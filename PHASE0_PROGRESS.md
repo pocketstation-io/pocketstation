@@ -16,6 +16,17 @@
 
 ---
 
+## Task 1 — Fix sine_to_wav example (DONE 2026-05-20)
+
+### Changes
+- `pocketstation-audio/examples/sine_to_wav.rs`: sized ring to 64 (matches pool) so all 50 frames fit; replaced panicking `.expect("ring full")` with `let _ =` (backpressure drop policy intentional)
+- `pocketstation-audio/Cargo.toml`: added `[[example]]` entry documenting the run command
+
+### Verification
+- `cargo run -p pocketstation-audio --example sine_to_wav` — exits cleanly, writes 48000 samples
+
+---
+
 ## Remaining gaps
 
 - Task 1: `sine_to_wav` panics at runtime (ring capacity 8, pushes 50 frames)
