@@ -13,6 +13,10 @@ real-opus = ["pocketstation-codec/real-opus"]
 name = "sine_to_wav"
 # cargo run -p pocketstation-audio --example sine_to_wav
 
+[[example]]
+name = "soak"
+# cargo run -p pocketstation-audio --example soak
+
 [dependencies]
 pocketstation-frame = { path = "../pocketstation-frame" }
 pocketstation-bus = { path = "../pocketstation-bus" }

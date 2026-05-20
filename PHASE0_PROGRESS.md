@@ -109,6 +109,19 @@
 
 ---
 
+## Task 9 — Benchmark/soak placeholders (DONE 2026-05-20)
+
+### Changes
+- `pocketstation-audio/examples/soak.rs`: 60-second soak (3000 × 20 ms frames), asserts 0 drops, 0 pool failures, exact sample count
+- `pocketstation-audio/Cargo.toml`: registered `[[example]] soak`
+- Criterion next steps documented in soak.rs header (add `[[bench]]`, `benches/`, CI gate)
+
+### Verification
+- `cargo run -p pocketstation-audio --example soak` — 3000 frames in ~307 ms, PASS
+- Criterion: NOT added (no existing `[[bench]]` config); Phase 1 steps documented
+
+---
+
 ## Remaining gaps
 
 - Task 1: `sine_to_wav` panics at runtime (ring capacity 8, pushes 50 frames)
