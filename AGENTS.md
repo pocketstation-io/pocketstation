@@ -23,3 +23,26 @@ If the current project phase is earlier, do not implement code here unless the i
 - Do not change v2.3 architecture unless explicitly assigned.
 - Do not add dependencies without approval.
 - Do not bypass CI.
+
+
+## Engineering Standards
+
+Before code changes, every agent must read:
+
+- `docs/standards/STAFF_ENGINEERING_BAR.md`
+- `docs/standards/STRUCTURE_NAMING_STYLE_THINKING.md`
+- `docs/REPO_CONTRACT.md`
+- relevant ADRs
+- relevant phase progress file
+
+All code must follow the structure, naming, documentation,
+test naming, comment style, and thinking process defined there.
+
+Every non-trivial implementation documents:
+
+- invariant
+- ownership model
+- failure behavior
+- test coverage
+- phase scope
+- what is intentionally not implemented
