@@ -31,18 +31,23 @@ Before code changes, every agent must read:
 
 - `docs/standards/STAFF_ENGINEERING_BAR.md`
 - `docs/standards/STRUCTURE_NAMING_STYLE_THINKING.md`
+- `docs/standards/PRODUCTION_ENGINEERING_BAR.md`
 - `docs/REPO_CONTRACT.md`
 - relevant ADRs
-- relevant phase progress file
+- current phase progress file
+- `docs/standards/FAKE_SCAFFOLD_INVENTORY.md`
 
-All code must follow the structure, naming, documentation,
-test naming, comment style, and thinking process defined there.
+All code follows the structure, naming, documentation, test naming,
+comment style, and thinking process defined there.
 
 Every non-trivial implementation documents:
-
 - invariant
 - ownership model
 - failure behavior
 - test coverage
 - phase scope
 - what is intentionally not implemented
+
+Every PR that introduces a fake/mock/scaffold adds a row to
+`docs/standards/FAKE_SCAFFOLD_INVENTORY.md`. Every PR that replaces one burns
+the row down.
