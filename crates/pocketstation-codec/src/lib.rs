@@ -61,27 +61,32 @@ impl MockOpusEncoder {
 }
 
 impl MockOpusDecoder {
-    /// Allocation-free decode: appends decoded f32 samples into a caller-
-    /// supplied buffer. Returns the number of samples written.
-    pub fn decode_into(&mut self, encoded: &EncodedFrame, out: &mut Vec<f32>) -> usize {
+    /// Allocation-free decode from a raw byte slice: appends decoded f32
+    /// samples into a caller-supplied buffer. Returns the number of samples
+    /// written. This is the correct hot-path API; callers own both buffers.
+    pub fn decode_slice_into(&mut self, payload: &[u8], out: &mut Vec<f32>) -> usize {
         let before = out.len();
         out.extend(
-            encoded
-                .payload
+            payload
                 .chunks_exact(4)
                 .map(|b| f32::from_le_bytes([b[0], b[1], b[2], b[3]])),
         );
         out.len() - before
     }
 
+    /// Allocation-free decode from an EncodedFrame (borrows its payload).
+    /// Returns the number of samples written.
+    pub fn decode_into(&mut self, encoded: &EncodedFrame, out: &mut Vec<f32>) -> usize {
+        self.decode_slice_into(&encoded.payload, out)
+    }
+
     /// Allocates a new Vec per call — for tests and examples only.
     pub fn decode_to_vec(&mut self, encoded: &EncodedFrame) -> Vec<f32> {
-        // TODO: hot-path callers should use decode_into() with a pooled buffer.
+        // TODO: hot-path callers should use decode_slice_into() with pooled buffers.
         let mut out = Vec::with_capacity(encoded.payload.len() / 4);
         self.decode_into(encoded, &mut out);
         out
     }
-
 }
 
 #[cfg(feature = "real-opus")]

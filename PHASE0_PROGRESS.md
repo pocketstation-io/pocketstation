@@ -97,6 +97,18 @@
 
 ---
 
+## Task 8 — Allocation-check command (DONE 2026-05-20)
+
+### Changes
+- `pocketstation-alloccheck/src/main.rs`: exercises acquire→encode_into→decode_slice_into→release cycle with reused caller-owned buffers; asserts 0 pool failures
+- `pocketstation-codec`: added `decode_slice_into()` to avoid intermediate EncodedFrame allocation in the hot path
+
+### Verification
+- `cargo run -p pocketstation-alloccheck` — prints "Phase 0 OK", 0 pool failures
+- DHAT gate documented as Phase 1 work (ADR-TBD)
+
+---
+
 ## Remaining gaps
 
 - Task 1: `sine_to_wav` panics at runtime (ring capacity 8, pushes 50 frames)
