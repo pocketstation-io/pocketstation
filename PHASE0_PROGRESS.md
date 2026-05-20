@@ -49,6 +49,18 @@
 
 ---
 
+## Task 4 — BusMetrics (DONE 2026-05-20)
+
+### Changes
+- `pocketstation-metrics`: added `sum_ns()` accessor to `SimpleHistogram`
+- Added 6 tests covering Counter, Gauge, SimpleHistogram, and BusMetrics
+
+### Verification
+- `cargo test -p pocketstation-metrics` — 6/6 pass
+- `cargo clippy --workspace --all-targets -- -D warnings` — clean
+
+---
+
 ## Remaining gaps
 
 - Task 1: `sine_to_wav` panics at runtime (ring capacity 8, pushes 50 frames)
