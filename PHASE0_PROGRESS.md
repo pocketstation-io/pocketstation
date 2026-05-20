@@ -73,6 +73,19 @@
 
 ---
 
+## Task 6 — JitterBuffer Phase 0 scaffold (DONE 2026-05-20)
+
+### Changes
+- `pocketstation-codec`: added doc comment clearly marking JitterBuffer as NOT production NetEQ
+- Added `sequence_gap_ahead()` as a PLC hook point (ADR-009 placeholder)
+- Added `next_expected_seq` tracking field
+- Added 5 tests: depth gating, FIFO order, late frame (documents non-reorder), missing frame gap detection, contiguous no-gap
+
+### Verification
+- `cargo test -p pocketstation-codec` — 6/6 pass
+
+---
+
 ## Remaining gaps
 
 - Task 1: `sine_to_wav` panics at runtime (ring capacity 8, pushes 50 frames)
