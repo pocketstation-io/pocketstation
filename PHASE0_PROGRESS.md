@@ -61,6 +61,18 @@
 
 ---
 
+## Task 5 — ClockSync Phase 0 (DONE 2026-05-20)
+
+### Changes
+- `pocketstation-bus`: made `ClockSync` fields private, exposed `correction_ratio()`, `drift_ppm_estimate()`, `target_sample_rate()` as the stable Phase 1 API surface
+- Added 3 tests: zero drift, positive drift convergence, negative drift direction
+
+### Verification
+- `cargo test -p pocketstation-bus` — 8/8 pass
+- `cargo clippy --workspace --all-targets -- -D warnings` — clean
+
+---
+
 ## Remaining gaps
 
 - Task 1: `sine_to_wav` panics at runtime (ring capacity 8, pushes 50 frames)

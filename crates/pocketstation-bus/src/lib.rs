@@ -49,11 +49,16 @@ impl FrameConsumer {
     }
 }
 
+/// Phase 0 placeholder for ADR-006 PI-controlled clock synchronisation.
+///
+/// The full proportional-integral controller (dual-stage, anti-windup) is
+/// deferred to Phase 1. This stub exposes the stable public API surface so
+/// callers can be written against it now.
 #[derive(Debug, Clone, Copy)]
 pub struct ClockSync {
-    pub target_sample_rate: u32,
-    pub drift_ppm_estimate: f32,
-    pub correction_ratio: f32,
+    target_sample_rate: u32,
+    drift_ppm_estimate: f32,
+    correction_ratio: f32,
 }
 
 impl ClockSync {
@@ -64,10 +69,25 @@ impl ClockSync {
             correction_ratio: 1.0,
         }
     }
+
+    /// Feed a new drift measurement (in PPM) and update the correction ratio.
+    /// ADR-006 owns the full PI tuning; this is an exponential smoother placeholder.
     pub fn update_pi(&mut self, measured_drift_ppm: f32) {
-        // Phase 0 placeholder: smooth drift estimate. ADR-006 owns full PI tuning.
         self.drift_ppm_estimate = 0.95 * self.drift_ppm_estimate + 0.05 * measured_drift_ppm;
         self.correction_ratio = 1.0 - (self.drift_ppm_estimate / 1_000_000.0);
+    }
+
+    /// Multiplicative ratio to apply to the SRC step. 1.0 = no correction.
+    pub fn correction_ratio(&self) -> f32 {
+        self.correction_ratio
+    }
+
+    pub fn drift_ppm_estimate(&self) -> f32 {
+        self.drift_ppm_estimate
+    }
+
+    pub fn target_sample_rate(&self) -> u32 {
+        self.target_sample_rate
     }
 }
 
@@ -138,5 +158,37 @@ mod tests {
         assert_eq!(pushed, 8);
         assert_eq!(dropped, 8);
         assert_eq!(p.dropped_newest(), 8);
+    }
+
+    #[test]
+    fn clock_sync_zero_drift_correction_ratio_is_one() {
+        let cs = ClockSync::new(48_000);
+        assert_eq!(cs.correction_ratio(), 1.0);
+        assert_eq!(cs.drift_ppm_estimate(), 0.0);
+        assert_eq!(cs.target_sample_rate(), 48_000);
+    }
+
+    #[test]
+    fn clock_sync_positive_drift_reduces_correction_ratio() {
+        let mut cs = ClockSync::new(48_000);
+        for _ in 0..200 {
+            cs.update_pi(100.0);
+        }
+        // After convergence the estimate should be ~100 ppm.
+        let est = cs.drift_ppm_estimate();
+        assert!((est - 100.0).abs() < 1.0, "drift estimate {est} not near 100 ppm");
+        let ratio = cs.correction_ratio();
+        assert!(ratio < 1.0, "positive drift should yield ratio < 1.0, got {ratio}");
+        assert!((ratio - 0.9999).abs() < 0.0001, "ratio {ratio} not near 0.9999");
+    }
+
+    #[test]
+    fn clock_sync_negative_drift_increases_correction_ratio() {
+        let mut cs = ClockSync::new(48_000);
+        for _ in 0..200 {
+            cs.update_pi(-100.0);
+        }
+        let ratio = cs.correction_ratio();
+        assert!(ratio > 1.0, "negative drift should yield ratio > 1.0, got {ratio}");
     }
 }
