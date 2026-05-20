@@ -1,4 +1,5 @@
 use std::cell::UnsafeCell;
+use std::fmt;
 use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
 use std::sync::Arc;
 
@@ -25,12 +26,6 @@ pub enum AudioMode {
     Broadcast,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ChannelLayout {
-    Mono,
-    Stereo,
-}
-
 pub struct AudioBufferPool {
     slots: Box<[UnsafeCell<Box<[f32]>>]>,
     slot_size: usize,
@@ -51,7 +46,11 @@ impl AudioBufferPool {
         for _ in 0..slot_count {
             slots.push(UnsafeCell::new(vec![0.0f32; slot_size].into_boxed_slice()));
         }
-        let mask = if slot_count == 64 { u64::MAX } else { (1u64 << slot_count) - 1 };
+        let mask = if slot_count == 64 {
+            u64::MAX
+        } else {
+            (1u64 << slot_count) - 1
+        };
         Arc::new(Self {
             slots: slots.into_boxed_slice(),
             slot_size,
@@ -60,9 +59,15 @@ impl AudioBufferPool {
         })
     }
 
-    pub fn slot_size(&self) -> usize { self.slot_size }
-    pub fn slot_count(&self) -> usize { self.slots.len() }
-    pub fn acquire_failures(&self) -> usize { self.acquire_failures.load(Ordering::Relaxed) }
+    pub fn slot_size(&self) -> usize {
+        self.slot_size
+    }
+    pub fn slot_count(&self) -> usize {
+        self.slots.len()
+    }
+    pub fn acquire_failures(&self) -> usize {
+        self.acquire_failures.load(Ordering::Relaxed)
+    }
 
     pub fn acquire(self: &Arc<Self>) -> Option<AudioBufferHandle> {
         loop {
@@ -74,15 +79,25 @@ impl AudioBufferPool {
             let idx = mask.trailing_zeros() as usize;
             let bit = 1u64 << idx;
             let next = mask & !bit;
-            if self.free_mask.compare_exchange_weak(mask, next, Ordering::AcqRel, Ordering::Acquire).is_ok() {
-                return Some(AudioBufferHandle { pool: Arc::clone(self), index: idx as u32, len: self.slot_size as u32 });
+            if self
+                .free_mask
+                .compare_exchange_weak(mask, next, Ordering::AcqRel, Ordering::Acquire)
+                .is_ok()
+            {
+                return Some(AudioBufferHandle {
+                    pool: Arc::clone(self),
+                    index: idx as u32,
+                    len: self.slot_size as u32,
+                });
             }
         }
     }
 
     fn release(&self, index: u32) {
         let idx = index as usize;
-        if idx >= self.slots.len() { return; }
+        if idx >= self.slots.len() {
+            return;
+        }
         let bit = 1u64 << idx;
         #[cfg(debug_assertions)]
         {
@@ -111,6 +126,7 @@ impl AudioBufferPool {
         &slot[..len]
     }
 
+    #[allow(clippy::mut_from_ref)]
     fn slot_mut(&self, index: u32, len: u32) -> &mut [f32] {
         let idx = index as usize;
         let len = len as usize;
@@ -129,10 +145,21 @@ pub struct AudioBufferHandle {
 }
 
 impl AudioBufferHandle {
-    pub fn len(&self) -> usize { self.len as usize }
-    pub fn index(&self) -> u32 { self.index }
-    pub fn as_slice(&self) -> &[f32] { self.pool.slot(self.index, self.len) }
-    pub fn as_mut_slice(&mut self) -> &mut [f32] { self.pool.slot_mut(self.index, self.len) }
+    pub fn len(&self) -> usize {
+        self.len as usize
+    }
+    pub fn is_empty(&self) -> bool {
+        self.len == 0
+    }
+    pub fn index(&self) -> u32 {
+        self.index
+    }
+    pub fn as_slice(&self) -> &[f32] {
+        self.pool.slot(self.index, self.len)
+    }
+    pub fn as_mut_slice(&mut self) -> &mut [f32] {
+        self.pool.slot_mut(self.index, self.len)
+    }
     pub fn set_len(&mut self, len: usize) {
         assert!(len <= self.pool.slot_size());
         self.len = len as u32;
@@ -150,6 +177,16 @@ impl Drop for AudioBufferHandle {
     }
 }
 
+impl fmt::Debug for AudioBufferHandle {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("AudioBufferHandle")
+            .field("index", &self.index)
+            .field("len", &self.len)
+            .finish()
+    }
+}
+
+#[derive(Debug)]
 pub struct AudioFrame {
     pub stream_id: StreamId,
     pub source_id: SourceId,
@@ -162,8 +199,24 @@ pub struct AudioFrame {
 }
 
 impl AudioFrame {
-    pub fn new(stream_id: StreamId, source_id: SourceId, sequence_number: u64, timestamp_ns: u64, channels: u8, buffer: AudioBufferHandle) -> Self {
-        Self { stream_id, source_id, sample_rate: DEFAULT_SAMPLE_RATE, channels, format: SampleFormat::F32Interleaved, timestamp_ns, sequence_number, buffer }
+    pub fn new(
+        stream_id: StreamId,
+        source_id: SourceId,
+        sequence_number: u64,
+        timestamp_ns: u64,
+        channels: u8,
+        buffer: AudioBufferHandle,
+    ) -> Self {
+        Self {
+            stream_id,
+            source_id,
+            sample_rate: DEFAULT_SAMPLE_RATE,
+            channels,
+            format: SampleFormat::F32Interleaved,
+            timestamp_ns,
+            sequence_number,
+            buffer,
+        }
     }
 }
 
@@ -179,7 +232,10 @@ mod tests {
         let c = pool.acquire().unwrap();
         let d = pool.acquire().unwrap();
         assert!(pool.acquire().is_none());
-        drop(a); drop(b); drop(c); drop(d);
+        drop(a);
+        drop(b);
+        drop(c);
+        drop(d);
         assert!(pool.acquire().is_some());
     }
 
@@ -189,6 +245,6 @@ mod tests {
         let mut h = pool.acquire().unwrap();
         h.copy_from_slice(&[1.0, 2.0, 3.0]);
         assert_eq!(h.len(), 3);
-        assert_eq!(h.as_slice(), &[1.0,2.0,3.0]);
+        assert_eq!(h.as_slice(), &[1.0, 2.0, 3.0]);
     }
 }

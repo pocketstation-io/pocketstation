@@ -19,24 +19,34 @@ pub struct FrameConsumer {
 
 pub fn frame_bus(capacity: usize) -> (FrameProducer, FrameConsumer) {
     let (p, c) = RingBuffer::<AudioFrame>::new(capacity);
-    (FrameProducer { inner: p, dropped_newest: AtomicU64::new(0) }, FrameConsumer { inner: c })
+    (
+        FrameProducer {
+            inner: p,
+            dropped_newest: AtomicU64::new(0),
+        },
+        FrameConsumer { inner: c },
+    )
 }
 
 impl FrameProducer {
     pub fn push_drop_newest(&mut self, frame: AudioFrame) -> Result<(), AudioFrame> {
         match self.inner.push(frame) {
             Ok(()) => Ok(()),
-            Err(e) => {
+            Err(rtrb::PushError::Full(frame)) => {
                 self.dropped_newest.fetch_add(1, Ordering::Relaxed);
-                Err(e.into_inner())
+                Err(frame)
             }
         }
     }
-    pub fn dropped_newest(&self) -> u64 { self.dropped_newest.load(Ordering::Relaxed) }
+    pub fn dropped_newest(&self) -> u64 {
+        self.dropped_newest.load(Ordering::Relaxed)
+    }
 }
 
 impl FrameConsumer {
-    pub fn pop(&mut self) -> Option<AudioFrame> { self.inner.pop().ok() }
+    pub fn pop(&mut self) -> Option<AudioFrame> {
+        self.inner.pop().ok()
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -48,7 +58,11 @@ pub struct ClockSync {
 
 impl ClockSync {
     pub fn new(target_sample_rate: u32) -> Self {
-        Self { target_sample_rate, drift_ppm_estimate: 0.0, correction_ratio: 1.0 }
+        Self {
+            target_sample_rate,
+            drift_ppm_estimate: 0.0,
+            correction_ratio: 1.0,
+        }
     }
     pub fn update_pi(&mut self, measured_drift_ppm: f32) {
         // Phase 0 placeholder: smooth drift estimate. ADR-006 owns full PI tuning.
