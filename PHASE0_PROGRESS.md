@@ -86,6 +86,17 @@
 
 ---
 
+## Task 7 — Codec allocation story (DONE 2026-05-20)
+
+### Changes
+- `MockOpusEncoder`/`MockOpusDecoder` doc comments mark them explicitly as test/demo only
+- Added `encode_into(&mut Vec<u8>)` and `decode_into(&mut Vec<f32>)` allocation-free APIs for hot-path use
+- `encode()` and `decode_to_vec()` delegate to `_into` variants (tests/examples unchanged)
+- TODO/ADR-008 references added at Vec allocation points
+- `real-opus` feature already correctly gated via `dep:opus`; compiles without libopus installed
+
+---
+
 ## Remaining gaps
 
 - Task 1: `sine_to_wav` panics at runtime (ring capacity 8, pushes 50 frames)

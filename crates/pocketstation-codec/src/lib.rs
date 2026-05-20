@@ -26,15 +26,32 @@ pub struct EncodedFrame {
     pub payload: Vec<u8>,
 }
 
+/// Mock encoder for tests and examples only. NOT suitable for production.
+/// TODO(ADR-008): replace with real Opus encoder in Phase 1; hot path must
+/// use the allocation-free encode_into() API below.
 pub struct MockOpusEncoder;
+
+/// Mock decoder for tests and examples only. NOT suitable for production.
+/// TODO(ADR-008): replace with real Opus decoder in Phase 1.
 pub struct MockOpusDecoder;
 
 impl MockOpusEncoder {
-    pub fn encode(&mut self, frame: &AudioFrame) -> EncodedFrame {
-        let mut payload = Vec::with_capacity(frame.buffer.len() * 4);
+    /// Allocation-free encode: writes raw PCM bytes into a caller-supplied
+    /// buffer. Returns the number of bytes written.
+    /// This is the correct hot-path API shape; `encode()` is convenience-only.
+    pub fn encode_into(&mut self, frame: &AudioFrame, out: &mut Vec<u8>) -> usize {
+        out.clear();
         for s in frame.buffer.as_slice() {
-            payload.extend_from_slice(&s.to_le_bytes());
+            out.extend_from_slice(&s.to_le_bytes());
         }
+        out.len()
+    }
+
+    /// Allocates a new Vec per call — for tests and examples only.
+    pub fn encode(&mut self, frame: &AudioFrame) -> EncodedFrame {
+        // TODO: hot-path callers should use encode_into() with a pooled buffer.
+        let mut payload = Vec::with_capacity(frame.buffer.len() * 4);
+        self.encode_into(frame, &mut payload);
         EncodedFrame {
             sequence_number: frame.sequence_number,
             timestamp_ns: frame.timestamp_ns,
@@ -44,13 +61,27 @@ impl MockOpusEncoder {
 }
 
 impl MockOpusDecoder {
-    pub fn decode_to_vec(&mut self, encoded: &EncodedFrame) -> Vec<f32> {
-        encoded
-            .payload
-            .chunks_exact(4)
-            .map(|b| f32::from_le_bytes([b[0], b[1], b[2], b[3]]))
-            .collect()
+    /// Allocation-free decode: appends decoded f32 samples into a caller-
+    /// supplied buffer. Returns the number of samples written.
+    pub fn decode_into(&mut self, encoded: &EncodedFrame, out: &mut Vec<f32>) -> usize {
+        let before = out.len();
+        out.extend(
+            encoded
+                .payload
+                .chunks_exact(4)
+                .map(|b| f32::from_le_bytes([b[0], b[1], b[2], b[3]])),
+        );
+        out.len() - before
     }
+
+    /// Allocates a new Vec per call — for tests and examples only.
+    pub fn decode_to_vec(&mut self, encoded: &EncodedFrame) -> Vec<f32> {
+        // TODO: hot-path callers should use decode_into() with a pooled buffer.
+        let mut out = Vec::with_capacity(encoded.payload.len() / 4);
+        self.decode_into(encoded, &mut out);
+        out
+    }
+
 }
 
 #[cfg(feature = "real-opus")]
