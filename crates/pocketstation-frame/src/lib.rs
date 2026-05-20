@@ -224,11 +224,16 @@ mod tests {
 
     #[test]
     fn acquire_all_slots_then_none() {
+        // Given
         let pool = AudioBufferPool::new(4, 16);
+
+        // When
         let a = pool.acquire().unwrap();
         let b = pool.acquire().unwrap();
         let c = pool.acquire().unwrap();
         let d = pool.acquire().unwrap();
+
+        // Then
         assert!(pool.acquire().is_none());
         drop(a);
         drop(b);
@@ -239,37 +244,55 @@ mod tests {
 
     #[test]
     fn handle_copy_sets_length() {
+        // Given
         let pool = AudioBufferPool::new(1, 8);
         let mut h = pool.acquire().unwrap();
+
+        // When
         h.copy_from_slice(&[1.0, 2.0, 3.0]);
+
+        // Then
         assert_eq!(h.len(), 3);
         assert_eq!(h.as_slice(), &[1.0, 2.0, 3.0]);
     }
 
     #[test]
     fn acquire_all_64_slots_then_65th_returns_none() {
+        // Given
         let pool = AudioBufferPool::new(64, 4);
+
+        // When
         let handles: Vec<_> = (0..64).map(|_| pool.acquire().unwrap()).collect();
-        assert_eq!(pool.acquire_failures(), 0);
-        assert!(pool.acquire().is_none());
+        let extra = pool.acquire();
+
+        // Then
         assert_eq!(pool.acquire_failures(), 1);
+        assert!(extra.is_none());
         drop(handles);
     }
 
     #[test]
     fn drop_releases_slot_and_reacquire_succeeds() {
+        // Given
         let pool = AudioBufferPool::new(1, 4);
         let h = pool.acquire().unwrap();
         assert!(pool.acquire().is_none());
+
+        // When
         drop(h);
+
+        // Then
         assert!(pool.acquire().is_some());
     }
 
     #[test]
     fn is_in_use_tracks_acquire_and_release() {
+        // Given
         let pool = AudioBufferPool::new(2, 4);
         let h = pool.acquire().unwrap();
         let slot = h.index();
+
+        // When / Then
         assert!(pool.is_in_use(slot));
         drop(h);
         assert!(!pool.is_in_use(slot));

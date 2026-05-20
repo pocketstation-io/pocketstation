@@ -27,12 +27,12 @@ pub struct EncodedFrame {
 }
 
 /// Mock encoder for tests and examples only. NOT suitable for production.
-/// TODO(ADR-008): replace with real Opus encoder in Phase 1; hot path must
+/// TODO(Phase 1, ADR-008): replace with real Opus encoder; hot path must
 /// use the allocation-free encode_into() API below.
 pub struct MockOpusEncoder;
 
 /// Mock decoder for tests and examples only. NOT suitable for production.
-/// TODO(ADR-008): replace with real Opus decoder in Phase 1.
+/// TODO(Phase 1, ADR-008): replace with real Opus decoder.
 pub struct MockOpusDecoder;
 
 impl MockOpusEncoder {
@@ -49,7 +49,7 @@ impl MockOpusEncoder {
 
     /// Allocates a new Vec per call — for tests and examples only.
     pub fn encode(&mut self, frame: &AudioFrame) -> EncodedFrame {
-        // TODO: hot-path callers should use encode_into() with a pooled buffer.
+        // TODO(Phase 1, ADR-008): hot-path callers must use encode_into() with a pooled buffer.
         let mut payload = Vec::with_capacity(frame.buffer.len() * 4);
         self.encode_into(frame, &mut payload);
         EncodedFrame {
@@ -82,7 +82,7 @@ impl MockOpusDecoder {
 
     /// Allocates a new Vec per call — for tests and examples only.
     pub fn decode_to_vec(&mut self, encoded: &EncodedFrame) -> Vec<f32> {
-        // TODO: hot-path callers should use decode_slice_into() with pooled buffers.
+        // TODO(Phase 1, ADR-008): hot-path callers must use decode_slice_into() with pooled buffers.
         let mut out = Vec::with_capacity(encoded.payload.len() / 4);
         self.decode_into(encoded, &mut out);
         out
@@ -155,7 +155,6 @@ pub mod real_opus {
 pub struct JitterBuffer {
     target_depth: usize,
     queue: VecDeque<EncodedFrame>,
-    next_expected_seq: Option<u64>,
 }
 
 impl JitterBuffer {
@@ -163,20 +162,10 @@ impl JitterBuffer {
         Self {
             target_depth,
             queue: VecDeque::new(),
-            next_expected_seq: None,
         }
     }
 
     pub fn push(&mut self, frame: EncodedFrame) {
-        if self.next_expected_seq.is_none() {
-            self.next_expected_seq = Some(frame.sequence_number + 1);
-        } else {
-            self.next_expected_seq = Some(
-                self.next_expected_seq
-                    .unwrap()
-                    .max(frame.sequence_number + 1),
-            );
-        }
         self.queue.push_back(frame);
     }
 
@@ -221,13 +210,17 @@ mod tests {
     }
 
     #[test]
-    fn duration_samples() {
+    fn opus_frame_duration_ms20_is_960_samples_at_48k() {
+        // Given / When / Then
         assert_eq!(OpusFrameDuration::Ms20.samples_at_48k(), 960);
     }
 
     #[test]
-    fn jitter_buffer_withholds_until_target_depth_reached() {
+    fn jitter_buffer_withholds_frames_until_target_depth_is_reached() {
+        // Given
         let mut jb = JitterBuffer::new(3);
+
+        // When / Then (interleaved: each push either gates or releases)
         jb.push(make_encoded(0));
         assert!(jb.pop_ready().is_none());
         jb.push(make_encoded(1));
@@ -238,11 +231,13 @@ mod tests {
 
     #[test]
     fn jitter_buffer_ordered_frames_pop_in_fifo_order() {
-        // target_depth=1 so every push is immediately eligible; tests pure FIFO order.
+        // Given: target_depth=1 so every push is immediately eligible
         let mut jb = JitterBuffer::new(1);
         for seq in 0..4 {
             jb.push(make_encoded(seq));
         }
+
+        // When / Then
         for expected in 0..4u64 {
             let frame = jb.pop_ready().unwrap();
             assert_eq!(frame.sequence_number, expected);
@@ -251,13 +246,16 @@ mod tests {
     }
 
     #[test]
-    fn jitter_buffer_late_frame_is_not_reordered_phase0() {
-        // Phase 0: late frames are NOT reordered; they join the back of the queue.
-        // This test documents that known limitation.
+    fn jitter_buffer_late_frame_is_not_reordered_in_phase0() {
+        // Given: seq 1 arrives before seq 0 (out-of-order delivery)
         let mut jb = JitterBuffer::new(1);
-        jb.push(make_encoded(1)); // seq 1 arrives before seq 0
-        jb.push(make_encoded(0)); // seq 0 arrives late
+        jb.push(make_encoded(1));
+        jb.push(make_encoded(0));
+
+        // When
         let first = jb.pop_ready().unwrap();
+
+        // Then: Phase 0 does not reorder late frames; documents known limitation
         assert_eq!(
             first.sequence_number, 1,
             "Phase 0 JitterBuffer does not reorder late frames"
@@ -265,10 +263,13 @@ mod tests {
     }
 
     #[test]
-    fn jitter_buffer_missing_frame_detected_via_sequence_gap() {
+    fn jitter_buffer_detects_sequence_gap_when_frame_is_missing() {
+        // Given
         let mut jb = JitterBuffer::new(1);
         jb.push(make_encoded(0));
         jb.push(make_encoded(2)); // seq 1 is missing
+
+        // When / Then
         assert!(
             jb.sequence_gap_ahead(),
             "gap between seq 0 and seq 2 should be detected"
@@ -279,10 +280,15 @@ mod tests {
     }
 
     #[test]
-    fn jitter_buffer_contiguous_frames_have_no_gap() {
+    fn jitter_buffer_contiguous_frames_report_no_gap() {
+        // Given
         let mut jb = JitterBuffer::new(1);
+
+        // When
         jb.push(make_encoded(5));
         jb.push(make_encoded(6));
+
+        // Then
         assert!(!jb.sequence_gap_ahead());
     }
 }

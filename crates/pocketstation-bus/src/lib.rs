@@ -2,12 +2,6 @@ use pocketstation_frame::AudioFrame;
 use rtrb::{Consumer, Producer, RingBuffer};
 use std::sync::atomic::{AtomicU64, Ordering};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum BackpressurePolicy {
-    DropNewest,
-    DropOldest,
-}
-
 pub struct FrameProducer {
     inner: Producer<AudioFrame>,
     dropped_newest: AtomicU64,
@@ -102,34 +96,48 @@ mod tests {
     }
 
     #[test]
-    fn push_pop_frame() {
+    fn push_pop_single_frame_succeeds() {
+        // Given
         let pool = AudioBufferPool::new(2, 8);
         let handle = pool.acquire().unwrap();
         let frame = AudioFrame::new(StreamId(1), SourceId(1), 0, 0, 1, handle);
         let (mut p, mut c) = frame_bus(1);
+
+        // When
         p.push_drop_newest(frame).unwrap();
+
+        // Then
         assert!(c.pop().is_some());
     }
 
     #[test]
-    fn given_ring_capacity_3_when_push_4_then_4th_dropped_newest() {
+    fn push_into_full_ring_drops_newest_and_increments_counter() {
+        // Given
         let pool = AudioBufferPool::new(8, 4);
         let (mut p, _c) = frame_bus(3);
         for seq in 0..3 {
             assert!(p.push_drop_newest(make_frame(&pool, seq)).is_ok());
         }
+
+        // When
         let fourth = make_frame(&pool, 3);
-        assert!(p.push_drop_newest(fourth).is_err());
+        let result = p.push_drop_newest(fourth);
+
+        // Then
+        assert!(result.is_err());
         assert_eq!(p.dropped_newest(), 1);
     }
 
     #[test]
-    fn given_frames_pushed_in_order_when_popped_then_fifo_order() {
+    fn frames_pushed_in_order_are_popped_in_fifo_order() {
+        // Given
         let pool = AudioBufferPool::new(8, 4);
         let (mut p, mut c) = frame_bus(4);
         for seq in 0..4 {
             p.push_drop_newest(make_frame(&pool, seq)).unwrap();
         }
+
+        // When / Then (interleaved assertion loop)
         for expected_seq in 0..4u64 {
             let frame = c.pop().unwrap();
             assert_eq!(frame.sequence_number, expected_seq);
@@ -138,15 +146,21 @@ mod tests {
     }
 
     #[test]
-    fn given_empty_ring_when_pop_then_returns_none() {
+    fn pop_on_empty_ring_returns_none() {
+        // Given
         let (_p, mut c) = frame_bus(4);
+
+        // When / Then
         assert!(c.pop().is_none());
     }
 
     #[test]
-    fn given_full_ring_when_no_drop_policy_applied_then_capacity_bounded() {
+    fn ring_capacity_is_bounded_and_excess_frames_are_dropped() {
+        // Given
         let pool = AudioBufferPool::new(16, 4);
         let (mut p, _c) = frame_bus(8);
+
+        // When
         let mut pushed = 0u64;
         let mut dropped = 0u64;
         for seq in 0..16 {
@@ -155,6 +169,8 @@ mod tests {
                 Err(_) => dropped += 1,
             }
         }
+
+        // Then
         assert_eq!(pushed, 8);
         assert_eq!(dropped, 8);
         assert_eq!(p.dropped_newest(), 8);
@@ -162,19 +178,26 @@ mod tests {
 
     #[test]
     fn clock_sync_zero_drift_correction_ratio_is_one() {
+        // Given / When
         let cs = ClockSync::new(48_000);
+
+        // Then
         assert_eq!(cs.correction_ratio(), 1.0);
         assert_eq!(cs.drift_ppm_estimate(), 0.0);
         assert_eq!(cs.target_sample_rate(), 48_000);
     }
 
     #[test]
-    fn clock_sync_positive_drift_reduces_correction_ratio() {
+    fn clock_sync_positive_drift_converges_and_reduces_correction_ratio() {
+        // Given
         let mut cs = ClockSync::new(48_000);
+
+        // When: drive the smoother to convergence
         for _ in 0..200 {
             cs.update_pi(100.0);
         }
-        // After convergence the estimate should be ~100 ppm.
+
+        // Then
         let est = cs.drift_ppm_estimate();
         assert!(
             (est - 100.0).abs() < 1.0,
@@ -192,11 +215,16 @@ mod tests {
     }
 
     #[test]
-    fn clock_sync_negative_drift_increases_correction_ratio() {
+    fn clock_sync_negative_drift_increases_correction_ratio_above_one() {
+        // Given
         let mut cs = ClockSync::new(48_000);
+
+        // When
         for _ in 0..200 {
             cs.update_pi(-100.0);
         }
+
+        // Then
         let ratio = cs.correction_ratio();
         assert!(
             ratio > 1.0,
