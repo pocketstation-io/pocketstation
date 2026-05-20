@@ -122,14 +122,21 @@
 
 ---
 
-## Remaining gaps
+## Task 10 — Final Phase 0 audit (DONE 2026-05-20)
 
-- Task 1: `sine_to_wav` panics at runtime (ring capacity 8, pushes 50 frames)
-- Task 2: `AudioBufferPool` double-release only protected in debug; needs more tests
-- Task 3: No invariant tests for `FrameBus` bounded/FIFO/drop-newest behavior
-- Task 4: `BusMetrics` fields exist but no tests
-- Task 5: `ClockSync` is a stub; needs clean Phase 1 API
-- Task 6: `JitterBuffer` has no tests for late/missing frames
-- Task 7: Mock codec is not clearly marked test-only; hot-path `Vec` allocation present
-- Task 8: `pocketstation-alloccheck` is a placeholder binary
-- Task 9: No benchmarks or soak mode
+### Checks run
+```
+cargo fmt --all -- --check                                 PASS
+cargo clippy --workspace --all-targets -- -D warnings     PASS (0 warnings)
+cargo test --workspace                                     PASS (26 tests)
+cargo run -p pocketstation-audio --example sine_to_wav    PASS (48000 samples)
+```
+
+### Remaining Phase 1 gaps (not blockers for Phase 0 exit)
+
+- **DHAT allocation gate**: `pocketstation-alloccheck` exercises the hot path but does not yet count heap allocations. Needs DHAT or a custom `#[global_allocator]` shim (ADR-TBD). Document the per-frame budget in `PocketStation-v2.3.md`.
+- **Criterion benchmarks**: `criterion = "0.5"` is in workspace deps but no `[[bench]]` sections exist. Add `benches/` directories and CI gate in Phase 1.
+- **ClockSync full PI controller**: ADR-006 owns the dual-stage anti-windup PI. Current stub is an exponential smoother only.
+- **JitterBuffer adaptive depth + PLC**: ADR-009 owns the real adaptive NetEQ design. `sequence_gap_ahead()` is a hook only; no PLC is generated.
+- **Codec real-opus feature**: `dep:opus` is gated correctly but requires `libopus` installed at link time. CI needs the `real-opus` feature tested in a separate job with libopus available.
+- **EncodedFrame payload allocation**: `EncodedFrame.payload: Vec<u8>` means the struct itself forces one heap allocation. Phase 1 should consider a pool-backed byte buffer or a newtype over `Arc<[u8]>`.

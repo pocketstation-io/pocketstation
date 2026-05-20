@@ -213,7 +213,11 @@ mod tests {
     use super::*;
 
     fn make_encoded(seq: u64) -> EncodedFrame {
-        EncodedFrame { sequence_number: seq, timestamp_ns: seq * 20_000_000, payload: vec![] }
+        EncodedFrame {
+            sequence_number: seq,
+            timestamp_ns: seq * 20_000_000,
+            payload: vec![],
+        }
     }
 
     #[test]
@@ -265,7 +269,10 @@ mod tests {
         let mut jb = JitterBuffer::new(1);
         jb.push(make_encoded(0));
         jb.push(make_encoded(2)); // seq 1 is missing
-        assert!(jb.sequence_gap_ahead(), "gap between seq 0 and seq 2 should be detected");
+        assert!(
+            jb.sequence_gap_ahead(),
+            "gap between seq 0 and seq 2 should be detected"
+        );
         // Phase 0: no PLC is generated; caller is responsible for concealment.
         let first = jb.pop_ready().unwrap();
         assert_eq!(first.sequence_number, 0);

@@ -17,11 +17,31 @@ pub enum SourceCapability {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum PlatformId { Ios, Android, Windows, Macos, Linux, Web, Server, Unknown(String) }
+pub enum PlatformId {
+    Ios,
+    Android,
+    Windows,
+    Macos,
+    Linux,
+    Web,
+    Server,
+    Unknown(String),
+}
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum LatencyClass { Realtime, LowLatency, Buffered }
+pub enum LatencyClass {
+    Realtime,
+    LowLatency,
+    Buffered,
+}
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum ReliabilityClass { AlwaysAvailable, UserPermission, UserAction, Experimental, PolicyGated, FutureAPI }
+pub enum ReliabilityClass {
+    AlwaysAvailable,
+    UserPermission,
+    UserAction,
+    Experimental,
+    PolicyGated,
+    FutureAPI,
+}
 
 #[derive(Debug, Clone)]
 pub struct AudioSourceDescriptor {
@@ -37,13 +57,45 @@ pub struct AudioSourceDescriptor {
 }
 
 #[derive(Debug, Clone)]
-pub enum RouteKind { LocalPlayback, LanDirect, CloudRelay, VoiceAgentBackend, RecordingFile, VirtualMicrophone, PeerToPeer, HardwareBridge, PublicChannel, PrivateRoom }
+pub enum RouteKind {
+    LocalPlayback,
+    LanDirect,
+    CloudRelay,
+    VoiceAgentBackend,
+    RecordingFile,
+    VirtualMicrophone,
+    PeerToPeer,
+    HardwareBridge,
+    PublicChannel,
+    PrivateRoom,
+}
 #[derive(Debug, Clone)]
-pub enum TransportKind { Local, WebRtc, RtpUdp, File }
+pub enum TransportKind {
+    Local,
+    WebRtc,
+    RtpUdp,
+    File,
+}
 #[derive(Debug, Clone)]
-pub enum EncryptionMode { TransportOnly, SFrameE2EE, EnterpriseKeyManager }
+pub enum EncryptionMode {
+    TransportOnly,
+    SFrameE2EE,
+    EnterpriseKeyManager,
+}
 #[derive(Debug, Clone)]
-pub enum OutputTarget { LocalSpeaker, BluetoothDevice, WebListener, MobileApp, DesktopApp, VoiceAgentBackend, RecordingFile, VirtualMicrophone, PublicRoom, PrivateRoom, HardwareAccessory }
+pub enum OutputTarget {
+    LocalSpeaker,
+    BluetoothDevice,
+    WebListener,
+    MobileApp,
+    DesktopApp,
+    VoiceAgentBackend,
+    RecordingFile,
+    VirtualMicrophone,
+    PublicRoom,
+    PrivateRoom,
+    HardwareAccessory,
+}
 
 #[derive(Debug, Clone)]
 pub struct RoutePlan {

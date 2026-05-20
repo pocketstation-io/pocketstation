@@ -176,10 +176,19 @@ mod tests {
         }
         // After convergence the estimate should be ~100 ppm.
         let est = cs.drift_ppm_estimate();
-        assert!((est - 100.0).abs() < 1.0, "drift estimate {est} not near 100 ppm");
+        assert!(
+            (est - 100.0).abs() < 1.0,
+            "drift estimate {est} not near 100 ppm"
+        );
         let ratio = cs.correction_ratio();
-        assert!(ratio < 1.0, "positive drift should yield ratio < 1.0, got {ratio}");
-        assert!((ratio - 0.9999).abs() < 0.0001, "ratio {ratio} not near 0.9999");
+        assert!(
+            ratio < 1.0,
+            "positive drift should yield ratio < 1.0, got {ratio}"
+        );
+        assert!(
+            (ratio - 0.9999).abs() < 0.0001,
+            "ratio {ratio} not near 0.9999"
+        );
     }
 
     #[test]
@@ -189,6 +198,9 @@ mod tests {
             cs.update_pi(-100.0);
         }
         let ratio = cs.correction_ratio();
-        assert!(ratio > 1.0, "negative drift should yield ratio > 1.0, got {ratio}");
+        assert!(
+            ratio > 1.0,
+            "negative drift should yield ratio > 1.0, got {ratio}"
+        );
     }
 }

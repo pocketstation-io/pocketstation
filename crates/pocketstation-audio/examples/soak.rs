@@ -22,7 +22,10 @@ const FRAMES_PER_SEC: u64 = 1_000 / 20; // 20 ms frames
 const TOTAL_FRAMES: u64 = SOAK_DURATION_SECS * FRAMES_PER_SEC;
 
 fn main() {
-    println!("soak: running {} frames ({} seconds of audio)", TOTAL_FRAMES, SOAK_DURATION_SECS);
+    println!(
+        "soak: running {} frames ({} seconds of audio)",
+        TOTAL_FRAMES, SOAK_DURATION_SECS
+    );
 
     let pool = AudioBufferPool::new(64, DEFAULT_SLOT_SAMPLES_MONO_20MS);
     let (mut prod, mut cons) = frame_bus(64);
@@ -77,11 +80,17 @@ fn main() {
     println!("soak: frames         = {}", TOTAL_FRAMES);
     println!("soak: dropped_newest = {}", dropped);
     println!("soak: pool_failures  = {}", pool_failures);
-    println!("soak: samples decoded = {} / {} expected", total_samples_decoded, expected_samples);
+    println!(
+        "soak: samples decoded = {} / {} expected",
+        total_samples_decoded, expected_samples
+    );
 
     assert_eq!(dropped, 0, "frames dropped during soak");
     assert_eq!(pool_failures, 0, "pool exhausted during soak");
-    assert_eq!(total_samples_decoded, expected_samples, "sample count mismatch");
+    assert_eq!(
+        total_samples_decoded, expected_samples,
+        "sample count mismatch"
+    );
 
     println!("soak: PASS");
 }

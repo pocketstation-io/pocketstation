@@ -25,5 +25,8 @@ fn main() {
     }
 
     write_wav_mono_48k("pocketstation-sine.wav", &decoded_all).expect("write wav");
-    println!("wrote pocketstation-sine.wav with {} samples", decoded_all.len());
+    println!(
+        "wrote pocketstation-sine.wav with {} samples",
+        decoded_all.len()
+    );
 }

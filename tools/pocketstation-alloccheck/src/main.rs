@@ -50,8 +50,7 @@ fn main() {
         decode_buf.clear();
         let n_dec = decoder.decode_slice_into(&encode_buf[..n_enc], &mut decode_buf);
         assert_eq!(
-            n_dec,
-            DEFAULT_SLOT_SAMPLES_MONO_20MS,
+            n_dec, DEFAULT_SLOT_SAMPLES_MONO_20MS,
             "decoded sample count mismatch on seq {seq}"
         );
     }
