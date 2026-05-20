@@ -76,6 +76,11 @@ mod tests {
     use super::*;
     use pocketstation_frame::{AudioBufferPool, AudioFrame, SourceId, StreamId};
 
+    fn make_frame(pool: &std::sync::Arc<AudioBufferPool>, seq: u64) -> AudioFrame {
+        let h = pool.acquire().unwrap();
+        AudioFrame::new(StreamId(1), SourceId(1), seq, seq * 20_000_000, 1, h)
+    }
+
     #[test]
     fn push_pop_frame() {
         let pool = AudioBufferPool::new(2, 8);
@@ -84,5 +89,54 @@ mod tests {
         let (mut p, mut c) = frame_bus(1);
         p.push_drop_newest(frame).unwrap();
         assert!(c.pop().is_some());
+    }
+
+    #[test]
+    fn given_ring_capacity_3_when_push_4_then_4th_dropped_newest() {
+        let pool = AudioBufferPool::new(8, 4);
+        let (mut p, _c) = frame_bus(3);
+        for seq in 0..3 {
+            assert!(p.push_drop_newest(make_frame(&pool, seq)).is_ok());
+        }
+        let fourth = make_frame(&pool, 3);
+        assert!(p.push_drop_newest(fourth).is_err());
+        assert_eq!(p.dropped_newest(), 1);
+    }
+
+    #[test]
+    fn given_frames_pushed_in_order_when_popped_then_fifo_order() {
+        let pool = AudioBufferPool::new(8, 4);
+        let (mut p, mut c) = frame_bus(4);
+        for seq in 0..4 {
+            p.push_drop_newest(make_frame(&pool, seq)).unwrap();
+        }
+        for expected_seq in 0..4u64 {
+            let frame = c.pop().unwrap();
+            assert_eq!(frame.sequence_number, expected_seq);
+        }
+        assert!(c.pop().is_none());
+    }
+
+    #[test]
+    fn given_empty_ring_when_pop_then_returns_none() {
+        let (_p, mut c) = frame_bus(4);
+        assert!(c.pop().is_none());
+    }
+
+    #[test]
+    fn given_full_ring_when_no_drop_policy_applied_then_capacity_bounded() {
+        let pool = AudioBufferPool::new(16, 4);
+        let (mut p, _c) = frame_bus(8);
+        let mut pushed = 0u64;
+        let mut dropped = 0u64;
+        for seq in 0..16 {
+            match p.push_drop_newest(make_frame(&pool, seq)) {
+                Ok(()) => pushed += 1,
+                Err(_) => dropped += 1,
+            }
+        }
+        assert_eq!(pushed, 8);
+        assert_eq!(dropped, 8);
+        assert_eq!(p.dropped_newest(), 8);
     }
 }

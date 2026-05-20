@@ -38,6 +38,17 @@
 
 ---
 
+## Task 3 — FrameBus/rtrb invariant tests (DONE 2026-05-20)
+
+### Changes
+- `pocketstation-bus`: added tests for bounded capacity, drop-newest policy, FIFO order, empty-ring pop
+
+### Verification
+- `cargo clippy --workspace --all-targets -- -D warnings` — clean
+- `cargo test -p pocketstation-bus` — 5/5 pass
+
+---
+
 ## Remaining gaps
 
 - Task 1: `sine_to_wav` panics at runtime (ring capacity 8, pushes 50 frames)
