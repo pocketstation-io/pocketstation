@@ -1,9 +1,9 @@
-pub use pocketstation_frame::*;
 pub use pocketstation_bus::*;
-pub use pocketstation_graph::*;
 pub use pocketstation_codec::*;
-pub use pocketstation_route::*;
+pub use pocketstation_frame::*;
+pub use pocketstation_graph::*;
 pub use pocketstation_metrics::*;
+pub use pocketstation_route::*;
 
 use std::f32::consts::PI;
 
@@ -15,7 +15,12 @@ pub fn fill_sine(buffer: &mut [f32], sample_rate: u32, freq_hz: f32, start_sampl
 }
 
 pub fn write_wav_mono_48k(path: &str, samples: &[f32]) -> Result<(), hound::Error> {
-    let spec = hound::WavSpec { channels: 1, sample_rate: 48_000, bits_per_sample: 16, sample_format: hound::SampleFormat::Int };
+    let spec = hound::WavSpec {
+        channels: 1,
+        sample_rate: 48_000,
+        bits_per_sample: 16,
+        sample_format: hound::SampleFormat::Int,
+    };
     let mut writer = hound::WavWriter::create(path, spec)?;
     for s in samples {
         let v = (s.clamp(-1.0, 1.0) * i16::MAX as f32) as i16;

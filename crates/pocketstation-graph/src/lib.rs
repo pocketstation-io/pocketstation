@@ -10,7 +10,9 @@ pub enum ChannelLayout {
 pub trait AudioProcessorNode: Send {
     fn name(&self) -> &'static str;
     fn process(&mut self, frame: AudioFrame) -> Option<AudioFrame>;
-    fn accepted_channels(&self) -> ChannelLayout { ChannelLayout::Either }
+    fn accepted_channels(&self) -> ChannelLayout {
+        ChannelLayout::Either
+    }
 }
 
 pub struct ProcessorGraph {
@@ -18,8 +20,12 @@ pub struct ProcessorGraph {
 }
 
 impl ProcessorGraph {
-    pub fn new() -> Self { Self { nodes: Vec::new() } }
-    pub fn add_node<N: AudioProcessorNode + 'static>(&mut self, node: N) { self.nodes.push(Box::new(node)); }
+    pub fn new() -> Self {
+        Self { nodes: Vec::new() }
+    }
+    pub fn add_node<N: AudioProcessorNode + 'static>(&mut self, node: N) {
+        self.nodes.push(Box::new(node));
+    }
     pub fn process(&mut self, mut frame: AudioFrame) -> Option<AudioFrame> {
         for node in self.nodes.iter_mut() {
             frame = node.process(frame)?;
@@ -28,28 +34,50 @@ impl ProcessorGraph {
     }
 }
 
-impl Default for ProcessorGraph { fn default() -> Self { Self::new() } }
+impl Default for ProcessorGraph {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 pub struct PassthroughNode;
 impl AudioProcessorNode for PassthroughNode {
-    fn name(&self) -> &'static str { "passthrough" }
-    fn process(&mut self, frame: AudioFrame) -> Option<AudioFrame> { Some(frame) }
+    fn name(&self) -> &'static str {
+        "passthrough"
+    }
+    fn process(&mut self, frame: AudioFrame) -> Option<AudioFrame> {
+        Some(frame)
+    }
 }
 
-pub struct GainNode { gain: f32 }
-impl GainNode { pub fn new(gain: f32) -> Self { Self { gain } } }
+pub struct GainNode {
+    gain: f32,
+}
+impl GainNode {
+    pub fn new(gain: f32) -> Self {
+        Self { gain }
+    }
+}
 impl AudioProcessorNode for GainNode {
-    fn name(&self) -> &'static str { "gain" }
+    fn name(&self) -> &'static str {
+        "gain"
+    }
     fn process(&mut self, mut frame: AudioFrame) -> Option<AudioFrame> {
-        for s in frame.buffer.as_mut_slice().iter_mut() { *s *= self.gain; }
+        for s in frame.buffer.as_mut_slice().iter_mut() {
+            *s *= self.gain;
+        }
         Some(frame)
     }
 }
 
 pub struct MonoMixNode;
 impl AudioProcessorNode for MonoMixNode {
-    fn name(&self) -> &'static str { "mono_mix" }
-    fn accepted_channels(&self) -> ChannelLayout { ChannelLayout::StereoOnly }
+    fn name(&self) -> &'static str {
+        "mono_mix"
+    }
+    fn accepted_channels(&self) -> ChannelLayout {
+        ChannelLayout::StereoOnly
+    }
     fn process(&mut self, mut frame: AudioFrame) -> Option<AudioFrame> {
         if frame.channels == 2 {
             let len = frame.buffer.len();
@@ -70,7 +98,9 @@ impl AudioProcessorNode for MonoMixNode {
 
 pub struct ResampleNode;
 impl AudioProcessorNode for ResampleNode {
-    fn name(&self) -> &'static str { "resample_placeholder" }
+    fn name(&self) -> &'static str {
+        "resample_placeholder"
+    }
     fn process(&mut self, frame: AudioFrame) -> Option<AudioFrame> {
         // ADR-006 owns real PI-controlled SRC implementation.
         Some(frame)

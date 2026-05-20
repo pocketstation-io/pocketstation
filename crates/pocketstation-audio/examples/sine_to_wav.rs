@@ -2,16 +2,20 @@ use pocketstation_audio::*;
 
 fn main() {
     let pool = AudioBufferPool::new(64, DEFAULT_SLOT_SAMPLES_MONO_20MS);
-    let (mut prod, mut cons) = frame_bus(8);
+    // Ring sized to match the pool so all 50 frames fit without backpressure.
+    let (mut prod, mut cons) = frame_bus(64);
     let mut encoder = MockOpusEncoder;
     let mut decoder = MockOpusDecoder;
     let mut decoded_all = Vec::new();
 
-    for seq in 0..50u64 { // 1 second at 20ms
+    for seq in 0..50u64 {
+        // 1 second at 20 ms frames
         let mut handle = pool.acquire().expect("pool exhausted in example");
-        fill_sine(handle.as_mut_slice(), 48_000, 440.0, seq * 960);
+        fill_sine(handle.as_mut_slice(), DEFAULT_SAMPLE_RATE, 440.0, seq * 960);
         let frame = AudioFrame::new(StreamId(1), SourceId(1), seq, seq * 20_000_000, 1, handle);
-        prod.push_drop_newest(frame).expect("ring full in example");
+        // push_drop_newest only drops if the ring is full; ring is sized to
+        // prevent that in this single-threaded example.
+        let _ = prod.push_drop_newest(frame);
     }
 
     while let Some(frame) = cons.pop() {
@@ -21,5 +25,8 @@ fn main() {
     }
 
     write_wav_mono_48k("pocketstation-sine.wav", &decoded_all).expect("write wav");
-    println!("wrote pocketstation-sine.wav with {} samples", decoded_all.len());
+    println!(
+        "wrote pocketstation-sine.wav with {} samples",
+        decoded_all.len()
+    );
 }
