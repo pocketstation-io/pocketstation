@@ -101,13 +101,11 @@ impl AudioBufferPool {
         let bit = 1u64 << idx;
         #[cfg(debug_assertions)]
         {
-            let old = self.free_mask.fetch_or(bit, Ordering::Release);
-            debug_assert_eq!(old & bit, 0, "double release of buffer slot {}", idx);
+            // Check BEFORE marking free so the assertion fires before any state change.
+            let current = self.free_mask.load(Ordering::Acquire);
+            debug_assert_eq!(current & bit, 0, "double release of buffer slot {}", idx);
         }
-        #[cfg(not(debug_assertions))]
-        {
-            self.free_mask.fetch_or(bit, Ordering::Release);
-        }
+        self.free_mask.fetch_or(bit, Ordering::Release);
     }
 
     pub fn is_in_use(&self, index: u32) -> bool {
@@ -246,5 +244,34 @@ mod tests {
         h.copy_from_slice(&[1.0, 2.0, 3.0]);
         assert_eq!(h.len(), 3);
         assert_eq!(h.as_slice(), &[1.0, 2.0, 3.0]);
+    }
+
+    #[test]
+    fn acquire_all_64_slots_then_65th_returns_none() {
+        let pool = AudioBufferPool::new(64, 4);
+        let handles: Vec<_> = (0..64).map(|_| pool.acquire().unwrap()).collect();
+        assert_eq!(pool.acquire_failures(), 0);
+        assert!(pool.acquire().is_none());
+        assert_eq!(pool.acquire_failures(), 1);
+        drop(handles);
+    }
+
+    #[test]
+    fn drop_releases_slot_and_reacquire_succeeds() {
+        let pool = AudioBufferPool::new(1, 4);
+        let h = pool.acquire().unwrap();
+        assert!(pool.acquire().is_none());
+        drop(h);
+        assert!(pool.acquire().is_some());
+    }
+
+    #[test]
+    fn is_in_use_tracks_acquire_and_release() {
+        let pool = AudioBufferPool::new(2, 4);
+        let h = pool.acquire().unwrap();
+        let slot = h.index();
+        assert!(pool.is_in_use(slot));
+        drop(h);
+        assert!(!pool.is_in_use(slot));
     }
 }

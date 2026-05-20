@@ -27,6 +27,17 @@
 
 ---
 
+## Task 2 — Harden AudioBufferPool release/drop (DONE 2026-05-20)
+
+### Changes
+- `release()`: check free_mask BEFORE fetch_or in debug mode so double-release assertion fires before any state mutation
+- Added tests: acquire all 64, 65th returns None; drop releases slot; is_in_use tracks state
+
+### Verification
+- `cargo test -p pocketstation-frame` — 5/5 pass
+
+---
+
 ## Remaining gaps
 
 - Task 1: `sine_to_wav` panics at runtime (ring capacity 8, pushes 50 frames)
