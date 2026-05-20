@@ -1,0 +1,26 @@
+[workspace]
+resolver = "2"
+members = [
+  "crates/pocketstation-frame",
+  "crates/pocketstation-bus",
+  "crates/pocketstation-graph",
+  "crates/pocketstation-codec",
+  "crates/pocketstation-route",
+  "crates/pocketstation-metrics",
+  "crates/pocketstation-audio",
+  "tools/pocketstation-alloccheck"
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/pocketstation-io/audio-core"
+
+[workspace.dependencies]
+rtrb = "0.3"
+thiserror = "1"
+hound = "3"
+opus = "0.3"
+proptest = "1"
+criterion = "0.5"

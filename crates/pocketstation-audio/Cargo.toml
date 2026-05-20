@@ -1,0 +1,19 @@
+[package]
+name = "pocketstation-audio"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[features]
+default = []
+real-opus = ["pocketstation-codec/real-opus"]
+
+[dependencies]
+pocketstation-frame = { path = "../pocketstation-frame" }
+pocketstation-bus = { path = "../pocketstation-bus" }
+pocketstation-graph = { path = "../pocketstation-graph" }
+pocketstation-codec = { path = "../pocketstation-codec" }
+pocketstation-route = { path = "../pocketstation-route" }
+pocketstation-metrics = { path = "../pocketstation-metrics" }
+hound.workspace = true

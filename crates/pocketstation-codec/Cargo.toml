@@ -1,0 +1,15 @@
+[package]
+name = "pocketstation-codec"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[features]
+default = []
+real-opus = ["dep:opus"]
+
+[dependencies]
+pocketstation-frame = { path = "../pocketstation-frame" }
+opus = { workspace = true, optional = true }
+thiserror.workspace = true

@@ -1,0 +1,6 @@
+# Replace @raph with your GitHub username/team before pushing.
+* @raph
+/docs/architecture/ @raph
+/docs/adr/ @raph
+/.github/ @raph
+/AGENTS.md @raph
