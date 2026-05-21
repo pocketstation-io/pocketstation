@@ -24,30 +24,24 @@ DEFERRED    Intentionally postponed; ADR or phase plan justifies it
 
 | Component | Status | Repo / File | What's missing | Replace by | Blocked on |
 |---|---|---|---|---|---|
-| _example row — delete when first real row lands_ | _SCAFFOLD_ | _audio-core/crates/pocketstation-codec/src/opus_mock.rs_ | _Real libopus binding_ | _Phase 0 task 7_ | _libopus-sys dependency approval_ |
+| Opus encoder/decoder | MOCK | audio-core / pocketstation-codec | Real libopus bindings; current mock copies bytes | Phase 3 | ADR-013 sample format finalized, libopus-sys dep approval |
+| JitterBuffer | PARTIAL | audio-core / pocketstation-codec | NetEQ-class adaptive algorithm; current scaffold is fixed-delay | Phase 5 | ADR-010 algorithm choice |
+| ClockSync | PARTIAL | audio-core / pocketstation-bus | PI controller per ADR-006; current scaffold is fixed-rate | Phase 3 | ADR-006 resolution |
+| DHAT allocation check | DEFERRED | audio-core / tools/pocketstation-alloccheck | Real DHAT integration; current is cargo-bloat placeholder | Phase 3 | DHAT setup in CI |
+| TURN configuration | DEFERRED | relay | Production TURN credentials; STUN-only works on most networks | Phase 2 | TURN provider decision |
+| SFrame E2EE | DEFERRED | relay + SDKs | Frame-layer encryption per RFC 9605 | Phase 3 | ADR for per-platform insertion point |
 
 ---
 
-## Phase 0 starter rows
+## Phase 1 burns (completed 2026-05-20)
 
-These are typical scaffolds expected at Phase 0 exit. Replace this section with the actual state when Phase 0 starts.
+These rows were resolved at Phase 1 exit. Work landed in the `relay` repo, not in `audio-core`.
 
-| Component | Status | Repo / File | What's missing | Replace by | Blocked on |
-|---|---|---|---|---|---|
-| Opus encoder/decoder | MOCK | audio-core / pocketstation-codec | Real libopus bindings; current mock copies bytes | Phase 1 | ADR-013 sample format finalized, libopus-sys dep approval |
-| JitterBuffer | PARTIAL | audio-core / pocketstation-codec | NetEQ-class adaptive algorithm; current scaffold is fixed-delay | Phase 5 | ADR-010 algorithm choice |
-| ClockSync | PARTIAL | audio-core / pocketstation-bus | PI controller per ADR-006; current scaffold is fixed-rate | Phase 1 | ADR-006 resolution |
-| DHAT allocation check | DEFERRED | audio-core / tools/pocketstation-alloccheck | Real DHAT integration; current is cargo-bloat placeholder | Phase 1 | DHAT setup in CI |
-
-## Phase 1 expected additions
-
-| Component | Status | Repo / File | What's missing | Replace by | Blocked on |
-|---|---|---|---|---|---|
-| Fake-source publisher | _to add_ | relay / cmd/fake-source | Real WebRTC publisher; needed for E2E smoke | Phase 1 exit | P1-PROD-003 |
-| Token authority | _to add_ | api-server + relay | api-server JWTs accepted by relay (or relay owns issuance) | Phase 1 exit | P1-PROD-002 |
-| Browser metrics | PARTIAL | app-web-receiver | Real RTCStats.getStats() values; current returns null | Phase 1 exit | P1-PROD-006 |
-| TURN configuration | DEFERRED | relay | Production TURN credentials; STUN-only works on most networks | Phase 2 | TURN provider decision |
-| SFrame E2EE | DEFERRED | relay + SDKs | Frame-layer encryption per RFC 9605 | Phase 3 | ADR for per-platform insertion point |
+| Component | Status | Repo / File | Resolution |
+|---|---|---|---|
+| Fake-source publisher | resolved | relay / cmd/fake-source | Implemented as P1-PROD-003. Binary publishes synthetic 0xAB RTP; it is a development tool, not an audio-core integration. |
+| Token authority | resolved | relay (relay owns issuance) | Implemented as P1-PROD-002. relay issues and validates JWTs; api-server integration deferred to Phase 2. |
+| Browser metrics | resolved | app-web-receiver | Completed as P1-PROD-006. Real RTCStats.getStats() values wired. |
 
 ## Permanent (intentional) scaffolds
 

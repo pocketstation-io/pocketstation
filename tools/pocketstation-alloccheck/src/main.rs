@@ -2,7 +2,7 @@
 ///
 /// Exercises the hot-path code paths that must remain allocation-free in
 /// production. This tool does NOT use DHAT or a custom allocator shim —
-/// those require platform-specific setup and are Phase 1 work (ADR-TBD).
+/// those require platform-specific setup and are Phase 3 work (ADR-TBD).
 ///
 /// What this tool does:
 /// - Runs the acquire → fill → encode_into → decode_slice_into → release
@@ -12,7 +12,7 @@
 ///
 /// To run: `cargo run -p pocketstation-alloccheck`
 ///
-/// Phase 1 TODO: replace with a DHAT-instrumented binary and add a CI gate
+/// Phase 3 TODO: replace with a DHAT-instrumented binary and add a CI gate
 /// that fails if heap allocation count per frame exceeds the budget in
 /// docs/architecture/PocketStation-v2.3.md.
 use pocketstation_audio::{
@@ -66,5 +66,5 @@ fn main() {
         FRAME_COUNT,
         pool.acquire_failures()
     );
-    println!("alloccheck: Phase 0 OK. DHAT gate is Phase 1 work (ADR-TBD).");
+    println!("alloccheck: Phase 0 OK. DHAT gate is Phase 3 work (ADR-TBD).");
 }
