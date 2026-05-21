@@ -27,12 +27,12 @@ pub struct EncodedFrame {
 }
 
 /// Mock encoder for tests and examples only. NOT suitable for production.
-/// TODO(Phase 1, ADR-008): replace with real Opus encoder; hot path must
+/// TODO(Phase 3, ADR-012): replace with real Opus encoder; hot path must
 /// use the allocation-free encode_into() API below.
 pub struct MockOpusEncoder;
 
 /// Mock decoder for tests and examples only. NOT suitable for production.
-/// TODO(Phase 1, ADR-008): replace with real Opus decoder.
+/// TODO(Phase 3, ADR-012): replace with real Opus decoder.
 pub struct MockOpusDecoder;
 
 impl MockOpusEncoder {
@@ -49,7 +49,7 @@ impl MockOpusEncoder {
 
     /// Allocates a new Vec per call — for tests and examples only.
     pub fn encode(&mut self, frame: &AudioFrame) -> EncodedFrame {
-        // TODO(Phase 1, ADR-008): hot-path callers must use encode_into() with a pooled buffer.
+        // TODO(Phase 3, ADR-012): hot-path callers must use encode_into() with a pooled buffer.
         let mut payload = Vec::with_capacity(frame.buffer.len() * 4);
         self.encode_into(frame, &mut payload);
         EncodedFrame {
@@ -82,7 +82,7 @@ impl MockOpusDecoder {
 
     /// Allocates a new Vec per call — for tests and examples only.
     pub fn decode_to_vec(&mut self, encoded: &EncodedFrame) -> Vec<f32> {
-        // TODO(Phase 1, ADR-008): hot-path callers must use decode_slice_into() with pooled buffers.
+        // TODO(Phase 3, ADR-012): hot-path callers must use decode_slice_into() with pooled buffers.
         let mut out = Vec::with_capacity(encoded.payload.len() / 4);
         self.decode_into(encoded, &mut out);
         out
