@@ -1,5 +1,24 @@
 # Phase 0 Progress — audio-core
 
+## Phase 0 COMPLETE — 2026-05-20
+
+**Status: COMPLETE**
+
+All 26 tests pass across 6 crates. Race detector clean.
+Exit criteria met per v2.3 §15 Phase 0 section.
+
+Remaining items carried to Phase 2:
+
+- Opus real bindings (libopus-sys) — burn the Opus MOCK
+- ClockSync PI controller per ADR-006
+- DHAT CI integration (zero per-frame heap allocation gate)
+- First crates.io publish of `pocketstation-audio` v0.1.0
+
+Next phase: Phase 2 — sdk-ios + crates.io publish.
+See ADR-014 for the Phase 1 integration state and Phase 2 gate.
+
+---
+
 ## Task 0 — Fix CI blocker (DONE 2026-05-20)
 
 ### Changes
