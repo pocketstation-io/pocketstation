@@ -1,7 +1,7 @@
 # ADR-008-workspace-release-sequencing — Workspace Release Sequencing
 
 ## Status
-Accepted for v2.3 scaffold. Reversal requires Phase 0/1 measurement data.
+Accepted. Phase 0 and Phase 1 complete; no reversal triggered. Active for Phase 2.
 
 ## Context
 PocketStation v2.3 requires this ADR before implementation lands. See `docs/architecture/pocketstation-v2.3.md`.
