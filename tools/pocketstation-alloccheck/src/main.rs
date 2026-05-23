@@ -24,8 +24,8 @@ const FRAME_COUNT: u64 = 50;
 
 fn main() {
     let pool = AudioBufferPool::new(64, DEFAULT_SLOT_SAMPLES_MONO_20MS);
-    let mut encoder = MockOpusEncoder;
-    let mut decoder = MockOpusDecoder;
+    let mut encoder = MockOpusEncoder::default();
+    let mut decoder = MockOpusDecoder::default();
 
     // Allocate once; reuse per frame — this is the pattern hot-path callers must follow.
     let mut encode_buf: Vec<u8> = Vec::with_capacity(DEFAULT_SLOT_SAMPLES_MONO_20MS * 4);

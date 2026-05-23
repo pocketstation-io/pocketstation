@@ -29,8 +29,8 @@ fn main() {
 
     let pool = AudioBufferPool::new(64, DEFAULT_SLOT_SAMPLES_MONO_20MS);
     let (mut prod, mut cons) = frame_bus(64);
-    let mut encoder = MockOpusEncoder;
-    let mut decoder = MockOpusDecoder;
+    let mut encoder = MockOpusEncoder::default();
+    let mut decoder = MockOpusDecoder::default();
 
     let mut encode_buf: Vec<u8> = Vec::with_capacity(DEFAULT_SLOT_SAMPLES_MONO_20MS * 4);
     let mut decode_buf: Vec<f32> = Vec::with_capacity(DEFAULT_SLOT_SAMPLES_MONO_20MS);

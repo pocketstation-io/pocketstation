@@ -43,45 +43,85 @@ impl FrameConsumer {
     }
 }
 
-/// Phase 0 placeholder for ADR-006 PI-controlled clock synchronisation.
+/// PI-controlled clock synchronisation per ADR-006.
 ///
-/// The full proportional-integral controller (dual-stage, anti-windup) is
-/// deferred to Phase 1. This stub exposes the stable public API surface so
-/// callers can be written against it now.
+/// # Design
+///
+/// Implements a proportional-integral (PI) controller that converts a measured
+/// clock offset (in nanoseconds) into a correction value (also nanoseconds)
+/// that the SRC layer applies to adjust the effective sample rate.
+///
+/// Output is clamped to ±10 ms (±10 000 000 ns) to prevent windup on startup
+/// or after a large discontinuity.
+///
+/// # Gain defaults
+///
+/// `kp = 0.1`, `ki = 0.001` — conservative values suitable for typical
+/// network jitter in a LAN/Wi-Fi voice call.  These will be tuned in Phase 5
+/// once real-world measurements are available (ADR-006).
+///
+/// # Phase 3, ADR-006: PI controller implemented; gains tuned in Phase 5.
 #[derive(Debug, Clone, Copy)]
 pub struct ClockSync {
-    target_sample_rate: u32,
-    drift_ppm_estimate: f32,
-    correction_ratio: f32,
+    kp: f64,
+    ki: f64,
+    integral: f64,
+    last_offset_ns: i64,
 }
 
+/// Maximum correction magnitude: ±10 ms expressed in nanoseconds.
+const CLOCK_SYNC_CLAMP_NS: i64 = 10_000_000;
+
 impl ClockSync {
-    pub fn new(target_sample_rate: u32) -> Self {
+    /// Create a new PI controller with the given proportional and integral gains.
+    ///
+    /// Use [`ClockSync::default()`] for the ADR-006 recommended starting gains.
+    pub fn new(kp: f64, ki: f64) -> Self {
         Self {
-            target_sample_rate,
-            drift_ppm_estimate: 0.0,
-            correction_ratio: 1.0,
+            kp,
+            ki,
+            integral: 0.0,
+            last_offset_ns: 0,
         }
     }
 
-    /// Feed a new drift measurement (in PPM) and update the correction ratio.
-    /// ADR-006 owns the full PI tuning; this is an exponential smoother placeholder.
-    pub fn update_pi(&mut self, measured_drift_ppm: f32) {
-        self.drift_ppm_estimate = 0.95 * self.drift_ppm_estimate + 0.05 * measured_drift_ppm;
-        self.correction_ratio = 1.0 - (self.drift_ppm_estimate / 1_000_000.0);
+    /// Advance the controller by one tick.
+    ///
+    /// `measured_offset_ns` is the signed difference between the local clock
+    /// and the remote reference (positive = local is ahead).
+    ///
+    /// Returns the correction to apply, clamped to ±10 ms.
+    pub fn tick(&mut self, measured_offset_ns: i64) -> i64 {
+        let error = measured_offset_ns as f64;
+
+        // Accumulate integral term.
+        self.integral += error;
+
+        let correction = self.kp * error + self.ki * self.integral;
+        self.last_offset_ns = measured_offset_ns;
+
+        // Clamp to ±10 ms.
+        correction
+            .round()
+            .clamp(-CLOCK_SYNC_CLAMP_NS as f64, CLOCK_SYNC_CLAMP_NS as f64) as i64
     }
 
-    /// Multiplicative ratio to apply to the SRC step. 1.0 = no correction.
-    pub fn correction_ratio(&self) -> f32 {
-        self.correction_ratio
+    /// Most recent measured offset supplied to [`tick`].
+    pub fn last_offset_ns(&self) -> i64 {
+        self.last_offset_ns
     }
 
-    pub fn drift_ppm_estimate(&self) -> f32 {
-        self.drift_ppm_estimate
+    /// Current value of the integral accumulator (useful for diagnostics).
+    pub fn integral(&self) -> f64 {
+        self.integral
     }
+}
 
-    pub fn target_sample_rate(&self) -> u32 {
-        self.target_sample_rate
+impl Default for ClockSync {
+    /// Returns a controller with the ADR-006 recommended starting gains:
+    /// `kp = 0.1`, `ki = 0.001`.
+    fn default() -> Self {
+        Self::new(0.1, 0.001)
     }
 }
 
@@ -177,58 +217,78 @@ mod tests {
     }
 
     #[test]
-    fn clock_sync_zero_drift_correction_ratio_is_one() {
-        // Given / When
-        let cs = ClockSync::new(48_000);
-
-        // Then
-        assert_eq!(cs.correction_ratio(), 1.0);
-        assert_eq!(cs.drift_ppm_estimate(), 0.0);
-        assert_eq!(cs.target_sample_rate(), 48_000);
-    }
-
-    #[test]
-    fn clock_sync_positive_drift_converges_and_reduces_correction_ratio() {
+    fn clock_sync_zero_offset_produces_zero_correction() {
         // Given
-        let mut cs = ClockSync::new(48_000);
-
-        // When: drive the smoother to convergence
-        for _ in 0..200 {
-            cs.update_pi(100.0);
-        }
-
-        // Then
-        let est = cs.drift_ppm_estimate();
-        assert!(
-            (est - 100.0).abs() < 1.0,
-            "drift estimate {est} not near 100 ppm"
-        );
-        let ratio = cs.correction_ratio();
-        assert!(
-            ratio < 1.0,
-            "positive drift should yield ratio < 1.0, got {ratio}"
-        );
-        assert!(
-            (ratio - 0.9999).abs() < 0.0001,
-            "ratio {ratio} not near 0.9999"
-        );
-    }
-
-    #[test]
-    fn clock_sync_negative_drift_increases_correction_ratio_above_one() {
-        // Given
-        let mut cs = ClockSync::new(48_000);
+        let mut cs = ClockSync::default();
 
         // When
-        for _ in 0..200 {
-            cs.update_pi(-100.0);
-        }
+        let correction = cs.tick(0);
 
         // Then
-        let ratio = cs.correction_ratio();
+        assert_eq!(correction, 0);
+        assert_eq!(cs.last_offset_ns(), 0);
+    }
+
+    #[test]
+    fn clock_sync_positive_offset_produces_positive_correction() {
+        // Given: 1 ms offset
+        let mut cs = ClockSync::default();
+
+        // When
+        let correction = cs.tick(1_000_000);
+
+        // Then: correction is positive (steer local clock back)
         assert!(
-            ratio > 1.0,
-            "negative drift should yield ratio > 1.0, got {ratio}"
+            correction > 0,
+            "positive offset must produce positive correction, got {correction}"
+        );
+    }
+
+    #[test]
+    fn clock_sync_negative_offset_produces_negative_correction() {
+        // Given: −1 ms offset
+        let mut cs = ClockSync::default();
+
+        // When
+        let correction = cs.tick(-1_000_000);
+
+        // Then
+        assert!(
+            correction < 0,
+            "negative offset must produce negative correction, got {correction}"
+        );
+    }
+
+    #[test]
+    fn clock_sync_correction_is_clamped_to_ten_milliseconds() {
+        // Given: offset far larger than the clamp window (100 ms)
+        let mut cs = ClockSync::default();
+
+        // When
+        let correction = cs.tick(100_000_000);
+
+        // Then: correction is clamped to ±10 ms
+        assert!(
+            correction.abs() <= 10_000_000,
+            "correction {correction} exceeds ±10 ms clamp"
+        );
+    }
+
+    #[test]
+    fn clock_sync_integral_accumulates_across_ticks() {
+        // Given
+        let mut cs = ClockSync::new(0.0, 1.0); // pure I controller for isolation
+
+        // When: two ticks of equal offset
+        cs.tick(1_000);
+        cs.tick(1_000);
+
+        // Then: integral has accumulated both errors (clamped at output but
+        // the raw integral field is unclamped)
+        assert!(
+            cs.integral() > 1_000.0,
+            "integral {} should exceed single-tick error",
+            cs.integral()
         );
     }
 }
