@@ -7,9 +7,11 @@ repository.workspace = true
 
 [features]
 default = []
-real-opus = ["dep:opus"]
+# real-opus kept for backward compatibility; 'recording' is the Phase 3 canonical feature name.
+real-opus = []
+recording = []
 
 [dependencies]
 pocketstation-frame = { path = "../pocketstation-frame" }
-opus = { workspace = true, optional = true }
+opus.workspace = true
 thiserror.workspace = true

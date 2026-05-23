@@ -24,12 +24,19 @@ DEFERRED    Intentionally postponed; ADR or phase plan justifies it
 
 | Component | Status | Repo / File | What's missing | Replace by | Blocked on |
 |---|---|---|---|---|---|
-| Opus encoder/decoder | MOCK | audio-core / pocketstation-codec | Real libopus bindings; current mock copies bytes | Phase 3 | ADR-013 sample format finalized, libopus-sys dep approval |
 | JitterBuffer | PARTIAL | audio-core / pocketstation-codec | NetEQ-class adaptive algorithm; current scaffold is fixed-delay | Phase 5 | ADR-010 algorithm choice |
-| ClockSync | PARTIAL | audio-core / pocketstation-bus | PI controller per ADR-006; current scaffold is fixed-rate | Phase 3 | ADR-006 resolution |
 | DHAT allocation check | DEFERRED | audio-core / tools/pocketstation-alloccheck | Real DHAT integration; current is cargo-bloat placeholder | Phase 3 | DHAT setup in CI |
 | TURN configuration | DEFERRED | relay | Production TURN credentials; STUN-only works on most networks | Phase 2 | TURN provider decision |
 | SFrame E2EE | DEFERRED | relay + SDKs | Frame-layer encryption per RFC 9605 | Phase 3 | ADR for per-platform insertion point |
+
+---
+
+## Phase 3 burns (completed 2026-05-23)
+
+| Component | Status | Repo / File | Resolution |
+|---|---|---|---|
+| Opus encoder/decoder | resolved | audio-core / pocketstation-codec | Real libopus bindings via `opus = "0.3"`. `OpusEncoder` / `OpusDecoder` wrap libopus at 48 kHz / mono / VOIP per ADR-012. `MockOpusEncoder` / `MockOpusDecoder` are retained as legacy aliases that delegate to the real types. |
+| ClockSync | resolved | audio-core / pocketstation-bus | PI controller implemented per ADR-006. `kp = 0.1`, `ki = 0.001`. Output clamped to ±10 ms. Gains will be tuned in Phase 5 with real-world measurements. |
 
 ---
 

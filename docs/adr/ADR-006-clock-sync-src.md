@@ -1,7 +1,14 @@
 # ADR-006-clock-sync-src — Clock Sync / Async Sample Rate Conversion
 
 ## Status
-Accepted. Phase 0 and Phase 1 complete; no reversal triggered. Active for Phase 2.
+Accepted. Phase 0, Phase 1, and Phase 3 complete; no reversal triggered.
+
+## Phase 3 implementation note (2026-05-23)
+
+PI controller implemented in `pocketstation-bus::ClockSync`.
+- `tick(measured_offset_ns: i64) -> i64`: computes `kp * error + ki * integral`, clamps to ±10 ms.
+- Default gains: `kp = 0.1`, `ki = 0.001` (conservative; tuned in Phase 5 with real measurements).
+- The Phase 0 exponential-smoother stub (`update_pi` / `correction_ratio`) has been replaced.
 
 ## Context
 PocketStation v2.3 requires this ADR before implementation lands. See `docs/architecture/pocketstation-v2.3.md`.

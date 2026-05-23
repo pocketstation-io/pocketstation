@@ -1,6 +1,14 @@
+// Phase 3, ADR-012: real libopus bindings replace the Phase 0 mock.
+// Dependency approved: opus = "0.3" wraps libopus via libopus-sys. Chosen over
+// audiopus because it is the de-facto Rust binding (most downloads, active
+// maintenance, matches the workspace dep already declared).
+
+use opus::{Application, Channels, Decoder, Encoder};
 use pocketstation_frame::AudioFrame;
 use std::collections::VecDeque;
 
+/// Opus frame duration.  20 ms is the ADR-012 default; 10 ms is available for
+/// voice-agent mode once CPU/overhead benchmarks justify it.
 #[derive(Debug, Clone, Copy)]
 pub enum OpusFrameDuration {
     Ms10,
@@ -20,124 +28,231 @@ impl OpusFrameDuration {
     }
 }
 
+/// 48 000 Hz, mono, VOIP application profile (ADR-012 default).
+pub const OPUS_SAMPLE_RATE: u32 = 48_000;
+
+/// 20 ms frame = 960 samples at 48 kHz (ADR-012).
+pub const OPUS_FRAME_SAMPLES: usize = 960;
+
+/// Maximum number of bytes the Opus encoder can emit per 20 ms frame.
+/// libopus guarantees this upper bound.
+pub const OPUS_MAX_PACKET_BYTES: usize = 4_000;
+
+/// Scale factor for f32 ↔ i16 conversion.
+const I16_SCALE: f32 = i16::MAX as f32;
+
 pub struct EncodedFrame {
     pub sequence_number: u64,
     pub timestamp_ns: u64,
     pub payload: Vec<u8>,
 }
 
-/// Mock encoder for tests and examples only. NOT suitable for production.
-/// TODO(Phase 3, ADR-012): replace with real Opus encoder; hot path must
-/// use the allocation-free encode_into() API below.
-pub struct MockOpusEncoder;
+/// Real Opus encoder wrapping libopus via the `opus` crate.
+///
+/// Configured for 48 000 Hz, mono, [`Application::Voip`], 20 ms frames
+/// (960 samples) per ADR-012.
+///
+/// # Heap allocation notes
+///
+/// - `new()` allocates the libopus encoder state once; no per-frame allocation
+///   inside libopus itself after that.
+/// - `encode_into()` writes into a caller-supplied `Vec<u8>` (pre-allocated,
+///   cleared per call).  The only allocation that may occur is if the caller
+///   passes a `Vec` whose capacity is smaller than `OPUS_MAX_PACKET_BYTES`; the
+///   `Vec` will then grow once and remain stable for subsequent calls.
+/// - `encode()` allocates one `Vec<u8>` per call and is intended for tests and
+///   examples only.  Hot-path callers must use `encode_into()` with a pooled
+///   output buffer.
+pub struct OpusEncoder {
+    inner: Encoder,
+}
 
-/// Mock decoder for tests and examples only. NOT suitable for production.
-/// TODO(Phase 3, ADR-012): replace with real Opus decoder.
-pub struct MockOpusDecoder;
-
-impl MockOpusEncoder {
-    /// Allocation-free encode: writes raw PCM bytes into a caller-supplied
-    /// buffer. Returns the number of bytes written.
-    /// This is the correct hot-path API shape; `encode()` is convenience-only.
-    pub fn encode_into(&mut self, frame: &AudioFrame, out: &mut Vec<u8>) -> usize {
-        out.clear();
-        for s in frame.buffer.as_slice() {
-            out.extend_from_slice(&s.to_le_bytes());
-        }
-        out.len()
+impl OpusEncoder {
+    /// Create a new encoder.  Returns `Err` only if libopus rejects the
+    /// parameters (which cannot happen for the fixed 48 kHz / mono / Voip
+    /// combination used here).
+    pub fn new() -> Result<Self, opus::Error> {
+        Ok(Self {
+            inner: Encoder::new(OPUS_SAMPLE_RATE, Channels::Mono, Application::Voip)?,
+        })
     }
 
-    /// Allocates a new Vec per call — for tests and examples only.
-    pub fn encode(&mut self, frame: &AudioFrame) -> EncodedFrame {
-        // TODO(Phase 3, ADR-012): hot-path callers must use encode_into() with a pooled buffer.
-        let mut payload = Vec::with_capacity(frame.buffer.len() * 4);
-        self.encode_into(frame, &mut payload);
-        EncodedFrame {
+    /// Encode a 960-sample f32 PCM slice into `out`.
+    ///
+    /// Converts f32 → i16 (multiply by 32 767.0, clamp) then calls
+    /// `encoder.encode()`.  Returns the number of compressed bytes written.
+    /// `out` is cleared and reused; no heap allocation occurs after the first
+    /// call provided `out` already has `OPUS_MAX_PACKET_BYTES` capacity.
+    pub fn encode_into(&mut self, pcm: &[f32], out: &mut Vec<u8>) -> Result<usize, opus::Error> {
+        // Convert f32 PCM to i16.  Stack buffer is used for the frame so that
+        // the hot path remains allocation-free.
+        debug_assert_eq!(
+            pcm.len(),
+            OPUS_FRAME_SAMPLES,
+            "encode_into: expected {OPUS_FRAME_SAMPLES} samples, got {}",
+            pcm.len()
+        );
+        let mut i16_buf = [0i16; OPUS_FRAME_SAMPLES];
+        for (dst, src) in i16_buf.iter_mut().zip(pcm.iter()) {
+            *dst = (src.clamp(-1.0, 1.0) * I16_SCALE) as i16;
+        }
+
+        out.resize(OPUS_MAX_PACKET_BYTES, 0u8);
+        let n = self.inner.encode(&i16_buf, out)?;
+        out.truncate(n);
+        Ok(n)
+    }
+
+    /// Convenience wrapper that allocates a `Vec<u8>` per call.
+    /// For tests and examples only; hot-path callers must use `encode_into()`.
+    pub fn encode(&mut self, frame: &AudioFrame) -> Result<EncodedFrame, opus::Error> {
+        let mut payload = Vec::with_capacity(OPUS_MAX_PACKET_BYTES);
+        self.encode_into(frame.buffer.as_slice(), &mut payload)?;
+        Ok(EncodedFrame {
             sequence_number: frame.sequence_number,
             timestamp_ns: frame.timestamp_ns,
             payload,
-        }
+        })
     }
 }
 
-impl MockOpusDecoder {
-    /// Allocation-free decode from a raw byte slice: appends decoded f32
-    /// samples into a caller-supplied buffer. Returns the number of samples
-    /// written. This is the correct hot-path API; callers own both buffers.
-    pub fn decode_slice_into(&mut self, payload: &[u8], out: &mut Vec<f32>) -> usize {
-        let before = out.len();
-        out.extend(
-            payload
-                .chunks_exact(4)
-                .map(|b| f32::from_le_bytes([b[0], b[1], b[2], b[3]])),
-        );
-        out.len() - before
+impl Default for OpusEncoder {
+    fn default() -> Self {
+        Self::new().expect("OpusEncoder::new failed with fixed parameters — libopus not linked?")
+    }
+}
+
+/// Real Opus decoder wrapping libopus via the `opus` crate.
+///
+/// Configured for 48 000 Hz, mono per ADR-012.
+///
+/// # Heap allocation notes
+///
+/// - `new()` allocates the libopus decoder state once.
+/// - `decode_into()` writes into a caller-supplied `Vec<f32>` (no internal
+///   allocation after the first call, provided the `Vec` has enough capacity).
+/// - `decode_to_vec()` allocates one `Vec<f32>` per call — tests/examples only.
+pub struct OpusDecoder {
+    inner: Decoder,
+}
+
+impl OpusDecoder {
+    pub fn new() -> Result<Self, opus::Error> {
+        Ok(Self {
+            inner: Decoder::new(OPUS_SAMPLE_RATE, Channels::Mono)?,
+        })
     }
 
-    /// Allocation-free decode from an EncodedFrame (borrows its payload).
-    /// Returns the number of samples written.
+    /// Decode a compressed Opus packet into i16 samples, then convert to f32.
+    ///
+    /// Appends decoded f32 samples to `out`.  Returns the number of samples
+    /// appended.  No heap allocation after the first call if `out` has
+    /// sufficient capacity.
+    pub fn decode_into(
+        &mut self,
+        payload: &[u8],
+        out: &mut Vec<f32>,
+    ) -> Result<usize, opus::Error> {
+        let before = out.len();
+        // Decode into a stack-allocated i16 buffer (hot-path allocation-free).
+        let mut i16_buf = [0i16; OPUS_FRAME_SAMPLES];
+        let n = self.inner.decode(payload, &mut i16_buf, false)?;
+        for s in &i16_buf[..n] {
+            out.push(*s as f32 / I16_SCALE);
+        }
+        Ok(out.len() - before)
+    }
+
+    /// Convenience wrapper allocating a `Vec<f32>` — tests/examples only.
+    pub fn decode_to_vec(&mut self, encoded: &EncodedFrame) -> Result<Vec<f32>, opus::Error> {
+        let mut out = Vec::with_capacity(OPUS_FRAME_SAMPLES);
+        self.decode_into(&encoded.payload, &mut out)?;
+        Ok(out)
+    }
+}
+
+impl Default for OpusDecoder {
+    fn default() -> Self {
+        Self::new().expect("OpusDecoder::new failed with fixed parameters — libopus not linked?")
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Legacy mock aliases — kept so that existing tests and the sine_to_wav example
+// continue to compile without modification.  They delegate to the real encoder
+// and decoder.  Remove in Phase 5 once all call sites have been migrated.
+// ---------------------------------------------------------------------------
+
+/// Deprecated alias for [`OpusEncoder`].  Use `OpusEncoder` directly.
+pub struct MockOpusEncoder {
+    inner: OpusEncoder,
+}
+
+impl MockOpusEncoder {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self {
+            inner: OpusEncoder::default(),
+        }
+    }
+
+    /// Allocation-free encode into a caller-supplied buffer.
+    pub fn encode_into(&mut self, frame: &AudioFrame, out: &mut Vec<u8>) -> usize {
+        self.inner
+            .encode_into(frame.buffer.as_slice(), out)
+            .expect("MockOpusEncoder.encode_into failed")
+    }
+
+    /// Allocates per call — for tests and examples only.
+    pub fn encode(&mut self, frame: &AudioFrame) -> EncodedFrame {
+        self.inner
+            .encode(frame)
+            .expect("MockOpusEncoder.encode failed")
+    }
+}
+
+impl Default for MockOpusEncoder {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+/// Deprecated alias for [`OpusDecoder`].  Use `OpusDecoder` directly.
+pub struct MockOpusDecoder {
+    inner: OpusDecoder,
+}
+
+impl MockOpusDecoder {
+    #[allow(clippy::new_without_default)]
+    pub fn new() -> Self {
+        Self {
+            inner: OpusDecoder::default(),
+        }
+    }
+
+    /// Allocation-free decode from a raw byte slice.
+    pub fn decode_slice_into(&mut self, payload: &[u8], out: &mut Vec<f32>) -> usize {
+        self.inner
+            .decode_into(payload, out)
+            .expect("MockOpusDecoder.decode_slice_into failed")
+    }
+
+    /// Allocation-free decode from an [`EncodedFrame`].
     pub fn decode_into(&mut self, encoded: &EncodedFrame, out: &mut Vec<f32>) -> usize {
         self.decode_slice_into(&encoded.payload, out)
     }
 
-    /// Allocates a new Vec per call — for tests and examples only.
+    /// Allocates per call — for tests and examples only.
     pub fn decode_to_vec(&mut self, encoded: &EncodedFrame) -> Vec<f32> {
-        // TODO(Phase 3, ADR-012): hot-path callers must use decode_slice_into() with pooled buffers.
-        let mut out = Vec::with_capacity(encoded.payload.len() / 4);
-        self.decode_into(encoded, &mut out);
-        out
+        self.inner
+            .decode_to_vec(encoded)
+            .expect("MockOpusDecoder.decode_to_vec failed")
     }
 }
 
-#[cfg(feature = "real-opus")]
-pub mod real_opus {
-    use opus::{Application, Channels, Decoder, Encoder};
-
-    pub struct RealOpusEncoder {
-        inner: Encoder,
-        channels: usize,
-    }
-    pub struct RealOpusDecoder {
-        inner: Decoder,
-        channels: usize,
-    }
-
-    impl RealOpusEncoder {
-        pub fn new(sample_rate: u32, channels: usize) -> Result<Self, opus::Error> {
-            let ch = if channels == 1 {
-                Channels::Mono
-            } else {
-                Channels::Stereo
-            };
-            Ok(Self {
-                inner: Encoder::new(sample_rate, ch, Application::Audio)?,
-                channels,
-            })
-        }
-        pub fn encode_float(&mut self, pcm: &[f32], out: &mut [u8]) -> Result<usize, opus::Error> {
-            self.inner.encode_float(pcm, out)
-        }
-    }
-
-    impl RealOpusDecoder {
-        pub fn new(sample_rate: u32, channels: usize) -> Result<Self, opus::Error> {
-            let ch = if channels == 1 {
-                Channels::Mono
-            } else {
-                Channels::Stereo
-            };
-            Ok(Self {
-                inner: Decoder::new(sample_rate, ch)?,
-                channels,
-            })
-        }
-        pub fn decode_float(
-            &mut self,
-            payload: &[u8],
-            out: &mut [f32],
-        ) -> Result<usize, opus::Error> {
-            self.inner.decode_float(payload, out, false)
-        }
+impl Default for MockOpusDecoder {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -200,6 +315,7 @@ impl JitterBuffer {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pocketstation_frame::{AudioBufferPool, AudioFrame, SourceId, StreamId};
 
     fn make_encoded(seq: u64) -> EncodedFrame {
         EncodedFrame {
@@ -213,6 +329,72 @@ mod tests {
     fn opus_frame_duration_ms20_is_960_samples_at_48k() {
         // Given / When / Then
         assert_eq!(OpusFrameDuration::Ms20.samples_at_48k(), 960);
+    }
+
+    #[test]
+    fn opus_encoder_encodes_960_sample_frame_to_non_empty_packet() {
+        // Given: 960 silent samples (valid 20 ms frame per ADR-012)
+        let mut enc = OpusEncoder::new().unwrap();
+        let pcm = vec![0.0f32; OPUS_FRAME_SAMPLES];
+        let mut out = Vec::new();
+
+        // When
+        let n = enc.encode_into(&pcm, &mut out).unwrap();
+
+        // Then: packet is non-empty and length matches the returned count
+        assert!(n > 0, "encoded packet must be non-empty");
+        assert_eq!(out.len(), n);
+    }
+
+    #[test]
+    fn opus_decoder_decodes_encoded_packet_to_960_samples() {
+        // Given: encode a 20 ms frame of silence
+        let mut enc = OpusEncoder::new().unwrap();
+        let mut dec = OpusDecoder::new().unwrap();
+        let pcm_in = vec![0.0f32; OPUS_FRAME_SAMPLES];
+        let mut packet = Vec::new();
+        enc.encode_into(&pcm_in, &mut packet).unwrap();
+
+        let mut pcm_out = Vec::new();
+
+        // When
+        let n = dec.decode_into(&packet, &mut pcm_out).unwrap();
+
+        // Then: decoder produces exactly one frame of samples
+        assert_eq!(n, OPUS_FRAME_SAMPLES);
+        assert_eq!(pcm_out.len(), OPUS_FRAME_SAMPLES);
+    }
+
+    #[test]
+    fn opus_round_trip_sine_preserves_approximate_magnitude() {
+        // Given: 960-sample 440 Hz sine at 48 kHz, amplitude 0.25
+        let mut enc = OpusEncoder::new().unwrap();
+        let mut dec = OpusDecoder::new().unwrap();
+
+        use std::f32::consts::PI;
+        let pcm_in: Vec<f32> = (0..OPUS_FRAME_SAMPLES)
+            .map(|i| (2.0 * PI * 440.0 * i as f32 / 48_000.0).sin() * 0.25)
+            .collect();
+
+        let mut packet = Vec::new();
+        enc.encode_into(&pcm_in, &mut packet).unwrap();
+
+        let mut pcm_out = Vec::new();
+        dec.decode_into(&packet, &mut pcm_out).unwrap();
+
+        // Then: RMS of decoded signal is within 10 dB of the original
+        let rms_in = rms(&pcm_in);
+        let rms_out = rms(&pcm_out);
+        let ratio = rms_out / rms_in;
+        assert!(
+            ratio > 0.3 && ratio < 3.0,
+            "RMS ratio {ratio:.3} outside acceptable range (Opus VOIP mode may attenuate sine)"
+        );
+    }
+
+    fn rms(s: &[f32]) -> f32 {
+        let sum_sq: f32 = s.iter().map(|x| x * x).sum();
+        (sum_sq / s.len() as f32).sqrt()
     }
 
     #[test]
@@ -290,5 +472,22 @@ mod tests {
 
         // Then
         assert!(!jb.sequence_gap_ahead());
+    }
+
+    #[test]
+    fn mock_encoder_and_decoder_round_trip_via_legacy_api() {
+        // Given: legacy API used by sine_to_wav example
+        let pool = AudioBufferPool::new(2, OPUS_FRAME_SAMPLES);
+        let handle = pool.acquire().unwrap();
+        let frame = AudioFrame::new(StreamId(1), SourceId(1), 0, 0, 1, handle);
+        let mut enc = MockOpusEncoder::default();
+        let mut dec = MockOpusDecoder::default();
+
+        // When
+        let encoded = enc.encode(&frame);
+        let decoded = dec.decode_to_vec(&encoded);
+
+        // Then: decoded samples equal one frame
+        assert_eq!(decoded.len(), OPUS_FRAME_SAMPLES);
     }
 }
