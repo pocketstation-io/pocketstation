@@ -26,6 +26,24 @@ pub enum AudioMode {
     Broadcast,
 }
 
+/// Indicates whether audio was captured from a real source or synthesised by AI.
+///
+/// Required by EU AI Act Article 50 (2026-08-01 deadline): machine-detectable
+/// markings must be embedded in AI-synthesised audio before delivery.
+/// The watermark node (ADR-017) reads this tag and embeds AudioSeal only when
+/// the value is `AiTts`. See `pocketstation-watermark` in `pocketstation-io/audio-ml`.
+///
+/// Phase scope: Phase 5.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum AudioSourceTag {
+    /// Audio captured from a real microphone or system loopback. No watermark needed.
+    #[default]
+    Captured,
+    /// Audio synthesised by an AI text-to-speech engine. Must be watermarked before
+    /// delivery per EU AI Act Article 50.
+    AiTts,
+}
+
 pub struct AudioBufferPool {
     slots: Box<[UnsafeCell<Box<[f32]>>]>,
     slot_size: usize,
@@ -194,6 +212,10 @@ pub struct AudioFrame {
     pub timestamp_ns: u64,
     pub sequence_number: u64,
     pub buffer: AudioBufferHandle,
+    /// Whether this frame originated from a real capture source or an AI TTS engine.
+    /// Defaults to `Captured`. Set to `AiTts` by TTS pipeline stages so the
+    /// downstream watermark node (ADR-017) can embed a machine-detectable mark.
+    pub source_tag: AudioSourceTag,
 }
 
 impl AudioFrame {
@@ -214,6 +236,7 @@ impl AudioFrame {
             timestamp_ns,
             sequence_number,
             buffer,
+            source_tag: AudioSourceTag::Captured,
         }
     }
 }

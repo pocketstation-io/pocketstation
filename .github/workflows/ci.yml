@@ -10,4 +10,5 @@ jobs:
       - run: cargo fmt --all -- --check
       - run: cargo clippy --workspace --all-targets -- -D warnings
       - run: cargo test --workspace
+      - run: cargo run -p pocketstation-alloccheck
       - run: cargo publish --dry-run -p pocketstation-audio || true
