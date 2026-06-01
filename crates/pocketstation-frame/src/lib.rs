@@ -44,6 +44,23 @@ pub enum AudioSourceTag {
     AiTts,
 }
 
+/// Encryption mode applied to this frame's payload.
+///
+/// Used by the SFrame E2EE relay path (ADR-014). The relay forwards frames
+/// without decrypting regardless of this field; the value is set by the SDK
+/// before sending and read by the receiving SDK to select the decryption path.
+///
+/// Phase scope: Phase 5.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub enum EncryptionMode {
+    /// No encryption. Default for Phase 0–4 compatibility.
+    #[default]
+    None,
+    /// SFrame (RFC 9605) frame-level encryption. Key exchanged via KEY_EXCHANGE
+    /// signaling message before any encrypted frames are sent.
+    SFrame,
+}
+
 pub struct AudioBufferPool {
     slots: Box<[UnsafeCell<Box<[f32]>>]>,
     slot_size: usize,
@@ -216,6 +233,11 @@ pub struct AudioFrame {
     /// Defaults to `Captured`. Set to `AiTts` by TTS pipeline stages so the
     /// downstream watermark node (ADR-017) can embed a machine-detectable mark.
     pub source_tag: AudioSourceTag,
+    /// Speaker identity assigned by the diarization node (ADR-018).
+    /// `None` until `pocketstation-diarize` (Phase 6) assigns a speaker ID.
+    pub speaker_id: Option<u32>,
+    /// SFrame encryption mode (ADR-014). `None` for unencrypted transport.
+    pub encryption_mode: EncryptionMode,
 }
 
 impl AudioFrame {
@@ -237,6 +259,8 @@ impl AudioFrame {
             sequence_number,
             buffer,
             source_tag: AudioSourceTag::Captured,
+            speaker_id: None,
+            encryption_mode: EncryptionMode::None,
         }
     }
 }
