@@ -12,6 +12,6 @@ real-opus = []
 recording = []
 
 [dependencies]
-pocketstation-frame = { path = "../pocketstation-frame" }
+pocketstation-frame = { path = "../pocketstation-frame", version = "0.1.0" }
 opus.workspace = true
 thiserror.workspace = true
