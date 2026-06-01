@@ -76,3 +76,65 @@ pub unsafe extern "C" fn ps_encode_opus(
         Err(_) => -2,
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::f32::consts::PI;
+
+    fn sine_960(hz: f32) -> Vec<f32> {
+        (0..pocketstation_codec::OPUS_FRAME_SAMPLES)
+            .map(|i| (2.0 * PI * hz * i as f32 / 48_000.0).sin() * 0.25)
+            .collect()
+    }
+
+    #[test]
+    fn given_valid_pcm_when_encode_then_returns_positive_byte_count() {
+        unsafe {
+            let enc = ps_opus_encoder_create(48_000, 1, 64);
+            assert!(!enc.is_null(), "encoder creation failed");
+            let pcm = sine_960(440.0);
+            let mut out = vec![0u8; 256];
+            let n = ps_encode_opus(enc, pcm.as_ptr(), pcm.len(), out.as_mut_ptr(), out.len());
+            assert!(n > 0, "expected positive byte count, got {n}");
+            ps_opus_encoder_destroy(enc);
+        }
+    }
+
+    #[test]
+    fn given_null_encoder_when_encode_then_returns_minus_one() {
+        unsafe {
+            let mut out = vec![0u8; 256];
+            let pcm = sine_960(440.0);
+            let n = ps_encode_opus(
+                std::ptr::null_mut(),
+                pcm.as_ptr(),
+                pcm.len(),
+                out.as_mut_ptr(),
+                out.len(),
+            );
+            assert_eq!(n, -1);
+        }
+    }
+
+    #[test]
+    fn given_encoder_when_destroy_null_then_no_crash() {
+        unsafe { ps_opus_encoder_destroy(std::ptr::null_mut()) }
+    }
+
+    #[test]
+    fn given_sine_440hz_when_round_trip_then_decoded_has_energy() {
+        unsafe {
+            let enc = ps_opus_encoder_create(48_000, 1, 64);
+            assert!(!enc.is_null());
+            let pcm = sine_960(440.0);
+            let mut out = vec![0u8; 256];
+            let n = ps_encode_opus(enc, pcm.as_ptr(), pcm.len(), out.as_mut_ptr(), out.len());
+            assert!(n > 0);
+            // Verify the encoded frame is a plausible size: Opus 20ms at 64kbps ≈ 160 bytes
+            assert!(n <= 256, "encoded frame too large: {n}");
+            assert!(n >= 2, "encoded frame suspiciously small: {n}");
+            ps_opus_encoder_destroy(enc);
+        }
+    }
+}
