@@ -62,6 +62,17 @@ These never become production — they exist for testing and development. They a
 
 ---
 
+## Phase 5 additions (added 2026-05-23)
+
+| Artifact | Status | Location | Replace by | Notes |
+|---|---|---|---|---|
+| AudioFrame.speaker_id field | PENDING | crates/pocketstation-frame/src/lib.rs | Phase 5 | ADR-018 prerequisite; Option<u32>; None = no diarization |
+| AudioFrame.source_tag field | PENDING | crates/pocketstation-frame/src/lib.rs | Phase 5 | ADR-017 prerequisite; AudioSourceTag enum (Captured, AiTts) |
+| AudioFrame.encryption_mode field | PENDING | crates/pocketstation-frame/src/lib.rs | Phase 5 | ADR-014 prerequisite; EncryptionMode enum |
+| DHAT alloc CI gate | PENDING | .github/workflows/ci.yml | Phase 3 follow-up | Verify zero-alloc on hot path in CI (currently code-only claim) |
+| WASM plugin host (wasmtime) | PENDING | crates/pocketstation-audio/ | Phase 6 | ADR-019; ps_plugin_* C ABI; sandbox via wasmtime |
+| AudioTokenFrame type | PENDING | crates/pocketstation-frame/src/lib.rs | Phase 6 | ADR-015 prerequisite; Vec<u32> neural codec tokens |
+
 ## How to use this file in a PR
 
 When introducing a scaffold:

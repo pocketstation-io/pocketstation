@@ -104,3 +104,15 @@ audio processing thread. They are enforced, not aspirational.
 - No Rust panic across any FFI boundary.
 - No ML inference on the callback thread (ML nodes run on the processing
   thread, which drains the SPSC ring).
+
+## Phase 5 intake gates
+
+- [ ] AudioFrame: add speaker_id (Option<u32>), source_tag (AudioSourceTag), encryption_mode (EncryptionMode) fields — required by ADR-014, ADR-017, ADR-018
+- [ ] DHAT alloc CI gate: add DHAT profiler step to CI; zero-alloc on hot path verified automatically (currently only code-structure claim)
+- [ ] Relay echo timestamp mechanism (ADR-020): embed send_timestamp_ns in Opus payload for benchmark tool
+
+## Phase 6 intake gates
+
+- [ ] WASM plugin host: wasmtime integration in pocketstation-audio; ps_plugin_* C ABI (ADR-019)
+- [ ] AudioTokenFrame type: Vec<u32> in pocketstation-frame for neural codec output (ADR-015)
+- [ ] cbindgen C header: generate headers for Swift/Kotlin FFI (ADR-011 — long-standing deferral)
