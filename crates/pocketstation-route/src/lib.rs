@@ -77,7 +77,9 @@ pub enum TransportKind {
     File,
 }
 #[derive(Debug, Clone)]
-pub enum EncryptionMode {
+// Renamed from EncryptionMode to avoid ambiguous glob re-export with
+// pocketstation_frame::EncryptionMode in pocketstation-audio (Phase 5).
+pub enum RouteEncryptionMode {
     TransportOnly,
     SFrameE2EE,
     EnterpriseKeyManager,
@@ -102,7 +104,7 @@ pub struct RoutePlan {
     pub source: SourceId,
     pub outputs: Vec<OutputTarget>,
     pub transport: TransportKind,
-    pub encryption: EncryptionMode,
+    pub encryption: RouteEncryptionMode,
     pub latency_budget_ms: u32,
     pub fallback_routes: Vec<RouteKind>,
 }
