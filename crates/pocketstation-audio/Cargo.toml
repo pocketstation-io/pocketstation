@@ -9,6 +9,9 @@ repository.workspace = true
 default = []
 real-opus = ["pocketstation-codec/real-opus"]
 
+[lib]
+crate-type = ["cdylib", "staticlib", "rlib"]
+
 [[example]]
 name = "sine_to_wav"
 # cargo run -p pocketstation-audio --example sine_to_wav
@@ -25,3 +28,6 @@ pocketstation-codec = { path = "../pocketstation-codec" }
 pocketstation-route = { path = "../pocketstation-route" }
 pocketstation-metrics = { path = "../pocketstation-metrics" }
 hound.workspace = true
+
+[build-dependencies]
+cbindgen = "0.27"

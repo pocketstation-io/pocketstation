@@ -1,3 +1,6 @@
+pub mod ffi;
+pub use ffi::{ps_encode_opus, ps_opus_encoder_create, ps_opus_encoder_destroy, PsOpusEncoder};
+
 pub use pocketstation_bus::*;
 pub use pocketstation_codec::*;
 pub use pocketstation_frame::*;
