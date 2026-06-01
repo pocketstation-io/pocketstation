@@ -24,3 +24,15 @@ hound = "3"
 opus = "0.3"
 proptest = "1"
 criterion = "0.5"
+
+# Production release: full LTO + single codegen unit so LLVM can inline
+# across crate boundaries (Rust → libopus FFI call sites) and vectorize.
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+
+# Bench profile inherits release but keeps debug symbols for profiling.
+[profile.bench]
+inherits = "release"
+debug = true

@@ -8,4 +8,4 @@ repository.workspace = true
 [dependencies]
 rtrb.workspace = true
 thiserror.workspace = true
-pocketstation-frame = { path = "../pocketstation-frame" }
+pocketstation-frame = { path = "../pocketstation-frame", version = "0.1.0" }

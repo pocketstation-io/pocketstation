@@ -21,12 +21,12 @@ name = "soak"
 # cargo run -p pocketstation-audio --example soak
 
 [dependencies]
-pocketstation-frame = { path = "../pocketstation-frame" }
-pocketstation-bus = { path = "../pocketstation-bus" }
-pocketstation-graph = { path = "../pocketstation-graph" }
-pocketstation-codec = { path = "../pocketstation-codec" }
-pocketstation-route = { path = "../pocketstation-route" }
-pocketstation-metrics = { path = "../pocketstation-metrics" }
+pocketstation-frame = { path = "../pocketstation-frame", version = "0.1.0" }
+pocketstation-bus = { path = "../pocketstation-bus", version = "0.1.0" }
+pocketstation-graph = { path = "../pocketstation-graph", version = "0.1.0" }
+pocketstation-codec = { path = "../pocketstation-codec", version = "0.1.0" }
+pocketstation-route = { path = "../pocketstation-route", version = "0.1.0" }
+pocketstation-metrics = { path = "../pocketstation-metrics", version = "0.1.0" }
 hound.workspace = true
 
 [build-dependencies]

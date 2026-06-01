@@ -6,4 +6,4 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
-pocketstation-frame = { path = "../pocketstation-frame" }
+pocketstation-frame = { path = "../pocketstation-frame", version = "0.1.0" }

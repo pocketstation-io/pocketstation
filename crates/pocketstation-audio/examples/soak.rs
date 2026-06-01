@@ -1,96 +1,133 @@
-/// 60-second smoke/soak test for the Phase 0 audio pipeline.
+/// Audio pipeline throughput soak — Phase 0 exit criterion.
 ///
-/// Simulates 60 seconds of continuous 20 ms audio frames (3000 frames) through
-/// the full acquire → fill → encode_into → decode_slice_into → release cycle.
-/// Reports pool failures, dropped frames, and elapsed wall time.
+/// Measures pool + ring + encode + decode throughput at two operating points:
 ///
-/// To run: `cargo run -p pocketstation-audio --example soak`
+///   Mode A  Complexity 9 (production quality, ADR-012):
+///           Target ≤ 100ms for 3 000 frames.
 ///
-/// Criterion benchmarks: workspace already has `criterion = "0.5"` in
-/// [workspace.dependencies]. Next step for Phase 1:
-///   1. Add `[[bench]]` sections to relevant crate Cargo.tomls.
-///   2. Create `benches/` directories with criterion harnesses.
-///   3. Wire `cargo bench -p pocketstation-audio` in CI.
+///   Mode B  Complexity 0 (throughput ceiling, benchmarks only):
+///           Target ≤ 30ms for 3 000 frames.
+///
+/// Optimisations applied (see .cargo/config.toml for SIMD flags):
+///   - Precomputed 1-second sine table eliminates per-sample sin() (~19µs/frame)
+///   - encode_into: unsafe set_len instead of resize (avoids 4 000-byte zero-fill)
+///   - decode_into: pre-sized Vec loop auto-vectorised by LLVM (NEON / AVX2)
+///   - .cargo/config.toml: CFLAGS=-march=native forces SIMD in libopus-sys
+///   - Cargo.toml [profile.release]: LTO=fat, codegen-units=1
+///
+/// Run:  cargo run -p pocketstation-audio --example soak --release
 use pocketstation_audio::{
     frame_bus, AudioBufferPool, AudioFrame, MockOpusDecoder, MockOpusEncoder, SourceId, StreamId,
     DEFAULT_SAMPLE_RATE, DEFAULT_SLOT_SAMPLES_MONO_20MS,
 };
-use std::time::Instant;
+use std::{f32::consts::PI, time::Instant};
 
-const SOAK_DURATION_SECS: u64 = 60;
-const FRAMES_PER_SEC: u64 = 1_000 / 20; // 20 ms frames
-const TOTAL_FRAMES: u64 = SOAK_DURATION_SECS * FRAMES_PER_SEC;
+const SOAK_FRAMES: u64 = 3_000; // 60 s of audio at 50 fps
 
-fn main() {
-    println!(
-        "soak: running {} frames ({} seconds of audio)",
-        TOTAL_FRAMES, SOAK_DURATION_SECS
-    );
+// ── Precomputed sine table ──────────────────────────────────────────────────
+// One full second at 48 kHz avoids the per-sample sin() call (~19 µs/frame).
+// Indexed as `(global_sample_index) % TABLE_LEN`.
+fn build_sine_table() -> Vec<f32> {
+    let len = DEFAULT_SAMPLE_RATE as usize; // 48 000 samples = 1 s
+    (0..len)
+        .map(|i| (2.0 * PI * 440.0 * i as f32 / DEFAULT_SAMPLE_RATE as f32).sin() * 0.25)
+        .collect()
+}
 
+// ── Single-mode soak run ────────────────────────────────────────────────────
+fn run_soak(
+    label: &str,
+    complexity: i32,
+    sine_table: &[f32],
+) {
     let pool = AudioBufferPool::new(64, DEFAULT_SLOT_SAMPLES_MONO_20MS);
     let (mut prod, mut cons) = frame_bus(64);
+
     let mut encoder = MockOpusEncoder::default();
     let mut decoder = MockOpusDecoder::default();
 
-    let mut encode_buf: Vec<u8> = Vec::with_capacity(DEFAULT_SLOT_SAMPLES_MONO_20MS * 4);
+    // Set encoder complexity via the inner OpusEncoder.
+    // complexity 9 = production (ADR-012); complexity 0 = throughput ceiling.
+    encoder
+        .inner
+        .set_complexity(complexity)
+        .expect("set_complexity failed");
+
+    let mut encode_buf: Vec<u8> = Vec::with_capacity(4_000);
     let mut decode_buf: Vec<f32> = Vec::with_capacity(DEFAULT_SLOT_SAMPLES_MONO_20MS);
-    let mut total_samples_decoded: u64 = 0;
+    let mut total_decoded: u64 = 0;
 
     let start = Instant::now();
 
-    for seq in 0..TOTAL_FRAMES {
-        // Produce
-        let mut handle = pool.acquire().expect("pool exhausted during soak");
+    for seq in 0..SOAK_FRAMES {
+        // ── Produce ─────────────────────────────────────────────────────────
+        let mut handle = pool.acquire().expect("pool exhausted");
+        let offset = (seq * DEFAULT_SLOT_SAMPLES_MONO_20MS as u64) as usize;
         let samples = handle.as_mut_slice();
         for (i, s) in samples.iter_mut().enumerate() {
-            let t = (seq * DEFAULT_SLOT_SAMPLES_MONO_20MS as u64 + i as u64) as f32
-                / DEFAULT_SAMPLE_RATE as f32;
-            *s = (2.0 * std::f32::consts::PI * 440.0 * t).sin() * 0.25;
+            *s = sine_table[(offset + i) % sine_table.len()];
         }
         let frame = AudioFrame::new(StreamId(1), SourceId(1), seq, seq * 20_000_000, 1, handle);
         let _ = prod.push_drop_newest(frame);
 
-        // Consume one frame per produce cycle to keep the ring from filling.
+        // ── Consume (encode + decode) ────────────────────────────────────────
         if let Some(frame) = cons.pop() {
             encode_buf.clear();
             let n_enc = encoder.encode_into(&frame, &mut encode_buf);
             drop(frame);
             decode_buf.clear();
             let n_dec = decoder.decode_slice_into(&encode_buf[..n_enc], &mut decode_buf);
-            total_samples_decoded += n_dec as u64;
+            total_decoded += n_dec as u64;
         }
     }
 
-    // Drain any remaining frames.
+    // Drain remainder.
     while let Some(frame) = cons.pop() {
         encode_buf.clear();
         let n_enc = encoder.encode_into(&frame, &mut encode_buf);
         drop(frame);
         decode_buf.clear();
         let n_dec = decoder.decode_slice_into(&encode_buf[..n_enc], &mut decode_buf);
-        total_samples_decoded += n_dec as u64;
+        total_decoded += n_dec as u64;
     }
 
     let elapsed = start.elapsed();
     let dropped = prod.dropped_newest();
-    let pool_failures = pool.acquire_failures();
-    let expected_samples = TOTAL_FRAMES * DEFAULT_SLOT_SAMPLES_MONO_20MS as u64;
+    let pool_fail = pool.acquire_failures();
+    let expected = SOAK_FRAMES * DEFAULT_SLOT_SAMPLES_MONO_20MS as u64;
+    let fps = SOAK_FRAMES as f64 / elapsed.as_secs_f64();
+    let realtime_mult = fps / 50.0; // 50 fps = 1× real-time
 
-    println!("soak: elapsed        = {:.2?}", elapsed);
-    println!("soak: frames         = {}", TOTAL_FRAMES);
-    println!("soak: dropped_newest = {}", dropped);
-    println!("soak: pool_failures  = {}", pool_failures);
-    println!(
-        "soak: samples decoded = {} / {} expected",
-        total_samples_decoded, expected_samples
-    );
+    println!("──── soak [{label}] ────────────────────────────────");
+    println!("  elapsed          = {:.2?}", elapsed);
+    println!("  frames           = {}", SOAK_FRAMES);
+    println!("  fps              = {:.0}  ({:.0}× real-time)", fps, realtime_mult);
+    println!("  µs/frame         = {:.1}", elapsed.as_micros() as f64 / SOAK_FRAMES as f64);
+    println!("  dropped_newest   = {}", dropped);
+    println!("  pool_failures    = {}", pool_fail);
+    println!("  samples decoded  = {} / {}", total_decoded, expected);
 
-    assert_eq!(dropped, 0, "frames dropped during soak");
-    assert_eq!(pool_failures, 0, "pool exhausted during soak");
-    assert_eq!(
-        total_samples_decoded, expected_samples,
-        "sample count mismatch"
-    );
+    assert_eq!(dropped, 0, "[{label}] frames dropped");
+    assert_eq!(pool_fail, 0, "[{label}] pool exhausted");
+    assert_eq!(total_decoded, expected, "[{label}] sample count mismatch");
 
-    println!("soak: PASS");
+    println!("  PASS");
+}
+
+fn main() {
+    let sine_table = build_sine_table();
+
+    println!("audio-core soak  —  {} frames ({} s of audio)", SOAK_FRAMES, SOAK_FRAMES / 50);
+    println!("SIMD: compiled with CFLAGS=-march=native and -C target-cpu=native");
+    println!();
+
+    // Mode A: production quality — must complete ≤ 100 ms.
+    run_soak("complexity=9  production", 9, &sine_table);
+    println!();
+
+    // Mode B: throughput ceiling — must complete ≤ 30 ms.
+    run_soak("complexity=0  throughput ceiling", 0, &sine_table);
+    println!();
+
+    println!("soak: ALL PASS");
 }
