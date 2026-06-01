@@ -84,23 +84,40 @@ impl OpusEncoder {
     /// `out` is cleared and reused; no heap allocation occurs after the first
     /// call provided `out` already has `OPUS_MAX_PACKET_BYTES` capacity.
     pub fn encode_into(&mut self, pcm: &[f32], out: &mut Vec<u8>) -> Result<usize, opus::Error> {
-        // Convert f32 PCM to i16.  Stack buffer is used for the frame so that
-        // the hot path remains allocation-free.
         debug_assert_eq!(
             pcm.len(),
             OPUS_FRAME_SAMPLES,
             "encode_into: expected {OPUS_FRAME_SAMPLES} samples, got {}",
             pcm.len()
         );
+
+        // f32 → i16.  Written as a plain iterator loop so LLVM auto-vectorises
+        // to NEON/AVX2 when compiled with target-cpu=native (.cargo/config.toml).
         let mut i16_buf = [0i16; OPUS_FRAME_SAMPLES];
-        for (dst, src) in i16_buf.iter_mut().zip(pcm.iter()) {
+        for (dst, &src) in i16_buf.iter_mut().zip(pcm.iter()) {
             *dst = (src.clamp(-1.0, 1.0) * I16_SCALE) as i16;
         }
 
-        out.resize(OPUS_MAX_PACKET_BYTES, 0u8);
+        // Avoid the 4 000-byte zero-fill that `resize(cap, 0)` performs.
+        // Safety: libopus writes sequentially into `out` before reading any
+        // byte of its output; `truncate(n)` then hides the unwritten tail.
+        out.clear();
+        if out.capacity() < OPUS_MAX_PACKET_BYTES {
+            out.reserve(OPUS_MAX_PACKET_BYTES);
+        }
+        unsafe { out.set_len(OPUS_MAX_PACKET_BYTES) };
+
         let n = self.inner.encode(&i16_buf, out)?;
         out.truncate(n);
         Ok(n)
+    }
+
+    /// Set encoder complexity (0 = fastest, 10 = highest quality).
+    ///
+    /// Production default is 9. Set to 0 only in throughput benchmarks where
+    /// quality is irrelevant (ADR-012 §10.4 codec control).
+    pub fn set_complexity(&mut self, complexity: i32) -> Result<(), opus::Error> {
+        self.inner.set_complexity(complexity)
     }
 
     /// Convenience wrapper that allocates a `Vec<u8>` per call.
@@ -154,13 +171,17 @@ impl OpusDecoder {
         out: &mut Vec<f32>,
     ) -> Result<usize, opus::Error> {
         let before = out.len();
-        // Decode into a stack-allocated i16 buffer (hot-path allocation-free).
         let mut i16_buf = [0i16; OPUS_FRAME_SAMPLES];
         let n = self.inner.decode(payload, &mut i16_buf, false)?;
-        for s in &i16_buf[..n] {
-            out.push(*s as f32 / I16_SCALE);
+
+        // Pre-size output then write with a plain loop.  Avoids the per-element
+        // bounds check inside `push` and is auto-vectorised by LLVM (NEON/AVX2)
+        // when target-cpu=native is set.
+        out.resize(before + n, 0.0f32);
+        for (dst, &src) in out[before..].iter_mut().zip(&i16_buf[..n]) {
+            *dst = src as f32 / I16_SCALE;
         }
-        Ok(out.len() - before)
+        Ok(n)
     }
 
     /// Convenience wrapper allocating a `Vec<f32>` — tests/examples only.
@@ -185,7 +206,7 @@ impl Default for OpusDecoder {
 
 /// Deprecated alias for [`OpusEncoder`].  Use `OpusEncoder` directly.
 pub struct MockOpusEncoder {
-    inner: OpusEncoder,
+    pub inner: OpusEncoder,
 }
 
 impl MockOpusEncoder {
