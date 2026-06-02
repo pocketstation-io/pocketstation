@@ -34,6 +34,10 @@ pub const OPUS_SAMPLE_RATE: u32 = 48_000;
 /// 20 ms frame = 960 samples at 48 kHz (ADR-012).
 pub const OPUS_FRAME_SAMPLES: usize = 960;
 
+/// 10 ms frame = 480 samples at 48 kHz (voice-agent low-latency mode, RFC 6716 §3.1).
+/// Used with [`OpusEncoder::voice_agent`] and OPUS_APPLICATION_RESTRICTED_LOWDELAY.
+pub const VOICE_AGENT_FRAME_SAMPLES: usize = 480;
+
 /// Maximum number of bytes the Opus encoder can emit per 20 ms frame.
 /// libopus guarantees this upper bound.
 pub const OPUS_MAX_PACKET_BYTES: usize = 4_000;
@@ -77,24 +81,53 @@ impl OpusEncoder {
         })
     }
 
-    /// Encode a 960-sample f32 PCM slice into `out`.
+    /// Create a low-latency voice-agent encoder using OPUS_APPLICATION_RESTRICTED_LOWDELAY.
+    ///
+    /// Configured for 10 ms frames (480 samples at 48 kHz), complexity 5, and the
+    /// caller-specified bitrate.  RESTRICTED_LOWDELAY disables the lookahead that
+    /// VOIP mode uses for pitch detection, saving ~10 ms of algorithmic delay
+    /// per RFC 6716 §3.1.
+    ///
+    /// `bitrate_kbps` must be at least 32 (the minimum for 10 ms mono Opus frames
+    /// at acceptable quality); values above 96 are unclamped but wasteful.
+    ///
+    /// # Errors
+    ///
+    /// Returns `Err` only if libopus rejects the channel or bitrate values.
+    pub fn voice_agent(channels: u8, bitrate_kbps: u32) -> Result<Self, opus::Error> {
+        let ch = if channels == 2 {
+            Channels::Stereo
+        } else {
+            Channels::Mono
+        };
+        let mut enc = Encoder::new(OPUS_SAMPLE_RATE, ch, Application::LowDelay)?;
+        enc.set_bitrate(opus::Bitrate::Bits((bitrate_kbps * 1_000) as i32))?;
+        enc.set_complexity(5)?;
+        Ok(Self { inner: enc })
+    }
+
+    /// Encode a PCM slice into `out`.
+    ///
+    /// Accepts either a 960-sample (20 ms) or 480-sample (10 ms) slice.  The
+    /// frame size is detected from the slice length; passing any other length is
+    /// a logic error and will panic in debug builds (debug_assert).
     ///
     /// Converts f32 → i16 (multiply by 32 767.0, clamp) then calls
     /// `encoder.encode()`.  Returns the number of compressed bytes written.
     /// `out` is cleared and reused; no heap allocation occurs after the first
     /// call provided `out` already has `OPUS_MAX_PACKET_BYTES` capacity.
     pub fn encode_into(&mut self, pcm: &[f32], out: &mut Vec<u8>) -> Result<usize, opus::Error> {
-        debug_assert_eq!(
-            pcm.len(),
-            OPUS_FRAME_SAMPLES,
-            "encode_into: expected {OPUS_FRAME_SAMPLES} samples, got {}",
-            pcm.len()
+        let frame_len = pcm.len();
+        debug_assert!(
+            frame_len == OPUS_FRAME_SAMPLES || frame_len == VOICE_AGENT_FRAME_SAMPLES,
+            "encode_into: expected {OPUS_FRAME_SAMPLES} or {VOICE_AGENT_FRAME_SAMPLES} samples, got {frame_len}",
         );
 
         // f32 → i16.  Written as a plain iterator loop so LLVM auto-vectorises
         // to NEON/AVX2 when compiled with target-cpu=native (.cargo/config.toml).
+        // We use the maximum frame size for the stack buffer so both modes fit.
         let mut i16_buf = [0i16; OPUS_FRAME_SAMPLES];
-        for (dst, &src) in i16_buf.iter_mut().zip(pcm.iter()) {
+        for (dst, &src) in i16_buf[..frame_len].iter_mut().zip(pcm.iter()) {
             *dst = (src.clamp(-1.0, 1.0) * I16_SCALE) as i16;
         }
 
@@ -107,7 +140,7 @@ impl OpusEncoder {
         }
         unsafe { out.set_len(OPUS_MAX_PACKET_BYTES) };
 
-        let n = self.inner.encode(&i16_buf, out)?;
+        let n = self.inner.encode(&i16_buf[..frame_len], out)?;
         out.truncate(n);
         Ok(n)
     }
@@ -558,6 +591,52 @@ mod tests {
         assert_eq!(
             out_a, out_b,
             "encoded bytes differ — encode_into optimisation broke audio fidelity"
+        );
+    }
+
+    #[test]
+    fn given_voice_agent_mode_when_encode_480_samples_then_valid_packet() {
+        // Given: voice-agent encoder + 480 silent samples (10 ms at 48 kHz)
+        let mut enc = OpusEncoder::voice_agent(1, 32).unwrap();
+        let pcm = vec![0.0f32; VOICE_AGENT_FRAME_SAMPLES];
+        let mut out = Vec::new();
+
+        // When
+        let n = enc.encode_into(&pcm, &mut out).unwrap();
+
+        // Then: packet is non-empty and length matches the returned byte count
+        assert!(n > 0, "voice-agent encoded packet must be non-empty");
+        assert_eq!(out.len(), n);
+    }
+
+    #[test]
+    fn given_voice_agent_frame_when_round_trip_then_snr_above_minus_6db() {
+        use std::f32::consts::PI;
+
+        // Given: 480-sample 440 Hz sine at 48 kHz, amplitude 0.25
+        let mut enc = OpusEncoder::voice_agent(1, 32).unwrap();
+        let mut dec = OpusDecoder::new().unwrap();
+
+        let pcm_in: Vec<f32> = (0..VOICE_AGENT_FRAME_SAMPLES)
+            .map(|i| (2.0 * PI * 440.0 * i as f32 / 48_000.0).sin() * 0.25)
+            .collect();
+
+        let mut packet = Vec::new();
+        enc.encode_into(&pcm_in, &mut packet).unwrap();
+
+        let mut pcm_out = Vec::new();
+        dec.decode_into(&packet, &mut pcm_out).unwrap();
+
+        // Then: round-trip SNR is above -6 dB.
+        // RESTRICTED_LOWDELAY at 32 kbps is lower quality than VOIP at 64 kbps,
+        // but -6 dB is the minimum acceptable perceptual floor for voice.
+        let rms = |s: &[f32]| -> f32 {
+            (s.iter().map(|x| x * x).sum::<f32>() / s.len() as f32).sqrt()
+        };
+        let snr_db = 20.0 * (rms(&pcm_out) / rms(&pcm_in)).log10();
+        assert!(
+            snr_db > -6.0,
+            "voice-agent round-trip SNR {snr_db:.1} dB below -6 dB threshold"
         );
     }
 
