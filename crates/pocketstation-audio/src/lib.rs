@@ -6,7 +6,13 @@ pub use pocketstation_codec::*;
 pub use pocketstation_frame::*;
 pub use pocketstation_graph::*;
 pub use pocketstation_metrics::*;
-pub use pocketstation_route::*;
+// Route re-exports: exclude EncryptionMode which conflicts with pocketstation_codec's re-export.
+pub use pocketstation_route::{
+    AdapterError, AudioOutputDescriptor, AudioOutputSink, AudioSourceDescriptor,
+    AudioSourceStream, LatencyClass, OutputRequest, OutputTarget, PlatformAdapter,
+    PlatformId, ReliabilityClass, RoutePlan, RouteKind, SourceCapability,
+    SourcePreference, SourceRequest, TransportKind, open_best_source,
+};
 
 use std::f32::consts::PI;
 
