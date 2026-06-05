@@ -436,11 +436,7 @@ impl JitterBuffer {
         // On the very first frame there is no prior timestamp, so we skip.
         if self.last_pop_instant_ns > 0 {
             let arrival = frame.timestamp_ns;
-            let inter_arrival = if arrival > self.last_pop_instant_ns {
-                arrival - self.last_pop_instant_ns
-            } else {
-                0
-            };
+            let inter_arrival = arrival.saturating_sub(self.last_pop_instant_ns);
             // EWMA: new = (7*old + sample) / 8
             self.inter_arrival_ewma_ns =
                 ((self.inter_arrival_ewma_ns * 7) + inter_arrival) >> EWMA_SHIFT;
@@ -597,8 +593,7 @@ impl JitterBuffer {
         self.frames_since_adapt = 0;
 
         // Recompute target from measured jitter EWMA.
-        let jitter_frames =
-            (self.inter_arrival_ewma_ns + FRAME_DURATION_NS - 1) / FRAME_DURATION_NS;
+        let jitter_frames = self.inter_arrival_ewma_ns.div_ceil(FRAME_DURATION_NS);
         let new_target = (jitter_frames as usize + ADAPT_SAFETY_MARGIN)
             .max(self.min_depth)
             .min(self.max_depth);

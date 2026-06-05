@@ -21,6 +21,9 @@ typedef struct PsOpusEncoder PsOpusEncoder;
  * sample_rate: must be 48000. channels: 1 (mono) or 2 (stereo).
  * bitrate_kbps: target bitrate in kbps (e.g. 64).
  * Returns null on failure.
+ *
+ * # Safety
+ * The returned pointer must be destroyed with `ps_opus_encoder_destroy`.
  */
 struct PsOpusEncoder *ps_opus_encoder_create(unsigned int _sample_rate,
                                              uint8_t _channels,
@@ -29,6 +32,9 @@ struct PsOpusEncoder *ps_opus_encoder_create(unsigned int _sample_rate,
 /**
  * Destroy an encoder created by ps_opus_encoder_create.
  * Safe to call with null.
+ *
+ * # Safety
+ * `enc` must be a pointer returned by `ps_opus_encoder_create` or null.
  */
 void ps_opus_encoder_destroy(struct PsOpusEncoder *enc);
 
@@ -43,6 +49,11 @@ void ps_opus_encoder_destroy(struct PsOpusEncoder *enc);
  * Returns:  number of bytes written on success.
  *           -1 if enc is null.
  *           -2 on encoding error.
+ *
+ * # Safety
+ * - `enc` must be a valid pointer from `ps_opus_encoder_create` or null.
+ * - `pcm` must point to at least `sample_count` valid f32 values.
+ * - `out_buf` must point to at least `out_cap` bytes of writable memory.
  */
 int ps_encode_opus(struct PsOpusEncoder *enc,
                    const float *pcm,

@@ -19,6 +19,9 @@ pub struct PsOpusEncoder {
 /// sample_rate: must be 48000. channels: 1 (mono) or 2 (stereo).
 /// bitrate_kbps: target bitrate in kbps (e.g. 64).
 /// Returns null on failure.
+///
+/// # Safety
+/// The returned pointer must be destroyed with `ps_opus_encoder_destroy`.
 #[no_mangle]
 pub unsafe extern "C" fn ps_opus_encoder_create(
     _sample_rate: c_uint,
@@ -36,6 +39,9 @@ pub unsafe extern "C" fn ps_opus_encoder_create(
 
 /// Destroy an encoder created by ps_opus_encoder_create.
 /// Safe to call with null.
+///
+/// # Safety
+/// `enc` must be a pointer returned by `ps_opus_encoder_create` or null.
 #[no_mangle]
 pub unsafe extern "C" fn ps_opus_encoder_destroy(enc: *mut PsOpusEncoder) {
     if !enc.is_null() {
@@ -53,6 +59,11 @@ pub unsafe extern "C" fn ps_opus_encoder_destroy(enc: *mut PsOpusEncoder) {
 /// Returns:  number of bytes written on success.
 ///           -1 if enc is null.
 ///           -2 on encoding error.
+///
+/// # Safety
+/// - `enc` must be a valid pointer from `ps_opus_encoder_create` or null.
+/// - `pcm` must point to at least `sample_count` valid f32 values.
+/// - `out_buf` must point to at least `out_cap` bytes of writable memory.
 #[no_mangle]
 pub unsafe extern "C" fn ps_encode_opus(
     enc: *mut PsOpusEncoder,
