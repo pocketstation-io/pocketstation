@@ -6,10 +6,8 @@ fn main() {
     cbindgen::Builder::new()
         .with_crate(&crate_dir)
         .with_config(
-            cbindgen::Config::from_file(
-                std::path::PathBuf::from(&crate_dir).join("cbindgen.toml"),
-            )
-            .unwrap_or_default(),
+            cbindgen::Config::from_file(std::path::PathBuf::from(&crate_dir).join("cbindgen.toml"))
+                .unwrap_or_default(),
         )
         .generate()
         .expect("Unable to generate bindings")

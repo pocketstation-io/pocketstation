@@ -856,8 +856,16 @@ mod tests {
         let mut jb = JitterBuffer::new(1, 8);
 
         // Prime with 2 frames so the buffer is ready to deliver
-        jb.push(EncodedFrame { sequence_number: 0, timestamp_ns: 0, payload: vec![] });
-        jb.push(EncodedFrame { sequence_number: 1, timestamp_ns: FRAME_DURATION_NS, payload: vec![] });
+        jb.push(EncodedFrame {
+            sequence_number: 0,
+            timestamp_ns: 0,
+            payload: vec![],
+        });
+        jb.push(EncodedFrame {
+            sequence_number: 1,
+            timestamp_ns: FRAME_DURATION_NS,
+            payload: vec![],
+        });
 
         // Stream 50 rounds: push the next frame then pop one
         for i in 2u64..52 {
@@ -884,8 +892,16 @@ mod tests {
         let inter_arrival_ns: u64 = 40_000_000;
         let mut jb = JitterBuffer::new(1, 8);
 
-        jb.push(EncodedFrame { sequence_number: 0, timestamp_ns: 0, payload: vec![] });
-        jb.push(EncodedFrame { sequence_number: 1, timestamp_ns: inter_arrival_ns, payload: vec![] });
+        jb.push(EncodedFrame {
+            sequence_number: 0,
+            timestamp_ns: 0,
+            payload: vec![],
+        });
+        jb.push(EncodedFrame {
+            sequence_number: 1,
+            timestamp_ns: inter_arrival_ns,
+            payload: vec![],
+        });
 
         for i in 2u64..52 {
             jb.push(EncodedFrame {
@@ -945,16 +961,19 @@ mod tests {
         // Encoder B — reference path (resize fills zeros before encode)
         let mut enc_b = OpusEncoder::default();
         let mut out_b = vec![0u8; OPUS_MAX_PACKET_BYTES];
-        let n_b = enc_b.inner.encode(
-            &{
-                let mut i16_buf = [0i16; OPUS_FRAME_SAMPLES];
-                for (d, &s) in i16_buf.iter_mut().zip(pcm.iter()) {
-                    *d = (s.clamp(-1.0, 1.0) * I16_SCALE) as i16;
-                }
-                i16_buf
-            },
-            &mut out_b,
-        ).unwrap();
+        let n_b = enc_b
+            .inner
+            .encode(
+                &{
+                    let mut i16_buf = [0i16; OPUS_FRAME_SAMPLES];
+                    for (d, &s) in i16_buf.iter_mut().zip(pcm.iter()) {
+                        *d = (s.clamp(-1.0, 1.0) * I16_SCALE) as i16;
+                    }
+                    i16_buf
+                },
+                &mut out_b,
+            )
+            .unwrap();
         out_b.truncate(n_b);
 
         // Then: every byte is identical — optimisation is audio-transparent
@@ -1007,9 +1026,8 @@ mod tests {
         // Then: round-trip SNR is above -6 dB.
         // RESTRICTED_LOWDELAY at 32 kbps is lower quality than VOIP at 64 kbps,
         // but -6 dB is the minimum acceptable perceptual floor for voice.
-        let rms = |s: &[f32]| -> f32 {
-            (s.iter().map(|x| x * x).sum::<f32>() / s.len() as f32).sqrt()
-        };
+        let rms =
+            |s: &[f32]| -> f32 { (s.iter().map(|x| x * x).sum::<f32>() / s.len() as f32).sqrt() };
         let snr_db = 20.0 * (rms(&pcm_out) / rms(&pcm_in)).log10();
         assert!(
             snr_db > -6.0,
@@ -1035,9 +1053,8 @@ mod tests {
         let mut pcm_out = Vec::new();
         dec.decode_into(&packet, &mut pcm_out).unwrap();
 
-        let rms = |s: &[f32]| -> f32 {
-            (s.iter().map(|x| x * x).sum::<f32>() / s.len() as f32).sqrt()
-        };
+        let rms =
+            |s: &[f32]| -> f32 { (s.iter().map(|x| x * x).sum::<f32>() / s.len() as f32).sqrt() };
         let snr_db = 20.0 * (rms(&pcm_out) / rms(&pcm_in)).log10();
 
         // Opus VOIP mode is lossy and voice-optimised.  A pure sine is not a

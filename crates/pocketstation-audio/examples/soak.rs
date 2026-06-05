@@ -35,11 +35,7 @@ fn build_sine_table() -> Vec<f32> {
 }
 
 // ── Single-mode soak run ────────────────────────────────────────────────────
-fn run_soak(
-    label: &str,
-    complexity: i32,
-    sine_table: &[f32],
-) {
+fn run_soak(label: &str, complexity: i32, sine_table: &[f32]) {
     let pool = AudioBufferPool::new(64, DEFAULT_SLOT_SAMPLES_MONO_20MS);
     let (mut prod, mut cons) = frame_bus(64);
 
@@ -101,8 +97,14 @@ fn run_soak(
     println!("──── soak [{label}] ────────────────────────────────");
     println!("  elapsed          = {:.2?}", elapsed);
     println!("  frames           = {}", SOAK_FRAMES);
-    println!("  fps              = {:.0}  ({:.0}× real-time)", fps, realtime_mult);
-    println!("  µs/frame         = {:.1}", elapsed.as_micros() as f64 / SOAK_FRAMES as f64);
+    println!(
+        "  fps              = {:.0}  ({:.0}× real-time)",
+        fps, realtime_mult
+    );
+    println!(
+        "  µs/frame         = {:.1}",
+        elapsed.as_micros() as f64 / SOAK_FRAMES as f64
+    );
     println!("  dropped_newest   = {}", dropped);
     println!("  pool_failures    = {}", pool_fail);
     println!("  samples decoded  = {} / {}", total_decoded, expected);
@@ -117,7 +119,11 @@ fn run_soak(
 fn main() {
     let sine_table = build_sine_table();
 
-    println!("audio-core soak  —  {} frames ({} s of audio)", SOAK_FRAMES, SOAK_FRAMES / 50);
+    println!(
+        "audio-core soak  —  {} frames ({} s of audio)",
+        SOAK_FRAMES,
+        SOAK_FRAMES / 50
+    );
     println!("SIMD: compiled with CFLAGS=-march=native and -C target-cpu=native");
     println!();
 

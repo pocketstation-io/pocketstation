@@ -101,14 +101,7 @@ fn given_hot_path_when_100_frames_then_zero_heap_allocs() {
         let mut handle = pool.acquire().expect("pool exhausted on hot path");
         handle.copy_from_slice(&pcm);
 
-        let frame = AudioFrame::new(
-            StreamId(1),
-            SourceId(1),
-            seq,
-            seq * 20_000_000,
-            1,
-            handle,
-        );
+        let frame = AudioFrame::new(StreamId(1), SourceId(1), seq, seq * 20_000_000, 1, handle);
 
         // Ring push — rtrb uses a fixed-capacity ring; no allocation on push.
         let _ = prod.push_drop_newest(frame);

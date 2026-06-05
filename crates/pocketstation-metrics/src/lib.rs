@@ -380,10 +380,7 @@ mod tests {
         let p99 = h.p99_ns();
 
         // Then: the 99th-percentile value should be at least 9 ms
-        assert!(
-            p99 >= 9_000_000,
-            "P99 = {p99} ns, expected >= 9_000_000 ns"
-        );
+        assert!(p99 >= 9_000_000, "P99 = {p99} ns, expected >= 9_000_000 ns");
     }
 
     /// Overflow bucket: a value of 20 ms (above 16 ms) lands in bucket 63.
