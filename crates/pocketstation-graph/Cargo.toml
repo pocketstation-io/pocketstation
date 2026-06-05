@@ -7,3 +7,4 @@ repository.workspace = true
 
 [dependencies]
 pocketstation-frame = { path = "../pocketstation-frame", version = "0.1.0" }
+pocketstation-bus = { path = "../pocketstation-bus", version = "0.1.0" }

@@ -1,0 +1,16 @@
+[package]
+name = "pocketstation-loopback"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "macOS system audio loopback capture via ScreenCaptureKit for PocketStation"
+
+[dependencies]
+pocketstation-frame = { path = "../pocketstation-frame" }
+thiserror.workspace = true
+
+[target.'cfg(target_os = "macos")'.dependencies]
+screencapturekit = "7"
+
+[dev-dependencies]
