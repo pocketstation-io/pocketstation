@@ -262,6 +262,7 @@ mod stub {
     use super::LoopbackError;
 
     /// Stub source that always reports the platform is unsupported.
+    #[derive(Debug)]
     pub struct SystemLoopbackSource;
 
     impl SystemLoopbackSource {
