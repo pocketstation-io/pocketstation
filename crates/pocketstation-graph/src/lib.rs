@@ -240,7 +240,11 @@ impl AudioProcessorNode for ResampleNode {
                 // Linear interpolation between the last consumed input sample
                 // and the current one at in_idx.  phase is f64; cast to f32
                 // for the arithmetic (sample precision is 32-bit throughout).
-                let current = if in_idx < input_len { input[in_idx] } else { 0.0_f32 };
+                let current = if in_idx < input_len {
+                    input[in_idx]
+                } else {
+                    0.0_f32
+                };
                 let t = phase as f32;
                 let sample = self.last_sample * (1.0_f32 - t) + current * t;
 
@@ -270,7 +274,11 @@ mod resample_tests {
     use super::*;
     use pocketstation_frame::{AudioBufferPool, AudioFrame, SourceId, StreamId};
 
-    fn make_frame(pool: &std::sync::Arc<AudioBufferPool>, samples: &[f32], rate: u32) -> AudioFrame {
+    fn make_frame(
+        pool: &std::sync::Arc<AudioBufferPool>,
+        samples: &[f32],
+        rate: u32,
+    ) -> AudioFrame {
         let mut h = pool.acquire().unwrap();
         h.copy_from_slice(samples);
         let mut f = AudioFrame::new(StreamId(1), SourceId(1), 0, 0, 1, h);

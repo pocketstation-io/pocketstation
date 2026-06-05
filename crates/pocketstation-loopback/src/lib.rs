@@ -44,8 +44,8 @@ mod macos {
     use std::sync::Arc;
 
     use pocketstation_frame::{
-        AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode,
-        SourceId, StreamId, DEFAULT_SAMPLE_RATE, DEFAULT_SLOT_SAMPLES_MONO_20MS,
+        AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId,
+        DEFAULT_SAMPLE_RATE, DEFAULT_SLOT_SAMPLES_MONO_20MS,
     };
     use screencapturekit::prelude::*;
 
@@ -92,11 +92,7 @@ mod macos {
     where
         F: Fn(AudioFrame) + Send + Sync + 'static,
     {
-        fn did_output_sample_buffer(
-            &self,
-            sample: CMSampleBuffer,
-            of_type: SCStreamOutputType,
-        ) {
+        fn did_output_sample_buffer(&self, sample: CMSampleBuffer, of_type: SCStreamOutputType) {
             if of_type != SCStreamOutputType::Audio {
                 return;
             }
@@ -137,9 +133,7 @@ mod macos {
 
             handle.set_len(written);
 
-            let seq = self
-                .seq
-                .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+            let seq = self.seq.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
 
             let timestamp_ns = std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
@@ -192,8 +186,8 @@ mod macos {
             // ----------------------------------------------------------------
             // 1. Enumerate shareable content to obtain a display reference.
             // ----------------------------------------------------------------
-            let content = SCShareableContent::get()
-                .map_err(|e| LoopbackError::Init(format!("{e:?}")))?;
+            let content =
+                SCShareableContent::get().map_err(|e| LoopbackError::Init(format!("{e:?}")))?;
 
             let display = content
                 .displays()
@@ -302,9 +296,7 @@ pub use stub::SystemLoopbackSource;
 ///
 /// The returned `SystemLoopbackSource` keeps the capture session alive.
 /// Drop it to stop capture.
-pub fn capture_system_audio<F>(
-    callback: F,
-) -> Result<SystemLoopbackSource, LoopbackError>
+pub fn capture_system_audio<F>(callback: F) -> Result<SystemLoopbackSource, LoopbackError>
 where
     F: Fn(pocketstation_frame::AudioFrame) + Send + Sync + 'static,
 {
