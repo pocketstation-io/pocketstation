@@ -110,14 +110,18 @@ fn main() {
         std::process::exit(1);
     }
 
-    assert_eq!(pool.acquire_failures(), 0, "pool exhausted during hot-path run");
+    assert_eq!(
+        pool.acquire_failures(),
+        0,
+        "pool exhausted during hot-path run"
+    );
     println!("alloccheck PASS: zero heap allocations on audio hot path.");
 }
 
 fn fill_sine(samples: &mut [f32], seq: u64, sample_rate: u32) {
     for (i, s) in samples.iter_mut().enumerate() {
-        let t = (seq * DEFAULT_SLOT_SAMPLES_MONO_20MS as u64 + i as u64) as f32
-            / sample_rate as f32;
+        let t =
+            (seq * DEFAULT_SLOT_SAMPLES_MONO_20MS as u64 + i as u64) as f32 / sample_rate as f32;
         *s = (2.0 * std::f32::consts::PI * 440.0 * t).sin() * 0.25;
     }
 }

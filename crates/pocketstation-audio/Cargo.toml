@@ -29,5 +29,9 @@ pocketstation-route = { path = "../pocketstation-route", version = "0.1.0" }
 pocketstation-metrics = { path = "../pocketstation-metrics", version = "0.1.0" }
 hound.workspace = true
 
+[[test]]
+name = "phase0_pipeline"
+path = "../../tests/phase0_pipeline.rs"
+
 [build-dependencies]
 cbindgen = "0.27"

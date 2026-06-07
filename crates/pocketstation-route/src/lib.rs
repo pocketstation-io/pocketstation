@@ -149,7 +149,9 @@ impl std::fmt::Display for AdapterError {
         match self {
             AdapterError::Unavailable => write!(f, "adapter: source or output is unavailable"),
             AdapterError::PermissionDenied => write!(f, "adapter: permission denied"),
-            AdapterError::Unsupported => write!(f, "adapter: operation not supported on this platform"),
+            AdapterError::Unsupported => {
+                write!(f, "adapter: operation not supported on this platform")
+            }
             AdapterError::Io(msg) => write!(f, "adapter I/O error: {msg}"),
         }
     }
@@ -168,8 +170,12 @@ pub trait PlatformAdapter: Send + Sync {
     fn platform(&self) -> PlatformId;
     fn source_capabilities(&self) -> Vec<AudioSourceDescriptor>;
     fn output_capabilities(&self) -> Vec<AudioOutputDescriptor>;
-    fn open_source(&self, request: SourceRequest) -> Result<Box<dyn AudioSourceStream>, AdapterError>;
-    fn open_output(&self, request: OutputRequest) -> Result<Box<dyn AudioOutputSink>, AdapterError>;
+    fn open_source(
+        &self,
+        request: SourceRequest,
+    ) -> Result<Box<dyn AudioSourceStream>, AdapterError>;
+    fn open_output(&self, request: OutputRequest)
+        -> Result<Box<dyn AudioOutputSink>, AdapterError>;
 }
 
 /// Hint to `open_best_source` about the intended use-case.
@@ -205,7 +211,10 @@ fn reliability_rank(rc: &ReliabilityClass) -> u8 {
 fn is_preferred(cap: &SourceCapability, preference: &SourcePreference) -> bool {
     match preference {
         SourcePreference::Voice => {
-            matches!(cap, SourceCapability::Microphone | SourceCapability::OwnAppAudio)
+            matches!(
+                cap,
+                SourceCapability::Microphone | SourceCapability::OwnAppAudio
+            )
         }
         SourcePreference::Music => {
             matches!(
@@ -242,8 +251,16 @@ pub fn open_best_source(
     }
 
     candidates.sort_by_key(|d| {
-        let pref_rank: u8 = if is_preferred(&d.capability, &preference) { 0 } else { 1 };
-        (pref_rank, latency_rank(&d.latency_class), reliability_rank(&d.reliability_class))
+        let pref_rank: u8 = if is_preferred(&d.capability, &preference) {
+            0
+        } else {
+            1
+        };
+        (
+            pref_rank,
+            latency_rank(&d.latency_class),
+            reliability_rank(&d.reliability_class),
+        )
     });
 
     let best = candidates.remove(0);
@@ -289,9 +306,15 @@ mod tests {
             vec![]
         }
 
-        fn open_source(&self, request: SourceRequest) -> Result<Box<dyn AudioSourceStream>, AdapterError> {
+        fn open_source(
+            &self,
+            request: SourceRequest,
+        ) -> Result<Box<dyn AudioSourceStream>, AdapterError> {
             // Return a stream only if the requested capability is in our list.
-            let found = self.sources.iter().any(|d| d.capability == request.capability && d.available_now);
+            let found = self
+                .sources
+                .iter()
+                .any(|d| d.capability == request.capability && d.available_now);
             if found {
                 Ok(Box::new(MockStream))
             } else {
@@ -299,7 +322,10 @@ mod tests {
             }
         }
 
-        fn open_output(&self, _request: OutputRequest) -> Result<Box<dyn AudioOutputSink>, AdapterError> {
+        fn open_output(
+            &self,
+            _request: OutputRequest,
+        ) -> Result<Box<dyn AudioOutputSink>, AdapterError> {
             Ok(Box::new(MockSink))
         }
     }
@@ -374,7 +400,11 @@ mod tests {
         // For Music: OwnAppAudio and DesktopSystemLoopback are preferred.
         // Microphone is not preferred. OwnAppAudio (LowLatency) beats loopback (Buffered).
         let adapter = MockAdapter {
-            sources: vec![mic_descriptor(true), own_app_descriptor(true), loopback_descriptor(true)],
+            sources: vec![
+                mic_descriptor(true),
+                own_app_descriptor(true),
+                loopback_descriptor(true),
+            ],
         };
         // open_best_source should pick OwnAppAudio (preferred + LowLatency)
         // and MockAdapter.open_source succeeds for it.

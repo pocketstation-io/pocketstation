@@ -77,11 +77,14 @@ fn given_hot_path_when_100_frames_then_zero_heap_allocs() {
     let mut encode_buf: Vec<u8> = Vec::with_capacity(OPUS_MAX_PACKET_BYTES);
     let mut decode_buf: Vec<f32> = Vec::with_capacity(DEFAULT_SLOT_SAMPLES_MONO_20MS);
 
-    // Warm-up: one frame so branch predictors and ring internals are initialised.
-    {
+    // Warm-up: 10 frames to prime branch predictors, ring internals, and
+    // libopus internal SILK decoder state (which allocates lazily on first
+    // few frames on Linux glibc; 10 frames is sufficient to exhaust all
+    // lazy-init paths before the allocation gate opens).
+    for wu in 0u64..10 {
         let mut handle = pool.acquire().expect("pool exhausted on warmup");
         handle.copy_from_slice(&pcm);
-        let frame = AudioFrame::new(StreamId(1), SourceId(1), 0, 0, 1, handle);
+        let frame = AudioFrame::new(StreamId(1), SourceId(1), wu, wu * 20_000_000, 1, handle);
         let _ = prod.push_drop_newest(frame);
         if let Some(f) = cons.pop() {
             encode_buf.clear();
@@ -101,14 +104,7 @@ fn given_hot_path_when_100_frames_then_zero_heap_allocs() {
         let mut handle = pool.acquire().expect("pool exhausted on hot path");
         handle.copy_from_slice(&pcm);
 
-        let frame = AudioFrame::new(
-            StreamId(1),
-            SourceId(1),
-            seq,
-            seq * 20_000_000,
-            1,
-            handle,
-        );
+        let frame = AudioFrame::new(StreamId(1), SourceId(1), seq, seq * 20_000_000, 1, handle);
 
         // Ring push — rtrb uses a fixed-capacity ring; no allocation on push.
         let _ = prod.push_drop_newest(frame);

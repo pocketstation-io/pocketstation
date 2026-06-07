@@ -8,6 +8,7 @@ members = [
   "crates/pocketstation-route",
   "crates/pocketstation-metrics",
   "crates/pocketstation-audio",
+  "crates/pocketstation-loopback",
   "tools/pocketstation-alloccheck"
 ]
 
