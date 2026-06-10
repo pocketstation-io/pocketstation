@@ -6,7 +6,7 @@ Before editing, read:
 
 1. `docs/architecture/PocketStation-v2.3.md`
 2. `docs/REPO_CONTRACT.md`
-3. Relevant ADRs in `docs/adr/` (ADR-004 through ADR-014)
+3. Relevant ADRs in `docs/adr/` (AUDIO-004 through AUDIO-014)
 4. The assigned GitHub issue
 
 ## Phase gate
@@ -18,7 +18,7 @@ This repo covers **Phase 0** (complete) and is the intake for **Phase 2**.
 - 26 tests pass across 6 crates (`cargo test --workspace`).
 - Race detector clean.
 - All exit criteria met per v2.3 §15 Phase 0 section.
-- ADR-004 through ADR-013 written and merged.
+- AUDIO-004 through AUDIO-013 written and merged.
 
 **Phase 1 — audio-core is NOT involved**
 
@@ -38,19 +38,19 @@ The following items are the gate for this repo entering Phase 2:
 1. **First crates.io publish of `pocketstation-audio` v0.1.0** — per v2.3 §14.5
    and §15 Phase 1 exit criteria. Publish happens after the Phase 1 demo
    validates the API surface. Use `cargo-release --workspace` with the
-   dependency order specified in ADR-008.
+   dependency order specified in AUDIO-008.
 2. **Opus real bindings (libopus-sys)** — burn the Opus MOCK row in
    `docs/standards/FAKE_SCAFFOLD_INVENTORY.md`. Gated by `real-opus` feature
    flag; requires libopus-sys dep approval and CI job with libopus installed.
-3. **ClockSync PI controller (ADR-006 resolution)** — replace the Phase 0
+3. **ClockSync PI controller (AUDIO-006 resolution)** — replace the Phase 0
    exponential-smoother placeholder with the dual-stage anti-windup PI
-   controller specified in ADR-006.
+   controller specified in AUDIO-006.
 4. **DHAT CI integration** — replace `pocketstation-alloccheck` binary with
    a real `#[global_allocator]` shim or DHAT gate that proves zero per-frame
    heap allocation on the hot path.
 
 sdk-ios depends on audio-core v0.1.0 being published to crates.io. sdk-ios
-cannot be created until the Phase 2 publish lands. See ADR-014.
+cannot be created until the Phase 2 publish lands. See AUDIO-014.
 
 ## Rules
 
@@ -107,12 +107,12 @@ audio processing thread. They are enforced, not aspirational.
 
 ## Phase 5 intake gates
 
-- [ ] AudioFrame: add speaker_id (Option<u32>), source_tag (AudioSourceTag), encryption_mode (EncryptionMode) fields — required by ADR-014, ADR-017, ADR-018
+- [ ] AudioFrame: add speaker_id (Option<u32>), source_tag (AudioSourceTag), encryption_mode (EncryptionMode) fields — required by AUDIO-014, AUDIO-017, AUDIO-018
 - [ ] DHAT alloc CI gate: add DHAT profiler step to CI; zero-alloc on hot path verified automatically (currently only code-structure claim)
-- [ ] Relay echo timestamp mechanism (ADR-020): embed send_timestamp_ns in Opus payload for benchmark tool
+- [ ] Relay echo timestamp mechanism (AUDIO-020): embed send_timestamp_ns in Opus payload for benchmark tool
 
 ## Phase 6 intake gates
 
-- [ ] WASM plugin host: wasmtime integration in pocketstation-audio; ps_plugin_* C ABI (ADR-019)
-- [ ] AudioTokenFrame type: Vec<u32> in pocketstation-frame for neural codec output (ADR-015)
-- [ ] cbindgen C header: generate headers for Swift/Kotlin FFI (ADR-011 — long-standing deferral)
+- [ ] WASM plugin host: wasmtime integration in pocketstation-audio; ps_plugin_* C ABI (AUDIO-019)
+- [ ] AudioTokenFrame type: Vec<u32> in pocketstation-frame for neural codec output (AUDIO-015)
+- [ ] cbindgen C header: generate headers for Swift/Kotlin FFI (AUDIO-011 — long-standing deferral)

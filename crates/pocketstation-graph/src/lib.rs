@@ -117,7 +117,7 @@ const NS_PER_SEC: f64 = 1_000_000_000.0;
 /// Worst-case output frame size (stereo, 48 kHz, 20 ms).
 const RESAMPLE_MAX_OUT_SAMPLES: usize = 1920;
 
-/// PI-controlled linear interpolation sample-rate converter (ADR-006).
+/// PI-controlled linear interpolation sample-rate converter (AUDIO-006).
 ///
 /// # Phase 1 scope
 /// - Identity pass (source == target): zero work, frame returned unchanged.
@@ -134,7 +134,7 @@ const RESAMPLE_MAX_OUT_SAMPLES: usize = 1920;
 pub struct ResampleNode {
     source_rate: u32,
     target_rate: u32,
-    /// PI controller for clock-drift correction (ADR-006).
+    /// PI controller for clock-drift correction (AUDIO-006).
     clock_sync: ClockSync,
     /// Fractional position within the current input sample pair (0.0..1.0).
     phase: f64,

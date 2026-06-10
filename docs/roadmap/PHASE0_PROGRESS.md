@@ -10,12 +10,12 @@ Exit criteria met per v2.3 §15 Phase 0 section.
 Remaining items carried to Phase 2:
 
 - Opus real bindings (libopus-sys) — burn the Opus MOCK
-- ClockSync PI controller per ADR-006
+- ClockSync PI controller per AUDIO-006
 - DHAT CI integration (zero per-frame heap allocation gate)
 - First crates.io publish of `pocketstation-audio` v0.1.0
 
 Next phase: Phase 2 — sdk-ios + crates.io publish.
-See ADR-014 for the Phase 1 integration state and Phase 2 gate.
+See AUDIO-014 for the Phase 1 integration state and Phase 2 gate.
 
 ---
 
@@ -141,14 +141,14 @@ See ADR-014 for the Phase 1 integration state and Phase 2 gate.
 - `cargo clippy --workspace --all-targets -- -D warnings` — clean
 
 ### Staff Bar Self-Check — Task 5
-- Smallest correct design: yes — exponential smoother placeholder; ADR-006 owns the full PI controller
+- Smallest correct design: yes — exponential smoother placeholder; AUDIO-006 owns the full PI controller
 - Tests added or updated: yes — 3 tests covering initialization, convergence, and sign direction
 - Hot-path safe: yes — pure f32 arithmetic, no allocation, no lock
 - Public API changed: yes — fields made private; 3 read-only getters added (non-breaking, additive)
 - New dependency: no
 - Phase scope respected: yes — explicitly marked as Phase 0 placeholder in doc comment
 - Unsafe added: no
-- Remaining risk: exponential smoother is not the ADR-006 dual-stage PI; Phase 1 must replace with tested PI before production use
+- Remaining risk: exponential smoother is not the AUDIO-006 dual-stage PI; Phase 1 must replace with tested PI before production use
 
 ---
 
@@ -156,7 +156,7 @@ See ADR-014 for the Phase 1 integration state and Phase 2 gate.
 
 ### Changes
 - `pocketstation-codec`: added doc comment clearly marking JitterBuffer as NOT production NetEQ
-- Added `sequence_gap_ahead()` as a PLC hook point (ADR-009 placeholder)
+- Added `sequence_gap_ahead()` as a PLC hook point (AUDIO-009 placeholder)
 - Added 5 tests: depth gating, FIFO order, late frame (documents non-reorder), missing frame gap detection, contiguous no-gap
 
 ### Verification
@@ -168,7 +168,7 @@ See ADR-014 for the Phase 1 integration state and Phase 2 gate.
 - Hot-path safe: not applicable — Phase 0 scaffold; no audio callback path wired
 - Public API changed: yes — `JitterBuffer`, `push`, `pop_ready`, `sequence_gap_ahead`, `depth` added (new type)
 - New dependency: no — uses `std::collections::VecDeque`
-- Phase scope respected: yes — ADR-009 references in doc comments; full NetEQ explicitly deferred
+- Phase scope respected: yes — AUDIO-009 references in doc comments; full NetEQ explicitly deferred
 - Unsafe added: no
 - Remaining risk: `next_expected_seq` field initially added but drove no behavior — removed in compliance pass (see Task 11)
 
@@ -180,7 +180,7 @@ See ADR-014 for the Phase 1 integration state and Phase 2 gate.
 - `MockOpusEncoder`/`MockOpusDecoder` doc comments mark them explicitly as test/demo only
 - Added `encode_into(&mut Vec<u8>)` and `decode_into(&mut Vec<f32>)` allocation-free APIs for hot-path use
 - `encode()` and `decode_to_vec()` delegate to `_into` variants (tests/examples unchanged)
-- TODO(Phase 1, ADR-008) references added at Vec allocation points
+- TODO(Phase 1, AUDIO-008) references added at Vec allocation points
 - `real-opus` feature already correctly gated via `dep:opus`; compiles without libopus installed
 
 ### Staff Bar Self-Check — Task 7
@@ -191,7 +191,7 @@ See ADR-014 for the Phase 1 integration state and Phase 2 gate.
 - New dependency: no
 - Phase scope respected: yes — real-opus gated; mocks clearly marked
 - Unsafe added: no
-- Remaining risk: `EncodedFrame.payload: Vec<u8>` forces one heap allocation per frame in the convenience path; Phase 1 ADR-008 should evaluate pool-backed byte buffer
+- Remaining risk: `EncodedFrame.payload: Vec<u8>` forces one heap allocation per frame in the convenience path; Phase 1 AUDIO-008 should evaluate pool-backed byte buffer
 
 ---
 
@@ -264,8 +264,8 @@ cargo run -p pocketstation-audio --example sine_to_wav    PASS (48000 samples)
 
 - **DHAT allocation gate**: `pocketstation-alloccheck` exercises the hot path but does not yet count heap allocations. Needs DHAT or a custom `#[global_allocator]` shim (ADR-TBD). Document the per-frame budget in `PocketStation-v2.3.md`.
 - **Criterion benchmarks**: `criterion = "0.5"` is in workspace deps but no `[[bench]]` sections exist. Add `benches/` directories and CI gate in Phase 1.
-- **ClockSync full PI controller**: ADR-006 owns the dual-stage anti-windup PI. Current stub is an exponential smoother only.
-- **JitterBuffer adaptive depth + PLC**: ADR-009 owns the real adaptive NetEQ design. `sequence_gap_ahead()` is a hook only; no PLC is generated.
+- **ClockSync full PI controller**: AUDIO-006 owns the dual-stage anti-windup PI. Current stub is an exponential smoother only.
+- **JitterBuffer adaptive depth + PLC**: AUDIO-009 owns the real adaptive NetEQ design. `sequence_gap_ahead()` is a hook only; no PLC is generated.
 - **Codec real-opus feature**: `dep:opus` is gated correctly but requires `libopus` installed at link time. CI needs the `real-opus` feature tested in a separate job with libopus available.
 - **EncodedFrame payload allocation**: `EncodedFrame.payload: Vec<u8>` means the struct itself forces one heap allocation. Phase 1 should consider a pool-backed byte buffer or a newtype over `Arc<[u8]>`.
 - **Pool memory layout**: current `Box<[UnsafeCell<Box<[f32]>>]>` is pointer-per-slot; architecture spec shows `Box<[f32]>` contiguous. Non-blocking for Phase 0 correctness; Phase 1 should evaluate cache behaviour and decide via ADR.

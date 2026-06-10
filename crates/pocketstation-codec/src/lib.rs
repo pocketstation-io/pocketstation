@@ -1,4 +1,4 @@
-// Phase 3, ADR-012: real libopus bindings replace the Phase 0 mock.
+// Phase 3, AUDIO-012: real libopus bindings replace the Phase 0 mock.
 // Dependency approved: opus = "0.3" wraps libopus via libopus-sys. Chosen over
 // audiopus because it is the de-facto Rust binding (most downloads, active
 // maintenance, matches the workspace dep already declared).

@@ -1,4 +1,4 @@
-# ADR-012-opus-frame-duration — Opus Frame Duration
+# AUDIO-012-opus-frame-duration — Opus Frame Duration
 
 ## Status
 Accepted. Phase 0, Phase 1, and Phase 3 complete; no reversal triggered.
@@ -7,7 +7,7 @@ Accepted. Phase 0, Phase 1, and Phase 3 complete; no reversal triggered.
 
 Real libopus bindings landed in `pocketstation-codec` via `OpusEncoder` / `OpusDecoder`.
 - Dependency: `opus = "0.3"` (wraps libopus 1.x via `audiopus_sys`). Chosen as the de-facto Rust binding; approved in commit message.
-- Encoder: 48 000 Hz, mono, `Application::Voip`, 20 ms / 960 samples per ADR-012.
+- Encoder: 48 000 Hz, mono, `Application::Voip`, 20 ms / 960 samples per AUDIO-012.
 - Decoder: 48 000 Hz, mono.
 - f32 ↔ i16 conversion via multiply/divide by `i16::MAX` (32 767).
 - Hot path: stack-allocated `[i16; 960]` for both encode and decode; no per-frame heap allocation beyond what libopus itself requires after init.

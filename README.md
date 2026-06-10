@@ -5,7 +5,7 @@
 **v2.3 tier:** Tier 1 — Core Rust Engine
 **Activation phase:** Phase 0
 **Language/package:** Rust Cargo workspace
-**Release strategy:** SemVer, `cargo-release --workspace`; first publish at Phase 2 entry (v2.3 §14.5; deferred per ADR-014)
+**Release strategy:** SemVer, `cargo-release --workspace`; first publish at Phase 2 entry (v2.3 §14.5; deferred per AUDIO-014)
 
 Rust Cargo workspace that provides the PocketStation Tier 1 audio core. This is
 an independently releasable unit — it is not merged into a monorepo.
@@ -63,11 +63,11 @@ Per v2.3 §14.5 and §15:
 1. First crates.io publish of `pocketstation-audio` v0.1.0, after the Phase 1
    relay demo validates the API surface.
 2. Opus real bindings via `libopus-sys` (burn the Opus MOCK).
-3. ClockSync PI controller per ADR-006.
+3. ClockSync PI controller per AUDIO-006.
 4. DHAT CI integration to enforce zero per-frame heap allocation.
 
 sdk-ios wraps audio-core via XCFramework FFI (cbindgen-generated headers). It
-cannot be created until v0.1.0 is published. See ADR-014.
+cannot be created until v0.1.0 is published. See AUDIO-014.
 
 ## Further reading
 

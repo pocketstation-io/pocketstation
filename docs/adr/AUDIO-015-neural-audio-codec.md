@@ -1,4 +1,4 @@
-# ADR-015-neural-audio-codec — Neural Audio Codec / Mimi
+# AUDIO-015-neural-audio-codec — Neural Audio Codec / Mimi
 
 ## Status
 

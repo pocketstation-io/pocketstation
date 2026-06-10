@@ -25,7 +25,7 @@ DEFERRED    Intentionally postponed; ADR or phase plan justifies it
 | Component | Status | Repo / File | What's missing | Replace by | Blocked on |
 |---|---|---|---|---|---|
 | pocketstation-loopback (non-macOS) | STUB | audio-core / pocketstation-loopback / src/lib.rs | Returns `Err(LoopbackError::NotSupported)` on all non-macOS targets; ScreenCaptureKit is macOS-only | Phase 6 | Windows WASAPI + Linux PipeWire implementation |
-| JitterBuffer | PARTIAL | audio-core / pocketstation-codec | NetEQ-class adaptive algorithm; current scaffold is fixed-delay | Phase 5 | ADR-010 algorithm choice |
+| JitterBuffer | PARTIAL | audio-core / pocketstation-codec | NetEQ-class adaptive algorithm; current scaffold is fixed-delay | Phase 5 | AUDIO-010 algorithm choice |
 | DHAT allocation check | DEFERRED | audio-core / tools/pocketstation-alloccheck | Real DHAT integration; current is cargo-bloat placeholder | Phase 3 | DHAT setup in CI |
 | TURN configuration | DEFERRED | relay | Production TURN credentials; STUN-only works on most networks | Phase 2 | TURN provider decision |
 | SFrame E2EE | DEFERRED | relay + SDKs | Frame-layer encryption per RFC 9605 | Phase 3 | ADR for per-platform insertion point |
@@ -36,8 +36,8 @@ DEFERRED    Intentionally postponed; ADR or phase plan justifies it
 
 | Component | Status | Repo / File | Resolution |
 |---|---|---|---|
-| Opus encoder/decoder | resolved | audio-core / pocketstation-codec | Real libopus bindings via `opus = "0.3"`. `OpusEncoder` / `OpusDecoder` wrap libopus at 48 kHz / mono / VOIP per ADR-012. `MockOpusEncoder` / `MockOpusDecoder` are retained as legacy aliases that delegate to the real types. |
-| ClockSync | resolved | audio-core / pocketstation-bus | PI controller implemented per ADR-006. `kp = 0.1`, `ki = 0.001`. Output clamped to ±10 ms. Gains will be tuned in Phase 5 with real-world measurements. |
+| Opus encoder/decoder | resolved | audio-core / pocketstation-codec | Real libopus bindings via `opus = "0.3"`. `OpusEncoder` / `OpusDecoder` wrap libopus at 48 kHz / mono / VOIP per AUDIO-012. `MockOpusEncoder` / `MockOpusDecoder` are retained as legacy aliases that delegate to the real types. |
+| ClockSync | resolved | audio-core / pocketstation-bus | PI controller implemented per AUDIO-006. `kp = 0.1`, `ki = 0.001`. Output clamped to ±10 ms. Gains will be tuned in Phase 5 with real-world measurements. |
 
 ---
 
@@ -67,12 +67,12 @@ These never become production — they exist for testing and development. They a
 
 | Artifact | Status | Location | Replace by | Notes |
 |---|---|---|---|---|
-| AudioFrame.speaker_id field | PENDING | crates/pocketstation-frame/src/lib.rs | Phase 5 | ADR-018 prerequisite; Option<u32>; None = no diarization |
-| AudioFrame.source_tag field | PENDING | crates/pocketstation-frame/src/lib.rs | Phase 5 | ADR-017 prerequisite; AudioSourceTag enum (Captured, AiTts) |
-| AudioFrame.encryption_mode field | PENDING | crates/pocketstation-frame/src/lib.rs | Phase 5 | ADR-014 prerequisite; EncryptionMode enum |
+| AudioFrame.speaker_id field | PENDING | crates/pocketstation-frame/src/lib.rs | Phase 5 | AUDIO-018 prerequisite; Option<u32>; None = no diarization |
+| AudioFrame.source_tag field | PENDING | crates/pocketstation-frame/src/lib.rs | Phase 5 | AUDIO-017 prerequisite; AudioSourceTag enum (Captured, AiTts) |
+| AudioFrame.encryption_mode field | PENDING | crates/pocketstation-frame/src/lib.rs | Phase 5 | AUDIO-014 prerequisite; EncryptionMode enum |
 | DHAT alloc CI gate | PENDING | .github/workflows/ci.yml | Phase 3 follow-up | Verify zero-alloc on hot path in CI (currently code-only claim) |
-| WASM plugin host (wasmtime) | PENDING | crates/pocketstation-audio/ | Phase 6 | ADR-019; ps_plugin_* C ABI; sandbox via wasmtime |
-| AudioTokenFrame type | PENDING | crates/pocketstation-frame/src/lib.rs | Phase 6 | ADR-015 prerequisite; Vec<u32> neural codec tokens |
+| WASM plugin host (wasmtime) | PENDING | crates/pocketstation-audio/ | Phase 6 | AUDIO-019; ps_plugin_* C ABI; sandbox via wasmtime |
+| AudioTokenFrame type | PENDING | crates/pocketstation-frame/src/lib.rs | Phase 6 | AUDIO-015 prerequisite; Vec<u32> neural codec tokens |
 
 ## How to use this file in a PR
 

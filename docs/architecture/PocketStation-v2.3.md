@@ -16,8 +16,8 @@
 | `SourceCapability::AirPlayRouteInput` (iOS-only meaning, generic name) | Renamed to `ExternalRouteInput` | Name describes the capability shape, not a single Apple feature |
 | "Go + Pion v3" | Go + Pion v4 (current stable as of 2026-05-19); v5 in development | Pion v3 → v4 ship'd; using v3 on a new project is a deliberate downgrade |
 | Phase 0 exit: "Crate published on crates.io with docs.rs documentation" | "Crate is publish-ready: docs build cleanly, `cargo publish --dry-run` succeeds, public API reviewed by at least one external Rust reviewer. Actual publish happens after Phase 1 demo validates the surface." | Publishing locks names and creates SemVer pressure before the API has met one real route |
-| Opus frame duration left implicit (`960 samples at 48kHz`) | ADR-012 added: 20ms default; 10ms option for voice-agent mode after benchmarks | Frame duration cascades into pool sizing, packet rate, jitter buffer, CPU, bitrate overhead — must be explicit |
-| Internal sample format + channel layout policy unstated | ADR-013 added: interleaved f32 internal; mono 48kHz voice mode; stereo 48kHz music/broadcast; `AudioProcessorNode` declares accepted channel layout, graph auto-inserts `MonoMixNode` | Every encoder, VAD, STT, and ML node makes assumptions; lock the policy or pay for surprises |
+| Opus frame duration left implicit (`960 samples at 48kHz`) | AUDIO-012 added: 20ms default; 10ms option for voice-agent mode after benchmarks | Frame duration cascades into pool sizing, packet rate, jitter buffer, CPU, bitrate overhead — must be explicit |
+| Internal sample format + channel layout policy unstated | AUDIO-013 added: interleaved f32 internal; mono 48kHz voice mode; stereo 48kHz music/broadcast; `AudioProcessorNode` declares accepted channel layout, graph auto-inserts `MonoMixNode` | Every encoder, VAD, STT, and ML node makes assumptions; lock the policy or pay for surprises |
 
 This is the green-light version. No further structural rewrites planned.
 
@@ -113,8 +113,8 @@ Social/consumer:     Only after one user community proves repeat usage.
 | Generic `AppOutput`, `AirPlayRouteInput` names | Renamed to capability-shape names |
 | Pion v3 hardcoded | Pion v4 stable, current; v5 in flight |
 | "Published on crates.io" as Phase 0 exit | "Publish-ready"; first publish lands after Phase 1 demo |
-| Opus frame duration implicit | ADR-012 makes it explicit |
-| Channel layout / sample format policy implicit | ADR-013 makes it explicit |
+| Opus frame duration implicit | AUDIO-012 makes it explicit |
+| Channel layout / sample format policy implicit | AUDIO-013 makes it explicit |
 
 ---
 
@@ -284,9 +284,9 @@ impl Drop for AudioBufferHandle {
 pub struct AudioFrame {
     pub stream_id:       StreamId,
     pub source_id:       SourceId,
-    pub sample_rate:     u32,         // 48_000 internally (ADR-013)
-    pub channels:        u8,          // 1 voice / 2 music (ADR-013)
-    pub format:          SampleFormat, // F32LE interleaved (ADR-013)
+    pub sample_rate:     u32,         // 48_000 internally (AUDIO-013)
+    pub channels:        u8,          // 1 voice / 2 music (AUDIO-013)
+    pub format:          SampleFormat, // F32LE interleaved (AUDIO-013)
     pub timestamp_ns:    u64,         // monotonic, per-node, never wall clock
     pub sequence_number: u64,         // monotonic per stream
     pub buffer:          AudioBufferHandle,
@@ -295,13 +295,13 @@ pub struct AudioFrame {
 
 ```rust
 /// Phase 0 pool — 64-slot ceiling imposed by AtomicU64 bitset.
-/// At 20ms frame duration (ADR-012): 64 × 20ms = 1.28s of headroom.
+/// At 20ms frame duration (AUDIO-012): 64 × 20ms = 1.28s of headroom.
 /// Expansion path if needed: segmented bitset (Vec<AtomicU64>) or lock-free
 /// freelist (treiber stack of indices). Decision deferred until Phase 0
 /// profiler data shows actual pool pressure.
 pub struct AudioBufferPool {
     slots:     Box<[f32]>,          // contiguous block, allocated once at session start
-    slot_size: usize,               // samples per slot — 960 at 48kHz/20ms (ADR-012)
+    slot_size: usize,               // samples per slot — 960 at 48kHz/20ms (AUDIO-012)
     free_mask: AtomicU64,           // bitset of free slots; one bit per slot, 64-slot cap
 }
 
@@ -341,7 +341,7 @@ pub trait AudioProcessorNode: Send {
     fn process(&mut self, frame: AudioFrame) -> Option<AudioFrame>;
 
     /// Channel layout this node accepts. Graph auto-inserts MonoMixNode
-    /// or appropriate adapter when upstream layout differs. See ADR-013.
+    /// or appropriate adapter when upstream layout differs. See AUDIO-013.
     fn accepted_channels(&self) -> ChannelLayout {
         ChannelLayout::Either
     }
@@ -502,7 +502,7 @@ Capability negotiation on partial match: see §26.4.
 
 ## 6. Architecture Decision Records
 
-### ADR-001: FFI/JNI Boundary Ownership
+### AUDIO-001: FFI/JNI Boundary Ownership
 
 **iOS: Platform owns the audio callback thread.**
 
@@ -552,13 +552,13 @@ device.build_input_stream(&config, move |data: &[f32], info| {
 }, |err| tracing::error!("{err}"), None)
 ```
 
-### ADR-002: Star Topology — No Relay Chains
+### AUDIO-002: Star Topology — No Relay Chains
 
 All audio flows `source → cloud relay → listeners`. No device-to-device chains.
 
 Relay chains stack latency (each hop: 20-80ms minimum), require each intermediate node to encode/decode, and provide no capability that star topology does not. WebRTC ICE handles LAN-direct paths automatically.
 
-### ADR-003: Custom Go Relay — No LiveKit
+### AUDIO-003: Custom Go Relay — No LiveKit
 
 Custom MVP relay using Pion v4. Production relay grows as a real subsystem.
 
@@ -836,7 +836,7 @@ All ML runs as ProcessorGraph nodes. All models run on-device. Raw audio is neve
 
 **Threading rule (load-bearing):** ML nodes run only on the Rust processing thread, never inside platform audio callbacks. VAD inference is often quick enough that this distinction looks academic — until denoise or AEC pushes a model load or a 30ms inference into the callback path and the audio system glitches. The boundary is enforced architecturally: callbacks write to the SPSC ring and return; the processing thread drains the ring and runs all `AudioProcessorNode::process()` calls, including ML.
 
-**Channel layout rule (ADR-013):** ML nodes declare `accepted_channels()`. Most voice ML expects mono. The graph inserts a `MonoMixNode` upstream of any mono-only node when fed stereo, transparently and at the cost of one extra allocation-free pass.
+**Channel layout rule (AUDIO-013):** ML nodes declare `accepted_channels()`. Most voice ML expects mono. The graph inserts a `MonoMixNode` upstream of any mono-only node when fed stereo, transparently and at the cost of one extra allocation-free pass.
 
 ### 10.1 VAD
 
@@ -932,8 +932,8 @@ AudioWatermarkNode       EU AI Act compliance
 let station = PocketStation::builder()
     .relay_url("wss://relay.pocketstation.io")
     .room_id("abc123")
-    .mode(AudioMode::Voice)                    // mono 48kHz internal (ADR-013)
-    .opus_frame_duration_ms(20)                // default; 10 for voice-agent (ADR-012)
+    .mode(AudioMode::Voice)                    // mono 48kHz internal (AUDIO-013)
+    .opus_frame_duration_ms(20)                // default; 10 for voice-agent (AUDIO-012)
     .add_processor(VadNode::default())
     .add_processor(NoiseSuppressorNode::default())
     .on_listener_count(|n| println!("{n} listening"))
@@ -1295,16 +1295,16 @@ Prove every future audio source can enter one core. No OS audio APIs. No UI.
 Build:
 ```
 AudioBufferPool (zero per-frame allocation, 64-slot cap documented)
-AudioFrame with pool handles, interleaved f32 48kHz (ADR-013)
+AudioFrame with pool handles, interleaved f32 48kHz (AUDIO-013)
 SPSC ring buffer (proptest-verified invariants; crate choice per §26.8)
 FrameBus
-ProcessorGraph (empty graph, PassthroughNode) with accepted_channels routing (ADR-013)
+ProcessorGraph (empty graph, PassthroughNode) with accepted_channels routing (AUDIO-013)
 ClockSync (algorithm decision per §26.3)
-Opus encoder/decoder at 20ms default frame duration (ADR-012)
+Opus encoder/decoder at 20ms default frame duration (AUDIO-012)
 Fake sine-wave source
 File output sink
 Full metrics
-Backpressure policy decided (ADR-004, §26.1)
+Backpressure policy decided (AUDIO-004, §26.1)
 ```
 
 Exit criteria:
@@ -1316,7 +1316,7 @@ BusMetrics P50/P95/P99 print correctly after 60-second run
 Crate is publish-ready: docs build cleanly, `cargo publish --dry-run` succeeds,
   public API reviewed by at least one external Rust reviewer.
   Actual crates.io publish happens at Phase 1 exit, not here.
-ADR-004 through ADR-013 written and merged.
+AUDIO-004 through AUDIO-013 written and merged.
 ```
 
 ### Phase 1 — First Real Route
@@ -1711,7 +1711,7 @@ First public artifacts:
 ### T5 — FFI Boundary Crashes in Production (Medium Probability if Not Designed Properly)
 
 Mitigation:
-- ADR-001 defines the complete boundary contract before code
+- AUDIO-001 defines the complete boundary contract before code
 - `proptest` for ring buffer invariants
 - DHAT profiler in CI verifies zero allocation on hot path
 - Debug assertion: callback thread identity verified at session start
@@ -1796,7 +1796,7 @@ B. Drop oldest — keeps fresh audio flowing, encoder glitch
 C. Block producer — violates no-blocking rule, non-starter
 ```
 
-**Recommended:** A. Documented as ADR-004.
+**Recommended:** A. Documented as AUDIO-004.
 
 ### 26.2 Relay Forward-Loop Locking — Blocks Phase 2
 
@@ -1808,7 +1808,7 @@ type Room struct {
 }
 ```
 
-Documented as ADR-005.
+Documented as AUDIO-005.
 
 ### 26.3 Clock Sync / Async Sample Rate Conversion — Blocks Phase 0
 
@@ -1818,7 +1818,7 @@ B. PI-controlled linear interpolation — ~100 lines, voice default
 C. Variable-rate SRC (libsoxr / rubato) — music quality, ~5x CPU
 ```
 
-**Recommended:** B for voice, hook for C in music-mode. Documented as ADR-006.
+**Recommended:** B for voice, hook for C in music-mode. Documented as AUDIO-006.
 
 ### 26.4 Capability Negotiation on Partial Match — Blocks Phase 1
 
@@ -1828,7 +1828,7 @@ B. Auto-insert ResampleNode + MonoMixNode
 C. Return descriptor delta, caller decides
 ```
 
-**Recommended:** B with explicit `negotiated: NegotiatedCapability` on the stream. Documented as ADR-007.
+**Recommended:** B with explicit `negotiated: NegotiatedCapability` on the stream. Documented as AUDIO-007.
 
 ### 26.5 Workspace Release Sequencing — Blocks Phase 1 First Publish
 
@@ -1844,7 +1844,7 @@ pocketstation-metrics  (deps: frame, bus)
 pocketstation-audio    (re-export, deps: all above)
 ```
 
-Tooling: `cargo-release` with sequenced publish and per-crate retry. Git tag strategy: single `v0.X.Y` at workspace root, all crates published at the same version. Documented as ADR-008.
+Tooling: `cargo-release` with sequenced publish and per-crate retry. Git tag strategy: single `v0.X.Y` at workspace root, all crates published at the same version. Documented as AUDIO-008.
 
 ### 26.6 Pion `WriteRTP` Allocation Profile — Blocks Phase 1
 
@@ -1856,7 +1856,7 @@ Tooling: `cargo-release` with sequenced publish and per-crate retry. Git tag str
 5. GC pressure at 50 pkt/sec × 200 listeners = 10,000 calls/sec/room?
 ```
 
-"No re-encode" does not mean "no allocation." Documented as ADR-009.
+"No re-encode" does not mean "no allocation." Documented as AUDIO-009.
 
 ### 26.7 JitterBuffer Algorithm — Blocks Phase 1
 
@@ -1868,13 +1868,13 @@ B. Adaptive (NetEQ-class) — WebRTC standard; ~500 lines
 C. RTT-variance-driven with PLC — wraps webrtc-audio-processing
 ```
 
-**Recommended:** B for Phase 1, optional swap to C in Phase 5. Documented as ADR-010.
+**Recommended:** B for Phase 1, optional swap to C in Phase 5. Documented as AUDIO-010.
 
 ### 26.8 SPSC Ring Buffer Crate Choice — Blocks Phase 0
 
 Criteria: wait-free both ends, no alloc after construction, bounded capacity, cache-line padding, maintained, ideally no_std.
 
-**Default candidate:** `rtrb` — fixed-capacity allocation at construction, no allocation afterward, lock-free wait-free reads/writes. Verified against criteria; confirm in Phase 0 prototype. Documented as ADR-011.
+**Default candidate:** `rtrb` — fixed-capacity allocation at construction, no allocation afterward, lock-free wait-free reads/writes. Verified against criteria; confirm in Phase 0 prototype. Documented as AUDIO-011.
 
 ### 26.9 Opus Frame Duration — Blocks Phase 0/1
 
@@ -1894,7 +1894,7 @@ C. 40 or 60ms frames
    Acceptable only for one-way music/broadcast with VAD off
 ```
 
-**Recommended:** 20ms default. Make it a runtime parameter on `PocketStation::builder()`. After Phase 1 latency measurements, enable 10ms for voice-agent mode if benchmarks justify the CPU/overhead tradeoff. Documented as ADR-012.
+**Recommended:** 20ms default. Make it a runtime parameter on `PocketStation::builder()`. After Phase 1 latency measurements, enable 10ms for voice-agent mode if benchmarks justify the CPU/overhead tradeoff. Documented as AUDIO-012.
 
 Knock-on effects to verify:
 - Pool slot size: 20ms × 48kHz = 960 samples; 10ms = 480 samples; 60ms = 2880 samples
@@ -1927,10 +1927,10 @@ AudioMode::Broadcast (default)
   Channels: configurable per session; defaults to stereo
 ```
 
-**`AudioProcessorNode::accepted_channels()`** lets each node declare what it can ingest. Graph builder checks the chain and inserts adapter nodes (`MonoMixNode`, `StereoBroadcastNode`) at the right positions. Insertions are zero-allocation passes using the existing pool. Documented as ADR-013.
+**`AudioProcessorNode::accepted_channels()`** lets each node declare what it can ingest. Graph builder checks the chain and inserts adapter nodes (`MonoMixNode`, `StereoBroadcastNode`) at the right positions. Insertions are zero-allocation passes using the existing pool. Documented as AUDIO-013.
 
 ---
 
-*Document version 2.3 — green-light version. No further structural rewrites planned. Phase 0 begins when ADR-004 through ADR-013 are written and merged.*
+*Document version 2.3 — green-light version. No further structural rewrites planned. Phase 0 begins when AUDIO-004 through AUDIO-013 are written and merged.*
 *Kill criteria reviewed: 2026-05-19.*
 *Next revision trigger: Phase 0 exit criteria met and measured; first crates.io publish at Phase 1 exit.*
