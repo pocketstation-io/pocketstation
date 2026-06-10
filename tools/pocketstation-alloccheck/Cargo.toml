@@ -1,9 +1,0 @@
-[package]
-name = "pocketstation-alloccheck"
-version.workspace = true
-edition.workspace = true
-license.workspace = true
-repository.workspace = true
-
-[dependencies]
-pocketstation-audio = { path = "../../crates/pocketstation-audio" }
