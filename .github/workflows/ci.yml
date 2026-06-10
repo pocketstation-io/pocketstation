@@ -12,5 +12,4 @@ jobs:
       - run: cargo test --workspace
       - name: Alloc-free hot path check (integration test)
         run: cargo test -p pocketstation-audio --test alloc_check -- --nocapture
-      - run: cargo run -p pocketstation-alloccheck
       - run: cargo publish --dry-run -p pocketstation-audio || true

@@ -33,5 +33,33 @@ hound.workspace = true
 name = "phase0_pipeline"
 path = "../../tests/phase0_pipeline.rs"
 
+[[test]]
+name = "alloc_check"
+path = "tests/alloc_check.rs"
+
+[dev-dependencies]
+assert_no_alloc = { workspace = true }
+criterion = { workspace = true, features = ["html_reports"] }
+
+[[bench]]
+name = "encode_bench"
+harness = false
+path = "../../benches/encode_bench.rs"
+
+[[bench]]
+name = "decode_bench"
+harness = false
+path = "../../benches/decode_bench.rs"
+
+[[bench]]
+name = "pool_bench"
+harness = false
+path = "../../benches/pool_bench.rs"
+
+[[bench]]
+name = "bus_bench"
+harness = false
+path = "../../benches/bus_bench.rs"
+
 [build-dependencies]
 cbindgen = "0.27"

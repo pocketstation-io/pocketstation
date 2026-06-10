@@ -8,8 +8,7 @@ members = [
   "crates/pocketstation-route",
   "crates/pocketstation-metrics",
   "crates/pocketstation-audio",
-  "crates/pocketstation-loopback",
-  "tools/pocketstation-alloccheck"
+  "crates/pocketstation-loopback"
 ]
 
 [workspace.package]
@@ -25,6 +24,7 @@ hound = "3"
 opus = "0.3"
 proptest = "1"
 criterion = "0.5"
+assert_no_alloc = "1.1"
 
 # Production release: full LTO + single codegen unit so LLVM can inline
 # across crate boundaries (Rust → libopus FFI call sites) and vectorize.
