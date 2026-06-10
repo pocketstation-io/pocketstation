@@ -10,6 +10,8 @@ jobs:
       - run: cargo fmt --all -- --check
       - run: cargo clippy --workspace --all-targets -- -D warnings
       - run: cargo test --workspace
+      - name: Compile benchmarks
+        run: cargo bench --no-run -p pocketstation-audio
       - name: Alloc-free hot path check (integration test)
         run: cargo test -p pocketstation-audio --test alloc_check -- --nocapture
       - run: cargo publish --dry-run -p pocketstation-audio || true
