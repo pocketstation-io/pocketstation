@@ -172,7 +172,7 @@ The architecture document at `docs/architecture/PocketStation-v2.3.md` (and any 
 
 Agents must not edit the architecture document without an ADR documenting why the change is needed.
 
-ADR-008 through ADR-013 in v2.3 are open questions; resolving them may legitimately require architecture-doc changes. When that happens:
+AUDIO-008 through AUDIO-013 in v2.3 are open questions; resolving them may legitimately require architecture-doc changes. When that happens:
 
 1. Write the ADR first.
 2. Get human approval on the ADR.

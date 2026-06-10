@@ -1,4 +1,4 @@
-/// Phase 5 allocation-check harness — DHAT CI gate (ADR-023 prerequisite).
+/// Phase 5 allocation-check harness — DHAT CI gate (AUDIO-023 prerequisite).
 ///
 /// Instruments the hot-path encode→decode cycle with a counting global allocator
 /// to verify zero heap allocations per frame. The counter is reset between

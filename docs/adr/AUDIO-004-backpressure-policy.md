@@ -1,4 +1,4 @@
-# ADR-008-workspace-release-sequencing — Workspace Release Sequencing
+# AUDIO-004-backpressure-policy — Backpressure Policy on Pool / Ring Exhaustion
 
 ## Status
 Accepted. Phase 0 and Phase 1 complete; no reversal triggered. Active for Phase 2.
@@ -7,7 +7,7 @@ Accepted. Phase 0 and Phase 1 complete; no reversal triggered. Active for Phase 
 PocketStation v2.3 requires this ADR before implementation lands. See `docs/architecture/pocketstation-v2.3.md`.
 
 ## Decision
-Publish crates in dependency order with retry/backoff. One root tag, same workspace version.
+Drop newest when the pool or SPSC ring is full. Stable latency is more important than preserving every frame. Blocking the producer is forbidden.
 
 ## Options considered
 

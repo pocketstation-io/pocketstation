@@ -1,4 +1,4 @@
-# ADR-014-sframe-e2ee — SFrame E2EE
+# AUDIO-016-sframe-e2ee — SFrame E2EE
 
 ## Status
 
@@ -25,7 +25,7 @@ Chosen: B
 - Relay receives and forwards SFrame-encrypted frames; cannot decode audio content
 - Key rotation is a control-plane concern, not media-plane
 - Adds ~22 bytes per frame overhead (~3% at 20ms Opus)
-- EU AI Act Article 50 compliance path requires SFrame + ADR-017 watermarking together
+- EU AI Act Article 50 compliance path requires SFrame + AUDIO-017 watermarking together
 - All platform SDKs must implement the pre-packetization insertion point
 
 ## Test / measurement plan

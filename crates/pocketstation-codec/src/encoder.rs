@@ -6,7 +6,7 @@ use crate::constants::{
     VOICE_AGENT_FRAME_SAMPLES,
 };
 
-/// Opus frame duration.  20 ms is the ADR-012 default; 10 ms is available for
+/// Opus frame duration.  20 ms is the AUDIO-012 default; 10 ms is available for
 /// voice-agent mode once CPU/overhead benchmarks justify it.
 #[derive(Debug, Clone, Copy)]
 pub enum OpusFrameDuration {
@@ -37,7 +37,7 @@ pub struct EncodedFrame {
 /// Real Opus encoder wrapping libopus via the `opus` crate.
 ///
 /// Configured for 48 000 Hz, mono, [`Application::Voip`], 20 ms frames
-/// (960 samples) per ADR-012.
+/// (960 samples) per AUDIO-012.
 ///
 /// # Heap allocation notes
 ///
@@ -131,7 +131,7 @@ impl OpusEncoder {
     /// Set encoder complexity (0 = fastest, 10 = highest quality).
     ///
     /// Production default is 9. Set to 0 only in throughput benchmarks where
-    /// quality is irrelevant (ADR-012 §10.4 codec control).
+    /// quality is irrelevant (AUDIO-012 §10.4 codec control).
     pub fn set_complexity(&mut self, complexity: i32) -> Result<(), opus::Error> {
         self.inner.set_complexity(complexity)
     }
@@ -207,7 +207,7 @@ mod tests {
 
     #[test]
     fn opus_encoder_encodes_960_sample_frame_to_non_empty_packet() {
-        // Given: 960 silent samples (valid 20 ms frame per ADR-012)
+        // Given: 960 silent samples (valid 20 ms frame per AUDIO-012)
         let mut enc = OpusEncoder::new().unwrap();
         let pcm = vec![0.0f32; OPUS_FRAME_SAMPLES];
         let mut out = Vec::new();

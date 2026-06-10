@@ -1,4 +1,4 @@
-# ADR-010-jitter-buffer — Jitter Buffer Algorithm
+# AUDIO-011-spsc-ring — SPSC Ring Buffer Choice
 
 ## Status
 Accepted. Phase 0 and Phase 1 complete; no reversal triggered. Active for Phase 2.
@@ -7,7 +7,7 @@ Accepted. Phase 0 and Phase 1 complete; no reversal triggered. Active for Phase 
 PocketStation v2.3 requires this ADR before implementation lands. See `docs/architecture/pocketstation-v2.3.md`.
 
 ## Decision
-Start with adaptive jitter buffer target depth. Keep room to replace with NetEQ-class behavior after Phase 1 measurement.
+Use rtrb by default: fixed capacity, allocation at construction, lock-free/wait-free reads and writes.
 
 ## Options considered
 

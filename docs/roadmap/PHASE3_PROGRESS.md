@@ -8,7 +8,7 @@
 
 ---
 
-## Task 1 — Real libopus encoder/decoder (ADR-012)
+## Task 1 — Real libopus encoder/decoder (AUDIO-012)
 
 ### Changes
 
@@ -23,7 +23,7 @@
 - `crates/pocketstation-audio/examples/soak.rs`: same update.
 - `tools/pocketstation-alloccheck/src/main.rs`: same update.
 - `docs/standards/FAKE_SCAFFOLD_INVENTORY.md`: Opus row burned.
-- `docs/adr/ADR-012-opus-frame-duration.md`: status updated, implementation note added.
+- `docs/adr/AUDIO-012-opus-frame-duration.md`: status updated, implementation note added.
 
 ### New tests (pocketstation-codec)
 
@@ -58,7 +58,7 @@ cargo run -p pocketstation-audio --example sine_to_wav    PASS (48000 samples)
 
 ---
 
-## Task 2 — ClockSync PI controller (ADR-006)
+## Task 2 — ClockSync PI controller (AUDIO-006)
 
 ### Changes
 
@@ -69,7 +69,7 @@ cargo run -p pocketstation-audio --example sine_to_wav    PASS (48000 samples)
   - `last_offset_ns()` and `integral()` accessors for diagnostics.
 - Old API (`update_pi`, `correction_ratio`, `drift_ppm_estimate`, `target_sample_rate`) removed; tests updated.
 - `docs/standards/FAKE_SCAFFOLD_INVENTORY.md`: ClockSync row burned.
-- `docs/adr/ADR-006-clock-sync-src.md`: status updated, implementation note added.
+- `docs/adr/AUDIO-006-clock-sync-src.md`: status updated, implementation note added.
 
 ### New tests (pocketstation-bus)
 
@@ -94,6 +94,6 @@ cargo test --workspace                                     PASS (38 tests)
 - Hot-path safe: yes — pure f64 arithmetic, no allocation, no lock
 - Public API changed: yes — `tick()`, `new(kp, ki)`, `last_offset_ns()`, `integral()` replace old API (breaking; only internal callers)
 - New dependency: no
-- Phase scope respected: yes — gains deferred to Phase 5 per ADR-006
+- Phase scope respected: yes — gains deferred to Phase 5 per AUDIO-006
 - Unsafe added: no
 - Remaining risk: gains not validated against real hardware; Phase 5 must measure and retune
