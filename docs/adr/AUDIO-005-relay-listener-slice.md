@@ -1,4 +1,4 @@
-# ADR-004-backpressure-policy — Backpressure Policy on Pool / Ring Exhaustion
+# AUDIO-005-relay-listener-slice — Relay Listener Slice Model
 
 ## Status
 Accepted. Phase 0 and Phase 1 complete; no reversal triggered. Active for Phase 2.
@@ -7,7 +7,7 @@ Accepted. Phase 0 and Phase 1 complete; no reversal triggered. Active for Phase 
 PocketStation v2.3 requires this ADR before implementation lands. See `docs/architecture/pocketstation-v2.3.md`.
 
 ## Decision
-Drop newest when the pool or SPSC ring is full. Stable latency is more important than preserving every frame. Blocking the producer is forbidden.
+Phase 1 may use RWMutex around the listener slice. Phase 2 migrates to copy-on-write atomic pointer to avoid per-packet lock contention.
 
 ## Options considered
 

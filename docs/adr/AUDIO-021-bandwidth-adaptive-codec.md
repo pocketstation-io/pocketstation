@@ -1,4 +1,4 @@
-# ADR-021-bandwidth-adaptive-codec — Bandwidth-Adaptive Codec Control via RTCP
+# AUDIO-021-bandwidth-adaptive-codec — Bandwidth-Adaptive Codec Control via RTCP
 
 ## Status
 

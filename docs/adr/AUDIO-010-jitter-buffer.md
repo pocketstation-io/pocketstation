@@ -1,4 +1,4 @@
-# ADR-005-relay-listener-slice — Relay Listener Slice Model
+# AUDIO-010-jitter-buffer — Jitter Buffer Algorithm
 
 ## Status
 Accepted. Phase 0 and Phase 1 complete; no reversal triggered. Active for Phase 2.
@@ -7,7 +7,7 @@ Accepted. Phase 0 and Phase 1 complete; no reversal triggered. Active for Phase 
 PocketStation v2.3 requires this ADR before implementation lands. See `docs/architecture/pocketstation-v2.3.md`.
 
 ## Decision
-Phase 1 may use RWMutex around the listener slice. Phase 2 migrates to copy-on-write atomic pointer to avoid per-packet lock contention.
+Start with adaptive jitter buffer target depth. Keep room to replace with NetEQ-class behavior after Phase 1 measurement.
 
 ## Options considered
 

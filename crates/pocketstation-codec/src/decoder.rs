@@ -5,7 +5,7 @@ use crate::encoder::EncodedFrame;
 
 /// Real Opus decoder wrapping libopus via the `opus` crate.
 ///
-/// Configured for 48 000 Hz, mono per ADR-012.
+/// Configured for 48 000 Hz, mono per AUDIO-012.
 ///
 /// # Heap allocation notes
 ///
