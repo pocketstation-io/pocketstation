@@ -14,7 +14,7 @@
  * Opaque Opus encoder handle. Created once per session; not thread-safe.
  * The iOS caller must not share this pointer across threads.
  */
-typedef struct PsOpusEncoder PsOpusEncoder;
+typedef struct PksOpusEncoder PksOpusEncoder;
 
 /**
  * Create an Opus encoder.
@@ -23,20 +23,20 @@ typedef struct PsOpusEncoder PsOpusEncoder;
  * Returns null on failure.
  *
  * # Safety
- * The returned pointer must be destroyed with `ps_opus_encoder_destroy`.
+ * The returned pointer must be destroyed with `pks_opus_encoder_destroy`.
  */
-struct PsOpusEncoder *ps_opus_encoder_create(unsigned int _sample_rate,
-                                             uint8_t _channels,
-                                             unsigned int _bitrate_kbps);
+struct PksOpusEncoder *pks_opus_encoder_create(unsigned int _sample_rate,
+                                               uint8_t _channels,
+                                               unsigned int _bitrate_kbps);
 
 /**
- * Destroy an encoder created by ps_opus_encoder_create.
+ * Destroy an encoder created by pks_opus_encoder_create.
  * Safe to call with null.
  *
  * # Safety
- * `enc` must be a pointer returned by `ps_opus_encoder_create` or null.
+ * `enc` must be a pointer returned by `pks_opus_encoder_create` or null.
  */
-void ps_opus_encoder_destroy(struct PsOpusEncoder *enc);
+void pks_opus_encoder_destroy(struct PksOpusEncoder *enc);
 
 /**
  * Encode one PCM frame to Opus.
@@ -51,14 +51,14 @@ void ps_opus_encoder_destroy(struct PsOpusEncoder *enc);
  *           -2 on encoding error.
  *
  * # Safety
- * - `enc` must be a valid pointer from `ps_opus_encoder_create` or null.
+ * - `enc` must be a valid pointer from `pks_opus_encoder_create` or null.
  * - `pcm` must point to at least `sample_count` valid f32 values.
  * - `out_buf` must point to at least `out_cap` bytes of writable memory.
  */
-int ps_encode_opus(struct PsOpusEncoder *enc,
-                   const float *pcm,
-                   uintptr_t sample_count,
-                   unsigned char *out_buf,
-                   uintptr_t out_cap);
+int pks_encode_opus(struct PksOpusEncoder *enc,
+                    const float *pcm,
+                    uintptr_t sample_count,
+                    unsigned char *out_buf,
+                    uintptr_t out_cap);
 
 #endif  /* POCKETSTATION_AUDIO_H */

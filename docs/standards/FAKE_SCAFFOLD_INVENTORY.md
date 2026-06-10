@@ -24,6 +24,7 @@ DEFERRED    Intentionally postponed; ADR or phase plan justifies it
 
 | Component | Status | Repo / File | What's missing | Replace by | Blocked on |
 |---|---|---|---|---|---|
+| pocketstation-loopback (non-macOS) | STUB | audio-core / pocketstation-loopback / src/lib.rs | Returns `Err(LoopbackError::NotSupported)` on all non-macOS targets; ScreenCaptureKit is macOS-only | Phase 6 | Windows WASAPI + Linux PipeWire implementation |
 | JitterBuffer | PARTIAL | audio-core / pocketstation-codec | NetEQ-class adaptive algorithm; current scaffold is fixed-delay | Phase 5 | ADR-010 algorithm choice |
 | DHAT allocation check | DEFERRED | audio-core / tools/pocketstation-alloccheck | Real DHAT integration; current is cargo-bloat placeholder | Phase 3 | DHAT setup in CI |
 | TURN configuration | DEFERRED | relay | Production TURN credentials; STUN-only works on most networks | Phase 2 | TURN provider decision |

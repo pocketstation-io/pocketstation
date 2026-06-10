@@ -6,7 +6,7 @@ tab_width = 4
 documentation = true
 
 [export]
-include = ["PsOpusEncoder"]
+include = ["PksOpusEncoder"]
 
 [parse]
 parse_deps = false
