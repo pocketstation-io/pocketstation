@@ -313,7 +313,7 @@ impl AudioBufferPool {
 
 **Hot path rules — enforced, not aspirational:**
 ```
-No heap allocation (verified by DHAT profiler in CI)
+No heap allocation (verified by counting allocator gate in CI; full DHAT integration deferred — see FAKE_SCAFFOLD_INVENTORY)
 No locks (SPSC ring buffer + atomic pool bitset)
 No blocking (callback returns immediately)
 No logging (metrics are atomic counters, not log calls)
@@ -1194,7 +1194,7 @@ pocketstation-io/app-desktop       Tauri (Rust + web frontend)
 #### Tier 7 — Developer Tools
 
 ```
-pocketstation-io/cli   `ps` command — room create, source sine/file, listen, latency, relay status
+pocketstation-io/cli   `pks` command — room create, source sine/file, listen, latency, relay status
 pocketstation-io/docs  docs.pocketstation.io
 ```
 
@@ -1274,6 +1274,8 @@ Phase 1:  Create relay + api-server. Create app-web-receiver. Signaling types in
           First crates.io publish of audio-core happens here, after demo works.
 Phase 2:  Create sdk-ios. First SPM publish. Extract protocol repo when sdk-js or
           sdk-android needs stable generated types.
+          Note (actual): protocol repo created early (pre-Phase 2) with provisional
+          proto definitions. Wire contract not yet stable; JSON is the live contract.
 Phase 3:  Create sdk-android. First Maven Central publish. Create cli.
 Phase 4:  Create app-creator.
 Phase 5:  Create audio-ml. Create sdk-js, sdk-rust, sdk-python as demand warrants.
@@ -1377,7 +1379,7 @@ Rust crate API finalized
 Python SDK (PyO3 bindings)
 Documentation: 3 quickstart guides, architecture explanation, API reference
 3 demo apps
-CLI (`ps` command)
+CLI (`pks` command)
 ```
 
 Exit:
