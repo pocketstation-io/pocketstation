@@ -30,7 +30,7 @@ pub enum AudioMode {
 ///
 /// Required by EU AI Act Article 50 (2026-08-01 deadline): machine-detectable
 /// markings must be embedded in AI-synthesised audio before delivery.
-/// The watermark node (ADR-017) reads this tag and embeds AudioSeal only when
+/// The watermark node (AUDIO-017) reads this tag and embeds AudioSeal only when
 /// the value is `AiTts`. See `pocketstation-watermark` in `pocketstation-io/audio-ml`.
 ///
 /// Phase scope: Phase 5.
@@ -46,7 +46,7 @@ pub enum AudioSourceTag {
 
 /// Encryption mode applied to this frame's payload.
 ///
-/// Used by the SFrame E2EE relay path (ADR-014). The relay forwards frames
+/// Used by the SFrame E2EE relay path (AUDIO-014). The relay forwards frames
 /// without decrypting regardless of this field; the value is set by the SDK
 /// before sending and read by the receiving SDK to select the decryption path.
 ///
@@ -231,12 +231,12 @@ pub struct AudioFrame {
     pub buffer: AudioBufferHandle,
     /// Whether this frame originated from a real capture source or an AI TTS engine.
     /// Defaults to `Captured`. Set to `AiTts` by TTS pipeline stages so the
-    /// downstream watermark node (ADR-017) can embed a machine-detectable mark.
+    /// downstream watermark node (AUDIO-017) can embed a machine-detectable mark.
     pub source_tag: AudioSourceTag,
-    /// Speaker identity assigned by the diarization node (ADR-018).
+    /// Speaker identity assigned by the diarization node (AUDIO-018).
     /// `None` until `pocketstation-diarize` (Phase 6) assigns a speaker ID.
     pub speaker_id: Option<u32>,
-    /// SFrame encryption mode (ADR-014). `None` for unencrypted transport.
+    /// SFrame encryption mode (AUDIO-014). `None` for unencrypted transport.
     pub encryption_mode: EncryptionMode,
 }
 

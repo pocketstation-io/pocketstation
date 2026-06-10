@@ -2,7 +2,7 @@
 //!
 //! Generated header: audio-core/ffi/pocketstation_audio.h (via cbindgen in build.rs).
 //! Swift usage: import via module.modulemap in sdk-ios.
-//! ADR-001: platform callback writes f32 PCM → Rust Opus encode → Swift WebRTC send.
+//! AUDIO-001: platform callback writes f32 PCM → Rust Opus encode → Swift WebRTC send.
 
 use std::os::raw::{c_int, c_uchar, c_uint};
 

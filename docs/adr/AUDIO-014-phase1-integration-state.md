@@ -1,4 +1,4 @@
-# ADR-014 — Phase 1 Integration State
+# AUDIO-014 — Phase 1 Integration State
 
 ## Status
 
@@ -29,13 +29,13 @@ audio-core's Phase 2 gate consists of four requirements:
 
 1. **crates.io publish of `pocketstation-audio` v0.1.0** — per v2.3 §14.5 and
    §15. Publish happens after the Phase 1 relay demo validates the API surface.
-   Use `cargo-release --workspace` with the dependency order specified in ADR-008.
+   Use `cargo-release --workspace` with the dependency order specified in AUDIO-008.
    The workspace version across all crates must be identical at publish time.
 
 2. **FFI headers generated via cbindgen** — headers must be generated under
    `ffi/` and consumed by sdk-ios. The `AudioBufferPool`, `AudioFrame`,
    `FrameBus`, and core session lifecycle types must be exported. No Rust panic
-   may cross the FFI boundary (v2.3 §6, ADR-001).
+   may cross the FFI boundary (v2.3 §6, AUDIO-001).
 
 3. **Opus real bindings replacing the MOCK** — the `real-opus` feature flag
    activates `libopus-sys`. The MOCK row in
@@ -43,7 +43,7 @@ audio-core's Phase 2 gate consists of four requirements:
    validates the real codec path in CI with libopus installed.
 
 4. **ClockSync PI controller** — the dual-stage anti-windup PI controller
-   specified in ADR-006 replaces the Phase 0 exponential-smoother placeholder.
+   specified in AUDIO-006 replaces the Phase 0 exponential-smoother placeholder.
    The PARTIAL row for ClockSync in the inventory is burned when the PI
    controller passes its convergence and sign-direction tests.
 
@@ -90,7 +90,7 @@ independently releasable without coupling their Phase 1 timelines.
   headers. Any Rust panic crossing the FFI boundary fails the test suite.
 - crates.io publish: `cargo publish --dry-run --workspace` must pass in CI
   before the actual publish tag is created. Dependency publish order follows
-  ADR-008.
+  AUDIO-008.
 
 ## Reversal trigger
 

@@ -1,4 +1,4 @@
-# ADR-007-capability-negotiation — Capability Negotiation
+# AUDIO-008-workspace-release-sequencing — Workspace Release Sequencing
 
 ## Status
 Accepted. Phase 0 and Phase 1 complete; no reversal triggered. Active for Phase 2.
@@ -7,7 +7,7 @@ Accepted. Phase 0 and Phase 1 complete; no reversal triggered. Active for Phase 
 PocketStation v2.3 requires this ADR before implementation lands. See `docs/architecture/pocketstation-v2.3.md`.
 
 ## Decision
-Auto-insert adapter nodes such as ResampleNode and MonoMixNode, but expose NegotiatedCapability to the caller.
+Publish crates in dependency order with retry/backoff. One root tag, same workspace version.
 
 ## Options considered
 

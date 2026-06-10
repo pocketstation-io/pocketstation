@@ -31,7 +31,7 @@ pub enum PopResult {
     NotReady,
 }
 
-/// Adaptive jitter buffer (ADR-010 / architecture §26.7 and §13.3).
+/// Adaptive jitter buffer (AUDIO-010 / architecture §26.7 and §13.3).
 ///
 /// Owns 60 ms of the 170 ms transport-P95 budget:
 /// - P50 target ≈ 20 ms (1 frame)
