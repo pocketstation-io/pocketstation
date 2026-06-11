@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted for v2.3. Phase 3, Wave C.
+Accepted and merged. Phase 3, Wave C. linux.rs, four-way platform split, and Wave C GWT tests landed in main.
 
 ## Context
 
