@@ -97,7 +97,7 @@ Phase 1 must measure three hot paths, no more, no less. The list is fixed so thi
 Phase 1 performance gate:
   1. AudioBufferPool acquire / release / drop (Criterion bench in audio-core)
   2. JWT verify rate (Go bench in relay/auth)
-  3. Pion TrackLocalStaticRTP.WriteRTP allocation profile (per ADR-009)
+  3. Pion TrackLocalStaticRTP.WriteRTP allocation profile (per AUDIO-009)
 ```
 
 Phase 2 hardening expands the gate to include:

@@ -2,7 +2,7 @@
 ///
 /// Measures pool + ring + encode + decode throughput at two operating points:
 ///
-///   Mode A  Complexity 9 (production quality, ADR-012):
+///   Mode A  Complexity 9 (production quality, AUDIO-012):
 ///           Target ≤ 100ms for 3 000 frames.
 ///
 ///   Mode B  Complexity 0 (throughput ceiling, benchmarks only):
@@ -43,7 +43,7 @@ fn run_soak(label: &str, complexity: i32, sine_table: &[f32]) {
     let mut decoder = MockOpusDecoder::default();
 
     // Set encoder complexity via the inner OpusEncoder.
-    // complexity 9 = production (ADR-012); complexity 0 = throughput ceiling.
+    // complexity 9 = production (AUDIO-012); complexity 0 = throughput ceiling.
     encoder
         .inner
         .set_complexity(complexity)

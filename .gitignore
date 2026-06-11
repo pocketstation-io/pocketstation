@@ -12,3 +12,6 @@ coverage/
 .cache/
 .vscode/
 .idea/
+.claude/
+*.profraw
+*.profdata

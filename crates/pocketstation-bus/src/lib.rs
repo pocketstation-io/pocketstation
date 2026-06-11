@@ -43,7 +43,7 @@ impl FrameConsumer {
     }
 }
 
-/// PI-controlled clock synchronisation per ADR-006.
+/// PI-controlled clock synchronisation per AUDIO-006.
 ///
 /// # Design
 ///
@@ -58,9 +58,9 @@ impl FrameConsumer {
 ///
 /// `kp = 0.1`, `ki = 0.001` — conservative values suitable for typical
 /// network jitter in a LAN/Wi-Fi voice call.  These will be tuned in Phase 5
-/// once real-world measurements are available (ADR-006).
+/// once real-world measurements are available (AUDIO-006).
 ///
-/// # Phase 3, ADR-006: PI controller implemented; gains tuned in Phase 5.
+/// # Phase 3, AUDIO-006: PI controller implemented; gains tuned in Phase 5.
 #[derive(Debug, Clone, Copy)]
 pub struct ClockSync {
     kp: f64,
@@ -75,7 +75,7 @@ const CLOCK_SYNC_CLAMP_NS: i64 = 10_000_000;
 impl ClockSync {
     /// Create a new PI controller with the given proportional and integral gains.
     ///
-    /// Use [`ClockSync::default()`] for the ADR-006 recommended starting gains.
+    /// Use [`ClockSync::default()`] for the AUDIO-006 recommended starting gains.
     pub fn new(kp: f64, ki: f64) -> Self {
         Self {
             kp,
@@ -118,7 +118,7 @@ impl ClockSync {
 }
 
 impl Default for ClockSync {
-    /// Returns a controller with the ADR-006 recommended starting gains:
+    /// Returns a controller with the AUDIO-006 recommended starting gains:
     /// `kp = 0.1`, `ki = 0.001`.
     fn default() -> Self {
         Self::new(0.1, 0.001)
