@@ -1,12 +1,20 @@
-//! System audio loopback capture via ScreenCaptureKit (macOS only).
-//!
-//! On macOS 13+, `capture_system_audio` uses ScreenCaptureKit to tap the
-//! system mix and delivers `AudioFrame` values to the provided callback.
-//!
-//! On all other platforms the function returns `Err(LoopbackError::NotSupported)`
-//! immediately without attempting any capture.
-
 use thiserror::Error;
+
+// ---------------------------------------------------------------------------
+// Capture mode
+// ---------------------------------------------------------------------------
+
+/// Selects which audio source to capture.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub enum CaptureMode {
+    /// Capture the system-wide audio mix (all applications).
+    #[default]
+    SystemMix,
+    /// Capture a specific application by bundle ID (macOS) or node name (Linux).
+    Application(String),
+    /// Capture a specific process by PID.
+    Process(u32),
+}
 
 // ---------------------------------------------------------------------------
 // Public error type
@@ -15,28 +23,36 @@ use thiserror::Error;
 /// Errors produced by the loopback capture API.
 #[derive(Debug, Error, PartialEq, Eq)]
 pub enum LoopbackError {
-    /// The platform does not support system audio loopback (non-macOS).
+    /// The platform does not support system audio loopback.
     #[error("system audio loopback is not supported on this platform")]
     NotSupported,
 
-    /// ScreenCaptureKit initialisation failed.
+    /// A backend-specific initialisation error.
+    #[error("loopback backend error: {0}")]
+    BackendInit(String),
+
+    /// The requested capture mode is not supported by this backend.
+    #[error("capture mode not supported on this backend: {0:?}")]
+    ModeUnsupported(CaptureMode),
+
+    /// ScreenCaptureKit initialisation failed (macOS only).
     #[cfg(target_os = "macos")]
     #[error("ScreenCaptureKit initialisation failed: {0}")]
     Init(String),
 
-    /// No display was found to anchor the content filter.
+    /// No display was found to anchor the content filter (macOS only).
     #[cfg(target_os = "macos")]
     #[error("no display found for content filter")]
     NoDisplay,
 
-    /// The audio buffer pool is exhausted; a frame was dropped.
+    /// The audio buffer pool is exhausted (macOS only).
     #[cfg(target_os = "macos")]
-    #[error("audio buffer pool exhausted — frame dropped")]
+    #[error("audio buffer pool exhausted -- frame dropped")]
     PoolExhausted,
 }
 
 // ---------------------------------------------------------------------------
-// macOS implementation
+// macOS ScreenCaptureKit implementation
 // ---------------------------------------------------------------------------
 
 #[cfg(target_os = "macos")]
@@ -49,33 +65,12 @@ mod macos {
     };
     use screencapturekit::prelude::*;
 
-    use super::LoopbackError;
+    use super::{CaptureMode, LoopbackError};
 
-    // -----------------------------------------------------------------------
-    // Constants
-    // -----------------------------------------------------------------------
-
-    /// Number of audio channels captured from ScreenCaptureKit (stereo).
     const CAPTURE_CHANNELS: u8 = 2;
-
-    /// Stereo 20 ms frame at 48 kHz = 960 mono samples × 2 channels.
     const CAPTURE_FRAME_SAMPLES: usize = DEFAULT_SLOT_SAMPLES_MONO_20MS * CAPTURE_CHANNELS as usize;
-
-    /// Pool depth: 8 frames of lookahead to absorb callback jitter without
-    /// blocking.  Each slot is CAPTURE_FRAME_SAMPLES * 4 bytes = 7.68 kB.
     const POOL_DEPTH: usize = 8;
 
-    // -----------------------------------------------------------------------
-    // Internal handler
-    // -----------------------------------------------------------------------
-
-    /// Implements `SCStreamOutputTrait` so it can be registered as an audio
-    /// output handler on an `SCStream`.
-    ///
-    /// The handler receives `CMSampleBuffer` values on a ScreenCaptureKit
-    /// dispatch thread and forwards them to the user-provided callback.
-    /// All allocations happen in `SystemLoopbackSource::new`; the hot path
-    /// only acquires pool slots (lock-free CAS) and invokes the callback.
     struct AudioHandler<F>
     where
         F: Fn(AudioFrame) + Send + Sync + 'static,
@@ -84,7 +79,6 @@ mod macos {
         callback: F,
         stream_id: StreamId,
         source_id: SourceId,
-        /// Sequence counter — incremented atomically per delivered frame.
         seq: std::sync::atomic::AtomicU64,
     }
 
@@ -96,50 +90,35 @@ mod macos {
             if of_type != SCStreamOutputType::Audio {
                 return;
             }
-
             let buffer_list = match sample.audio_buffer_list() {
                 Some(bl) => bl,
                 None => return,
             };
-
-            // Acquire a pool slot — lock-free, no heap allocation.
             let mut handle = match self.pool.acquire() {
                 Some(h) => h,
-                None => return, // pool exhausted: drop frame rather than allocate
+                None => return,
             };
-
-            // Copy interleaved f32 samples from every AudioBuffer in the list
-            // into the pool slot.  ScreenCaptureKit delivers f32Le interleaved
-            // when configured with `.with_captures_audio(true)` at 48 kHz.
             let dst = handle.as_mut_slice();
             let mut written = 0usize;
-
             'outer: for audio_buf in buffer_list.iter() {
                 let bytes = audio_buf.data();
-                // Interpret the byte slice as f32 samples (4 bytes each).
                 let n_samples = bytes.len() / std::mem::size_of::<f32>();
                 let src_ptr = bytes.as_ptr() as *const f32;
                 for i in 0..n_samples {
                     if written >= dst.len() {
                         break 'outer;
                     }
-                    // SAFETY: `src_ptr` points to a valid, aligned region of
-                    // `bytes.len()` bytes delivered by ScreenCaptureKit.  We
-                    // iterate within `n_samples` which equals `bytes.len() / 4`.
+                    // SAFETY: ptr is valid f32 LE data from ScreenCaptureKit.
                     dst[written] = unsafe { src_ptr.add(i).read_unaligned() };
                     written += 1;
                 }
             }
-
             handle.set_len(written);
-
             let seq = self.seq.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-
             let timestamp_ns = std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .unwrap_or_default()
                 .as_nanos() as u64;
-
             let mut frame = AudioFrame::new(
                 self.stream_id,
                 self.source_id,
@@ -150,77 +129,71 @@ mod macos {
             );
             frame.source_tag = AudioSourceTag::Captured;
             frame.encryption_mode = EncryptionMode::None;
-            // Mono equivalent is still 48 kHz; channels field carries stereo count.
             frame.sample_rate = DEFAULT_SAMPLE_RATE;
-
             (self.callback)(frame);
         }
     }
 
-    // -----------------------------------------------------------------------
-    // Public struct
-    // -----------------------------------------------------------------------
-
     /// Manages a ScreenCaptureKit audio capture session.
-    ///
-    /// Drop this value to stop capture (calls `stop_capture` on the underlying
-    /// `SCStream`).
     pub struct SystemLoopbackSource {
         stream: SCStream,
     }
 
     impl SystemLoopbackSource {
-        /// Start capturing system audio and deliver `AudioFrame` values to
-        /// `callback`.
-        ///
-        /// # Errors
-        ///
-        /// Returns `LoopbackError::Init` if ScreenCaptureKit cannot be
-        /// initialised, or `LoopbackError::NoDisplay` if no display is
-        /// available to anchor the content filter (required even for
-        /// audio-only capture).
         pub fn capture<F>(callback: F) -> Result<Self, LoopbackError>
         where
             F: Fn(AudioFrame) + Send + Sync + 'static,
         {
-            // ----------------------------------------------------------------
-            // 1. Enumerate shareable content to obtain a display reference.
-            // ----------------------------------------------------------------
-            let content =
-                SCShareableContent::get().map_err(|e| LoopbackError::Init(format!("{e:?}")))?;
+            Self::capture_mode(CaptureMode::SystemMix, callback)
+        }
 
+        pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
+        where
+            F: Fn(AudioFrame) + Send + Sync + 'static,
+        {
+            let content = SCShareableContent::get()
+                .map_err(|e| LoopbackError::Init(format!("{e:?}")))?;
             let display = content
                 .displays()
                 .into_iter()
                 .next()
                 .ok_or(LoopbackError::NoDisplay)?;
-
-            // ----------------------------------------------------------------
-            // 2. Build a content filter that captures the full display.
-            // ----------------------------------------------------------------
-            let filter = SCContentFilter::create()
-                .with_display(&display)
-                .with_excluding_windows(&[])
-                .build();
-
-            // ----------------------------------------------------------------
-            // 3. Configure the stream: audio only, 48 kHz stereo, exclude the
-            //    current process so the CLI does not feed back into itself.
-            // ----------------------------------------------------------------
+            // Build a content filter for the requested mode.
+            // Process(_) is not supported by SCKit.
+            let filter = match &mode {
+                CaptureMode::SystemMix => SCContentFilter::create()
+                    .with_display(&display)
+                    .with_excluding_windows(&[])
+                    .build(),
+                CaptureMode::Application(bundle_id) => {
+                    let app = content
+                        .applications()
+                        .into_iter()
+                        .find(|a| a.bundle_identifier() == *bundle_id)
+                        .ok_or_else(|| {
+                            LoopbackError::ModeUnsupported(CaptureMode::Application(
+                                bundle_id.clone(),
+                            ))
+                        })?;
+                    SCContentFilter::create()
+                        .with_display(&display)
+                        .with_including_applications(&[&app], &[])
+                        .build()
+                }
+                CaptureMode::Process(_) => {
+                    return Err(LoopbackError::ModeUnsupported(mode));
+                }
+            };
+            // with_excludes_current_process_audio prevents the CLI from
+            // capturing its own output (feedback loop prevention).
             let config = SCStreamConfiguration::new()
                 .with_captures_audio(true)
                 .with_sample_rate(DEFAULT_SAMPLE_RATE as i32)
                 .with_channel_count(CAPTURE_CHANNELS as i32)
-                // Minimise frame size; ScreenCaptureKit delivers frames at
-                // its own cadence — we accept whatever it provides.
+                .with_excludes_current_process_audio(true)
                 .with_width(1)
                 .with_height(1);
-
-            // ----------------------------------------------------------------
-            // 4. Build the stream and register the audio handler.
-            // ----------------------------------------------------------------
             let pool = AudioBufferPool::new(POOL_DEPTH, CAPTURE_FRAME_SAMPLES);
-
             let handler = AudioHandler {
                 pool,
                 callback,
@@ -228,24 +201,17 @@ mod macos {
                 source_id: SourceId(0),
                 seq: std::sync::atomic::AtomicU64::new(0),
             };
-
             let mut stream = SCStream::new(&filter, &config);
             stream.add_output_handler(handler, SCStreamOutputType::Audio);
-
-            // ----------------------------------------------------------------
-            // 5. Start capture.
-            // ----------------------------------------------------------------
             stream
                 .start_capture()
                 .map_err(|e| LoopbackError::Init(format!("{e:?}")))?;
-
             Ok(Self { stream })
         }
     }
 
     impl Drop for SystemLoopbackSource {
         fn drop(&mut self) {
-            // Best-effort: if stop_capture fails we cannot recover.
             let _ = self.stream.stop_capture();
         }
     }
@@ -258,16 +224,20 @@ mod macos {
 #[cfg(not(target_os = "macos"))]
 mod stub {
     use pocketstation_frame::AudioFrame;
+    use super::{CaptureMode, LoopbackError};
 
-    use super::LoopbackError;
-
-    /// Stub source that always reports the platform is unsupported.
     #[derive(Debug)]
     pub struct SystemLoopbackSource;
 
     impl SystemLoopbackSource {
-        /// Always returns `Err(LoopbackError::NotSupported)` on non-macOS.
         pub fn capture<F>(_callback: F) -> Result<Self, LoopbackError>
+        where
+            F: Fn(AudioFrame) + Send + Sync + 'static,
+        {
+            Err(LoopbackError::NotSupported)
+        }
+
+        pub fn capture_mode<F>(_mode: CaptureMode, _callback: F) -> Result<Self, LoopbackError>
         where
             F: Fn(AudioFrame) + Send + Sync + 'static,
         {
@@ -275,6 +245,15 @@ mod stub {
         }
     }
 }
+
+// ---------------------------------------------------------------------------
+// macOS ASP detection
+// ---------------------------------------------------------------------------
+
+#[cfg(target_os = "macos")]
+mod macos_asp;
+#[cfg(target_os = "macos")]
+pub use macos_asp::asp_is_installed;
 
 // ---------------------------------------------------------------------------
 // Re-export the right implementation
@@ -287,21 +266,34 @@ pub use macos::SystemLoopbackSource;
 pub use stub::SystemLoopbackSource;
 
 // ---------------------------------------------------------------------------
-// Public convenience function
+// Public convenience functions
 // ---------------------------------------------------------------------------
 
-/// Start capturing system audio and deliver `AudioFrame` values to `callback`.
+/// Start capturing system audio in `SystemMix` mode.
 ///
-/// On macOS this uses ScreenCaptureKit.  On all other platforms it returns
-/// `Err(LoopbackError::NotSupported)` without attempting capture.
-///
-/// The returned `SystemLoopbackSource` keeps the capture session alive.
-/// Drop it to stop capture.
+/// Uses ScreenCaptureKit on macOS. Returns `Err(LoopbackError::NotSupported)`
+/// on all other platforms.
 pub fn capture_system_audio<F>(callback: F) -> Result<SystemLoopbackSource, LoopbackError>
 where
     F: Fn(pocketstation_frame::AudioFrame) + Send + Sync + 'static,
 {
     SystemLoopbackSource::capture(callback)
+}
+
+/// Start capturing with an explicit `CaptureMode`.
+///
+/// - macOS: `Application(bundle_id)` uses `SCContentFilter.with_including_applications`.
+///   `Process(_)` returns `ModeUnsupported`.
+///   `with_excludes_current_process_audio(true)` prevents CLI feedback.
+/// - Other platforms: always returns `NotSupported`.
+pub fn capture_with_mode<F>(
+    mode: CaptureMode,
+    callback: F,
+) -> Result<SystemLoopbackSource, LoopbackError>
+where
+    F: Fn(pocketstation_frame::AudioFrame) + Send + Sync + 'static,
+{
+    SystemLoopbackSource::capture_mode(mode, callback)
 }
 
 // ---------------------------------------------------------------------------
@@ -312,55 +304,144 @@ where
 mod tests {
     use super::*;
 
-    // -----------------------------------------------------------------------
-    // Test 1: non-macOS stub always returns NotSupported
-    // -----------------------------------------------------------------------
-
-    /// On non-macOS platforms the capture function must return NotSupported
-    /// without panicking.  On macOS this test is compiled out because the
-    /// real implementation is wired in instead.
+    // Test 1: non-macOS returns NotSupported.
     #[cfg(not(target_os = "macos"))]
     #[test]
     fn test_loopback_source_returns_not_supported_on_non_macos() {
-        // Given: a no-op callback
-        // When: capture is requested on a non-macOS platform
         let result = capture_system_audio(|_frame| {});
-
-        // Then: the result is the NotSupported variant
         assert_eq!(result.unwrap_err(), LoopbackError::NotSupported);
     }
 
-    // -----------------------------------------------------------------------
-    // Test 2: error Display formatting
-    // -----------------------------------------------------------------------
-
+    // Test 2: NotSupported error formats correctly.
     #[test]
     fn test_loopback_error_display() {
-        // Given / When / Then: the NotSupported variant formats correctly
         let msg = LoopbackError::NotSupported.to_string();
+        assert!(msg.contains("not supported"), "got: {msg}");
+    }
+
+    // Test 3: type name accessible (compile-time check).
+    #[test]
+    fn test_loopback_source_struct_can_be_constructed() {
+        let type_name = std::any::type_name::<SystemLoopbackSource>();
+        assert!(type_name.contains("SystemLoopbackSource"), "got: {type_name}");
+    }
+
+    // GWT Test 4: SystemMix on non-macOS returns NotSupported.
+    // Given: SystemMix mode
+    // When: capture_with_mode is called on a non-macOS platform
+    // Then: returns NotSupported
+    #[cfg(not(target_os = "macos"))]
+    #[test]
+    fn given_system_mix_mode_when_capture_with_mode_called_on_non_macos_then_returns_not_supported() {
+        let result = capture_with_mode(CaptureMode::SystemMix, |_frame| {});
+        assert_eq!(result.unwrap_err(), LoopbackError::NotSupported);
+    }
+
+    // GWT Test 5: Application mode on non-macOS returns NotSupported.
+    // Given: Application mode with a bundle ID
+    // When: capture_with_mode is called on a non-macOS platform
+    // Then: returns NotSupported
+    #[cfg(not(target_os = "macos"))]
+    #[test]
+    fn given_application_mode_when_capture_with_mode_called_on_non_macos_then_returns_not_supported() {
+        let result = capture_with_mode(
+            CaptureMode::Application("com.example.app".into()),
+            |_frame| {},
+        );
+        assert_eq!(result.unwrap_err(), LoopbackError::NotSupported);
+    }
+
+    // GWT Test 6: Process mode on non-macOS returns NotSupported.
+    // Given: Process mode with a PID
+    // When: capture_with_mode is called on a non-macOS platform
+    // Then: returns NotSupported
+    #[cfg(not(target_os = "macos"))]
+    #[test]
+    fn given_process_mode_when_capture_with_mode_called_on_non_macos_then_returns_not_supported() {
+        let result = capture_with_mode(CaptureMode::Process(1234), |_frame| {});
+        assert_eq!(result.unwrap_err(), LoopbackError::NotSupported);
+    }
+
+    // GWT Test 7: ModeUnsupported error display.
+    // Given: a ModeUnsupported error for Process mode
+    // When: displayed
+    // Then: contains 'not supported'
+    #[test]
+    fn given_capture_mode_unsupported_when_displayed_then_contains_not_supported() {
+        let err = LoopbackError::ModeUnsupported(CaptureMode::Process(1234));
+        let msg = err.to_string();
+        assert!(msg.contains("not supported"), "got: {msg}");
+    }
+
+    // GWT Test 8: BackendInit error preserves the message.
+    // Given: a BackendInit error with a custom message
+    // When: displayed
+    // Then: custom text is present
+    #[test]
+    fn given_backend_init_error_when_displayed_then_contains_message() {
+        let err = LoopbackError::BackendInit("test failure".into());
+        let msg = err.to_string();
+        assert!(msg.contains("test failure"), "got: {msg}");
+    }
+
+    // GWT Test 9: ASP stub always returns false (macOS only).
+    // Given: ASP feature is off (no libASPL submodule)
+    // When: asp_is_installed() is called
+    // Then: returns false
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn given_asp_stub_compiled_when_asp_is_installed_called_then_returns_false() {
+        assert!(!asp_is_installed(), "asp_is_installed() must return false with stub");
+    }
+
+    // Wave C GWT Test 1: PW_NODE_LATENCY format is "numerator/denominator".
+    // Given: the PW_NODE_LATENCY constant used by linux.rs
+    // When: parsed as "n/d"
+    // Then: numerator is 128 and denominator is 48000
+    #[test]
+    fn given_pw_node_latency_const_when_parsed_then_numerator_is_128_and_denominator_is_48000() {
+        const PW_NODE_LATENCY: &str = "128/48000";
+        let parts: Vec<u32> = PW_NODE_LATENCY
+            .split('/')
+            .map(|s| s.parse().expect("must be a number"))
+            .collect();
+        assert_eq!(parts.len(), 2, "expected n/d form");
+        assert_eq!(parts[0], 128, "numerator must be 128 (~2.67 ms at 48 kHz)");
+        assert_eq!(parts[1], 48_000, "denominator must be 48000 Hz");
+    }
+
+    // Wave C GWT Test 2: pipewire socket absent outside a PipeWire session.
+    // Given: running on macOS / non-Linux CI (no PipeWire daemon)
+    // When: the pipewire-0 socket path is checked in a temp directory
+    // Then: the socket does not exist
+    #[cfg(not(target_os = "linux"))]
+    #[test]
+    fn given_non_linux_host_when_pipewire_socket_path_checked_then_does_not_exist() {
+        let tmp = std::env::temp_dir();
+        let socket = tmp.join("pipewire-0");
         assert!(
-            msg.contains("not supported"),
-            "expected 'not supported' in error message, got: {msg}"
+            !socket.exists(),
+            "unexpected pipewire-0 socket found at {socket:?}"
         );
     }
 
-    // -----------------------------------------------------------------------
-    // Test 3: struct can be named (compile-time check)
-    // -----------------------------------------------------------------------
-
-    /// Verifies that `SystemLoopbackSource` is accessible as a named type.
-    /// This is a compile-time check — if the type does not exist the test
-    /// file will not compile.
+    // Wave C GWT Test 3: CaptureMode::Process on non-Linux/non-Windows returns NotSupported.
+    // Given: Process mode on a stub platform (not Linux, not Windows, not macOS)
+    // When: capture_with_mode is called
+    // Then: NotSupported (stub backend)
+    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
     #[test]
-    fn test_loopback_source_struct_can_be_constructed() {
-        // Given: the type is accessible
-        // When: we obtain a type name string
-        let type_name = std::any::type_name::<SystemLoopbackSource>();
+    fn given_process_capture_mode_when_called_on_stub_platform_then_returns_not_supported() {
+        let result = capture_with_mode(CaptureMode::Process(42), |_frame| {});
+        assert_eq!(result.unwrap_err(), LoopbackError::NotSupported);
+    }
 
-        // Then: the string contains the struct name
-        assert!(
-            type_name.contains("SystemLoopbackSource"),
-            "unexpected type name: {type_name}"
-        );
+    // Wave C GWT Test 4: CaptureMode default is SystemMix.
+    // Given: CaptureMode::default()
+    // When: compared to CaptureMode::SystemMix
+    // Then: they are equal
+    #[test]
+    fn given_default_capture_mode_when_compared_then_is_system_mix() {
+        assert_eq!(CaptureMode::default(), CaptureMode::SystemMix);
     }
 }

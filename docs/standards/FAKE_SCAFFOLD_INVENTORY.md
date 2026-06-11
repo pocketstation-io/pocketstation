@@ -24,7 +24,9 @@ DEFERRED    Intentionally postponed; ADR or phase plan justifies it
 
 | Component | Status | Repo / File | What's missing | Replace by | Blocked on |
 |---|---|---|---|---|---|
-| pocketstation-loopback (non-macOS) | STUB | audio-core / pocketstation-loopback / src/lib.rs | Returns `Err(LoopbackError::NotSupported)` on all non-macOS targets; ScreenCaptureKit is macOS-only | Phase 6 | Windows WASAPI + Linux PipeWire implementation |
+| pocketstation-loopback (macOS Application mode) | PARTIAL | audio-core / pocketstation-loopback / src/lib.rs | `CaptureMode::Application` uses SCKit `with_including_applications`; per-app routing works but sub-5 ms requires ASP plugin (Wave D) | Phase 3 Wave D | libASPL submodule + HAL plugin deployment |
+| pocketstation-loopback (macOS ASP plugin) | DEFERRED | audio-core / pocketstation-loopback / asp/ | `asp` Cargo feature off by default; `pks_asp_is_installed()` always returns 0 (stub); real plugin requires libASPL vendor submodule + signed deployment | Phase 3 Wave D | AUDIO-022; `vendor/libASPL` submodule (human operator step) |
+| pocketstation-loopback (non-macOS) | STUB | audio-core / pocketstation-loopback / src/lib.rs | Returns `Err(LoopbackError::NotSupported)` on all non-macOS targets (Windows WASAPI in Wave B; Linux PipeWire in Wave C) | Phase 3 Wave B/C | AUDIO-011; Windows WASAPI crate; Linux PipeWire crate |
 | JitterBuffer | PARTIAL | audio-core / pocketstation-codec | NetEQ-class adaptive algorithm; current scaffold is fixed-delay | Phase 5 | AUDIO-010 algorithm choice |
 | DHAT allocation check | RESOLVED | audio-core | Replaced with assert_no_alloc = "1.1" crate; NIH alloccheck tool removed | — | — |
 | TURN configuration | DEFERRED | relay | Production TURN credentials; STUN-only works on most networks | Phase 2 | TURN provider decision |

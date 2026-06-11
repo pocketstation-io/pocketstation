@@ -4,7 +4,10 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "macOS system audio loopback capture via ScreenCaptureKit for PocketStation"
+description = "System audio loopback capture for PocketStation (macOS via ScreenCaptureKit; ASP optional)"
+
+[features]
+asp = []   # opt-in; requires vendor/libASPL submodule (see asp/README.md)
 
 [dependencies]
 pocketstation-frame = { path = "../pocketstation-frame" }
@@ -12,5 +15,8 @@ thiserror.workspace = true
 
 [target.'cfg(target_os = "macos")'.dependencies]
 screencapturekit = "7"
+
+[build-dependencies]
+cc = "1"
 
 [dev-dependencies]
