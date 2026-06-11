@@ -20,6 +20,11 @@ screencapturekit = "7"
 pipewire = "0.10"
 alsa = "0.9"
 
+[target.'cfg(target_os = "windows")'.dependencies]
+wasapi = "0.23"
+windows = { version = "0.58", features = ["Win32_Media", "Win32_Media_Audio"] }
+windows-core = "0.58"
+
 [build-dependencies]
 cc = "1"
 

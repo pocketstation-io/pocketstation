@@ -218,10 +218,24 @@ mod macos {
 }
 
 // ---------------------------------------------------------------------------
-// Non-macOS stub
+// Windows WASAPI implementation
 // ---------------------------------------------------------------------------
 
-#[cfg(not(target_os = "macos"))]
+#[cfg(target_os = "windows")]
+mod windows;
+
+// ---------------------------------------------------------------------------
+// Linux PipeWire + ALSA implementation
+// ---------------------------------------------------------------------------
+
+#[cfg(target_os = "linux")]
+mod linux;
+
+// ---------------------------------------------------------------------------
+// Stub for platforms with no backend (not macOS, not Linux, not Windows)
+// ---------------------------------------------------------------------------
+
+#[cfg(not(any(target_os = "macos", target_os = "linux", target_os = "windows")))]
 mod stub {
     use pocketstation_frame::AudioFrame;
     use super::{CaptureMode, LoopbackError};
@@ -262,7 +276,13 @@ pub use macos_asp::asp_is_installed;
 #[cfg(target_os = "macos")]
 pub use macos::SystemLoopbackSource;
 
-#[cfg(not(target_os = "macos"))]
+#[cfg(target_os = "windows")]
+pub use windows::SystemLoopbackSource;
+
+#[cfg(target_os = "linux")]
+pub use linux::SystemLoopbackSource;
+
+#[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
 pub use stub::SystemLoopbackSource;
 
 // ---------------------------------------------------------------------------
@@ -304,8 +324,8 @@ where
 mod tests {
     use super::*;
 
-    // Test 1: non-macOS returns NotSupported.
-    #[cfg(not(target_os = "macos"))]
+    // Test 1: stub platform returns NotSupported.
+    #[cfg(not(any(target_os = "macos", target_os = "linux", target_os = "windows")))]
     #[test]
     fn test_loopback_source_returns_not_supported_on_non_macos() {
         let result = capture_system_audio(|_frame| {});
@@ -326,22 +346,22 @@ mod tests {
         assert!(type_name.contains("SystemLoopbackSource"), "got: {type_name}");
     }
 
-    // GWT Test 4: SystemMix on non-macOS returns NotSupported.
+    // GWT Test 4: SystemMix on stub platform returns NotSupported.
     // Given: SystemMix mode
-    // When: capture_with_mode is called on a non-macOS platform
+    // When: capture_with_mode is called on a platform with no backend
     // Then: returns NotSupported
-    #[cfg(not(target_os = "macos"))]
+    #[cfg(not(any(target_os = "macos", target_os = "linux", target_os = "windows")))]
     #[test]
     fn given_system_mix_mode_when_capture_with_mode_called_on_non_macos_then_returns_not_supported() {
         let result = capture_with_mode(CaptureMode::SystemMix, |_frame| {});
         assert_eq!(result.unwrap_err(), LoopbackError::NotSupported);
     }
 
-    // GWT Test 5: Application mode on non-macOS returns NotSupported.
+    // GWT Test 5: Application mode on stub platform returns NotSupported.
     // Given: Application mode with a bundle ID
-    // When: capture_with_mode is called on a non-macOS platform
+    // When: capture_with_mode is called on a platform with no backend
     // Then: returns NotSupported
-    #[cfg(not(target_os = "macos"))]
+    #[cfg(not(any(target_os = "macos", target_os = "linux", target_os = "windows")))]
     #[test]
     fn given_application_mode_when_capture_with_mode_called_on_non_macos_then_returns_not_supported() {
         let result = capture_with_mode(
@@ -351,11 +371,11 @@ mod tests {
         assert_eq!(result.unwrap_err(), LoopbackError::NotSupported);
     }
 
-    // GWT Test 6: Process mode on non-macOS returns NotSupported.
+    // GWT Test 6: Process mode on stub platform returns NotSupported.
     // Given: Process mode with a PID
-    // When: capture_with_mode is called on a non-macOS platform
+    // When: capture_with_mode is called on a platform with no backend
     // Then: returns NotSupported
-    #[cfg(not(target_os = "macos"))]
+    #[cfg(not(any(target_os = "macos", target_os = "linux", target_os = "windows")))]
     #[test]
     fn given_process_mode_when_capture_with_mode_called_on_non_macos_then_returns_not_supported() {
         let result = capture_with_mode(CaptureMode::Process(1234), |_frame| {});
@@ -392,6 +412,55 @@ mod tests {
     #[test]
     fn given_asp_stub_compiled_when_asp_is_installed_called_then_returns_false() {
         assert!(!asp_is_installed(), "asp_is_installed() must return false with stub");
+    }
+
+    // Wave B GWT Test 1: SystemMix on non-Windows non-macOS returns NotSupported.
+    // Given: SystemMix mode on a non-Windows, non-macOS platform
+    // When: capture_with_mode is called
+    // Then: NotSupported (stub backend on macOS CI, Linux backend on Linux)
+    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+    #[test]
+    fn given_system_mix_mode_when_capture_with_mode_on_non_windows_non_macos_then_returns_not_supported() {
+        let mode = CaptureMode::SystemMix;
+        let result = capture_with_mode(mode, |_frame| {});
+        assert_eq!(result.unwrap_err(), LoopbackError::NotSupported);
+    }
+
+    // Wave B GWT Test 2: Process mode on non-Windows non-macOS returns NotSupported.
+    // Given: Process mode with an arbitrary PID on a non-Windows, non-macOS platform
+    // When: capture_with_mode is called
+    // Then: NotSupported
+    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+    #[test]
+    fn given_process_mode_when_capture_with_mode_on_non_windows_non_macos_then_returns_not_supported() {
+        let mode = CaptureMode::Process(1234);
+        let result = capture_with_mode(mode, |_frame| {});
+        assert_eq!(result.unwrap_err(), LoopbackError::NotSupported);
+    }
+
+    // Wave B GWT Test 3: WASAPI_PROCESS_LOOPBACK_PERIOD_100NS is non-zero (Windows only).
+    // Given: the process-loopback period constant from the windows backend
+    // When: the constant is read
+    // Then: it is non-zero (passing zero to initialize_client is a bug)
+    #[cfg(target_os = "windows")]
+    #[test]
+    fn given_wasapi_process_period_const_when_checked_then_is_nonzero() {
+        use crate::windows::WASAPI_PROCESS_LOOPBACK_PERIOD_100NS;
+        assert_ne!(WASAPI_PROCESS_LOOPBACK_PERIOD_100NS, 0);
+    }
+
+    // Wave B GWT Test 4: BackendInit error contains the message.
+    // Given: a BackendInit error with a specific message
+    // When: the error is displayed
+    // Then: the message is present in the output
+    #[test]
+    fn given_backend_init_error_when_displayed_then_contains_com_message() {
+        let err = LoopbackError::BackendInit("COM init failed".to_owned());
+        let msg = err.to_string();
+        assert!(
+            msg.contains("COM init failed"),
+            "expected message in display, got: {msg}"
+        );
     }
 
     // Wave C GWT Test 1: PW_NODE_LATENCY format is "numerator/denominator".
