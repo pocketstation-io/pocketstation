@@ -91,8 +91,11 @@ impl SystemLoopbackSource {
     where
         F: Fn(AudioFrame) + Send + Sync + 'static,
     {
-        if let CaptureMode::Process(_) = &mode {
-            return Err(LoopbackError::ModeUnsupported(mode));
+        match &mode {
+            CaptureMode::Process(_) | CaptureMode::Application(_) => {
+                return Err(LoopbackError::ModeUnsupported(mode));
+            }
+            _ => {}
         }
         if pipewire_available() {
             run_pipewire(mode, callback)
@@ -136,12 +139,6 @@ where
 
     let pool = AudioBufferPool::new(POOL_DEPTH, CAPTURE_FRAME_SAMPLES);
     let seq = Arc::new(AtomicU64::new(0));
-
-    let target_node = match &mode {
-        CaptureMode::Application(name) => Some(name.clone()),
-        _ => None,
-    };
-    let _ = target_node; // used to select the node on Linux in future
 
     // Capture thread: owns the PipeWire MainLoop for its lifetime.
     let capture_thread = thread::Builder::new()
@@ -245,7 +242,7 @@ where
                     let _ = frame_tx_cb.try_send(frame);
                 })
                 .register()
-                .expect!("listener registration must not fail");
+                .expect("listener registration must not fail");
 
             // Build audio format params.
             let mut audio_info = spa::param::audio::AudioInfoRaw::new();
@@ -260,10 +257,10 @@ where
                     properties: audio_info.into(),
                 }),
             )
-            .unwrap!()
+            .unwrap()
             .0
             .into_inner();
-            let param = Pod::from_bytes(&obj).unwrap!();
+            let param = Pod::from_bytes(&obj).unwrap();
 
             let flags = pw::stream::StreamFlags::AUTOCONNECT
                 | pw::stream::StreamFlags::MAP_BUFFERS
@@ -360,7 +357,7 @@ where
                 return;
             }
 
-            let io = pcm.io_f32().expect!("io_f32 must succeed after hw_params");
+            let io = pcm.io_f32().expect("io_f32 must succeed after hw_params");
             let mut buf = vec![0f32; CAPTURE_FRAME_SAMPLES];
 
             loop {

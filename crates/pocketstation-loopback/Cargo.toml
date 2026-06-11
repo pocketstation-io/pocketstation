@@ -10,12 +10,10 @@ description = "System audio loopback capture for PocketStation (macOS ScreenCapt
 pocketstation-frame = { path = "../pocketstation-frame" }
 thiserror.workspace = true
 
-[target.'cfg(target_os = "macos")'.dependencies]
-screencapturekit = "7"
-
 [target.'cfg(target_os = "linux")'.dependencies]
 pipewire = "0.10"
 alsa = "0.9"
+libc = "0.2"
 
 [target.'cfg(target_os = "windows")'.dependencies]
 wasapi = "0.23"

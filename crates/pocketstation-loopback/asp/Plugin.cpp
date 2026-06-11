@@ -8,7 +8,7 @@
 //   - ZeroTimeStampPeriod derived from sample rate
 //   - Drop counter in shared memory
 
-#include <AudioServerPlugIn.h>
+#include <CoreAudio/AudioServerPlugIn.h>
 #include <CoreAudio/CoreAudioTypes.h>
 #include <CoreFoundation/CoreFoundation.h>
 #include <mach/mach_time.h>
@@ -165,7 +165,11 @@ static HRESULT pks_QueryInterface(void* inDriver, REFIID inUUID, LPVOID* outInte
     CFUUIDRef ifaceUUID = CFUUIDGetConstantUUIDWithBytes(NULL,
         0xEE, 0xA5, 0x77, 0x3D, 0xCC, 0x43, 0x49, 0xF1,
         0x8E, 0x00, 0x8F, 0x96, 0xE7, 0xD2, 0x3B, 0x17);
-    if (CFEqual(inUUID, ifaceUUID)) {
+    // inUUID is a CFUUIDBytes value (REFIID); wrap it for CFEqual comparison.
+    CFUUIDRef requestedUUID = CFUUIDCreateFromUUIDBytes(kCFAllocatorDefault, inUUID);
+    bool match = CFEqual(requestedUUID, ifaceUUID);
+    CFRelease(requestedUUID);
+    if (match) {
         *outInterface = &gDriver.vtable;
         ((PksDriver*)inDriver)->refCount++;
         return S_OK;
@@ -655,7 +659,7 @@ static OSStatus pks_GetPropertyData(AudioServerPlugInDriverRef inDriver,
         switch (inAddress->mSelector) {
             case kAudioObjectPropertyBaseClass: RETURN_CID(kAudioObjectClassID); break;
             case kAudioObjectPropertyClass:     RETURN_CID(kAudioPlugInClassID); break;
-            case kAudioObjectPropertyOwner:     RETURN_OID(kAudioObjectSystemObject); break;
+            case kAudioObjectPropertyOwner:     RETURN_OID(kAudioObjectPlugInObject); break;
             case kAudioObjectPropertyManufacturer: RETURN_CFSTR(kDevice_Manufacturer); break;
             case kAudioObjectPropertyOwnedObjects: {
                 *(AudioObjectID*)outData = kObjectID_Device;
