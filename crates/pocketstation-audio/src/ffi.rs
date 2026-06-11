@@ -2,7 +2,7 @@
 //!
 //! Generated header: audio-core/ffi/pocketstation_audio.h (via cbindgen in build.rs).
 //! Swift usage: import via module.modulemap in sdk-ios.
-//! ADR-001: platform callback writes f32 PCM → Rust Opus encode → Swift WebRTC send.
+//! AUDIO-001: platform callback writes f32 PCM → Rust Opus encode → Swift WebRTC send.
 
 use std::os::raw::{c_int, c_uchar, c_uint};
 
@@ -10,7 +10,7 @@ use pocketstation_codec::OpusEncoder;
 
 /// Opaque Opus encoder handle. Created once per session; not thread-safe.
 /// The iOS caller must not share this pointer across threads.
-pub struct PsOpusEncoder {
+pub struct PksOpusEncoder {
     inner: OpusEncoder,
     encode_buf: Vec<u8>,
 }
@@ -21,15 +21,15 @@ pub struct PsOpusEncoder {
 /// Returns null on failure.
 ///
 /// # Safety
-/// The returned pointer must be destroyed with `ps_opus_encoder_destroy`.
+/// The returned pointer must be destroyed with `pks_opus_encoder_destroy`.
 #[no_mangle]
-pub unsafe extern "C" fn ps_opus_encoder_create(
+pub unsafe extern "C" fn pks_opus_encoder_create(
     _sample_rate: c_uint,
     _channels: u8,
     _bitrate_kbps: c_uint,
-) -> *mut PsOpusEncoder {
+) -> *mut PksOpusEncoder {
     match OpusEncoder::new() {
-        Ok(enc) => Box::into_raw(Box::new(PsOpusEncoder {
+        Ok(enc) => Box::into_raw(Box::new(PksOpusEncoder {
             inner: enc,
             encode_buf: Vec::with_capacity(pocketstation_codec::OPUS_MAX_PACKET_BYTES),
         })),
@@ -37,13 +37,13 @@ pub unsafe extern "C" fn ps_opus_encoder_create(
     }
 }
 
-/// Destroy an encoder created by ps_opus_encoder_create.
+/// Destroy an encoder created by pks_opus_encoder_create.
 /// Safe to call with null.
 ///
 /// # Safety
-/// `enc` must be a pointer returned by `ps_opus_encoder_create` or null.
+/// `enc` must be a pointer returned by `pks_opus_encoder_create` or null.
 #[no_mangle]
-pub unsafe extern "C" fn ps_opus_encoder_destroy(enc: *mut PsOpusEncoder) {
+pub unsafe extern "C" fn pks_opus_encoder_destroy(enc: *mut PksOpusEncoder) {
     if !enc.is_null() {
         drop(Box::from_raw(enc));
     }
@@ -61,12 +61,12 @@ pub unsafe extern "C" fn ps_opus_encoder_destroy(enc: *mut PsOpusEncoder) {
 ///           -2 on encoding error.
 ///
 /// # Safety
-/// - `enc` must be a valid pointer from `ps_opus_encoder_create` or null.
+/// - `enc` must be a valid pointer from `pks_opus_encoder_create` or null.
 /// - `pcm` must point to at least `sample_count` valid f32 values.
 /// - `out_buf` must point to at least `out_cap` bytes of writable memory.
 #[no_mangle]
-pub unsafe extern "C" fn ps_encode_opus(
-    enc: *mut PsOpusEncoder,
+pub unsafe extern "C" fn pks_encode_opus(
+    enc: *mut PksOpusEncoder,
     pcm: *const f32,
     sample_count: usize,
     out_buf: *mut c_uchar,
@@ -102,13 +102,13 @@ mod tests {
     #[test]
     fn given_valid_pcm_when_encode_then_returns_positive_byte_count() {
         unsafe {
-            let enc = ps_opus_encoder_create(48_000, 1, 64);
+            let enc = pks_opus_encoder_create(48_000, 1, 64);
             assert!(!enc.is_null(), "encoder creation failed");
             let pcm = sine_960(440.0);
             let mut out = vec![0u8; 256];
-            let n = ps_encode_opus(enc, pcm.as_ptr(), pcm.len(), out.as_mut_ptr(), out.len());
+            let n = pks_encode_opus(enc, pcm.as_ptr(), pcm.len(), out.as_mut_ptr(), out.len());
             assert!(n > 0, "expected positive byte count, got {n}");
-            ps_opus_encoder_destroy(enc);
+            pks_opus_encoder_destroy(enc);
         }
     }
 
@@ -117,7 +117,7 @@ mod tests {
         unsafe {
             let mut out = vec![0u8; 256];
             let pcm = sine_960(440.0);
-            let n = ps_encode_opus(
+            let n = pks_encode_opus(
                 std::ptr::null_mut(),
                 pcm.as_ptr(),
                 pcm.len(),
@@ -130,22 +130,22 @@ mod tests {
 
     #[test]
     fn given_encoder_when_destroy_null_then_no_crash() {
-        unsafe { ps_opus_encoder_destroy(std::ptr::null_mut()) }
+        unsafe { pks_opus_encoder_destroy(std::ptr::null_mut()) }
     }
 
     #[test]
     fn given_sine_440hz_when_round_trip_then_decoded_has_energy() {
         unsafe {
-            let enc = ps_opus_encoder_create(48_000, 1, 64);
+            let enc = pks_opus_encoder_create(48_000, 1, 64);
             assert!(!enc.is_null());
             let pcm = sine_960(440.0);
             let mut out = vec![0u8; 256];
-            let n = ps_encode_opus(enc, pcm.as_ptr(), pcm.len(), out.as_mut_ptr(), out.len());
+            let n = pks_encode_opus(enc, pcm.as_ptr(), pcm.len(), out.as_mut_ptr(), out.len());
             assert!(n > 0);
             // Verify the encoded frame is a plausible size: Opus 20ms at 64kbps ≈ 160 bytes
             assert!(n <= 256, "encoded frame too large: {n}");
             assert!(n >= 2, "encoded frame suspiciously small: {n}");
-            ps_opus_encoder_destroy(enc);
+            pks_opus_encoder_destroy(enc);
         }
     }
 }

@@ -292,7 +292,7 @@ Good:
 
 ```rust
 // Drop newest instead of oldest because audio callback freshness
-// matters more than completeness — see ADR-004.
+// matters more than completeness — see AUDIO-004.
 ```
 
 Avoid:
@@ -307,7 +307,7 @@ Every `unsafe` block has a `SAFETY:` comment (see `STAFF_ENGINEERING_BAR.md` §4
 Every `TODO` references a phase and an ADR or issue:
 
 ```rust
-// TODO(Phase 1, ADR-009): measure WriteRTP allocation behavior
+// TODO(Phase 1, AUDIO-009): measure WriteRTP allocation behavior
 //                        before production relay.
 ```
 

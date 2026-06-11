@@ -35,3 +35,27 @@ path = "../../tests/phase0_pipeline.rs"
 
 [build-dependencies]
 cbindgen = "0.27"
+
+[dev-dependencies]
+criterion = { workspace = true }
+assert_no_alloc = { workspace = true }
+
+[[bench]]
+name = "encode_bench"
+harness = false
+path = "../../benches/encode_bench.rs"
+
+[[bench]]
+name = "decode_bench"
+harness = false
+path = "../../benches/decode_bench.rs"
+
+[[bench]]
+name = "pool_bench"
+harness = false
+path = "../../benches/pool_bench.rs"
+
+[[bench]]
+name = "bus_bench"
+harness = false
+path = "../../benches/bus_bench.rs"
