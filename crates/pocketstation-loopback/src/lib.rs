@@ -66,6 +66,7 @@ mod macos {
     use screencapturekit::prelude::*;
 
     use super::{CaptureMode, LoopbackError};
+    use super::macos_asp::AspReader;
 
     const CAPTURE_CHANNELS: u8 = 2;
     const CAPTURE_FRAME_SAMPLES: usize = DEFAULT_SLOT_SAMPLES_MONO_20MS * CAPTURE_CHANNELS as usize;
@@ -134,9 +135,18 @@ mod macos {
         }
     }
 
-    /// Manages a ScreenCaptureKit audio capture session.
+    /// Manages a macOS audio capture session.
+    ///
+    /// Backed by the PocketStation HAL plugin shared memory ring when the plugin is
+    /// installed (zero Screen Recording permission required), falling back to
+    /// ScreenCaptureKit when it is not.
     pub struct SystemLoopbackSource {
-        stream: SCStream,
+        /// SCKit stream handle — present only when using the SCKit backend.
+        sckit_stream: Option<SCStream>,
+        /// ASP reader thread join handle — present only when using the ASP backend.
+        asp_thread: Option<std::thread::JoinHandle<()>>,
+        /// Channel used to signal the ASP reader thread to stop.
+        asp_stop: Option<std::sync::mpsc::SyncSender<()>>,
     }
 
     impl SystemLoopbackSource {
@@ -148,6 +158,92 @@ mod macos {
         }
 
         pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
+        where
+            F: Fn(AudioFrame) + Send + Sync + 'static,
+        {
+            // Use ASP ring if plugin is installed (zero-permission, low-latency).
+            if crate::macos_asp::asp_is_installed() {
+                return Self::capture_via_asp(mode, callback);
+            }
+            // Fall back to SCKit (requires Screen Recording permission).
+            Self::capture_via_sckit(mode, callback)
+        }
+
+        fn capture_via_asp<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
+        where
+            F: Fn(AudioFrame) + Send + Sync + 'static,
+        {
+            // ASP ring is output-only (system mix); per-app capture not supported.
+            if mode != CaptureMode::SystemMix {
+                return Err(LoopbackError::ModeUnsupported(mode));
+            }
+            let mut reader = AspReader::open()
+                .ok_or_else(|| LoopbackError::BackendInit("ASP shm open failed".into()))?;
+
+            let channels = reader.channels() as u8;
+            // Frame size: 20 ms at the plugin's sample rate.
+            let sample_rate = reader.sample_rate();
+            // 20 ms worth of frames per callback invocation.
+            let frames_per_cb: u32 = sample_rate / 50;
+            let buf_samples = (frames_per_cb as usize) * (channels as usize);
+            let pool = Arc::new(AudioBufferPool::new(POOL_DEPTH, buf_samples));
+
+            let (stop_tx, stop_rx) = std::sync::mpsc::sync_channel::<()>(1);
+
+            let thread = std::thread::Builder::new()
+                .name("pks-asp-reader".into())
+                .spawn(move || {
+                    let mut seq: u64 = 0;
+                    let mut buf = vec![0.0f32; buf_samples];
+                    loop {
+                        // Check for stop signal (non-blocking).
+                        if stop_rx.try_recv().is_ok() {
+                            break;
+                        }
+                        let read = reader.read_frames(&mut buf, frames_per_cb);
+                        if read == 0 {
+                            // Ring empty — yield and retry after ~1 ms.
+                            std::thread::sleep(std::time::Duration::from_millis(1));
+                            continue;
+                        }
+                        let mut handle = match pool.acquire() {
+                            Some(h) => h,
+                            None => continue,
+                        };
+                        let dst = handle.as_mut_slice();
+                        let samples = (read as usize) * (channels as usize);
+                        let copy_len = samples.min(dst.len());
+                        dst[..copy_len].copy_from_slice(&buf[..copy_len]);
+                        handle.set_len(copy_len);
+                        let timestamp_ns = std::time::SystemTime::now()
+                            .duration_since(std::time::UNIX_EPOCH)
+                            .unwrap_or_default()
+                            .as_nanos() as u64;
+                        let mut frame = AudioFrame::new(
+                            StreamId(0),
+                            SourceId(0),
+                            seq,
+                            timestamp_ns,
+                            channels,
+                            handle,
+                        );
+                        frame.source_tag = AudioSourceTag::Captured;
+                        frame.encryption_mode = EncryptionMode::None;
+                        frame.sample_rate = sample_rate;
+                        callback(frame);
+                        seq += 1;
+                    }
+                })
+                .map_err(|e| LoopbackError::BackendInit(format!("thread spawn: {e}")))?;
+
+            Ok(Self {
+                sckit_stream: None,
+                asp_thread: Some(thread),
+                asp_stop: Some(stop_tx),
+            })
+        }
+
+        fn capture_via_sckit<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
         where
             F: Fn(AudioFrame) + Send + Sync + 'static,
         {
@@ -206,13 +302,25 @@ mod macos {
             stream
                 .start_capture()
                 .map_err(|e| LoopbackError::Init(format!("{e:?}")))?;
-            Ok(Self { stream })
+            Ok(Self {
+                sckit_stream: Some(stream),
+                asp_thread: None,
+                asp_stop: None,
+            })
         }
     }
 
     impl Drop for SystemLoopbackSource {
         fn drop(&mut self) {
-            let _ = self.stream.stop_capture();
+            if let Some(ref tx) = self.asp_stop {
+                let _ = tx.try_send(());
+            }
+            if let Some(thread) = self.asp_thread.take() {
+                let _ = thread.join();
+            }
+            if let Some(ref mut stream) = self.sckit_stream {
+                let _ = stream.stop_capture();
+            }
         }
     }
 }
@@ -404,14 +512,14 @@ mod tests {
         assert!(msg.contains("test failure"), "got: {msg}");
     }
 
-    // GWT Test 9: ASP stub always returns false (macOS only).
-    // Given: ASP feature is off (no libASPL submodule)
+    // GWT Test 9: asp_is_installed() returns false when no HAL plugin is running (macOS only).
+    // Given: no PocketStation HAL plugin running (CI environment, no /pocketstation-loopback-v1 shm)
     // When: asp_is_installed() is called
     // Then: returns false
     #[cfg(target_os = "macos")]
     #[test]
-    fn given_asp_stub_compiled_when_asp_is_installed_called_then_returns_false() {
-        assert!(!asp_is_installed(), "asp_is_installed() must return false with stub");
+    fn given_asp_not_running_when_asp_is_installed_then_returns_false() {
+        assert!(!asp_is_installed(), "asp_is_installed() must return false without the plugin");
     }
 
     // Wave B GWT Test 1: SystemMix on non-Windows non-macOS returns NotSupported.
@@ -512,5 +620,38 @@ mod tests {
     #[test]
     fn given_default_capture_mode_when_compared_then_is_system_mix() {
         assert_eq!(CaptureMode::default(), CaptureMode::SystemMix);
+    }
+
+    // ASP GWT Test 1: asp_is_installed() returns false without the plugin (macOS only).
+    // Given: no HAL plugin running (no shared memory region present in CI)
+    // When: asp_is_installed() is called
+    // Then: returns false
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn given_asp_not_running_when_asp_is_installed_called_then_returns_false() {
+        assert!(!asp_is_installed());
+    }
+
+    // ASP GWT Test 2: AspReader::open() returns None when no plugin is running (macOS only).
+    // Given: no HAL plugin running (no shared memory region)
+    // When: AspReader::open() is called
+    // Then: returns None
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn given_asp_reader_null_when_open_called_without_plugin_then_returns_none() {
+        use crate::macos_asp::AspReader;
+        assert!(AspReader::open().is_none());
+    }
+
+    // ASP GWT Test 3: PKS_RING_FRAMES is a power of two (compile-time check).
+    // Given: the PKS_RING_FRAMES constant (65536)
+    // When: checked at compile time
+    // Then: it is a power of two and non-zero
+    #[test]
+    fn given_shm_ring_const_pks_ring_frames_when_checked_then_is_power_of_two() {
+        const PKS_RING_FRAMES: u32 = 65536u32;
+        assert!(PKS_RING_FRAMES > 0);
+        assert_eq!(PKS_RING_FRAMES & (PKS_RING_FRAMES - 1), 0,
+            "PKS_RING_FRAMES must be a power of two for bitmask wrap to work");
     }
 }

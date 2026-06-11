@@ -6,9 +6,6 @@ license.workspace = true
 repository.workspace = true
 description = "System audio loopback capture for PocketStation (macOS ScreenCaptureKit, Linux PipeWire/ALSA, Windows WASAPI)"
 
-[features]
-asp = []   # opt-in; requires vendor/libASPL submodule (see asp/README.md)
-
 [dependencies]
 pocketstation-frame = { path = "../pocketstation-frame" }
 thiserror.workspace = true
