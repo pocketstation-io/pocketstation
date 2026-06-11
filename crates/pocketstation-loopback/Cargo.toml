@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "System audio loopback capture for PocketStation (macOS via ScreenCaptureKit; ASP optional)"
+description = "System audio loopback capture for PocketStation (macOS ScreenCaptureKit, Linux PipeWire/ALSA, Windows WASAPI)"
 
 [features]
 asp = []   # opt-in; requires vendor/libASPL submodule (see asp/README.md)
@@ -15,6 +15,10 @@ thiserror.workspace = true
 
 [target.'cfg(target_os = "macos")'.dependencies]
 screencapturekit = "7"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+pipewire = "0.10"
+alsa = "0.9"
 
 [build-dependencies]
 cc = "1"
