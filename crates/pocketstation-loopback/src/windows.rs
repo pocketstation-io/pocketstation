@@ -82,6 +82,10 @@ impl SystemLoopbackSource {
     where
         F: Fn(AudioFrame) + Send + Sync + 'static,
     {
+        if let CaptureMode::Application(_) = &mode {
+            return Err(LoopbackError::ModeUnsupported(mode));
+        }
+
         // S_OK = 0, S_FALSE = 1 (already initialised) -- both success.
         let hr = wasapi::initialize_mta();
         if hr.0 < 0 {
@@ -105,10 +109,8 @@ impl SystemLoopbackSource {
                     CaptureMode::Process(pid) => {
                         run_process_loopback(pid, pool, seq, callback, stop_rx)
                     }
-                    other => {
-                        eprintln!("pks-wasapi: unsupported capture mode {:?}", other);
-                        Ok(())
-                    }
+                    // Application(_) is rejected before thread spawn; this arm is unreachable.
+                    other => Err(LoopbackError::ModeUnsupported(other)),
                 };
                 if let Err(e) = result {
                     eprintln!("pks-wasapi capture error: {e}");

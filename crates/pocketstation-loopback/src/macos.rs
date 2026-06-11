@@ -1,0 +1,370 @@
+//! macOS audio loopback capture backend — AudioServerPlugin path only.
+//!
+//! On first use, if the HAL driver is not installed, this module prompts
+//! for the administrator password, installs the driver, and restarts
+//! `coreaudiod` automatically. Subsequent runs start instantly with no
+//! prompt and no Screen Recording permission required.
+//!
+//! # How it works
+//!
+//! 1. `ensure_asp_driver_active()` checks the HAL directory for the
+//!    `.driver` bundle.  If absent, it extracts the bundle bytes that were
+//!    compiled into this binary at build time, copies them to
+//!    `/Library/Audio/Plug-Ins/HAL/` via `sudo`, and sends SIGTERM to
+//!    `coreaudiod` so the daemon reloads its plugin list.
+//! 2. After the restart, `coreaudiod` calls `StartIO` on the plugin,
+//!    which creates the POSIX shared-memory ring.  We poll for the ring
+//!    with a 5-second timeout before proceeding.
+//! 3. A dedicated reader thread pulls frames from the ring and delivers
+//!    them to the caller's callback.
+//!
+//! # Hot-path invariants
+//!
+//! No allocation, locking, logging, or panicking on the audio delivery
+//! path.  Pool slot acquisition is lock-free (CAS bitset in
+//! `AudioBufferPool::acquire`).
+
+use std::path::Path;
+use std::sync::Arc;
+use std::time::Duration;
+
+use pocketstation_frame::{
+    AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId,
+};
+
+use crate::{CaptureMode, LoopbackError};
+use crate::macos_asp::AspReader;
+
+// ---------------------------------------------------------------------------
+// Driver bundle — embedded at compile time by build.rs
+// ---------------------------------------------------------------------------
+
+// These paths are emitted as `cargo:rustc-env` by build.rs.
+const DRIVER_DYLIB_BYTES: &[u8] = include_bytes!(env!("PKS_DRIVER_DYLIB"));
+const DRIVER_PLIST_BYTES: &[u8] = include_bytes!(env!("PKS_DRIVER_PLIST"));
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+const DRIVER_INSTALL_DIR: &str = "/Library/Audio/Plug-Ins/HAL";
+const DRIVER_BUNDLE_NAME: &str = "PocketStationLoopback.driver";
+
+/// Milliseconds to sleep before the first poll after restarting coreaudiod.
+const COREAUDIOD_RESTART_INITIAL_SLEEP_MS: u64 = 800;
+
+/// Milliseconds between subsequent SHM-ring poll attempts.
+const COREAUDIOD_POLL_INTERVAL_MS: u64 = 200;
+
+/// Total number of poll attempts after the initial sleep (~5 s window total).
+const COREAUDIOD_POLL_ATTEMPTS: u32 = 25;
+
+/// Pool depth: 8 frames absorb callback jitter without unbounded growth.
+const POOL_DEPTH: usize = 8;
+
+// ---------------------------------------------------------------------------
+// Public struct
+// ---------------------------------------------------------------------------
+
+/// Manages a macOS loopback capture session via the PocketStation HAL plugin.
+///
+/// Drop this value to stop capture.
+pub struct SystemLoopbackSource {
+    _thread: std::thread::JoinHandle<()>,
+    stop_tx: std::sync::mpsc::SyncSender<()>,
+}
+
+impl SystemLoopbackSource {
+    pub fn capture<F>(callback: F) -> Result<Self, LoopbackError>
+    where
+        F: Fn(AudioFrame) + Send + Sync + 'static,
+    {
+        Self::capture_mode(CaptureMode::SystemMix, callback)
+    }
+
+    pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
+    where
+        F: Fn(AudioFrame) + Send + Sync + 'static,
+    {
+        match mode {
+            CaptureMode::SystemMix => {}
+            other => return Err(LoopbackError::ModeUnsupported(other)),
+        }
+
+        ensure_asp_driver_active()?;
+
+        let mut reader = AspReader::open()
+            .ok_or_else(|| LoopbackError::BackendInit(
+                "SHM ring unavailable after driver install — try running again".into(),
+            ))?;
+
+        let channels = reader.channels() as u8;
+        let sample_rate = reader.sample_rate();
+        let frames_per_cb: u32 = sample_rate / 50; // 20 ms
+        let buf_samples = (frames_per_cb as usize) * (channels as usize);
+        let pool = Arc::new(AudioBufferPool::new(POOL_DEPTH, buf_samples));
+
+        let (stop_tx, stop_rx) = std::sync::mpsc::sync_channel::<()>(1);
+
+        let thread = std::thread::Builder::new()
+            .name("pks-asp-reader".into())
+            .spawn(move || {
+                let mut seq: u64 = 0;
+                let mut buf = vec![0.0f32; buf_samples];
+                loop {
+                    if stop_rx.try_recv().is_ok() {
+                        break;
+                    }
+                    let read = reader.read_frames(&mut buf, frames_per_cb);
+                    if read == 0 {
+                        std::thread::sleep(Duration::from_millis(1));
+                        continue;
+                    }
+                    let mut handle = match pool.acquire() {
+                        Some(h) => h,
+                        None => continue,
+                    };
+                    let dst = handle.as_mut_slice();
+                    let samples = (read as usize) * (channels as usize);
+                    let copy_len = samples.min(dst.len());
+                    dst[..copy_len].copy_from_slice(&buf[..copy_len]);
+                    handle.set_len(copy_len);
+                    let ts_ns = std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .unwrap_or_default()
+                        .as_nanos() as u64;
+                    let mut frame = AudioFrame::new(
+                        StreamId(0), SourceId(0), seq, ts_ns, channels, handle,
+                    );
+                    frame.source_tag = AudioSourceTag::Captured;
+                    frame.encryption_mode = EncryptionMode::None;
+                    frame.sample_rate = sample_rate;
+                    callback(frame);
+                    seq += 1;
+                }
+            })
+            .map_err(|e| LoopbackError::BackendInit(format!("thread spawn: {e}")))?;
+
+        Ok(Self { _thread: thread, stop_tx })
+    }
+}
+
+impl Drop for SystemLoopbackSource {
+    fn drop(&mut self) {
+        let _ = self.stop_tx.try_send(());
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Auto-install pipeline
+// ---------------------------------------------------------------------------
+
+/// Ensures the HAL plugin is installed and `coreaudiod` has loaded it.
+///
+/// If the `.driver` bundle is absent from the HAL directory, this function:
+///
+/// 1. Extracts the bundle bytes embedded in this binary to a temp directory.
+/// 2. Prompts for the administrator password via `sudo cp`.
+/// 3. Sends SIGTERM to `coreaudiod` so it reloads its plugin list.
+/// 4. Polls for the SHM ring to appear (up to 5 s) before returning.
+///
+/// Already-installed: returns immediately without any prompt or restart.
+fn ensure_asp_driver_active() -> Result<(), LoopbackError> {
+    let install_path = format!("{DRIVER_INSTALL_DIR}/{DRIVER_BUNDLE_NAME}");
+
+    if Path::new(&install_path).exists() {
+        // Driver is present. If coreaudiod has already called StartIO the
+        // SHM ring exists; if not (e.g. just after a reboot), wait briefly.
+        if !crate::macos_asp::asp_is_installed() {
+            wait_for_shm_ring()?;
+        }
+        return Ok(());
+    }
+
+    // First run — install the driver.
+    let tmp = extract_driver_to_temp()?;
+
+    println!(
+        "PocketStation audio driver not detected.\n\
+         Installing to {install_path} — you may be prompted for your password."
+    );
+
+    install_driver(&tmp, &install_path)?;
+    restart_coreaudiod()?;
+    wait_for_shm_ring()?;
+
+    println!("Driver active. Ultra-low latency capture ready.");
+    Ok(())
+}
+
+/// Extracts the embedded `.driver` bundle bytes to a temporary directory.
+///
+/// Returns the path to `<tmpdir>/PocketStationLoopback.driver`.
+fn extract_driver_to_temp() -> Result<std::path::PathBuf, LoopbackError> {
+    let tmp = std::env::temp_dir().join("pocketstation-driver-install");
+    let macos_dir = tmp.join(DRIVER_BUNDLE_NAME).join("Contents").join("MacOS");
+    std::fs::create_dir_all(&macos_dir)
+        .map_err(|e| LoopbackError::BackendInit(format!("temp dir create: {e}")))?;
+
+    std::fs::write(
+        macos_dir.join("PocketStationLoopback"),
+        DRIVER_DYLIB_BYTES,
+    )
+    .map_err(|e| LoopbackError::BackendInit(format!("dylib write: {e}")))?;
+
+    std::fs::write(
+        tmp.join(DRIVER_BUNDLE_NAME).join("Contents").join("Info.plist"),
+        DRIVER_PLIST_BYTES,
+    )
+    .map_err(|e| LoopbackError::BackendInit(format!("plist write: {e}")))?;
+
+    // The dylib must be executable.
+    set_executable(&macos_dir.join("PocketStationLoopback"))?;
+
+    Ok(tmp.join(DRIVER_BUNDLE_NAME))
+}
+
+fn set_executable(path: &Path) -> Result<(), LoopbackError> {
+    use std::os::unix::fs::PermissionsExt;
+    let mut perms = std::fs::metadata(path)
+        .map_err(|e| LoopbackError::BackendInit(format!("metadata: {e}")))?
+        .permissions();
+    perms.set_mode(0o755);
+    std::fs::set_permissions(path, perms)
+        .map_err(|e| LoopbackError::BackendInit(format!("chmod: {e}")))?;
+    Ok(())
+}
+
+/// Copies the extracted bundle to the HAL directory via `sudo cp -R`.
+fn install_driver(bundle: &Path, install_path: &str) -> Result<(), LoopbackError> {
+    let status = std::process::Command::new("sudo")
+        .args(["cp", "-R", bundle.to_str().unwrap(), DRIVER_INSTALL_DIR])
+        .status()
+        .map_err(|e| LoopbackError::BackendInit(format!("sudo cp: {e}")))?;
+
+    if !status.success() {
+        return Err(LoopbackError::BackendInit(
+            "Driver installation cancelled or failed. \
+             Ensure you have administrator privileges.".into(),
+        ));
+    }
+
+    // Make the installed dylib executable (sudo may reset permissions).
+    let installed_dylib = format!(
+        "{install_path}/Contents/MacOS/PocketStationLoopback"
+    );
+    let _ = std::process::Command::new("sudo")
+        .args(["chmod", "755", &installed_dylib])
+        .status();
+
+    Ok(())
+}
+
+/// Sends SIGTERM to `coreaudiod` so it restarts and loads the new plugin.
+///
+/// SIGTERM (not SIGKILL) is the correct signal — the same method used by
+/// BlackHole and other HAL plugin installers.  coreaudiod is a system
+/// daemon under launchd and will be relaunched automatically.
+fn restart_coreaudiod() -> Result<(), LoopbackError> {
+    println!("Restarting audio daemon to load driver (audio will briefly interrupt)...");
+    let status = std::process::Command::new("sudo")
+        .args(["killall", "coreaudiod"])
+        .status()
+        .map_err(|e| LoopbackError::BackendInit(format!("killall coreaudiod: {e}")))?;
+
+    // killall returns 1 if no process was found; treat that as ok (already dead).
+    if !status.success() && status.code() != Some(1) {
+        return Err(LoopbackError::BackendInit(
+            "coreaudiod restart failed — try running again with sudo".into(),
+        ));
+    }
+    Ok(())
+}
+
+/// Polls the SHM ring until `coreaudiod` has loaded the plugin and called
+/// `StartIO` (up to ~5 s total).
+fn wait_for_shm_ring() -> Result<(), LoopbackError> {
+    std::thread::sleep(Duration::from_millis(COREAUDIOD_RESTART_INITIAL_SLEEP_MS));
+
+    for _ in 0..COREAUDIOD_POLL_ATTEMPTS {
+        if crate::macos_asp::asp_is_installed() {
+            return Ok(());
+        }
+        std::thread::sleep(Duration::from_millis(COREAUDIOD_POLL_INTERVAL_MS));
+    }
+
+    Err(LoopbackError::BackendInit(
+        "Timed out waiting for PocketStation audio driver to become active. \
+         Try running `pks source system` again, or reboot if the problem persists."
+            .into(),
+    ))
+}
+
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // Given: driver install path constant
+    // When: inspected at test time
+    // Then: points to the canonical HAL directory
+    #[test]
+    fn given_driver_install_dir_when_checked_then_is_hal_directory() {
+        assert_eq!(DRIVER_INSTALL_DIR, "/Library/Audio/Plug-Ins/HAL");
+    }
+
+    // Given: driver bundle name constant
+    // When: inspected
+    // Then: ends with .driver extension
+    #[test]
+    fn given_driver_bundle_name_when_checked_then_has_driver_extension() {
+        assert!(
+            DRIVER_BUNDLE_NAME.ends_with(".driver"),
+            "bundle name must end with .driver, got: {DRIVER_BUNDLE_NAME}"
+        );
+    }
+
+    // Given: embedded driver bytes
+    // When: length checked
+    // Then: both are non-empty (would be zero if build.rs failed to embed)
+    #[test]
+    fn given_embedded_driver_bytes_when_checked_then_are_non_empty() {
+        assert!(!DRIVER_DYLIB_BYTES.is_empty(), "DRIVER_DYLIB_BYTES must be non-empty");
+        assert!(!DRIVER_PLIST_BYTES.is_empty(), "DRIVER_PLIST_BYTES must be non-empty");
+    }
+
+    // Given: embedded Info.plist
+    // When: inspected as UTF-8
+    // Then: contains the expected bundle identifier
+    #[test]
+    fn given_embedded_info_plist_when_parsed_then_contains_bundle_id() {
+        let plist = std::str::from_utf8(DRIVER_PLIST_BYTES)
+            .expect("Info.plist must be valid UTF-8");
+        assert!(
+            plist.contains("io.pocketstation.loopback"),
+            "Info.plist must contain the bundle identifier"
+        );
+    }
+
+    // Given: restart initial sleep constant
+    // When: checked
+    // Then: provides enough time for coreaudiod to restart (~800 ms floor)
+    #[test]
+    fn given_restart_sleep_constant_when_checked_then_is_at_least_500ms() {
+        assert!(
+            COREAUDIOD_RESTART_INITIAL_SLEEP_MS >= 500,
+            "restart sleep must be at least 500 ms to let coreaudiod initialise"
+        );
+    }
+
+    // Given: no ASP plugin running in CI
+    // When: asp_is_installed() is called
+    // Then: returns false without panicking
+    #[test]
+    fn given_no_plugin_running_when_asp_is_installed_called_then_returns_false() {
+        assert!(!crate::macos_asp::asp_is_installed());
+    }
+}

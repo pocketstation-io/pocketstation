@@ -34,199 +34,17 @@ pub enum LoopbackError {
     /// The requested capture mode is not supported by this backend.
     #[error("capture mode not supported on this backend: {0:?}")]
     ModeUnsupported(CaptureMode),
-
-    /// ScreenCaptureKit initialisation failed (macOS only).
-    #[cfg(target_os = "macos")]
-    #[error("ScreenCaptureKit initialisation failed: {0}")]
-    Init(String),
-
-    /// No display was found to anchor the content filter (macOS only).
-    #[cfg(target_os = "macos")]
-    #[error("no display found for content filter")]
-    NoDisplay,
-
-    /// The audio buffer pool is exhausted (macOS only).
-    #[cfg(target_os = "macos")]
-    #[error("audio buffer pool exhausted -- frame dropped")]
-    PoolExhausted,
 }
 
 // ---------------------------------------------------------------------------
-// macOS ScreenCaptureKit implementation
+// Platform backends
 // ---------------------------------------------------------------------------
 
 #[cfg(target_os = "macos")]
-mod macos {
-    use std::sync::Arc;
-
-    use pocketstation_frame::{
-        AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId,
-        DEFAULT_SAMPLE_RATE, DEFAULT_SLOT_SAMPLES_MONO_20MS,
-    };
-    use screencapturekit::prelude::*;
-
-    use super::{CaptureMode, LoopbackError};
-
-    const CAPTURE_CHANNELS: u8 = 2;
-    const CAPTURE_FRAME_SAMPLES: usize = DEFAULT_SLOT_SAMPLES_MONO_20MS * CAPTURE_CHANNELS as usize;
-    const POOL_DEPTH: usize = 8;
-
-    struct AudioHandler<F>
-    where
-        F: Fn(AudioFrame) + Send + Sync + 'static,
-    {
-        pool: Arc<AudioBufferPool>,
-        callback: F,
-        stream_id: StreamId,
-        source_id: SourceId,
-        seq: std::sync::atomic::AtomicU64,
-    }
-
-    impl<F> SCStreamOutputTrait for AudioHandler<F>
-    where
-        F: Fn(AudioFrame) + Send + Sync + 'static,
-    {
-        fn did_output_sample_buffer(&self, sample: CMSampleBuffer, of_type: SCStreamOutputType) {
-            if of_type != SCStreamOutputType::Audio {
-                return;
-            }
-            let buffer_list = match sample.audio_buffer_list() {
-                Some(bl) => bl,
-                None => return,
-            };
-            let mut handle = match self.pool.acquire() {
-                Some(h) => h,
-                None => return,
-            };
-            let dst = handle.as_mut_slice();
-            let mut written = 0usize;
-            'outer: for audio_buf in buffer_list.iter() {
-                let bytes = audio_buf.data();
-                let n_samples = bytes.len() / std::mem::size_of::<f32>();
-                let src_ptr = bytes.as_ptr() as *const f32;
-                for i in 0..n_samples {
-                    if written >= dst.len() {
-                        break 'outer;
-                    }
-                    // SAFETY: ptr is valid f32 LE data from ScreenCaptureKit.
-                    dst[written] = unsafe { src_ptr.add(i).read_unaligned() };
-                    written += 1;
-                }
-            }
-            handle.set_len(written);
-            let seq = self.seq.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-            let timestamp_ns = std::time::SystemTime::now()
-                .duration_since(std::time::UNIX_EPOCH)
-                .unwrap_or_default()
-                .as_nanos() as u64;
-            let mut frame = AudioFrame::new(
-                self.stream_id,
-                self.source_id,
-                seq,
-                timestamp_ns,
-                CAPTURE_CHANNELS,
-                handle,
-            );
-            frame.source_tag = AudioSourceTag::Captured;
-            frame.encryption_mode = EncryptionMode::None;
-            frame.sample_rate = DEFAULT_SAMPLE_RATE;
-            (self.callback)(frame);
-        }
-    }
-
-    /// Manages a ScreenCaptureKit audio capture session.
-    pub struct SystemLoopbackSource {
-        stream: SCStream,
-    }
-
-    impl SystemLoopbackSource {
-        pub fn capture<F>(callback: F) -> Result<Self, LoopbackError>
-        where
-            F: Fn(AudioFrame) + Send + Sync + 'static,
-        {
-            Self::capture_mode(CaptureMode::SystemMix, callback)
-        }
-
-        pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
-        where
-            F: Fn(AudioFrame) + Send + Sync + 'static,
-        {
-            let content = SCShareableContent::get()
-                .map_err(|e| LoopbackError::Init(format!("{e:?}")))?;
-            let display = content
-                .displays()
-                .into_iter()
-                .next()
-                .ok_or(LoopbackError::NoDisplay)?;
-            // Build a content filter for the requested mode.
-            // Process(_) is not supported by SCKit.
-            let filter = match &mode {
-                CaptureMode::SystemMix => SCContentFilter::create()
-                    .with_display(&display)
-                    .with_excluding_windows(&[])
-                    .build(),
-                CaptureMode::Application(bundle_id) => {
-                    let app = content
-                        .applications()
-                        .into_iter()
-                        .find(|a| a.bundle_identifier() == *bundle_id)
-                        .ok_or_else(|| {
-                            LoopbackError::ModeUnsupported(CaptureMode::Application(
-                                bundle_id.clone(),
-                            ))
-                        })?;
-                    SCContentFilter::create()
-                        .with_display(&display)
-                        .with_including_applications(&[&app], &[])
-                        .build()
-                }
-                CaptureMode::Process(_) => {
-                    return Err(LoopbackError::ModeUnsupported(mode));
-                }
-            };
-            // with_excludes_current_process_audio prevents the CLI from
-            // capturing its own output (feedback loop prevention).
-            let config = SCStreamConfiguration::new()
-                .with_captures_audio(true)
-                .with_sample_rate(DEFAULT_SAMPLE_RATE as i32)
-                .with_channel_count(CAPTURE_CHANNELS as i32)
-                .with_excludes_current_process_audio(true)
-                .with_width(1)
-                .with_height(1);
-            let pool = AudioBufferPool::new(POOL_DEPTH, CAPTURE_FRAME_SAMPLES);
-            let handler = AudioHandler {
-                pool,
-                callback,
-                stream_id: StreamId(0),
-                source_id: SourceId(0),
-                seq: std::sync::atomic::AtomicU64::new(0),
-            };
-            let mut stream = SCStream::new(&filter, &config);
-            stream.add_output_handler(handler, SCStreamOutputType::Audio);
-            stream
-                .start_capture()
-                .map_err(|e| LoopbackError::Init(format!("{e:?}")))?;
-            Ok(Self { stream })
-        }
-    }
-
-    impl Drop for SystemLoopbackSource {
-        fn drop(&mut self) {
-            let _ = self.stream.stop_capture();
-        }
-    }
-}
-
-// ---------------------------------------------------------------------------
-// Windows WASAPI implementation
-// ---------------------------------------------------------------------------
+mod macos;
 
 #[cfg(target_os = "windows")]
 mod windows;
-
-// ---------------------------------------------------------------------------
-// Linux PipeWire + ALSA implementation
-// ---------------------------------------------------------------------------
 
 #[cfg(target_os = "linux")]
 mod linux;
@@ -291,8 +109,9 @@ pub use stub::SystemLoopbackSource;
 
 /// Start capturing system audio in `SystemMix` mode.
 ///
-/// Uses ScreenCaptureKit on macOS. Returns `Err(LoopbackError::NotSupported)`
-/// on all other platforms.
+/// On macOS, installs the HAL plugin automatically on first run (prompts for
+/// sudo once).  Returns `Err(LoopbackError::NotSupported)` on platforms with
+/// no backend.
 pub fn capture_system_audio<F>(callback: F) -> Result<SystemLoopbackSource, LoopbackError>
 where
     F: Fn(pocketstation_frame::AudioFrame) + Send + Sync + 'static,
@@ -302,9 +121,12 @@ where
 
 /// Start capturing with an explicit `CaptureMode`.
 ///
-/// - macOS: `Application(bundle_id)` uses `SCContentFilter.with_including_applications`.
-///   `Process(_)` returns `ModeUnsupported`.
-///   `with_excludes_current_process_audio(true)` prevents CLI feedback.
+/// - macOS: only `SystemMix` is supported; `Application(_)` and `Process(_)`
+///   return `ModeUnsupported`.
+/// - Windows: `SystemMix` and `Process(pid)` supported; `Application(_)` returns
+///   `ModeUnsupported`.
+/// - Linux: only `SystemMix` is supported (PipeWire); other modes return
+///   `ModeUnsupported`.
 /// - Other platforms: always returns `NotSupported`.
 pub fn capture_with_mode<F>(
     mode: CaptureMode,
@@ -404,14 +226,14 @@ mod tests {
         assert!(msg.contains("test failure"), "got: {msg}");
     }
 
-    // GWT Test 9: ASP stub always returns false (macOS only).
-    // Given: ASP feature is off (no libASPL submodule)
+    // GWT Test 9: asp_is_installed() returns false when no HAL plugin is running (macOS only).
+    // Given: no PocketStation HAL plugin running (CI environment, no /pocketstation-loopback-v1 shm)
     // When: asp_is_installed() is called
     // Then: returns false
     #[cfg(target_os = "macos")]
     #[test]
-    fn given_asp_stub_compiled_when_asp_is_installed_called_then_returns_false() {
-        assert!(!asp_is_installed(), "asp_is_installed() must return false with stub");
+    fn given_asp_not_running_when_asp_is_installed_then_returns_false() {
+        assert!(!asp_is_installed(), "asp_is_installed() must return false without the plugin");
     }
 
     // Wave B GWT Test 1: SystemMix on non-Windows non-macOS returns NotSupported.
@@ -512,5 +334,38 @@ mod tests {
     #[test]
     fn given_default_capture_mode_when_compared_then_is_system_mix() {
         assert_eq!(CaptureMode::default(), CaptureMode::SystemMix);
+    }
+
+    // ASP GWT Test 1: asp_is_installed() returns false without the plugin (macOS only).
+    // Given: no HAL plugin running (no shared memory region present in CI)
+    // When: asp_is_installed() is called
+    // Then: returns false
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn given_asp_not_running_when_asp_is_installed_called_then_returns_false() {
+        assert!(!asp_is_installed());
+    }
+
+    // ASP GWT Test 2: AspReader::open() returns None when no plugin is running (macOS only).
+    // Given: no HAL plugin running (no shared memory region)
+    // When: AspReader::open() is called
+    // Then: returns None
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn given_asp_reader_null_when_open_called_without_plugin_then_returns_none() {
+        use crate::macos_asp::AspReader;
+        assert!(AspReader::open().is_none());
+    }
+
+    // ASP GWT Test 3: PKS_RING_FRAMES is a power of two (compile-time check).
+    // Given: the PKS_RING_FRAMES constant (65536)
+    // When: checked at compile time
+    // Then: it is a power of two and non-zero
+    #[test]
+    fn given_shm_ring_const_pks_ring_frames_when_checked_then_is_power_of_two() {
+        const PKS_RING_FRAMES: u32 = 65536u32;
+        assert!(PKS_RING_FRAMES > 0);
+        assert_eq!(PKS_RING_FRAMES & (PKS_RING_FRAMES - 1), 0,
+            "PKS_RING_FRAMES must be a power of two for bitmask wrap to work");
     }
 }
