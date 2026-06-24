@@ -45,7 +45,17 @@ extern "C" {
 // Public API
 // ---------------------------------------------------------------------------
 
-/// Returns `true` when the CoreAudio process tap API is available (macOS 14.2+).
+/// Returns `true` when the CoreAudio process tap API is available.
+///
+/// This is a **runtime** availability check, not a compile-time gate.  The
+/// call is safe on any macOS version: on macOS < 14.2 the FFI symbol resolves
+/// but returns 0 (unavailable), so callers on older systems get a clean `false`
+/// rather than a link error or panic.  Code that calls `tap_available()` therefore
+/// compiles and runs on all macOS versions and degrades gracefully when the host
+/// is below 14.2.
+///
+/// The underlying API (`AudioHardwareCreateProcessTap` / `CATapDescription`) was
+/// introduced in macOS 14.2.
 pub fn tap_available() -> bool {
     unsafe { pks_process_tap_available() != 0 }
 }
