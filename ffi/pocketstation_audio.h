@@ -18,16 +18,20 @@ typedef struct PksOpusEncoder PksOpusEncoder;
 
 /**
  * Create an Opus encoder.
- * sample_rate: must be 48000. channels: 1 (mono) or 2 (stereo).
- * bitrate_kbps: target bitrate in kbps (e.g. 64).
- * Returns null on failure.
+ *
+ * sample_rate: must be 48000 (Opus operates internally at 48 kHz; any other
+ *              value returns null — this is a hard rejection, not silent rounding).
+ * channels:    1 (mono) or 2 (stereo). Any other value returns null.
+ * bitrate_kbps: target bitrate in kbps (e.g. 64). 0 = Opus auto (VBR).
+ *
+ * Returns null on invalid parameters or on internal encoder failure.
  *
  * # Safety
  * The returned pointer must be destroyed with `pks_opus_encoder_destroy`.
  */
-struct PksOpusEncoder *pks_opus_encoder_create(unsigned int _sample_rate,
-                                               uint8_t _channels,
-                                               unsigned int _bitrate_kbps);
+struct PksOpusEncoder *pks_opus_encoder_create(unsigned int sample_rate,
+                                               uint8_t channels,
+                                               unsigned int bitrate_kbps);
 
 /**
  * Destroy an encoder created by pks_opus_encoder_create.

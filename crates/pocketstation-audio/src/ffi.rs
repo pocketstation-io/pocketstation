@@ -6,7 +6,7 @@
 
 use std::os::raw::{c_int, c_uchar, c_uint};
 
-use pocketstation_codec::OpusEncoder;
+use pocketstation_codec::{OpusChannels, OpusConfig, OpusEncoder};
 
 /// Opaque Opus encoder handle. Created once per session; not thread-safe.
 /// The iOS caller must not share this pointer across threads.
@@ -16,19 +16,36 @@ pub struct PksOpusEncoder {
 }
 
 /// Create an Opus encoder.
-/// sample_rate: must be 48000. channels: 1 (mono) or 2 (stereo).
-/// bitrate_kbps: target bitrate in kbps (e.g. 64).
-/// Returns null on failure.
+///
+/// sample_rate: must be 48000 (Opus operates internally at 48 kHz; any other
+///              value returns null — this is a hard rejection, not silent rounding).
+/// channels:    1 (mono) or 2 (stereo). Any other value returns null.
+/// bitrate_kbps: target bitrate in kbps (e.g. 64). 0 = Opus auto (VBR).
+///
+/// Returns null on invalid parameters or on internal encoder failure.
 ///
 /// # Safety
 /// The returned pointer must be destroyed with `pks_opus_encoder_destroy`.
 #[no_mangle]
 pub unsafe extern "C" fn pks_opus_encoder_create(
-    _sample_rate: c_uint,
-    _channels: u8,
-    _bitrate_kbps: c_uint,
+    sample_rate: c_uint,
+    channels: u8,
+    bitrate_kbps: c_uint,
 ) -> *mut PksOpusEncoder {
-    match OpusEncoder::new() {
+    if sample_rate != 48_000 {
+        return std::ptr::null_mut();
+    }
+    let ch = match channels {
+        1 => OpusChannels::Mono,
+        2 => OpusChannels::Stereo,
+        _ => return std::ptr::null_mut(),
+    };
+    let config = OpusConfig {
+        channels: ch,
+        bitrate_kbps: if bitrate_kbps > 0 { Some(bitrate_kbps) } else { None },
+        ..OpusConfig::default()
+    };
+    match OpusEncoder::from_config(&config) {
         Ok(enc) => Box::into_raw(Box::new(PksOpusEncoder {
             inner: enc,
             encode_buf: Vec::with_capacity(pocketstation_codec::OPUS_MAX_PACKET_BYTES),
@@ -97,6 +114,31 @@ mod tests {
         (0..pocketstation_codec::OPUS_FRAME_SAMPLES)
             .map(|i| (2.0 * PI * hz * i as f32 / 48_000.0).sin() * 0.25)
             .collect()
+    }
+
+    #[test]
+    fn given_wrong_sample_rate_when_create_then_returns_null() {
+        unsafe {
+            let enc = pks_opus_encoder_create(44_100, 1, 64);
+            assert!(enc.is_null(), "must reject non-48000 sample rate");
+        }
+    }
+
+    #[test]
+    fn given_invalid_channel_count_when_create_then_returns_null() {
+        unsafe {
+            let enc = pks_opus_encoder_create(48_000, 3, 64);
+            assert!(enc.is_null(), "must reject channels != 1 or 2");
+        }
+    }
+
+    #[test]
+    fn given_stereo_channels_when_create_then_succeeds() {
+        unsafe {
+            let enc = pks_opus_encoder_create(48_000, 2, 64);
+            assert!(!enc.is_null(), "stereo encoder must succeed");
+            pks_opus_encoder_destroy(enc);
+        }
     }
 
     #[test]
