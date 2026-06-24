@@ -2,7 +2,7 @@ use opus::{Application, Channels, Encoder};
 use pocketstation_frame::AudioFrame;
 
 use crate::constants::{
-    I16_SCALE, OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, OPUS_SAMPLE_RATE,
+    I16_SCALE, OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES,
     VOICE_AGENT_FRAME_SAMPLES,
 };
 
