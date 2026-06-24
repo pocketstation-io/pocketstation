@@ -814,3 +814,65 @@ where
         stop_tx,
     })
 }
+
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use pocketstation_capture::CaptureError;
+
+    /// P4 no-fallback: Process(pid) on a system without PipeWire must return
+    /// ModeUnsupported, not silently fall back to the system mix.
+    #[test]
+    fn given_process_mode_when_pipewire_unavailable_then_mode_unsupported_not_system_mix() {
+        if pipewire_available() {
+            return; // test requires PipeWire to be absent
+        }
+        let result = SystemLoopbackSource::capture_mode(
+            CaptureMode::Process(99999),
+            |_| {},
+        );
+        match result {
+            Err(CaptureError::ModeUnsupported(_)) => {}
+            other => panic!("expected ModeUnsupported, got {other:?}"),
+        }
+    }
+
+    /// P4 no-fallback: Application(name) on a system without PipeWire must return
+    /// ModeUnsupported, not silently fall back to the system mix.
+    #[test]
+    fn given_application_mode_when_pipewire_unavailable_then_mode_unsupported_not_system_mix() {
+        if pipewire_available() {
+            return; // test requires PipeWire to be absent
+        }
+        let result = SystemLoopbackSource::capture_mode(
+            CaptureMode::Application("some-app".to_owned()),
+            |_| {},
+        );
+        match result {
+            Err(CaptureError::ModeUnsupported(_)) => {}
+            other => panic!("expected ModeUnsupported, got {other:?}"),
+        }
+    }
+
+    /// P4 no-fallback: Process(pid) when PipeWire is present but node not found
+    /// must return a BackendInit error, not fall back to SystemMix.
+    #[test]
+    fn given_process_mode_when_node_not_found_then_backend_init_error_not_system_mix() {
+        if !pipewire_available() {
+            return; // test requires PipeWire
+        }
+        // PID 0 is the idle process and will never appear as an audio node.
+        let result = SystemLoopbackSource::capture_mode(
+            CaptureMode::Process(0),
+            |_| {},
+        );
+        match result {
+            Err(CaptureError::ModeUnsupported(_)) | Err(CaptureError::BackendInit(_)) => {}
+            Ok(_) => panic!("expected Err for nonexistent PID 0, got Ok"),
+        }
+    }
+}
