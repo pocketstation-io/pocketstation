@@ -40,10 +40,16 @@ pub enum SourceKind {
 /// Playback state of a discoverable capture source.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum SourceState {
+    /// The source exists and is available to capture.
+    Available,
     /// The source is actively producing audio.
-    Active,
-    /// The source exists but is currently silent or paused.
-    Idle,
+    Playing,
+    /// The source is paused or silent.
+    Silent,
+    /// The source is not accessible (exclusive mode, device error, etc.).
+    Unavailable,
+    /// OS permission denied (Screen Recording, Microphone access, etc.).
+    PermissionBlocked,
 }
 
 // ---------------------------------------------------------------------------
@@ -95,6 +101,7 @@ impl StableSourceId {
 // ---------------------------------------------------------------------------
 
 /// A discoverable audio capture source returned by the discovery layer.
+#[derive(Debug, Clone)]
 pub struct CaptureSource {
     /// Typed stable identity. Use `stable_id.to_frame_source_id()` when
     /// constructing AudioFrame for this source.
@@ -103,6 +110,12 @@ pub struct CaptureSource {
     pub name: String,
     /// OS process ID of the application (None for device/system sources).
     pub process_id: Option<u32>,
+    /// Application identifier (bundle ID on macOS, exe stem on Windows, app name on Linux).
+    /// Convenience field — also encoded as `stable_id.stable_key` for app sources.
+    pub app_id: Option<String>,
+    /// Device UID (macOS device UID, PipeWire node name, WASAPI device ID).
+    /// Convenience field — also encoded as `stable_id.stable_key` for device sources.
+    pub device_uid: Option<String>,
     /// Current playback state.
     pub state: SourceState,
     /// Native sample rate reported by the source (Hz).
@@ -190,7 +203,9 @@ mod tests {
             stable_id,
             name: "Speakers".into(),
             process_id: None,
-            state: SourceState::Active,
+            app_id: None,
+            device_uid: None,
+            state: SourceState::Available,
             sample_rate: 48_000,
             channels: 2,
         };

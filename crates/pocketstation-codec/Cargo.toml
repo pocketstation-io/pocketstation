@@ -17,3 +17,6 @@ test-helpers = []
 pocketstation-frame = { path = "../pocketstation-frame", version = "0.1.0" }
 opus.workspace = true
 thiserror.workspace = true
+
+[dev-dependencies]
+hound.workspace = true

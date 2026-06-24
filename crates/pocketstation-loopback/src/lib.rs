@@ -11,6 +11,9 @@ pub use model::{
 #[cfg(target_os = "macos")]
 mod macos;
 
+#[cfg(target_os = "macos")]
+pub mod macos_tap;
+
 #[cfg(target_os = "windows")]
 mod windows;
 
@@ -56,6 +59,13 @@ mod macos_asp;
 pub use macos_asp::asp_is_installed;
 
 // ---------------------------------------------------------------------------
+// macOS tap availability re-export
+// ---------------------------------------------------------------------------
+
+#[cfg(target_os = "macos")]
+pub use macos_tap::tap_available;
+
+// ---------------------------------------------------------------------------
 // Re-export the right implementation
 // ---------------------------------------------------------------------------
 
@@ -72,14 +82,75 @@ pub use linux::SystemLoopbackSource;
 pub use stub::SystemLoopbackSource;
 
 // ---------------------------------------------------------------------------
+// Source discovery — public API
+// ---------------------------------------------------------------------------
+
+/// Enumerate all available audio capture sources on this system.
+///
+/// - macOS 14.2+: system mix entry followed by per-process application sources
+///   discovered via CoreAudio process enumeration.
+/// - macOS < 14.2: system mix entry only.
+/// - Windows: system mix entry followed by active WASAPI audio session sources.
+/// - Linux (PipeWire): system mix entry followed by PipeWire node sources.
+/// - Linux (no PipeWire): system mix entry only.
+/// - Other platforms: system mix entry only.
+pub fn discover_sources() -> Vec<CaptureSource> {
+    #[cfg(target_os = "macos")]
+    {
+        use pocketstation_frame::Platform;
+        let system_mix = CaptureSource {
+            stable_id:   StableSourceId::new(Platform::Macos, SourceKind::SystemMix, "system:mix"),
+            name:        "System Mix".to_owned(),
+            process_id:  None,
+            app_id:      None,
+            device_uid:  None,
+            state:       SourceState::Available,
+            sample_rate: 48000,
+            channels:    2,
+        };
+        let mut sources = vec![system_mix];
+        if macos_tap::tap_available() {
+            sources.extend(macos_tap::discover_sources_native());
+        }
+        sources
+    }
+
+    #[cfg(target_os = "windows")]
+    {
+        windows::discover_sources_windows()
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        linux::discover_sources_linux()
+    }
+
+    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
+    {
+        use pocketstation_frame::Platform;
+        vec![CaptureSource {
+            stable_id:   StableSourceId::new(Platform::Unknown, SourceKind::SystemMix, "system:mix"),
+            name:        "System Mix".to_owned(),
+            process_id:  None,
+            app_id:      None,
+            device_uid:  None,
+            state:       SourceState::Available,
+            sample_rate: 48000,
+            channels:    2,
+        }]
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Public convenience functions
 // ---------------------------------------------------------------------------
 
 /// Start capturing system audio in `SystemMix` mode.
 ///
-/// On macOS, installs the HAL plugin automatically on first run (prompts for
-/// sudo once).  Returns `Err(LoopbackError::NotSupported)` on platforms with
-/// no backend.
+/// On macOS 14.2+, uses the CoreAudio process tap (no HAL plugin required).
+/// On older macOS, installs the HAL plugin automatically on first run (prompts
+/// for sudo once).  Returns `Err(LoopbackError::NotSupported)` on platforms
+/// with no backend.
 pub fn capture_system_audio<F>(callback: F) -> Result<SystemLoopbackSource, LoopbackError>
 where
     F: Fn(pocketstation_frame::AudioFrame) + Send + Sync + 'static,
@@ -89,8 +160,9 @@ where
 
 /// Start capturing with an explicit `CaptureMode`.
 ///
-/// - macOS: only `SystemMix` is supported; `Application(_)` and `Process(_)`
-///   return `ModeUnsupported`.
+/// - macOS 14.2+: `SystemMix`, `Application(_)`, and `Process(_)` all
+///   supported via the CoreAudio process tap.
+/// - macOS < 14.2: only `SystemMix` is supported via the HAL plugin.
 /// - Windows: `SystemMix` and `Process(pid)` supported; `Application(_)` returns
 ///   `ModeUnsupported`.
 /// - Linux: only `SystemMix` is supported (PipeWire); other modes return
@@ -137,9 +209,6 @@ mod tests {
     }
 
     // GWT Test 4: SystemMix on stub platform returns NotSupported.
-    // Given: SystemMix mode
-    // When: capture_with_mode is called on a platform with no backend
-    // Then: returns NotSupported
     #[cfg(not(any(target_os = "macos", target_os = "linux", target_os = "windows")))]
     #[test]
     fn given_system_mix_mode_when_capture_with_mode_called_on_non_macos_then_returns_not_supported() {
@@ -148,9 +217,6 @@ mod tests {
     }
 
     // GWT Test 5: Application mode on stub platform returns NotSupported.
-    // Given: Application mode with a bundle ID
-    // When: capture_with_mode is called on a platform with no backend
-    // Then: returns NotSupported
     #[cfg(not(any(target_os = "macos", target_os = "linux", target_os = "windows")))]
     #[test]
     fn given_application_mode_when_capture_with_mode_called_on_non_macos_then_returns_not_supported() {
@@ -162,9 +228,6 @@ mod tests {
     }
 
     // GWT Test 6: Process mode on stub platform returns NotSupported.
-    // Given: Process mode with a PID
-    // When: capture_with_mode is called on a platform with no backend
-    // Then: returns NotSupported
     #[cfg(not(any(target_os = "macos", target_os = "linux", target_os = "windows")))]
     #[test]
     fn given_process_mode_when_capture_with_mode_called_on_non_macos_then_returns_not_supported() {
@@ -173,9 +236,6 @@ mod tests {
     }
 
     // GWT Test 7: ModeUnsupported error display.
-    // Given: a ModeUnsupported error for Process mode
-    // When: displayed
-    // Then: contains 'not supported'
     #[test]
     fn given_capture_mode_unsupported_when_displayed_then_contains_not_supported() {
         let err = LoopbackError::ModeUnsupported(CaptureMode::Process(1234));
@@ -184,9 +244,6 @@ mod tests {
     }
 
     // GWT Test 8: BackendInit error preserves the message.
-    // Given: a BackendInit error with a custom message
-    // When: displayed
-    // Then: custom text is present
     #[test]
     fn given_backend_init_error_when_displayed_then_contains_message() {
         let err = LoopbackError::BackendInit("test failure".into());
@@ -195,9 +252,6 @@ mod tests {
     }
 
     // GWT Test 9: asp_is_installed() returns false when no HAL plugin is running (macOS only).
-    // Given: no PocketStation HAL plugin running (CI environment, no /pocketstation-loopback-v1 shm)
-    // When: asp_is_installed() is called
-    // Then: returns false
     #[cfg(target_os = "macos")]
     #[test]
     fn given_asp_not_running_when_asp_is_installed_then_returns_false() {
@@ -205,9 +259,6 @@ mod tests {
     }
 
     // Wave B GWT Test 1: SystemMix on non-Windows non-macOS returns NotSupported.
-    // Given: SystemMix mode on a non-Windows, non-macOS platform
-    // When: capture_with_mode is called
-    // Then: NotSupported (stub backend on macOS CI, Linux backend on Linux)
     #[cfg(not(any(target_os = "macos", target_os = "windows")))]
     #[test]
     fn given_system_mix_mode_when_capture_with_mode_on_non_windows_non_macos_then_returns_not_supported() {
@@ -217,9 +268,6 @@ mod tests {
     }
 
     // Wave B GWT Test 2: Process mode on non-Windows non-macOS returns NotSupported.
-    // Given: Process mode with an arbitrary PID on a non-Windows, non-macOS platform
-    // When: capture_with_mode is called
-    // Then: NotSupported
     #[cfg(not(any(target_os = "macos", target_os = "windows")))]
     #[test]
     fn given_process_mode_when_capture_with_mode_on_non_windows_non_macos_then_returns_not_supported() {
@@ -229,9 +277,6 @@ mod tests {
     }
 
     // Wave B GWT Test 3: WASAPI_PROCESS_LOOPBACK_PERIOD_100NS is non-zero (Windows only).
-    // Given: the process-loopback period constant from the windows backend
-    // When: the constant is read
-    // Then: it is non-zero (passing zero to initialize_client is a bug)
     #[cfg(target_os = "windows")]
     #[test]
     fn given_wasapi_process_period_const_when_checked_then_is_nonzero() {
@@ -240,9 +285,6 @@ mod tests {
     }
 
     // Wave B GWT Test 4: BackendInit error contains the message.
-    // Given: a BackendInit error with a specific message
-    // When: the error is displayed
-    // Then: the message is present in the output
     #[test]
     fn given_backend_init_error_when_displayed_then_contains_com_message() {
         let err = LoopbackError::BackendInit("COM init failed".to_owned());
@@ -254,9 +296,6 @@ mod tests {
     }
 
     // Wave C GWT Test 1: PW_NODE_LATENCY format is "numerator/denominator".
-    // Given: the PW_NODE_LATENCY constant used by linux.rs
-    // When: parsed as "n/d"
-    // Then: numerator is 128 and denominator is 48000
     #[test]
     fn given_pw_node_latency_const_when_parsed_then_numerator_is_128_and_denominator_is_48000() {
         const PW_NODE_LATENCY: &str = "128/48000";
@@ -270,9 +309,6 @@ mod tests {
     }
 
     // Wave C GWT Test 2: pipewire socket absent outside a PipeWire session.
-    // Given: running on macOS / non-Linux CI (no PipeWire daemon)
-    // When: the pipewire-0 socket path is checked in a temp directory
-    // Then: the socket does not exist
     #[cfg(not(target_os = "linux"))]
     #[test]
     fn given_non_linux_host_when_pipewire_socket_path_checked_then_does_not_exist() {
@@ -285,9 +321,6 @@ mod tests {
     }
 
     // Wave C GWT Test 3: CaptureMode::Process on non-Linux/non-Windows returns NotSupported.
-    // Given: Process mode on a stub platform (not Linux, not Windows, not macOS)
-    // When: capture_with_mode is called
-    // Then: NotSupported (stub backend)
     #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
     #[test]
     fn given_process_capture_mode_when_called_on_stub_platform_then_returns_not_supported() {
@@ -296,18 +329,12 @@ mod tests {
     }
 
     // Wave C GWT Test 4: CaptureMode default is SystemMix.
-    // Given: CaptureMode::default()
-    // When: compared to CaptureMode::SystemMix
-    // Then: they are equal
     #[test]
     fn given_default_capture_mode_when_compared_then_is_system_mix() {
         assert_eq!(CaptureMode::default(), CaptureMode::SystemMix);
     }
 
     // ASP GWT Test 1: asp_is_installed() returns false without the plugin (macOS only).
-    // Given: no HAL plugin running (no shared memory region present in CI)
-    // When: asp_is_installed() is called
-    // Then: returns false
     #[cfg(target_os = "macos")]
     #[test]
     fn given_asp_not_running_when_asp_is_installed_called_then_returns_false() {
@@ -315,9 +342,6 @@ mod tests {
     }
 
     // ASP GWT Test 2: AspReader::open() returns None when no plugin is running (macOS only).
-    // Given: no HAL plugin running (no shared memory region)
-    // When: AspReader::open() is called
-    // Then: returns None
     #[cfg(target_os = "macos")]
     #[test]
     fn given_asp_reader_null_when_open_called_without_plugin_then_returns_none() {
@@ -326,14 +350,33 @@ mod tests {
     }
 
     // ASP GWT Test 3: PKS_RING_FRAMES is a power of two (compile-time check).
-    // Given: the PKS_RING_FRAMES constant (65536)
-    // When: checked at compile time
-    // Then: it is a power of two and non-zero
     #[test]
     fn given_shm_ring_const_pks_ring_frames_when_checked_then_is_power_of_two() {
         const PKS_RING_FRAMES: u32 = 65536u32;
         assert!(PKS_RING_FRAMES > 0);
         assert_eq!(PKS_RING_FRAMES & (PKS_RING_FRAMES - 1), 0,
             "PKS_RING_FRAMES must be a power of two for bitmask wrap to work");
+    }
+
+    // Tap GWT Test 1: discover_sources() always returns at least the SystemMix entry.
+    #[test]
+    fn given_any_platform_when_discover_sources_called_then_first_entry_is_system_mix() {
+        let sources = discover_sources();
+        assert!(!sources.is_empty(), "discover_sources must return at least one entry");
+        assert_eq!(
+            sources[0].stable_id.kind,
+            SourceKind::SystemMix,
+            "first source must be SystemMix"
+        );
+    }
+
+    // Tap GWT Test 2: tap_available() reports macOS 14.2+ (macOS only).
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn given_macos_15_when_tap_available_called_then_returns_true() {
+        assert!(
+            tap_available(),
+            "tap_available() must return true on macOS 14.2+ (this machine is 15.5)"
+        );
     }
 }

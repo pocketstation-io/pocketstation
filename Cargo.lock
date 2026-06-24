@@ -830,6 +830,7 @@ dependencies = [
 name = "pocketstation-codec"
 version = "0.1.0"
 dependencies = [
+ "hound",
  "opus",
  "pocketstation-frame",
  "thiserror 1.0.69",

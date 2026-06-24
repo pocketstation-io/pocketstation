@@ -11,7 +11,7 @@ fn build_macos() {
     let manifest = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
     let asp      = manifest.join("asp");
 
-    // shm_reader.c → static lib linked into the Rust binary (always needed).
+    // shm_reader.c — POSIX SHM reader for the ASP fallback path (macOS < 14.2).
     cc::Build::new()
         .file(asp.join("shm_reader.c"))
         .include(&asp)
@@ -21,14 +21,28 @@ fn build_macos() {
     println!("cargo:rerun-if-changed=asp/bridge.h");
     println!("cargo:rerun-if-changed=asp/SharedRing.h");
 
-    // Plugin.cpp → .dylib → .driver bundle (always on macOS).
-    // The bundle bytes are embedded in the binary via include_bytes! in macos.rs.
+    // source_discovery.m — CoreAudio process tap source enumeration and capture.
+    // Objective-C, compiled with ARC enabled.  Requires macOS 14.2 SDK or later.
+    cc::Build::new()
+        .file(asp.join("source_discovery.m"))
+        .flag("-fobjc-arc")
+        .flag("-ObjC")
+        .include(&asp)
+        .compile("pks_tap_source");
+
+    println!("cargo:rerun-if-changed=asp/source_discovery.m");
+    println!("cargo:rerun-if-changed=asp/source_discovery.h");
+
+    println!("cargo:rustc-link-lib=framework=CoreAudio");
+    println!("cargo:rustc-link-lib=framework=Foundation");
+    println!("cargo:rustc-link-lib=framework=AppKit");
+
+    // Plugin.cpp → HAL driver dylib → embedded in binary as the ASP fallback.
     let dylib  = out_dir.join("PocketStationLoopback.dylib");
     let bundle = out_dir.join("PocketStationLoopback.driver");
     let contents = bundle.join("Contents");
     let macos_dir = contents.join("MacOS");
 
-    // Resolve the SDK root: prefer SDKROOT env (set by Xcode), fall back to xcrun.
     let sdk = std::env::var("SDKROOT").unwrap_or_else(|_| {
         let out = std::process::Command::new("xcrun")
             .args(["--show-sdk-path"])
@@ -40,8 +54,6 @@ fn build_macos() {
             .to_owned()
     });
 
-    // AudioServerPlugIn.h lives inside CoreAudio.framework/Headers — add it
-    // explicitly so the flat #include <CoreAudio/AudioServerPlugIn.h> resolves.
     let coreaudio_headers = format!(
         "{sdk}/System/Library/Frameworks/CoreAudio.framework/Headers"
     );
@@ -69,7 +81,6 @@ fn build_macos() {
     println!("cargo:rerun-if-changed=asp/Plugin.cpp");
     println!("cargo:rerun-if-changed=asp/Info.plist");
 
-    // Expose bundle file paths for include_bytes! in macos.rs.
     println!(
         "cargo:rustc-env=PKS_DRIVER_DYLIB={}",
         macos_dir.join("PocketStationLoopback").display()

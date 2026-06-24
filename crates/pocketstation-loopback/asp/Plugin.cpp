@@ -110,7 +110,7 @@ static OSStatus pks_shm_create(PksDevice* dev) {
     // Unlink any stale region from a previous run
     shm_unlink(PKS_SHM_NAME);
 
-    int fd = shm_open(PKS_SHM_NAME, O_CREAT | O_RDWR, 0666);
+    int fd = shm_open(PKS_SHM_NAME, O_CREAT | O_RDWR, 0600);
     if (fd < 0) return kAudioHardwareUnspecifiedError;
 
     if (ftruncate(fd, (off_t)PKS_SHM_SIZE) != 0) {

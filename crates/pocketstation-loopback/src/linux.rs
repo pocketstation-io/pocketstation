@@ -92,15 +92,40 @@ impl SystemLoopbackSource {
         F: Fn(AudioFrame) + Send + Sync + 'static,
     {
         match &mode {
-            CaptureMode::Process(_) | CaptureMode::Application(_) => {
-                return Err(LoopbackError::ModeUnsupported(mode));
+            CaptureMode::Process(pid) => {
+                if !pipewire_available() {
+                    return Err(LoopbackError::ModeUnsupported(mode));
+                }
+                let nodes = enumerate_pipewire_nodes();
+                let target_pid = *pid;
+                match nodes.iter().find(|s| s.process_id == Some(target_pid)) {
+                    Some(src) => run_pipewire_targeted(src.id, mode, callback),
+                    None => Err(LoopbackError::BackendInit(format!(
+                        "BLOCKED_WITH_EVIDENCE: PipeWire per-app source capture requires PipeWire node enumeration and link; no node found for '{target_pid}'"
+                    ))),
+                }
             }
-            _ => {}
-        }
-        if pipewire_available() {
-            run_pipewire(mode, callback)
-        } else {
-            run_alsa(callback)
+            CaptureMode::Application(name) => {
+                if !pipewire_available() {
+                    return Err(LoopbackError::ModeUnsupported(mode));
+                }
+                let nodes = enumerate_pipewire_nodes();
+                let name_lower = name.to_ascii_lowercase();
+                let name_clone = name.clone();
+                match nodes.iter().find(|s| s.name.to_ascii_lowercase() == name_lower) {
+                    Some(src) => run_pipewire_targeted(src.id, mode, callback),
+                    None => Err(LoopbackError::BackendInit(format!(
+                        "BLOCKED_WITH_EVIDENCE: PipeWire per-app source capture requires PipeWire node enumeration and link; no node found for '{name_clone}'"
+                    ))),
+                }
+            }
+            CaptureMode::SystemMix => {
+                if pipewire_available() {
+                    run_pipewire(mode, callback)
+                } else {
+                    run_alsa(callback)
+                }
+            }
         }
     }
 }
@@ -300,6 +325,369 @@ where
             }
         })
         .map_err(|e| LoopbackError::BackendInit(format!("dispatch thread spawn: {e}", e)))?;
+
+    Ok(SystemLoopbackSource {
+        _capture_thread: capture_thread,
+        _dispatch_thread: dispatch_thread,
+        stop_tx,
+    })
+}
+
+// ---------------------------------------------------------------------------
+// Source discovery
+// ---------------------------------------------------------------------------
+
+/// Enumerate all audio capture sources visible on this Linux system.
+///
+/// Always returns at least one entry (the system-wide mix at id=0).
+/// If PipeWire is available, per-application node sources are appended.
+pub(crate) fn discover_sources_linux() -> Vec<crate::CaptureSource> {
+    use crate::{CaptureSource, SourceKind, SourceState};
+
+    let system_mix = CaptureSource {
+        id:          0,
+        name:        "System Mix".to_owned(),
+        kind:        SourceKind::SystemMix,
+        process_id:  None,
+        app_id:      None,
+        device_uid:  None,
+        state:       SourceState::Available,
+        sample_rate: 48_000,
+        channels:    2,
+    };
+
+    let mut sources = vec![system_mix];
+    if pipewire_available() {
+        sources.extend(enumerate_pipewire_nodes());
+    }
+    sources
+}
+
+/// Collect PipeWire audio nodes via the registry API.
+///
+/// Spawns a thread, connects to PipeWire, subscribes to registry globals,
+/// and waits for the initial round-trip to complete (or 300 ms timeout).
+/// Returns an empty `Vec` on any error.
+fn enumerate_pipewire_nodes() -> Vec<crate::CaptureSource> {
+    use crate::{CaptureSource, SourceKind, SourceState};
+    use std::cell::RefCell;
+    use std::rc::Rc;
+    use std::sync::mpsc as smpsc;
+
+    let (tx, rx) = smpsc::channel::<Vec<CaptureSource>>();
+
+    let join = thread::Builder::new()
+        .name("pks-pw-discovery".into())
+        .spawn(move || {
+            pw::init();
+
+            let mainloop = match pw::main_loop::MainLoop::new(None) {
+                Ok(ml) => ml,
+                Err(_) => {
+                    let _ = tx.send(Vec::new());
+                    return;
+                }
+            };
+            let context = match pw::context::Context::new(&mainloop) {
+                Ok(ctx) => ctx,
+                Err(_) => {
+                    let _ = tx.send(Vec::new());
+                    return;
+                }
+            };
+            let core = match context.connect(None) {
+                Ok(c) => c,
+                Err(_) => {
+                    let _ = tx.send(Vec::new());
+                    return;
+                }
+            };
+
+            let registry = match core.get_registry() {
+                Ok(r) => r,
+                Err(_) => {
+                    let _ = tx.send(Vec::new());
+                    return;
+                }
+            };
+
+            let collected: Rc<RefCell<Vec<CaptureSource>>> = Rc::new(RefCell::new(Vec::new()));
+            let collected_for_reg = collected.clone();
+
+            let _reg_listener = registry
+                .add_listener_local()
+                .global(move |global| {
+                    let props = match global.props {
+                        Some(ref p) => p,
+                        None => return,
+                    };
+                    let media_class = props.get("media.class").unwrap_or("");
+                    let (kind, is_audio) = match media_class {
+                        "Stream/Output/Audio" => (SourceKind::Application, true),
+                        "Audio/Source"        => (SourceKind::InputDevice, true),
+                        "Audio/Sink"          => (SourceKind::OutputDevice, true),
+                        _                     => (SourceKind::SystemMix, false),
+                    };
+                    if !is_audio {
+                        return;
+                    }
+
+                    let name = props
+                        .get("application.name")
+                        .or_else(|| props.get("node.name"))
+                        .unwrap_or("unknown")
+                        .to_owned();
+                    let node_name = props.get("node.name").map(str::to_owned);
+                    let pid = props
+                        .get("application.process.id")
+                        .and_then(|s| s.parse::<u32>().ok());
+
+                    collected_for_reg.borrow_mut().push(CaptureSource {
+                        id:          global.id as u64,
+                        name,
+                        kind,
+                        process_id:  pid,
+                        app_id:      None,
+                        device_uid:  node_name,
+                        state:       SourceState::Available,
+                        sample_rate: 48_000,
+                        channels:    2,
+                    });
+                })
+                .register()
+                .expect("registry listener registration failed");
+
+            // Request a round-trip sync so we know when all initial globals have arrived.
+            let seq = match core.sync(0) {
+                Ok(s) => s,
+                Err(_) => {
+                    let _ = tx.send(Vec::new());
+                    return;
+                }
+            };
+
+            let ml_for_done = mainloop.downgrade();
+            let collected_for_done = collected.clone();
+            let tx_clone = tx.clone();
+
+            let _core_listener = core
+                .add_listener_local()
+                .done(move |id, done_seq| {
+                    if id == 0 && done_seq >= seq {
+                        let sources = collected_for_done.borrow().clone();
+                        let _ = tx_clone.send(sources);
+                        if let Some(ml) = ml_for_done.upgrade() {
+                            ml.quit();
+                        }
+                    }
+                })
+                .register();
+
+            // Safety valve: quit after 300 ms even if done never fires.
+            let ml_timer = mainloop.downgrade();
+            let tx_timer = tx.clone();
+            let collected_timer = collected.clone();
+            let timer = mainloop.loop_().add_timer(move |_| {
+                let sources = collected_timer.borrow().clone();
+                let _ = tx_timer.send(sources);
+                if let Some(ml) = ml_timer.upgrade() {
+                    ml.quit();
+                }
+            });
+            timer.update_timer(
+                Some(Duration::from_millis(300)),
+                None,
+            );
+
+            mainloop.run();
+            unsafe { pw::deinit() };
+        });
+
+    match join {
+        Ok(_) => {}
+        Err(_) => return Vec::new(),
+    }
+
+    rx.recv_timeout(Duration::from_millis(400)).unwrap_or_default()
+}
+
+// ---------------------------------------------------------------------------
+// PipeWire targeted (per-node) capture
+// ---------------------------------------------------------------------------
+
+/// Like `run_pipewire` but routes the capture stream to a specific PipeWire
+/// node identified by `node_id` instead of the default sink monitor.
+fn run_pipewire_targeted<F>(
+    node_id: u64,
+    mode: CaptureMode,
+    callback: F,
+) -> Result<SystemLoopbackSource, LoopbackError>
+where
+    F: Fn(AudioFrame) + Send + Sync + 'static,
+{
+    let (stop_tx, stop_rx) = mpsc::sync_channel::<()>(1);
+    let (frame_tx, frame_rx) = mpsc::sync_channel::<AudioFrame>(PW_CHANNEL_DEPTH);
+
+    let pool = AudioBufferPool::new(POOL_DEPTH, CAPTURE_FRAME_SAMPLES);
+    let seq = Arc::new(AtomicU64::new(0));
+
+    let capture_thread = thread::Builder::new()
+        .name("pks-pipewire-capture-targeted".into())
+        .spawn(move || {
+            pw::init();
+            let mainloop = match pw::main_loop::MainLoop::new(None) {
+                Ok(ml) => ml,
+                Err(e) => {
+                    eprintln!("pks-pipewire-targeted: MainLoop::new failed: {e}");
+                    return;
+                }
+            };
+            let context = match pw::context::Context::new(&mainloop) {
+                Ok(ctx) => ctx,
+                Err(e) => {
+                    eprintln!("pks-pipewire-targeted: Context::new failed: {e}");
+                    return;
+                }
+            };
+            let core = match context.connect(None) {
+                Ok(c) => c,
+                Err(e) => {
+                    eprintln!("pks-pipewire-targeted: Context::connect failed: {e}");
+                    return;
+                }
+            };
+
+            let node_id_str = node_id.to_string();
+            // Route to a specific node rather than the default sink monitor.
+            // STREAM_CAPTURE_SINK is intentionally omitted.
+            let stream_props = properties! {
+                *pw::keys::NODE_NAME => "pks-loopback-capture",
+                *pw::keys::NODE_LATENCY => PW_NODE_LATENCY,
+                "node.target" => node_id_str.as_str(),
+            };
+
+            let stream = match pw::stream::Stream::new(&core, "pks-loopback-targeted", stream_props) {
+                Ok(s) => s,
+                Err(e) => {
+                    eprintln!("pks-pipewire-targeted: Stream::new failed: {e}");
+                    return;
+                }
+            };
+
+            let frame_tx_cb = frame_tx.clone();
+            let pool_cb = pool.clone();
+            let seq_cb = seq.clone();
+
+            let _listener = stream
+                .add_local_listener_with_user_data(())
+                .param_changed(|_id, _user, _param| {})
+                .process(move |stream, _user| {
+                    let mut buf = match stream.dequeue_buffer() {
+                        Some(b) => b,
+                        None => return,
+                    };
+                    let datas = buf.datas_mut();
+                    if datas.is_empty() {
+                        return;
+                    }
+                    let chunk = datas[0].chunk();
+                    let byte_count = chunk.size() as usize;
+                    if byte_count == 0 {
+                        return;
+                    }
+                    let src_ptr = match datas[0].data() {
+                        Some(d) => d.as_ptr(),
+                        None => return,
+                    };
+                    let n_samples = byte_count / std::mem::size_of::<f32>();
+
+                    let mut handle = match pool_cb.acquire() {
+                        Some(h) => h,
+                        None => return,
+                    };
+                    let dst = handle.as_mut_slice();
+                    let copy_count = n_samples.min(dst.len());
+                    // SAFETY: src_ptr points into a valid PipeWire buffer.
+                    unsafe {
+                        std::ptr::copy_nonoverlapping(
+                            src_ptr as *const f32,
+                            dst.as_mut_ptr(),
+                            copy_count,
+                        );
+                    }
+                    handle.set_len(copy_count);
+
+                    let s = seq_cb.fetch_add(1, Ordering::Relaxed);
+                    let ts_ns = std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .unwrap_or_default()
+                        .as_nanos() as u64;
+
+                    let mut frame = AudioFrame::new(
+                        StreamId(0), SourceId(0), s, ts_ns, CAPTURE_CHANNELS, handle,
+                    );
+                    frame.source_tag = AudioSourceTag::Captured;
+                    frame.encryption_mode = EncryptionMode::None;
+                    frame.sample_rate = DEFAULT_SAMPLE_RATE;
+
+                    let _ = frame_tx_cb.try_send(frame);
+                })
+                .register()
+                .expect("listener registration must not fail");
+
+            let mut audio_info = spa::param::audio::AudioInfoRaw::new();
+            audio_info.set_format(AudioFormat::F32LE);
+            audio_info.set_rate(DEFAULT_SAMPLE_RATE as u32);
+            audio_info.set_channels(CAPTURE_CHANNELS as u32);
+            let obj = pw::spa::pod::serialize::PodSerializer::serialize(
+                std::io::Cursor::new(Vec::new()),
+                &pw::spa::pod::Value::Object(pw::spa::pod::Object {
+                    type_: pw::spa::utils::SpaTypes::ObjectParamFormat.as_raw(),
+                    id: pw::spa::param::ParamType::EnumFormat.as_raw(),
+                    properties: audio_info.into(),
+                }),
+            )
+            .unwrap()
+            .0
+            .into_inner();
+            let param = Pod::from_bytes(&obj).unwrap();
+
+            let flags = pw::stream::StreamFlags::AUTOCONNECT
+                | pw::stream::StreamFlags::MAP_BUFFERS
+                | pw::stream::StreamFlags::RT_PROCESS;
+
+            if let Err(e) = stream.connect(pw::spa::utils::Direction::Input, None, flags, &mut [param]) {
+                eprintln!("pks-pipewire-targeted: stream.connect failed: {e}");
+                return;
+            }
+
+            let ml_weak = mainloop.downgrade();
+            let timer = mainloop.loop_().add_timer(move |_| {
+                if stop_rx.try_recv().is_ok() {
+                    if let Some(ml) = ml_weak.upgrade() {
+                        ml.quit();
+                    }
+                }
+            });
+            timer.update_timer(
+                Some(Duration::from_millis(PW_STOP_POLL_MS)),
+                Some(Duration::from_millis(PW_STOP_POLL_MS)),
+            );
+
+            mainloop.run();
+            let _ = stream.disconnect();
+            unsafe { pw::deinit() };
+        })
+        .map_err(|e| LoopbackError::BackendInit(format!("capture thread spawn: {e}")))?;
+
+    let dispatch_thread = thread::Builder::new()
+        .name("pks-pipewire-dispatch-targeted".into())
+        .spawn(move || {
+            while let Ok(frame) = frame_rx.recv() {
+                callback(frame);
+            }
+        })
+        .map_err(|e| LoopbackError::BackendInit(format!("dispatch thread spawn: {e}")))?;
 
     Ok(SystemLoopbackSource {
         _capture_thread: capture_thread,

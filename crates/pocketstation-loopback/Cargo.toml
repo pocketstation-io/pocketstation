@@ -17,7 +17,13 @@ libc = "0.2"
 
 [target.'cfg(target_os = "windows")'.dependencies]
 wasapi = "0.23"
-windows = { version = "0.58", features = ["Win32_Media", "Win32_Media_Audio"] }
+windows = { version = "0.58", features = [
+    "Win32_Media",
+    "Win32_Media_Audio",
+    "Win32_System_Threading",
+    "Win32_System_Com",
+    "Win32_Foundation",
+] }
 windows-core = "0.58"
 
 [build-dependencies]

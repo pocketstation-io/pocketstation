@@ -1,28 +1,18 @@
-//! macOS audio loopback capture backend — AudioServerPlugin path only.
+//! macOS audio loopback capture backend.
 //!
-//! On first use, if the HAL driver is not installed, this module prompts
-//! for the administrator password, installs the driver, and restarts
-//! `coreaudiod` automatically. Subsequent runs start instantly with no
-//! prompt and no Screen Recording permission required.
+//! On macOS 14.2+, uses `AudioHardwareCreateProcessTap` / `CATapDescription`
+//! (the process tap path).  No HAL plugin installation, no Screen Recording
+//! permission, no deadlock.
 //!
-//! # How it works
-//!
-//! 1. `ensure_asp_driver_active()` checks the HAL directory for the
-//!    `.driver` bundle.  If absent, it extracts the bundle bytes that were
-//!    compiled into this binary at build time, copies them to
-//!    `/Library/Audio/Plug-Ins/HAL/` via `sudo`, and sends SIGTERM to
-//!    `coreaudiod` so the daemon reloads its plugin list.
-//! 2. After the restart, `coreaudiod` calls `StartIO` on the plugin,
-//!    which creates the POSIX shared-memory ring.  We poll for the ring
-//!    with a 5-second timeout before proceeding.
-//! 3. A dedicated reader thread pulls frames from the ring and delivers
-//!    them to the caller's callback.
+//! On older macOS, falls back to the AudioServerPlugin + POSIX SHM ring.
+//! On first use, if the HAL driver is not installed, this module prompts for
+//! the administrator password, installs the driver, and restarts `coreaudiod`
+//! automatically.
 //!
 //! # Hot-path invariants
 //!
-//! No allocation, locking, logging, or panicking on the audio delivery
-//! path.  Pool slot acquisition is lock-free (CAS bitset in
-//! `AudioBufferPool::acquire`).
+//! No allocation, locking, logging, or panicking on the audio delivery path.
+//! Pool slot acquisition is lock-free (CAS bitset in `AudioBufferPool::acquire`).
 
 use std::path::Path;
 use std::sync::Arc;
@@ -51,28 +41,46 @@ const DRIVER_INSTALL_DIR: &str = "/Library/Audio/Plug-Ins/HAL";
 const DRIVER_BUNDLE_NAME: &str = "PocketStationLoopback.driver";
 
 /// Milliseconds to sleep before the first poll after restarting coreaudiod.
-const COREAUDIOD_RESTART_INITIAL_SLEEP_MS: u64 = 800;
+const COREAUDIOD_RESTART_INITIAL_SLEEP_MS: u64 = 2_000;
 
 /// Milliseconds between subsequent SHM-ring poll attempts.
 const COREAUDIOD_POLL_INTERVAL_MS: u64 = 200;
 
-/// Total number of poll attempts after the initial sleep (~5 s window total).
-const COREAUDIOD_POLL_ATTEMPTS: u32 = 25;
+/// Total number of poll attempts after the initial sleep (~12 s window, 14 s total).
+const COREAUDIOD_POLL_ATTEMPTS: u32 = 60;
 
 /// Pool depth: 8 frames absorb callback jitter without unbounded growth.
 const POOL_DEPTH: usize = 8;
 
 // ---------------------------------------------------------------------------
+// Internal implementation variant
+// ---------------------------------------------------------------------------
+
+enum Impl {
+    // TapLoopbackSource is held for RAII; it stops capture on Drop.
+    // The inner value is never read — only dropped.
+    #[allow(dead_code)]
+    Tap(crate::macos_tap::TapLoopbackSource),
+    Asp {
+        _thread: std::thread::JoinHandle<()>,
+        stop_tx: std::sync::mpsc::SyncSender<()>,
+    },
+}
+
+// ---------------------------------------------------------------------------
 // Public struct
 // ---------------------------------------------------------------------------
 
-/// Manages a macOS loopback capture session via the PocketStation HAL plugin.
+/// Manages a macOS loopback capture session.
+///
+/// On macOS 14.2+, uses the CoreAudio process tap (no HAL plugin required).
+/// On older macOS, uses the PocketStation HAL plugin + POSIX SHM ring.
 ///
 /// Drop this value to stop capture.
-pub struct SystemLoopbackSource {
-    _thread: std::thread::JoinHandle<()>,
-    stop_tx: std::sync::mpsc::SyncSender<()>,
-}
+// The inner Impl is read-only from Rust; it is kept alive for Drop/RAII and
+// accessed exclusively through the C FFI callbacks.
+#[allow(dead_code)]
+pub struct SystemLoopbackSource(Impl);
 
 impl SystemLoopbackSource {
     pub fn capture<F>(callback: F) -> Result<Self, LoopbackError>
@@ -86,6 +94,13 @@ impl SystemLoopbackSource {
     where
         F: Fn(AudioFrame) + Send + Sync + 'static,
     {
+        // macOS 14.2+: use the process tap path (no HAL plugin, no routing change).
+        if crate::macos_tap::tap_available() {
+            return crate::macos_tap::TapLoopbackSource::capture_mode(mode, callback)
+                .map(|t| Self(Impl::Tap(t)));
+        }
+
+        // Older macOS: ASP fallback only supports SystemMix.
         match mode {
             CaptureMode::SystemMix => {}
             other => return Err(LoopbackError::ModeUnsupported(other)),
@@ -145,43 +160,36 @@ impl SystemLoopbackSource {
             })
             .map_err(|e| LoopbackError::BackendInit(format!("thread spawn: {e}")))?;
 
-        Ok(Self { _thread: thread, stop_tx })
+        Ok(Self(Impl::Asp { _thread: thread, stop_tx }))
     }
 }
 
 impl Drop for SystemLoopbackSource {
     fn drop(&mut self) {
-        let _ = self.stop_tx.try_send(());
+        match &self.0 {
+            Impl::Tap(_) => {} // TapLoopbackSource::Drop handles stop
+            Impl::Asp { stop_tx, .. } => {
+                let _ = stop_tx.try_send(());
+            }
+        }
     }
 }
 
 // ---------------------------------------------------------------------------
-// Auto-install pipeline
+// Auto-install pipeline (ASP fallback only)
 // ---------------------------------------------------------------------------
 
 /// Ensures the HAL plugin is installed and `coreaudiod` has loaded it.
-///
-/// If the `.driver` bundle is absent from the HAL directory, this function:
-///
-/// 1. Extracts the bundle bytes embedded in this binary to a temp directory.
-/// 2. Prompts for the administrator password via `sudo cp`.
-/// 3. Sends SIGTERM to `coreaudiod` so it reloads its plugin list.
-/// 4. Polls for the SHM ring to appear (up to 5 s) before returning.
-///
-/// Already-installed: returns immediately without any prompt or restart.
 fn ensure_asp_driver_active() -> Result<(), LoopbackError> {
     let install_path = format!("{DRIVER_INSTALL_DIR}/{DRIVER_BUNDLE_NAME}");
 
     if Path::new(&install_path).exists() {
-        // Driver is present. If coreaudiod has already called StartIO the
-        // SHM ring exists; if not (e.g. just after a reboot), wait briefly.
         if !crate::macos_asp::asp_is_installed() {
             wait_for_shm_ring()?;
         }
         return Ok(());
     }
 
-    // First run — install the driver.
     let tmp = extract_driver_to_temp()?;
 
     println!(
@@ -197,9 +205,6 @@ fn ensure_asp_driver_active() -> Result<(), LoopbackError> {
     Ok(())
 }
 
-/// Extracts the embedded `.driver` bundle bytes to a temporary directory.
-///
-/// Returns the path to `<tmpdir>/PocketStationLoopback.driver`.
 fn extract_driver_to_temp() -> Result<std::path::PathBuf, LoopbackError> {
     let tmp = std::env::temp_dir().join("pocketstation-driver-install");
     let macos_dir = tmp.join(DRIVER_BUNDLE_NAME).join("Contents").join("MacOS");
@@ -218,9 +223,7 @@ fn extract_driver_to_temp() -> Result<std::path::PathBuf, LoopbackError> {
     )
     .map_err(|e| LoopbackError::BackendInit(format!("plist write: {e}")))?;
 
-    // The dylib must be executable.
     set_executable(&macos_dir.join("PocketStationLoopback"))?;
-
     Ok(tmp.join(DRIVER_BUNDLE_NAME))
 }
 
@@ -235,7 +238,6 @@ fn set_executable(path: &Path) -> Result<(), LoopbackError> {
     Ok(())
 }
 
-/// Copies the extracted bundle to the HAL directory via `sudo cp -R`.
 fn install_driver(bundle: &Path, install_path: &str) -> Result<(), LoopbackError> {
     let status = std::process::Command::new("sudo")
         .args(["cp", "-R", bundle.to_str().unwrap(), DRIVER_INSTALL_DIR])
@@ -249,7 +251,6 @@ fn install_driver(bundle: &Path, install_path: &str) -> Result<(), LoopbackError
         ));
     }
 
-    // Make the installed dylib executable (sudo may reset permissions).
     let installed_dylib = format!(
         "{install_path}/Contents/MacOS/PocketStationLoopback"
     );
@@ -260,11 +261,6 @@ fn install_driver(bundle: &Path, install_path: &str) -> Result<(), LoopbackError
     Ok(())
 }
 
-/// Sends SIGTERM to `coreaudiod` so it restarts and loads the new plugin.
-///
-/// SIGTERM (not SIGKILL) is the correct signal — the same method used by
-/// BlackHole and other HAL plugin installers.  coreaudiod is a system
-/// daemon under launchd and will be relaunched automatically.
 fn restart_coreaudiod() -> Result<(), LoopbackError> {
     println!("Restarting audio daemon to load driver (audio will briefly interrupt)...");
     let status = std::process::Command::new("sudo")
@@ -272,7 +268,6 @@ fn restart_coreaudiod() -> Result<(), LoopbackError> {
         .status()
         .map_err(|e| LoopbackError::BackendInit(format!("killall coreaudiod: {e}")))?;
 
-    // killall returns 1 if no process was found; treat that as ok (already dead).
     if !status.success() && status.code() != Some(1) {
         return Err(LoopbackError::BackendInit(
             "coreaudiod restart failed — try running again with sudo".into(),
@@ -281,8 +276,6 @@ fn restart_coreaudiod() -> Result<(), LoopbackError> {
     Ok(())
 }
 
-/// Polls the SHM ring until `coreaudiod` has loaded the plugin and called
-/// `StartIO` (up to ~5 s total).
 fn wait_for_shm_ring() -> Result<(), LoopbackError> {
     std::thread::sleep(Duration::from_millis(COREAUDIOD_RESTART_INITIAL_SLEEP_MS));
 

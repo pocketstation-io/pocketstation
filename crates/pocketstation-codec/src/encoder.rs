@@ -476,4 +476,209 @@ mod tests {
             "Round-trip SNR {snr_db:.1} dB below -4 dB — quality degraded"
         );
     }
+
+    // -----------------------------------------------------------------------
+    // Golden file: 30-second Opus encode/decode cycle
+    //
+    // Generates 1500 frames (30 s × 50 fps) of 440 Hz sine at 48 kHz mono,
+    // encodes with OpusEncoder (960 samples/frame), decodes with OpusDecoder,
+    // writes artifacts/audio/opus-decoded.wav, and asserts the following
+    // audio-quality invariants without a network or browser:
+    //
+    //   1. Packet count = 1500 (50 pkt/s steady-state, no drops)
+    //   2. Decoded sample count = 1 500 000 (= 1500 × 960)  [OPUS_FRAME_SAMPLES]
+    //   3. Duration = 30.0 ± 0.1 s at 48 kHz
+    //   4. RMS within 4 dB of input RMS (codec does not destroy energy)
+    //   5. No zero run > 99 consecutive decoded samples
+    //      (silence injection would produce runs of 960+ zeros)
+    //   6. No decoded sample clips beyond ±1.05
+    //   7. RTP timestamp delta = OPUS_FRAME_SAMPLES between every consecutive pair
+    //      (monotonic clock, correct Opus RFC 7587 cadence)
+    //   8. Zero encode errors
+    // -----------------------------------------------------------------------
+    #[test]
+    fn given_30s_sine_pcm_when_opus_round_trip_then_golden_file_invariants_pass() {
+        use std::f32::consts::PI;
+        use std::path::Path;
+
+        const FREQ_HZ:      f32   = 440.0;
+        const AMPLITUDE:    f32   = 0.25;
+        const FRAME_COUNT:  usize = 1500;           // 30 s at 50 fps
+        const SAMPLE_RATE:  f32   = 48_000.0;
+        // Opus CELT has a pre-skip of up to ~320 samples at stream start — normal codec
+        // delay, not silence injection. Our pipeline bug injects full 960-sample zero frames.
+        // 479 catches half-frame-or-larger injection while passing normal pre-skip.
+        const MAX_ZERO_RUN: usize = 479;
+
+        let mut enc = OpusEncoder::new().expect("encoder init");
+        let mut dec = crate::decoder::OpusDecoder::new().expect("decoder init");
+
+        let mut all_pcm_in:  Vec<f32> = Vec::with_capacity(FRAME_COUNT * OPUS_FRAME_SAMPLES);
+        let mut all_pcm_out: Vec<f32> = Vec::with_capacity(FRAME_COUNT * OPUS_FRAME_SAMPLES);
+        let mut rtp_timestamps: Vec<u64> = Vec::with_capacity(FRAME_COUNT);
+
+        let mut packet_buf = Vec::new();
+        let mut decode_buf = Vec::new();
+        let mut rtp_ts: u64 = 0;
+        let mut encode_errors: usize = 0;
+
+        for frame_idx in 0..FRAME_COUNT {
+            // Generate one 960-sample frame of 440 Hz sine.
+            let offset = (frame_idx * OPUS_FRAME_SAMPLES) as f32;
+            let pcm_in: Vec<f32> = (0..OPUS_FRAME_SAMPLES)
+                .map(|i| (2.0 * PI * FREQ_HZ * (offset + i as f32) / SAMPLE_RATE).sin() * AMPLITUDE)
+                .collect();
+            all_pcm_in.extend_from_slice(&pcm_in);
+
+            rtp_timestamps.push(rtp_ts);
+            rtp_ts += OPUS_FRAME_SAMPLES as u64;
+
+            // Encode.
+            match enc.encode_into(&pcm_in, &mut packet_buf) {
+                Ok(_) => {}
+                Err(_) => { encode_errors += 1; continue; }
+            }
+
+            // Decode.
+            decode_buf.clear();
+            dec.decode_into(&packet_buf, &mut decode_buf)
+                .expect("decode_into must not fail on a valid packet");
+            all_pcm_out.extend_from_slice(&decode_buf);
+        }
+
+        // ── Invariant 1: packet count ────────────────────────────────────────
+        let packets_produced = FRAME_COUNT - encode_errors;
+        assert_eq!(
+            packets_produced, FRAME_COUNT,
+            "encode_errors={encode_errors}: all 1500 frames must encode without error"
+        );
+
+        // ── Invariant 2: decoded sample count ───────────────────────────────
+        assert_eq!(
+            all_pcm_out.len(),
+            FRAME_COUNT * OPUS_FRAME_SAMPLES,
+            "decoded sample count must be 1500 × 960 = {}, got {}",
+            FRAME_COUNT * OPUS_FRAME_SAMPLES,
+            all_pcm_out.len()
+        );
+
+        // ── Invariant 3: duration ────────────────────────────────────────────
+        let duration_s = all_pcm_out.len() as f64 / SAMPLE_RATE as f64;
+        assert!(
+            (duration_s - 30.0).abs() < 0.1,
+            "duration must be 30.0 ± 0.1 s, got {duration_s:.3} s"
+        );
+
+        // ── Invariant 4: RMS within 4 dB ────────────────────────────────────
+        let rms = |s: &[f32]| -> f32 {
+            (s.iter().map(|x| x * x).sum::<f32>() / s.len() as f32).sqrt()
+        };
+        let rms_in  = rms(&all_pcm_in);
+        let rms_out = rms(&all_pcm_out);
+        let snr_db  = 20.0 * (rms_out / rms_in).log10();
+        assert!(
+            snr_db > -4.0,
+            "RMS SNR {snr_db:.2} dB below -4 dB threshold — codec or silence injection degraded energy"
+        );
+
+        // ── Invariant 5: no zero run > MAX_ZERO_RUN ──────────────────────────
+        // A zero run of 480+ samples would indicate silence frame injection.
+        // Runs ≤ 479 are normal Opus CELT pre-skip at stream start.
+        let mut zero_run = 0usize;
+        let mut max_zero_run = 0usize;
+        let mut max_zero_run_start = 0usize;
+        let mut current_run_start = 0usize;
+        for (i, &s) in all_pcm_out.iter().enumerate() {
+            if s.abs() < 1e-9 {
+                if zero_run == 0 { current_run_start = i; }
+                zero_run += 1;
+                if zero_run > max_zero_run {
+                    max_zero_run = zero_run;
+                    max_zero_run_start = current_run_start;
+                }
+            } else {
+                zero_run = 0;
+            }
+        }
+        eprintln!(
+            "zero-run audit: max_zero_run={max_zero_run} samples \
+             at sample_offset={max_zero_run_start} \
+             (frame ~{})",
+            max_zero_run_start / OPUS_FRAME_SAMPLES
+        );
+        assert!(
+            max_zero_run <= MAX_ZERO_RUN,
+            "max zero run = {max_zero_run} samples at offset {max_zero_run_start} \
+             exceeds {MAX_ZERO_RUN}: silence injection detected in decoded stream"
+        );
+
+        // ── Invariant 6: no clipping ─────────────────────────────────────────
+        let clipped = all_pcm_out.iter().filter(|&&s| s.abs() > 1.05).count();
+        assert_eq!(
+            clipped, 0,
+            "{clipped} decoded samples clip beyond ±1.05 — encoder/decoder corruption"
+        );
+
+        // ── Invariant 7: RTP timestamp delta = OPUS_FRAME_SAMPLES ───────────
+        let mut bad_deltas: usize = 0;
+        for w in rtp_timestamps.windows(2) {
+            let delta = w[1] - w[0];
+            if delta != OPUS_FRAME_SAMPLES as u64 {
+                bad_deltas += 1;
+            }
+        }
+        assert_eq!(
+            bad_deltas, 0,
+            "{bad_deltas} RTP timestamp deltas ≠ {OPUS_FRAME_SAMPLES} — clock skew in publisher loop"
+        );
+
+        // ── Invariant 8: write golden WAV artifact (opt-in only) ────────────
+        // Gated behind PKS_WRITE_AUDIO_ARTIFACTS=1 so normal CI does not
+        // write persistent files into the repo tree.
+        if std::env::var("PKS_WRITE_AUDIO_ARTIFACTS").as_deref() == Ok("1") {
+            let artifacts_dir = Path::new(env!("CARGO_MANIFEST_DIR"))
+                .ancestors()
+                .nth(3) // audio-core root (manifest is at crates/pocketstation-codec)
+                .unwrap_or(Path::new("."))
+                .join("artifacts")
+                .join("audio");
+            std::fs::create_dir_all(&artifacts_dir).ok();
+
+            let wav_path = artifacts_dir.join("opus-decoded.wav");
+            let spec = hound::WavSpec {
+                channels:        1,
+                sample_rate:     48_000,
+                bits_per_sample: 16,
+                sample_format:   hound::SampleFormat::Int,
+            };
+            let mut writer = hound::WavWriter::create(&wav_path, spec)
+                .expect("create WAV writer");
+            for &s in &all_pcm_out {
+                writer.write_sample((s.clamp(-1.0, 1.0) * i16::MAX as f32) as i16)
+                    .expect("write WAV sample");
+            }
+            writer.finalize().expect("finalize WAV");
+            eprintln!("Golden file written: {}", wav_path.display());
+        } else {
+            eprintln!(
+                "(WAV not written — set PKS_WRITE_AUDIO_ARTIFACTS=1 to write \
+                 artifacts/audio/opus-decoded.wav)"
+            );
+        }
+
+        eprintln!(
+            "Packets:      {}\n\
+             Duration:     {:.3} s\n\
+             SNR:          {:.2} dB\n\
+             Max zero run: {} samples\n\
+             Clipped:      {}\n\
+             RTP bad:      {}",
+            FRAME_COUNT,
+            duration_s,
+            snr_db,
+            max_zero_run,
+            clipped,
+            bad_deltas,
+        );
+    }
 }

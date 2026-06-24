@@ -82,10 +82,6 @@ impl SystemLoopbackSource {
     where
         F: Fn(AudioFrame) + Send + Sync + 'static,
     {
-        if let CaptureMode::Application(_) = &mode {
-            return Err(LoopbackError::ModeUnsupported(mode));
-        }
-
         // S_OK = 0, S_FALSE = 1 (already initialised) -- both success.
         let hr = wasapi::initialize_mta();
         if hr.0 < 0 {
@@ -93,6 +89,34 @@ impl SystemLoopbackSource {
                 "COM MTA initialisation failed: {hr:?}"
             )));
         }
+
+        // Resolve Application(name) → Process(pid) before spawning the thread.
+        let resolved_mode = match mode {
+            CaptureMode::Application(ref name) => {
+                let sources = discover_sources_windows();
+                let name_lower = name.to_ascii_lowercase();
+                let matched_pid = sources.iter().find(|s| {
+                    s.name.to_ascii_lowercase() == name_lower
+                        || s.app_id.as_deref().map(|id| id.to_ascii_lowercase()) == Some(name_lower.clone())
+                });
+                match matched_pid {
+                    Some(src) => match src.process_id {
+                        Some(pid) => CaptureMode::Process(pid),
+                        None => {
+                            return Err(LoopbackError::BackendInit(format!(
+                                "no audio session found for '{name}' — run `pks sources list`"
+                            )));
+                        }
+                    },
+                    None => {
+                        return Err(LoopbackError::BackendInit(format!(
+                            "no audio session found for '{name}' — run `pks sources list`"
+                        )));
+                    }
+                }
+            }
+            other => other,
+        };
 
         let (stop_tx, stop_rx) = std::sync::mpsc::sync_channel::<()>(1);
         let pool = AudioBufferPool::new(POOL_DEPTH, CAPTURE_FRAME_SAMPLES);
@@ -104,12 +128,12 @@ impl SystemLoopbackSource {
                 wasapi::initialize_mta();
                 apply_mmcss_audio_thread();
 
-                let result = match mode {
+                let result = match resolved_mode {
                     CaptureMode::SystemMix => run_system_loopback(pool, seq, callback, stop_rx),
                     CaptureMode::Process(pid) => {
                         run_process_loopback(pid, pool, seq, callback, stop_rx)
                     }
-                    // Application(_) is rejected before thread spawn; this arm is unreachable.
+                    // Application(_) is resolved to Process before thread spawn.
                     other => Err(LoopbackError::ModeUnsupported(other)),
                 };
                 if let Err(e) = result {
@@ -307,6 +331,167 @@ fn run_system_loopback(
         callback,
         stop_rx,
     )
+}
+
+// ---------------------------------------------------------------------------
+// Source discovery
+// ---------------------------------------------------------------------------
+
+/// Enumerate all audio capture sources visible on this Windows system.
+///
+/// Always returns at least one entry (the system-wide mix at id=0).
+/// Per-process application sources are appended via WASAPI session enumeration.
+pub(crate) fn discover_sources_windows() -> Vec<crate::CaptureSource> {
+    use crate::{CaptureSource, SourceKind, SourceState};
+
+    let system_mix = CaptureSource {
+        id:          0,
+        name:        "System Mix".to_owned(),
+        kind:        SourceKind::SystemMix,
+        process_id:  None,
+        app_id:      None,
+        device_uid:  None,
+        state:       SourceState::Available,
+        sample_rate: 48_000,
+        channels:    2,
+    };
+
+    let hr = wasapi::initialize_mta();
+    if hr.0 < 0 {
+        return vec![system_mix];
+    }
+
+    let mut sources = vec![system_mix];
+    // SAFETY: COM is initialised above; all COM objects are released before return.
+    let app_sources = unsafe { enumerate_wasapi_sessions() };
+    sources.extend(app_sources);
+    sources
+}
+
+/// Enumerate active WASAPI audio sessions on the default render endpoint.
+///
+/// Returns per-process `Application` sources.  On any error, returns an empty
+/// `Vec` — missing sessions are not fatal.
+///
+/// # Safety
+///
+/// Caller must have initialised COM (MTA) before calling this function.
+unsafe fn enumerate_wasapi_sessions() -> Vec<crate::CaptureSource> {
+    use crate::{CaptureSource, SourceKind, SourceState};
+    use windows::Win32::Media::Audio::{
+        eMultimedia, eRender, AudioSessionStateActive, IAudioSessionControl,
+        IAudioSessionControl2, IAudioSessionEnumerator, IAudioSessionManager2,
+        IMMDeviceEnumerator, MMDeviceEnumerator,
+    };
+    use windows::Win32::System::Com::{CoCreateInstance, CLSCTX_ALL};
+    use windows::Win32::System::Threading::{
+        OpenProcess, QueryFullProcessImageNameW, PROCESS_NAME_WIN32,
+        PROCESS_QUERY_LIMITED_INFORMATION,
+    };
+    use windows::Win32::Foundation::CloseHandle;
+    use windows_core::PWSTR;
+
+    let current_pid = std::process::id();
+
+    let enumerator: IMMDeviceEnumerator =
+        match CoCreateInstance(&MMDeviceEnumerator, None, CLSCTX_ALL) {
+            Ok(e) => e,
+            Err(_) => return Vec::new(),
+        };
+
+    let device = match enumerator.GetDefaultAudioEndpoint(eRender, eMultimedia) {
+        Ok(d) => d,
+        Err(_) => return Vec::new(),
+    };
+
+    let session_manager: IAudioSessionManager2 = match device.Activate(CLSCTX_ALL, None) {
+        Ok(sm) => sm,
+        Err(_) => return Vec::new(),
+    };
+
+    let session_enum: IAudioSessionEnumerator = match session_manager.GetSessionEnumerator() {
+        Ok(se) => se,
+        Err(_) => return Vec::new(),
+    };
+
+    let count = match session_enum.GetCount() {
+        Ok(c) => c,
+        Err(_) => return Vec::new(),
+    };
+
+    let mut sources: Vec<CaptureSource> = Vec::with_capacity(count as usize);
+
+    for i in 0..count {
+        let ctrl: IAudioSessionControl = match session_enum.GetSession(i) {
+            Ok(c) => c,
+            Err(_) => continue,
+        };
+        let ctrl2: IAudioSessionControl2 = match ctrl.cast() {
+            Ok(c) => c,
+            Err(_) => continue,
+        };
+
+        let pid = match ctrl2.GetProcessId() {
+            Ok(p) => p,
+            Err(_) => continue,
+        };
+
+        // Skip system/idle sessions and our own process.
+        if pid == 0 || pid == current_pid {
+            continue;
+        }
+
+        let state = match ctrl.GetState() {
+            Ok(s) => s,
+            Err(_) => continue,
+        };
+        let source_state = if state == AudioSessionStateActive {
+            SourceState::Playing
+        } else {
+            SourceState::Silent
+        };
+
+        // Resolve process name from PID.
+        let name = match OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid) {
+            Ok(handle) => {
+                let mut buf = vec![0u16; 260];
+                let mut len = buf.len() as u32;
+                let name_result = QueryFullProcessImageNameW(
+                    handle,
+                    PROCESS_NAME_WIN32,
+                    PWSTR(buf.as_mut_ptr()),
+                    &mut len,
+                );
+                let _ = CloseHandle(handle);
+                match name_result {
+                    Ok(()) => {
+                        let path = String::from_utf16_lossy(&buf[..len as usize]);
+                        std::path::Path::new(&path)
+                            .file_stem()
+                            .and_then(|s| s.to_str())
+                            .unwrap_or(&path)
+                            .to_owned()
+                    }
+                    Err(_) => format!("pid-{pid}"),
+                }
+            }
+            Err(_) => format!("pid-{pid}"),
+        };
+
+        sources.push(CaptureSource {
+            id:          pid as u64,
+            name:        name.clone(),
+            kind:        SourceKind::Application,
+            process_id:  Some(pid),
+            app_id:      Some(name),
+            device_uid:  None,
+            state:       source_state,
+            sample_rate: 48_000,
+            channels:    2,
+        });
+    }
+
+    sources
 }
 
 // ---------------------------------------------------------------------------
