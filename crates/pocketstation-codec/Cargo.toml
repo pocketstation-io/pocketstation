@@ -11,6 +11,7 @@ default = []
 # real-opus kept for backward compatibility; 'recording' is the Phase 3 canonical feature name.
 real-opus = []
 recording = []
+test-helpers = []
 
 [dependencies]
 pocketstation-frame = { path = "../pocketstation-frame", version = "0.1.0" }

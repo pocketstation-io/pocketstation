@@ -63,16 +63,18 @@ impl Default for OpusDecoder {
 }
 
 // ---------------------------------------------------------------------------
-// Legacy mock alias — kept so that existing tests and the sine_to_wav example
-// continue to compile without modification.  Delegates to the real decoder.
+// Legacy mock alias — kept so that existing tests continue to compile without
+// modification.  Delegates to the real decoder.
 // Remove in Phase 5 once all call sites have been migrated.
 // ---------------------------------------------------------------------------
 
 /// Deprecated alias for [`OpusDecoder`].  Use `OpusDecoder` directly.
+#[cfg(any(test, feature = "test-helpers"))]
 pub struct MockOpusDecoder {
     inner: OpusDecoder,
 }
 
+#[cfg(any(test, feature = "test-helpers"))]
 impl MockOpusDecoder {
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
@@ -101,6 +103,7 @@ impl MockOpusDecoder {
     }
 }
 
+#[cfg(any(test, feature = "test-helpers"))]
 impl Default for MockOpusDecoder {
     fn default() -> Self {
         Self::new()

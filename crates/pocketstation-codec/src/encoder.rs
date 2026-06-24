@@ -27,6 +27,73 @@ impl OpusFrameDuration {
     }
 }
 
+/// Opus application mode.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum OpusApplication {
+    /// Optimised for voice (VOIP). Default for PocketStation broadcast.
+    Voip,
+    /// Optimised for low algorithmic delay. Use for real-time voice agents.
+    LowDelay,
+    /// Optimised for audio quality (music/broadcast).
+    Audio,
+}
+
+/// Explicit configuration for an Opus encoder instance.
+///
+/// All parameters named and documented. Eliminates hardcoded magic values
+/// scattered across constructors.
+#[derive(Debug, Clone)]
+pub struct OpusConfig {
+    /// Number of channels (1 = mono, 2 = stereo).
+    pub channels: u8,
+    /// Frame duration. Default: 20 ms (AUDIO-012).
+    pub frame_duration: OpusFrameDuration,
+    /// Opus application mode.
+    pub application: OpusApplication,
+    /// Target bitrate in kbps. None = Opus auto (variable bitrate).
+    pub bitrate_kbps: Option<u32>,
+    /// Encoder complexity 0–10. Higher = better quality, more CPU.
+    pub complexity: u8,
+    /// Discontinuous transmission (silence suppression).
+    pub dtx: bool,
+    /// In-band forward error correction.
+    pub fec: bool,
+}
+
+impl Default for OpusConfig {
+    fn default() -> Self {
+        Self {
+            channels: 1,
+            frame_duration: OpusFrameDuration::Ms20,
+            application: OpusApplication::Voip,
+            bitrate_kbps: None,
+            complexity: 9,
+            dtx: false,
+            fec: false,
+        }
+    }
+}
+
+impl OpusConfig {
+    /// Standard voice broadcast config (AUDIO-012 default).
+    pub fn voice_broadcast() -> Self {
+        Self::default()
+    }
+
+    /// Low-latency voice-agent config: 10 ms frames, RESTRICTED_LOWDELAY.
+    pub fn voice_agent(bitrate_kbps: u32) -> Self {
+        Self {
+            channels: 1,
+            frame_duration: OpusFrameDuration::Ms10,
+            application: OpusApplication::LowDelay,
+            bitrate_kbps: Some(bitrate_kbps),
+            complexity: 5,
+            dtx: false,
+            fec: false,
+        }
+    }
+}
+
 #[derive(Debug)]
 pub struct EncodedFrame {
     pub sequence_number: u64,
@@ -86,6 +153,22 @@ impl OpusEncoder {
         let mut enc = Encoder::new(OPUS_SAMPLE_RATE, ch, Application::LowDelay)?;
         enc.set_bitrate(opus::Bitrate::Bits((bitrate_kbps * 1_000) as i32))?;
         enc.set_complexity(5)?;
+        Ok(Self { inner: enc })
+    }
+
+    /// Create an encoder from an explicit OpusConfig.
+    pub fn from_config(config: &OpusConfig) -> Result<Self, opus::Error> {
+        let ch = if config.channels == 2 { Channels::Stereo } else { Channels::Mono };
+        let app = match config.application {
+            OpusApplication::Voip => Application::Voip,
+            OpusApplication::LowDelay => Application::LowDelay,
+            OpusApplication::Audio => Application::Audio,
+        };
+        let mut enc = Encoder::new(OPUS_SAMPLE_RATE, ch, app)?;
+        if let Some(kbps) = config.bitrate_kbps {
+            enc.set_bitrate(opus::Bitrate::Bits((kbps * 1_000) as i32))?;
+        }
+        enc.set_complexity(config.complexity as i32)?;
         Ok(Self { inner: enc })
     }
 
@@ -156,16 +239,18 @@ impl Default for OpusEncoder {
 }
 
 // ---------------------------------------------------------------------------
-// Legacy mock alias — kept so that existing tests and the sine_to_wav example
-// continue to compile without modification.  Delegates to the real encoder.
+// Legacy mock alias — kept so that existing tests continue to compile without
+// modification.  Delegates to the real encoder.
 // Remove in Phase 5 once all call sites have been migrated.
 // ---------------------------------------------------------------------------
 
 /// Deprecated alias for [`OpusEncoder`].  Use `OpusEncoder` directly.
+#[cfg(any(test, feature = "test-helpers"))]
 pub struct MockOpusEncoder {
     pub inner: OpusEncoder,
 }
 
+#[cfg(any(test, feature = "test-helpers"))]
 impl MockOpusEncoder {
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
@@ -189,6 +274,7 @@ impl MockOpusEncoder {
     }
 }
 
+#[cfg(any(test, feature = "test-helpers"))]
 impl Default for MockOpusEncoder {
     fn default() -> Self {
         Self::new()

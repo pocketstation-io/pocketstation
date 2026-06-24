@@ -11,6 +11,11 @@ mod jitter_buffer;
 pub use constants::{
     OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, OPUS_SAMPLE_RATE, VOICE_AGENT_FRAME_SAMPLES,
 };
-pub use decoder::{MockOpusDecoder, OpusDecoder};
-pub use encoder::{EncodedFrame, MockOpusEncoder, OpusEncoder, OpusFrameDuration};
+pub use decoder::OpusDecoder;
+pub use encoder::{EncodedFrame, OpusApplication, OpusConfig, OpusEncoder, OpusFrameDuration};
 pub use jitter_buffer::{JitterBuffer, PopResult};
+
+#[cfg(any(test, feature = "test-helpers"))]
+pub use decoder::MockOpusDecoder;
+#[cfg(any(test, feature = "test-helpers"))]
+pub use encoder::MockOpusEncoder;
