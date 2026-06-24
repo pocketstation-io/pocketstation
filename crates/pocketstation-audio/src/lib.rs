@@ -6,7 +6,6 @@ pub use pocketstation_codec::*;
 pub use pocketstation_frame::*;
 pub use pocketstation_metrics::*;
 
-// Capture re-exports: exclude OutputTarget which conflicts with pocketstation_transport.
 pub use pocketstation_capture::{
     capture_system_audio, capture_with_mode, discover_sources,
     open_best_source, AdapterError, AudioOutputDescriptor, AudioOutputSink, AudioSourceDescriptor,
@@ -16,10 +15,27 @@ pub use pocketstation_capture::{
     SourceState, StableSourceId, SystemLoopbackSource,
 };
 
-// Transport re-exports: OutputTarget lives here to avoid conflict with capture's OutputTarget.
-pub use pocketstation_transport::{RouteKind, RoutePlan, RouteEncryptionMode, TransportKind};
-// Re-export capture's OutputTarget under the same name as before.
+// Re-export capture's OutputTarget.
 pub use pocketstation_capture::OutputTarget;
+
+/// Transport mechanism used to carry encoded audio frames.
+/// Not dispatched on until a Rust transport layer exists (AUDIO-025).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum TransportKind {
+    Local,
+    WebRtc,
+    RtpUdp,
+    File,
+}
+
+/// Encryption mode applied at the transport or frame layer (AUDIO-025).
+/// SFrameE2EE follows RFC 9605. EnterpriseKeyManager is deferred to Phase 5.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum RouteEncryptionMode {
+    TransportOnly,
+    SFrameE2EE,
+    EnterpriseKeyManager,
+}
 
 // Platform-specific re-exports.
 #[cfg(target_os = "macos")]

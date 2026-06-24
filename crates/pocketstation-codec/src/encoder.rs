@@ -262,6 +262,17 @@ impl OpusEncoder {
         self.inner.set_complexity(complexity)
     }
 
+    /// Update the live encoder bitrate. Called by CODEC_HINT handler (AUDIO-021).
+    /// `kbps` = 0 switches to Opus auto (VBR). Safe to call mid-stream.
+    pub fn set_bitrate_kbps(&mut self, kbps: u32) -> Result<(), opus::Error> {
+        let bitrate = if kbps > 0 {
+            opus::Bitrate::Bits((kbps * 1_000) as i32)
+        } else {
+            opus::Bitrate::Auto
+        };
+        self.inner.set_bitrate(bitrate)
+    }
+
     /// Convenience wrapper that allocates a `Vec<u8>` per call.
     /// For tests and examples only; hot-path callers must use `encode_into()`.
     pub fn encode(&mut self, frame: &AudioFrame) -> Result<EncodedFrame, opus::Error> {

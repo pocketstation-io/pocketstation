@@ -109,9 +109,6 @@ impl ProcessorGraph {
 
     pub fn process(&mut self, mut frame: AudioFrame) -> Option<AudioFrame> {
         for node in self.nodes.iter_mut() {
-            if node.accepted_channels() == ChannelLayout::MonoOnly && frame.channels > 1 {
-                frame = MonoMixNode.process(frame)?;
-            }
             frame = node.process(frame)?;
         }
         Some(frame)

@@ -817,7 +817,6 @@ dependencies = [
  "pocketstation-frame",
  "pocketstation-metrics",
  "pocketstation-pipeline",
- "pocketstation-transport",
 ]
 
 [[package]]
@@ -889,13 +888,6 @@ dependencies = [
  "pocketstation-codec",
  "pocketstation-frame",
  "rtrb",
-]
-
-[[package]]
-name = "pocketstation-transport"
-version = "0.1.0"
-dependencies = [
- "pocketstation-frame",
 ]
 
 [[package]]
