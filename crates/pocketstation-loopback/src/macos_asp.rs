@@ -8,6 +8,7 @@ extern "C" {
     fn pks_asp_open_reader() -> *mut std::ffi::c_void;
     fn pks_asp_sample_rate(r: *mut std::ffi::c_void) -> c_uint;
     fn pks_asp_channels(r: *mut std::ffi::c_void) -> c_uint;
+    #[allow(dead_code)]
     fn pks_asp_drop_count(r: *mut std::ffi::c_void) -> u64;
     fn pks_asp_read_frames(r: *mut std::ffi::c_void, out: *mut c_float, frame_count: c_uint) -> c_uint;
     fn pks_asp_close_reader(r: *mut std::ffi::c_void);
@@ -44,6 +45,7 @@ impl AspReader {
         unsafe { pks_asp_channels(self.0) }
     }
 
+    #[allow(dead_code)]
     pub fn drop_count(&self) -> u64 {
         // SAFETY: self.0 is valid (checked in open()).
         unsafe { pks_asp_drop_count(self.0) }

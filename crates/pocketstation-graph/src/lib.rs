@@ -195,9 +195,9 @@ impl AudioProcessorNode for ResampleNode {
         let ratio = base_ratio - drift_ratio;
 
         if self.target_rate > self.source_rate {
-            // Upsampling: deferred to Phase 2.  Return frame unchanged so
-            // downstream nodes can still process at source_rate.
-            return Some(frame);
+            // Upsampling is not implemented. Drop the frame rather than passing
+            // wrong-rate audio downstream. Phase 2+ will add real SRC upsampling.
+            return None;
         }
 
         // ---- Downsampling path (target < source) ----
@@ -325,18 +325,18 @@ mod resample_tests {
     }
 
     #[test]
-    fn given_upsample_44100_to_48000_when_process_then_frame_returned_unchanged() {
-        // Given: Phase 1 — upsampling is deferred, frame passes through at source_rate.
+    fn given_upsample_44100_to_48000_when_process_then_none_returned() {
+        // Given: upsampling is not implemented — must fail hard, never silent passthrough.
         let pool = AudioBufferPool::new(4, 960);
         let input: Vec<f32> = (0..441).map(|i| i as f32 * 0.001).collect();
         let frame = make_frame(&pool, &input, 44_100);
         let mut node = ResampleNode::new(44_100, 48_000);
 
         // When
-        let out = node.process(frame).unwrap();
+        let out = node.process(frame);
 
-        // Then: upsampling deferred — same sample count returned
-        assert_eq!(out.buffer.len(), input.len());
+        // Then: None — upsampling drops the frame until Phase 2 SRC is added
+        assert!(out.is_none(), "upsampling must return None until Phase 2 SRC is implemented");
     }
 
     #[test]

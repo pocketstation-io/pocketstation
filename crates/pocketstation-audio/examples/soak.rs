@@ -17,7 +17,7 @@
 ///
 /// Run:  cargo run -p pocketstation-audio --example soak --release
 use pocketstation_audio::{
-    frame_bus, AudioBufferPool, AudioFrame, MockOpusDecoder, MockOpusEncoder, SourceId, StreamId,
+    frame_bus, AudioBufferPool, AudioFrame, OpusDecoder, OpusEncoder, SourceId, StreamId,
     DEFAULT_SAMPLE_RATE, DEFAULT_SLOT_SAMPLES_MONO_20MS,
 };
 use std::{f32::consts::PI, time::Instant};
@@ -39,13 +39,12 @@ fn run_soak(label: &str, complexity: i32, sine_table: &[f32]) {
     let pool = AudioBufferPool::new(64, DEFAULT_SLOT_SAMPLES_MONO_20MS);
     let (mut prod, mut cons) = frame_bus(64);
 
-    let mut encoder = MockOpusEncoder::default();
-    let mut decoder = MockOpusDecoder::default();
+    let mut encoder = OpusEncoder::default();
+    let mut decoder = OpusDecoder::default();
 
-    // Set encoder complexity via the inner OpusEncoder.
+    // Set encoder complexity.
     // complexity 9 = production (AUDIO-012); complexity 0 = throughput ceiling.
     encoder
-        .inner
         .set_complexity(complexity)
         .expect("set_complexity failed");
 
@@ -69,10 +68,14 @@ fn run_soak(label: &str, complexity: i32, sine_table: &[f32]) {
         // ── Consume (encode + decode) ────────────────────────────────────────
         if let Some(frame) = cons.pop() {
             encode_buf.clear();
-            let n_enc = encoder.encode_into(&frame, &mut encode_buf);
+            let n_enc = encoder
+                .encode_into(frame.buffer.as_slice(), &mut encode_buf)
+                .expect("encode_into failed");
             drop(frame);
             decode_buf.clear();
-            let n_dec = decoder.decode_slice_into(&encode_buf[..n_enc], &mut decode_buf);
+            let n_dec = decoder
+                .decode_into(&encode_buf[..n_enc], &mut decode_buf)
+                .expect("decode_into failed");
             total_decoded += n_dec as u64;
         }
     }
@@ -80,10 +83,14 @@ fn run_soak(label: &str, complexity: i32, sine_table: &[f32]) {
     // Drain remainder.
     while let Some(frame) = cons.pop() {
         encode_buf.clear();
-        let n_enc = encoder.encode_into(&frame, &mut encode_buf);
+        let n_enc = encoder
+            .encode_into(frame.buffer.as_slice(), &mut encode_buf)
+            .expect("encode_into failed");
         drop(frame);
         decode_buf.clear();
-        let n_dec = decoder.decode_slice_into(&encode_buf[..n_enc], &mut decode_buf);
+        let n_dec = decoder
+            .decode_into(&encode_buf[..n_enc], &mut decode_buf)
+            .expect("decode_into failed");
         total_decoded += n_dec as u64;
     }
 
