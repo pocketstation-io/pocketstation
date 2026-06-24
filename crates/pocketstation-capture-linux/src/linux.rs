@@ -36,7 +36,7 @@ use pw::spa::pod::Pod;
 use spa::format::{MediaSubtype, MediaType};
 use spa::param::audio::AudioFormat;
 
-use crate::{CaptureMode, LoopbackError};
+use pocketstation_capture::{CaptureMode, CaptureError as LoopbackError};
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -99,7 +99,7 @@ impl SystemLoopbackSource {
                 let nodes = enumerate_pipewire_nodes();
                 let target_pid = *pid;
                 match nodes.iter().find(|s| s.process_id == Some(target_pid)) {
-                    Some(src) => run_pipewire_targeted(src.id, mode, callback),
+                    Some(src) => run_pipewire_targeted(src.stable_id.to_frame_source_id().0, mode, callback),
                     None => Err(LoopbackError::BackendInit(format!(
                         "BLOCKED_WITH_EVIDENCE: PipeWire per-app source capture requires PipeWire node enumeration and link; no node found for '{target_pid}'"
                     ))),
@@ -113,7 +113,7 @@ impl SystemLoopbackSource {
                 let name_lower = name.to_ascii_lowercase();
                 let name_clone = name.clone();
                 match nodes.iter().find(|s| s.name.to_ascii_lowercase() == name_lower) {
-                    Some(src) => run_pipewire_targeted(src.id, mode, callback),
+                    Some(src) => run_pipewire_targeted(src.stable_id.to_frame_source_id().0, mode, callback),
                     None => Err(LoopbackError::BackendInit(format!(
                         "BLOCKED_WITH_EVIDENCE: PipeWire per-app source capture requires PipeWire node enumeration and link; no node found for '{name_clone}'"
                     ))),
@@ -341,13 +341,13 @@ where
 ///
 /// Always returns at least one entry (the system-wide mix at id=0).
 /// If PipeWire is available, per-application node sources are appended.
-pub(crate) fn discover_sources_linux() -> Vec<crate::CaptureSource> {
-    use crate::{CaptureSource, SourceKind, SourceState};
+pub(crate) fn discover_sources_linux() -> Vec<pocketstation_capture::CaptureSource> {
+    use pocketstation_capture::{CaptureSource, SourceKind, SourceState, StableSourceId};
+    use pocketstation_frame::Platform;
 
     let system_mix = CaptureSource {
-        id:          0,
+        stable_id:   StableSourceId::new(Platform::Linux, SourceKind::SystemMix, "system:mix"),
         name:        "System Mix".to_owned(),
-        kind:        SourceKind::SystemMix,
         process_id:  None,
         app_id:      None,
         device_uid:  None,
@@ -368,8 +368,9 @@ pub(crate) fn discover_sources_linux() -> Vec<crate::CaptureSource> {
 /// Spawns a thread, connects to PipeWire, subscribes to registry globals,
 /// and waits for the initial round-trip to complete (or 300 ms timeout).
 /// Returns an empty `Vec` on any error.
-fn enumerate_pipewire_nodes() -> Vec<crate::CaptureSource> {
-    use crate::{CaptureSource, SourceKind, SourceState};
+fn enumerate_pipewire_nodes() -> Vec<pocketstation_capture::CaptureSource> {
+    use pocketstation_capture::{CaptureSource, SourceKind, SourceState, StableSourceId};
+    use pocketstation_frame::Platform;
     use std::cell::RefCell;
     use std::rc::Rc;
     use std::sync::mpsc as smpsc;
@@ -442,10 +443,12 @@ fn enumerate_pipewire_nodes() -> Vec<crate::CaptureSource> {
                         .get("application.process.id")
                         .and_then(|s| s.parse::<u32>().ok());
 
+                    let stable_key = node_name.as_deref()
+                        .map(|n| format!("pw-node:{n}"))
+                        .unwrap_or_else(|| format!("pw-id:{}", global.id));
                     collected_for_reg.borrow_mut().push(CaptureSource {
-                        id:          global.id as u64,
+                        stable_id:   StableSourceId::new(Platform::Linux, kind, stable_key),
                         name,
-                        kind,
                         process_id:  pid,
                         app_id:      None,
                         device_uid:  node_name,

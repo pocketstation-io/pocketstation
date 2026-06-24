@@ -2,13 +2,15 @@
 resolver = "2"
 members = [
   "crates/pocketstation-frame",
-  "crates/pocketstation-bus",
-  "crates/pocketstation-graph",
   "crates/pocketstation-codec",
-  "crates/pocketstation-route",
   "crates/pocketstation-metrics",
+  "crates/pocketstation-transport",
+  "crates/pocketstation-pipeline",
+  "crates/pocketstation-capture",
+  "crates/pocketstation-capture-macos",
+  "crates/pocketstation-capture-windows",
+  "crates/pocketstation-capture-linux",
   "crates/pocketstation-audio",
-  "crates/pocketstation-loopback",
 ]
 
 [workspace.package]

@@ -35,7 +35,7 @@ use pocketstation_frame::{
 };
 use wasapi::{AudioClient, DeviceEnumerator, Direction, SampleType, StreamMode, WaveFormat};
 
-use crate::{CaptureMode, LoopbackError};
+use pocketstation_capture::{CaptureMode, CaptureError as LoopbackError};
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -341,13 +341,13 @@ fn run_system_loopback(
 ///
 /// Always returns at least one entry (the system-wide mix at id=0).
 /// Per-process application sources are appended via WASAPI session enumeration.
-pub(crate) fn discover_sources_windows() -> Vec<crate::CaptureSource> {
-    use crate::{CaptureSource, SourceKind, SourceState};
+pub(crate) fn discover_sources_windows() -> Vec<pocketstation_capture::CaptureSource> {
+    use pocketstation_capture::{CaptureSource, SourceKind, SourceState, StableSourceId};
+    use pocketstation_frame::Platform;
 
     let system_mix = CaptureSource {
-        id:          0,
+        stable_id:   StableSourceId::new(Platform::Windows, SourceKind::SystemMix, "system:mix"),
         name:        "System Mix".to_owned(),
-        kind:        SourceKind::SystemMix,
         process_id:  None,
         app_id:      None,
         device_uid:  None,
@@ -376,8 +376,9 @@ pub(crate) fn discover_sources_windows() -> Vec<crate::CaptureSource> {
 /// # Safety
 ///
 /// Caller must have initialised COM (MTA) before calling this function.
-unsafe fn enumerate_wasapi_sessions() -> Vec<crate::CaptureSource> {
-    use crate::{CaptureSource, SourceKind, SourceState};
+unsafe fn enumerate_wasapi_sessions() -> Vec<pocketstation_capture::CaptureSource> {
+    use pocketstation_capture::{CaptureSource, SourceKind, SourceState, StableSourceId};
+    use pocketstation_frame::Platform;
     use windows::Win32::Media::Audio::{
         eMultimedia, eRender, AudioSessionStateActive, IAudioSessionControl,
         IAudioSessionControl2, IAudioSessionEnumerator, IAudioSessionManager2,
@@ -479,9 +480,8 @@ unsafe fn enumerate_wasapi_sessions() -> Vec<crate::CaptureSource> {
         };
 
         sources.push(CaptureSource {
-            id:          pid as u64,
+            stable_id:   StableSourceId::new(Platform::Windows, SourceKind::Application, format!("wasapi:pid:{pid}")),
             name:        name.clone(),
-            kind:        SourceKind::Application,
             process_id:  Some(pid),
             app_id:      Some(name),
             device_uid:  None,

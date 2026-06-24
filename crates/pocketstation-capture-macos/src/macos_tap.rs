@@ -9,7 +9,7 @@ use std::time::Duration;
 
 use pocketstation_frame::{AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, Platform, StreamId};
 
-use crate::{CaptureMode, CaptureSource, LoopbackError, SourceKind, SourceState, StableSourceId};
+use pocketstation_capture::{CaptureMode, CaptureSource, CaptureError as LoopbackError, SourceKind, SourceState, StableSourceId};
 
 // ---------------------------------------------------------------------------
 // FFI — mirrors source_discovery.h

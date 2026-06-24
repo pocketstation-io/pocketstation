@@ -22,7 +22,7 @@ use pocketstation_frame::{
     AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId,
 };
 
-use crate::{CaptureMode, LoopbackError};
+use pocketstation_capture::{CaptureMode, CaptureError as LoopbackError};
 use crate::macos_asp::AspReader;
 
 // ---------------------------------------------------------------------------

@@ -1,0 +1,12 @@
+[package]
+name = "pocketstation-pipeline"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Frame bus, clock sync, and audio processing graph for PocketStation"
+
+[dependencies]
+pocketstation-frame = { path = "../pocketstation-frame", version = "0.1.0" }
+pocketstation-codec = { path = "../pocketstation-codec", version = "0.1.0" }
+rtrb = { workspace = true }

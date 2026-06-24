@@ -1,18 +1,29 @@
 pub mod ffi;
 pub use ffi::{pks_encode_opus, pks_opus_encoder_create, pks_opus_encoder_destroy, PksOpusEncoder};
 
-pub use pocketstation_bus::*;
+pub use pocketstation_pipeline::*;
 pub use pocketstation_codec::*;
 pub use pocketstation_frame::*;
-pub use pocketstation_graph::*;
 pub use pocketstation_metrics::*;
-// Route re-exports: exclude EncryptionMode which conflicts with pocketstation_codec's re-export.
-pub use pocketstation_route::{
+
+// Capture re-exports: exclude OutputTarget which conflicts with pocketstation_transport.
+pub use pocketstation_capture::{
+    capture_system_audio, capture_with_mode, discover_sources,
     open_best_source, AdapterError, AudioOutputDescriptor, AudioOutputSink, AudioSourceDescriptor,
-    AudioSourceStream, LatencyClass, OutputRequest, OutputTarget, PlatformAdapter, PlatformId,
-    ReliabilityClass, RouteKind, RoutePlan, SourceCapability, SourcePreference, SourceRequest,
-    TransportKind,
+    AudioSourceStream, CaptureError, CaptureMode, CaptureSource, LatencyClass,
+    LoopbackError, OutputRequest, PlatformAdapter, PlatformId,
+    ReliabilityClass, SourceCapability, SourceKind, SourcePreference, SourceRequest,
+    SourceState, StableSourceId, SystemLoopbackSource,
 };
+
+// Transport re-exports: OutputTarget lives here to avoid conflict with capture's OutputTarget.
+pub use pocketstation_transport::{RouteKind, RoutePlan, RouteEncryptionMode, TransportKind};
+// Re-export capture's OutputTarget under the same name as before.
+pub use pocketstation_capture::OutputTarget;
+
+// Platform-specific re-exports.
+#[cfg(target_os = "macos")]
+pub use pocketstation_capture_macos::{asp_is_installed, tap_available};
 
 use std::f32::consts::PI;
 

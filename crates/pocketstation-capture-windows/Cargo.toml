@@ -1,19 +1,14 @@
 [package]
-name = "pocketstation-loopback"
+name = "pocketstation-capture-windows"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "System audio loopback capture for PocketStation (macOS ScreenCaptureKit, Linux PipeWire/ALSA, Windows WASAPI)"
+description = "Windows WASAPI loopback capture for PocketStation"
 
 [dependencies]
-pocketstation-frame = { path = "../pocketstation-frame" }
-thiserror.workspace = true
-
-[target.'cfg(target_os = "linux")'.dependencies]
-pipewire = "0.10"
-alsa = "0.9"
-libc = "0.2"
+pocketstation-capture = { path = "../pocketstation-capture", version = "0.1.0" }
+pocketstation-frame = { path = "../pocketstation-frame", version = "0.1.0" }
 
 [target.'cfg(target_os = "windows")'.dependencies]
 wasapi = "0.23"
@@ -25,8 +20,3 @@ windows = { version = "0.58", features = [
     "Win32_Foundation",
 ] }
 windows-core = "0.58"
-
-[build-dependencies]
-cc = "1"
-
-[dev-dependencies]

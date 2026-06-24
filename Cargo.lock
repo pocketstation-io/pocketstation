@@ -809,21 +809,54 @@ dependencies = [
  "cbindgen",
  "criterion",
  "hound",
- "pocketstation-bus",
+ "pocketstation-capture",
+ "pocketstation-capture-linux",
+ "pocketstation-capture-macos",
+ "pocketstation-capture-windows",
  "pocketstation-codec",
  "pocketstation-frame",
- "pocketstation-graph",
  "pocketstation-metrics",
- "pocketstation-route",
+ "pocketstation-pipeline",
+ "pocketstation-transport",
 ]
 
 [[package]]
-name = "pocketstation-bus"
+name = "pocketstation-capture"
 version = "0.1.0"
 dependencies = [
  "pocketstation-frame",
- "rtrb",
  "thiserror 1.0.69",
+]
+
+[[package]]
+name = "pocketstation-capture-linux"
+version = "0.1.0"
+dependencies = [
+ "alsa",
+ "libc",
+ "pipewire",
+ "pocketstation-capture",
+ "pocketstation-frame",
+]
+
+[[package]]
+name = "pocketstation-capture-macos"
+version = "0.1.0"
+dependencies = [
+ "cc",
+ "pocketstation-capture",
+ "pocketstation-frame",
+]
+
+[[package]]
+name = "pocketstation-capture-windows"
+version = "0.1.0"
+dependencies = [
+ "pocketstation-capture",
+ "pocketstation-frame",
+ "wasapi",
+ "windows 0.58.0",
+ "windows-core 0.58.0",
 ]
 
 [[package]]
@@ -845,34 +878,20 @@ dependencies = [
 ]
 
 [[package]]
-name = "pocketstation-graph"
-version = "0.1.0"
-dependencies = [
- "pocketstation-bus",
- "pocketstation-frame",
-]
-
-[[package]]
-name = "pocketstation-loopback"
-version = "0.1.0"
-dependencies = [
- "alsa",
- "cc",
- "libc",
- "pipewire",
- "pocketstation-frame",
- "thiserror 1.0.69",
- "wasapi",
- "windows 0.58.0",
- "windows-core 0.58.0",
-]
-
-[[package]]
 name = "pocketstation-metrics"
 version = "0.1.0"
 
 [[package]]
-name = "pocketstation-route"
+name = "pocketstation-pipeline"
+version = "0.1.0"
+dependencies = [
+ "pocketstation-codec",
+ "pocketstation-frame",
+ "rtrb",
+]
+
+[[package]]
+name = "pocketstation-transport"
 version = "0.1.0"
 dependencies = [
  "pocketstation-frame",
