@@ -4,7 +4,6 @@ members = [
   "crates/pocketstation-frame",
   "crates/pocketstation-codec",
   "crates/pocketstation-metrics",
-  "crates/pocketstation-transport",
   "crates/pocketstation-pipeline",
   "crates/pocketstation-capture",
   "crates/pocketstation-capture-macos",

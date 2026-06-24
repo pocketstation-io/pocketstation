@@ -28,7 +28,6 @@ pocketstation-capture = { path = "../pocketstation-capture", version = "0.1.0" }
 pocketstation-capture-macos = { path = "../pocketstation-capture-macos", version = "0.1.0" }
 pocketstation-capture-windows = { path = "../pocketstation-capture-windows", version = "0.1.0" }
 pocketstation-capture-linux = { path = "../pocketstation-capture-linux", version = "0.1.0" }
-pocketstation-transport = { path = "../pocketstation-transport", version = "0.1.0" }
 pocketstation-metrics = { path = "../pocketstation-metrics", version = "0.1.0" }
 hound.workspace = true
 

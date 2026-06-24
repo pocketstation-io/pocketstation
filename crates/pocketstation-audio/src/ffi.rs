@@ -1,7 +1,9 @@
 //! C FFI boundary for the PocketStation audio engine.
 //!
-//! Generated header: audio-core/ffi/pocketstation_audio.h (via cbindgen in build.rs).
-//! Swift usage: import via module.modulemap in sdk-ios.
+//! Canonical headers (regenerate with scripts/sync-ffi-header.sh after any change here):
+//!   sdk-ios/Sources/PocketStationAudioFFI/pocketstation_audio.h
+//!   sdk-android/sdk/src/main/cpp/pocketstation_audio.h
+//! Swift usage: import via module.modulemap in sdk-ios (AUDIO-001).
 //! AUDIO-001: platform callback writes f32 PCM → Rust Opus encode → Swift WebRTC send.
 
 use std::os::raw::{c_int, c_uchar, c_uint};
@@ -63,6 +65,29 @@ pub unsafe extern "C" fn pks_opus_encoder_create(
 pub unsafe extern "C" fn pks_opus_encoder_destroy(enc: *mut PksOpusEncoder) {
     if !enc.is_null() {
         drop(Box::from_raw(enc));
+    }
+}
+
+/// Update the bitrate of a running encoder. Called on CODEC_HINT relay messages (AUDIO-021).
+///
+/// enc:          pointer from pks_opus_encoder_create. No-op if null (returns -1).
+/// bitrate_kbps: new target bitrate in kbps (e.g. 32, 64, 96). 0 = Opus auto (VBR).
+///
+/// Returns 0 on success, -1 if enc is null, -2 on internal Opus error.
+///
+/// # Safety
+/// `enc` must be a valid pointer from `pks_opus_encoder_create` or null.
+#[no_mangle]
+pub unsafe extern "C" fn pks_opus_encoder_set_bitrate(
+    enc: *mut PksOpusEncoder,
+    bitrate_kbps: c_uint,
+) -> c_int {
+    if enc.is_null() {
+        return -1;
+    }
+    match (*enc).inner.set_bitrate_kbps(bitrate_kbps) {
+        Ok(()) => 0,
+        Err(_) => -2,
     }
 }
 
@@ -173,6 +198,39 @@ mod tests {
     #[test]
     fn given_encoder_when_destroy_null_then_no_crash() {
         unsafe { pks_opus_encoder_destroy(std::ptr::null_mut()) }
+    }
+
+    #[test]
+    fn given_valid_encoder_when_set_bitrate_then_returns_zero() {
+        unsafe {
+            let enc = pks_opus_encoder_create(48_000, 1, 64);
+            assert!(!enc.is_null());
+            assert_eq!(pks_opus_encoder_set_bitrate(enc, 32), 0);
+            assert_eq!(pks_opus_encoder_set_bitrate(enc, 96), 0);
+            assert_eq!(pks_opus_encoder_set_bitrate(enc, 0), 0, "0 kbps = VBR auto must succeed");
+            pks_opus_encoder_destroy(enc);
+        }
+    }
+
+    #[test]
+    fn given_null_encoder_when_set_bitrate_then_returns_minus_one() {
+        unsafe {
+            assert_eq!(pks_opus_encoder_set_bitrate(std::ptr::null_mut(), 64), -1);
+        }
+    }
+
+    #[test]
+    fn given_bitrate_change_when_encode_then_still_produces_valid_packet() {
+        unsafe {
+            let enc = pks_opus_encoder_create(48_000, 1, 64);
+            assert!(!enc.is_null());
+            pks_opus_encoder_set_bitrate(enc, 32);
+            let pcm = sine_960(440.0);
+            let mut out = vec![0u8; 256];
+            let n = pks_encode_opus(enc, pcm.as_ptr(), pcm.len(), out.as_mut_ptr(), out.len());
+            assert!(n > 0, "encode after bitrate change must produce valid packet");
+            pks_opus_encoder_destroy(enc);
+        }
     }
 
     #[test]
