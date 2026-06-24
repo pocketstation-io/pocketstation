@@ -1,40 +1,8 @@
-use thiserror::Error;
+mod model;
 
-// ---------------------------------------------------------------------------
-// Capture mode
-// ---------------------------------------------------------------------------
-
-/// Selects which audio source to capture.
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
-pub enum CaptureMode {
-    /// Capture the system-wide audio mix (all applications).
-    #[default]
-    SystemMix,
-    /// Capture a specific application by bundle ID (macOS) or node name (Linux).
-    Application(String),
-    /// Capture a specific process by PID.
-    Process(u32),
-}
-
-// ---------------------------------------------------------------------------
-// Public error type
-// ---------------------------------------------------------------------------
-
-/// Errors produced by the loopback capture API.
-#[derive(Debug, Error, PartialEq, Eq)]
-pub enum LoopbackError {
-    /// The platform does not support system audio loopback.
-    #[error("system audio loopback is not supported on this platform")]
-    NotSupported,
-
-    /// A backend-specific initialisation error.
-    #[error("loopback backend error: {0}")]
-    BackendInit(String),
-
-    /// The requested capture mode is not supported by this backend.
-    #[error("capture mode not supported on this backend: {0:?}")]
-    ModeUnsupported(CaptureMode),
-}
+pub use model::{
+    CaptureMode, CaptureSource, LoopbackError, SourceKind, SourceState, StableSourceId,
+};
 
 // ---------------------------------------------------------------------------
 // Platform backends
