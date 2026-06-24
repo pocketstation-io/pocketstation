@@ -8,6 +8,19 @@ pub const DEFAULT_FRAME_MS: u32 = 20;
 pub const DEFAULT_SLOT_SAMPLES_MONO_20MS: usize = 960;
 pub const MAX_POOL_SLOTS: usize = 64;
 
+/// The OS platform where this audio source was captured.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum Platform {
+    Macos,
+    Windows,
+    Linux,
+    Ios,
+    Android,
+    Web,
+    /// Used in tests or when platform is not yet determined.
+    Unknown,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct StreamId(pub u64);
 
