@@ -7,7 +7,7 @@
 use std::ptr::NonNull;
 use std::time::Duration;
 
-use pocketstation_frame::{AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, Platform, SourceId, StreamId};
+use pocketstation_frame::{AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, Platform, StreamId};
 
 use crate::{CaptureMode, CaptureSource, LoopbackError, SourceKind, SourceState, StableSourceId};
 
@@ -214,6 +214,23 @@ impl TapLoopbackSource {
         let pool           = std::sync::Arc::new(AudioBufferPool::new(POOL_DEPTH, buf_samples));
         let (stop_tx, stop_rx) = std::sync::mpsc::sync_channel::<()>(1);
 
+        // Compute the stable SourceId from the capture mode before the thread
+        // is spawned so that every AudioFrame carries the correct source identity.
+        let frame_source_id = match &mode {
+            CaptureMode::SystemMix => {
+                StableSourceId::new(Platform::Macos, SourceKind::SystemMix, "system:mix")
+                    .to_frame_source_id()
+            }
+            CaptureMode::Process(pid) => {
+                StableSourceId::new(Platform::Macos, SourceKind::Application, format!("pid:{pid}"))
+                    .to_frame_source_id()
+            }
+            CaptureMode::Application(bundle_id) => {
+                StableSourceId::new(Platform::Macos, SourceKind::Application, bundle_id.clone())
+                    .to_frame_source_id()
+            }
+        };
+
         let thread = std::thread::Builder::new()
             .name("pks-tap-reader".into())
             .spawn(move || {
@@ -239,7 +256,7 @@ impl TapLoopbackSource {
                         .duration_since(std::time::UNIX_EPOCH)
                         .unwrap_or_default().as_nanos() as u64;
                     let mut frame = AudioFrame::new(
-                        StreamId(0), SourceId(0), seq, ts_ns, channels, handle,
+                        StreamId(0), frame_source_id, seq, ts_ns, channels, handle,
                     );
                     frame.source_tag      = AudioSourceTag::Captured;
                     frame.encryption_mode = EncryptionMode::None;

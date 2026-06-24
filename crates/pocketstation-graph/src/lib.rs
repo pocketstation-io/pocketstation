@@ -134,6 +134,10 @@ const RESAMPLE_MAX_OUT_SAMPLES: usize = 1920;
 pub struct ResampleNode {
     source_rate: u32,
     target_rate: u32,
+    /// Expected channel count. Frames with a different channel count are
+    /// dropped (returns `None`) to prevent stereo audio silently passing
+    /// through a mono-configured node, or vice versa.
+    channels: u8,
     /// PI controller for clock-drift correction (AUDIO-006).
     clock_sync: ClockSync,
     /// Fractional position within the current input sample pair (0.0..1.0).
@@ -145,14 +149,18 @@ pub struct ResampleNode {
 }
 
 impl ResampleNode {
-    /// Create a resampler for the given rate pair.
+    /// Create a resampler for the given rate pair and channel count.
+    ///
+    /// Frames arriving with a different channel count than `channels` are
+    /// dropped by `process()` rather than being silently mis-converted.
     ///
     /// Pre-allocates the output scratch buffer for the worst-case frame size so
     /// `process()` never allocates.
-    pub fn new(source_rate: u32, target_rate: u32) -> Self {
+    pub fn new(source_rate: u32, target_rate: u32, channels: u8) -> Self {
         Self {
             source_rate,
             target_rate,
+            channels,
             clock_sync: ClockSync::default(),
             phase: 0.0,
             last_sample: 0.0,
@@ -160,9 +168,9 @@ impl ResampleNode {
         }
     }
 
-    /// Convenience constructor: 48 kHz → 48 kHz identity with drift tracking.
+    /// Convenience constructor: 48 kHz → 48 kHz identity with drift tracking (mono).
     pub fn identity_48k() -> Self {
-        Self::new(48_000, 48_000)
+        Self::new(48_000, 48_000, 1)
     }
 }
 
@@ -176,6 +184,13 @@ impl AudioProcessorNode for ResampleNode {
     }
 
     fn process(&mut self, mut frame: AudioFrame) -> Option<AudioFrame> {
+        // Channel layout guard: drop frames that don't match the configured
+        // channel count. Prevents stereo audio silently passing through a
+        // mono-configured node (or vice versa) and producing corrupted output.
+        if frame.channels != self.channels {
+            return None;
+        }
+
         // Feed timestamp into PI controller to compute drift correction.
         // The correction is in nanoseconds; convert to a dimensionless ratio
         // tweak (positive correction → we are running fast → slow down slightly).
@@ -309,7 +324,7 @@ mod resample_tests {
         let pool = AudioBufferPool::new(4, 960);
         let input: Vec<f32> = (0..960).map(|i| (i as f32) / 960.0).collect();
         let frame = make_frame(&pool, &input, 48_000);
-        let mut node = ResampleNode::new(48_000, 44_100);
+        let mut node = ResampleNode::new(48_000, 44_100, 1);
 
         // When
         let out = node.process(frame).unwrap();
@@ -330,13 +345,38 @@ mod resample_tests {
         let pool = AudioBufferPool::new(4, 960);
         let input: Vec<f32> = (0..441).map(|i| i as f32 * 0.001).collect();
         let frame = make_frame(&pool, &input, 44_100);
-        let mut node = ResampleNode::new(44_100, 48_000);
+        let mut node = ResampleNode::new(44_100, 48_000, 1);
 
         // When
         let out = node.process(frame);
 
         // Then: None — upsampling drops the frame until Phase 2 SRC is added
         assert!(out.is_none(), "upsampling must return None until Phase 2 SRC is implemented");
+    }
+
+    #[test]
+    fn given_stereo_frame_when_mono_resample_node_then_none_returned() {
+        // Given: a mono-configured ResampleNode (channels=1) and a stereo frame
+        // (channels=2). The node must drop the frame rather than silently
+        // mis-converting interleaved stereo samples as mono.
+        let pool = AudioBufferPool::new(4, 1920);
+        let input: Vec<f32> = (0..960).map(|i| i as f32 * 0.001).collect();
+        let mut h = pool.acquire().unwrap();
+        h.copy_from_slice(&input);
+        // Construct a stereo frame (channels = 2).
+        let mut frame = AudioFrame::new(StreamId(1), SourceId(1), 0, 0, 2, h);
+        frame.sample_rate = 48_000;
+
+        let mut node = ResampleNode::new(48_000, 48_000, 1);
+
+        // When
+        let out = node.process(frame);
+
+        // Then: None — channel mismatch must be rejected, not silently passed through.
+        assert!(
+            out.is_none(),
+            "stereo frame must be dropped by a mono-configured ResampleNode"
+        );
     }
 
     #[test]
