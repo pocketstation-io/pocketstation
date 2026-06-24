@@ -163,10 +163,16 @@ where
 /// - macOS 14.2+: `SystemMix`, `Application(_)`, and `Process(_)` all
 ///   supported via the CoreAudio process tap.
 /// - macOS < 14.2: only `SystemMix` is supported via the HAL plugin.
-/// - Windows: `SystemMix` and `Process(pid)` supported; `Application(_)` returns
-///   `ModeUnsupported`.
-/// - Linux: only `SystemMix` is supported (PipeWire); other modes return
-///   `ModeUnsupported`.
+/// - Windows: `SystemMix` and `Process(pid)` supported; `Application(name)` is
+///   resolved to `Process(pid)` by name lookup — returns `BackendInit` if no
+///   matching session is found.  Never silently falls back to `SystemMix`.
+/// - Linux (PipeWire available): `SystemMix`, `Application(name)`, and
+///   `Process(pid)` all supported via PipeWire node targeting.  Returns
+///   `BackendInit` if the named node or PID is not found, and
+///   `ModeUnsupported` if PipeWire is unavailable for per-app modes.
+///   Never silently falls back to `SystemMix`.
+/// - Linux (no PipeWire): `SystemMix` falls back to ALSA snd-aloop;
+///   `Application(_)` and `Process(_)` return `ModeUnsupported`.
 /// - Other platforms: always returns `NotSupported`.
 pub fn capture_with_mode<F>(
     mode: CaptureMode,
@@ -378,5 +384,64 @@ mod tests {
             tap_available(),
             "tap_available() must return true on macOS 14.2+ (this machine is 15.5)"
         );
+    }
+
+    // No-fallback contract: Application mode on Linux with no PipeWire socket
+    // present (as in a standard macOS/CI host) must return ModeUnsupported, not
+    // silently capture SystemMix.
+    //
+    // GWT: Application mode on Linux returns ModeUnsupported, not SystemMix fallback.
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn given_application_mode_when_capture_with_mode_on_linux_then_mode_unsupported() {
+        // Remove XDG_RUNTIME_DIR so pipewire_available() returns false, which
+        // guarantees the PipeWire socket path cannot be resolved.  This exercises
+        // the no-fallback contract: Application(_) must return ModeUnsupported
+        // immediately rather than capturing SystemMix.
+        std::env::remove_var("XDG_RUNTIME_DIR");
+        let result = capture_with_mode(
+            CaptureMode::Application("com.spotify.client".into()),
+            |_| {},
+        );
+        assert_eq!(
+            result.unwrap_err(),
+            LoopbackError::ModeUnsupported(CaptureMode::Application("com.spotify.client".into())),
+            "Application mode without PipeWire must return ModeUnsupported, not SystemMix"
+        );
+    }
+
+    // GWT: Process mode on Linux without PipeWire returns ModeUnsupported.
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn given_process_mode_when_capture_with_mode_on_linux_without_pipewire_then_mode_unsupported() {
+        std::env::remove_var("XDG_RUNTIME_DIR");
+        let result = capture_with_mode(CaptureMode::Process(99999), |_| {});
+        assert_eq!(
+            result.unwrap_err(),
+            LoopbackError::ModeUnsupported(CaptureMode::Process(99999)),
+            "Process mode without PipeWire must return ModeUnsupported, not SystemMix"
+        );
+    }
+
+    // GWT: Application mode on Windows returns an error, not a SystemMix fallback.
+    // Windows resolves Application(name) → Process(pid) by WASAPI session lookup.
+    // When no session matches, it returns BackendInit (not ModeUnsupported and not
+    // a silent SystemMix capture), satisfying the no-fallback contract.
+    #[cfg(target_os = "windows")]
+    #[test]
+    fn given_application_mode_when_capture_with_mode_on_windows_then_errors_not_system_mix() {
+        // Use a name that cannot match any real WASAPI session in a CI environment.
+        let result = capture_with_mode(
+            CaptureMode::Application("__pks_no_such_app__".into()),
+            |_| {},
+        );
+        match result.unwrap_err() {
+            LoopbackError::ModeUnsupported(_) | LoopbackError::BackendInit(_) => {
+                // Both are acceptable: no match → BackendInit; contract preserved.
+            }
+            other => panic!(
+                "expected ModeUnsupported or BackendInit for unknown app, got: {other:?}"
+            ),
+        }
     }
 }
