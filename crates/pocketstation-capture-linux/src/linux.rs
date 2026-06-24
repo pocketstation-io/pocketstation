@@ -6,23 +6,23 @@
 //! `MainLoop` for its entire lifetime.  PipeWire objects are not `Send`/`Sync`,
 //! so all creation happens inside that thread.
 //!
-//! Audio data flows from the PipeWire process callback through a bounded
-//! `std::sync::mpsc::sync_channel` to a second dispatcher thread
-//! (`"pks-pipewire-dispatch"`), which invokes the user callback without
-//! holding any PipeWire lock.
+//! Audio data flows from the PipeWire RT process callback through a lock-free
+//! `rtrb::RingBuffer` to a dispatcher thread (`"pks-pipewire-dispatch"`),
+//! which invokes the user callback without holding any PipeWire lock.
 //!
-//! ## Hot-path rule
+//! ## Hot-path rule (RT callback — strictly enforced)
 //!
 //! The PipeWire process callback does only lock-free work:
-//! - `AudioBufferPool::acquire()` - lock-free CAS
-//! - byte copy from PipeWire buffer into pool slot
-//! - `mpsc::SyncSender::try_send` - non-blocking send, drops frame when full
+//! - `AudioBufferPool::acquire()` — lock-free CAS bitset
+//! - byte copy from PipeWire buffer into pool slot (ptr::copy_nonoverlapping)
+//! - `rtrb::Producer::push()` — wait-free SPSC push, drops frame when ring is full
 
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::mpsc;
 use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
+use rtrb::RingBuffer;
 
 use pocketstation_frame::{
     AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId,
@@ -51,8 +51,8 @@ const CAPTURE_FRAME_SAMPLES: usize = DEFAULT_SLOT_SAMPLES_MONO_20MS * CAPTURE_CH
 /// Pool depth: 8 frames absorb callback jitter without unbounded growth.
 const POOL_DEPTH: usize = 8;
 
-/// Bounded channel depth between the PW process callback and the dispatch thread.
-const PW_CHANNEL_DEPTH: usize = 10;
+/// SPSC ring depth between the PW RT process callback and the dispatch thread.
+const PW_RING_DEPTH: usize = 16;
 
 /// PipeWire node latency: 128 frames at 48 kHz (~2.67 ms quantum).
 const PW_NODE_LATENCY: &str = "128/48000";
@@ -160,7 +160,7 @@ where
     F: Fn(AudioFrame) + Send + Sync + 'static,
 {
     let (stop_tx, stop_rx) = mpsc::sync_channel::<()>(1);
-    let (frame_tx, frame_rx) = mpsc::sync_channel::<AudioFrame>(PW_CHANNEL_DEPTH);
+    let (frame_producer, mut frame_consumer) = RingBuffer::<AudioFrame>::new(PW_RING_DEPTH);
 
     let pool = AudioBufferPool::new(POOL_DEPTH, CAPTURE_FRAME_SAMPLES);
     let seq = Arc::new(AtomicU64::new(0));
@@ -208,7 +208,7 @@ where
                 }
             };
 
-            let frame_tx_cb = frame_tx.clone();
+            let mut frame_producer = frame_producer;
             let pool_cb = pool.clone();
             let seq_cb = seq.clone();
 
@@ -264,7 +264,8 @@ where
                     frame.encryption_mode = EncryptionMode::None;
                     frame.sample_rate = DEFAULT_SAMPLE_RATE;
 
-                    let _ = frame_tx_cb.try_send(frame);
+                    // RT-safe: wait-free push; drops frame silently when ring is full.
+                    let _ = frame_producer.push(frame);
                 })
                 .register()
                 .expect("listener registration must not fail");
@@ -316,12 +317,18 @@ where
         })
         .map_err(|e| LoopbackError::BackendInit(format!("capture thread spawn: {e}", e)))?;
 
-    // Dispatch thread: pulls frames from the channel and calls the user callback.
+    // Dispatch thread: polls the SPSC ring and calls the user callback.
+    // Sleeps 1 ms when the ring is empty to avoid busy-waiting; exits when
+    // the producer side is dropped (capture thread exited).
     let dispatch_thread = thread::Builder::new()
         .name("pks-pipewire-dispatch".into())
         .spawn(move || {
-            while let Ok(frame) = frame_rx.recv() {
-                callback(frame);
+            loop {
+                while let Ok(frame) = frame_consumer.pop() {
+                    callback(frame);
+                }
+                if frame_consumer.is_abandoned() { break; }
+                thread::sleep(Duration::from_millis(1));
             }
         })
         .map_err(|e| LoopbackError::BackendInit(format!("dispatch thread spawn: {e}", e)))?;
@@ -529,7 +536,7 @@ where
     F: Fn(AudioFrame) + Send + Sync + 'static,
 {
     let (stop_tx, stop_rx) = mpsc::sync_channel::<()>(1);
-    let (frame_tx, frame_rx) = mpsc::sync_channel::<AudioFrame>(PW_CHANNEL_DEPTH);
+    let (frame_producer, mut frame_consumer) = RingBuffer::<AudioFrame>::new(PW_RING_DEPTH);
 
     let pool = AudioBufferPool::new(POOL_DEPTH, CAPTURE_FRAME_SAMPLES);
     let seq = Arc::new(AtomicU64::new(0));
@@ -577,7 +584,7 @@ where
                 }
             };
 
-            let frame_tx_cb = frame_tx.clone();
+            let mut frame_producer = frame_producer;
             let pool_cb = pool.clone();
             let seq_cb = seq.clone();
 
@@ -633,7 +640,8 @@ where
                     frame.encryption_mode = EncryptionMode::None;
                     frame.sample_rate = DEFAULT_SAMPLE_RATE;
 
-                    let _ = frame_tx_cb.try_send(frame);
+                    // RT-safe: wait-free push; drops frame silently when ring is full.
+                    let _ = frame_producer.push(frame);
                 })
                 .register()
                 .expect("listener registration must not fail");
@@ -686,8 +694,12 @@ where
     let dispatch_thread = thread::Builder::new()
         .name("pks-pipewire-dispatch-targeted".into())
         .spawn(move || {
-            while let Ok(frame) = frame_rx.recv() {
-                callback(frame);
+            loop {
+                while let Ok(frame) = frame_consumer.pop() {
+                    callback(frame);
+                }
+                if frame_consumer.is_abandoned() { break; }
+                thread::sleep(Duration::from_millis(1));
             }
         })
         .map_err(|e| LoopbackError::BackendInit(format!("dispatch thread spawn: {e}")))?;

@@ -181,7 +181,23 @@ pub struct ResampleNode {
 }
 
 impl ResampleNode {
+    /// Create a node that will downsamples or pass-through frames.
+    ///
+    /// Panics if `target_rate > source_rate` — upsampling is not implemented.
+    /// Use `new_unchecked()` only in tests that explicitly verify the None-return
+    /// contract for unsupported configurations.
     pub fn new(source_rate: u32, target_rate: u32, channels: u8) -> Self {
+        assert!(
+            target_rate <= source_rate,
+            "ResampleNode: upsampling {source_rate}→{target_rate} is not implemented; \
+             ensure target_rate <= source_rate"
+        );
+        Self::new_unchecked(source_rate, target_rate, channels)
+    }
+
+    /// Like `new()` but skips the upsampling guard. Only for tests verifying the
+    /// None-return contract on unsupported configurations.
+    pub fn new_unchecked(source_rate: u32, target_rate: u32, channels: u8) -> Self {
         Self {
             source_rate, target_rate, channels,
             clock_sync: ClockSync::default(),
@@ -212,7 +228,11 @@ impl AudioProcessorNode for ResampleNode {
         let ratio = base_ratio - drift_ratio;
 
         if self.target_rate > self.source_rate {
-            return None; // upsampling deferred to Phase 2
+            // Upsampling is not implemented. Frame is dropped (not passed through
+            // unchanged) — a dropped frame is a louder failure than a silent rate
+            // mismatch. Production callers must not configure target_rate > source_rate;
+            // this is caught at construction time via ResampleNode::new_checked().
+            return None;
         }
 
         {
@@ -410,7 +430,7 @@ mod tests {
         let pool = AudioBufferPool::new(4, 960);
         let input: Vec<f32> = (0..441).map(|i| i as f32 * 0.001).collect();
         let frame = make_sample_frame(&pool, &input, 44_100);
-        let mut node = ResampleNode::new(44_100, 48_000, 1);
+        let mut node = ResampleNode::new_unchecked(44_100, 48_000, 1);
         assert!(node.process(frame).is_none());
     }
 

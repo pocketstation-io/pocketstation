@@ -27,6 +27,37 @@ impl OpusFrameDuration {
     }
 }
 
+/// Typed channel count for Opus — prevents silent u8 misuse.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum OpusChannels {
+    Mono,
+    Stereo,
+}
+
+impl OpusChannels {
+    pub fn count(self) -> u8 {
+        match self {
+            Self::Mono => 1,
+            Self::Stereo => 2,
+        }
+    }
+}
+
+/// Typed sample rate.  Opus internally always uses 48 kHz; this type makes
+/// the constraint explicit rather than hiding it behind a `u32` constant.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum OpusSampleRate {
+    Hz48000,
+}
+
+impl OpusSampleRate {
+    pub fn hz(self) -> u32 {
+        match self {
+            Self::Hz48000 => 48_000,
+        }
+    }
+}
+
 /// Opus application mode.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OpusApplication {
@@ -44,8 +75,10 @@ pub enum OpusApplication {
 /// scattered across constructors.
 #[derive(Debug, Clone)]
 pub struct OpusConfig {
-    /// Number of channels (1 = mono, 2 = stereo).
-    pub channels: u8,
+    /// Sample rate. Opus only supports 48 kHz internally.
+    pub sample_rate: OpusSampleRate,
+    /// Channel layout.
+    pub channels: OpusChannels,
     /// Frame duration. Default: 20 ms (AUDIO-012).
     pub frame_duration: OpusFrameDuration,
     /// Opus application mode.
@@ -63,7 +96,8 @@ pub struct OpusConfig {
 impl Default for OpusConfig {
     fn default() -> Self {
         Self {
-            channels: 1,
+            sample_rate: OpusSampleRate::Hz48000,
+            channels: OpusChannels::Mono,
             frame_duration: OpusFrameDuration::Ms20,
             application: OpusApplication::Voip,
             bitrate_kbps: None,
@@ -83,11 +117,26 @@ impl OpusConfig {
     /// Low-latency voice-agent config: 10 ms frames, RESTRICTED_LOWDELAY.
     pub fn voice_agent(bitrate_kbps: u32) -> Self {
         Self {
-            channels: 1,
+            sample_rate: OpusSampleRate::Hz48000,
+            channels: OpusChannels::Mono,
             frame_duration: OpusFrameDuration::Ms10,
             application: OpusApplication::LowDelay,
             bitrate_kbps: Some(bitrate_kbps),
             complexity: 5,
+            dtx: false,
+            fec: false,
+        }
+    }
+
+    /// Broadcast stereo music config: 20 ms frames, Audio mode.
+    pub fn stereo_broadcast(bitrate_kbps: u32) -> Self {
+        Self {
+            sample_rate: OpusSampleRate::Hz48000,
+            channels: OpusChannels::Stereo,
+            frame_duration: OpusFrameDuration::Ms20,
+            application: OpusApplication::Audio,
+            bitrate_kbps: Some(bitrate_kbps),
+            complexity: 10,
             dtx: false,
             fec: false,
         }
@@ -122,53 +171,47 @@ pub struct OpusEncoder {
 }
 
 impl OpusEncoder {
-    /// Create a new encoder.  Returns `Err` only if libopus rejects the
-    /// parameters (which cannot happen for the fixed 48 kHz / mono / Voip
-    /// combination used here).
+    /// Create a new encoder with default config (48 kHz, mono, Voip, 20 ms).
     pub fn new() -> Result<Self, opus::Error> {
-        Ok(Self {
-            inner: Encoder::new(OPUS_SAMPLE_RATE, Channels::Mono, Application::Voip)?,
-        })
+        Self::from_config(&OpusConfig::default())
     }
 
     /// Create a low-latency voice-agent encoder using OPUS_APPLICATION_RESTRICTED_LOWDELAY.
     ///
-    /// Configured for 10 ms frames (480 samples at 48 kHz), complexity 5, and the
-    /// caller-specified bitrate.  RESTRICTED_LOWDELAY disables the lookahead that
-    /// VOIP mode uses for pitch detection, saving ~10 ms of algorithmic delay
-    /// per RFC 6716 §3.1.
-    ///
-    /// `bitrate_kbps` must be at least 32 (the minimum for 10 ms mono Opus frames
-    /// at acceptable quality); values above 96 are unclamped but wasteful.
-    ///
-    /// # Errors
-    ///
-    /// Returns `Err` only if libopus rejects the channel or bitrate values.
-    pub fn voice_agent(channels: u8, bitrate_kbps: u32) -> Result<Self, opus::Error> {
-        let ch = if channels == 2 {
-            Channels::Stereo
-        } else {
-            Channels::Mono
-        };
-        let mut enc = Encoder::new(OPUS_SAMPLE_RATE, ch, Application::LowDelay)?;
-        enc.set_bitrate(opus::Bitrate::Bits((bitrate_kbps * 1_000) as i32))?;
-        enc.set_complexity(5)?;
-        Ok(Self { inner: enc })
+    /// `bitrate_kbps` must be at least 32 (minimum for 10 ms mono Opus at acceptable quality).
+    pub fn voice_agent(channels: OpusChannels, bitrate_kbps: u32) -> Result<Self, opus::Error> {
+        Self::from_config(&OpusConfig {
+            channels,
+            frame_duration: OpusFrameDuration::Ms10,
+            application: OpusApplication::LowDelay,
+            bitrate_kbps: Some(bitrate_kbps),
+            complexity: 5,
+            ..OpusConfig::default()
+        })
     }
 
     /// Create an encoder from an explicit OpusConfig.
     pub fn from_config(config: &OpusConfig) -> Result<Self, opus::Error> {
-        let ch = if config.channels == 2 { Channels::Stereo } else { Channels::Mono };
+        let ch = match config.channels {
+            OpusChannels::Mono => Channels::Mono,
+            OpusChannels::Stereo => Channels::Stereo,
+        };
         let app = match config.application {
             OpusApplication::Voip => Application::Voip,
             OpusApplication::LowDelay => Application::LowDelay,
             OpusApplication::Audio => Application::Audio,
         };
-        let mut enc = Encoder::new(OPUS_SAMPLE_RATE, ch, app)?;
+        let mut enc = Encoder::new(config.sample_rate.hz(), ch, app)?;
         if let Some(kbps) = config.bitrate_kbps {
             enc.set_bitrate(opus::Bitrate::Bits((kbps * 1_000) as i32))?;
         }
         enc.set_complexity(config.complexity as i32)?;
+        if config.dtx {
+            enc.set_dtx(true)?;
+        }
+        if config.fec {
+            enc.set_inband_fec(true)?;
+        }
         Ok(Self { inner: enc })
     }
 
@@ -406,7 +449,7 @@ mod tests {
     #[test]
     fn given_voice_agent_mode_when_encode_480_samples_then_valid_packet() {
         // Given: voice-agent encoder + 480 silent samples (10 ms at 48 kHz)
-        let mut enc = OpusEncoder::voice_agent(1, 32).unwrap();
+        let mut enc = OpusEncoder::voice_agent(OpusChannels::Mono, 32).unwrap();
         let pcm = vec![0.0f32; VOICE_AGENT_FRAME_SAMPLES];
         let mut out = Vec::new();
 
@@ -423,7 +466,7 @@ mod tests {
         use std::f32::consts::PI;
 
         // Given: 480-sample 440 Hz sine at 48 kHz, amplitude 0.25
-        let mut enc = OpusEncoder::voice_agent(1, 32).unwrap();
+        let mut enc = OpusEncoder::voice_agent(OpusChannels::Mono, 32).unwrap();
         let mut dec = crate::decoder::OpusDecoder::new().unwrap();
 
         let pcm_in: Vec<f32> = (0..VOICE_AGENT_FRAME_SAMPLES)

@@ -837,6 +837,7 @@ dependencies = [
  "pipewire",
  "pocketstation-capture",
  "pocketstation-frame",
+ "rtrb",
 ]
 
 [[package]]

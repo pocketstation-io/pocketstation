@@ -12,7 +12,7 @@ pub use constants::{
     OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, OPUS_SAMPLE_RATE, VOICE_AGENT_FRAME_SAMPLES,
 };
 pub use decoder::OpusDecoder;
-pub use encoder::{EncodedFrame, OpusApplication, OpusConfig, OpusEncoder, OpusFrameDuration};
+pub use encoder::{EncodedFrame, OpusApplication, OpusChannels, OpusConfig, OpusEncoder, OpusFrameDuration, OpusSampleRate};
 pub use jitter_buffer::{JitterBuffer, PopResult};
 
 #[cfg(any(test, feature = "test-helpers"))]

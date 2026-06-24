@@ -1,4 +1,4 @@
-//! CoreAudio process tap backend — macOS 14.2+.
+//! CoreAudio process tap backend — macOS 14.4+ (public support claim).
 //!
 //! Uses `AudioHardwareCreateProcessTap` + `CATapDescription` to capture audio
 //! from specific processes or the global system output mix without routing
@@ -55,13 +55,14 @@ extern "C" {
 /// is below 14.2.
 ///
 /// The underlying API (`AudioHardwareCreateProcessTap` / `CATapDescription`) was
-/// introduced in macOS 14.2.
+/// introduced in macOS 14.2 but is only publicly claimed to be supported on
+/// macOS 14.4+ until runtime tests on 14.2/14.3 validate the earlier versions.
 pub fn tap_available() -> bool {
     unsafe { pks_process_tap_available() != 0 }
 }
 
 /// Enumerate all running processes that have audio output.
-/// Returns an empty `Vec` on macOS < 14.2 or on non-macOS platforms.
+/// Returns an empty `Vec` on macOS < 14.4 (public support floor) or on non-macOS platforms.
 pub fn discover_sources_native() -> Vec<CaptureSource> {
     const MAX: usize = 128;
     // Safety: pks_discover_sources fills exactly `n` entries before returning.
@@ -193,7 +194,7 @@ impl TapLoopbackSource {
     {
         if !tap_available() {
             return Err(LoopbackError::BackendInit(
-                "CoreAudio process tap requires macOS 14.2 or later".into()
+                "CoreAudio process tap requires macOS 14.4 or later".into()
             ));
         }
 

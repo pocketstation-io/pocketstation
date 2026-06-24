@@ -1,6 +1,6 @@
 //! macOS audio loopback capture backend.
 //!
-//! On macOS 14.2+, uses `AudioHardwareCreateProcessTap` / `CATapDescription`
+//! On macOS 14.4+ (public support), uses `AudioHardwareCreateProcessTap` / `CATapDescription`
 //! (the process tap path).  No HAL plugin installation, no Screen Recording
 //! permission, no deadlock.
 //!
@@ -73,7 +73,7 @@ enum Impl {
 
 /// Manages a macOS loopback capture session.
 ///
-/// On macOS 14.2+, uses the CoreAudio process tap (no HAL plugin required).
+/// On macOS 14.4+ (public support), uses the CoreAudio process tap (no HAL plugin required).
 /// On older macOS, uses the PocketStation HAL plugin + POSIX SHM ring.
 ///
 /// Drop this value to stop capture.
@@ -94,7 +94,7 @@ impl SystemLoopbackSource {
     where
         F: Fn(AudioFrame) + Send + Sync + 'static,
     {
-        // macOS 14.2+: use the process tap path (no HAL plugin, no routing change).
+        // macOS 14.4+ (public support): use the process tap path (no HAL plugin, no routing change).
         if crate::macos_tap::tap_available() {
             return crate::macos_tap::TapLoopbackSource::capture_mode(mode, callback)
                 .map(|t| Self(Impl::Tap(t)));

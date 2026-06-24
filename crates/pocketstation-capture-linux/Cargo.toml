@@ -14,3 +14,4 @@ pocketstation-frame = { path = "../pocketstation-frame", version = "0.1.0" }
 pipewire = "0.10"
 alsa = "0.9"
 libc = "0.2"
+rtrb = "0.3"
