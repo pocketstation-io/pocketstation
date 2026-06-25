@@ -110,8 +110,15 @@ impl Default for OpusConfig {
 
 impl OpusConfig {
     /// Standard voice broadcast config (AUDIO-012 default).
+    ///
+    /// FEC is enabled so that the decoder can recover from isolated packet
+    /// loss using redundancy embedded in the following packet.  This requires
+    /// the decoder to pass `fec=true` when a gap is detected (see decoder.rs).
     pub fn voice_broadcast() -> Self {
-        Self::default()
+        Self {
+            fec: true,
+            ..Self::default()
+        }
     }
 
     /// Low-latency voice-agent config: 10 ms frames, RESTRICTED_LOWDELAY.
@@ -168,6 +175,10 @@ pub struct EncodedFrame {
 ///   output buffer.
 pub struct OpusEncoder {
     pub(crate) inner: Encoder,
+    /// Channel count (1 = mono, 2 = stereo). Stored so `encode_into` can validate
+    /// the interleaved frame length (samples-per-channel × channels) and size its
+    /// conversion buffer for the widest case (20 ms stereo = 1920 samples).
+    channels: usize,
 }
 
 impl OpusEncoder {
@@ -212,14 +223,22 @@ impl OpusEncoder {
         if config.fec {
             enc.set_inband_fec(true)?;
         }
-        Ok(Self { inner: enc })
+        let channels = match config.channels {
+            OpusChannels::Mono => 1,
+            OpusChannels::Stereo => 2,
+        };
+        Ok(Self {
+            inner: enc,
+            channels,
+        })
     }
 
-    /// Encode a PCM slice into `out`.
+    /// Encode an interleaved PCM slice into `out`.
     ///
-    /// Accepts either a 960-sample (20 ms) or 480-sample (10 ms) slice.  The
-    /// frame size is detected from the slice length; passing any other length is
-    /// a logic error and will panic in debug builds (debug_assert).
+    /// `pcm` is interleaved across channels: its length must be
+    /// `samples_per_channel × channels`, where samples-per-channel is 960 (20 ms)
+    /// or 480 (10 ms). For mono that is 960/480; for stereo, 1920/960. Any other
+    /// length is a logic error and panics in debug builds (debug_assert).
     ///
     /// Converts f32 → i16 (multiply by 32 767.0, clamp) then calls
     /// `encoder.encode()`.  Returns the number of compressed bytes written.
@@ -227,15 +246,20 @@ impl OpusEncoder {
     /// call provided `out` already has `OPUS_MAX_PACKET_BYTES` capacity.
     pub fn encode_into(&mut self, pcm: &[f32], out: &mut Vec<u8>) -> Result<usize, opus::Error> {
         let frame_len = pcm.len();
+        let per_channel = frame_len / self.channels;
         debug_assert!(
-            frame_len == OPUS_FRAME_SAMPLES || frame_len == VOICE_AGENT_FRAME_SAMPLES,
-            "encode_into: expected {OPUS_FRAME_SAMPLES} or {VOICE_AGENT_FRAME_SAMPLES} samples, got {frame_len}",
+            frame_len % self.channels == 0
+                && (per_channel == OPUS_FRAME_SAMPLES || per_channel == VOICE_AGENT_FRAME_SAMPLES),
+            "encode_into: expected {OPUS_FRAME_SAMPLES} or {VOICE_AGENT_FRAME_SAMPLES} samples per channel \
+             × {} channels, got {frame_len} total",
+            self.channels,
         );
 
         // f32 → i16.  Written as a plain iterator loop so LLVM auto-vectorises
         // to NEON/AVX2 when compiled with target-cpu=native (.cargo/config.toml).
-        // We use the maximum frame size for the stack buffer so both modes fit.
-        let mut i16_buf = [0i16; OPUS_FRAME_SAMPLES];
+        // Sized for the widest case (20 ms stereo = 1920 interleaved samples) so
+        // both mono and stereo fit on the stack with no allocation.
+        let mut i16_buf = [0i16; OPUS_FRAME_SAMPLES * 2];
         for (dst, &src) in i16_buf[..frame_len].iter_mut().zip(pcm.iter()) {
             *dst = (src.clamp(-1.0, 1.0) * I16_SCALE) as i16;
         }
@@ -376,7 +400,7 @@ mod tests {
         enc.encode_into(&pcm_in, &mut packet).unwrap();
 
         let mut pcm_out = Vec::new();
-        dec.decode_into(&packet, &mut pcm_out).unwrap();
+        dec.decode_into(&packet, &mut pcm_out, false).unwrap();
 
         // Then: RMS of decoded signal is within 10 dB of the original
         let rms = |s: &[f32]| -> f32 {
@@ -389,6 +413,57 @@ mod tests {
         assert!(
             ratio > 0.3 && ratio < 3.0,
             "RMS ratio {ratio:.3} outside acceptable range (Opus VOIP mode may attenuate sine)"
+        );
+    }
+
+    #[test]
+    fn given_stereo_music_config_when_round_trip_then_channels_stay_distinct() {
+        use std::f32::consts::PI;
+
+        // Given: a 20 ms STEREO frame (1920 interleaved L/R samples). The left
+        // channel carries a 440 Hz tone; the right channel is silent — a signal a
+        // mono downmix would destroy by averaging L and R into one channel. This
+        // is the Stage-A gate for the stereo music pipeline (stereo_broadcast =
+        // Opus Audio mode, complexity 10).
+        let mut enc = OpusEncoder::from_config(&OpusConfig::stereo_broadcast(128)).unwrap();
+        let mut dec =
+            crate::decoder::OpusDecoder::with_channels(OpusChannels::Stereo).unwrap();
+
+        let mut pcm_in = Vec::with_capacity(OPUS_FRAME_SAMPLES * 2);
+        for i in 0..OPUS_FRAME_SAMPLES {
+            let left = (2.0 * PI * 440.0 * i as f32 / 48_000.0).sin() * 0.3;
+            let right = 0.0; // silent right channel
+            pcm_in.push(left);
+            pcm_in.push(right);
+        }
+
+        // When: encode the interleaved stereo frame and decode it back as stereo.
+        let mut packet = Vec::new();
+        enc.encode_into(&pcm_in, &mut packet).unwrap();
+        let mut pcm_out = Vec::new();
+        let total = dec.decode_into(&packet, &mut pcm_out, false).unwrap();
+
+        // Then: a full interleaved stereo frame returns ...
+        assert_eq!(
+            total,
+            OPUS_FRAME_SAMPLES * 2,
+            "stereo decode must return 1920 interleaved samples, got {total}"
+        );
+
+        // ... and the two channels stay DISTINCT: left carries the tone, right is
+        // near-silent. A mono collapse would make the channels roughly equal.
+        let rms = |s: &[f32]| -> f32 {
+            let sum: f32 = s.iter().map(|x| x * x).sum();
+            (sum / s.len() as f32).sqrt()
+        };
+        let left: Vec<f32> = pcm_out.iter().step_by(2).copied().collect();
+        let right: Vec<f32> = pcm_out.iter().skip(1).step_by(2).copied().collect();
+        let rms_l = rms(&left);
+        let rms_r = rms(&right);
+        assert!(rms_l > 0.05, "left channel must carry the tone, rms_l={rms_l:.4}");
+        assert!(
+            rms_l > rms_r * 4.0,
+            "channels must stay distinct (true stereo), rms_l={rms_l:.4} rms_r={rms_r:.4}"
         );
     }
 
@@ -488,7 +563,7 @@ mod tests {
         enc.encode_into(&pcm_in, &mut packet).unwrap();
 
         let mut pcm_out = Vec::new();
-        dec.decode_into(&packet, &mut pcm_out).unwrap();
+        dec.decode_into(&packet, &mut pcm_out, false).unwrap();
 
         let rms =
             |s: &[f32]| -> f32 { (s.iter().map(|x| x * x).sum::<f32>() / s.len() as f32).sqrt() };
@@ -514,7 +589,7 @@ mod tests {
         enc.encode_into(&pcm_in, &mut packet).unwrap();
 
         let mut pcm_out = Vec::new();
-        dec.decode_into(&packet, &mut pcm_out).unwrap();
+        dec.decode_into(&packet, &mut pcm_out, false).unwrap();
 
         let rms =
             |s: &[f32]| -> f32 { (s.iter().map(|x| x * x).sum::<f32>() / s.len() as f32).sqrt() };
@@ -595,7 +670,7 @@ mod tests {
 
             // Decode.
             decode_buf.clear();
-            dec.decode_into(&packet_buf, &mut decode_buf)
+            dec.decode_into(&packet_buf, &mut decode_buf, false)
                 .expect("decode_into must not fail on a valid packet");
             all_pcm_out.extend_from_slice(&decode_buf);
         }

@@ -1,7 +1,7 @@
 use opus::{Channels, Decoder};
 
 use crate::constants::{I16_SCALE, OPUS_FRAME_SAMPLES, OPUS_SAMPLE_RATE};
-use crate::encoder::EncodedFrame;
+use crate::encoder::{EncodedFrame, OpusChannels};
 
 /// Real Opus decoder wrapping libopus via the `opus` crate.
 ///
@@ -15,12 +15,28 @@ use crate::encoder::EncodedFrame;
 /// - `decode_to_vec()` allocates one `Vec<f32>` per call — tests/examples only.
 pub struct OpusDecoder {
     inner: Decoder,
+    /// Channel count (1 = mono, 2 = stereo). libopus decodes `frame_size`
+    /// samples per channel and writes `frame_size × channels` interleaved values,
+    /// so the output sizing depends on this.
+    channels: usize,
 }
 
 impl OpusDecoder {
+    /// Mono decoder (48 kHz). Back-compatible default for the existing pipeline.
     pub fn new() -> Result<Self, opus::Error> {
+        Self::with_channels(OpusChannels::Mono)
+    }
+
+    /// Decoder for an explicit channel layout. Use `Stereo` to decode the music
+    /// pipeline's stereo Opus stream into interleaved L/R f32.
+    pub fn with_channels(channels: OpusChannels) -> Result<Self, opus::Error> {
+        let (ch, n) = match channels {
+            OpusChannels::Mono => (Channels::Mono, 1),
+            OpusChannels::Stereo => (Channels::Stereo, 2),
+        };
         Ok(Self {
-            inner: Decoder::new(OPUS_SAMPLE_RATE, Channels::Mono)?,
+            inner: Decoder::new(OPUS_SAMPLE_RATE, ch)?,
+            channels: n,
         })
     }
 
@@ -29,29 +45,42 @@ impl OpusDecoder {
     /// Appends decoded f32 samples to `out`.  Returns the number of samples
     /// appended.  No heap allocation after the first call if `out` has
     /// sufficient capacity.
+    ///
+    /// `fec` — pass `false` for normal (no-loss) decoding.  Pass `true` when
+    /// the caller detects a gap in the sequence number stream: Opus will extract
+    /// forward error correction data embedded in `payload` by the sender and use
+    /// it to reconstruct the *preceding* lost packet.  Callers must hold the
+    /// current packet and call this first with `fec=true` (and the *previous*
+    /// lost-packet length hint) to recover the lost frame, then again with
+    /// `fec=false` to decode the current packet normally.
     pub fn decode_into(
         &mut self,
         payload: &[u8],
         out: &mut Vec<f32>,
+        fec: bool,
     ) -> Result<usize, opus::Error> {
         let before = out.len();
-        let mut i16_buf = [0i16; OPUS_FRAME_SAMPLES];
-        let n = self.inner.decode(payload, &mut i16_buf, false)?;
+        // Sized for the widest case (20 ms stereo = 1920 interleaved samples).
+        let mut i16_buf = [0i16; OPUS_FRAME_SAMPLES * 2];
+        // libopus returns samples-PER-CHANNEL; the buffer holds that many × channels
+        // interleaved values.
+        let per_channel = self.inner.decode(payload, &mut i16_buf, fec)?;
+        let total = per_channel * self.channels;
 
         // Pre-size output then write with a plain loop.  Avoids the per-element
         // bounds check inside `push` and is auto-vectorised by LLVM (NEON/AVX2)
         // when target-cpu=native is set.
-        out.resize(before + n, 0.0f32);
-        for (dst, &src) in out[before..].iter_mut().zip(&i16_buf[..n]) {
+        out.resize(before + total, 0.0f32);
+        for (dst, &src) in out[before..].iter_mut().zip(&i16_buf[..total]) {
             *dst = src as f32 / I16_SCALE;
         }
-        Ok(n)
+        Ok(total)
     }
 
     /// Convenience wrapper allocating a `Vec<f32>` — tests/examples only.
     pub fn decode_to_vec(&mut self, encoded: &EncodedFrame) -> Result<Vec<f32>, opus::Error> {
         let mut out = Vec::with_capacity(OPUS_FRAME_SAMPLES);
-        self.decode_into(&encoded.payload, &mut out)?;
+        self.decode_into(&encoded.payload, &mut out, false)?;
         Ok(out)
     }
 }
@@ -86,7 +115,7 @@ impl MockOpusDecoder {
     /// Allocation-free decode from a raw byte slice.
     pub fn decode_slice_into(&mut self, payload: &[u8], out: &mut Vec<f32>) -> usize {
         self.inner
-            .decode_into(payload, out)
+            .decode_into(payload, out, false)
             .expect("MockOpusDecoder.decode_slice_into failed")
     }
 
@@ -128,7 +157,7 @@ mod tests {
         let mut pcm_out = Vec::new();
 
         // When
-        let n = dec.decode_into(&packet, &mut pcm_out).unwrap();
+        let n = dec.decode_into(&packet, &mut pcm_out, false).unwrap();
 
         // Then: decoder produces exactly one frame of samples
         assert_eq!(n, OPUS_FRAME_SAMPLES);
