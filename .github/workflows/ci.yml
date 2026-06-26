@@ -15,8 +15,8 @@ jobs:
       # script needs the PipeWire dev headers + pkg-config, and bindgen needs
       # libclang. Without these the workspace fails to build on Linux — which is
       # why CI was red before this step existed.
-      - name: Install Linux audio system deps (PipeWire / libspa-sys)
-        run: sudo apt-get update && sudo apt-get install -y libpipewire-0.3-dev pkg-config clang
+      - name: Install Linux audio system deps (PipeWire + ALSA)
+        run: sudo apt-get update && sudo apt-get install -y libpipewire-0.3-dev libasound2-dev pkg-config clang
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - run: cargo fmt --all -- --check
