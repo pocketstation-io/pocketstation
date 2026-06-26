@@ -65,8 +65,8 @@ pub struct JitterBuffer {
     // Sequence tracking
     next_expected_seq: Option<u64>,
 
-    // Adaptive state
-    last_pop_instant_ns: u64,
+    // Adaptive state — tracks inter-arrival time between consecutive pushes.
+    last_arrival_ns: u64,
     inter_arrival_ewma_ns: u64,
     consecutive_empty: u32,
 
@@ -102,7 +102,7 @@ impl JitterBuffer {
             target_depth,
             queue: VecDeque::with_capacity(max_depth),
             next_expected_seq: None,
-            last_pop_instant_ns: 0,
+            last_arrival_ns: 0,
             inter_arrival_ewma_ns: FRAME_DURATION_NS,
             consecutive_empty: 0,
             frames_since_adapt: 0,
@@ -114,38 +114,53 @@ impl JitterBuffer {
 
     /// Push an encoded frame into the buffer.
     ///
+    /// Frames are inserted in sequence order (ordered insertion).  Frames
+    /// arriving after they have already been delivered (sequence number <
+    /// `next_expected_seq`) are discarded and counted as late.  Duplicate
+    /// sequence numbers already present in the queue are silently dropped.
+    ///
     /// Frames arriving when the queue is already at `max_depth` are dropped
     /// (the oldest frame is not evicted — caller controls pacing).
-    ///
-    /// Out-of-order frames (sequence number < `next_expected_seq`) are counted
-    /// as late but still enqueued so they can be delivered.
     ///
     /// No heap allocation occurs after the first call if the queue was
     /// pre-allocated at construction time (it is, via `with_capacity`).
     pub fn push(&mut self, frame: EncodedFrame) {
         // Update inter-arrival EWMA using the frame's own timestamp.
         // On the very first frame there is no prior timestamp, so we skip.
-        if self.last_pop_instant_ns > 0 {
-            let arrival = frame.timestamp_ns;
-            let inter_arrival = arrival.saturating_sub(self.last_pop_instant_ns);
+        if self.last_arrival_ns > 0 {
+            let inter_arrival = frame.timestamp_ns.saturating_sub(self.last_arrival_ns);
             // EWMA: new = (7*old + sample) / 8
             self.inter_arrival_ewma_ns =
                 ((self.inter_arrival_ewma_ns * 7) + inter_arrival) >> EWMA_SHIFT;
         }
-        self.last_pop_instant_ns = frame.timestamp_ns;
+        self.last_arrival_ns = frame.timestamp_ns;
 
-        // Track late arrivals.
+        // Discard frames already delivered (too late) or duplicates in flight.
         if let Some(expected) = self.next_expected_seq {
             if frame.sequence_number < expected {
                 self.late_frames += 1;
+                return;
             }
+        }
+        if self
+            .queue
+            .iter()
+            .any(|f| f.sequence_number == frame.sequence_number)
+        {
+            // Duplicate already in queue — silent drop (not a late frame).
+            return;
         }
 
         // Enforce max_depth — drop if full.
-        if self.queue.len() < self.max_depth {
-            self.queue.push_back(frame);
+        if self.queue.len() >= self.max_depth {
+            return;
         }
-        // (dropped frames are silent; no allocation, no panic)
+
+        // Insert in sequence order (small VecDeque, insertion sort is fine).
+        let pos = self
+            .queue
+            .partition_point(|f| f.sequence_number < frame.sequence_number);
+        self.queue.insert(pos, frame);
     }
 
     /// Pop the next frame, applying adaptive depth and sequence-gap detection.
@@ -202,12 +217,13 @@ impl JitterBuffer {
     /// Backward-compatible alias for [`pop`].
     ///
     /// Returns `Some(frame)` when a frame is ready, `None` otherwise.
-    /// Gap signals are treated as `None` (same behaviour as Phase 0).
+    /// Gap signals are collapsed to `None` — use [`pop`] directly to receive
+    /// [`PopResult::GapDetected`] for proper PLC handling.
+    #[deprecated(note = "Use pop() to receive GapDetected for proper PLC handling")]
     pub fn pop_ready(&mut self) -> Option<EncodedFrame> {
         match self.pop() {
             PopResult::Frame(f) => Some(f),
-            PopResult::GapDetected { .. } => None,
-            PopResult::NotReady => None,
+            PopResult::GapDetected { .. } | PopResult::NotReady => None,
         }
     }
 
@@ -243,7 +259,7 @@ impl JitterBuffer {
         self.target_depth
     }
 
-    /// Total late frames received (arrived with seq < expected).
+    /// Total late frames received (arrived with seq < expected, discarded).
     pub fn late_frames(&self) -> u64 {
         self.late_frames
     }
@@ -253,7 +269,7 @@ impl JitterBuffer {
         self.concealed_frames
     }
 
-    /// Total frames successfully delivered via [`pop`] / [`pop_ready`].
+    /// Total frames successfully delivered via [`pop`].
     pub fn total_frames(&self) -> u64 {
         self.total_frames
     }
@@ -293,6 +309,7 @@ impl JitterBuffer {
 }
 
 #[cfg(test)]
+#[allow(deprecated)]
 mod tests {
     use super::*;
 
@@ -300,6 +317,14 @@ mod tests {
         EncodedFrame {
             sequence_number: seq,
             timestamp_ns: seq * 20_000_000,
+            payload: vec![],
+        }
+    }
+
+    fn make_encoded_with_ts(seq: u64, ts_ns: u64) -> EncodedFrame {
+        EncodedFrame {
+            sequence_number: seq,
+            timestamp_ns: ts_ns,
             payload: vec![],
         }
     }
@@ -338,19 +363,21 @@ mod tests {
     }
 
     #[test]
-    fn jitter_buffer_late_frame_is_not_reordered_in_phase0() {
-        // Given: seq 1 arrives before seq 0 (out-of-order delivery)
+    fn given_out_of_order_arrival_when_depth_met_then_delivered_in_sequence_order() {
+        // Given: seq 1 arrives before seq 0 — ordered insertion must fix this.
         let mut jb = JitterBuffer::new(1, 8);
         jb.push(make_encoded(1));
-        jb.push(make_encoded(0));
+        jb.push(make_encoded(0)); // late arrival, but before any pop
+        jb.push(make_encoded(2)); // fill to target_depth=2
 
-        // When
-        let first = jb.pop_ready().unwrap();
-
-        // Then: jitter buffer does not reorder late frames; documents known limitation
+        // When / Then: seq 0 must come out first
+        let first = match jb.pop() {
+            PopResult::Frame(f) => f,
+            other => panic!("expected Frame, got {:?}", other),
+        };
         assert_eq!(
-            first.sequence_number, 1,
-            "JitterBuffer does not reorder late frames"
+            first.sequence_number, 0,
+            "ordered insertion must deliver seq 0 before seq 1"
         );
     }
 
@@ -484,6 +511,113 @@ mod tests {
             jb.target_depth() >= 3,
             "high jitter (40ms inter-arrival) should push target_depth to ≥ 3, got {}",
             jb.target_depth()
+        );
+    }
+
+    #[test]
+    fn given_duplicate_seq_when_pushed_twice_then_only_one_delivered() {
+        let mut jb = JitterBuffer::new(1, 8);
+        jb.push(make_encoded(5));
+        jb.push(make_encoded(5)); // duplicate — must be silently dropped
+        jb.push(make_encoded(6)); // fill to target_depth=2
+
+        // First pop delivers seq 5.
+        let first = match jb.pop() {
+            PopResult::Frame(f) => f,
+            other => panic!("expected Frame, got {:?}", other),
+        };
+        assert_eq!(first.sequence_number, 5);
+
+        // After seq 5 is delivered, queue has only [6] (depth=1 < target_depth=2).
+        // Push seq 7 to satisfy target_depth before the second pop.
+        jb.push(make_encoded(7));
+
+        let second = match jb.pop() {
+            PopResult::Frame(f) => f,
+            other => panic!("expected Frame, got {:?}", other),
+        };
+        assert_eq!(second.sequence_number, 6);
+        assert_eq!(
+            jb.depth(),
+            1,
+            "only seq 7 remains; duplicate must not inflate queue depth"
+        );
+    }
+
+    #[test]
+    fn given_burst_loss_of_5_when_pop_then_gap_count_is_5() {
+        // seq 0, burst loss of seq 1-5, then seq 6
+        let mut jb = JitterBuffer::new(1, 8);
+        jb.push(make_encoded(0));
+        jb.push(make_encoded(6)); // gap_count = 5 (seq 1-5 missing)
+        jb.push(make_encoded(7));
+
+        // Deliver seq 0
+        assert!(matches!(jb.pop(), PopResult::Frame(ref f) if f.sequence_number == 0));
+
+        // Next pop should signal the gap
+        jb.push(make_encoded(8));
+        let gap = jb.pop();
+        assert!(
+            matches!(gap, PopResult::GapDetected { gap_count: 5 }),
+            "expected GapDetected{{gap_count:5}}, got {:?}",
+            gap
+        );
+    }
+
+    #[test]
+    fn given_very_late_frame_when_pushed_after_delivery_then_discarded_and_late_count_incremented()
+    {
+        let mut jb = JitterBuffer::new(1, 8);
+        // Push and deliver seq 0, 1
+        for i in 0u64..4 {
+            jb.push(make_encoded(i));
+        }
+        assert!(matches!(jb.pop(), PopResult::Frame(ref f) if f.sequence_number == 0));
+        assert!(matches!(jb.pop(), PopResult::Frame(ref f) if f.sequence_number == 1));
+
+        // Now push seq 0 again (very late)
+        let late_before = jb.late_frames();
+        jb.push(make_encoded(0));
+
+        assert_eq!(jb.depth(), 2, "very late frame must not enter the queue");
+        assert_eq!(
+            jb.late_frames(),
+            late_before + 1,
+            "late_frames must increment"
+        );
+    }
+
+    #[test]
+    fn given_300_uniform_frames_soak_then_all_delivered_and_depth_bounded() {
+        let mut jb = JitterBuffer::new(1, 8);
+        const N: u64 = 300;
+        const FRAME_NS: u64 = 20_000_000;
+
+        let mut delivered = 0u64;
+        let mut max_depth = 0usize;
+
+        for i in 0..N {
+            jb.push(make_encoded_with_ts(i, i * FRAME_NS));
+            if let PopResult::Frame(_) = jb.pop() {
+                delivered += 1;
+            }
+            max_depth = max_depth.max(jb.depth());
+        }
+        // Drain remaining
+        for _ in 0..8 {
+            if let PopResult::Frame(_) = jb.pop() {
+                delivered += 1;
+            }
+        }
+
+        assert!(
+            delivered >= N - 2, // allow 2-frame startup pipeline
+            "soak: only {delivered}/{N} frames delivered"
+        );
+        assert!(
+            max_depth <= 3,
+            "soak: max buffer depth {max_depth} > 3 frames (60 ms) under uniform arrival"
         );
     }
 }

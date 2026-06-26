@@ -15,17 +15,34 @@ if [[ "${1:-}" == "--dry-run" ]]; then
     DRY_RUN=true
 fi
 
-# Publish order follows dependency graph (ADR-008 §26.5).
+# Publish order follows dependency graph (AUDIO-008 §26.5).
 # Format: "crate_name:has_internal_deps"
 # has_internal_deps=0 → full cargo publish --dry-run is safe
 # has_internal_deps=1 → uses cargo check in dry-run mode (crates.io limitation)
+#
+# Crate graph (as of AUDIO-025 transport deferral):
+#   pocketstation-frame (leaf)
+#   pocketstation-codec → frame
+#   pocketstation-metrics (leaf)
+#   pocketstation-pipeline → frame, codec
+#   pocketstation-capture → frame
+#   pocketstation-capture-macos → capture, frame
+#   pocketstation-capture-windows → capture, frame
+#   pocketstation-capture-linux → capture, frame
+#   pocketstation-audio → all of the above
+#
+# pocketstation-transport deleted per AUDIO-025; TransportKind and
+# RouteEncryptionMode are inlined in pocketstation-audio until a Rust
+# transport layer justifies a real crate with RtpFrame + TransportSession.
 CRATES=(
     "pocketstation-frame:0"
-    "pocketstation-bus:1"
-    "pocketstation-graph:1"
     "pocketstation-codec:1"
-    "pocketstation-route:1"
-    "pocketstation-metrics:1"
+    "pocketstation-metrics:0"
+    "pocketstation-pipeline:1"
+    "pocketstation-capture:1"
+    "pocketstation-capture-macos:1"
+    "pocketstation-capture-windows:1"
+    "pocketstation-capture-linux:1"
     "pocketstation-audio:1"
 )
 

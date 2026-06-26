@@ -1,0 +1,17 @@
+[package]
+name = "pocketstation-capture-linux"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Linux PipeWire and ALSA loopback capture for PocketStation"
+
+[dependencies]
+pocketstation-capture = { path = "../pocketstation-capture", version = "0.1.0" }
+pocketstation-frame = { path = "../pocketstation-frame", version = "0.1.0" }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+pipewire = "0.10"
+alsa = "0.9"
+libc = "0.2"
+rtrb = "0.3"

@@ -1,0 +1,11 @@
+[package]
+name = "pocketstation-capture"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Source model, discovery traits, and capture backend interface for PocketStation"
+
+[dependencies]
+pocketstation-frame = { path = "../pocketstation-frame", version = "0.1.0" }
+thiserror = { workspace = true }

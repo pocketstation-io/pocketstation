@@ -4,8 +4,8 @@ fn main() {
     let pool = AudioBufferPool::new(64, DEFAULT_SLOT_SAMPLES_MONO_20MS);
     // Ring sized to match the pool so all 50 frames fit without backpressure.
     let (mut prod, mut cons) = frame_bus(64);
-    let mut encoder = MockOpusEncoder::default();
-    let mut decoder = MockOpusDecoder::default();
+    let mut encoder = OpusEncoder::default();
+    let mut decoder = OpusDecoder::default();
     let mut decoded_all = Vec::new();
 
     for seq in 0..50u64 {
@@ -19,8 +19,8 @@ fn main() {
     }
 
     while let Some(frame) = cons.pop() {
-        let encoded = encoder.encode(&frame);
-        let decoded = decoder.decode_to_vec(&encoded);
+        let encoded = encoder.encode(&frame).expect("encode failed");
+        let decoded = decoder.decode_to_vec(&encoded).expect("decode failed");
         decoded_all.extend_from_slice(&decoded);
     }
 

@@ -24,13 +24,13 @@ DEFERRED    Intentionally postponed; ADR or phase plan justifies it
 
 | Component | Status | Repo / File | What's missing | Replace by | Blocked on |
 |---|---|---|---|---|---|
-| pocketstation-loopback (macOS Application mode) | PARTIAL | audio-core / pocketstation-loopback / src/lib.rs | `CaptureMode::Application` uses SCKit `with_including_applications`; per-app routing works but sub-5 ms requires ASP plugin (Wave D) | Phase 3 Wave D | libASPL submodule + HAL plugin deployment |
-| pocketstation-loopback (macOS ASP plugin) | DEFERRED | audio-core / pocketstation-loopback / asp/ | `asp` Cargo feature off by default; `pks_asp_is_installed()` always returns 0 (stub); real plugin requires libASPL vendor submodule + signed deployment | Phase 3 Wave D | AUDIO-022; `vendor/libASPL` submodule (human operator step) |
-| pocketstation-loopback (Linux) | PARTIAL | audio-core / pocketstation-loopback / src/linux.rs | PipeWire path + snd-aloop fallback implemented (AUDIO-024); no CI runner with real PipeWire daemon | Phase 3 Wave C | Linux CI runner with PipeWire |
-| pocketstation-loopback (Windows) | PARTIAL | audio-core / pocketstation-loopback / src/windows.rs | WASAPI system-wide loopback + process loopback implemented (Wave B); no Windows CI runner | Phase 3 Wave B | Windows CI runner; wasapi crate |
-| pocketstation-loopback (other platforms) | STUB | audio-core / pocketstation-loopback / src/lib.rs (stub mod) | Returns `Err(LoopbackError::NotSupported)` on platforms other than macOS, Linux, Windows | Never (no target) | — |
-| JitterBuffer | PARTIAL | audio-core / pocketstation-codec | NetEQ-class adaptive algorithm; current scaffold is fixed-delay | Phase 5 | AUDIO-010 algorithm choice |
-| DHAT allocation check | RESOLVED | audio-core | Replaced with assert_no_alloc = "1.1" crate; NIH alloccheck tool removed | — | — |
+| pocketstation-capture-macos (Application mode) | PARTIAL | audio-core / pocketstation-capture-macos / src/macos_tap.rs | `CaptureMode::Application` uses CoreAudio tap; per-app routing works but sub-5 ms requires ASP plugin (Wave D). Public claim: macOS 14.4+ until 14.2/14.3 tested on device. | Phase 3 Wave D | libASPL submodule + HAL plugin deployment |
+| pocketstation-capture-macos (ASP plugin) | DEFERRED | audio-core / pocketstation-capture-macos / asp/ | `pks_asp_is_installed()` returns 0 (stub); real plugin requires libASPL vendor submodule + signed deployment | Phase 3 Wave D | AUDIO-022; `vendor/libASPL` submodule (human operator step) |
+| pocketstation-capture-linux | PARTIAL | audio-core / pocketstation-capture-linux / src/linux.rs | PipeWire path + snd-aloop fallback implemented (AUDIO-024); no CI runner with real PipeWire daemon; PipeWire graph model (node serial, ports, links) still first-pass | Phase 3 Wave C | Linux CI runner with PipeWire |
+| pocketstation-capture-windows | PARTIAL | audio-core / pocketstation-capture-windows / src/windows.rs | WASAPI system-wide loopback + process loopback implemented (Wave B); WASAPI session enumeration weak; no Windows CI runner | Phase 3 Wave B | Windows CI runner; wasapi crate |
+| pocketstation-capture (non-macOS/Linux/Windows) | STUB | audio-core / pocketstation-capture / src/lib.rs | `capture_system_audio()` stub returns `Err(CaptureError::NotSupported)` on unsupported platforms | Never (no target) | — |
+| JitterBuffer | PARTIAL | audio-core / pocketstation-codec | EWMA adaptive depth implemented; missing: PLC (caller gets GapDetected but no concealment audio); adaptation gains not tuned on real network jitter; no real-device validation | Phase 5 | Real network jitter measurement |
+| DHAT allocation check | RESOLVED | audio-core | Replaced with assert_no_alloc = "1.1" in `crates/pocketstation-audio/tests/alloc_check.rs`; `tools/pocketstation-alloccheck` deleted (was broken: workspace-inheritance without workspace member). | — | — |
 | TURN configuration | DEFERRED | relay | Production TURN credentials; STUN-only works on most networks | Phase 2 | TURN provider decision |
 | SFrame E2EE | DEFERRED | relay + SDKs | Frame-layer encryption per RFC 9605 | Phase 3 | ADR for per-platform insertion point |
 
