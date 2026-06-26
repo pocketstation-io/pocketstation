@@ -854,7 +854,7 @@ mod tests {
         let result = SystemLoopbackSource::capture_mode(CaptureMode::Process(99999), |_| {});
         match result {
             Err(CaptureError::ModeUnsupported(_)) => {}
-            other => panic!("expected ModeUnsupported, got {other:?}"),
+            _ => panic!("expected Err(ModeUnsupported)"),
         }
     }
 
@@ -871,7 +871,7 @@ mod tests {
         );
         match result {
             Err(CaptureError::ModeUnsupported(_)) => {}
-            other => panic!("expected ModeUnsupported, got {other:?}"),
+            _ => panic!("expected Err(ModeUnsupported)"),
         }
     }
 
@@ -885,7 +885,9 @@ mod tests {
         // PID 0 is the idle process and will never appear as an audio node.
         let result = SystemLoopbackSource::capture_mode(CaptureMode::Process(0), |_| {});
         match result {
-            Err(CaptureError::ModeUnsupported(_)) | Err(CaptureError::BackendInit(_)) => {}
+            Err(CaptureError::ModeUnsupported(_))
+            | Err(CaptureError::BackendInit(_))
+            | Err(CaptureError::NotSupported) => {}
             Ok(_) => panic!("expected Err for nonexistent PID 0, got Ok"),
         }
     }
