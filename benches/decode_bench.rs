@@ -20,7 +20,8 @@ fn bench_decode(c: &mut Criterion) {
     group.bench_function("960_samples_from_packet", |b| {
         b.iter(|| {
             out.clear();
-            dec.decode_into(black_box(&packet), &mut out).unwrap();
+            dec.decode_into(black_box(&packet), &mut out, false)
+                .unwrap();
             black_box(out.len())
         })
     });

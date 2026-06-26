@@ -62,7 +62,7 @@ fn given_hot_path_when_100_frames_then_zero_heap_allocs() {
                 drop(f);
                 decode_buf.clear();
                 decoder
-                    .decode_into(&encode_buf[..n], &mut decode_buf)
+                    .decode_into(&encode_buf[..n], &mut decode_buf, false)
                     .unwrap();
             }
         }

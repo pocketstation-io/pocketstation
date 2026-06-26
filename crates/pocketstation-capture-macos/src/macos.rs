@@ -300,6 +300,7 @@ fn wait_for_shm_ring() -> Result<(), LoopbackError> {
 
 #[cfg(test)]
 mod tests {
+    #![allow(clippy::assertions_on_constants)]
     use super::*;
 
     // Given: driver install path constant

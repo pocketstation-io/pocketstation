@@ -247,7 +247,7 @@ impl OpusEncoder {
         let frame_len = pcm.len();
         let per_channel = frame_len / self.channels;
         debug_assert!(
-            frame_len % self.channels == 0
+            frame_len.is_multiple_of(self.channels)
                 && (per_channel == OPUS_FRAME_SAMPLES || per_channel == VOICE_AGENT_FRAME_SAMPLES),
             "encode_into: expected {OPUS_FRAME_SAMPLES} or {VOICE_AGENT_FRAME_SAMPLES} samples per channel \
              × {} channels, got {frame_len} total",

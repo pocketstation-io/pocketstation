@@ -70,9 +70,12 @@ pub fn tap_available() -> bool {
 /// Returns an empty `Vec` on macOS < 14.4 (public support floor) or on non-macOS platforms.
 pub fn discover_sources_native() -> Vec<CaptureSource> {
     const MAX: usize = 128;
-    // Safety: pks_discover_sources fills exactly `n` entries before returning.
+    // Safety: write_bytes zeroes the allocation before set_len, so all MAX
+    // elements are initialised.  pks_discover_sources then writes exactly `n`
+    // valid entries into the first `n` slots; we truncate to that count.
     let raw: Vec<RawSourceInfo> = unsafe {
         let mut v: Vec<RawSourceInfo> = Vec::with_capacity(MAX);
+        std::ptr::write_bytes(v.as_mut_ptr(), 0, MAX);
         v.set_len(MAX);
         let n = pks_discover_sources(v.as_mut_ptr(), MAX as i32);
         v.truncate(n.max(0) as usize);

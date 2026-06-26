@@ -74,7 +74,7 @@ fn run_soak(label: &str, complexity: i32, sine_table: &[f32]) {
             drop(frame);
             decode_buf.clear();
             let n_dec = decoder
-                .decode_into(&encode_buf[..n_enc], &mut decode_buf)
+                .decode_into(&encode_buf[..n_enc], &mut decode_buf, false)
                 .expect("decode_into failed");
             total_decoded += n_dec as u64;
         }
@@ -89,7 +89,7 @@ fn run_soak(label: &str, complexity: i32, sine_table: &[f32]) {
         drop(frame);
         decode_buf.clear();
         let n_dec = decoder
-            .decode_into(&encode_buf[..n_enc], &mut decode_buf)
+            .decode_into(&encode_buf[..n_enc], &mut decode_buf, false)
             .expect("decode_into failed");
         total_decoded += n_dec as u64;
     }
