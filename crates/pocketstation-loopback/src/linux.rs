@@ -188,7 +188,7 @@ where
 
             let _listener = stream
                 .add_local_listener_with_user_data(())
-                .param_changed(|_id, _user, _param| {})
+                .param_changed(|_stream, _user, _id, _param| {})
                 .process(move |stream, _user| {
                     let mut buf = match stream.dequeue_buffer() {
                         Some(b) => b,
@@ -295,7 +295,7 @@ where
             let _ = stream.disconnect();
             unsafe { pw::deinit() };
         })
-        .map_err(|e| LoopbackError::BackendInit(format!("capture thread spawn: {e}", e)))?;
+        .map_err(|e| LoopbackError::BackendInit(format!("capture thread spawn: {e}")))?;
 
     // Dispatch thread: pulls frames from the channel and calls the user callback.
     let dispatch_thread = thread::Builder::new()
@@ -305,7 +305,7 @@ where
                 callback(frame);
             }
         })
-        .map_err(|e| LoopbackError::BackendInit(format!("dispatch thread spawn: {e}", e)))?;
+        .map_err(|e| LoopbackError::BackendInit(format!("dispatch thread spawn: {e}")))?;
 
     Ok(SystemLoopbackSource {
         _capture_thread: capture_thread,
@@ -411,14 +411,14 @@ where
             }
             let _ = pcm.drop();
         })
-        .map_err(|e| LoopbackError::BackendInit(format!("alsa thread spawn: {e}", e)))?;
+        .map_err(|e| LoopbackError::BackendInit(format!("alsa thread spawn: {e}")))?;
 
     // ALSA path calls callback inline; use a dummy dispatch thread for uniform struct layout.
     let (_dummy_tx, dummy_rx) = mpsc::sync_channel::<AudioFrame>(1);
     let dispatch_thread = thread::Builder::new()
         .name("pks-alsa-dispatch".into())
         .spawn(move || while dummy_rx.recv().is_ok() {})
-        .map_err(|e| LoopbackError::BackendInit(format!("alsa dispatch spawn: {e}", e)))?;
+        .map_err(|e| LoopbackError::BackendInit(format!("alsa dispatch spawn: {e}")))?;
 
     Ok(SystemLoopbackSource {
         _capture_thread: capture_thread,
