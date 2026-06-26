@@ -29,11 +29,9 @@ use pocketstation_frame::{
     AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId,
     DEFAULT_SAMPLE_RATE, DEFAULT_SLOT_SAMPLES_MONO_20MS,
 };
-use pw::prelude::*;
 use pw::properties::properties;
 use pw::spa;
 use pw::spa::pod::Pod;
-use spa::format::{MediaSubtype, MediaType};
 use spa::param::audio::AudioFormat;
 
 use pocketstation_capture::{CaptureError as LoopbackError, CaptureMode};
@@ -170,21 +168,21 @@ where
         .name("pks-pipewire-capture".into())
         .spawn(move || {
             pw::init();
-            let mainloop = match pw::main_loop::MainLoop::new(None) {
+            let mainloop = match pw::main_loop::MainLoopRc::new(None) {
                 Ok(ml) => ml,
                 Err(e) => {
                     eprintln!("pks-pipewire: MainLoop::new failed: {e}");
                     return;
                 }
             };
-            let context = match pw::context::Context::new(&mainloop) {
+            let context = match pw::context::ContextRc::new(&mainloop, None) {
                 Ok(ctx) => ctx,
                 Err(e) => {
                     eprintln!("pks-pipewire: Context::new failed: {e}");
                     return;
                 }
             };
-            let core = match context.connect(None) {
+            let core = match context.connect_rc(None) {
                 Ok(c) => c,
                 Err(e) => {
                     eprintln!("pks-pipewire: Context::connect failed: {e}");
@@ -200,7 +198,7 @@ where
                 *pw::keys::STREAM_CAPTURE_SINK => "true",
             };
 
-            let stream = match pw::stream::Stream::new(&core, "pks-loopback", stream_props) {
+            let stream = match pw::stream::StreamRc::new(core, "pks-loopback", stream_props) {
                 Ok(s) => s,
                 Err(e) => {
                     eprintln!("pks-pipewire: Stream::new failed: {e}");
@@ -214,7 +212,7 @@ where
 
             let _listener = stream
                 .add_local_listener_with_user_data(())
-                .param_changed(|_id, _user, _param| {})
+                .param_changed(|_stream, _user, _id, _param| {})
                 .process(move |stream, _user| {
                     let mut buf = match stream.dequeue_buffer() {
                         Some(b) => b,
@@ -322,7 +320,7 @@ where
             let _ = stream.disconnect();
             unsafe { pw::deinit() };
         })
-        .map_err(|e| LoopbackError::BackendInit(format!("capture thread spawn: {e}", e)))?;
+        .map_err(|e| LoopbackError::BackendInit(format!("capture thread spawn: {e}")))?;
 
     // Dispatch thread: polls the SPSC ring and calls the user callback.
     // Sleeps 1 ms when the ring is empty to avoid busy-waiting; exits when
@@ -338,7 +336,7 @@ where
             }
             thread::sleep(Duration::from_millis(1));
         })
-        .map_err(|e| LoopbackError::BackendInit(format!("dispatch thread spawn: {e}", e)))?;
+        .map_err(|e| LoopbackError::BackendInit(format!("dispatch thread spawn: {e}")))?;
 
     Ok(SystemLoopbackSource {
         _capture_thread: capture_thread,
@@ -355,7 +353,7 @@ where
 ///
 /// Always returns at least one entry (the system-wide mix at id=0).
 /// If PipeWire is available, per-application node sources are appended.
-pub(crate) fn discover_sources_linux() -> Vec<pocketstation_capture::CaptureSource> {
+pub fn discover_sources_linux() -> Vec<pocketstation_capture::CaptureSource> {
     use pocketstation_capture::{CaptureSource, SourceKind, SourceState, StableSourceId};
     use pocketstation_frame::Platform;
 
@@ -396,21 +394,21 @@ fn enumerate_pipewire_nodes() -> Vec<pocketstation_capture::CaptureSource> {
         .spawn(move || {
             pw::init();
 
-            let mainloop = match pw::main_loop::MainLoop::new(None) {
+            let mainloop = match pw::main_loop::MainLoopRc::new(None) {
                 Ok(ml) => ml,
                 Err(_) => {
                     let _ = tx.send(Vec::new());
                     return;
                 }
             };
-            let context = match pw::context::Context::new(&mainloop) {
+            let context = match pw::context::ContextRc::new(&mainloop, None) {
                 Ok(ctx) => ctx,
                 Err(_) => {
                     let _ = tx.send(Vec::new());
                     return;
                 }
             };
-            let core = match context.connect(None) {
+            let core = match context.connect_rc(None) {
                 Ok(c) => c,
                 Err(_) => {
                     let _ = tx.send(Vec::new());
@@ -551,21 +549,21 @@ where
         .name("pks-pipewire-capture-targeted".into())
         .spawn(move || {
             pw::init();
-            let mainloop = match pw::main_loop::MainLoop::new(None) {
+            let mainloop = match pw::main_loop::MainLoopRc::new(None) {
                 Ok(ml) => ml,
                 Err(e) => {
                     eprintln!("pks-pipewire-targeted: MainLoop::new failed: {e}");
                     return;
                 }
             };
-            let context = match pw::context::Context::new(&mainloop) {
+            let context = match pw::context::ContextRc::new(&mainloop, None) {
                 Ok(ctx) => ctx,
                 Err(e) => {
                     eprintln!("pks-pipewire-targeted: Context::new failed: {e}");
                     return;
                 }
             };
-            let core = match context.connect(None) {
+            let core = match context.connect_rc(None) {
                 Ok(c) => c,
                 Err(e) => {
                     eprintln!("pks-pipewire-targeted: Context::connect failed: {e}");
@@ -582,14 +580,14 @@ where
                 "node.target" => node_id_str.as_str(),
             };
 
-            let stream = match pw::stream::Stream::new(&core, "pks-loopback-targeted", stream_props)
-            {
-                Ok(s) => s,
-                Err(e) => {
-                    eprintln!("pks-pipewire-targeted: Stream::new failed: {e}");
-                    return;
-                }
-            };
+            let stream =
+                match pw::stream::StreamRc::new(core, "pks-loopback-targeted", stream_props) {
+                    Ok(s) => s,
+                    Err(e) => {
+                        eprintln!("pks-pipewire-targeted: Stream::new failed: {e}");
+                        return;
+                    }
+                };
 
             let mut frame_producer = frame_producer;
             let pool_cb = pool.clone();
@@ -597,7 +595,7 @@ where
 
             let _listener = stream
                 .add_local_listener_with_user_data(())
-                .param_changed(|_id, _user, _param| {})
+                .param_changed(|_stream, _user, _id, _param| {})
                 .process(move |stream, _user| {
                     let mut buf = match stream.dequeue_buffer() {
                         Some(b) => b,
@@ -822,14 +820,14 @@ where
             }
             let _ = pcm.drop();
         })
-        .map_err(|e| LoopbackError::BackendInit(format!("alsa thread spawn: {e}", e)))?;
+        .map_err(|e| LoopbackError::BackendInit(format!("alsa thread spawn: {e}")))?;
 
     // ALSA path calls callback inline; use a dummy dispatch thread for uniform struct layout.
     let (_dummy_tx, dummy_rx) = mpsc::sync_channel::<AudioFrame>(1);
     let dispatch_thread = thread::Builder::new()
         .name("pks-alsa-dispatch".into())
         .spawn(move || while dummy_rx.recv().is_ok() {})
-        .map_err(|e| LoopbackError::BackendInit(format!("alsa dispatch spawn: {e}", e)))?;
+        .map_err(|e| LoopbackError::BackendInit(format!("alsa dispatch spawn: {e}")))?;
 
     Ok(SystemLoopbackSource {
         _capture_thread: capture_thread,
