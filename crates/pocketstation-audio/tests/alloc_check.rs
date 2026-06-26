@@ -37,10 +37,14 @@ fn given_hot_path_when_100_frames_then_zero_heap_allocs() {
         let _ = prod.push_drop_newest(frame);
         if let Some(f) = cons.pop() {
             encode_buf.clear();
-            let n = encoder.encode_into(f.buffer.as_slice(), &mut encode_buf).unwrap();
+            let n = encoder
+                .encode_into(f.buffer.as_slice(), &mut encode_buf)
+                .unwrap();
             drop(f);
             decode_buf.clear();
-            decoder.decode_into(&encode_buf[..n], &mut decode_buf).unwrap();
+            decoder
+                .decode_into(&encode_buf[..n], &mut decode_buf)
+                .unwrap();
         }
     }
 
@@ -52,10 +56,14 @@ fn given_hot_path_when_100_frames_then_zero_heap_allocs() {
             let _ = prod.push_drop_newest(frame);
             if let Some(f) = cons.pop() {
                 encode_buf.clear();
-                let n = encoder.encode_into(f.buffer.as_slice(), &mut encode_buf).unwrap();
+                let n = encoder
+                    .encode_into(f.buffer.as_slice(), &mut encode_buf)
+                    .unwrap();
                 drop(f);
                 decode_buf.clear();
-                decoder.decode_into(&encode_buf[..n], &mut decode_buf).unwrap();
+                decoder
+                    .decode_into(&encode_buf[..n], &mut decode_buf)
+                    .unwrap();
             }
         }
     });
@@ -65,8 +73,10 @@ fn given_hot_path_when_100_frames_then_zero_heap_allocs() {
 }
 
 fn build_sine(start: u64, len: usize) -> Vec<f32> {
-    (0..len).map(|i| {
-        let t = (start + i as u64) as f32 / DEFAULT_SAMPLE_RATE as f32;
-        (2.0 * std::f32::consts::PI * 440.0 * t).sin() * 0.25
-    }).collect()
+    (0..len)
+        .map(|i| {
+            let t = (start + i as u64) as f32 / DEFAULT_SAMPLE_RATE as f32;
+            (2.0 * std::f32::consts::PI * 440.0 * t).sin() * 0.25
+        })
+        .collect()
 }

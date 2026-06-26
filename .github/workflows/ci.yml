@@ -1,5 +1,11 @@
 name: ci-rust-audio-core
-on: [pull_request, push]
+# Run on PRs, and on push only to main (post-merge). The previous
+# `on: [pull_request, push]` ran every check TWICE on a PR branch (once for the
+# push event, once for the pull_request event) — wasteful and noisy.
+on:
+  push:
+    branches: [main]
+  pull_request:
 jobs:
   rust:
     runs-on: ubuntu-latest
@@ -14,4 +20,5 @@ jobs:
         run: cargo bench --no-run -p pocketstation-audio
       - name: Alloc-free hot path check (integration test)
         run: cargo test -p pocketstation-audio --test alloc_check -- --nocapture
-      - run: cargo publish --dry-run -p pocketstation-audio || true
+      # Publish dry-run removed: it was guarded by `|| true` (could never fail =
+      # meaningless), and real publishing is handled by publish.yml.

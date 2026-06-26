@@ -22,9 +22,7 @@ fn bench_encode(c: &mut Criterion) {
 
     // Case 2: 440 Hz sine at 25 % amplitude — exercises the full MDCT path.
     let sine: Vec<f32> = (0..OPUS_FRAME_SAMPLES)
-        .map(|i| {
-            (2.0 * std::f32::consts::PI * 440.0 * i as f32 / 48_000.0).sin() * 0.25
-        })
+        .map(|i| (2.0 * std::f32::consts::PI * 440.0 * i as f32 / 48_000.0).sin() * 0.25)
         .collect();
     group.bench_function("960_samples_sine", |b| {
         b.iter(|| {

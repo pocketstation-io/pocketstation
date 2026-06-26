@@ -8,9 +8,7 @@ fn bench_decode(c: &mut Criterion) {
     // only the decode path, not encode overhead.
     let mut enc = OpusEncoder::default();
     let sine: Vec<f32> = (0..OPUS_FRAME_SAMPLES)
-        .map(|i| {
-            (2.0 * std::f32::consts::PI * 440.0 * i as f32 / 48_000.0).sin() * 0.25
-        })
+        .map(|i| (2.0 * std::f32::consts::PI * 440.0 * i as f32 / 48_000.0).sin() * 0.25)
         .collect();
     let mut packet = Vec::with_capacity(OPUS_MAX_PACKET_BYTES);
     enc.encode_into(&sine, &mut packet).unwrap();

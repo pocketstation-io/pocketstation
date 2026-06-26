@@ -24,11 +24,11 @@ use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
 
+use pipewire as pw;
 use pocketstation_frame::{
     AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId,
     DEFAULT_SAMPLE_RATE, DEFAULT_SLOT_SAMPLES_MONO_20MS,
 };
-use pipewire as pw;
 use pw::prelude::*;
 use pw::properties::properties;
 use pw::spa;
@@ -233,7 +233,12 @@ where
                         .as_nanos() as u64;
 
                     let mut frame = AudioFrame::new(
-                        StreamId(0), SourceId(0), s, ts_ns, CAPTURE_CHANNELS, handle,
+                        StreamId(0),
+                        SourceId(0),
+                        s,
+                        ts_ns,
+                        CAPTURE_CHANNELS,
+                        handle,
                     );
                     frame.source_tag = AudioSourceTag::Captured;
                     frame.encryption_mode = EncryptionMode::None;
@@ -266,7 +271,9 @@ where
                 | pw::stream::StreamFlags::MAP_BUFFERS
                 | pw::stream::StreamFlags::RT_PROCESS;
 
-            if let Err(e) = stream.connect(pw::spa::utils::Direction::Input, None, flags, &mut [param]) {
+            if let Err(e) =
+                stream.connect(pw::spa::utils::Direction::Input, None, flags, &mut [param])
+            {
                 eprintln!("pks-pipewire: stream.connect failed: {e}");
                 return;
             }
@@ -361,10 +368,14 @@ where
             let mut buf = vec![0f32; CAPTURE_FRAME_SAMPLES];
 
             loop {
-                if stop_rx.try_recv().is_ok() { break; }
+                if stop_rx.try_recv().is_ok() {
+                    break;
+                }
                 match io.readi(&mut buf) {
                     Ok(0) | Err(_) => {
-                        if stop_rx.try_recv().is_ok() { break; }
+                        if stop_rx.try_recv().is_ok() {
+                            break;
+                        }
                         continue;
                     }
                     Ok(frames_read) => {
@@ -385,7 +396,12 @@ where
                             .as_nanos() as u64;
 
                         let mut frame = AudioFrame::new(
-                            StreamId(0), SourceId(0), s, ts_ns, CAPTURE_CHANNELS, handle,
+                            StreamId(0),
+                            SourceId(0),
+                            s,
+                            ts_ns,
+                            CAPTURE_CHANNELS,
+                            handle,
                         );
                         frame.source_tag = AudioSourceTag::Captured;
                         frame.encryption_mode = EncryptionMode::None;
@@ -402,7 +418,7 @@ where
     let (_dummy_tx, dummy_rx) = mpsc::sync_channel::<AudioFrame>(1);
     let dispatch_thread = thread::Builder::new()
         .name("pks-alsa-dispatch".into())
-        .spawn(move || { while dummy_rx.recv().is_ok() {} })
+        .spawn(move || while dummy_rx.recv().is_ok() {})
         .map_err(|e| LoopbackError::BackendInit(format!("alsa dispatch spawn: {e}", e)))?;
 
     Ok(SystemLoopbackSource {

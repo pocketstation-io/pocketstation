@@ -8,8 +8,13 @@ extern "C" {
     fn pks_asp_open_reader() -> *mut std::ffi::c_void;
     fn pks_asp_sample_rate(r: *mut std::ffi::c_void) -> c_uint;
     fn pks_asp_channels(r: *mut std::ffi::c_void) -> c_uint;
+    #[allow(dead_code)] // reserved diagnostic accessor; not yet wired to callers
     fn pks_asp_drop_count(r: *mut std::ffi::c_void) -> u64;
-    fn pks_asp_read_frames(r: *mut std::ffi::c_void, out: *mut c_float, frame_count: c_uint) -> c_uint;
+    fn pks_asp_read_frames(
+        r: *mut std::ffi::c_void,
+        out: *mut c_float,
+        frame_count: c_uint,
+    ) -> c_uint;
     fn pks_asp_close_reader(r: *mut std::ffi::c_void);
 }
 
@@ -31,7 +36,11 @@ impl AspReader {
     pub fn open() -> Option<Self> {
         // SAFETY: returns NULL on failure; we check before wrapping.
         let ptr = unsafe { pks_asp_open_reader() };
-        if ptr.is_null() { None } else { Some(Self(ptr)) }
+        if ptr.is_null() {
+            None
+        } else {
+            Some(Self(ptr))
+        }
     }
 
     pub fn sample_rate(&self) -> u32 {
@@ -44,6 +53,7 @@ impl AspReader {
         unsafe { pks_asp_channels(self.0) }
     }
 
+    #[allow(dead_code)] // reserved diagnostic accessor; not yet wired to callers
     pub fn drop_count(&self) -> u64 {
         // SAFETY: self.0 is valid (checked in open()).
         unsafe { pks_asp_drop_count(self.0) }
