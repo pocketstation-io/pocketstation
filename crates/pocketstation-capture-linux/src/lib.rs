@@ -2,4 +2,4 @@
 mod linux;
 
 #[cfg(target_os = "linux")]
-pub use linux::{SystemLoopbackSource, discover_sources_linux};
+pub use linux::{discover_sources_linux, SystemLoopbackSource};

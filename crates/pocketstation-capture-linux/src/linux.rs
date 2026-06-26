@@ -17,18 +17,18 @@
 //! - byte copy from PipeWire buffer into pool slot (ptr::copy_nonoverlapping)
 //! - `rtrb::Producer::push()` — wait-free SPSC push, drops frame when ring is full
 
+use rtrb::RingBuffer;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::mpsc;
 use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
-use rtrb::RingBuffer;
 
+use pipewire as pw;
 use pocketstation_frame::{
     AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId,
     DEFAULT_SAMPLE_RATE, DEFAULT_SLOT_SAMPLES_MONO_20MS,
 };
-use pipewire as pw;
 use pw::prelude::*;
 use pw::properties::properties;
 use pw::spa;
@@ -36,7 +36,7 @@ use pw::spa::pod::Pod;
 use spa::format::{MediaSubtype, MediaType};
 use spa::param::audio::AudioFormat;
 
-use pocketstation_capture::{CaptureMode, CaptureError as LoopbackError};
+use pocketstation_capture::{CaptureError as LoopbackError, CaptureMode};
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -258,7 +258,12 @@ where
                         .as_nanos() as u64;
 
                     let mut frame = AudioFrame::new(
-                        StreamId(0), SourceId(0), s, ts_ns, CAPTURE_CHANNELS, handle,
+                        StreamId(0),
+                        SourceId(0),
+                        s,
+                        ts_ns,
+                        CAPTURE_CHANNELS,
+                        handle,
                     );
                     frame.source_tag = AudioSourceTag::Captured;
                     frame.encryption_mode = EncryptionMode::None;
@@ -292,7 +297,9 @@ where
                 | pw::stream::StreamFlags::MAP_BUFFERS
                 | pw::stream::StreamFlags::RT_PROCESS;
 
-            if let Err(e) = stream.connect(pw::spa::utils::Direction::Input, None, flags, &mut [param]) {
+            if let Err(e) =
+                stream.connect(pw::spa::utils::Direction::Input, None, flags, &mut [param])
+            {
                 eprintln!("pks-pipewire: stream.connect failed: {e}");
                 return;
             }
@@ -322,14 +329,14 @@ where
     // the producer side is dropped (capture thread exited).
     let dispatch_thread = thread::Builder::new()
         .name("pks-pipewire-dispatch".into())
-        .spawn(move || {
-            loop {
-                while let Ok(frame) = frame_consumer.pop() {
-                    callback(frame);
-                }
-                if frame_consumer.is_abandoned() { break; }
-                thread::sleep(Duration::from_millis(1));
+        .spawn(move || loop {
+            while let Ok(frame) = frame_consumer.pop() {
+                callback(frame);
             }
+            if frame_consumer.is_abandoned() {
+                break;
+            }
+            thread::sleep(Duration::from_millis(1));
         })
         .map_err(|e| LoopbackError::BackendInit(format!("dispatch thread spawn: {e}", e)))?;
 
@@ -353,14 +360,14 @@ pub(crate) fn discover_sources_linux() -> Vec<pocketstation_capture::CaptureSour
     use pocketstation_frame::Platform;
 
     let system_mix = CaptureSource {
-        stable_id:   StableSourceId::new(Platform::Linux, SourceKind::SystemMix, "system:mix"),
-        name:        "System Mix".to_owned(),
-        process_id:  None,
-        app_id:      None,
-        device_uid:  None,
-        state:       SourceState::Available,
+        stable_id: StableSourceId::new(Platform::Linux, SourceKind::SystemMix, "system:mix"),
+        name: "System Mix".to_owned(),
+        process_id: None,
+        app_id: None,
+        device_uid: None,
+        state: SourceState::Available,
         sample_rate: 48_000,
-        channels:    2,
+        channels: 2,
     };
 
     let mut sources = vec![system_mix];
@@ -432,9 +439,9 @@ fn enumerate_pipewire_nodes() -> Vec<pocketstation_capture::CaptureSource> {
                     let media_class = props.get("media.class").unwrap_or("");
                     let (kind, is_audio) = match media_class {
                         "Stream/Output/Audio" => (SourceKind::Application, true),
-                        "Audio/Source"        => (SourceKind::InputDevice, true),
-                        "Audio/Sink"          => (SourceKind::OutputDevice, true),
-                        _                     => (SourceKind::SystemMix, false),
+                        "Audio/Source" => (SourceKind::InputDevice, true),
+                        "Audio/Sink" => (SourceKind::OutputDevice, true),
+                        _ => (SourceKind::SystemMix, false),
                     };
                     if !is_audio {
                         return;
@@ -450,18 +457,19 @@ fn enumerate_pipewire_nodes() -> Vec<pocketstation_capture::CaptureSource> {
                         .get("application.process.id")
                         .and_then(|s| s.parse::<u32>().ok());
 
-                    let stable_key = node_name.as_deref()
+                    let stable_key = node_name
+                        .as_deref()
                         .map(|n| format!("pw-node:{n}"))
                         .unwrap_or_else(|| format!("pw-id:{}", global.id));
                     collected_for_reg.borrow_mut().push(CaptureSource {
-                        stable_id:   StableSourceId::new(Platform::Linux, kind, stable_key),
+                        stable_id: StableSourceId::new(Platform::Linux, kind, stable_key),
                         name,
-                        process_id:  pid,
-                        app_id:      None,
-                        device_uid:  node_name,
-                        state:       SourceState::Available,
+                        process_id: pid,
+                        app_id: None,
+                        device_uid: node_name,
+                        state: SourceState::Available,
                         sample_rate: 48_000,
-                        channels:    2,
+                        channels: 2,
                     });
                 })
                 .register()
@@ -504,10 +512,7 @@ fn enumerate_pipewire_nodes() -> Vec<pocketstation_capture::CaptureSource> {
                     ml.quit();
                 }
             });
-            timer.update_timer(
-                Some(Duration::from_millis(300)),
-                None,
-            );
+            timer.update_timer(Some(Duration::from_millis(300)), None);
 
             mainloop.run();
             unsafe { pw::deinit() };
@@ -518,7 +523,8 @@ fn enumerate_pipewire_nodes() -> Vec<pocketstation_capture::CaptureSource> {
         Err(_) => return Vec::new(),
     }
 
-    rx.recv_timeout(Duration::from_millis(400)).unwrap_or_default()
+    rx.recv_timeout(Duration::from_millis(400))
+        .unwrap_or_default()
 }
 
 // ---------------------------------------------------------------------------
@@ -576,7 +582,8 @@ where
                 "node.target" => node_id_str.as_str(),
             };
 
-            let stream = match pw::stream::Stream::new(&core, "pks-loopback-targeted", stream_props) {
+            let stream = match pw::stream::Stream::new(&core, "pks-loopback-targeted", stream_props)
+            {
                 Ok(s) => s,
                 Err(e) => {
                     eprintln!("pks-pipewire-targeted: Stream::new failed: {e}");
@@ -634,7 +641,12 @@ where
                         .as_nanos() as u64;
 
                     let mut frame = AudioFrame::new(
-                        StreamId(0), SourceId(0), s, ts_ns, CAPTURE_CHANNELS, handle,
+                        StreamId(0),
+                        SourceId(0),
+                        s,
+                        ts_ns,
+                        CAPTURE_CHANNELS,
+                        handle,
                     );
                     frame.source_tag = AudioSourceTag::Captured;
                     frame.encryption_mode = EncryptionMode::None;
@@ -667,7 +679,9 @@ where
                 | pw::stream::StreamFlags::MAP_BUFFERS
                 | pw::stream::StreamFlags::RT_PROCESS;
 
-            if let Err(e) = stream.connect(pw::spa::utils::Direction::Input, None, flags, &mut [param]) {
+            if let Err(e) =
+                stream.connect(pw::spa::utils::Direction::Input, None, flags, &mut [param])
+            {
                 eprintln!("pks-pipewire-targeted: stream.connect failed: {e}");
                 return;
             }
@@ -693,14 +707,14 @@ where
 
     let dispatch_thread = thread::Builder::new()
         .name("pks-pipewire-dispatch-targeted".into())
-        .spawn(move || {
-            loop {
-                while let Ok(frame) = frame_consumer.pop() {
-                    callback(frame);
-                }
-                if frame_consumer.is_abandoned() { break; }
-                thread::sleep(Duration::from_millis(1));
+        .spawn(move || loop {
+            while let Ok(frame) = frame_consumer.pop() {
+                callback(frame);
             }
+            if frame_consumer.is_abandoned() {
+                break;
+            }
+            thread::sleep(Duration::from_millis(1));
         })
         .map_err(|e| LoopbackError::BackendInit(format!("dispatch thread spawn: {e}")))?;
 
@@ -764,10 +778,14 @@ where
             let mut buf = vec![0f32; CAPTURE_FRAME_SAMPLES];
 
             loop {
-                if stop_rx.try_recv().is_ok() { break; }
+                if stop_rx.try_recv().is_ok() {
+                    break;
+                }
                 match io.readi(&mut buf) {
                     Ok(0) | Err(_) => {
-                        if stop_rx.try_recv().is_ok() { break; }
+                        if stop_rx.try_recv().is_ok() {
+                            break;
+                        }
                         continue;
                     }
                     Ok(frames_read) => {
@@ -788,7 +806,12 @@ where
                             .as_nanos() as u64;
 
                         let mut frame = AudioFrame::new(
-                            StreamId(0), SourceId(0), s, ts_ns, CAPTURE_CHANNELS, handle,
+                            StreamId(0),
+                            SourceId(0),
+                            s,
+                            ts_ns,
+                            CAPTURE_CHANNELS,
+                            handle,
                         );
                         frame.source_tag = AudioSourceTag::Captured;
                         frame.encryption_mode = EncryptionMode::None;
@@ -805,7 +828,7 @@ where
     let (_dummy_tx, dummy_rx) = mpsc::sync_channel::<AudioFrame>(1);
     let dispatch_thread = thread::Builder::new()
         .name("pks-alsa-dispatch".into())
-        .spawn(move || { while dummy_rx.recv().is_ok() {} })
+        .spawn(move || while dummy_rx.recv().is_ok() {})
         .map_err(|e| LoopbackError::BackendInit(format!("alsa dispatch spawn: {e}", e)))?;
 
     Ok(SystemLoopbackSource {
@@ -831,10 +854,7 @@ mod tests {
         if pipewire_available() {
             return; // test requires PipeWire to be absent
         }
-        let result = SystemLoopbackSource::capture_mode(
-            CaptureMode::Process(99999),
-            |_| {},
-        );
+        let result = SystemLoopbackSource::capture_mode(CaptureMode::Process(99999), |_| {});
         match result {
             Err(CaptureError::ModeUnsupported(_)) => {}
             other => panic!("expected ModeUnsupported, got {other:?}"),
@@ -866,10 +886,7 @@ mod tests {
             return; // test requires PipeWire
         }
         // PID 0 is the idle process and will never appear as an audio node.
-        let result = SystemLoopbackSource::capture_mode(
-            CaptureMode::Process(0),
-            |_| {},
-        );
+        let result = SystemLoopbackSource::capture_mode(CaptureMode::Process(0), |_| {});
         match result {
             Err(CaptureError::ModeUnsupported(_)) | Err(CaptureError::BackendInit(_)) => {}
             Ok(_) => panic!("expected Err for nonexistent PID 0, got Ok"),

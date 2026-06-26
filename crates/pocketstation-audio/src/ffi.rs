@@ -44,7 +44,11 @@ pub unsafe extern "C" fn pks_opus_encoder_create(
     };
     let config = OpusConfig {
         channels: ch,
-        bitrate_kbps: if bitrate_kbps > 0 { Some(bitrate_kbps) } else { None },
+        bitrate_kbps: if bitrate_kbps > 0 {
+            Some(bitrate_kbps)
+        } else {
+            None
+        },
         ..OpusConfig::default()
     };
     match OpusEncoder::from_config(&config) {
@@ -207,7 +211,11 @@ mod tests {
             assert!(!enc.is_null());
             assert_eq!(pks_opus_encoder_set_bitrate(enc, 32), 0);
             assert_eq!(pks_opus_encoder_set_bitrate(enc, 96), 0);
-            assert_eq!(pks_opus_encoder_set_bitrate(enc, 0), 0, "0 kbps = VBR auto must succeed");
+            assert_eq!(
+                pks_opus_encoder_set_bitrate(enc, 0),
+                0,
+                "0 kbps = VBR auto must succeed"
+            );
             pks_opus_encoder_destroy(enc);
         }
     }
@@ -228,7 +236,10 @@ mod tests {
             let pcm = sine_960(440.0);
             let mut out = vec![0u8; 256];
             let n = pks_encode_opus(enc, pcm.as_ptr(), pcm.len(), out.as_mut_ptr(), out.len());
-            assert!(n > 0, "encode after bitrate change must produce valid packet");
+            assert!(
+                n > 0,
+                "encode after bitrate change must produce valid packet"
+            );
             pks_opus_encoder_destroy(enc);
         }
     }

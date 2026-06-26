@@ -20,7 +20,13 @@ pub struct FrameConsumer {
 
 pub fn frame_bus(capacity: usize) -> (FrameProducer, FrameConsumer) {
     let (p, c) = RingBuffer::<AudioFrame>::new(capacity);
-    (FrameProducer { inner: p, dropped_newest: AtomicU64::new(0) }, FrameConsumer { inner: c })
+    (
+        FrameProducer {
+            inner: p,
+            dropped_newest: AtomicU64::new(0),
+        },
+        FrameConsumer { inner: c },
+    )
 }
 
 impl FrameProducer {
@@ -60,7 +66,12 @@ pub struct ClockSync {
 
 impl ClockSync {
     pub fn new(kp: f64, ki: f64) -> Self {
-        Self { kp, ki, integral: 0.0, last_offset_ns: 0 }
+        Self {
+            kp,
+            ki,
+            integral: 0.0,
+            last_offset_ns: 0,
+        }
     }
 
     pub fn tick(&mut self, measured_offset_ns: i64) -> i64 {
@@ -68,15 +79,23 @@ impl ClockSync {
         self.integral += error;
         let correction = self.kp * error + self.ki * self.integral;
         self.last_offset_ns = measured_offset_ns;
-        correction.round().clamp(-CLOCK_SYNC_CLAMP_NS as f64, CLOCK_SYNC_CLAMP_NS as f64) as i64
+        correction
+            .round()
+            .clamp(-CLOCK_SYNC_CLAMP_NS as f64, CLOCK_SYNC_CLAMP_NS as f64) as i64
     }
 
-    pub fn last_offset_ns(&self) -> i64 { self.last_offset_ns }
-    pub fn integral(&self) -> f64 { self.integral }
+    pub fn last_offset_ns(&self) -> i64 {
+        self.last_offset_ns
+    }
+    pub fn integral(&self) -> f64 {
+        self.integral
+    }
 }
 
 impl Default for ClockSync {
-    fn default() -> Self { Self::new(0.1, 0.001) }
+    fn default() -> Self {
+        Self::new(0.1, 0.001)
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -93,7 +112,9 @@ pub enum ChannelLayout {
 pub trait AudioProcessorNode: Send {
     fn name(&self) -> &'static str;
     fn process(&mut self, frame: AudioFrame) -> Option<AudioFrame>;
-    fn accepted_channels(&self) -> ChannelLayout { ChannelLayout::Either }
+    fn accepted_channels(&self) -> ChannelLayout {
+        ChannelLayout::Either
+    }
 }
 
 pub struct ProcessorGraph {
@@ -101,7 +122,9 @@ pub struct ProcessorGraph {
 }
 
 impl ProcessorGraph {
-    pub fn new() -> Self { Self { nodes: Vec::new() } }
+    pub fn new() -> Self {
+        Self { nodes: Vec::new() }
+    }
 
     pub fn add_node<N: AudioProcessorNode + 'static>(&mut self, node: N) {
         self.nodes.push(Box::new(node));
@@ -116,32 +139,54 @@ impl ProcessorGraph {
 }
 
 impl Default for ProcessorGraph {
-    fn default() -> Self { Self::new() }
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 pub struct PassthroughNode;
 impl AudioProcessorNode for PassthroughNode {
-    fn name(&self) -> &'static str { "passthrough" }
-    fn process(&mut self, frame: AudioFrame) -> Option<AudioFrame> { Some(frame) }
+    fn name(&self) -> &'static str {
+        "passthrough"
+    }
+    fn process(&mut self, frame: AudioFrame) -> Option<AudioFrame> {
+        Some(frame)
+    }
 }
 
-pub struct GainNode { gain: f32 }
+pub struct GainNode {
+    gain: f32,
+}
 impl GainNode {
-    pub fn new(gain: f32) -> Self { Self { gain } }
+    pub fn new(gain: f32) -> Self {
+        Self { gain }
+    }
 }
 impl AudioProcessorNode for GainNode {
-    fn name(&self) -> &'static str { "gain" }
+    fn name(&self) -> &'static str {
+        "gain"
+    }
     fn process(&mut self, mut frame: AudioFrame) -> Option<AudioFrame> {
-        for s in frame.buffer.as_mut_slice().iter_mut() { *s *= self.gain; }
+        for s in frame.buffer.as_mut_slice().iter_mut() {
+            *s *= self.gain;
+        }
         Some(frame)
     }
 }
 
 pub struct MonoMixNode;
-impl Default for MonoMixNode { fn default() -> Self { Self } }
+impl Default for MonoMixNode {
+    fn default() -> Self {
+        Self
+    }
+}
 impl AudioProcessorNode for MonoMixNode {
-    fn name(&self) -> &'static str { "mono_mix" }
-    fn accepted_channels(&self) -> ChannelLayout { ChannelLayout::StereoOnly }
+    fn name(&self) -> &'static str {
+        "mono_mix"
+    }
+    fn accepted_channels(&self) -> ChannelLayout {
+        ChannelLayout::StereoOnly
+    }
     fn process(&mut self, mut frame: AudioFrame) -> Option<AudioFrame> {
         if frame.channels == 2 {
             let len = frame.buffer.len();
@@ -196,22 +241,33 @@ impl ResampleNode {
     /// None-return contract on unsupported configurations.
     pub fn new_unchecked(source_rate: u32, target_rate: u32, channels: u8) -> Self {
         Self {
-            source_rate, target_rate, channels,
+            source_rate,
+            target_rate,
+            channels,
             clock_sync: ClockSync::default(),
-            phase: 0.0, last_sample: 0.0,
+            phase: 0.0,
+            last_sample: 0.0,
             out_buf: Vec::with_capacity(RESAMPLE_MAX_OUT_SAMPLES),
         }
     }
 
-    pub fn identity_48k() -> Self { Self::new(48_000, 48_000, 1) }
+    pub fn identity_48k() -> Self {
+        Self::new(48_000, 48_000, 1)
+    }
 }
 
 impl AudioProcessorNode for ResampleNode {
-    fn name(&self) -> &'static str { "resample" }
-    fn accepted_channels(&self) -> ChannelLayout { ChannelLayout::Either }
+    fn name(&self) -> &'static str {
+        "resample"
+    }
+    fn accepted_channels(&self) -> ChannelLayout {
+        ChannelLayout::Either
+    }
 
     fn process(&mut self, mut frame: AudioFrame) -> Option<AudioFrame> {
-        if frame.channels != self.channels { return None; }
+        if frame.channels != self.channels {
+            return None;
+        }
 
         let correction_ns = self.clock_sync.tick(frame.timestamp_ns as i64);
         let drift_ratio = correction_ns as f64 / NS_PER_SEC;
@@ -235,7 +291,8 @@ impl AudioProcessorNode for ResampleNode {
         {
             let input = frame.buffer.as_slice();
             let input_len = input.len();
-            let expected_out = ((input_len as f64 / ratio).ceil() as usize).min(RESAMPLE_MAX_OUT_SAMPLES);
+            let expected_out =
+                ((input_len as f64 / ratio).ceil() as usize).min(RESAMPLE_MAX_OUT_SAMPLES);
             self.out_buf.clear();
 
             let mut in_idx: usize = 0;
@@ -245,13 +302,22 @@ impl AudioProcessorNode for ResampleNode {
             while out_count < expected_out {
                 phase += ratio;
                 while phase >= 1.0 {
-                    self.last_sample = if in_idx < input_len { input[in_idx] } else { 0.0 };
+                    self.last_sample = if in_idx < input_len {
+                        input[in_idx]
+                    } else {
+                        0.0
+                    };
                     in_idx += 1;
                     phase -= 1.0;
                 }
-                let current = if in_idx < input_len { input[in_idx] } else { 0.0_f32 };
+                let current = if in_idx < input_len {
+                    input[in_idx]
+                } else {
+                    0.0_f32
+                };
                 let t = phase as f32;
-                self.out_buf.push(self.last_sample * (1.0_f32 - t) + current * t);
+                self.out_buf
+                    .push(self.last_sample * (1.0_f32 - t) + current * t);
                 out_count += 1;
             }
             self.phase = phase;
@@ -298,7 +364,9 @@ mod tests {
     fn push_into_full_ring_drops_newest_and_increments_counter() {
         let pool = AudioBufferPool::new(8, 4);
         let (mut p, _c) = frame_bus(3);
-        for seq in 0..3 { assert!(p.push_drop_newest(make_frame(&pool, seq)).is_ok()); }
+        for seq in 0..3 {
+            assert!(p.push_drop_newest(make_frame(&pool, seq)).is_ok());
+        }
         let result = p.push_drop_newest(make_frame(&pool, 3));
         assert!(result.is_err());
         assert_eq!(p.dropped_newest(), 1);
@@ -308,7 +376,9 @@ mod tests {
     fn frames_pushed_in_order_are_popped_in_fifo_order() {
         let pool = AudioBufferPool::new(8, 4);
         let (mut p, mut c) = frame_bus(4);
-        for seq in 0..4 { p.push_drop_newest(make_frame(&pool, seq)).unwrap(); }
+        for seq in 0..4 {
+            p.push_drop_newest(make_frame(&pool, seq)).unwrap();
+        }
         for expected_seq in 0..4u64 {
             let frame = c.pop().unwrap();
             assert_eq!(frame.sequence_number, expected_seq);
@@ -330,7 +400,8 @@ mod tests {
         let mut dropped = 0u64;
         for seq in 0..16 {
             match p.push_drop_newest(make_frame(&pool, seq)) {
-                Ok(()) => pushed += 1, Err(_) => dropped += 1,
+                Ok(()) => pushed += 1,
+                Err(_) => dropped += 1,
             }
         }
         assert_eq!(pushed, 8);
@@ -351,21 +422,30 @@ mod tests {
     fn clock_sync_positive_offset_produces_positive_correction() {
         let mut cs = ClockSync::default();
         let correction = cs.tick(1_000_000);
-        assert!(correction > 0, "positive offset must produce positive correction, got {correction}");
+        assert!(
+            correction > 0,
+            "positive offset must produce positive correction, got {correction}"
+        );
     }
 
     #[test]
     fn clock_sync_negative_offset_produces_negative_correction() {
         let mut cs = ClockSync::default();
         let correction = cs.tick(-1_000_000);
-        assert!(correction < 0, "negative offset must produce negative correction, got {correction}");
+        assert!(
+            correction < 0,
+            "negative offset must produce negative correction, got {correction}"
+        );
     }
 
     #[test]
     fn clock_sync_correction_is_clamped_to_ten_milliseconds() {
         let mut cs = ClockSync::default();
         let correction = cs.tick(100_000_000);
-        assert!(correction.abs() <= 10_000_000, "correction {correction} exceeds ±10 ms clamp");
+        assert!(
+            correction.abs() <= 10_000_000,
+            "correction {correction} exceeds ±10 ms clamp"
+        );
     }
 
     #[test]
@@ -373,7 +453,11 @@ mod tests {
         let mut cs = ClockSync::new(0.0, 1.0);
         cs.tick(1_000);
         cs.tick(1_000);
-        assert!(cs.integral() > 1_000.0, "integral {} should exceed single-tick error", cs.integral());
+        assert!(
+            cs.integral() > 1_000.0,
+            "integral {} should exceed single-tick error",
+            cs.integral()
+        );
     }
 
     // --- Graph tests ---
@@ -392,7 +476,11 @@ mod tests {
 
     // --- ResampleNode tests ---
 
-    fn make_sample_frame(pool: &std::sync::Arc<AudioBufferPool>, samples: &[f32], rate: u32) -> AudioFrame {
+    fn make_sample_frame(
+        pool: &std::sync::Arc<AudioBufferPool>,
+        samples: &[f32],
+        rate: u32,
+    ) -> AudioFrame {
         let mut h = pool.acquire().unwrap();
         h.copy_from_slice(samples);
         let mut f = AudioFrame::new(StreamId(1), SourceId(1), 0, 0, 1, h);

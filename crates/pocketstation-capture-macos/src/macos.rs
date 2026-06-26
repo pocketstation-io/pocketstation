@@ -22,8 +22,8 @@ use pocketstation_frame::{
     AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId,
 };
 
-use pocketstation_capture::{CaptureMode, CaptureError as LoopbackError};
 use crate::macos_asp::AspReader;
+use pocketstation_capture::{CaptureError as LoopbackError, CaptureMode};
 
 // ---------------------------------------------------------------------------
 // Driver bundle — embedded at compile time by build.rs
@@ -108,10 +108,11 @@ impl SystemLoopbackSource {
 
         ensure_asp_driver_active()?;
 
-        let mut reader = AspReader::open()
-            .ok_or_else(|| LoopbackError::BackendInit(
+        let mut reader = AspReader::open().ok_or_else(|| {
+            LoopbackError::BackendInit(
                 "SHM ring unavailable after driver install — try running again".into(),
-            ))?;
+            )
+        })?;
 
         let channels = reader.channels() as u8;
         let sample_rate = reader.sample_rate();
@@ -148,9 +149,8 @@ impl SystemLoopbackSource {
                         .duration_since(std::time::UNIX_EPOCH)
                         .unwrap_or_default()
                         .as_nanos() as u64;
-                    let mut frame = AudioFrame::new(
-                        StreamId(0), SourceId(0), seq, ts_ns, channels, handle,
-                    );
+                    let mut frame =
+                        AudioFrame::new(StreamId(0), SourceId(0), seq, ts_ns, channels, handle);
                     frame.source_tag = AudioSourceTag::Captured;
                     frame.encryption_mode = EncryptionMode::None;
                     frame.sample_rate = sample_rate;
@@ -160,7 +160,10 @@ impl SystemLoopbackSource {
             })
             .map_err(|e| LoopbackError::BackendInit(format!("thread spawn: {e}")))?;
 
-        Ok(Self(Impl::Asp { _thread: thread, stop_tx }))
+        Ok(Self(Impl::Asp {
+            _thread: thread,
+            stop_tx,
+        }))
     }
 }
 
@@ -211,14 +214,13 @@ fn extract_driver_to_temp() -> Result<std::path::PathBuf, LoopbackError> {
     std::fs::create_dir_all(&macos_dir)
         .map_err(|e| LoopbackError::BackendInit(format!("temp dir create: {e}")))?;
 
-    std::fs::write(
-        macos_dir.join("PocketStationLoopback"),
-        DRIVER_DYLIB_BYTES,
-    )
-    .map_err(|e| LoopbackError::BackendInit(format!("dylib write: {e}")))?;
+    std::fs::write(macos_dir.join("PocketStationLoopback"), DRIVER_DYLIB_BYTES)
+        .map_err(|e| LoopbackError::BackendInit(format!("dylib write: {e}")))?;
 
     std::fs::write(
-        tmp.join(DRIVER_BUNDLE_NAME).join("Contents").join("Info.plist"),
+        tmp.join(DRIVER_BUNDLE_NAME)
+            .join("Contents")
+            .join("Info.plist"),
         DRIVER_PLIST_BYTES,
     )
     .map_err(|e| LoopbackError::BackendInit(format!("plist write: {e}")))?;
@@ -247,13 +249,12 @@ fn install_driver(bundle: &Path, install_path: &str) -> Result<(), LoopbackError
     if !status.success() {
         return Err(LoopbackError::BackendInit(
             "Driver installation cancelled or failed. \
-             Ensure you have administrator privileges.".into(),
+             Ensure you have administrator privileges."
+                .into(),
         ));
     }
 
-    let installed_dylib = format!(
-        "{install_path}/Contents/MacOS/PocketStationLoopback"
-    );
+    let installed_dylib = format!("{install_path}/Contents/MacOS/PocketStationLoopback");
     let _ = std::process::Command::new("sudo")
         .args(["chmod", "755", &installed_dylib])
         .status();
@@ -325,8 +326,14 @@ mod tests {
     // Then: both are non-empty (would be zero if build.rs failed to embed)
     #[test]
     fn given_embedded_driver_bytes_when_checked_then_are_non_empty() {
-        assert!(!DRIVER_DYLIB_BYTES.is_empty(), "DRIVER_DYLIB_BYTES must be non-empty");
-        assert!(!DRIVER_PLIST_BYTES.is_empty(), "DRIVER_PLIST_BYTES must be non-empty");
+        assert!(
+            !DRIVER_DYLIB_BYTES.is_empty(),
+            "DRIVER_DYLIB_BYTES must be non-empty"
+        );
+        assert!(
+            !DRIVER_PLIST_BYTES.is_empty(),
+            "DRIVER_PLIST_BYTES must be non-empty"
+        );
     }
 
     // Given: embedded Info.plist
@@ -334,8 +341,8 @@ mod tests {
     // Then: contains the expected bundle identifier
     #[test]
     fn given_embedded_info_plist_when_parsed_then_contains_bundle_id() {
-        let plist = std::str::from_utf8(DRIVER_PLIST_BYTES)
-            .expect("Info.plist must be valid UTF-8");
+        let plist =
+            std::str::from_utf8(DRIVER_PLIST_BYTES).expect("Info.plist must be valid UTF-8");
         assert!(
             plist.contains("io.pocketstation.loopback"),
             "Info.plist must contain the bundle identifier"

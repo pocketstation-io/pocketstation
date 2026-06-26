@@ -2,8 +2,7 @@ use opus::{Application, Channels, Encoder};
 use pocketstation_frame::AudioFrame;
 
 use crate::constants::{
-    I16_SCALE, OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES,
-    VOICE_AGENT_FRAME_SAMPLES,
+    I16_SCALE, OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, VOICE_AGENT_FRAME_SAMPLES,
 };
 
 /// Opus frame duration.  20 ms is the AUDIO-012 default; 10 ms is available for
@@ -426,8 +425,7 @@ mod tests {
         // is the Stage-A gate for the stereo music pipeline (stereo_broadcast =
         // Opus Audio mode, complexity 10).
         let mut enc = OpusEncoder::from_config(&OpusConfig::stereo_broadcast(128)).unwrap();
-        let mut dec =
-            crate::decoder::OpusDecoder::with_channels(OpusChannels::Stereo).unwrap();
+        let mut dec = crate::decoder::OpusDecoder::with_channels(OpusChannels::Stereo).unwrap();
 
         let mut pcm_in = Vec::with_capacity(OPUS_FRAME_SAMPLES * 2);
         for i in 0..OPUS_FRAME_SAMPLES {
@@ -460,7 +458,10 @@ mod tests {
         let right: Vec<f32> = pcm_out.iter().skip(1).step_by(2).copied().collect();
         let rms_l = rms(&left);
         let rms_r = rms(&right);
-        assert!(rms_l > 0.05, "left channel must carry the tone, rms_l={rms_l:.4}");
+        assert!(
+            rms_l > 0.05,
+            "left channel must carry the tone, rms_l={rms_l:.4}"
+        );
         assert!(
             rms_l > rms_r * 4.0,
             "channels must stay distinct (true stereo), rms_l={rms_l:.4} rms_r={rms_r:.4}"
@@ -630,10 +631,10 @@ mod tests {
         use std::f32::consts::PI;
         use std::path::Path;
 
-        const FREQ_HZ:      f32   = 440.0;
-        const AMPLITUDE:    f32   = 0.25;
-        const FRAME_COUNT:  usize = 1500;           // 30 s at 50 fps
-        const SAMPLE_RATE:  f32   = 48_000.0;
+        const FREQ_HZ: f32 = 440.0;
+        const AMPLITUDE: f32 = 0.25;
+        const FRAME_COUNT: usize = 1500; // 30 s at 50 fps
+        const SAMPLE_RATE: f32 = 48_000.0;
         // Opus CELT has a pre-skip of up to ~320 samples at stream start — normal codec
         // delay, not silence injection. Our pipeline bug injects full 960-sample zero frames.
         // 479 catches half-frame-or-larger injection while passing normal pre-skip.
@@ -642,7 +643,7 @@ mod tests {
         let mut enc = OpusEncoder::new().expect("encoder init");
         let mut dec = crate::decoder::OpusDecoder::new().expect("decoder init");
 
-        let mut all_pcm_in:  Vec<f32> = Vec::with_capacity(FRAME_COUNT * OPUS_FRAME_SAMPLES);
+        let mut all_pcm_in: Vec<f32> = Vec::with_capacity(FRAME_COUNT * OPUS_FRAME_SAMPLES);
         let mut all_pcm_out: Vec<f32> = Vec::with_capacity(FRAME_COUNT * OPUS_FRAME_SAMPLES);
         let mut rtp_timestamps: Vec<u64> = Vec::with_capacity(FRAME_COUNT);
 
@@ -665,7 +666,10 @@ mod tests {
             // Encode.
             match enc.encode_into(&pcm_in, &mut packet_buf) {
                 Ok(_) => {}
-                Err(_) => { encode_errors += 1; continue; }
+                Err(_) => {
+                    encode_errors += 1;
+                    continue;
+                }
             }
 
             // Decode.
@@ -699,12 +703,11 @@ mod tests {
         );
 
         // ── Invariant 4: RMS within 4 dB ────────────────────────────────────
-        let rms = |s: &[f32]| -> f32 {
-            (s.iter().map(|x| x * x).sum::<f32>() / s.len() as f32).sqrt()
-        };
-        let rms_in  = rms(&all_pcm_in);
+        let rms =
+            |s: &[f32]| -> f32 { (s.iter().map(|x| x * x).sum::<f32>() / s.len() as f32).sqrt() };
+        let rms_in = rms(&all_pcm_in);
         let rms_out = rms(&all_pcm_out);
-        let snr_db  = 20.0 * (rms_out / rms_in).log10();
+        let snr_db = 20.0 * (rms_out / rms_in).log10();
         assert!(
             snr_db > -4.0,
             "RMS SNR {snr_db:.2} dB below -4 dB threshold — codec or silence injection degraded energy"
@@ -719,7 +722,9 @@ mod tests {
         let mut current_run_start = 0usize;
         for (i, &s) in all_pcm_out.iter().enumerate() {
             if s.abs() < 1e-9 {
-                if zero_run == 0 { current_run_start = i; }
+                if zero_run == 0 {
+                    current_run_start = i;
+                }
                 zero_run += 1;
                 if zero_run > max_zero_run {
                     max_zero_run = zero_run;
@@ -775,15 +780,15 @@ mod tests {
 
             let wav_path = artifacts_dir.join("opus-decoded.wav");
             let spec = hound::WavSpec {
-                channels:        1,
-                sample_rate:     48_000,
+                channels: 1,
+                sample_rate: 48_000,
                 bits_per_sample: 16,
-                sample_format:   hound::SampleFormat::Int,
+                sample_format: hound::SampleFormat::Int,
             };
-            let mut writer = hound::WavWriter::create(&wav_path, spec)
-                .expect("create WAV writer");
+            let mut writer = hound::WavWriter::create(&wav_path, spec).expect("create WAV writer");
             for &s in &all_pcm_out {
-                writer.write_sample((s.clamp(-1.0, 1.0) * i16::MAX as f32) as i16)
+                writer
+                    .write_sample((s.clamp(-1.0, 1.0) * i16::MAX as f32) as i16)
                     .expect("write WAV sample");
             }
             writer.finalize().expect("finalize WAV");
@@ -802,12 +807,7 @@ mod tests {
              Max zero run: {} samples\n\
              Clipped:      {}\n\
              RTP bad:      {}",
-            FRAME_COUNT,
-            duration_s,
-            snr_db,
-            max_zero_run,
-            clipped,
-            bad_deltas,
+            FRAME_COUNT, duration_s, snr_db, max_zero_run, clipped, bad_deltas,
         );
     }
 }

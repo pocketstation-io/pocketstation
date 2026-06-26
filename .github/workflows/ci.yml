@@ -1,5 +1,5 @@
 name: ci-rust-audio-core
-on: [pull_request, push]
+on: workflow_dispatch
 jobs:
   rust:
     runs-on: ubuntu-latest

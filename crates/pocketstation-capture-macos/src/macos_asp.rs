@@ -12,7 +12,11 @@ extern "C" {
     // Not yet wired to a counter but kept for future diagnostics.
     #[allow(dead_code)]
     fn pks_asp_drop_count(r: *mut std::ffi::c_void) -> u64;
-    fn pks_asp_read_frames(r: *mut std::ffi::c_void, out: *mut c_float, frame_count: c_uint) -> c_uint;
+    fn pks_asp_read_frames(
+        r: *mut std::ffi::c_void,
+        out: *mut c_float,
+        frame_count: c_uint,
+    ) -> c_uint;
     fn pks_asp_close_reader(r: *mut std::ffi::c_void);
 }
 
@@ -34,7 +38,11 @@ impl AspReader {
     pub fn open() -> Option<Self> {
         // SAFETY: returns NULL on failure; we check before wrapping.
         let ptr = unsafe { pks_asp_open_reader() };
-        if ptr.is_null() { None } else { Some(Self(ptr)) }
+        if ptr.is_null() {
+            None
+        } else {
+            Some(Self(ptr))
+        }
     }
 
     pub fn sample_rate(&self) -> u32 {

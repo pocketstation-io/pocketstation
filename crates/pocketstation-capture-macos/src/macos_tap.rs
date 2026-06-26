@@ -7,9 +7,14 @@
 use std::ptr::NonNull;
 use std::time::Duration;
 
-use pocketstation_frame::{AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, Platform, StreamId};
+use pocketstation_frame::{
+    AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, Platform, StreamId,
+};
 
-use pocketstation_capture::{CaptureMode, CaptureSource, CaptureError as LoopbackError, SourceKind, SourceState, StableSourceId};
+use pocketstation_capture::{
+    CaptureError as LoopbackError, CaptureMode, CaptureSource, SourceKind, SourceState,
+    StableSourceId,
+};
 
 // ---------------------------------------------------------------------------
 // FFI — mirrors source_discovery.h
@@ -18,13 +23,13 @@ use pocketstation_capture::{CaptureMode, CaptureSource, CaptureError as Loopback
 #[repr(C)]
 struct RawSourceInfo {
     audio_object_id: u32,
-    pid:             i32,
-    bundle_id:       [u8; 256],
-    name:            [u8; 256],
-    kind:            u8,
-    state:           u8,
-    sample_rate:     u32,
-    channels:        u16,
+    pid: i32,
+    bundle_id: [u8; 256],
+    name: [u8; 256],
+    kind: u8,
+    state: u8,
+    sample_rate: u32,
+    channels: u16,
 }
 
 extern "C" {
@@ -74,39 +79,44 @@ pub fn discover_sources_native() -> Vec<CaptureSource> {
         v
     };
 
-    raw.iter().map(|r| {
-        let pid = if r.pid > 0 { Some(r.pid as u32) } else { None };
-        let app_id = cstr_to_opt(&r.bundle_id);
-        let source_kind = match r.kind {
-            1 => SourceKind::InputDevice,
-            2 => SourceKind::OutputDevice,
-            3 => SourceKind::SystemMix,
-            _ => SourceKind::Application,
-        };
-        let stable_key = app_id.as_deref()
-            .map(|id| id.to_owned())
-            .unwrap_or_else(|| format!("pid:{}", r.pid));
-        CaptureSource {
-            stable_id:   StableSourceId::new(Platform::Macos, source_kind, stable_key),
-            name:        cstr_to_string(&r.name).unwrap_or_else(|| format!("pid:{}", r.pid)),
-            process_id:  pid,
-            app_id,
-            device_uid:  None,
-            state:       match r.state {
-                1 => SourceState::Playing,
-                2 => SourceState::Silent,
-                3 => SourceState::Unavailable,
-                _ => SourceState::Available,
-            },
-            sample_rate: r.sample_rate,
-            channels:    r.channels,
-        }
-    }).collect()
+    raw.iter()
+        .map(|r| {
+            let pid = if r.pid > 0 { Some(r.pid as u32) } else { None };
+            let app_id = cstr_to_opt(&r.bundle_id);
+            let source_kind = match r.kind {
+                1 => SourceKind::InputDevice,
+                2 => SourceKind::OutputDevice,
+                3 => SourceKind::SystemMix,
+                _ => SourceKind::Application,
+            };
+            let stable_key = app_id
+                .as_deref()
+                .map(|id| id.to_owned())
+                .unwrap_or_else(|| format!("pid:{}", r.pid));
+            CaptureSource {
+                stable_id: StableSourceId::new(Platform::Macos, source_kind, stable_key),
+                name: cstr_to_string(&r.name).unwrap_or_else(|| format!("pid:{}", r.pid)),
+                process_id: pid,
+                app_id,
+                device_uid: None,
+                state: match r.state {
+                    1 => SourceState::Playing,
+                    2 => SourceState::Silent,
+                    3 => SourceState::Unavailable,
+                    _ => SourceState::Available,
+                },
+                sample_rate: r.sample_rate,
+                channels: r.channels,
+            }
+        })
+        .collect()
 }
 
 fn cstr_to_string(buf: &[u8]) -> Option<String> {
     let end = buf.iter().position(|&b| b == 0).unwrap_or(buf.len());
-    if end == 0 { return None; }
+    if end == 0 {
+        return None;
+    }
     Some(String::from_utf8_lossy(&buf[..end]).into_owned())
 }
 
@@ -132,25 +142,32 @@ impl ProcessTap {
     fn global() -> Result<Self, LoopbackError> {
         NonNull::new(unsafe { pks_create_process_tap(std::ptr::null(), 0) })
             .map(Self)
-            .ok_or_else(|| LoopbackError::BackendInit(
-                "AudioHardwareCreateProcessTap failed for global system tap — \
-                 check that no other exclusive tap is active".into()
-            ))
+            .ok_or_else(|| {
+                LoopbackError::BackendInit(
+                    "AudioHardwareCreateProcessTap failed for global system tap — \
+                 check that no other exclusive tap is active"
+                        .into(),
+                )
+            })
     }
 
     fn for_pids(pids: &[i32]) -> Result<Self, LoopbackError> {
         NonNull::new(unsafe { pks_create_process_tap(pids.as_ptr(), pids.len() as i32) })
             .map(Self)
-            .ok_or_else(|| LoopbackError::BackendInit(
-                "AudioHardwareCreateProcessTap failed for the specified process(es)".into()
-            ))
+            .ok_or_else(|| {
+                LoopbackError::BackendInit(
+                    "AudioHardwareCreateProcessTap failed for the specified process(es)".into(),
+                )
+            })
     }
 
     fn start(&mut self) -> Result<(), LoopbackError> {
         if unsafe { pks_tap_start(self.0.as_ptr()) } == 0 {
             Ok(())
         } else {
-            Err(LoopbackError::BackendInit("AudioDeviceStart failed on tap aggregate device".into()))
+            Err(LoopbackError::BackendInit(
+                "AudioDeviceStart failed on tap aggregate device".into(),
+            ))
         }
     }
 
@@ -164,14 +181,18 @@ impl ProcessTap {
 
     fn read_frames(&mut self, out: &mut [f32], frame_count: u32) -> u32 {
         let required = frame_count as usize * self.channels() as usize;
-        if out.len() < required { return 0; }
+        if out.len() < required {
+            return 0;
+        }
         unsafe { pks_tap_read_frames(self.0.as_ptr(), out.as_mut_ptr(), frame_count) }
     }
 }
 
 impl Drop for ProcessTap {
     fn drop(&mut self) {
-        unsafe { pks_destroy_process_tap(self.0.as_ptr()); }
+        unsafe {
+            pks_destroy_process_tap(self.0.as_ptr());
+        }
     }
 }
 
@@ -194,7 +215,7 @@ impl TapLoopbackSource {
     {
         if !tap_available() {
             return Err(LoopbackError::BackendInit(
-                "CoreAudio process tap requires macOS 14.4 or later".into()
+                "CoreAudio process tap requires macOS 14.4 or later".into(),
             ));
         }
 
@@ -203,14 +224,15 @@ impl TapLoopbackSource {
             CaptureMode::Process(pid) => ProcessTap::for_pids(&[*pid as i32])?,
             CaptureMode::Application(bundle_id) => {
                 let sources = discover_sources_native();
-                let pids: Vec<i32> = sources.iter()
+                let pids: Vec<i32> = sources
+                    .iter()
                     .filter(|s| s.app_id.as_deref() == Some(bundle_id.as_str()))
                     .filter_map(|s| s.process_id.map(|p| p as i32))
                     .collect();
                 if pids.is_empty() {
-                    return Err(LoopbackError::BackendInit(
-                        format!("no running audio process found for bundle ID: {bundle_id}")
-                    ));
+                    return Err(LoopbackError::BackendInit(format!(
+                        "no running audio process found for bundle ID: {bundle_id}"
+                    )));
                 }
                 ProcessTap::for_pids(&pids)?
             }
@@ -218,11 +240,11 @@ impl TapLoopbackSource {
 
         tap.start()?;
 
-        let sample_rate    = tap.sample_rate();
-        let channels       = tap.channels() as u8;
+        let sample_rate = tap.sample_rate();
+        let channels = tap.channels() as u8;
         let frames_per_cb: u32 = sample_rate / 50; // 20 ms
-        let buf_samples    = frames_per_cb as usize * channels as usize;
-        let pool           = std::sync::Arc::new(AudioBufferPool::new(POOL_DEPTH, buf_samples));
+        let buf_samples = frames_per_cb as usize * channels as usize;
+        let pool = std::sync::Arc::new(AudioBufferPool::new(POOL_DEPTH, buf_samples));
         let (stop_tx, stop_rx) = std::sync::mpsc::sync_channel::<()>(1);
 
         // Compute the stable SourceId from the capture mode before the thread
@@ -232,10 +254,12 @@ impl TapLoopbackSource {
                 StableSourceId::new(Platform::Macos, SourceKind::SystemMix, "system:mix")
                     .to_frame_source_id()
             }
-            CaptureMode::Process(pid) => {
-                StableSourceId::new(Platform::Macos, SourceKind::Application, format!("pid:{pid}"))
-                    .to_frame_source_id()
-            }
+            CaptureMode::Process(pid) => StableSourceId::new(
+                Platform::Macos,
+                SourceKind::Application,
+                format!("pid:{pid}"),
+            )
+            .to_frame_source_id(),
             CaptureMode::Application(bundle_id) => {
                 StableSourceId::new(Platform::Macos, SourceKind::Application, bundle_id.clone())
                     .to_frame_source_id()
@@ -248,7 +272,9 @@ impl TapLoopbackSource {
                 let mut seq: u64 = 0;
                 let mut buf = vec![0.0f32; buf_samples];
                 loop {
-                    if stop_rx.try_recv().is_ok() { break; }
+                    if stop_rx.try_recv().is_ok() {
+                        break;
+                    }
                     let read = tap.read_frames(&mut buf, frames_per_cb);
                     if read == 0 {
                         std::thread::sleep(Duration::from_millis(1));
@@ -265,20 +291,23 @@ impl TapLoopbackSource {
                     handle.set_len(copy_len);
                     let ts_ns = std::time::SystemTime::now()
                         .duration_since(std::time::UNIX_EPOCH)
-                        .unwrap_or_default().as_nanos() as u64;
-                    let mut frame = AudioFrame::new(
-                        StreamId(0), frame_source_id, seq, ts_ns, channels, handle,
-                    );
-                    frame.source_tag      = AudioSourceTag::Captured;
+                        .unwrap_or_default()
+                        .as_nanos() as u64;
+                    let mut frame =
+                        AudioFrame::new(StreamId(0), frame_source_id, seq, ts_ns, channels, handle);
+                    frame.source_tag = AudioSourceTag::Captured;
                     frame.encryption_mode = EncryptionMode::None;
-                    frame.sample_rate     = sample_rate;
+                    frame.sample_rate = sample_rate;
                     callback(frame);
                     seq += 1;
                 }
             })
             .map_err(|e| LoopbackError::BackendInit(format!("thread spawn: {e}")))?;
 
-        Ok(Self { _thread: thread, stop_tx })
+        Ok(Self {
+            _thread: thread,
+            stop_tx,
+        })
     }
 }
 

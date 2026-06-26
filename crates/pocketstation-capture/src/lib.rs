@@ -50,7 +50,11 @@ pub struct StableSourceId {
 
 impl StableSourceId {
     pub fn new(platform: Platform, kind: SourceKind, stable_key: impl Into<String>) -> Self {
-        Self { platform, kind, stable_key: stable_key.into() }
+        Self {
+            platform,
+            kind,
+            stable_key: stable_key.into(),
+        }
     }
 
     pub fn to_frame_source_id(&self) -> pocketstation_frame::SourceId {
@@ -121,7 +125,9 @@ impl std::fmt::Display for AdapterError {
         match self {
             AdapterError::Unavailable => write!(f, "adapter: source or output is unavailable"),
             AdapterError::PermissionDenied => write!(f, "adapter: permission denied"),
-            AdapterError::Unsupported => write!(f, "adapter: operation not supported on this platform"),
+            AdapterError::Unsupported => {
+                write!(f, "adapter: operation not supported on this platform")
+            }
             AdapterError::Io(msg) => write!(f, "adapter I/O error: {msg}"),
         }
     }
@@ -231,40 +237,76 @@ pub trait PlatformAdapter: Send + Sync {
     fn platform(&self) -> PlatformId;
     fn source_capabilities(&self) -> Vec<AudioSourceDescriptor>;
     fn output_capabilities(&self) -> Vec<AudioOutputDescriptor>;
-    fn open_source(&self, request: SourceRequest) -> Result<Box<dyn AudioSourceStream>, AdapterError>;
-    fn open_output(&self, request: OutputRequest) -> Result<Box<dyn AudioOutputSink>, AdapterError>;
+    fn open_source(
+        &self,
+        request: SourceRequest,
+    ) -> Result<Box<dyn AudioSourceStream>, AdapterError>;
+    fn open_output(&self, request: OutputRequest)
+        -> Result<Box<dyn AudioOutputSink>, AdapterError>;
 }
 
 fn latency_rank(lc: &LatencyClass) -> u8 {
-    match lc { LatencyClass::Realtime => 0, LatencyClass::LowLatency => 1, LatencyClass::Buffered => 2 }
+    match lc {
+        LatencyClass::Realtime => 0,
+        LatencyClass::LowLatency => 1,
+        LatencyClass::Buffered => 2,
+    }
 }
 
 fn reliability_rank(rc: &ReliabilityClass) -> u8 {
     match rc {
-        ReliabilityClass::AlwaysAvailable => 0, ReliabilityClass::UserPermission => 1,
-        ReliabilityClass::UserAction => 2, ReliabilityClass::PolicyGated => 3,
-        ReliabilityClass::Experimental => 4, ReliabilityClass::FutureAPI => 5,
+        ReliabilityClass::AlwaysAvailable => 0,
+        ReliabilityClass::UserPermission => 1,
+        ReliabilityClass::UserAction => 2,
+        ReliabilityClass::PolicyGated => 3,
+        ReliabilityClass::Experimental => 4,
+        ReliabilityClass::FutureAPI => 5,
     }
 }
 
 fn is_preferred(cap: &SourceCapability, preference: &SourcePreference) -> bool {
     match preference {
-        SourcePreference::Voice => matches!(cap, SourceCapability::Microphone | SourceCapability::OwnAppAudio),
-        SourcePreference::Music => matches!(cap, SourceCapability::OwnAppAudio | SourceCapability::DesktopSystemLoopback),
+        SourcePreference::Voice => matches!(
+            cap,
+            SourceCapability::Microphone | SourceCapability::OwnAppAudio
+        ),
+        SourcePreference::Music => matches!(
+            cap,
+            SourceCapability::OwnAppAudio | SourceCapability::DesktopSystemLoopback
+        ),
         SourcePreference::Broadcast => true,
     }
 }
 
-pub fn open_best_source(adapter: &dyn PlatformAdapter, preference: SourcePreference) -> Result<Box<dyn AudioSourceStream>, AdapterError> {
+pub fn open_best_source(
+    adapter: &dyn PlatformAdapter,
+    preference: SourcePreference,
+) -> Result<Box<dyn AudioSourceStream>, AdapterError> {
     let mut candidates: Vec<AudioSourceDescriptor> = adapter
-        .source_capabilities().into_iter().filter(|d| d.available_now).collect();
-    if candidates.is_empty() { return Err(AdapterError::Unavailable); }
+        .source_capabilities()
+        .into_iter()
+        .filter(|d| d.available_now)
+        .collect();
+    if candidates.is_empty() {
+        return Err(AdapterError::Unavailable);
+    }
     candidates.sort_by_key(|d| {
-        let pref_rank: u8 = if is_preferred(&d.capability, &preference) { 0 } else { 1 };
-        (pref_rank, latency_rank(&d.latency_class), reliability_rank(&d.reliability_class))
+        let pref_rank: u8 = if is_preferred(&d.capability, &preference) {
+            0
+        } else {
+            1
+        };
+        (
+            pref_rank,
+            latency_rank(&d.latency_class),
+            reliability_rank(&d.reliability_class),
+        )
     });
     let best = candidates.remove(0);
-    adapter.open_source(SourceRequest { capability: best.capability, preferred_latency: best.latency_class })
+    adapter.open_source(SourceRequest {
+        capability: best.capability,
+        preferred_latency: best.latency_class,
+    })
 }
 
 // ---------------------------------------------------------------------------
@@ -275,11 +317,15 @@ pub struct SystemLoopbackSource;
 
 impl SystemLoopbackSource {
     pub fn capture<F>(_cb: F) -> Result<Self, CaptureError>
-    where F: Fn(pocketstation_frame::AudioFrame) + Send + Sync + 'static {
+    where
+        F: Fn(pocketstation_frame::AudioFrame) + Send + Sync + 'static,
+    {
         Err(CaptureError::NotSupported)
     }
     pub fn capture_mode<F>(_mode: CaptureMode, _cb: F) -> Result<Self, CaptureError>
-    where F: Fn(pocketstation_frame::AudioFrame) + Send + Sync + 'static {
+    where
+        F: Fn(pocketstation_frame::AudioFrame) + Send + Sync + 'static,
+    {
         Err(CaptureError::NotSupported)
     }
 }
@@ -303,24 +349,31 @@ pub fn discover_sources() -> Vec<CaptureSource> {
     let platform = Platform::Unknown;
 
     vec![CaptureSource {
-        stable_id:  StableSourceId::new(platform, SourceKind::SystemMix, "system:mix"),
-        name:       "System Mix".to_owned(),
+        stable_id: StableSourceId::new(platform, SourceKind::SystemMix, "system:mix"),
+        name: "System Mix".to_owned(),
         process_id: None,
-        app_id:     None,
+        app_id: None,
         device_uid: None,
-        state:      SourceState::Available,
+        state: SourceState::Available,
         sample_rate: 48_000,
-        channels:   2,
+        channels: 2,
     }]
 }
 
 pub fn capture_system_audio<F>(callback: F) -> Result<SystemLoopbackSource, CaptureError>
-where F: Fn(pocketstation_frame::AudioFrame) + Send + Sync + 'static {
+where
+    F: Fn(pocketstation_frame::AudioFrame) + Send + Sync + 'static,
+{
     SystemLoopbackSource::capture(callback)
 }
 
-pub fn capture_with_mode<F>(mode: CaptureMode, callback: F) -> Result<SystemLoopbackSource, CaptureError>
-where F: Fn(pocketstation_frame::AudioFrame) + Send + Sync + 'static {
+pub fn capture_with_mode<F>(
+    mode: CaptureMode,
+    callback: F,
+) -> Result<SystemLoopbackSource, CaptureError>
+where
+    F: Fn(pocketstation_frame::AudioFrame) + Send + Sync + 'static,
+{
     SystemLoopbackSource::capture_mode(mode, callback)
 }
 
@@ -335,13 +388,21 @@ mod tests {
 
     #[test]
     fn given_stable_source_id_when_hashed_twice_then_same_frame_source_id() {
-        let id = StableSourceId::new(Platform::Macos, SourceKind::Application, "com.spotify.client");
+        let id = StableSourceId::new(
+            Platform::Macos,
+            SourceKind::Application,
+            "com.spotify.client",
+        );
         assert_eq!(id.to_frame_source_id(), id.to_frame_source_id());
     }
 
     #[test]
     fn given_two_different_stable_ids_when_hashed_then_different_frame_source_ids() {
-        let a = StableSourceId::new(Platform::Macos, SourceKind::Application, "com.spotify.client");
+        let a = StableSourceId::new(
+            Platform::Macos,
+            SourceKind::Application,
+            "com.spotify.client",
+        );
         let b = StableSourceId::new(Platform::Macos, SourceKind::Application, "com.apple.music");
         assert_ne!(a.to_frame_source_id(), b.to_frame_source_id());
     }

@@ -35,7 +35,7 @@ use pocketstation_frame::{
 };
 use wasapi::{AudioClient, DeviceEnumerator, Direction, SampleType, StreamMode, WaveFormat};
 
-use pocketstation_capture::{CaptureMode, CaptureError as LoopbackError};
+use pocketstation_capture::{CaptureError as LoopbackError, CaptureMode};
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -97,7 +97,8 @@ impl SystemLoopbackSource {
                 let name_lower = name.to_ascii_lowercase();
                 let matched_pid = sources.iter().find(|s| {
                     s.name.to_ascii_lowercase() == name_lower
-                        || s.app_id.as_deref().map(|id| id.to_ascii_lowercase()) == Some(name_lower.clone())
+                        || s.app_id.as_deref().map(|id| id.to_ascii_lowercase())
+                            == Some(name_lower.clone())
                 });
                 match matched_pid {
                     Some(src) => match src.process_id {
@@ -160,7 +161,7 @@ impl Drop for SystemLoopbackSource {
 // ---------------------------------------------------------------------------
 
 fn apply_mmcss_audio_thread() {
-    use windows::Win32::Media::{Audio::AvSetMmThreadCharacteristicsW, timeBeginPeriod};
+    use windows::Win32::Media::{timeBeginPeriod, Audio::AvSetMmThreadCharacteristicsW};
     use windows_core::w;
 
     // SAFETY: both API calls are safe to call from any thread.
@@ -220,8 +221,7 @@ fn deliver_packet(
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap_or_default()
         .as_nanos() as u64;
-    let mut frame =
-        AudioFrame::new(StreamId(0), SourceId(0), s, ts_ns, CAPTURE_CHANNELS, handle);
+    let mut frame = AudioFrame::new(StreamId(0), SourceId(0), s, ts_ns, CAPTURE_CHANNELS, handle);
     frame.source_tag = AudioSourceTag::Captured;
     frame.encryption_mode = EncryptionMode::None;
     frame.sample_rate = DEFAULT_SAMPLE_RATE;
@@ -272,8 +272,7 @@ fn capture_loop(
                     if frames == 0 || info.flags.silent {
                         continue;
                     }
-                    let bytes =
-                        frames as usize * CAPTURE_CHANNELS as usize * size_of::<f32>();
+                    let bytes = frames as usize * CAPTURE_CHANNELS as usize * size_of::<f32>();
                     deliver_packet(&raw_buf[..bytes], &pool, &seq, &callback);
                 }
                 Err(_) => break,
@@ -346,14 +345,14 @@ pub(crate) fn discover_sources_windows() -> Vec<pocketstation_capture::CaptureSo
     use pocketstation_frame::Platform;
 
     let system_mix = CaptureSource {
-        stable_id:   StableSourceId::new(Platform::Windows, SourceKind::SystemMix, "system:mix"),
-        name:        "System Mix".to_owned(),
-        process_id:  None,
-        app_id:      None,
-        device_uid:  None,
-        state:       SourceState::Available,
+        stable_id: StableSourceId::new(Platform::Windows, SourceKind::SystemMix, "system:mix"),
+        name: "System Mix".to_owned(),
+        process_id: None,
+        app_id: None,
+        device_uid: None,
+        state: SourceState::Available,
         sample_rate: 48_000,
-        channels:    2,
+        channels: 2,
     };
 
     let hr = wasapi::initialize_mta();
@@ -379,17 +378,16 @@ pub(crate) fn discover_sources_windows() -> Vec<pocketstation_capture::CaptureSo
 unsafe fn enumerate_wasapi_sessions() -> Vec<pocketstation_capture::CaptureSource> {
     use pocketstation_capture::{CaptureSource, SourceKind, SourceState, StableSourceId};
     use pocketstation_frame::Platform;
+    use windows::Win32::Foundation::CloseHandle;
     use windows::Win32::Media::Audio::{
-        eMultimedia, eRender, AudioSessionStateActive, IAudioSessionControl,
-        IAudioSessionControl2, IAudioSessionEnumerator, IAudioSessionManager2,
-        IMMDeviceEnumerator, MMDeviceEnumerator,
+        eMultimedia, eRender, AudioSessionStateActive, IAudioSessionControl, IAudioSessionControl2,
+        IAudioSessionEnumerator, IAudioSessionManager2, IMMDeviceEnumerator, MMDeviceEnumerator,
     };
     use windows::Win32::System::Com::{CoCreateInstance, CLSCTX_ALL};
     use windows::Win32::System::Threading::{
         OpenProcess, QueryFullProcessImageNameW, PROCESS_NAME_WIN32,
         PROCESS_QUERY_LIMITED_INFORMATION,
     };
-    use windows::Win32::Foundation::CloseHandle;
     use windows_core::PWSTR;
 
     let current_pid = std::process::id();
@@ -480,14 +478,18 @@ unsafe fn enumerate_wasapi_sessions() -> Vec<pocketstation_capture::CaptureSourc
         };
 
         sources.push(CaptureSource {
-            stable_id:   StableSourceId::new(Platform::Windows, SourceKind::Application, format!("wasapi:pid:{pid}")),
-            name:        name.clone(),
-            process_id:  Some(pid),
-            app_id:      Some(name),
-            device_uid:  None,
-            state:       source_state,
+            stable_id: StableSourceId::new(
+                Platform::Windows,
+                SourceKind::Application,
+                format!("wasapi:pid:{pid}"),
+            ),
+            name: name.clone(),
+            process_id: Some(pid),
+            app_id: Some(name),
+            device_uid: None,
+            state: source_state,
             sample_rate: 48_000,
-            channels:    2,
+            channels: 2,
         });
     }
 

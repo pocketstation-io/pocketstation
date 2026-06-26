@@ -142,7 +142,11 @@ impl JitterBuffer {
                 return;
             }
         }
-        if self.queue.iter().any(|f| f.sequence_number == frame.sequence_number) {
+        if self
+            .queue
+            .iter()
+            .any(|f| f.sequence_number == frame.sequence_number)
+        {
             // Duplicate already in queue — silent drop (not a late frame).
             return;
         }
@@ -153,7 +157,9 @@ impl JitterBuffer {
         }
 
         // Insert in sequence order (small VecDeque, insertion sort is fine).
-        let pos = self.queue.partition_point(|f| f.sequence_number < frame.sequence_number);
+        let pos = self
+            .queue
+            .partition_point(|f| f.sequence_number < frame.sequence_number);
         self.queue.insert(pos, frame);
     }
 
@@ -316,7 +322,11 @@ mod tests {
     }
 
     fn make_encoded_with_ts(seq: u64, ts_ns: u64) -> EncodedFrame {
-        EncodedFrame { sequence_number: seq, timestamp_ns: ts_ns, payload: vec![] }
+        EncodedFrame {
+            sequence_number: seq,
+            timestamp_ns: ts_ns,
+            payload: vec![],
+        }
     }
 
     #[test]
@@ -365,7 +375,10 @@ mod tests {
             PopResult::Frame(f) => f,
             other => panic!("expected Frame, got {:?}", other),
         };
-        assert_eq!(first.sequence_number, 0, "ordered insertion must deliver seq 0 before seq 1");
+        assert_eq!(
+            first.sequence_number, 0,
+            "ordered insertion must deliver seq 0 before seq 1"
+        );
     }
 
     #[test]
@@ -524,7 +537,11 @@ mod tests {
             other => panic!("expected Frame, got {:?}", other),
         };
         assert_eq!(second.sequence_number, 6);
-        assert_eq!(jb.depth(), 1, "only seq 7 remains; duplicate must not inflate queue depth");
+        assert_eq!(
+            jb.depth(),
+            1,
+            "only seq 7 remains; duplicate must not inflate queue depth"
+        );
     }
 
     #[test]
@@ -543,15 +560,19 @@ mod tests {
         let gap = jb.pop();
         assert!(
             matches!(gap, PopResult::GapDetected { gap_count: 5 }),
-            "expected GapDetected{{gap_count:5}}, got {:?}", gap
+            "expected GapDetected{{gap_count:5}}, got {:?}",
+            gap
         );
     }
 
     #[test]
-    fn given_very_late_frame_when_pushed_after_delivery_then_discarded_and_late_count_incremented() {
+    fn given_very_late_frame_when_pushed_after_delivery_then_discarded_and_late_count_incremented()
+    {
         let mut jb = JitterBuffer::new(1, 8);
         // Push and deliver seq 0, 1
-        for i in 0u64..4 { jb.push(make_encoded(i)); }
+        for i in 0u64..4 {
+            jb.push(make_encoded(i));
+        }
         assert!(matches!(jb.pop(), PopResult::Frame(ref f) if f.sequence_number == 0));
         assert!(matches!(jb.pop(), PopResult::Frame(ref f) if f.sequence_number == 1));
 
@@ -560,7 +581,11 @@ mod tests {
         jb.push(make_encoded(0));
 
         assert_eq!(jb.depth(), 2, "very late frame must not enter the queue");
-        assert_eq!(jb.late_frames(), late_before + 1, "late_frames must increment");
+        assert_eq!(
+            jb.late_frames(),
+            late_before + 1,
+            "late_frames must increment"
+        );
     }
 
     #[test]
@@ -574,12 +599,16 @@ mod tests {
 
         for i in 0..N {
             jb.push(make_encoded_with_ts(i, i * FRAME_NS));
-            if let PopResult::Frame(_) = jb.pop() { delivered += 1; }
+            if let PopResult::Frame(_) = jb.pop() {
+                delivered += 1;
+            }
             max_depth = max_depth.max(jb.depth());
         }
         // Drain remaining
         for _ in 0..8 {
-            if let PopResult::Frame(_) = jb.pop() { delivered += 1; }
+            if let PopResult::Frame(_) = jb.pop() {
+                delivered += 1;
+            }
         }
 
         assert!(
