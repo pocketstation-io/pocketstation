@@ -248,30 +248,42 @@ mod tests {
         );
     }
 
-    // Wave B GWT Test 1: SystemMix on non-Windows non-macOS returns NotSupported.
-    // Given: SystemMix mode on a non-Windows, non-macOS platform
+    // Wave B GWT Test 1: SystemMix on stub platform (not macOS, not Windows, not Linux) returns NotSupported.
+    // Given: SystemMix mode on a stub platform
     // When: capture_with_mode is called
-    // Then: NotSupported (stub backend on macOS CI, Linux backend on Linux)
-    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+    // Then: NotSupported
+    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
     #[test]
-    fn given_system_mix_mode_when_capture_with_mode_on_non_windows_non_macos_then_returns_not_supported(
-    ) {
+    fn given_system_mix_mode_when_capture_with_mode_on_stub_platform_then_returns_not_supported() {
         let mode = CaptureMode::SystemMix;
         let result = capture_with_mode(mode, |_frame| {});
         assert_eq!(result.unwrap_err(), LoopbackError::NotSupported);
     }
 
-    // Wave B GWT Test 2: Process mode on non-Windows non-macOS returns NotSupported.
-    // Given: Process mode with an arbitrary PID on a non-Windows, non-macOS platform
+    // Wave B GWT Test 2: Process mode on stub platform returns NotSupported.
+    // Given: Process mode with an arbitrary PID on a stub platform
     // When: capture_with_mode is called
     // Then: NotSupported
-    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
     #[test]
-    fn given_process_mode_when_capture_with_mode_on_non_windows_non_macos_then_returns_not_supported(
-    ) {
+    fn given_process_mode_when_capture_with_mode_on_stub_platform_then_returns_not_supported() {
         let mode = CaptureMode::Process(1234);
         let result = capture_with_mode(mode, |_frame| {});
         assert_eq!(result.unwrap_err(), LoopbackError::NotSupported);
+    }
+
+    // Wave C GWT Test: Process mode on Linux returns ModeUnsupported (only SystemMix is backed).
+    // Given: Process mode with an arbitrary PID on Linux
+    // When: capture_with_mode is called
+    // Then: ModeUnsupported(Process(1234))
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn given_process_mode_on_linux_when_capture_with_mode_then_returns_mode_unsupported() {
+        let result = capture_with_mode(CaptureMode::Process(1234), |_frame| {});
+        assert_eq!(
+            result.unwrap_err(),
+            LoopbackError::ModeUnsupported(CaptureMode::Process(1234))
+        );
     }
 
     // Wave B GWT Test 3: WASAPI_PROCESS_LOOPBACK_PERIOD_100NS is non-zero (Windows only).
