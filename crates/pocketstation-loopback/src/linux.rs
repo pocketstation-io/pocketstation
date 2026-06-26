@@ -129,7 +129,7 @@ fn pipewire_available() -> bool {
 // PipeWire implementation
 // ---------------------------------------------------------------------------
 
-fn run_pipewire<F>(mode: CaptureMode, callback: F) -> Result<SystemLoopbackSource, LoopbackError>
+fn run_pipewire<F>(_mode: CaptureMode, callback: F) -> Result<SystemLoopbackSource, LoopbackError>
 where
     F: Fn(AudioFrame) + Send + Sync + 'static,
 {
@@ -251,7 +251,7 @@ where
             // Build audio format params.
             let mut audio_info = spa::param::audio::AudioInfoRaw::new();
             audio_info.set_format(AudioFormat::F32LE);
-            audio_info.set_rate(DEFAULT_SAMPLE_RATE as u32);
+            audio_info.set_rate(DEFAULT_SAMPLE_RATE);
             audio_info.set_channels(CAPTURE_CHANNELS as u32);
             let obj = pw::spa::pod::serialize::PodSerializer::serialize(
                 std::io::Cursor::new(Vec::new()),
@@ -349,7 +349,7 @@ where
                     }
                 };
                 let _ = hwp.set_channels(CAPTURE_CHANNELS as u32);
-                let _ = hwp.set_rate(DEFAULT_SAMPLE_RATE as u32, alsa::ValueOr::Nearest);
+                let _ = hwp.set_rate(DEFAULT_SAMPLE_RATE, alsa::ValueOr::Nearest);
                 let _ = hwp.set_format(Format::float());
                 let _ = hwp.set_access(Access::RWInterleaved);
                 if let Err(e) = pcm.hw_params(&hwp) {
