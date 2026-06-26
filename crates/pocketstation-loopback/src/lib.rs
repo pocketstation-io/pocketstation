@@ -55,8 +55,8 @@ mod linux;
 
 #[cfg(not(any(target_os = "macos", target_os = "linux", target_os = "windows")))]
 mod stub {
-    use pocketstation_frame::AudioFrame;
     use super::{CaptureMode, LoopbackError};
+    use pocketstation_frame::AudioFrame;
 
     #[derive(Debug)]
     pub struct SystemLoopbackSource;
@@ -144,6 +144,10 @@ where
 
 #[cfg(test)]
 mod tests {
+    // Several tests assert that a named constant meets a property (power-of-two,
+    // non-zero floor). These are intentional compile-time-known checks documenting
+    // the constant's contract, not redundant runtime assertions.
+    #![allow(clippy::assertions_on_constants)]
     use super::*;
 
     // Test 1: stub platform returns NotSupported.
@@ -165,7 +169,10 @@ mod tests {
     #[test]
     fn test_loopback_source_struct_can_be_constructed() {
         let type_name = std::any::type_name::<SystemLoopbackSource>();
-        assert!(type_name.contains("SystemLoopbackSource"), "got: {type_name}");
+        assert!(
+            type_name.contains("SystemLoopbackSource"),
+            "got: {type_name}"
+        );
     }
 
     // GWT Test 4: SystemMix on stub platform returns NotSupported.
@@ -174,7 +181,8 @@ mod tests {
     // Then: returns NotSupported
     #[cfg(not(any(target_os = "macos", target_os = "linux", target_os = "windows")))]
     #[test]
-    fn given_system_mix_mode_when_capture_with_mode_called_on_non_macos_then_returns_not_supported() {
+    fn given_system_mix_mode_when_capture_with_mode_called_on_non_macos_then_returns_not_supported()
+    {
         let result = capture_with_mode(CaptureMode::SystemMix, |_frame| {});
         assert_eq!(result.unwrap_err(), LoopbackError::NotSupported);
     }
@@ -185,7 +193,8 @@ mod tests {
     // Then: returns NotSupported
     #[cfg(not(any(target_os = "macos", target_os = "linux", target_os = "windows")))]
     #[test]
-    fn given_application_mode_when_capture_with_mode_called_on_non_macos_then_returns_not_supported() {
+    fn given_application_mode_when_capture_with_mode_called_on_non_macos_then_returns_not_supported(
+    ) {
         let result = capture_with_mode(
             CaptureMode::Application("com.example.app".into()),
             |_frame| {},
@@ -233,31 +242,48 @@ mod tests {
     #[cfg(target_os = "macos")]
     #[test]
     fn given_asp_not_running_when_asp_is_installed_then_returns_false() {
-        assert!(!asp_is_installed(), "asp_is_installed() must return false without the plugin");
+        assert!(
+            !asp_is_installed(),
+            "asp_is_installed() must return false without the plugin"
+        );
     }
 
-    // Wave B GWT Test 1: SystemMix on non-Windows non-macOS returns NotSupported.
-    // Given: SystemMix mode on a non-Windows, non-macOS platform
+    // Wave B GWT Test 1: SystemMix on stub platform (not macOS, not Windows, not Linux) returns NotSupported.
+    // Given: SystemMix mode on a stub platform
     // When: capture_with_mode is called
-    // Then: NotSupported (stub backend on macOS CI, Linux backend on Linux)
-    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+    // Then: NotSupported
+    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
     #[test]
-    fn given_system_mix_mode_when_capture_with_mode_on_non_windows_non_macos_then_returns_not_supported() {
+    fn given_system_mix_mode_when_capture_with_mode_on_stub_platform_then_returns_not_supported() {
         let mode = CaptureMode::SystemMix;
         let result = capture_with_mode(mode, |_frame| {});
         assert_eq!(result.unwrap_err(), LoopbackError::NotSupported);
     }
 
-    // Wave B GWT Test 2: Process mode on non-Windows non-macOS returns NotSupported.
-    // Given: Process mode with an arbitrary PID on a non-Windows, non-macOS platform
+    // Wave B GWT Test 2: Process mode on stub platform returns NotSupported.
+    // Given: Process mode with an arbitrary PID on a stub platform
     // When: capture_with_mode is called
     // Then: NotSupported
-    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
     #[test]
-    fn given_process_mode_when_capture_with_mode_on_non_windows_non_macos_then_returns_not_supported() {
+    fn given_process_mode_when_capture_with_mode_on_stub_platform_then_returns_not_supported() {
         let mode = CaptureMode::Process(1234);
         let result = capture_with_mode(mode, |_frame| {});
         assert_eq!(result.unwrap_err(), LoopbackError::NotSupported);
+    }
+
+    // Wave C GWT Test: Process mode on Linux returns ModeUnsupported (only SystemMix is backed).
+    // Given: Process mode with an arbitrary PID on Linux
+    // When: capture_with_mode is called
+    // Then: ModeUnsupported(Process(1234))
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn given_process_mode_on_linux_when_capture_with_mode_then_returns_mode_unsupported() {
+        let result = capture_with_mode(CaptureMode::Process(1234), |_frame| {});
+        assert_eq!(
+            result.unwrap_err(),
+            LoopbackError::ModeUnsupported(CaptureMode::Process(1234))
+        );
     }
 
     // Wave B GWT Test 3: WASAPI_PROCESS_LOOPBACK_PERIOD_100NS is non-zero (Windows only).
@@ -365,7 +391,10 @@ mod tests {
     fn given_shm_ring_const_pks_ring_frames_when_checked_then_is_power_of_two() {
         const PKS_RING_FRAMES: u32 = 65536u32;
         assert!(PKS_RING_FRAMES > 0);
-        assert_eq!(PKS_RING_FRAMES & (PKS_RING_FRAMES - 1), 0,
-            "PKS_RING_FRAMES must be a power of two for bitmask wrap to work");
+        assert_eq!(
+            PKS_RING_FRAMES & (PKS_RING_FRAMES - 1),
+            0,
+            "PKS_RING_FRAMES must be a power of two for bitmask wrap to work"
+        );
     }
 }

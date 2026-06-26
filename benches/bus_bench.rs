@@ -1,7 +1,6 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use pocketstation_audio::{
-    frame_bus, AudioBufferPool, AudioFrame, SourceId, StreamId,
-    DEFAULT_SLOT_SAMPLES_MONO_20MS,
+    frame_bus, AudioBufferPool, AudioFrame, SourceId, StreamId, DEFAULT_SLOT_SAMPLES_MONO_20MS,
 };
 
 fn bench_bus(c: &mut Criterion) {

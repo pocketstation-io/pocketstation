@@ -136,7 +136,7 @@ impl Drop for SystemLoopbackSource {
 // ---------------------------------------------------------------------------
 
 fn apply_mmcss_audio_thread() {
-    use windows::Win32::Media::{Audio::AvSetMmThreadCharacteristicsW, timeBeginPeriod};
+    use windows::Win32::Media::{timeBeginPeriod, Audio::AvSetMmThreadCharacteristicsW};
     use windows_core::w;
 
     // SAFETY: both API calls are safe to call from any thread.
@@ -196,8 +196,7 @@ fn deliver_packet(
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap_or_default()
         .as_nanos() as u64;
-    let mut frame =
-        AudioFrame::new(StreamId(0), SourceId(0), s, ts_ns, CAPTURE_CHANNELS, handle);
+    let mut frame = AudioFrame::new(StreamId(0), SourceId(0), s, ts_ns, CAPTURE_CHANNELS, handle);
     frame.source_tag = AudioSourceTag::Captured;
     frame.encryption_mode = EncryptionMode::None;
     frame.sample_rate = DEFAULT_SAMPLE_RATE;
@@ -248,8 +247,7 @@ fn capture_loop(
                     if frames == 0 || info.flags.silent {
                         continue;
                     }
-                    let bytes =
-                        frames as usize * CAPTURE_CHANNELS as usize * size_of::<f32>();
+                    let bytes = frames as usize * CAPTURE_CHANNELS as usize * size_of::<f32>();
                     deliver_packet(&raw_buf[..bytes], &pool, &seq, &callback);
                 }
                 Err(_) => break,

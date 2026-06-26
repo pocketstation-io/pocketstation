@@ -7,9 +7,9 @@ fn main() {
 fn build_macos() {
     use std::path::PathBuf;
 
-    let out_dir  = PathBuf::from(std::env::var("OUT_DIR").unwrap());
+    let out_dir = PathBuf::from(std::env::var("OUT_DIR").unwrap());
     let manifest = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
-    let asp      = manifest.join("asp");
+    let asp = manifest.join("asp");
 
     // shm_reader.c → static lib linked into the Rust binary (always needed).
     cc::Build::new()
@@ -23,7 +23,7 @@ fn build_macos() {
 
     // Plugin.cpp → .dylib → .driver bundle (always on macOS).
     // The bundle bytes are embedded in the binary via include_bytes! in macos.rs.
-    let dylib  = out_dir.join("PocketStationLoopback.dylib");
+    let dylib = out_dir.join("PocketStationLoopback.dylib");
     let bundle = out_dir.join("PocketStationLoopback.driver");
     let contents = bundle.join("Contents");
     let macos_dir = contents.join("MacOS");
@@ -42,21 +42,26 @@ fn build_macos() {
 
     // AudioServerPlugIn.h lives inside CoreAudio.framework/Headers — add it
     // explicitly so the flat #include <CoreAudio/AudioServerPlugIn.h> resolves.
-    let coreaudio_headers = format!(
-        "{sdk}/System/Library/Frameworks/CoreAudio.framework/Headers"
-    );
+    let coreaudio_headers = format!("{sdk}/System/Library/Frameworks/CoreAudio.framework/Headers");
 
     let status = std::process::Command::new("clang++")
         .args([
-            "-std=c++17", "-O2",
+            "-std=c++17",
+            "-O2",
             "-dynamiclib",
-            "-isysroot", &sdk,
-            "-I", &coreaudio_headers,
-            "-framework", "CoreAudio",
-            "-framework", "CoreFoundation",
-            "-I", asp.to_str().unwrap(),
+            "-isysroot",
+            &sdk,
+            "-I",
+            &coreaudio_headers,
+            "-framework",
+            "CoreAudio",
+            "-framework",
+            "CoreFoundation",
+            "-I",
+            asp.to_str().unwrap(),
             asp.join("Plugin.cpp").to_str().unwrap(),
-            "-o", dylib.to_str().unwrap(),
+            "-o",
+            dylib.to_str().unwrap(),
         ])
         .status()
         .expect("clang++ not found — install Xcode command-line tools");

@@ -24,16 +24,14 @@ use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
 
+use pipewire as pw;
 use pocketstation_frame::{
     AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId,
     DEFAULT_SAMPLE_RATE, DEFAULT_SLOT_SAMPLES_MONO_20MS,
 };
-use pipewire as pw;
-use pw::prelude::*;
 use pw::properties::properties;
 use pw::spa;
 use pw::spa::pod::Pod;
-use spa::format::{MediaSubtype, MediaType};
 use spa::param::audio::AudioFormat;
 
 use crate::{CaptureMode, LoopbackError};
@@ -71,6 +69,7 @@ const ALSA_LOOPBACK_DEVICE: &str = "hw:Loopback,1,0";
 /// Manages a Linux loopback capture session.
 ///
 /// Drop this value to stop capture.
+#[derive(Debug)]
 pub struct SystemLoopbackSource {
     _capture_thread: thread::JoinHandle<()>,
     _dispatch_thread: thread::JoinHandle<()>,
@@ -130,7 +129,7 @@ fn pipewire_available() -> bool {
 // PipeWire implementation
 // ---------------------------------------------------------------------------
 
-fn run_pipewire<F>(mode: CaptureMode, callback: F) -> Result<SystemLoopbackSource, LoopbackError>
+fn run_pipewire<F>(_mode: CaptureMode, callback: F) -> Result<SystemLoopbackSource, LoopbackError>
 where
     F: Fn(AudioFrame) + Send + Sync + 'static,
 {
@@ -145,21 +144,21 @@ where
         .name("pks-pipewire-capture".into())
         .spawn(move || {
             pw::init();
-            let mainloop = match pw::main_loop::MainLoop::new(None) {
+            let mainloop = match pw::main_loop::MainLoopRc::new(None) {
                 Ok(ml) => ml,
                 Err(e) => {
                     eprintln!("pks-pipewire: MainLoop::new failed: {e}");
                     return;
                 }
             };
-            let context = match pw::context::Context::new(&mainloop) {
+            let context = match pw::context::ContextRc::new(&mainloop, None) {
                 Ok(ctx) => ctx,
                 Err(e) => {
                     eprintln!("pks-pipewire: Context::new failed: {e}");
                     return;
                 }
             };
-            let core = match context.connect(None) {
+            let core = match context.connect_rc(None) {
                 Ok(c) => c,
                 Err(e) => {
                     eprintln!("pks-pipewire: Context::connect failed: {e}");
@@ -175,7 +174,7 @@ where
                 *pw::keys::STREAM_CAPTURE_SINK => "true",
             };
 
-            let stream = match pw::stream::Stream::new(&core, "pks-loopback", stream_props) {
+            let stream = match pw::stream::StreamRc::new(core, "pks-loopback", stream_props) {
                 Ok(s) => s,
                 Err(e) => {
                     eprintln!("pks-pipewire: Stream::new failed: {e}");
@@ -189,7 +188,7 @@ where
 
             let _listener = stream
                 .add_local_listener_with_user_data(())
-                .param_changed(|_id, _user, _param| {})
+                .param_changed(|_stream, _user, _id, _param| {})
                 .process(move |stream, _user| {
                     let mut buf = match stream.dequeue_buffer() {
                         Some(b) => b,
@@ -233,7 +232,12 @@ where
                         .as_nanos() as u64;
 
                     let mut frame = AudioFrame::new(
-                        StreamId(0), SourceId(0), s, ts_ns, CAPTURE_CHANNELS, handle,
+                        StreamId(0),
+                        SourceId(0),
+                        s,
+                        ts_ns,
+                        CAPTURE_CHANNELS,
+                        handle,
                     );
                     frame.source_tag = AudioSourceTag::Captured;
                     frame.encryption_mode = EncryptionMode::None;
@@ -247,7 +251,7 @@ where
             // Build audio format params.
             let mut audio_info = spa::param::audio::AudioInfoRaw::new();
             audio_info.set_format(AudioFormat::F32LE);
-            audio_info.set_rate(DEFAULT_SAMPLE_RATE as u32);
+            audio_info.set_rate(DEFAULT_SAMPLE_RATE);
             audio_info.set_channels(CAPTURE_CHANNELS as u32);
             let obj = pw::spa::pod::serialize::PodSerializer::serialize(
                 std::io::Cursor::new(Vec::new()),
@@ -266,7 +270,9 @@ where
                 | pw::stream::StreamFlags::MAP_BUFFERS
                 | pw::stream::StreamFlags::RT_PROCESS;
 
-            if let Err(e) = stream.connect(pw::spa::utils::Direction::Input, None, flags, &mut [param]) {
+            if let Err(e) =
+                stream.connect(pw::spa::utils::Direction::Input, None, flags, &mut [param])
+            {
                 eprintln!("pks-pipewire: stream.connect failed: {e}");
                 return;
             }
@@ -289,7 +295,7 @@ where
             let _ = stream.disconnect();
             unsafe { pw::deinit() };
         })
-        .map_err(|e| LoopbackError::BackendInit(format!("capture thread spawn: {e}", e)))?;
+        .map_err(|e| LoopbackError::BackendInit(format!("capture thread spawn: {e}")))?;
 
     // Dispatch thread: pulls frames from the channel and calls the user callback.
     let dispatch_thread = thread::Builder::new()
@@ -299,7 +305,7 @@ where
                 callback(frame);
             }
         })
-        .map_err(|e| LoopbackError::BackendInit(format!("dispatch thread spawn: {e}", e)))?;
+        .map_err(|e| LoopbackError::BackendInit(format!("dispatch thread spawn: {e}")))?;
 
     Ok(SystemLoopbackSource {
         _capture_thread: capture_thread,
@@ -343,7 +349,7 @@ where
                     }
                 };
                 let _ = hwp.set_channels(CAPTURE_CHANNELS as u32);
-                let _ = hwp.set_rate(DEFAULT_SAMPLE_RATE as u32, alsa::ValueOr::Nearest);
+                let _ = hwp.set_rate(DEFAULT_SAMPLE_RATE, alsa::ValueOr::Nearest);
                 let _ = hwp.set_format(Format::float());
                 let _ = hwp.set_access(Access::RWInterleaved);
                 if let Err(e) = pcm.hw_params(&hwp) {
@@ -361,10 +367,14 @@ where
             let mut buf = vec![0f32; CAPTURE_FRAME_SAMPLES];
 
             loop {
-                if stop_rx.try_recv().is_ok() { break; }
+                if stop_rx.try_recv().is_ok() {
+                    break;
+                }
                 match io.readi(&mut buf) {
                     Ok(0) | Err(_) => {
-                        if stop_rx.try_recv().is_ok() { break; }
+                        if stop_rx.try_recv().is_ok() {
+                            break;
+                        }
                         continue;
                     }
                     Ok(frames_read) => {
@@ -385,7 +395,12 @@ where
                             .as_nanos() as u64;
 
                         let mut frame = AudioFrame::new(
-                            StreamId(0), SourceId(0), s, ts_ns, CAPTURE_CHANNELS, handle,
+                            StreamId(0),
+                            SourceId(0),
+                            s,
+                            ts_ns,
+                            CAPTURE_CHANNELS,
+                            handle,
                         );
                         frame.source_tag = AudioSourceTag::Captured;
                         frame.encryption_mode = EncryptionMode::None;
@@ -396,14 +411,14 @@ where
             }
             let _ = pcm.drop();
         })
-        .map_err(|e| LoopbackError::BackendInit(format!("alsa thread spawn: {e}", e)))?;
+        .map_err(|e| LoopbackError::BackendInit(format!("alsa thread spawn: {e}")))?;
 
     // ALSA path calls callback inline; use a dummy dispatch thread for uniform struct layout.
     let (_dummy_tx, dummy_rx) = mpsc::sync_channel::<AudioFrame>(1);
     let dispatch_thread = thread::Builder::new()
         .name("pks-alsa-dispatch".into())
-        .spawn(move || { while dummy_rx.recv().is_ok() {} })
-        .map_err(|e| LoopbackError::BackendInit(format!("alsa dispatch spawn: {e}", e)))?;
+        .spawn(move || while dummy_rx.recv().is_ok() {})
+        .map_err(|e| LoopbackError::BackendInit(format!("alsa dispatch spawn: {e}")))?;
 
     Ok(SystemLoopbackSource {
         _capture_thread: capture_thread,
