@@ -29,11 +29,9 @@ use pocketstation_frame::{
     AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId,
     DEFAULT_SAMPLE_RATE, DEFAULT_SLOT_SAMPLES_MONO_20MS,
 };
-use pw::prelude::*;
 use pw::properties::properties;
 use pw::spa;
 use pw::spa::pod::Pod;
-use spa::format::{MediaSubtype, MediaType};
 use spa::param::audio::AudioFormat;
 
 use crate::{CaptureMode, LoopbackError};
@@ -71,6 +69,7 @@ const ALSA_LOOPBACK_DEVICE: &str = "hw:Loopback,1,0";
 /// Manages a Linux loopback capture session.
 ///
 /// Drop this value to stop capture.
+#[derive(Debug)]
 pub struct SystemLoopbackSource {
     _capture_thread: thread::JoinHandle<()>,
     _dispatch_thread: thread::JoinHandle<()>,
@@ -145,21 +144,21 @@ where
         .name("pks-pipewire-capture".into())
         .spawn(move || {
             pw::init();
-            let mainloop = match pw::main_loop::MainLoop::new(None) {
+            let mainloop = match pw::main_loop::MainLoopRc::new(None) {
                 Ok(ml) => ml,
                 Err(e) => {
                     eprintln!("pks-pipewire: MainLoop::new failed: {e}");
                     return;
                 }
             };
-            let context = match pw::context::Context::new(&mainloop) {
+            let context = match pw::context::ContextRc::new(&mainloop, None) {
                 Ok(ctx) => ctx,
                 Err(e) => {
                     eprintln!("pks-pipewire: Context::new failed: {e}");
                     return;
                 }
             };
-            let core = match context.connect(None) {
+            let core = match context.connect_rc(None) {
                 Ok(c) => c,
                 Err(e) => {
                     eprintln!("pks-pipewire: Context::connect failed: {e}");
@@ -175,7 +174,7 @@ where
                 *pw::keys::STREAM_CAPTURE_SINK => "true",
             };
 
-            let stream = match pw::stream::Stream::new(&core, "pks-loopback", stream_props) {
+            let stream = match pw::stream::StreamRc::new(core, "pks-loopback", stream_props) {
                 Ok(s) => s,
                 Err(e) => {
                     eprintln!("pks-pipewire: Stream::new failed: {e}");
