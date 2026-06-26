@@ -488,7 +488,7 @@ fn enumerate_pipewire_nodes() -> Vec<pocketstation_capture::CaptureSource> {
             let _core_listener = core
                 .add_listener_local()
                 .done(move |id, done_seq| {
-                    if id == 0 && done_seq.0 >= seq.0 {
+                    if id == 0 && done_seq == seq {
                         let sources = collected_for_done.borrow().clone();
                         let _ = tx_clone.send(sources);
                         if let Some(ml) = ml_for_done.upgrade() {
