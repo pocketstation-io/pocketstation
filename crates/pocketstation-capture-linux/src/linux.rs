@@ -153,7 +153,7 @@ fn pipewire_available() -> bool {
 // PipeWire implementation
 // ---------------------------------------------------------------------------
 
-fn run_pipewire<F>(mode: CaptureMode, callback: F) -> Result<SystemLoopbackSource, LoopbackError>
+fn run_pipewire<F>(_mode: CaptureMode, callback: F) -> Result<SystemLoopbackSource, LoopbackError>
 where
     F: Fn(AudioFrame) + Send + Sync + 'static,
 {
@@ -470,8 +470,7 @@ fn enumerate_pipewire_nodes() -> Vec<pocketstation_capture::CaptureSource> {
                         channels: 2,
                     });
                 })
-                .register()
-                .expect("registry listener registration failed");
+                .register();
 
             // Request a round-trip sync so we know when all initial globals have arrived.
             let seq = match core.sync(0) {
@@ -489,7 +488,7 @@ fn enumerate_pipewire_nodes() -> Vec<pocketstation_capture::CaptureSource> {
             let _core_listener = core
                 .add_listener_local()
                 .done(move |id, done_seq| {
-                    if id == 0 && done_seq >= seq {
+                    if id == 0 && done_seq.0 >= seq.0 {
                         let sources = collected_for_done.borrow().clone();
                         let _ = tx_clone.send(sources);
                         if let Some(ml) = ml_for_done.upgrade() {
@@ -533,7 +532,7 @@ fn enumerate_pipewire_nodes() -> Vec<pocketstation_capture::CaptureSource> {
 /// node identified by `node_id` instead of the default sink monitor.
 fn run_pipewire_targeted<F>(
     node_id: u64,
-    mode: CaptureMode,
+    _mode: CaptureMode,
     callback: F,
 ) -> Result<SystemLoopbackSource, LoopbackError>
 where
