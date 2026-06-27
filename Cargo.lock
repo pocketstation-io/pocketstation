@@ -887,6 +887,13 @@ name = "pocketstation-metrics"
 version = "0.1.0"
 
 [[package]]
+name = "pocketstation-ml"
+version = "0.1.0"
+dependencies = [
+ "pocketstation-graph",
+]
+
+[[package]]
 name = "pocketstation-pipeline"
 version = "0.1.0"
 dependencies = [

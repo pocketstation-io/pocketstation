@@ -1,6 +1,6 @@
 // Phase 0 exit gate — this example must compile and run.
-// It exercises the full AudioGraph API surface defined in pocketstation-graph.
-// run() is a scaffold (returns immediately); Phase 1 wires real scheduling.
+// Exercises the full AudioGraph API: compile() validates topology (Kahn's sort);
+// run() dispatches one frame tick in topological order via registered processors.
 // BUILD_GUIDE note: 'gain_db' replaces the conceptual 'db' shorthand per CODE_PROTOCOL LAW 1.
 
 use pocketstation_graph::{
@@ -53,16 +53,17 @@ fn main() -> Result<(), pocketstation_graph::GraphError> {
     graph.connect(agent.out("audio"), relay.in_("agent_voice"))?;
     graph.connect(relay.out("mix"), browser.in_("audio"))?;
 
-    let plan = graph.compile()?;
+    let mut plan = graph.compile()?;
 
     println!(
-        "holy_shit_demo: graph compiled — {} nodes, {} edges",
+        "holy_shit_demo: graph compiled — {} nodes, {} edges, topo order: {:?}",
         plan.node_count(),
         plan.edge_count(),
+        plan.topo_order().iter().map(|n| n.id()).collect::<Vec<_>>(),
     );
 
-    graph.run(plan)?;
+    graph.run(&mut plan)?;
 
-    println!("holy_shit_demo: run complete (Phase 0 scaffold — exits immediately)");
+    println!("holy_shit_demo: one frame tick dispatched in topological order");
     Ok(())
 }
