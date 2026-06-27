@@ -1,8 +1,4 @@
-use pocketstation_frame::Platform;
-
-// ---------------------------------------------------------------------------
-// Capture mode
-// ---------------------------------------------------------------------------
+use pocketstation_frame::{AudioFrame, Platform};
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub enum CaptureMode {
@@ -12,10 +8,6 @@ pub enum CaptureMode {
     Process(u32),
 }
 
-// ---------------------------------------------------------------------------
-// Source kind
-// ---------------------------------------------------------------------------
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum SourceKind {
     Application,
@@ -23,10 +15,6 @@ pub enum SourceKind {
     InputDevice,
     SystemMix,
 }
-
-// ---------------------------------------------------------------------------
-// Source state
-// ---------------------------------------------------------------------------
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum SourceState {
@@ -36,10 +24,6 @@ pub enum SourceState {
     Unavailable,
     PermissionBlocked,
 }
-
-// ---------------------------------------------------------------------------
-// Stable source identity
-// ---------------------------------------------------------------------------
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct StableSourceId {
@@ -66,10 +50,6 @@ impl StableSourceId {
     }
 }
 
-// ---------------------------------------------------------------------------
-// Capture source
-// ---------------------------------------------------------------------------
-
 #[derive(Debug, Clone)]
 pub struct CaptureSource {
     pub stable_id: StableSourceId,
@@ -78,7 +58,7 @@ pub struct CaptureSource {
     pub app_id: Option<String>,
     pub device_uid: Option<String>,
     pub state: SourceState,
-    pub sample_rate: u32,
+    pub sample_rate_hz: u32,
     pub channels: u16,
 }
 
@@ -87,10 +67,6 @@ impl CaptureSource {
         self.stable_id.to_frame_source_id()
     }
 }
-
-// ---------------------------------------------------------------------------
-// Error type
-// ---------------------------------------------------------------------------
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
 pub enum CaptureError {
@@ -105,12 +81,16 @@ pub enum CaptureError {
 // Backwards-compat alias — existing callers that use LoopbackError still compile.
 pub use CaptureError as LoopbackError;
 
-// ---------------------------------------------------------------------------
-// Backend traits
-// ---------------------------------------------------------------------------
+pub trait AudioSourceStream: Send {
+    fn sample_rate_hz(&self) -> u32;
+    fn channel_count(&self) -> u8;
+    fn read_frame(&mut self) -> Result<AudioFrame, CaptureError>;
+}
 
-pub trait AudioSourceStream: Send {}
-pub trait AudioOutputSink: Send {}
+pub trait AudioOutputSink: Send {
+    fn write_frame(&mut self, frame: AudioFrame) -> Result<(), CaptureError>;
+    fn flush(&mut self) -> Result<(), CaptureError>;
+}
 
 #[derive(Debug)]
 pub enum AdapterError {
@@ -170,6 +150,16 @@ pub enum LatencyClass {
     Buffered,
 }
 
+impl LatencyClass {
+    pub fn rank(self) -> u8 {
+        match self {
+            Self::Realtime => 0,
+            Self::LowLatency => 1,
+            Self::Buffered => 2,
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ReliabilityClass {
     AlwaysAvailable,
@@ -178,6 +168,19 @@ pub enum ReliabilityClass {
     Experimental,
     PolicyGated,
     FutureAPI,
+}
+
+impl ReliabilityClass {
+    pub fn rank(self) -> u8 {
+        match self {
+            Self::AlwaysAvailable => 0,
+            Self::UserPermission => 1,
+            Self::UserAction => 2,
+            Self::PolicyGated => 3,
+            Self::Experimental => 4,
+            Self::FutureAPI => 5,
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -245,25 +248,6 @@ pub trait PlatformAdapter: Send + Sync {
         -> Result<Box<dyn AudioOutputSink>, AdapterError>;
 }
 
-fn latency_rank(lc: &LatencyClass) -> u8 {
-    match lc {
-        LatencyClass::Realtime => 0,
-        LatencyClass::LowLatency => 1,
-        LatencyClass::Buffered => 2,
-    }
-}
-
-fn reliability_rank(rc: &ReliabilityClass) -> u8 {
-    match rc {
-        ReliabilityClass::AlwaysAvailable => 0,
-        ReliabilityClass::UserPermission => 1,
-        ReliabilityClass::UserAction => 2,
-        ReliabilityClass::PolicyGated => 3,
-        ReliabilityClass::Experimental => 4,
-        ReliabilityClass::FutureAPI => 5,
-    }
-}
-
 fn is_preferred(cap: &SourceCapability, preference: &SourcePreference) -> bool {
     match preference {
         SourcePreference::Voice => matches!(
@@ -298,8 +282,8 @@ pub fn open_best_source(
         };
         (
             pref_rank,
-            latency_rank(&d.latency_class),
-            reliability_rank(&d.reliability_class),
+            d.latency_class.clone().rank(),
+            d.reliability_class.clone().rank(),
         )
     });
     let best = candidates.remove(0);
@@ -308,10 +292,6 @@ pub fn open_best_source(
         preferred_latency: best.latency_class,
     })
 }
-
-// ---------------------------------------------------------------------------
-// SystemLoopbackSource stub (platform crates provide the real impl)
-// ---------------------------------------------------------------------------
 
 pub struct SystemLoopbackSource;
 
@@ -330,14 +310,6 @@ impl SystemLoopbackSource {
     }
 }
 
-// ---------------------------------------------------------------------------
-// Source discovery — platform-aware, no-circular-dep design
-//
-// Returns at minimum the SystemMix entry for this platform.
-// Per-process enumeration is available from each pocketstation-capture-{platform}
-// crate and is composed in the pocketstation-audio facade.
-// ---------------------------------------------------------------------------
-
 pub fn discover_sources() -> Vec<CaptureSource> {
     #[cfg(target_os = "macos")]
     let platform = Platform::Macos;
@@ -355,7 +327,7 @@ pub fn discover_sources() -> Vec<CaptureSource> {
         app_id: None,
         device_uid: None,
         state: SourceState::Available,
-        sample_rate: 48_000,
+        sample_rate_hz: 48_000,
         channels: 2,
     }]
 }
@@ -376,10 +348,6 @@ where
 {
     SystemLoopbackSource::capture_mode(mode, callback)
 }
-
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {
@@ -440,5 +408,17 @@ mod tests {
     fn given_mode_unsupported_error_when_displayed_then_contains_not_supported() {
         let err = CaptureError::ModeUnsupported(CaptureMode::Process(1234));
         assert!(err.to_string().contains("not supported"));
+    }
+
+    #[test]
+    fn latency_class_rank_order_is_realtime_low_buffered() {
+        assert!(LatencyClass::Realtime.rank() < LatencyClass::LowLatency.rank());
+        assert!(LatencyClass::LowLatency.rank() < LatencyClass::Buffered.rank());
+    }
+
+    #[test]
+    fn reliability_class_rank_always_available_is_lowest() {
+        assert_eq!(ReliabilityClass::AlwaysAvailable.rank(), 0);
+        assert!(ReliabilityClass::AlwaysAvailable.rank() < ReliabilityClass::FutureAPI.rank());
     }
 }

@@ -31,7 +31,7 @@ use std::sync::Arc;
 
 use pocketstation_frame::{
     AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId,
-    DEFAULT_SAMPLE_RATE, DEFAULT_SLOT_SAMPLES_MONO_20MS,
+    POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,
 };
 use wasapi::{AudioClient, DeviceEnumerator, Direction, SampleType, StreamMode, WaveFormat};
 
@@ -42,7 +42,7 @@ use pocketstation_capture::{CaptureError as LoopbackError, CaptureMode};
 // ---------------------------------------------------------------------------
 
 const CAPTURE_CHANNELS: u8 = 2;
-const CAPTURE_FRAME_SAMPLES: usize = DEFAULT_SLOT_SAMPLES_MONO_20MS * CAPTURE_CHANNELS as usize;
+const CAPTURE_FRAME_SAMPLES: usize = POOL_SLOT_SAMPLES * CAPTURE_CHANNELS as usize;
 const POOL_DEPTH: usize = 8;
 
 /// Buffer duration hint (20 ms in 100-ns units).  Ignored for loopback modes.
@@ -182,7 +182,7 @@ fn target_wave_format() -> WaveFormat {
         32,
         32,
         &SampleType::Float,
-        DEFAULT_SAMPLE_RATE as usize,
+        SAMPLE_RATE_HZ as usize,
         CAPTURE_CHANNELS as usize,
         None,
     )
@@ -224,7 +224,7 @@ fn deliver_packet(
     let mut frame = AudioFrame::new(StreamId(0), SourceId(0), s, ts_ns, CAPTURE_CHANNELS, handle);
     frame.source_tag = AudioSourceTag::Captured;
     frame.encryption_mode = EncryptionMode::None;
-    frame.sample_rate = DEFAULT_SAMPLE_RATE;
+    frame.sample_rate = SAMPLE_RATE_HZ;
     callback(frame);
 }
 

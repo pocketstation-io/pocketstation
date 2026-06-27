@@ -815,6 +815,7 @@ dependencies = [
  "pocketstation-capture-windows",
  "pocketstation-codec",
  "pocketstation-frame",
+ "pocketstation-graph",
  "pocketstation-metrics",
  "pocketstation-pipeline",
 ]
@@ -876,6 +877,10 @@ dependencies = [
  "proptest",
  "thiserror 1.0.69",
 ]
+
+[[package]]
+name = "pocketstation-graph"
+version = "0.1.0"
 
 [[package]]
 name = "pocketstation-metrics"

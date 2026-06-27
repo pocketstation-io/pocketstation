@@ -13,6 +13,10 @@ real-opus = ["pocketstation-codec/real-opus"]
 crate-type = ["cdylib", "staticlib", "rlib"]
 
 [[example]]
+name = "holy_shit_demo"
+# cargo run -p pocketstation-audio --example holy_shit_demo
+
+[[example]]
 name = "sine_to_wav"
 # cargo run -p pocketstation-audio --example sine_to_wav
 
@@ -22,6 +26,7 @@ name = "soak"
 
 [dependencies]
 pocketstation-frame = { path = "../pocketstation-frame", version = "0.1.0" }
+pocketstation-graph = { path = "../pocketstation-graph", version = "0.1.0" }
 pocketstation-pipeline = { path = "../pocketstation-pipeline", version = "0.1.0" }
 pocketstation-codec = { path = "../pocketstation-codec", version = "0.1.0" }
 pocketstation-capture = { path = "../pocketstation-capture", version = "0.1.0" }

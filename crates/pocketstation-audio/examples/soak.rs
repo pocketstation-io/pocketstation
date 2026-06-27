@@ -18,7 +18,7 @@
 /// Run:  cargo run -p pocketstation-audio --example soak --release
 use pocketstation_audio::{
     frame_bus, AudioBufferPool, AudioFrame, OpusDecoder, OpusEncoder, SourceId, StreamId,
-    DEFAULT_SAMPLE_RATE, DEFAULT_SLOT_SAMPLES_MONO_20MS,
+    POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,
 };
 use std::{f32::consts::PI, time::Instant};
 
@@ -28,15 +28,15 @@ const SOAK_FRAMES: u64 = 3_000; // 60 s of audio at 50 fps
 // One full second at 48 kHz avoids the per-sample sin() call (~19 µs/frame).
 // Indexed as `(global_sample_index) % TABLE_LEN`.
 fn build_sine_table() -> Vec<f32> {
-    let len = DEFAULT_SAMPLE_RATE as usize; // 48 000 samples = 1 s
+    let len = SAMPLE_RATE_HZ as usize; // 48 000 samples = 1 s
     (0..len)
-        .map(|i| (2.0 * PI * 440.0 * i as f32 / DEFAULT_SAMPLE_RATE as f32).sin() * 0.25)
+        .map(|i| (2.0 * PI * 440.0 * i as f32 / SAMPLE_RATE_HZ as f32).sin() * 0.25)
         .collect()
 }
 
 // ── Single-mode soak run ────────────────────────────────────────────────────
 fn run_soak(label: &str, complexity: i32, sine_table: &[f32]) {
-    let pool = AudioBufferPool::new(64, DEFAULT_SLOT_SAMPLES_MONO_20MS);
+    let pool = AudioBufferPool::new(64, POOL_SLOT_SAMPLES);
     let (mut prod, mut cons) = frame_bus(64);
 
     let mut encoder = OpusEncoder::default();
@@ -49,7 +49,7 @@ fn run_soak(label: &str, complexity: i32, sine_table: &[f32]) {
         .expect("set_complexity failed");
 
     let mut encode_buf: Vec<u8> = Vec::with_capacity(4_000);
-    let mut decode_buf: Vec<f32> = Vec::with_capacity(DEFAULT_SLOT_SAMPLES_MONO_20MS);
+    let mut decode_buf: Vec<f32> = Vec::with_capacity(POOL_SLOT_SAMPLES);
     let mut total_decoded: u64 = 0;
 
     let start = Instant::now();
@@ -57,7 +57,7 @@ fn run_soak(label: &str, complexity: i32, sine_table: &[f32]) {
     for seq in 0..SOAK_FRAMES {
         // ── Produce ─────────────────────────────────────────────────────────
         let mut handle = pool.acquire().expect("pool exhausted");
-        let offset = (seq * DEFAULT_SLOT_SAMPLES_MONO_20MS as u64) as usize;
+        let offset = (seq * POOL_SLOT_SAMPLES as u64) as usize;
         let samples = handle.as_mut_slice();
         for (i, s) in samples.iter_mut().enumerate() {
             *s = sine_table[(offset + i) % sine_table.len()];
@@ -97,7 +97,7 @@ fn run_soak(label: &str, complexity: i32, sine_table: &[f32]) {
     let elapsed = start.elapsed();
     let dropped = prod.dropped_newest();
     let pool_fail = pool.acquire_failures();
-    let expected = SOAK_FRAMES * DEFAULT_SLOT_SAMPLES_MONO_20MS as u64;
+    let expected = SOAK_FRAMES * POOL_SLOT_SAMPLES as u64;
     let fps = SOAK_FRAMES as f64 / elapsed.as_secs_f64();
     let realtime_mult = fps / 50.0; // 50 fps = 1× real-time
 

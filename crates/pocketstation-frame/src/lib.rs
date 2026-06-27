@@ -3,12 +3,11 @@ use std::fmt;
 use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
 use std::sync::Arc;
 
-pub const DEFAULT_SAMPLE_RATE: u32 = 48_000;
-pub const DEFAULT_FRAME_MS: u32 = 20;
-pub const DEFAULT_SLOT_SAMPLES_MONO_20MS: usize = 960;
-pub const MAX_POOL_SLOTS: usize = 64;
+pub const SAMPLE_RATE_HZ: u32 = 48_000;
+pub const FRAME_DURATION_MS: u32 = 20;
+pub const POOL_SLOT_SAMPLES: usize = 960; // 20ms × 48kHz
+pub const POOL_MAX_SLOTS: usize = 64; // AtomicU64 bitset ceiling
 
-/// The OS platform where this audio source was captured.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Platform {
     Macos,
@@ -17,7 +16,6 @@ pub enum Platform {
     Ios,
     Android,
     Web,
-    /// Used in tests or when platform is not yet determined.
     Unknown,
 }
 
@@ -26,6 +24,27 @@ pub struct StreamId(pub u64);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct SourceId(pub u64);
+
+/// Identifies a named audio bus within a GraphSession. None = pre-graph capture path.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct BusId(pub u64);
+
+/// Opaque handles for Phase 3+ fields on SourceIdentity.
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct UserId(pub String);
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct AgentId(pub String);
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct ModelProviderId(pub String);
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct ClockDomainId(pub u32);
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PrivacyClass {
+    Public,
+    Private,      // not forwarded to model nodes
+    Confidential, // E2EE required end-to-end (Phase 5)
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SampleFormat {
@@ -39,62 +58,40 @@ pub enum AudioMode {
     Broadcast,
 }
 
-/// Indicates whether audio was captured from a real source or synthesised by AI.
-///
-/// Required by EU AI Act Article 50 (2026-08-01 deadline): machine-detectable
-/// markings must be embedded in AI-synthesised audio before delivery.
-/// The watermark node (AUDIO-017) reads this tag and embeds AudioSeal only when
-/// the value is `AiTts`. See `pocketstation-watermark` in `pocketstation-io/audio-ml`.
-///
-/// Phase scope: Phase 5.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum AudioSourceTag {
-    /// Audio captured from a real microphone or system loopback. No watermark needed.
     #[default]
     Captured,
-    /// Audio synthesised by an AI text-to-speech engine. Must be watermarked before
-    /// delivery per EU AI Act Article 50.
-    AiTts,
+    AiTts, // EU AI Act §50: watermark required before relay delivery (AUDIO-017)
 }
 
-/// Encryption mode applied to this frame's payload.
-///
-/// Used by the SFrame E2EE relay path (AUDIO-014). The relay forwards frames
-/// without decrypting regardless of this field; the value is set by the SDK
-/// before sending and read by the receiving SDK to select the decryption path.
-///
-/// Phase scope: Phase 5.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum EncryptionMode {
-    /// No encryption. Default for Phase 0–4 compatibility.
     #[default]
     None,
-    /// SFrame (RFC 9605) frame-level encryption. Key exchanged via KEY_EXCHANGE
-    /// signaling message before any encrypted frames are sent.
-    SFrame,
+    SFrame, // RFC 9605 frame-level E2EE; relay forwards opaque, SDK decrypts
 }
 
 pub struct AudioBufferPool {
     slots: Box<[UnsafeCell<Box<[f32]>>]>,
-    slot_size: usize,
-    free_mask: AtomicU64,
+    slot_size: usize,     // samples per slot, fixed at creation
+    free_mask: AtomicU64, // bitset: 1 = free; 64-slot cap
     acquire_failures: AtomicUsize,
 }
 
-// SAFETY: Each slot is protected by the `free_mask` bitset. A slot can only be
-// mutably accessed through an `AudioBufferHandle` obtained by successfully
-// clearing its free bit. Release sets the bit again exactly once in Drop.
+// SAFETY: Each slot is guarded by its free_mask bit. A slot is exclusively
+// accessible only through the AudioBufferHandle that cleared its bit.
+// Release sets the bit again exactly once in Drop.
 unsafe impl Sync for AudioBufferPool {}
 
 impl AudioBufferPool {
     pub fn new(slot_count: usize, slot_size: usize) -> Arc<Self> {
-        assert!((1..=MAX_POOL_SLOTS).contains(&slot_count));
+        assert!((1..=POOL_MAX_SLOTS).contains(&slot_count));
         assert!(slot_size > 0);
-        let mut slots = Vec::with_capacity(slot_count);
-        for _ in 0..slot_count {
-            slots.push(UnsafeCell::new(vec![0.0f32; slot_size].into_boxed_slice()));
-        }
-        let mask = if slot_count == 64 {
+        let slots: Vec<_> = (0..slot_count)
+            .map(|_| UnsafeCell::new(vec![0.0f32; slot_size].into_boxed_slice()))
+            .collect();
+        let full_mask = if slot_count == 64 {
             u64::MAX
         } else {
             (1u64 << slot_count) - 1
@@ -102,7 +99,7 @@ impl AudioBufferPool {
         Arc::new(Self {
             slots: slots.into_boxed_slice(),
             slot_size,
-            free_mask: AtomicU64::new(mask),
+            free_mask: AtomicU64::new(full_mask),
             acquire_failures: AtomicUsize::new(0),
         })
     }
@@ -126,10 +123,9 @@ impl AudioBufferPool {
             }
             let idx = mask.trailing_zeros() as usize;
             let bit = 1u64 << idx;
-            let next = mask & !bit;
             if self
                 .free_mask
-                .compare_exchange_weak(mask, next, Ordering::AcqRel, Ordering::Acquire)
+                .compare_exchange_weak(mask, mask & !bit, Ordering::AcqRel, Ordering::Acquire)
                 .is_ok()
             {
                 return Some(AudioBufferHandle {
@@ -141,46 +137,27 @@ impl AudioBufferPool {
         }
     }
 
-    fn release(&self, index: u32) {
-        let idx = index as usize;
-        if idx >= self.slots.len() {
-            return;
-        }
-        let bit = 1u64 << idx;
-        #[cfg(debug_assertions)]
-        {
-            // Check BEFORE marking free so the assertion fires before any state change.
-            let current = self.free_mask.load(Ordering::Acquire);
-            debug_assert_eq!(current & bit, 0, "double release of buffer slot {}", idx);
-        }
-        self.free_mask.fetch_or(bit, Ordering::Release);
+    pub fn is_in_use(&self, index: u32) -> bool {
+        self.free_mask.load(Ordering::Acquire) & (1u64 << index) == 0
     }
 
-    pub fn is_in_use(&self, index: u32) -> bool {
-        let bit = 1u64 << index;
-        self.free_mask.load(Ordering::Acquire) & bit == 0
+    fn release(&self, index: u32) {
+        self.free_mask.fetch_or(1u64 << index, Ordering::Release);
     }
 
     fn slot(&self, index: u32, len: u32) -> &[f32] {
-        let idx = index as usize;
-        let len = len as usize;
-        assert!(idx < self.slots.len());
-        assert!(len <= self.slot_size);
-        // SAFETY: immutable access for read-only slice; unique mutable access is
-        // only exposed through the owning handle.
-        let slot = unsafe { &*self.slots[idx].get() };
-        &slot[..len]
+        assert!((index as usize) < self.slots.len() && (len as usize) <= self.slot_size);
+        // SAFETY: immutable borrow; exclusive mutable access is held by the owning handle.
+        let cell = unsafe { &*self.slots[index as usize].get() };
+        &cell[..len as usize]
     }
 
     #[allow(clippy::mut_from_ref)]
     fn slot_mut(&self, index: u32, len: u32) -> &mut [f32] {
-        let idx = index as usize;
-        let len = len as usize;
-        assert!(idx < self.slots.len());
-        assert!(len <= self.slot_size);
+        assert!((index as usize) < self.slots.len() && (len as usize) <= self.slot_size);
         // SAFETY: acquisition protocol ensures exactly one live handle per slot.
-        let slot = unsafe { &mut *self.slots[idx].get() };
-        &mut slot[..len]
+        let cell = unsafe { &mut *self.slots[index as usize].get() };
+        &mut cell[..len as usize]
     }
 }
 
@@ -203,13 +180,16 @@ impl AudioBufferHandle {
     pub fn as_slice(&self) -> &[f32] {
         self.pool.slot(self.index, self.len)
     }
+
     pub fn as_mut_slice(&mut self) -> &mut [f32] {
         self.pool.slot_mut(self.index, self.len)
     }
+
     pub fn set_len(&mut self, len: usize) {
         assert!(len <= self.pool.slot_size());
         self.len = len as u32;
     }
+
     pub fn copy_from_slice(&mut self, data: &[f32]) {
         assert!(data.len() <= self.pool.slot_size());
         self.set_len(data.len());
@@ -217,9 +197,16 @@ impl AudioBufferHandle {
     }
 }
 
+/// Drop contract — must stay forever: wait-free · panic-free · alloc-free · log-free.
 impl Drop for AudioBufferHandle {
     fn drop(&mut self) {
-        self.pool.release(self.index);
+        #[cfg(debug_assertions)]
+        debug_assert!(
+            self.pool.is_in_use(self.index),
+            "double-release of slot {}",
+            self.index
+        );
+        self.pool.release(self.index); // single atomic fetch_or
     }
 }
 
@@ -232,24 +219,58 @@ impl fmt::Debug for AudioBufferHandle {
     }
 }
 
+/// Semantic identity of an audio source node in the graph (v3.0 addition — Phase 0).
+#[derive(Debug, Clone)]
+pub struct SourceIdentity {
+    pub source_id: SourceId,
+    pub display_name: String,
+    pub kind: SourceKind,
+    pub platform: Platform,
+    pub app_bundle_id: Option<String>,
+    pub device_id: Option<String>,
+    pub human_owner: Option<UserId>,          // Phase 3
+    pub agent_owner: Option<AgentId>,         // Phase 3
+    pub model_owner: Option<ModelProviderId>, // Phase 3
+    pub clock_domain: ClockDomainId,
+    pub privacy_class: PrivacyClass,
+}
+
+/// Identifies an audio source kind for graph node discrimination.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum SourceKind {
+    Mic,
+    SystemOutput,
+    Application,
+    Device,
+    NetworkStream,
+    VirtualInput,
+    ModelOutput, // TTS or agent output fed back into the graph
+    Synthetic,   // testing / Phase 0 sine sources
+}
+
+/// Describes a named audio bus in a GraphSession (v3.0 addition — Phase 0).
+#[derive(Debug, Clone)]
+pub struct BusDescriptor {
+    pub bus_id: BusId,
+    pub name: String,
+    pub mode: AudioMode,     // Voice | Music | Broadcast
+    pub channels: u8,        // 1 or 2
+    pub sample_rate_hz: u32, // always 48_000 in Phase 0–1
+}
+
 #[derive(Debug)]
 pub struct AudioFrame {
     pub stream_id: StreamId,
     pub source_id: SourceId,
-    pub sample_rate: u32,
-    pub channels: u8,
+    pub bus_id: Option<BusId>, // semantic bus identity (v3.0)
+    pub sample_rate_hz: u32,   // always 48_000 internally; see DOCS-013
+    pub channels: u8,          // 1 = voice, 2 = music/broadcast
     pub format: SampleFormat,
-    pub timestamp_ns: u64,
+    pub timestamp_ns: u64, // monotonic, never wall clock
     pub sequence_number: u64,
     pub buffer: AudioBufferHandle,
-    /// Whether this frame originated from a real capture source or an AI TTS engine.
-    /// Defaults to `Captured`. Set to `AiTts` by TTS pipeline stages so the
-    /// downstream watermark node (AUDIO-017) can embed a machine-detectable mark.
-    pub source_tag: AudioSourceTag,
-    /// Speaker identity assigned by the diarization node (AUDIO-018).
-    /// `None` until `pocketstation-diarize` (Phase 6) assigns a speaker ID.
-    pub speaker_id: Option<u32>,
-    /// SFrame encryption mode (AUDIO-014). `None` for unencrypted transport.
+    pub source_tag: AudioSourceTag, // AiTts triggers AUDIO-017 watermark
+    pub speaker_id: Option<u32>,    // assigned by diarization node (Phase 6)
     pub encryption_mode: EncryptionMode,
 }
 
@@ -265,7 +286,8 @@ impl AudioFrame {
         Self {
             stream_id,
             source_id,
-            sample_rate: DEFAULT_SAMPLE_RATE,
+            bus_id: None,
+            sample_rate_hz: SAMPLE_RATE_HZ,
             channels,
             format: SampleFormat::F32Interleaved,
             timestamp_ns,

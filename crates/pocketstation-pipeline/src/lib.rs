@@ -1,37 +1,30 @@
-// pocketstation-pipeline: frame bus, clock sync, and audio processing graph.
-// Merges pocketstation-bus and pocketstation-graph.
-
 use pocketstation_frame::AudioFrame;
 use rtrb::{Consumer, Producer, RingBuffer};
 use std::sync::atomic::{AtomicU64, Ordering};
 
-// ---------------------------------------------------------------------------
-// Frame bus (from pocketstation-bus)
-// ---------------------------------------------------------------------------
-
 pub struct FrameProducer {
-    inner: Producer<AudioFrame>,
+    ring_producer: Producer<AudioFrame>,
     dropped_newest: AtomicU64,
 }
 
 pub struct FrameConsumer {
-    inner: Consumer<AudioFrame>,
+    ring_consumer: Consumer<AudioFrame>,
 }
 
 pub fn frame_bus(capacity: usize) -> (FrameProducer, FrameConsumer) {
     let (p, c) = RingBuffer::<AudioFrame>::new(capacity);
     (
         FrameProducer {
-            inner: p,
+            ring_producer: p,
             dropped_newest: AtomicU64::new(0),
         },
-        FrameConsumer { inner: c },
+        FrameConsumer { ring_consumer: c },
     )
 }
 
 impl FrameProducer {
     pub fn push_drop_newest(&mut self, frame: AudioFrame) -> Result<(), AudioFrame> {
-        match self.inner.push(frame) {
+        match self.ring_producer.push(frame) {
             Ok(()) => Ok(()),
             Err(rtrb::PushError::Full(frame)) => {
                 self.dropped_newest.fetch_add(1, Ordering::Relaxed);
@@ -46,13 +39,9 @@ impl FrameProducer {
 
 impl FrameConsumer {
     pub fn pop(&mut self) -> Option<AudioFrame> {
-        self.inner.pop().ok()
+        self.ring_consumer.pop().ok()
     }
 }
-
-// ---------------------------------------------------------------------------
-// Clock sync — PI controller (AUDIO-006, from pocketstation-bus)
-// ---------------------------------------------------------------------------
 
 const CLOCK_SYNC_CLAMP_NS: i64 = 10_000_000;
 
@@ -60,7 +49,7 @@ const CLOCK_SYNC_CLAMP_NS: i64 = 10_000_000;
 pub struct ClockSync {
     kp: f64,
     ki: f64,
-    integral: f64,
+    integral_ns: f64, // accumulated PI error term
     last_offset_ns: i64,
 }
 
@@ -69,15 +58,15 @@ impl ClockSync {
         Self {
             kp,
             ki,
-            integral: 0.0,
+            integral_ns: 0.0,
             last_offset_ns: 0,
         }
     }
 
     pub fn tick(&mut self, measured_offset_ns: i64) -> i64 {
         let error = measured_offset_ns as f64;
-        self.integral += error;
-        let correction = self.kp * error + self.ki * self.integral;
+        self.integral_ns += error;
+        let correction = self.kp * error + self.ki * self.integral_ns;
         self.last_offset_ns = measured_offset_ns;
         correction
             .round()
@@ -87,8 +76,8 @@ impl ClockSync {
     pub fn last_offset_ns(&self) -> i64 {
         self.last_offset_ns
     }
-    pub fn integral(&self) -> f64 {
-        self.integral
+    pub fn integral_ns(&self) -> f64 {
+        self.integral_ns
     }
 }
 
@@ -97,10 +86,6 @@ impl Default for ClockSync {
         Self::new(0.1, 0.001)
     }
 }
-
-// ---------------------------------------------------------------------------
-// Processing graph (from pocketstation-graph)
-// ---------------------------------------------------------------------------
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ChannelLayout {
@@ -145,6 +130,7 @@ impl Default for ProcessorGraph {
 }
 
 pub struct PassthroughNode;
+
 impl AudioProcessorNode for PassthroughNode {
     fn name(&self) -> &'static str {
         "passthrough"
@@ -155,31 +141,35 @@ impl AudioProcessorNode for PassthroughNode {
 }
 
 pub struct GainNode {
-    gain: f32,
+    gain_linear: f32,
 }
+
 impl GainNode {
-    pub fn new(gain: f32) -> Self {
-        Self { gain }
+    pub fn new(gain_linear: f32) -> Self {
+        Self { gain_linear }
     }
 }
+
 impl AudioProcessorNode for GainNode {
     fn name(&self) -> &'static str {
         "gain"
     }
     fn process(&mut self, mut frame: AudioFrame) -> Option<AudioFrame> {
         for s in frame.buffer.as_mut_slice().iter_mut() {
-            *s *= self.gain;
+            *s *= self.gain_linear;
         }
         Some(frame)
     }
 }
 
 pub struct MonoMixNode;
+
 impl Default for MonoMixNode {
     fn default() -> Self {
         Self
     }
 }
+
 impl AudioProcessorNode for MonoMixNode {
     fn name(&self) -> &'static str {
         "mono_mix"
@@ -187,6 +177,7 @@ impl AudioProcessorNode for MonoMixNode {
     fn accepted_channels(&self) -> ChannelLayout {
         ChannelLayout::StereoOnly
     }
+
     fn process(&mut self, mut frame: AudioFrame) -> Option<AudioFrame> {
         if frame.channels == 2 {
             let len = frame.buffer.len();
@@ -205,17 +196,13 @@ impl AudioProcessorNode for MonoMixNode {
     }
 }
 
-// ---------------------------------------------------------------------------
-// Resample node
-// ---------------------------------------------------------------------------
-
 const NS_PER_SEC: f64 = 1_000_000_000.0;
 const RESAMPLE_MAX_OUT_SAMPLES: usize = 1920;
 
 pub struct ResampleNode {
-    source_rate: u32,
-    target_rate: u32,
-    channels: u8,
+    source_rate_hz: u32,
+    target_rate_hz: u32,
+    channel_count: u8,
     clock_sync: ClockSync,
     phase: f64,
     last_sample: f32,
@@ -223,27 +210,22 @@ pub struct ResampleNode {
 }
 
 impl ResampleNode {
-    /// Create a node that will downsamples or pass-through frames.
-    ///
-    /// Panics if `target_rate > source_rate` — upsampling is not implemented.
-    /// Use `new_unchecked()` only in tests that explicitly verify the None-return
-    /// contract for unsupported configurations.
-    pub fn new(source_rate: u32, target_rate: u32, channels: u8) -> Self {
+    // Panics if target_rate_hz > source_rate_hz — upsampling not implemented.
+    pub fn new(source_rate_hz: u32, target_rate_hz: u32, channel_count: u8) -> Self {
         assert!(
-            target_rate <= source_rate,
-            "ResampleNode: upsampling {source_rate}→{target_rate} is not implemented; \
-             ensure target_rate <= source_rate"
+            target_rate_hz <= source_rate_hz,
+            "ResampleNode: upsampling {source_rate_hz}→{target_rate_hz} is not implemented; \
+             ensure target_rate_hz <= source_rate_hz"
         );
-        Self::new_unchecked(source_rate, target_rate, channels)
+        Self::new_unchecked(source_rate_hz, target_rate_hz, channel_count)
     }
 
-    /// Like `new()` but skips the upsampling guard. Only for tests verifying the
-    /// None-return contract on unsupported configurations.
-    pub fn new_unchecked(source_rate: u32, target_rate: u32, channels: u8) -> Self {
+    // Skips the upsampling guard. Only for tests verifying the None-return contract.
+    pub fn new_unchecked(source_rate_hz: u32, target_rate_hz: u32, channel_count: u8) -> Self {
         Self {
-            source_rate,
-            target_rate,
-            channels,
+            source_rate_hz,
+            target_rate_hz,
+            channel_count,
             clock_sync: ClockSync::default(),
             phase: 0.0,
             last_sample: 0.0,
@@ -265,26 +247,23 @@ impl AudioProcessorNode for ResampleNode {
     }
 
     fn process(&mut self, mut frame: AudioFrame) -> Option<AudioFrame> {
-        if frame.channels != self.channels {
+        if frame.channels != self.channel_count {
             return None;
         }
 
         let correction_ns = self.clock_sync.tick(frame.timestamp_ns as i64);
         let drift_ratio = correction_ns as f64 / NS_PER_SEC;
 
-        if self.source_rate == self.target_rate {
+        if self.source_rate_hz == self.target_rate_hz {
             let _ = drift_ratio;
             return Some(frame);
         }
 
-        let base_ratio = self.source_rate as f64 / self.target_rate as f64;
+        let base_ratio = self.source_rate_hz as f64 / self.target_rate_hz as f64;
         let ratio = base_ratio - drift_ratio;
 
-        if self.target_rate > self.source_rate {
-            // Upsampling is not implemented. Frame is dropped (not passed through
-            // unchanged) — a dropped frame is a louder failure than a silent rate
-            // mismatch. Production callers must not configure target_rate > source_rate;
-            // this is caught at construction time via ResampleNode::new_checked().
+        if self.target_rate_hz > self.source_rate_hz {
+            // Upsampling not implemented; drop frame rather than pass silent mismatch.
             return None;
         }
 
@@ -324,19 +303,12 @@ impl AudioProcessorNode for ResampleNode {
         }
 
         let out_len = self.out_buf.len();
-        {
-            let dst = frame.buffer.as_mut_slice();
-            dst[..out_len].copy_from_slice(&self.out_buf[..out_len]);
-        }
+        frame.buffer.as_mut_slice()[..out_len].copy_from_slice(&self.out_buf[..out_len]);
         frame.buffer.set_len(out_len);
-        frame.sample_rate = self.target_rate;
+        frame.sample_rate_hz = self.target_rate_hz;
         Some(frame)
     }
 }
-
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {
@@ -347,8 +319,6 @@ mod tests {
         let h = pool.acquire().unwrap();
         AudioFrame::new(StreamId(1), SourceId(1), seq, seq * 20_000_000, 1, h)
     }
-
-    // --- Bus tests ---
 
     #[test]
     fn push_pop_single_frame_succeeds() {
@@ -409,8 +379,6 @@ mod tests {
         assert_eq!(p.dropped_newest(), 8);
     }
 
-    // --- ClockSync tests ---
-
     #[test]
     fn clock_sync_zero_offset_produces_zero_correction() {
         let mut cs = ClockSync::default();
@@ -454,13 +422,11 @@ mod tests {
         cs.tick(1_000);
         cs.tick(1_000);
         assert!(
-            cs.integral() > 1_000.0,
+            cs.integral_ns() > 1_000.0,
             "integral {} should exceed single-tick error",
-            cs.integral()
+            cs.integral_ns()
         );
     }
-
-    // --- Graph tests ---
 
     #[test]
     fn gain_node_mutates_samples() {
@@ -474,8 +440,6 @@ mod tests {
         assert_eq!(out.buffer.as_slice(), &[0.5, -0.5]);
     }
 
-    // --- ResampleNode tests ---
-
     fn make_sample_frame(
         pool: &std::sync::Arc<AudioBufferPool>,
         samples: &[f32],
@@ -484,7 +448,7 @@ mod tests {
         let mut h = pool.acquire().unwrap();
         h.copy_from_slice(samples);
         let mut f = AudioFrame::new(StreamId(1), SourceId(1), 0, 0, 1, h);
-        f.sample_rate = rate;
+        f.sample_rate_hz = rate;
         f
     }
 
@@ -496,7 +460,7 @@ mod tests {
         let mut node = ResampleNode::identity_48k();
         let out = node.process(frame).unwrap();
         assert_eq!(out.buffer.len(), input.len());
-        assert_eq!(out.sample_rate, 48_000);
+        assert_eq!(out.sample_rate_hz, 48_000);
     }
 
     #[test]
@@ -507,7 +471,7 @@ mod tests {
         let mut node = ResampleNode::new(48_000, 44_100, 1);
         let out = node.process(frame).unwrap();
         assert!(out.buffer.len() < input.len());
-        assert_eq!(out.sample_rate, 44_100);
+        assert_eq!(out.sample_rate_hz, 44_100);
     }
 
     #[test]
@@ -526,7 +490,7 @@ mod tests {
         let mut h = pool.acquire().unwrap();
         h.copy_from_slice(&input);
         let mut frame = AudioFrame::new(StreamId(1), SourceId(1), 0, 0, 2, h);
-        frame.sample_rate = 48_000;
+        frame.sample_rate_hz = 48_000;
         let mut node = ResampleNode::new(48_000, 48_000, 1);
         assert!(node.process(frame).is_none());
     }

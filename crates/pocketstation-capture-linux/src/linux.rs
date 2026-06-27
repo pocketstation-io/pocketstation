@@ -27,7 +27,7 @@ use std::time::Duration;
 use pipewire as pw;
 use pocketstation_frame::{
     AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId,
-    DEFAULT_SAMPLE_RATE, DEFAULT_SLOT_SAMPLES_MONO_20MS,
+    POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,
 };
 use pw::properties::properties;
 use pw::spa;
@@ -44,7 +44,7 @@ use pocketstation_capture::{CaptureError as LoopbackError, CaptureMode};
 const CAPTURE_CHANNELS: u8 = 2;
 
 /// Stereo 20 ms frame at 48 kHz = 960 mono samples * 2 channels.
-const CAPTURE_FRAME_SAMPLES: usize = DEFAULT_SLOT_SAMPLES_MONO_20MS * CAPTURE_CHANNELS as usize;
+const CAPTURE_FRAME_SAMPLES: usize = POOL_SLOT_SAMPLES * CAPTURE_CHANNELS as usize;
 
 /// Pool depth: 8 frames absorb callback jitter without unbounded growth.
 const POOL_DEPTH: usize = 8;
@@ -265,7 +265,7 @@ where
                     );
                     frame.source_tag = AudioSourceTag::Captured;
                     frame.encryption_mode = EncryptionMode::None;
-                    frame.sample_rate = DEFAULT_SAMPLE_RATE;
+                    frame.sample_rate = SAMPLE_RATE_HZ;
 
                     // RT-safe: wait-free push; drops frame silently when ring is full.
                     let _ = frame_producer.push(frame);
@@ -276,7 +276,7 @@ where
             // Build audio format params.
             let mut audio_info = spa::param::audio::AudioInfoRaw::new();
             audio_info.set_format(AudioFormat::F32LE);
-            audio_info.set_rate(DEFAULT_SAMPLE_RATE);
+            audio_info.set_rate(SAMPLE_RATE_HZ);
             audio_info.set_channels(CAPTURE_CHANNELS as u32);
             let obj = pw::spa::pod::serialize::PodSerializer::serialize(
                 std::io::Cursor::new(Vec::new()),
@@ -647,7 +647,7 @@ where
                     );
                     frame.source_tag = AudioSourceTag::Captured;
                     frame.encryption_mode = EncryptionMode::None;
-                    frame.sample_rate = DEFAULT_SAMPLE_RATE;
+                    frame.sample_rate = SAMPLE_RATE_HZ;
 
                     // RT-safe: wait-free push; drops frame silently when ring is full.
                     let _ = frame_producer.push(frame);
@@ -657,7 +657,7 @@ where
 
             let mut audio_info = spa::param::audio::AudioInfoRaw::new();
             audio_info.set_format(AudioFormat::F32LE);
-            audio_info.set_rate(DEFAULT_SAMPLE_RATE);
+            audio_info.set_rate(SAMPLE_RATE_HZ);
             audio_info.set_channels(CAPTURE_CHANNELS as u32);
             let obj = pw::spa::pod::serialize::PodSerializer::serialize(
                 std::io::Cursor::new(Vec::new()),
@@ -757,7 +757,7 @@ where
                     }
                 };
                 let _ = hwp.set_channels(CAPTURE_CHANNELS as u32);
-                let _ = hwp.set_rate(DEFAULT_SAMPLE_RATE, alsa::ValueOr::Nearest);
+                let _ = hwp.set_rate(SAMPLE_RATE_HZ, alsa::ValueOr::Nearest);
                 let _ = hwp.set_format(Format::float());
                 let _ = hwp.set_access(Access::RWInterleaved);
                 if let Err(e) = pcm.hw_params(&hwp) {
@@ -812,7 +812,7 @@ where
                         );
                         frame.source_tag = AudioSourceTag::Captured;
                         frame.encryption_mode = EncryptionMode::None;
-                        frame.sample_rate = DEFAULT_SAMPLE_RATE;
+                        frame.sample_rate = SAMPLE_RATE_HZ;
                         callback(frame);
                     }
                 }
