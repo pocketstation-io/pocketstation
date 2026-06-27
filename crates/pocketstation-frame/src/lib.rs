@@ -25,6 +25,23 @@ pub struct StreamId(pub u64);
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct SourceId(pub u64);
 
+/// Identifies a named audio bus within a GraphSession. None = pre-graph capture path.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct BusId(pub u64);
+
+/// Opaque handles for Phase 3+ fields on SourceIdentity.
+#[derive(Debug, Clone, PartialEq, Eq, Hash)] pub struct UserId(pub String);
+#[derive(Debug, Clone, PartialEq, Eq, Hash)] pub struct AgentId(pub String);
+#[derive(Debug, Clone, PartialEq, Eq, Hash)] pub struct ModelProviderId(pub String);
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)] pub struct ClockDomainId(pub u32);
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PrivacyClass {
+    Public,
+    Private,      // not forwarded to model nodes
+    Confidential, // E2EE required end-to-end (Phase 5)
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SampleFormat {
     F32Interleaved,
@@ -174,14 +191,54 @@ impl fmt::Debug for AudioBufferHandle {
     }
 }
 
+/// Semantic identity of an audio source node in the graph (v3.0 addition — Phase 0).
+#[derive(Debug, Clone)]
+pub struct SourceIdentity {
+    pub source_id:          SourceId,
+    pub display_name:       String,
+    pub kind:               SourceKind,
+    pub platform:           Platform,
+    pub app_bundle_id:      Option<String>,
+    pub device_id:          Option<String>,
+    pub human_owner:        Option<UserId>,         // Phase 3
+    pub agent_owner:        Option<AgentId>,        // Phase 3
+    pub model_owner:        Option<ModelProviderId>, // Phase 3
+    pub clock_domain:       ClockDomainId,
+    pub privacy_class:      PrivacyClass,
+}
+
+/// Identifies an audio source kind for graph node discrimination.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum SourceKind {
+    Mic,
+    SystemOutput,
+    Application,
+    Device,
+    NetworkStream,
+    VirtualInput,
+    ModelOutput, // TTS or agent output fed back into the graph
+    Synthetic,   // testing / Phase 0 sine sources
+}
+
+/// Describes a named audio bus in a GraphSession (v3.0 addition — Phase 0).
+#[derive(Debug, Clone)]
+pub struct BusDescriptor {
+    pub bus_id:         BusId,
+    pub name:           String,
+    pub mode:           AudioMode, // Voice | Music | Broadcast
+    pub channels:       u8,        // 1 or 2
+    pub sample_rate_hz: u32,       // always 48_000 in Phase 0–1
+}
+
 #[derive(Debug)]
 pub struct AudioFrame {
     pub stream_id:       StreamId,
     pub source_id:       SourceId,
-    pub sample_rate_hz:  u32,             // always 48_000 internally; see DOCS-013
-    pub channels:        u8,              // 1 = voice, 2 = music/broadcast
+    pub bus_id:          Option<BusId>, // semantic bus identity (v3.0)
+    pub sample_rate_hz:  u32,           // always 48_000 internally; see DOCS-013
+    pub channels:        u8,            // 1 = voice, 2 = music/broadcast
     pub format:          SampleFormat,
-    pub timestamp_ns:    u64,             // monotonic, never wall clock
+    pub timestamp_ns:    u64,           // monotonic, never wall clock
     pub sequence_number: u64,
     pub buffer:          AudioBufferHandle,
     pub source_tag:      AudioSourceTag,  // AiTts triggers AUDIO-017 watermark
@@ -201,6 +258,7 @@ impl AudioFrame {
         Self {
             stream_id,
             source_id,
+            bus_id:          None,
             sample_rate_hz:  SAMPLE_RATE_HZ,
             channels,
             format:          SampleFormat::F32Interleaved,
