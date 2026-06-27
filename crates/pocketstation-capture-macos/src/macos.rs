@@ -153,7 +153,7 @@ impl SystemLoopbackSource {
                         AudioFrame::new(StreamId(0), SourceId(0), seq, ts_ns, channels, handle);
                     frame.source_tag = AudioSourceTag::Captured;
                     frame.encryption_mode = EncryptionMode::None;
-                    frame.sample_rate = sample_rate;
+                    frame.sample_rate_hz = sample_rate;
                     callback(frame);
                     seq += 1;
                 }

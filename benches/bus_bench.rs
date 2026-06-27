@@ -1,13 +1,13 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use pocketstation_audio::{
-    frame_bus, AudioBufferPool, AudioFrame, SourceId, StreamId, DEFAULT_SLOT_SAMPLES_MONO_20MS,
+    frame_bus, AudioBufferPool, AudioFrame, SourceId, StreamId, POOL_SLOT_SAMPLES,
 };
 
 fn bench_bus(c: &mut Criterion) {
     let mut group = c.benchmark_group("frame_bus");
 
     // Pool of 64 slots — large enough that acquire never fails during the bench.
-    let pool = AudioBufferPool::new(64, DEFAULT_SLOT_SAMPLES_MONO_20MS);
+    let pool = AudioBufferPool::new(64, POOL_SLOT_SAMPLES);
 
     group.bench_function("push_drop_newest_and_pop", |b| {
         // Create a fresh bus each iteration set so the ring is never saturated.

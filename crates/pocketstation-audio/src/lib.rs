@@ -42,9 +42,9 @@ pub use pocketstation_capture_macos::{asp_is_installed, tap_available};
 
 use std::f32::consts::PI;
 
-pub fn fill_sine(buffer: &mut [f32], sample_rate: u32, freq_hz: f32, start_sample: u64) {
+pub fn fill_sine(buffer: &mut [f32], sample_rate_hz: u32, freq_hz: f32, start_sample: u64) {
     for (i, s) in buffer.iter_mut().enumerate() {
-        let t = (start_sample + i as u64) as f32 / sample_rate as f32;
+        let t = (start_sample + i as u64) as f32 / sample_rate_hz as f32;
         *s = (2.0 * PI * freq_hz * t).sin() * 0.25;
     }
 }
