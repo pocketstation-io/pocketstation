@@ -1,5 +1,41 @@
 # Phase 0 Progress — audio-core
 
+## Graph-crate rescue — Wave 1 (DONE 2026-06-27)
+
+**Branch:** wave1/caps-and-frame
+**Scope:** typed media contracts + frame extensions (foundation for the DSL→IR→runtime rewrite).
+See `docs/GRAPH_RESCUE_EXECUTION_PLAN.md` for the governing resolution and full wave list.
+
+### What was built
+- **`pocketstation-caps`** (new crate) — `MediaKind`, `ChannelLayout`, `AudioCaps`, `MediaCaps`
+  (with `is_compatible_with`/`negotiate`), `PortSpec`, `ClockDomain`, `BackpressurePolicy`,
+  `DeliverySemantics`, `CopyPolicy`, `LossPolicy`, `EdgeObservabilityLevel`, `EdgeContract`
+  (`voice_default`/`model_default` per CODE_PROTOCOL §C-6). 14 GWT tests incl. proptest
+  (compat reflexive + symmetric).
+- **`pocketstation-frame`** — added `SampleSpec`, `EncodedCodec`, `EncodedFrame`, `EventPayload`,
+  `EventFrame`; migrated the 5 existing tests to GWT names (bodies unchanged); +7 new GWT tests.
+- **`pocketstation-audio`** — explicit re-export disambiguates the canonical `frame::EncodedFrame`
+  from the leaner `codec::EncodedFrame` (no consumer used the facade name; behavior-preserving).
+- **`scripts/check_protocol.sh`** — added LAW-13 forbidden-vocabulary check (room/listener/track).
+- **`prototype/graph-engine-frozen`** tag — froze the demo-grade graph engine before the rewrite.
+
+### Verification
+```
+cargo fmt --all -- --check                                 PASS
+cargo clippy --workspace --all-targets -- -D warnings      PASS (0 warnings)
+cargo test --workspace                                     PASS (130 tests, was 109)
+check_protocol.sh (run inside caps + frame)                PASS (LAW 1/10/13/15/16/18)
+```
+
+### Staff Bar Self-Check — Wave 1
+- Smallest correct design: yes — pure additive type layer + one disambiguating re-export.
+- Hot-path safe: yes — `EncodedFrame`/`EventFrame` heap fields documented as off-callback (LAW 15).
+- Public API change: additive only; `pocketstation_audio::EncodedFrame` now = `frame::EncodedFrame` (no consumer used it).
+- New scaffold: none — both crates fully real; no FAKE_SCAFFOLD row needed.
+- New dependency: none (caps reuses workspace `proptest` dev-dep).
+- Phase scope: Phase 0 correction (no Phase N+1 code). Pre-existing non-GWT tests in 4 untouched
+  crates recorded in the execution plan for a dedicated, deliberate compliance-migration wave.
+
 ## Phase 0 COMPLETE — 2026-06-27 (v3.0 exit gate)
 
 **Status: COMPLETE**

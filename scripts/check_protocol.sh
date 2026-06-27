@@ -36,6 +36,15 @@ if [ -n "$bad_tests" ]; then
 fi
 echo "  pass"
 
+echo "LAW-13: forbidden v2.3 vocabulary (room/listener/track)..."
+vocab=$(grep -rniE "\b(room|listener|track)\b" src/ --include="*.rs" 2>/dev/null | grep -v "//" || true)
+if [ -n "$vocab" ]; then
+  echo "  FAIL: v3.0 vocabulary required (GraphSession/BusSubscription/AudioBus):"
+  echo "$vocab"
+  exit 1
+fi
+echo "  pass"
+
 echo "LAW-18: no dumping-ground modules..."
 if find . -type d \( -name "utils" -o -name "helpers" -o -name "common" -o -name "misc" \) \
   2>/dev/null | grep -v ".git\|node_modules\|target" | grep -q .; then

@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
   "crates/pocketstation-frame",
+  "crates/pocketstation-caps",
   "crates/pocketstation-codec",
   "crates/pocketstation-metrics",
   "crates/pocketstation-pipeline",
