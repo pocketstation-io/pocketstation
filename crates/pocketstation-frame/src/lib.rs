@@ -52,6 +52,27 @@ pub enum SampleFormat {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct SampleSpec {
+    pub sample_rate_hz: u32,
+    pub channels: u8,
+    pub format: SampleFormat,
+}
+
+impl SampleSpec {
+    pub fn new(sample_rate_hz: u32, channels: u8, format: SampleFormat) -> Self {
+        Self {
+            sample_rate_hz,
+            channels,
+            format,
+        }
+    }
+
+    pub fn frame_samples_for_duration_ms(&self, duration_ms: u32) -> usize {
+        (self.sample_rate_hz * duration_ms / 1000) as usize * self.channels as usize
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AudioMode {
     Voice,
     Music,
@@ -300,12 +321,111 @@ impl AudioFrame {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum EncodedCodec {
+    Opus,    // RFC 6716 single Opus payload
+    OpusRed, // RFC 2198 redundancy wrapping Opus; loss-resilient (ADR-021)
+}
+
+impl EncodedCodec {
+    pub fn is_redundant(self) -> bool {
+        matches!(self, Self::OpusRed)
+    }
+}
+
+/// Encoder output; produced on the encoder/processing thread, never the audio callback,
+/// so the owned payload_bytes Vec does not violate the hot-path purity rule (LAW 15).
+#[derive(Debug, Clone)]
+pub struct EncodedFrame {
+    pub stream_id: StreamId,
+    pub source_id: SourceId,
+    pub bus_id: Option<BusId>,
+    pub codec: EncodedCodec,
+    pub sample_rate_hz: u32,
+    pub channels: u8,
+    pub timestamp_ns: u64,
+    pub sequence_number: u64,
+    pub payload_bytes: Vec<u8>,
+    pub source_tag: AudioSourceTag,
+    pub encryption_mode: EncryptionMode,
+}
+
+impl EncodedFrame {
+    #[allow(clippy::too_many_arguments)]
+    pub fn new(
+        stream_id: StreamId,
+        source_id: SourceId,
+        bus_id: Option<BusId>,
+        codec: EncodedCodec,
+        sample_rate_hz: u32,
+        channels: u8,
+        timestamp_ns: u64,
+        sequence_number: u64,
+        payload_bytes: Vec<u8>,
+        source_tag: AudioSourceTag,
+        encryption_mode: EncryptionMode,
+    ) -> Self {
+        Self {
+            stream_id,
+            source_id,
+            bus_id,
+            codec,
+            sample_rate_hz,
+            channels,
+            timestamp_ns,
+            sequence_number,
+            payload_bytes,
+            source_tag,
+            encryption_mode,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum EventPayload {
+    VoiceActivity(bool),
+    Transcript { text: String, is_final: bool },
+    Metadata { key: String, value: String },
+}
+
+/// Control/event-plane frame; produced off the audio callback thread, so the owned
+/// String payloads in EventPayload are acceptable here (LAW 15 hot-path purity).
+#[derive(Debug, Clone)]
+pub struct EventFrame {
+    pub stream_id: StreamId,
+    pub source_id: SourceId,
+    pub bus_id: Option<BusId>,
+    pub timestamp_ns: u64,
+    pub sequence_number: u64,
+    pub payload: EventPayload,
+}
+
+impl EventFrame {
+    pub fn new(
+        stream_id: StreamId,
+        source_id: SourceId,
+        bus_id: Option<BusId>,
+        timestamp_ns: u64,
+        sequence_number: u64,
+        payload: EventPayload,
+    ) -> Self {
+        Self {
+            stream_id,
+            source_id,
+            bus_id,
+            timestamp_ns,
+            sequence_number,
+            payload,
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn acquire_all_slots_then_none() {
+    fn given_pool_with_4_slots_when_all_acquired_then_next_acquire_returns_none() {
         // Given
         let pool = AudioBufferPool::new(4, 16);
 
@@ -325,7 +445,7 @@ mod tests {
     }
 
     #[test]
-    fn handle_copy_sets_length() {
+    fn given_acquired_handle_when_copy_from_slice_then_length_matches_data() {
         // Given
         let pool = AudioBufferPool::new(1, 8);
         let mut h = pool.acquire().unwrap();
@@ -339,7 +459,7 @@ mod tests {
     }
 
     #[test]
-    fn acquire_all_64_slots_then_65th_returns_none() {
+    fn given_full_64_slot_pool_when_acquire_then_returns_none_and_increments_failures() {
         // Given
         let pool = AudioBufferPool::new(64, 4);
 
@@ -354,7 +474,7 @@ mod tests {
     }
 
     #[test]
-    fn drop_releases_slot_and_reacquire_succeeds() {
+    fn given_exhausted_pool_when_handle_dropped_then_reacquire_succeeds() {
         // Given
         let pool = AudioBufferPool::new(1, 4);
         let h = pool.acquire().unwrap();
@@ -368,7 +488,7 @@ mod tests {
     }
 
     #[test]
-    fn is_in_use_tracks_acquire_and_release() {
+    fn given_pool_when_acquire_and_release_then_in_use_flag_tracks_state() {
         // Given
         let pool = AudioBufferPool::new(2, 4);
         let h = pool.acquire().unwrap();
@@ -378,5 +498,136 @@ mod tests {
         assert!(pool.is_in_use(slot));
         drop(h);
         assert!(!pool.is_in_use(slot));
+    }
+
+    #[test]
+    fn given_48khz_mono_spec_when_frame_samples_for_20ms_then_returns_960() {
+        // Given
+        let spec = SampleSpec::new(SAMPLE_RATE_HZ, 1, SampleFormat::F32Interleaved);
+
+        // When
+        let samples = spec.frame_samples_for_duration_ms(FRAME_DURATION_MS);
+
+        // Then
+        assert_eq!(samples, 960);
+    }
+
+    #[test]
+    fn given_48khz_stereo_spec_when_frame_samples_for_20ms_then_returns_1920() {
+        // Given
+        let spec = SampleSpec::new(SAMPLE_RATE_HZ, 2, SampleFormat::F32Interleaved);
+
+        // When
+        let samples = spec.frame_samples_for_duration_ms(FRAME_DURATION_MS);
+
+        // Then
+        assert_eq!(samples, 1920);
+    }
+
+    #[test]
+    fn given_encoded_codec_variants_when_is_redundant_then_only_opus_red_is_true() {
+        // Given / When / Then
+        assert!(!EncodedCodec::Opus.is_redundant());
+        assert!(EncodedCodec::OpusRed.is_redundant());
+    }
+
+    #[test]
+    fn given_encoded_frame_fields_when_new_then_fields_round_trip() {
+        // Given
+        let payload_bytes = vec![1u8, 2, 3, 4];
+
+        // When
+        let frame = EncodedFrame::new(
+            StreamId(7),
+            SourceId(11),
+            Some(BusId(3)),
+            EncodedCodec::OpusRed,
+            SAMPLE_RATE_HZ,
+            2,
+            123_456_789,
+            42,
+            payload_bytes.clone(),
+            AudioSourceTag::AiTts,
+            EncryptionMode::SFrame,
+        );
+
+        // Then
+        assert_eq!(frame.stream_id, StreamId(7));
+        assert_eq!(frame.source_id, SourceId(11));
+        assert_eq!(frame.bus_id, Some(BusId(3)));
+        assert_eq!(frame.codec, EncodedCodec::OpusRed);
+        assert_eq!(frame.sample_rate_hz, SAMPLE_RATE_HZ);
+        assert_eq!(frame.channels, 2);
+        assert_eq!(frame.timestamp_ns, 123_456_789);
+        assert_eq!(frame.sequence_number, 42);
+        assert_eq!(frame.payload_bytes, payload_bytes);
+        assert_eq!(frame.source_tag, AudioSourceTag::AiTts);
+        assert_eq!(frame.encryption_mode, EncryptionMode::SFrame);
+    }
+
+    #[test]
+    fn given_voice_activity_payload_when_event_frame_new_then_payload_round_trips() {
+        // Given / When
+        let frame = EventFrame::new(
+            StreamId(1),
+            SourceId(2),
+            None,
+            10,
+            1,
+            EventPayload::VoiceActivity(true),
+        );
+
+        // Then
+        assert_eq!(frame.payload, EventPayload::VoiceActivity(true));
+    }
+
+    #[test]
+    fn given_transcript_payload_when_event_frame_new_then_payload_round_trips() {
+        // Given / When
+        let frame = EventFrame::new(
+            StreamId(1),
+            SourceId(2),
+            Some(BusId(9)),
+            20,
+            2,
+            EventPayload::Transcript {
+                text: "hello".to_string(),
+                is_final: true,
+            },
+        );
+
+        // Then
+        assert_eq!(
+            frame.payload,
+            EventPayload::Transcript {
+                text: "hello".to_string(),
+                is_final: true,
+            }
+        );
+    }
+
+    #[test]
+    fn given_metadata_payload_when_event_frame_new_then_payload_round_trips() {
+        // Given / When
+        let frame = EventFrame::new(
+            StreamId(1),
+            SourceId(2),
+            None,
+            30,
+            3,
+            EventPayload::Metadata {
+                key: "lang".to_string(),
+                value: "en".to_string(),
+            },
+        );
+
+        // Then
+        assert_eq!(
+            frame.payload,
+            EventPayload::Metadata {
+                key: "lang".to_string(),
+                value: "en".to_string(),
+            }
+        );
     }
 }

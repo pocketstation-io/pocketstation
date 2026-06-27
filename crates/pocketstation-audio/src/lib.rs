@@ -6,6 +6,11 @@ pub use pocketstation_frame::*;
 pub use pocketstation_metrics::*;
 pub use pocketstation_pipeline::*;
 
+// frame owns the canonical graph-level EncodedFrame; codec's leaner Opus-packet
+// type stays reachable as pocketstation_codec::EncodedFrame. Explicit re-export
+// disambiguates the two glob re-exports above.
+pub use pocketstation_frame::EncodedFrame;
+
 pub use pocketstation_capture::{
     capture_system_audio, capture_with_mode, discover_sources, open_best_source, AdapterError,
     AudioOutputDescriptor, AudioOutputSink, AudioSourceDescriptor, AudioSourceStream, CaptureError,

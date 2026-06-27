@@ -821,6 +821,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "pocketstation-caps"
+version = "0.1.0"
+dependencies = [
+ "pocketstation-frame",
+ "proptest",
+]
+
+[[package]]
 name = "pocketstation-capture"
 version = "0.1.0"
 dependencies = [
