@@ -8,7 +8,7 @@
 use assert_no_alloc::*;
 use pocketstation_audio::{
     frame_bus, AudioBufferPool, AudioFrame, OpusDecoder, OpusEncoder, SourceId, StreamId,
-    DEFAULT_SAMPLE_RATE, DEFAULT_SLOT_SAMPLES_MONO_20MS, OPUS_MAX_PACKET_BYTES,
+    SAMPLE_RATE_HZ, POOL_SLOT_SAMPLES, OPUS_MAX_PACKET_BYTES,
 };
 
 #[cfg(test)]
@@ -20,14 +20,14 @@ static A: AllocDisabler = AllocDisabler;
 /// then zero heap allocations must occur.
 #[test]
 fn given_hot_path_when_100_frames_then_zero_heap_allocs() {
-    let pool = AudioBufferPool::new(64, DEFAULT_SLOT_SAMPLES_MONO_20MS);
+    let pool = AudioBufferPool::new(64, POOL_SLOT_SAMPLES);
     let (mut prod, mut cons) = frame_bus(64);
     let mut encoder = OpusEncoder::default();
     let mut decoder = OpusDecoder::default();
 
-    let pcm: Vec<f32> = build_sine(0, DEFAULT_SLOT_SAMPLES_MONO_20MS);
+    let pcm: Vec<f32> = build_sine(0, POOL_SLOT_SAMPLES);
     let mut encode_buf: Vec<u8> = Vec::with_capacity(OPUS_MAX_PACKET_BYTES);
-    let mut decode_buf: Vec<f32> = Vec::with_capacity(DEFAULT_SLOT_SAMPLES_MONO_20MS);
+    let mut decode_buf: Vec<f32> = Vec::with_capacity(POOL_SLOT_SAMPLES);
 
     // Warm up 10 frames to exhaust libopus lazy-init paths before the gate opens.
     for wu in 0u64..10 {
@@ -75,7 +75,7 @@ fn given_hot_path_when_100_frames_then_zero_heap_allocs() {
 fn build_sine(start: u64, len: usize) -> Vec<f32> {
     (0..len)
         .map(|i| {
-            let t = (start + i as u64) as f32 / DEFAULT_SAMPLE_RATE as f32;
+            let t = (start + i as u64) as f32 / SAMPLE_RATE_HZ as f32;
             (2.0 * std::f32::consts::PI * 440.0 * t).sin() * 0.25
         })
         .collect()

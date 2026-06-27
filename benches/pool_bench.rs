@@ -1,5 +1,5 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use pocketstation_audio::{AudioBufferPool, DEFAULT_SLOT_SAMPLES_MONO_20MS, MAX_POOL_SLOTS};
+use pocketstation_audio::{AudioBufferPool, POOL_SLOT_SAMPLES, POOL_MAX_SLOTS};
 
 fn bench_pool(c: &mut Criterion) {
     let mut group = c.benchmark_group("audio_buffer_pool");
@@ -7,7 +7,7 @@ fn bench_pool(c: &mut Criterion) {
     // Pool sized to the architecture maximum: 64 slots of 960 samples each.
     // Constructed once outside the loop — measures the atomic CAS acquire+release
     // cycle only, not allocation.
-    let pool = AudioBufferPool::new(MAX_POOL_SLOTS, DEFAULT_SLOT_SAMPLES_MONO_20MS);
+    let pool = AudioBufferPool::new(POOL_MAX_SLOTS, POOL_SLOT_SAMPLES);
 
     group.bench_function("acquire_and_drop", |b| {
         b.iter(|| {

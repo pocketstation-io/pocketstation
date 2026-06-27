@@ -108,7 +108,7 @@ pub fn discover_sources_native() -> Vec<CaptureSource> {
                     3 => SourceState::Unavailable,
                     _ => SourceState::Available,
                 },
-                sample_rate: r.sample_rate,
+                sample_rate_hz: r.sample_rate,
                 channels: r.channels,
             }
         })
@@ -300,7 +300,7 @@ impl TapLoopbackSource {
                         AudioFrame::new(StreamId(0), frame_source_id, seq, ts_ns, channels, handle);
                     frame.source_tag = AudioSourceTag::Captured;
                     frame.encryption_mode = EncryptionMode::None;
-                    frame.sample_rate = sample_rate;
+                    frame.sample_rate_hz = sample_rate;
                     callback(frame);
                     seq += 1;
                 }
