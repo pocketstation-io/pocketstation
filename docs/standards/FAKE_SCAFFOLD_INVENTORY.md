@@ -24,8 +24,8 @@ DEFERRED    Intentionally postponed; ADR or phase plan justifies it
 
 | Component | Status | Repo / File | What's missing | Replace by | Blocked on |
 |---|---|---|---|---|---|
-| pocketstation-graph AudioGraph::run() | SCAFFOLD | audio-core / pocketstation-graph / src/lib.rs | `run()` returns `Ok(())` immediately; no real frame scheduling, no async executor, no edge traversal | Phase 1 | Phase 0 exit audit passes; Phase 1 scheduler design |
-| pocketstation-graph AudioGraph::compile() | SCAFFOLD | audio-core / pocketstation-graph / src/lib.rs | No cycle detection, no topological sort, no adapter auto-insertion; accepts any topology | Phase 1 | Phase 1 graph compiler |
+| pocketstation-ml NoiseSuppressor | PARTIAL | audio-core / pocketstation-ml / src/denoise.rs | Per-band RMS Wiener gate; missing full FFT-domain spectral subtraction (RNNoise/WebRTC NS quality) | Phase 5 | Phase 5: ONNX/RNNoise model |
+| pocketstation-ml EchoCanceller | PARTIAL | audio-core / pocketstation-ml / src/aec.rs | NLMS 512-tap adaptive filter; missing delay estimation, double-talk detector, frequency-domain partitioned-block (WebRTC AEC3 quality) | Phase 5 | Phase 5: production AEC |
 | pocketstation-capture-macos (Application mode) | PARTIAL | audio-core / pocketstation-capture-macos / src/macos_tap.rs | `CaptureMode::Application` uses CoreAudio tap; per-app routing works but sub-5 ms requires ASP plugin (Wave D). Public claim: macOS 14.4+ until 14.2/14.3 tested on device. | Phase 3 Wave D | libASPL submodule + HAL plugin deployment |
 | pocketstation-capture-macos (ASP plugin) | DEFERRED | audio-core / pocketstation-capture-macos / asp/ | `pks_asp_is_installed()` returns 0 (stub); real plugin requires libASPL vendor submodule + signed deployment | Phase 3 Wave D | AUDIO-022; `vendor/libASPL` submodule (human operator step) |
 | pocketstation-capture-linux | PARTIAL | audio-core / pocketstation-capture-linux / src/linux.rs | PipeWire path + snd-aloop fallback implemented (AUDIO-024); no CI runner with real PipeWire daemon; PipeWire graph model (node serial, ports, links) still first-pass | Phase 3 Wave C | Linux CI runner with PipeWire |
