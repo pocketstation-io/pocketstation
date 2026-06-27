@@ -27,7 +27,7 @@ use std::time::Duration;
 use pipewire as pw;
 use pocketstation_frame::{
     AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId,
-    SAMPLE_RATE_HZ, POOL_SLOT_SAMPLES,
+    POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,
 };
 use pw::properties::properties;
 use pw::spa;

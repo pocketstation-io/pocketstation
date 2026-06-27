@@ -8,7 +8,7 @@
 use assert_no_alloc::*;
 use pocketstation_audio::{
     frame_bus, AudioBufferPool, AudioFrame, OpusDecoder, OpusEncoder, SourceId, StreamId,
-    SAMPLE_RATE_HZ, POOL_SLOT_SAMPLES, OPUS_MAX_PACKET_BYTES,
+    OPUS_MAX_PACKET_BYTES, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,
 };
 
 #[cfg(test)]

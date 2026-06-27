@@ -3,26 +3,40 @@ use std::sync::atomic::{AtomicU64, Ordering};
 #[derive(Default)]
 pub struct Counter(AtomicU64);
 impl Counter {
-    pub fn inc(&self)          { self.0.fetch_add(1, Ordering::Relaxed); }
-    pub fn add(&self, n: u64)  { self.0.fetch_add(n, Ordering::Relaxed); }
-    pub fn get(&self) -> u64   { self.0.load(Ordering::Relaxed) }
+    pub fn inc(&self) {
+        self.0.fetch_add(1, Ordering::Relaxed);
+    }
+    pub fn add(&self, n: u64) {
+        self.0.fetch_add(n, Ordering::Relaxed);
+    }
+    pub fn get(&self) -> u64 {
+        self.0.load(Ordering::Relaxed)
+    }
 }
 
 #[derive(Default)]
 pub struct Gauge(AtomicU64);
 impl Gauge {
-    pub fn set_scaled(&self, v: f64) { self.0.store((v * 1_000_000.0) as u64, Ordering::Relaxed); }
-    pub fn get_scaled(&self) -> f64  { self.0.load(Ordering::Relaxed) as f64 / 1_000_000.0 }
+    pub fn set_scaled(&self, v: f64) {
+        self.0.store((v * 1_000_000.0) as u64, Ordering::Relaxed);
+    }
+    pub fn get_scaled(&self) -> f64 {
+        self.0.load(Ordering::Relaxed) as f64 / 1_000_000.0
+    }
 }
 
-const BUCKET_WIDTH_NS: u64   = 250_000;            // 250 µs per bucket
-const NUM_BUCKETS:     usize = 64;
-const OVERFLOW_BUCKET: usize = NUM_BUCKETS - 1;    // captures values >= 16 ms
+const BUCKET_WIDTH_NS: u64 = 250_000; // 250 µs per bucket
+const NUM_BUCKETS: usize = 64;
+const OVERFLOW_BUCKET: usize = NUM_BUCKETS - 1; // captures values >= 16 ms
 
 #[inline]
 fn bucket_for(v: u64) -> usize {
     let idx = (v / BUCKET_WIDTH_NS) as usize;
-    if idx >= OVERFLOW_BUCKET { OVERFLOW_BUCKET } else { idx }
+    if idx >= OVERFLOW_BUCKET {
+        OVERFLOW_BUCKET
+    } else {
+        idx
+    }
 }
 
 #[inline]
@@ -39,9 +53,9 @@ fn bucket_midpoint_ns(idx: usize) -> u64 {
 /// All counters are `AtomicU64` — Send + Sync without any mutex.
 pub struct SimpleHistogram {
     buckets: [AtomicU64; NUM_BUCKETS],
-    count:   AtomicU64,
-    sum_ns:  AtomicU64,
-    max_ns:  AtomicU64,
+    count: AtomicU64,
+    sum_ns: AtomicU64,
+    max_ns: AtomicU64,
 }
 
 impl SimpleHistogram {
@@ -54,7 +68,9 @@ impl SimpleHistogram {
         let ptr = arr.as_mut_ptr() as *mut AtomicU64;
         for i in 0..NUM_BUCKETS {
             // SAFETY: ptr is valid for NUM_BUCKETS elements.
-            unsafe { ptr.add(i).write(AtomicU64::new(0)); }
+            unsafe {
+                ptr.add(i).write(AtomicU64::new(0));
+            }
         }
         // SAFETY: every element has been written.
         unsafe { arr.assume_init() }
@@ -68,16 +84,25 @@ impl SimpleHistogram {
         self.sum_ns.fetch_add(v, Ordering::Relaxed);
         let mut old = self.max_ns.load(Ordering::Relaxed);
         while v > old {
-            match self.max_ns.compare_exchange_weak(old, v, Ordering::Relaxed, Ordering::Relaxed) {
+            match self
+                .max_ns
+                .compare_exchange_weak(old, v, Ordering::Relaxed, Ordering::Relaxed)
+            {
                 Ok(_) => break,
                 Err(current) => old = current,
             }
         }
     }
 
-    pub fn count(&self) -> u64   { self.count.load(Ordering::Relaxed) }
-    pub fn sum_ns(&self) -> u64  { self.sum_ns.load(Ordering::Relaxed) }
-    pub fn max_ns(&self) -> u64  { self.max_ns.load(Ordering::Relaxed) }
+    pub fn count(&self) -> u64 {
+        self.count.load(Ordering::Relaxed)
+    }
+    pub fn sum_ns(&self) -> u64 {
+        self.sum_ns.load(Ordering::Relaxed)
+    }
+    pub fn max_ns(&self) -> u64 {
+        self.max_ns.load(Ordering::Relaxed)
+    }
 
     /// Non-atomic snapshot — slightly inconsistent under concurrent writes.
     /// Acceptable for metrics reporting; `p` must be in `[0.0, 1.0]`.
@@ -90,29 +115,41 @@ impl SimpleHistogram {
             counts[i] = c;
             total = total.saturating_add(c);
         }
-        if total == 0 { return 0; }
+        if total == 0 {
+            return 0;
+        }
         let threshold = ((p * total as f64).ceil() as u64).max(1);
         let mut accumulated: u64 = 0;
         for (i, &c) in counts.iter().enumerate() {
             accumulated = accumulated.saturating_add(c);
-            if accumulated >= threshold { return bucket_midpoint_ns(i); }
+            if accumulated >= threshold {
+                return bucket_midpoint_ns(i);
+            }
         }
         bucket_midpoint_ns(OVERFLOW_BUCKET)
     }
 
-    pub fn p50_ns(&self) -> u64  { self.percentile_ns(0.50) }
-    pub fn p95_ns(&self) -> u64  { self.percentile_ns(0.95) }
-    pub fn p99_ns(&self) -> u64  { self.percentile_ns(0.99) }
-    pub fn p999_ns(&self) -> u64 { self.percentile_ns(0.999) }
+    pub fn p50_ns(&self) -> u64 {
+        self.percentile_ns(0.50)
+    }
+    pub fn p95_ns(&self) -> u64 {
+        self.percentile_ns(0.95)
+    }
+    pub fn p99_ns(&self) -> u64 {
+        self.percentile_ns(0.99)
+    }
+    pub fn p999_ns(&self) -> u64 {
+        self.percentile_ns(0.999)
+    }
 }
 
 impl Default for SimpleHistogram {
     fn default() -> Self {
         Self {
             buckets: Self::new_buckets(),
-            count:   AtomicU64::new(0),
-            sum_ns:  AtomicU64::new(0),
-            max_ns:  AtomicU64::new(0),
+            count: AtomicU64::new(0),
+            sum_ns: AtomicU64::new(0),
+            max_ns: AtomicU64::new(0),
         }
     }
 }
@@ -124,10 +161,10 @@ unsafe impl Sync for SimpleHistogram {}
 #[derive(Default)]
 pub struct BusMetrics {
     pub capture_to_bus_ns: SimpleHistogram,
-    pub ring_utilization:  Gauge,
-    pub overruns_total:    Counter,
-    pub pool_exhaustion:   Counter,
-    pub frames_total:      Counter,
+    pub ring_utilization: Gauge,
+    pub overruns_total: Counter,
+    pub pool_exhaustion: Counter,
+    pub frames_total: Counter,
 }
 
 #[cfg(test)]
@@ -193,11 +230,16 @@ mod tests {
     #[test]
     fn histogram_p50_of_uniform_0_to_10ms_is_near_5ms() {
         let h = SimpleHistogram::default();
-        for i in 0..100u64 { h.record_ns(i * 100_000); }
+        for i in 0..100u64 {
+            h.record_ns(i * 100_000);
+        }
         let p50 = h.p50_ns();
         let lo: u64 = 4_750_000;
         let hi: u64 = 5_250_000;
-        assert!(p50 >= lo && p50 <= hi, "P50 = {p50} ns, expected {lo}..{hi} ns");
+        assert!(
+            p50 >= lo && p50 <= hi,
+            "P50 = {p50} ns, expected {lo}..{hi} ns"
+        );
     }
 
     #[test]
@@ -214,7 +256,9 @@ mod tests {
     #[test]
     fn histogram_p99_of_uniform_0_to_10ms_is_above_9ms() {
         let h = SimpleHistogram::default();
-        for i in 0..100u64 { h.record_ns(i * 100_000); }
+        for i in 0..100u64 {
+            h.record_ns(i * 100_000);
+        }
         assert!(h.p99_ns() >= 9_000_000, "P99 = {} ns", h.p99_ns());
     }
 
@@ -228,7 +272,9 @@ mod tests {
     #[test]
     fn histogram_record_ns_accumulates_10000_observations_correctly() {
         let h = SimpleHistogram::default();
-        for i in 0..10_000u64 { h.record_ns(i * 1_000); }
+        for i in 0..10_000u64 {
+            h.record_ns(i * 1_000);
+        }
         assert_eq!(h.count(), 10_000);
     }
 }

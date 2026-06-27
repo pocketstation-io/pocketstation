@@ -31,7 +31,7 @@ use std::sync::Arc;
 
 use pocketstation_frame::{
     AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId,
-    SAMPLE_RATE_HZ, POOL_SLOT_SAMPLES,
+    POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,
 };
 use wasapi::{AudioClient, DeviceEnumerator, Direction, SampleType, StreamMode, WaveFormat};
 

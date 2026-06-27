@@ -18,7 +18,7 @@
 /// Run:  cargo run -p pocketstation-audio --example soak --release
 use pocketstation_audio::{
     frame_bus, AudioBufferPool, AudioFrame, OpusDecoder, OpusEncoder, SourceId, StreamId,
-    SAMPLE_RATE_HZ, POOL_SLOT_SAMPLES,
+    POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,
 };
 use std::{f32::consts::PI, time::Instant};
 
