@@ -3,7 +3,7 @@ use rtrb::{Consumer, Producer, RingBuffer};
 use std::sync::atomic::{AtomicU64, Ordering};
 
 pub struct FrameProducer {
-    ring_producer:  Producer<AudioFrame>,
+    ring_producer: Producer<AudioFrame>,
     dropped_newest: AtomicU64,
 }
 
@@ -14,7 +14,10 @@ pub struct FrameConsumer {
 pub fn frame_bus(capacity: usize) -> (FrameProducer, FrameConsumer) {
     let (p, c) = RingBuffer::<AudioFrame>::new(capacity);
     (
-        FrameProducer { ring_producer: p, dropped_newest: AtomicU64::new(0) },
+        FrameProducer {
+            ring_producer: p,
+            dropped_newest: AtomicU64::new(0),
+        },
         FrameConsumer { ring_consumer: c },
     )
 }
@@ -29,26 +32,35 @@ impl FrameProducer {
             }
         }
     }
-    pub fn dropped_newest(&self) -> u64 { self.dropped_newest.load(Ordering::Relaxed) }
+    pub fn dropped_newest(&self) -> u64 {
+        self.dropped_newest.load(Ordering::Relaxed)
+    }
 }
 
 impl FrameConsumer {
-    pub fn pop(&mut self) -> Option<AudioFrame> { self.ring_consumer.pop().ok() }
+    pub fn pop(&mut self) -> Option<AudioFrame> {
+        self.ring_consumer.pop().ok()
+    }
 }
 
 const CLOCK_SYNC_CLAMP_NS: i64 = 10_000_000;
 
 #[derive(Debug, Clone, Copy)]
 pub struct ClockSync {
-    kp:             f64,
-    ki:             f64,
-    integral_ns:    f64,  // accumulated PI error term
+    kp: f64,
+    ki: f64,
+    integral_ns: f64, // accumulated PI error term
     last_offset_ns: i64,
 }
 
 impl ClockSync {
     pub fn new(kp: f64, ki: f64) -> Self {
-        Self { kp, ki, integral_ns: 0.0, last_offset_ns: 0 }
+        Self {
+            kp,
+            ki,
+            integral_ns: 0.0,
+            last_offset_ns: 0,
+        }
     }
 
     pub fn tick(&mut self, measured_offset_ns: i64) -> i64 {
@@ -61,12 +73,18 @@ impl ClockSync {
             .clamp(-CLOCK_SYNC_CLAMP_NS as f64, CLOCK_SYNC_CLAMP_NS as f64) as i64
     }
 
-    pub fn last_offset_ns(&self) -> i64 { self.last_offset_ns }
-    pub fn integral_ns(&self) -> f64    { self.integral_ns }
+    pub fn last_offset_ns(&self) -> i64 {
+        self.last_offset_ns
+    }
+    pub fn integral_ns(&self) -> f64 {
+        self.integral_ns
+    }
 }
 
 impl Default for ClockSync {
-    fn default() -> Self { Self::new(0.1, 0.001) }
+    fn default() -> Self {
+        Self::new(0.1, 0.001)
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -79,7 +97,9 @@ pub enum ChannelLayout {
 pub trait AudioProcessorNode: Send {
     fn name(&self) -> &'static str;
     fn process(&mut self, frame: AudioFrame) -> Option<AudioFrame>;
-    fn accepted_channels(&self) -> ChannelLayout { ChannelLayout::Either }
+    fn accepted_channels(&self) -> ChannelLayout {
+        ChannelLayout::Either
+    }
 }
 
 pub struct ProcessorGraph {
@@ -87,7 +107,9 @@ pub struct ProcessorGraph {
 }
 
 impl ProcessorGraph {
-    pub fn new() -> Self { Self { nodes: Vec::new() } }
+    pub fn new() -> Self {
+        Self { nodes: Vec::new() }
+    }
 
     pub fn add_node<N: AudioProcessorNode + 'static>(&mut self, node: N) {
         self.nodes.push(Box::new(node));
@@ -102,14 +124,20 @@ impl ProcessorGraph {
 }
 
 impl Default for ProcessorGraph {
-    fn default() -> Self { Self::new() }
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 pub struct PassthroughNode;
 
 impl AudioProcessorNode for PassthroughNode {
-    fn name(&self) -> &'static str { "passthrough" }
-    fn process(&mut self, frame: AudioFrame) -> Option<AudioFrame> { Some(frame) }
+    fn name(&self) -> &'static str {
+        "passthrough"
+    }
+    fn process(&mut self, frame: AudioFrame) -> Option<AudioFrame> {
+        Some(frame)
+    }
 }
 
 pub struct GainNode {
@@ -117,11 +145,15 @@ pub struct GainNode {
 }
 
 impl GainNode {
-    pub fn new(gain_linear: f32) -> Self { Self { gain_linear } }
+    pub fn new(gain_linear: f32) -> Self {
+        Self { gain_linear }
+    }
 }
 
 impl AudioProcessorNode for GainNode {
-    fn name(&self) -> &'static str { "gain" }
+    fn name(&self) -> &'static str {
+        "gain"
+    }
     fn process(&mut self, mut frame: AudioFrame) -> Option<AudioFrame> {
         for s in frame.buffer.as_mut_slice().iter_mut() {
             *s *= self.gain_linear;
@@ -133,12 +165,18 @@ impl AudioProcessorNode for GainNode {
 pub struct MonoMixNode;
 
 impl Default for MonoMixNode {
-    fn default() -> Self { Self }
+    fn default() -> Self {
+        Self
+    }
 }
 
 impl AudioProcessorNode for MonoMixNode {
-    fn name(&self) -> &'static str { "mono_mix" }
-    fn accepted_channels(&self) -> ChannelLayout { ChannelLayout::StereoOnly }
+    fn name(&self) -> &'static str {
+        "mono_mix"
+    }
+    fn accepted_channels(&self) -> ChannelLayout {
+        ChannelLayout::StereoOnly
+    }
 
     fn process(&mut self, mut frame: AudioFrame) -> Option<AudioFrame> {
         if frame.channels == 2 {
@@ -158,17 +196,17 @@ impl AudioProcessorNode for MonoMixNode {
     }
 }
 
-const NS_PER_SEC: f64             = 1_000_000_000.0;
+const NS_PER_SEC: f64 = 1_000_000_000.0;
 const RESAMPLE_MAX_OUT_SAMPLES: usize = 1920;
 
 pub struct ResampleNode {
     source_rate_hz: u32,
     target_rate_hz: u32,
-    channel_count:  u8,
-    clock_sync:     ClockSync,
-    phase:          f64,
-    last_sample:    f32,
-    out_buf:        Vec<f32>,
+    channel_count: u8,
+    clock_sync: ClockSync,
+    phase: f64,
+    last_sample: f32,
+    out_buf: Vec<f32>,
 }
 
 impl ResampleNode {
@@ -188,19 +226,25 @@ impl ResampleNode {
             source_rate_hz,
             target_rate_hz,
             channel_count,
-            clock_sync:  ClockSync::default(),
-            phase:       0.0,
+            clock_sync: ClockSync::default(),
+            phase: 0.0,
             last_sample: 0.0,
-            out_buf:     Vec::with_capacity(RESAMPLE_MAX_OUT_SAMPLES),
+            out_buf: Vec::with_capacity(RESAMPLE_MAX_OUT_SAMPLES),
         }
     }
 
-    pub fn identity_48k() -> Self { Self::new(48_000, 48_000, 1) }
+    pub fn identity_48k() -> Self {
+        Self::new(48_000, 48_000, 1)
+    }
 }
 
 impl AudioProcessorNode for ResampleNode {
-    fn name(&self) -> &'static str { "resample" }
-    fn accepted_channels(&self) -> ChannelLayout { ChannelLayout::Either }
+    fn name(&self) -> &'static str {
+        "resample"
+    }
+    fn accepted_channels(&self) -> ChannelLayout {
+        ChannelLayout::Either
+    }
 
     fn process(&mut self, mut frame: AudioFrame) -> Option<AudioFrame> {
         if frame.channels != self.channel_count {
@@ -237,13 +281,22 @@ impl AudioProcessorNode for ResampleNode {
             while out_count < expected_out {
                 phase += ratio;
                 while phase >= 1.0 {
-                    self.last_sample = if in_idx < input_len { input[in_idx] } else { 0.0 };
+                    self.last_sample = if in_idx < input_len {
+                        input[in_idx]
+                    } else {
+                        0.0
+                    };
                     in_idx += 1;
                     phase -= 1.0;
                 }
-                let current = if in_idx < input_len { input[in_idx] } else { 0.0_f32 };
+                let current = if in_idx < input_len {
+                    input[in_idx]
+                } else {
+                    0.0_f32
+                };
                 let t = phase as f32;
-                self.out_buf.push(self.last_sample * (1.0_f32 - t) + current * t);
+                self.out_buf
+                    .push(self.last_sample * (1.0_f32 - t) + current * t);
                 out_count += 1;
             }
             self.phase = phase;

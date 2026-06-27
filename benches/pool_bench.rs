@@ -1,5 +1,5 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use pocketstation_audio::{AudioBufferPool, POOL_SLOT_SAMPLES, POOL_MAX_SLOTS};
+use pocketstation_audio::{AudioBufferPool, POOL_MAX_SLOTS, POOL_SLOT_SAMPLES};
 
 fn bench_pool(c: &mut Criterion) {
     let mut group = c.benchmark_group("audio_buffer_pool");
