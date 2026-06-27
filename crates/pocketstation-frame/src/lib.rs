@@ -3,10 +3,10 @@ use std::fmt;
 use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
 use std::sync::Arc;
 
-pub const SAMPLE_RATE_HZ:    u32   = 48_000;
-pub const FRAME_DURATION_MS: u32   = 20;
-pub const POOL_SLOT_SAMPLES: usize = 960;    // 20ms × 48kHz
-pub const POOL_MAX_SLOTS:    usize = 64;     // AtomicU64 bitset ceiling
+pub const SAMPLE_RATE_HZ: u32 = 48_000;
+pub const FRAME_DURATION_MS: u32 = 20;
+pub const POOL_SLOT_SAMPLES: usize = 960; // 20ms × 48kHz
+pub const POOL_MAX_SLOTS: usize = 64; // AtomicU64 bitset ceiling
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Platform {
@@ -30,10 +30,14 @@ pub struct SourceId(pub u64);
 pub struct BusId(pub u64);
 
 /// Opaque handles for Phase 3+ fields on SourceIdentity.
-#[derive(Debug, Clone, PartialEq, Eq, Hash)] pub struct UserId(pub String);
-#[derive(Debug, Clone, PartialEq, Eq, Hash)] pub struct AgentId(pub String);
-#[derive(Debug, Clone, PartialEq, Eq, Hash)] pub struct ModelProviderId(pub String);
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)] pub struct ClockDomainId(pub u32);
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct UserId(pub String);
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct AgentId(pub String);
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct ModelProviderId(pub String);
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct ClockDomainId(pub u32);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PrivacyClass {
@@ -58,20 +62,20 @@ pub enum AudioMode {
 pub enum AudioSourceTag {
     #[default]
     Captured,
-    AiTts,    // EU AI Act §50: watermark required before relay delivery (AUDIO-017)
+    AiTts, // EU AI Act §50: watermark required before relay delivery (AUDIO-017)
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum EncryptionMode {
     #[default]
     None,
-    SFrame,   // RFC 9605 frame-level E2EE; relay forwards opaque, SDK decrypts
+    SFrame, // RFC 9605 frame-level E2EE; relay forwards opaque, SDK decrypts
 }
 
 pub struct AudioBufferPool {
-    slots:            Box<[UnsafeCell<Box<[f32]>>]>,
-    slot_size:        usize,      // samples per slot, fixed at creation
-    free_mask:        AtomicU64,  // bitset: 1 = free; 64-slot cap
+    slots: Box<[UnsafeCell<Box<[f32]>>]>,
+    slot_size: usize,     // samples per slot, fixed at creation
+    free_mask: AtomicU64, // bitset: 1 = free; 64-slot cap
     acquire_failures: AtomicUsize,
 }
 
@@ -87,18 +91,28 @@ impl AudioBufferPool {
         let slots: Vec<_> = (0..slot_count)
             .map(|_| UnsafeCell::new(vec![0.0f32; slot_size].into_boxed_slice()))
             .collect();
-        let full_mask = if slot_count == 64 { u64::MAX } else { (1u64 << slot_count) - 1 };
+        let full_mask = if slot_count == 64 {
+            u64::MAX
+        } else {
+            (1u64 << slot_count) - 1
+        };
         Arc::new(Self {
-            slots:            slots.into_boxed_slice(),
+            slots: slots.into_boxed_slice(),
             slot_size,
-            free_mask:        AtomicU64::new(full_mask),
+            free_mask: AtomicU64::new(full_mask),
             acquire_failures: AtomicUsize::new(0),
         })
     }
 
-    pub fn slot_size(&self) -> usize        { self.slot_size }
-    pub fn slot_count(&self) -> usize       { self.slots.len() }
-    pub fn acquire_failures(&self) -> usize { self.acquire_failures.load(Ordering::Relaxed) }
+    pub fn slot_size(&self) -> usize {
+        self.slot_size
+    }
+    pub fn slot_count(&self) -> usize {
+        self.slots.len()
+    }
+    pub fn acquire_failures(&self) -> usize {
+        self.acquire_failures.load(Ordering::Relaxed)
+    }
 
     pub fn acquire(self: &Arc<Self>) -> Option<AudioBufferHandle> {
         loop {
@@ -115,9 +129,9 @@ impl AudioBufferPool {
                 .is_ok()
             {
                 return Some(AudioBufferHandle {
-                    pool:  Arc::clone(self),
+                    pool: Arc::clone(self),
                     index: idx as u32,
-                    len:   self.slot_size as u32,
+                    len: self.slot_size as u32,
                 });
             }
         }
@@ -148,18 +162,28 @@ impl AudioBufferPool {
 }
 
 pub struct AudioBufferHandle {
-    pool:  Arc<AudioBufferPool>,
+    pool: Arc<AudioBufferPool>,
     index: u32,
-    len:   u32,
+    len: u32,
 }
 
 impl AudioBufferHandle {
-    pub fn len(&self) -> usize          { self.len as usize }
-    pub fn is_empty(&self) -> bool      { self.len == 0 }
-    pub fn index(&self) -> u32          { self.index }
-    pub fn as_slice(&self) -> &[f32]    { self.pool.slot(self.index, self.len) }
+    pub fn len(&self) -> usize {
+        self.len as usize
+    }
+    pub fn is_empty(&self) -> bool {
+        self.len == 0
+    }
+    pub fn index(&self) -> u32 {
+        self.index
+    }
+    pub fn as_slice(&self) -> &[f32] {
+        self.pool.slot(self.index, self.len)
+    }
 
-    pub fn as_mut_slice(&mut self) -> &mut [f32] { self.pool.slot_mut(self.index, self.len) }
+    pub fn as_mut_slice(&mut self) -> &mut [f32] {
+        self.pool.slot_mut(self.index, self.len)
+    }
 
     pub fn set_len(&mut self, len: usize) {
         assert!(len <= self.pool.slot_size());
@@ -177,7 +201,11 @@ impl AudioBufferHandle {
 impl Drop for AudioBufferHandle {
     fn drop(&mut self) {
         #[cfg(debug_assertions)]
-        debug_assert!(self.pool.is_in_use(self.index), "double-release of slot {}", self.index);
+        debug_assert!(
+            self.pool.is_in_use(self.index),
+            "double-release of slot {}",
+            self.index
+        );
         self.pool.release(self.index); // single atomic fetch_or
     }
 }
@@ -186,7 +214,7 @@ impl fmt::Debug for AudioBufferHandle {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("AudioBufferHandle")
             .field("index", &self.index)
-            .field("len",   &self.len)
+            .field("len", &self.len)
             .finish()
     }
 }
@@ -194,17 +222,17 @@ impl fmt::Debug for AudioBufferHandle {
 /// Semantic identity of an audio source node in the graph (v3.0 addition — Phase 0).
 #[derive(Debug, Clone)]
 pub struct SourceIdentity {
-    pub source_id:          SourceId,
-    pub display_name:       String,
-    pub kind:               SourceKind,
-    pub platform:           Platform,
-    pub app_bundle_id:      Option<String>,
-    pub device_id:          Option<String>,
-    pub human_owner:        Option<UserId>,         // Phase 3
-    pub agent_owner:        Option<AgentId>,        // Phase 3
-    pub model_owner:        Option<ModelProviderId>, // Phase 3
-    pub clock_domain:       ClockDomainId,
-    pub privacy_class:      PrivacyClass,
+    pub source_id: SourceId,
+    pub display_name: String,
+    pub kind: SourceKind,
+    pub platform: Platform,
+    pub app_bundle_id: Option<String>,
+    pub device_id: Option<String>,
+    pub human_owner: Option<UserId>,          // Phase 3
+    pub agent_owner: Option<AgentId>,         // Phase 3
+    pub model_owner: Option<ModelProviderId>, // Phase 3
+    pub clock_domain: ClockDomainId,
+    pub privacy_class: PrivacyClass,
 }
 
 /// Identifies an audio source kind for graph node discrimination.
@@ -223,50 +251,50 @@ pub enum SourceKind {
 /// Describes a named audio bus in a GraphSession (v3.0 addition — Phase 0).
 #[derive(Debug, Clone)]
 pub struct BusDescriptor {
-    pub bus_id:         BusId,
-    pub name:           String,
-    pub mode:           AudioMode, // Voice | Music | Broadcast
-    pub channels:       u8,        // 1 or 2
-    pub sample_rate_hz: u32,       // always 48_000 in Phase 0–1
+    pub bus_id: BusId,
+    pub name: String,
+    pub mode: AudioMode,     // Voice | Music | Broadcast
+    pub channels: u8,        // 1 or 2
+    pub sample_rate_hz: u32, // always 48_000 in Phase 0–1
 }
 
 #[derive(Debug)]
 pub struct AudioFrame {
-    pub stream_id:       StreamId,
-    pub source_id:       SourceId,
-    pub bus_id:          Option<BusId>, // semantic bus identity (v3.0)
-    pub sample_rate_hz:  u32,           // always 48_000 internally; see DOCS-013
-    pub channels:        u8,            // 1 = voice, 2 = music/broadcast
-    pub format:          SampleFormat,
-    pub timestamp_ns:    u64,           // monotonic, never wall clock
+    pub stream_id: StreamId,
+    pub source_id: SourceId,
+    pub bus_id: Option<BusId>, // semantic bus identity (v3.0)
+    pub sample_rate_hz: u32,   // always 48_000 internally; see DOCS-013
+    pub channels: u8,          // 1 = voice, 2 = music/broadcast
+    pub format: SampleFormat,
+    pub timestamp_ns: u64, // monotonic, never wall clock
     pub sequence_number: u64,
-    pub buffer:          AudioBufferHandle,
-    pub source_tag:      AudioSourceTag,  // AiTts triggers AUDIO-017 watermark
-    pub speaker_id:      Option<u32>,     // assigned by diarization node (Phase 6)
+    pub buffer: AudioBufferHandle,
+    pub source_tag: AudioSourceTag, // AiTts triggers AUDIO-017 watermark
+    pub speaker_id: Option<u32>,    // assigned by diarization node (Phase 6)
     pub encryption_mode: EncryptionMode,
 }
 
 impl AudioFrame {
     pub fn new(
-        stream_id:       StreamId,
-        source_id:       SourceId,
+        stream_id: StreamId,
+        source_id: SourceId,
         sequence_number: u64,
-        timestamp_ns:    u64,
-        channels:        u8,
-        buffer:          AudioBufferHandle,
+        timestamp_ns: u64,
+        channels: u8,
+        buffer: AudioBufferHandle,
     ) -> Self {
         Self {
             stream_id,
             source_id,
-            bus_id:          None,
-            sample_rate_hz:  SAMPLE_RATE_HZ,
+            bus_id: None,
+            sample_rate_hz: SAMPLE_RATE_HZ,
             channels,
-            format:          SampleFormat::F32Interleaved,
+            format: SampleFormat::F32Interleaved,
             timestamp_ns,
             sequence_number,
             buffer,
-            source_tag:      AudioSourceTag::Captured,
-            speaker_id:      None,
+            source_tag: AudioSourceTag::Captured,
+            speaker_id: None,
             encryption_mode: EncryptionMode::None,
         }
     }

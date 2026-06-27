@@ -1,11 +1,46 @@
 # Phase 0 Progress — audio-core
 
-## Phase 0 COMPLETE — 2026-05-20
+## Phase 0 COMPLETE — 2026-06-27 (v3.0 exit gate)
 
 **Status: COMPLETE**
 
-All 26 tests pass across 6 crates. Race detector clean.
-Exit criteria met per v2.3 §15 Phase 0 section.
+90 tests pass across 10 crates. `holy_shit_demo` compiles and runs. Clippy clean. fmt clean.
+Exit criteria met: `pocketstation-graph` crate created; `AudioGraph::new().connect().compile().run()` API compiles.
+
+## Task 0.A — pocketstation-graph crate (DONE 2026-06-27)
+
+### What was built
+- `crates/pocketstation-graph/src/lib.rs` — public AudioGraph API: NodeHandle, OutputPortRef,
+  InputPortRef, ConnectionSpec (fan-in via const generics), SourceNode, TransformNode, ModelNode,
+  PolicyNode (Duck/Gate/Failover), TransportNode, SinkNode, GraphError, GraphPlan.
+- `crates/pocketstation-audio/examples/holy_shit_demo.rs` — Phase 0 exit gate example.
+- `Cargo.toml` workspace — `pocketstation-graph` added as member.
+
+### Demo lines enabled
+- `AudioGraph::new()` through `graph.run(plan)` — the full BUILD_GUIDE_NORTH_STAR.md Rust example compiles.
+
+### Verification
+```
+cargo fmt --all -- --check                                     PASS
+cargo clippy --workspace --all-targets -- -D warnings          PASS (0 warnings)
+cargo test --workspace                                          PASS (90 tests, 0 failures)
+cargo run -p pocketstation-audio --example holy_shit_demo      PASS (11 nodes, 15 edges)
+```
+
+### Staff Bar Self-Check — Task 0.A
+- Smallest correct design: yes — public API types + scaffold impls; no over-engineering
+- Tests added: yes — 5 given_when_then tests in pocketstation-graph
+- Hot-path safe: yes — graph is construction only; no callback path in this crate
+- Public API changed: yes — new crate (additive only)
+- New dependency: no external deps; pocketstation-graph depends on std only
+- Phase scope respected: yes — Phase 0 only; no Phase 1+ runtime code
+- Unsafe added: no
+- FAKE_SCAFFOLD_INVENTORY updated: yes — S-graph-run-01, S-graph-compile-01 added
+
+### Remaining Phase 0 gaps (unchanged from 2026-05-20)
+- `AudioGraph::run()` is a stub — Phase 1 wires real scheduling
+- `AudioGraph::compile()` accepts any topology — Phase 1 adds cycle detection
+- No async runtime wired — Phase 1 task
 
 Remaining items carried to Phase 2:
 
