@@ -310,6 +310,59 @@ impl SystemLoopbackSource {
     }
 }
 
+/// A request for sources, resolved against discovered `CaptureSource`s. `App("Discord")`
+/// is a query — the provider resolves it to concrete sources, not a source itself.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum SourceQuery {
+    Any,
+    App(String),         // case-insensitive match on app_id or display name
+    ByKind(SourceKind),  // microphone, output device, system mix, …
+    ByStableKey(String), // exact stable-id key
+    Playing,             // only sources currently producing audio
+}
+
+impl SourceQuery {
+    pub fn matches(&self, source: &CaptureSource) -> bool {
+        match self {
+            Self::Any => true,
+            Self::App(name) => {
+                let needle = name.to_lowercase();
+                source
+                    .app_id
+                    .as_deref()
+                    .is_some_and(|a| a.to_lowercase().contains(&needle))
+                    || source.name.to_lowercase().contains(&needle)
+            }
+            Self::ByKind(kind) => source.stable_id.kind == *kind,
+            Self::ByStableKey(key) => &source.stable_id.stable_key == key,
+            Self::Playing => source.state == SourceState::Playing,
+        }
+    }
+}
+
+/// Resolve a query against an already-discovered source list.
+pub fn resolve_query(query: &SourceQuery, sources: &[CaptureSource]) -> Vec<CaptureSource> {
+    sources
+        .iter()
+        .filter(|s| query.matches(s))
+        .cloned()
+        .collect()
+}
+
+/// Discovers sources and resolves queries against them. The local provider lists
+/// what the platform exposes; a remote/test provider can implement this differently.
+pub trait SourceProvider {
+    fn discover(&self, query: &SourceQuery) -> Vec<CaptureSource>;
+}
+
+pub struct LocalSourceProvider;
+
+impl SourceProvider for LocalSourceProvider {
+    fn discover(&self, query: &SourceQuery) -> Vec<CaptureSource> {
+        resolve_query(query, &discover_sources())
+    }
+}
+
 pub fn discover_sources() -> Vec<CaptureSource> {
     #[cfg(target_os = "macos")]
     let platform = Platform::Macos;
@@ -420,5 +473,82 @@ mod tests {
     fn reliability_class_rank_always_available_is_lowest() {
         assert_eq!(ReliabilityClass::AlwaysAvailable.rank(), 0);
         assert!(ReliabilityClass::AlwaysAvailable.rank() < ReliabilityClass::FutureAPI.rank());
+    }
+
+    fn fake_source(
+        kind: SourceKind,
+        name: &str,
+        app_id: Option<&str>,
+        state: SourceState,
+    ) -> CaptureSource {
+        CaptureSource {
+            stable_id: StableSourceId::new(Platform::Macos, kind, name),
+            name: name.to_owned(),
+            process_id: None,
+            app_id: app_id.map(|a| a.to_owned()),
+            device_uid: None,
+            state,
+            sample_rate_hz: 48_000,
+            channels: 2,
+        }
+    }
+
+    #[test]
+    fn given_app_query_when_matched_against_matching_app_id_then_true() {
+        let src = fake_source(
+            SourceKind::Application,
+            "Discord",
+            Some("com.hnc.Discord"),
+            SourceState::Playing,
+        );
+        assert!(SourceQuery::App("discord".to_owned()).matches(&src));
+        assert!(!SourceQuery::App("spotify".to_owned()).matches(&src));
+    }
+
+    #[test]
+    fn given_kind_query_when_resolved_then_only_matching_kind_returned() {
+        let sources = vec![
+            fake_source(
+                SourceKind::Application,
+                "Discord",
+                None,
+                SourceState::Playing,
+            ),
+            fake_source(
+                SourceKind::SystemMix,
+                "System",
+                None,
+                SourceState::Available,
+            ),
+        ];
+        let out = resolve_query(&SourceQuery::ByKind(SourceKind::SystemMix), &sources);
+        assert_eq!(out.len(), 1);
+        assert_eq!(out[0].stable_id.kind, SourceKind::SystemMix);
+    }
+
+    #[test]
+    fn given_playing_query_when_resolved_then_only_playing_sources_returned() {
+        let sources = vec![
+            fake_source(SourceKind::Application, "A", None, SourceState::Playing),
+            fake_source(SourceKind::Application, "B", None, SourceState::Silent),
+        ];
+        let out = resolve_query(&SourceQuery::Playing, &sources);
+        assert_eq!(out.len(), 1);
+        assert_eq!(out[0].name, "A");
+    }
+
+    #[test]
+    fn given_any_query_when_resolved_then_all_sources_returned() {
+        let sources = vec![
+            fake_source(SourceKind::Application, "A", None, SourceState::Playing),
+            fake_source(SourceKind::SystemMix, "B", None, SourceState::Available),
+        ];
+        assert_eq!(resolve_query(&SourceQuery::Any, &sources).len(), 2);
+    }
+
+    #[test]
+    fn given_local_provider_when_discover_any_then_does_not_panic() {
+        let provider = LocalSourceProvider;
+        let _ = provider.discover(&SourceQuery::Any);
     }
 }
