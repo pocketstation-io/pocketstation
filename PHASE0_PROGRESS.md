@@ -1,5 +1,45 @@
 # Phase 0 Progress — audio-core
 
+## Graph-crate rescue — Wave 3 (DONE 2026-06-27)
+
+**Branch:** wave3/dsl-graphspec
+**Scope:** the builder stops executing — it now assembles a typed `GraphSpec`. Deleted the
+fake provider factories and the executing graph; preserved node specs (no more discarded `_spec`).
+
+### What changed (in `pocketstation-graph`)
+- **New** `spec.rs` — `GraphSpec`, `NodeSpec` (id + `NodeTypeId` + `NodeConfig`, preserved
+  verbatim), `EdgeSpec` (with optional requested `EdgeContract`), `OutputPortRef`/`InputPortRef`,
+  `NodeId`/`EdgeId`.
+- **New** `dsl.rs` — `AudioGraph` builder: `add_node(type_id, config)`, `connect`/`connect_with`,
+  `into_spec`/`spec`. Produces a `GraphSpec`; never executes.
+- **New** `legacy.rs` — `GraphProcessor` + `FRAME_LEN_SAMPLES` retained ONLY for
+  `pocketstation-ml` (re-exported at crate root) until ml migrates to `RuntimeNode` (Wave 6/7).
+- **Deleted** — `deepgram()`/`openai_realtime()`/`local_model()`/`ModelProvider`; the closed
+  node enums (`SourceNode`/`TransformNode`/`ModelNode`/`PolicyNode`/`TransportNode`/`SinkNode`);
+  the executing `AudioGraph::compile()`/`run()`/`output()`, `GraphPlan`, `GraphError`,
+  `ConnectionSpec`, `NodeSelector`; and the old LAW-10 banner comments.
+- **`holy_shit_demo`** — rewritten to build the fundable-graph `GraphSpec` (11 nodes, 15 edges)
+  and print it; no execution (returns in Waves 4–6). Fan-in now = multiple edges into one port.
+
+### Verification
+```
+cargo fmt --all -- --check                                 PASS
+cargo clippy --workspace --all-targets -- -D warnings      PASS (0 warnings)
+cargo test --workspace                                     PASS (145 tests; old fake compile/run
+                                                                  tests deleted, +5 spec/dsl tests)
+cargo run --example holy_shit_demo                          PASS (GraphSpec built — 11 nodes, 15 edges)
+cargo bench --no-run -p pocketstation-audio                PASS
+```
+
+### Staff Bar Self-Check — Wave 3
+- The audit's worst offenders are gone: no discarded `_spec`, no fake `deepgram()`/`openai_realtime()`,
+  no universal-execution `AudioGraph::run()`, no string-enum nodes. Builder → spec only.
+- `pocketstation-ml` kept green untouched via the legacy re-export (verified: ml builds + tests pass).
+- Deferred deletion (recorded, not fake): `legacy::GraphProcessor` + `FRAME_LEN_SAMPLES` removed when
+  ml is rewired to `RuntimeNode`. It is a real, in-use trait — not a scaffold — so no inventory row.
+- New scaffold: none. New dependency: none.
+- Phase scope: Phase 0 correction (no Phase N+1 code).
+
 ## Graph-crate rescue — Wave 2 (DONE 2026-06-27)
 
 **Branch:** wave2/node-model-registry
