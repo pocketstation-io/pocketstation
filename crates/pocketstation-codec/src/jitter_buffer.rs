@@ -13,8 +13,14 @@ const EWMA_SHIFT: u32 = 3;
 /// Adaptation runs every this many frames (~1 second at 20 ms/frame).
 const ADAPT_INTERVAL: u64 = 50;
 
-/// 20 ms frame duration in nanoseconds — used to convert jitter → frame count.
-const FRAME_DURATION_NS: u64 = 20_000_000;
+/// Nanoseconds per millisecond.
+const NS_PER_MS: u64 = 1_000_000;
+
+/// Default frame duration (20 ms, AUDIO-012) used by [`JitterBuffer::new`].
+/// The buffer converts jitter → frame count using its *configured* frame
+/// duration, so 10 ms voice-agent frames size the target depth correctly
+/// (a 60 ms jitter target is 6 frames at 10 ms, not 3).
+const DEFAULT_FRAME_DURATION_MS: u16 = 20;
 
 /// Safety margin added on top of the measured jitter target (frames).
 const ADAPT_SAFETY_MARGIN: usize = 1;
@@ -47,7 +53,7 @@ pub enum PopResult {
 /// Inter-arrival jitter is tracked as an EWMA (α = 0.125).  Every
 /// [`ADAPT_INTERVAL`] frames the target depth is recomputed:
 /// ```text
-/// new_target = ceil(ewma_ns / FRAME_DURATION_NS) + ADAPT_SAFETY_MARGIN
+/// new_target = ceil(ewma_ns / frame_duration_ns) + ADAPT_SAFETY_MARGIN
 /// new_target = clamp(new_target, min_depth, max_depth)
 /// ```
 ///
@@ -58,6 +64,7 @@ pub struct JitterBuffer {
     min_depth: usize,
     max_depth: usize,
     target_depth: usize,
+    frame_duration_ns: u64, // packet duration; jitter→frame-count divisor
 
     // Storage — bounded at max_depth; no allocation after construction.
     queue: VecDeque<EncodedFrame>,
@@ -93,17 +100,41 @@ impl JitterBuffer {
     /// # Panics
     /// Panics in debug builds if `min_depth == 0` or `min_depth > max_depth`.
     pub fn new(min_depth: usize, max_depth: usize) -> Self {
+        Self::with_frame_duration_ms(min_depth, max_depth, DEFAULT_FRAME_DURATION_MS)
+    }
+
+    /// Create a jitter buffer for a specific packet/frame duration.
+    ///
+    /// The target depth (in frames) is the measured jitter time divided by
+    /// `frame_duration_ms`, so a 10 ms voice-agent stream sizes its depth to
+    /// twice the frame count of a 20 ms stream for the same wall-clock jitter
+    /// (WebRTC NetEQ rounds its time target to the packet duration).
+    ///
+    /// # Panics
+    /// Panics in debug builds if `min_depth == 0`, `min_depth > max_depth`, or
+    /// `frame_duration_ms == 0`.
+    pub fn with_frame_duration_ms(
+        min_depth: usize,
+        max_depth: usize,
+        frame_duration_ms: u16,
+    ) -> Self {
         debug_assert!(min_depth > 0, "min_depth must be at least 1");
         debug_assert!(min_depth <= max_depth, "min_depth must be ≤ max_depth");
+        debug_assert!(
+            frame_duration_ms > 0,
+            "frame_duration_ms must be at least 1"
+        );
+        let frame_duration_ns = frame_duration_ms as u64 * NS_PER_MS;
         let target_depth = (min_depth + 1).min(max_depth);
         Self {
             min_depth,
             max_depth,
             target_depth,
+            frame_duration_ns,
             queue: VecDeque::with_capacity(max_depth),
             next_expected_seq: None,
             last_arrival_ns: 0,
-            inter_arrival_ewma_ns: FRAME_DURATION_NS,
+            inter_arrival_ewma_ns: frame_duration_ns,
             consecutive_empty: 0,
             frames_since_adapt: 0,
             late_frames: 0,
@@ -299,8 +330,9 @@ impl JitterBuffer {
         }
         self.frames_since_adapt = 0;
 
-        // Recompute target from measured jitter EWMA.
-        let jitter_frames = self.inter_arrival_ewma_ns.div_ceil(FRAME_DURATION_NS);
+        // Recompute target from measured jitter EWMA, in units of this stream's
+        // own frame duration (10 ms frames need twice the frames of 20 ms).
+        let jitter_frames = self.inter_arrival_ewma_ns.div_ceil(self.frame_duration_ns);
         let new_target = (jitter_frames as usize + ADAPT_SAFETY_MARGIN)
             .max(self.min_depth)
             .min(self.max_depth);
@@ -453,6 +485,7 @@ mod tests {
 
     #[test]
     fn given_50_uniform_frames_when_adapt_runs_then_target_stays_at_min() {
+        const FRAME_NS: u64 = 20_000_000; // 20 ms default frame duration
         let mut jb = JitterBuffer::new(1, 8);
 
         jb.push(EncodedFrame {
@@ -462,14 +495,14 @@ mod tests {
         });
         jb.push(EncodedFrame {
             sequence_number: 1,
-            timestamp_ns: FRAME_DURATION_NS,
+            timestamp_ns: FRAME_NS,
             payload: vec![],
         });
 
         for i in 2u64..52 {
             jb.push(EncodedFrame {
                 sequence_number: i,
-                timestamp_ns: i * FRAME_DURATION_NS,
+                timestamp_ns: i * FRAME_NS,
                 payload: vec![],
             });
             jb.pop();
@@ -480,6 +513,46 @@ mod tests {
             "uniform arrivals should keep target_depth ≤ 2, got {}",
             jb.target_depth()
         );
+    }
+
+    /// Drive `count` frames at a fixed inter-arrival spacing through `jb`,
+    /// returning the adapted target depth. Proves the depth tracks jitter.
+    fn run_uniform_jitter(jb: &mut JitterBuffer, inter_arrival_ns: u64) -> usize {
+        jb.push(make_encoded_with_ts(0, 0));
+        jb.push(make_encoded_with_ts(1, inter_arrival_ns));
+        for i in 2u64..52 {
+            jb.push(make_encoded_with_ts(i, i * inter_arrival_ns));
+            jb.pop();
+        }
+        jb.target_depth()
+    }
+
+    #[test]
+    fn given_same_jitter_when_10ms_frames_then_target_depth_exceeds_20ms_frames() {
+        // Same 35 ms wall-clock inter-arrival jitter, two frame durations.
+        // 20 ms: ceil(35/20)+1 = 3 frames; 10 ms: ceil(35/10)+1 = 5 frames.
+        let inter_arrival_ns: u64 = 35_000_000;
+        let mut jb_20ms = JitterBuffer::with_frame_duration_ms(1, 12, 20);
+        let mut jb_10ms = JitterBuffer::with_frame_duration_ms(1, 12, 10);
+
+        let target_20ms = run_uniform_jitter(&mut jb_20ms, inter_arrival_ns);
+        let target_10ms = run_uniform_jitter(&mut jb_10ms, inter_arrival_ns);
+
+        assert!(
+            target_10ms > target_20ms,
+            "10 ms frames must buffer more frames for the same wall-clock jitter: \
+             10ms={target_10ms}, 20ms={target_20ms}"
+        );
+    }
+
+    #[test]
+    fn given_10ms_buffer_when_constructed_then_new_matches_default_20ms() {
+        // new() must remain the 20 ms default; with_frame_duration_ms(.., 20)
+        // is identical so the existing callers are unaffected.
+        let default = JitterBuffer::new(1, 8);
+        let explicit_20ms = JitterBuffer::with_frame_duration_ms(1, 8, 20);
+        assert_eq!(default.target_depth(), explicit_20ms.target_depth());
+        assert_eq!(default.frame_duration_ns, explicit_20ms.frame_duration_ns);
     }
 
     #[test]
