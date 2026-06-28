@@ -910,6 +910,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "pocketstation-nodes"
+version = "0.1.0"
+dependencies = [
+ "pocketstation-caps",
+ "pocketstation-frame",
+ "pocketstation-graph",
+ "pocketstation-ml",
+ "proptest",
+]
+
+[[package]]
 name = "pocketstation-pipeline"
 version = "0.1.0"
 dependencies = [

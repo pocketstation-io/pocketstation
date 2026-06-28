@@ -1,5 +1,45 @@
 # Phase 0 Progress — audio-core
 
+## Graph-crate rescue — Wave 7 (DONE 2026-06-28)
+
+**Branch:** wave7/nodes-and-providers
+**Scope:** populate the node registry with real node factories, and make source discovery
+query-driven. Transport stays deferred per ADR AUDIO-025.
+
+### What was built
+- **`pocketstation-nodes`** (new crate): real `NodeFactory` + `RuntimeNode` for
+  `transform.mono_mix` (in-place stereo→mono downmix, alloc-free) and ml-backed
+  `transform.vad` / `transform.noise_suppress` / `transform.echo_cancel` /
+  `transform.watermark`. `register_all(registry)` registers graph builtins
+  (`passthrough`, `gain`) + these — a populated registry the compiler can instantiate against.
+  A graph of `passthrough → transform.vad → gain` compiles end-to-end (11 tests).
+- **`pocketstation-capture` SourceProvider model**: `SourceQuery`
+  (`Any`/`App`/`ByKind`/`ByStableKey`/`Playing`) with `matches` (LAW 8 impl method),
+  `resolve_query`, and `SourceProvider`/`LocalSourceProvider`. `App("Discord")` is now a
+  structured query resolved against discovered sources, not a bare string (rescue-plan
+  requirement). +5 GWT tests. Existing `PlatformAdapter`/`discover_sources` reused, not duplicated.
+
+### Transport — DEFERRED (ADR AUDIO-025 honored, not re-litigated)
+`pocketstation-transport` was NOT created. AUDIO-025 (Accepted 2026-06-24) deletes it until a
+Rust relay / P2P / multi-transport backend exists — none do (relay is Go/Pion). Building it now
+would recreate "scaffolding presented as architecture." The graph's transport node is a node
+factory (Wave 8), the wire transport stays Go-relay-owned.
+
+### Verification
+```
+cargo fmt --all -- --check                                 PASS
+cargo clippy --workspace --all-targets -- -D warnings      PASS (0 warnings)
+cargo test --workspace                                     PASS (197 tests, was 181; +16)
+cargo bench --no-run -p pocketstation-audio                PASS
+```
+
+### Staff Bar Self-Check — Wave 7
+- Registry is now populated with REAL factories (DSP + ml) — the compiler can instantiate a
+  real graph; this is the prerequisite for the Wave-8 demo.
+- Source discovery is query-driven; no bare-string source identity.
+- Transport correctly deferred per existing ADR (no premature crate, no fake wire layer).
+- New scaffold: none. New dependency: none. Phase scope: Phase 0 correction.
+
 ## Graph-crate rescue — Wave 6 (DONE 2026-06-28)
 
 **Branch:** wave6/runtime-execution

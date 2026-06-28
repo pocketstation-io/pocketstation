@@ -9,6 +9,7 @@ members = [
   "crates/pocketstation-runtime",
   "crates/pocketstation-graph",
   "crates/pocketstation-ml",
+  "crates/pocketstation-nodes",
   "crates/pocketstation-capture",
   "crates/pocketstation-capture-macos",
   "crates/pocketstation-capture-windows",
