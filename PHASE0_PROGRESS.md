@@ -1,5 +1,44 @@
 # Phase 0 Progress — audio-core
 
+## Graph-crate rescue — Wave 5 (DONE 2026-06-27)
+
+**Branch:** wave5/lowering-runtimeplan
+**Scope:** lower a validated `GraphIr` into a `RuntimePlan` (partitions, memory, edge metrics,
+fan-in/out). Two passes deliberately deferred with an ADR — not stubbed.
+
+### What was built (in `pocketstation-graph`)
+- `plan.rs` — `RuntimePlan` (node_order, partitions, memory_plan, edge_metrics, fan_out,
+  fan_in, edge_count), `ExecutionPartition`, `MemoryPlan`/`EdgeBufferPlan` (with `total_bytes`),
+  `EdgeMetricId`, `FanOutGroup`/`FanInGroup`, `PlanError`. Constants `FRAME_BYTES_MONO_48K`,
+  `EDGE_RING_CAPACITY_FRAMES`.
+- `planner.rs` — `RuntimePlanner::plan(ir)` runs the lowering pipeline:
+  1. `lower_fan_out` — outputs feeding multiple edges → `FanOutGroup`.
+  2. `lower_fan_in_mix` — multiple edges into one input → `FanInGroup`; `FanInOnSinglePort`
+     error if the port multiplicity is `One`.
+  3. `partition_execution_domains` — bucket nodes by `ExecutionClass`, ordered by `rank()`.
+     Realtime never shares a partition with Network/ModelRemote (the rescue plan's core rule).
+  4. `plan_memory` — per-edge `EdgeBufferPlan`; `realtime_pool_bytes` over realtime consumers.
+  5. `instrument_edges` — stable `EdgeMetricId` per edge.
+  6. emit `RuntimePlan`.
+- `docs/adr/AUDIO-026` — records the two deferrals: `InsertAdapterNodes` (needs Wave 7 nodes)
+  and fusion (post-functional optimization). Rejected alternatives: stub passes, placeholder adapters.
+
+### Verification
+```
+cargo fmt --all -- --check                                 PASS
+cargo clippy --workspace --all-targets -- -D warnings      PASS (0 warnings)
+cargo test --workspace                                     PASS (165 tests, was 156; +9)
+cargo run --example holy_shit_demo                          PASS (11 nodes, 15 edges)
+cargo bench --no-run -p pocketstation-audio                PASS
+```
+Tests include a golden RuntimePlan snapshot + a proptest (random realtime chain → one partition).
+
+### Staff Bar Self-Check — Wave 5
+- Real lowering, no stub passes: deferred passes are documented in AUDIO-026, not faked.
+- The compile pipeline now goes Spec → validated IR → RuntimePlan (partitions + memory + metrics).
+- New scaffold: none. New dependency: none.
+- Phase scope: Phase 0 correction.
+
 ## Graph-crate rescue — Wave 4 (DONE 2026-06-27)
 
 **Branch:** wave4/graph-ir-verify
