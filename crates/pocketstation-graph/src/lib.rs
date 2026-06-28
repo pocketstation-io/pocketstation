@@ -9,7 +9,6 @@ pub mod builtins;
 pub mod compiler;
 pub mod dsl;
 pub mod ir;
-pub mod legacy;
 pub mod node;
 pub mod plan;
 pub mod planner;
@@ -26,7 +25,3 @@ pub use node::{
 pub use registry::{NodeFactory, NodeRegistry};
 pub use runtime_node::RuntimeNode;
 pub use spec::{EdgeId, EdgeSpec, GraphSpec, InputPortRef, NodeId, NodeSpec, OutputPortRef};
-
-// Legacy slice-based DSP trait, re-exported for pocketstation-ml until it migrates
-// to RuntimeNode. Removed once ml is rewired (Wave 6/7).
-pub use legacy::{GraphProcessor, FRAME_LEN_SAMPLES};

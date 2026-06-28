@@ -818,6 +818,7 @@ dependencies = [
  "pocketstation-graph",
  "pocketstation-metrics",
  "pocketstation-pipeline",
+ "pocketstation-runtime",
 ]
 
 [[package]]
@@ -904,6 +905,7 @@ version = "0.1.0"
 name = "pocketstation-ml"
 version = "0.1.0"
 dependencies = [
+ "pocketstation-frame",
  "pocketstation-graph",
 ]
 
@@ -913,6 +915,18 @@ version = "0.1.0"
 dependencies = [
  "pocketstation-codec",
  "pocketstation-frame",
+ "rtrb",
+]
+
+[[package]]
+name = "pocketstation-runtime"
+version = "0.1.0"
+dependencies = [
+ "pocketstation-caps",
+ "pocketstation-frame",
+ "pocketstation-graph",
+ "pocketstation-metrics",
+ "proptest",
  "rtrb",
 ]
 

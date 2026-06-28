@@ -16,7 +16,10 @@
 // process() is alloc-free, lock-free, blocking-free — LAW 15.
 // Computing reference power per sample is O(FILTER_TAPS) per sample.
 
-use pocketstation_graph::{GraphProcessor, FRAME_LEN_SAMPLES};
+use crate::{FRAME_DURATION_MS, FRAME_SAMPLES_48K_20MS as FRAME_LEN_SAMPLES};
+use pocketstation_frame::AudioFrame;
+use pocketstation_graph::node::{NodeError, PrepareContext};
+use pocketstation_graph::RuntimeNode;
 
 /// Number of adaptive filter taps. Covers the first 10.7 ms of echo path at 48 kHz.
 const FILTER_TAPS: usize = 512;
@@ -24,8 +27,8 @@ const FILTER_TAPS: usize = 512;
 /// NLMS acoustic echo canceller.
 ///
 /// Call set_reference() with the far-end signal before each process() call.
-/// The GraphProcessor::process() input is the microphone signal; output is
-/// the echo-cancelled residual.
+/// The process() input is the microphone signal; output is the echo-cancelled
+/// residual.
 pub struct EchoCanceller {
     /// Adaptive filter weights (echo path model), pre-allocated.
     weights: [f32; FILTER_TAPS],
@@ -40,6 +43,8 @@ pub struct EchoCanceller {
     regularization: f32,
     /// True after set_reference() is called at least once.
     has_reference: bool,
+    /// Pre-allocated input copy for the RuntimeNode in-place frame path (no hot-path alloc).
+    scratch: Vec<f32>,
 }
 
 impl EchoCanceller {
@@ -54,6 +59,7 @@ impl EchoCanceller {
             mu: mu.clamp(0.01, 1.99),
             regularization: regularization.max(1e-10),
             has_reference: false,
+            scratch: vec![0.0f32; FRAME_LEN_SAMPLES],
         }
     }
 
@@ -71,13 +77,13 @@ impl EchoCanceller {
     }
 }
 
-impl GraphProcessor for EchoCanceller {
+impl EchoCanceller {
     /// Cancel echo from the microphone signal using the reference supplied via set_reference().
     ///
     /// Samples are interleaved: for each sample i, push ref_frame[i] into the ring buffer,
     /// compute the echo estimate, subtract from mic[i], and update the adaptive weights.
     /// This ensures zero-delay echo is fully cancellable (tap 0 = current reference sample).
-    fn process(&mut self, input: &[f32], output: &mut [f32]) {
+    pub fn process_slices(&mut self, input: &[f32], output: &mut [f32]) {
         if !self.has_reference {
             output.copy_from_slice(input);
             return;
@@ -114,6 +120,35 @@ impl GraphProcessor for EchoCanceller {
     }
 }
 
+impl RuntimeNode for EchoCanceller {
+    fn prepare(&mut self, cx: &PrepareContext) -> Result<(), NodeError> {
+        let frame_samples = cx
+            .sample_spec
+            .frame_samples_for_duration_ms(FRAME_DURATION_MS);
+        if self.scratch.len() != frame_samples {
+            self.scratch = vec![0.0f32; frame_samples];
+        }
+        if self.ref_frame.len() != frame_samples {
+            self.ref_frame = vec![0.0f32; frame_samples];
+        }
+        Ok(())
+    }
+
+    /// The mic frame is the input; the far-end reference must be supplied out-of-band
+    /// via set_reference() before this runs (multi-input edge wiring lands in Wave 7).
+    fn process(&mut self, mut frame: AudioFrame) -> Result<Option<AudioFrame>, NodeError> {
+        let mut scratch = std::mem::take(&mut self.scratch);
+        {
+            let buf = frame.buffer.as_mut_slice();
+            let n = buf.len().min(scratch.len());
+            scratch[..n].copy_from_slice(&buf[..n]);
+            self.process_slices(&scratch[..n], &mut buf[..n]);
+        }
+        self.scratch = scratch;
+        Ok(Some(frame))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -130,7 +165,7 @@ mod tests {
         let mut aec = EchoCanceller::default_config();
         let input = sine_frame(440.0, 0.5, 0);
         let mut output = vec![0.0f32; FRAME_LEN_SAMPLES];
-        aec.process(&input, &mut output);
+        aec.process_slices(&input, &mut output);
         for (o, i) in output.iter().zip(input.iter()) {
             assert!(
                 (o - i).abs() < 1e-9,
@@ -151,7 +186,7 @@ mod tests {
             let signal = sine_frame(440.0, 0.5, frame * FRAME_LEN_SAMPLES);
             aec.set_reference(&signal);
             let mut output = vec![0.0f32; FRAME_LEN_SAMPLES];
-            aec.process(&signal, &mut output);
+            aec.process_slices(&signal, &mut output);
             let rms: f32 =
                 (output.iter().map(|&s| s * s).sum::<f32>() / FRAME_LEN_SAMPLES as f32).sqrt();
             if frame < 10 {
@@ -181,7 +216,7 @@ mod tests {
                 .map(|(&d, &r)| d + r)
                 .collect();
             aec.set_reference(&reference);
-            aec.process(&mic, &mut out);
+            aec.process_slices(&mic, &mut out);
         }
 
         let desired = sine_frame(440.0, 0.3, 300 * FRAME_LEN_SAMPLES);
@@ -192,7 +227,7 @@ mod tests {
             .map(|(&d, &r)| d + r)
             .collect();
         aec.set_reference(&reference);
-        aec.process(&mic, &mut out);
+        aec.process_slices(&mic, &mut out);
 
         let mic_rms: f32 =
             (mic.iter().map(|&s| s * s).sum::<f32>() / FRAME_LEN_SAMPLES as f32).sqrt();
@@ -211,7 +246,7 @@ mod tests {
         let mic = sine_frame(440.0, 0.5, 0);
         let mut out = vec![0.0f32; FRAME_LEN_SAMPLES];
         aec.set_reference(&silence);
-        aec.process(&mic, &mut out);
+        aec.process_slices(&mic, &mut out);
         let max_weight = aec.weights.iter().map(|w| w.abs()).fold(0.0_f32, f32::max);
         assert!(
             max_weight < 1e6,

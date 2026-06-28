@@ -29,7 +29,7 @@ Source documents (binding, read in full before any work):
 | `pocketstation-frame` | extend | `EncodedFrame`, `EventFrame`, `SampleSpec` (+ existing pool/handle/AudioFrame) |
 | `pocketstation-caps` | **new** | `MediaCaps`, `PortSpec`, `EdgeContract`, `ClockDomain`, `BackpressurePolicy`, … |
 | `pocketstation-graph` | **rewrite** | DSL→`GraphSpec`, `NodeSpec`, `NodeRegistry`, `GraphIr`, compiler passes, emits `RuntimePlan` |
-| `pocketstation-runtime` | rename `pipeline` | `Scheduler`, `Executor`, `EdgeChannel`, memory planner |
+| `pocketstation-runtime` | **new crate** (Wave 6); `pipeline` folds in at Wave 7 when nodes extract | `PlanScheduler`, `RealtimeExecutor`, `EdgeChannel`, `RunMetrics` |
 | `pocketstation-nodes` | **new** | built-in VAD/Gain/Duck/Mixer/StemRecorder/Passthrough |
 | `pocketstation-ml` | rewire | local model nodes onto `RuntimeNode` lifecycle |
 | `pocketstation-capture*` | extend | `SourceProvider`/`SourceDescriptor`/`SourceQuery` model |

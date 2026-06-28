@@ -6,3 +6,4 @@ description = "Real-time audio signal processing nodes for the PocketStation Aud
 
 [dependencies]
 pocketstation-graph = { path = "../pocketstation-graph", version = "0.1.0" }
+pocketstation-frame = { path = "../pocketstation-frame", version = "0.1.0" }

@@ -17,7 +17,10 @@
 // process() is alloc-free, lock-free, blocking-free — LAW 15.
 // The LFSR state advances 960 positions per process() call (one 20 ms frame).
 
-use pocketstation_graph::GraphProcessor;
+use crate::{FRAME_DURATION_MS, FRAME_SAMPLES_48K_20MS};
+use pocketstation_frame::AudioFrame;
+use pocketstation_graph::node::{NodeError, PrepareContext};
+use pocketstation_graph::RuntimeNode;
 
 /// 32-bit Galois LFSR — maximal-length, taps at bits 32,22,2,1 (standard poly).
 /// Produces a PN sequence with period 2^32−1 ≈ 4×10^9 samples (~25 hours at 48 kHz).
@@ -64,6 +67,8 @@ pub struct AudioWatermark {
     pn_frame: Vec<f32>,
     /// Running detection accumulator (exponential average of correlation).
     detection_score: f32,
+    /// Pre-allocated input copy for the RuntimeNode in-place frame path (no hot-path alloc).
+    scratch: Vec<f32>,
 }
 
 impl AudioWatermark {
@@ -71,7 +76,7 @@ impl AudioWatermark {
     /// * `alpha` — embedding amplitude; 0.002 is inaudible, 0.01 is detectable easily.
     /// * `detect_threshold` — normalized correlation above which detection fires (e.g. 0.3).
     pub fn new(session_token: u32, alpha: f32, detect_threshold: f32) -> Self {
-        let frame_len = pocketstation_graph::FRAME_LEN_SAMPLES;
+        let frame_len = FRAME_SAMPLES_48K_20MS;
         Self {
             embed_lfsr: Lfsr32::new(session_token),
             detect_lfsr: Lfsr32::new(session_token),
@@ -79,6 +84,7 @@ impl AudioWatermark {
             detect_threshold: detect_threshold.clamp(0.0, 1.0),
             pn_frame: vec![0.0f32; frame_len],
             detection_score: 0.0,
+            scratch: vec![0.0f32; frame_len],
         }
     }
 
@@ -110,8 +116,8 @@ impl AudioWatermark {
     }
 }
 
-impl GraphProcessor for AudioWatermark {
-    fn process(&mut self, input: &[f32], output: &mut [f32]) {
+impl AudioWatermark {
+    pub fn process_slices(&mut self, input: &[f32], output: &mut [f32]) {
         // Generate PN chips from embed_lfsr; store in pn_frame for detect() calls.
         for chip in self.pn_frame.iter_mut() {
             *chip = self.embed_lfsr.next_chip();
@@ -131,6 +137,33 @@ impl GraphProcessor for AudioWatermark {
     }
 }
 
+impl RuntimeNode for AudioWatermark {
+    fn prepare(&mut self, cx: &PrepareContext) -> Result<(), NodeError> {
+        let frame_samples = cx
+            .sample_spec
+            .frame_samples_for_duration_ms(FRAME_DURATION_MS);
+        if self.scratch.len() != frame_samples {
+            self.scratch = vec![0.0f32; frame_samples];
+        }
+        if self.pn_frame.len() != frame_samples {
+            self.pn_frame = vec![0.0f32; frame_samples];
+        }
+        Ok(())
+    }
+
+    fn process(&mut self, mut frame: AudioFrame) -> Result<Option<AudioFrame>, NodeError> {
+        let mut scratch = std::mem::take(&mut self.scratch);
+        {
+            let buf = frame.buffer.as_mut_slice();
+            let n = buf.len().min(scratch.len());
+            scratch[..n].copy_from_slice(&buf[..n]);
+            self.process_slices(&scratch[..n], &mut buf[..n]);
+        }
+        self.scratch = scratch;
+        Ok(Some(frame))
+    }
+}
+
 /// Returns the PN frame length (= input.len() clamped to pn_frame capacity).
 #[inline]
 fn pn_frame_len(input: &[f32]) -> usize {
@@ -140,7 +173,7 @@ fn pn_frame_len(input: &[f32]) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use pocketstation_graph::FRAME_LEN_SAMPLES;
+    use crate::FRAME_SAMPLES_48K_20MS as FRAME_LEN_SAMPLES;
 
     fn sine_frame(amplitude: f32) -> Vec<f32> {
         use std::f32::consts::PI;
@@ -159,7 +192,7 @@ mod tests {
 
         let silence = vec![0.0f32; FRAME_LEN_SAMPLES];
         let mut output = vec![0.0f32; FRAME_LEN_SAMPLES];
-        wm.process(&silence, &mut output);
+        wm.process_slices(&silence, &mut output);
 
         // Re-generate the same PN sequence from a fresh LFSR at the same seed
         let mut ref_lfsr = Lfsr32::new(token);
@@ -186,7 +219,7 @@ mod tests {
         let mut wm = AudioWatermark::new(0xC0FFEE, 0.01, 0.1);
         let input = sine_frame(0.5);
         let mut output = vec![0.0f32; FRAME_LEN_SAMPLES];
-        wm.process(&input, &mut output);
+        wm.process_slices(&input, &mut output);
 
         // Wrong token → wrong PN sequence → correlation near 0
         let mut wrong_lfsr = Lfsr32::new(0xDEADBEEF);
@@ -212,7 +245,7 @@ mod tests {
         let mut wm = AudioWatermark::new(0xABCD, 0.0, 0.1);
         let input = sine_frame(0.5);
         let mut output = vec![0.0f32; FRAME_LEN_SAMPLES];
-        wm.process(&input, &mut output);
+        wm.process_slices(&input, &mut output);
         for (o, i) in output.iter().zip(input.iter()) {
             assert!(
                 (o - i).abs() < 1e-9,
@@ -226,7 +259,7 @@ mod tests {
         let mut wm = AudioWatermark::new(0x1234, 0.01, 0.1);
         let input = sine_frame(0.5);
         let mut output = vec![0.0f32; FRAME_LEN_SAMPLES];
-        wm.process(&input, &mut output);
+        wm.process_slices(&input, &mut output);
         let max_diff = input
             .iter()
             .zip(output.iter())
