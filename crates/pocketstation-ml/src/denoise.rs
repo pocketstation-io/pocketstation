@@ -11,8 +11,10 @@
 //
 // process() is alloc-free, lock-free, blocking-free — LAW 15.
 
-use crate::rms;
-use pocketstation_graph::GraphProcessor;
+use crate::{rms, FRAME_DURATION_MS, FRAME_SAMPLES_48K_20MS};
+use pocketstation_frame::AudioFrame;
+use pocketstation_graph::node::{NodeError, PrepareContext};
+use pocketstation_graph::RuntimeNode;
 
 /// Number of sub-frames used for per-band noise estimation.
 /// Each sub-frame covers 960/NUM_BANDS = 60 samples (~1.25 ms).
@@ -30,6 +32,8 @@ pub struct NoiseSuppressor {
     gain_floor: f32,
     /// Wiener over-subtraction factor (>1 increases suppression, >2 may add artifacts).
     over_subtraction: f32,
+    /// Pre-allocated input copy for the RuntimeNode in-place frame path (no hot-path alloc).
+    scratch: Vec<f32>,
 }
 
 impl NoiseSuppressor {
@@ -51,6 +55,7 @@ impl NoiseSuppressor {
             vad_threshold_rms,
             gain_floor,
             over_subtraction: over_subtraction.max(0.0),
+            scratch: vec![0.0f32; FRAME_SAMPLES_48K_20MS],
         }
     }
 
@@ -60,8 +65,8 @@ impl NoiseSuppressor {
     }
 }
 
-impl GraphProcessor for NoiseSuppressor {
-    fn process(&mut self, input: &[f32], output: &mut [f32]) {
+impl NoiseSuppressor {
+    pub fn process_slices(&mut self, input: &[f32], output: &mut [f32]) {
         let frame_rms = rms(input);
         let band_len = input.len() / NUM_BANDS;
 
@@ -100,10 +105,34 @@ impl GraphProcessor for NoiseSuppressor {
     }
 }
 
+impl RuntimeNode for NoiseSuppressor {
+    fn prepare(&mut self, cx: &PrepareContext) -> Result<(), NodeError> {
+        let frame_samples = cx
+            .sample_spec
+            .frame_samples_for_duration_ms(FRAME_DURATION_MS);
+        if self.scratch.len() != frame_samples {
+            self.scratch = vec![0.0f32; frame_samples];
+        }
+        Ok(())
+    }
+
+    fn process(&mut self, mut frame: AudioFrame) -> Result<Option<AudioFrame>, NodeError> {
+        let mut scratch = std::mem::take(&mut self.scratch);
+        {
+            let buf = frame.buffer.as_mut_slice();
+            let n = buf.len().min(scratch.len());
+            scratch[..n].copy_from_slice(&buf[..n]);
+            self.process_slices(&scratch[..n], &mut buf[..n]);
+        }
+        self.scratch = scratch;
+        Ok(Some(frame))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use pocketstation_graph::FRAME_LEN_SAMPLES;
+    use crate::FRAME_SAMPLES_48K_20MS as FRAME_LEN_SAMPLES;
 
     fn silence() -> Vec<f32> {
         vec![0.0f32; FRAME_LEN_SAMPLES]
@@ -125,7 +154,7 @@ mod tests {
         let mut ns = NoiseSuppressor::default_config();
         let input = silence();
         let mut output = vec![1.0f32; FRAME_LEN_SAMPLES];
-        ns.process(&input, &mut output);
+        ns.process_slices(&input, &mut output);
         assert!(
             output.iter().all(|&s| s.abs() < 1e-9),
             "silence in → silence out"
@@ -139,7 +168,7 @@ mod tests {
         let mut out = vec![0.0f32; FRAME_LEN_SAMPLES];
         // Run many frames so noise floor adapts
         for _ in 0..200 {
-            ns.process(&noise, &mut out);
+            ns.process_slices(&noise, &mut out);
         }
         // After adaptation, noise floor estimates should be non-zero
         assert!(
@@ -155,11 +184,11 @@ mod tests {
         let mut out = vec![0.0f32; FRAME_LEN_SAMPLES];
         // Adapt noise floor
         for _ in 0..100 {
-            ns.process(&noise, &mut out);
+            ns.process_slices(&noise, &mut out);
         }
         // Now process a slightly louder noise (above VAD threshold) — should be reduced
         let signal = noise_frame(0.05); // -26 dBFS, above -40 VAD
-        ns.process(&signal, &mut out);
+        ns.process_slices(&signal, &mut out);
         let in_rms = rms(&signal);
         let out_rms = rms(&out);
         assert!(out_rms < in_rms, "suppressor must reduce signal RMS");
@@ -173,11 +202,11 @@ mod tests {
         // Adapt with very quiet noise
         let tiny_noise = noise_frame(1e-5);
         for _ in 0..200 {
-            ns.process(&tiny_noise, &mut out);
+            ns.process_slices(&tiny_noise, &mut out);
         }
         // Loud signal: SNR >> 1 → gain → 1.0
         let loud = noise_frame(0.5);
-        ns.process(&loud, &mut out);
+        ns.process_slices(&loud, &mut out);
         let in_rms = rms(&loud);
         let out_rms = rms(&out);
         // At high SNR, gain ≈ 1.0, so output ≈ input within a few %

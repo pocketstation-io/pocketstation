@@ -1,5 +1,51 @@
 # Phase 0 Progress — audio-core
 
+## Graph-crate rescue — Wave 6 (DONE 2026-06-28)
+
+**Branch:** wave6/runtime-execution
+**Scope:** the `RuntimePlan` becomes executable, and `pocketstation-ml` migrates off the
+legacy slice trait onto `RuntimeNode` — burning the `legacy` module entirely.
+
+### What was built
+- **`pocketstation-runtime`** (new crate): `EdgeChannel`/`EdgeSender`/`EdgeReceiver` (bounded
+  SPSC over rtrb, drop-newest, alloc/lock/block-free), `RealtimeExecutor` (threads a frame
+  through realtime nodes in topo order, short-circuits on gating, LAW-15 hot path),
+  `RunMetrics`, `ExecError`, `PlanScheduler::build_realtime_executor` (instantiates nodes
+  from the registry per the plan's realtime partition). Proven: a real
+  passthrough→gain→passthrough graph applies gain through the node path.
+- **`pocketstation-ml` migration**: VAD / NoiseSuppressor / EchoCanceller / AudioWatermark
+  now implement `RuntimeNode` (prepare/process/flush/close). DSP cores preserved byte-for-byte
+  as `process_slices`; the frame path copies into a pre-allocated scratch via `mem::take`
+  (O(1) swap, no hot-path alloc) and writes back into the frame buffer. New integration test
+  proves the RuntimeNode path equals the slice core for every node.
+- **legacy module BURNED**: `graph::legacy::{GraphProcessor, FRAME_LEN_SAMPLES}` deleted; ml
+  uses its own `FRAME_SAMPLES_48K_20MS`. The Wave-3 deferred-deletion debt is now retired.
+- **facade**: `pocketstation-audio` re-exports the runtime executor (targeted, not glob).
+
+### Verification
+```
+cargo fmt --all -- --check                                 PASS
+cargo clippy --workspace --all-targets -- -D warnings      PASS (0 warnings)
+cargo test --workspace                                     PASS (181 tests, was 165; +16)
+cargo run --example holy_shit_demo                          PASS (11 nodes, 15 edges)
+cargo bench --no-run -p pocketstation-audio                PASS
+```
+ml's 17 DSP tests preserved unchanged (correctness held across the migration).
+
+### Deviations (documented, not silent)
+- `pocketstation-runtime` is a **new crate**, not a rename of `pipeline`. Rationale: `pipeline`
+  still holds nodes (Gain/Resample/MonoMix) that belong in `pocketstation-nodes` (Wave 7);
+  renaming now then re-splitting later is churn. `pipeline` folds in during Wave 7.
+- Async/model/network partition execution is **out of scope** this wave (documented in the
+  executor): only realtime partitions run; bounded-channel wiring for async boundaries is Wave 7.
+- `ExecError` is hand-rolled `Display`/`Error` (runtime Cargo.toml has no thiserror dep yet).
+
+### Staff Bar Self-Check — Wave 6
+- Real execution proven end-to-end (build→compile→plan→run frames, gain applied on real path).
+- DSP correctness preserved (byte-identical cores; 17 tests unchanged + 4 new wrapper tests).
+- Hot path alloc-free (scratch via mem::take; SPSC ring; assert_no_alloc gate still green).
+- New scaffold: none. legacy debt retired. Phase scope: Phase 0 correction.
+
 ## Graph-crate rescue — Wave 5 (DONE 2026-06-27)
 
 **Branch:** wave5/lowering-runtimeplan

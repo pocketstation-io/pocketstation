@@ -11,6 +11,11 @@ pub use pocketstation_pipeline::*;
 // disambiguates the two glob re-exports above.
 pub use pocketstation_frame::EncodedFrame;
 
+// Graph compiler + runtime executor (targeted, not glob — avoids re-export clashes).
+pub use pocketstation_runtime::{
+    EdgeChannel, EdgeReceiver, EdgeSender, ExecError, PlanScheduler, RealtimeExecutor, RunMetrics,
+};
+
 pub use pocketstation_capture::{
     capture_system_audio, capture_with_mode, discover_sources, open_best_source, AdapterError,
     AudioOutputDescriptor, AudioOutputSink, AudioSourceDescriptor, AudioSourceStream, CaptureError,

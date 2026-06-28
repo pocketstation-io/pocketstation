@@ -6,6 +6,7 @@ members = [
   "crates/pocketstation-codec",
   "crates/pocketstation-metrics",
   "crates/pocketstation-pipeline",
+  "crates/pocketstation-runtime",
   "crates/pocketstation-graph",
   "crates/pocketstation-ml",
   "crates/pocketstation-capture",

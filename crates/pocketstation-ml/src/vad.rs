@@ -7,8 +7,10 @@
 //
 // All state is f32 scalars — process() is alloc-free, lock-free, blocking-free.
 
-use crate::rms;
-use pocketstation_graph::GraphProcessor;
+use crate::{rms, FRAME_DURATION_MS, FRAME_SAMPLES_48K_20MS};
+use pocketstation_frame::AudioFrame;
+use pocketstation_graph::node::{NodeError, PrepareContext};
+use pocketstation_graph::RuntimeNode;
 
 /// Voice activity state exposed after each process() call.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -37,6 +39,8 @@ pub struct VadProcessor {
     state: VadState,
     /// When inactive, gate output to silence (true) or pass through (false).
     gate_output: bool,
+    /// Pre-allocated input copy for the RuntimeNode in-place frame path (no hot-path alloc).
+    scratch: Vec<f32>,
 }
 
 impl VadProcessor {
@@ -69,6 +73,7 @@ impl VadProcessor {
             hangover_count: 0,
             state: VadState::Inactive,
             gate_output,
+            scratch: vec![0.0f32; FRAME_SAMPLES_48K_20MS],
         }
     }
 
@@ -85,8 +90,8 @@ impl VadProcessor {
     }
 }
 
-impl GraphProcessor for VadProcessor {
-    fn process(&mut self, input: &[f32], output: &mut [f32]) {
+impl VadProcessor {
+    pub fn process_slices(&mut self, input: &[f32], output: &mut [f32]) {
         let current_rms = rms(input);
 
         // Asymmetric IIR smoothing: fast attack, slow release
@@ -116,10 +121,34 @@ impl GraphProcessor for VadProcessor {
     }
 }
 
+impl RuntimeNode for VadProcessor {
+    fn prepare(&mut self, cx: &PrepareContext) -> Result<(), NodeError> {
+        let frame_samples = cx
+            .sample_spec
+            .frame_samples_for_duration_ms(FRAME_DURATION_MS);
+        if self.scratch.len() != frame_samples {
+            self.scratch = vec![0.0f32; frame_samples];
+        }
+        Ok(())
+    }
+
+    fn process(&mut self, mut frame: AudioFrame) -> Result<Option<AudioFrame>, NodeError> {
+        let mut scratch = std::mem::take(&mut self.scratch);
+        {
+            let buf = frame.buffer.as_mut_slice();
+            let n = buf.len().min(scratch.len());
+            scratch[..n].copy_from_slice(&buf[..n]);
+            self.process_slices(&scratch[..n], &mut buf[..n]);
+        }
+        self.scratch = scratch;
+        Ok(Some(frame))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use pocketstation_graph::FRAME_LEN_SAMPLES;
+    use crate::FRAME_SAMPLES_48K_20MS as FRAME_LEN_SAMPLES;
 
     fn sine_frame(amplitude: f32) -> Vec<f32> {
         use std::f32::consts::PI;
@@ -135,7 +164,7 @@ mod tests {
         let mut out = vec![0.0f32; FRAME_LEN_SAMPLES];
         // Run several frames to let smoothing settle
         for _ in 0..50 {
-            vad.process(&silence, &mut out);
+            vad.process_slices(&silence, &mut out);
         }
         assert_eq!(vad.state(), VadState::Inactive);
     }
@@ -146,7 +175,7 @@ mod tests {
         let loud = sine_frame(0.5); // well above -40 dBFS
         let mut out = vec![0.0f32; FRAME_LEN_SAMPLES];
         for _ in 0..20 {
-            vad.process(&loud, &mut out);
+            vad.process_slices(&loud, &mut out);
         }
         assert_eq!(vad.state(), VadState::Active);
     }
@@ -160,12 +189,12 @@ mod tests {
 
         // Activate
         for _ in 0..20 {
-            vad.process(&loud, &mut out);
+            vad.process_slices(&loud, &mut out);
         }
         assert_eq!(vad.state(), VadState::Active);
 
         // One frame of silence — still active due to hangover
-        vad.process(&silence, &mut out);
+        vad.process_slices(&silence, &mut out);
         assert_eq!(vad.state(), VadState::Active);
     }
 
@@ -175,7 +204,7 @@ mod tests {
         let quiet = vec![1e-6f32; FRAME_LEN_SAMPLES]; // below -40 dBFS
         let mut out = vec![1.0f32; FRAME_LEN_SAMPLES];
         for _ in 0..100 {
-            vad.process(&quiet, &mut out);
+            vad.process_slices(&quiet, &mut out);
         }
         assert_eq!(vad.state(), VadState::Inactive);
         assert!(out.iter().all(|&s| s == 0.0), "output must be gated to 0");
@@ -187,7 +216,7 @@ mod tests {
         let quiet = vec![1e-6f32; FRAME_LEN_SAMPLES];
         let mut out = vec![0.0f32; FRAME_LEN_SAMPLES];
         for _ in 0..100 {
-            vad.process(&quiet, &mut out);
+            vad.process_slices(&quiet, &mut out);
         }
         // gate_output=false: input passes regardless of state
         assert!(out
