@@ -6,13 +6,19 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use pocketstation_caps::{
-    BackpressurePolicy, ClockDomain, EdgeContract, MediaCaps, PortDirection, PortSpec,
+    BackpressurePolicy, ChannelLayout, ClockDomain, EdgeContract, MediaCaps, PortDirection,
+    PortSpec,
 };
 
 use crate::ir::{GraphIr, ResolvedEdge, ResolvedNode};
-use crate::node::{ExecutionClass, NodeDescriptor};
+use crate::node::{ExecutionClass, NodeConfig, NodeDescriptor, NodeTypeId};
 use crate::registry::NodeRegistry;
-use crate::spec::{GraphSpec, InputPortRef, NodeId};
+use crate::spec::{EdgeId, EdgeSpec, GraphSpec, InputPortRef, NodeId, NodeSpec, OutputPortRef};
+
+/// Canonical built-in adapter that downmixes a stereo output into a mono-only
+/// input. Lives in `pocketstation-nodes`; referenced here by stable type id so
+/// the compiler can auto-insert it (cf. GStreamer `audioconvert` autoplugging).
+const MONO_DOWNMIX_ADAPTER_TYPE: &str = "transform.mono_mix";
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
 pub enum CompileError {
@@ -39,6 +45,8 @@ pub enum CompileError {
     InvalidRealtimeEdge { edge: u32, reason: String },
     #[error("graph contains a cycle")]
     CycleDetected,
+    #[error("edge {edge} needs adapter {type_id} but it is not registered")]
+    AdapterUnavailable { edge: u32, type_id: String },
 }
 
 pub struct CompileContext<'a> {
@@ -90,6 +98,108 @@ fn ensure_port(
 
 fn port_media(ports: &[PortSpec], name: &str) -> Option<MediaCaps> {
     ports.iter().find(|p| p.name == name).map(|p| p.media)
+}
+
+fn audio_layout(media: MediaCaps) -> Option<ChannelLayout> {
+    match media {
+        MediaCaps::Audio(caps) => Some(caps.channel_layout),
+        _ => None,
+    }
+}
+
+pub struct InsertAdapterNodesPass;
+
+impl InsertAdapterNodesPass {
+    /// An edge needs a mono downmix only when a concrete stereo output feeds a
+    /// mono-only input. Stereo survives to `Any`/stereo consumers untouched
+    /// (PocketStation Corrected Audit §4.4).
+    fn needs_mono_downmix(from: ChannelLayout, to: ChannelLayout) -> bool {
+        from == ChannelLayout::Stereo && to == ChannelLayout::Mono
+    }
+}
+
+impl GraphPass for InsertAdapterNodesPass {
+    fn name(&self) -> &'static str {
+        "InsertAdapterNodes"
+    }
+
+    fn run(&self, ir: &mut GraphIr, cx: &CompileContext) -> Result<(), CompileError> {
+        let mut targets: Vec<usize> = Vec::new();
+        for (index, edge) in ir.edges.iter().enumerate() {
+            let from = find_node(&ir.nodes, edge.spec.from.node)?;
+            let to = find_node(&ir.nodes, edge.spec.to.node)?;
+            let from_layout =
+                port_media(&from.descriptor.outputs, &edge.spec.from.port).and_then(audio_layout);
+            let to_layout =
+                port_media(&to.descriptor.inputs, &edge.spec.to.port).and_then(audio_layout);
+            if let (Some(from_layout), Some(to_layout)) = (from_layout, to_layout) {
+                if Self::needs_mono_downmix(from_layout, to_layout) {
+                    targets.push(index);
+                }
+            }
+        }
+        if targets.is_empty() {
+            return Ok(());
+        }
+
+        let adapter_type = NodeTypeId::from(MONO_DOWNMIX_ADAPTER_TYPE);
+        let factory =
+            cx.registry
+                .get(&adapter_type)
+                .ok_or_else(|| CompileError::AdapterUnavailable {
+                    edge: ir.edges[targets[0]].spec.id.index(),
+                    type_id: MONO_DOWNMIX_ADAPTER_TYPE.to_owned(),
+                })?;
+        let descriptor = factory.descriptor();
+        let in_port = descriptor.inputs[0].name.clone();
+        let out_port = descriptor.outputs[0].name.clone();
+
+        // Each target inserts exactly one adapter node + one edge, so the new
+        // ids are the next free index plus the target's offset.
+        let node_base = ir.nodes.iter().map(|n| n.id().index()).max().unwrap_or(0) + 1;
+        let edge_base = ir
+            .edges
+            .iter()
+            .map(|e| e.spec.id.index())
+            .max()
+            .unwrap_or(0)
+            + 1;
+        let mut added_edges: Vec<ResolvedEdge> = Vec::new();
+
+        for (offset, &index) in targets.iter().enumerate() {
+            let adapter_id = NodeId(node_base + offset as u32);
+            ir.nodes.push(ResolvedNode {
+                spec: NodeSpec {
+                    id: adapter_id,
+                    type_id: adapter_type.clone(),
+                    config: NodeConfig::new(),
+                },
+                descriptor: descriptor.clone(),
+            });
+
+            // Reroute source → adapter.in, then adapter.out → original dest.
+            let original_to = ir.edges[index].spec.to.clone();
+            ir.edges[index].spec.to = InputPortRef {
+                node: adapter_id,
+                port: in_port.clone(),
+            };
+            added_edges.push(ResolvedEdge {
+                spec: EdgeSpec {
+                    id: EdgeId(edge_base + offset as u32),
+                    from: OutputPortRef {
+                        node: adapter_id,
+                        port: out_port.clone(),
+                    },
+                    to: original_to,
+                    requested: None,
+                },
+                media: MediaCaps::Any,
+                contract: None,
+            });
+        }
+        ir.edges.extend(added_edges);
+        Ok(())
+    }
 }
 
 pub struct ValidateNodeIdsPass;
@@ -321,9 +431,9 @@ impl Compiler {
             passes: vec![
                 Box::new(ValidateNodeIdsPass),
                 Box::new(ValidatePortsPass),
+                Box::new(InsertAdapterNodesPass),
                 Box::new(NegotiateCapsPass),
                 Box::new(ValidateClockDomainsPass),
-                // deferred: InsertAdapterNodes (Wave 10, with MonoMix/StreamProfile)
                 Box::new(ValidateRealtimeBoundariesPass),
                 Box::new(CycleDetectionPass),
             ],
@@ -400,10 +510,14 @@ mod tests {
     use crate::runtime_node::RuntimeNode;
 
     fn audio_media() -> MediaCaps {
+        audio_media_with(ChannelLayout::Any)
+    }
+
+    fn audio_media_with(layout: ChannelLayout) -> MediaCaps {
         MediaCaps::Audio(AudioCaps {
             sample_rate_hz: None,
             frame_samples: None,
-            channel_layout: ChannelLayout::Any,
+            channel_layout: layout,
             format: SampleFormat::F32Interleaved,
         })
     }
@@ -611,6 +725,119 @@ mod tests {
         }
     }
 
+    struct StereoSourceFactory;
+    impl NodeFactory for StereoSourceFactory {
+        fn descriptor(&self) -> NodeDescriptor {
+            test_descriptor(
+                "source.stereo",
+                NodeKind::Source,
+                Vec::new(),
+                vec![port(
+                    "audio",
+                    PortDirection::Output,
+                    audio_media_with(ChannelLayout::Stereo),
+                )],
+                ExecutionClass::RealtimeCpu,
+            )
+        }
+        fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
+            Ok(())
+        }
+        fn instantiate(
+            &self,
+            _cx: &PrepareContext,
+            _config: &NodeConfig,
+        ) -> Result<Box<dyn RuntimeNode>, crate::node::NodeError> {
+            unused_node()
+        }
+    }
+
+    struct MonoOnlySinkFactory;
+    impl NodeFactory for MonoOnlySinkFactory {
+        fn descriptor(&self) -> NodeDescriptor {
+            test_descriptor(
+                "sink.mono_only",
+                NodeKind::Sink,
+                vec![port(
+                    "audio",
+                    PortDirection::Input,
+                    audio_media_with(ChannelLayout::Mono),
+                )],
+                Vec::new(),
+                ExecutionClass::RealtimeCpu,
+            )
+        }
+        fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
+            Ok(())
+        }
+        fn instantiate(
+            &self,
+            _cx: &PrepareContext,
+            _config: &NodeConfig,
+        ) -> Result<Box<dyn RuntimeNode>, crate::node::NodeError> {
+            unused_node()
+        }
+    }
+
+    struct StereoSinkFactory;
+    impl NodeFactory for StereoSinkFactory {
+        fn descriptor(&self) -> NodeDescriptor {
+            test_descriptor(
+                "sink.stereo",
+                NodeKind::Sink,
+                vec![port(
+                    "audio",
+                    PortDirection::Input,
+                    audio_media_with(ChannelLayout::Stereo),
+                )],
+                Vec::new(),
+                ExecutionClass::RealtimeCpu,
+            )
+        }
+        fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
+            Ok(())
+        }
+        fn instantiate(
+            &self,
+            _cx: &PrepareContext,
+            _config: &NodeConfig,
+        ) -> Result<Box<dyn RuntimeNode>, crate::node::NodeError> {
+            unused_node()
+        }
+    }
+
+    // Mirrors pocketstation-nodes `transform.mono_mix`: Any in, Mono out.
+    struct MonoMixAdapterFactory;
+    impl NodeFactory for MonoMixAdapterFactory {
+        fn descriptor(&self) -> NodeDescriptor {
+            test_descriptor(
+                MONO_DOWNMIX_ADAPTER_TYPE,
+                NodeKind::Transform,
+                vec![port(
+                    "in",
+                    PortDirection::Input,
+                    audio_media_with(ChannelLayout::Any),
+                )],
+                vec![port(
+                    "out",
+                    PortDirection::Output,
+                    audio_media_with(ChannelLayout::Mono),
+                )],
+                ExecutionClass::RealtimeCpu,
+            )
+        }
+        fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
+            Ok(())
+        }
+        fn instantiate(
+            &self,
+            _cx: &PrepareContext,
+            _config: &NodeConfig,
+        ) -> Result<Box<dyn RuntimeNode>, crate::node::NodeError> {
+            unused_node()
+        }
+    }
+
     fn test_registry() -> NodeRegistry {
         let mut registry = NodeRegistry::new();
         registry.register(Arc::new(SourceFactory));
@@ -620,6 +847,10 @@ mod tests {
         registry.register(Arc::new(AsyncModelFactory));
         registry.register(Arc::new(TextSinkFactory));
         registry.register(Arc::new(RejectingFactory));
+        registry.register(Arc::new(StereoSourceFactory));
+        registry.register(Arc::new(MonoOnlySinkFactory));
+        registry.register(Arc::new(StereoSinkFactory));
+        registry.register(Arc::new(MonoMixAdapterFactory));
         registry
     }
 
@@ -805,6 +1036,47 @@ mod tests {
         assert!(Compiler::new()
             .compile(graph.into_spec(), &registry)
             .is_ok());
+    }
+
+    #[test]
+    fn given_stereo_source_into_mono_only_sink_when_compiled_then_mono_mix_adapter_inserted() {
+        let registry = test_registry();
+        let mut graph = AudioGraph::new();
+        let source = graph.add_node("source.stereo", NodeConfig::new());
+        let sink = graph.add_node("sink.mono_only", NodeConfig::new());
+        graph.connect(source.out("audio"), sink.in_("audio"));
+
+        let ir = Compiler::new()
+            .compile(graph.into_spec(), &registry)
+            .unwrap();
+
+        // source + inserted adapter + sink; original edge split into two.
+        assert_eq!(ir.node_count(), 3);
+        assert_eq!(ir.edge_count(), 2);
+        assert!(ir
+            .nodes
+            .iter()
+            .any(|node| node.type_str() == MONO_DOWNMIX_ADAPTER_TYPE));
+    }
+
+    #[test]
+    fn given_stereo_source_into_stereo_sink_when_compiled_then_stereo_survives_no_adapter() {
+        let registry = test_registry();
+        let mut graph = AudioGraph::new();
+        let source = graph.add_node("source.stereo", NodeConfig::new());
+        let sink = graph.add_node("sink.stereo", NodeConfig::new());
+        graph.connect(source.out("audio"), sink.in_("audio"));
+
+        let ir = Compiler::new()
+            .compile(graph.into_spec(), &registry)
+            .unwrap();
+
+        assert_eq!(ir.node_count(), 2);
+        assert_eq!(ir.edge_count(), 1);
+        assert!(!ir
+            .nodes
+            .iter()
+            .any(|node| node.type_str() == MONO_DOWNMIX_ADAPTER_TYPE));
     }
 
     #[test]
