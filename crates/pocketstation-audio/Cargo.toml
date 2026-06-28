@@ -28,6 +28,7 @@ name = "soak"
 pocketstation-frame = { path = "../pocketstation-frame", version = "0.1.0" }
 pocketstation-graph = { path = "../pocketstation-graph", version = "0.1.0" }
 pocketstation-runtime = { path = "../pocketstation-runtime", version = "0.1.0" }
+pocketstation-nodes = { path = "../pocketstation-nodes", version = "0.1.0" }
 pocketstation-pipeline = { path = "../pocketstation-pipeline", version = "0.1.0" }
 pocketstation-codec = { path = "../pocketstation-codec", version = "0.1.0" }
 pocketstation-capture = { path = "../pocketstation-capture", version = "0.1.0" }

@@ -167,6 +167,102 @@ pub struct BusMetrics {
     pub frames_total: Counter,
 }
 
+/// Loudness reference: digital full scale (peak |sample| = 1.0) maps to 0 dBFS.
+const FULL_SCALE_AMPLITUDE: f32 = 1.0;
+/// Floor reported when a frame is digital silence (avoids log10(0) = -inf).
+pub const SILENCE_FLOOR_DBFS: f32 = -120.0;
+
+/// Per-frame audio observation, computed from real samples crossing one edge.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct EdgeObservation {
+    pub peak_dbfs: f32,
+    pub loudness_dbfs: f32,  // RMS level in dBFS
+    pub clipping_count: u32, // samples at or beyond full scale
+}
+
+impl EdgeObservation {
+    pub fn observe(samples: &[f32]) -> Self {
+        if samples.is_empty() {
+            return Self {
+                peak_dbfs: SILENCE_FLOOR_DBFS,
+                loudness_dbfs: SILENCE_FLOOR_DBFS,
+                clipping_count: 0,
+            };
+        }
+        let mut peak = 0.0f32;
+        let mut sum_sq = 0.0f32;
+        let mut clipping_count = 0u32;
+        for &s in samples {
+            let mag = s.abs();
+            if mag > peak {
+                peak = mag;
+            }
+            if mag >= FULL_SCALE_AMPLITUDE {
+                clipping_count += 1;
+            }
+            sum_sq += s * s;
+        }
+        let rms = (sum_sq / samples.len() as f32).sqrt();
+        Self {
+            peak_dbfs: Self::to_dbfs(peak),
+            loudness_dbfs: Self::to_dbfs(rms),
+            clipping_count,
+        }
+    }
+
+    fn to_dbfs(amplitude: f32) -> f32 {
+        if amplitude <= 0.0 {
+            return SILENCE_FLOOR_DBFS;
+        }
+        (20.0 * amplitude.log10()).max(SILENCE_FLOOR_DBFS)
+    }
+
+    pub fn is_clipping(&self) -> bool {
+        self.clipping_count > 0
+    }
+}
+
+/// Per-edge running metrics: frame throughput plus worst-case level observations.
+#[derive(Default)]
+pub struct EdgeMetrics {
+    pub frames_in: Counter,
+    pub frames_out: Counter,
+    pub frames_dropped: Counter,
+    pub clipping_frames: Counter,
+    pub worst_peak_dbfs: Gauge,
+}
+
+impl EdgeMetrics {
+    pub fn record_in(&self, observation: EdgeObservation) {
+        self.frames_in.inc();
+        if observation.is_clipping() {
+            self.clipping_frames.inc();
+        }
+        if observation.peak_dbfs as f64 > self.worst_peak_dbfs.get_scaled()
+            || self.frames_in.get() == 1
+        {
+            self.worst_peak_dbfs
+                .set_scaled(observation.peak_dbfs as f64);
+        }
+    }
+
+    pub fn record_out(&self) {
+        self.frames_out.inc();
+    }
+
+    pub fn record_dropped(&self) {
+        self.frames_dropped.inc();
+    }
+
+    pub fn drop_rate_pct(&self) -> f64 {
+        let total = self.frames_in.get();
+        if total == 0 {
+            return 0.0;
+        }
+        self.frames_dropped.get() as f64 / total as f64 * 100.0
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -276,5 +372,63 @@ mod tests {
             h.record_ns(i * 1_000);
         }
         assert_eq!(h.count(), 10_000);
+    }
+
+    #[test]
+    fn given_silence_when_observed_then_levels_are_at_silence_floor() {
+        let obs = EdgeObservation::observe(&[0.0; 960]);
+        assert_eq!(obs.peak_dbfs, SILENCE_FLOOR_DBFS);
+        assert_eq!(obs.loudness_dbfs, SILENCE_FLOOR_DBFS);
+        assert_eq!(obs.clipping_count, 0);
+    }
+
+    #[test]
+    fn given_full_scale_tone_when_observed_then_peak_is_zero_dbfs() {
+        let obs = EdgeObservation::observe(&[1.0, -1.0, 1.0, -1.0]);
+        assert!(
+            (obs.peak_dbfs - 0.0).abs() < 1e-4,
+            "peak {} dbfs",
+            obs.peak_dbfs
+        );
+        assert_eq!(obs.clipping_count, 4);
+        assert!(obs.is_clipping());
+    }
+
+    #[test]
+    fn given_half_scale_signal_when_observed_then_peak_near_minus_six_dbfs() {
+        let obs = EdgeObservation::observe(&[0.5, -0.5, 0.5, -0.5]);
+        assert!(
+            (obs.peak_dbfs - (-6.0206)).abs() < 0.01,
+            "peak {} dbfs",
+            obs.peak_dbfs
+        );
+        assert_eq!(obs.clipping_count, 0);
+    }
+
+    #[test]
+    fn given_empty_frame_when_observed_then_silence_floor_and_no_clipping() {
+        let obs = EdgeObservation::observe(&[]);
+        assert_eq!(obs.peak_dbfs, SILENCE_FLOOR_DBFS);
+        assert_eq!(obs.clipping_count, 0);
+    }
+
+    #[test]
+    fn given_edge_metrics_when_three_in_one_dropped_then_drop_rate_is_thirty_three_pct() {
+        let m = EdgeMetrics::default();
+        m.record_in(EdgeObservation::observe(&[0.1; 8]));
+        m.record_in(EdgeObservation::observe(&[0.1; 8]));
+        m.record_in(EdgeObservation::observe(&[0.1; 8]));
+        m.record_dropped();
+        assert_eq!(m.frames_in.get(), 3);
+        assert!((m.drop_rate_pct() - 33.333).abs() < 0.01);
+    }
+
+    #[test]
+    fn given_edge_metrics_when_clipping_frame_recorded_then_clipping_counter_increments() {
+        let m = EdgeMetrics::default();
+        m.record_in(EdgeObservation::observe(&[0.1; 8]));
+        m.record_in(EdgeObservation::observe(&[1.0; 8]));
+        assert_eq!(m.clipping_frames.get(), 1);
+        assert!((m.worst_peak_dbfs.get_scaled() - 0.0).abs() < 1e-3);
     }
 }

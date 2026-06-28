@@ -5,6 +5,8 @@
 
 mod mix;
 mod ml_nodes;
+mod sink;
+mod source;
 
 use std::sync::Arc;
 
@@ -12,14 +14,19 @@ use pocketstation_graph::{register_builtins, NodeRegistry};
 
 pub use mix::{MonoMixFactory, MonoMixNode};
 pub use ml_nodes::{EchoCancelFactory, NoiseSuppressFactory, VadFactory, WatermarkFactory};
+pub use sink::{RecordingSinkFactory, RecordingSinkNode, RecordingTally};
+pub use source::{SyntheticSourceFactory, SyntheticSourceNode};
 
 pub fn register_all(registry: &mut NodeRegistry) {
     register_builtins(registry);
+    registry.register(Arc::new(SyntheticSourceFactory));
     registry.register(Arc::new(MonoMixFactory));
     registry.register(Arc::new(VadFactory));
     registry.register(Arc::new(NoiseSuppressFactory));
     registry.register(Arc::new(EchoCancelFactory));
     registry.register(Arc::new(WatermarkFactory));
+    let (recording_sink, _tally) = RecordingSinkFactory::new();
+    registry.register(Arc::new(recording_sink));
 }
 
 #[cfg(test)]

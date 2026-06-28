@@ -64,6 +64,8 @@ These never become production — they exist for testing and development. They a
 | Component | Repo / File | Purpose |
 |---|---|---|
 | Sine wave source | audio-core / examples/sine_to_wav | Phase 0 smoke test, latency measurement |
+| Synthetic source node | audio-core / pocketstation-nodes / src/source.rs | Registered `source.synthetic` NodeFactory; steady sine tone for graph smoke tests + latency/observability measurement |
+| Recording sink node | audio-core / pocketstation-nodes / src/sink.rs | Registered `sink.recording` NodeFactory; atomic frame/sample tally for offline verification + soak counting |
 | File output sink | audio-core / pocketstation-route | Test recording, offline verification |
 | In-memory token store | api-server | Phase 1 only; Phase 2+ uses real persistence |
 
