@@ -1,15 +1,18 @@
 //! Verification-pass pipeline that turns a `GraphSpec` into a checked `GraphIr`.
 //! Resolution binds descriptors; ordered passes validate ids, ports, media,
-//! realtime boundaries, and acyclicity. Lowering/emit passes arrive in Wave 5.
+//! clock domains, realtime boundaries, and acyclicity. Lowering into a
+//! `RuntimePlan` lives in `planner::RuntimePlanner` (Wave 5).
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use pocketstation_caps::{BackpressurePolicy, EdgeContract, MediaCaps, PortDirection, PortSpec};
+use pocketstation_caps::{
+    BackpressurePolicy, ClockDomain, EdgeContract, MediaCaps, PortDirection, PortSpec,
+};
 
 use crate::ir::{GraphIr, ResolvedEdge, ResolvedNode};
 use crate::node::{ExecutionClass, NodeDescriptor};
 use crate::registry::NodeRegistry;
-use crate::spec::{GraphSpec, NodeId};
+use crate::spec::{GraphSpec, InputPortRef, NodeId};
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
 pub enum CompileError {
@@ -23,6 +26,13 @@ pub enum CompileError {
     UnknownPort { node: u32, port: String },
     #[error("node {node}: port {port} connected against its declared direction")]
     WrongPortDirection { node: u32, port: String },
+    #[error("node {node}: input port {port} fans in clock domains {expected:?} and {found:?} without a clock adapter")]
+    ClockDomainMismatch {
+        node: u32,
+        port: String,
+        expected: ClockDomain,
+        found: ClockDomain,
+    },
     #[error("edge {edge}: media {from} incompatible with {to}")]
     MediaMismatch { edge: u32, from: String, to: String },
     #[error("edge {edge}: invalid realtime boundary: {reason}")]
@@ -124,6 +134,40 @@ impl GraphPass for ValidatePortsPass {
                 &edge.spec.to.port,
                 PortDirection::Input,
             )?;
+        }
+        Ok(())
+    }
+}
+
+pub struct ValidateClockDomainsPass;
+
+impl GraphPass for ValidateClockDomainsPass {
+    fn name(&self) -> &'static str {
+        "ValidateClockDomains"
+    }
+
+    fn run(&self, ir: &mut GraphIr, _cx: &CompileContext) -> Result<(), CompileError> {
+        // Every edge feeding one input port must share a clock domain: blindly
+        // mixing sources from different clocks (e.g. Capture + Network) without a
+        // resampling adapter drifts and glitches (ADR-006). The adapter that
+        // bridges clocks is inserted in Wave 10 alongside MonoMix/StreamProfile.
+        let mut seen: Vec<(InputPortRef, ClockDomain)> = Vec::new();
+        for edge in &ir.edges {
+            let clock = edge
+                .contract
+                .map_or(ClockDomain::Capture, |contract| contract.clock);
+            match seen.iter().find(|(port, _)| *port == edge.spec.to) {
+                Some((_, expected)) if *expected != clock => {
+                    return Err(CompileError::ClockDomainMismatch {
+                        node: edge.spec.to.node.index(),
+                        port: edge.spec.to.port.clone(),
+                        expected: *expected,
+                        found: clock,
+                    });
+                }
+                Some(_) => {}
+                None => seen.push((edge.spec.to.clone(), clock)),
+            }
         }
         Ok(())
     }
@@ -278,7 +322,8 @@ impl Compiler {
                 Box::new(ValidateNodeIdsPass),
                 Box::new(ValidatePortsPass),
                 Box::new(NegotiateCapsPass),
-                // deferred: InsertAdapterNodes (Wave 5 lowering)
+                Box::new(ValidateClockDomainsPass),
+                // deferred: InsertAdapterNodes (Wave 10, with MonoMix/StreamProfile)
                 Box::new(ValidateRealtimeBoundariesPass),
                 Box::new(CycleDetectionPass),
             ],
@@ -465,6 +510,35 @@ mod tests {
         }
     }
 
+    struct MixerFactory;
+    impl NodeFactory for MixerFactory {
+        fn descriptor(&self) -> NodeDescriptor {
+            test_descriptor(
+                "mixer",
+                NodeKind::Transform,
+                vec![PortSpec {
+                    name: "audio".to_owned(),
+                    direction: PortDirection::Input,
+                    media: audio_media(),
+                    multiplicity: Multiplicity::Many,
+                    required: true,
+                }],
+                vec![port("audio", PortDirection::Output, audio_media())],
+                ExecutionClass::RealtimeCpu,
+            )
+        }
+        fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
+            Ok(())
+        }
+        fn instantiate(
+            &self,
+            _cx: &PrepareContext,
+            _config: &NodeConfig,
+        ) -> Result<Box<dyn RuntimeNode>, crate::node::NodeError> {
+            unused_node()
+        }
+    }
+
     struct AsyncModelFactory;
     impl NodeFactory for AsyncModelFactory {
         fn descriptor(&self) -> NodeDescriptor {
@@ -542,6 +616,7 @@ mod tests {
         registry.register(Arc::new(SourceFactory));
         registry.register(Arc::new(TransformFactory));
         registry.register(Arc::new(SinkFactory));
+        registry.register(Arc::new(MixerFactory));
         registry.register(Arc::new(AsyncModelFactory));
         registry.register(Arc::new(TextSinkFactory));
         registry.register(Arc::new(RejectingFactory));
@@ -694,6 +769,42 @@ mod tests {
             .unwrap_err();
 
         assert_eq!(error, CompileError::CycleDetected);
+    }
+
+    #[test]
+    fn given_fan_in_with_mismatched_clock_domains_when_compiled_then_clock_domain_mismatch() {
+        let registry = test_registry();
+        let mut graph = AudioGraph::new();
+        let capture = graph.add_node("source", NodeConfig::new());
+        let network = graph.add_node("source", NodeConfig::new());
+        let mixer = graph.add_node("mixer", NodeConfig::new());
+        graph.connect(capture.out("audio"), mixer.in_("audio")); // voice_default → Capture
+        let network_edge = EdgeContract {
+            clock: ClockDomain::Network,
+            ..EdgeContract::voice_default()
+        };
+        graph.connect_with(network.out("audio"), mixer.in_("audio"), network_edge);
+
+        let error = Compiler::new()
+            .compile(graph.into_spec(), &registry)
+            .unwrap_err();
+
+        assert!(matches!(error, CompileError::ClockDomainMismatch { .. }));
+    }
+
+    #[test]
+    fn given_fan_in_with_consistent_clock_domains_when_compiled_then_ok() {
+        let registry = test_registry();
+        let mut graph = AudioGraph::new();
+        let first = graph.add_node("source", NodeConfig::new());
+        let second = graph.add_node("source", NodeConfig::new());
+        let mixer = graph.add_node("mixer", NodeConfig::new());
+        graph.connect(first.out("audio"), mixer.in_("audio")); // Capture
+        graph.connect(second.out("audio"), mixer.in_("audio")); // Capture
+
+        assert!(Compiler::new()
+            .compile(graph.into_spec(), &registry)
+            .is_ok());
     }
 
     #[test]

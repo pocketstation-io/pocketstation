@@ -817,6 +817,7 @@ dependencies = [
  "pocketstation-frame",
  "pocketstation-graph",
  "pocketstation-metrics",
+ "pocketstation-nodes",
  "pocketstation-pipeline",
  "pocketstation-runtime",
 ]
