@@ -2,6 +2,13 @@
 // compile() performs Kahn's cycle detection + topological sort.
 // run() dispatches frames in topological order via GraphProcessor implementations.
 
+// Wave 2 node model (declaration + registry + lifecycle). The legacy AudioGraph
+// below is the frozen prototype; it is replaced by the DSL→GraphSpec rewrite in Wave 3.
+pub mod builtins;
+pub mod node;
+pub mod registry;
+pub mod runtime_node;
+
 use std::collections::{HashMap, VecDeque};
 
 // --- identity ---

@@ -1,5 +1,40 @@
 # Phase 0 Progress — audio-core
 
+## Graph-crate rescue — Wave 2 (DONE 2026-06-27)
+
+**Branch:** wave2/node-model-registry
+**Scope:** node declaration model + registry + `RuntimeNode` lifecycle (the compiler-facing
+and execution-contract layer). Additive new modules in `pocketstation-graph`; the legacy
+`AudioGraph`/`GraphProcessor` stay untouched (frozen prototype, replaced in Wave 3).
+
+### What was built (all in `pocketstation-graph`)
+- `node.rs` — `NodeTypeId`, `NodeKind` (+`is_terminal`), `ExecutionClass` (8 variants,
+  `is_realtime`/`rank`), `NodeConfig` (builder + typed getters), `ConfigError`/`NodeError`
+  (thiserror), `NodeDescriptor` (inputs/outputs as `caps::PortSpec`), `PrepareContext`.
+- `runtime_node.rs` — `RuntimeNode` lifecycle trait: `prepare`/`process(frame)->Result<Option<frame>>`/
+  `flush`/`close`; mirrors the established `AudioProcessorNode` frame-ownership idiom + LAW-15
+  realtime invariant doc. Lives in graph (dependency-correct: runtime will depend on graph).
+- `registry.rs` — `NodeFactory` trait (descriptor/validate_config/instantiate) + `NodeRegistry`.
+- `builtins.rs` — real `PassthroughFactory`/`GainFactory` producing real `RuntimeNode`s
+  (gain is alloc-free in-place dB→linear sample scaling); `register_builtins()`.
+
+### Verification
+```
+cargo fmt --all -- --check                                 PASS
+cargo clippy --workspace --all-targets -- -D warnings      PASS (0 warnings)
+cargo test --workspace                                     PASS (147 tests, was 130)
+cargo bench --no-run -p pocketstation-audio                PASS (compiles)
+```
+
+### Staff Bar Self-Check — Wave 2
+- Smallest correct design: yes — additive modules; legacy API untouched; no scheduler pulled forward.
+- Correctness-first: declaration + validation + single-node lifecycle delivered; multi-node
+  scheduling/execution deferred to Wave 6 (runtime) where contexts become real — no stub contexts.
+- Hot-path safe: `GainNode::process` scales in place, no alloc (LAW 15); realtime invariant documented.
+- Registry enables third-party nodes (no enum editing) — the core rescue requirement.
+- New scaffold: none. New dependency: none (thiserror is a workspace dep; caps/frame are path deps).
+- Phase scope: Phase 0 correction (no Phase N+1 code).
+
 ## Graph-crate rescue — Wave 1 (DONE 2026-06-27)
 
 **Branch:** wave1/caps-and-frame

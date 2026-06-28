@@ -4,3 +4,8 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
+
+[dependencies]
+pocketstation-frame = { path = "../pocketstation-frame" }
+pocketstation-caps = { path = "../pocketstation-caps" }
+thiserror.workspace = true
