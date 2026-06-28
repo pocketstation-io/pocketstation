@@ -889,6 +889,11 @@ dependencies = [
 [[package]]
 name = "pocketstation-graph"
 version = "0.1.0"
+dependencies = [
+ "pocketstation-caps",
+ "pocketstation-frame",
+ "thiserror 1.0.69",
+]
 
 [[package]]
 name = "pocketstation-metrics"
