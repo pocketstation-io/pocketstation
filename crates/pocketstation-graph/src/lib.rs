@@ -11,6 +11,8 @@ pub mod dsl;
 pub mod ir;
 pub mod legacy;
 pub mod node;
+pub mod plan;
+pub mod planner;
 pub mod registry;
 pub mod runtime_node;
 pub mod spec;
