@@ -6,7 +6,9 @@
 //! so third parties register `NodeFactory`s instead of editing this crate.
 
 pub mod builtins;
+pub mod compiler;
 pub mod dsl;
+pub mod ir;
 pub mod legacy;
 pub mod node;
 pub mod registry;

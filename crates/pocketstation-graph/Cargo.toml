@@ -9,3 +9,6 @@ repository.workspace = true
 pocketstation-frame = { path = "../pocketstation-frame" }
 pocketstation-caps = { path = "../pocketstation-caps" }
 thiserror.workspace = true
+
+[dev-dependencies]
+proptest.workspace = true

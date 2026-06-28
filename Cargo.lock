@@ -892,6 +892,7 @@ version = "0.1.0"
 dependencies = [
  "pocketstation-caps",
  "pocketstation-frame",
+ "proptest",
  "thiserror 1.0.69",
 ]
 
