@@ -35,6 +35,7 @@ DEFERRED    Intentionally postponed; ADR or phase plan justifies it
 | DHAT allocation check | RESOLVED | audio-core | Replaced with assert_no_alloc = "1.1" in `crates/pocketstation-audio/tests/alloc_check.rs`; `tools/pocketstation-alloccheck` deleted (was broken: workspace-inheritance without workspace member). | — | — |
 | TURN configuration | DEFERRED | relay | Production TURN credentials; STUN-only works on most networks | Phase 2 | TURN provider decision |
 | SFrame E2EE | DEFERRED | relay + SDKs | Frame-layer encryption per RFC 9605 | Phase 3 | ADR for per-platform insertion point |
+| Clock-domain / channel adapter insertion | DEFERRED | audio-core / pocketstation-graph / src/compiler.rs | `ValidateClockDomainsPass` (Wave 9) *rejects* cross-clock fan-in; the ASRC/resampler + MonoMix adapter that would *bridge* mismatched clocks/layouts is not inserted yet (industry-standard async sample-rate conversion, cf. WebRTC audio mixer) | Wave 10 | StreamProfile + MonoMix node + `InsertAdapterNodesPass` |
 
 ---
 
