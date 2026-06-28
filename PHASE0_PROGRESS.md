@@ -1,5 +1,45 @@
 # Phase 0 Progress — audio-core
 
+## Graph-crate rescue — Wave 4 (DONE 2026-06-27)
+
+**Branch:** wave4/graph-ir-verify
+**Scope:** typed `GraphIr` + the compiler verification-pass pipeline. The inert `GraphSpec`
+now compiles into a validated IR that rejects bad topologies with specific `CompileError`s.
+
+### What was built (in `pocketstation-graph`)
+- `ir.rs` — `ResolvedNode` (spec + descriptor), `ResolvedEdge` (spec + negotiated media +
+  contract), `GraphIr` (nodes/edges/topo_order with accessors).
+- `compiler.rs` — `CompileError` (8 specific variants), `CompileContext`, `GraphPass` trait,
+  and the ordered pass pipeline:
+  1. `ValidateNodeIdsPass` — edges reference existing nodes.
+  2. `ValidatePortsPass` — ports exist with correct direction.
+  3. `NegotiateCapsPass` — media compatibility via `caps`; `MediaMismatch` on incompatible.
+  4. *(deferred: InsertAdapterNodes — Wave 5 lowering; comment marker, no stub)*
+  5. `ValidateRealtimeBoundariesPass` — async→realtime edges must be non-blocking
+     (`InvalidRealtimeEdge` otherwise) — the rescue plan's realtime-boundary rule.
+  6. `CycleDetectionPass` — deterministic Kahn BFS → `topo_order`; `CycleDetected` on back-edge.
+  `Compiler::compile(spec, registry)` resolves factories (`UnknownNodeType`/`InvalidConfig`),
+  then runs the passes.
+
+### Verification
+```
+cargo fmt --all -- --check                                 PASS
+cargo clippy --workspace --all-targets -- -D warnings      PASS (0 warnings)
+cargo test --workspace                                     PASS (156 tests, was 145; +11)
+cargo run --example holy_shit_demo                          PASS (11 nodes, 15 edges)
+cargo bench --no-run -p pocketstation-audio                PASS
+```
+Tests include a golden IR snapshot (topo order asserted inline) and a proptest (random
+linear chain always compiles to insertion order).
+
+### Staff Bar Self-Check — Wave 4
+- Real validation, no stub passes: every pass does its full job with GWT tests, or is absent
+  (InsertAdapterNodes deferred to Wave 5 with a comment marker — not a fake `Ok(())`).
+- Correctness-first ordering per the rescue plan (validation before lowering/fusion).
+- New scaffold: none. New dependency: `proptest` added as a `[dev-dependencies]` to the graph
+  crate (test-only, workspace-inherited; matches pocketstation-caps).
+- Phase scope: Phase 0 correction.
+
 ## Graph-crate rescue — Wave 3 (DONE 2026-06-27)
 
 **Branch:** wave3/dsl-graphspec
