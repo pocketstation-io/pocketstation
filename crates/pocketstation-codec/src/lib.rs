@@ -7,6 +7,7 @@ mod constants;
 mod decoder;
 mod encoder;
 mod jitter_buffer;
+mod profile;
 
 pub use constants::{
     OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, OPUS_SAMPLE_RATE, VOICE_AGENT_FRAME_SAMPLES,
@@ -17,6 +18,7 @@ pub use encoder::{
     OpusSampleRate,
 };
 pub use jitter_buffer::{JitterBuffer, PopResult};
+pub use profile::StreamProfile;
 
 #[cfg(any(test, feature = "test-helpers"))]
 pub use decoder::MockOpusDecoder;
