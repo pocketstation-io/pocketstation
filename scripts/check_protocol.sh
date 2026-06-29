@@ -14,9 +14,11 @@ fi
 echo "  pass"
 
 echo "LAW-10: no section banners..."
-if grep -rn "//\s*[-=*#]\{4,\}" src/ --include="*.rs" 2>/dev/null | grep -q .; then
+# Catches ASCII (- = * #) AND box-drawing (─ U+2500) divider banners; the
+# box-drawing form previously slipped the gate (see feedback: CODE_PROTOCOL rigor).
+if grep -rnE "//[[:space:]]*([-=*#]{4,}|─{4,})" src/ --include="*.rs" 2>/dev/null | grep -q .; then
   echo "  FAIL: section divider banners found"
-  grep -rn "//\s*[-=*#]\{4,\}" src/ --include="*.rs"
+  grep -rnE "//[[:space:]]*([-=*#]{4,}|─{4,})" src/ --include="*.rs"
   exit 1
 fi
 echo "  pass"
