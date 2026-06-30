@@ -20,7 +20,7 @@ pub use builtins::register_builtins;
 pub use dsl::{AudioGraph, NodeHandle};
 pub use node::{
     ConfigError, ExecutionClass, NodeConfig, NodeDescriptor, NodeError, NodeKind, NodeTypeId,
-    PrepareContext,
+    PrepareContext, ReceiverBackend,
 };
 pub use registry::{NodeFactory, NodeRegistry};
 pub use runtime_node::RuntimeNode;
