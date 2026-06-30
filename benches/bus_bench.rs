@@ -1,7 +1,5 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use pocketstation_audio::{
-    frame_bus, AudioBufferPool, AudioFrame, SourceId, StreamId, POOL_SLOT_SAMPLES,
-};
+use pks_audio::{frame_bus, AudioBufferPool, AudioFrame, SourceId, StreamId, POOL_SLOT_SAMPLES};
 
 fn bench_bus(c: &mut Criterion) {
     let mut group = c.benchmark_group("frame_bus");

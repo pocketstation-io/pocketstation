@@ -1,5 +1,5 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use pocketstation_audio::{OpusEncoder, OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES};
+use pks_audio::{OpusEncoder, OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES};
 
 fn bench_encode(c: &mut Criterion) {
     let mut group = c.benchmark_group("opus_encode");

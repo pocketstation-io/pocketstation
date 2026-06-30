@@ -1,4 +1,4 @@
-use pocketstation_audio::*;
+use pks_audio::*;
 
 #[test]
 fn sine_to_mock_codec_roundtrip() {

@@ -1,0 +1,9 @@
+[package]
+name = "pks-ml"
+version = "0.1.0"
+edition = "2021"
+description = "Real-time audio signal processing nodes for the PocketStation AudioGraph"
+
+[dependencies]
+pks-graph = { path = "../pks-graph", version = "0.1.0" }
+pks-frame = { path = "../pks-frame", version = "0.1.0" }

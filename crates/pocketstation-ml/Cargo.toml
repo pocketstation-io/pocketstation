@@ -1,9 +1,0 @@
-[package]
-name = "pocketstation-ml"
-version = "0.1.0"
-edition = "2021"
-description = "Real-time audio signal processing nodes for the PocketStation AudioGraph"
-
-[dependencies]
-pocketstation-graph = { path = "../pocketstation-graph", version = "0.1.0" }
-pocketstation-frame = { path = "../pocketstation-frame", version = "0.1.0" }

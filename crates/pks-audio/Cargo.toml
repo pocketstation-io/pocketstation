@@ -1,0 +1,70 @@
+[package]
+name = "pks-audio"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[features]
+default = []
+real-opus = ["pks-codec/real-opus"]
+
+[lib]
+crate-type = ["cdylib", "staticlib", "rlib"]
+
+[[example]]
+name = "holy_shit_demo"
+# cargo run -p pks-audio --example holy_shit_demo
+
+[[example]]
+name = "sine_to_wav"
+# cargo run -p pks-audio --example sine_to_wav
+
+[[example]]
+name = "soak"
+# cargo run -p pks-audio --example soak
+
+[dependencies]
+pks-frame = { path = "../pks-frame", version = "0.1.0" }
+pks-graph = { path = "../pks-graph", version = "0.1.0" }
+pks-runtime = { path = "../pks-runtime", version = "0.1.0" }
+pks-nodes = { path = "../pks-nodes", version = "0.1.0" }
+pks-pipeline = { path = "../pks-pipeline", version = "0.1.0" }
+pks-codec = { path = "../pks-codec", version = "0.1.0" }
+pks-capture = { path = "../pks-capture", version = "0.1.0" }
+pks-capture-macos = { path = "../pks-capture-macos", version = "0.1.0" }
+pks-capture-windows = { path = "../pks-capture-windows", version = "0.1.0" }
+pks-capture-linux = { path = "../pks-capture-linux", version = "0.1.0" }
+pks-metrics = { path = "../pks-metrics", version = "0.1.0" }
+hound.workspace = true
+
+[[test]]
+name = "phase0_pipeline"
+path = "../../tests/phase0_pipeline.rs"
+
+[build-dependencies]
+cbindgen = "0.27"
+
+[dev-dependencies]
+criterion = { workspace = true }
+assert_no_alloc = { workspace = true }
+
+[[bench]]
+name = "encode_bench"
+harness = false
+path = "../../benches/encode_bench.rs"
+
+[[bench]]
+name = "decode_bench"
+harness = false
+path = "../../benches/decode_bench.rs"
+
+[[bench]]
+name = "pool_bench"
+harness = false
+path = "../../benches/pool_bench.rs"
+
+[[bench]]
+name = "bus_bench"
+harness = false
+path = "../../benches/bus_bench.rs"

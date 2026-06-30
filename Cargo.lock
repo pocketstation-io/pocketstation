@@ -774,6 +774,147 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "19f132c84eca552bf34cab8ec81f1c1dcc229b811638f9d283dceabe58c5569e"
 
 [[package]]
+name = "pks-audio"
+version = "0.1.0"
+dependencies = [
+ "assert_no_alloc",
+ "cbindgen",
+ "criterion",
+ "hound",
+ "pks-capture",
+ "pks-capture-linux",
+ "pks-capture-macos",
+ "pks-capture-windows",
+ "pks-codec",
+ "pks-frame",
+ "pks-graph",
+ "pks-metrics",
+ "pks-nodes",
+ "pks-pipeline",
+ "pks-runtime",
+]
+
+[[package]]
+name = "pks-caps"
+version = "0.1.0"
+dependencies = [
+ "pks-frame",
+ "proptest",
+]
+
+[[package]]
+name = "pks-capture"
+version = "0.1.0"
+dependencies = [
+ "pks-frame",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "pks-capture-linux"
+version = "0.1.0"
+dependencies = [
+ "alsa",
+ "libc",
+ "pipewire",
+ "pks-capture",
+ "pks-frame",
+ "rtrb",
+]
+
+[[package]]
+name = "pks-capture-macos"
+version = "0.1.0"
+dependencies = [
+ "cc",
+ "pks-capture",
+ "pks-frame",
+]
+
+[[package]]
+name = "pks-capture-windows"
+version = "0.1.0"
+dependencies = [
+ "pks-capture",
+ "pks-frame",
+ "wasapi",
+ "windows 0.58.0",
+ "windows-core 0.58.0",
+]
+
+[[package]]
+name = "pks-codec"
+version = "0.1.0"
+dependencies = [
+ "hound",
+ "opus",
+ "pks-frame",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "pks-frame"
+version = "0.1.0"
+dependencies = [
+ "proptest",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "pks-graph"
+version = "0.1.0"
+dependencies = [
+ "pks-caps",
+ "pks-frame",
+ "proptest",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "pks-metrics"
+version = "0.1.0"
+
+[[package]]
+name = "pks-ml"
+version = "0.1.0"
+dependencies = [
+ "pks-frame",
+ "pks-graph",
+]
+
+[[package]]
+name = "pks-nodes"
+version = "0.1.0"
+dependencies = [
+ "pks-caps",
+ "pks-frame",
+ "pks-graph",
+ "pks-ml",
+ "proptest",
+]
+
+[[package]]
+name = "pks-pipeline"
+version = "0.1.0"
+dependencies = [
+ "pks-codec",
+ "pks-frame",
+ "rtrb",
+]
+
+[[package]]
+name = "pks-runtime"
+version = "0.1.0"
+dependencies = [
+ "pks-caps",
+ "pks-frame",
+ "pks-graph",
+ "pks-metrics",
+ "proptest",
+ "rtrb",
+]
+
+[[package]]
 name = "plotters"
 version = "0.3.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -799,147 +940,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "51bae2ac328883f7acdfea3d66a7c35751187f870bc81f94563733a154d7a670"
 dependencies = [
  "plotters-backend",
-]
-
-[[package]]
-name = "pocketstation-audio"
-version = "0.1.0"
-dependencies = [
- "assert_no_alloc",
- "cbindgen",
- "criterion",
- "hound",
- "pocketstation-capture",
- "pocketstation-capture-linux",
- "pocketstation-capture-macos",
- "pocketstation-capture-windows",
- "pocketstation-codec",
- "pocketstation-frame",
- "pocketstation-graph",
- "pocketstation-metrics",
- "pocketstation-nodes",
- "pocketstation-pipeline",
- "pocketstation-runtime",
-]
-
-[[package]]
-name = "pocketstation-caps"
-version = "0.1.0"
-dependencies = [
- "pocketstation-frame",
- "proptest",
-]
-
-[[package]]
-name = "pocketstation-capture"
-version = "0.1.0"
-dependencies = [
- "pocketstation-frame",
- "thiserror 1.0.69",
-]
-
-[[package]]
-name = "pocketstation-capture-linux"
-version = "0.1.0"
-dependencies = [
- "alsa",
- "libc",
- "pipewire",
- "pocketstation-capture",
- "pocketstation-frame",
- "rtrb",
-]
-
-[[package]]
-name = "pocketstation-capture-macos"
-version = "0.1.0"
-dependencies = [
- "cc",
- "pocketstation-capture",
- "pocketstation-frame",
-]
-
-[[package]]
-name = "pocketstation-capture-windows"
-version = "0.1.0"
-dependencies = [
- "pocketstation-capture",
- "pocketstation-frame",
- "wasapi",
- "windows 0.58.0",
- "windows-core 0.58.0",
-]
-
-[[package]]
-name = "pocketstation-codec"
-version = "0.1.0"
-dependencies = [
- "hound",
- "opus",
- "pocketstation-frame",
- "thiserror 1.0.69",
-]
-
-[[package]]
-name = "pocketstation-frame"
-version = "0.1.0"
-dependencies = [
- "proptest",
- "thiserror 1.0.69",
-]
-
-[[package]]
-name = "pocketstation-graph"
-version = "0.1.0"
-dependencies = [
- "pocketstation-caps",
- "pocketstation-frame",
- "proptest",
- "thiserror 1.0.69",
-]
-
-[[package]]
-name = "pocketstation-metrics"
-version = "0.1.0"
-
-[[package]]
-name = "pocketstation-ml"
-version = "0.1.0"
-dependencies = [
- "pocketstation-frame",
- "pocketstation-graph",
-]
-
-[[package]]
-name = "pocketstation-nodes"
-version = "0.1.0"
-dependencies = [
- "pocketstation-caps",
- "pocketstation-frame",
- "pocketstation-graph",
- "pocketstation-ml",
- "proptest",
-]
-
-[[package]]
-name = "pocketstation-pipeline"
-version = "0.1.0"
-dependencies = [
- "pocketstation-codec",
- "pocketstation-frame",
- "rtrb",
-]
-
-[[package]]
-name = "pocketstation-runtime"
-version = "0.1.0"
-dependencies = [
- "pocketstation-caps",
- "pocketstation-frame",
- "pocketstation-graph",
- "pocketstation-metrics",
- "proptest",
- "rtrb",
 ]
 
 [[package]]

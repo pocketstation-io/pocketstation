@@ -4,7 +4,7 @@
 #
 # --dry-run behaviour:
 #   Runs `cargo publish --dry-run` for crates with no internal workspace
-#   dependencies (pocketstation-frame). For crates that depend on other
+#   dependencies (pks-frame). For crates that depend on other
 #   workspace crates, cargo publish --dry-run always fails because crates.io
 #   hasn't received the upstream yet — this is a known cargo limitation.
 #   Those crates are validated with `cargo check -p <crate>` instead.
@@ -21,29 +21,29 @@ fi
 # has_internal_deps=1 → uses cargo check in dry-run mode (crates.io limitation)
 #
 # Crate graph (as of AUDIO-025 transport deferral):
-#   pocketstation-frame (leaf)
-#   pocketstation-codec → frame
-#   pocketstation-metrics (leaf)
-#   pocketstation-pipeline → frame, codec
-#   pocketstation-capture → frame
-#   pocketstation-capture-macos → capture, frame
-#   pocketstation-capture-windows → capture, frame
-#   pocketstation-capture-linux → capture, frame
-#   pocketstation-audio → all of the above
+#   pks-frame (leaf)
+#   pks-codec → frame
+#   pks-metrics (leaf)
+#   pks-pipeline → frame, codec
+#   pks-capture → frame
+#   pks-capture-macos → capture, frame
+#   pks-capture-windows → capture, frame
+#   pks-capture-linux → capture, frame
+#   pks-audio → all of the above
 #
-# pocketstation-transport deleted per AUDIO-025; TransportKind and
-# RouteEncryptionMode are inlined in pocketstation-audio until a Rust
+# pks-transport deleted per AUDIO-025; TransportKind and
+# RouteEncryptionMode are inlined in pks-audio until a Rust
 # transport layer justifies a real crate with RtpFrame + TransportSession.
 CRATES=(
-    "pocketstation-frame:0"
-    "pocketstation-codec:1"
-    "pocketstation-metrics:0"
-    "pocketstation-pipeline:1"
-    "pocketstation-capture:1"
-    "pocketstation-capture-macos:1"
-    "pocketstation-capture-windows:1"
-    "pocketstation-capture-linux:1"
-    "pocketstation-audio:1"
+    "pks-frame:0"
+    "pks-codec:1"
+    "pks-metrics:0"
+    "pks-pipeline:1"
+    "pks-capture:1"
+    "pks-capture-macos:1"
+    "pks-capture-windows:1"
+    "pks-capture-linux:1"
+    "pks-audio:1"
 )
 
 TOTAL=${#CRATES[@]}

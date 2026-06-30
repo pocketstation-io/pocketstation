@@ -1,20 +1,20 @@
 [workspace]
 resolver = "2"
 members = [
-  "crates/pocketstation-frame",
-  "crates/pocketstation-caps",
-  "crates/pocketstation-codec",
-  "crates/pocketstation-metrics",
-  "crates/pocketstation-pipeline",
-  "crates/pocketstation-runtime",
-  "crates/pocketstation-graph",
-  "crates/pocketstation-ml",
-  "crates/pocketstation-nodes",
-  "crates/pocketstation-capture",
-  "crates/pocketstation-capture-macos",
-  "crates/pocketstation-capture-windows",
-  "crates/pocketstation-capture-linux",
-  "crates/pocketstation-audio",
+  "crates/pks-frame",
+  "crates/pks-caps",
+  "crates/pks-codec",
+  "crates/pks-metrics",
+  "crates/pks-pipeline",
+  "crates/pks-runtime",
+  "crates/pks-graph",
+  "crates/pks-ml",
+  "crates/pks-nodes",
+  "crates/pks-capture",
+  "crates/pks-capture-macos",
+  "crates/pks-capture-windows",
+  "crates/pks-capture-linux",
+  "crates/pks-audio",
 ]
 
 [workspace.package]
