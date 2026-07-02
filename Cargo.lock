@@ -897,6 +897,7 @@ dependencies = [
  "pks-graph",
  "pks-ml",
  "proptest",
+ "rtrb",
 ]
 
 [[package]]

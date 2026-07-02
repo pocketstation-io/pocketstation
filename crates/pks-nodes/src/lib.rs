@@ -3,6 +3,7 @@
 //! (passthrough, gain) plus the DSP factories defined here so a compiled graph
 //! can instantiate concrete nodes.
 
+mod mic_source;
 mod mix;
 mod ml_nodes;
 mod sink;
@@ -12,6 +13,7 @@ use std::sync::Arc;
 
 use pks_graph::{register_builtins, NodeRegistry};
 
+pub use mic_source::{MicSourceFactory, MicSourceNode, MicTelemetry};
 pub use mix::{MonoMixFactory, MonoMixNode};
 pub use ml_nodes::{EchoCancelFactory, NoiseSuppressFactory, VadFactory, WatermarkFactory};
 pub use sink::{RecordingSinkFactory, RecordingSinkNode, RecordingTally};
@@ -99,5 +101,19 @@ mod tests {
 
         let out = node.process(frame).unwrap();
         assert!(out.is_some());
+    }
+
+    #[test]
+    fn given_mic_source_factory_when_registered_then_registry_contains_source_mic() {
+        let mut registry = NodeRegistry::new();
+        register_all(&mut registry);
+
+        let (mic_factory, _producer, _telemetry) = MicSourceFactory::with_default_capacity();
+        registry.register(Arc::new(mic_factory));
+
+        assert!(
+            registry.contains(&NodeTypeId::from("source.mic")),
+            "registry missing source.mic"
+        );
     }
 }
