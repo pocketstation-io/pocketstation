@@ -68,3 +68,8 @@ path = "../../benches/pool_bench.rs"
 name = "bus_bench"
 harness = false
 path = "../../benches/bus_bench.rs"
+
+[[bench]]
+name = "capture_framebus"
+harness = false
+path = "../../benches/capture_framebus.rs"
