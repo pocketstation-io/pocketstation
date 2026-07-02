@@ -3,6 +3,8 @@
 //! that decides channels, frame duration, application mode, and bitrate so that
 //! "is this stream stereo?" is never guessed (PocketStation Corrected Audit §4).
 
+use media_clock::Contract;
+
 use crate::encoder::{
     OpusApplication, OpusChannels, OpusConfig, OpusFrameDuration, OpusSampleRate,
 };
@@ -83,6 +85,21 @@ impl StreamProfile {
         matches!(self.channels(), OpusChannels::Stereo)
     }
 
+    /// Map this stream profile to a MediaClock Contract.
+    ///
+    /// Voice profiles map to Direct (AI ingest) or Interactive (agent output).
+    /// Music/broadcast/hifi profiles map to Fidelity or Continuity.
+    pub fn contract(self) -> Contract {
+        match self {
+            Self::VoiceAgentMono10ms => Contract::direct(),
+            Self::VoiceMono20ms => Contract::interactive(),
+            Self::MusicStereo20ms | Self::MusicStereo10ms | Self::HifiStereo20ms => {
+                Contract::fidelity()
+            }
+            Self::BroadcastStereo20ms => Contract::continuity(),
+        }
+    }
+
     fn complexity(self) -> u8 {
         match self {
             Self::VoiceAgentMono10ms => VOICE_AGENT_COMPLEXITY,
@@ -154,6 +171,42 @@ mod tests {
         assert!(
             StreamProfile::HifiStereo20ms.bitrate_kbps()
                 > StreamProfile::MusicStereo20ms.bitrate_kbps()
+        );
+    }
+
+    #[test]
+    fn given_voice_agent_profile_when_contract_then_direct() {
+        assert_eq!(
+            StreamProfile::VoiceAgentMono10ms.contract(),
+            Contract::direct()
+        );
+    }
+
+    #[test]
+    fn given_voice_mono_profile_when_contract_then_interactive() {
+        assert_eq!(
+            StreamProfile::VoiceMono20ms.contract(),
+            Contract::interactive()
+        );
+    }
+
+    #[test]
+    fn given_broadcast_profile_when_contract_then_continuity() {
+        assert_eq!(
+            StreamProfile::BroadcastStereo20ms.contract(),
+            Contract::continuity()
+        );
+    }
+
+    #[test]
+    fn given_music_profiles_when_contract_then_fidelity() {
+        assert_eq!(
+            StreamProfile::MusicStereo20ms.contract(),
+            Contract::fidelity()
+        );
+        assert_eq!(
+            StreamProfile::HifiStereo20ms.contract(),
+            Contract::fidelity()
         );
     }
 }

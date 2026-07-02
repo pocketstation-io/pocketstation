@@ -15,6 +15,7 @@ test-helpers = []
 
 [dependencies]
 pks-frame = { path = "../pks-frame", version = "0.1.0" }
+media-clock.workspace = true
 opus.workspace = true
 thiserror.workspace = true
 

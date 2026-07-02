@@ -66,42 +66,6 @@ impl ExecutionClass {
     }
 }
 
-/// Which receiver pipeline a `Transport`-kind node uses for inbound audio.
-///
-/// A TransportNode carries a `ReceiverBackend` as configuration. It runs in the
-/// `Network` execution partition. See ADR FACTORY-002 for the full rationale.
-///
-/// Phase 0-1: only `RawIngest` and `PocketEqExperimental` are active in product
-/// code. `WebRtcPlayout` exists as a type for benchmark tooling parity; its
-/// runtime is browser-only (Playwright + AudioWorklet), not Rust product code.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ReceiverBackend {
-    /// Pre-jitter-buffer decoded frames. AI/source pipelines, VAD, ASR.
-    RawIngest,
-    /// libWebRTC/NetEQ playout. Browser or native libWebRTC receiver.
-    WebRtcPlayout,
-    /// PocketStation adaptive jitter engine (experimental, non-WebRTC paths).
-    PocketEqExperimental,
-}
-
-impl ReceiverBackend {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::RawIngest => "raw_ingest",
-            Self::WebRtcPlayout => "webrtc_playout",
-            Self::PocketEqExperimental => "pocketeq_experimental",
-        }
-    }
-
-    pub fn rank(self) -> u8 {
-        match self {
-            Self::RawIngest => 0,
-            Self::WebRtcPlayout => 1,
-            Self::PocketEqExperimental => 2,
-        }
-    }
-}
-
 #[derive(Debug, Clone, Default)]
 pub struct NodeConfig {
     values: HashMap<String, String>,
@@ -240,21 +204,4 @@ mod tests {
         assert_eq!(config.get_u32("attack_ms"), None);
     }
 
-    #[test]
-    fn given_receiver_backends_when_ranked_then_raw_first_pocketeq_last() {
-        assert_eq!(ReceiverBackend::RawIngest.rank(), 0);
-        assert_eq!(ReceiverBackend::WebRtcPlayout.rank(), 1);
-        assert_eq!(ReceiverBackend::PocketEqExperimental.rank(), 2);
-        assert!(ReceiverBackend::RawIngest.rank() < ReceiverBackend::PocketEqExperimental.rank());
-    }
-
-    #[test]
-    fn given_receiver_backends_when_as_str_then_snake_case_labels() {
-        assert_eq!(ReceiverBackend::RawIngest.as_str(), "raw_ingest");
-        assert_eq!(ReceiverBackend::WebRtcPlayout.as_str(), "webrtc_playout");
-        assert_eq!(
-            ReceiverBackend::PocketEqExperimental.as_str(),
-            "pocketeq_experimental"
-        );
-    }
 }
