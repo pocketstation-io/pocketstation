@@ -3,6 +3,7 @@
 //! (passthrough, gain) plus the DSP factories defined here so a compiled graph
 //! can instantiate concrete nodes.
 
+mod bridge_sink;
 mod mic_source;
 mod mix;
 mod ml_nodes;
@@ -14,6 +15,7 @@ use std::sync::Arc;
 
 use pks_graph::{register_builtins, NodeRegistry};
 
+pub use bridge_sink::{BridgeSinkFactory, BridgeSinkNode, BridgeSinkTelemetry};
 pub use mic_source::{MicSourceFactory, MicSourceNode, MicTelemetry};
 pub use mix::{MonoMixFactory, MonoMixNode};
 pub use ml_nodes::{EchoCancelFactory, NoiseSuppressFactory, VadFactory, WatermarkFactory};
@@ -117,5 +119,80 @@ mod tests {
             registry.contains(&NodeTypeId::from("source.mic")),
             "registry missing source.mic"
         );
+    }
+
+    #[test]
+    fn given_source_and_bridge_in_executor_when_frames_pushed_then_consumer_receives_processed_output(
+    ) {
+        let cx = prepare_cx();
+
+        // Wire: MicSourceFactory -> GainNode (0dB) -> BridgeSinkNode
+        let (mic_factory, mut mic_producer, mic_telemetry) = MicSourceFactory::new(8);
+        let mut mic_node = mic_factory.instantiate(&cx, &NodeConfig::new()).unwrap();
+        mic_node.prepare(&cx).unwrap();
+
+        let gain_config = NodeConfig::new().with("gain_db", "0.0");
+        let gain_factory = pks_graph::builtins::GainFactory;
+        let mut gain_node = gain_factory.instantiate(&cx, &gain_config).unwrap();
+        gain_node.prepare(&cx).unwrap();
+
+        let (bridge_factory, mut bridge_consumer, bridge_telemetry) = BridgeSinkFactory::new(8);
+        let mut bridge_node = bridge_factory.instantiate(&cx, &NodeConfig::new()).unwrap();
+        bridge_node.prepare(&cx).unwrap();
+
+        // Push two frames into the mic source.
+        let pool_a = pks_frame::AudioBufferPool::new(1, FRAME_SAMPLES);
+        let mut handle_a = pool_a.acquire().unwrap();
+        handle_a.copy_from_slice(&vec![0.3f32; FRAME_SAMPLES]);
+        let frame_a = AudioFrame::new(StreamId(0), SourceId(0), 0, 0, 1, handle_a);
+
+        let pool_b = pks_frame::AudioBufferPool::new(1, FRAME_SAMPLES);
+        let mut handle_b = pool_b.acquire().unwrap();
+        handle_b.copy_from_slice(&vec![0.8f32; FRAME_SAMPLES]);
+        let frame_b = AudioFrame::new(StreamId(0), SourceId(0), 1, 0, 1, handle_b);
+
+        mic_producer.push(frame_a).unwrap();
+        mic_producer.push(frame_b).unwrap();
+
+        // Drive the mini-pipeline for two ticks.
+        for _ in 0..2 {
+            let pool_tick = pks_frame::AudioBufferPool::new(1, FRAME_SAMPLES);
+            let mut handle_tick = pool_tick.acquire().unwrap();
+            handle_tick.copy_from_slice(&vec![0.0f32; FRAME_SAMPLES]);
+            let silence = AudioFrame::new(StreamId(0), SourceId(0), 0, 0, 1, handle_tick);
+
+            let from_mic = mic_node.process(silence).unwrap().unwrap();
+            let from_gain = gain_node.process(from_mic).unwrap().unwrap();
+            let sink_out = bridge_node.process(from_gain).unwrap();
+            assert!(sink_out.is_none(), "sink must return None");
+        }
+
+        // Verify the bridge consumer received both frames in order.
+        let out_a = bridge_consumer.pop().unwrap();
+        let out_b = bridge_consumer.pop().unwrap();
+
+        let peak_a = out_a
+            .buffer
+            .as_slice()
+            .iter()
+            .fold(0.0f32, |m, &s| m.max(s.abs()));
+        let peak_b = out_b
+            .buffer
+            .as_slice()
+            .iter()
+            .fold(0.0f32, |m, &s| m.max(s.abs()));
+
+        assert!(
+            (peak_a - 0.3).abs() < 1e-6,
+            "first frame amplitude wrong: peak={peak_a}"
+        );
+        assert!(
+            (peak_b - 0.8).abs() < 1e-6,
+            "second frame amplitude wrong: peak={peak_b}"
+        );
+
+        assert_eq!(mic_telemetry.frames_delivered(), 2);
+        assert_eq!(bridge_telemetry.frames_pushed(), 2);
+        assert_eq!(bridge_telemetry.overrun_count(), 0);
     }
 }
