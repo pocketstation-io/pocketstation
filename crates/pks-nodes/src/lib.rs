@@ -8,6 +8,7 @@ mod mix;
 mod ml_nodes;
 mod sink;
 mod source;
+mod system_source;
 
 use std::sync::Arc;
 
@@ -18,6 +19,7 @@ pub use mix::{MonoMixFactory, MonoMixNode};
 pub use ml_nodes::{EchoCancelFactory, NoiseSuppressFactory, VadFactory, WatermarkFactory};
 pub use sink::{RecordingSinkFactory, RecordingSinkNode, RecordingTally};
 pub use source::{SyntheticSourceFactory, SyntheticSourceNode};
+pub use system_source::{SystemOutputSourceFactory, SystemOutputSourceNode, SystemOutputTelemetry};
 
 pub fn register_all(registry: &mut NodeRegistry) {
     register_builtins(registry);
