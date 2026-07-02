@@ -850,6 +850,7 @@ dependencies = [
 name = "pks-codec"
 version = "0.1.0"
 dependencies = [
+ "criterion",
  "hound",
  "media-clock",
  "opus",

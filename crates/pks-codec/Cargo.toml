@@ -21,3 +21,8 @@ thiserror.workspace = true
 
 [dev-dependencies]
 hound.workspace = true
+criterion.workspace = true
+
+[[bench]]
+name = "opus_encode"
+harness = false
