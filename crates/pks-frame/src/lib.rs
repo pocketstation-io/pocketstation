@@ -25,7 +25,7 @@ pub struct StreamId(pub u64);
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct SourceId(pub u64);
 
-/// Identifies a named audio bus within a GraphSession. None = pre-graph capture path.
+/// Identifies a named audio bus within a Session. None = pre-graph capture path.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct BusId(pub u64);
 
@@ -269,7 +269,7 @@ pub enum SourceKind {
     Synthetic,   // testing / Phase 0 sine sources
 }
 
-/// Describes a named audio bus in a GraphSession (v3.0 addition — Phase 0).
+/// Describes a named audio bus in a Session (v3.0 addition -- Phase 0).
 #[derive(Debug, Clone)]
 pub struct BusDescriptor {
     pub bus_id: BusId,

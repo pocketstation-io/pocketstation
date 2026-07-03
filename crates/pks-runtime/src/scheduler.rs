@@ -65,7 +65,7 @@ mod tests {
     use pks_frame::AudioFrame;
     use pks_frame::{AudioBufferPool, SampleFormat, SampleSpec, SourceId, StreamId};
     use pks_graph::compiler::Compiler;
-    use pks_graph::dsl::AudioGraph;
+    use pks_graph::dsl::Pipeline;
     use pks_graph::node::NodeConfig;
     use pks_graph::planner::RuntimePlanner;
     use pks_graph::register_builtins;
@@ -92,7 +92,7 @@ mod tests {
 
     fn passthrough_gain_passthrough(gain_db: &str) -> (RuntimePlan, GraphIr) {
         let registry = built_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let source = graph.add_node("passthrough", NodeConfig::new());
         let gain = graph.add_node("gain", NodeConfig::new().with(GAIN_DB_KEY, gain_db));
         let sink = graph.add_node("passthrough", NodeConfig::new());

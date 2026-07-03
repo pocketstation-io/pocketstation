@@ -180,7 +180,7 @@ mod tests {
 
     use crate::builtins::PassthroughNode;
     use crate::compiler::Compiler;
-    use crate::dsl::AudioGraph;
+    use crate::dsl::Pipeline;
     use crate::node::{
         ConfigError, NodeConfig, NodeDescriptor, NodeKind, NodeTypeId, PrepareContext,
     };
@@ -354,7 +354,7 @@ mod tests {
         registry
     }
 
-    fn compile(graph: AudioGraph, registry: &NodeRegistry) -> GraphIr {
+    fn compile(graph: Pipeline, registry: &NodeRegistry) -> GraphIr {
         Compiler::new()
             .compile(graph.into_spec(), registry)
             .unwrap()
@@ -363,7 +363,7 @@ mod tests {
     #[test]
     fn given_linear_realtime_graph_when_planned_then_single_partition_in_topo_order() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let source = graph.add_node("source", NodeConfig::new());
         let transform = graph.add_node("transform", NodeConfig::new());
         let sink = graph.add_node("sink", NodeConfig::new());
@@ -381,7 +381,7 @@ mod tests {
     #[test]
     fn given_realtime_and_model_remote_nodes_when_planned_then_two_partitions_ordered_by_rank() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let source = graph.add_node("source", NodeConfig::new());
         let model = graph.add_node("model.async", NodeConfig::new());
         graph.connect(source.out("audio"), model.in_("audio"));
@@ -406,7 +406,7 @@ mod tests {
     #[test]
     fn given_output_feeding_two_edges_when_planned_then_one_fan_out_group_with_two_targets() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let source = graph.add_node("source", NodeConfig::new());
         let left = graph.add_node("transform", NodeConfig::new());
         let right = graph.add_node("transform", NodeConfig::new());
@@ -425,7 +425,7 @@ mod tests {
     #[test]
     fn given_many_input_port_with_multiple_sources_when_planned_then_one_fan_in_group() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let first = graph.add_node("source", NodeConfig::new());
         let second = graph.add_node("source", NodeConfig::new());
         let mixer = graph.add_node("mixer", NodeConfig::new());
@@ -445,7 +445,7 @@ mod tests {
     fn given_single_input_port_with_multiple_sources_when_planned_then_fan_in_on_single_port_error()
     {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let first = graph.add_node("source", NodeConfig::new());
         let second = graph.add_node("source", NodeConfig::new());
         let sink = graph.add_node("sink", NodeConfig::new());
@@ -467,7 +467,7 @@ mod tests {
     #[test]
     fn given_realtime_consumers_when_planned_then_every_edge_buffered_and_pool_positive() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let source = graph.add_node("source", NodeConfig::new());
         let transform = graph.add_node("transform", NodeConfig::new());
         let sink = graph.add_node("sink", NodeConfig::new());
@@ -493,7 +493,7 @@ mod tests {
     #[test]
     fn given_compiled_graph_when_instrumented_then_metric_ids_are_stable_and_distinct() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let source = graph.add_node("source", NodeConfig::new());
         let transform = graph.add_node("transform", NodeConfig::new());
         let sink = graph.add_node("sink", NodeConfig::new());
@@ -511,7 +511,7 @@ mod tests {
     #[test]
     fn given_fixed_graph_when_planned_then_runtime_plan_matches_golden_snapshot() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let source = graph.add_node("source", NodeConfig::new());
         let transform = graph.add_node("transform", NodeConfig::new());
         let sink = graph.add_node("sink", NodeConfig::new());
@@ -540,7 +540,7 @@ mod tests {
             chain_len in 2usize..=8,
         ) {
             let registry = test_registry();
-            let mut graph = AudioGraph::new();
+            let mut graph = Pipeline::new();
             let mut handles = Vec::with_capacity(chain_len);
             for _ in 0..chain_len {
                 handles.push(graph.add_node("transform", NodeConfig::new()));

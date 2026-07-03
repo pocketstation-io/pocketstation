@@ -40,7 +40,7 @@ mod tests {
     use super::*;
     use pks_frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId};
     use pks_graph::compiler::Compiler;
-    use pks_graph::dsl::AudioGraph;
+    use pks_graph::dsl::Pipeline;
     use pks_graph::node::PrepareContext;
     use pks_graph::planner::RuntimePlanner;
     use pks_graph::{NodeConfig, NodeFactory, NodeRegistry, NodeTypeId};
@@ -76,7 +76,7 @@ mod tests {
         let mut registry = NodeRegistry::new();
         register_all(&mut registry);
 
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let source = graph.add_node("passthrough", NodeConfig::new());
         let vad = graph.add_node("transform.vad", NodeConfig::new());
         let gain = graph.add_node("gain", NodeConfig::new().with("gain_db", "0.0"));

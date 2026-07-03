@@ -32,14 +32,14 @@ fn bench_opus_encode(c: &mut Criterion) {
     {
         let pcm = pcm_sine(SAMPLES_20MS_MONO);
         let config = OpusConfig {
-            sample_rate:    OpusSampleRate::Hz48000,
-            channels:       OpusChannels::Mono,
+            sample_rate: OpusSampleRate::Hz48000,
+            channels: OpusChannels::Mono,
             frame_duration: OpusFrameDuration::Ms20,
-            application:    OpusApplication::Voip,
-            bitrate_kbps:   Some(32),
-            complexity:     10,
-            dtx:            false,
-            fec:            false,
+            application: OpusApplication::Voip,
+            bitrate_kbps: Some(32),
+            complexity: 10,
+            dtx: false,
+            fec: false,
         };
         let mut enc = OpusEncoder::from_config(&config).expect("encoder");
         let mut out = Vec::with_capacity(4096);
@@ -54,14 +54,14 @@ fn bench_opus_encode(c: &mut Criterion) {
     {
         let pcm = pcm_sine(SAMPLES_10MS_MONO);
         let config = OpusConfig {
-            sample_rate:    OpusSampleRate::Hz48000,
-            channels:       OpusChannels::Mono,
+            sample_rate: OpusSampleRate::Hz48000,
+            channels: OpusChannels::Mono,
             frame_duration: OpusFrameDuration::Ms10,
-            application:    OpusApplication::LowDelay,
-            bitrate_kbps:   Some(32),
-            complexity:     10,
-            dtx:            false,
-            fec:            false,
+            application: OpusApplication::LowDelay,
+            bitrate_kbps: Some(32),
+            complexity: 10,
+            dtx: false,
+            fec: false,
         };
         let mut enc = OpusEncoder::from_config(&config).expect("encoder");
         let mut out = Vec::with_capacity(4096);
@@ -76,14 +76,14 @@ fn bench_opus_encode(c: &mut Criterion) {
     {
         let pcm = pcm_sine(SAMPLES_20MS_STEREO);
         let config = OpusConfig {
-            sample_rate:    OpusSampleRate::Hz48000,
-            channels:       OpusChannels::Stereo,
+            sample_rate: OpusSampleRate::Hz48000,
+            channels: OpusChannels::Stereo,
             frame_duration: OpusFrameDuration::Ms20,
-            application:    OpusApplication::Audio,
-            bitrate_kbps:   Some(96),
-            complexity:     10,
-            dtx:            false,
-            fec:            false,
+            application: OpusApplication::Audio,
+            bitrate_kbps: Some(96),
+            complexity: 10,
+            dtx: false,
+            fec: false,
         };
         let mut enc = OpusEncoder::from_config(&config).expect("encoder");
         let mut out = Vec::with_capacity(4096);

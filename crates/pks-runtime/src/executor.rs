@@ -140,7 +140,7 @@ mod tests {
     use super::*;
     use pks_frame::{AudioBufferPool, SampleFormat, SampleSpec, SourceId, StreamId};
     use pks_graph::builtins::{GainFactory, PassthroughNode};
-    use pks_graph::dsl::AudioGraph;
+    use pks_graph::dsl::Pipeline;
     use pks_graph::node::NodeConfig;
     use pks_graph::registry::NodeFactory;
 
@@ -158,7 +158,7 @@ mod tests {
     }
 
     fn node_ids(count: usize) -> Vec<NodeId> {
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         (0..count)
             .map(|_| graph.add_node("passthrough", NodeConfig::new()).id())
             .collect()

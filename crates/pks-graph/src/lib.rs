@@ -1,6 +1,6 @@
 //! pocketstation-graph — builds a typed GraphSpec.
 //!
-//! The builder (`dsl::AudioGraph`) only assembles a `GraphSpec`; it does not execute.
+//! The builder (`dsl::Pipeline`) only assembles a `GraphSpec`; it does not execute.
 //! Compilation (verification + lowering → RuntimePlan) and execution live downstream
 //! (Waves 4–6). Nodes are registry-backed (`registry::NodeRegistry`), not closed enums,
 //! so third parties register `NodeFactory`s instead of editing this crate.
@@ -17,7 +17,7 @@ pub mod runtime_node;
 pub mod spec;
 
 pub use builtins::register_builtins;
-pub use dsl::{AudioGraph, NodeHandle};
+pub use dsl::{NodeHandle, Pipeline};
 pub use node::{
     ConfigError, ExecutionClass, NodeConfig, NodeDescriptor, NodeError, NodeKind, NodeTypeId,
     PrepareContext,

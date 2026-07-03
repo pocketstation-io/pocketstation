@@ -9,7 +9,7 @@
 
 use pks_frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId};
 use pks_graph::compiler::Compiler;
-use pks_graph::dsl::AudioGraph;
+use pks_graph::dsl::Pipeline;
 use pks_graph::node::PrepareContext;
 use pks_graph::planner::RuntimePlanner;
 use pks_graph::{NodeConfig, NodeRegistry};
@@ -22,7 +22,7 @@ const FRAMES_TO_RUN: usize = 250; // 5 s of audio
 
 fn main() {
     // 1. Build a real, executable graph via the DSL (produces an inert GraphSpec).
-    let mut graph = AudioGraph::new();
+    let mut graph = Pipeline::new();
     let src = graph.add_node(
         "source.synthetic",
         NodeConfig::new()

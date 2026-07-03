@@ -504,7 +504,7 @@ mod tests {
     use proptest::prelude::*;
 
     use crate::builtins::PassthroughNode;
-    use crate::dsl::AudioGraph;
+    use crate::dsl::Pipeline;
     use crate::node::{ConfigError, NodeConfig, NodeKind, NodeTypeId, PrepareContext};
     use crate::registry::NodeFactory;
     use crate::runtime_node::RuntimeNode;
@@ -857,7 +857,7 @@ mod tests {
     #[test]
     fn given_linear_graph_when_compiled_then_topo_orders_source_before_sink() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let source = graph.add_node("source", NodeConfig::new());
         let transform = graph.add_node("transform", NodeConfig::new());
         let sink = graph.add_node("sink", NodeConfig::new());
@@ -878,7 +878,7 @@ mod tests {
     #[test]
     fn given_unregistered_type_when_compiled_then_unknown_node_type() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         graph.add_node("does.not.exist", NodeConfig::new());
 
         let error = Compiler::new()
@@ -894,7 +894,7 @@ mod tests {
     #[test]
     fn given_node_with_rejecting_config_when_compiled_then_invalid_config() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         graph.add_node("reject", NodeConfig::new());
 
         let error = Compiler::new()
@@ -907,7 +907,7 @@ mod tests {
     #[test]
     fn given_edge_to_missing_port_when_compiled_then_unknown_port() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let source = graph.add_node("source", NodeConfig::new());
         let transform = graph.add_node("transform", NodeConfig::new());
         graph.connect(source.out("audio"), transform.in_("missing"));
@@ -922,7 +922,7 @@ mod tests {
     #[test]
     fn given_edge_into_output_port_when_compiled_then_wrong_port_direction() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let source = graph.add_node("source", NodeConfig::new());
         let transform = graph.add_node("transform", NodeConfig::new());
         graph.connect(transform.out("audio"), source.in_("audio"));
@@ -937,7 +937,7 @@ mod tests {
     #[test]
     fn given_audio_output_into_text_input_when_compiled_then_media_mismatch() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let source = graph.add_node("source", NodeConfig::new());
         let text_sink = graph.add_node("sink.text", NodeConfig::new());
         graph.connect(source.out("audio"), text_sink.in_("text"));
@@ -953,7 +953,7 @@ mod tests {
     fn given_async_producer_into_realtime_consumer_with_bounded_edge_when_compiled_then_invalid_realtime_edge(
     ) {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let model = graph.add_node("model.async", NodeConfig::new());
         let sink = graph.add_node("sink", NodeConfig::new());
         let bounded = EdgeContract {
@@ -972,7 +972,7 @@ mod tests {
     #[test]
     fn given_async_producer_into_realtime_consumer_with_drop_newest_edge_when_compiled_then_ok() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let model = graph.add_node("model.async", NodeConfig::new());
         let sink = graph.add_node("sink", NodeConfig::new());
         graph.connect_with(
@@ -989,7 +989,7 @@ mod tests {
     #[test]
     fn given_two_node_cycle_when_compiled_then_cycle_detected() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let first = graph.add_node("transform", NodeConfig::new());
         let second = graph.add_node("transform", NodeConfig::new());
         graph.connect(first.out("audio"), second.in_("audio"));
@@ -1005,7 +1005,7 @@ mod tests {
     #[test]
     fn given_fan_in_with_mismatched_clock_domains_when_compiled_then_clock_domain_mismatch() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let capture = graph.add_node("source", NodeConfig::new());
         let network = graph.add_node("source", NodeConfig::new());
         let mixer = graph.add_node("mixer", NodeConfig::new());
@@ -1026,7 +1026,7 @@ mod tests {
     #[test]
     fn given_fan_in_with_consistent_clock_domains_when_compiled_then_ok() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let first = graph.add_node("source", NodeConfig::new());
         let second = graph.add_node("source", NodeConfig::new());
         let mixer = graph.add_node("mixer", NodeConfig::new());
@@ -1041,7 +1041,7 @@ mod tests {
     #[test]
     fn given_stereo_source_into_mono_only_sink_when_compiled_then_mono_mix_adapter_inserted() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let source = graph.add_node("source.stereo", NodeConfig::new());
         let sink = graph.add_node("sink.mono_only", NodeConfig::new());
         graph.connect(source.out("audio"), sink.in_("audio"));
@@ -1062,7 +1062,7 @@ mod tests {
     #[test]
     fn given_stereo_source_into_stereo_sink_when_compiled_then_stereo_survives_no_adapter() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let source = graph.add_node("source.stereo", NodeConfig::new());
         let sink = graph.add_node("sink.stereo", NodeConfig::new());
         graph.connect(source.out("audio"), sink.in_("audio"));
@@ -1082,7 +1082,7 @@ mod tests {
     #[test]
     fn given_fixed_graph_when_compiled_then_topo_order_matches_golden_snapshot() {
         let registry = test_registry();
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let source = graph.add_node("source", NodeConfig::new());
         let transform = graph.add_node("transform", NodeConfig::new());
         let sink = graph.add_node("sink", NodeConfig::new());
@@ -1103,7 +1103,7 @@ mod tests {
             chain_len in 2usize..=8,
         ) {
             let registry = test_registry();
-            let mut graph = AudioGraph::new();
+            let mut graph = Pipeline::new();
             let mut handles = Vec::with_capacity(chain_len);
             for _ in 0..chain_len {
                 handles.push(graph.add_node("transform", NodeConfig::new()));

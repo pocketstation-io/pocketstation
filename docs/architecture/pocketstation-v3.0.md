@@ -863,7 +863,7 @@ C. Block producer — violates no-blocking rule, non-starter
 Phase 1 uses `sync.RWMutex` per packet. Bottlenecks above ~200 listeners/room. Phase 2 switches to copy-on-write atomic pointer:
 
 ```go
-type GraphRoom struct {
+type RelaySession struct {
     buses atomic.Pointer[map[BusID]*AudioBus]
 }
 ```
@@ -1044,7 +1044,7 @@ type Room struct {
 New relay model:
 
 ```go
-type GraphRoom struct {
+type RelaySession struct {
     ID          string
     GraphID     string
     Sources     map[SourceID]*SourceSession
@@ -1052,7 +1052,7 @@ type GraphRoom struct {
     Subscribers map[SubscriberID]*BusSubscription
     Routes      atomic.Pointer[RouteTable]
     Policies    []PolicyBinding
-    Metrics     *GraphRoomMetrics
+    Metrics     *RelaySessionMetrics
 }
 
 type AudioBus struct {
@@ -1071,7 +1071,7 @@ The relay still uses Pion v4 WebRTC internally for the media plane. The control 
 ### 8.3 Core Relay — Phase 1 MVP (~1200–1500 lines total)
 
 ```go
-func (r *GraphRoom) forwardBus(bus *AudioBus) {
+func (r *RelaySession) forwardBus(bus *AudioBus) {
     for {
         pkt, _, err := bus.Source.ReadRTP()
         if err != nil { return }
@@ -1360,11 +1360,11 @@ SLI: Source publish success
 
 ```bash
 pks sources                            # list available source nodes
-pks graph inspect {session_id}         # graph topology + node states
-pks graph edges {session_id}           # all edges + latency per edge
-pks graph trace {session_id} \
+pks session inspect {session_id}         # graph topology + node states
+pks session edges {session_id}           # all edges + latency per edge
+pks session trace {session_id} \
   --edge mic:voice→openai:audio        # per-edge packet trace
-pks graph record {session_id} \
+pks session record {session_id} \
   --stems mic,discord,spotify,agent    # start multi-stem recording
 ```
 
@@ -1683,7 +1683,7 @@ WebRTC signaling (types live in relay repo)
 Browser receiver: shows source name, bus name, latency metrics
 E2E latency measurement dashboard
 First crates.io publish of audio-core
-CLI: pks sources, pks graph init, pks route, pks run
+CLI: pks sources, pks session create, pks route, pks run
 ```
 
 Exit:
@@ -1773,7 +1773,7 @@ Android app: same UX
 Web receiver: stem selector, latency display, event stream
 Desktop app (Tauri): same session pairing, WASAPI/SCKit source
 Graph template system (voice-agent, podcast, meeting-transcription, remote-monitor)
-CLI: pks graph inspect, pks graph trace, pks graph record
+CLI: pks session inspect, pks session trace, pks session record
 ```
 
 Exit:

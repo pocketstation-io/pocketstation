@@ -28,13 +28,13 @@ impl NodeHandle {
 }
 
 #[derive(Default)]
-pub struct AudioGraph {
+pub struct Pipeline {
     spec: GraphSpec,
     next_node: u32,
     next_edge: u32,
 }
 
-impl AudioGraph {
+impl Pipeline {
     pub fn new() -> Self {
         Self::default()
     }
@@ -95,7 +95,7 @@ mod tests {
 
     #[test]
     fn given_two_added_nodes_when_into_spec_then_specs_are_preserved_with_distinct_ids() {
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let mic = graph.add_node("source.mic", NodeConfig::new());
         let gain = graph.add_node("gain", NodeConfig::new().with("gain_db", "-6.0"));
         assert_ne!(mic.id(), gain.id());
@@ -109,7 +109,7 @@ mod tests {
 
     #[test]
     fn given_connected_nodes_when_into_spec_then_edge_records_endpoints() {
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let mic = graph.add_node("source.mic", NodeConfig::new());
         let gain = graph.add_node("gain", NodeConfig::new().with("gain_db", "0.0"));
         let edge = graph.connect(mic.out("audio"), gain.in_("audio"));
@@ -124,7 +124,7 @@ mod tests {
 
     #[test]
     fn given_connect_with_contract_when_into_spec_then_edge_carries_requested_contract() {
-        let mut graph = AudioGraph::new();
+        let mut graph = Pipeline::new();
         let a = graph.add_node("source.mic", NodeConfig::new());
         let b = graph.add_node("sink.browser", NodeConfig::new());
         graph.connect_with(

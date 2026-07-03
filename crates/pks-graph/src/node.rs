@@ -203,5 +203,4 @@ mod tests {
         let config = NodeConfig::new().with("attack_ms", "fast");
         assert_eq!(config.get_u32("attack_ms"), None);
     }
-
 }
