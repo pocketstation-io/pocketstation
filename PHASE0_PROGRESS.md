@@ -175,13 +175,13 @@ fake provider factories and the executing graph; preserved node specs (no more d
 - **New** `spec.rs` — `GraphSpec`, `NodeSpec` (id + `NodeTypeId` + `NodeConfig`, preserved
   verbatim), `EdgeSpec` (with optional requested `EdgeContract`), `OutputPortRef`/`InputPortRef`,
   `NodeId`/`EdgeId`.
-- **New** `dsl.rs` — `AudioGraph` builder: `add_node(type_id, config)`, `connect`/`connect_with`,
+- **New** `dsl.rs` — `Pipeline` builder: `add_node(type_id, config)`, `connect`/`connect_with`,
   `into_spec`/`spec`. Produces a `GraphSpec`; never executes.
 - **New** `legacy.rs` — `GraphProcessor` + `FRAME_LEN_SAMPLES` retained ONLY for
   `pocketstation-ml` (re-exported at crate root) until ml migrates to `RuntimeNode` (Wave 6/7).
 - **Deleted** — `deepgram()`/`openai_realtime()`/`local_model()`/`ModelProvider`; the closed
   node enums (`SourceNode`/`TransformNode`/`ModelNode`/`PolicyNode`/`TransportNode`/`SinkNode`);
-  the executing `AudioGraph::compile()`/`run()`/`output()`, `GraphPlan`, `GraphError`,
+  the executing `Pipeline::compile()`/`run()`/`output()`, `GraphPlan`, `GraphError`,
   `ConnectionSpec`, `NodeSelector`; and the old LAW-10 banner comments.
 - **`holy_shit_demo`** — rewritten to build the fundable-graph `GraphSpec` (11 nodes, 15 edges)
   and print it; no execution (returns in Waves 4–6). Fan-in now = multiple edges into one port.
@@ -198,7 +198,7 @@ cargo bench --no-run -p pocketstation-audio                PASS
 
 ### Staff Bar Self-Check — Wave 3
 - The audit's worst offenders are gone: no discarded `_spec`, no fake `deepgram()`/`openai_realtime()`,
-  no universal-execution `AudioGraph::run()`, no string-enum nodes. Builder → spec only.
+  no universal-execution `Pipeline::run()`, no string-enum nodes. Builder → spec only.
 - `pocketstation-ml` kept green untouched via the legacy re-export (verified: ml builds + tests pass).
 - Deferred deletion (recorded, not fake): `legacy::GraphProcessor` + `FRAME_LEN_SAMPLES` removed when
   ml is rewired to `RuntimeNode`. It is a real, in-use trait — not a scaffold — so no inventory row.
@@ -210,7 +210,7 @@ cargo bench --no-run -p pocketstation-audio                PASS
 **Branch:** wave2/node-model-registry
 **Scope:** node declaration model + registry + `RuntimeNode` lifecycle (the compiler-facing
 and execution-contract layer). Additive new modules in `pocketstation-graph`; the legacy
-`AudioGraph`/`GraphProcessor` stay untouched (frozen prototype, replaced in Wave 3).
+`Pipeline`/`GraphProcessor` stay untouched (frozen prototype, replaced in Wave 3).
 
 ### What was built (all in `pocketstation-graph`)
 - `node.rs` — `NodeTypeId`, `NodeKind` (+`is_terminal`), `ExecutionClass` (8 variants,
@@ -281,19 +281,19 @@ check_protocol.sh (run inside caps + frame)                PASS (LAW 1/10/13/15/
 **Status: COMPLETE**
 
 90 tests pass across 10 crates. `holy_shit_demo` compiles and runs. Clippy clean. fmt clean.
-Exit criteria met: `pocketstation-graph` crate created; `AudioGraph::new().connect().compile().run()` API compiles.
+Exit criteria met: `pocketstation-graph` crate created; `Pipeline::new().connect().compile().run()` API compiles.
 
 ## Task 0.A — pocketstation-graph crate (DONE 2026-06-27)
 
 ### What was built
-- `crates/pocketstation-graph/src/lib.rs` — public AudioGraph API: NodeHandle, OutputPortRef,
+- `crates/pocketstation-graph/src/lib.rs` — public Pipeline API: NodeHandle, OutputPortRef,
   InputPortRef, ConnectionSpec (fan-in via const generics), SourceNode, TransformNode, ModelNode,
   PolicyNode (Duck/Gate/Failover), TransportNode, SinkNode, GraphError, GraphPlan.
 - `crates/pocketstation-audio/examples/holy_shit_demo.rs` — Phase 0 exit gate example.
 - `Cargo.toml` workspace — `pocketstation-graph` added as member.
 
 ### Demo lines enabled
-- `AudioGraph::new()` through `graph.run(plan)` — the full BUILD_GUIDE_NORTH_STAR.md Rust example compiles.
+- `Pipeline::new()` through `graph.run(plan)` — the full BUILD_GUIDE_NORTH_STAR.md Rust example compiles.
 
 ### Verification
 ```
@@ -314,8 +314,8 @@ cargo run -p pocketstation-audio --example holy_shit_demo      PASS (11 nodes, 1
 - FAKE_SCAFFOLD_INVENTORY updated: yes — S-graph-run-01, S-graph-compile-01 added
 
 ### Remaining Phase 0 gaps (unchanged from 2026-05-20)
-- `AudioGraph::run()` is a stub — Phase 1 wires real scheduling
-- `AudioGraph::compile()` accepts any topology — Phase 1 adds cycle detection
+- `Pipeline::run()` is a stub — Phase 1 wires real scheduling
+- `Pipeline::compile()` accepts any topology — Phase 1 adds cycle detection
 - No async runtime wired — Phase 1 task
 
 Remaining items carried to Phase 2:

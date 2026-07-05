@@ -1,0 +1,28 @@
+[package]
+name = "pks-codec"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Opus codec encode/decode for the PocketStation real-time audio pipeline"
+
+[features]
+default = []
+# real-opus kept for backward compatibility; 'recording' is the Phase 3 canonical feature name.
+real-opus = []
+recording = []
+test-helpers = []
+
+[dependencies]
+pks-frame = { path = "../pks-frame", version = "0.1.0" }
+media-clock.workspace = true
+opus.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+hound.workspace = true
+criterion.workspace = true
+
+[[bench]]
+name = "opus_encode"
+harness = false

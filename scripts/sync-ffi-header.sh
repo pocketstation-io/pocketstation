@@ -2,7 +2,7 @@
 # Regenerate ffi/pocketstation_audio.h via cbindgen and copy it to every SDK
 # that links against audio-core as a C FFI consumer.
 #
-# Run this after any change to crates/pocketstation-audio/src/ffi.rs.
+# Run this after any change to crates/pks-audio/src/ffi.rs.
 # The generated header is gitignored in audio-core; the copies in each SDK
 # repo are the canonical ones committed to version control.
 #
@@ -18,8 +18,8 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 HEADER="$REPO_ROOT/ffi/pocketstation_audio.h"
 
-echo "Building pocketstation-audio (runs cbindgen via build.rs)..."
-cargo build -p pocketstation-audio 2>&1 | grep -v "^$" || true
+echo "Building pks-audio (runs cbindgen via build.rs)..."
+cargo build -p pks-audio 2>&1 | grep -v "^$" || true
 
 if [[ ! -f "$HEADER" ]]; then
     echo "ERROR: $HEADER not found after build. Check build.rs." >&2

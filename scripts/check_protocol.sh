@@ -41,7 +41,7 @@ echo "  pass"
 echo "LAW-13: forbidden v2.3 vocabulary (room/listener/track)..."
 vocab=$(grep -rniE "\b(room|listener|track)\b" src/ --include="*.rs" 2>/dev/null | grep -v "//" || true)
 if [ -n "$vocab" ]; then
-  echo "  FAIL: v3.0 vocabulary required (GraphSession/BusSubscription/AudioBus):"
+  echo "  FAIL: v3.0 vocabulary required (Session/BusSubscription/AudioBus):"
   echo "$vocab"
   exit 1
 fi
