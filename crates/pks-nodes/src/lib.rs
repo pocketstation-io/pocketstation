@@ -17,7 +17,7 @@ use pks_graph::{register_builtins, NodeRegistry};
 
 pub use bridge_sink::{BridgeSinkFactory, BridgeSinkNode, BridgeSinkTelemetry};
 pub use mic_source::{MicSourceFactory, MicSourceNode, MicTelemetry};
-pub use mix::{MonoMixFactory, MonoMixNode};
+pub use mix::{MixerSourceFactory, MixerSourceNode, MixerTelemetry, MonoMixFactory, MonoMixNode};
 pub use ml_nodes::{EchoCancelFactory, NoiseSuppressFactory, VadFactory, WatermarkFactory};
 pub use sink::{RecordingSinkFactory, RecordingSinkNode, RecordingTally};
 pub use source::{SyntheticSourceFactory, SyntheticSourceNode};
