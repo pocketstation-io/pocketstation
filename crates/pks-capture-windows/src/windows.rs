@@ -73,14 +73,14 @@ pub struct SystemLoopbackSource {
 impl SystemLoopbackSource {
     pub fn capture<F>(callback: F) -> Result<Self, LoopbackError>
     where
-        F: Fn(AudioFrame) + Send + Sync + 'static,
+        F: FnMut(AudioFrame) + Send + 'static,
     {
         Self::capture_mode(CaptureMode::SystemMix, callback)
     }
 
     pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
     where
-        F: Fn(AudioFrame) + Send + Sync + 'static,
+        F: FnMut(AudioFrame) + Send + 'static,
     {
         // S_OK = 0, S_FALSE = 1 (already initialised) -- both success.
         let hr = wasapi::initialize_mta();
@@ -197,7 +197,7 @@ fn deliver_packet(
     raw: &[u8],
     pool: &Arc<AudioBufferPool>,
     seq: &Arc<AtomicU64>,
-    callback: &(impl Fn(AudioFrame) + Send + Sync + 'static),
+    callback: &mut (impl FnMut(AudioFrame) + Send + 'static),
 ) {
     let n_samples = raw.len() / size_of::<f32>();
     if n_samples == 0 {
@@ -238,7 +238,7 @@ fn capture_loop(
     h_event: &wasapi::Handle,
     pool: Arc<AudioBufferPool>,
     seq: Arc<AtomicU64>,
-    callback: impl Fn(AudioFrame) + Send + Sync + 'static,
+    mut callback: impl FnMut(AudioFrame) + Send + 'static,
     stop_rx: std::sync::mpsc::Receiver<()>,
 ) -> Result<(), LoopbackError> {
     const BUF_BYTES: usize = CAPTURE_FRAME_SAMPLES * size_of::<f32>() * 2;
@@ -273,7 +273,7 @@ fn capture_loop(
                         continue;
                     }
                     let bytes = frames as usize * CAPTURE_CHANNELS as usize * size_of::<f32>();
-                    deliver_packet(&raw_buf[..bytes], &pool, &seq, &callback);
+                    deliver_packet(&raw_buf[..bytes], &pool, &seq, &mut callback);
                 }
                 Err(_) => break,
             }
@@ -290,7 +290,7 @@ fn capture_loop(
 fn run_system_loopback(
     pool: Arc<AudioBufferPool>,
     seq: Arc<AtomicU64>,
-    callback: impl Fn(AudioFrame) + Send + Sync + 'static,
+    callback: impl FnMut(AudioFrame) + Send + 'static,
     stop_rx: std::sync::mpsc::Receiver<()>,
 ) -> Result<(), LoopbackError> {
     let enumerator =
@@ -504,7 +504,7 @@ fn run_process_loopback(
     pid: u32,
     pool: Arc<AudioBufferPool>,
     seq: Arc<AtomicU64>,
-    callback: impl Fn(AudioFrame) + Send + Sync + 'static,
+    callback: impl FnMut(AudioFrame) + Send + 'static,
     stop_rx: std::sync::mpsc::Receiver<()>,
 ) -> Result<(), LoopbackError> {
     // include_tree = false: capture only `pid`, not its children.

@@ -79,7 +79,7 @@ impl SystemLoopbackSource {
     /// Start capturing the system-wide audio mix.
     pub fn capture<F>(callback: F) -> Result<Self, LoopbackError>
     where
-        F: Fn(AudioFrame) + Send + Sync + 'static,
+        F: FnMut(AudioFrame) + Send + 'static,
     {
         Self::capture_mode(CaptureMode::SystemMix, callback)
     }
@@ -87,7 +87,7 @@ impl SystemLoopbackSource {
     /// Start capturing in the given mode.
     pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
     where
-        F: Fn(AudioFrame) + Send + Sync + 'static,
+        F: FnMut(AudioFrame) + Send + 'static,
     {
         match &mode {
             CaptureMode::Process(pid) => {
@@ -153,9 +153,12 @@ fn pipewire_available() -> bool {
 // PipeWire implementation
 // ---------------------------------------------------------------------------
 
-fn run_pipewire<F>(_mode: CaptureMode, callback: F) -> Result<SystemLoopbackSource, LoopbackError>
+fn run_pipewire<F>(
+    _mode: CaptureMode,
+    mut callback: F,
+) -> Result<SystemLoopbackSource, LoopbackError>
 where
-    F: Fn(AudioFrame) + Send + Sync + 'static,
+    F: FnMut(AudioFrame) + Send + 'static,
 {
     let (stop_tx, stop_rx) = mpsc::sync_channel::<()>(1);
     let (frame_producer, mut frame_consumer) = RingBuffer::<AudioFrame>::new(PW_RING_DEPTH);
@@ -533,10 +536,10 @@ fn enumerate_pipewire_nodes() -> Vec<pks_capture::CaptureSource> {
 fn run_pipewire_targeted<F>(
     node_id: u64,
     _mode: CaptureMode,
-    callback: F,
+    mut callback: F,
 ) -> Result<SystemLoopbackSource, LoopbackError>
 where
-    F: Fn(AudioFrame) + Send + Sync + 'static,
+    F: FnMut(AudioFrame) + Send + 'static,
 {
     let (stop_tx, stop_rx) = mpsc::sync_channel::<()>(1);
     let (frame_producer, mut frame_consumer) = RingBuffer::<AudioFrame>::new(PW_RING_DEPTH);
@@ -726,9 +729,9 @@ where
 // ALSA snd-aloop fallback
 // ---------------------------------------------------------------------------
 
-fn run_alsa<F>(callback: F) -> Result<SystemLoopbackSource, LoopbackError>
+fn run_alsa<F>(mut callback: F) -> Result<SystemLoopbackSource, LoopbackError>
 where
-    F: Fn(AudioFrame) + Send + Sync + 'static,
+    F: FnMut(AudioFrame) + Send + 'static,
 {
     use alsa::pcm::{Access, Format, HwParams, PCM};
     use alsa::Direction;

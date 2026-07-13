@@ -1,4 +1,24 @@
 use pks_frame::{AudioFrame, Platform};
+use std::sync::OnceLock;
+use std::time::Instant;
+
+mod frame_stream;
+
+pub use frame_stream::{
+    captured_frame_stream, CapturedFrameDelivery, CapturedFrameSender, CapturedFrameStream,
+    CapturedFrameStreamStats,
+};
+
+/// Process-wide monotonic timestamp domain used by every capture adapter.
+/// The value is non-zero and comparable across PocketStation crates in the
+/// same process; it is never derived from a wall clock and cannot jump.
+pub fn monotonic_timestamp_ns() -> u64 {
+    static ORIGIN: OnceLock<Instant> = OnceLock::new();
+    let elapsed_ns = ORIGIN.get_or_init(Instant::now).elapsed().as_nanos();
+    u64::try_from(elapsed_ns)
+        .unwrap_or(u64::MAX)
+        .saturating_add(1)
+}
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub enum CaptureMode {
@@ -76,6 +96,8 @@ pub enum CaptureError {
     BackendInit(String),
     #[error("capture mode not supported on this backend: {0:?}")]
     ModeUnsupported(CaptureMode),
+    #[error("captured-frame stream capacity must be greater than zero")]
+    InvalidStreamCapacity,
 }
 
 // Backwards-compat alias — existing callers that use LoopbackError still compile.
@@ -298,13 +320,13 @@ pub struct SystemLoopbackSource;
 impl SystemLoopbackSource {
     pub fn capture<F>(_cb: F) -> Result<Self, CaptureError>
     where
-        F: Fn(pks_frame::AudioFrame) + Send + Sync + 'static,
+        F: FnMut(pks_frame::AudioFrame) + Send + 'static,
     {
         Err(CaptureError::NotSupported)
     }
     pub fn capture_mode<F>(_mode: CaptureMode, _cb: F) -> Result<Self, CaptureError>
     where
-        F: Fn(pks_frame::AudioFrame) + Send + Sync + 'static,
+        F: FnMut(pks_frame::AudioFrame) + Send + 'static,
     {
         Err(CaptureError::NotSupported)
     }
@@ -387,7 +409,7 @@ pub fn discover_sources() -> Vec<CaptureSource> {
 
 pub fn capture_system_audio<F>(callback: F) -> Result<SystemLoopbackSource, CaptureError>
 where
-    F: Fn(pks_frame::AudioFrame) + Send + Sync + 'static,
+    F: FnMut(pks_frame::AudioFrame) + Send + 'static,
 {
     SystemLoopbackSource::capture(callback)
 }
@@ -397,7 +419,7 @@ pub fn capture_with_mode<F>(
     callback: F,
 ) -> Result<SystemLoopbackSource, CaptureError>
 where
-    F: Fn(pks_frame::AudioFrame) + Send + Sync + 'static,
+    F: FnMut(pks_frame::AudioFrame) + Send + 'static,
 {
     SystemLoopbackSource::capture_mode(mode, callback)
 }
@@ -461,6 +483,14 @@ mod tests {
     fn given_mode_unsupported_error_when_displayed_then_contains_not_supported() {
         let err = CaptureError::ModeUnsupported(CaptureMode::Process(1234));
         assert!(err.to_string().contains("not supported"));
+    }
+
+    #[test]
+    fn given_monotonic_capture_clock_when_sampled_then_never_moves_backwards() {
+        let first = monotonic_timestamp_ns();
+        let second = monotonic_timestamp_ns();
+        assert!(first > 0);
+        assert!(second >= first);
     }
 
     #[test]

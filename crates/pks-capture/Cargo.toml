@@ -8,4 +8,5 @@ description = "Source model, discovery traits, and capture backend interface for
 
 [dependencies]
 pks-frame = { path = "../pks-frame", version = "0.1.0" }
+rtrb = { workspace = true }
 thiserror = { workspace = true }
