@@ -15,6 +15,7 @@ members = [
   "crates/pks-capture-windows",
   "crates/pks-capture-linux",
   "crates/pks-audio",
+  "examples/whisper-transcribe",
 ]
 
 [workspace.package]

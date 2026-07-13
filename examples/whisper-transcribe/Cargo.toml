@@ -1,0 +1,12 @@
+[package]
+name = "whisper-transcribe-example"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+pks-frame = { path = "../../crates/pks-frame" }
+pks-graph = { path = "../../crates/pks-graph" }
+tempfile = "3"
+tokio = { version = "1", features = ["fs", "macros", "process", "rt-multi-thread"] }
