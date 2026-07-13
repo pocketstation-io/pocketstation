@@ -210,9 +210,9 @@ pub struct TapLoopbackSource {
 }
 
 impl TapLoopbackSource {
-    pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
+    pub fn capture_mode<F>(mode: CaptureMode, mut callback: F) -> Result<Self, LoopbackError>
     where
-        F: Fn(AudioFrame) + Send + Sync + 'static,
+        F: FnMut(AudioFrame) + Send + 'static,
     {
         if !tap_available() {
             return Err(LoopbackError::BackendInit(
