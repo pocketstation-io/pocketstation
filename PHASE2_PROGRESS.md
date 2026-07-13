@@ -40,7 +40,6 @@
   current product feature.
 - `media-clock` compatibility wrappers delegate to the new owner; the live
   CLI/codec path has since been decoupled from that workspace.
-
 ## Local Whisper connector example - 2026-07-13
 
 - Added `examples/whisper-transcribe` as an example-owned `AsyncNode`; no provider dependency entered first-party crates.
@@ -48,7 +47,6 @@
 - Missing process/model and subprocess crashes fail visibly.
 - Real whisper.cpp tiny English E2E passed in CPU mode with a 3.84-second spoken fixture; measured wall time was 1.08 seconds.
 - GPU remains explicit opt-in because Homebrew whisper.cpp 1.9.1 crashed in the Metal backend on this machine.
-
 ## Bounded captured-frame stream - 2026-07-13
 
 - Added a stable `FnMut(AudioFrame)` capture callback contract across the platform adapters.
