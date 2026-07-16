@@ -20,6 +20,9 @@
   reorder/holdback stays private to the harness. Product docs now mark the old
   workspace archived rather than compatibility-active; the remote archive was
   verified 2026-07-16.
+- Linux capture now uses the canonical `sample_rate_hz` field on `AudioFrame`
+  and `CaptureSource`, closing the cross-platform strict-clippy failure without
+  changing capture behavior.
 
 ## Runtime timing ownership - 2026-07-16
 

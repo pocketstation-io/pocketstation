@@ -265,7 +265,7 @@ where
                     );
                     frame.source_tag = AudioSourceTag::Captured;
                     frame.encryption_mode = EncryptionMode::None;
-                    frame.sample_rate = SAMPLE_RATE_HZ;
+                    frame.sample_rate_hz = SAMPLE_RATE_HZ;
 
                     // RT-safe: wait-free push; drops frame silently when ring is full.
                     let _ = frame_producer.push(frame);
@@ -364,7 +364,7 @@ pub fn discover_sources_linux() -> Vec<pks_capture::CaptureSource> {
         app_id: None,
         device_uid: None,
         state: SourceState::Available,
-        sample_rate: 48_000,
+        sample_rate_hz: 48_000,
         channels: 2,
     };
 
@@ -466,7 +466,7 @@ fn enumerate_pipewire_nodes() -> Vec<pks_capture::CaptureSource> {
                         app_id: None,
                         device_uid: node_name,
                         state: SourceState::Available,
-                        sample_rate: 48_000,
+                        sample_rate_hz: 48_000,
                         channels: 2,
                     });
                 })
@@ -647,7 +647,7 @@ where
                     );
                     frame.source_tag = AudioSourceTag::Captured;
                     frame.encryption_mode = EncryptionMode::None;
-                    frame.sample_rate = SAMPLE_RATE_HZ;
+                    frame.sample_rate_hz = SAMPLE_RATE_HZ;
 
                     // RT-safe: wait-free push; drops frame silently when ring is full.
                     let _ = frame_producer.push(frame);
@@ -812,7 +812,7 @@ where
                         );
                         frame.source_tag = AudioSourceTag::Captured;
                         frame.encryption_mode = EncryptionMode::None;
-                        frame.sample_rate = SAMPLE_RATE_HZ;
+                        frame.sample_rate_hz = SAMPLE_RATE_HZ;
                         callback(frame);
                     }
                 }
