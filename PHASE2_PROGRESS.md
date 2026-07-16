@@ -15,6 +15,11 @@
 - Added allocation-stable Opus PLC decoding to `pks-codec` so benchmark and
   receiver code do not need a separate codec wrapper.
 - Acceptance: `cargo test -p pks-codec -p pks-timing` passes (32 tests total).
+- The neutral benchmark's final `media-clock` dependency was removed: benchmark
+  drift uses `pks-timing`, Opus PLC uses `pks-codec`, and reproducibility-only
+  reorder/holdback stays private to the harness. Product docs now mark the old
+  workspace archived rather than compatibility-active; the remote archive was
+  verified 2026-07-16.
 
 ## Runtime timing ownership - 2026-07-16
 
