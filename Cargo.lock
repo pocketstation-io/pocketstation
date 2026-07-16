@@ -661,10 +661,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5e5032e24019045c762d3c0f28f5b6b8bbf38563a65908389bf7978758920897"
 
 [[package]]
-name = "media-clock"
-version = "0.1.0"
-
-[[package]]
 name = "memchr"
 version = "2.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -796,6 +792,7 @@ dependencies = [
  "pks-nodes",
  "pks-pipeline",
  "pks-runtime",
+ "pks-timing",
 ]
 
 [[package]]
@@ -852,7 +849,6 @@ version = "0.1.0"
 dependencies = [
  "criterion",
  "hound",
- "media-clock",
  "opus",
  "pks-frame",
  "thiserror 1.0.69",
@@ -906,6 +902,7 @@ version = "0.1.0"
 dependencies = [
  "pks-codec",
  "pks-frame",
+ "pks-timing",
  "rtrb",
 ]
 
@@ -920,6 +917,10 @@ dependencies = [
  "proptest",
  "rtrb",
 ]
+
+[[package]]
+name = "pks-timing"
+version = "0.1.0"
 
 [[package]]
 name = "plotters"

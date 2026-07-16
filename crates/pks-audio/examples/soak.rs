@@ -15,7 +15,7 @@
 ///   - .cargo/config.toml: CFLAGS=-march=native forces SIMD in libopus-sys
 ///   - Cargo.toml [profile.release]: LTO=fat, codegen-units=1
 ///
-/// Run:  cargo run -p pocketstation-audio --example soak --release
+/// Run:  cargo run -p pks-audio --example soak --release
 use pks_audio::{
     frame_bus, AudioBufferPool, AudioFrame, OpusDecoder, OpusEncoder, SourceId, StreamId,
     POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,

@@ -1,118 +1,87 @@
-# AGENTS.md — pocketstation-io/audio-core
+# AGENTS.md — pocketstation-io/pocketstation
 
-## Source of truth
+This repository is the central PocketStation Rust runtime workspace. It was
+formerly named `pocketstation`; current paths and new documentation must use
+`pocketstation`.
 
-Before editing, read:
+The factory-root `AGENTS.md`, `PRODUCT_OPERATING_CONTRACT.md`, and
+`V3_REPO_OWNERSHIP_STATE.md` are binding. By 2026-08-15 the runtime must help prove one
+desktop application plus one microphone as independent stems fanning out to an
+example connector, browser/remote receiver, and multistem recording.
 
-1. `docs/architecture/PocketStation-v2.3.md`
-2. `docs/REPO_CONTRACT.md`
-3. Relevant ADRs in `docs/adr/` (AUDIO-004 through AUDIO-014)
-4. The assigned GitHub issue
+## Before Editing
 
-## Phase gate
+Read, in order:
 
-This repo covers **Phase 0** (complete) and is the intake for **Phase 2**.
+1. Factory-root `AGENTS.md`
+2. Factory-root `PRODUCT_OPERATING_CONTRACT.md`
+3. Factory-root `V3_REPO_OWNERSHIP_STATE.md`
+4. Factory-root `docs/standards/CODE_PROTOCOL.md`
+5. `docs/architecture/pocketstation-v3.0.md`
+6. `docs/architecture/CRATE_OWNERSHIP.md`
+7. `PHASE2_PROGRESS.md`
+8. `docs/standards/FAKE_SCAFFOLD_INVENTORY.md`
+9. Relevant ADRs
 
-**Phase 0 — COMPLETE as of 2026-05-20**
+State the product-proof outcome, demo line, deadline milestone, owning crate,
+and next three acceptance commands before writing code.
 
-- 26 tests pass across 6 crates (`cargo test --workspace`).
-- Race detector clean.
-- All exit criteria met per v2.3 §15 Phase 0 section.
-- AUDIO-004 through AUDIO-013 written and merged.
+## Active Phase
 
-**Phase 1 — audio-core is NOT involved**
+Phase 0 foundation and Phase 1 transport proof are complete under the recorded
+exit reports. Active work is the narrow Phase 2 product slice:
 
-audio-core does not connect directly to the relay in Phase 1. The relay's
-`fake-source` binary (`relay/cmd/fake-source`) publishes synthetic 0xAB RTP
-packets — it does not use audio-core output. Real audio-core output enters the
-relay pipeline only when sdk-ios (Phase 2) wraps audio-core via FFI and
-establishes a WebRTC PUBLISH connection.
+- independent application and microphone stems;
+- source/clock/timestamp lineage;
+- realtime-to-async Bridges;
+- bounded one-to-many fan-out and explicit backpressure;
+- example connector, browser/remote sink, and multistem recording;
+- permission, discontinuity, queue/drop, and latency observability.
 
-If the current project phase is earlier than Phase 2 for this repo, do not
-implement code here unless the issue has `phase-exception-approved`.
+New platforms, virtual drivers, consumer apps, provider catalogs, and memory
+work are deferred unless the product operating contract explicitly changes.
 
-## Phase 2 intake
+## Ownership Locks
 
-The following items are the gate for this repo entering Phase 2:
+- `pks-frame`: frame data and lineage.
+- `pks-timing`: drift/correction and compiled experimental SegmentGate storage.
+- `pks-caps`: capability and permission truth.
+- `pks-codec`: codec behavior only.
+- `pks-metrics`: runtime observations.
+- `pks-graph`: open manifests, signal/edge contracts, compiler and plan.
+- `pks-runtime`: scheduling, bounded Bridges, backpressure and fan-out.
+- `pks-capture-*`: permitted platform capture.
+- `pks-nodes`: first-party audio/recording operators.
+- `pks-ml`: bounded local audio inference, not cloud/provider clients.
+- `examples/`: provider-specific connectors and customer workflows.
 
-1. **First crates.io publish of `pocketstation-audio` v0.1.0** — per v2.3 §14.5
-   and §15 Phase 1 exit criteria. Publish happens after the Phase 1 demo
-   validates the API surface. Use `cargo-release --workspace` with the
-   dependency order specified in AUDIO-008.
-2. **Opus real bindings (libopus-sys)** — burn the Opus MOCK row in
-   `docs/standards/FAKE_SCAFFOLD_INVENTORY.md`. Gated by `real-opus` feature
-   flag; requires libopus-sys dep approval and CI job with libopus installed.
-3. **ClockSync PI controller (AUDIO-006 resolution)** — replace the Phase 0
-   exponential-smoother placeholder with the dual-stage anti-windup PI
-   controller specified in AUDIO-006.
-4. **DHAT CI integration** — replace `pocketstation-alloccheck` binary with
-   a real `#[global_allocator]` shim or DHAT gate that proves zero per-frame
-   heap allocation on the hot path.
+RTP/RTCP pacing, sequence/timestamp translation, repair and clock lineage belong
+to the relay. WebRTC receiver jitter buffering/playout belongs to the receiver.
+Do not recreate those as `pks-playout` without a real native receiver consumer.
 
-sdk-ios depends on audio-core v0.1.0 being published to crates.io. sdk-ios
-cannot be created until the Phase 2 publish lands. See AUDIO-014.
+The legacy `media-clock` workspace is retired historical source. The live
+runtime, CLI, and benchmarks must not regain a dependency on it. The
+experimental Gate must remain compiled and tested in `pks-timing` until an
+explicit removal or promotion decision.
 
-## Rules
+## Required Quality
 
-- One issue = one branch = one PR.
-- Do not edit unrelated repos.
-- Do not create `pocketstation-io/protocol` before Phase 2.
-- Do not change v2.3 architecture unless explicitly assigned.
-- Do not add dependencies without approval.
-- Do not bypass CI.
+- No allocation, blocking, mutex, I/O, or logging on audio callback/realtime
+  paths.
+- All queues are bounded and expose their overflow policy and counters.
+- Provider integrations do not enter first-party core crates.
+- No closed model/policy/provider enums in the graph contract.
+- Update `PHASE2_PROGRESS.md` before a commit.
+- Update the fake-scaffold inventory whenever a scaffold is added or burned.
+- Component tests do not justify a product claim; record real-path artifacts.
 
+## Acceptance
 
-## Engineering Standards
+Use the smallest relevant subset first, then the full workspace before merge:
 
-Before code changes, every agent must read:
-
-- `docs/standards/STAFF_ENGINEERING_BAR.md`
-- `docs/standards/STRUCTURE_NAMING_STYLE_THINKING.md`
-- `docs/standards/PRODUCTION_ENGINEERING_BAR.md`
-- `docs/REPO_CONTRACT.md`
-- relevant ADRs
-- current phase progress file
-- `docs/standards/FAKE_SCAFFOLD_INVENTORY.md`
-
-All code follows the structure, naming, documentation, test naming,
-comment style, and thinking process defined there.
-
-Every non-trivial implementation documents:
-- invariant
-- ownership model
-- failure behavior
-- test coverage
-- phase scope
-- what is intentionally not implemented
-
-Every PR that introduces a fake/mock/scaffold adds a row to
-`docs/standards/FAKE_SCAFFOLD_INVENTORY.md`. Every PR that replaces one burns
-the row down.
-
-## Hot-path rules — non-negotiable
-
-These rules apply to all code that runs inside an audio callback or on the
-audio processing thread. They are enforced, not aspirational.
-
-- No heap allocation (verify with DHAT in CI — Phase 2 gate).
-- No locks (use SPSC ring buffer and atomic pool bitset).
-- No blocking (callback returns immediately).
-- No logging (use atomic counters; see `pocketstation-metrics`).
-- No `async`/`.await` (callback is synchronous).
-- No ObjC/Swift method calls on the callback thread.
-- No JNI calls per audio frame.
-- No Rust panic across any FFI boundary.
-- No ML inference on the callback thread (ML nodes run on the processing
-  thread, which drains the SPSC ring).
-
-## Phase 5 intake gates
-
-- [ ] AudioFrame: add speaker_id (Option<u32>), source_tag (AudioSourceTag), encryption_mode (EncryptionMode) fields — required by AUDIO-014, AUDIO-017, AUDIO-018
-- [ ] DHAT alloc CI gate: add DHAT profiler step to CI; zero-alloc on hot path verified automatically (currently only code-structure claim)
-- [ ] Relay echo timestamp mechanism (AUDIO-020): embed send_timestamp_ns in Opus payload for benchmark tool
-
-## Phase 6 intake gates
-
-- [ ] WASM plugin host: wasmtime integration in pocketstation-audio; ps_plugin_* C ABI (AUDIO-019)
-- [ ] AudioTokenFrame type: Vec<u32> in pocketstation-frame for neural codec output (AUDIO-015)
-- [ ] cbindgen C header: generate headers for Swift/Kotlin FFI (AUDIO-011 — long-standing deferral)
+```bash
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets -- -D warnings
+cargo test --workspace
+cargo run -p pks-audio --example holy_shit_demo
+```
