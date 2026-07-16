@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
   "crates/pks-frame",
+  "crates/pks-timing",
   "crates/pks-caps",
   "crates/pks-codec",
   "crates/pks-metrics",
@@ -22,10 +23,10 @@ members = [
 version = "0.1.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/pocketstation-io/audio-core"
+repository = "https://github.com/pocketstation-io/pocketstation"
 
 [workspace.dependencies]
-media-clock = { path = "../media-clock/crates/media-clock" }
+pks-timing = { path = "crates/pks-timing" }
 rtrb = "0.3"
 thiserror = "1"
 hound = "3"

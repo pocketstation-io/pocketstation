@@ -1,7 +1,9 @@
 use opus::{Channels, Decoder};
 
 use crate::constants::{I16_SCALE, OPUS_FRAME_SAMPLES, OPUS_SAMPLE_RATE};
-use crate::encoder::{EncodedFrame, OpusChannels};
+use crate::encoder::{EncodedFrame, OpusChannels, OpusFrameDuration};
+
+const OPUS_MAX_FRAME_SAMPLES_PER_CHANNEL: usize = 2_880; // 60 ms at 48 kHz
 
 /// Real Opus decoder wrapping libopus via the `opus` crate.
 ///
@@ -75,6 +77,35 @@ impl OpusDecoder {
             *dst = src as f32 / I16_SCALE;
         }
         Ok(total)
+    }
+
+    /// Conceal one missing packet while preserving libopus decoder state.
+    ///
+    /// The caller declares the missing packet duration because an empty Opus
+    /// payload does not carry that information. Output appends to caller-owned
+    /// storage and remains allocation-stable after the vector is pre-sized.
+    pub fn decode_plc_into(
+        &mut self,
+        frame_duration: OpusFrameDuration,
+        out: &mut Vec<f32>,
+    ) -> Result<usize, opus::Error> {
+        let frame_samples_per_channel = frame_duration.samples_at_48k();
+        let total_samples = frame_samples_per_channel * self.channels;
+        let before_samples = out.len();
+        let mut i16_buf = [0i16; OPUS_MAX_FRAME_SAMPLES_PER_CHANNEL * 2];
+        let decoded_samples_per_channel =
+            self.inner
+                .decode(&[], &mut i16_buf[..total_samples], false)?;
+        let decoded_samples = decoded_samples_per_channel * self.channels;
+
+        out.resize(before_samples + decoded_samples, 0.0);
+        for (dst, &src) in out[before_samples..]
+            .iter_mut()
+            .zip(&i16_buf[..decoded_samples])
+        {
+            *dst = src as f32 / I16_SCALE;
+        }
+        Ok(decoded_samples)
     }
 
     /// Convenience wrapper allocating a `Vec<f32>` — tests/examples only.
@@ -162,5 +193,48 @@ mod tests {
         // Then: decoder produces exactly one frame of samples
         assert_eq!(n, OPUS_FRAME_SAMPLES);
         assert_eq!(pcm_out.len(), OPUS_FRAME_SAMPLES);
+    }
+
+    #[test]
+    fn given_mono_decoder_when_concealing_10ms_then_480_samples_are_appended() {
+        let mut decoder = OpusDecoder::new().unwrap();
+        let mut pcm_out = Vec::with_capacity(480);
+
+        let decoded_samples = decoder
+            .decode_plc_into(OpusFrameDuration::Ms10, &mut pcm_out)
+            .unwrap();
+
+        assert_eq!(decoded_samples, 480);
+        assert_eq!(pcm_out.len(), 480);
+    }
+
+    #[test]
+    fn given_stereo_decoder_when_concealing_20ms_then_1920_samples_are_appended() {
+        let mut decoder = OpusDecoder::with_channels(OpusChannels::Stereo).unwrap();
+        let mut pcm_out = Vec::with_capacity(1_920);
+
+        let decoded_samples = decoder
+            .decode_plc_into(OpusFrameDuration::Ms20, &mut pcm_out)
+            .unwrap();
+
+        assert_eq!(decoded_samples, 1_920);
+        assert_eq!(pcm_out.len(), 1_920);
+    }
+
+    #[test]
+    fn given_presized_output_when_concealing_repeatedly_then_capacity_stays_fixed() {
+        let mut decoder = OpusDecoder::new().unwrap();
+        let mut pcm_out = Vec::with_capacity(OPUS_FRAME_SAMPLES);
+        let initial_capacity_samples = pcm_out.capacity();
+
+        decoder
+            .decode_plc_into(OpusFrameDuration::Ms20, &mut pcm_out)
+            .unwrap();
+        pcm_out.clear();
+        decoder
+            .decode_plc_into(OpusFrameDuration::Ms20, &mut pcm_out)
+            .unwrap();
+
+        assert_eq!(pcm_out.capacity(), initial_capacity_samples);
     }
 }

@@ -1,4 +1,34 @@
-# Phase 2 Progress - audio-core
+# Phase 2 Progress - PocketStation Runtime
+
+## Repository and timing partition - 2026-07-16
+
+- Renamed the local central workspace from `pocketstation` to `pocketstation`; the
+  workspace is the product center while `pks-*` crates keep narrow ownership.
+- Removed `media-clock` from the central workspace dependency graph.
+- Removed the unrelated `StreamProfile -> media_clock::Contract` mapping from
+  `pks-codec`; codec profiles now own codec configuration only.
+- Kept drift/correction and the compiled, tested experimental `SegmentGate` in
+  `pks-timing`.
+- Confirmed network pacing, RTP sequence/timestamp continuity, repair, and RTCP
+  clock lineage remain relay media-plane responsibilities; no `pks-playout`
+  crate was added.
+- Added allocation-stable Opus PLC decoding to `pks-codec` so benchmark and
+  receiver code do not need a separate codec wrapper.
+- Acceptance: `cargo test -p pks-codec -p pks-timing` passes (32 tests total).
+
+## Runtime timing ownership - 2026-07-16
+
+- Added `pks-timing` as the single owner of clock drift estimation and PI clock
+  correction.
+- Replaced `pks-pipeline`'s duplicate `ClockSync` implementation with the
+  runtime-owned controller while retaining a compatibility alias.
+- Stopped treating an absolute frame timestamp as a measured clock offset in
+  `ResampleNode`; correction now requires an explicit inter-clock observation.
+- Preserved the future voice-output interruption state machine as compiled,
+  tested `pks_timing::experimental::SegmentGate` code without exposing it as a
+  current product feature.
+- `media-clock` compatibility wrappers delegate to the new owner; the live
+  CLI/codec path has since been decoupled from that workspace.
 
 ## Local Whisper connector example - 2026-07-13
 

@@ -6,7 +6,6 @@
 mod constants;
 mod decoder;
 mod encoder;
-mod jitter_buffer;
 mod profile;
 
 pub use constants::{
@@ -17,7 +16,6 @@ pub use encoder::{
     EncodedFrame, OpusApplication, OpusChannels, OpusConfig, OpusEncoder, OpusFrameDuration,
     OpusSampleRate,
 };
-pub use jitter_buffer::{JitterBuffer, PopResult};
 pub use profile::StreamProfile;
 
 #[cfg(any(test, feature = "test-helpers"))]
