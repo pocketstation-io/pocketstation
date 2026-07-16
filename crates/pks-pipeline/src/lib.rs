@@ -1,4 +1,5 @@
 use pks_frame::AudioFrame;
+pub use pks_timing::{ClockCorrectionController, ClockCorrectionController as ClockSync};
 use rtrb::{Consumer, Producer, RingBuffer};
 use std::sync::atomic::{AtomicU64, Ordering};
 
@@ -40,50 +41,6 @@ impl FrameProducer {
 impl FrameConsumer {
     pub fn pop(&mut self) -> Option<AudioFrame> {
         self.ring_consumer.pop().ok()
-    }
-}
-
-const CLOCK_SYNC_CLAMP_NS: i64 = 10_000_000;
-
-#[derive(Debug, Clone, Copy)]
-pub struct ClockSync {
-    kp: f64,
-    ki: f64,
-    integral_ns: f64, // accumulated PI error term
-    last_offset_ns: i64,
-}
-
-impl ClockSync {
-    pub fn new(kp: f64, ki: f64) -> Self {
-        Self {
-            kp,
-            ki,
-            integral_ns: 0.0,
-            last_offset_ns: 0,
-        }
-    }
-
-    pub fn tick(&mut self, measured_offset_ns: i64) -> i64 {
-        let error = measured_offset_ns as f64;
-        self.integral_ns += error;
-        let correction = self.kp * error + self.ki * self.integral_ns;
-        self.last_offset_ns = measured_offset_ns;
-        correction
-            .round()
-            .clamp(-CLOCK_SYNC_CLAMP_NS as f64, CLOCK_SYNC_CLAMP_NS as f64) as i64
-    }
-
-    pub fn last_offset_ns(&self) -> i64 {
-        self.last_offset_ns
-    }
-    pub fn integral_ns(&self) -> f64 {
-        self.integral_ns
-    }
-}
-
-impl Default for ClockSync {
-    fn default() -> Self {
-        Self::new(0.1, 0.001)
     }
 }
 
@@ -203,7 +160,7 @@ pub struct ResampleNode {
     source_rate_hz: u32,
     target_rate_hz: u32,
     channel_count: u8,
-    clock_sync: ClockSync,
+    clock_correction: ClockCorrectionController,
     phase: f64,
     last_sample: f32,
     out_buf: Vec<f32>,
@@ -226,7 +183,7 @@ impl ResampleNode {
             source_rate_hz,
             target_rate_hz,
             channel_count,
-            clock_sync: ClockSync::default(),
+            clock_correction: ClockCorrectionController::default(),
             phase: 0.0,
             last_sample: 0.0,
             out_buf: Vec::with_capacity(RESAMPLE_MAX_OUT_SAMPLES),
@@ -235,6 +192,10 @@ impl ResampleNode {
 
     pub fn identity_48k() -> Self {
         Self::new(48_000, 48_000, 1)
+    }
+
+    pub fn observe_clock_offset(&mut self, measured_offset_ns: i64) -> i64 {
+        self.clock_correction.tick(measured_offset_ns)
     }
 }
 
@@ -251,7 +212,10 @@ impl AudioProcessorNode for ResampleNode {
             return None;
         }
 
-        let correction_ns = self.clock_sync.tick(frame.timestamp_ns as i64);
+        // A frame timestamp is an observation in one clock domain, not an
+        // offset between two clocks. Runtime clock comparison updates the
+        // controller through observe_clock_offset().
+        let correction_ns = self.clock_correction.last_correction_ns();
         let drift_ratio = correction_ns as f64 / NS_PER_SEC;
 
         if self.source_rate_hz == self.target_rate_hz {
@@ -380,16 +344,16 @@ mod tests {
     }
 
     #[test]
-    fn clock_sync_zero_offset_produces_zero_correction() {
-        let mut cs = ClockSync::default();
-        assert_eq!(cs.tick(0), 0);
-        assert_eq!(cs.last_offset_ns(), 0);
+    fn given_zero_clock_offset_when_corrected_then_correction_is_zero() {
+        let mut controller = ClockCorrectionController::default();
+        assert_eq!(controller.tick(0), 0);
+        assert_eq!(controller.last_offset_ns(), 0);
     }
 
     #[test]
-    fn clock_sync_positive_offset_produces_positive_correction() {
-        let mut cs = ClockSync::default();
-        let correction = cs.tick(1_000_000);
+    fn given_positive_clock_offset_when_corrected_then_correction_is_positive() {
+        let mut controller = ClockCorrectionController::default();
+        let correction = controller.tick(1_000_000);
         assert!(
             correction > 0,
             "positive offset must produce positive correction, got {correction}"
@@ -397,9 +361,9 @@ mod tests {
     }
 
     #[test]
-    fn clock_sync_negative_offset_produces_negative_correction() {
-        let mut cs = ClockSync::default();
-        let correction = cs.tick(-1_000_000);
+    fn given_negative_clock_offset_when_corrected_then_correction_is_negative() {
+        let mut controller = ClockCorrectionController::default();
+        let correction = controller.tick(-1_000_000);
         assert!(
             correction < 0,
             "negative offset must produce negative correction, got {correction}"
@@ -407,9 +371,9 @@ mod tests {
     }
 
     #[test]
-    fn clock_sync_correction_is_clamped_to_ten_milliseconds() {
-        let mut cs = ClockSync::default();
-        let correction = cs.tick(100_000_000);
+    fn given_large_clock_offset_when_corrected_then_correction_is_clamped() {
+        let mut controller = ClockCorrectionController::default();
+        let correction = controller.tick(100_000_000);
         assert!(
             correction.abs() <= 10_000_000,
             "correction {correction} exceeds ±10 ms clamp"
@@ -417,14 +381,14 @@ mod tests {
     }
 
     #[test]
-    fn clock_sync_integral_accumulates_across_ticks() {
-        let mut cs = ClockSync::new(0.0, 1.0);
-        cs.tick(1_000);
-        cs.tick(1_000);
+    fn given_repeated_clock_offset_when_corrected_then_integral_accumulates() {
+        let mut controller = ClockCorrectionController::new(0.0, 1.0);
+        controller.tick(1_000);
+        controller.tick(1_000);
         assert!(
-            cs.integral_ns() > 1_000.0,
+            controller.integral_ns() > 1_000.0,
             "integral {} should exceed single-tick error",
-            cs.integral_ns()
+            controller.integral_ns()
         );
     }
 
@@ -472,6 +436,17 @@ mod tests {
         let out = node.process(frame).unwrap();
         assert!(out.buffer.len() < input.len());
         assert_eq!(out.sample_rate_hz, 44_100);
+    }
+
+    #[test]
+    fn given_timestamp_without_clock_comparison_when_processed_then_no_offset_is_inferred() {
+        let pool = AudioBufferPool::new(4, 960);
+        let input: Vec<f32> = (0..960).map(|i| (i as f32) / 960.0).collect();
+        let mut frame = make_sample_frame(&pool, &input, 48_000);
+        frame.timestamp_ns = 9_000_000_000;
+        let mut node = ResampleNode::new(48_000, 44_100, 1);
+        let out = node.process(frame).unwrap();
+        assert_eq!(out.buffer.len(), 882);
     }
 
     #[test]

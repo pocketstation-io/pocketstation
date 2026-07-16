@@ -8,5 +8,6 @@ description = "Frame bus, clock sync, and audio processing graph for PocketStati
 
 [dependencies]
 pks-frame = { path = "../pks-frame", version = "0.1.0" }
+pks-timing = { path = "../pks-timing", version = "0.1.0" }
 pks-codec = { path = "../pks-codec", version = "0.1.0" }
 rtrb = { workspace = true }

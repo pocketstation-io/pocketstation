@@ -5,6 +5,7 @@ pub use pks_codec::*;
 pub use pks_frame::*;
 pub use pks_metrics::*;
 pub use pks_pipeline::*;
+pub use pks_timing::{ClockDriftEstimator, ClockDriftSnapshot};
 
 // frame owns the canonical graph-level EncodedFrame; codec's leaner Opus-packet
 // type stays reachable as pks_codec::EncodedFrame. Explicit re-export
