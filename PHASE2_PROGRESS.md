@@ -23,6 +23,9 @@
 - Linux capture now uses the canonical `sample_rate_hz` field on `AudioFrame`
   and `CaptureSource`, closing the cross-platform strict-clippy failure without
   changing capture behavior.
+- CI benchmark compilation and the allocation-free integration gate now target
+  the canonical `pks-audio` package name instead of the retired
+  `pocketstation-audio` name.
 
 ## Runtime timing ownership - 2026-07-16
 
