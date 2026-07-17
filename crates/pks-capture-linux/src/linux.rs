@@ -891,6 +891,9 @@ mod tests {
             Err(CaptureError::ModeUnsupported(_))
             | Err(CaptureError::BackendInit(_))
             | Err(CaptureError::NotSupported) => {}
+            Err(CaptureError::InvalidStreamCapacity) => {
+                panic!("capture mode does not configure stream capacity")
+            }
             Ok(_) => panic!("expected Err for nonexistent PID 0, got Ok"),
         }
     }

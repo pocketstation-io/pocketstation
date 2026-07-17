@@ -58,3 +58,5 @@
 - All 112 CLI tests pass against the updated capture API.
 - The capture-stream example is target-gated so Linux and Windows all-targets
   checks compile without pretending the macOS system-loopback endpoint exists.
+- Linux capture tests explicitly reject the stream-capacity setup error so the
+  cross-platform `CaptureError` contract remains exhaustively checked.
