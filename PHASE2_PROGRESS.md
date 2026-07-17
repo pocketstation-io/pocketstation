@@ -56,3 +56,5 @@
 - Unit tests pass for delivery, overflow, closure, callback adaptation, and invalid capacity.
 - Real macOS exact-process capture passed with 281 consumed frames, 287,744 samples, RMS 0.141005, and zero dropped frames.
 - All 112 CLI tests pass against the updated capture API.
+- The capture-stream example is target-gated so Linux and Windows all-targets
+  checks compile without pretending the macOS system-loopback endpoint exists.
