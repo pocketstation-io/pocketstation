@@ -10,7 +10,14 @@ pks-frame = { path = "../pks-frame" }
 pks-caps = { path = "../pks-caps" }
 pks-graph = { path = "../pks-graph" }
 pks-ml = { path = "../pks-ml" }
+pks-runtime = { path = "../pks-runtime" }
+pks-timing.workspace = true
+hound.workspace = true
 rtrb.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
 
 [dev-dependencies]
 proptest.workspace = true
+tempfile = "3"

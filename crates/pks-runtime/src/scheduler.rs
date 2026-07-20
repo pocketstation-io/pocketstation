@@ -1,22 +1,38 @@
-//! Builds a `RealtimeExecutor` from a compiled `RuntimePlan` plus the `GraphIr`
-//! it was lowered from and a `NodeRegistry` to instantiate nodes.
-//!
-//! Only the realtime partitions (`ExecutionClass::is_realtime()`) are wired into
-//! the executor. Async/model/network/recorder partitions are left for a later
-//! wave; they will be driven over bounded `EdgeChannel`s, not here.
+//! Builds executable realtime nodes and bounded partition crossings from a
+//! compiled `RuntimePlan`, its `GraphIr`, and a `NodeRegistry`.
 
 use pks_graph::ir::GraphIr;
 use pks_graph::node::PrepareContext;
+use pks_graph::partition::ExecutionPartition;
 use pks_graph::plan::RuntimePlan;
 use pks_graph::registry::NodeRegistry;
 use pks_graph::runtime_node::RuntimeNode;
-use pks_graph::spec::NodeId;
+use pks_graph::spec::{EdgeId, NodeId};
 
 use crate::executor::{ExecError, RealtimeExecutor};
+use crate::plan_executor::RealtimePlanExecutor;
+use crate::plan_router::PlanEdgeReceiver;
 
 pub struct PlanScheduler;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct PartitionBridgeSpec {
+    pub edge: EdgeId,
+    pub from: ExecutionPartition,
+    pub to: ExecutionPartition,
+    pub capacity_frames: usize,
+}
+
 impl PlanScheduler {
+    pub fn build_plan_executor(
+        plan: &RuntimePlan,
+        ir: &GraphIr,
+        registry: &NodeRegistry,
+        cx: &PrepareContext,
+    ) -> Result<(RealtimePlanExecutor, Vec<PlanEdgeReceiver>), ExecError> {
+        RealtimePlanExecutor::new(plan, ir, registry, cx)
+    }
+
     pub fn build_realtime_executor(
         plan: &RuntimePlan,
         ir: &GraphIr,
@@ -26,7 +42,7 @@ impl PlanScheduler {
         let realtime: Vec<NodeId> = plan
             .partitions
             .iter()
-            .filter(|partition| partition.class.is_realtime())
+            .filter(|partition| partition.execution.requires_realtime_safety())
             .flat_map(|partition| partition.nodes.iter().copied())
             .collect();
         let ordered: Vec<NodeId> = plan
@@ -57,19 +73,66 @@ impl PlanScheduler {
         executor.prepare(cx)?;
         Ok(executor)
     }
+
+    pub fn build_partition_bridges(
+        plan: &RuntimePlan,
+        ir: &GraphIr,
+    ) -> Result<Vec<PartitionBridgeSpec>, ExecError> {
+        let mut bridges = Vec::new();
+        for edge in &ir.edges {
+            let from = ir
+                .node(edge.spec.from.node)
+                .ok_or_else(|| {
+                    ExecError::Node(format!(
+                        "edge {} source node {} absent from IR",
+                        edge.spec.id.index(),
+                        edge.spec.from.node.index()
+                    ))
+                })?
+                .descriptor
+                .execution;
+            let to = ir
+                .node(edge.spec.to.node)
+                .ok_or_else(|| {
+                    ExecError::Node(format!(
+                        "edge {} target node {} absent from IR",
+                        edge.spec.id.index(),
+                        edge.spec.to.node.index()
+                    ))
+                })?
+                .descriptor
+                .execution;
+            if from.needs_bridge_to(to) {
+                let capacity_frames = plan
+                    .memory_plan
+                    .edge_buffer(edge.spec.id)
+                    .map_or(pks_graph::plan::EDGE_RING_CAPACITY_FRAMES, |buffer| {
+                        buffer.capacity_frames
+                    });
+                bridges.push(PartitionBridgeSpec {
+                    edge: edge.spec.id,
+                    from,
+                    to,
+                    capacity_frames,
+                });
+            }
+        }
+        Ok(bridges)
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pks_caps::{AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec};
     use pks_frame::AudioFrame;
     use pks_frame::{AudioBufferPool, SampleFormat, SampleSpec, SourceId, StreamId};
     use pks_graph::compiler::Compiler;
     use pks_graph::dsl::Pipeline;
-    use pks_graph::node::NodeConfig;
+    use pks_graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId};
     use pks_graph::planner::RuntimePlanner;
     use pks_graph::register_builtins;
-    use pks_graph::registry::NodeRegistry;
+    use pks_graph::registry::{NodeFactory, NodeRegistry};
 
     const GAIN_DB_KEY: &str = "gain_db";
 
@@ -90,6 +153,51 @@ mod tests {
         registry
     }
 
+    fn audio_port(name: &str, direction: PortDirection) -> PortSpec {
+        PortSpec {
+            name: name.to_owned(),
+            direction,
+            media: MediaCaps::Audio(AudioCaps {
+                sample_rate_hz: Some(48_000),
+                frame_samples: Some(960),
+                channel_layout: ChannelLayout::Mono,
+                format: SampleFormat::F32Interleaved,
+            }),
+            multiplicity: Multiplicity::One,
+            required: true,
+        }
+    }
+
+    struct ExternalFactory;
+
+    impl NodeFactory for ExternalFactory {
+        fn descriptor(&self) -> NodeDescriptor {
+            NodeDescriptor {
+                type_id: NodeTypeId::from("model.external"),
+                display_name: "External Model",
+                inputs: vec![audio_port("in", PortDirection::Input)],
+                outputs: vec![audio_port("out", PortDirection::Output)],
+                execution: ExecutionPartition::External,
+                realtime_safe: false,
+                stateful: true,
+            }
+        }
+
+        fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
+            Ok(())
+        }
+
+        fn instantiate(
+            &self,
+            _cx: &PrepareContext,
+            _config: &NodeConfig,
+        ) -> Result<Box<dyn RuntimeNode>, NodeError> {
+            Err(NodeError::Prepare(
+                "external test factory is not instantiated by realtime scheduler".to_owned(),
+            ))
+        }
+    }
+
     fn passthrough_gain_passthrough(gain_db: &str) -> (RuntimePlan, GraphIr) {
         let registry = built_registry();
         let mut graph = Pipeline::new();
@@ -98,6 +206,20 @@ mod tests {
         let sink = graph.add_node("passthrough", NodeConfig::new());
         graph.connect(source.out("out"), gain.in_("in"));
         graph.connect(gain.out("out"), sink.in_("in"));
+        let ir = Compiler::new()
+            .compile(graph.into_spec(), &registry)
+            .unwrap();
+        let plan = RuntimePlanner::new().plan(&ir).unwrap();
+        (plan, ir)
+    }
+
+    fn passthrough_external() -> (RuntimePlan, GraphIr) {
+        let mut registry = built_registry();
+        registry.register(std::sync::Arc::new(ExternalFactory));
+        let mut graph = Pipeline::new();
+        let source = graph.add_node("passthrough", NodeConfig::new());
+        let external = graph.add_node("model.external", NodeConfig::new());
+        graph.connect(source.out("out"), external.in_("in"));
         let ir = Compiler::new()
             .compile(graph.into_spec(), &registry)
             .unwrap();
@@ -154,5 +276,26 @@ mod tests {
         assert_eq!(metrics.frames_in(), 4);
         assert_eq!(metrics.frames_out(), 4);
         assert_eq!(metrics.frames_dropped(), 0);
+    }
+
+    #[test]
+    fn given_realtime_only_plan_when_build_partition_bridges_then_no_bridges() {
+        let (plan, ir) = passthrough_gain_passthrough("0.0");
+        let bridges = PlanScheduler::build_partition_bridges(&plan, &ir).unwrap();
+        assert!(bridges.is_empty());
+    }
+
+    #[test]
+    fn given_realtime_to_external_edge_when_build_partition_bridges_then_bridge_is_planned() {
+        let (plan, ir) = passthrough_external();
+        let bridges = PlanScheduler::build_partition_bridges(&plan, &ir).unwrap();
+        assert_eq!(bridges.len(), 1);
+        assert_eq!(bridges[0].edge.index(), 0);
+        assert_eq!(bridges[0].from, ExecutionPartition::RealtimeCpu);
+        assert_eq!(bridges[0].to, ExecutionPartition::External);
+        assert_eq!(
+            bridges[0].capacity_frames,
+            pks_graph::plan::EDGE_RING_CAPACITY_FRAMES
+        );
     }
 }

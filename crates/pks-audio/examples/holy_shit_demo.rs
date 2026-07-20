@@ -34,14 +34,12 @@ fn main() {
     let vad = graph.add_node("transform.vad", NodeConfig::new());
     let watermark = graph.add_node("transform.watermark", NodeConfig::new());
     let gain = graph.add_node("gain", NodeConfig::new().with("gain_db", "-3.0"));
-    let recorder = graph.add_node("sink.recording", NodeConfig::new());
 
     graph.connect(src.out("out"), mix.in_("in"));
     graph.connect(mix.out("out"), denoise.in_("in"));
     graph.connect(denoise.out("out"), vad.in_("in"));
     graph.connect(vad.out("out"), watermark.in_("in"));
     graph.connect(watermark.out("out"), gain.in_("in"));
-    graph.connect(gain.out("out"), recorder.in_("in"));
 
     // 2. Compile (validate + topo sort) and lower to a RuntimePlan.
     let mut registry = NodeRegistry::new();
@@ -60,7 +58,7 @@ fn main() {
     for partition in &plan.partitions {
         println!(
             "  partition {:?}: {} node(s)",
-            partition.class,
+            partition.execution,
             partition.nodes.len()
         );
     }

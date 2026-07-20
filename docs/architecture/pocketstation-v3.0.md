@@ -5,6 +5,13 @@
 **Status:** Green-light version. AudioGraph is the product center. v2.3 core algorithm, platform specs, and engineering ADRs are fully preserved underneath the new graph abstraction. No further structural rewrites planned.
 **Supersedes:** v2.3 (Universal Audio Fabric / mobile-first SDK + relay positioning)
 
+> **Current product/topology override — 2026-07-16:** The binding narrow product
+> and 2026-08-15 deadline are in the factory-root
+> `PRODUCT_OPERATING_CONTRACT.md`; the audited repository/crate map is in
+> `PROJECT_STATE.md`. The central Rust workspace is `pocketstation` (formerly
+> `pocketstation`). Historical repo and phase descriptions below are preserved for
+> architectural context and do not override those current contracts.
+
 ---
 
 ## Changelog v2.3 → v3.0
@@ -207,6 +214,21 @@ pub struct AudioGraph {
 }
 ```
 
+#### Semantic control values
+
+Domain alternatives cross component boundaries as named types, never as
+boolean conventions. Causes, policies, modes, directions, roles, ownership
+rules, and telemetry outcomes use enums or newtypes. Booleans remain valid only
+for irreducibly binary state whose name reads as a yes/no question.
+
+For example, an edge reports `EdgeDropReason::QueueFull` or
+`EdgeDropReason::BranchPoolExhausted`; it does not derive a boolean from
+`CopyPolicy` and ask telemetry to reinterpret it. A WHIP/WHEP handler accepts a
+typed publish/subscribe direction; callers do not pass `true` or `false` with a
+comment explaining the meaning. This preserves exhaustiveness, keeps telemetry
+independent from routing policy, and lets contracts evolve without boolean
+flag combinations.
+
 ### 3.3 Node Taxonomy
 
 #### SourceNode
@@ -279,54 +301,29 @@ Optional (Phase 4+, feature flags): `VadNode`, `NoiseSuppressorNode`, `EchoCance
 
 All nodes declare `accepted_channels()`. Graph auto-inserts `MonoMixNode` upstream of any mono-only node. Insertions are zero-allocation passes using the existing pool.
 
-#### PolicyNode
+#### Policy Operators
 
-Policy nodes are not just DSP — they decide what should happen.
+Policy behavior is implemented as open operators with manifests, not as a
+closed `PolicyNode` enum. Core only sees `OperatorId`, declared ports,
+`SignalSpec`, `ExecutionPartition`, `SafetyContract`, and typed config.
 
-```rust
-pub enum PolicyNode {
-    Duck { target: NodeSelector, db: f32, attack_ms: u32, release_ms: u32 },
-    Gate { condition: TriggerExpr },
-    RouteIf { condition: TriggerExpr, to: NodeSelector },
-    PrivacyRedact { policy: PrivacyPolicy },
-    Failover { primary: NodeSelector, fallback: NodeSelector },
-    CostCap { max_usd_per_hour: f32 },
-    ModelSwitch { condition: TriggerExpr, provider: ModelProviderId },
-    StartRecording { stems: Vec<BusId> },
-    LatencyFallback { threshold_ms: u32, fallback: NodeSelector },
-}
+Examples such as duck, gate, route-if, failover, cost-cap, model-switch, and
+recording trigger are concrete operator implementations registered by first
+party audio crates, examples, or user/community code. Adding a new policy must
+not require editing `pks-graph` or `pks-runtime`.
 
-pub enum GraphAction {
-    RouteEnable(RouteId),
-    RouteDisable(RouteId),
-    SetGain { bus_id: BusId, db: f32 },
-    SwitchModel { node_id: NodeId, provider: ModelProviderId },
-    StartRecording { stem_ids: Vec<BusId> },
-    ApplyPrivacyMode(PrivacyMode),
-    TriggerWebhook(WebhookEvent),
-}
-```
+#### Model Operators
 
-#### ModelNode
+Model processing makes PocketStation AI-native without becoming a model
+company. Model behavior is an open operator contract, not a closed `ModelNode`
+enum.
 
-Model nodes make PocketStation AI-native without becoming a model company.
+Transcribe, translate, TTS, speech-to-speech, emotion, diarization, intent, and
+agent operators are registered by examples, extension crates, or user code.
+Whisper, Ollama, Deepgram, OpenAI, ElevenLabs, and future providers do not live
+as enum variants in core.
 
-```rust
-pub enum ModelNode {
-    Transcribe(ModelProvider),
-    Translate(ModelProvider),
-    TextToSpeech(ModelProvider),
-    SpeechToSpeech(ModelProvider),
-    EmotionDetect(ModelProvider),
-    SpeakerDiarize(ModelProvider),
-    IntentDetect(ModelProvider),
-    KeywordSpot { keywords: Vec<String> },
-    AudioClassify(ModelProvider),
-    Agent(AgentProvider),
-}
-```
-
-Model nodes expose latency, cost, and quality telemetry:
+Model operators expose latency, cost, and quality telemetry:
 
 ```rust
 pub struct ModelNodeMetrics {
@@ -1508,7 +1505,7 @@ github.com/pocketstation-examples/ standalone examples, one per use case
 #### Tier 0 — Core Rust (Cargo workspace)
 
 ```
-pocketstation-io/audio-core
+pocketstation-io/pocketstation
   crates/
     pocketstation-frame/     AudioFrame, AudioBufferPool, SampleFormat
     pocketstation-bus/       FrameBus, SpscRingBuffer, ClockSync
@@ -1522,7 +1519,7 @@ pocketstation-io/audio-core
   ffi/                       cbindgen → C headers for Swift/Kotlin
 ```
 
-#### Tier 1 — Graph Runtime (Cargo workspace, separate from audio-core)
+#### Tier 1 — Graph Runtime (now crates inside the `pocketstation` workspace)
 
 ```
 pocketstation-io/audio-graph
@@ -1558,10 +1555,10 @@ pocketstation-io/sdk-python     PyPI                  pocketstation
 
 ```
 pocketstation-io/relay          Go + Pion v4 (GraphSession, AudioBus)
-pocketstation-io/api-server     Go (control plane, graph/session/metrics APIs)
+pocketstation-io/control-plane     Go (control plane, graph/session/metrics APIs)
 ```
 
-#### Tier 5 — ML Nodes (Cargo workspace, separate from audio-core)
+#### Tier 5 — ML Nodes (legacy external workspace; active bounded primitives are `pks-ml`)
 
 ```
 pocketstation-io/audio-ml
@@ -1572,15 +1569,22 @@ pocketstation-io/audio-ml
   models/                       ONNX model files, git-lfs
 ```
 
-#### Tier 6 — Model Connectors
+#### Tier 6 — Connector Examples
+
+Model provider integrations are **not** first-party core repos. There is no
+official `pocketstation-io/model-connectors` repo and no first-party `pks-ai-*`
+crate family. Connector examples live under examples or community-owned repos.
 
 ```
-pocketstation-io/model-connectors
-  openai-realtime/
-  deepgram-stt/
-  elevenlabs-tts/
-  local-whisper/
-  sip-adapter/
+pocketstation/examples/
+  meeting_whisper_ollama.rs
+  deepgram_agent.rs
+
+github.com/pocketstation-examples/
+  connector-whisper
+  connector-deepgram
+  connector-openai-realtime
+  connector-elevenlabs
 ```
 
 #### Tier 7 — OS Driver Extensions
@@ -1594,9 +1598,9 @@ pocketstation-io/driver-macos       C++/DriverKit
 
 ```
 pocketstation-io/app-creator        React Native (iOS + Android)
-pocketstation-io/app-web-receiver   Static TS, no framework
+pocketstation-io/web-receiver   Static TS, no framework
 pocketstation-io/app-desktop        Tauri (Rust + web frontend)
-pocketstation-io/cli                pks command
+pocketstation-io/pks                pks command
 pocketstation-io/docs               docs.pocketstation.io
 ```
 
@@ -1617,10 +1621,9 @@ github.com/pocketstation-examples/
 ### 14.4 Release Strategy
 
 ```
-audio-core:    SemVer. cargo-release --workspace. First publish: Phase 1 exit.
-audio-graph:   SemVer aligned with audio-core major.
-sdk-ios:       SemVer aligned with audio-core major. SPM tag.
-sdk-android:   SemVer aligned with audio-core major. Maven Central.
+pocketstation: SemVer. cargo-release --workspace after product API proof.
+sdk-ios:       SemVer aligned with PocketStation major. SPM tag.
+sdk-android:   SemVer aligned with PocketStation major. Maven Central.
 sdk-python:    SemVer independent. PyPI.
 relay:         SemVer independent. Docker image on tag.
 protocol:      SemVer independent. Vendored into SDKs.
@@ -1664,7 +1667,7 @@ BusMetrics P50/P95/P99 print correctly after 60-second run
 Old simple route API compiles to a graph template internally
 DOCS-004 through DOCS-013 written and merged
 ADR-014 through ADR-016 drafted
-audio-core crate is publish-ready (not yet published)
+PocketStation crates are component-tested but not product-proof/publish-ready
 ```
 
 ### Phase 1 — First Graph Route
@@ -1682,7 +1685,7 @@ QR code generation
 WebRTC signaling (types live in relay repo)
 Browser receiver: shows source name, bus name, latency metrics
 E2E latency measurement dashboard
-First crates.io publish of audio-core
+First crates.io publish of PocketStation runtime crates
 CLI: pks sources, pks session create, pks route, pks run
 ```
 
@@ -1692,7 +1695,7 @@ Desktop source → relay → browser on different network (30-minute stable sess
 P95 transport latency ≤ 250ms measured
 Source identity visible in browser receiver
 Latency dashboard shows per-edge breakdown (capture, encode, relay, jitter, decode)
-audio-core v0.1.0 published on crates.io
+PocketStation runtime crates published on crates.io
 CLI works on macOS and Linux
 ```
 
@@ -2154,7 +2157,7 @@ LiveKit. Every decision answers: "Is this better than LiveKit for a developer wh
 ### 25.2 The First Thing to Ship
 
 ```
-audio-core (Rust crate, publish-ready at Phase 0 exit, published at Phase 1 exit)
+pocketstation (central Rust workspace; publish only after the narrow product API is proven)
 + desktop source adapters (macOS/Linux first)
 + audio-graph API (v0, typed nodes and edges)
 + Go relay as GraphSession

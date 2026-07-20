@@ -34,7 +34,7 @@ use pw::spa;
 use pw::spa::pod::Pod;
 use spa::param::audio::AudioFormat;
 
-use pks_capture::{CaptureError as LoopbackError, CaptureMode};
+use pks_capture::{monotonic_timestamp_ns, CaptureError as LoopbackError, CaptureMode};
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -124,6 +124,7 @@ impl SystemLoopbackSource {
                     run_alsa(callback)
                 }
             }
+            CaptureMode::InputDevice(_) => Err(LoopbackError::ModeUnsupported(mode)),
         }
     }
 }
@@ -253,10 +254,7 @@ where
                     handle.set_len(copy_count);
 
                     let s = seq_cb.fetch_add(1, Ordering::Relaxed);
-                    let ts_ns = std::time::SystemTime::now()
-                        .duration_since(std::time::UNIX_EPOCH)
-                        .unwrap_or_default()
-                        .as_nanos() as u64;
+                    let ts_ns = monotonic_timestamp_ns();
 
                     let mut frame = AudioFrame::new(
                         StreamId(0),
@@ -635,10 +633,7 @@ where
                     handle.set_len(copy_count);
 
                     let s = seq_cb.fetch_add(1, Ordering::Relaxed);
-                    let ts_ns = std::time::SystemTime::now()
-                        .duration_since(std::time::UNIX_EPOCH)
-                        .unwrap_or_default()
-                        .as_nanos() as u64;
+                    let ts_ns = monotonic_timestamp_ns();
 
                     let mut frame = AudioFrame::new(
                         StreamId(0),
@@ -800,10 +795,7 @@ where
                         handle.set_len(copy_count);
 
                         let s = seq.fetch_add(1, Ordering::Relaxed);
-                        let ts_ns = std::time::SystemTime::now()
-                            .duration_since(std::time::UNIX_EPOCH)
-                            .unwrap_or_default()
-                            .as_nanos() as u64;
+                        let ts_ns = monotonic_timestamp_ns();
 
                         let mut frame = AudioFrame::new(
                             StreamId(0),

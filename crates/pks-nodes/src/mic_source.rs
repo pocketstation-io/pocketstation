@@ -6,9 +6,9 @@ use pks_frame::{AudioFrame, SampleFormat};
 use rtrb::{Consumer, Producer, RingBuffer};
 
 use pks_graph::node::{
-    ConfigError, ExecutionClass, NodeConfig, NodeDescriptor, NodeError, NodeKind, NodeTypeId,
-    PrepareContext,
+    ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext,
 };
+use pks_graph::partition::ExecutionPartition;
 use pks_graph::{NodeFactory, RuntimeNode};
 
 const MIC_SOURCE_TYPE_ID: &str = "source.mic";
@@ -92,10 +92,9 @@ impl NodeFactory for MicSourceFactory {
         NodeDescriptor {
             type_id: NodeTypeId::from(MIC_SOURCE_TYPE_ID),
             display_name: "Mic Source",
-            kind: NodeKind::Source,
             inputs: vec![],
             outputs: vec![audio_output_port()],
-            execution: ExecutionClass::AudioCallback,
+            execution: ExecutionPartition::AudioCallback,
             realtime_safe: true,
             stateful: true,
         }

@@ -6,9 +6,9 @@ use pks_frame::{AudioFrame, SampleFormat};
 use rtrb::{Consumer, Producer, RingBuffer};
 
 use pks_graph::node::{
-    ConfigError, ExecutionClass, NodeConfig, NodeDescriptor, NodeError, NodeKind, NodeTypeId,
-    PrepareContext,
+    ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext,
 };
+use pks_graph::partition::ExecutionPartition;
 use pks_graph::{NodeFactory, RuntimeNode};
 
 const BRIDGE_SINK_TYPE_ID: &str = "sink.bridge";
@@ -88,10 +88,9 @@ impl NodeFactory for BridgeSinkFactory {
         NodeDescriptor {
             type_id: NodeTypeId::from(BRIDGE_SINK_TYPE_ID),
             display_name: "Bridge Sink",
-            kind: NodeKind::Sink,
             inputs: vec![audio_input_port()],
             outputs: vec![],
-            execution: ExecutionClass::RealtimeCpu,
+            execution: ExecutionPartition::RealtimeCpu,
             realtime_safe: true,
             stateful: true,
         }

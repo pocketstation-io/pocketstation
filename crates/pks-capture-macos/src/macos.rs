@@ -21,7 +21,7 @@ use std::time::Duration;
 use pks_frame::{AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId};
 
 use crate::macos_asp::AspReader;
-use pks_capture::{CaptureError as LoopbackError, CaptureMode};
+use pks_capture::{CaptureError as LoopbackError, CaptureMode, CaptureSampleTimeline};
 
 // ---------------------------------------------------------------------------
 // Driver bundle — embedded at compile time by build.rs
@@ -114,6 +114,9 @@ impl SystemLoopbackSource {
 
         let channels = reader.channels() as u8;
         let sample_rate = reader.sample_rate();
+        let sample_rate_nonzero = std::num::NonZeroU32::new(sample_rate).ok_or_else(|| {
+            LoopbackError::BackendInit("ASP reader reported a zero sample rate".to_owned())
+        })?;
         let frames_per_cb: u32 = sample_rate / 50; // 20 ms
         let buf_samples = (frames_per_cb as usize) * (channels as usize);
         let pool = Arc::new(AudioBufferPool::new(POOL_DEPTH, buf_samples));
@@ -124,6 +127,7 @@ impl SystemLoopbackSource {
             .name("pks-asp-reader".into())
             .spawn(move || {
                 let mut seq: u64 = 0;
+                let mut timeline = CaptureSampleTimeline::new(sample_rate_nonzero);
                 let mut buf = vec![0.0f32; buf_samples];
                 loop {
                     if stop_rx.try_recv().is_ok() {
@@ -134,6 +138,9 @@ impl SystemLoopbackSource {
                         std::thread::sleep(Duration::from_millis(1));
                         continue;
                     }
+                    let timestamp_ns = timeline.advance(u64::from(read));
+                    let frame_sequence_number = seq;
+                    seq = seq.saturating_add(1);
                     let mut handle = match pool.acquire() {
                         Some(h) => h,
                         None => continue,
@@ -143,17 +150,18 @@ impl SystemLoopbackSource {
                     let copy_len = samples.min(dst.len());
                     dst[..copy_len].copy_from_slice(&buf[..copy_len]);
                     handle.set_len(copy_len);
-                    let ts_ns = std::time::SystemTime::now()
-                        .duration_since(std::time::UNIX_EPOCH)
-                        .unwrap_or_default()
-                        .as_nanos() as u64;
-                    let mut frame =
-                        AudioFrame::new(StreamId(0), SourceId(0), seq, ts_ns, channels, handle);
+                    let mut frame = AudioFrame::new(
+                        StreamId(0),
+                        SourceId(0),
+                        frame_sequence_number,
+                        timestamp_ns,
+                        channels,
+                        handle,
+                    );
                     frame.source_tag = AudioSourceTag::Captured;
                     frame.encryption_mode = EncryptionMode::None;
                     frame.sample_rate_hz = sample_rate;
                     callback(frame);
-                    seq += 1;
                 }
             })
             .map_err(|e| LoopbackError::BackendInit(format!("thread spawn: {e}")))?;

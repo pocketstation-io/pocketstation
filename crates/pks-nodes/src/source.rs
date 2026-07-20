@@ -4,9 +4,9 @@ use pks_caps::{AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection,
 use pks_frame::{AudioFrame, SampleFormat};
 
 use pks_graph::node::{
-    ConfigError, ExecutionClass, NodeConfig, NodeDescriptor, NodeError, NodeKind, NodeTypeId,
-    PrepareContext,
+    ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext,
 };
+use pks_graph::partition::ExecutionPartition;
 use pks_graph::{NodeFactory, RuntimeNode};
 
 const SYNTHETIC_SOURCE_TYPE_ID: &str = "source.synthetic";
@@ -37,10 +37,9 @@ impl NodeFactory for SyntheticSourceFactory {
         NodeDescriptor {
             type_id: NodeTypeId::from(SYNTHETIC_SOURCE_TYPE_ID),
             display_name: "Synthetic Source",
-            kind: NodeKind::Source,
             inputs: vec![],
             outputs: vec![audio_output_port()],
-            execution: ExecutionClass::RealtimeCpu,
+            execution: ExecutionPartition::RealtimeCpu,
             realtime_safe: true,
             stateful: true,
         }

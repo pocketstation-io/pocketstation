@@ -772,7 +772,7 @@ mod tests {
         if std::env::var("PKS_WRITE_AUDIO_ARTIFACTS").as_deref() == Ok("1") {
             let artifacts_dir = Path::new(env!("CARGO_MANIFEST_DIR"))
                 .ancestors()
-                .nth(3) // audio-core root (manifest is at crates/pocketstation-codec)
+                .nth(3) // pocketstation root (manifest is at crates/pocketstation-codec)
                 .unwrap_or(Path::new("."))
                 .join("artifacts")
                 .join("audio");

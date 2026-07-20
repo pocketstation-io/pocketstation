@@ -35,7 +35,7 @@ use pks_frame::{
 };
 use wasapi::{AudioClient, DeviceEnumerator, Direction, SampleType, StreamMode, WaveFormat};
 
-use pks_capture::{CaptureError as LoopbackError, CaptureMode};
+use pks_capture::{monotonic_timestamp_ns, CaptureError as LoopbackError, CaptureMode};
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -217,10 +217,7 @@ fn deliver_packet(
     handle.set_len(copy_count);
 
     let s = seq.fetch_add(1, Ordering::Relaxed);
-    let ts_ns = std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .unwrap_or_default()
-        .as_nanos() as u64;
+    let ts_ns = monotonic_timestamp_ns();
     let mut frame = AudioFrame::new(StreamId(0), SourceId(0), s, ts_ns, CAPTURE_CHANNELS, handle);
     frame.source_tag = AudioSourceTag::Captured;
     frame.encryption_mode = EncryptionMode::None;

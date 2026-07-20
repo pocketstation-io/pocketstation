@@ -56,6 +56,17 @@ if find . -type d \( -name "utils" -o -name "helpers" -o -name "common" -o -name
 fi
 echo "  pass"
 
+echo "LAW-22: semantic choices are typed..."
+semantic_bools=$(rg -n --pcre2 \
+  '\b(reason|cause|category|policy|mode|direction|role|strategy|ownership|outcome|overrun)\s*:\s*bool\b' \
+  crates examples 2>/dev/null || true)
+if [ -n "$semantic_bools" ]; then
+  echo "  FAIL: semantic boolean fields or parameters found:"
+  echo "$semantic_bools"
+  exit 1
+fi
+echo "  pass"
+
 if [ -f "Cargo.toml" ]; then
   echo "Rust format..."
   cargo fmt --all -- --check

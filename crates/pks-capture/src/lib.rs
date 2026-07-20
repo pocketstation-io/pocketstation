@@ -1,6 +1,6 @@
 use pks_frame::{AudioFrame, Platform};
-use std::sync::OnceLock;
-use std::time::Instant;
+use serde::Serialize;
+use std::num::NonZeroU32;
 
 mod frame_stream;
 
@@ -13,11 +13,52 @@ pub use frame_stream::{
 /// The value is non-zero and comparable across PocketStation crates in the
 /// same process; it is never derived from a wall clock and cannot jump.
 pub fn monotonic_timestamp_ns() -> u64 {
-    static ORIGIN: OnceLock<Instant> = OnceLock::new();
-    let elapsed_ns = ORIGIN.get_or_init(Instant::now).elapsed().as_nanos();
-    u64::try_from(elapsed_ns)
-        .unwrap_or(u64::MAX)
-        .saturating_add(1)
+    pks_timing::monotonic_timestamp_ns()
+}
+
+/// Source-time clock for capture streams whose media cadence is defined by
+/// the number of sample frames produced by the device.
+///
+/// Callback arrival time is scheduler time, not audio presentation time. This
+/// clock anchors the first observed sample frame to the process monotonic clock
+/// and advances only by represented sample count. Callers must advance it even
+/// when a captured buffer is dropped so downstream gaps remain observable.
+#[derive(Debug)]
+pub struct CaptureSampleTimeline {
+    sample_rate_hz: NonZeroU32,
+    origin_timestamp_ns: Option<u64>,
+    elapsed_sample_frames: u64,
+}
+
+impl CaptureSampleTimeline {
+    pub fn new(sample_rate_hz: NonZeroU32) -> Self {
+        Self {
+            sample_rate_hz,
+            origin_timestamp_ns: None,
+            elapsed_sample_frames: 0,
+        }
+    }
+
+    /// Returns this buffer's source-time start and advances the next start.
+    pub fn advance(&mut self, sample_frames: u64) -> u64 {
+        let origin_timestamp_ns = *self
+            .origin_timestamp_ns
+            .get_or_insert_with(monotonic_timestamp_ns);
+        let elapsed_ns = u128::from(self.elapsed_sample_frames)
+            .saturating_mul(1_000_000_000)
+            .checked_div(u128::from(self.sample_rate_hz.get()))
+            .unwrap_or(0)
+            .min(u128::from(u64::MAX)) as u64;
+        self.elapsed_sample_frames = self.elapsed_sample_frames.saturating_add(sample_frames);
+        origin_timestamp_ns.saturating_add(elapsed_ns)
+    }
+}
+
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub enum InputDeviceSelector {
+    #[default]
+    Default,
+    StableId(String),
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -26,6 +67,7 @@ pub enum CaptureMode {
     SystemMix,
     Application(String),
     Process(u32),
+    InputDevice(InputDeviceSelector),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -86,6 +128,200 @@ impl CaptureSource {
     pub fn frame_source_id(&self) -> pks_frame::SourceId {
         self.stable_id.to_frame_source_id()
     }
+}
+
+/// Point-in-time authorization evidence for opening one exact capture source.
+///
+/// This is control-plane evidence, not callback state. Backends must use
+/// `NotObservable` when the operating system does not expose an authoritative
+/// permission or policy result; a successful stream open is recorded
+/// separately and must not be relabeled as an OS permission preflight.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct CaptureAuthorizationSnapshot {
+    pub capability: CaptureCapabilityState,
+    pub os_permission: PermissionObservation,
+    pub application_policy: ApplicationPolicyObservation,
+    pub session_grant: CaptureSessionGrant,
+    pub capture_scope: CaptureScope,
+    pub identity_strength: SourceIdentityStrength,
+    pub permission_epoch: PermissionEpoch,
+    pub open_outcome: CaptureOpenOutcome,
+}
+
+impl CaptureAuthorizationSnapshot {
+    /// Records the evidence available after an explicitly selected source opens.
+    pub fn after_successful_open(
+        source: &CaptureSource,
+        session_grant: CaptureSessionGrant,
+        permission_epoch: PermissionEpoch,
+    ) -> Self {
+        Self::from_open_outcome(
+            source,
+            session_grant,
+            permission_epoch,
+            CaptureOpenOutcome::Succeeded,
+        )
+    }
+
+    /// Records a backend open failure without guessing that permission was denied.
+    pub fn after_failed_open(
+        source: &CaptureSource,
+        session_grant: CaptureSessionGrant,
+        permission_epoch: PermissionEpoch,
+    ) -> Self {
+        Self::from_open_outcome(
+            source,
+            session_grant,
+            permission_epoch,
+            CaptureOpenOutcome::BackendFailed,
+        )
+    }
+
+    /// Records a source that was resolved but not opened because another
+    /// required source failed first.
+    pub fn before_open(
+        source: &CaptureSource,
+        session_grant: CaptureSessionGrant,
+        permission_epoch: PermissionEpoch,
+    ) -> Self {
+        Self::from_open_outcome(
+            source,
+            session_grant,
+            permission_epoch,
+            CaptureOpenOutcome::NotAttempted,
+        )
+    }
+
+    fn from_open_outcome(
+        source: &CaptureSource,
+        session_grant: CaptureSessionGrant,
+        permission_epoch: PermissionEpoch,
+        open_outcome: CaptureOpenOutcome,
+    ) -> Self {
+        let (capture_scope, identity_strength, application_policy) = match source.stable_id.kind {
+            SourceKind::Application => (
+                CaptureScope::ExactApplication {
+                    stable_id: source.stable_id.stable_key.clone(),
+                },
+                if source.app_id.is_some() && source.process_id.is_some() {
+                    SourceIdentityStrength::ApplicationIdAndProcessId
+                } else if source.app_id.is_some() {
+                    SourceIdentityStrength::StableApplicationId
+                } else {
+                    SourceIdentityStrength::PlatformStableId
+                },
+                ApplicationPolicyObservation::NotObservable,
+            ),
+            SourceKind::InputDevice => (
+                CaptureScope::ExactInputDevice {
+                    stable_id: source.stable_id.stable_key.clone(),
+                },
+                if source.device_uid.is_some() {
+                    SourceIdentityStrength::StableDeviceUid
+                } else {
+                    SourceIdentityStrength::PlatformStableId
+                },
+                ApplicationPolicyObservation::NotApplicable,
+            ),
+            SourceKind::OutputDevice => (
+                CaptureScope::ExactOutputDevice {
+                    stable_id: source.stable_id.stable_key.clone(),
+                },
+                SourceIdentityStrength::PlatformStableId,
+                ApplicationPolicyObservation::NotApplicable,
+            ),
+            SourceKind::SystemMix => (
+                CaptureScope::SystemMix,
+                SourceIdentityStrength::PlatformStableId,
+                ApplicationPolicyObservation::NotApplicable,
+            ),
+        };
+        Self {
+            capability: CaptureCapabilityState::Available,
+            os_permission: PermissionObservation::NotObservable,
+            application_policy,
+            session_grant,
+            capture_scope,
+            identity_strength,
+            permission_epoch,
+            open_outcome,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum CaptureCapabilityState {
+    Available,
+    Unavailable,
+    Unsupported,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum PermissionObservation {
+    Allowed,
+    Denied,
+    Revoked,
+    NotObservable,
+    NotApplicable,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum ApplicationPolicyObservation {
+    Allowed,
+    Denied,
+    NotObservable,
+    NotApplicable,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum CaptureSessionGrant {
+    GrantedByExplicitSelection,
+    Denied,
+    NotEvaluated,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(tag = "kind", rename_all = "kebab-case")]
+pub enum CaptureScope {
+    ExactApplication { stable_id: String },
+    ExactInputDevice { stable_id: String },
+    ExactOutputDevice { stable_id: String },
+    SystemMix,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum SourceIdentityStrength {
+    ApplicationIdAndProcessId,
+    StableApplicationId,
+    StableDeviceUid,
+    PlatformStableId,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(transparent)]
+pub struct PermissionEpoch(pub u64);
+
+impl PermissionEpoch {
+    pub const INITIAL: Self = Self(1);
+
+    /// Advances the local evidence epoch after an observed authorization change
+    /// or an explicit source reopen.
+    pub fn next(self) -> Self {
+        Self(self.0.saturating_add(1))
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum CaptureOpenOutcome {
+    NotAttempted,
+    Succeeded,
+    BackendFailed,
 }
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
@@ -474,6 +710,15 @@ mod tests {
     }
 
     #[test]
+    fn given_stable_input_selector_when_wrapped_then_capture_mode_preserves_identity() {
+        let selector = InputDeviceSelector::StableId("coreaudio:device-7".to_owned());
+        assert_eq!(
+            CaptureMode::InputDevice(selector.clone()),
+            CaptureMode::InputDevice(selector)
+        );
+    }
+
+    #[test]
     fn given_stub_capture_when_called_then_returns_not_supported() {
         let result = capture_system_audio(|_| {});
         assert!(matches!(result, Err(CaptureError::NotSupported)));
@@ -491,6 +736,124 @@ mod tests {
         let second = monotonic_timestamp_ns();
         assert!(first > 0);
         assert!(second >= first);
+    }
+
+    #[test]
+    fn given_capture_sample_timeline_when_callback_arrival_varies_then_media_cadence_is_exact() {
+        let mut timeline = CaptureSampleTimeline::new(NonZeroU32::new(48_000).unwrap());
+
+        let first_timestamp_ns = timeline.advance(960);
+        std::thread::sleep(std::time::Duration::from_millis(1));
+        let second_timestamp_ns = timeline.advance(480);
+        let third_timestamp_ns = timeline.advance(480);
+
+        assert_eq!(second_timestamp_ns - first_timestamp_ns, 20_000_000);
+        assert_eq!(third_timestamp_ns - second_timestamp_ns, 10_000_000);
+    }
+
+    #[test]
+    fn given_small_capture_chunks_when_one_second_elapses_then_rounding_does_not_drift() {
+        let mut timeline = CaptureSampleTimeline::new(NonZeroU32::new(48_000).unwrap());
+        let origin_timestamp_ns = timeline.advance(128);
+        for _ in 1..375 {
+            timeline.advance(128);
+        }
+
+        let one_second_timestamp_ns = timeline.advance(128);
+
+        assert_eq!(one_second_timestamp_ns - origin_timestamp_ns, 1_000_000_000);
+    }
+
+    #[test]
+    fn given_exact_application_after_open_when_authorization_snapshotted_then_scope_stays_exact() {
+        let mut source = fake_source(
+            SourceKind::Application,
+            "com.acme.meeting",
+            Some("com.acme.meeting"),
+            SourceState::Playing,
+        );
+        source.process_id = Some(42);
+
+        let snapshot = CaptureAuthorizationSnapshot::after_successful_open(
+            &source,
+            CaptureSessionGrant::GrantedByExplicitSelection,
+            PermissionEpoch::INITIAL,
+        );
+
+        assert_eq!(snapshot.capability, CaptureCapabilityState::Available);
+        assert_eq!(
+            snapshot.capture_scope,
+            CaptureScope::ExactApplication {
+                stable_id: "com.acme.meeting".to_owned()
+            }
+        );
+        assert_eq!(
+            snapshot.identity_strength,
+            SourceIdentityStrength::ApplicationIdAndProcessId
+        );
+        assert_eq!(
+            snapshot.application_policy,
+            ApplicationPolicyObservation::NotObservable
+        );
+        assert_eq!(snapshot.os_permission, PermissionObservation::NotObservable);
+        assert_eq!(snapshot.open_outcome, CaptureOpenOutcome::Succeeded);
+    }
+
+    #[test]
+    fn given_exact_microphone_after_open_when_authorization_snapshotted_then_device_uid_is_retained(
+    ) {
+        let mut source = fake_source(
+            SourceKind::InputDevice,
+            "coreaudio:built-in-mic",
+            None,
+            SourceState::Available,
+        );
+        source.device_uid = Some("coreaudio:built-in-mic".to_owned());
+
+        let snapshot = CaptureAuthorizationSnapshot::after_successful_open(
+            &source,
+            CaptureSessionGrant::GrantedByExplicitSelection,
+            PermissionEpoch::INITIAL,
+        );
+
+        assert_eq!(
+            snapshot.capture_scope,
+            CaptureScope::ExactInputDevice {
+                stable_id: "coreaudio:built-in-mic".to_owned()
+            }
+        );
+        assert_eq!(
+            snapshot.identity_strength,
+            SourceIdentityStrength::StableDeviceUid
+        );
+        assert_eq!(
+            snapshot.application_policy,
+            ApplicationPolicyObservation::NotApplicable
+        );
+    }
+
+    #[test]
+    fn given_unclassified_backend_failure_when_snapshotted_then_permission_is_not_guessed() {
+        let source = fake_source(
+            SourceKind::Application,
+            "com.acme.meeting",
+            Some("com.acme.meeting"),
+            SourceState::Available,
+        );
+
+        let snapshot = CaptureAuthorizationSnapshot::after_failed_open(
+            &source,
+            CaptureSessionGrant::GrantedByExplicitSelection,
+            PermissionEpoch::INITIAL,
+        );
+
+        assert_eq!(snapshot.os_permission, PermissionObservation::NotObservable);
+        assert_eq!(snapshot.open_outcome, CaptureOpenOutcome::BackendFailed);
+    }
+
+    #[test]
+    fn given_authorization_transition_when_epoch_advanced_then_previous_snapshot_is_not_reused() {
+        assert_eq!(PermissionEpoch::INITIAL.next(), PermissionEpoch(2));
     }
 
     #[test]

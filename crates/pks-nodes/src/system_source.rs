@@ -6,9 +6,9 @@ use pks_frame::{AudioFrame, SampleFormat};
 use rtrb::{Consumer, Producer, RingBuffer};
 
 use pks_graph::node::{
-    ConfigError, ExecutionClass, NodeConfig, NodeDescriptor, NodeError, NodeKind, NodeTypeId,
-    PrepareContext,
+    ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext,
 };
+use pks_graph::partition::ExecutionPartition;
 use pks_graph::{NodeFactory, RuntimeNode};
 
 const SYSTEM_OUTPUT_SOURCE_TYPE_ID: &str = "source.system_output";
@@ -93,10 +93,9 @@ impl NodeFactory for SystemOutputSourceFactory {
         NodeDescriptor {
             type_id: NodeTypeId::from(SYSTEM_OUTPUT_SOURCE_TYPE_ID),
             display_name: "System Output Source",
-            kind: NodeKind::Source,
             inputs: vec![],
             outputs: vec![audio_output_port()],
-            execution: ExecutionClass::AudioCallback,
+            execution: ExecutionPartition::AudioCallback,
             realtime_safe: true,
             stateful: true,
         }

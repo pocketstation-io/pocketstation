@@ -3,17 +3,20 @@
 //! sizing, fan-out/fan-in groupings, and stable metric handles the runtime
 //! (Wave 6) consumes. No node is executed here; this is the plan, not the run.
 
-use crate::node::ExecutionClass;
+use crate::partition::ExecutionPartition;
 use crate::spec::{EdgeId, InputPortRef, NodeId, OutputPortRef};
 use pks_caps::CopyPolicy;
 
 pub const FRAME_BYTES_MONO_48K: usize = 960 * 4; // 20ms × 48kHz mono = 960 f32 × 4 bytes (ADR-012/013)
 pub const EDGE_RING_CAPACITY_FRAMES: usize = 8; // 8 × 20ms = 160ms de-jitter headroom (ADR-010)
+pub const MAX_EDGE_RING_CAPACITY_FRAMES: usize = 64;
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
 pub enum PlanError {
     #[error("input port '{port}' on node {node} has multiplicity One but receives multiple edges")]
     FanInOnSinglePort { node: u32, port: String },
+    #[error("output port '{port}' on node {node} uses MoveExclusive in a fan-out group")]
+    MoveExclusiveFanOut { node: u32, port: String },
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -36,6 +39,7 @@ impl EdgeBufferPlan {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct MemoryPlan {
     pub realtime_pool_bytes: usize,
+    pub branch_copy_pool_bytes: usize,
     pub edge_buffers: Vec<EdgeBufferPlan>,
 }
 
@@ -45,10 +49,11 @@ impl MemoryPlan {
     }
 }
 
+/// A group of nodes assigned to the same execution partition in a compiled plan.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ExecutionPartition {
-    pub class: ExecutionClass,
-    pub nodes: Vec<NodeId>, // global topo order, restricted to this class
+pub struct PartitionGroup {
+    pub execution: ExecutionPartition,
+    pub nodes: Vec<NodeId>, // global topo order, restricted to this partition
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -66,7 +71,7 @@ pub struct FanInGroup {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RuntimePlan {
     pub node_order: Vec<NodeId>,
-    pub partitions: Vec<ExecutionPartition>,
+    pub partitions: Vec<PartitionGroup>,
     pub memory_plan: MemoryPlan,
     pub edge_metrics: Vec<(EdgeId, EdgeMetricId)>,
     pub fan_out: Vec<FanOutGroup>,
@@ -79,10 +84,8 @@ impl RuntimePlan {
         self.node_order.len()
     }
 
-    pub fn partition(&self, class: ExecutionClass) -> Option<&ExecutionPartition> {
-        self.partitions
-            .iter()
-            .find(|partition| partition.class == class)
+    pub fn partition(&self, ep: ExecutionPartition) -> Option<&PartitionGroup> {
+        self.partitions.iter().find(|group| group.execution == ep)
     }
 
     pub fn metric_id(&self, edge: EdgeId) -> Option<EdgeMetricId> {

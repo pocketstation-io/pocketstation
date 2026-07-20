@@ -10,8 +10,8 @@ use std::time::Duration;
 use pks_frame::{AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, Platform, StreamId};
 
 use pks_capture::{
-    CaptureError as LoopbackError, CaptureMode, CaptureSource, SourceKind, SourceState,
-    StableSourceId,
+    CaptureError as LoopbackError, CaptureMode, CaptureSampleTimeline, CaptureSource, SourceKind,
+    SourceState, StableSourceId,
 };
 
 // ---------------------------------------------------------------------------
@@ -187,6 +187,10 @@ impl ProcessTap {
         }
         unsafe { pks_tap_read_frames(self.0.as_ptr(), out.as_mut_ptr(), frame_count) }
     }
+
+    fn level(&self) -> f32 {
+        unsafe { pks_tap_level(self.0.as_ptr()) }
+    }
 }
 
 impl Drop for ProcessTap {
@@ -230,6 +234,14 @@ impl TapLoopbackSource {
                     .filter(|s| s.app_id.as_deref() == Some(bundle_id.as_str()))
                     .filter_map(|s| s.process_id.map(|p| p as i32))
                     .collect();
+                if std::env::var_os("PKS_TAP_DIAG").is_some() {
+                    eprintln!(
+                        "tap_diag: app_source_lookup bundle_id={} sources={} pids={:?}",
+                        bundle_id,
+                        sources.len(),
+                        pids
+                    );
+                }
                 if pids.is_empty() {
                     return Err(LoopbackError::BackendInit(format!(
                         "no running audio process found for bundle ID: {bundle_id}"
@@ -237,11 +249,17 @@ impl TapLoopbackSource {
                 }
                 ProcessTap::for_pids(&pids)?
             }
+            CaptureMode::InputDevice(_) => {
+                return Err(LoopbackError::ModeUnsupported(mode));
+            }
         };
 
         tap.start()?;
 
         let sample_rate = tap.sample_rate();
+        let sample_rate_nonzero = std::num::NonZeroU32::new(sample_rate).ok_or_else(|| {
+            LoopbackError::BackendInit("tap reported a zero sample rate".to_owned())
+        })?;
         let channels = tap.channels() as u8;
         let frames_per_cb: u32 = sample_rate / 50; // 20 ms
         let buf_samples = frames_per_cb as usize * channels as usize;
@@ -265,13 +283,22 @@ impl TapLoopbackSource {
                 StableSourceId::new(Platform::Macos, SourceKind::Application, bundle_id.clone())
                     .to_frame_source_id()
             }
+            CaptureMode::InputDevice(_) => {
+                return Err(LoopbackError::ModeUnsupported(mode));
+            }
         };
 
         let thread = std::thread::Builder::new()
             .name("pks-tap-reader".into())
             .spawn(move || {
                 let mut seq: u64 = 0;
+                let mut timeline = CaptureSampleTimeline::new(sample_rate_nonzero);
                 let mut buf = vec![0.0f32; buf_samples];
+                let diag = std::env::var_os("PKS_TAP_DIAG").is_some();
+                let mut diag_samples: u64 = 0;
+                let mut diag_nonzero_frames: u64 = 0;
+                let mut diag_peak: f32 = 0.0;
+                let mut diag_last = std::time::Instant::now();
                 loop {
                     if stop_rx.try_recv().is_ok() {
                         break;
@@ -281,6 +308,9 @@ impl TapLoopbackSource {
                         std::thread::sleep(Duration::from_millis(1));
                         continue;
                     }
+                    let timestamp_ns = timeline.advance(u64::from(read));
+                    let frame_sequence_number = seq;
+                    seq = seq.saturating_add(1);
                     let mut handle = match pool.acquire() {
                         Some(h) => h,
                         None => continue,
@@ -290,17 +320,41 @@ impl TapLoopbackSource {
                     let copy_len = samples.min(dst.len());
                     dst[..copy_len].copy_from_slice(&buf[..copy_len]);
                     handle.set_len(copy_len);
-                    let ts_ns = std::time::SystemTime::now()
-                        .duration_since(std::time::UNIX_EPOCH)
-                        .unwrap_or_default()
-                        .as_nanos() as u64;
-                    let mut frame =
-                        AudioFrame::new(StreamId(0), frame_source_id, seq, ts_ns, channels, handle);
+                    if diag {
+                        diag_samples += copy_len as u64;
+                        let chunk_peak = buf[..copy_len]
+                            .iter()
+                            .fold(0.0_f32, |acc, sample| acc.max(sample.abs()));
+                        if chunk_peak > 1e-9 {
+                            diag_nonzero_frames += 1;
+                        }
+                        diag_peak = diag_peak.max(chunk_peak);
+                        if diag_last.elapsed() >= Duration::from_secs(1) {
+                            eprintln!(
+                                "tap_diag: read_samples={} nonzero_chunks={} peak={:.6} tap_rms={:.6}",
+                                diag_samples,
+                                diag_nonzero_frames,
+                                diag_peak,
+                                tap.level()
+                            );
+                            diag_samples = 0;
+                            diag_nonzero_frames = 0;
+                            diag_peak = 0.0;
+                            diag_last = std::time::Instant::now();
+                        }
+                    }
+                    let mut frame = AudioFrame::new(
+                        StreamId(0),
+                        frame_source_id,
+                        frame_sequence_number,
+                        timestamp_ns,
+                        channels,
+                        handle,
+                    );
                     frame.source_tag = AudioSourceTag::Captured;
                     frame.encryption_mode = EncryptionMode::None;
                     frame.sample_rate_hz = sample_rate;
                     callback(frame);
-                    seq += 1;
                 }
             })
             .map_err(|e| LoopbackError::BackendInit(format!("thread spawn: {e}")))?;

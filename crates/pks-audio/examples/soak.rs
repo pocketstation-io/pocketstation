@@ -127,7 +127,7 @@ fn main() {
     let sine_table = build_sine_table();
 
     println!(
-        "audio-core soak  —  {} frames ({} s of audio)",
+        "pocketstation soak  —  {} frames ({} s of audio)",
         SOAK_FRAMES,
         SOAK_FRAMES / 50
     );

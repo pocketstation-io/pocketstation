@@ -174,9 +174,9 @@ pub enum DeliverySemantics {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CopyPolicy {
-    BorrowReadOnly,
-    SharedBufferHandle,
-    CopyAllowed,
+    MoveExclusive,
+    ShareReadOnly,
+    CopyToBranchPool,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -232,7 +232,7 @@ impl EdgeContract {
             backpressure: BackpressurePolicy::DropNewest,
             delivery: DeliverySemantics::Ordered,
             loss: LossPolicy::ConcealForAudio,
-            copy_policy: CopyPolicy::SharedBufferHandle,
+            copy_policy: CopyPolicy::ShareReadOnly,
             encryption: EncryptionMode::None,
             observability: EdgeObservabilityLevel::Counters,
         }

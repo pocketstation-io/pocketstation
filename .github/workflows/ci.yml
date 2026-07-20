@@ -28,5 +28,7 @@ jobs:
         run: cargo bench --no-run -p pks-audio
       - name: Alloc-free hot path check (integration test)
         run: cargo test -p pks-audio --test alloc_check -- --nocapture
+      - name: Architecture constraint checks (CRATE_OWNERSHIP.md enforcement)
+        run: bash scripts/lint/check-architecture-constraints.sh
       # Publish dry-run removed: it was guarded by `|| true` (could never fail =
       # meaningless), and real publishing is handled by publish.yml.
