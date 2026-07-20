@@ -1,5 +1,26 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W7.5 saturated-edge classification correction — 2026-07-20
+
+- Status: `SAFE-TO-TEST`; the new long candidate remains open.
+- The first corrected 60-minute candidate proved capture and recording
+  continuity but exposed one synchronized destination recovery burst between
+  2,470 and 2,480 seconds. Recorder edges peaked at 15/50 with zero loss;
+  every eight-frame relay/connector edge saturated and dropped. Evidence:
+  `pocketstation-lab/artifacts/product-proof/w7-soak-60m-corrected-2026-07-20`.
+- When a branch copy pool and its queue are simultaneously full, the router now
+  observes queue state before classifying a failed copy acquisition. Saturated
+  edges report `queue_full`; `branch_pool_exhausted` remains reserved for copy
+  ownership exhaustion while queue capacity is still available.
+- The receiver-in-flight regression now explicitly requests
+  `CopyToBranchPool`. It proves both sides of the contract: a popped in-flight
+  frame does not prevent the next enqueue, and queue-plus-in-flight saturation
+  is classified as queue-full without pretending the copy pool is undersized.
+- Acceptance passes: all 36 runtime tests, both debug and release allocation
+  gates, targeted strict Clippy, and workspace format. No queue wait, blocking,
+  allocation, lock, logging, panic, scaffold, mock, or loopback-only path was
+  added to dispatch.
+
 ## W7.4 branch ownership stress correction — 2026-07-20
 
 - Status: `SAFE-TO-TEST`; the corrected isolated long candidate remains open.

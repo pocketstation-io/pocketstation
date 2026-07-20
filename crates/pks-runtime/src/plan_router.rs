@@ -410,6 +410,10 @@ struct EdgeSender {
 }
 
 impl EdgeSender {
+    fn is_full(&self) -> bool {
+        self.producer.is_full()
+    }
+
     fn send(&mut self, frame: PlanEdgeFrame, enqueued_at_ns: u64) -> bool {
         if !self.alive.load(Ordering::Acquire) {
             self.telemetry
@@ -722,11 +726,14 @@ impl PlanEdgeRouter {
                         .and_then(|pool| shared.copy_to_pool(pool))
                     else {
                         summary.dropped_edges = summary.dropped_edges.saturating_add(1);
-                        summary.copy_pool_exhausted_edges =
-                            summary.copy_pool_exhausted_edges.saturating_add(1);
-                        edge.sender
-                            .telemetry
-                            .observe_drop(EdgeDropReason::BranchPoolExhausted);
+                        let reason = if edge.sender.is_full() {
+                            EdgeDropReason::QueueFull
+                        } else {
+                            summary.copy_pool_exhausted_edges =
+                                summary.copy_pool_exhausted_edges.saturating_add(1);
+                            EdgeDropReason::BranchPoolExhausted
+                        };
+                        edge.sender.telemetry.observe_drop(reason);
                         continue;
                     };
                     PlanEdgeFrame::Exclusive(branch_frame)
@@ -760,6 +767,7 @@ impl PlanEdgeRouter {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pks_caps::EdgeContract;
     use pks_frame::{SourceId, StreamId};
     use pks_graph::compiler::Compiler;
     use pks_graph::dsl::Pipeline;
@@ -1037,7 +1045,9 @@ mod tests {
         let mut graph = Pipeline::new();
         let source = graph.add_node("passthrough", NodeConfig::new());
         let sink = graph.add_node("passthrough", NodeConfig::new());
-        graph.connect(source.out("out"), sink.in_("in"));
+        let mut contract = EdgeContract::voice_default();
+        contract.copy_policy = CopyPolicy::CopyToBranchPool;
+        graph.connect_with(source.out("out"), sink.in_("in"), contract);
         let ir = Compiler::new()
             .compile(graph.into_spec(), &registry)
             .unwrap();
@@ -1047,7 +1057,7 @@ mod tests {
             .iter_mut()
             .for_each(|buffer| buffer.capacity_frames = 1);
         let (mut router, mut receivers) = PlanEdgeRouter::new(&plan, &ir).unwrap();
-        let pool = AudioBufferPool::new(2, 2);
+        let pool = AudioBufferPool::new(3, 2);
         router.dispatch_from(source.id(), "out", frame(&pool, 1, 1), 1);
         let in_flight = receivers[0].recv_at(2).unwrap();
 
@@ -1064,8 +1074,15 @@ mod tests {
                 .branch_pool_exhausted_drops_total,
             0
         );
+
+        let saturated = router.dispatch_from(source.id(), "out", frame(&pool, 1, 3), 4);
+        let saturated_observations = router.observations(receivers[0].edge_id()).unwrap();
+        assert_eq!(saturated.dropped_edges, 1);
+        assert_eq!(saturated.copy_pool_exhausted_edges, 0);
+        assert_eq!(saturated_observations.queue_full_drops_total, 1);
+        assert_eq!(saturated_observations.branch_pool_exhausted_drops_total, 0);
         drop(in_flight);
-        assert_eq!(receivers[0].recv_at(4).unwrap().sequence_number(), 2);
+        assert_eq!(receivers[0].recv_at(5).unwrap().sequence_number(), 2);
     }
 
     #[test]
