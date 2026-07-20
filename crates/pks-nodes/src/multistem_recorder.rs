@@ -450,8 +450,7 @@ fn run_stem_worker_inner(
     let mut state = StemWriteState::new(config.timeline_mapping.session_origin_ns);
 
     loop {
-        let delivered_at_ns = pks_timing::monotonic_timestamp_ns();
-        if let Some(frame) = receiver.recv_at(delivered_at_ns) {
+        if let Some(frame) = receiver.try_recv() {
             state.write_frame(config, &frame, &mut writer, &mut event_writer)?;
             continue;
         }
@@ -1277,16 +1276,10 @@ mod tests {
         .unwrap();
 
         router.dispatch_from(source.id(), "out", frame(1, 0, 0, 0.25), 0);
-        assert_eq!(healthy_receiver.recv_at(1).unwrap().sequence_number(), 0);
+        assert_eq!(healthy_receiver.try_recv().unwrap().sequence_number(), 0);
         thread::sleep(Duration::from_millis(10));
         router.dispatch_from(source.id(), "out", frame(1, 1, 20_000_000, 0.5), 20_000_000);
-        assert_eq!(
-            healthy_receiver
-                .recv_at(20_000_001)
-                .unwrap()
-                .sequence_number(),
-            1
-        );
+        assert_eq!(healthy_receiver.try_recv().unwrap().sequence_number(), 1);
         let outcome = recording.finish().unwrap();
 
         assert_eq!(outcome.state, RecordingState::Incomplete);

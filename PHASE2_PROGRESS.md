@@ -249,8 +249,10 @@
   empty-queue pop, allowing a producer enqueue between those operations. The
   router now owns `PlanEdgeReceiver::try_recv`, which pops first and samples the
   canonical `pks-timing` process clock second. Explicit `recv_at` remains for
-  deterministic schedulers/tests. The rejected soak remains negative evidence;
-  no tolerance or metric was relaxed.
+  deterministic runtime schedulers/tests and is crate-private so destination
+  workers cannot repeat the race. A second candidate identified and removed the
+  recorder's remaining pre-pop call. Both rejected attempts remain negative
+  evidence; no tolerance or metric was relaxed.
 - Physical microphone timestamps now use CPAL's authoritative relative capture-
   to-callback duration in the shared process clock. The CLI normalization
   Bridge derives output timestamps from cumulative normalized samples and no

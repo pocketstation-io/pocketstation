@@ -265,7 +265,7 @@ impl DestinationWorker {
                 let mut delivered_frames = 0u64;
                 let mut failed = false;
                 loop {
-                    if let Some(_frame) = receiver.recv_at(pks_capture::monotonic_timestamp_ns()) {
+                    if let Some(_frame) = receiver.try_recv() {
                         delivered_frames = delivered_frames.saturating_add(1);
                         if behavior
                             .fail_after_frames

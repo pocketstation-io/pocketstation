@@ -463,7 +463,7 @@ impl PlanEdgeReceiver {
         &self.to
     }
 
-    pub fn recv_at(&mut self, delivered_at_ns: u64) -> Option<PlanEdgeFrame> {
+    pub(crate) fn recv_at(&mut self, delivered_at_ns: u64) -> Option<PlanEdgeFrame> {
         let queued = self.consumer.pop().ok()?;
         self.observe_received(queued, delivered_at_ns)
     }
@@ -473,8 +473,9 @@ impl PlanEdgeReceiver {
     /// Callers that sample time before attempting the pop can race a producer:
     /// an empty queue may receive a new frame between the timestamp read and the
     /// pop, manufacturing a receive-before-enqueue observation. Production
-    /// destination workers should use this method; [`Self::recv_at`] remains for
-    /// deterministic schedulers and tests that already own a valid timestamp.
+    /// destination workers must use this method. The internal `recv_at` method
+    /// remains only for deterministic schedulers and runtime tests that already
+    /// own a valid timestamp.
     pub fn try_recv(&mut self) -> Option<PlanEdgeFrame> {
         self.recv_with_clock(pks_timing::monotonic_timestamp_ns)
     }
