@@ -244,6 +244,13 @@
   counted as invalid rather than silently becoming zero latency. Both capture
   Bridges expose source/sink counters and executor and accumulator pool
   availability/failures.
+- The first long soak exposed a receiver-instrumentation race without media
+  loss: a destination worker sampled its receive timestamp before attempting an
+  empty-queue pop, allowing a producer enqueue between those operations. The
+  router now owns `PlanEdgeReceiver::try_recv`, which pops first and samples the
+  canonical `pks-timing` process clock second. Explicit `recv_at` remains for
+  deterministic schedulers/tests. The rejected soak remains negative evidence;
+  no tolerance or metric was relaxed.
 - Physical microphone timestamps now use CPAL's authoritative relative capture-
   to-callback duration in the shared process clock. The CLI normalization
   Bridge derives output timestamps from cumulative normalized samples and no

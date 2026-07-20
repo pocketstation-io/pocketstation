@@ -1244,6 +1244,7 @@ dependencies = [
  "pks-frame",
  "pks-graph",
  "pks-metrics",
+ "pks-timing",
  "proptest",
  "rtrb",
  "thiserror 1.0.69",

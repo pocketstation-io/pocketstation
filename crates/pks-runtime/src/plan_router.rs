@@ -465,6 +465,31 @@ impl PlanEdgeReceiver {
 
     pub fn recv_at(&mut self, delivered_at_ns: u64) -> Option<PlanEdgeFrame> {
         let queued = self.consumer.pop().ok()?;
+        self.observe_received(queued, delivered_at_ns)
+    }
+
+    /// Pops one queued frame before sampling the canonical process clock.
+    ///
+    /// Callers that sample time before attempting the pop can race a producer:
+    /// an empty queue may receive a new frame between the timestamp read and the
+    /// pop, manufacturing a receive-before-enqueue observation. Production
+    /// destination workers should use this method; [`Self::recv_at`] remains for
+    /// deterministic schedulers and tests that already own a valid timestamp.
+    pub fn try_recv(&mut self) -> Option<PlanEdgeFrame> {
+        self.recv_with_clock(pks_timing::monotonic_timestamp_ns)
+    }
+
+    fn recv_with_clock(&mut self, clock: impl FnOnce() -> u64) -> Option<PlanEdgeFrame> {
+        let queued = self.consumer.pop().ok()?;
+        let delivered_at_ns = clock();
+        self.observe_received(queued, delivered_at_ns)
+    }
+
+    fn observe_received(
+        &mut self,
+        queued: QueuedPlanEdgeFrame,
+        delivered_at_ns: u64,
+    ) -> Option<PlanEdgeFrame> {
         self.observe_continuity(&queued.frame);
         self.telemetry.observe_delivery(&queued, delivered_at_ns);
         Some(queued.frame)
@@ -836,6 +861,30 @@ mod tests {
         assert_eq!(observations.frames_delivered_total, 1);
         assert_eq!(observations.enqueue_to_receive_samples_total, 0);
         assert_eq!(observations.enqueue_to_receive_invalid_order_total, 1);
+    }
+
+    #[test]
+    fn given_queued_frame_when_clocked_receive_runs_then_clock_is_sampled_after_pop() {
+        let registry = registry();
+        let mut graph = Pipeline::new();
+        let source = graph.add_node("passthrough", NodeConfig::new());
+        let sink = graph.add_node("passthrough", NodeConfig::new());
+        graph.connect(source.out("out"), sink.in_("in"));
+        let ir = Compiler::new()
+            .compile(graph.into_spec(), &registry)
+            .unwrap();
+        let plan = RuntimePlanner::new().plan(&ir).unwrap();
+        let (mut router, mut receivers) = PlanEdgeRouter::new(&plan, &ir).unwrap();
+        let pool = AudioBufferPool::new(1, 2);
+        router.dispatch_from(source.id(), "out", frame(&pool, 7, 1), 100);
+
+        let received = receivers[0].recv_with_clock(|| 150).unwrap();
+        let observations = receivers[0].observations();
+
+        assert_eq!(received.sequence_number(), 1);
+        assert_eq!(observations.enqueue_to_receive_samples_total, 1);
+        assert_eq!(observations.enqueue_to_receive_invalid_order_total, 0);
+        assert_eq!(observations.enqueue_to_receive_max_ns, 50);
     }
 
     #[test]
