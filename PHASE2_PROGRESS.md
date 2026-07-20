@@ -19,6 +19,12 @@
   next frame is enqueued without pool exhaustion. A genuinely full slow edge
   remains isolated and is now classified as `queue_full`, not mislabeled as
   branch-pool exhaustion.
+- The committed correction passed a 300-second real-device vertical slice:
+  application delivered 15,000 frames and microphone delivered 15,001 frames
+  independently to recording, relay/browser, and example connector branches.
+  Every edge reported zero drops, zero branch-pool exhaustion, zero continuity
+  events, and zero worker failures; recording finalized complete. Evidence:
+  `pocketstation-lab/artifacts/product-proof/w7-branch-ownership-300s-2026-07-20`.
 - The simultaneous source sequence boundary is not suppressed or reclassified.
   The corrected candidate must run without competing builds/fault injections;
   any repeated source boundary remains a W7 failure requiring native capture
