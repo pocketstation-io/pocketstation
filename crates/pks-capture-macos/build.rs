@@ -33,7 +33,17 @@ fn build_macos() {
     println!("cargo:rerun-if-changed=asp/source_discovery.m");
     println!("cargo:rerun-if-changed=asp/source_discovery.h");
 
+    cc::Build::new()
+        .file(asp.join("authorization.m"))
+        .flag("-fobjc-arc")
+        .include(&asp)
+        .compile("pks_capture_authorization");
+
+    println!("cargo:rerun-if-changed=asp/authorization.m");
+    println!("cargo:rerun-if-changed=asp/authorization.h");
+
     println!("cargo:rustc-link-lib=framework=CoreAudio");
+    println!("cargo:rustc-link-lib=framework=AVFoundation");
     println!("cargo:rustc-link-lib=framework=Foundation");
     println!("cargo:rustc-link-lib=framework=AppKit");
 

@@ -1,4 +1,6 @@
 #[cfg(target_os = "macos")]
+mod authorization;
+#[cfg(target_os = "macos")]
 mod input;
 #[cfg(target_os = "macos")]
 mod macos;
@@ -7,6 +9,8 @@ pub mod macos_asp;
 #[cfg(target_os = "macos")]
 pub mod macos_tap;
 
+#[cfg(target_os = "macos")]
+pub use authorization::microphone_permission_observation;
 #[cfg(target_os = "macos")]
 pub use input::{discover_input_sources_native, InputCaptureObservations, MacosInputSource};
 #[cfg(target_os = "macos")]

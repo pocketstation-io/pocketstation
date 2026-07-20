@@ -33,8 +33,13 @@ struct RawSourceInfo {
 extern "C" {
     fn pks_process_tap_available() -> i32;
     fn pks_discover_sources(out: *mut RawSourceInfo, max: i32) -> i32;
-    fn pks_create_process_tap(pids: *const i32, pid_count: i32) -> *mut std::ffi::c_void;
-    fn pks_tap_start(tap: *mut std::ffi::c_void) -> i32;
+    fn pks_create_process_tap(
+        pids: *const i32,
+        pid_count: i32,
+        out_status: *mut i32,
+        out_stage: *mut u8,
+    ) -> *mut std::ffi::c_void;
+    fn pks_tap_start(tap: *mut std::ffi::c_void, out_status: *mut i32, out_stage: *mut u8) -> i32;
     fn pks_destroy_process_tap(tap: *mut std::ffi::c_void);
     fn pks_tap_read_frames(tap: *mut std::ffi::c_void, out: *mut f32, frame_count: u32) -> u32;
     fn pks_tap_sample_rate(tap: *const std::ffi::c_void) -> u32;
@@ -131,6 +136,31 @@ fn cstr_to_opt(buf: &[u8]) -> Option<String> {
 
 struct ProcessTap(NonNull<std::ffi::c_void>);
 
+const CORE_AUDIO_PERMISSION_DENIED_STATUS: i32 = i32::from_be_bytes(*b"!hog");
+
+fn tap_operation(stage: u8) -> &'static str {
+    match stage {
+        1 => "resolving the selected process",
+        2 => "creating the CoreAudio process tap",
+        3 => "reading the CoreAudio process tap identifier",
+        4 => "creating the CoreAudio aggregate device",
+        5 => "allocating the CoreAudio process tap handle",
+        6 => "creating the CoreAudio device callback",
+        7 => "starting the CoreAudio aggregate device",
+        8 => "checking CoreAudio process tap platform support",
+        _ => "opening the CoreAudio process tap",
+    }
+}
+
+fn tap_error(status: i32, stage: u8) -> LoopbackError {
+    let operation = tap_operation(stage);
+    if status == CORE_AUDIO_PERMISSION_DENIED_STATUS {
+        LoopbackError::PermissionDenied { operation }
+    } else {
+        LoopbackError::BackendStatus { operation, status }
+    }
+}
+
 // Safety:
 // - PksProcessTapHandle is heap-allocated and exclusively owned by this struct.
 // - pks_tap_read_frames is called only from the single thread that owns ProcessTap.
@@ -141,34 +171,29 @@ unsafe impl Send for ProcessTap {}
 
 impl ProcessTap {
     fn global() -> Result<Self, LoopbackError> {
-        NonNull::new(unsafe { pks_create_process_tap(std::ptr::null(), 0) })
-            .map(Self)
-            .ok_or_else(|| {
-                LoopbackError::BackendInit(
-                    "AudioHardwareCreateProcessTap failed for global system tap — \
-                 check that no other exclusive tap is active"
-                        .into(),
-                )
-            })
+        Self::create(std::ptr::null(), 0)
     }
 
     fn for_pids(pids: &[i32]) -> Result<Self, LoopbackError> {
-        NonNull::new(unsafe { pks_create_process_tap(pids.as_ptr(), pids.len() as i32) })
+        Self::create(pids.as_ptr(), pids.len() as i32)
+    }
+
+    fn create(pids: *const i32, pid_count: i32) -> Result<Self, LoopbackError> {
+        let mut status = 0;
+        let mut stage = 0;
+        let handle = unsafe { pks_create_process_tap(pids, pid_count, &mut status, &mut stage) };
+        NonNull::new(handle)
             .map(Self)
-            .ok_or_else(|| {
-                LoopbackError::BackendInit(
-                    "AudioHardwareCreateProcessTap failed for the specified process(es)".into(),
-                )
-            })
+            .ok_or_else(|| tap_error(status, stage))
     }
 
     fn start(&mut self) -> Result<(), LoopbackError> {
-        if unsafe { pks_tap_start(self.0.as_ptr()) } == 0 {
+        let mut status = 0;
+        let mut stage = 0;
+        if unsafe { pks_tap_start(self.0.as_ptr(), &mut status, &mut stage) } == 0 {
             Ok(())
         } else {
-            Err(LoopbackError::BackendInit(
-                "AudioDeviceStart failed on tap aggregate device".into(),
-            ))
+            Err(tap_error(status, stage))
         }
     }
 
@@ -369,5 +394,32 @@ impl TapLoopbackSource {
 impl Drop for TapLoopbackSource {
     fn drop(&mut self) {
         let _ = self.stop_tx.try_send(());
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{tap_error, CORE_AUDIO_PERMISSION_DENIED_STATUS};
+    use pks_capture::CaptureError;
+
+    #[test]
+    fn given_core_audio_permission_status_when_mapped_then_denial_remains_typed() {
+        assert_eq!(
+            tap_error(CORE_AUDIO_PERMISSION_DENIED_STATUS, 2),
+            CaptureError::PermissionDenied {
+                operation: "creating the CoreAudio process tap"
+            }
+        );
+    }
+
+    #[test]
+    fn given_other_core_audio_status_when_mapped_then_raw_status_is_preserved() {
+        assert_eq!(
+            tap_error(-50, 7),
+            CaptureError::BackendStatus {
+                operation: "starting the CoreAudio aggregate device",
+                status: -50
+            }
+        );
     }
 }

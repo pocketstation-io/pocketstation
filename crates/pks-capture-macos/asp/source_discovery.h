@@ -36,12 +36,25 @@ int pks_discover_sources(PksCaptureSourceInfo *out, int max);
 
 typedef struct PksProcessTapHandle PksProcessTapHandle;
 
+typedef enum PksTapOperationStage {
+    PKS_TAP_STAGE_NONE = 0,
+    PKS_TAP_STAGE_RESOLVE_PROCESS = 1,
+    PKS_TAP_STAGE_CREATE_PROCESS_TAP = 2,
+    PKS_TAP_STAGE_READ_TAP_UID = 3,
+    PKS_TAP_STAGE_CREATE_AGGREGATE_DEVICE = 4,
+    PKS_TAP_STAGE_ALLOCATE_HANDLE = 5,
+    PKS_TAP_STAGE_CREATE_IO_PROC = 6,
+    PKS_TAP_STAGE_START_DEVICE = 7,
+    PKS_TAP_STAGE_PLATFORM_SUPPORT = 8,
+} PksTapOperationStage;
+
 // Create a tap. pids=NULL / pid_count=0 → global system tap (all output).
 // Returns NULL on failure or on macOS < 14.2.
-PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count);
+PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count,
+                                            int32_t *out_status, uint8_t *out_stage);
 
 // Start capturing. Returns 0 on success.
-int pks_tap_start(PksProcessTapHandle *tap);
+int pks_tap_start(PksProcessTapHandle *tap, int32_t *out_status, uint8_t *out_stage);
 
 // Destroy handle and release all CoreAudio resources.
 void pks_destroy_process_tap(PksProcessTapHandle *tap);

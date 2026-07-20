@@ -100,6 +100,12 @@ pub enum PermissionDecision {
     Denied,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum PermissionScope {
+    SessionCaptureGrant,
+}
+
 #[derive(Debug, Clone)]
 pub struct RecorderStemConfig {
     pub session_id: SessionId,
@@ -108,6 +114,7 @@ pub struct RecorderStemConfig {
     pub clock_id: ClockDomainId,
     pub source_generation: u32,
     pub permission_epoch: u64,
+    pub permission_scope: PermissionScope,
     pub permission: PermissionDecision,
     pub label: StemLabel,
     pub sample_rate_hz: u32,
@@ -682,6 +689,7 @@ struct PermissionEvent {
     source_id: u64,
     stem_id: u64,
     permission_epoch: u64,
+    scope: PermissionScope,
     decision: PermissionDecision,
 }
 
@@ -700,6 +708,7 @@ fn write_permission_events(
                 source_id: config.source_id.0,
                 stem_id: config.stem_id.0,
                 permission_epoch: config.permission_epoch,
+                scope: config.permission_scope,
                 decision: config.permission,
             },
         )?;
@@ -1075,6 +1084,7 @@ mod tests {
             clock_id: ClockDomainId(clock_id),
             source_generation: 1,
             permission_epoch: 1,
+            permission_scope: PermissionScope::SessionCaptureGrant,
             permission: PermissionDecision::Allowed,
             label: StemLabel::new(label).unwrap(),
             sample_rate_hz: 48_000,
@@ -1163,6 +1173,13 @@ mod tests {
         assert_eq!(manifest["stems"][0]["first_timestamp_ns"], 10_000);
         assert_eq!(manifest["stems"][1]["first_timestamp_ns"], 10_000);
         assert!(manifest["stems"][0]["checksum"].as_str().is_some());
+        let permission_events =
+            fs::read_to_string(outcome.session_dir.join("events").join("permissions.jsonl"))
+                .unwrap();
+        let first_permission: serde_json::Value =
+            serde_json::from_str(permission_events.lines().next().unwrap()).unwrap();
+        assert_eq!(first_permission["scope"], "session_capture_grant");
+        assert_eq!(first_permission["decision"], "allowed");
     }
 
     #[test]

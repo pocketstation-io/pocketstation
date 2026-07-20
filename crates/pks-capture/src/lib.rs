@@ -145,6 +145,7 @@ pub struct CaptureAuthorizationSnapshot {
     pub capture_scope: CaptureScope,
     pub identity_strength: SourceIdentityStrength,
     pub permission_epoch: PermissionEpoch,
+    pub observed_at_ns: u64,
     pub open_outcome: CaptureOpenOutcome,
 }
 
@@ -192,6 +193,24 @@ impl CaptureAuthorizationSnapshot {
         )
     }
 
+    /// Records platform authorization observations without inferring them from
+    /// a generic backend result. Callers must pass `NotObservable` when their
+    /// platform has no authoritative query for the requested capture class.
+    pub fn from_open_observations(
+        source: &CaptureSource,
+        session_grant: CaptureSessionGrant,
+        permission_epoch: PermissionEpoch,
+        os_permission: PermissionObservation,
+        application_policy: ApplicationPolicyObservation,
+        open_outcome: CaptureOpenOutcome,
+    ) -> Self {
+        let mut snapshot =
+            Self::from_open_outcome(source, session_grant, permission_epoch, open_outcome);
+        snapshot.os_permission = os_permission;
+        snapshot.application_policy = application_policy;
+        snapshot
+    }
+
     fn from_open_outcome(
         source: &CaptureSource,
         session_grant: CaptureSessionGrant,
@@ -237,13 +256,18 @@ impl CaptureAuthorizationSnapshot {
             ),
         };
         Self {
-            capability: CaptureCapabilityState::Available,
+            capability: if source.state == SourceState::Unavailable {
+                CaptureCapabilityState::Unavailable
+            } else {
+                CaptureCapabilityState::Available
+            },
             os_permission: PermissionObservation::NotObservable,
             application_policy,
             session_grant,
             capture_scope,
             identity_strength,
             permission_epoch,
+            observed_at_ns: monotonic_timestamp_ns(),
             open_outcome,
         }
     }
@@ -262,6 +286,8 @@ pub enum CaptureCapabilityState {
 pub enum PermissionObservation {
     Allowed,
     Denied,
+    Restricted,
+    NotDetermined,
     Revoked,
     NotObservable,
     NotApplicable,
@@ -321,6 +347,7 @@ impl PermissionEpoch {
 pub enum CaptureOpenOutcome {
     NotAttempted,
     Succeeded,
+    PermissionDenied,
     BackendFailed,
 }
 
@@ -330,6 +357,13 @@ pub enum CaptureError {
     NotSupported,
     #[error("loopback backend error: {0}")]
     BackendInit(String),
+    #[error("capture permission denied while {operation}")]
+    PermissionDenied { operation: &'static str },
+    #[error("capture backend failed while {operation}: status {status}")]
+    BackendStatus {
+        operation: &'static str,
+        status: i32,
+    },
     #[error("capture mode not supported on this backend: {0:?}")]
     ModeUnsupported(CaptureMode),
     #[error("captured-frame stream capacity must be greater than zero")]
@@ -849,6 +883,46 @@ mod tests {
 
         assert_eq!(snapshot.os_permission, PermissionObservation::NotObservable);
         assert_eq!(snapshot.open_outcome, CaptureOpenOutcome::BackendFailed);
+    }
+
+    #[test]
+    fn given_authoritative_permission_when_snapshotted_then_platform_state_is_preserved() {
+        let source = fake_source(
+            SourceKind::InputDevice,
+            "coreaudio:built-in-mic",
+            None,
+            SourceState::Available,
+        );
+
+        let snapshot = CaptureAuthorizationSnapshot::from_open_observations(
+            &source,
+            CaptureSessionGrant::GrantedByExplicitSelection,
+            PermissionEpoch::INITIAL,
+            PermissionObservation::Denied,
+            ApplicationPolicyObservation::NotApplicable,
+            CaptureOpenOutcome::BackendFailed,
+        );
+
+        assert_eq!(snapshot.os_permission, PermissionObservation::Denied);
+        assert!(snapshot.observed_at_ns > 0);
+    }
+
+    #[test]
+    fn given_unavailable_source_when_snapshotted_then_capability_is_unavailable() {
+        let source = fake_source(
+            SourceKind::Application,
+            "com.acme.meeting",
+            Some("com.acme.meeting"),
+            SourceState::Unavailable,
+        );
+
+        let snapshot = CaptureAuthorizationSnapshot::before_open(
+            &source,
+            CaptureSessionGrant::GrantedByExplicitSelection,
+            PermissionEpoch::INITIAL,
+        );
+
+        assert_eq!(snapshot.capability, CaptureCapabilityState::Unavailable);
     }
 
     #[test]

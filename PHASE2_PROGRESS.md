@@ -1,5 +1,24 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W7.3 exact-source and authorization truth — 2026-07-19
+
+- Status: `SAFE-TO-TEST`; real permission-transition cells and the corrected
+  long candidate remain open.
+- Capture authorization snapshots now accept authoritative platform
+  observations, carry a monotonic observation timestamp, and report an
+  unavailable source as unavailable instead of synthesizing capability.
+- The macOS control path reads microphone authorization without prompting.
+  CoreAudio process-tap creation/start returns the exact operation stage and
+  raw `OSStatus`; only the documented permission status maps to typed
+  `PermissionDenied`, while every other status remains a typed backend failure.
+- Recorder permission events now identify their scope as the explicit Session
+  capture grant. They do not claim that a Session grant proves OS permission.
+- No authorization query, allocation, lock, log, or error classification was
+  added to an audio callback. No automatic restart, source substitution,
+  system-mix fallback, scaffold, mock, or loopback-only path was introduced.
+- Acceptance passes: `cargo test --workspace`, strict workspace Clippy, format,
+  and the accepted `product_proof_local` example compile gate.
+
 ## W0 product-proof baseline — 2026-07-19
 
 - Protected the existing graph/runtime, capture-adapter, relay, benchmark, and

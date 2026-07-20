@@ -20,8 +20,9 @@ pub use mic_source::{MicSourceFactory, MicSourceNode, MicTelemetry};
 pub use mix::{MixerSourceFactory, MixerSourceNode, MixerTelemetry, MonoMixFactory, MonoMixNode};
 pub use ml_nodes::{EchoCancelFactory, NoiseSuppressFactory, VadFactory, WatermarkFactory};
 pub use multistem_recorder::{
-    DiscontinuityKind, DiscontinuityRecord, MultistemRecording, PermissionDecision, RecorderError,
-    RecorderStemConfig, RecordingOutcome, RecordingState, RecordingStemOutcome, StemLabel,
+    DiscontinuityKind, DiscontinuityRecord, MultistemRecording, PermissionDecision,
+    PermissionScope, RecorderError, RecorderStemConfig, RecordingOutcome, RecordingState,
+    RecordingStemOutcome, StemLabel,
 };
 pub use source::{SyntheticSourceFactory, SyntheticSourceNode};
 pub use system_source::{SystemOutputSourceFactory, SystemOutputSourceNode, SystemOutputTelemetry};

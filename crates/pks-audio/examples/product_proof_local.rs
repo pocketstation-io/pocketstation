@@ -20,7 +20,8 @@ use pks_graph::runtime_node::RuntimeNode;
 use pks_graph::spec::NodeId;
 use pks_graph::EdgeId;
 use pks_nodes::{
-    MultistemRecording, PermissionDecision, RecorderStemConfig, RecordingState, StemLabel,
+    MultistemRecording, PermissionDecision, PermissionScope, RecorderStemConfig, RecordingState,
+    StemLabel,
 };
 use pks_runtime::{EdgeObservations, PlanEdgeReceiver, PlanEdgeRouter};
 use pks_timing::TimelineMapping;
@@ -366,6 +367,7 @@ fn recorder_config(label: &str, source_id: u64, stem_id: u64, clock_id: u32) -> 
         clock_id: ClockDomainId(clock_id),
         source_generation: 1,
         permission_epoch: 1,
+        permission_scope: PermissionScope::SessionCaptureGrant,
         permission: PermissionDecision::Allowed,
         label: StemLabel::new(label).expect("static stem label"),
         sample_rate_hz: SAMPLE_RATE_HZ,
