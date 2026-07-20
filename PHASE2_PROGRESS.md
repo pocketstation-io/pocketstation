@@ -24,6 +24,10 @@
   Both stems reached recording, relay/browser, and connector branches with zero
   drops or continuity events; the microphone permission observation was
   authoritative `allowed` and the lifecycle event log was empty.
+- macOS discovery now labels unbundled audio processes from their executable
+  basename when AppKit has no application display name. The PID remains the
+  exact process-lifetime identity; the fallback label is never promoted to a
+  stable or security identity.
 - No authorization query, allocation, lock, log, or error classification was
   added to an audio callback. No automatic restart, source substitution,
   system-mix fallback, scaffold, mock, or loopback-only path was introduced.

@@ -11,6 +11,7 @@
 #import <CoreAudio/CATapDescription.h>
 #import <CoreAudio/AudioHardwareTapping.h>
 #import <AppKit/NSRunningApplication.h>
+#import <libproc.h>
 #import <stdatomic.h>
 #import <math.h>
 #import <string.h>
@@ -237,17 +238,27 @@ int pks_discover_sources(PksCaptureSourceInfo *out, int max) {
             AudioObjectGetPropertyData(obj, &runAddr, 0, NULL, &sz, &running);
             info->state = running ? PKS_SOURCE_STATE_PLAYING : PKS_SOURCE_STATE_SILENT;
 
-            // Friendly name from NSRunningApplication
+            // Friendly label only. Identity remains the bundle/PID fields.
+            NSRunningApplication *pidApp =
+                [NSRunningApplication runningApplicationWithProcessIdentifier:pid];
+            if (pidApp && pidApp.localizedName) {
+                [pidApp.localizedName getCString:info->name
+                                       maxLength:sizeof(info->name)
+                                        encoding:NSUTF8StringEncoding];
+            }
             if (info->bundle_id[0] != '\0') {
                 NSString *bid = [NSString stringWithUTF8String:info->bundle_id];
                 NSArray<NSRunningApplication *> *apps =
                     [NSRunningApplication runningApplicationsWithBundleIdentifier:bid];
                 NSRunningApplication *app = apps.firstObject;
-                if (app && app.localizedName) {
+                if (info->name[0] == '\0' && app && app.localizedName) {
                     [app.localizedName getCString:info->name
                                        maxLength:sizeof(info->name)
                                         encoding:NSUTF8StringEncoding];
                 }
+            }
+            if (info->name[0] == '\0') {
+                proc_name(pid, info->name, (uint32_t)sizeof(info->name));
             }
             if (info->name[0] == '\0')
                 strncpy(info->name, info->bundle_id[0] ? info->bundle_id : "unknown",
