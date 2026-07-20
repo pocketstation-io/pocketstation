@@ -14,6 +14,7 @@ use pks_graph::node::{
     ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext,
 };
 use pks_graph::partition::ExecutionPartition;
+use pks_graph::plan::MAX_EDGE_RING_CAPACITY_FRAMES;
 use pks_graph::planner::RuntimePlanner;
 use pks_graph::registry::{NodeFactory, NodeRegistry};
 use pks_graph::runtime_node::RuntimeNode;
@@ -215,7 +216,7 @@ fn build_topology(cell: Cell) -> Result<Topology, Box<dyn Error>> {
         buffer.capacity_frames = match cell {
             Cell::SlowRecorder if recorder_nodes.contains(&target_node) => 1,
             Cell::SlowConnector if connector_nodes.contains(&target_node) => 8,
-            _ => 64,
+            _ => MAX_EDGE_RING_CAPACITY_FRAMES,
         };
     }
     let (router, receivers) = PlanEdgeRouter::new(&plan, &ir)?;
@@ -242,6 +243,25 @@ fn build_topology(cell: Cell) -> Result<Topology, Box<dyn Error>> {
         browser_receivers,
         recorder_receivers,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn given_every_fault_cell_when_topology_built_then_branch_pool_capacity_is_valid() {
+        for cell in [
+            Cell::Normal,
+            Cell::SlowConnector,
+            Cell::SlowRecorder,
+            Cell::ConnectorFailure,
+            Cell::RecorderFailure,
+        ] {
+            let topology = build_topology(cell).expect("fault topology must fit bounded pools");
+            drop(topology);
+        }
+    }
 }
 
 #[derive(Clone, Copy)]

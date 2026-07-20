@@ -1,5 +1,29 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W7.6 fast destination-fault matrix correction — 2026-07-20
+
+- Status: `SAFE-TO-TEST`; deterministic destination isolation passes without a
+  long soak or a simulated real-device claim.
+- The local product-proof example hard-coded a 64-frame edge after branch-pool
+  ownership gained one explicit receiver-in-flight slot. That requested 65
+  slots from the fixed 64-slot atomic pool and panicked before every fault cell.
+  The example now consumes the runtime plan's published maximum edge capacity
+  instead of duplicating an invalid constant.
+- A regression constructs every normal, slow-connector, slow-recorder,
+  connector-failure, and recorder-failure topology and proves all bounded pools
+  are valid before media starts.
+- Five parallel two-second cells pass. Normal flush delivers 100/100 frames per
+  destination. Slow connectors drop only their own 46–47 frames while both
+  browser branches deliver 100/100. Connector failures emit one worker failure
+  per connector while browsers deliver 100/100. Recorder failure finalizes
+  incomplete while all connector/browser branches deliver 100/100. Slow
+  recorder drops only recorder frames while connector/browser branches deliver
+  102/102. Evidence is under
+  `pocketstation-lab/artifacts/product-proof/w7-fast-*-2s-pass-2026-07-20`.
+- This is deterministic bounded-runtime evidence, not permission, physical
+  device, network reconnect, or production-scale evidence. No scaffold, mock,
+  hidden fallback, provider code, unbounded queue, or hot-path work was added.
+
 ## W7.5 saturated-edge classification correction — 2026-07-20
 
 - Status: `SAFE-TO-TEST`; the new long candidate remains open.
