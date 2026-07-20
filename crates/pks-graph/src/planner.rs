@@ -154,7 +154,7 @@ impl RuntimePlanner {
                 realtime_pool_bytes += buffer.total_bytes();
             }
             if copy_policy == CopyPolicy::CopyToBranchPool {
-                branch_copy_pool_bytes += buffer.total_bytes();
+                branch_copy_pool_bytes += buffer.branch_copy_pool_bytes();
             }
             edge_buffers.push(buffer);
         }
@@ -484,7 +484,10 @@ mod tests {
 
         let edge = plan.memory_plan.edge_buffer(edge_id).unwrap();
         assert_eq!(edge.copy_policy, CopyPolicy::CopyToBranchPool);
-        assert_eq!(plan.memory_plan.branch_copy_pool_bytes, edge.total_bytes());
+        assert_eq!(
+            plan.memory_plan.branch_copy_pool_bytes,
+            edge.branch_copy_pool_bytes()
+        );
     }
 
     #[test]
@@ -512,7 +515,8 @@ mod tests {
         }
         assert_eq!(
             plan.memory_plan.branch_copy_pool_bytes,
-            2 * EDGE_RING_CAPACITY_FRAMES * FRAME_BYTES_MONO_48K
+            2 * (EDGE_RING_CAPACITY_FRAMES + EDGE_RECEIVER_MAX_IN_FLIGHT_FRAMES)
+                * FRAME_BYTES_MONO_48K
         );
     }
 
@@ -625,7 +629,10 @@ mod tests {
 
         let edge = plan.memory_plan.edge_buffer(edge_id).unwrap();
         assert_eq!(edge.copy_policy, CopyPolicy::CopyToBranchPool);
-        assert_eq!(plan.memory_plan.branch_copy_pool_bytes, edge.total_bytes());
+        assert_eq!(
+            plan.memory_plan.branch_copy_pool_bytes,
+            edge.branch_copy_pool_bytes()
+        );
     }
 
     #[test]

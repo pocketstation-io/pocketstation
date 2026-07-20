@@ -620,7 +620,7 @@ impl PlanEdgeRouter {
             let telemetry = Arc::new(EdgeTelemetry::new(buffer.capacity_frames));
             let branch_pool = (buffer.copy_policy == CopyPolicy::CopyToBranchPool).then(|| {
                 AudioBufferPool::new(
-                    buffer.capacity_frames,
+                    buffer.branch_copy_pool_capacity_frames(),
                     buffer.bytes_per_frame / size_of::<f32>(),
                 )
             });
@@ -1021,13 +1021,51 @@ mod tests {
         );
         let slow_observations = router.observations(slow_edge).unwrap();
         assert_eq!(slow_observations.overruns_total, 1);
-        assert_eq!(slow_observations.queue_full_drops_total, 0);
-        assert_eq!(slow_observations.branch_pool_exhausted_drops_total, 1);
+        assert_eq!(slow_observations.queue_full_drops_total, 1);
+        assert_eq!(slow_observations.branch_pool_exhausted_drops_total, 0);
         assert_eq!(
             router.observations(fast_edge).unwrap().frames_dropped_total,
             0
         );
         assert_eq!(receivers[slow_index].observations().queue_depth_frames, 1);
+    }
+
+    #[test]
+    fn given_receiver_holds_popped_frame_when_queue_has_room_then_next_copy_is_enqueued() {
+        // Given a one-frame queue and its separately planned receiver in-flight slot.
+        let registry = registry();
+        let mut graph = Pipeline::new();
+        let source = graph.add_node("passthrough", NodeConfig::new());
+        let sink = graph.add_node("passthrough", NodeConfig::new());
+        graph.connect(source.out("out"), sink.in_("in"));
+        let ir = Compiler::new()
+            .compile(graph.into_spec(), &registry)
+            .unwrap();
+        let mut plan = RuntimePlanner::new().plan(&ir).unwrap();
+        plan.memory_plan
+            .edge_buffers
+            .iter_mut()
+            .for_each(|buffer| buffer.capacity_frames = 1);
+        let (mut router, mut receivers) = PlanEdgeRouter::new(&plan, &ir).unwrap();
+        let pool = AudioBufferPool::new(2, 2);
+        router.dispatch_from(source.id(), "out", frame(&pool, 1, 1), 1);
+        let in_flight = receivers[0].recv_at(2).unwrap();
+
+        // When the producer sends while the consumer still owns the popped frame.
+        let summary = router.dispatch_from(source.id(), "out", frame(&pool, 1, 2), 3);
+
+        // Then ownership headroom prevents false pool exhaustion.
+        assert_eq!(summary.enqueued_edges, 1);
+        assert_eq!(summary.dropped_edges, 0);
+        assert_eq!(
+            router
+                .observations(receivers[0].edge_id())
+                .unwrap()
+                .branch_pool_exhausted_drops_total,
+            0
+        );
+        drop(in_flight);
+        assert_eq!(receivers[0].recv_at(4).unwrap().sequence_number(), 2);
     }
 
     #[test]
@@ -1107,6 +1145,10 @@ mod tests {
             .iter()
             .filter_map(|edge| edge.branch_pool.as_ref().cloned())
             .collect();
+        let receiver_in_flight_reservations: Vec<_> = branch_pools
+            .iter()
+            .map(|branch_pool| branch_pool.acquire().unwrap())
+            .collect();
         assert!(branch_pools
             .iter()
             .all(|branch_pool| branch_pool.acquire().is_none()));
@@ -1118,5 +1160,6 @@ mod tests {
         assert!(branch_pools
             .iter()
             .all(|branch_pool| branch_pool.acquire().is_some()));
+        drop(receiver_in_flight_reservations);
     }
 }

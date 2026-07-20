@@ -1,5 +1,33 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W7.4 branch ownership stress correction — 2026-07-20
+
+- Status: `SAFE-TO-TEST`; the corrected isolated long candidate remains open.
+- The rejected 60-minute candidate stayed live for 3,600 seconds with zero
+  capture-bridge, normalization, recorder-edge, worker, and observation drops,
+  but correctly failed the continuity gate. At one common host scheduling
+  stall, the default eight-frame remote/connector edges reported one or two
+  branch-pool exhaustion drops and both normalized inputs exposed one source
+  sequence boundary. Evidence:
+  `pocketstation-lab/artifacts/product-proof/w7-soak-60m-binding-2026-07-19`.
+- The branch failures exposed an ownership-plan defect: a copy pool reserved
+  only the queue capacity even though its sequential receiver can own one
+  already-popped frame while the queue accepts the next frame. The memory plan
+  now names that maximum in-flight ownership, reserves queue capacity plus the
+  receiver allowance, and includes the extra slot in bounded memory accounting.
+- A regression test holds the popped frame from a one-frame edge and proves the
+  next frame is enqueued without pool exhaustion. A genuinely full slow edge
+  remains isolated and is now classified as `queue_full`, not mislabeled as
+  branch-pool exhaustion.
+- The simultaneous source sequence boundary is not suppressed or reclassified.
+  The corrected candidate must run without competing builds/fault injections;
+  any repeated source boundary remains a W7 failure requiring native capture
+  ownership/drop evidence.
+- Acceptance passes: 71 `pks-graph` tests, 36 `pks-runtime` tests, both release
+  allocation tests, targeted strict Clippy, and workspace format check. No
+  scaffold, mock, loopback-only path, hot-path allocation, lock, blocking,
+  async work, logging, or panic was introduced.
+
 ## W7.3 exact-source and authorization truth — 2026-07-19
 
 - Status: `SAFE-TO-TEST`; real permission-transition cells and the corrected

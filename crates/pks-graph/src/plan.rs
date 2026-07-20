@@ -9,7 +9,12 @@ use pks_caps::CopyPolicy;
 
 pub const FRAME_BYTES_MONO_48K: usize = 960 * 4; // 20ms × 48kHz mono = 960 f32 × 4 bytes (ADR-012/013)
 pub const EDGE_RING_CAPACITY_FRAMES: usize = 8; // 8 × 20ms = 160ms de-jitter headroom (ADR-010)
-pub const MAX_EDGE_RING_CAPACITY_FRAMES: usize = 64;
+/// A sequential edge receiver may retain the frame it just popped while it
+/// processes that frame. Copy-pool sizing must cover that owned frame in
+/// addition to every frame that can still be queued.
+pub const EDGE_RECEIVER_MAX_IN_FLIGHT_FRAMES: usize = 1;
+pub const MAX_EDGE_RING_CAPACITY_FRAMES: usize =
+    pks_frame::POOL_MAX_SLOTS - EDGE_RECEIVER_MAX_IN_FLIGHT_FRAMES;
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
 pub enum PlanError {
@@ -33,6 +38,20 @@ pub struct EdgeBufferPlan {
 impl EdgeBufferPlan {
     pub fn total_bytes(&self) -> usize {
         self.capacity_frames * self.bytes_per_frame
+    }
+
+    pub fn branch_copy_pool_capacity_frames(&self) -> usize {
+        if self.copy_policy == CopyPolicy::CopyToBranchPool {
+            self.capacity_frames
+                .saturating_add(EDGE_RECEIVER_MAX_IN_FLIGHT_FRAMES)
+        } else {
+            0
+        }
+    }
+
+    pub fn branch_copy_pool_bytes(&self) -> usize {
+        self.branch_copy_pool_capacity_frames()
+            .saturating_mul(self.bytes_per_frame)
     }
 }
 
