@@ -161,6 +161,31 @@ fn tap_error(status: i32, stage: u8) -> LoopbackError {
     }
 }
 
+fn frame_source_id(mode: &CaptureMode) -> Result<pks_frame::SourceId, LoopbackError> {
+    match mode {
+        CaptureMode::SystemMix => {
+            Ok(
+                StableSourceId::new(Platform::Macos, SourceKind::SystemMix, "system:mix")
+                    .to_frame_source_id(),
+            )
+        }
+        CaptureMode::Process(pid) => Ok(StableSourceId::new(
+            Platform::Macos,
+            SourceKind::Application,
+            format!("pid:{pid}"),
+        )
+        .to_frame_source_id()),
+        CaptureMode::ExactApplication { stable_id, .. } => Ok(stable_id.to_frame_source_id()),
+        CaptureMode::Application(bundle_id) => {
+            Ok(
+                StableSourceId::new(Platform::Macos, SourceKind::Application, bundle_id.clone())
+                    .to_frame_source_id(),
+            )
+        }
+        CaptureMode::InputDevice(_) => Err(LoopbackError::ModeUnsupported(mode.clone())),
+    }
+}
+
 // Safety:
 // - PksProcessTapHandle is heap-allocated and exclusively owned by this struct.
 // - pks_tap_read_frames is called only from the single thread that owns ProcessTap.
@@ -252,6 +277,9 @@ impl TapLoopbackSource {
         let mut tap = match &mode {
             CaptureMode::SystemMix => ProcessTap::global()?,
             CaptureMode::Process(pid) => ProcessTap::for_pids(&[*pid as i32])?,
+            CaptureMode::ExactApplication { process_id, .. } => {
+                ProcessTap::for_pids(&[*process_id as i32])?
+            }
             CaptureMode::Application(bundle_id) => {
                 let sources = discover_sources_native();
                 let pids: Vec<i32> = sources
@@ -293,25 +321,7 @@ impl TapLoopbackSource {
 
         // Compute the stable SourceId from the capture mode before the thread
         // is spawned so that every AudioFrame carries the correct source identity.
-        let frame_source_id = match &mode {
-            CaptureMode::SystemMix => {
-                StableSourceId::new(Platform::Macos, SourceKind::SystemMix, "system:mix")
-                    .to_frame_source_id()
-            }
-            CaptureMode::Process(pid) => StableSourceId::new(
-                Platform::Macos,
-                SourceKind::Application,
-                format!("pid:{pid}"),
-            )
-            .to_frame_source_id(),
-            CaptureMode::Application(bundle_id) => {
-                StableSourceId::new(Platform::Macos, SourceKind::Application, bundle_id.clone())
-                    .to_frame_source_id()
-            }
-            CaptureMode::InputDevice(_) => {
-                return Err(LoopbackError::ModeUnsupported(mode));
-            }
-        };
+        let frame_source_id = frame_source_id(&mode)?;
 
         let thread = std::thread::Builder::new()
             .name("pks-tap-reader".into())
@@ -399,8 +409,9 @@ impl Drop for TapLoopbackSource {
 
 #[cfg(test)]
 mod tests {
-    use super::{tap_error, CORE_AUDIO_PERMISSION_DENIED_STATUS};
-    use pks_capture::CaptureError;
+    use super::{frame_source_id, tap_error, CORE_AUDIO_PERMISSION_DENIED_STATUS};
+    use pks_capture::{CaptureError, CaptureMode, SourceKind, StableSourceId};
+    use pks_frame::Platform;
 
     #[test]
     fn given_core_audio_permission_status_when_mapped_then_denial_remains_typed() {
@@ -421,5 +432,20 @@ mod tests {
                 status: -50
             }
         );
+    }
+
+    #[test]
+    fn given_exact_application_target_when_framed_then_stable_identity_is_preserved() {
+        let stable_id =
+            StableSourceId::new(Platform::Macos, SourceKind::Application, "com.acme.meeting");
+        let expected = stable_id.to_frame_source_id();
+
+        let observed = frame_source_id(&CaptureMode::ExactApplication {
+            process_id: 42,
+            stable_id,
+        })
+        .unwrap();
+
+        assert_eq!(observed, expected);
     }
 }

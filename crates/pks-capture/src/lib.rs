@@ -67,6 +67,10 @@ pub enum CaptureMode {
     SystemMix,
     Application(String),
     Process(u32),
+    ExactApplication {
+        process_id: u32,
+        stable_id: StableSourceId,
+    },
     InputDevice(InputDeviceSelector),
 }
 

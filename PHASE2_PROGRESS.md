@@ -13,6 +13,17 @@
   `PermissionDenied`, while every other status remains a typed backend failure.
 - Recorder permission events now identify their scope as the explicit Session
   capture grant. They do not claim that a Session grant proves OS permission.
+- The first exact-PID real smoke exposed an identity mismatch: process capture
+  emitted a PID-derived frame source while the selected source and recorder
+  retained the stable application identity. `CaptureMode::ExactApplication`
+  now carries both the pinned PID and resolved stable ID. The macOS adapter
+  opens only that PID and emits the stable frame identity; Linux/Windows
+  targeted paths retain the same contract.
+- Corrected real evidence:
+  `pocketstation-lab/artifacts/product-proof/w7-exact-pid-auth-12s-pass2-2026-07-19`.
+  Both stems reached recording, relay/browser, and connector branches with zero
+  drops or continuity events; the microphone permission observation was
+  authoritative `allowed` and the lifecycle event log was empty.
 - No authorization query, allocation, lock, log, or error classification was
   added to an audio callback. No automatic restart, source substitution,
   system-mix fallback, scaffold, mock, or loopback-only path was introduced.

@@ -102,7 +102,10 @@ impl SystemLoopbackSource {
                 });
                 match matched_pid {
                     Some(src) => match src.process_id {
-                        Some(pid) => CaptureMode::Process(pid),
+                        Some(pid) => CaptureMode::ExactApplication {
+                            process_id: pid,
+                            stable_id: src.stable_id.clone(),
+                        },
                         None => {
                             return Err(LoopbackError::BackendInit(format!(
                                 "no audio session found for '{name}' — run `pks sources list`"
@@ -132,8 +135,19 @@ impl SystemLoopbackSource {
                 let result = match resolved_mode {
                     CaptureMode::SystemMix => run_system_loopback(pool, seq, callback, stop_rx),
                     CaptureMode::Process(pid) => {
-                        run_process_loopback(pid, pool, seq, callback, stop_rx)
+                        run_process_loopback(pid, SourceId(0), pool, seq, callback, stop_rx)
                     }
+                    CaptureMode::ExactApplication {
+                        process_id,
+                        stable_id,
+                    } => run_process_loopback(
+                        process_id,
+                        stable_id.to_frame_source_id(),
+                        pool,
+                        seq,
+                        callback,
+                        stop_rx,
+                    ),
                     // Application(_) is resolved to Process before thread spawn.
                     other => Err(LoopbackError::ModeUnsupported(other)),
                 };
@@ -195,6 +209,7 @@ fn target_wave_format() -> WaveFormat {
 #[inline(always)]
 fn deliver_packet(
     raw: &[u8],
+    source_id: SourceId,
     pool: &Arc<AudioBufferPool>,
     seq: &Arc<AtomicU64>,
     callback: &mut (impl FnMut(AudioFrame) + Send + 'static),
@@ -218,7 +233,7 @@ fn deliver_packet(
 
     let s = seq.fetch_add(1, Ordering::Relaxed);
     let ts_ns = monotonic_timestamp_ns();
-    let mut frame = AudioFrame::new(StreamId(0), SourceId(0), s, ts_ns, CAPTURE_CHANNELS, handle);
+    let mut frame = AudioFrame::new(StreamId(0), source_id, s, ts_ns, CAPTURE_CHANNELS, handle);
     frame.source_tag = AudioSourceTag::Captured;
     frame.encryption_mode = EncryptionMode::None;
     frame.sample_rate = SAMPLE_RATE_HZ;
@@ -233,6 +248,7 @@ fn capture_loop(
     audio_client: &AudioClient,
     capture_client: &wasapi::AudioCaptureClient,
     h_event: &wasapi::Handle,
+    source_id: SourceId,
     pool: Arc<AudioBufferPool>,
     seq: Arc<AtomicU64>,
     mut callback: impl FnMut(AudioFrame) + Send + 'static,
@@ -270,7 +286,7 @@ fn capture_loop(
                         continue;
                     }
                     let bytes = frames as usize * CAPTURE_CHANNELS as usize * size_of::<f32>();
-                    deliver_packet(&raw_buf[..bytes], &pool, &seq, &mut callback);
+                    deliver_packet(&raw_buf[..bytes], source_id, &pool, &seq, &mut callback);
                 }
                 Err(_) => break,
             }
@@ -322,6 +338,7 @@ fn run_system_loopback(
         &audio_client,
         &capture_client,
         &h_event,
+        SourceId(0),
         pool,
         seq,
         callback,
@@ -499,6 +516,7 @@ unsafe fn enumerate_wasapi_sessions() -> Vec<pks_capture::CaptureSource> {
 
 fn run_process_loopback(
     pid: u32,
+    source_id: SourceId,
     pool: Arc<AudioBufferPool>,
     seq: Arc<AtomicU64>,
     callback: impl FnMut(AudioFrame) + Send + 'static,
@@ -532,6 +550,7 @@ fn run_process_loopback(
         &audio_client,
         &capture_client,
         &h_event,
+        source_id,
         pool,
         seq,
         callback,

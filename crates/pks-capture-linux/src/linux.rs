@@ -34,7 +34,9 @@ use pw::spa;
 use pw::spa::pod::Pod;
 use spa::param::audio::AudioFormat;
 
-use pks_capture::{monotonic_timestamp_ns, CaptureError as LoopbackError, CaptureMode};
+use pks_capture::{
+    monotonic_timestamp_ns, CaptureError as LoopbackError, CaptureMode, CaptureSource,
+};
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -97,9 +99,36 @@ impl SystemLoopbackSource {
                 let nodes = enumerate_pipewire_nodes();
                 let target_pid = *pid;
                 match nodes.iter().find(|s| s.process_id == Some(target_pid)) {
-                    Some(src) => run_pipewire_targeted(src.stable_id.to_frame_source_id().0, mode, callback),
+                    Some(src) => run_pipewire_targeted(
+                        pipewire_node_target(src)?,
+                        src.stable_id.to_frame_source_id().0,
+                        mode,
+                        callback,
+                    ),
                     None => Err(LoopbackError::BackendInit(format!(
                         "BLOCKED_WITH_EVIDENCE: PipeWire per-app source capture requires PipeWire node enumeration and link; no node found for '{target_pid}'"
+                    ))),
+                }
+            }
+            CaptureMode::ExactApplication {
+                process_id,
+                stable_id,
+            } => {
+                if !pipewire_available() {
+                    return Err(LoopbackError::ModeUnsupported(mode));
+                }
+                let nodes = enumerate_pipewire_nodes();
+                match nodes.iter().find(|source| {
+                    source.process_id == Some(*process_id) && &source.stable_id == stable_id
+                }) {
+                    Some(source) => run_pipewire_targeted(
+                        pipewire_node_target(source)?,
+                        stable_id.to_frame_source_id().0,
+                        mode,
+                        callback,
+                    ),
+                    None => Err(LoopbackError::BackendInit(format!(
+                        "exact PipeWire application process {process_id} no longer matches the resolved stable source"
                     ))),
                 }
             }
@@ -111,7 +140,12 @@ impl SystemLoopbackSource {
                 let name_lower = name.to_ascii_lowercase();
                 let name_clone = name.clone();
                 match nodes.iter().find(|s| s.name.to_ascii_lowercase() == name_lower) {
-                    Some(src) => run_pipewire_targeted(src.stable_id.to_frame_source_id().0, mode, callback),
+                    Some(src) => run_pipewire_targeted(
+                        pipewire_node_target(src)?,
+                        src.stable_id.to_frame_source_id().0,
+                        mode,
+                        callback,
+                    ),
                     None => Err(LoopbackError::BackendInit(format!(
                         "BLOCKED_WITH_EVIDENCE: PipeWire per-app source capture requires PipeWire node enumeration and link; no node found for '{name_clone}'"
                     ))),
@@ -127,6 +161,15 @@ impl SystemLoopbackSource {
             CaptureMode::InputDevice(_) => Err(LoopbackError::ModeUnsupported(mode)),
         }
     }
+}
+
+fn pipewire_node_target(source: &CaptureSource) -> Result<String, LoopbackError> {
+    source.device_uid.clone().ok_or_else(|| {
+        LoopbackError::BackendInit(format!(
+            "PipeWire source '{}' has no stable node target",
+            source.name
+        ))
+    })
 }
 
 impl Drop for SystemLoopbackSource {
@@ -532,7 +575,8 @@ fn enumerate_pipewire_nodes() -> Vec<pks_capture::CaptureSource> {
 /// Like `run_pipewire` but routes the capture stream to a specific PipeWire
 /// node identified by `node_id` instead of the default sink monitor.
 fn run_pipewire_targeted<F>(
-    node_id: u64,
+    node_target: String,
+    source_id: u64,
     _mode: CaptureMode,
     mut callback: F,
 ) -> Result<SystemLoopbackSource, LoopbackError>
@@ -571,13 +615,12 @@ where
                 }
             };
 
-            let node_id_str = node_id.to_string();
             // Route to a specific node rather than the default sink monitor.
             // STREAM_CAPTURE_SINK is intentionally omitted.
             let stream_props = properties! {
                 *pw::keys::NODE_NAME => "pks-loopback-capture",
                 *pw::keys::NODE_LATENCY => PW_NODE_LATENCY,
-                "node.target" => node_id_str.as_str(),
+                "node.target" => node_target.as_str(),
             };
 
             let stream =
@@ -637,7 +680,7 @@ where
 
                     let mut frame = AudioFrame::new(
                         StreamId(0),
-                        SourceId(0),
+                        SourceId(source_id),
                         s,
                         ts_ns,
                         CAPTURE_CHANNELS,
