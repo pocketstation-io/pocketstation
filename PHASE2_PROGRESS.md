@@ -1,5 +1,37 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W11 embedded Session engine boundary decision — 2026-07-25
+
+- Status: `PARTIAL`; W10 PASS opened W11 and the engine deployment/ownership
+  decision is accepted, while no W11 engine code, C header, language binding,
+  or bindability artifact exists yet.
+- AUDIO-029 selects one embedded native Session engine. The embedding
+  application remains the visible permission identity; desktop packages may
+  load a dynamic library and future mobile adapters may statically link the
+  same engine. A signed local helper and process IPC remain evidence-triggered
+  alternatives, not parallel implementations.
+- The binding contract is a versioned C ABI over opaque generational handles.
+  It exposes Session declaration, compile/start/stop, bounded event and metric
+  polling, and bounded multi-frame audio leases. It does not expose Rust graph
+  IR, runtime/pool layouts, traits, Tokio types, platform objects, provider
+  enums, or per-frame foreign-language callbacks.
+- Foreign audio retention receives a preallocated `CopyToBranchPool` copy under
+  AUDIO-027. Batch leases are immutable, explicitly released, and bounded at
+  compilation; queue or lease exhaustion drops the newest delivery and records
+  the exact reason.
+- `CRATE_OWNERSHIP.md` assigns the authoritative Session specification,
+  lifecycle, error/event/metric projections, leases, and C ABI to the precise
+  `pks-session` crate. `pks-runtime`, `pks-frame`, capture adapters, and endpoint
+  implementations retain their existing lower-layer ownership.
+- The existing `pks-audio` Session still returns typed
+  `RuntimeNotIntegrated`; its `PARTIAL` scaffold inventory row remains live
+  until real execution migrates and the compatibility façade delegates to the
+  canonical engine.
+- This documentation slice adds no code, generated header, mock, scaffold,
+  fallback, provider path, helper process, or loopback-only behavior. W11 exit
+  still requires a non-Rust lifecycle/lease harness, typed panic containment,
+  the quickstart compile gate, and full protocol acceptance.
+
 ## macOS native ring-loss telemetry — 2026-07-23
 
 - Status: `SAFE-TO-TEST`; the 11 macOS component tests pass, while no

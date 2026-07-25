@@ -48,6 +48,23 @@ These five crates define the architecture. Everything else builds on them.
 
 ---
 
+## Session engine and language boundary
+
+`pks-session` is the one public Session engine owner. It is deliberately not a
+sixth foundation crate: it orchestrates the contracts and implementations owned
+by the lower layers without redefining them.
+
+| Crate | Owns | Must NOT own |
+|---|---|---|
+| `pks-session` | Versioned `SessionSpec`, public selectors and descriptors, Session lifecycle, opaque control handles, capability/version negotiation, bounded event/metric projections, bounded foreign audio leases, stable error mapping, and the canonical C ABI | Graph IR or scheduling, buffer-pool implementation, platform capture implementation, codec implementation, recorder implementation, provider connectors, language-SDK ergonomics, UI, or process-helper IPC |
+
+The embedded-versus-helper decision and exact ABI constraints are binding in
+[AUDIO-029](../adr/AUDIO-029-embedded-session-engine-boundary.md).
+`pks-audio` may temporarily re-export Session types for source compatibility,
+but it must not own a parallel Session runtime.
+
+---
+
 ## Signal contract — `SignalSpec` (pks-graph, Phase 2 prerequisite)
 
 **Do not use `SignalType`.** The original `SignalType` enum had two problems:
@@ -207,6 +224,14 @@ pks-runtime
 pks-caps
   may depend on:      pks-frame (types only)
   must not depend on: pks-capture-macos/windows/linux concrete implementations
+
+pks-session
+  may depend on:      pks-frame, pks-caps, pks-graph, pks-runtime,
+                      pks-capture and target-selected capture adapters,
+                      pks-nodes, pks-metrics
+  must not depend on: provider SDKs, app UI, language SDK packages,
+                      helper-process IPC, or language-runtime types in its
+                      public contract
 
 pks-nodes
   may depend on:      pks-frame, pks-graph, pks-audio, pks-codec
