@@ -61,6 +61,7 @@ void pks_destroy_process_tap(PksProcessTapHandle *tap);
 
 // Read up to frame_count interleaved f32 stereo frames. Returns frames read.
 uint32_t pks_tap_read_frames(PksProcessTapHandle *tap, float *out, uint32_t frame_count);
+uint64_t pks_tap_drop_count(const PksProcessTapHandle *tap);
 
 uint32_t pks_tap_sample_rate(const PksProcessTapHandle *tap);
 uint32_t pks_tap_channels(const PksProcessTapHandle *tap);

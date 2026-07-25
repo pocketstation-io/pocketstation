@@ -10,7 +10,7 @@ RFC 9605 (SFrame, finalized August 2024) defines frame-level encryption where th
 
 ## Decision
 
-Implement SFrame at the encoded-frame layer, after Opus encode, before relay forward. Key exchange over control-plane WebSocket (new KEY_EXCHANGE signaling message). Per-platform insertion: browser via WebRTC encoded-transform API; iOS/Android via pre-packetization hook in native WebRTC pipeline; relay forwards opaque SFrame packets without decrypting. Use the `sframe` Rust crate for encryption primitives in audio-core; Go `sframe` library in relay for validation.
+Implement SFrame at the encoded-frame layer, after Opus encode, before relay forward. Key exchange over control-plane WebSocket (new KEY_EXCHANGE signaling message). Per-platform insertion: browser via WebRTC encoded-transform API; iOS/Android via pre-packetization hook in native WebRTC pipeline; relay forwards opaque SFrame packets without decrypting. Use the `sframe` Rust crate for encryption primitives in pocketstation; Go `sframe` library in relay for validation.
 
 ## Options considered
 

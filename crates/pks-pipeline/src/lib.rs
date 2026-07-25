@@ -98,12 +98,12 @@ impl AudioProcessorNode for PassthroughNode {
 }
 
 pub struct GainNode {
-    gain_linear: f32,
+    gain_ratio: f32,
 }
 
 impl GainNode {
-    pub fn new(gain_linear: f32) -> Self {
-        Self { gain_linear }
+    pub fn new(gain_ratio: f32) -> Self {
+        Self { gain_ratio }
     }
 }
 
@@ -113,7 +113,7 @@ impl AudioProcessorNode for GainNode {
     }
     fn process(&mut self, mut frame: AudioFrame) -> Option<AudioFrame> {
         for s in frame.buffer.as_mut_slice().iter_mut() {
-            *s *= self.gain_linear;
+            *s *= self.gain_ratio;
         }
         Some(frame)
     }
@@ -162,7 +162,7 @@ pub struct ResampleNode {
     channel_count: u8,
     clock_correction: ClockCorrectionController,
     phase: f64,
-    last_sample: f32,
+    last_sample_linear: f32,
     out_buf: Vec<f32>,
 }
 
@@ -185,8 +185,8 @@ impl ResampleNode {
             channel_count,
             clock_correction: ClockCorrectionController::default(),
             phase: 0.0,
-            last_sample: 0.0,
-            out_buf: Vec::with_capacity(RESAMPLE_MAX_OUT_SAMPLES),
+            last_sample_linear: 0.0,
+            out_buf: vec![0.0; RESAMPLE_MAX_OUT_SAMPLES],
         }
     }
 
@@ -231,21 +231,19 @@ impl AudioProcessorNode for ResampleNode {
             return None;
         }
 
+        let out_len;
         {
             let input = frame.buffer.as_slice();
             let input_len = input.len();
-            let expected_out =
-                ((input_len as f64 / ratio).ceil() as usize).min(RESAMPLE_MAX_OUT_SAMPLES);
-            self.out_buf.clear();
-
+            out_len = ((input_len as f64 / ratio).ceil() as usize).min(RESAMPLE_MAX_OUT_SAMPLES);
             let mut in_idx: usize = 0;
             let mut phase = self.phase;
             let mut out_count = 0usize;
 
-            while out_count < expected_out {
+            while out_count < out_len {
                 phase += ratio;
                 while phase >= 1.0 {
-                    self.last_sample = if in_idx < input_len {
+                    self.last_sample_linear = if in_idx < input_len {
                         input[in_idx]
                     } else {
                         0.0
@@ -259,14 +257,12 @@ impl AudioProcessorNode for ResampleNode {
                     0.0_f32
                 };
                 let t = phase as f32;
-                self.out_buf
-                    .push(self.last_sample * (1.0_f32 - t) + current * t);
+                self.out_buf[out_count] = self.last_sample_linear * (1.0_f32 - t) + current * t;
                 out_count += 1;
             }
             self.phase = phase;
         }
 
-        let out_len = self.out_buf.len();
         frame.buffer.as_mut_slice()[..out_len].copy_from_slice(&self.out_buf[..out_len]);
         frame.buffer.set_len(out_len);
         frame.sample_rate_hz = self.target_rate_hz;
@@ -285,7 +281,7 @@ mod tests {
     }
 
     #[test]
-    fn push_pop_single_frame_succeeds() {
+    fn given_empty_ring_when_frame_is_pushed_then_same_frame_is_popped() {
         let pool = AudioBufferPool::new(2, 8);
         let handle = pool.acquire().unwrap();
         let frame = AudioFrame::new(StreamId(1), SourceId(1), 0, 0, 1, handle);
@@ -295,7 +291,7 @@ mod tests {
     }
 
     #[test]
-    fn push_into_full_ring_drops_newest_and_increments_counter() {
+    fn given_full_ring_when_frame_is_pushed_then_newest_is_dropped_and_counted() {
         let pool = AudioBufferPool::new(8, 4);
         let (mut p, _c) = frame_bus(3);
         for seq in 0..3 {
@@ -307,7 +303,7 @@ mod tests {
     }
 
     #[test]
-    fn frames_pushed_in_order_are_popped_in_fifo_order() {
+    fn given_ordered_frames_when_popped_then_fifo_order_is_preserved() {
         let pool = AudioBufferPool::new(8, 4);
         let (mut p, mut c) = frame_bus(4);
         for seq in 0..4 {
@@ -321,13 +317,13 @@ mod tests {
     }
 
     #[test]
-    fn pop_on_empty_ring_returns_none() {
+    fn given_empty_ring_when_popped_then_none_is_returned() {
         let (_p, mut c) = frame_bus(4);
         assert!(c.pop().is_none());
     }
 
     #[test]
-    fn ring_capacity_is_bounded_and_excess_frames_are_dropped() {
+    fn given_bounded_ring_when_capacity_is_exceeded_then_excess_frames_are_dropped() {
         let pool = AudioBufferPool::new(16, 4);
         let (mut p, _c) = frame_bus(8);
         let mut pushed = 0u64;
@@ -393,7 +389,7 @@ mod tests {
     }
 
     #[test]
-    fn gain_node_mutates_samples() {
+    fn given_audio_samples_when_gain_runs_then_sample_amplitudes_change() {
         let pool = AudioBufferPool::new(1, 4);
         let mut h = pool.acquire().unwrap();
         h.copy_from_slice(&[1.0, -1.0]);
@@ -407,12 +403,12 @@ mod tests {
     fn make_sample_frame(
         pool: &std::sync::Arc<AudioBufferPool>,
         samples: &[f32],
-        rate: u32,
+        sample_rate_hz: u32,
     ) -> AudioFrame {
         let mut h = pool.acquire().unwrap();
         h.copy_from_slice(samples);
         let mut f = AudioFrame::new(StreamId(1), SourceId(1), 0, 0, 1, h);
-        f.sample_rate_hz = rate;
+        f.sample_rate_hz = sample_rate_hz;
         f
     }
 

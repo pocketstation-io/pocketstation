@@ -21,19 +21,14 @@ use std::time::Duration;
 use pks_frame::{AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId};
 
 use crate::macos_asp::AspReader;
-use pks_capture::{CaptureError as LoopbackError, CaptureMode, CaptureSampleTimeline};
-
-// ---------------------------------------------------------------------------
-// Driver bundle — embedded at compile time by build.rs
-// ---------------------------------------------------------------------------
+use pks_capture::{
+    CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservations,
+    CaptureSampleTimeline,
+};
 
 // These paths are emitted as `cargo:rustc-env` by build.rs.
 const DRIVER_DYLIB_BYTES: &[u8] = include_bytes!(env!("PKS_DRIVER_DYLIB"));
 const DRIVER_PLIST_BYTES: &[u8] = include_bytes!(env!("PKS_DRIVER_PLIST"));
-
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
 
 const DRIVER_INSTALL_DIR: &str = "/Library/Audio/Plug-Ins/HAL";
 const DRIVER_BUNDLE_NAME: &str = "PocketStationLoopback.driver";
@@ -48,11 +43,7 @@ const COREAUDIOD_POLL_INTERVAL_MS: u64 = 200;
 const COREAUDIOD_POLL_ATTEMPTS: u32 = 60;
 
 /// Pool depth: 8 frames absorb callback jitter without unbounded growth.
-const POOL_DEPTH: usize = 8;
-
-// ---------------------------------------------------------------------------
-// Internal implementation variant
-// ---------------------------------------------------------------------------
+const POOL_CAPACITY_FRAMES: usize = 8;
 
 enum Impl {
     // TapLoopbackSource is held for RAII; it stops capture on Drop.
@@ -62,12 +53,9 @@ enum Impl {
     Asp {
         _thread: std::thread::JoinHandle<()>,
         stop_tx: std::sync::mpsc::SyncSender<()>,
+        counters: CaptureObservationCounters,
     },
 }
-
-// ---------------------------------------------------------------------------
-// Public struct
-// ---------------------------------------------------------------------------
 
 /// Manages a macOS loopback capture session.
 ///
@@ -112,55 +100,75 @@ impl SystemLoopbackSource {
             )
         })?;
 
-        let channels = reader.channels() as u8;
-        let sample_rate = reader.sample_rate();
-        let sample_rate_nonzero = std::num::NonZeroU32::new(sample_rate).ok_or_else(|| {
+        let channel_count = reader.channels() as u8;
+        let sample_rate_hz = reader.sample_rate();
+        let sample_rate_nonzero = std::num::NonZeroU32::new(sample_rate_hz).ok_or_else(|| {
             LoopbackError::BackendInit("ASP reader reported a zero sample rate".to_owned())
         })?;
-        let frames_per_cb: u32 = sample_rate / 50; // 20 ms
-        let buf_samples = (frames_per_cb as usize) * (channels as usize);
-        let pool = Arc::new(AudioBufferPool::new(POOL_DEPTH, buf_samples));
+        let callback_frame_count: u32 = sample_rate_hz / 50; // 20 ms
+        let buffer_capacity_samples = callback_frame_count as usize * channel_count as usize;
+        let pool = Arc::new(AudioBufferPool::new(
+            POOL_CAPACITY_FRAMES,
+            buffer_capacity_samples,
+        ));
 
         let (stop_tx, stop_rx) = std::sync::mpsc::sync_channel::<()>(1);
+        let counters = CaptureObservationCounters::default();
+        let capture_counters = counters.clone();
+        let initial_drop_count = reader.drop_count();
 
         let thread = std::thread::Builder::new()
             .name("pks-asp-reader".into())
             .spawn(move || {
-                let mut seq: u64 = 0;
+                let mut sequence_num: u64 = 0;
                 let mut timeline = CaptureSampleTimeline::new(sample_rate_nonzero);
-                let mut buf = vec![0.0f32; buf_samples];
+                let mut buffer = vec![0.0f32; buffer_capacity_samples];
+                let mut observed_drop_count = initial_drop_count;
                 loop {
                     if stop_rx.try_recv().is_ok() {
                         break;
                     }
-                    let read = reader.read_frames(&mut buf, frames_per_cb);
-                    if read == 0 {
+                    let frame_count = reader.read_frames(&mut buffer, callback_frame_count);
+                    let drop_count = reader.drop_count();
+                    capture_counters.observe_dispatch_queue_full_frames(
+                        drop_count.saturating_sub(observed_drop_count),
+                    );
+                    observed_drop_count = drop_count;
+                    if frame_count == 0 {
                         std::thread::sleep(Duration::from_millis(1));
                         continue;
                     }
-                    let timestamp_ns = timeline.advance(u64::from(read));
-                    let frame_sequence_number = seq;
-                    seq = seq.saturating_add(1);
+                    capture_counters.observe_callback_buffer();
+                    let timestamp_ns = timeline.advance(u64::from(frame_count));
+                    let frame_sequence_number = sequence_num;
+                    sequence_num = sequence_num.saturating_add(1);
                     let mut handle = match pool.acquire() {
                         Some(h) => h,
-                        None => continue,
+                        None => {
+                            capture_counters.observe_pool_exhaustion();
+                            continue;
+                        }
                     };
                     let dst = handle.as_mut_slice();
-                    let samples = (read as usize) * (channels as usize);
-                    let copy_len = samples.min(dst.len());
-                    dst[..copy_len].copy_from_slice(&buf[..copy_len]);
-                    handle.set_len(copy_len);
+                    let sample_count = frame_count as usize * channel_count as usize;
+                    if sample_count > dst.len() {
+                        capture_counters.observe_oversized_buffer();
+                        continue;
+                    }
+                    dst[..sample_count].copy_from_slice(&buffer[..sample_count]);
+                    handle.set_len(sample_count);
                     let mut frame = AudioFrame::new(
                         StreamId(0),
                         SourceId(0),
                         frame_sequence_number,
                         timestamp_ns,
-                        channels,
+                        channel_count,
                         handle,
                     );
                     frame.source_tag = AudioSourceTag::Captured;
                     frame.encryption_mode = EncryptionMode::None;
-                    frame.sample_rate_hz = sample_rate;
+                    frame.sample_rate_hz = sample_rate_hz;
+                    capture_counters.observe_enqueued_frame();
                     callback(frame);
                 }
             })
@@ -169,10 +177,20 @@ impl SystemLoopbackSource {
         Ok(Self(Impl::Asp {
             _thread: thread,
             stop_tx,
+            counters,
         }))
+    }
+
+    pub fn observations(&self) -> CaptureObservations {
+        match &self.0 {
+            Impl::Tap(source) => source.observations(),
+            Impl::Asp { counters, .. } => counters.snapshot(),
+        }
     }
 }
 
+/// Drop contract — this is a control-thread-only owner:
+///   non-blocking stop request · panic-free · allocation-free · log-free
 impl Drop for SystemLoopbackSource {
     fn drop(&mut self) {
         match &self.0 {
@@ -183,10 +201,6 @@ impl Drop for SystemLoopbackSource {
         }
     }
 }
-
-// ---------------------------------------------------------------------------
-// Auto-install pipeline (ASP fallback only)
-// ---------------------------------------------------------------------------
 
 /// Ensures the HAL plugin is installed and `coreaudiod` has loaded it.
 fn ensure_asp_driver_active() -> Result<(), LoopbackError> {
@@ -299,10 +313,6 @@ fn wait_for_shm_ring() -> Result<(), LoopbackError> {
             .into(),
     ))
 }
-
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {

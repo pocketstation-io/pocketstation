@@ -45,20 +45,20 @@ impl std::error::Error for ExecError {}
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct RunMetrics {
-    frames_in: u64,
-    frames_out: u64,
-    frames_dropped: u64, // frames a node gated to None (e.g. VAD silence)
+    frames_in_total: u64,
+    frames_out_total: u64,
+    frames_dropped_total: u64, // frames a node gated to None (e.g. VAD silence)
 }
 
 impl RunMetrics {
     pub fn frames_in(&self) -> u64 {
-        self.frames_in
+        self.frames_in_total
     }
     pub fn frames_out(&self) -> u64 {
-        self.frames_out
+        self.frames_out_total
     }
     pub fn frames_dropped(&self) -> u64 {
-        self.frames_dropped
+        self.frames_dropped_total
     }
 }
 
@@ -125,10 +125,10 @@ impl RealtimeExecutor {
             return Err(ExecError::NotPrepared);
         }
         for frame in frames {
-            self.metrics.frames_in += 1;
+            self.metrics.frames_in_total += 1;
             match self.run_frame(frame)? {
-                Some(_output) => self.metrics.frames_out += 1,
-                None => self.metrics.frames_dropped += 1,
+                Some(_output) => self.metrics.frames_out_total += 1,
+                None => self.metrics.frames_dropped_total += 1,
             }
         }
         Ok(self.metrics)

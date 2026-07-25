@@ -1,6 +1,8 @@
 use pks_frame::{AudioFrame, Platform};
 use serde::Serialize;
 use std::num::NonZeroU32;
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::Arc;
 
 mod frame_stream;
 
@@ -8,6 +10,120 @@ pub use frame_stream::{
     captured_frame_stream, CapturedFrameDelivery, CapturedFrameSender, CapturedFrameStream,
     CapturedFrameStreamStats,
 };
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize)]
+pub struct CaptureObservations {
+    pub callback_buffers_total: u64,
+    pub frames_enqueued_total: u64,
+    pub pool_exhausted_total: u64,
+    pub dispatch_queue_full_total: u64,
+    pub invalid_buffer_total: u64,
+    pub oversized_buffer_total: u64,
+    pub stream_errors_total: u64,
+    pub timestamp_epoch_clamps_total: u64,
+}
+
+#[derive(Debug, Default)]
+struct CaptureObservationValues {
+    callback_buffers_total: AtomicU64,
+    frames_enqueued_total: AtomicU64,
+    pool_exhausted_total: AtomicU64,
+    dispatch_queue_full_total: AtomicU64,
+    invalid_buffer_total: AtomicU64,
+    oversized_buffer_total: AtomicU64,
+    stream_errors_total: AtomicU64,
+    timestamp_epoch_clamps_total: AtomicU64,
+}
+
+/// Setup-time cloneable handle; every observation is one relaxed atomic
+/// operation and remains allocation-free, lock-free, and log-free.
+#[derive(Clone, Debug, Default)]
+pub struct CaptureObservationCounters {
+    values: Arc<CaptureObservationValues>,
+}
+
+impl CaptureObservationCounters {
+    pub fn observe_callback_buffer(&self) {
+        self.values
+            .callback_buffers_total
+            .fetch_add(1, Ordering::Relaxed);
+    }
+
+    pub fn observe_enqueued_frame(&self) {
+        self.values
+            .frames_enqueued_total
+            .fetch_add(1, Ordering::Relaxed);
+    }
+
+    pub fn observe_pool_exhaustion(&self) {
+        self.values
+            .pool_exhausted_total
+            .fetch_add(1, Ordering::Relaxed);
+    }
+
+    pub fn observe_dispatch_queue_full(&self) {
+        self.observe_dispatch_queue_full_frames(1);
+    }
+
+    /// Records a known number of frames lost at a bounded native or Rust
+    /// delivery edge.
+    pub fn observe_dispatch_queue_full_frames(&self, lost_frames: u64) {
+        self.values
+            .dispatch_queue_full_total
+            .fetch_add(lost_frames, Ordering::Relaxed);
+    }
+
+    pub fn observe_invalid_buffer(&self) {
+        self.values
+            .invalid_buffer_total
+            .fetch_add(1, Ordering::Relaxed);
+    }
+
+    pub fn observe_oversized_buffer(&self) {
+        self.values
+            .oversized_buffer_total
+            .fetch_add(1, Ordering::Relaxed);
+    }
+
+    pub fn observe_stream_error(&self) {
+        self.values
+            .stream_errors_total
+            .fetch_add(1, Ordering::Relaxed);
+    }
+
+    pub fn observe_timestamp_epoch_clamp(&self) {
+        self.values
+            .timestamp_epoch_clamps_total
+            .fetch_add(1, Ordering::Relaxed);
+    }
+
+    pub fn snapshot(&self) -> CaptureObservations {
+        CaptureObservations {
+            callback_buffers_total: self.values.callback_buffers_total.load(Ordering::Relaxed),
+            frames_enqueued_total: self.values.frames_enqueued_total.load(Ordering::Relaxed),
+            pool_exhausted_total: self.values.pool_exhausted_total.load(Ordering::Relaxed),
+            dispatch_queue_full_total: self
+                .values
+                .dispatch_queue_full_total
+                .load(Ordering::Relaxed),
+            invalid_buffer_total: self.values.invalid_buffer_total.load(Ordering::Relaxed),
+            oversized_buffer_total: self.values.oversized_buffer_total.load(Ordering::Relaxed),
+            stream_errors_total: self.values.stream_errors_total.load(Ordering::Relaxed),
+            timestamp_epoch_clamps_total: self
+                .values
+                .timestamp_epoch_clamps_total
+                .load(Ordering::Relaxed),
+        }
+    }
+}
+
+/// Initializes the process-wide capture timestamp domain from a setup thread.
+///
+/// Capture backends call this before starting a realtime callback so the
+/// callback only reads the initialized monotonic origin.
+pub fn initialize_monotonic_timestamp_domain() {
+    let _ = pks_timing::monotonic_timestamp_ns();
+}
 
 /// Process-wide monotonic timestamp domain used by every capture adapter.
 /// The value is non-zero and comparable across PocketStation crates in the
@@ -71,7 +187,312 @@ pub enum CaptureMode {
         process_id: u32,
         stable_id: StableSourceId,
     },
+    ExactApplicationStable {
+        stable_id: StableSourceId,
+    },
     InputDevice(InputDeviceSelector),
+}
+
+impl CaptureMode {
+    /// Describes how long the selector may be reused without rediscovery.
+    ///
+    /// This is control-plane metadata. It never authorizes a backend to follow
+    /// a replacement process or substitute a default device.
+    pub fn selector_persistence_scope(&self) -> SelectorPersistenceScope {
+        match self {
+            Self::SystemMix => SelectorPersistenceScope::PlatformIdentity,
+            Self::Application(_) | Self::ExactApplicationStable { .. } => {
+                SelectorPersistenceScope::ApplicationIdentity
+            }
+            Self::Process(_) | Self::ExactApplication { .. } => {
+                SelectorPersistenceScope::ProcessLifetime
+            }
+            Self::InputDevice(InputDeviceSelector::Default) => {
+                SelectorPersistenceScope::SessionDefaultDevice
+            }
+            Self::InputDevice(InputDeviceSelector::StableId(_)) => {
+                SelectorPersistenceScope::DeviceIdentity
+            }
+        }
+    }
+
+    /// Reports the process boundary requested from the native backend.
+    pub fn process_tree_scope(&self, platform: Platform) -> ProcessTreeScope {
+        match self {
+            Self::Process(_) | Self::ExactApplication { .. } if platform == Platform::Windows => {
+                ProcessTreeScope::SelectedProcessAndDescendants
+            }
+            Self::Process(_) | Self::ExactApplication { .. } => {
+                ProcessTreeScope::SelectedProcessOnly
+            }
+            Self::Application(_) | Self::ExactApplicationStable { .. } => {
+                ProcessTreeScope::ApplicationIdentity
+            }
+            Self::SystemMix | Self::InputDevice(_) => ProcessTreeScope::NotApplicable,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum SelectorPersistenceScope {
+    ProcessLifetime,
+    ApplicationIdentity,
+    DeviceIdentity,
+    SessionDefaultDevice,
+    PlatformIdentity,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum ProcessTreeScope {
+    SelectedProcessOnly,
+    SelectedProcessAndDescendants,
+    ApplicationIdentity,
+    NotApplicable,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(transparent)]
+pub struct SourceGeneration(pub u32);
+
+impl SourceGeneration {
+    pub const INITIAL: Self = Self(1);
+
+    /// Returns the generation assigned after explicit rediscovery.
+    pub fn next(self) -> Self {
+        Self(self.0.saturating_add(1))
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum SourceLifecycleEventKind {
+    SourceUnavailable,
+    ReplacementObserved,
+    PermissionChanged,
+    PermissionRevoked,
+    SourceReappeared,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum SourceRecoveryRequirement {
+    ExplicitRediscoveryAndNewSession,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CaptureRuntimeFailureClass {
+    SourceInstanceExited,
+    PlatformStatus { status_code: i32 },
+    BackendClass { class: String },
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CaptureRuntimeFailure {
+    pub operation: &'static str,
+    pub error_class: CaptureRuntimeFailureClass,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum SourceRuntimeEvent {
+    SourceUnavailable {
+        stable_id: StableSourceId,
+        generation: SourceGeneration,
+        recovery_requirement: SourceRecoveryRequirement,
+        failure: CaptureRuntimeFailure,
+    },
+    BackendFailure {
+        stable_id: StableSourceId,
+        generation: SourceGeneration,
+        failure: CaptureRuntimeFailure,
+    },
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SourceRuntimeEventDelivery {
+    Enqueued,
+    DroppedFull,
+    ReceiverClosed,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum SourceRuntimeEventReceive {
+    Event(SourceRuntimeEvent),
+    Empty,
+    Closed,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub struct SourceRuntimeEventObservations {
+    pub events_enqueued_total: u64,
+    pub events_dropped_total: u64,
+}
+
+#[derive(Debug, Default)]
+struct SourceRuntimeEventCounters {
+    events_enqueued_total: AtomicU64,
+    events_dropped_total: AtomicU64,
+}
+
+#[derive(Debug, Clone)]
+pub struct SourceRuntimeEventSender {
+    sender: std::sync::mpsc::SyncSender<SourceRuntimeEvent>,
+    counters: Arc<SourceRuntimeEventCounters>,
+}
+
+impl SourceRuntimeEventSender {
+    /// Publishes from a capture worker without blocking. When the bounded
+    /// control channel is full, the newest event is dropped and counted.
+    pub fn try_send(&self, event: SourceRuntimeEvent) -> SourceRuntimeEventDelivery {
+        match self.sender.try_send(event) {
+            Ok(()) => {
+                self.counters
+                    .events_enqueued_total
+                    .fetch_add(1, Ordering::Relaxed);
+                SourceRuntimeEventDelivery::Enqueued
+            }
+            Err(std::sync::mpsc::TrySendError::Full(_)) => {
+                self.counters
+                    .events_dropped_total
+                    .fetch_add(1, Ordering::Relaxed);
+                SourceRuntimeEventDelivery::DroppedFull
+            }
+            Err(std::sync::mpsc::TrySendError::Disconnected(_)) => {
+                SourceRuntimeEventDelivery::ReceiverClosed
+            }
+        }
+    }
+
+    pub fn observations(&self) -> SourceRuntimeEventObservations {
+        SourceRuntimeEventObservations {
+            events_enqueued_total: self.counters.events_enqueued_total.load(Ordering::Relaxed),
+            events_dropped_total: self.counters.events_dropped_total.load(Ordering::Relaxed),
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct SourceRuntimeEventReceiver {
+    receiver: std::sync::mpsc::Receiver<SourceRuntimeEvent>,
+    counters: Arc<SourceRuntimeEventCounters>,
+}
+
+impl SourceRuntimeEventReceiver {
+    pub fn try_recv(&self) -> SourceRuntimeEventReceive {
+        match self.receiver.try_recv() {
+            Ok(event) => SourceRuntimeEventReceive::Event(event),
+            Err(std::sync::mpsc::TryRecvError::Empty) => SourceRuntimeEventReceive::Empty,
+            Err(std::sync::mpsc::TryRecvError::Disconnected) => SourceRuntimeEventReceive::Closed,
+        }
+    }
+
+    pub fn observations(&self) -> SourceRuntimeEventObservations {
+        SourceRuntimeEventObservations {
+            events_enqueued_total: self.counters.events_enqueued_total.load(Ordering::Relaxed),
+            events_dropped_total: self.counters.events_dropped_total.load(Ordering::Relaxed),
+        }
+    }
+}
+
+pub fn source_runtime_event_channel(
+    capacity_events: usize,
+) -> Result<(SourceRuntimeEventSender, SourceRuntimeEventReceiver), CaptureError> {
+    if capacity_events == 0 {
+        return Err(CaptureError::InvalidRuntimeEventCapacity);
+    }
+    let (sender, receiver) = std::sync::mpsc::sync_channel(capacity_events);
+    let counters = Arc::new(SourceRuntimeEventCounters::default());
+    Ok((
+        SourceRuntimeEventSender {
+            sender,
+            counters: counters.clone(),
+        },
+        SourceRuntimeEventReceiver { receiver, counters },
+    ))
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum SourceGenerationTransition {
+    Disappeared {
+        stable_id: StableSourceId,
+        generation: SourceGeneration,
+    },
+    Reappeared {
+        stable_id: StableSourceId,
+        previous_generation: SourceGeneration,
+        generation: SourceGeneration,
+    },
+}
+
+#[derive(Debug, Clone, Copy)]
+struct SourceGenerationState {
+    generation: SourceGeneration,
+    available: bool,
+}
+
+/// Control-plane owner for source generations across complete discovery snapshots.
+///
+/// The registry never reconnects a capture Session. It only assigns a new
+/// generation when the same stable identity disappears and later reappears;
+/// callers must still rediscover and create a new Session.
+#[derive(Debug, Default)]
+pub struct SourceLifecycleRegistry {
+    entries: std::collections::HashMap<StableSourceId, SourceGenerationState>,
+}
+
+impl SourceLifecycleRegistry {
+    pub fn observe_complete_snapshot(
+        &mut self,
+        sources: &[CaptureSource],
+    ) -> Vec<SourceGenerationTransition> {
+        let present_ids = sources
+            .iter()
+            .filter(|source| source.state != SourceState::Unavailable)
+            .map(|source| source.stable_id.clone())
+            .collect::<std::collections::HashSet<_>>();
+        let mut transitions = Vec::new();
+
+        for (stable_id, state) in &mut self.entries {
+            if state.available && !present_ids.contains(stable_id) {
+                state.available = false;
+                transitions.push(SourceGenerationTransition::Disappeared {
+                    stable_id: stable_id.clone(),
+                    generation: state.generation,
+                });
+            }
+        }
+
+        for stable_id in present_ids {
+            match self.entries.get_mut(&stable_id) {
+                Some(state) if !state.available => {
+                    let previous_generation = state.generation;
+                    state.generation = state.generation.next();
+                    state.available = true;
+                    transitions.push(SourceGenerationTransition::Reappeared {
+                        stable_id,
+                        previous_generation,
+                        generation: state.generation,
+                    });
+                }
+                Some(_) => {}
+                None => {
+                    self.entries.insert(
+                        stable_id,
+                        SourceGenerationState {
+                            generation: SourceGeneration::INITIAL,
+                            available: true,
+                        },
+                    );
+                }
+            }
+        }
+        transitions
+    }
+
+    pub fn generation(&self, stable_id: &StableSourceId) -> Option<SourceGeneration> {
+        self.entries.get(stable_id).map(|state| state.generation)
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -131,6 +552,24 @@ pub struct CaptureSource {
 impl CaptureSource {
     pub fn frame_source_id(&self) -> pks_frame::SourceId {
         self.stable_id.to_frame_source_id()
+    }
+
+    pub fn identity_strength(&self) -> SourceIdentityStrength {
+        match self.stable_id.kind {
+            SourceKind::Application if self.app_id.is_some() && self.process_id.is_some() => {
+                SourceIdentityStrength::ApplicationIdAndProcessId
+            }
+            SourceKind::Application if self.app_id.is_some() => {
+                SourceIdentityStrength::StableApplicationId
+            }
+            SourceKind::Application if self.process_id.is_some() => {
+                SourceIdentityStrength::ProcessId
+            }
+            SourceKind::InputDevice | SourceKind::OutputDevice if self.device_uid.is_some() => {
+                SourceIdentityStrength::StableDeviceUid
+            }
+            _ => SourceIdentityStrength::PlatformStableId,
+        }
     }
 }
 
@@ -226,31 +665,21 @@ impl CaptureAuthorizationSnapshot {
                 CaptureScope::ExactApplication {
                     stable_id: source.stable_id.stable_key.clone(),
                 },
-                if source.app_id.is_some() && source.process_id.is_some() {
-                    SourceIdentityStrength::ApplicationIdAndProcessId
-                } else if source.app_id.is_some() {
-                    SourceIdentityStrength::StableApplicationId
-                } else {
-                    SourceIdentityStrength::PlatformStableId
-                },
+                source.identity_strength(),
                 ApplicationPolicyObservation::NotObservable,
             ),
             SourceKind::InputDevice => (
                 CaptureScope::ExactInputDevice {
                     stable_id: source.stable_id.stable_key.clone(),
                 },
-                if source.device_uid.is_some() {
-                    SourceIdentityStrength::StableDeviceUid
-                } else {
-                    SourceIdentityStrength::PlatformStableId
-                },
+                source.identity_strength(),
                 ApplicationPolicyObservation::NotApplicable,
             ),
             SourceKind::OutputDevice => (
                 CaptureScope::ExactOutputDevice {
                     stable_id: source.stable_id.stable_key.clone(),
                 },
-                SourceIdentityStrength::PlatformStableId,
+                source.identity_strength(),
                 ApplicationPolicyObservation::NotApplicable,
             ),
             SourceKind::SystemMix => (
@@ -328,6 +757,7 @@ pub enum CaptureScope {
 pub enum SourceIdentityStrength {
     ApplicationIdAndProcessId,
     StableApplicationId,
+    ProcessId,
     StableDeviceUid,
     PlatformStableId,
 }
@@ -352,6 +782,7 @@ pub enum CaptureOpenOutcome {
     NotAttempted,
     Succeeded,
     PermissionDenied,
+    SourceUnavailable,
     BackendFailed,
 }
 
@@ -363,15 +794,19 @@ pub enum CaptureError {
     BackendInit(String),
     #[error("capture permission denied while {operation}")]
     PermissionDenied { operation: &'static str },
-    #[error("capture backend failed while {operation}: status {status}")]
+    #[error("capture backend failed while {operation}: status {status_code}")]
     BackendStatus {
         operation: &'static str,
-        status: i32,
+        status_code: i32,
     },
+    #[error("selected capture source is unavailable: {stable_key}")]
+    SourceUnavailable { stable_key: String },
     #[error("capture mode not supported on this backend: {0:?}")]
     ModeUnsupported(CaptureMode),
     #[error("captured-frame stream capacity must be greater than zero")]
     InvalidStreamCapacity,
+    #[error("source-runtime event channel capacity must be greater than zero")]
+    InvalidRuntimeEventCapacity,
 }
 
 // Backwards-compat alias — existing callers that use LoopbackError still compile.
@@ -703,6 +1138,109 @@ mod tests {
     use super::*;
     use pks_frame::Platform;
 
+    fn runtime_backend_failure(status_code: i32) -> SourceRuntimeEvent {
+        SourceRuntimeEvent::BackendFailure {
+            stable_id: StableSourceId::new(
+                Platform::Windows,
+                SourceKind::Application,
+                "wasapi:pid:4242:creation-100ns:100",
+            ),
+            generation: SourceGeneration::INITIAL,
+            failure: CaptureRuntimeFailure {
+                operation: "read WASAPI packet",
+                error_class: CaptureRuntimeFailureClass::PlatformStatus { status_code },
+            },
+        }
+    }
+
+    #[test]
+    fn given_runtime_event_when_sent_then_exact_identity_and_platform_status_are_retained() {
+        let (sender, receiver) = source_runtime_event_channel(1).expect("valid capacity");
+        let event = runtime_backend_failure(-2_004_284_412);
+
+        assert_eq!(
+            sender.try_send(event.clone()),
+            SourceRuntimeEventDelivery::Enqueued
+        );
+        assert_eq!(receiver.try_recv(), SourceRuntimeEventReceive::Event(event));
+        assert_eq!(
+            receiver.observations(),
+            SourceRuntimeEventObservations {
+                events_enqueued_total: 1,
+                events_dropped_total: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn given_full_runtime_event_channel_when_published_then_newest_event_is_dropped_and_counted() {
+        let (sender, _receiver) = source_runtime_event_channel(1).expect("valid capacity");
+
+        assert_eq!(
+            sender.try_send(runtime_backend_failure(1)),
+            SourceRuntimeEventDelivery::Enqueued
+        );
+        assert_eq!(
+            sender.try_send(runtime_backend_failure(2)),
+            SourceRuntimeEventDelivery::DroppedFull
+        );
+        assert_eq!(
+            sender.observations(),
+            SourceRuntimeEventObservations {
+                events_enqueued_total: 1,
+                events_dropped_total: 1,
+            }
+        );
+    }
+
+    #[test]
+    fn given_dropped_runtime_event_receiver_when_published_then_closed_is_reported() {
+        let (sender, receiver) = source_runtime_event_channel(1).expect("valid capacity");
+        drop(receiver);
+
+        assert_eq!(
+            sender.try_send(runtime_backend_failure(1)),
+            SourceRuntimeEventDelivery::ReceiverClosed
+        );
+    }
+
+    #[test]
+    fn given_zero_runtime_event_capacity_when_created_then_invalid_capacity_is_reported() {
+        assert_eq!(
+            source_runtime_event_channel(0).expect_err("zero capacity must fail"),
+            CaptureError::InvalidRuntimeEventCapacity
+        );
+    }
+
+    #[test]
+    fn given_capture_events_when_observed_then_snapshot_preserves_each_boundary() {
+        let counters = CaptureObservationCounters::default();
+
+        counters.observe_callback_buffer();
+        counters.observe_enqueued_frame();
+        counters.observe_pool_exhaustion();
+        counters.observe_dispatch_queue_full();
+        counters.observe_dispatch_queue_full_frames(3);
+        counters.observe_invalid_buffer();
+        counters.observe_oversized_buffer();
+        counters.observe_stream_error();
+        counters.observe_timestamp_epoch_clamp();
+
+        assert_eq!(
+            counters.snapshot(),
+            CaptureObservations {
+                callback_buffers_total: 1,
+                frames_enqueued_total: 1,
+                pool_exhausted_total: 1,
+                dispatch_queue_full_total: 4,
+                invalid_buffer_total: 1,
+                oversized_buffer_total: 1,
+                stream_errors_total: 1,
+                timestamp_epoch_clamps_total: 1,
+            }
+        );
+    }
+
     #[test]
     fn given_stable_source_id_when_hashed_twice_then_same_frame_source_id() {
         let id = StableSourceId::new(
@@ -754,6 +1292,143 @@ mod tests {
             CaptureMode::InputDevice(selector.clone()),
             CaptureMode::InputDevice(selector)
         );
+    }
+
+    #[test]
+    fn given_exact_windows_process_when_contract_inspected_then_scope_is_process_tree() {
+        let mode = CaptureMode::ExactApplication {
+            process_id: 42,
+            stable_id: StableSourceId::new(
+                Platform::Windows,
+                SourceKind::Application,
+                "process:42",
+            ),
+        };
+
+        assert_eq!(
+            mode.selector_persistence_scope(),
+            SelectorPersistenceScope::ProcessLifetime
+        );
+        assert_eq!(
+            mode.process_tree_scope(Platform::Windows),
+            ProcessTreeScope::SelectedProcessAndDescendants
+        );
+    }
+
+    #[test]
+    fn given_exact_macos_process_when_contract_inspected_then_scope_is_process_only() {
+        let mode = CaptureMode::ExactApplication {
+            process_id: 42,
+            stable_id: StableSourceId::new(
+                Platform::Macos,
+                SourceKind::Application,
+                "com.acme.meeting",
+            ),
+        };
+
+        assert_eq!(
+            mode.process_tree_scope(Platform::Macos),
+            ProcessTreeScope::SelectedProcessOnly
+        );
+    }
+
+    #[test]
+    fn given_default_and_exact_microphones_when_contract_inspected_then_lifetimes_differ() {
+        assert_eq!(
+            CaptureMode::InputDevice(InputDeviceSelector::Default).selector_persistence_scope(),
+            SelectorPersistenceScope::SessionDefaultDevice
+        );
+        assert_eq!(
+            CaptureMode::InputDevice(InputDeviceSelector::StableId("device-7".to_owned()))
+                .selector_persistence_scope(),
+            SelectorPersistenceScope::DeviceIdentity
+        );
+    }
+
+    #[test]
+    fn given_source_generation_when_rediscovered_then_generation_advances() {
+        assert_eq!(SourceGeneration::INITIAL.next(), SourceGeneration(2));
+    }
+
+    #[test]
+    fn given_source_disappearance_and_reappearance_when_snapshots_observed_then_generation_advances(
+    ) {
+        let source = fake_source(
+            SourceKind::InputDevice,
+            "coreaudio:device-7",
+            None,
+            SourceState::Available,
+        );
+        let stable_id = source.stable_id.clone();
+        let mut registry = SourceLifecycleRegistry::default();
+
+        assert!(registry
+            .observe_complete_snapshot(std::slice::from_ref(&source))
+            .is_empty());
+        assert_eq!(
+            registry.generation(&stable_id),
+            Some(SourceGeneration::INITIAL)
+        );
+        assert_eq!(
+            registry.observe_complete_snapshot(&[]),
+            vec![SourceGenerationTransition::Disappeared {
+                stable_id: stable_id.clone(),
+                generation: SourceGeneration::INITIAL,
+            }]
+        );
+        assert!(registry.observe_complete_snapshot(&[]).is_empty());
+        assert_eq!(
+            registry.observe_complete_snapshot(&[source]),
+            vec![SourceGenerationTransition::Reappeared {
+                stable_id: stable_id.clone(),
+                previous_generation: SourceGeneration::INITIAL,
+                generation: SourceGeneration(2),
+            }]
+        );
+        assert_eq!(registry.generation(&stable_id), Some(SourceGeneration(2)));
+    }
+
+    #[test]
+    fn given_different_process_identity_when_snapshot_observed_then_it_starts_at_generation_one() {
+        let first = fake_source(
+            SourceKind::Application,
+            "windows:pid:42:start:100",
+            None,
+            SourceState::Playing,
+        );
+        let second = fake_source(
+            SourceKind::Application,
+            "windows:pid:42:start:200",
+            None,
+            SourceState::Playing,
+        );
+        let first_id = first.stable_id.clone();
+        let second_id = second.stable_id.clone();
+        let mut registry = SourceLifecycleRegistry::default();
+
+        registry.observe_complete_snapshot(&[first]);
+        let transitions = registry.observe_complete_snapshot(&[second]);
+
+        assert_eq!(
+            transitions,
+            vec![SourceGenerationTransition::Disappeared {
+                stable_id: first_id,
+                generation: SourceGeneration::INITIAL,
+            }]
+        );
+        assert_eq!(
+            registry.generation(&second_id),
+            Some(SourceGeneration::INITIAL)
+        );
+    }
+
+    #[test]
+    fn given_source_unavailable_error_when_displayed_then_stable_identity_is_retained() {
+        let error = CaptureError::SourceUnavailable {
+            stable_key: "device-7".to_owned(),
+        };
+
+        assert!(error.to_string().contains("device-7"));
     }
 
     #[test]
@@ -835,6 +1510,47 @@ mod tests {
         );
         assert_eq!(snapshot.os_permission, PermissionObservation::NotObservable);
         assert_eq!(snapshot.open_outcome, CaptureOpenOutcome::Succeeded);
+    }
+
+    #[test]
+    fn given_process_only_application_when_identity_inspected_then_strength_is_not_overstated() {
+        let mut source = fake_source(
+            SourceKind::Application,
+            "powershell",
+            None,
+            SourceState::Playing,
+        );
+        source.process_id = Some(42);
+
+        assert_eq!(
+            source.identity_strength(),
+            SourceIdentityStrength::ProcessId
+        );
+    }
+
+    #[test]
+    fn given_output_device_uid_when_identity_inspected_then_strength_is_stable_device_uid() {
+        let mut source = fake_source(
+            SourceKind::OutputDevice,
+            "coreaudio:built-in-output",
+            None,
+            SourceState::Available,
+        );
+        source.device_uid = Some("coreaudio:built-in-output".to_owned());
+
+        assert_eq!(
+            source.identity_strength(),
+            SourceIdentityStrength::StableDeviceUid
+        );
+        let snapshot = CaptureAuthorizationSnapshot::before_open(
+            &source,
+            CaptureSessionGrant::NotEvaluated,
+            PermissionEpoch::INITIAL,
+        );
+        assert_eq!(
+            snapshot.identity_strength,
+            SourceIdentityStrength::StableDeviceUid
+        );
     }
 
     #[test]
@@ -935,13 +1651,13 @@ mod tests {
     }
 
     #[test]
-    fn latency_class_rank_order_is_realtime_low_buffered() {
+    fn given_latency_classes_when_ranked_then_realtime_precedes_buffered() {
         assert!(LatencyClass::Realtime.rank() < LatencyClass::LowLatency.rank());
         assert!(LatencyClass::LowLatency.rank() < LatencyClass::Buffered.rank());
     }
 
     #[test]
-    fn reliability_class_rank_always_available_is_lowest() {
+    fn given_reliability_classes_when_ranked_then_always_available_is_lowest() {
         assert_eq!(ReliabilityClass::AlwaysAvailable.rank(), 0);
         assert!(ReliabilityClass::AlwaysAvailable.rank() < ReliabilityClass::FutureAPI.rank());
     }

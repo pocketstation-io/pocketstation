@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Publish all audio-core crates to crates.io in dependency order (ADR-008 §26.5).
+# Publish all pocketstation crates to crates.io in dependency order (ADR-008 §26.5).
 # Usage: ./scripts/publish.sh [--dry-run]
 #
 # --dry-run behaviour:

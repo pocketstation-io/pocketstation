@@ -147,6 +147,8 @@ mod tests {
 
     #[test]
     fn given_wrong_sample_rate_when_create_then_returns_null() {
+        // SAFETY: The call passes scalar values only and checks the returned
+        // pointer without dereferencing it.
         unsafe {
             let enc = pks_opus_encoder_create(44_100, 1, 64);
             assert!(enc.is_null(), "must reject non-48000 sample rate");
@@ -155,6 +157,8 @@ mod tests {
 
     #[test]
     fn given_invalid_channel_count_when_create_then_returns_null() {
+        // SAFETY: The call passes scalar values only and checks the returned
+        // pointer without dereferencing it.
         unsafe {
             let enc = pks_opus_encoder_create(48_000, 3, 64);
             assert!(enc.is_null(), "must reject channels != 1 or 2");
@@ -163,6 +167,8 @@ mod tests {
 
     #[test]
     fn given_stereo_channels_when_create_then_succeeds() {
+        // SAFETY: The returned pointer is checked, used on this thread, and
+        // destroyed exactly once.
         unsafe {
             let enc = pks_opus_encoder_create(48_000, 2, 64);
             assert!(!enc.is_null(), "stereo encoder must succeed");
@@ -172,6 +178,8 @@ mod tests {
 
     #[test]
     fn given_valid_pcm_when_encode_then_returns_positive_byte_count() {
+        // SAFETY: The encoder is live, and the PCM/output pointers cover the
+        // lengths passed to the FFI functions.
         unsafe {
             let enc = pks_opus_encoder_create(48_000, 1, 64);
             assert!(!enc.is_null(), "encoder creation failed");
@@ -185,6 +193,8 @@ mod tests {
 
     #[test]
     fn given_null_encoder_when_encode_then_returns_minus_one() {
+        // SAFETY: The API explicitly permits a null encoder; the PCM/output
+        // pointers cover the lengths passed with them.
         unsafe {
             let mut out = vec![0u8; 256];
             let pcm = sine_960(440.0);
@@ -201,11 +211,14 @@ mod tests {
 
     #[test]
     fn given_encoder_when_destroy_null_then_no_crash() {
+        // SAFETY: The destroy contract explicitly permits a null pointer.
         unsafe { pks_opus_encoder_destroy(std::ptr::null_mut()) }
     }
 
     #[test]
     fn given_valid_encoder_when_set_bitrate_then_returns_zero() {
+        // SAFETY: The returned pointer is checked, used on this thread, and
+        // destroyed exactly once.
         unsafe {
             let enc = pks_opus_encoder_create(48_000, 1, 64);
             assert!(!enc.is_null());
@@ -222,6 +235,7 @@ mod tests {
 
     #[test]
     fn given_null_encoder_when_set_bitrate_then_returns_minus_one() {
+        // SAFETY: The bitrate API explicitly permits a null encoder.
         unsafe {
             assert_eq!(pks_opus_encoder_set_bitrate(std::ptr::null_mut(), 64), -1);
         }
@@ -229,6 +243,8 @@ mod tests {
 
     #[test]
     fn given_bitrate_change_when_encode_then_still_produces_valid_packet() {
+        // SAFETY: The encoder is live, and the PCM/output pointers cover the
+        // lengths passed to the FFI functions.
         unsafe {
             let enc = pks_opus_encoder_create(48_000, 1, 64);
             assert!(!enc.is_null());
@@ -246,6 +262,8 @@ mod tests {
 
     #[test]
     fn given_sine_440hz_when_round_trip_then_decoded_has_energy() {
+        // SAFETY: The encoder is live, and the PCM/output pointers cover the
+        // lengths passed to the FFI functions.
         unsafe {
             let enc = pks_opus_encoder_create(48_000, 1, 64);
             assert!(!enc.is_null());

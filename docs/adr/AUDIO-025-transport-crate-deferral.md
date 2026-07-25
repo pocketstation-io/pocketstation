@@ -29,7 +29,7 @@ None of these types are used by any real caller. `RoutePlan` has no execution
 engine. `RouteKind` has speculative variants (`PeerToPeer`, `HardwareBridge`,
 `PublicChannel`) that correspond to no implemented path. The relay is Go/Pion and
 cannot import a Rust crate. iOS and Android SDKs use native WebRTC APIs. The Rust
-audio-core produces Opus frames and hands them to the SDK layer — it does not
+pocketstation produces Opus frames and hands them to the SDK layer — it does not
 initiate or manage transport connections.
 
 A standalone crate signals a stable, consumed public API boundary. This one has

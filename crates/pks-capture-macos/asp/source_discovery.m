@@ -37,6 +37,7 @@ int pks_process_tap_available(void) {
 typedef struct {
     _Atomic uint64_t write_head;
     uint64_t         read_head;   // single-consumer, non-atomic
+    _Atomic uint64_t drop_count;  // reader-observed overwritten sample frames
     _Atomic uint32_t sample_rate;
     _Atomic uint32_t level_bits;  // float RMS stored as uint32_t for atomic access
     float data[TAP_RING_FRAMES * TAP_RING_CHANNELS];
@@ -378,6 +379,7 @@ PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count,
             h->io_proc_id    = NULL;
             atomic_store(&h->ring.write_head, 0);
             h->ring.read_head = 0;
+            atomic_store(&h->ring.drop_count, 0);
             atomic_store(&h->ring.sample_rate, 48000u);
             ring_store_level(&h->ring, 0.0f);
             return h;
@@ -445,7 +447,12 @@ uint32_t pks_tap_read_frames(PksProcessTapHandle *tap, float *out, uint32_t fram
     uint64_t rHead = ring->read_head;
     uint64_t avail = wHead - rHead;
     if (avail == 0) return 0;
-    if (avail > TAP_RING_FRAMES) { rHead = wHead - TAP_RING_FRAMES; avail = TAP_RING_FRAMES; }
+    if (avail > TAP_RING_FRAMES) {
+        atomic_fetch_add_explicit(
+            &ring->drop_count, avail - TAP_RING_FRAMES, memory_order_relaxed);
+        rHead = wHead - TAP_RING_FRAMES;
+        avail = TAP_RING_FRAMES;
+    }
 
     uint32_t toRead = (uint32_t)(avail < (uint64_t)frame_count ? avail : (uint64_t)frame_count);
     for (uint32_t i = 0; i < toRead; i++) {
@@ -455,6 +462,11 @@ uint32_t pks_tap_read_frames(PksProcessTapHandle *tap, float *out, uint32_t fram
     }
     ring->read_head = rHead + toRead;
     return toRead;
+}
+
+uint64_t pks_tap_drop_count(const PksProcessTapHandle *tap) {
+    if (!tap) return 0;
+    return atomic_load_explicit(&tap->ring.drop_count, memory_order_relaxed);
 }
 
 uint32_t pks_tap_sample_rate(const PksProcessTapHandle *tap) {

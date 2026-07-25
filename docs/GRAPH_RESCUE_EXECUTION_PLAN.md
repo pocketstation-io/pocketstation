@@ -1,4 +1,4 @@
-# Graph Crate Rescue — Execution Plan (audio-core)
+# Graph Crate Rescue — Execution Plan (pocketstation)
 
 Source documents (binding, read in full before any work):
 - `recap_v2.md` — the audit (why the current graph crate is a demo, not a runtime)

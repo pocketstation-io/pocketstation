@@ -1,6 +1,6 @@
 use opus::{Channels, Decoder};
 
-use crate::constants::{I16_SCALE, OPUS_FRAME_SAMPLES, OPUS_SAMPLE_RATE};
+use crate::constants::{I16_SCALE, OPUS_FRAME_SAMPLES, OPUS_SAMPLE_RATE_HZ};
 use crate::encoder::{EncodedFrame, OpusChannels, OpusFrameDuration};
 
 const OPUS_MAX_FRAME_SAMPLES_PER_CHANNEL: usize = 2_880; // 60 ms at 48 kHz
@@ -37,7 +37,7 @@ impl OpusDecoder {
             OpusChannels::Stereo => (Channels::Stereo, 2),
         };
         Ok(Self {
-            inner: Decoder::new(OPUS_SAMPLE_RATE, ch)?,
+            inner: Decoder::new(OPUS_SAMPLE_RATE_HZ, ch)?,
             channels: n,
         })
     }
@@ -122,11 +122,9 @@ impl Default for OpusDecoder {
     }
 }
 
-// ---------------------------------------------------------------------------
 // Legacy mock alias — kept so that existing tests continue to compile without
 // modification.  Delegates to the real decoder.
 // Remove in Phase 5 once all call sites have been migrated.
-// ---------------------------------------------------------------------------
 
 /// Deprecated alias for [`OpusDecoder`].  Use `OpusDecoder` directly.
 #[cfg(any(test, feature = "test-helpers"))]
@@ -177,7 +175,7 @@ mod tests {
     use crate::encoder::OpusEncoder;
 
     #[test]
-    fn opus_decoder_decodes_encoded_packet_to_960_samples() {
+    fn given_encoded_opus_packet_when_decoded_then_contains_960_samples() {
         // Given: encode a 20 ms frame of silence
         let mut enc = OpusEncoder::new().unwrap();
         let mut dec = OpusDecoder::new().unwrap();

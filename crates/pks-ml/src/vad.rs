@@ -60,10 +60,10 @@ impl VadProcessor {
         let threshold_rms = 10.0_f32.powf(threshold_dbfs / 20.0);
         // One-pole IIR coefficient from time constant: α = 1 − exp(−1 / (fs*τ))
         // Frame rate = 48000 / 960 = 50 frames/s
-        const FRAMES_PER_SEC: f32 = 50.0;
-        let alpha_attack = 1.0 - (-1.0 / (FRAMES_PER_SEC * attack_ms / 1000.0)).exp();
-        let alpha_release = 1.0 - (-1.0 / (FRAMES_PER_SEC * release_ms / 1000.0)).exp();
-        let hangover_frames = (FRAMES_PER_SEC * hangover_ms / 1000.0).ceil() as u32;
+        const FRAME_RATE_HZ: f32 = 50.0;
+        let alpha_attack = 1.0 - (-1.0 / (FRAME_RATE_HZ * attack_ms / 1000.0)).exp();
+        let alpha_release = 1.0 - (-1.0 / (FRAME_RATE_HZ * release_ms / 1000.0)).exp();
+        let hangover_frames = (FRAME_RATE_HZ * hangover_ms / 1000.0).ceil() as u32;
         Self {
             threshold_rms,
             smoothed_rms: 0.0,

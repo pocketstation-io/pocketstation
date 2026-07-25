@@ -1,14 +1,15 @@
 //! Physical input-device capture through CoreAudio via CPAL.
 
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{BufferSize, SampleFormat, SupportedBufferSize};
 use pks_capture::{
-    monotonic_timestamp_ns, CaptureError, CaptureSource, InputDeviceSelector, SourceKind,
-    SourceState, StableSourceId,
+    initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureError,
+    CaptureObservationCounters, CaptureObservations, CaptureSource, InputDeviceSelector,
+    SourceKind, SourceState, StableSourceId,
 };
 use pks_frame::{AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, Platform, StreamId};
 
@@ -17,46 +18,34 @@ const POOL_CAPACITY_FRAMES: usize = QUEUE_CAPACITY_FRAMES + 2;
 const TARGET_FRAME_DURATION_MS: u32 = 20;
 const FALLBACK_MAX_CALLBACK_DURATION_MS: u32 = 200;
 
-fn input_capture_timestamp_ns(
+struct InputCaptureTimestamp {
+    timestamp_ns: u64,
+    epoch_clamped: bool,
+}
+
+fn input_capture_timestamp(
     callback_observed_at_ns: u64,
     callback_info: &cpal::InputCallbackInfo,
-) -> u64 {
+) -> InputCaptureTimestamp {
     let timestamp = callback_info.timestamp();
     let capture_before_callback_ns = timestamp
         .callback
         .saturating_duration_since(timestamp.capture)
         .as_nanos()
         .min(u128::from(u64::MAX)) as u64;
-    callback_observed_at_ns.saturating_sub(capture_before_callback_ns)
-}
-
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
-pub struct InputCaptureObservations {
-    pub frames_captured_total: u64,
-    pub pool_exhausted_total: u64,
-    pub queue_full_total: u64,
-    pub oversized_callback_total: u64,
-    pub stream_errors_total: u64,
-}
-
-#[derive(Default)]
-struct InputCaptureCounters {
-    frames_captured_total: AtomicU64,
-    pool_exhausted_total: AtomicU64,
-    queue_full_total: AtomicU64,
-    oversized_callback_total: AtomicU64,
-    stream_errors_total: AtomicU64,
-}
-
-impl InputCaptureCounters {
-    fn snapshot(&self) -> InputCaptureObservations {
-        InputCaptureObservations {
-            frames_captured_total: self.frames_captured_total.load(Ordering::Relaxed),
-            pool_exhausted_total: self.pool_exhausted_total.load(Ordering::Relaxed),
-            queue_full_total: self.queue_full_total.load(Ordering::Relaxed),
-            oversized_callback_total: self.oversized_callback_total.load(Ordering::Relaxed),
-            stream_errors_total: self.stream_errors_total.load(Ordering::Relaxed),
-        }
+    // The shared monotonic clock is process-relative. During the first
+    // callbacks, Core Audio's capture-to-callback delay can predate that
+    // process epoch. Timestamp 1 is the earliest representable instant in the
+    // shared domain; zero is reserved for "timestamp unavailable".
+    match callback_observed_at_ns.checked_sub(capture_before_callback_ns) {
+        Some(timestamp_ns) if timestamp_ns != 0 => InputCaptureTimestamp {
+            timestamp_ns,
+            epoch_clamped: false,
+        },
+        _ => InputCaptureTimestamp {
+            timestamp_ns: 1,
+            epoch_clamped: true,
+        },
     }
 }
 
@@ -64,7 +53,7 @@ pub struct MacosInputSource {
     stream: Option<cpal::Stream>,
     reader_thread: Option<std::thread::JoinHandle<()>>,
     running: Arc<AtomicBool>,
-    counters: Arc<InputCaptureCounters>,
+    counters: CaptureObservationCounters,
 }
 
 impl MacosInputSource {
@@ -109,27 +98,28 @@ impl MacosInputSource {
         let pool = Arc::new(AudioBufferPool::new(POOL_CAPACITY_FRAMES, slot_samples));
         let (mut producer, mut consumer) = rtrb::RingBuffer::new(QUEUE_CAPACITY_FRAMES);
         let running = Arc::new(AtomicBool::new(true));
-        let counters = Arc::new(InputCaptureCounters::default());
+        let counters = CaptureObservationCounters::default();
+        initialize_monotonic_timestamp_domain();
         let frame_source_id =
             StableSourceId::new(Platform::Macos, SourceKind::InputDevice, stable_device_id)
                 .to_frame_source_id();
         let callback_pool = Arc::clone(&pool);
-        let callback_counters = Arc::clone(&counters);
+        let callback_counters = counters.clone();
         let mut sequence_number = 0u64;
         let data_callback = move |data: &[f32], callback_info: &cpal::InputCallbackInfo| {
-            let timestamp_ns = input_capture_timestamp_ns(monotonic_timestamp_ns(), callback_info);
+            let timestamp = input_capture_timestamp(monotonic_timestamp_ns(), callback_info);
+            if timestamp.epoch_clamped {
+                callback_counters.observe_timestamp_epoch_clamp();
+            }
             let frame_sequence_number = sequence_number;
             sequence_number = sequence_number.saturating_add(1);
+            callback_counters.observe_callback_buffer();
             if data.len() > callback_pool.slot_size() {
-                callback_counters
-                    .oversized_callback_total
-                    .fetch_add(1, Ordering::Relaxed);
+                callback_counters.observe_oversized_buffer();
                 return;
             }
             let Some(mut handle) = callback_pool.acquire() else {
-                callback_counters
-                    .pool_exhausted_total
-                    .fetch_add(1, Ordering::Relaxed);
+                callback_counters.observe_pool_exhaustion();
                 return;
             };
             handle.as_mut_slice()[..data.len()].copy_from_slice(data);
@@ -138,7 +128,7 @@ impl MacosInputSource {
                 StreamId(frame_source_id.0),
                 frame_source_id,
                 frame_sequence_number,
-                timestamp_ns,
+                timestamp.timestamp_ns,
                 channels,
                 handle,
             );
@@ -146,20 +136,14 @@ impl MacosInputSource {
             frame.encryption_mode = EncryptionMode::None;
             frame.sample_rate_hz = sample_rate_hz;
             if producer.push(frame).is_err() {
-                callback_counters
-                    .queue_full_total
-                    .fetch_add(1, Ordering::Relaxed);
+                callback_counters.observe_dispatch_queue_full();
                 return;
             }
-            callback_counters
-                .frames_captured_total
-                .fetch_add(1, Ordering::Relaxed);
+            callback_counters.observe_enqueued_frame();
         };
-        let error_counters = Arc::clone(&counters);
+        let error_counters = counters.clone();
         let error_callback = move |_| {
-            error_counters
-                .stream_errors_total
-                .fetch_add(1, Ordering::Relaxed);
+            error_counters.observe_stream_error();
         };
         let stream = device
             .build_input_stream(stream_config, data_callback, error_callback, None)
@@ -195,7 +179,7 @@ impl MacosInputSource {
         })
     }
 
-    pub fn observations(&self) -> InputCaptureObservations {
+    pub fn observations(&self) -> CaptureObservations {
         self.counters.snapshot()
     }
 }
@@ -355,9 +339,22 @@ mod tests {
             capture: StreamInstant::new(10, 0),
         });
 
-        assert_eq!(
-            input_capture_timestamp_ns(1_000_000_000, &callback_info),
-            980_000_000
-        );
+        let timestamp = input_capture_timestamp(1_000_000_000, &callback_info);
+
+        assert_eq!(timestamp.timestamp_ns, 980_000_000);
+        assert!(!timestamp.epoch_clamped);
+    }
+
+    #[test]
+    fn given_capture_before_process_epoch_when_mapped_then_timestamp_is_earliest_representable() {
+        let callback_info = InputCallbackInfo::new(InputStreamTimestamp {
+            callback: StreamInstant::new(10, 40_000_000),
+            capture: StreamInstant::new(10, 0),
+        });
+
+        let timestamp = input_capture_timestamp(20_000_000, &callback_info);
+
+        assert_eq!(timestamp.timestamp_ns, 1);
+        assert!(timestamp.epoch_clamped);
     }
 }

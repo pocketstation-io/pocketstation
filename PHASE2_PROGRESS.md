@@ -1,5 +1,254 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## macOS native ring-loss telemetry — 2026-07-23
+
+- Status: `SAFE-TO-TEST`; the 11 macOS component tests pass, while no
+  post-change real-device artifact yet proves the new counters on an active
+  CoreAudio process tap, microphone, or AudioServerPlugin fallback.
+- CoreAudio process-tap and AudioServerPlugin readers now convert native ring
+  overwrite deltas into `dispatch_queue_full_total`. The microphone callback
+  reports bounded Rust-ring rejection through the same canonical counter.
+- Process-tap, AudioServerPlugin, and microphone capture expose canonical
+  `CaptureObservations` for callback buffers, enqueued frames, pool exhaustion,
+  bounded-ring loss, oversize rejection, and stream errors where each backend
+  can observe them. `DesktopCaptureSource::observations()` no longer fabricates
+  or omits the process-tap boundary.
+- Existing macOS real-device artifacts predate this telemetry and therefore do
+  not prove zero native-ring loss for the new boundary. A new physical-device
+  capture artifact is required before upgrading this section.
+- No queue was made unbounded, and no mock, fallback, provider path, or new
+  loopback-only behavior was introduced.
+
+## Windows active-source lifecycle events — 2026-07-23
+
+- Status: `SAFE-TO-TEST`; the shared contract and Windows ARM64 compilation
+  gates pass, while native active-process-exit and endpoint-invalidation
+  artifacts remain open.
+- `pks-capture` now owns a typed `SourceRuntimeEvent` control stream. It carries
+  the exact stable identity and generation, distinguishes authoritative
+  `SourceUnavailable` from `BackendFailure`, and requires explicit rediscovery
+  plus a new Session after disappearance.
+- The control stream is bounded to eight events in the Windows backend.
+  Publication uses nonblocking `try_send`; a full channel drops the newest
+  event and exposes exact enqueued/dropped totals. Event creation and
+  publication happen only on the capture worker after a terminal condition,
+  never in the audio delivery callback.
+- Active Windows process-loopback retains a synchronization handle for the
+  process incarnation verified at open. A signaled handle emits typed
+  `SourceUnavailable` with `SourceInstanceExited`; PID reuse cannot silently
+  retarget the active Session.
+- WASAPI query, read, and event-wait failures retain their exact Windows
+  HRESULT when present. Only `AUDCLNT_E_DEVICE_INVALIDATED` is classified as
+  source disappearance. Resource invalidation, process-watch errors, oversize
+  packets, and all other WASAPI classes remain typed backend failures rather
+  than being guessed as disappearance.
+- Acceptance: 44 shared capture tests and 15 Windows host-neutral tests pass;
+  `cargo check -p pks-capture-windows --target aarch64-pc-windows-msvc` and
+  target strict Clippy pass.
+- `pks proof sources` and `pks capture from` now consume the typed Windows
+  events and retain exact failure plus event-channel observations. This CLI
+  integration has host tests but no native Windows active-invalidation
+  artifact.
+- Residual boundaries: process-tree capture observes termination of the
+  selected root process, not each descendant; the bounded event stream may
+  report counted overflow; and native Windows active-invalidation evidence is
+  still required.
+- No scaffold, mock, automatic restart, replacement following, fallback,
+  provider path, or new loopback-only behavior was introduced.
+
+## Windows process-instance identity hardening — 2026-07-23
+
+- Status: `SAFE-TO-TEST`; deterministic identity tests and Windows ARM64
+  cross-checks pass, while a native PID-reuse execution artifact remains open.
+- Discovered WASAPI application sources now encode the native process creation
+  `FILETIME` with the PID in `StableSourceId`. Discovery verifies the creation
+  time again after resolving display metadata and omits a session that changed
+  or disappeared during enumeration.
+- `ExactApplication` parses that fingerprint and verifies PID plus creation time
+  immediately before and after `ActivateAudioInterfaceAsync`. A missing,
+  replaced, recycled, or malformed exact identity fails closed; no system-mix
+  or replacement-process fallback is permitted.
+- Direct `Process(pid)` remains a raw process-lifetime selector. It checks that
+  the PID is queryable and pins the observed incarnation only across that open,
+  but intentionally persists no creation-time identity and makes no
+  restart-stability claim.
+- Missing/recycled exact instances return typed `SourceUnavailable` with the
+  selected stable key. Access-denied, malformed identity, cleanup, and generic
+  backend failures remain backend errors rather than being guessed as source
+  disappearance or permission denial.
+- Four platform-neutral fingerprint parsing/matching tests join the eight
+  lifecycle/packet tests. Host tests, host and Windows ARM64 strict Clippy,
+  Windows ARM64 check/tests, and scoped format pass. The latest full
+  CODE_PROTOCOL rerun passes across 85 central Rust files.
+- No public capture-type redesign, scaffold, mock, automatic restart, fallback,
+  provider path, or new loopback-only behavior was introduced.
+
+## Windows backend open and packet-delivery hardening — 2026-07-23
+
+- Status: `SAFE-TO-TEST`; Windows target compilation and focused lifecycle
+  contracts pass, while a new native Windows execution artifact remains open.
+- The five-second backend-open deadline is now caller-bounded even when
+  `ActivateAudioInterfaceAsync` does not return. Timeout marks the open
+  cancelled, signals stop, drops the unopened worker handle without joining,
+  and returns an error. Dispatch starts only after successful backend open.
+- A late activation completion observes cancellation before process-loopback
+  initialization. Every backend mode also rejects a late success notification,
+  stops a stream that raced with timeout, and releases WASAPI/COM objects on
+  the capture worker. Exact application capture never falls back to system mix.
+- WASAPI packet size is checked with overflow-safe byte accounting before
+  reading into the fixed buffer and checked again against the delivered frame
+  count. Announced/delivered oversize increments
+  `oversized_buffer_total`; query/read failure increments
+  `stream_errors_total`; each condition terminates the failed stream instead
+  of silently breaking only the packet-drain loop.
+- Missing exact process-lifetime and input-device selectors now return
+  `SourceUnavailable` with their selected stable key. Access-denied or otherwise
+  inaccessible process/device failures remain backend errors rather than being
+  guessed as disappearance or permission denial.
+- Eight platform-neutral lifecycle/packet tests pass on the host. Targeted
+  host tests, host strict Clippy, Windows ARM64 check/tests, Windows ARM64
+  strict Clippy, workspace format, and CODE_PROTOCOL checks pass.
+- The pinned `wasapi` activation helper has no cancellation API. If Windows
+  never completes activation, one detached setup worker can remain until
+  process exit; caller latency stays bounded and no capture or dispatch
+  success is reported.
+- No scaffold, mock capture, fallback, provider path, unbounded queue, or new
+  loopback-only behavior was introduced.
+
+## Linux native capture loss telemetry — 2026-07-23
+
+- Status: `SAFE-TO-TEST`; native Linux execution remains required before a new
+  `VM-PROVEN` artifact can claim zero loss at this boundary.
+- Both PipeWire process callbacks and the ALSA capture loop now route pool
+  acquisition through one hot-path helper. Exhaustion increments
+  `pool_exhausted_total` with one relaxed atomic operation and drops the newest
+  buffer without blocking.
+- Both PipeWire producer paths route bounded SPSC pushes through one hot-path
+  helper. A rejected push increments `dispatch_queue_full_total`; a successful
+  push increments `frames_enqueued_total`. The helpers allocate, lock, block,
+  log, await, and panic nowhere.
+- Deterministic GWT tests exercise a real exhausted `AudioBufferPool`, a real
+  full `rtrb` producer, exact counter snapshots, and pool-slot reclamation.
+  All seven Linux crate tests pass in a Linux ARM64 Rust container with the
+  PipeWire/ALSA development libraries. Native device execution remains an
+  explicit acceptance command rather than a product-proof claim.
+- An exact stable application or stable input device absent at open now returns
+  typed `SourceUnavailable` with the selected stable key. Default-device,
+  fuzzy-name, malformed-node, and generic backend failures retain their prior
+  classifications. Selection remains fail-closed with no fallback.
+- Focused Linux-source formatting, host package check/strict Clippy, and the
+  Linux ARM64 crate test suite pass. The latest full protocol, hot-path
+  allocation, workspace-format, and strict workspace-Clippy gates pass.
+- No scaffold, mock, fallback, replacement-following, provider integration, or
+  new loopback-only path was introduced.
+
+## Native capture fault and identity closeout — 2026-07-23
+
+- Status: `SAFE-TO-TEST`, with deterministic Linux live-source and Windows
+  fail-closed cells `VM-PROVEN`.
+- Windows WASAPI process-loopback now queries the selected PID before opening;
+  an invalid PID can no longer initialize a silent stream and report capture
+  success.
+- `CaptureSource::identity_strength()` is now the canonical truth boundary.
+  Windows process-only application sources report `ProcessId` rather than
+  overstating executable names as stable application IDs. macOS and Linux keep
+  their stronger identity only where platform evidence supplies it.
+- The change is setup/control-path only. It adds no allocation, lock, blocking,
+  logging, async work, or platform call to an audio callback.
+- Linux live application and virtual-microphone disappearance cells retain
+  exact lineage, return `failed-continuity`, finalize recording, and show zero
+  reported capture-bridge, normalization, recorder-edge, or discontinuity
+  drops. One initial-alignment gap per stem remains explicit. That artifact
+  predates the Linux ring/pool telemetry above, so it does not claim zero loss
+  for the newly visible boundary. Windows invalid PID/microphone cells return
+  nonzero with diagnostics matching the expected patterns and leave no WAV
+  after the CLI open-order correction.
+- Output-device identities with a device UID now report
+  `StableDeviceUid`, matching input-device identity semantics.
+- Acceptance: 33 `pks-capture` tests, Windows ARM64 backend cross-check, native
+  Windows ARM64 build, and final native negative cells pass. Full evidence:
+  `../../docs/reports/2026-07-23-cross-platform-native-capture-proof.md`.
+- No fallback, replacement-following, mock, scaffold, provider path, or new
+  loopback-only product behavior was introduced.
+
+## Full-workspace protocol and downstream contract gate — 2026-07-23
+
+- Status: `SAFE-TO-TEST`. `scripts/check_protocol.sh` now scans all 85 Rust
+  source files under `src`, `crates`, and `examples`; it no longer defaults to
+  changed files or silently passes because the workspace has no root `src`.
+- The gate enforces measurement suffixes, section-banner removal, GWT test
+  names, canonical vocabulary, semantic choice types, and a new executable
+  LAW-14 check requiring a nearby `SAFETY:` invariant for every unsafe block.
+- Existing code was brought to the gate: measurement names retain explicit
+  units/ratios, legacy tests use GWT names, PipeWire callback ownership is
+  called a stream subscription, and normalized resampling writes into
+  preallocated storage without `Vec::push` on `process()`.
+- LAW-15 now executes zero-allocation gates for pipeline processing, runtime
+  plan dispatch/execution, and the audio encode/decode path instead of emitting
+  a non-binding grep warning.
+- The full workspace protocol gate, strict all-target Clippy, and all central
+  workspace tests pass, including the allocation gates.
+- Downstream impact was checked in `pks`, `control-plane`, `relay`, and
+  `web-receiver`. The current `pks` suite has 177 passing tests and strict
+  Clippy passes. Control-plane short tests, relay short race
+  tests, and web type-check/build pass. Their long soak packages were
+  intentionally not rerun as part of this naming/protocol repair.
+- No capture fallback, unbounded queue, mock, scaffold, provider integration,
+  or loopback-only product path was introduced.
+
+## Native ARM64 platform proof — 2026-07-23
+
+- Status: Linux and Windows are `SAFE-TO-TEST` and `VM-PROVEN`; macOS remains
+  the only `REAL-DEVICE-PROVEN` product slice.
+- Windows natively builds the current backend and CLI and passes discovery,
+  system mix, exact Edge process-tree capture, virtualized microphone capture,
+  WAV, and three same-source capture-reopen cells per source. A concurrent independent
+  distractor is rejected by 69.529 dB.
+- Linux natively builds the current backend and CLI and passes discovery,
+  system mix, exact PipeWire application capture, named virtual microphone
+  capture, WAV, and three same-source capture-reopen cells per source. Stable
+  application identity remains exact even when PipeWire exposes no PID; no
+  system-mix fallback is permitted. A concurrent distractor is rejected by
+  123.361 dB.
+- Linux corrections cover one-time PipeWire initialization, joined object
+  lifetimes, `InputDevice`, exact stable-node targeting, no-fallback session
+  policy, SPA chunk/layout handling, and separation of the OS callback maximum
+  from PocketStation's 10/20 ms transport frames.
+- The final Linux matrix validates exit status, at least 80% requested WAV
+  duration, and RMS above 0.001. All twelve cells pass; main WAVs are exactly
+  5.00 seconds and expected tones survive.
+- Evidence and remaining physical-device/drop-telemetry boundaries:
+  `../../docs/reports/2026-07-23-cross-platform-native-capture-proof.md`.
+- Linux also passes a bounded two-stem recording plus VM-to-host
+  relay/browser cell: 750 source frames per stem, zero runtime/relay-edge
+  drops or discontinuities, and 561 browser packets per bus with zero packet
+  loss. Windows relay/browser and both platform connector cells remain open.
+- No provider code, model graph, unbounded queue, mock capture fallback, or
+  physical-device claim was introduced.
+
+## Native ARM64 platform audit checkpoint — 2026-07-21
+
+- Status: macOS remains `REAL-DEVICE-PROVEN`; Linux is `PARTIAL` and
+  `VM-PROVEN`; Windows is `SAFE-TO-TEST` at the cross-compile boundary and
+  native execution is `BLOCKED`.
+- Mechanical Windows repairs restore
+  `cargo check -p pks-capture-windows --target aarch64-pc-windows-msvc` and
+  targeted format. They update stale exports/imports and current frame/source
+  field names; they do not claim native capture.
+- Strict Windows Clippy still reports the existing range-loop and
+  eight-argument capture-loop findings. They were not suppressed.
+- Native Linux evidence proves system-mix capture, while exact-process capture
+  fails and then aborts during PipeWire teardown. `InputDevice` remains
+  unsupported on Linux and Windows.
+- Static inspection also found that Windows exact-process capture passes
+  `include_tree = false`, which pinned `wasapi` maps to excluding the target
+  process tree. This is a P0 correctness blocker for the next implementation
+  step, not a product claim.
+- Full evidence and ordered repair plan:
+  `../../docs/reports/2026-07-21-cross-platform-native-capture-audit.md`.
+- No capture redesign, provider code, scaffold, mock, fallback, or new
+  loopback-only product path was introduced.
+
 ## W7.6 fast destination-fault matrix correction — 2026-07-20
 
 - Status: `SAFE-TO-TEST`; deterministic destination isolation passes without a
@@ -460,9 +709,30 @@
 - Added a stable `FnMut(AudioFrame)` capture callback contract across the platform adapters.
 - Added a bounded, non-blocking SPSC `CapturedFrameStream` with explicit delivered/drop counters and no hidden runtime.
 - Unit tests pass for delivery, overflow, closure, callback adaptation, and invalid capacity.
-- Real macOS exact-process capture passed with 281 consumed frames, 287,744 samples, RMS 0.141005, and zero dropped frames.
+- Real macOS exact-process capture passed with 281 consumed frames, 287,744
+  samples, RMS 0.141005, and zero drops at the then-visible captured-frame
+  stream boundary. That artifact predates the native-ring counters documented
+  above and makes no zero-loss claim for them.
 - All 112 CLI tests pass against the updated capture API.
 - The capture-stream example is target-gated so Linux and Windows all-targets
   checks compile without pretending the macOS system-loopback endpoint exists.
 - Linux capture tests explicitly reject the stream-capacity setup error so the
   cross-platform `CaptureError` contract remains exhaustively checked.
+
+## Capture timestamp epoch observability — 2026-07-24
+
+- `pks-capture` now exposes `timestamp_epoch_clamps_total` with the other native
+  capture observations.
+- Capture backends can initialize the shared monotonic timestamp domain during
+  setup, before a realtime callback reads it.
+- The macOS input adapter maps capture instants before the process epoch to the
+  earliest representable non-zero timestamp and records each mapping. Zero
+  remains reserved for an unavailable timestamp.
+- The change adds no allocation, blocking, logging, or async work to the
+  callback. The callback performs an initialized clock read, bounded
+  pool/ring work, and relaxed atomic observations.
+- The physical built-in-microphone acceptance produced 150/150 frames with no
+  pipeline loss. Evidence is owned by
+  `pocketstation-io/pks/artifacts/macos-mic-timestamp-repair-2026-07-24`.
+- `bash scripts/check_protocol.sh`, focused capture/timing tests, strict clippy,
+  the product quickstart build, and the full workspace tests pass.

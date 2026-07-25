@@ -82,7 +82,7 @@ Any cross-repo contract must be tested by a test that actually executes the cont
 
 Examples for Phase 1:
 
-- api-server token signature must be accepted by relay (or relay must explicitly own room creation in Phase 1, documented in the relay's README)
+- control-plane token signature must be accepted by relay (or relay must explicitly own room creation in Phase 1, documented in the relay's README)
 - relay signaling message JSON must round-trip through the web receiver's TypeScript types
 - fake-source publisher must complete the PUBLISH WebRTC flow against the real relay binary
 - browser subscriber must complete the SUBSCRIBE WebRTC flow against the real relay binary
@@ -95,7 +95,7 @@ Phase 1 must measure three hot paths, no more, no less. The list is fixed so thi
 
 ```
 Phase 1 performance gate:
-  1. AudioBufferPool acquire / release / drop (Criterion bench in audio-core)
+  1. AudioBufferPool acquire / release / drop (Criterion bench in pocketstation)
   2. JWT verify rate (Go bench in relay/auth)
   3. Pion TrackLocalStaticRTP.WriteRTP allocation profile (per AUDIO-009)
 ```

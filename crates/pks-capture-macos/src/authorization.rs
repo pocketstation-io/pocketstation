@@ -12,7 +12,7 @@ extern "C" {
 /// Reads the current macOS microphone authorization state without prompting.
 /// This control-path query must never run from an audio callback.
 pub fn microphone_permission_observation() -> PermissionObservation {
-    // Safety: the Objective-C function takes no pointers, performs a read-only
+    // SAFETY: the Objective-C function takes no pointers, performs a read-only
     // AVFoundation authorization query, and returns an integer value.
     permission_observation(unsafe { pks_microphone_authorization_status() })
 }

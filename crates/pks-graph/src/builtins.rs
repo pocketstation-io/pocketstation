@@ -112,13 +112,13 @@ impl NodeFactory for GainFactory {
         let gain_db = config
             .get_f32(GAIN_DB_KEY)
             .ok_or_else(|| ConfigError::Missing(GAIN_DB_KEY.to_owned()))?;
-        let gain_linear = 10f32.powf(gain_db / 20.0);
-        Ok(Box::new(GainNode { gain_linear }))
+        let gain_ratio = 10f32.powf(gain_db / 20.0);
+        Ok(Box::new(GainNode { gain_ratio }))
     }
 }
 
 pub struct GainNode {
-    gain_linear: f32, // dimensionless amplitude ratio derived from gain_db
+    gain_ratio: f32, // dimensionless amplitude ratio derived from gain_db
 }
 
 impl RuntimeNode for GainNode {
@@ -128,7 +128,7 @@ impl RuntimeNode for GainNode {
 
     fn process(&mut self, mut frame: AudioFrame) -> Result<Option<AudioFrame>, NodeError> {
         for sample in frame.buffer.as_mut_slice() {
-            *sample *= self.gain_linear;
+            *sample *= self.gain_ratio;
         }
         Ok(Some(frame))
     }

@@ -264,12 +264,12 @@ impl OpusEncoder {
         }
 
         // Avoid the 4 000-byte zero-fill that `resize(cap, 0)` performs.
-        // Safety: libopus writes sequentially into `out` before reading any
-        // byte of its output; `truncate(n)` then hides the unwritten tail.
         out.clear();
         if out.capacity() < OPUS_MAX_PACKET_BYTES {
             out.reserve(OPUS_MAX_PACKET_BYTES);
         }
+        // SAFETY: libopus writes sequentially into `out` before reading any
+        // byte of its output; `truncate(n)` then hides the unwritten tail.
         unsafe { out.set_len(OPUS_MAX_PACKET_BYTES) };
 
         let n = self.inner.encode(&i16_buf[..frame_len], out)?;
@@ -315,11 +315,9 @@ impl Default for OpusEncoder {
     }
 }
 
-// ---------------------------------------------------------------------------
 // Legacy mock alias — kept so that existing tests continue to compile without
 // modification.  Delegates to the real encoder.
 // Remove in Phase 5 once all call sites have been migrated.
-// ---------------------------------------------------------------------------
 
 /// Deprecated alias for [`OpusEncoder`].  Use `OpusEncoder` directly.
 #[cfg(any(test, feature = "test-helpers"))]
@@ -364,12 +362,12 @@ mod tests {
     use pks_frame::{AudioBufferPool, AudioFrame, SourceId, StreamId};
 
     #[test]
-    fn opus_frame_duration_ms20_is_960_samples_at_48k() {
+    fn given_20ms_opus_frame_when_sampled_at_48khz_then_contains_960_samples() {
         assert_eq!(OpusFrameDuration::Ms20.samples_at_48k(), 960);
     }
 
     #[test]
-    fn opus_encoder_encodes_960_sample_frame_to_non_empty_packet() {
+    fn given_960_sample_frame_when_encoded_then_packet_is_not_empty() {
         // Given: 960 silent samples (valid 20 ms frame per AUDIO-012)
         let mut enc = OpusEncoder::new().unwrap();
         let pcm = vec![0.0f32; OPUS_FRAME_SAMPLES];
@@ -384,7 +382,7 @@ mod tests {
     }
 
     #[test]
-    fn opus_round_trip_sine_preserves_approximate_magnitude() {
+    fn given_sine_wave_when_opus_round_trip_runs_then_approximate_magnitude_is_preserved() {
         use std::f32::consts::PI;
 
         // Given: 960-sample 440 Hz sine at 48 kHz, amplitude 0.25
@@ -469,7 +467,7 @@ mod tests {
     }
 
     #[test]
-    fn mock_encoder_round_trip_via_legacy_api() {
+    fn given_legacy_mock_api_when_round_trip_runs_then_samples_are_decoded() {
         // Given: legacy API used by sine_to_wav example
         let pool = AudioBufferPool::new(2, OPUS_FRAME_SAMPLES);
         let handle = pool.acquire().unwrap();
@@ -607,7 +605,6 @@ mod tests {
         );
     }
 
-    // -----------------------------------------------------------------------
     // Golden file: 30-second Opus encode/decode cycle
     //
     // Generates 1500 frames (30 s × 50 fps) of 440 Hz sine at 48 kHz mono,
@@ -625,7 +622,6 @@ mod tests {
     //   7. RTP timestamp delta = OPUS_FRAME_SAMPLES between every consecutive pair
     //      (monotonic clock, correct Opus RFC 7587 cadence)
     //   8. Zero encode errors
-    // -----------------------------------------------------------------------
     #[test]
     fn given_30s_sine_pcm_when_opus_round_trip_then_golden_file_invariants_pass() {
         use std::f32::consts::PI;
@@ -634,7 +630,7 @@ mod tests {
         const FREQ_HZ: f32 = 440.0;
         const AMPLITUDE: f32 = 0.25;
         const FRAME_COUNT: usize = 1500; // 30 s at 50 fps
-        const SAMPLE_RATE: f32 = 48_000.0;
+        const SAMPLE_RATE_HZ: f32 = 48_000.0;
         // Opus CELT has a pre-skip of up to ~320 samples at stream start — normal codec
         // delay, not silence injection. Our pipeline bug injects full 960-sample zero frames.
         // 479 catches half-frame-or-larger injection while passing normal pre-skip.
@@ -656,7 +652,9 @@ mod tests {
             // Generate one 960-sample frame of 440 Hz sine.
             let offset = (frame_idx * OPUS_FRAME_SAMPLES) as f32;
             let pcm_in: Vec<f32> = (0..OPUS_FRAME_SAMPLES)
-                .map(|i| (2.0 * PI * FREQ_HZ * (offset + i as f32) / SAMPLE_RATE).sin() * AMPLITUDE)
+                .map(|i| {
+                    (2.0 * PI * FREQ_HZ * (offset + i as f32) / SAMPLE_RATE_HZ).sin() * AMPLITUDE
+                })
                 .collect();
             all_pcm_in.extend_from_slice(&pcm_in);
 
@@ -696,7 +694,7 @@ mod tests {
         );
 
         // ── Invariant 3: duration ────────────────────────────────────────────
-        let duration_s = all_pcm_out.len() as f64 / SAMPLE_RATE as f64;
+        let duration_s = all_pcm_out.len() as f64 / SAMPLE_RATE_HZ as f64;
         assert!(
             (duration_s - 30.0).abs() < 0.1,
             "duration must be 30.0 ± 0.1 s, got {duration_s:.3} s"

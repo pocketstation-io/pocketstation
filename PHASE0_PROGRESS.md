@@ -1,4 +1,4 @@
-# Phase 0 Progress — audio-core
+# Phase 0 Progress — pocketstation
 
 ## Graph-crate rescue — Wave 7 (DONE 2026-06-28)
 

@@ -61,14 +61,14 @@ impl Cell {
 }
 
 struct Args {
-    duration_seconds: u64,
+    duration_s: u64,
     output: PathBuf,
     cell: Cell,
 }
 
 impl Args {
     fn parse() -> Result<Self, String> {
-        let mut duration_seconds = None;
+        let mut duration_s = None;
         let mut output = None;
         let mut cell = None;
         let mut arguments = std::env::args().skip(1);
@@ -78,7 +78,7 @@ impl Args {
                 .ok_or_else(|| format!("missing value after {argument}"))?;
             match argument.as_str() {
                 "--duration-seconds" => {
-                    duration_seconds = Some(
+                    duration_s = Some(
                         value
                             .parse::<u64>()
                             .map_err(|error| format!("invalid duration '{value}': {error}"))?,
@@ -89,12 +89,12 @@ impl Args {
                 _ => return Err(format!("unknown argument '{argument}'")),
             }
         }
-        let duration_seconds = duration_seconds.ok_or("--duration-seconds is required")?;
-        if duration_seconds == 0 {
+        let duration_s = duration_s.ok_or("--duration-seconds is required")?;
+        if duration_s == 0 {
             return Err("--duration-seconds must be greater than zero".to_owned());
         }
         Ok(Self {
-            duration_seconds,
+            duration_s,
             output: output.ok_or("--output is required")?,
             cell: cell.ok_or("--cell is required")?,
         })
@@ -372,7 +372,7 @@ impl From<EdgeObservations> for ObservationSummary {
 #[derive(Serialize)]
 struct CellSummary {
     cell: Cell,
-    duration_seconds: u64,
+    duration_s: u64,
     generated_frames_per_stem: u64,
     recording_state: String,
     recording_session_dir: String,
@@ -523,9 +523,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         ],
     )?;
 
-    let frames_to_generate = args
-        .duration_seconds
-        .saturating_mul(1_000 / FRAME_DURATION_MS);
+    let frames_to_generate = args.duration_s.saturating_mul(1_000 / FRAME_DURATION_MS);
     let stop_sequence_number = sequence_number.saturating_add(frames_to_generate);
     let run_started = Instant::now();
     while sequence_number < stop_sequence_number {
@@ -644,7 +642,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let summary = CellSummary {
         cell: args.cell,
-        duration_seconds: args.duration_seconds,
+        duration_s: args.duration_s,
         generated_frames_per_stem: sequence_number,
         recording_state: format!("{:?}", recording_outcome.state).to_lowercase(),
         recording_session_dir: recording_outcome.session_dir.display().to_string(),

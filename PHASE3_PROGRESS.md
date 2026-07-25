@@ -1,4 +1,4 @@
-# Phase 3 Progress — audio-core
+# Phase 3 Progress — pocketstation
 
 ## Phase 3 COMPLETE — 2026-05-23
 

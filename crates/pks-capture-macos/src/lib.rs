@@ -12,7 +12,7 @@ pub mod macos_tap;
 #[cfg(target_os = "macos")]
 pub use authorization::microphone_permission_observation;
 #[cfg(target_os = "macos")]
-pub use input::{discover_input_sources_native, InputCaptureObservations, MacosInputSource};
+pub use input::{discover_input_sources_native, MacosInputSource};
 #[cfg(target_os = "macos")]
 pub use macos::SystemLoopbackSource;
 #[cfg(target_os = "macos")]
@@ -50,6 +50,13 @@ impl DesktopCaptureSource {
             loopback_mode => SystemLoopbackSource::capture_mode(loopback_mode, callback)
                 .map(DesktopCaptureImplementation::Loopback)
                 .map(Self),
+        }
+    }
+
+    pub fn observations(&self) -> pks_capture::CaptureObservations {
+        match &self.0 {
+            DesktopCaptureImplementation::Input(source) => source.observations(),
+            DesktopCaptureImplementation::Loopback(source) => source.observations(),
         }
     }
 }

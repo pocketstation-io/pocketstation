@@ -268,7 +268,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn counter_inc_and_add_accumulate_correctly() {
+    fn given_empty_counter_when_incremented_and_added_then_total_accumulates() {
         let c = Counter::default();
         c.inc();
         c.inc();
@@ -277,7 +277,7 @@ mod tests {
     }
 
     #[test]
-    fn gauge_set_scaled_round_trips_without_precision_loss() {
+    fn given_scaled_gauge_when_value_round_trips_then_precision_is_preserved() {
         let g = Gauge::default();
         g.set_scaled(0.75);
         let v = g.get_scaled();
@@ -285,7 +285,7 @@ mod tests {
     }
 
     #[test]
-    fn histogram_records_count_sum_and_max_for_three_observations() {
+    fn given_three_observations_when_recorded_then_count_sum_and_max_are_preserved() {
         let h = SimpleHistogram::default();
         h.record_ns(100);
         h.record_ns(300);
@@ -296,7 +296,7 @@ mod tests {
     }
 
     #[test]
-    fn histogram_max_does_not_decrease_on_smaller_observation() {
+    fn given_histogram_max_when_smaller_value_is_recorded_then_max_does_not_decrease() {
         let h = SimpleHistogram::default();
         h.record_ns(50);
         h.record_ns(10);
@@ -304,7 +304,7 @@ mod tests {
     }
 
     #[test]
-    fn bus_metrics_all_fields_are_zero_on_default() {
+    fn given_default_bus_metrics_when_read_then_all_fields_are_zero() {
         let m = BusMetrics::default();
         assert_eq!(m.frames_total.get(), 0);
         assert_eq!(m.overruns_total.get(), 0);
@@ -314,7 +314,7 @@ mod tests {
     }
 
     #[test]
-    fn bus_metrics_fields_are_independent_of_each_other() {
+    fn given_bus_metrics_when_one_field_changes_then_other_fields_remain_independent() {
         let m = BusMetrics::default();
         m.frames_total.add(10);
         m.overruns_total.inc();
@@ -324,7 +324,7 @@ mod tests {
     }
 
     #[test]
-    fn histogram_p50_of_uniform_0_to_10ms_is_near_5ms() {
+    fn given_uniform_0_to_10ms_values_when_p50_is_read_then_value_is_near_5ms() {
         let h = SimpleHistogram::default();
         for i in 0..100u64 {
             h.record_ns(i * 100_000);
@@ -339,7 +339,7 @@ mod tests {
     }
 
     #[test]
-    fn histogram_single_sample_all_percentiles_return_same_bucket() {
+    fn given_single_sample_when_percentiles_are_read_then_each_returns_same_bucket() {
         let h = SimpleHistogram::default();
         h.record_ns(3_000_000);
         let p50 = h.p50_ns();
@@ -350,7 +350,7 @@ mod tests {
     }
 
     #[test]
-    fn histogram_p99_of_uniform_0_to_10ms_is_above_9ms() {
+    fn given_uniform_0_to_10ms_values_when_p99_is_read_then_value_is_above_9ms() {
         let h = SimpleHistogram::default();
         for i in 0..100u64 {
             h.record_ns(i * 100_000);
@@ -359,14 +359,14 @@ mod tests {
     }
 
     #[test]
-    fn histogram_overflow_sample_lands_in_overflow_bucket() {
+    fn given_overflow_sample_when_recorded_then_value_lands_in_overflow_bucket() {
         let h = SimpleHistogram::default();
         h.record_ns(20_000_000);
         assert_eq!(h.p50_ns(), bucket_midpoint_ns(OVERFLOW_BUCKET));
     }
 
     #[test]
-    fn histogram_record_ns_accumulates_10000_observations_correctly() {
+    fn given_10000_observations_when_recorded_then_histogram_accumulates_each_value() {
         let h = SimpleHistogram::default();
         for i in 0..10_000u64 {
             h.record_ns(i * 1_000);
