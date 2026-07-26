@@ -1182,3 +1182,25 @@
   108-file CODE_PROTOCOL gate passes.
 - No fallback, mock, scaffold, provider integration, CLI/SDK behavior, capture
   hot-path work, or loopback-only product claim was introduced.
+
+## W11 live plan-edge observation handle — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; `pks-runtime` now exposes a cloneable, read-only
+  `PlanEdgeObservationHandle` from `PlanEdgeReceiver` before receiver ownership
+  moves into an endpoint worker.
+- The handle is exported from `pks-runtime`; downstream endpoint adapters do
+  not reach through a private module or duplicate snapshots.
+- The handle shares the existing authoritative `EdgeTelemetry` atomics. It
+  introduces no duplicate counters and exposes no mutation, lifecycle, sender,
+  or receiver authority.
+- Live snapshots retain queue capacity/depth/peak, enqueue/delivery/drop
+  reasons, latency coverage, discontinuities, worker failures, and shutdown
+  discards after the receiver and router have been dropped.
+- Three Given/When/Then tests prove producer-side queue saturation and full
+  drops, consumer-side sequence/timestamp discontinuities, and post-drop
+  shutdown-discard snapshots through a cloned handle. The focused plan-router
+  gate passes 16/16 tests, strict all-target `pks-runtime` Clippy passes, and
+  workspace formatting passes.
+- No provider implementation, mock, scaffold, fallback, new counter source, or
+  loopback-only product path was introduced. Concrete endpoint adapters still
+  own the next W11 integration step.

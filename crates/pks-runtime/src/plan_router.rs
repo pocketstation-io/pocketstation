@@ -218,6 +218,23 @@ struct EdgeTelemetry {
     source_timestamp_to_receive_future_total: AtomicU64,
 }
 
+/// Cloneable read-only access to one plan edge's authoritative live telemetry.
+///
+/// Endpoint workers can retain this handle after taking ownership of a
+/// [`PlanEdgeReceiver`]. The handle shares the existing atomic telemetry and
+/// cannot mutate counters or edge lifecycle state.
+#[derive(Clone)]
+pub struct PlanEdgeObservationHandle {
+    telemetry: Arc<EdgeTelemetry>,
+}
+
+impl PlanEdgeObservationHandle {
+    /// Returns a point-in-time snapshot of the edge's live observations.
+    pub fn observations(&self) -> EdgeObservations {
+        self.telemetry.snapshot()
+    }
+}
+
 impl EdgeTelemetry {
     fn new(capacity_frames: usize) -> Self {
         Self {
@@ -511,6 +528,17 @@ impl PlanEdgeReceiver {
 
     pub fn to(&self) -> &InputPortRef {
         &self.to
+    }
+
+    /// Returns a read-only handle to this edge's authoritative live telemetry.
+    ///
+    /// Call this before moving the receiver into its destination worker when
+    /// another owner must observe queue, drop, discontinuity, or shutdown
+    /// state.
+    pub fn observation_handle(&self) -> PlanEdgeObservationHandle {
+        PlanEdgeObservationHandle {
+            telemetry: Arc::clone(&self.telemetry),
+        }
     }
 
     pub(crate) fn recv_at(&mut self, delivered_at_ns: u64) -> Option<PlanEdgeFrame> {
@@ -1314,6 +1342,103 @@ mod tests {
             0
         );
         assert_eq!(receivers[slow_index].observations().queue_depth_frames, 1);
+    }
+
+    #[test]
+    fn given_observation_handle_when_producer_fills_edge_then_live_queue_and_drop_are_visible() {
+        // Given
+        let registry = registry();
+        let mut graph = Pipeline::new();
+        let source = graph.add_node("passthrough", NodeConfig::new());
+        let sink = graph.add_node("passthrough", NodeConfig::new());
+        graph.connect(source.out("out"), sink.in_("in"));
+        let ir = Compiler::new()
+            .compile(graph.into_spec(), &registry)
+            .unwrap();
+        let mut plan = RuntimePlanner::new().plan(&ir).unwrap();
+        plan.memory_plan
+            .edge_buffers
+            .iter_mut()
+            .for_each(|buffer| buffer.capacity_frames = 1);
+        let (mut router, receivers) = PlanEdgeRouter::new(&plan, &ir).unwrap();
+        let observations = receivers[0].observation_handle();
+        let pool = AudioBufferPool::new(2, 2);
+
+        // When
+        let first = router.dispatch_from(source.id(), "out", frame(&pool, 1, 1), 1);
+        let second = router.dispatch_from(source.id(), "out", frame(&pool, 1, 2), 2);
+
+        // Then
+        assert_eq!(first.enqueued_edges, 1);
+        assert_eq!(second.dropped_edges, 1);
+        let snapshot = observations.observations();
+        assert_eq!(snapshot.queue_depth_frames, 1);
+        assert_eq!(snapshot.queue_peak_frames, 1);
+        assert_eq!(snapshot.frames_enqueued_total, 1);
+        assert_eq!(snapshot.frames_dropped_total, 1);
+        assert_eq!(snapshot.queue_full_drops_total, 1);
+        assert_eq!(snapshot.overruns_total, 1);
+    }
+
+    #[test]
+    fn given_observation_handle_when_consumer_detects_gap_then_live_discontinuity_is_visible() {
+        // Given
+        let registry = registry();
+        let mut graph = Pipeline::new();
+        let source = graph.add_node("passthrough", NodeConfig::new());
+        let sink = graph.add_node("passthrough", NodeConfig::new());
+        graph.connect(source.out("out"), sink.in_("in"));
+        let ir = Compiler::new()
+            .compile(graph.into_spec(), &registry)
+            .unwrap();
+        let plan = RuntimePlanner::new().plan(&ir).unwrap();
+        let (mut router, mut receivers) = PlanEdgeRouter::new(&plan, &ir).unwrap();
+        let observations = receivers[0].observation_handle();
+        let pool = AudioBufferPool::new(1, 2);
+
+        // When
+        router.dispatch_from(source.id(), "out", frame(&pool, 1, 1), 20_000_001);
+        receivers[0].recv_at(20_000_002).unwrap();
+        router.dispatch_from(source.id(), "out", frame(&pool, 1, 3), 60_000_001);
+        receivers[0].recv_at(60_000_002).unwrap();
+
+        // Then
+        let snapshot = observations.observations();
+        assert_eq!(snapshot.sequence_discontinuities_total, 1);
+        assert_eq!(snapshot.timestamp_discontinuities_total, 1);
+        assert_eq!(snapshot.discontinuities_total, 2);
+    }
+
+    #[test]
+    fn given_observation_handle_when_receiver_drops_then_shutdown_snapshot_remains_available() {
+        // Given
+        let registry = registry();
+        let mut graph = Pipeline::new();
+        let source = graph.add_node("passthrough", NodeConfig::new());
+        let sink = graph.add_node("passthrough", NodeConfig::new());
+        graph.connect(source.out("out"), sink.in_("in"));
+        let ir = Compiler::new()
+            .compile(graph.into_spec(), &registry)
+            .unwrap();
+        let plan = RuntimePlanner::new().plan(&ir).unwrap();
+        let (mut router, mut receivers) = PlanEdgeRouter::new(&plan, &ir).unwrap();
+        let receiver = receivers.pop().unwrap();
+        let observations = receiver.observation_handle();
+        let cloned_observations = observations.clone();
+        let pool = AudioBufferPool::new(1, 2);
+        router.dispatch_from(source.id(), "out", frame(&pool, 1, 1), 1);
+
+        // When
+        drop(receiver);
+        drop(router);
+
+        // Then
+        let snapshot = observations.observations();
+        assert_eq!(snapshot.queue_depth_frames, 0);
+        assert_eq!(snapshot.frames_enqueued_total, 1);
+        assert_eq!(snapshot.frames_delivered_total, 0);
+        assert_eq!(snapshot.shutdown_discarded_total, 1);
+        assert_eq!(cloned_observations.observations(), snapshot);
     }
 
     #[test]

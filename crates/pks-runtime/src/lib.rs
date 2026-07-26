@@ -20,8 +20,8 @@ pub use edge_channel::{EdgeChannel, EdgeReceiver, EdgeSender, EdgeTelemetrySnaps
 pub use executor::{ExecError, RealtimeExecutor, RunMetrics};
 pub use plan_executor::{PlanExecutionSummary, RealtimePlanExecutor};
 pub use plan_router::{
-    DispatchSummary, EdgeObservations, PlanEdgeFrame, PlanEdgeReceiver, PlanEdgeRouter,
-    PlanRouterError,
+    DispatchSummary, EdgeObservations, PlanEdgeFrame, PlanEdgeObservationHandle, PlanEdgeReceiver,
+    PlanEdgeRouter, PlanRouterError,
 };
 pub use plan_runner::{
     plan_source_channel, PlanRunnerCancellation, PlanRunnerDrainPolicy, PlanRunnerError,
