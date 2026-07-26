@@ -11,6 +11,7 @@ members = [
   "crates/pks-graph",
   "crates/pks-ml",
   "crates/pks-nodes",
+  "crates/pks-session",
   "crates/pks-capture",
   "crates/pks-capture-macos",
   "crates/pks-capture-windows",

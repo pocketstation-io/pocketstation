@@ -1253,6 +1253,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "pks-session"
+version = "0.1.0"
+dependencies = [
+ "pks-capture",
+ "pks-frame",
+ "pks-graph",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "pks-timing"
 version = "0.1.0"
 
