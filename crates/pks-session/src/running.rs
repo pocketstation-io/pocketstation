@@ -836,27 +836,35 @@ fn capture_mode(source: &Source) -> CaptureMode {
 }
 
 fn run_runtime_worker(
-    mut sources: Vec<RuntimeSource>,
+    sources: Vec<RuntimeSource>,
     mut runner: RealtimePlanRunner,
     stop_requested: Arc<AtomicBool>,
     options: SessionStartOptions,
     session_id: SessionId,
     event_sender: SessionEventSender,
 ) -> RuntimeWorkerOutcome {
+    let mut sources = sources
+        .into_iter()
+        .map(|source| (source.stem_id, Some(source.capture), source.sender))
+        .collect::<Vec<_>>();
+    let mut captures = Vec::with_capacity(sources.len());
     let mut runtime_events_total = 0u64;
     let mut runtime_failures_total = 0u64;
     let mut lineage_failures_total = 0u64;
     let mut source_send_rejections_total = 0u64;
     let mut source_failures = Vec::new();
-    'runtime: while !stop_requested.load(Ordering::Acquire) {
+    while !stop_requested.load(Ordering::Acquire) {
         let mut work_observed = false;
-        for source in &mut sources {
+        for (stem_id, capture, sender) in &mut sources {
+            let Some(active_capture) = capture.as_mut() else {
+                continue;
+            };
             loop {
-                match source.capture.try_next_lineaged_frame() {
+                match active_capture.try_next_lineaged_frame() {
                     Ok(Some(frame)) => {
                         work_observed = true;
                         if matches!(
-                            source.sender.try_send(frame),
+                            sender.try_send(frame),
                             PlanSourceSendOutcome::Rejected { .. }
                         ) {
                             source_send_rejections_total =
@@ -866,18 +874,26 @@ fn run_runtime_worker(
                     Ok(None) => break,
                     Err(_) => {
                         lineage_failures_total = lineage_failures_total.saturating_add(1);
-                        break 'runtime;
+                        if let Some(failed_capture) = capture.take() {
+                            captures.push((*stem_id, failed_capture.stop_and_join()));
+                        }
+                        break;
                     }
                 }
             }
-            if let SourceRuntimeEventReceive::Event(event) = source.capture.try_recv_runtime_event()
+            let Some(active_capture) = capture.as_ref() else {
+                continue;
+            };
+            if let SourceRuntimeEventReceive::Event(event) = active_capture.try_recv_runtime_event()
             {
                 runtime_events_total = runtime_events_total.saturating_add(1);
                 runtime_failures_total = runtime_failures_total.saturating_add(1);
-                let failure = SessionSourceFailure::new(source.stem_id, event);
+                let failure = SessionSourceFailure::new(*stem_id, event);
                 let _ = event_sender.publish_source(session_id, failure.clone());
                 source_failures.push(failure);
-                break 'runtime;
+                if let Some(failed_capture) = capture.take() {
+                    captures.push((*stem_id, failed_capture.stop_and_join()));
+                }
             }
         }
         if runner
@@ -891,10 +907,13 @@ fn run_runtime_worker(
             std::thread::sleep(Duration::from_millis(options.runtime_idle_poll_ms));
         }
     }
-    let captures = sources
-        .into_iter()
-        .map(|source| (source.stem_id, source.capture.stop_and_join()))
-        .collect();
+    captures.extend(
+        sources
+            .into_iter()
+            .filter_map(|(stem_id, capture, _sender)| {
+                capture.map(|capture| (stem_id, capture.stop_and_join()))
+            }),
+    );
     let runner = runner.finish(
         PlanRunnerDrainPolicy::DiscardQueued,
         options.runtime_work_budget_frames,

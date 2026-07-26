@@ -1,5 +1,21 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W11 source-failure branch isolation — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; the canonical Session runtime now stops and
+  finalizes only the capture owner that emits a typed source failure. Other
+  source stems continue through their independent bounded routes until the
+  Session owner requests stop.
+- The failed source remains represented in terminal source failures and makes
+  the final Session outcome failed. Branch isolation does not hide or
+  downgrade the fault.
+- A focused two-source/six-route test injects an authoritative application
+  disappearance before runtime polling and proves the microphone frame still
+  reaches all three destinations, exactly one source failure is emitted, all
+  owners finalize, and the Session outcome remains failed.
+- No retry, selector fallback, source replacement, unbounded queue, mock
+  product path, or loopback-only behavior was introduced.
+
 ## W11 declared connector identity handoff — 2026-07-26
 
 - Status: `SAFE-TO-TEST`; the `EndpointHandle` returned by

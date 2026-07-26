@@ -5,15 +5,18 @@ use std::time::Duration;
 use pks_caps::{AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec};
 use pks_capture::{
     ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode,
-    CaptureObservationCounters, CaptureObservations, PreparedCaptureBackend,
-    SourceRuntimeEventSender,
+    CaptureObservationCounters, CaptureObservations, CaptureRuntimeFailure,
+    CaptureRuntimeFailureClass, PreparedCaptureBackend, SourceGeneration, SourceKind,
+    SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventSender, StableSourceId,
 };
 use pks_endpoint::{
     EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization,
     EndpointDriverInput, EndpointDriverObservations, EndpointDriverRegistry, EndpointFailure,
     EndpointFailureStage, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver,
 };
-use pks_frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId};
+use pks_frame::{
+    AudioBufferPool, AudioFrame, Platform, SampleFormat, SampleSpec, SourceId, StreamId,
+};
 use pks_graph::{
     ConfigError, ExecutionPartition, NodeConfig, NodeDescriptor, NodeError, NodeFactory,
     NodeRegistry, NodeTypeId, PrepareContext, RuntimeNode,
@@ -189,6 +192,7 @@ struct CaptureControl {
     fail_prepare: AtomicBool,
     fail_open: AtomicBool,
     fail_stop: AtomicBool,
+    emit_source_unavailable: AtomicBool,
 }
 
 struct TestCaptureBackend {
@@ -243,6 +247,24 @@ impl PreparedCaptureBackend for TestPreparedCapture {
         buffer.set_len(960);
         let frame = AudioFrame::new(StreamId(self.source_id.0), self.source_id, 1, 2, 1, buffer);
         let _ = delivery.frame_sender.try_send(frame);
+        if self.control.emit_source_unavailable.load(Ordering::Acquire) {
+            let _ = delivery
+                .runtime_event_sender
+                .try_send(SourceRuntimeEvent::SourceUnavailable {
+                    stable_id: StableSourceId::new(
+                        Platform::Unknown,
+                        SourceKind::Application,
+                        format!("test-source-{}", self.source_id.0),
+                    ),
+                    generation: SourceGeneration::INITIAL.next(),
+                    recovery_requirement:
+                        SourceRecoveryRequirement::ExplicitRediscoveryAndNewSession,
+                    failure: CaptureRuntimeFailure {
+                        operation: "test capture lifecycle",
+                        error_class: CaptureRuntimeFailureClass::SourceInstanceExited,
+                    },
+                });
+        }
         self.control
             .live_active_total
             .fetch_add(1, Ordering::Relaxed);
@@ -616,6 +638,44 @@ fn given_two_sources_when_started_then_gate_lineage_and_repeated_stop_are_truthf
         Some(SessionEventKind::Terminal(terminal))
             if terminal.state() == SessionTerminalState::Stopped
     ));
+}
+
+#[test]
+fn given_one_source_failure_when_runtime_continues_then_healthy_source_frame_is_delivered() {
+    let (nodes, operators) = registries();
+    let application = Arc::new(CaptureControl::default());
+    application
+        .emit_source_unavailable
+        .store(true, Ordering::Release);
+    let microphone = Arc::new(CaptureControl::default());
+    let endpoints = Arc::new(EndpointControl::default());
+    let application_backend = capture_backend(&application, 11);
+    let microphone_backend = capture_backend(&microphone, 22);
+    let registry = endpoint_registry(&endpoints);
+
+    let mut running = start_prepared_session(
+        prepared_session(&nodes, &operators),
+        capture_backend_set(&application_backend, &microphone_backend),
+        &registry,
+        SessionStartOptions::default(),
+    )
+    .expect("transactional Session startup must succeed");
+    let events = running
+        .take_event_receiver()
+        .expect("running Session must expose its event receiver");
+    std::thread::sleep(Duration::from_millis(30));
+    let outcome = running.stop();
+
+    assert!(!outcome.is_success());
+    assert_eq!(endpoints.deliveries_total.load(Ordering::Relaxed), 6);
+    let mut source_failures_total = 0;
+    while let SessionEventReceive::Event(event) = events.try_recv() {
+        if matches!(event.kind(), SessionEventKind::Source(_)) {
+            source_failures_total += 1;
+        }
+    }
+    assert_eq!(source_failures_total, 1);
+    assert_no_live_owners(&application, &microphone, &endpoints);
 }
 
 #[test]
