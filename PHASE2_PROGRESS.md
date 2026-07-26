@@ -1,5 +1,63 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W11 endpoint-driver lifecycle contract — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; the new acyclic `pks-endpoint` crate owns the open
+  endpoint-driver registry and setup-time lifecycle contract shared by
+  `pks-session` orchestration and concrete destination packages.
+- `EndpointDriverRegistry` resolves only an exact open `OperatorId` plus
+  `NodeTypeId` pair and transfers the route's existing bounded
+  `PlanEdgeReceiver` into the selected factory. Unknown, empty, and duplicate
+  registrations and driver preparation failures remain typed.
+- Prepared endpoints may start only while the shared gate is closed. Starting
+  makes the driver ready but does not authorize delivery; only the
+  Session-owned `EndpointStartGateController` can open the one-way gate after
+  every startup resource is ready. An already-open gate fails start and returns
+  the prepared endpoint for rollback.
+- Preparation cancellation, idempotent stop request, and join/finalize return
+  authoritative endpoint observations and preserve stop and finalization
+  failures independently. The contract creates no worker thread and contains
+  no concrete connector, relay, recorder, provider, or production no-op
+  implementation.
+- `OperatorId` moved to this lower contract crate and remains re-exported from
+  `pks-session`. Its version-one serialized form is explicitly one transparent
+  UTF-8 string; `SessionSpec` retains document migration authority.
+- Six contract tests prove exact registry resolution, multi-endpoint prepare
+  rollback, closed-gate readiness with no pre-open delivery, fail-closed
+  already-open start, and truthful stop/join failure reporting. All 16
+  `pks-session` tests, strict Clippy for both packages, focused formatting, the
+  architecture dependency lint, and full CODE_PROTOCOL pass.
+- No scaffold, mock product path, fallback, provider implementation, helper
+  process, or loopback-only product behavior was introduced. The only driver
+  implementation is a `cfg(test)` contract double.
+
+## W11 Session compiler and RuntimePlan ownership — 2026-07-26
+
+- Status: `PARTIAL`; immutable Session declarations now lower through the real
+  `pks-graph` compiler and runtime planner, while runtime start, capture and
+  endpoint ownership, transactional rollback, stopping, and finalization
+  remain open.
+- `SessionCompiler` consumes a validated `SessionSpec`, the existing
+  `NodeRegistry`, and an open `OperatorRegistry` mapping `OperatorId` to
+  `NodeTypeId`. Unknown operators, missing source node types, mismatched
+  operator/node registrations, reserved configuration keys, graph compile
+  errors, and planner errors remain typed.
+- Each captured stem lowers to one source node. Each route lowers to its own
+  endpoint node and edge, so two stems sharing connector/browser declarations
+  still receive independent edge queues and memory plans.
+- `CompiledSession` privately owns the immutable specification, verified
+  `GraphIr`, and `RuntimePlan`. Its public surface exposes declarations and
+  summary counts, not graph IR, runtime plans, factories, pools, or executor
+  internals.
+- The focused product topology compiles two sources plus six route endpoints
+  into eight nodes and six independent graph/planned edges. Test-only
+  descriptors are registry-backed and their compile-only factories return a
+  typed error if execution is attempted; no no-op endpoint success exists.
+- Eleven focused tests, package strict Clippy, and format pass. This step adds no
+  `start`, `Running`, runtime-success, endpoint worker, capture backend,
+  provider implementation, mock product path, fallback, or loopback-only
+  claim.
+
 ## W11 callback capture ownership contract — 2026-07-26
 
 - Status: `SAFE-TO-TEST`; `pks-capture` now owns a platform-neutral
@@ -8,11 +66,27 @@
   typed runtime-event channel, and their authoritative observations. Prepared
   and active owners are distinct, and a prepared backend can open only once.
 - Dropping the owner reclaims the backend through its RAII contract; explicit
-  `stop_and_join` returns final observations. The existing pull-oriented
-  `PlatformAdapter` remains a documented legacy compatibility path.
-- Forty-eight package tests, strict clippy, and full CODE_PROTOCOL pass.
-- Target-specific macOS, Windows, and Linux adapters are not implemented yet,
-  so this component contract is not real-path Session evidence.
+  `stop_and_join` joins every native worker before returning final observations
+  and maps a worker panic to typed `CaptureWorkerPanicked`. Drop performs the
+  same reclamation best-effort without propagating failure. The existing
+  pull-oriented `PlatformAdapter` remains a documented legacy compatibility
+  path.
+- Fifty package tests, strict clippy, focused format, and the full
+  CODE_PROTOCOL gate pass.
+- Thin target adapters now move the platform-neutral bounded delivery
+  endpoints into the existing macOS, Windows, and Linux
+  `DesktopCaptureSource` owners. macOS native check, tests, and strict Clippy
+  pass. Windows ARM64 MSVC check and strict Clippy pass as cross-compilation
+  evidence only; its existing typed runtime events now publish directly into
+  the supplied Session channel with no forwarding thread or duplicate queue.
+  macOS and Linux likewise move the supplied sender into their native
+  callback/worker owner: CPAL and PipeWire callbacks publish a prebuilt,
+  allocation-free one-shot failure event, and reader failure ownership closes
+  when the native producer exits.
+  Linux source integration is implemented, but macOS cross-compilation stops
+  in `alsa-sys` before the crate builds because no ARM64 Linux ALSA/PipeWire
+  pkg-config sysroot is installed. Linux therefore still requires a native VM
+  check, and the target adapters are not yet real Session-path evidence.
 - No live scaffold, mock, fallback, helper process, provider implementation, or
   loopback-only product path was introduced. Contract doubles are test-only.
 
@@ -38,6 +112,58 @@
   `RuntimeNotIntegrated`, C ABI, mock, scaffold, fallback, or loopback-only
   path.
 
+## W11 Session runtime preparation — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; consuming a `CompiledSession` now instantiates the
+  real `RealtimePlanExecutor`, creates one bounded `PlanSource` channel for
+  each declared stem, and retains each non-realtime edge receiver with its
+  exact route, stem, and endpoint identity.
+- Preparation validates that the compiled plan produces exactly one worker
+  receiver per route, rejects missing, invalid, unknown, duplicate, or
+  mismatched route metadata with typed errors, and rolls all instantiated
+  nodes and bounded channels back through ownership drop on any failure.
+- The public prepared surface exposes Session, stem, route, and endpoint
+  identities plus counts and observations. Graph node IDs, the executor,
+  source consumers, worker receivers, and cancellation ownership remain
+  internal for the later `RunningSession` transition.
+- Sixteen focused `pks-session` tests pass. Four preparation tests use explicit
+  test factories to prove two independently bounded source channels, six
+  independently mapped worker receivers, and zero live nodes after both
+  receiver-mapping and source-channel failures. Focused strict Clippy and the
+  full workspace CODE_PROTOCOL gate pass.
+- This step opens no capture backend, starts no endpoint worker or runtime
+  thread, publishes no `Running` state, and adds no production no-op node,
+  scaffold, mock, fallback, provider implementation, or loopback-only path.
+
+## W11 lineage-authoritative runtime routing — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; canonical `pks-runtime` source ingress, realtime
+  execution, bounded edge fan-out, and worker delivery now retain the exact
+  capture-time `FrameLineage`.
+- `PlanSourceSender` accepts only `LineagedAudioFrame`. Full or cancelled sends
+  return a non-allocating outcome containing a small typed reason and the
+  rejected exclusive frame, preserving explicit drop-newest ownership without
+  boxing on the hot path.
+- `RealtimePlanExecutor` temporarily separates samples from lineage only while
+  a registered `RuntimeNode` processes the exclusive `AudioFrame`. It validates
+  the returned frame identity and reattaches the same immutable lineage;
+  source, sequence, or timestamp mutation fails typed execution instead of
+  reconstructing source generation, discontinuity, or permission epochs.
+- `PlanEdgeRouter` preserves lineage through both shared-reference fan-out and
+  branch-pool copies. Receivers expose the retained lineage and count an
+  authoritative discontinuity-epoch transition beside existing sequence and
+  timestamp discontinuities.
+- Raw `dispatch_from` and `execute_from` remain documented compatibility entry
+  points for existing callers only. The canonical runner cannot enter that
+  path, and lineaged/raw edge variants fail closed if mixed during execution.
+- Focused tests prove exact lineage across three independent copied branches,
+  realtime operator processing, discontinuity-epoch observation, independent
+  multi-source dispatch, bounded cancellation, and zero-allocation lineaged
+  router, executor, and runner processing.
+- No frame allocates, no lineage epoch is inferred on the canonical path, and
+  no Session lifecycle authority, provider implementation, scaffold, mock,
+  fallback, or loopback-only product behavior was introduced.
+
 ## W11 bounded multi-source runtime runner — 2026-07-26
 
 - Status: `SAFE-TO-TEST`; this is a reusable runtime component, not a complete
@@ -57,7 +183,7 @@
   no more than its declared frame budget, remaining frames discard explicitly,
   discard-only finalization executes no frame, and prepared runner processing
   performs zero heap allocation.
-- Acceptance passes: scoped format, locked package check, all 40 runtime unit
+- Acceptance passes: scoped format, locked package check, all 43 runtime unit
   tests plus three allocation tests, strict all-target `pks-runtime` Clippy,
   and the full CODE_PROTOCOL gate.
 - No Session type, lifecycle authority, worker thread, capture implementation,
