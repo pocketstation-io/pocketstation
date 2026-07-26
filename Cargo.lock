@@ -1226,6 +1226,7 @@ version = "0.1.0"
 dependencies = [
  "hound",
  "pks-caps",
+ "pks-endpoint",
  "pks-frame",
  "pks-graph",
  "pks-ml",

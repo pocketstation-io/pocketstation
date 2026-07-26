@@ -1,12 +1,14 @@
+use std::fmt;
 use std::fs::{self, File};
 use std::io::{BufReader, BufWriter, Read, Write};
 use std::path::{Path, PathBuf};
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+use std::sync::{Arc, Mutex};
 use std::thread::{self, JoinHandle};
 use std::time::Duration;
 
 use hound::{SampleFormat as WavSampleFormat, WavSpec, WavWriter};
+use pks_endpoint::EndpointStartGate;
 use pks_frame::{ClockDomainId, SessionId, SourceId, StemId};
 use pks_runtime::{EdgeObservations, PlanEdgeFrame, PlanEdgeReceiver};
 use pks_timing::TimelineMapping;
@@ -63,12 +65,75 @@ pub enum RecorderError {
     TooManyGaps(String),
     #[error("recorder worker '{0}' panicked")]
     WorkerPanicked(String),
+    #[error("recording publication failed: {0}")]
+    Publication(String),
+    #[error("recording cannot roll back after its start gate opened")]
+    RollbackAfterStart,
+    #[error(transparent)]
+    Rollback(#[from] RecordingRollbackFailure),
     #[error("I/O error: {0}")]
     Io(#[from] std::io::Error),
     #[error("WAV error: {0}")]
     Wav(#[from] hound::Error),
     #[error("JSON error: {0}")]
     Json(#[from] serde_json::Error),
+}
+
+#[derive(Debug)]
+pub struct RecordingRollbackFailure {
+    worker_failures: Vec<RecordingRollbackWorkerFailure>,
+    cleanup_failure: Option<std::io::Error>,
+}
+
+impl RecordingRollbackFailure {
+    pub fn worker_failures(&self) -> &[RecordingRollbackWorkerFailure] {
+        &self.worker_failures
+    }
+
+    pub const fn cleanup_failure(&self) -> Option<&std::io::Error> {
+        self.cleanup_failure.as_ref()
+    }
+}
+
+impl fmt::Display for RecordingRollbackFailure {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            formatter,
+            "recording rollback failed for {} worker(s)",
+            self.worker_failures.len()
+        )?;
+        if let Some(cleanup_failure) = &self.cleanup_failure {
+            write!(
+                formatter,
+                "; pending artifact cleanup failed: {cleanup_failure}"
+            )?;
+        }
+        Ok(())
+    }
+}
+
+impl std::error::Error for RecordingRollbackFailure {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        self.cleanup_failure
+            .as_ref()
+            .map(|failure| failure as &(dyn std::error::Error + 'static))
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RecordingRollbackWorkerFailure {
+    label: String,
+    error: String,
+}
+
+impl RecordingRollbackWorkerFailure {
+    pub fn label(&self) -> &str {
+        &self.label
+    }
+
+    pub fn error(&self) -> &str {
+        &self.error
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -165,11 +230,23 @@ pub struct RecordingStemOutcome {
     pub stale_frames: u64,
     pub gap_ranges: Vec<DiscontinuityRecord>,
     pub error: Option<String>,
+    pub edge_observations: EdgeObservations,
+}
+
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct RecordingObservations {
+    pub frames_received_total: u64,
+    pub frames_written_total: u64,
+    pub frames_rejected_total: u64,
+    pub discontinuities_total: u64,
+    pub failures_total: u64,
 }
 
 pub struct MultistemRecording {
     session_id: SessionId,
     session_dir: PathBuf,
+    pending_session_dir: Option<PathBuf>,
+    start_gate: Option<Arc<EndpointStartGate>>,
     configs: Vec<RecorderStemConfig>,
     workers: Vec<RecorderWorker>,
     finished: bool,
@@ -181,12 +258,47 @@ impl MultistemRecording {
         session_id: SessionId,
         stems: Vec<(RecorderStemConfig, PlanEdgeReceiver)>,
     ) -> Result<Self, RecorderError> {
+        Self::start_with_gate(output_root, session_id, stems, None)
+    }
+
+    pub(crate) fn start_gated(
+        output_root: impl AsRef<Path>,
+        session_id: SessionId,
+        stems: Vec<(RecorderStemConfig, PlanEdgeReceiver)>,
+        start_gate: Arc<EndpointStartGate>,
+    ) -> Result<Self, RecorderError> {
+        Self::start_with_gate(output_root, session_id, stems, Some(start_gate))
+    }
+
+    fn start_with_gate(
+        output_root: impl AsRef<Path>,
+        session_id: SessionId,
+        stems: Vec<(RecorderStemConfig, PlanEdgeReceiver)>,
+        start_gate: Option<Arc<EndpointStartGate>>,
+    ) -> Result<Self, RecorderError> {
         let session_dir = output_root
             .as_ref()
             .join(format!("session-{}", session_id.0));
         if session_dir.exists() {
             return Err(RecorderError::OutputExists(session_dir));
         }
+        let pending_session_dir = start_gate.as_ref().map(|_| {
+            output_root
+                .as_ref()
+                .join(format!(".session-{}.pending", session_id.0))
+        });
+        if let Some(pending_session_dir) = &pending_session_dir {
+            if pending_session_dir.exists() {
+                return Err(RecorderError::OutputExists(pending_session_dir.clone()));
+            }
+        }
+        let working_session_dir = pending_session_dir.as_ref().unwrap_or(&session_dir).clone();
+        let publication = pending_session_dir.as_ref().map(|pending_session_dir| {
+            Arc::new(RecordingPublication::new(
+                pending_session_dir.clone(),
+                session_dir.clone(),
+            ))
+        });
 
         let mut configs = Vec::with_capacity(stems.len());
         for (config, _) in &stems {
@@ -221,20 +333,26 @@ impl MultistemRecording {
         }
 
         fs::create_dir_all(output_root.as_ref())?;
-        fs::create_dir(&session_dir)?;
-        fs::create_dir(session_dir.join("stems"))?;
-        fs::create_dir(session_dir.join("events"))?;
-        fs::create_dir(session_dir.join("metrics"))?;
+        fs::create_dir(&working_session_dir)?;
+        fs::create_dir(working_session_dir.join("stems"))?;
+        fs::create_dir(working_session_dir.join("events"))?;
+        fs::create_dir(working_session_dir.join("metrics"))?;
 
-        write_permission_events(&session_dir, &configs)?;
+        write_permission_events(&working_session_dir, &configs)?;
         write_manifest(
-            &session_dir,
+            &working_session_dir,
             &ManifestDocument::initial(session_id, &configs),
         )?;
 
         let mut workers = Vec::with_capacity(stems.len());
         for (config, receiver) in stems {
-            match RecorderWorker::spawn(session_dir.clone(), config, receiver) {
+            match RecorderWorker::spawn(
+                session_dir.clone(),
+                config,
+                receiver,
+                start_gate.clone(),
+                publication.clone(),
+            ) {
                 Ok(worker) => workers.push(worker),
                 Err(error) => {
                     for worker in &workers {
@@ -242,6 +360,9 @@ impl MultistemRecording {
                     }
                     for worker in workers {
                         let _ = worker.join();
+                    }
+                    if let Some(pending_session_dir) = &pending_session_dir {
+                        fs::remove_dir_all(pending_session_dir)?;
                     }
                     return Err(error);
                 }
@@ -251,6 +372,8 @@ impl MultistemRecording {
         Ok(Self {
             session_id,
             session_dir,
+            pending_session_dir,
+            start_gate,
             configs,
             workers,
             finished: false,
@@ -259,6 +382,70 @@ impl MultistemRecording {
 
     pub fn session_dir(&self) -> &Path {
         &self.session_dir
+    }
+
+    pub fn observations(&self) -> RecordingObservations {
+        self.workers.iter().map(RecorderWorker::observations).fold(
+            RecordingObservations::default(),
+            |mut total, current| {
+                total.frames_received_total = total
+                    .frames_received_total
+                    .saturating_add(current.frames_received_total);
+                total.frames_written_total = total
+                    .frames_written_total
+                    .saturating_add(current.frames_written_total);
+                total.frames_rejected_total = total
+                    .frames_rejected_total
+                    .saturating_add(current.frames_rejected_total);
+                total.discontinuities_total = total
+                    .discontinuities_total
+                    .saturating_add(current.discontinuities_total);
+                total.failures_total = total.failures_total.saturating_add(current.failures_total);
+                total
+            },
+        )
+    }
+
+    pub fn request_stop(&self) {
+        for worker in &self.workers {
+            worker.request_stop();
+        }
+    }
+
+    pub(crate) fn rollback_before_start(mut self) -> Result<RecordingObservations, RecorderError> {
+        if self
+            .start_gate
+            .as_ref()
+            .is_some_and(|start_gate| start_gate.is_open())
+        {
+            return Err(RecorderError::RollbackAfterStart);
+        }
+        let observations = self.observations();
+        self.request_stop();
+        let worker_failures = self
+            .workers
+            .drain(..)
+            .filter_map(|worker| {
+                let outcome = worker.join();
+                outcome.error.map(|error| RecordingRollbackWorkerFailure {
+                    label: outcome.label,
+                    error,
+                })
+            })
+            .collect::<Vec<_>>();
+        let cleanup_failure = self
+            .pending_session_dir
+            .as_ref()
+            .and_then(|pending_session_dir| fs::remove_dir_all(pending_session_dir).err());
+        self.finished = true;
+        if worker_failures.is_empty() && cleanup_failure.is_none() {
+            Ok(observations)
+        } else {
+            Err(RecorderError::Rollback(RecordingRollbackFailure {
+                worker_failures,
+                cleanup_failure,
+            }))
+        }
     }
 
     pub fn finish(mut self) -> Result<RecordingOutcome, RecorderError> {
@@ -316,6 +503,7 @@ impl MultistemRecording {
                     .as_ref()
                     .map_or_else(Vec::new, |report| report.gap_ranges.clone()),
                 error: outcome.error.clone(),
+                edge_observations: outcome.observations,
             })
             .collect();
         self.finished = true;
@@ -340,6 +528,45 @@ impl Drop for MultistemRecording {
         for worker in self.workers.drain(..) {
             let _ = worker.join();
         }
+        if let Some(pending_session_dir) = &self.pending_session_dir {
+            let _ = fs::remove_dir_all(pending_session_dir);
+        }
+    }
+}
+
+struct RecordingPublication {
+    pending_session_dir: PathBuf,
+    session_dir: PathBuf,
+    result: Mutex<Option<Result<(), String>>>,
+}
+
+impl RecordingPublication {
+    fn new(pending_session_dir: PathBuf, session_dir: PathBuf) -> Self {
+        Self {
+            pending_session_dir,
+            session_dir,
+            result: Mutex::new(None),
+        }
+    }
+
+    fn publish(&self) -> Result<(), RecorderError> {
+        let mut result = self
+            .result
+            .lock()
+            .map_err(|_| RecorderError::Publication("publication lock was poisoned".to_owned()))?;
+        if result.is_none() {
+            *result = Some(
+                fs::rename(&self.pending_session_dir, &self.session_dir)
+                    .map_err(|error| error.to_string()),
+            );
+        }
+        match result.as_ref() {
+            Some(Ok(())) => Ok(()),
+            Some(Err(error)) => Err(RecorderError::Publication(error.clone())),
+            None => Err(RecorderError::Publication(
+                "publication result was not recorded".to_owned(),
+            )),
+        }
     }
 }
 
@@ -347,6 +574,7 @@ struct RecorderWorker {
     label: String,
     stop_requested: Arc<AtomicBool>,
     join_handle: JoinHandle<StemWorkerOutcome>,
+    telemetry: Arc<RecorderWorkerTelemetry>,
 }
 
 impl RecorderWorker {
@@ -354,17 +582,32 @@ impl RecorderWorker {
         session_dir: PathBuf,
         config: RecorderStemConfig,
         receiver: PlanEdgeReceiver,
+        start_gate: Option<Arc<EndpointStartGate>>,
+        publication: Option<Arc<RecordingPublication>>,
     ) -> Result<Self, RecorderError> {
         let label = config.label.as_str().to_owned();
         let stop_requested = Arc::new(AtomicBool::new(false));
         let worker_stop = Arc::clone(&stop_requested);
+        let telemetry = Arc::new(RecorderWorkerTelemetry::default());
+        let worker_telemetry = Arc::clone(&telemetry);
         let join_handle = thread::Builder::new()
             .name(format!("pks-recorder-{label}"))
-            .spawn(move || run_stem_worker(&session_dir, config, receiver, worker_stop))?;
+            .spawn(move || {
+                run_stem_worker(
+                    &session_dir,
+                    config,
+                    receiver,
+                    worker_stop,
+                    start_gate,
+                    publication,
+                    worker_telemetry,
+                )
+            })?;
         Ok(Self {
             label,
             stop_requested,
             join_handle,
+            telemetry,
         })
     }
 
@@ -385,6 +628,31 @@ impl RecorderWorker {
                     ..EdgeObservations::default()
                 },
             })
+    }
+
+    fn observations(&self) -> RecordingObservations {
+        self.telemetry.snapshot()
+    }
+}
+
+#[derive(Default)]
+struct RecorderWorkerTelemetry {
+    frames_received_total: AtomicU64,
+    frames_written_total: AtomicU64,
+    frames_rejected_total: AtomicU64,
+    discontinuities_total: AtomicU64,
+    failures_total: AtomicU64,
+}
+
+impl RecorderWorkerTelemetry {
+    fn snapshot(&self) -> RecordingObservations {
+        RecordingObservations {
+            frames_received_total: self.frames_received_total.load(Ordering::Relaxed),
+            frames_written_total: self.frames_written_total.load(Ordering::Relaxed),
+            frames_rejected_total: self.frames_rejected_total.load(Ordering::Relaxed),
+            discontinuities_total: self.discontinuities_total.load(Ordering::Relaxed),
+            failures_total: self.failures_total.load(Ordering::Relaxed),
+        }
     }
 }
 
@@ -412,16 +680,34 @@ fn run_stem_worker(
     config: RecorderStemConfig,
     mut receiver: PlanEdgeReceiver,
     stop_requested: Arc<AtomicBool>,
+    start_gate: Option<Arc<EndpointStartGate>>,
+    publication: Option<Arc<RecordingPublication>>,
+    telemetry: Arc<RecorderWorkerTelemetry>,
 ) -> StemWorkerOutcome {
-    let result = run_stem_worker_inner(session_dir, &config, &mut receiver, &stop_requested);
+    let result = run_stem_worker_inner(
+        session_dir,
+        &config,
+        &mut receiver,
+        &stop_requested,
+        start_gate.as_deref(),
+        publication.as_deref(),
+        &telemetry,
+    );
     if result.is_err() {
+        telemetry.failures_total.fetch_add(1, Ordering::Relaxed);
         receiver.mark_worker_failure();
     }
     let observations = receiver.observations();
     match result {
-        Ok(report) => StemWorkerOutcome {
+        Ok(Some(report)) => StemWorkerOutcome {
             label: config.label.as_str().to_owned(),
             report: Some(report),
+            error: None,
+            observations,
+        },
+        Ok(None) => StemWorkerOutcome {
+            label: config.label.as_str().to_owned(),
+            report: None,
             error: None,
             observations,
         },
@@ -439,7 +725,25 @@ fn run_stem_worker_inner(
     config: &RecorderStemConfig,
     receiver: &mut PlanEdgeReceiver,
     stop_requested: &AtomicBool,
-) -> Result<StemWorkerReport, RecorderError> {
+    start_gate: Option<&EndpointStartGate>,
+    publication: Option<&RecordingPublication>,
+    telemetry: &RecorderWorkerTelemetry,
+) -> Result<Option<StemWorkerReport>, RecorderError> {
+    if let Some(start_gate) = start_gate {
+        while !start_gate.is_open() {
+            if stop_requested.load(Ordering::Acquire) {
+                return Ok(None);
+            }
+            thread::park_timeout(Duration::from_millis(WORKER_IDLE_WAIT_MS));
+        }
+        publication
+            .ok_or_else(|| {
+                RecorderError::Publication(
+                    "gated recorder worker is missing publication ownership".to_owned(),
+                )
+            })?
+            .publish()?;
+    }
     let wav_path = session_dir
         .join("stems")
         .join(format!("{}.wav", config.label.as_str()));
@@ -457,8 +761,36 @@ fn run_stem_worker_inner(
     let mut state = StemWriteState::new(config.timeline_mapping.session_origin_ns);
 
     loop {
+        if start_gate.is_some_and(|gate| !gate.is_open()) {
+            if stop_requested.load(Ordering::Acquire) {
+                break;
+            }
+            thread::park_timeout(Duration::from_millis(WORKER_IDLE_WAIT_MS));
+            continue;
+        }
         if let Some(frame) = receiver.try_recv() {
+            telemetry
+                .frames_received_total
+                .fetch_add(1, Ordering::Relaxed);
+            let written_before = state.written_frames;
+            let stale_before = state.stale_frames;
+            let discontinuities_before = state.gap_ranges.len();
             state.write_frame(config, &frame, &mut writer, &mut event_writer)?;
+            telemetry.frames_written_total.fetch_add(
+                state.written_frames.saturating_sub(written_before),
+                Ordering::Relaxed,
+            );
+            telemetry.frames_rejected_total.fetch_add(
+                state.stale_frames.saturating_sub(stale_before),
+                Ordering::Relaxed,
+            );
+            telemetry.discontinuities_total.fetch_add(
+                state
+                    .gap_ranges
+                    .len()
+                    .saturating_sub(discontinuities_before) as u64,
+                Ordering::Relaxed,
+            );
             continue;
         }
         if stop_requested.load(Ordering::Acquire) {
@@ -471,7 +803,7 @@ fn run_stem_worker_inner(
     writer.finalize()?;
     let wav_bytes = fs::metadata(&wav_path)?.len();
     let checksum_fnv1a64 = checksum_fnv1a64(&wav_path)?;
-    Ok(StemWorkerReport {
+    Ok(Some(StemWorkerReport {
         first_timestamp_ns: state.first_timestamp_ns,
         final_timestamp_ns: state.expected_timestamp_ns,
         written_frames: state.written_frames,
@@ -480,7 +812,7 @@ fn run_stem_worker_inner(
         gap_ranges: state.gap_ranges,
         wav_bytes,
         checksum_fnv1a64,
-    })
+    }))
 }
 
 struct StemWriteState {
@@ -1041,6 +1373,7 @@ fn write_json_atomic(path: &Path, value: &impl Serialize) -> Result<(), Recorder
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pks_endpoint::endpoint_start_gate;
     use pks_frame::{AudioBufferPool, AudioFrame, StreamId};
     use pks_graph::compiler::Compiler;
     use pks_graph::dsl::Pipeline;
@@ -1318,5 +1651,59 @@ mod tests {
             .as_str()
             .unwrap()
             .contains("received source"));
+    }
+
+    #[test]
+    fn given_multiple_worker_and_cleanup_failures_when_rolled_back_then_all_failures_are_preserved()
+    {
+        let temp_dir = TempDir::new().unwrap();
+        let pending_path = temp_dir.path().join(".session-10.pending");
+        fs::write(&pending_path, b"not a directory").unwrap();
+        let (_gate_controller, gate) = endpoint_start_gate();
+        let failed_worker = RecorderWorker {
+            label: "failed".to_owned(),
+            stop_requested: Arc::new(AtomicBool::new(false)),
+            join_handle: thread::spawn(|| StemWorkerOutcome {
+                label: "failed".to_owned(),
+                report: None,
+                error: Some("deterministic pre-gate failure".to_owned()),
+                observations: EdgeObservations::default(),
+            }),
+            telemetry: Arc::new(RecorderWorkerTelemetry::default()),
+        };
+        let panicked_worker = RecorderWorker {
+            label: "panicked".to_owned(),
+            stop_requested: Arc::new(AtomicBool::new(false)),
+            join_handle: thread::spawn(|| -> StemWorkerOutcome {
+                panic!("deterministic pre-gate panic");
+            }),
+            telemetry: Arc::new(RecorderWorkerTelemetry::default()),
+        };
+        let recording = MultistemRecording {
+            session_id: SessionId(10),
+            session_dir: temp_dir.path().join("session-10"),
+            pending_session_dir: Some(pending_path),
+            start_gate: Some(gate),
+            configs: Vec::new(),
+            workers: vec![failed_worker, panicked_worker],
+            finished: false,
+        };
+
+        let error = recording.rollback_before_start().unwrap_err();
+
+        let RecorderError::Rollback(rollback) = error else {
+            panic!("expected typed rollback failure");
+        };
+        assert_eq!(rollback.worker_failures().len(), 2);
+        assert_eq!(rollback.worker_failures()[0].label(), "failed");
+        assert_eq!(
+            rollback.worker_failures()[0].error(),
+            "deterministic pre-gate failure"
+        );
+        assert_eq!(rollback.worker_failures()[1].label(), "panicked");
+        assert!(rollback.worker_failures()[1]
+            .error()
+            .contains("worker 'panicked' panicked"));
+        assert!(rollback.cleanup_failure().is_some());
     }
 }

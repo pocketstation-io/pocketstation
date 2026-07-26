@@ -6,6 +6,7 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
+pks-endpoint = { path = "../pks-endpoint" }
 pks-frame = { path = "../pks-frame" }
 pks-caps = { path = "../pks-caps" }
 pks-graph = { path = "../pks-graph" }

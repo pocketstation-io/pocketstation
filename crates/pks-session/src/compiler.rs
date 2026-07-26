@@ -17,6 +17,8 @@ pub const BROWSER_NODE_TYPE_ID: &str = "endpoint.browser.remote";
 pub const BROWSER_OPERATOR_ID: &str = "io.pocketstation.browser.webrtc.v1";
 pub const RECORDER_NODE_TYPE_ID: &str = "endpoint.recording.multistem";
 pub const RECORDER_OPERATOR_ID: &str = "io.pocketstation.recording.wav-stems.v1";
+pub const RECORDING_GROUP_CONFIGURATION_KEY: &str = "recording_group_id";
+pub const DEFAULT_MULTISTEM_RECORDING_GROUP_ID: &str = "session.multistem.default.v1";
 const AUDIO_OUTPUT_PORT: &str = "audio";
 const AUDIO_INPUT_PORT: &str = "audio";
 const RESERVED_ENDPOINT_CONFIGURATION_KEYS: [&str; 6] = [
@@ -321,7 +323,7 @@ fn source_node_config(session_id: SessionId, stem: &StemSpec) -> NodeConfig {
     config
 }
 
-fn endpoint_node_config(
+pub(crate) fn endpoint_node_config(
     session_id: SessionId,
     stem: &StemSpec,
     endpoint: &EndpointSpec,

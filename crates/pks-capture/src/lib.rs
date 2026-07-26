@@ -9,8 +9,9 @@ mod frame_stream;
 
 pub use capture_owner::{
     join_capture_worker, prepare_capture, ActiveCaptureBackend, CallbackCaptureBackend,
-    CaptureDelivery, CaptureOwner, CaptureOwnerObservations, CapturePrepareRequest,
-    CaptureStopOutcome, PreparedCapture, PreparedCaptureBackend,
+    CaptureDelivery, CaptureLineageSeed, CaptureOpenMetadata, CaptureOwner,
+    CaptureOwnerObservations, CapturePrepareRequest, CaptureStopOutcome, PreparedCapture,
+    PreparedCaptureBackend, CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID,
 };
 pub use frame_stream::{
     captured_frame_stream, CapturedFrameDelivery, CapturedFrameSender, CapturedFrameStream,

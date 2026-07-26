@@ -31,6 +31,43 @@
   process, or loopback-only product behavior was introduced. The only driver
   implementation is a `cfg(test)` contract double.
 
+## W11 grouped multistem recording endpoint — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; `pks-nodes::MultistemEndpointCoordinator` is one
+  Session-scoped concrete endpoint driver over the accepted
+  `MultistemRecording`. It does not duplicate WAV, timeline, discontinuity,
+  manifest, metric, checksum, or finalization algorithms.
+- AUDIO-030 adds explicit batch preparation to `pks-endpoint`. Grouping requires
+  one Session and an exact `OperatorId`, `NodeTypeId`, `EndpointGroupId`, and
+  declared endpoint set. `StemHandle::record` now persists the stable default
+  `recording_group_id` `session.multistem.default.v1`; sharing only an operator
+  or node type never groups endpoints.
+- Preparation validates the complete application/microphone batch, exact
+  endpoint IDs, Session, group, stem labels, and sample specifications before
+  creating an artifact or worker. Cancellation drops the pending receivers and
+  leaves no Session directory.
+- One prepared group starts one `MultistemRecording` while the shared gate is
+  closed. Setup uses an unpublished pending directory; workers consume zero
+  queued frames and no final Session directory or manifest exists before the
+  Session opens the gate. Opening publishes the staged directory atomically.
+  One `RunningEndpoint` owns both stems and therefore requests stop, joins
+  workers, writes one final manifest, and reports one typed outcome exactly
+  once. Pre-open rollback removes staging and reports cleanup failure rather
+  than hiding it; all workers are joined and typed worker plus cleanup failures
+  are preserved together when both occur.
+- Recorder observations now expose frames received/written/rejected,
+  discontinuities, and failures while running; final endpoint observations also
+  preserve each edge's authoritative delivery/drop counters. Incomplete worker
+  finalization remains a failed endpoint outcome with an incomplete manifest.
+- Five grouped-driver tests prove two stems in one directory/manifest,
+  pre-gate zero consumption and zero published artifacts, partial-batch and
+  ready-group rollback without artifacts, finalization failure truth, and
+  failed-branch isolation. A recorder-level test separately proves aggregate
+  pre-gate worker and cleanup failure truth. All 47 `pks-nodes` tests and all
+  six `pks-endpoint` tests pass; strict `pks-nodes` Clippy passes.
+- No process-global registry, concrete relay/provider logic, production fake,
+  fallback, helper process, or loopback-only product behavior was introduced.
+
 ## W11 Session compiler and RuntimePlan ownership — 2026-07-26
 
 - Status: `PARTIAL`; immutable Session declarations now lower through the real
@@ -1000,3 +1037,65 @@
   `pocketstation-io/pks/artifacts/macos-mic-timestamp-repair-2026-07-24`.
 - `bash scripts/check_protocol.sh`, focused capture/timing tests, strict clippy,
   the product quickstart build, and the full workspace tests pass.
+
+## Session control events and capture-owned lineage — 2026-07-26
+
+- `pks-session` now owns a bounded, non-blocking control-event queue with
+  public polling and queue observations. Event values preserve stable session,
+  stem, route, and endpoint IDs and keep source, endpoint, rollback, and
+  finalization failures separate in the terminal outcome. Construction and
+  publication authority remain crate-private.
+- Queue overflow drops the newest event and records depth, peak depth,
+  enqueue, drop, and receiver-closure counts. Six focused tests pass for FIFO
+  delivery, overflow, closure, and terminal failure preservation.
+- `pks-capture` now establishes `CaptureOpenMetadata` only after native open
+  succeeds. `CaptureOwner` wraps frames with the authoritative session/stem
+  seed, the declared monotonic capture clock, named initial source and
+  permission epochs, and discontinuity state advanced from typed source runtime
+  events. Session code no longer needs to fabricate lineage epoch literals.
+- `cargo test -p pks-capture` passes all 50 tests and
+  `cargo clippy -p pks-capture --all-targets -- -D warnings` passes.
+- `RunningSession` now publishes the typed lifecycle, source, rollback,
+  endpoint, finalization, and terminal events and exposes the sole receiver.
+  Failed startup returns `SessionStartFailure`, retaining the root typed error,
+  the bounded receiver, and every exact rollback failure instead of reducing
+  rollback truth to a count or dropping the only receiver.
+- The focused `pks-session` tests pass 27/27, strict all-target Clippy passes,
+  and the full 107-file CODE_PROTOCOL gate passes. This is component-level
+  `SAFE-TO-TEST` evidence; concrete relay/browser and example connector
+  endpoint adapters plus the installed real-path Session proof remain open.
+
+## W11 transactional RunningSession — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; `pks-session` now owns one real startup and shutdown
+  transaction over the accepted graph, runtime, capture, and endpoint owners.
+- Startup validates the narrow one-application plus one-microphone topology,
+  prepares exact endpoint batches, starts endpoint workers behind one closed
+  gate, opens both capture owners, creates the real runner, transfers all
+  resources through a bounded worker Start command, waits for readiness, and
+  opens the gate exactly once before publishing `Running`.
+- Thread-spawn failure retains the captures and runner for caller-thread
+  rollback. Every later failure unwinds runner, captures, started endpoints,
+  and prepared endpoints in reverse acquisition order. Failed startup returns
+  the root error, exact typed rollback details, and the bounded event receiver;
+  it publishes `Failed` and a failed terminal outcome before returning.
+- Runtime ingress accepts only capture-owned `LineagedAudioFrame` values.
+  Typed source disappearance terminates the Session path and is preserved in
+  the terminal outcome. Full bounded source queues, lineage rejection, runner
+  failure, capture finalization failure, endpoint stop failure, endpoint join
+  failure, and worker panic all prevent a successful stop result.
+- Stop is idempotent. It requests runtime termination, joins capture and runner
+  ownership, requests endpoint stop, joins and finalizes every endpoint, then
+  publishes `Stopped` only for a clean result or `Failed` otherwise.
+- Four transactional tests cover five endpoint owners for six routes,
+  two authoritative source lineages, zero pre-gate delivery, repeated stop,
+  endpoint prepare/start rollback, second-capture-open rollback, exact failure
+  events, and zero leaked test owners.
+- Integrated acceptance passes: 50 `pks-capture`, 43 `pks-runtime` plus three
+  allocation gates, six `pks-endpoint`, 47 `pks-nodes`, and 27 `pks-session`
+  tests; focused strict Clippy; workspace format; and the full 107-file
+  CODE_PROTOCOL gate.
+- No concrete relay/browser or connector driver, public compatibility façade,
+  C adapter, provider implementation, mock product path, fallback, helper
+  process, or new loopback-only path was introduced. Those remain later W11
+  gates.

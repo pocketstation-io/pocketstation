@@ -8,11 +8,29 @@ use crate::{
     EndpointFailure, EndpointPrepareContext, OperatorId, PreparedEndpoint, PreparedEndpointDriver,
 };
 
+pub struct EndpointDriverInput {
+    receiver: PlanEdgeReceiver,
+    context: EndpointPrepareContext,
+}
+
+impl EndpointDriverInput {
+    pub fn new(receiver: PlanEdgeReceiver, context: EndpointPrepareContext) -> Self {
+        Self { receiver, context }
+    }
+
+    pub const fn context(&self) -> &EndpointPrepareContext {
+        &self.context
+    }
+
+    pub fn into_parts(self) -> (PlanEdgeReceiver, EndpointPrepareContext) {
+        (self.receiver, self.context)
+    }
+}
+
 pub trait EndpointDriverFactory: Send + Sync {
     fn prepare(
         &self,
-        receiver: PlanEdgeReceiver,
-        context: &EndpointPrepareContext,
+        inputs: Vec<EndpointDriverInput>,
     ) -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure>;
 }
 
@@ -39,6 +57,8 @@ pub enum EndpointDriverRegistryError {
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
 pub enum EndpointPrepareError {
+    #[error("endpoint driver batch cannot be empty")]
+    EmptyBatch,
     #[error(
         "no endpoint driver registered for operator '{operator_id}' and node type '{node_type_id}'"
     )]
@@ -100,6 +120,22 @@ impl EndpointDriverRegistry {
         receiver: PlanEdgeReceiver,
         context: &EndpointPrepareContext,
     ) -> Result<PreparedEndpoint, EndpointPrepareError> {
+        self.prepare_batch(
+            operator_id,
+            node_type_id,
+            vec![EndpointDriverInput::new(receiver, context.clone())],
+        )
+    }
+
+    pub fn prepare_batch(
+        &self,
+        operator_id: &OperatorId,
+        node_type_id: &NodeTypeId,
+        inputs: Vec<EndpointDriverInput>,
+    ) -> Result<PreparedEndpoint, EndpointPrepareError> {
+        if inputs.is_empty() {
+            return Err(EndpointPrepareError::EmptyBatch);
+        }
         let key = EndpointDriverKey {
             operator_id: operator_id.clone(),
             node_type_id: node_type_id.clone(),
@@ -112,7 +148,7 @@ impl EndpointDriverRegistry {
                     node_type_id: node_type_id.as_str().to_owned(),
                 })?;
         Ok(PreparedEndpoint {
-            driver: factory.prepare(receiver, context)?,
+            driver: factory.prepare(inputs)?,
         })
     }
 }
@@ -181,8 +217,7 @@ mod tests {
     impl EndpointDriverFactory for TestDriverFactory {
         fn prepare(
             &self,
-            receiver: PlanEdgeReceiver,
-            _context: &EndpointPrepareContext,
+            mut inputs: Vec<EndpointDriverInput>,
         ) -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {
             self.control
                 .prepare_calls_total
@@ -193,6 +228,10 @@ mod tests {
                     "test prepare failure",
                 ));
             }
+            let (receiver, _context) = inputs
+                .pop()
+                .expect("single-input registry path must supply one input")
+                .into_parts();
             Ok(Box::new(TestPreparedDriver {
                 control: Arc::clone(&self.control),
                 _receiver: receiver,

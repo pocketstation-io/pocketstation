@@ -1,14 +1,59 @@
+use std::sync::atomic::{AtomicU32, AtomicU64, Ordering};
+
+use pks_frame::{
+    ClockDomainId, FrameLineage, FrameLineageError, LineagedAudioFrame, SessionId, StemId,
+};
+
 use crate::{
     captured_frame_stream, source_runtime_event_channel, CaptureError, CaptureMode,
     CaptureObservations, CapturedFrameSender, CapturedFrameStream, CapturedFrameStreamStats,
-    SourceRuntimeEventObservations, SourceRuntimeEventReceive, SourceRuntimeEventReceiver,
-    SourceRuntimeEventSender,
+    PermissionEpoch, SourceGeneration, SourceRuntimeEvent, SourceRuntimeEventObservations,
+    SourceRuntimeEventReceive, SourceRuntimeEventReceiver, SourceRuntimeEventSender,
 };
+
+/// Monotonic timestamp domain used by native capture backends.
+pub const CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID: ClockDomainId = ClockDomainId(1);
+
+/// Stable session and stem identity assigned before an exact source is opened.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct CaptureLineageSeed {
+    session_id: SessionId,
+    stem_id: StemId,
+}
+
+impl CaptureLineageSeed {
+    pub const fn new(session_id: SessionId, stem_id: StemId) -> Self {
+        Self {
+            session_id,
+            stem_id,
+        }
+    }
+
+    pub const fn session_id(self) -> SessionId {
+        self.session_id
+    }
+
+    pub const fn stem_id(self) -> StemId {
+        self.stem_id
+    }
+}
+
+/// Authoritative lineage state established only after native capture opens.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct CaptureOpenMetadata {
+    pub session_id: SessionId,
+    pub stem_id: StemId,
+    pub clock_id: ClockDomainId,
+    pub source_generation: SourceGeneration,
+    pub discontinuity_epoch: u64,
+    pub permission_epoch: PermissionEpoch,
+}
 
 /// Setup-time request for one bounded callback-oriented capture owner.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CapturePrepareRequest {
     pub mode: CaptureMode,
+    pub lineage_seed: CaptureLineageSeed,
     pub frame_capacity_frames: usize,
     pub runtime_event_capacity_events: usize,
 }
@@ -61,6 +106,7 @@ pub struct PreparedCapture {
     delivery: CaptureDelivery,
     frame_stream: CapturedFrameStream,
     runtime_event_receiver: SourceRuntimeEventReceiver,
+    lineage_seed: CaptureLineageSeed,
 }
 
 impl PreparedCapture {
@@ -70,6 +116,16 @@ impl PreparedCapture {
             active_backend,
             frame_stream: self.frame_stream,
             runtime_event_receiver: self.runtime_event_receiver,
+            open_metadata: CaptureOpenMetadata {
+                session_id: self.lineage_seed.session_id(),
+                stem_id: self.lineage_seed.stem_id(),
+                clock_id: CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID,
+                source_generation: SourceGeneration::INITIAL,
+                discontinuity_epoch: 0,
+                permission_epoch: PermissionEpoch::INITIAL,
+            },
+            source_generation: AtomicU32::new(SourceGeneration::INITIAL.0),
+            discontinuity_epoch: AtomicU64::new(0),
         })
     }
 }
@@ -97,6 +153,9 @@ pub struct CaptureOwner {
     active_backend: Box<dyn ActiveCaptureBackend>,
     frame_stream: CapturedFrameStream,
     runtime_event_receiver: SourceRuntimeEventReceiver,
+    open_metadata: CaptureOpenMetadata,
+    source_generation: AtomicU32,
+    discontinuity_epoch: AtomicU64,
 }
 
 impl CaptureOwner {
@@ -105,7 +164,48 @@ impl CaptureOwner {
     }
 
     pub fn try_recv_runtime_event(&self) -> SourceRuntimeEventReceive {
-        self.runtime_event_receiver.try_recv()
+        let received = self.runtime_event_receiver.try_recv();
+        if let SourceRuntimeEventReceive::Event(event) = &received {
+            self.observe_runtime_event(event);
+        }
+        received
+    }
+
+    pub fn try_next_lineaged_frame(
+        &mut self,
+    ) -> Result<Option<LineagedAudioFrame>, FrameLineageError> {
+        let Some(frame) = self.frame_stream.try_next() else {
+            return Ok(None);
+        };
+        let channels = usize::from(frame.channels).max(1);
+        let samples_per_channel = frame.buffer.len() / channels;
+        let duration_ns = u64::try_from(samples_per_channel)
+            .unwrap_or(u64::MAX)
+            .saturating_mul(1_000_000_000)
+            .checked_div(u64::from(frame.sample_rate_hz))
+            .unwrap_or(0);
+        let metadata = self.open_metadata();
+        let lineage = FrameLineage {
+            session_id: metadata.session_id,
+            source_id: frame.source_id,
+            stem_id: metadata.stem_id,
+            clock_id: metadata.clock_id,
+            sequence_num: frame.sequence_number,
+            timestamp_start_ns: frame.timestamp_ns,
+            duration_ns,
+            source_generation: metadata.source_generation.0,
+            discontinuity_epoch: metadata.discontinuity_epoch,
+            permission_epoch: metadata.permission_epoch.0,
+        };
+        LineagedAudioFrame::new(frame, lineage).map(Some)
+    }
+
+    pub fn open_metadata(&self) -> CaptureOpenMetadata {
+        CaptureOpenMetadata {
+            source_generation: SourceGeneration(self.source_generation.load(Ordering::Acquire)),
+            discontinuity_epoch: self.discontinuity_epoch.load(Ordering::Acquire),
+            ..self.open_metadata
+        }
     }
 
     pub fn frame_stream_closed(&self) -> bool {
@@ -125,6 +225,9 @@ impl CaptureOwner {
             active_backend,
             frame_stream,
             runtime_event_receiver,
+            open_metadata: _,
+            source_generation: _,
+            discontinuity_epoch: _,
         } = self;
         let backend = active_backend.stop_and_join()?;
         Ok(CaptureStopOutcome {
@@ -135,6 +238,16 @@ impl CaptureOwner {
             },
         })
     }
+
+    fn observe_runtime_event(&self, event: &SourceRuntimeEvent) {
+        let generation = match event {
+            SourceRuntimeEvent::SourceUnavailable { generation, .. }
+            | SourceRuntimeEvent::BackendFailure { generation, .. } => *generation,
+        };
+        self.source_generation
+            .store(generation.0, Ordering::Release);
+        self.discontinuity_epoch.fetch_add(1, Ordering::AcqRel);
+    }
 }
 
 /// Prepares a bounded capture owner without starting native delivery.
@@ -142,6 +255,7 @@ pub fn prepare_capture(
     backend: &dyn CallbackCaptureBackend,
     request: CapturePrepareRequest,
 ) -> Result<PreparedCapture, CaptureError> {
+    let lineage_seed = request.lineage_seed;
     let (frame_sender, frame_stream) = captured_frame_stream(request.frame_capacity_frames)?;
     let (runtime_event_sender, runtime_event_receiver) =
         source_runtime_event_channel(request.runtime_event_capacity_events)?;
@@ -154,6 +268,7 @@ pub fn prepare_capture(
         },
         frame_stream,
         runtime_event_receiver,
+        lineage_seed,
     })
 }
 
@@ -175,7 +290,7 @@ mod tests {
     use std::sync::atomic::{AtomicBool, Ordering};
     use std::sync::Arc;
 
-    use pks_frame::{AudioBufferPool, AudioFrame, SourceId, StreamId};
+    use pks_frame::{AudioBufferPool, AudioFrame, SessionId, SourceId, StemId, StreamId};
 
     use super::*;
     use crate::{
@@ -258,6 +373,10 @@ mod tests {
         }
     }
 
+    fn lineage_seed() -> CaptureLineageSeed {
+        CaptureLineageSeed::new(SessionId(11), StemId(12))
+    }
+
     #[test]
     fn given_prepared_capture_when_opened_then_bounded_delivery_is_owned() {
         let opened = Arc::new(AtomicBool::new(false));
@@ -270,6 +389,7 @@ mod tests {
             &backend,
             CapturePrepareRequest {
                 mode: CaptureMode::SystemMix,
+                lineage_seed: lineage_seed(),
                 frame_capacity_frames: 2,
                 runtime_event_capacity_events: 2,
             },
@@ -280,17 +400,24 @@ mod tests {
         let mut owner = prepared.open().expect("capture open must succeed");
 
         assert!(opened.load(Ordering::Acquire));
+        let frame = owner
+            .try_next_lineaged_frame()
+            .expect("lineage must be valid")
+            .expect("frame must be delivered");
+        assert_eq!(frame.frame().sequence_number, 3);
+        assert_eq!(frame.lineage().session_id, SessionId(11));
+        assert_eq!(frame.lineage().stem_id, StemId(12));
+        assert_eq!(frame.lineage().clock_id, CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID);
         assert_eq!(
-            owner
-                .try_next_frame()
-                .expect("frame must be delivered")
-                .sequence_number,
-            3
+            frame.lineage().source_generation,
+            SourceGeneration::INITIAL.0
         );
+        assert_eq!(frame.lineage().permission_epoch, PermissionEpoch::INITIAL.0);
         assert!(matches!(
             owner.try_recv_runtime_event(),
             SourceRuntimeEventReceive::Event(SourceRuntimeEvent::SourceUnavailable { .. })
         ));
+        assert_eq!(owner.open_metadata().discontinuity_epoch, 1);
     }
 
     #[test]
@@ -305,6 +432,7 @@ mod tests {
             &backend,
             CapturePrepareRequest {
                 mode: CaptureMode::SystemMix,
+                lineage_seed: lineage_seed(),
                 frame_capacity_frames: 1,
                 runtime_event_capacity_events: 1,
             },
@@ -332,6 +460,7 @@ mod tests {
             &backend,
             CapturePrepareRequest {
                 mode: CaptureMode::SystemMix,
+                lineage_seed: lineage_seed(),
                 frame_capacity_frames: 1,
                 runtime_event_capacity_events: 1,
             },
@@ -358,6 +487,7 @@ mod tests {
             &backend,
             CapturePrepareRequest {
                 mode: CaptureMode::SystemMix,
+                lineage_seed: lineage_seed(),
                 frame_capacity_frames: 0,
                 runtime_event_capacity_events: 1,
             },

@@ -7,6 +7,7 @@ mod bridge_sink;
 mod mic_source;
 mod mix;
 mod ml_nodes;
+mod multistem_endpoint;
 mod multistem_recorder;
 mod source;
 mod system_source;
@@ -19,10 +20,14 @@ pub use bridge_sink::{BridgeSinkFactory, BridgeSinkNode, BridgeSinkTelemetry};
 pub use mic_source::{MicSourceFactory, MicSourceNode, MicTelemetry};
 pub use mix::{MixerSourceFactory, MixerSourceNode, MixerTelemetry, MonoMixFactory, MonoMixNode};
 pub use ml_nodes::{EchoCancelFactory, NoiseSuppressFactory, VadFactory, WatermarkFactory};
+pub use multistem_endpoint::{
+    MultistemEndpointCoordinator, MultistemEndpointError, MultistemEndpointStem,
+};
 pub use multistem_recorder::{
     DiscontinuityKind, DiscontinuityRecord, MultistemRecording, PermissionDecision,
-    PermissionScope, RecorderError, RecorderStemConfig, RecordingOutcome, RecordingState,
-    RecordingStemOutcome, StemLabel,
+    PermissionScope, RecorderError, RecorderStemConfig, RecordingObservations, RecordingOutcome,
+    RecordingRollbackFailure, RecordingRollbackWorkerFailure, RecordingState, RecordingStemOutcome,
+    StemLabel,
 };
 pub use source::{SyntheticSourceFactory, SyntheticSourceNode};
 pub use system_source::{SystemOutputSourceFactory, SystemOutputSourceNode, SystemOutputTelemetry};

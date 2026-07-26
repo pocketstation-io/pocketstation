@@ -6,8 +6,9 @@ use pks_frame::{ConnectorId, EndpointId, RouteId, SessionId, StemId};
 use pks_graph::NodeTypeId;
 
 use crate::compiler::{
-    BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID,
-    RECORDER_OPERATOR_ID,
+    BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID,
+    DEFAULT_MULTISTEM_RECORDING_GROUP_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID,
+    RECORDING_GROUP_CONFIGURATION_KEY,
 };
 use crate::spec::{endpoint_spec, route_spec, stem_spec};
 use crate::{
@@ -319,7 +320,14 @@ impl StemHandle {
             NodeTypeId::from(RECORDER_NODE_TYPE_ID),
             OperatorId::new(RECORDER_OPERATOR_ID),
         )
-        .with_configuration(EndpointConfiguration::new().with("stem_name", stem_name));
+        .with_configuration(
+            EndpointConfiguration::new()
+                .with("stem_name", stem_name)
+                .with(
+                    RECORDING_GROUP_CONFIGURATION_KEY,
+                    DEFAULT_MULTISTEM_RECORDING_GROUP_ID,
+                ),
+        );
         descriptor.validate()?;
 
         let mut draft = self.shared.draft()?;
@@ -382,6 +390,29 @@ mod tests {
 
         assert_ne!(application_route_id, microphone_route_id);
         assert_eq!(session.id(), browser.session_id());
+    }
+
+    #[test]
+    fn given_two_record_declarations_when_frozen_then_default_group_identity_is_explicit_and_stable(
+    ) {
+        let (session, application, microphone, _browser) = proof_draft();
+        application.record("application").unwrap();
+        microphone.record("microphone").unwrap();
+
+        let spec = session.freeze().unwrap();
+        let recording_endpoints = spec
+            .endpoints()
+            .iter()
+            .filter(|endpoint| endpoint.operator_id().as_str() == RECORDER_OPERATOR_ID)
+            .collect::<Vec<_>>();
+
+        assert_eq!(recording_endpoints.len(), 2);
+        assert!(recording_endpoints.iter().all(|endpoint| {
+            endpoint
+                .configuration()
+                .get(RECORDING_GROUP_CONFIGURATION_KEY)
+                == Some(DEFAULT_MULTISTEM_RECORDING_GROUP_ID)
+        }));
     }
 
     #[test]

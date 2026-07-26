@@ -54,13 +54,18 @@ provider catalog or a second scheduler.
 
 | Crate | Owns | Must NOT own |
 |---|---|---|
-| `pks-endpoint` | Open `OperatorId`, exact `OperatorId` + `NodeTypeId` driver registration, endpoint prepare/cancel/start-gate/running/stop/join-finalize state contracts, and authoritative endpoint observation/outcome records | Concrete connector/provider/relay/recording algorithms, Session transaction policy, graph execution, worker-thread creation, native capture, product workflows, or production no-op drivers |
+| `pks-endpoint` | Open `OperatorId`, explicit `EndpointGroupId`, exact `OperatorId` + `NodeTypeId` driver registration, one-input and explicit batch preparation, endpoint prepare/cancel/start-gate/running/stop/join-finalize state contracts, and authoritative endpoint observation/outcome records | Implicit grouping by operator, concrete connector/provider/relay/recording algorithms, Session transaction policy, graph execution, worker-thread creation, native capture, product workflows, or production no-op drivers |
 
 `pks-endpoint` depends downward on `pks-runtime` for `PlanEdgeReceiver` and on
 `pks-graph`/`pks-frame` for stable identities and setup context.
 `pks-runtime` never depends on `pks-endpoint`. Both `pks-session` and concrete
 endpoint packages such as `pks-nodes` may depend on `pks-endpoint`, preventing a
 `pks-nodes -> pks-session` cycle.
+
+Grouped lifecycle rules are binding in
+[AUDIO-030](../adr/AUDIO-030-grouped-endpoint-lifecycle.md): batches require one
+Session plus an exact `OperatorId`, `NodeTypeId`, `EndpointGroupId`, and declared
+endpoint set. Sharing only an operator or node type never authorizes grouping.
 
 ---
 

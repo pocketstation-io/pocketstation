@@ -14,8 +14,8 @@ pub use driver::{
     EndpointStartGateController, PreparedEndpoint, PreparedEndpointDriver, RunningEndpoint,
     RunningEndpointDriver,
 };
-pub use identity::{OperatorId, OPERATOR_ID_SYNTAX_VERSION};
+pub use identity::{EndpointGroupId, OperatorId, OPERATOR_ID_SYNTAX_VERSION};
 pub use registry::{
-    EndpointDriverFactory, EndpointDriverRegistry, EndpointDriverRegistryError,
-    EndpointPrepareError,
+    EndpointDriverFactory, EndpointDriverInput, EndpointDriverRegistry,
+    EndpointDriverRegistryError, EndpointPrepareError,
 };
