@@ -1178,6 +1178,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "pks-endpoint"
+version = "0.1.0"
+dependencies = [
+ "pks-caps",
+ "pks-frame",
+ "pks-graph",
+ "pks-runtime",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "pks-frame"
 version = "0.1.0"
 dependencies = [
@@ -1258,8 +1271,10 @@ version = "0.1.0"
 dependencies = [
  "pks-caps",
  "pks-capture",
+ "pks-endpoint",
  "pks-frame",
  "pks-graph",
+ "pks-runtime",
  "thiserror 1.0.69",
 ]
 

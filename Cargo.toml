@@ -8,6 +8,7 @@ members = [
   "crates/pks-metrics",
   "crates/pks-pipeline",
   "crates/pks-runtime",
+  "crates/pks-endpoint",
   "crates/pks-graph",
   "crates/pks-ml",
   "crates/pks-nodes",

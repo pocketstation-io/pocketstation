@@ -4,11 +4,12 @@
 # Run: bash scripts/lint/check-architecture-constraints.sh
 # Wired into: .github/workflows/ci.yml
 #
-# Four hard checks (exit 1 on any failure):
+# Five hard checks (exit 1 on any failure):
 #   1. No first-party AI connector crate directories
 #   2. No closed graph enums in pks-graph / pks-runtime
 #   3. No provider names leaking into core crates
 #   4. No Rust TypeId in pks-graph (breaks cross-language contract stability)
+#   5. Endpoint lifecycle dependency direction remains acyclic
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -40,7 +41,7 @@ done
 # 3. Forbid provider names leaking into core crates.
 # pks-frame, pks-graph, pks-runtime must not mention AI provider names.
 PROVIDER_RE='[Ww]hisper|[Oo]llama|[Dd]eepgram|[Ee]leven[Ll]abs|[Oo]pen[Aa][Ii]'
-for dir in "${CORE}/pks-frame" "${CORE}/pks-graph" "${CORE}/pks-runtime"; do
+for dir in "${CORE}/pks-frame" "${CORE}/pks-graph" "${CORE}/pks-runtime" "${CORE}/pks-endpoint"; do
   if [[ -d "${dir}" ]]; then
     if grep -rqE "${PROVIDER_RE}" "${dir}/src" 2>/dev/null; then
       echo "FAIL [arch-3]: AI provider name leaked into ${dir##"${REPO_ROOT}"/}/src." >&2
@@ -58,6 +59,17 @@ if [[ -d "${CORE}/pks-graph" ]]; then
     echo "  Use SignalId(Cow<'static, str>) for cross-language stable signal identity." >&2
     fail=$((fail + 1))
   fi
+fi
+
+# 5. Keep endpoint semantics above runtime and below Session/concrete drivers.
+if grep -qE 'pks-endpoint' "${CORE}/pks-runtime/Cargo.toml"; then
+  echo "FAIL [arch-5]: pks-runtime must not depend on pks-endpoint." >&2
+  fail=$((fail + 1))
+fi
+if grep -qE 'pks-session|pks-nodes|pks-capture-(macos|windows|linux)' \
+     "${CORE}/pks-endpoint/Cargo.toml"; then
+  echo "FAIL [arch-5]: pks-endpoint depends upward on Session, nodes, or target capture." >&2
+  fail=$((fail + 1))
 fi
 
 echo "---"

@@ -89,8 +89,9 @@ The dependency direction established by those facts is:
 ```text
 pks-frame / pks-timing / pks-metrics
         -> pks-caps / pks-capture / pks-graph
-        -> pks-runtime
-        -> pks-nodes and target capture implementations
+        -> pks-runtime -> pks-endpoint -> pks-nodes
+pks-capture -> target capture implementations
+pks-runtime / pks-endpoint / pks-nodes / target capture implementations
         -> pks-session
         -> Rust façade / CLI / language adapters
 
@@ -266,8 +267,11 @@ projection. Existing owners remain authoritative:
 
 - `pks-capture` owns capture authorization and source-runtime observations;
 - `pks-runtime` owns edge, queue, discontinuity, and worker observations;
+- `pks-endpoint` owns endpoint driver lifecycle and typed finalization outcome
+  contracts;
 - `pks-metrics` owns metric primitives and snapshots;
-- `pks-nodes` owns endpoint-specific finalization outcomes.
+- `pks-nodes` owns concrete endpoint-specific observations and finalization
+  behavior.
 
 `pks-session` maps those facts into safe Session events and metric snapshots.
 `pks-session-c` maps those values again into versioned foreign records. Neither

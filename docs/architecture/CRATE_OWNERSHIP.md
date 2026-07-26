@@ -46,6 +46,22 @@ These five crates define the architecture. Everything else builds on them.
 
 **Boundary note:** `pks-caps` owns platform/runtime availability truth (can this capability run here?). `pks-graph` owns signal/edge contracts (what flows between ports). Related but distinct.
 
+## Endpoint lifecycle boundary
+
+`pks-endpoint` is the acyclic contract between bounded runtime edges, concrete
+destination implementations, and Session transaction ownership. It is not a
+provider catalog or a second scheduler.
+
+| Crate | Owns | Must NOT own |
+|---|---|---|
+| `pks-endpoint` | Open `OperatorId`, exact `OperatorId` + `NodeTypeId` driver registration, endpoint prepare/cancel/start-gate/running/stop/join-finalize state contracts, and authoritative endpoint observation/outcome records | Concrete connector/provider/relay/recording algorithms, Session transaction policy, graph execution, worker-thread creation, native capture, product workflows, or production no-op drivers |
+
+`pks-endpoint` depends downward on `pks-runtime` for `PlanEdgeReceiver` and on
+`pks-graph`/`pks-frame` for stable identities and setup context.
+`pks-runtime` never depends on `pks-endpoint`. Both `pks-session` and concrete
+endpoint packages such as `pks-nodes` may depend on `pks-endpoint`, preventing a
+`pks-nodes -> pks-session` cycle.
+
 ---
 
 ## Session engine and language boundary
@@ -229,6 +245,11 @@ pks-runtime
   may depend on:      pks-frame, pks-graph, pks-metrics, pks-timing
   must not depend on: OpenAI/Deepgram/Ollama SDKs, app UI, platform capture implementations
 
+pks-endpoint
+  may depend on:      pks-frame, pks-graph, pks-runtime, serde
+  must not depend on: pks-session, pks-nodes, platform capture implementations,
+                      provider SDKs, concrete relay/recorder algorithms
+
 pks-caps
   may depend on:      pks-frame (types only)
   must not depend on: pks-capture-macos/windows/linux concrete implementations
@@ -239,7 +260,7 @@ pks-capture
                       pks-session, provider SDKs
 
 pks-session
-  may depend on:      pks-frame, pks-caps, pks-graph, pks-runtime,
+  may depend on:      pks-frame, pks-caps, pks-graph, pks-runtime, pks-endpoint,
                       pks-capture and target-selected capture adapters,
                       pks-nodes, pks-metrics
   must not depend on: provider SDKs, app UI, language SDK packages,
@@ -253,7 +274,7 @@ pks-session-c
                       or graph/runtime internals bypassing pks-session
 
 pks-nodes
-  may depend on:      pks-frame, pks-caps, pks-graph, pks-runtime,
+  may depend on:      pks-frame, pks-caps, pks-graph, pks-runtime, pks-endpoint,
                       pks-timing, pks-ml
   must not contain:   provider connector clients, API-key fields, product workflows
 

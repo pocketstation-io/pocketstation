@@ -1,18 +1,18 @@
 [package]
-name = "pks-session"
+name = "pks-endpoint"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "Session declaration and lifecycle composition for PocketStation"
+description = "Lifecycle contract for PocketStation endpoint drivers"
 
 [dependencies]
-pks-capture = { path = "../pks-capture", version = "0.1.0" }
-pks-endpoint = { path = "../pks-endpoint", version = "0.1.0" }
 pks-frame = { path = "../pks-frame", version = "0.1.0" }
 pks-graph = { path = "../pks-graph", version = "0.1.0" }
 pks-runtime = { path = "../pks-runtime", version = "0.1.0" }
+serde.workspace = true
 thiserror.workspace = true
 
 [dev-dependencies]
 pks-caps = { path = "../pks-caps", version = "0.1.0" }
+serde_json.workspace = true

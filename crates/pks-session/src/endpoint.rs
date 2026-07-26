@@ -1,21 +1,9 @@
 use std::collections::BTreeMap;
 
+pub use pks_endpoint::OperatorId;
 use pks_graph::NodeTypeId;
 
 use crate::SessionError;
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct OperatorId(String);
-
-impl OperatorId {
-    pub fn new(operator_id: impl Into<String>) -> Self {
-        Self(operator_id.into())
-    }
-
-    pub fn as_str(&self) -> &str {
-        &self.0
-    }
-}
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct EndpointConfiguration {
@@ -97,5 +85,19 @@ impl EndpointDescriptor {
             });
         }
         self.configuration.validate()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn given_endpoint_operator_id_when_imported_from_session_then_endpoint_contract_type_is_reexported(
+    ) {
+        let operator_id: OperatorId = pks_endpoint::OperatorId::new("connector.example");
+
+        assert_eq!(operator_id.as_str(), "connector.example");
+        assert_eq!(OperatorId::syntax_version(), 1);
     }
 }
