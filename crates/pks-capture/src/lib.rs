@@ -4,8 +4,14 @@ use std::num::NonZeroU32;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 
+mod capture_owner;
 mod frame_stream;
 
+pub use capture_owner::{
+    prepare_capture, ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureOwner,
+    CaptureOwnerObservations, CapturePrepareRequest, CaptureStopOutcome, PreparedCapture,
+    PreparedCaptureBackend,
+};
 pub use frame_stream::{
     captured_frame_stream, CapturedFrameDelivery, CapturedFrameSender, CapturedFrameStream,
     CapturedFrameStreamStats,
@@ -967,6 +973,12 @@ pub enum SourcePreference {
     Broadcast,
 }
 
+/// Legacy pull-oriented capability adapter.
+///
+/// The embedded Session engine uses `CallbackCaptureBackend` because native
+/// desktop capture delivers frames from callbacks or owned workers. This trait
+/// remains for existing pull-oriented callers; new callback backends must not
+/// implement a second delivery path through it.
 pub trait PlatformAdapter: Send + Sync {
     fn platform(&self) -> PlatformId;
     fn source_capabilities(&self) -> Vec<AudioSourceDescriptor>;
