@@ -1,6 +1,6 @@
 //! Realtime node execution connected by the bounded edges of a `RuntimePlan`.
 
-use pks_frame::AudioFrame;
+use pks_frame::{AudioFrame, LineagedAudioFrame};
 use pks_graph::ir::GraphIr;
 use pks_graph::node::PrepareContext;
 use pks_graph::plan::RuntimePlan;
@@ -131,6 +131,10 @@ impl RealtimePlanExecutor {
         ))
     }
 
+    /// Executes a raw frame without capture-time lineage.
+    ///
+    /// This is the compatibility path for pre-Session callers. New Session
+    /// execution must use [`Self::execute_lineaged_from`].
     pub fn execute_from(
         &mut self,
         source_node_id: NodeId,
@@ -163,8 +167,58 @@ impl RealtimePlanExecutor {
                         node_id.index()
                     )))
                 }
+                PlanEdgeFrame::LineagedExclusive(_) | PlanEdgeFrame::LineagedShared(_) => {
+                    return Err(ExecError::Node(format!(
+                        "raw execution for node {} received a lineaged frame",
+                        node_id.index()
+                    )))
+                }
             };
             self.process_and_dispatch(node_id, frame, now_ns, &mut summary)?;
+        }
+        Ok(summary)
+    }
+
+    pub fn execute_lineaged_from(
+        &mut self,
+        source_node_id: NodeId,
+        frame: LineagedAudioFrame,
+        now_ns: u64,
+    ) -> Result<PlanExecutionSummary, ExecError> {
+        let mut summary = PlanExecutionSummary::default();
+        self.process_and_dispatch_lineaged(source_node_id, frame, now_ns, &mut summary)?;
+
+        for order_index in 0..self.node_order.len() {
+            let node_id = self.node_order[order_index];
+            if node_id == source_node_id {
+                continue;
+            }
+            let mut incoming = None;
+            for receiver in &mut self.realtime_receivers {
+                if receiver.to().node == node_id {
+                    incoming = receiver.recv_at(now_ns);
+                    break;
+                }
+            }
+            let Some(incoming) = incoming else {
+                continue;
+            };
+            let frame = match incoming {
+                PlanEdgeFrame::LineagedExclusive(frame) => frame,
+                PlanEdgeFrame::LineagedShared(_frame) => {
+                    return Err(ExecError::Node(format!(
+                        "realtime node {} received an immutable lineaged frame without CopyToBranchPool",
+                        node_id.index()
+                    )))
+                }
+                PlanEdgeFrame::Exclusive(_) | PlanEdgeFrame::Shared(_) => {
+                    return Err(ExecError::Node(format!(
+                        "lineaged execution for node {} received a raw compatibility frame",
+                        node_id.index()
+                    )))
+                }
+            };
+            self.process_and_dispatch_lineaged(node_id, frame, now_ns, &mut summary)?;
         }
         Ok(summary)
     }
@@ -200,6 +254,41 @@ impl RealtimePlanExecutor {
         }
         Ok(())
     }
+
+    fn process_and_dispatch_lineaged(
+        &mut self,
+        node_id: NodeId,
+        frame: LineagedAudioFrame,
+        now_ns: u64,
+        summary: &mut PlanExecutionSummary,
+    ) -> Result<(), ExecError> {
+        let Some(slot) = self
+            .nodes
+            .get_mut(node_id.index() as usize)
+            .and_then(Option::as_mut)
+        else {
+            return Err(ExecError::Node(format!(
+                "node {} is not a realtime executable node",
+                node_id.index()
+            )));
+        };
+        let (frame, lineage) = frame.into_parts();
+        let output = slot.node.process(frame).map_err(ExecError::from_node)?;
+        summary.nodes_executed = summary.nodes_executed.saturating_add(1);
+        if let (Some(output), Some(output_port)) = (output, slot.output_port.as_deref()) {
+            let output = LineagedAudioFrame::new(output, lineage).map_err(|error| {
+                ExecError::Node(format!(
+                    "realtime node {} changed lineage-authoritative frame identity: {error}",
+                    node_id.index()
+                ))
+            })?;
+            let dispatch = self
+                .router
+                .dispatch_lineaged_from(node_id, output_port, output, now_ns);
+            summary.observe_dispatch(dispatch);
+        }
+        Ok(())
+    }
 }
 
 #[cfg(test)]
@@ -207,7 +296,10 @@ mod tests {
     use std::sync::Arc;
 
     use pks_caps::{AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec};
-    use pks_frame::{AudioBufferPool, SampleFormat, SampleSpec, SourceId, StreamId};
+    use pks_frame::{
+        AudioBufferPool, ClockDomainId, FrameLineage, SampleFormat, SampleSpec, SessionId,
+        SourceId, StemId, StreamId,
+    };
     use pks_graph::compiler::Compiler;
     use pks_graph::dsl::Pipeline;
     use pks_graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId};
@@ -281,6 +373,25 @@ mod tests {
         AudioFrame::new(StreamId(1), SourceId(2), 3, 4, 1, buffer)
     }
 
+    fn lineaged_frame(samples: &[f32]) -> LineagedAudioFrame {
+        LineagedAudioFrame::new(
+            frame(samples),
+            FrameLineage {
+                session_id: SessionId(5),
+                source_id: SourceId(2),
+                stem_id: StemId(6),
+                clock_id: ClockDomainId(7),
+                sequence_num: 3,
+                timestamp_start_ns: 4,
+                duration_ns: 20_000_000,
+                source_generation: 8,
+                discontinuity_epoch: 9,
+                permission_epoch: 10,
+            },
+        )
+        .unwrap()
+    }
+
     #[test]
     fn given_connected_gain_plan_when_executed_then_only_connected_nodes_run_and_worker_receives_output(
     ) {
@@ -316,6 +427,9 @@ mod tests {
                 assert!((frame.buffer.as_slice()[1] + 0.2).abs() < 1e-4);
             }
             PlanEdgeFrame::Shared(_) => panic!("worker edge should own an isolated branch copy"),
+            PlanEdgeFrame::LineagedExclusive(_) | PlanEdgeFrame::LineagedShared(_) => {
+                panic!("raw compatibility execution emitted a lineaged frame")
+            }
         }
     }
 
@@ -350,6 +464,9 @@ mod tests {
             .map(|frame| match frame {
                 PlanEdgeFrame::Shared(frame) => frame.buffer.as_slice()[0],
                 PlanEdgeFrame::Exclusive(frame) => frame.buffer.as_slice()[0],
+                PlanEdgeFrame::LineagedExclusive(_) | PlanEdgeFrame::LineagedShared(_) => {
+                    panic!("raw compatibility execution emitted a lineaged frame")
+                }
             })
             .collect::<Vec<_>>();
         outputs.sort_by(f32::total_cmp);
@@ -359,5 +476,43 @@ mod tests {
         assert_eq!(outputs.len(), 2);
         assert!((outputs[0] - 0.25).abs() < 1e-4);
         assert!((outputs[1] - 1.0).abs() < 1e-4);
+    }
+
+    #[test]
+    fn given_lineaged_frame_when_realtime_operator_executes_then_output_keeps_capture_epochs() {
+        let registry = registry();
+        let mut graph = Pipeline::new();
+        let source = graph.add_node("passthrough", NodeConfig::new());
+        let gain = graph.add_node("gain", NodeConfig::new().with("gain_db", "6.020599913"));
+        let worker = graph.add_node("test.worker_sink", NodeConfig::new());
+        graph.connect(source.out("out"), gain.in_("in"));
+        graph.connect(gain.out("out"), worker.in_("in"));
+        let ir = Compiler::new()
+            .compile(graph.into_spec(), &registry)
+            .unwrap();
+        let plan = RuntimePlanner::new().plan(&ir).unwrap();
+        let (mut executor, mut workers) =
+            RealtimePlanExecutor::new(&plan, &ir, &registry, &context()).unwrap();
+        let input = lineaged_frame(&[0.25]);
+        let expected_lineage = input.lineage();
+
+        let summary = executor
+            .execute_lineaged_from(source.id(), input, 10)
+            .unwrap();
+        let delivered = workers[0].recv_at(20).unwrap();
+
+        assert_eq!(summary.nodes_executed, 2);
+        assert_eq!(delivered.lineage(), Some(expected_lineage));
+        match delivered {
+            PlanEdgeFrame::LineagedExclusive(frame) => {
+                assert!((frame.frame().buffer.as_slice()[0] - 0.5).abs() < 1e-4);
+            }
+            PlanEdgeFrame::LineagedShared(_) => {
+                panic!("worker edge should own an isolated lineaged branch copy")
+            }
+            PlanEdgeFrame::Exclusive(_) | PlanEdgeFrame::Shared(_) => {
+                panic!("lineaged execution emitted a raw compatibility frame")
+            }
+        }
     }
 }

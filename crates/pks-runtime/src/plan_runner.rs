@@ -6,7 +6,7 @@
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
 
-use pks_frame::AudioFrame;
+use pks_frame::LineagedAudioFrame;
 use pks_graph::spec::NodeId;
 use rtrb::{Consumer, Producer, RingBuffer};
 
@@ -113,36 +113,52 @@ impl Default for PlanRunnerCancellation {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PlanSourceSendError {
-    Cancelled(AudioFrame),
-    Full(AudioFrame),
+    Cancelled,
+    Full,
+}
+
+#[derive(Debug)]
+#[must_use]
+pub enum PlanSourceSendOutcome {
+    Enqueued,
+    Rejected {
+        error: PlanSourceSendError,
+        frame: LineagedAudioFrame,
+    },
 }
 
 pub struct PlanSourceSender {
-    producer: Producer<AudioFrame>,
+    producer: Producer<LineagedAudioFrame>,
     cancellation: PlanRunnerCancellation,
     telemetry: Arc<PlanSourceInputTelemetry>,
 }
 
 impl PlanSourceSender {
-    pub fn try_send(&mut self, frame: AudioFrame) -> Result<(), PlanSourceSendError> {
+    pub fn try_send(&mut self, frame: LineagedAudioFrame) -> PlanSourceSendOutcome {
         if self.cancellation.is_requested() {
             self.telemetry
                 .frames_rejected_cancelled_total
                 .fetch_add(1, Ordering::Relaxed);
-            return Err(PlanSourceSendError::Cancelled(frame));
+            return PlanSourceSendOutcome::Rejected {
+                error: PlanSourceSendError::Cancelled,
+                frame,
+            };
         }
         match self.producer.push(frame) {
             Ok(()) => {
                 self.telemetry.observe_enqueue();
-                Ok(())
+                PlanSourceSendOutcome::Enqueued
             }
             Err(rtrb::PushError::Full(frame)) => {
                 self.telemetry
                     .frames_rejected_full_total
                     .fetch_add(1, Ordering::Relaxed);
-                Err(PlanSourceSendError::Full(frame))
+                PlanSourceSendOutcome::Rejected {
+                    error: PlanSourceSendError::Full,
+                    frame,
+                }
             }
         }
     }
@@ -154,7 +170,7 @@ impl PlanSourceSender {
 
 pub struct PlanSourceInput {
     source_node_id: NodeId,
-    consumer: Consumer<AudioFrame>,
+    consumer: Consumer<LineagedAudioFrame>,
     telemetry: Arc<PlanSourceInputTelemetry>,
 }
 
@@ -167,7 +183,7 @@ impl PlanSourceInput {
         self.telemetry.snapshot()
     }
 
-    fn try_recv(&mut self) -> Option<AudioFrame> {
+    fn try_recv(&mut self) -> Option<LineagedAudioFrame> {
         let frame = self.consumer.pop().ok()?;
         self.telemetry
             .frames_delivered_total
@@ -345,7 +361,9 @@ impl RealtimePlanRunner {
             let Some((source_node_id, frame)) = self.next_ready_source() else {
                 break;
             };
-            let execution = self.executor.execute_from(source_node_id, frame, clock())?;
+            let execution = self
+                .executor
+                .execute_lineaged_from(source_node_id, frame, clock())?;
             summary.observe_execution(execution);
         }
         Ok(summary)
@@ -390,7 +408,7 @@ impl RealtimePlanRunner {
         })
     }
 
-    fn next_ready_source(&mut self) -> Option<(NodeId, AudioFrame)> {
+    fn next_ready_source(&mut self) -> Option<(NodeId, LineagedAudioFrame)> {
         if self.sources.is_empty() {
             return None;
         }
@@ -411,7 +429,10 @@ mod tests {
     use std::sync::Arc;
 
     use pks_caps::{AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec};
-    use pks_frame::{AudioBufferPool, SampleFormat, SampleSpec, SourceId, StreamId};
+    use pks_frame::{
+        AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, SampleFormat, SampleSpec,
+        SessionId, SourceId, StemId, StreamId,
+    };
     use pks_graph::compiler::Compiler;
     use pks_graph::dsl::Pipeline;
     use pks_graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId};
@@ -464,18 +485,35 @@ mod tests {
         }
     }
 
-    fn frame(source_id: u64, sequence_number: u64) -> AudioFrame {
+    fn frame(source_id: u64, sequence_number: u64) -> LineagedAudioFrame {
         let pool = AudioBufferPool::new(1, 1);
         let mut buffer = pool.acquire().unwrap();
         buffer.as_mut_slice()[0] = source_id as f32;
-        AudioFrame::new(
+        let timestamp_ns = sequence_number.saturating_add(1);
+        let frame = AudioFrame::new(
             StreamId(source_id),
             SourceId(source_id),
             sequence_number,
-            sequence_number.saturating_add(1),
+            timestamp_ns,
             1,
             buffer,
+        );
+        LineagedAudioFrame::new(
+            frame,
+            FrameLineage {
+                session_id: SessionId(42),
+                source_id: SourceId(source_id),
+                stem_id: StemId(source_id),
+                clock_id: ClockDomainId(3),
+                sequence_num: sequence_number,
+                timestamp_start_ns: timestamp_ns,
+                duration_ns: 1,
+                source_generation: 7,
+                discontinuity_epoch: 8,
+                permission_epoch: 9,
+            },
         )
+        .unwrap()
     }
 
     type RunnerFixture = (
@@ -529,16 +567,25 @@ mod tests {
     #[test]
     fn given_two_ready_sources_when_processed_then_each_source_dispatches_independently() {
         let (mut runner, _cancellation, mut senders, mut workers, source_ids) = runner_fixture();
-        senders[0].try_send(frame(11, 0)).ok().unwrap();
-        senders[1].try_send(frame(22, 0)).ok().unwrap();
+        assert!(matches!(
+            senders[0].try_send(frame(11, 0)),
+            PlanSourceSendOutcome::Enqueued
+        ));
+        assert!(matches!(
+            senders[1].try_send(frame(22, 0)),
+            PlanSourceSendOutcome::Enqueued
+        ));
 
         let summary = runner.process_ready_with_clock(2, || 100).unwrap();
         let delivered = workers
             .iter_mut()
             .map(|worker| worker.recv_at(101).unwrap())
             .map(|frame| match frame {
-                PlanEdgeFrame::Exclusive(frame) => frame.source_id.0,
-                PlanEdgeFrame::Shared(frame) => frame.source_id.0,
+                PlanEdgeFrame::LineagedExclusive(frame) => frame.frame().source_id.0,
+                PlanEdgeFrame::LineagedShared(frame) => frame.frame().source_id.0,
+                PlanEdgeFrame::Exclusive(_) | PlanEdgeFrame::Shared(_) => {
+                    panic!("runner emitted raw compatibility frame")
+                }
             })
             .collect::<Vec<_>>();
 
@@ -565,14 +612,14 @@ mod tests {
     fn given_queued_sources_when_cancelled_with_budget_then_drain_is_bounded_and_rest_discards() {
         let (mut runner, cancellation, mut senders, _workers, source_ids) = runner_fixture();
         for sequence_number in 0..3 {
-            senders[0]
-                .try_send(frame(11, sequence_number))
-                .ok()
-                .unwrap();
-            senders[1]
-                .try_send(frame(22, sequence_number))
-                .ok()
-                .unwrap();
+            assert!(matches!(
+                senders[0].try_send(frame(11, sequence_number)),
+                PlanSourceSendOutcome::Enqueued
+            ));
+            assert!(matches!(
+                senders[1].try_send(frame(22, sequence_number)),
+                PlanSourceSendOutcome::Enqueued
+            ));
         }
 
         let summary = runner
@@ -584,7 +631,13 @@ mod tests {
         assert_eq!(summary.source_frames_processed_total, 2);
         assert_eq!(summary.source_frames_discarded_total, 4);
         assert!(summary.drain_budget_exhausted);
-        assert!(matches!(rejected, Err(PlanSourceSendError::Cancelled(_))));
+        assert!(matches!(
+            rejected,
+            PlanSourceSendOutcome::Rejected {
+                error: PlanSourceSendError::Cancelled,
+                ..
+            }
+        ));
         assert_eq!(
             runner
                 .source_observations(source_ids[0])
@@ -604,8 +657,14 @@ mod tests {
     #[test]
     fn given_queued_sources_when_cancelled_with_discard_then_no_frame_executes() {
         let (mut runner, _cancellation, mut senders, _workers, _source_ids) = runner_fixture();
-        senders[0].try_send(frame(11, 0)).ok().unwrap();
-        senders[1].try_send(frame(22, 0)).ok().unwrap();
+        assert!(matches!(
+            senders[0].try_send(frame(11, 0)),
+            PlanSourceSendOutcome::Enqueued
+        ));
+        assert!(matches!(
+            senders[1].try_send(frame(22, 0)),
+            PlanSourceSendOutcome::Enqueued
+        ));
 
         let summary = runner
             .finish_with_clock(PlanRunnerDrainPolicy::DiscardQueued, 0, || 100)
@@ -623,17 +682,29 @@ mod tests {
         let cancellation = PlanRunnerCancellation::new();
         let (mut sender, input) =
             plan_source_channel(source_ids[0], 1, cancellation.clone()).unwrap();
-        sender.try_send(frame(11, 0)).ok().unwrap();
+        assert!(matches!(
+            sender.try_send(frame(11, 0)),
+            PlanSourceSendOutcome::Enqueued
+        ));
 
         let full_result = sender.try_send(frame(11, 1));
         cancellation.request();
         let cancelled_result = sender.try_send(frame(11, 2));
         let observations = input.observations();
 
-        assert!(matches!(full_result, Err(PlanSourceSendError::Full(_))));
+        assert!(matches!(
+            full_result,
+            PlanSourceSendOutcome::Rejected {
+                error: PlanSourceSendError::Full,
+                ..
+            }
+        ));
         assert!(matches!(
             cancelled_result,
-            Err(PlanSourceSendError::Cancelled(_))
+            PlanSourceSendOutcome::Rejected {
+                error: PlanSourceSendError::Cancelled,
+                ..
+            }
         ));
         assert_eq!(observations.queue_capacity_frames, 1);
         assert_eq!(observations.queue_depth_frames, 1);

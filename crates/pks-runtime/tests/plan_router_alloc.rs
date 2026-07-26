@@ -1,5 +1,8 @@
 use assert_no_alloc::{assert_no_alloc, AllocDisabler};
-use pks_frame::{AudioBufferPool, AudioFrame, SourceId, StreamId};
+use pks_frame::{
+    AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, SessionId,
+    SourceId, StemId, StreamId,
+};
 use pks_graph::compiler::Compiler;
 use pks_graph::dsl::Pipeline;
 use pks_graph::node::{NodeConfig, PrepareContext};
@@ -7,12 +10,28 @@ use pks_graph::planner::RuntimePlanner;
 use pks_graph::register_builtins;
 use pks_graph::registry::NodeRegistry;
 use pks_runtime::{
-    plan_source_channel, PlanEdgeRouter, PlanRunnerCancellation, RealtimePlanExecutor,
-    RealtimePlanRunner,
+    plan_source_channel, PlanEdgeRouter, PlanRunnerCancellation, PlanSourceSendOutcome,
+    RealtimePlanExecutor, RealtimePlanRunner,
 };
 
 #[global_allocator]
 static ALLOCATOR: AllocDisabler = AllocDisabler;
+
+fn with_lineage(frame: AudioFrame) -> LineagedAudioFrame {
+    let lineage = FrameLineage {
+        session_id: SessionId(42),
+        source_id: frame.source_id,
+        stem_id: StemId(frame.source_id.0),
+        clock_id: ClockDomainId(3),
+        sequence_num: frame.sequence_number,
+        timestamp_start_ns: frame.timestamp_ns,
+        duration_ns: 20_000_000,
+        source_generation: 4,
+        discontinuity_epoch: 5,
+        permission_epoch: 6,
+    };
+    LineagedAudioFrame::new(frame, lineage).unwrap()
+}
 
 #[test]
 fn given_preallocated_three_edge_router_when_frame_dispatched_then_no_heap_allocation_occurs() {
@@ -34,10 +53,10 @@ fn given_preallocated_three_edge_router_when_frame_dispatched_then_no_heap_alloc
     let pool = AudioBufferPool::new(1, 2);
     let mut buffer = pool.acquire().unwrap();
     buffer.copy_from_slice(&[0.25, -0.5]);
-    let frame = AudioFrame::new(StreamId(1), SourceId(2), 3, 4, 1, buffer);
+    let frame = with_lineage(AudioFrame::new(StreamId(1), SourceId(2), 3, 4, 1, buffer));
 
     // When
-    let summary = assert_no_alloc(|| router.dispatch_from(source_id, "out", frame, 5));
+    let summary = assert_no_alloc(|| router.dispatch_lineaged_from(source_id, "out", frame, 5));
 
     // Then
     assert_eq!(summary.enqueued_edges, 3);
@@ -71,10 +90,10 @@ fn given_prepared_realtime_plan_when_connected_nodes_execute_then_no_heap_alloca
     let pool = AudioBufferPool::new(1, 2);
     let mut buffer = pool.acquire().unwrap();
     buffer.copy_from_slice(&[0.25, -0.5]);
-    let frame = AudioFrame::new(StreamId(1), SourceId(2), 3, 4, 1, buffer);
+    let frame = with_lineage(AudioFrame::new(StreamId(1), SourceId(2), 3, 4, 1, buffer));
 
     // When
-    let summary = assert_no_alloc(|| executor.execute_from(source_id, frame, 5)).unwrap();
+    let summary = assert_no_alloc(|| executor.execute_lineaged_from(source_id, frame, 5)).unwrap();
 
     // Then
     assert_eq!(summary.nodes_executed, 4);
@@ -118,28 +137,28 @@ fn given_prepared_multi_source_runner_when_ready_frames_process_then_no_heap_all
     let mut second_buffer = second_pool.acquire().unwrap();
     first_buffer.copy_from_slice(&[0.25, -0.5]);
     second_buffer.copy_from_slice(&[-0.25, 0.5]);
-    first_sender
-        .try_send(AudioFrame::new(
+    assert!(matches!(
+        first_sender.try_send(with_lineage(AudioFrame::new(
             StreamId(1),
             SourceId(1),
             1,
             1,
             1,
             first_buffer,
-        ))
-        .ok()
-        .unwrap();
-    second_sender
-        .try_send(AudioFrame::new(
+        ))),
+        PlanSourceSendOutcome::Enqueued
+    ));
+    assert!(matches!(
+        second_sender.try_send(with_lineage(AudioFrame::new(
             StreamId(2),
             SourceId(2),
             1,
             1,
             1,
             second_buffer,
-        ))
-        .ok()
-        .unwrap();
+        ))),
+        PlanSourceSendOutcome::Enqueued
+    ));
 
     // When
     let summary = assert_no_alloc(|| runner.process_ready(2)).unwrap();

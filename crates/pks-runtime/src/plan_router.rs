@@ -4,7 +4,10 @@ use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
 
 use pks_caps::CopyPolicy;
-use pks_frame::{AudioBufferPool, AudioFrame, SharedAudioFrame};
+use pks_frame::{
+    AudioBufferPool, AudioFrame, FrameLineage, LineagedAudioFrame, SharedAudioFrame,
+    SharedLineagedAudioFrame,
+};
 use pks_graph::ir::GraphIr;
 use pks_graph::plan::RuntimePlan;
 use pks_graph::spec::{EdgeId, InputPortRef, NodeId, OutputPortRef};
@@ -27,8 +30,14 @@ pub enum PlanRouterError {
 }
 
 pub enum PlanEdgeFrame {
+    /// Raw compatibility frame for callers that have not adopted frame lineage.
     Exclusive(AudioFrame),
+    /// Raw compatibility frame for callers that have not adopted frame lineage.
     Shared(SharedAudioFrame),
+    /// Canonical exclusive frame with capture-time lineage.
+    LineagedExclusive(LineagedAudioFrame),
+    /// Canonical immutable frame with capture-time lineage.
+    LineagedShared(SharedLineagedAudioFrame),
 }
 
 impl PlanEdgeFrame {
@@ -36,6 +45,8 @@ impl PlanEdgeFrame {
         match self {
             Self::Exclusive(frame) => frame.source_id,
             Self::Shared(frame) => frame.source_id,
+            Self::LineagedExclusive(frame) => frame.frame().source_id,
+            Self::LineagedShared(frame) => frame.frame().source_id,
         }
     }
 
@@ -43,6 +54,8 @@ impl PlanEdgeFrame {
         match self {
             Self::Exclusive(frame) => frame.sequence_number,
             Self::Shared(frame) => frame.sequence_number,
+            Self::LineagedExclusive(frame) => frame.frame().sequence_number,
+            Self::LineagedShared(frame) => frame.frame().sequence_number,
         }
     }
 
@@ -50,6 +63,8 @@ impl PlanEdgeFrame {
         match self {
             Self::Exclusive(frame) => frame.timestamp_ns,
             Self::Shared(frame) => frame.timestamp_ns,
+            Self::LineagedExclusive(frame) => frame.frame().timestamp_ns,
+            Self::LineagedShared(frame) => frame.frame().timestamp_ns,
         }
     }
 
@@ -57,6 +72,8 @@ impl PlanEdgeFrame {
         match self {
             Self::Exclusive(frame) => frame.sample_rate_hz,
             Self::Shared(frame) => frame.sample_rate_hz,
+            Self::LineagedExclusive(frame) => frame.frame().sample_rate_hz,
+            Self::LineagedShared(frame) => frame.frame().sample_rate_hz,
         }
     }
 
@@ -64,6 +81,8 @@ impl PlanEdgeFrame {
         match self {
             Self::Exclusive(frame) => frame.channels,
             Self::Shared(frame) => frame.channels,
+            Self::LineagedExclusive(frame) => frame.frame().channels,
+            Self::LineagedShared(frame) => frame.frame().channels,
         }
     }
 
@@ -71,6 +90,16 @@ impl PlanEdgeFrame {
         match self {
             Self::Exclusive(frame) => frame.buffer.as_slice(),
             Self::Shared(frame) => frame.buffer.as_slice(),
+            Self::LineagedExclusive(frame) => frame.frame().buffer.as_slice(),
+            Self::LineagedShared(frame) => frame.frame().buffer.as_slice(),
+        }
+    }
+
+    pub fn lineage(&self) -> Option<FrameLineage> {
+        match self {
+            Self::Exclusive(_) | Self::Shared(_) => None,
+            Self::LineagedExclusive(frame) => Some(frame.lineage()),
+            Self::LineagedShared(frame) => Some(frame.lineage()),
         }
     }
 }
@@ -85,6 +114,16 @@ impl std::fmt::Debug for PlanEdgeFrame {
             Self::Shared(frame) => f
                 .debug_tuple("Shared")
                 .field(&frame.sequence_number)
+                .finish(),
+            Self::LineagedExclusive(frame) => f
+                .debug_tuple("LineagedExclusive")
+                .field(&frame.frame().sequence_number)
+                .field(&frame.lineage())
+                .finish(),
+            Self::LineagedShared(frame) => f
+                .debug_tuple("LineagedShared")
+                .field(&frame.frame().sequence_number)
+                .field(&frame.lineage())
                 .finish(),
         }
     }
@@ -114,6 +153,7 @@ pub struct EdgeObservations {
     pub source_identity_discontinuities_total: u64,
     pub sequence_discontinuities_total: u64,
     pub timestamp_discontinuities_total: u64,
+    pub lineage_epoch_discontinuities_total: u64,
     pub manually_reported_discontinuities_total: u64,
     pub enqueue_to_receive_samples_total: u64,
     pub enqueue_to_receive_invalid_order_total: u64,
@@ -164,6 +204,7 @@ struct EdgeTelemetry {
     source_identity_discontinuities_total: AtomicU64,
     sequence_discontinuities_total: AtomicU64,
     timestamp_discontinuities_total: AtomicU64,
+    lineage_epoch_discontinuities_total: AtomicU64,
     manually_reported_discontinuities_total: AtomicU64,
     shutdown_discarded_total: AtomicU64,
     queue_peak_frames: AtomicU64,
@@ -195,6 +236,7 @@ impl EdgeTelemetry {
             source_identity_discontinuities_total: AtomicU64::new(0),
             sequence_discontinuities_total: AtomicU64::new(0),
             timestamp_discontinuities_total: AtomicU64::new(0),
+            lineage_epoch_discontinuities_total: AtomicU64::new(0),
             manually_reported_discontinuities_total: AtomicU64::new(0),
             shutdown_discarded_total: AtomicU64::new(0),
             queue_peak_frames: AtomicU64::new(0),
@@ -322,6 +364,9 @@ impl EdgeTelemetry {
                 .load(Ordering::Relaxed),
             timestamp_discontinuities_total: self
                 .timestamp_discontinuities_total
+                .load(Ordering::Relaxed),
+            lineage_epoch_discontinuities_total: self
+                .lineage_epoch_discontinuities_total
                 .load(Ordering::Relaxed),
             manually_reported_discontinuities_total: self
                 .manually_reported_discontinuities_total
@@ -452,6 +497,7 @@ struct FrameContinuity {
     source_id: pks_frame::SourceId,
     next_sequence_number: u64,
     next_timestamp_ns: u64,
+    discontinuity_epoch: Option<u64>,
 }
 
 impl PlanEdgeReceiver {
@@ -529,6 +575,18 @@ impl PlanEdgeReceiver {
                         .discontinuities_total
                         .fetch_add(1, Ordering::Relaxed);
                 }
+                if let (Some(previous_epoch), Some(lineage)) =
+                    (previous.discontinuity_epoch, frame.lineage())
+                {
+                    if lineage.discontinuity_epoch != previous_epoch {
+                        self.telemetry
+                            .lineage_epoch_discontinuities_total
+                            .fetch_add(1, Ordering::Relaxed);
+                        self.telemetry
+                            .discontinuities_total
+                            .fetch_add(1, Ordering::Relaxed);
+                    }
+                }
             }
         }
         let channels = usize::from(frame.channels()).max(1);
@@ -542,6 +600,7 @@ impl PlanEdgeReceiver {
             source_id,
             next_sequence_number: frame.sequence_number().saturating_add(1),
             next_timestamp_ns: frame.timestamp_ns().saturating_add(duration_ns),
+            discontinuity_epoch: frame.lineage().map(|lineage| lineage.discontinuity_epoch),
         });
     }
 
@@ -652,6 +711,10 @@ impl PlanEdgeRouter {
         Ok((Self { edges }, receivers))
     }
 
+    /// Routes a frame without capture-time lineage.
+    ///
+    /// This is the raw compatibility path for pre-Session callers. New Session
+    /// execution must use [`Self::dispatch_lineaged_from`].
     pub fn dispatch_from(
         &mut self,
         node_id: NodeId,
@@ -756,6 +819,109 @@ impl PlanEdgeRouter {
         summary
     }
 
+    pub fn dispatch_lineaged_from(
+        &mut self,
+        node_id: NodeId,
+        output_port: &str,
+        frame: LineagedAudioFrame,
+        enqueued_at_ns: u64,
+    ) -> DispatchSummary {
+        let matching_count = self
+            .edges
+            .iter()
+            .filter(|edge| edge.from.node == node_id && edge.from.port == output_port)
+            .count();
+        let mut summary = DispatchSummary {
+            attempted_edges: matching_count as u64,
+            ..DispatchSummary::default()
+        };
+        if matching_count == 0 {
+            return summary;
+        }
+        let exclusive_index = (matching_count == 1).then(|| {
+            self.edges.iter().position(|edge| {
+                edge.from.node == node_id
+                    && edge.from.port == output_port
+                    && edge.copy_policy == CopyPolicy::MoveExclusive
+            })
+        });
+        if let Some(Some(index)) = exclusive_index {
+            if self.edges[index]
+                .sender
+                .send(PlanEdgeFrame::LineagedExclusive(frame), enqueued_at_ns)
+            {
+                summary.enqueued_edges = 1;
+            } else {
+                summary.dropped_edges = 1;
+            }
+            return summary;
+        }
+
+        let Some(shared) = frame.freeze() else {
+            summary.dropped_edges = summary.attempted_edges;
+            summary.freeze_failed_edges = summary.attempted_edges;
+            for edge in &self.edges {
+                if edge.from.node == node_id && edge.from.port == output_port {
+                    edge.sender
+                        .telemetry
+                        .observe_drop(EdgeDropReason::FreezeFailed);
+                }
+            }
+            return summary;
+        };
+        for edge in &mut self.edges {
+            if edge.from.node != node_id || edge.from.port != output_port {
+                continue;
+            }
+            let branch_frame = match edge.copy_policy {
+                CopyPolicy::ShareReadOnly => {
+                    let Some(branch_frame) = shared.try_clone() else {
+                        summary.dropped_edges = summary.dropped_edges.saturating_add(1);
+                        summary.freeze_failed_edges = summary.freeze_failed_edges.saturating_add(1);
+                        edge.sender
+                            .telemetry
+                            .observe_drop(EdgeDropReason::SharedReferenceExhausted);
+                        continue;
+                    };
+                    PlanEdgeFrame::LineagedShared(branch_frame)
+                }
+                CopyPolicy::CopyToBranchPool => {
+                    let Some(branch_frame) = edge
+                        .branch_pool
+                        .as_ref()
+                        .and_then(|pool| shared.copy_to_pool(pool))
+                    else {
+                        summary.dropped_edges = summary.dropped_edges.saturating_add(1);
+                        let reason = if edge.sender.is_full() {
+                            EdgeDropReason::QueueFull
+                        } else {
+                            summary.copy_pool_exhausted_edges =
+                                summary.copy_pool_exhausted_edges.saturating_add(1);
+                            EdgeDropReason::BranchPoolExhausted
+                        };
+                        edge.sender.telemetry.observe_drop(reason);
+                        continue;
+                    };
+                    PlanEdgeFrame::LineagedExclusive(branch_frame)
+                }
+                CopyPolicy::MoveExclusive => {
+                    summary.dropped_edges = summary.dropped_edges.saturating_add(1);
+                    summary.freeze_failed_edges = summary.freeze_failed_edges.saturating_add(1);
+                    edge.sender
+                        .telemetry
+                        .observe_drop(EdgeDropReason::InvalidCopyPolicy);
+                    continue;
+                }
+            };
+            if edge.sender.send(branch_frame, enqueued_at_ns) {
+                summary.enqueued_edges = summary.enqueued_edges.saturating_add(1);
+            } else {
+                summary.dropped_edges = summary.dropped_edges.saturating_add(1);
+            }
+        }
+        summary
+    }
+
     pub fn observations(&self, edge_id: EdgeId) -> Option<EdgeObservations> {
         self.edges
             .iter()
@@ -768,7 +934,7 @@ impl PlanEdgeRouter {
 mod tests {
     use super::*;
     use pks_caps::EdgeContract;
-    use pks_frame::{SourceId, StreamId};
+    use pks_frame::{ClockDomainId, SessionId, SourceId, StemId, StreamId};
     use pks_graph::compiler::Compiler;
     use pks_graph::dsl::Pipeline;
     use pks_graph::node::NodeConfig;
@@ -793,6 +959,42 @@ mod tests {
             1,
             buffer,
         )
+    }
+
+    fn lineaged_frame(
+        pool: &Arc<AudioBufferPool>,
+        source_id: u64,
+        sequence_number: u64,
+        timestamp_ns: u64,
+        discontinuity_epoch: u64,
+    ) -> LineagedAudioFrame {
+        LineagedAudioFrame::new(
+            {
+                let mut buffer = pool.acquire().unwrap();
+                buffer.copy_from_slice(&[source_id as f32, sequence_number as f32]);
+                AudioFrame::new(
+                    StreamId(source_id),
+                    SourceId(source_id),
+                    sequence_number,
+                    timestamp_ns,
+                    1,
+                    buffer,
+                )
+            },
+            FrameLineage {
+                session_id: SessionId(42),
+                source_id: SourceId(source_id),
+                stem_id: StemId(8),
+                clock_id: ClockDomainId(9),
+                sequence_num: sequence_number,
+                timestamp_start_ns: timestamp_ns,
+                duration_ns: 41_666,
+                source_generation: 10,
+                discontinuity_epoch,
+                permission_epoch: 11,
+            },
+        )
+        .unwrap()
     }
 
     #[test]
@@ -825,6 +1027,82 @@ mod tests {
             assert_eq!(received.source_id(), SourceId(7));
             assert_eq!(received.sequence_number(), 11);
         }
+    }
+
+    #[test]
+    fn given_lineaged_source_fan_out_when_branch_frames_are_copied_then_exact_lineage_is_preserved()
+    {
+        let registry = registry();
+        let mut graph = Pipeline::new();
+        let source = graph.add_node("passthrough", NodeConfig::new());
+        for _ in 0..3 {
+            let sink = graph.add_node("passthrough", NodeConfig::new());
+            graph.connect(source.out("out"), sink.in_("in"));
+        }
+        let ir = Compiler::new()
+            .compile(graph.into_spec(), &registry)
+            .unwrap();
+        let plan = RuntimePlanner::new().plan(&ir).unwrap();
+        let (mut router, mut receivers) = PlanEdgeRouter::new(&plan, &ir).unwrap();
+        let pool = AudioBufferPool::new(1, 2);
+        let frame = lineaged_frame(&pool, 7, 11, 100, 12);
+        let expected_lineage = frame.lineage();
+
+        let summary = router.dispatch_lineaged_from(source.id(), "out", frame, 101);
+        let mut branch_buffer_addresses = Vec::new();
+        for receiver in &mut receivers {
+            let received = receiver.recv_at(102).unwrap();
+            assert_eq!(received.lineage(), Some(expected_lineage));
+            match received {
+                PlanEdgeFrame::LineagedExclusive(frame) => {
+                    branch_buffer_addresses.push(frame.frame().buffer.as_slice().as_ptr());
+                }
+                PlanEdgeFrame::LineagedShared(frame) => {
+                    branch_buffer_addresses.push(frame.frame().buffer.as_slice().as_ptr());
+                }
+                PlanEdgeFrame::Exclusive(_) | PlanEdgeFrame::Shared(_) => {
+                    panic!("lineaged dispatch emitted a raw compatibility frame")
+                }
+            }
+        }
+
+        assert_eq!(summary.enqueued_edges, 3);
+        assert_eq!(summary.dropped_edges, 0);
+        branch_buffer_addresses.sort_unstable();
+        branch_buffer_addresses.dedup();
+        assert_eq!(branch_buffer_addresses.len(), 3);
+    }
+
+    #[test]
+    fn given_lineage_discontinuity_epoch_change_when_received_then_declared_discontinuity_is_counted(
+    ) {
+        let registry = registry();
+        let mut graph = Pipeline::new();
+        let source = graph.add_node("passthrough", NodeConfig::new());
+        let sink = graph.add_node("passthrough", NodeConfig::new());
+        graph.connect(source.out("out"), sink.in_("in"));
+        let ir = Compiler::new()
+            .compile(graph.into_spec(), &registry)
+            .unwrap();
+        let plan = RuntimePlanner::new().plan(&ir).unwrap();
+        let (mut router, mut receivers) = PlanEdgeRouter::new(&plan, &ir).unwrap();
+        let pool = AudioBufferPool::new(1, 2);
+
+        router.dispatch_lineaged_from(source.id(), "out", lineaged_frame(&pool, 7, 1, 100, 3), 101);
+        receivers[0].recv_at(102).unwrap();
+        router.dispatch_lineaged_from(
+            source.id(),
+            "out",
+            lineaged_frame(&pool, 7, 2, 41_766, 4),
+            41_767,
+        );
+        receivers[0].recv_at(41_768).unwrap();
+        let observations = receivers[0].observations();
+
+        assert_eq!(observations.sequence_discontinuities_total, 0);
+        assert_eq!(observations.timestamp_discontinuities_total, 0);
+        assert_eq!(observations.lineage_epoch_discontinuities_total, 1);
+        assert_eq!(observations.discontinuities_total, 1);
     }
 
     #[test]
