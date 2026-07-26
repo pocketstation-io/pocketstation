@@ -8,9 +8,9 @@ mod capture_owner;
 mod frame_stream;
 
 pub use capture_owner::{
-    prepare_capture, ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureOwner,
-    CaptureOwnerObservations, CapturePrepareRequest, CaptureStopOutcome, PreparedCapture,
-    PreparedCaptureBackend,
+    join_capture_worker, prepare_capture, ActiveCaptureBackend, CallbackCaptureBackend,
+    CaptureDelivery, CaptureOwner, CaptureOwnerObservations, CapturePrepareRequest,
+    CaptureStopOutcome, PreparedCapture, PreparedCaptureBackend,
 };
 pub use frame_stream::{
     captured_frame_stream, CapturedFrameDelivery, CapturedFrameSender, CapturedFrameStream,
@@ -376,6 +376,25 @@ impl SourceRuntimeEventSender {
             events_dropped_total: self.counters.events_dropped_total.load(Ordering::Relaxed),
         }
     }
+}
+
+/// Publishes one exact post-open backend failure without introducing another
+/// event queue or worker.
+pub fn publish_backend_failure(
+    sender: &SourceRuntimeEventSender,
+    stable_id: StableSourceId,
+    generation: SourceGeneration,
+    operation: &'static str,
+    error_class: CaptureRuntimeFailureClass,
+) -> SourceRuntimeEventDelivery {
+    sender.try_send(SourceRuntimeEvent::BackendFailure {
+        stable_id,
+        generation,
+        failure: CaptureRuntimeFailure {
+            operation,
+            error_class,
+        },
+    })
 }
 
 #[derive(Debug)]
@@ -813,6 +832,8 @@ pub enum CaptureError {
     InvalidStreamCapacity,
     #[error("source-runtime event channel capacity must be greater than zero")]
     InvalidRuntimeEventCapacity,
+    #[error("capture worker panicked while joining: {worker}")]
+    CaptureWorkerPanicked { worker: &'static str },
 }
 
 // Backwards-compat alias — existing callers that use LoopbackError still compile.
@@ -1214,6 +1235,37 @@ mod tests {
             sender.try_send(runtime_backend_failure(1)),
             SourceRuntimeEventDelivery::ReceiverClosed
         );
+    }
+
+    #[test]
+    fn given_backend_failure_publisher_when_owner_ends_then_event_and_closure_are_observable() {
+        let (sender, receiver) = source_runtime_event_channel(1).unwrap();
+        let stable_id =
+            StableSourceId::new(Platform::Linux, SourceKind::Application, "pw-node:test");
+
+        assert_eq!(
+            publish_backend_failure(
+                &sender,
+                stable_id.clone(),
+                SourceGeneration::INITIAL,
+                "test native worker",
+                CaptureRuntimeFailureClass::BackendClass {
+                    class: "worker-exited".to_owned(),
+                },
+            ),
+            SourceRuntimeEventDelivery::Enqueued
+        );
+        assert!(matches!(
+            receiver.try_recv(),
+            SourceRuntimeEventReceive::Event(SourceRuntimeEvent::BackendFailure {
+                stable_id: event_stable_id,
+                ..
+            }) if event_stable_id == stable_id
+        ));
+
+        drop(sender);
+
+        assert_eq!(receiver.try_recv(), SourceRuntimeEventReceive::Closed);
     }
 
     #[test]

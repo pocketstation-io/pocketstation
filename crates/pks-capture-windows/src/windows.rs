@@ -78,7 +78,7 @@ pub struct SystemLoopbackSource {
     dispatch_thread: Option<std::thread::JoinHandle<()>>,
     stop_tx: std::sync::mpsc::SyncSender<()>,
     counters: CaptureObservationCounters,
-    runtime_event_rx: SourceRuntimeEventReceiver,
+    runtime_event_rx: Option<SourceRuntimeEventReceiver>,
 }
 
 pub struct DesktopCaptureSource {
@@ -93,6 +93,22 @@ impl DesktopCaptureSource {
         SystemLoopbackSource::capture_mode(mode, callback).map(|source| Self { source })
     }
 
+    pub(crate) fn capture_mode_with_runtime_event_sender<F>(
+        mode: CaptureMode,
+        callback: F,
+        runtime_event_sender: SourceRuntimeEventSender,
+    ) -> Result<Self, LoopbackError>
+    where
+        F: FnMut(AudioFrame) + Send + 'static,
+    {
+        SystemLoopbackSource::capture_mode_with_runtime_event_sender(
+            mode,
+            callback,
+            runtime_event_sender,
+        )
+        .map(|source| Self { source })
+    }
+
     pub fn observations(&self) -> CaptureObservations {
         self.source.observations()
     }
@@ -103,6 +119,10 @@ impl DesktopCaptureSource {
 
     pub fn runtime_event_observations(&self) -> SourceRuntimeEventObservations {
         self.source.runtime_event_observations()
+    }
+
+    pub fn stop_and_join(self) -> Result<CaptureObservations, LoopbackError> {
+        self.source.stop_and_join()
     }
 }
 
@@ -359,6 +379,36 @@ impl SystemLoopbackSource {
     where
         F: FnMut(AudioFrame) + Send + 'static,
     {
+        let (runtime_event_sender, runtime_event_receiver) =
+            source_runtime_event_channel(RUNTIME_EVENT_CHANNEL_CAPACITY_EVENTS)?;
+        Self::capture_mode_with_runtime_events(
+            mode,
+            callback,
+            runtime_event_sender,
+            Some(runtime_event_receiver),
+        )
+    }
+
+    pub(crate) fn capture_mode_with_runtime_event_sender<F>(
+        mode: CaptureMode,
+        callback: F,
+        runtime_event_sender: SourceRuntimeEventSender,
+    ) -> Result<Self, LoopbackError>
+    where
+        F: FnMut(AudioFrame) + Send + 'static,
+    {
+        Self::capture_mode_with_runtime_events(mode, callback, runtime_event_sender, None)
+    }
+
+    fn capture_mode_with_runtime_events<F>(
+        mode: CaptureMode,
+        callback: F,
+        runtime_event_tx: SourceRuntimeEventSender,
+        runtime_event_rx: Option<SourceRuntimeEventReceiver>,
+    ) -> Result<Self, LoopbackError>
+    where
+        F: FnMut(AudioFrame) + Send + 'static,
+    {
         let (stop_tx, stop_rx) = std::sync::mpsc::sync_channel::<()>(1);
         let (open_tx, open_rx) = std::sync::mpsc::sync_channel::<Result<(), LoopbackError>>(1);
         let (mut frame_producer, mut frame_consumer) =
@@ -369,9 +419,6 @@ impl SystemLoopbackSource {
         let capture_counters = counters.clone();
         let open_cancellation = OpenCancellation::default();
         let worker_cancellation = open_cancellation.clone();
-        let (runtime_event_tx, runtime_event_rx) =
-            source_runtime_event_channel(RUNTIME_EVENT_CHANNEL_CAPACITY_EVENTS)?;
-
         let capture_thread = std::thread::Builder::new()
             .name("pks-wasapi-capture".into())
             .spawn(move || {
@@ -561,11 +608,36 @@ impl SystemLoopbackSource {
     }
 
     pub fn try_recv_runtime_event(&self) -> SourceRuntimeEventReceive {
-        self.runtime_event_rx.try_recv()
+        self.runtime_event_rx
+            .as_ref()
+            .map_or(SourceRuntimeEventReceive::Closed, |receiver| {
+                receiver.try_recv()
+            })
     }
 
     pub fn runtime_event_observations(&self) -> SourceRuntimeEventObservations {
-        self.runtime_event_rx.observations()
+        self.runtime_event_rx
+            .as_ref()
+            .map_or_else(SourceRuntimeEventObservations::default, |receiver| {
+                receiver.observations()
+            })
+    }
+
+    pub fn stop_and_join(mut self) -> Result<CaptureObservations, LoopbackError> {
+        let counters = self.counters.clone();
+        self.stop_workers()?;
+        Ok(counters.snapshot())
+    }
+
+    fn stop_workers(&mut self) -> Result<(), LoopbackError> {
+        let _ = self.stop_tx.try_send(());
+        let capture_join = self.capture_thread.take().map_or(Ok(()), |thread| {
+            pks_capture::join_capture_worker(thread, "Windows capture")
+        });
+        let dispatch_join = self.dispatch_thread.take().map_or(Ok(()), |thread| {
+            pks_capture::join_capture_worker(thread, "Windows dispatch")
+        });
+        capture_join.and(dispatch_join)
     }
 }
 
@@ -601,13 +673,7 @@ fn resolve_application_mode(mode: CaptureMode) -> Result<CaptureMode, LoopbackEr
 /// never execute from a capture callback or realtime partition.
 impl Drop for SystemLoopbackSource {
     fn drop(&mut self) {
-        let _ = self.stop_tx.try_send(());
-        if let Some(capture_thread) = self.capture_thread.take() {
-            let _ = capture_thread.join();
-        }
-        if let Some(dispatch_thread) = self.dispatch_thread.take() {
-            let _ = dispatch_thread.join();
-        }
+        let _ = self.stop_workers();
     }
 }
 

@@ -8,8 +8,9 @@ use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{BufferSize, SampleFormat, SupportedBufferSize};
 use pks_capture::{
     initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureError,
-    CaptureObservationCounters, CaptureObservations, CaptureSource, InputDeviceSelector,
-    SourceKind, SourceState, StableSourceId,
+    CaptureObservationCounters, CaptureObservations, CaptureRuntimeFailure,
+    CaptureRuntimeFailureClass, CaptureSource, InputDeviceSelector, SourceGeneration, SourceKind,
+    SourceRuntimeEvent, SourceRuntimeEventSender, SourceState, StableSourceId,
 };
 use pks_frame::{AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, Platform, StreamId};
 
@@ -57,7 +58,18 @@ pub struct MacosInputSource {
 }
 
 impl MacosInputSource {
-    pub fn capture<F>(selector: InputDeviceSelector, mut callback: F) -> Result<Self, CaptureError>
+    pub fn capture<F>(selector: InputDeviceSelector, callback: F) -> Result<Self, CaptureError>
+    where
+        F: FnMut(AudioFrame) + Send + 'static,
+    {
+        Self::capture_with_runtime_event_sender(selector, callback, None)
+    }
+
+    pub(crate) fn capture_with_runtime_event_sender<F>(
+        selector: InputDeviceSelector,
+        mut callback: F,
+        runtime_event_sender: Option<SourceRuntimeEventSender>,
+    ) -> Result<Self, CaptureError>
     where
         F: FnMut(AudioFrame) + Send + 'static,
     {
@@ -100,9 +112,9 @@ impl MacosInputSource {
         let running = Arc::new(AtomicBool::new(true));
         let counters = CaptureObservationCounters::default();
         initialize_monotonic_timestamp_domain();
-        let frame_source_id =
-            StableSourceId::new(Platform::Macos, SourceKind::InputDevice, stable_device_id)
-                .to_frame_source_id();
+        let stable_id =
+            StableSourceId::new(Platform::Macos, SourceKind::InputDevice, stable_device_id);
+        let frame_source_id = stable_id.to_frame_source_id();
         let callback_pool = Arc::clone(&pool);
         let callback_counters = counters.clone();
         let mut sequence_number = 0u64;
@@ -142,8 +154,26 @@ impl MacosInputSource {
             callback_counters.observe_enqueued_frame();
         };
         let error_counters = counters.clone();
-        let error_callback = move |_| {
+        let mut runtime_failure_event =
+            runtime_event_sender
+                .as_ref()
+                .map(|_| SourceRuntimeEvent::BackendFailure {
+                    stable_id,
+                    generation: SourceGeneration::INITIAL,
+                    failure: CaptureRuntimeFailure {
+                        operation: "macOS input stream callback",
+                        error_class: CaptureRuntimeFailureClass::BackendClass {
+                            class: "cpal-stream-error".to_owned(),
+                        },
+                    },
+                });
+        let error_callback = move |_error: cpal::Error| {
             error_counters.observe_stream_error();
+            if let (Some(sender), Some(event)) =
+                (runtime_event_sender.as_ref(), runtime_failure_event.take())
+            {
+                let _ = sender.try_send(event);
+            }
         };
         let stream = device
             .build_input_stream(stream_config, data_callback, error_callback, None)
@@ -182,15 +212,25 @@ impl MacosInputSource {
     pub fn observations(&self) -> CaptureObservations {
         self.counters.snapshot()
     }
+
+    pub fn stop_and_join(mut self) -> Result<CaptureObservations, CaptureError> {
+        let counters = self.counters.clone();
+        self.stop_reader()?;
+        Ok(counters.snapshot())
+    }
+
+    fn stop_reader(&mut self) -> Result<(), CaptureError> {
+        self.running.store(false, Ordering::Release);
+        self.stream.take();
+        self.reader_thread.take().map_or(Ok(()), |thread| {
+            pks_capture::join_capture_worker(thread, "macOS input reader")
+        })
+    }
 }
 
 impl Drop for MacosInputSource {
     fn drop(&mut self) {
-        self.running.store(false, Ordering::Release);
-        self.stream.take();
-        if let Some(reader_thread) = self.reader_thread.take() {
-            let _ = reader_thread.join();
-        }
+        let _ = self.stop_reader();
     }
 }
 

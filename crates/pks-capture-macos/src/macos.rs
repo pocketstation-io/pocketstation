@@ -51,7 +51,7 @@ enum Impl {
     #[allow(dead_code)]
     Tap(crate::macos_tap::TapLoopbackSource),
     Asp {
-        _thread: std::thread::JoinHandle<()>,
+        reader_thread: Option<std::thread::JoinHandle<()>>,
         stop_tx: std::sync::mpsc::SyncSender<()>,
         counters: CaptureObservationCounters,
     },
@@ -76,14 +76,29 @@ impl SystemLoopbackSource {
         Self::capture_mode(CaptureMode::SystemMix, callback)
     }
 
-    pub fn capture_mode<F>(mode: CaptureMode, mut callback: F) -> Result<Self, LoopbackError>
+    pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
+    where
+        F: FnMut(AudioFrame) + Send + 'static,
+    {
+        Self::capture_mode_with_runtime_event_sender(mode, callback, None)
+    }
+
+    pub(crate) fn capture_mode_with_runtime_event_sender<F>(
+        mode: CaptureMode,
+        mut callback: F,
+        runtime_event_sender: Option<pks_capture::SourceRuntimeEventSender>,
+    ) -> Result<Self, LoopbackError>
     where
         F: FnMut(AudioFrame) + Send + 'static,
     {
         // macOS 14.4+ (public support): use the process tap path (no HAL plugin, no routing change).
         if crate::macos_tap::tap_available() {
-            return crate::macos_tap::TapLoopbackSource::capture_mode(mode, callback)
-                .map(|t| Self(Impl::Tap(t)));
+            return crate::macos_tap::TapLoopbackSource::capture_mode_with_runtime_event_sender(
+                mode,
+                callback,
+                runtime_event_sender,
+            )
+            .map(|t| Self(Impl::Tap(t)));
         }
 
         // Older macOS: ASP fallback only supports SystemMix.
@@ -115,67 +130,89 @@ impl SystemLoopbackSource {
         let (stop_tx, stop_rx) = std::sync::mpsc::sync_channel::<()>(1);
         let counters = CaptureObservationCounters::default();
         let capture_counters = counters.clone();
+        let failure_counters = counters.clone();
         let initial_drop_count = reader.drop_count();
 
         let thread = std::thread::Builder::new()
             .name("pks-asp-reader".into())
             .spawn(move || {
-                let mut sequence_num: u64 = 0;
-                let mut timeline = CaptureSampleTimeline::new(sample_rate_nonzero);
-                let mut buffer = vec![0.0f32; buffer_capacity_samples];
-                let mut observed_drop_count = initial_drop_count;
-                loop {
-                    if stop_rx.try_recv().is_ok() {
-                        break;
-                    }
-                    let frame_count = reader.read_frames(&mut buffer, callback_frame_count);
-                    let drop_count = reader.drop_count();
-                    capture_counters.observe_dispatch_queue_full_frames(
-                        drop_count.saturating_sub(observed_drop_count),
-                    );
-                    observed_drop_count = drop_count;
-                    if frame_count == 0 {
-                        std::thread::sleep(Duration::from_millis(1));
-                        continue;
-                    }
-                    capture_counters.observe_callback_buffer();
-                    let timestamp_ns = timeline.advance(u64::from(frame_count));
-                    let frame_sequence_number = sequence_num;
-                    sequence_num = sequence_num.saturating_add(1);
-                    let mut handle = match pool.acquire() {
-                        Some(h) => h,
-                        None => {
-                            capture_counters.observe_pool_exhaustion();
+                let worker = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                    let mut sequence_num: u64 = 0;
+                    let mut timeline = CaptureSampleTimeline::new(sample_rate_nonzero);
+                    let mut buffer = vec![0.0f32; buffer_capacity_samples];
+                    let mut observed_drop_count = initial_drop_count;
+                    loop {
+                        if stop_rx.try_recv().is_ok() {
+                            break;
+                        }
+                        let frame_count = reader.read_frames(&mut buffer, callback_frame_count);
+                        let drop_count = reader.drop_count();
+                        capture_counters.observe_dispatch_queue_full_frames(
+                            drop_count.saturating_sub(observed_drop_count),
+                        );
+                        observed_drop_count = drop_count;
+                        if frame_count == 0 {
+                            std::thread::sleep(Duration::from_millis(1));
                             continue;
                         }
-                    };
-                    let dst = handle.as_mut_slice();
-                    let sample_count = frame_count as usize * channel_count as usize;
-                    if sample_count > dst.len() {
-                        capture_counters.observe_oversized_buffer();
-                        continue;
+                        capture_counters.observe_callback_buffer();
+                        let timestamp_ns = timeline.advance(u64::from(frame_count));
+                        let frame_sequence_number = sequence_num;
+                        sequence_num = sequence_num.saturating_add(1);
+                        let mut handle = match pool.acquire() {
+                            Some(h) => h,
+                            None => {
+                                capture_counters.observe_pool_exhaustion();
+                                continue;
+                            }
+                        };
+                        let dst = handle.as_mut_slice();
+                        let sample_count = frame_count as usize * channel_count as usize;
+                        if sample_count > dst.len() {
+                            capture_counters.observe_oversized_buffer();
+                            continue;
+                        }
+                        dst[..sample_count].copy_from_slice(&buffer[..sample_count]);
+                        handle.set_len(sample_count);
+                        let mut frame = AudioFrame::new(
+                            StreamId(0),
+                            SourceId(0),
+                            frame_sequence_number,
+                            timestamp_ns,
+                            channel_count,
+                            handle,
+                        );
+                        frame.source_tag = AudioSourceTag::Captured;
+                        frame.encryption_mode = EncryptionMode::None;
+                        frame.sample_rate_hz = sample_rate_hz;
+                        capture_counters.observe_enqueued_frame();
+                        callback(frame);
                     }
-                    dst[..sample_count].copy_from_slice(&buffer[..sample_count]);
-                    handle.set_len(sample_count);
-                    let mut frame = AudioFrame::new(
-                        StreamId(0),
-                        SourceId(0),
-                        frame_sequence_number,
-                        timestamp_ns,
-                        channel_count,
-                        handle,
-                    );
-                    frame.source_tag = AudioSourceTag::Captured;
-                    frame.encryption_mode = EncryptionMode::None;
-                    frame.sample_rate_hz = sample_rate_hz;
-                    capture_counters.observe_enqueued_frame();
-                    callback(frame);
+                }));
+                if let Err(payload) = worker {
+                    failure_counters.observe_stream_error();
+                    if let Some(sender) = runtime_event_sender.as_ref() {
+                        let _ = pks_capture::publish_backend_failure(
+                            sender,
+                            pks_capture::StableSourceId::new(
+                                pks_frame::Platform::Macos,
+                                pks_capture::SourceKind::SystemMix,
+                                "system:mix",
+                            ),
+                            pks_capture::SourceGeneration::INITIAL,
+                            "macOS ASP reader",
+                            pks_capture::CaptureRuntimeFailureClass::BackendClass {
+                                class: "reader-panicked".to_owned(),
+                            },
+                        );
+                    }
+                    std::panic::resume_unwind(payload);
                 }
             })
             .map_err(|e| LoopbackError::BackendInit(format!("thread spawn: {e}")))?;
 
         Ok(Self(Impl::Asp {
-            _thread: thread,
+            reader_thread: Some(thread),
             stop_tx,
             counters,
         }))
@@ -187,18 +224,34 @@ impl SystemLoopbackSource {
             Impl::Asp { counters, .. } => counters.snapshot(),
         }
     }
-}
 
-/// Drop contract — this is a control-thread-only owner:
-///   non-blocking stop request · panic-free · allocation-free · log-free
-impl Drop for SystemLoopbackSource {
-    fn drop(&mut self) {
-        match &self.0 {
-            Impl::Tap(_) => {} // TapLoopbackSource::Drop handles stop
-            Impl::Asp { stop_tx, .. } => {
+    pub fn stop_and_join(mut self) -> Result<CaptureObservations, LoopbackError> {
+        self.stop_reader()
+    }
+
+    fn stop_reader(&mut self) -> Result<CaptureObservations, LoopbackError> {
+        match &mut self.0 {
+            Impl::Tap(source) => source.stop_and_join(),
+            Impl::Asp {
+                reader_thread,
+                stop_tx,
+                counters,
+            } => {
+                let counters = counters.clone();
                 let _ = stop_tx.try_send(());
+                if let Some(reader_thread) = reader_thread.take() {
+                    pks_capture::join_capture_worker(reader_thread, "macOS ASP reader")?;
+                }
+                Ok(counters.snapshot())
             }
         }
+    }
+}
+
+/// Drop contract — control thread only: signal and join the owned reader.
+impl Drop for SystemLoopbackSource {
+    fn drop(&mut self) {
+        let _ = self.stop_reader();
     }
 }
 

@@ -157,6 +157,19 @@ pub fn prepare_capture(
     })
 }
 
+/// Joins one owned capture worker and preserves panic as a typed failure.
+///
+/// This is a control-thread operation. Callers with multiple workers must call
+/// it for every owned handle before returning the first failure.
+pub fn join_capture_worker(
+    worker_thread: std::thread::JoinHandle<()>,
+    worker: &'static str,
+) -> Result<(), CaptureError> {
+    worker_thread
+        .join()
+        .map_err(|_| CaptureError::CaptureWorkerPanicked { worker })
+}
+
 #[cfg(test)]
 mod tests {
     use std::sync::atomic::{AtomicBool, Ordering};
@@ -352,5 +365,19 @@ mod tests {
 
         assert!(matches!(prepared, Err(CaptureError::InvalidStreamCapacity)));
         assert!(!opened.load(Ordering::Acquire));
+    }
+
+    #[test]
+    fn given_panicking_capture_worker_when_joined_then_typed_failure_is_returned() {
+        let worker_thread = std::thread::spawn(|| panic!("test worker panic"));
+
+        let outcome = join_capture_worker(worker_thread, "test capture");
+
+        assert_eq!(
+            outcome,
+            Err(CaptureError::CaptureWorkerPanicked {
+                worker: "test capture"
+            })
+        );
     }
 }

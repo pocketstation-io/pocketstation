@@ -197,11 +197,31 @@ impl DesktopCaptureSource {
     where
         F: FnMut(AudioFrame) + Send + 'static,
     {
-        SystemLoopbackSource::capture_mode(mode, callback).map(|source| Self { source })
+        Self::capture_mode_with_runtime_event_sender(mode, callback, None)
+    }
+
+    pub(crate) fn capture_mode_with_runtime_event_sender<F>(
+        mode: CaptureMode,
+        callback: F,
+        runtime_event_sender: Option<pks_capture::SourceRuntimeEventSender>,
+    ) -> Result<Self, LoopbackError>
+    where
+        F: FnMut(AudioFrame) + Send + 'static,
+    {
+        SystemLoopbackSource::capture_mode_with_runtime_event_sender(
+            mode,
+            callback,
+            runtime_event_sender,
+        )
+        .map(|source| Self { source })
     }
 
     pub fn observations(&self) -> CaptureObservations {
         self.source.observations()
+    }
+
+    pub fn stop_and_join(self) -> Result<CaptureObservations, LoopbackError> {
+        self.source.stop_and_join()
     }
 }
 
@@ -219,6 +239,17 @@ impl SystemLoopbackSource {
     where
         F: FnMut(AudioFrame) + Send + 'static,
     {
+        Self::capture_mode_with_runtime_event_sender(mode, callback, None)
+    }
+
+    pub(crate) fn capture_mode_with_runtime_event_sender<F>(
+        mode: CaptureMode,
+        callback: F,
+        runtime_event_sender: Option<pks_capture::SourceRuntimeEventSender>,
+    ) -> Result<Self, LoopbackError>
+    where
+        F: FnMut(AudioFrame) + Send + 'static,
+    {
         match &mode {
             CaptureMode::Process(pid) => {
                 if !pipewire_available() {
@@ -230,8 +261,10 @@ impl SystemLoopbackSource {
                     Some(src) => run_pipewire_targeted(
                         pipewire_node_target(src)?,
                         src.stable_id.to_frame_source_id().0,
+                        src.stable_id.clone(),
                         mode,
                         callback,
+                        runtime_event_sender,
                     ),
                     None => Err(LoopbackError::BackendInit(format!(
                         "BLOCKED_WITH_EVIDENCE: PipeWire per-app source capture requires PipeWire node enumeration and link; no node found for '{target_pid}'"
@@ -252,8 +285,10 @@ impl SystemLoopbackSource {
                     Some(source) => run_pipewire_targeted(
                         pipewire_node_target(source)?,
                         stable_id.to_frame_source_id().0,
+                        stable_id.clone(),
                         mode,
                         callback,
+                        runtime_event_sender,
                     ),
                     None => Err(source_unavailable(&stable_id.stable_key)),
                 }
@@ -267,8 +302,10 @@ impl SystemLoopbackSource {
                     Some(source) => run_pipewire_targeted(
                         pipewire_node_target(source)?,
                         stable_id.to_frame_source_id().0,
+                        stable_id.clone(),
                         mode,
                         callback,
+                        runtime_event_sender,
                     ),
                     None => Err(source_unavailable(&stable_id.stable_key)),
                 }
@@ -290,8 +327,10 @@ impl SystemLoopbackSource {
                     Some(src) => run_pipewire_targeted(
                         pipewire_node_target(src)?,
                         src.stable_id.to_frame_source_id().0,
+                        src.stable_id.clone(),
                         mode,
                         callback,
+                        runtime_event_sender,
                     ),
                     None => Err(LoopbackError::BackendInit(format!(
                         "BLOCKED_WITH_EVIDENCE: PipeWire per-app source capture requires PipeWire node enumeration and link; no node found for '{name_clone}'"
@@ -300,9 +339,9 @@ impl SystemLoopbackSource {
             }
             CaptureMode::SystemMix => {
                 if pipewire_available() {
-                    run_pipewire(mode, callback)
+                    run_pipewire(mode, callback, runtime_event_sender)
                 } else {
-                    run_alsa(callback)
+                    run_alsa(callback, runtime_event_sender)
                 }
             }
             CaptureMode::InputDevice(selector) => {
@@ -325,8 +364,10 @@ impl SystemLoopbackSource {
                     Some(source) => run_pipewire_targeted(
                         pipewire_node_target(source)?,
                         source.stable_id.to_frame_source_id().0,
+                        source.stable_id.clone(),
                         mode,
                         callback,
+                        runtime_event_sender,
                     ),
                     None => match selector {
                         pks_capture::InputDeviceSelector::StableId(device_uid) => {
@@ -346,6 +387,23 @@ impl SystemLoopbackSource {
     pub fn observations(&self) -> CaptureObservations {
         self.counters.snapshot()
     }
+
+    pub fn stop_and_join(mut self) -> Result<CaptureObservations, LoopbackError> {
+        let counters = self.counters.clone();
+        self.stop_workers()?;
+        Ok(counters.snapshot())
+    }
+
+    fn stop_workers(&mut self) -> Result<(), LoopbackError> {
+        let _ = self.stop_tx.try_send(());
+        let capture_join = self.capture_thread.take().map_or(Ok(()), |thread| {
+            pks_capture::join_capture_worker(thread, "linux capture")
+        });
+        let dispatch_join = self.dispatch_thread.take().map_or(Ok(()), |thread| {
+            pks_capture::join_capture_worker(thread, "linux dispatch")
+        });
+        capture_join.and(dispatch_join)
+    }
 }
 
 fn pipewire_node_target(source: &CaptureSource) -> Result<String, LoopbackError> {
@@ -361,13 +419,7 @@ fn pipewire_node_target(source: &CaptureSource) -> Result<String, LoopbackError>
 /// never execute from a capture callback or realtime partition.
 impl Drop for SystemLoopbackSource {
     fn drop(&mut self) {
-        let _ = self.stop_tx.try_send(());
-        if let Some(capture_thread) = self.capture_thread.take() {
-            let _ = capture_thread.join();
-        }
-        if let Some(dispatch_thread) = self.dispatch_thread.take() {
-            let _ = dispatch_thread.join();
-        }
+        let _ = self.stop_workers();
     }
 }
 
@@ -392,6 +444,7 @@ fn pipewire_available() -> bool {
 fn run_pipewire<F>(
     _mode: CaptureMode,
     mut callback: F,
+    runtime_event_sender: Option<pks_capture::SourceRuntimeEventSender>,
 ) -> Result<SystemLoopbackSource, LoopbackError>
 where
     F: FnMut(AudioFrame) + Send + 'static,
@@ -461,6 +514,22 @@ where
 
             let state_open_tx = open_tx.clone();
             let state_counters = capture_counters.clone();
+            let mut runtime_failure_event = runtime_event_sender.as_ref().map(|_| {
+                pks_capture::SourceRuntimeEvent::BackendFailure {
+                    stable_id: StableSourceId::new(
+                        Platform::Linux,
+                        SourceKind::SystemMix,
+                        "system:mix",
+                    ),
+                    generation: pks_capture::SourceGeneration::INITIAL,
+                    failure: pks_capture::CaptureRuntimeFailure {
+                        operation: "Linux PipeWire system-mix stream",
+                        error_class: pks_capture::CaptureRuntimeFailureClass::BackendClass {
+                            class: "pipewire-stream-error".to_owned(),
+                        },
+                    },
+                }
+            });
             let stream_subscription = match stream
                 .add_local_listener_with_user_data(())
                 .state_changed(move |_stream, _user, _old, new| match new {
@@ -469,6 +538,11 @@ where
                     }
                     pw::stream::StreamState::Error(error) => {
                         state_counters.observe_stream_error();
+                        if let (Some(sender), Some(event)) =
+                            (runtime_event_sender.as_ref(), runtime_failure_event.take())
+                        {
+                            let _ = sender.try_send(event);
+                        }
                         let _ =
                             state_open_tx.try_send(Err(format!("PipeWire stream state: {error}")));
                     }
@@ -833,8 +907,10 @@ fn enumerate_pipewire_nodes() -> Vec<pks_capture::CaptureSource> {
 fn run_pipewire_targeted<F>(
     node_target: String,
     source_id: u64,
+    stable_id: StableSourceId,
     _mode: CaptureMode,
     mut callback: F,
+    runtime_event_sender: Option<pks_capture::SourceRuntimeEventSender>,
 ) -> Result<SystemLoopbackSource, LoopbackError>
 where
     F: FnMut(AudioFrame) + Send + 'static,
@@ -906,6 +982,18 @@ where
 
             let state_open_tx = open_tx.clone();
             let state_counters = capture_counters.clone();
+            let mut runtime_failure_event = runtime_event_sender.as_ref().map(|_| {
+                pks_capture::SourceRuntimeEvent::BackendFailure {
+                    stable_id,
+                    generation: pks_capture::SourceGeneration::INITIAL,
+                    failure: pks_capture::CaptureRuntimeFailure {
+                        operation: "Linux PipeWire targeted stream",
+                        error_class: pks_capture::CaptureRuntimeFailureClass::BackendClass {
+                            class: "pipewire-stream-error".to_owned(),
+                        },
+                    },
+                }
+            });
             let stream_subscription = match stream
                 .add_local_listener_with_user_data(())
                 .state_changed(move |_stream, _user, _old, new| match new {
@@ -914,6 +1002,11 @@ where
                     }
                     pw::stream::StreamState::Error(error) => {
                         state_counters.observe_stream_error();
+                        if let (Some(sender), Some(event)) =
+                            (runtime_event_sender.as_ref(), runtime_failure_event.take())
+                        {
+                            let _ = sender.try_send(event);
+                        }
                         let _ =
                             state_open_tx.try_send(Err(format!("PipeWire stream state: {error}")));
                     }
@@ -1078,7 +1171,10 @@ where
     })
 }
 
-fn run_alsa<F>(mut callback: F) -> Result<SystemLoopbackSource, LoopbackError>
+fn run_alsa<F>(
+    mut callback: F,
+    runtime_event_sender: Option<pks_capture::SourceRuntimeEventSender>,
+) -> Result<SystemLoopbackSource, LoopbackError>
 where
     F: FnMut(AudioFrame) + Send + 'static,
 {
@@ -1135,6 +1231,22 @@ where
             };
             let _ = open_tx.send(Ok(()));
             let mut buf = vec![0f32; CAPTURE_FRAME_SAMPLES];
+            let mut runtime_failure_event = runtime_event_sender.as_ref().map(|_| {
+                pks_capture::SourceRuntimeEvent::BackendFailure {
+                    stable_id: StableSourceId::new(
+                        Platform::Linux,
+                        SourceKind::SystemMix,
+                        "system:mix",
+                    ),
+                    generation: pks_capture::SourceGeneration::INITIAL,
+                    failure: pks_capture::CaptureRuntimeFailure {
+                        operation: "Linux ALSA capture reader",
+                        error_class: pks_capture::CaptureRuntimeFailureClass::BackendClass {
+                            class: "alsa-read-error".to_owned(),
+                        },
+                    },
+                }
+            });
 
             loop {
                 if stop_rx.try_recv().is_ok() {
@@ -1152,6 +1264,11 @@ where
                         capture_counters.observe_stream_error();
                         if stop_rx.try_recv().is_ok() {
                             break;
+                        }
+                        if let (Some(sender), Some(event)) =
+                            (runtime_event_sender.as_ref(), runtime_failure_event.take())
+                        {
+                            let _ = sender.try_send(event);
                         }
                         thread::sleep(Duration::from_millis(1));
                         continue;
