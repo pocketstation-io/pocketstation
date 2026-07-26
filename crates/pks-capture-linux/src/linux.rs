@@ -26,8 +26,8 @@ use std::time::Duration;
 
 use pipewire as pw;
 use pks_frame::{
-    AudioBufferHandle, AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId,
-    StreamId, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,
+    AudioBufferHandle, AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, Platform,
+    SourceId, StreamId, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,
 };
 use pw::properties::properties;
 use pw::spa;
@@ -36,7 +36,7 @@ use spa::param::audio::AudioFormat;
 
 use pks_capture::{
     monotonic_timestamp_ns, CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters,
-    CaptureObservations, CaptureSource,
+    CaptureObservations, CaptureSource, SourceKind, StableSourceId,
 };
 
 /// Stereo capture.
@@ -322,7 +322,7 @@ impl SystemLoopbackSource {
                         || source
                             .app_id
                             .as_deref()
-                            .is_some_and(|app_id| app_id.eq_ignore_ascii_case(&name))
+                            .is_some_and(|app_id| app_id.eq_ignore_ascii_case(name))
                 }) {
                     Some(src) => run_pipewire_targeted(
                         pipewire_node_target(src)?,

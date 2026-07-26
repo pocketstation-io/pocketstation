@@ -1,5 +1,16 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## Linux runtime-event CI compilation — 2026-07-26
+
+- Status: `SAFE-TO-MERGE`; the Linux capture module now imports the shared
+  `Platform`, `SourceKind`, and `StableSourceId` types used by its typed
+  runtime-failure events.
+- GitHub's Linux all-target Clippy gate found the missing imports after the
+  macOS host gates passed. A current Linux Clippy run also removed an
+  immediately dereferenced name borrow in exact application matching. These
+  corrections change no capture behavior, queue, callback work, fallback,
+  selector, or product claim.
+
 ## W11 reusable Session structural node registration — 2026-07-26
 
 - Status: `SAFE-TO-TEST`; `pks-session::register_session_structural_nodes`
