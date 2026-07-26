@@ -182,6 +182,7 @@ impl Session {
         Ok(EndpointHandle {
             session_id: self.id(),
             endpoint_id,
+            connector_id: Some(connector_id),
         })
     }
 
@@ -246,6 +247,7 @@ impl Session {
         Ok(EndpointHandle {
             session_id: self.id(),
             endpoint_id,
+            connector_id,
         })
     }
 }
@@ -269,6 +271,7 @@ impl fmt::Debug for Session {
 pub struct EndpointHandle {
     session_id: SessionId,
     endpoint_id: EndpointId,
+    connector_id: Option<ConnectorId>,
 }
 
 impl EndpointHandle {
@@ -278,6 +281,10 @@ impl EndpointHandle {
 
     pub const fn id(self) -> EndpointId {
         self.endpoint_id
+    }
+
+    pub const fn connector_id(self) -> Option<ConnectorId> {
+        self.connector_id
     }
 }
 
@@ -347,6 +354,7 @@ impl StemHandle {
         Ok(EndpointHandle {
             session_id: self.session_id,
             endpoint_id,
+            connector_id: None,
         })
     }
 }
@@ -390,6 +398,19 @@ mod tests {
 
         assert_ne!(application_route_id, microphone_route_id);
         assert_eq!(session.id(), browser.session_id());
+    }
+
+    #[test]
+    fn given_connector_endpoint_when_declared_then_allocated_identity_is_exposed() {
+        let session = Session::new();
+        let connector = session
+            .connector(
+                OperatorId::new("example.connector.test.v1"),
+                EndpointConfiguration::new(),
+            )
+            .expect("connector declaration");
+
+        assert_eq!(connector.connector_id(), Some(ConnectorId(1)));
     }
 
     #[test]

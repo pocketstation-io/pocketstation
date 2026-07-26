@@ -1,5 +1,19 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W11 declared connector identity handoff — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; the `EndpointHandle` returned by
+  `Session::connector` now exposes its Session-allocated `ConnectorId`.
+  Concrete open connector factories can configure exact endpoint/route
+  receipts without guessing allocation order or freezing a second Session
+  copy.
+- Non-connector endpoints return no connector identity. The ID remains
+  Session-owned and is still serialized in the canonical `SessionSpec`.
+- All 41 `pks-session` tests and strict all-target Clippy pass, including a
+  focused allocation test.
+- No compatibility alias, provider enum, global registry, scaffold, fallback,
+  or loopback-only path was introduced.
+
 ## W11 multistem endpoint completion receipt — 2026-07-26
 
 - Status: `SAFE-TO-TEST`; `MultistemEndpointCoordinator` now exposes a
