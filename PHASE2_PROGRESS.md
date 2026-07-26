@@ -1,5 +1,34 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W11 Session ownership correction — 2026-07-26
+
+- Status: `PARTIAL`; the safe engine and portable adapter ownership contracts
+  are accepted, while no `pks-session` implementation, C artifact, or
+  conformance result exists yet.
+- `pks-session` is the thin safe-Rust composition and lifecycle owner. It
+  freezes declarations, coordinates real graph compilation and transactional
+  startup, owns all running resources, and coordinates bounded stop, join, and
+  recording finalization.
+- `pks-graph` retains graph compilation and `RuntimePlan`; `pks-runtime`
+  retains scheduling, execution, routing, and runtime observations;
+  `pks-frame` retains pools and frames; native capture and endpoint
+  implementations remain in their existing smallest owners.
+- `pks-session-c` is the sibling stable C projection. It owns ABI records,
+  generational handles, marshalling, polling, leases, panic containment,
+  reproducible headers, and C conformance. It does not own Session semantics.
+- Rust uses the future `pocketstation` façade directly over `pks-session`.
+  Python and Node may use direct PyO3 and Node-API adapters. Swift and Kotlin
+  may use language-owned adapters over the C/control boundary and setup-time
+  bounded buffers. Browser JavaScript remains relay-native.
+- The reusable lifecycle currently assembled by the CLI proof command is the
+  extraction seam. Proof policy, artifact rendering, connector provider code,
+  relay mechanics, and product thresholds remain outside the engine.
+- The unaccepted standalone `pks-runtime::RuntimeHandle` overlay was rejected:
+  it could fabricate lifecycle without owning capture, endpoint workers,
+  rollback, or recorder finalization.
+- This correction adds no scaffold, mock, provider implementation, fallback,
+  helper process, or loopback-only path.
+
 ## W11 embedded Session engine boundary decision — 2026-07-25
 
 - Status: `PARTIAL`; W10 PASS opened W11 and the engine deployment/ownership

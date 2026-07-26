@@ -2,7 +2,7 @@
 
 - Status: Accepted
 - Date: 2026-07-25
-- Owners: `pks-session`, `pks-runtime`, `pks-frame`
+- Owners: `pks-session`, `pks-session-c`, `pks-runtime`
 - Serves: W11 canonical cross-language engine boundary
 
 ## Context
@@ -29,22 +29,76 @@ before an ABI or language SDK fixes the wrong process boundary.
 ## Decision
 
 W11 uses one **embedded native Session engine** owned by the new
-`pks-session` crate.
+`pks-session` crate and one sibling portability adapter named
+`pks-session-c`.
 
 `pks-session` owns the public, host-neutral Session specification and lifecycle
-control boundary. It compiles declarations through `pks-graph`, executes the
-compiled plan through `pks-runtime`, and consumes the existing capture,
-endpoint, frame, and metric contracts. It does not reimplement graph execution,
+composition. It freezes declarations, resolves exact sources, coordinates
+transactional startup, retains the owners needed by a running Session, and
+coordinates cancellation, draining, joining, and finalization. It compiles
+declarations through `pks-graph`, executes the compiled plan through
+`pks-runtime`, and consumes the existing capture, endpoint, frame, metric, and
+recording contracts. It does not reimplement graph compilation or execution,
 buffer pools, capture backends, connectors, or recorder workers.
+
+`pks-session-c` projects that safe Rust contract into a versioned C ABI. It
+owns only ABI records, generational foreign handles, marshalling, bounded
+polling and lease projections, panic containment, header generation, and C
+conformance fixtures. It must not become another Session engine.
 
 `pks-audio` may temporarily re-export the Rust Session façade for source
 compatibility. It must not retain or grow a second Session runtime. The
 codec-specific `pks_audio` ABI remains a separate compatibility surface and is
 not the W11 engine contract.
 
-The first foreign-language boundary is a versioned C ABI. Python, Node, Swift,
-and Kotlin façades bind that ABI or a platform wrapper over it; they do not
-reimplement media execution.
+The portable conformance boundary is a versioned C ABI, but languages are not
+forced through it when a native Rust binding is safer or more idiomatic.
+Python may bind `pks-session` through PyO3 and Node through Node-API. Swift and
+Kotlin may use the C projection or generated/platform wrappers around it.
+Every adapter must preserve the same Session semantics and must not reimplement
+media execution.
+
+## Evidence from the accepted source tree
+
+This ownership decision follows the live source at the accepted W10 candidate,
+not an aspirational crate diagram:
+
+- `pks-frame` defines `AudioBufferPool`, `AudioFrame`, and
+  `SharedAudioFrame`;
+- `pks-graph` defines `Compiler`, `RuntimePlanner`, `RuntimePlan`,
+  `ExecutionPartition`, and `SafetyContract`;
+- `pks-runtime` consumes `RuntimePlan` and defines
+  `RealtimePlanExecutor`, `PlanScheduler`, `PlanEdgeRouter`, and bounded edge
+  receivers;
+- `pks-capture` defines source selectors, authorization and generation
+  evidence, runtime source events, and bounded captured-frame streams, while
+  target capture crates own native backend implementations;
+- `pks-nodes` defines concrete factories and `MultistemRecording`, including
+  explicit stop, join, and finalization outcomes;
+- `pks-pipeline` currently contains the older ring-backed `frame_bus` and
+  linear `ProcessorGraph`; it is not the owner of the compiled graph runtime;
+- `pks-audio` currently aggregates/re-exports lower crates and contains a
+  declaration-only `Session` whose `run` returns `RuntimeNotIntegrated`; and
+- the accepted product orchestration is currently assembled by the `pks`
+  proof command. W11 extracts reusable lifecycle ownership from that command
+  into `pks-session`; it does not move proof policy or artifact rendering into
+  the engine.
+
+The dependency direction established by those facts is:
+
+```text
+pks-frame / pks-timing / pks-metrics
+        -> pks-caps / pks-capture / pks-graph
+        -> pks-runtime
+        -> pks-nodes and target capture implementations
+        -> pks-session
+        -> Rust façade / CLI / language adapters
+
+pks-session <- pks-session-c
+```
+
+The last line is the Cargo dependency direction: `pks-session-c` depends on
+`pks-session`; the safe engine never depends on the adapter.
 
 ### Why embedded
 
@@ -103,20 +157,22 @@ Process crash isolation remains the principal advantage of a future helper.
 The reversal triggers below require evidence before paying its permission,
 packaging, lifecycle, latency, and copy costs.
 
-## Authoritative engine contract
+## Authoritative safe engine contract
 
-The contract exposes only:
+The safe Rust engine exposes only:
 
-- engine capability and version negotiation;
 - Session construction;
 - capture, stem, destination, and route declaration;
 - compile;
 - start and cancellation;
 - bounded event polling;
 - metric snapshot polling;
-- bounded audio-batch lease polling and release;
 - idempotent stop; and
-- destruction of opaque ownership handles.
+- typed terminal outcomes.
+
+Capability/version negotiation, opaque foreign handles, C buffer sizing, and
+foreign audio-batch lease polling are adapter projections owned by
+`pks-session-c`; they are not internal engine architecture.
 
 The lifecycle is monotonic:
 
@@ -140,10 +196,11 @@ explicitly abandons only work whose bounded shutdown contract permits it.
 Destruction must not report a clean stop while workers or recording
 finalization have failed.
 
-## ABI and versioning rules
+## Portable ABI adapter and versioning rules
 
-The C ABI is a projection of the authoritative Session contract, not a dump of
-Rust layouts.
+The `pks-session-c` C ABI is a projection of the authoritative Session
+contract, not a dump of Rust layouts and not the universal implementation path
+for every language.
 
 - The ABI has explicit major and minor versions. An unsupported major fails
   negotiation before Session construction. Minor-version negotiation and
@@ -212,10 +269,11 @@ projection. Existing owners remain authoritative:
 - `pks-metrics` owns metric primitives and snapshots;
 - `pks-nodes` owns endpoint-specific finalization outcomes.
 
-`pks-session` maps those facts into versioned Session event and metric records.
-It does not maintain competing counters or infer permission state from a
-generic backend failure. Event-channel overflow and metric snapshot
-unavailability are themselves explicit and measured.
+`pks-session` maps those facts into safe Session events and metric snapshots.
+`pks-session-c` maps those values again into versioned foreign records. Neither
+layer maintains competing counters or infers permission state from a generic
+backend failure. Event-channel overflow and metric snapshot unavailability are
+themselves explicit and measured.
 
 Metric names and fields retain measurement units and cumulative counters retain
 the `_total` suffix. A snapshot never exposes Rust atomics or references into a
@@ -241,7 +299,10 @@ The engine boundary must not expose:
 - a second SDK-owned graph, timing, codec, recorder, or media scheduler.
 
 Language SDKs own idiomatic syntax, cancellation adapters, package loading, and
-conversion to their native value types. They do not own media semantics.
+conversion to their native value types. A Python or Node adapter may depend
+directly on `pks-session`; direct use does not authorize it to own media
+semantics. Browser JavaScript remains a relay client and does not embed desktop
+native capture.
 
 ## Future helper compatibility
 
@@ -283,9 +344,12 @@ contract and would let foreign callers bypass compilation and hot-path safety.
 
 ## Consequences
 
-- W11 adds `pks-session` as the one Session engine owner and binding boundary.
-- `pks-runtime` remains the sole owner of compiled scheduling and runtime
-  execution; platform crates remain the sole owners of capture implementation.
+- W11 adds `pks-session` as the one safe Session composition owner and
+  `pks-session-c` as its sibling portable ABI adapter.
+- `pks-graph` remains the sole owner of compilation and `RuntimePlan`;
+  `pks-runtime` remains the owner of plan scheduling, execution, bounded edge
+  routing, and runtime observations; platform crates remain the sole owners of
+  capture implementation.
 - The existing `pks-audio` Session `PARTIAL` inventory row remains until the
   real Session runtime migrates and the compatibility façade delegates to it.
 - Documentation and contract-only tests cannot claim bindability. W11 exit
@@ -299,7 +363,7 @@ contract and would let foreign callers bypass compilation and hot-path safety.
 
 ## Acceptance
 
-W11 is not complete until one real engine and one non-Rust consumer prove:
+W11 is not complete until one real engine and the C conformance harness prove:
 
 1. compatible and incompatible version negotiation;
 2. exact Session declaration, compile, start, stop, and cancellation states;
@@ -310,7 +374,11 @@ W11 is not complete until one real engine and one non-Rust consumer prove:
 6. no Rust unwind crossing the ABI and explicit contained-panic mapping;
 7. no per-frame foreign-runtime invocation or unbounded queue;
 8. the quickstart/demo compile gate and CODE_PROTOCOL checks; and
-9. no second media runtime in a language SDK.
+9. no second media runtime in the CLI or a language SDK.
+
+The harness proves the portable adapter, not language ergonomics. PyO3,
+Node-API, Swift, and Kotlin façades remain later adapter work and must run the
+same semantic conformance fixtures when introduced.
 
 ## Reversal triggers
 
