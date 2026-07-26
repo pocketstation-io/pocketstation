@@ -70,6 +70,8 @@ impl ActiveCaptureBackend for TestActiveCapture {
 struct TestEndpointControl {
     starts_total: AtomicU64,
     started_before_gate_total: AtomicU64,
+    mono_inputs_total: AtomicU64,
+    stereo_inputs_total: AtomicU64,
 }
 
 struct TestEndpointFactory {
@@ -88,6 +90,21 @@ impl EndpointDriverFactory for TestEndpointFactory {
         inputs: Vec<EndpointDriverInput>,
     ) -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {
         assert!(!inputs.is_empty());
+        for input in &inputs {
+            match input.context().node_prepare_context().sample_spec.channels {
+                1 => {
+                    self.control
+                        .mono_inputs_total
+                        .fetch_add(1, Ordering::Relaxed);
+                }
+                2 => {
+                    self.control
+                        .stereo_inputs_total
+                        .fetch_add(1, Ordering::Relaxed);
+                }
+                channels => panic!("unexpected endpoint input channel count {channels}"),
+            }
+        }
         Ok(Box::new(TestPreparedEndpoint {
             control: Arc::clone(&self.control),
         }))
@@ -180,7 +197,7 @@ fn product_session() -> Session {
 }
 
 #[test]
-fn given_registered_open_drivers_when_engine_starts_then_canonical_product_session_runs() {
+fn given_product_plan_when_prepared_then_stem_media_is_preserved() {
     let control = Arc::new(TestEndpointControl::default());
     let mut builder =
         SessionEngineBuilder::new(prepare_context(), 8, SessionStartOptions::default())
@@ -221,6 +238,8 @@ fn given_registered_open_drivers_when_engine_starts_then_canonical_product_sessi
 
     assert_eq!(control.starts_total.load(Ordering::Relaxed), 5);
     assert_eq!(control.started_before_gate_total.load(Ordering::Relaxed), 0);
+    assert_eq!(control.stereo_inputs_total.load(Ordering::Relaxed), 3);
+    assert_eq!(control.mono_inputs_total.load(Ordering::Relaxed), 3);
     assert!(running.stop().is_success());
     assert!(running.stop().is_success());
 }

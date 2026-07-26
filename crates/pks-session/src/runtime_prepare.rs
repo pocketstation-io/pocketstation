@@ -1,6 +1,8 @@
 use std::collections::HashSet;
 
+use pks_caps::{ChannelLayout, MediaCaps};
 use pks_frame::{EndpointId, RouteId, SessionId, StemId};
+use pks_frame::{SampleFormat, SampleSpec};
 use pks_graph::ir::GraphIr;
 use pks_graph::{EdgeId, NodeRegistry, NodeTypeId, PrepareContext};
 use pks_runtime::{
@@ -32,6 +34,10 @@ pub enum SessionPrepareError {
     },
     #[error("worker edge {edge_id:?} target is absent from the compiled graph")]
     MissingWorkerTarget { edge_id: EdgeId },
+    #[error("worker edge {edge_id:?} is absent from the compiled graph")]
+    MissingWorkerEdge { edge_id: EdgeId },
+    #[error("worker edge {edge_id:?} has no concrete audio sample specification")]
+    MissingWorkerSampleSpec { edge_id: EdgeId },
     #[error("worker edge {edge_id:?} target is missing configuration key {key}")]
     MissingWorkerMetadata { edge_id: EdgeId, key: &'static str },
     #[error("worker edge {edge_id:?} target has invalid {key} value {value:?}")]
@@ -77,6 +83,7 @@ pub struct PreparedWorkerMapping {
     pub(crate) stem_id: StemId,
     pub(crate) endpoint_id: EndpointId,
     pub(crate) receiver: PlanEdgeReceiver,
+    pub(crate) prepare_context: PrepareContext,
 }
 
 impl PreparedWorkerMapping {
@@ -94,6 +101,10 @@ impl PreparedWorkerMapping {
 
     pub fn receiver_observations(&self) -> pks_runtime::EdgeObservations {
         self.receiver.observations()
+    }
+
+    pub const fn prepare_context(&self) -> &PrepareContext {
+        &self.prepare_context
     }
 }
 
@@ -225,6 +236,13 @@ fn map_worker_receivers(
     let mut mappings = Vec::with_capacity(worker_receivers.len());
     for receiver in worker_receivers {
         let edge_id = receiver.edge_id();
+        let edge = graph_ir
+            .edges
+            .iter()
+            .find(|edge| edge.spec.id == edge_id)
+            .ok_or(SessionPrepareError::MissingWorkerEdge { edge_id })?;
+        let prepare_context = prepare_context_for_media(edge.media)
+            .ok_or(SessionPrepareError::MissingWorkerSampleSpec { edge_id })?;
         let target = graph_ir
             .node(receiver.to().node)
             .ok_or(SessionPrepareError::MissingWorkerTarget { edge_id })?;
@@ -254,9 +272,28 @@ fn map_worker_receivers(
             stem_id,
             endpoint_id,
             receiver,
+            prepare_context,
         });
     }
     Ok(mappings)
+}
+
+fn prepare_context_for_media(media: MediaCaps) -> Option<PrepareContext> {
+    let MediaCaps::Audio(audio) = media else {
+        return None;
+    };
+    let channels = match audio.channel_layout {
+        ChannelLayout::Mono => 1,
+        ChannelLayout::Stereo => 2,
+        ChannelLayout::Any => return None,
+    };
+    Some(PrepareContext::new(SampleSpec::new(
+        audio.sample_rate_hz?,
+        channels,
+        match audio.format {
+            SampleFormat::F32Interleaved => SampleFormat::F32Interleaved,
+        },
+    )))
 }
 
 fn parse_metadata(

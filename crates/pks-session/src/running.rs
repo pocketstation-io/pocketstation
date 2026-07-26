@@ -13,7 +13,6 @@ use pks_endpoint::{
     EndpointStartFailure, PreparedEndpoint, RunningEndpoint,
 };
 use pks_frame::{EndpointId, RouteId, SessionId, StemId};
-use pks_graph::PrepareContext;
 use pks_runtime::{
     PlanRunnerDrainPolicy, PlanRunnerError, PlanRunnerFinishSummary, PlanSourceSendOutcome,
     RealtimePlanRunner,
@@ -348,7 +347,6 @@ pub fn start_prepared_session(
     prepared: PreparedSession,
     capture_backends: CaptureBackendSet<'_>,
     endpoint_registry: &EndpointDriverRegistry,
-    prepare_context: &PrepareContext,
     options: SessionStartOptions,
 ) -> Result<RunningSession, SessionStartFailure> {
     validate_start_options(options).map_err(SessionStartFailure::input)?;
@@ -367,19 +365,19 @@ pub fn start_prepared_session(
     let _ = event_sender.publish_lifecycle(session_id, SessionLifecycleState::Starting);
     let (gate_controller, start_gate) = endpoint_start_gate();
 
-    let mut prepared_endpoints =
-        match prepare_endpoints(&spec, worker_mappings, endpoint_registry, prepare_context) {
-            Ok(endpoints) => endpoints,
-            Err((error, rollback_failures)) => {
-                return Err(complete_start_failure(
-                    session_id,
-                    &event_sender,
-                    event_receiver,
-                    error,
-                    rollback_failures,
-                ));
-            }
-        };
+    let mut prepared_endpoints = match prepare_endpoints(&spec, worker_mappings, endpoint_registry)
+    {
+        Ok(endpoints) => endpoints,
+        Err((error, rollback_failures)) => {
+            return Err(complete_start_failure(
+                session_id,
+                &event_sender,
+                event_receiver,
+                error,
+                rollback_failures,
+            ));
+        }
+    };
     let mut running_endpoints = Vec::with_capacity(prepared_endpoints.len());
     while let Some(endpoint) = prepared_endpoints.pop() {
         match endpoint.endpoint.start(Arc::clone(&start_gate)) {
@@ -602,7 +600,6 @@ fn prepare_endpoints(
     spec: &crate::SessionSpec,
     mut worker_mappings: Vec<PreparedWorkerMapping>,
     endpoint_registry: &EndpointDriverRegistry,
-    prepare_context: &PrepareContext,
 ) -> Result<Vec<PreparedEndpointBinding>, (SessionStartError, Vec<SessionRollbackFailure>)> {
     let session_id = spec.session_id();
     let mut endpoints = Vec::with_capacity(worker_mappings.len());
@@ -679,7 +676,7 @@ fn prepare_endpoints(
                 session_id,
                 grouped_endpoint.id(),
                 node_configuration,
-                prepare_context.clone(),
+                mapping.prepare_context,
             );
             identities.push((mapping.route_id, mapping.endpoint_id));
             inputs.push(EndpointDriverInput::new(mapping.receiver, context));

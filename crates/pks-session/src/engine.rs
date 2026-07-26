@@ -150,7 +150,6 @@ impl SessionEngine {
             prepared,
             capture_backends,
             &self.endpoint_registry,
-            &self.prepare_context,
             self.start_options,
         )
         .map_err(SessionEngineStartError::Start)

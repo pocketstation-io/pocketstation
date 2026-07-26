@@ -82,6 +82,13 @@ impl SourceIngressFactory {
             SourceIngressKind::Microphone => "Microphone Capture Ingress",
         }
     }
+
+    const fn channel_layout(&self) -> ChannelLayout {
+        match self.kind {
+            SourceIngressKind::Application => ChannelLayout::Stereo,
+            SourceIngressKind::Microphone => ChannelLayout::Mono,
+        }
+    }
 }
 
 impl NodeFactory for SourceIngressFactory {
@@ -90,7 +97,7 @@ impl NodeFactory for SourceIngressFactory {
             type_id: NodeTypeId::from(self.node_type_id()),
             display_name: self.display_name(),
             inputs: Vec::new(),
-            outputs: vec![audio_port(PortDirection::Output)],
+            outputs: vec![audio_port(PortDirection::Output, self.channel_layout())],
             execution: ExecutionPartition::RealtimeCpu,
             realtime_safe: true,
             stateful: false,
@@ -185,7 +192,7 @@ impl NodeFactory for ExternalBoundaryFactory {
         NodeDescriptor {
             type_id: NodeTypeId::from(self.node_type_id),
             display_name: self.display_name,
-            inputs: vec![audio_port(PortDirection::Input)],
+            inputs: vec![audio_port(PortDirection::Input, ChannelLayout::Any)],
             outputs: Vec::new(),
             execution: ExecutionPartition::AsyncWorker,
             realtime_safe: false,
@@ -221,14 +228,14 @@ impl NodeFactory for ExternalBoundaryFactory {
     }
 }
 
-fn audio_port(direction: PortDirection) -> PortSpec {
+fn audio_port(direction: PortDirection, channel_layout: ChannelLayout) -> PortSpec {
     PortSpec {
         name: AUDIO_PORT.to_owned(),
         direction,
         media: MediaCaps::Audio(AudioCaps {
             sample_rate_hz: Some(48_000),
             frame_samples: None,
-            channel_layout: ChannelLayout::Any,
+            channel_layout,
             format: SampleFormat::F32Interleaved,
         }),
         multiplicity: Multiplicity::One,

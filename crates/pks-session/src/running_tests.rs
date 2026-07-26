@@ -565,7 +565,6 @@ fn given_two_sources_when_started_then_gate_lineage_and_repeated_stop_are_truthf
         prepared_session(&nodes, &operators),
         capture_backend_set(&application_backend, &microphone_backend),
         &registry,
-        &context(),
         SessionStartOptions::default(),
     )
     .expect("transactional Session startup must succeed");
@@ -634,7 +633,6 @@ fn given_endpoint_prepare_failure_when_started_then_every_prior_owner_rolls_back
         prepared_session(&nodes, &operators),
         capture_backend_set(&application_backend, &microphone_backend),
         &registry,
-        &context(),
         SessionStartOptions::default(),
     );
 
@@ -661,7 +659,6 @@ fn given_second_capture_open_failure_when_started_then_captures_and_endpoints_ro
         prepared_session(&nodes, &operators),
         capture_backend_set(&application_backend, &microphone_backend),
         &registry,
-        &context(),
         SessionStartOptions::default(),
     );
 
@@ -695,7 +692,6 @@ fn given_endpoint_start_failure_when_started_then_all_acquisitions_roll_back() {
         prepared_session(&nodes, &operators),
         capture_backend_set(&application_backend, &microphone_backend),
         &registry,
-        &context(),
         SessionStartOptions::default(),
     );
 

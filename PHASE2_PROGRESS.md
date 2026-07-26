@@ -1,5 +1,26 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W11 per-stem Session media preparation — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; the canonical Session structural graph now declares
+  the product formats explicitly: 48 kHz stereo for application capture and
+  48 kHz mono for microphone capture. Negotiated edge media therefore sizes
+  each bounded fan-out branch pool for its real channel count instead of
+  treating an `Any` layout as mono.
+- Runtime preparation now derives each endpoint input's `PrepareContext` from
+  that route's negotiated graph edge. Connector, relay/browser, and grouped
+  recorder drivers receive the application and microphone formats separately;
+  one global Session sample format no longer misrepresents both stems.
+- The obsolete endpoint-preparation context argument was removed from
+  `start_prepared_session`. The engine's setup context remains solely with
+  realtime-node preparation, while route-specific endpoint contexts travel
+  with the owned `PreparedWorkerMapping`.
+- A focused canonical-engine test proves all three application destinations
+  prepare as stereo and all three microphone destinations prepare as mono.
+  All 40 `pks-session` tests and strict all-target Clippy pass.
+- No converter, fallback, unbounded queue, provider behavior, capture
+  implementation, or loopback-only path was introduced.
+
 ## W11 pks-audio canonical Session facade — 2026-07-26
 
 - Status: `SAFE-TO-TEST`; `pks-audio` now re-exports the authoritative
