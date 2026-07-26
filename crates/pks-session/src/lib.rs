@@ -2,6 +2,7 @@ mod compiler;
 mod draft;
 mod endpoint;
 mod error;
+mod runtime_prepare;
 mod selector;
 mod spec;
 
@@ -14,6 +15,10 @@ pub use compiler::{
 pub use draft::{EndpointHandle, Session, StemHandle};
 pub use endpoint::{EndpointConfiguration, EndpointDescriptor, OperatorId};
 pub use error::SessionError;
+pub use runtime_prepare::{
+    prepare_session_runtime, PreparedSession, PreparedSourceMapping, PreparedWorkerMapping,
+    SessionPrepareError,
+};
 pub use selector::{ApplicationSelector, DeviceId, DeviceSelector, ProcessId, Source};
 pub use spec::{
     EndpointSpec, RouteSpec, SessionSpec, SessionSpecVersion, StemSpec, SESSION_SPEC_VERSION,

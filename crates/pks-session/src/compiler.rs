@@ -146,6 +146,15 @@ impl CompiledSession {
     pub fn planned_edge_count(&self) -> usize {
         self.runtime_plan.edge_count
     }
+
+    pub(crate) fn into_runtime_parts(self) -> (SessionSpec, GraphIr, pks_graph::plan::RuntimePlan) {
+        (self.spec, self.graph_ir, self.runtime_plan)
+    }
+
+    #[cfg(test)]
+    pub(crate) fn graph_ir_mut(&mut self) -> &mut GraphIr {
+        &mut self.graph_ir
+    }
 }
 
 pub struct SessionCompiler<'registry> {
