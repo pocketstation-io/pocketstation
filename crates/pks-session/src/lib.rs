@@ -7,6 +7,9 @@ mod spec;
 
 pub use compiler::{
     CompiledSession, OperatorRegistry, OperatorRegistryError, SessionCompileError, SessionCompiler,
+    APPLICATION_SOURCE_NODE_TYPE_ID, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID,
+    CONNECTOR_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID,
+    RECORDER_OPERATOR_ID,
 };
 pub use draft::{EndpointHandle, Session, StemHandle};
 pub use endpoint::{EndpointConfiguration, EndpointDescriptor, OperatorId};

@@ -5,16 +5,14 @@ use std::sync::{Arc, Mutex, MutexGuard};
 use pks_frame::{ConnectorId, EndpointId, RouteId, SessionId, StemId};
 use pks_graph::NodeTypeId;
 
+use crate::compiler::{
+    BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID,
+    RECORDER_OPERATOR_ID,
+};
 use crate::spec::{endpoint_spec, route_spec, stem_spec};
 use crate::{
     EndpointConfiguration, EndpointDescriptor, OperatorId, SessionError, SessionSpec, Source,
 };
-
-const CONNECTOR_NODE_TYPE_ID: &str = "endpoint.connector.external";
-const BROWSER_NODE_TYPE_ID: &str = "endpoint.browser.remote";
-const BROWSER_OPERATOR_ID: &str = "io.pocketstation.browser.webrtc.v1";
-const RECORDER_NODE_TYPE_ID: &str = "endpoint.recording.multistem";
-const RECORDER_OPERATOR_ID: &str = "io.pocketstation.recording.wav-stems.v1";
 
 static NEXT_SESSION_ID: AtomicU64 = AtomicU64::new(1);
 

@@ -10,8 +10,13 @@ use crate::{
     SessionSpec, Source, StemSpec,
 };
 
-const APPLICATION_SOURCE_NODE_TYPE_ID: &str = "source.application";
-const MICROPHONE_SOURCE_NODE_TYPE_ID: &str = "source.microphone";
+pub const APPLICATION_SOURCE_NODE_TYPE_ID: &str = "source.application";
+pub const MICROPHONE_SOURCE_NODE_TYPE_ID: &str = "source.microphone";
+pub const CONNECTOR_NODE_TYPE_ID: &str = "endpoint.connector.external";
+pub const BROWSER_NODE_TYPE_ID: &str = "endpoint.browser.remote";
+pub const BROWSER_OPERATOR_ID: &str = "io.pocketstation.browser.webrtc.v1";
+pub const RECORDER_NODE_TYPE_ID: &str = "endpoint.recording.multistem";
+pub const RECORDER_OPERATOR_ID: &str = "io.pocketstation.recording.wav-stems.v1";
 const AUDIO_OUTPUT_PORT: &str = "audio";
 const AUDIO_INPUT_PORT: &str = "audio";
 const RESERVED_ENDPOINT_CONFIGURATION_KEYS: [&str; 6] = [
@@ -342,11 +347,6 @@ mod tests {
     use super::*;
     use crate::{EndpointConfiguration, Session};
 
-    const CONNECTOR_NODE_TYPE_ID: &str = "endpoint.connector.external";
-    const BROWSER_NODE_TYPE_ID: &str = "endpoint.browser.remote";
-    const BROWSER_OPERATOR_ID: &str = "io.pocketstation.browser.webrtc.v1";
-    const RECORDER_NODE_TYPE_ID: &str = "endpoint.recording.multistem";
-    const RECORDER_OPERATOR_ID: &str = "io.pocketstation.recording.wav-stems.v1";
     const TEST_CONNECTOR_OPERATOR_ID: &str = "example.connector.streaming-stt.v1";
 
     struct CompileOnlyFactory {
