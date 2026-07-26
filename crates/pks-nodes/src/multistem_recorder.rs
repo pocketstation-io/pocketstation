@@ -214,7 +214,7 @@ pub enum DiscontinuityKind {
     OverlapRejected,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct RecordingOutcome {
     pub session_dir: PathBuf,
     pub state: RecordingState,
@@ -223,7 +223,7 @@ pub struct RecordingOutcome {
     pub stems: Vec<RecordingStemOutcome>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct RecordingStemOutcome {
     pub label: String,
     pub written_frames: u64,

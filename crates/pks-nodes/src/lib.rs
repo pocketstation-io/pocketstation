@@ -22,6 +22,7 @@ pub use mix::{MixerSourceFactory, MixerSourceNode, MixerTelemetry, MonoMixFactor
 pub use ml_nodes::{EchoCancelFactory, NoiseSuppressFactory, VadFactory, WatermarkFactory};
 pub use multistem_endpoint::{
     MultistemEndpointCoordinator, MultistemEndpointError, MultistemEndpointStem,
+    MultistemRecordingReceipt,
 };
 pub use multistem_recorder::{
     DiscontinuityKind, DiscontinuityRecord, MultistemRecording, PermissionDecision,

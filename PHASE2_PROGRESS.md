@@ -1,5 +1,24 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W11 multistem endpoint completion receipt — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; `MultistemEndpointCoordinator` now exposes a
+  cloneable, read-only completion receipt owned by the recording endpoint
+  boundary. The receipt publishes the exact finalized `RecordingOutcome`,
+  including each stem's written-frame count, discontinuities, error, and
+  authoritative edge observations.
+- Finalization installs the outcome once. A duplicate installation fails the
+  endpoint finalization explicitly instead of replacing evidence or returning
+  a false success.
+- The receipt does not start, stop, poll, or configure recording and adds no
+  process-global registry. `MultistemRecording` remains the sole recording
+  lifecycle owner.
+- Five focused multistem endpoint tests pass, including a two-stem gated run
+  that proves the receipt remains readable after endpoint finalization. Strict
+  all-target Clippy for `pks-nodes` passes.
+- No scaffold, fallback, unbounded storage, connector/provider behavior, or
+  loopback-only product path was introduced.
+
 ## W11 per-stem Session media preparation — 2026-07-26
 
 - Status: `SAFE-TO-TEST`; the canonical Session structural graph now declares

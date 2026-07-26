@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
-use std::sync::Arc;
+use std::sync::{Arc, OnceLock};
 
 use pks_endpoint::{
     EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization,
@@ -43,6 +43,23 @@ pub struct MultistemEndpointCoordinator {
     session_id: SessionId,
     group_id: EndpointGroupId,
     stems: Vec<MultistemEndpointStem>,
+    receipt_state: Arc<MultistemRecordingReceiptState>,
+}
+
+#[derive(Clone)]
+pub struct MultistemRecordingReceipt {
+    state: Arc<MultistemRecordingReceiptState>,
+}
+
+impl MultistemRecordingReceipt {
+    pub fn result(&self) -> Option<&RecordingOutcome> {
+        self.state.result.get()
+    }
+}
+
+#[derive(Default)]
+struct MultistemRecordingReceiptState {
+    result: OnceLock<RecordingOutcome>,
 }
 
 impl MultistemEndpointCoordinator {
@@ -73,6 +90,7 @@ impl MultistemEndpointCoordinator {
             session_id,
             group_id,
             stems,
+            receipt_state: Arc::new(MultistemRecordingReceiptState::default()),
         })
     }
 
@@ -90,6 +108,12 @@ impl MultistemEndpointCoordinator {
 
     pub fn group_id(&self) -> &EndpointGroupId {
         &self.group_id
+    }
+
+    pub fn receipt(&self) -> MultistemRecordingReceipt {
+        MultistemRecordingReceipt {
+            state: Arc::clone(&self.receipt_state),
+        }
     }
 }
 
@@ -177,6 +201,7 @@ impl EndpointDriverFactory for MultistemEndpointCoordinator {
             output_root: self.output_root.clone(),
             session_id: self.session_id,
             stems: prepared_stems,
+            receipt_state: Arc::clone(&self.receipt_state),
         }))
     }
 }
@@ -189,6 +214,7 @@ struct PreparedMultistemEndpoint {
     output_root: PathBuf,
     session_id: SessionId,
     stems: Vec<(RecorderStemConfig, pks_runtime::PlanEdgeReceiver)>,
+    receipt_state: Arc<MultistemRecordingReceiptState>,
 }
 
 impl PreparedEndpointDriver for PreparedMultistemEndpoint {
@@ -206,6 +232,7 @@ impl PreparedEndpointDriver for PreparedMultistemEndpoint {
         Ok(Box::new(RunningMultistemEndpoint {
             recording: Some(recording),
             start_gate,
+            receipt_state: self.receipt_state,
         }))
     }
 
@@ -220,6 +247,7 @@ impl PreparedEndpointDriver for PreparedMultistemEndpoint {
 struct RunningMultistemEndpoint {
     recording: Option<MultistemRecording>,
     start_gate: Arc<EndpointStartGate>,
+    receipt_state: Arc<MultistemRecordingReceiptState>,
 }
 
 impl RunningEndpointDriver for RunningMultistemEndpoint {
@@ -272,8 +300,15 @@ impl RunningEndpointDriver for RunningMultistemEndpoint {
         }
         match recording.finish() {
             Ok(outcome) => {
-                let observations = finalized_observations(&outcome);
-                let result = recording_outcome_result(&outcome);
+                let mut observations = finalized_observations(&outcome);
+                let mut result = recording_outcome_result(&outcome);
+                if self.receipt_state.result.set(outcome).is_err() {
+                    observations.failures_total = observations.failures_total.saturating_add(1);
+                    result = Err(EndpointFailure::new(
+                        EndpointFailureStage::JoinFinalize,
+                        "multistem recording receipt was already finalized",
+                    ));
+                }
                 EndpointDriverFinalization {
                     observations,
                     result,
@@ -522,6 +557,7 @@ mod tests {
             declarations,
         )
         .unwrap();
+        let receipt = coordinator.receipt();
         let (registry, operator_id, node_type_id) = endpoint_registry(coordinator);
         let (mut router, mut receivers, source_nodes, edge_ids) = router_with_sources(2);
         let prepared = registry
@@ -556,6 +592,13 @@ mod tests {
 
         assert!(finalization.is_success());
         assert_eq!(finalization.observations.frames_delivered_total, 2);
+        let receipt_result = receipt
+            .result()
+            .expect("finalized recording receipt must remain available");
+        assert_eq!(receipt_result.state, RecordingState::Complete);
+        assert_eq!(receipt_result.stems.len(), 2);
+        assert_eq!(receipt_result.stems[0].written_frames, 1);
+        assert_eq!(receipt_result.stems[1].written_frames, 1);
         let session_dir = temp_dir.path().join("session-42");
         let manifest: serde_json::Value =
             serde_json::from_reader(File::open(session_dir.join("manifest.json")).unwrap())
