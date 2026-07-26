@@ -82,17 +82,9 @@ mod tests {
     }
 
     fn block_on_ready<T>(future: AsyncNodeFuture<'_, T>) -> T {
-        use std::sync::Arc;
-        use std::task::{Context, Poll, Wake, Waker};
+        use std::task::{Context, Poll, Waker};
 
-        struct NoopWake;
-
-        impl Wake for NoopWake {
-            fn wake(self: Arc<Self>) {}
-        }
-
-        let waker = Waker::from(Arc::new(NoopWake));
-        let mut cx = Context::from_waker(&waker);
+        let mut cx = Context::from_waker(Waker::noop());
         let mut future = future;
         match future.as_mut().poll(&mut cx) {
             Poll::Ready(value) => value,

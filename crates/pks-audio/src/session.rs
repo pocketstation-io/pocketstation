@@ -633,20 +633,12 @@ impl fmt::Debug for StopHandle {
 mod tests {
     use std::future::Future;
     use std::pin::pin;
-    use std::sync::Arc;
-    use std::task::{Context, Poll, Wake, Waker};
+    use std::task::{Context, Poll, Waker};
 
     use super::*;
 
-    struct NoopWake;
-
-    impl Wake for NoopWake {
-        fn wake(self: Arc<Self>) {}
-    }
-
     fn block_on_ready<T>(future: impl Future<Output = T>) -> T {
-        let waker = Waker::from(Arc::new(NoopWake));
-        let mut context = Context::from_waker(&waker);
+        let mut context = Context::from_waker(Waker::noop());
         let mut future = pin!(future);
         match future.as_mut().poll(&mut context) {
             Poll::Ready(value) => value,

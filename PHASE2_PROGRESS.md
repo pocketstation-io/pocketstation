@@ -1,8 +1,32 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W11 local CI correction and candidate gate — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; GitHub PR #43 remains unmerged and must not be
+  described as `SAFE-TO-MERGE` until its exact pushed head has every required
+  check green.
+- Rust 1.97 strict all-target Clippy exposed manual no-op `Wake`
+  implementations in two test poll helpers. Both now use the standard
+  `Waker::noop()` without changing runtime scheduling, capture, endpoint,
+  allocation, or hot-path behavior.
+- The exact local Linux candidate passes workspace formatting, strict
+  all-target Clippy, all workspace tests and doc tests, allocation tests,
+  architecture constraints, quickstart compilation, CODE_PROTOCOL, and the
+  complete `pks-audio` benchmark build. The benchmark link was repeated with
+  one Cargo job and a 6 GiB ceiling after the initial 4 GiB container was
+  killed by its memory limit; the source, locked dependencies, release
+  profile, Rust 1.97 toolchain, and benchmark executables were unchanged.
+- The native macOS candidate independently passes workspace formatting, strict
+  all-target Clippy, all workspace tests and doc tests, allocation tests,
+  architecture constraints, quickstart compilation, CODE_PROTOCOL, and the
+  complete `pks-audio` benchmark build.
+- No CI check was disabled, made advisory, skipped, or wrapped in a success
+  override. No scaffold, mock, fallback, provider implementation, or
+  loopback-only product path was introduced.
+
 ## Linux runtime-event CI compilation — 2026-07-26
 
-- Status: `SAFE-TO-MERGE`; the Linux capture module now imports the shared
+- Status: `SAFE-TO-TEST`; the Linux capture module now imports the shared
   `Platform`, `SourceKind`, and `StableSourceId` types used by its typed
   runtime-failure events.
 - GitHub's Linux all-target Clippy gate found the missing imports after the
