@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Regenerate ffi/pocketstation_audio.h via cbindgen and copy it to every SDK
-# that links against audio-core as a C FFI consumer.
+# that links against pocketstation as a C FFI consumer.
 #
 # Run this after any change to crates/pks-audio/src/ffi.rs.
-# The generated header is gitignored in audio-core; the copies in each SDK
+# The generated header is gitignored in pocketstation; the copies in each SDK
 # repo are the canonical ones committed to version control.
 #
 # Usage:

@@ -99,7 +99,7 @@ Every implementation task must include at least one of:
 - benchmark or smoke test
 - explicit explanation in the progress file why testing is not practical
 
-Minimum checks for `audio-core` (Phase 0):
+Minimum checks for `pocketstation` (Phase 0):
 
 ```
 cargo fmt --all -- --check

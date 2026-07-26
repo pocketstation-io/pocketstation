@@ -8,14 +8,17 @@ members = [
   "crates/pks-metrics",
   "crates/pks-pipeline",
   "crates/pks-runtime",
+  "crates/pks-endpoint",
   "crates/pks-graph",
   "crates/pks-ml",
   "crates/pks-nodes",
+  "crates/pks-session",
   "crates/pks-capture",
   "crates/pks-capture-macos",
   "crates/pks-capture-windows",
   "crates/pks-capture-linux",
   "crates/pks-audio",
+  "examples/whisper-transcribe",
 ]
 
 [workspace.package]
@@ -29,10 +32,13 @@ pks-timing = { path = "crates/pks-timing" }
 rtrb = "0.3"
 thiserror = "1"
 hound = "3"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
 opus = "0.3"
 proptest = "1"
 criterion = "0.5"
-assert_no_alloc = "1.1"
+assert_no_alloc = { version = "1.1", default-features = false }
+cpal = "0.18.1"
 
 # Production release: full LTO + single codegen unit so LLVM can inline
 # across crate boundaries (Rust → libopus FFI call sites) and vectorize.

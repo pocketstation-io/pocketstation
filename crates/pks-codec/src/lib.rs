@@ -8,8 +8,10 @@ mod decoder;
 mod encoder;
 mod profile;
 
+#[deprecated(since = "0.1.0", note = "use OPUS_SAMPLE_RATE_HZ")]
+pub use constants::OPUS_SAMPLE_RATE_HZ as OPUS_SAMPLE_RATE;
 pub use constants::{
-    OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, OPUS_SAMPLE_RATE, VOICE_AGENT_FRAME_SAMPLES,
+    OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, OPUS_SAMPLE_RATE_HZ, VOICE_AGENT_FRAME_SAMPLES,
 };
 pub use decoder::OpusDecoder;
 pub use encoder::{
@@ -22,3 +24,12 @@ pub use profile::StreamProfile;
 pub use decoder::MockOpusDecoder;
 #[cfg(any(test, feature = "test-helpers"))]
 pub use encoder::MockOpusEncoder;
+
+#[cfg(test)]
+mod compatibility_tests {
+    #[test]
+    #[allow(deprecated)]
+    fn given_legacy_sample_rate_alias_when_read_then_value_matches_unit_named_constant() {
+        assert_eq!(super::OPUS_SAMPLE_RATE, super::OPUS_SAMPLE_RATE_HZ);
+    }
+}

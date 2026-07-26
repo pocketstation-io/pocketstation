@@ -1,0 +1,40 @@
+use std::path::PathBuf;
+
+use pks_frame::{SampleFormat, SampleSpec};
+use pks_graph::{AsyncEnvelope, AsyncNode, AsyncSignal, PrepareContext};
+use whisper_transcribe_example::WhisperConnector;
+
+fn usage() -> ! {
+    eprintln!("usage: whisper-transcribe-example <whisper-cli> <model.bin> <mono-16khz.wav>");
+    std::process::exit(2);
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut arguments = std::env::args_os().skip(1).map(PathBuf::from);
+    let binary_path = arguments.next().unwrap_or_else(|| usage());
+    let model_path = arguments.next().unwrap_or_else(|| usage());
+    let wav_path = arguments.next().unwrap_or_else(|| usage());
+    if arguments.next().is_some() {
+        usage();
+    }
+
+    let wav_bytes = tokio::fs::read(wav_path).await?;
+    let mut connector = WhisperConnector::new(binary_path, model_path, "en");
+    connector
+        .prepare(&PrepareContext::new(SampleSpec::new(
+            16_000,
+            1,
+            SampleFormat::F32Interleaved,
+        )))
+        .await?;
+    let output = connector
+        .process(AsyncEnvelope::new(AsyncSignal::Binary(wav_bytes), 0, 0))
+        .await?
+        .ok_or("Whisper connector returned no transcript")?;
+    match output.signal {
+        AsyncSignal::Text(transcript) => println!("{transcript}"),
+        _ => return Err("Whisper connector returned a non-text signal".into()),
+    }
+    Ok(())
+}

@@ -1,8 +1,11 @@
 use std::collections::HashMap;
+use std::fmt;
 use std::sync::Arc;
 
 use pks_caps::{EdgeContract, PortSpec};
 use pks_frame::SampleSpec;
+
+use crate::partition::ExecutionPartition;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct NodeTypeId(Arc<str>);
@@ -13,56 +16,15 @@ impl NodeTypeId {
     }
 }
 
+impl fmt::Display for NodeTypeId {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter.write_str(self.as_str())
+    }
+}
+
 impl From<&str> for NodeTypeId {
     fn from(value: &str) -> Self {
         Self(Arc::from(value))
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum NodeKind {
-    Source,
-    Transform,
-    Policy,
-    Model,
-    Transport,
-    Sink,
-}
-
-impl NodeKind {
-    pub fn is_terminal(self) -> bool {
-        matches!(self, Self::Source | Self::Sink)
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ExecutionClass {
-    AudioCallback, // platform capture/playback callback thread; alloc/lock/log-free (LAW 15)
-    RealtimeCpu,   // processing-thread DSP; alloc-free per tick (LAW 15)
-    AsyncIo,       // file/socket IO off the realtime path
-    Network,       // relay/transport sockets; never on a realtime executor
-    ModelLocal,    // on-device inference; processing thread, not the callback
-    ModelRemote,   // cloud model adapter; bounded edge channels only
-    Recorder,      // disk/stem writers; may block, never realtime
-    ControlPlane,  // policy/orchestration; not per-frame
-}
-
-impl ExecutionClass {
-    pub fn is_realtime(self) -> bool {
-        matches!(self, Self::AudioCallback | Self::RealtimeCpu)
-    }
-
-    pub fn rank(self) -> u8 {
-        match self {
-            Self::AudioCallback => 0,
-            Self::RealtimeCpu => 1,
-            Self::AsyncIo => 2,
-            Self::Network => 3,
-            Self::ModelLocal => 4,
-            Self::ModelRemote => 5,
-            Self::Recorder => 6,
-            Self::ControlPlane => 7,
-        }
     }
 }
 
@@ -108,6 +70,10 @@ pub enum NodeError {
     Prepare(String),
     #[error("node process failed: {0}")]
     Process(String),
+    #[error(
+        "external boundary node type '{node_type_id}' must execute through its endpoint driver"
+    )]
+    ExternalBoundaryExecution { node_type_id: NodeTypeId },
     #[error(transparent)]
     Config(#[from] ConfigError),
 }
@@ -116,10 +82,9 @@ pub enum NodeError {
 pub struct NodeDescriptor {
     pub type_id: NodeTypeId,
     pub display_name: &'static str,
-    pub kind: NodeKind,
     pub inputs: Vec<PortSpec>,
     pub outputs: Vec<PortSpec>,
-    pub execution: ExecutionClass,
+    pub execution: ExecutionPartition,
     pub realtime_safe: bool,
     pub stateful: bool,
 }
@@ -144,31 +109,6 @@ impl PrepareContext {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn given_execution_classes_when_is_realtime_then_only_callback_and_realtime_cpu_are_true() {
-        assert!(ExecutionClass::AudioCallback.is_realtime());
-        assert!(ExecutionClass::RealtimeCpu.is_realtime());
-        assert!(!ExecutionClass::Network.is_realtime());
-        assert!(!ExecutionClass::ModelRemote.is_realtime());
-    }
-
-    #[test]
-    fn given_execution_classes_when_ranked_then_ordered_callback_first_control_plane_last() {
-        assert_eq!(ExecutionClass::AudioCallback.rank(), 0);
-        assert_eq!(ExecutionClass::RealtimeCpu.rank(), 1);
-        assert!(ExecutionClass::RealtimeCpu.rank() < ExecutionClass::AsyncIo.rank());
-        assert!(ExecutionClass::Network.rank() < ExecutionClass::ModelLocal.rank());
-        assert_eq!(ExecutionClass::ControlPlane.rank(), 7);
-    }
-
-    #[test]
-    fn given_node_kinds_when_is_terminal_then_only_source_and_sink_are_true() {
-        assert!(NodeKind::Source.is_terminal());
-        assert!(NodeKind::Sink.is_terminal());
-        assert!(!NodeKind::Transform.is_terminal());
-        assert!(!NodeKind::Model.is_terminal());
-    }
 
     #[test]
     fn given_config_builder_when_with_then_values_are_retrievable() {

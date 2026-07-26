@@ -1,4 +1,4 @@
-# Phase 0 Queue — audio-core
+# Phase 0 Queue — pocketstation
 
 | # | Task | Status |
 |---|------|--------|

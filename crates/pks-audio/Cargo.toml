@@ -24,8 +24,17 @@ name = "sine_to_wav"
 name = "soak"
 # cargo run -p pks-audio --example soak
 
+[[example]]
+name = "product_quickstart"
+# cargo run -p pks-audio --example product_quickstart
+
+[[example]]
+name = "product_proof_local"
+# cargo run -p pks-audio --example product_proof_local -- --duration-seconds 300 --output <path> --cell normal
+
 [dependencies]
 pks-frame = { path = "../pks-frame", version = "0.1.0" }
+pks-caps = { path = "../pks-caps", version = "0.1.0" }
 pks-timing = { path = "../pks-timing", version = "0.1.0" }
 pks-graph = { path = "../pks-graph", version = "0.1.0" }
 pks-runtime = { path = "../pks-runtime", version = "0.1.0" }
@@ -38,6 +47,9 @@ pks-capture-windows = { path = "../pks-capture-windows", version = "0.1.0" }
 pks-capture-linux = { path = "../pks-capture-linux", version = "0.1.0" }
 pks-metrics = { path = "../pks-metrics", version = "0.1.0" }
 hound.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
 
 [[test]]
 name = "phase0_pipeline"
@@ -49,6 +61,7 @@ cbindgen = "0.27"
 [dev-dependencies]
 criterion = { workspace = true }
 assert_no_alloc = { workspace = true }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
 [[bench]]
 name = "encode_bench"

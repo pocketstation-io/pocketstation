@@ -18,7 +18,7 @@ example connector + browser/remote receiver + multistem recording
 
 The binding deadline, acceptance gate, and scope cuts are in the factory root
 `PRODUCT_OPERATING_CONTRACT.md`. Repository and crate ownership are in
-`V3_REPO_OWNERSHIP_STATE.md` and [CRATE_OWNERSHIP.md](docs/architecture/CRATE_OWNERSHIP.md).
+`PROJECT_STATE.md` and [CRATE_OWNERSHIP.md](docs/architecture/CRATE_OWNERSHIP.md).
 
 ## Workspace
 
@@ -31,6 +31,7 @@ The binding deadline, acceptance gate, and scope cuts are in the factory root
 | `pks-metrics` | Runtime counters and bounded latency/drop observations |
 | `pks-graph` | Open signal/operator/endpoint contracts, compiler and plan |
 | `pks-runtime` | Realtime/async scheduling, bounded Bridges and fan-out |
+| `pks-endpoint` | Open endpoint-driver registry, gated lifecycle and finalization truth |
 | `pks-capture` | Platform-neutral permitted capture contract |
 | `pks-capture-macos` | macOS application/system/device capture adapter |
 | `pks-capture-windows` | Windows capture adapter (partial) |

@@ -11,6 +11,7 @@
 #import <CoreAudio/CATapDescription.h>
 #import <CoreAudio/AudioHardwareTapping.h>
 #import <AppKit/NSRunningApplication.h>
+#import <libproc.h>
 #import <stdatomic.h>
 #import <math.h>
 #import <string.h>
@@ -36,6 +37,7 @@ int pks_process_tap_available(void) {
 typedef struct {
     _Atomic uint64_t write_head;
     uint64_t         read_head;   // single-consumer, non-atomic
+    _Atomic uint64_t drop_count;  // reader-observed overwritten sample frames
     _Atomic uint32_t sample_rate;
     _Atomic uint32_t level_bits;  // float RMS stored as uint32_t for atomic access
     float data[TAP_RING_FRAMES * TAP_RING_CHANNELS];
@@ -237,17 +239,27 @@ int pks_discover_sources(PksCaptureSourceInfo *out, int max) {
             AudioObjectGetPropertyData(obj, &runAddr, 0, NULL, &sz, &running);
             info->state = running ? PKS_SOURCE_STATE_PLAYING : PKS_SOURCE_STATE_SILENT;
 
-            // Friendly name from NSRunningApplication
+            // Friendly label only. Identity remains the bundle/PID fields.
+            NSRunningApplication *pidApp =
+                [NSRunningApplication runningApplicationWithProcessIdentifier:pid];
+            if (pidApp && pidApp.localizedName) {
+                [pidApp.localizedName getCString:info->name
+                                       maxLength:sizeof(info->name)
+                                        encoding:NSUTF8StringEncoding];
+            }
             if (info->bundle_id[0] != '\0') {
                 NSString *bid = [NSString stringWithUTF8String:info->bundle_id];
                 NSArray<NSRunningApplication *> *apps =
                     [NSRunningApplication runningApplicationsWithBundleIdentifier:bid];
                 NSRunningApplication *app = apps.firstObject;
-                if (app && app.localizedName) {
+                if (info->name[0] == '\0' && app && app.localizedName) {
                     [app.localizedName getCString:info->name
                                        maxLength:sizeof(info->name)
                                         encoding:NSUTF8StringEncoding];
                 }
+            }
+            if (info->name[0] == '\0') {
+                proc_name(pid, info->name, (uint32_t)sizeof(info->name));
             }
             if (info->name[0] == '\0')
                 strncpy(info->name, info->bundle_id[0] ? info->bundle_id : "unknown",
@@ -262,7 +274,14 @@ int pks_discover_sources(PksCaptureSourceInfo *out, int max) {
 
 // ─── Process tap creation ────────────────────────────────────────────────────
 
-PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count) {
+static OSStatus pks_failure_status(OSStatus status) {
+    return status == noErr ? kAudioHardwareUnspecifiedError : status;
+}
+
+PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count,
+                                            int32_t *out_status, uint8_t *out_stage) {
+    if (out_status) *out_status = noErr;
+    if (out_stage) *out_stage = 0;
     if (@available(macOS 14.2, *)) {
         @autoreleasepool {
             CATapDescription *tapDesc;
@@ -280,17 +299,29 @@ PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count) 
                     if (objID != kAudioObjectUnknown)
                         [objIDs addObject:@(objID)];
                 }
-                if (objIDs.count == 0) return NULL;
+                if (objIDs.count == 0) {
+                    if (out_status) *out_status = kAudioHardwareBadObjectError;
+                    if (out_stage) *out_stage = PKS_TAP_STAGE_RESOLVE_PROCESS;
+                    return NULL;
+                }
                 tapDesc = [[CATapDescription alloc]
                     initStereoMixdownOfProcesses:objIDs];
             }
-            if (!tapDesc) return NULL;
+            if (!tapDesc) {
+                if (out_status) *out_status = kAudioHardwareUnspecifiedError;
+                if (out_stage) *out_stage = PKS_TAP_STAGE_CREATE_PROCESS_TAP;
+                return NULL;
+            }
             // Keep the source playing (CATapUnmuted = 0).
             tapDesc.muteBehavior = CATapUnmuted;
 
             AudioObjectID tapID = kAudioObjectUnknown;
             OSStatus err = AudioHardwareCreateProcessTap(tapDesc, &tapID);
-            if (err != noErr || tapID == kAudioObjectUnknown) return NULL;
+            if (err != noErr || tapID == kAudioObjectUnknown) {
+                if (out_status) *out_status = pks_failure_status(err);
+                if (out_stage) *out_stage = PKS_TAP_STAGE_CREATE_PROCESS_TAP;
+                return NULL;
+            }
 
             // Get the tap's UID for the aggregate device descriptor.
             AudioObjectPropertyAddress uidAddr = {
@@ -302,6 +333,8 @@ PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count) 
             uint32_t uidSz = sizeof(tapUID);
             err = AudioObjectGetPropertyData(tapID, &uidAddr, 0, NULL, &uidSz, &tapUID);
             if (err != noErr || !tapUID) {
+                if (out_status) *out_status = pks_failure_status(err);
+                if (out_stage) *out_stage = PKS_TAP_STAGE_READ_TAP_UID;
                 AudioHardwareDestroyProcessTap(tapID);
                 return NULL;
             }
@@ -326,6 +359,8 @@ PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count) 
             err = AudioHardwareCreateAggregateDevice(
                 (__bridge CFDictionaryRef)aggDesc, &aggID);
             if (err != noErr || aggID == kAudioObjectUnknown) {
+                if (out_status) *out_status = pks_failure_status(err);
+                if (out_stage) *out_stage = PKS_TAP_STAGE_CREATE_AGGREGATE_DEVICE;
                 AudioHardwareDestroyProcessTap(tapID);
                 return NULL;
             }
@@ -333,6 +368,8 @@ PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count) 
             PksProcessTapHandle *h =
                 (PksProcessTapHandle *)calloc(1, sizeof(PksProcessTapHandle));
             if (!h) {
+                if (out_status) *out_status = kAudioHardwareUnspecifiedError;
+                if (out_stage) *out_stage = PKS_TAP_STAGE_ALLOCATE_HANDLE;
                 AudioHardwareDestroyAggregateDevice(aggID);
                 AudioHardwareDestroyProcessTap(tapID);
                 return NULL;
@@ -342,18 +379,27 @@ PksProcessTapHandle *pks_create_process_tap(const int32_t *pids, int pid_count) 
             h->io_proc_id    = NULL;
             atomic_store(&h->ring.write_head, 0);
             h->ring.read_head = 0;
+            atomic_store(&h->ring.drop_count, 0);
             atomic_store(&h->ring.sample_rate, 48000u);
             ring_store_level(&h->ring, 0.0f);
             return h;
         }
     }
+    if (out_status) *out_status = kAudioHardwareUnsupportedOperationError;
+    if (out_stage) *out_stage = PKS_TAP_STAGE_PLATFORM_SUPPORT;
     return NULL;
 }
 
 // ─── Start IO ────────────────────────────────────────────────────────────────
 
-int pks_tap_start(PksProcessTapHandle *tap) {
-    if (!tap || tap->io_proc_id) return -1;
+int pks_tap_start(PksProcessTapHandle *tap, int32_t *out_status, uint8_t *out_stage) {
+    if (out_status) *out_status = noErr;
+    if (out_stage) *out_stage = 0;
+    if (!tap || tap->io_proc_id) {
+        if (out_status) *out_status = kAudioHardwareIllegalOperationError;
+        if (out_stage) *out_stage = PKS_TAP_STAGE_CREATE_IO_PROC;
+        return -1;
+    }
     if (@available(macOS 14.2, *)) {
         // Detect the aggregate device's input format to get the actual sample rate.
         AudioObjectPropertyAddress fmtAddr = {
@@ -370,16 +416,24 @@ int pks_tap_start(PksProcessTapHandle *tap) {
 
         OSStatus err = AudioDeviceCreateIOProcID(
             tap->agg_device_id, tap_io_proc, &tap->ring, &tap->io_proc_id);
-        if (err != noErr) return -1;
+        if (err != noErr) {
+            if (out_status) *out_status = err;
+            if (out_stage) *out_stage = PKS_TAP_STAGE_CREATE_IO_PROC;
+            return -1;
+        }
 
         err = AudioDeviceStart(tap->agg_device_id, tap->io_proc_id);
         if (err != noErr) {
+            if (out_status) *out_status = err;
+            if (out_stage) *out_stage = PKS_TAP_STAGE_START_DEVICE;
             AudioDeviceDestroyIOProcID(tap->agg_device_id, tap->io_proc_id);
             tap->io_proc_id = NULL;
             return -1;
         }
         return 0;
     }
+    if (out_status) *out_status = kAudioHardwareUnsupportedOperationError;
+    if (out_stage) *out_stage = PKS_TAP_STAGE_PLATFORM_SUPPORT;
     return -1;
 }
 
@@ -393,7 +447,12 @@ uint32_t pks_tap_read_frames(PksProcessTapHandle *tap, float *out, uint32_t fram
     uint64_t rHead = ring->read_head;
     uint64_t avail = wHead - rHead;
     if (avail == 0) return 0;
-    if (avail > TAP_RING_FRAMES) { rHead = wHead - TAP_RING_FRAMES; avail = TAP_RING_FRAMES; }
+    if (avail > TAP_RING_FRAMES) {
+        atomic_fetch_add_explicit(
+            &ring->drop_count, avail - TAP_RING_FRAMES, memory_order_relaxed);
+        rHead = wHead - TAP_RING_FRAMES;
+        avail = TAP_RING_FRAMES;
+    }
 
     uint32_t toRead = (uint32_t)(avail < (uint64_t)frame_count ? avail : (uint64_t)frame_count);
     for (uint32_t i = 0; i < toRead; i++) {
@@ -403,6 +462,11 @@ uint32_t pks_tap_read_frames(PksProcessTapHandle *tap, float *out, uint32_t fram
     }
     ring->read_head = rHead + toRead;
     return toRead;
+}
+
+uint64_t pks_tap_drop_count(const PksProcessTapHandle *tap) {
+    if (!tap) return 0;
+    return atomic_load_explicit(&tap->ring.drop_count, memory_order_relaxed);
 }
 
 uint32_t pks_tap_sample_rate(const PksProcessTapHandle *tap) {

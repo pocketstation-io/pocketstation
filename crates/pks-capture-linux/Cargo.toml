@@ -12,6 +12,6 @@ pks-frame = { path = "../pks-frame", version = "0.1.0" }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 pipewire = "0.10"
-alsa = "0.9"
+alsa = "0.11"
 libc = "0.2"
 rtrb = "0.3"

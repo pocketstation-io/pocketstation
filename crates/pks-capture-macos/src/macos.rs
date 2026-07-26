@@ -21,19 +21,14 @@ use std::time::Duration;
 use pks_frame::{AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, SourceId, StreamId};
 
 use crate::macos_asp::AspReader;
-use pks_capture::{CaptureError as LoopbackError, CaptureMode};
-
-// ---------------------------------------------------------------------------
-// Driver bundle — embedded at compile time by build.rs
-// ---------------------------------------------------------------------------
+use pks_capture::{
+    CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservations,
+    CaptureSampleTimeline,
+};
 
 // These paths are emitted as `cargo:rustc-env` by build.rs.
 const DRIVER_DYLIB_BYTES: &[u8] = include_bytes!(env!("PKS_DRIVER_DYLIB"));
 const DRIVER_PLIST_BYTES: &[u8] = include_bytes!(env!("PKS_DRIVER_PLIST"));
-
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
 
 const DRIVER_INSTALL_DIR: &str = "/Library/Audio/Plug-Ins/HAL";
 const DRIVER_BUNDLE_NAME: &str = "PocketStationLoopback.driver";
@@ -48,11 +43,7 @@ const COREAUDIOD_POLL_INTERVAL_MS: u64 = 200;
 const COREAUDIOD_POLL_ATTEMPTS: u32 = 60;
 
 /// Pool depth: 8 frames absorb callback jitter without unbounded growth.
-const POOL_DEPTH: usize = 8;
-
-// ---------------------------------------------------------------------------
-// Internal implementation variant
-// ---------------------------------------------------------------------------
+const POOL_CAPACITY_FRAMES: usize = 8;
 
 enum Impl {
     // TapLoopbackSource is held for RAII; it stops capture on Drop.
@@ -60,14 +51,11 @@ enum Impl {
     #[allow(dead_code)]
     Tap(crate::macos_tap::TapLoopbackSource),
     Asp {
-        _thread: std::thread::JoinHandle<()>,
+        reader_thread: Option<std::thread::JoinHandle<()>>,
         stop_tx: std::sync::mpsc::SyncSender<()>,
+        counters: CaptureObservationCounters,
     },
 }
-
-// ---------------------------------------------------------------------------
-// Public struct
-// ---------------------------------------------------------------------------
 
 /// Manages a macOS loopback capture session.
 ///
@@ -88,14 +76,29 @@ impl SystemLoopbackSource {
         Self::capture_mode(CaptureMode::SystemMix, callback)
     }
 
-    pub fn capture_mode<F>(mode: CaptureMode, mut callback: F) -> Result<Self, LoopbackError>
+    pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
+    where
+        F: FnMut(AudioFrame) + Send + 'static,
+    {
+        Self::capture_mode_with_runtime_event_sender(mode, callback, None)
+    }
+
+    pub(crate) fn capture_mode_with_runtime_event_sender<F>(
+        mode: CaptureMode,
+        mut callback: F,
+        runtime_event_sender: Option<pks_capture::SourceRuntimeEventSender>,
+    ) -> Result<Self, LoopbackError>
     where
         F: FnMut(AudioFrame) + Send + 'static,
     {
         // macOS 14.4+ (public support): use the process tap path (no HAL plugin, no routing change).
         if crate::macos_tap::tap_available() {
-            return crate::macos_tap::TapLoopbackSource::capture_mode(mode, callback)
-                .map(|t| Self(Impl::Tap(t)));
+            return crate::macos_tap::TapLoopbackSource::capture_mode_with_runtime_event_sender(
+                mode,
+                callback,
+                runtime_event_sender,
+            )
+            .map(|t| Self(Impl::Tap(t)));
         }
 
         // Older macOS: ASP fallback only supports SystemMix.
@@ -112,73 +115,145 @@ impl SystemLoopbackSource {
             )
         })?;
 
-        let channels = reader.channels() as u8;
-        let sample_rate = reader.sample_rate();
-        let frames_per_cb: u32 = sample_rate / 50; // 20 ms
-        let buf_samples = (frames_per_cb as usize) * (channels as usize);
-        let pool = Arc::new(AudioBufferPool::new(POOL_DEPTH, buf_samples));
+        let channel_count = reader.channels() as u8;
+        let sample_rate_hz = reader.sample_rate();
+        let sample_rate_nonzero = std::num::NonZeroU32::new(sample_rate_hz).ok_or_else(|| {
+            LoopbackError::BackendInit("ASP reader reported a zero sample rate".to_owned())
+        })?;
+        let callback_frame_count: u32 = sample_rate_hz / 50; // 20 ms
+        let buffer_capacity_samples = callback_frame_count as usize * channel_count as usize;
+        let pool = Arc::new(AudioBufferPool::new(
+            POOL_CAPACITY_FRAMES,
+            buffer_capacity_samples,
+        ));
 
         let (stop_tx, stop_rx) = std::sync::mpsc::sync_channel::<()>(1);
+        let counters = CaptureObservationCounters::default();
+        let capture_counters = counters.clone();
+        let failure_counters = counters.clone();
+        let initial_drop_count = reader.drop_count();
 
         let thread = std::thread::Builder::new()
             .name("pks-asp-reader".into())
             .spawn(move || {
-                let mut seq: u64 = 0;
-                let mut buf = vec![0.0f32; buf_samples];
-                loop {
-                    if stop_rx.try_recv().is_ok() {
-                        break;
+                let worker = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                    let mut sequence_num: u64 = 0;
+                    let mut timeline = CaptureSampleTimeline::new(sample_rate_nonzero);
+                    let mut buffer = vec![0.0f32; buffer_capacity_samples];
+                    let mut observed_drop_count = initial_drop_count;
+                    loop {
+                        if stop_rx.try_recv().is_ok() {
+                            break;
+                        }
+                        let frame_count = reader.read_frames(&mut buffer, callback_frame_count);
+                        let drop_count = reader.drop_count();
+                        capture_counters.observe_dispatch_queue_full_frames(
+                            drop_count.saturating_sub(observed_drop_count),
+                        );
+                        observed_drop_count = drop_count;
+                        if frame_count == 0 {
+                            std::thread::sleep(Duration::from_millis(1));
+                            continue;
+                        }
+                        capture_counters.observe_callback_buffer();
+                        let timestamp_ns = timeline.advance(u64::from(frame_count));
+                        let frame_sequence_number = sequence_num;
+                        sequence_num = sequence_num.saturating_add(1);
+                        let mut handle = match pool.acquire() {
+                            Some(h) => h,
+                            None => {
+                                capture_counters.observe_pool_exhaustion();
+                                continue;
+                            }
+                        };
+                        let dst = handle.as_mut_slice();
+                        let sample_count = frame_count as usize * channel_count as usize;
+                        if sample_count > dst.len() {
+                            capture_counters.observe_oversized_buffer();
+                            continue;
+                        }
+                        dst[..sample_count].copy_from_slice(&buffer[..sample_count]);
+                        handle.set_len(sample_count);
+                        let mut frame = AudioFrame::new(
+                            StreamId(0),
+                            SourceId(0),
+                            frame_sequence_number,
+                            timestamp_ns,
+                            channel_count,
+                            handle,
+                        );
+                        frame.source_tag = AudioSourceTag::Captured;
+                        frame.encryption_mode = EncryptionMode::None;
+                        frame.sample_rate_hz = sample_rate_hz;
+                        capture_counters.observe_enqueued_frame();
+                        callback(frame);
                     }
-                    let read = reader.read_frames(&mut buf, frames_per_cb);
-                    if read == 0 {
-                        std::thread::sleep(Duration::from_millis(1));
-                        continue;
+                }));
+                if let Err(payload) = worker {
+                    failure_counters.observe_stream_error();
+                    if let Some(sender) = runtime_event_sender.as_ref() {
+                        let _ = pks_capture::publish_backend_failure(
+                            sender,
+                            pks_capture::StableSourceId::new(
+                                pks_frame::Platform::Macos,
+                                pks_capture::SourceKind::SystemMix,
+                                "system:mix",
+                            ),
+                            pks_capture::SourceGeneration::INITIAL,
+                            "macOS ASP reader",
+                            pks_capture::CaptureRuntimeFailureClass::BackendClass {
+                                class: "reader-panicked".to_owned(),
+                            },
+                        );
                     }
-                    let mut handle = match pool.acquire() {
-                        Some(h) => h,
-                        None => continue,
-                    };
-                    let dst = handle.as_mut_slice();
-                    let samples = (read as usize) * (channels as usize);
-                    let copy_len = samples.min(dst.len());
-                    dst[..copy_len].copy_from_slice(&buf[..copy_len]);
-                    handle.set_len(copy_len);
-                    let ts_ns = std::time::SystemTime::now()
-                        .duration_since(std::time::UNIX_EPOCH)
-                        .unwrap_or_default()
-                        .as_nanos() as u64;
-                    let mut frame =
-                        AudioFrame::new(StreamId(0), SourceId(0), seq, ts_ns, channels, handle);
-                    frame.source_tag = AudioSourceTag::Captured;
-                    frame.encryption_mode = EncryptionMode::None;
-                    frame.sample_rate_hz = sample_rate;
-                    callback(frame);
-                    seq += 1;
+                    std::panic::resume_unwind(payload);
                 }
             })
             .map_err(|e| LoopbackError::BackendInit(format!("thread spawn: {e}")))?;
 
         Ok(Self(Impl::Asp {
-            _thread: thread,
+            reader_thread: Some(thread),
             stop_tx,
+            counters,
         }))
     }
-}
 
-impl Drop for SystemLoopbackSource {
-    fn drop(&mut self) {
+    pub fn observations(&self) -> CaptureObservations {
         match &self.0 {
-            Impl::Tap(_) => {} // TapLoopbackSource::Drop handles stop
-            Impl::Asp { stop_tx, .. } => {
+            Impl::Tap(source) => source.observations(),
+            Impl::Asp { counters, .. } => counters.snapshot(),
+        }
+    }
+
+    pub fn stop_and_join(mut self) -> Result<CaptureObservations, LoopbackError> {
+        self.stop_reader()
+    }
+
+    fn stop_reader(&mut self) -> Result<CaptureObservations, LoopbackError> {
+        match &mut self.0 {
+            Impl::Tap(source) => source.stop_and_join(),
+            Impl::Asp {
+                reader_thread,
+                stop_tx,
+                counters,
+            } => {
+                let counters = counters.clone();
                 let _ = stop_tx.try_send(());
+                if let Some(reader_thread) = reader_thread.take() {
+                    pks_capture::join_capture_worker(reader_thread, "macOS ASP reader")?;
+                }
+                Ok(counters.snapshot())
             }
         }
     }
 }
 
-// ---------------------------------------------------------------------------
-// Auto-install pipeline (ASP fallback only)
-// ---------------------------------------------------------------------------
+/// Drop contract — control thread only: signal and join the owned reader.
+impl Drop for SystemLoopbackSource {
+    fn drop(&mut self) {
+        let _ = self.stop_reader();
+    }
+}
 
 /// Ensures the HAL plugin is installed and `coreaudiod` has loaded it.
 fn ensure_asp_driver_active() -> Result<(), LoopbackError> {
@@ -291,10 +366,6 @@ fn wait_for_shm_ring() -> Result<(), LoopbackError> {
             .into(),
     ))
 }
-
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {

@@ -6,26 +6,26 @@ Accepted 2026-05-20.
 
 ## Context
 
-audio-core Phase 0 is complete as of 2026-05-20. 26 tests pass across 6 crates;
+pocketstation Phase 0 is complete as of 2026-05-20. 26 tests pass across 6 crates;
 race detector clean; all exit criteria met per v2.3 §15.
 
 relay Phase 1 is complete as of 2026-05-20 (P1-PROD-001 through P1-PROD-010).
 The relay's `fake-source` binary (`relay/cmd/fake-source`) publishes synthetic
 0xAB RTP packets as a development and integration-testing tool.
 
-audio-core does not connect directly to the relay in Phase 1. The fake-source
+pocketstation does not connect directly to the relay in Phase 1. The fake-source
 binary uses synthetic bytes, not output from `pocketstation-codec`. Real
-audio-core output enters the relay pipeline only when sdk-ios (Phase 2) wraps
-audio-core via FFI and establishes a WebRTC PUBLISH connection. Until then,
-there is no runtime path between audio-core and the relay.
+pocketstation output enters the relay pipeline only when sdk-ios (Phase 2) wraps
+pocketstation via FFI and establishes a WebRTC PUBLISH connection. Until then,
+there is no runtime path between pocketstation and the relay.
 
-The relay's fake-source is therefore a development tool, not an audio-core
-integration. It must not be treated as evidence that audio-core is relay-capable
+The relay's fake-source is therefore a development tool, not an pocketstation
+integration. It must not be treated as evidence that pocketstation is relay-capable
 in Phase 1.
 
 ## Decision
 
-audio-core's Phase 2 gate consists of four requirements:
+pocketstation's Phase 2 gate consists of four requirements:
 
 1. **crates.io publish of `pocketstation-audio` v0.1.0** — per v2.3 §14.5 and
    §15. Publish happens after the Phase 1 relay demo validates the API surface.
@@ -48,29 +48,29 @@ audio-core's Phase 2 gate consists of four requirements:
    controller passes its convergence and sign-direction tests.
 
 sdk-ios depends on requirement 1 (the crates.io publish) before it can be
-created. The Phase 2 sequence is therefore: audio-core publish first, then
+created. The Phase 2 sequence is therefore: pocketstation publish first, then
 sdk-ios XCFramework integration, then the Phase 2 relay hardening.
 
 ## Options considered
 
-**Option A — publish audio-core at Phase 0 exit**
+**Option A — publish pocketstation at Phase 0 exit**
 Rejected. v2.3 §15 explicitly defers the actual publish to Phase 1 exit,
 after the demo validates the API surface. Publishing at Phase 0 would lock
 names and create SemVer pressure before the API has met one real route.
 
-**Option B — integrate audio-core directly with relay in Phase 1**
+**Option B — integrate pocketstation directly with relay in Phase 1**
 Rejected. There is no sdk-ios or FFI boundary yet. Building a direct
 Rust-to-Go integration path for Phase 1 would invent architecture not
 specified in v2.3 and would be discarded when sdk-ios ships.
 
-**Option C (this decision) — relay uses fake-source in Phase 1; audio-core
+**Option C (this decision) — relay uses fake-source in Phase 1; pocketstation
 integrates via sdk-ios in Phase 2**
-Accepted. Matches v2.3 §14.6 phase sequence. Keeps relay and audio-core
+Accepted. Matches v2.3 §14.6 phase sequence. Keeps relay and pocketstation
 independently releasable without coupling their Phase 1 timelines.
 
 ## Consequences
 
-- sdk-ios cannot be created until audio-core v0.1.0 is published.
+- sdk-ios cannot be created until pocketstation v0.1.0 is published.
 - The fake-source binary remains a development-only tool for relay E2E tests.
   It does not represent a production audio path.
 - DHAT CI integration (Phase 0 gap) and Criterion benchmarks are Phase 2
@@ -94,7 +94,7 @@ independently releasable without coupling their Phase 1 timelines.
 
 ## Reversal trigger
 
-Phase 1 demo latency measurements show the audio-core API surface is
+Phase 1 demo latency measurements show the pocketstation API surface is
 structurally wrong for the relay integration use case (e.g., frame size,
 transport abstraction, or FFI shape requires a breaking change). If this
 occurs, this ADR is superseded by a revised ADR that documents the required

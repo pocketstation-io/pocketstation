@@ -1,5 +1,11 @@
 pub mod ffi;
+mod session;
+
 pub use ffi::{pks_encode_opus, pks_opus_encoder_create, pks_opus_encoder_destroy, PksOpusEncoder};
+pub use session::{
+    ApplicationSelector, ConnectorHandle, ConnectorKey, DeviceId, DeviceSelector, EndpointHandle,
+    ProcessId, Session, SessionError, SessionState, Source, StemHandle, StopHandle,
+};
 
 pub use pks_codec::*;
 pub use pks_frame::*;
@@ -14,7 +20,10 @@ pub use pks_frame::EncodedFrame;
 
 // Graph compiler + runtime executor (targeted, not glob — avoids re-export clashes).
 pub use pks_runtime::{
-    EdgeChannel, EdgeReceiver, EdgeSender, ExecError, PlanScheduler, RealtimeExecutor, RunMetrics,
+    DispatchSummary, EdgeChannel, EdgeObservations, EdgeReceiver, EdgeSender, ExecError,
+    PlanEdgeFrame, PlanEdgeReceiver, PlanEdgeRouter, PlanExecutionSummary, PlanRouterError,
+    PlanScheduler, RealtimeExecutor, RealtimePlanExecutor, RunMetrics, SharedEdgeChannel,
+    SharedEdgeReceiver, SharedEdgeSender, SharedEdgeTelemetrySnapshot,
 };
 
 pub use pks_capture::{

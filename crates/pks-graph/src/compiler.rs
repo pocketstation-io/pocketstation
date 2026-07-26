@@ -11,7 +11,7 @@ use pks_caps::{
 };
 
 use crate::ir::{GraphIr, ResolvedEdge, ResolvedNode};
-use crate::node::{ExecutionClass, NodeConfig, NodeDescriptor, NodeTypeId};
+use crate::node::{NodeConfig, NodeDescriptor, NodeTypeId};
 use crate::registry::NodeRegistry;
 use crate::spec::{EdgeId, EdgeSpec, GraphSpec, InputPortRef, NodeId, NodeSpec, OutputPortRef};
 
@@ -351,11 +351,8 @@ impl GraphPass for ValidateRealtimeBoundariesPass {
         for edge in &ir.edges {
             let from = find_node(&ir.nodes, edge.spec.from.node)?;
             let to = find_node(&ir.nodes, edge.spec.to.node)?;
-            let producer_async = matches!(
-                from.descriptor.execution,
-                ExecutionClass::AsyncIo | ExecutionClass::Network | ExecutionClass::ModelRemote
-            );
-            if producer_async && to.descriptor.execution.is_realtime() {
+            let producer_async = !from.descriptor.execution.requires_realtime_safety();
+            if producer_async && to.descriptor.execution.requires_realtime_safety() {
                 let non_blocking = matches!(
                     edge.contract.map(|contract| contract.backpressure),
                     Some(BackpressurePolicy::DropNewest) | Some(BackpressurePolicy::DropOldest)
@@ -505,7 +502,8 @@ mod tests {
 
     use crate::builtins::PassthroughNode;
     use crate::dsl::Pipeline;
-    use crate::node::{ConfigError, NodeConfig, NodeKind, NodeTypeId, PrepareContext};
+    use crate::node::{ConfigError, NodeConfig, NodeTypeId, PrepareContext};
+    use crate::partition::ExecutionPartition;
     use crate::registry::NodeFactory;
     use crate::runtime_node::RuntimeNode;
 
@@ -534,19 +532,17 @@ mod tests {
 
     fn test_descriptor(
         type_id: &'static str,
-        kind: NodeKind,
         inputs: Vec<PortSpec>,
         outputs: Vec<PortSpec>,
-        execution: ExecutionClass,
+        execution: ExecutionPartition,
     ) -> NodeDescriptor {
         NodeDescriptor {
             type_id: NodeTypeId::from(type_id),
             display_name: "test",
-            kind,
             inputs,
             outputs,
+            realtime_safe: execution.requires_realtime_safety(),
             execution,
-            realtime_safe: execution.is_realtime(),
             stateful: false,
         }
     }
@@ -560,10 +556,9 @@ mod tests {
         fn descriptor(&self) -> NodeDescriptor {
             test_descriptor(
                 "source",
-                NodeKind::Source,
                 Vec::new(),
                 vec![port("audio", PortDirection::Output, audio_media())],
-                ExecutionClass::RealtimeCpu,
+                ExecutionPartition::RealtimeCpu,
             )
         }
         fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
@@ -583,10 +578,9 @@ mod tests {
         fn descriptor(&self) -> NodeDescriptor {
             test_descriptor(
                 "transform",
-                NodeKind::Transform,
                 vec![port("audio", PortDirection::Input, audio_media())],
                 vec![port("audio", PortDirection::Output, audio_media())],
-                ExecutionClass::RealtimeCpu,
+                ExecutionPartition::RealtimeCpu,
             )
         }
         fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
@@ -606,10 +600,9 @@ mod tests {
         fn descriptor(&self) -> NodeDescriptor {
             test_descriptor(
                 "sink",
-                NodeKind::Sink,
                 vec![port("audio", PortDirection::Input, audio_media())],
                 Vec::new(),
-                ExecutionClass::RealtimeCpu,
+                ExecutionPartition::RealtimeCpu,
             )
         }
         fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
@@ -629,7 +622,6 @@ mod tests {
         fn descriptor(&self) -> NodeDescriptor {
             test_descriptor(
                 "mixer",
-                NodeKind::Transform,
                 vec![PortSpec {
                     name: "audio".to_owned(),
                     direction: PortDirection::Input,
@@ -638,7 +630,7 @@ mod tests {
                     required: true,
                 }],
                 vec![port("audio", PortDirection::Output, audio_media())],
-                ExecutionClass::RealtimeCpu,
+                ExecutionPartition::RealtimeCpu,
             )
         }
         fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
@@ -658,10 +650,9 @@ mod tests {
         fn descriptor(&self) -> NodeDescriptor {
             test_descriptor(
                 "model.async",
-                NodeKind::Model,
                 vec![port("audio", PortDirection::Input, audio_media())],
                 vec![port("audio", PortDirection::Output, audio_media())],
-                ExecutionClass::ModelRemote,
+                ExecutionPartition::External,
             )
         }
         fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
@@ -681,10 +672,9 @@ mod tests {
         fn descriptor(&self) -> NodeDescriptor {
             test_descriptor(
                 "sink.text",
-                NodeKind::Sink,
                 vec![port("text", PortDirection::Input, MediaCaps::Text)],
                 Vec::new(),
-                ExecutionClass::RealtimeCpu,
+                ExecutionPartition::RealtimeCpu,
             )
         }
         fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
@@ -704,10 +694,9 @@ mod tests {
         fn descriptor(&self) -> NodeDescriptor {
             test_descriptor(
                 "reject",
-                NodeKind::Transform,
                 vec![port("audio", PortDirection::Input, audio_media())],
                 vec![port("audio", PortDirection::Output, audio_media())],
-                ExecutionClass::RealtimeCpu,
+                ExecutionPartition::RealtimeCpu,
             )
         }
         fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
@@ -730,14 +719,13 @@ mod tests {
         fn descriptor(&self) -> NodeDescriptor {
             test_descriptor(
                 "source.stereo",
-                NodeKind::Source,
                 Vec::new(),
                 vec![port(
                     "audio",
                     PortDirection::Output,
                     audio_media_with(ChannelLayout::Stereo),
                 )],
-                ExecutionClass::RealtimeCpu,
+                ExecutionPartition::RealtimeCpu,
             )
         }
         fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
@@ -757,14 +745,13 @@ mod tests {
         fn descriptor(&self) -> NodeDescriptor {
             test_descriptor(
                 "sink.mono_only",
-                NodeKind::Sink,
                 vec![port(
                     "audio",
                     PortDirection::Input,
                     audio_media_with(ChannelLayout::Mono),
                 )],
                 Vec::new(),
-                ExecutionClass::RealtimeCpu,
+                ExecutionPartition::RealtimeCpu,
             )
         }
         fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
@@ -784,14 +771,13 @@ mod tests {
         fn descriptor(&self) -> NodeDescriptor {
             test_descriptor(
                 "sink.stereo",
-                NodeKind::Sink,
                 vec![port(
                     "audio",
                     PortDirection::Input,
                     audio_media_with(ChannelLayout::Stereo),
                 )],
                 Vec::new(),
-                ExecutionClass::RealtimeCpu,
+                ExecutionPartition::RealtimeCpu,
             )
         }
         fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
@@ -812,7 +798,6 @@ mod tests {
         fn descriptor(&self) -> NodeDescriptor {
             test_descriptor(
                 MONO_DOWNMIX_ADAPTER_TYPE,
-                NodeKind::Transform,
                 vec![port(
                     "in",
                     PortDirection::Input,
@@ -823,7 +808,7 @@ mod tests {
                     PortDirection::Output,
                     audio_media_with(ChannelLayout::Mono),
                 )],
-                ExecutionClass::RealtimeCpu,
+                ExecutionPartition::RealtimeCpu,
             )
         }
         fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {

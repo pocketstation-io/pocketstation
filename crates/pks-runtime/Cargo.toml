@@ -10,7 +10,10 @@ pks-frame = { path = "../pks-frame" }
 pks-caps = { path = "../pks-caps" }
 pks-graph = { path = "../pks-graph" }
 pks-metrics = { path = "../pks-metrics" }
+pks-timing = { path = "../pks-timing" }
 rtrb.workspace = true
+thiserror.workspace = true
 
 [dev-dependencies]
 proptest.workspace = true
+assert_no_alloc.workspace = true

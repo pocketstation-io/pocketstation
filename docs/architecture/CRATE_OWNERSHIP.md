@@ -38,13 +38,66 @@ These five crates define the architecture. Everything else builds on them.
 
 | Crate | Owns | Must NOT own |
 |---|---|---|
-| `pks-frame` | FrameHandle, FrameId, Timestamp, MediaTime, SequenceNumber, Deadline, ClockId, BufferPool index/handle types, payload format metadata | Whisper, Ollama, Transcribe, Summarize, Ducking, Meeting recording, Deepgram, OpenAI, any product concept |
+| `pks-frame` | `AudioBufferPool`, exclusive/shared frame handles, `AudioFrame`, `SharedAudioFrame`, frame/stream/source/session IDs, sample specifications, timestamps, sequence numbers, deadlines, clock IDs, payload format metadata | Whisper, Ollama, Transcribe, Summarize, Ducking, Meeting recording, Deepgram, OpenAI, any product concept |
 | `pks-timing` | ClockDriftEstimator, ClockCorrectionController, clock-domain timing snapshots; compiled experimental SegmentGate storage until a generated-audio endpoint exists | Generic date/time utilities, WebRTC/NetEQ playout, provider APIs, product claims for experimental controls |
-| `pks-graph` | GraphSpec, OperatorSpec, EndpointSpec, PortSpec, **SignalSpec**, EdgeContract, RouteSpec, GraphPatch, PortArity, **ExecutionPartition**, **SafetyContract**, BackpressurePolicy, QoS | Concrete Whisper/Ollama/Deepgram providers, product UI, compiled execution plans |
-| `pks-runtime` | GraphCompiler, CompiledPlan, RealtimePlan, AsyncPlan, BridgePlan, RouteSnapshot, Schedule, RuntimeHandle, GraphRunner, MutationCoordinator, **ExecutionPartition** | Product UI, operator semantics, provider integrations, platform capture |
+| `pks-graph` | `GraphSpec`, registry-backed node declarations, `PortSpec`, **SignalSpec**, edge contracts, graph IR, `Compiler`, `RuntimePlanner`, `RuntimePlan`, memory/fan-out plans, **ExecutionPartition**, and **SafetyContract** | Concrete Whisper/Ollama/Deepgram providers, product UI, worker lifecycle, capture ownership, endpoint finalization |
+| `pks-runtime` | Execution of a compiled `RuntimePlan`: `PlanScheduler`, `RealtimePlanExecutor`, `PlanEdgeRouter`, independent bounded edge receivers, and edge/queue/discontinuity observations | Graph compilation or `RuntimePlan` definitions, complete product Session lifecycle, product UI, operator meaning, provider integrations, platform capture |
 | `pks-caps` | Capability, CapabilitySet, CapabilityRequirement, PlatformProfile, PermissionRequirement, UnsupportedReason | `SignalSpec` (lives in `pks-graph`), concrete implementations, provider meanings, product logic |
 
 **Boundary note:** `pks-caps` owns platform/runtime availability truth (can this capability run here?). `pks-graph` owns signal/edge contracts (what flows between ports). Related but distinct.
+
+## Endpoint lifecycle boundary
+
+`pks-endpoint` is the acyclic contract between bounded runtime edges, concrete
+destination implementations, and Session transaction ownership. It is not a
+provider catalog or a second scheduler.
+
+| Crate | Owns | Must NOT own |
+|---|---|---|
+| `pks-endpoint` | Open `OperatorId`, explicit `EndpointGroupId`, exact `OperatorId` + `NodeTypeId` driver registration, one-input and explicit batch preparation, endpoint prepare/cancel/start-gate/running/stop/join-finalize state contracts, and authoritative endpoint observation/outcome records | Implicit grouping by operator, concrete connector/provider/relay/recording algorithms, Session transaction policy, graph execution, worker-thread creation, native capture, product workflows, or production no-op drivers |
+
+`pks-endpoint` depends downward on `pks-runtime` for `PlanEdgeReceiver` and on
+`pks-graph`/`pks-frame` for stable identities and setup context.
+`pks-runtime` never depends on `pks-endpoint`. Both `pks-session` and concrete
+endpoint packages such as `pks-nodes` may depend on `pks-endpoint`, preventing a
+`pks-nodes -> pks-session` cycle.
+
+Grouped lifecycle rules are binding in
+[AUDIO-030](../adr/AUDIO-030-grouped-endpoint-lifecycle.md): batches require one
+Session plus an exact `OperatorId`, `NodeTypeId`, `EndpointGroupId`, and declared
+endpoint set. Sharing only an operator or node type never authorizes grouping.
+
+---
+
+## Session engine and language boundary
+
+`pks-session` is the one public Session engine owner. It is deliberately not a
+sixth foundation crate: it orchestrates the contracts and implementations owned
+by the lower layers without redefining them.
+
+| Crate | Owns | Must NOT own |
+|---|---|---|
+| `pks-session` | Safe Rust `SessionSpec`, public selectors/descriptors, declaration freeze, fixed Session source/external-boundary structural node registration, exact-source resolution orchestration, transactional startup/rollback, ownership of a running Session's capture/runtime/endpoint resources, cancellation, drain/join/finalization coordination, safe event/metric projections, and stable semantic errors | Graph compilation algorithms, plan scheduling/routing algorithms, buffer-pool implementation, native capture implementation, codec or recorder implementation, provider connectors, C ABI records/handle tables, language-SDK ergonomics, UI, or process-helper IPC |
+| `pks-session-c` | Versioned C records and status codes, ABI/capability negotiation, engine-scoped generational foreign handles, marshalling, bounded event/metric polling, bounded immutable audio-batch leases, panic containment, reproducible headers, and C conformance fixtures | Session lifecycle semantics, graph/runtime algorithms, capture or endpoint implementations, provider code, language-owned APIs, or a second scheduler |
+
+`pks-session-c` depends on `pks-session`; `pks-session` never depends on the
+adapter. Python and Node may use direct PyO3 and Node-API adapters over
+`pks-session` instead of being forced through C. Swift and Kotlin may use the C
+projection or platform/generated wrappers. Every adapter preserves one Session
+engine and the same lifecycle, error, backpressure, lineage, and observation
+semantics.
+
+The fixed Session node registration is structural only. Application and
+microphone ingress nodes forward capture-owned frames through the compiled
+realtime plan. Connector, browser, and recording descriptors define external
+worker boundaries; their `RuntimeNode` instantiation fails with a typed
+external-boundary error. Concrete work and finalization remain exclusively in
+registered `EndpointDriverFactory` implementations.
+
+The embedded-versus-helper decision and portable ABI constraints are binding in
+[AUDIO-029](../adr/AUDIO-029-embedded-session-engine-boundary.md).
+`pks-audio` may temporarily re-export Session types for source compatibility,
+but it must not own a parallel Session runtime.
 
 ---
 
@@ -116,7 +169,7 @@ pub trait Endpoint: Send + Sync {
 
 ---
 
-## Execution partitions and safety contracts (pks-runtime)
+## Execution partitions and safety contracts (`pks-graph`)
 
 `ExecutionPartition` (WHERE code runs) and `SafetyContract` (WHAT it guarantees) are separate types. Do not conflate them.
 
@@ -164,11 +217,11 @@ ml.local_vad
 
 | Crate | Owns | Must NOT own |
 |---|---|---|
-| `pks-capture` | Abstract capture endpoint traits/contracts | Platform-specific implementations |
+| `pks-capture` | Platform-neutral discovery/selectors, source identity/generation and permission evidence, runtime source events, bounded captured-frame streams, capture/output traits, and adapter contracts | Platform-specific implementations or Session orchestration |
 | `pks-capture-macos` | CoreAudio tap / ScreenCaptureKit / device capture | Non-macOS paths |
 | `pks-capture-windows` | WASAPI / process loopback | Non-Windows paths |
 | `pks-capture-linux` | PipeWire/Pulse implementation | Non-Linux paths |
-| `pks-audio` | AudioFormat, SampleRate, ChannelLayout, AudioBufferView, AudioBufferPool, Gain, Mixer, Ducker algorithm, Resampler | OpenAI, Ollama, summaries, meeting products, clock-domain estimation |
+| `pks-audio` | Current compatibility façade: selected lower-crate re-exports, legacy Opus C exports, temporary Session declaration, and small demo/test helpers while ownership is migrated | `AudioBufferPool` or frame ownership, compiled graph/runtime ownership, a second Session engine, provider integrations, product workflows |
 | `pks-codec` | Opus encode/decode, packet format, RTP timestamp metadata, jitter-adjacent helpers | WebRTC signaling, product logic |
 
 ---
@@ -177,9 +230,9 @@ ml.local_vad
 
 | Crate | Owns | Must NOT own |
 |---|---|---|
-| `pks-nodes` | First-party basic operators/endpoints only: `audio/gain`, `audio/mixer`, `audio/duck`, `audio/channel_adapter`, `audio/meter`, `recording/wav_sink`, `recording/multistem_sink`, `transport/packetizer`, `debug/null_sink`, `debug/tone_source` | whisper_local, ollama_local, deepgram, openai, meeting_summarizer, emotion_detection_api, any random AI wrapper |
-| `pks-ml` | Bounded local inference operators for RT-adjacent media processing: VAD adapter, local denoise adapter, AEC adapter, watermark detector, small classifier, model runtime abstraction for bounded local inference | OpenAI chat, Ollama summarize, Deepgram cloud STT, ElevenLabs TTS, agent orchestration, meeting notes product logic |
-| `pks-pipeline` | Composition recipes, ergonomic builders, graph templates (meeting_pipeline, broadcast_pipeline) | Primitive runtime semantics, ML model implementations |
+| `pks-nodes` | Current first-party factories/endpoints: synthetic, microphone, and system-output source factories; mono mixing; Bridge sink; VAD/denoise/AEC/watermark adapters; and explicit multistem recording lifecycle/finalization | Provider connectors, API-key fields, meeting/product workflows, or unimplemented operators presented as available |
+| `pks-ml` | Current bounded local DSP implementations: VAD, denoise, echo cancellation, and audio watermarking with slice-based hot-path cores and `RuntimeNode` integration | OpenAI chat, Ollama summarize, Deepgram cloud STT, ElevenLabs TTS, agent orchestration, meeting notes product logic, or an unimplemented generic model runtime |
+| `pks-pipeline` | Current legacy compatibility path: ring-backed `frame_bus`, linear `ProcessorGraph`, basic processors, and timing correction re-export until callers migrate to the compiled graph/runtime path | Product recipes falsely presented as implemented, compiled graph/runtime semantics, Session lifecycle, provider or model implementations |
 
 ---
 
@@ -204,12 +257,37 @@ pks-runtime
   may depend on:      pks-frame, pks-graph, pks-metrics, pks-timing
   must not depend on: OpenAI/Deepgram/Ollama SDKs, app UI, platform capture implementations
 
+pks-endpoint
+  may depend on:      pks-frame, pks-graph, pks-runtime, serde
+  must not depend on: pks-session, pks-nodes, platform capture implementations,
+                      provider SDKs, concrete relay/recorder algorithms
+
 pks-caps
   may depend on:      pks-frame (types only)
   must not depend on: pks-capture-macos/windows/linux concrete implementations
 
+pks-capture
+  may depend on:      pks-frame, pks-timing
+  must not depend on: target capture implementations, pks-runtime,
+                      pks-session, provider SDKs
+
+pks-session
+  may depend on:      pks-frame, pks-caps, pks-graph, pks-runtime, pks-endpoint,
+                      pks-capture and target-selected capture adapters,
+                      pks-nodes, pks-metrics
+  must not depend on: provider SDKs, app UI, language SDK packages,
+                      helper-process IPC, or language-runtime types in its
+                      public contract
+
+pks-session-c
+  may depend on:      pks-session and minimal ABI-support crates
+  must not depend on: platform capture implementations directly, pks CLI,
+                      provider SDKs, Python/Node/Swift/Kotlin runtime packages,
+                      or graph/runtime internals bypassing pks-session
+
 pks-nodes
-  may depend on:      pks-frame, pks-graph, pks-audio, pks-codec
+  may depend on:      pks-frame, pks-caps, pks-graph, pks-runtime, pks-endpoint,
+                      pks-timing, pks-ml
   must not contain:   provider connector clients, API-key fields, product workflows
 
 pks-ml
@@ -220,9 +298,12 @@ examples/
   may depend on:      anything
 ```
 
-`pks-pipeline` may compose `pks-timing` correction primitives but must not own a
-second clock estimator/controller implementation. A frame timestamp is one
-clock-domain observation; it is never itself a measured inter-clock offset.
+`pks-pipeline` currently depends on `pks-frame`, `pks-timing`, and `pks-codec`.
+It may compose timing correction primitives but must not own a second clock
+estimator/controller implementation. It is a legacy compatibility crate, not
+evidence that product recipes or the compiled Pipeline API already exist. A
+frame timestamp is one clock-domain observation; it is never itself a measured
+inter-clock offset.
 
 ---
 

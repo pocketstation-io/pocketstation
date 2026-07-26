@@ -29,7 +29,7 @@ pub struct NoiseSuppressor {
     /// VAD threshold RMS: frames below this update noise floor.
     vad_threshold_rms: f32,
     /// Minimum output gain (prevents complete silence; ~0.1 = -20 dB floor).
-    gain_floor: f32,
+    gain_floor_ratio: f32,
     /// Wiener over-subtraction factor (>1 increases suppression, >2 may add artifacts).
     over_subtraction: f32,
     /// Pre-allocated input copy for the RuntimeNode in-place frame path (no hot-path alloc).
@@ -38,22 +38,22 @@ pub struct NoiseSuppressor {
 
 impl NoiseSuppressor {
     /// * `vad_threshold_dbfs` — frames below this update the noise floor (e.g. -40.0).
-    /// * `noise_update_rate` — noise floor exponential update rate per frame (e.g. 0.01).
+    /// * `noise_update_ratio` — noise floor exponential update ratio per frame (e.g. 0.01).
     /// * `gain_floor_db` — minimum gain applied when SNR is very low (e.g. -20.0).
     /// * `over_subtraction` — suppression strength; 1.0 = Wiener, 2.0 = aggressive (e.g. 1.5).
     pub fn new(
         vad_threshold_dbfs: f32,
-        noise_update_rate: f32,
+        noise_update_ratio: f32,
         gain_floor_db: f32,
         over_subtraction: f32,
     ) -> Self {
         let vad_threshold_rms = 10.0_f32.powf(vad_threshold_dbfs / 20.0);
-        let gain_floor = 10.0_f32.powf(gain_floor_db / 20.0);
+        let gain_floor_ratio = 10.0_f32.powf(gain_floor_db / 20.0);
         Self {
             noise_floor: [vad_threshold_rms * 0.5; NUM_BANDS],
-            alpha_noise: noise_update_rate.clamp(1e-4, 0.5),
+            alpha_noise: noise_update_ratio.clamp(1e-4, 0.5),
             vad_threshold_rms,
-            gain_floor,
+            gain_floor_ratio,
             over_subtraction: over_subtraction.max(0.0),
             scratch: vec![0.0f32; FRAME_SAMPLES_48K_20MS],
         }
@@ -87,9 +87,9 @@ impl NoiseSuppressor {
             // Wiener gain approximation: g = max(1 − α·noise/signal, floor)
             let gain = if band_rms > 1e-12 {
                 let wiener = 1.0 - self.over_subtraction * self.noise_floor[b] / band_rms;
-                wiener.max(self.gain_floor).min(1.0)
+                wiener.max(self.gain_floor_ratio).min(1.0)
             } else {
-                self.gain_floor
+                self.gain_floor_ratio
             };
 
             for (o, &i) in out_band.iter_mut().zip(band.iter()) {

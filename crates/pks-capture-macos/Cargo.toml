@@ -9,6 +9,8 @@ description = "macOS CoreAudio process tap and HAL plugin loopback capture for P
 [dependencies]
 pks-capture = { path = "../pks-capture", version = "0.1.0" }
 pks-frame = { path = "../pks-frame", version = "0.1.0" }
+cpal.workspace = true
+rtrb.workspace = true
 
 [build-dependencies]
 cc = "1"

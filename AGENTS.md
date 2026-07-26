@@ -5,7 +5,7 @@ formerly named `pocketstation`; current paths and new documentation must use
 `pocketstation`.
 
 The factory-root `AGENTS.md`, `PRODUCT_OPERATING_CONTRACT.md`, and
-`V3_REPO_OWNERSHIP_STATE.md` are binding. By 2026-08-15 the runtime must help prove one
+`PROJECT_STATE.md` are binding. By 2026-08-15 the runtime must help prove one
 desktop application plus one microphone as independent stems fanning out to an
 example connector, browser/remote receiver, and multistem recording.
 
@@ -15,7 +15,7 @@ Read, in order:
 
 1. Factory-root `AGENTS.md`
 2. Factory-root `PRODUCT_OPERATING_CONTRACT.md`
-3. Factory-root `V3_REPO_OWNERSHIP_STATE.md`
+3. Factory-root `PROJECT_STATE.md`
 4. Factory-root `docs/standards/CODE_PROTOCOL.md`
 5. `docs/architecture/pocketstation-v3.0.md`
 6. `docs/architecture/CRATE_OWNERSHIP.md`

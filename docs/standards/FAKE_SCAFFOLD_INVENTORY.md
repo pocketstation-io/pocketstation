@@ -24,18 +24,19 @@ DEFERRED    Intentionally postponed; ADR or phase plan justifies it
 
 | Component | Status | Repo / File | What's missing | Replace by | Blocked on |
 |---|---|---|---|---|---|
-| pocketstation-ml NoiseSuppressor | PARTIAL | audio-core / pocketstation-ml / src/denoise.rs | Per-band RMS Wiener gate; missing full FFT-domain spectral subtraction (RNNoise/WebRTC NS quality) | Phase 5 | Phase 5: ONNX/RNNoise model |
-| pocketstation-ml EchoCanceller | PARTIAL | audio-core / pocketstation-ml / src/aec.rs | NLMS 512-tap adaptive filter; missing delay estimation, double-talk detector, frequency-domain partitioned-block (WebRTC AEC3 quality) | Phase 5 | Phase 5: production AEC |
-| pocketstation-capture-macos (Application mode) | PARTIAL | audio-core / pocketstation-capture-macos / src/macos_tap.rs | `CaptureMode::Application` uses CoreAudio tap; per-app routing works but sub-5 ms requires ASP plugin (Wave D). Public claim: macOS 14.4+ until 14.2/14.3 tested on device. | Phase 3 Wave D | libASPL submodule + HAL plugin deployment |
-| pocketstation-capture-macos (ASP plugin) | DEFERRED | audio-core / pocketstation-capture-macos / asp/ | `pks_asp_is_installed()` returns 0 (stub); real plugin requires libASPL vendor submodule + signed deployment | Phase 3 Wave D | AUDIO-022; `vendor/libASPL` submodule (human operator step) |
-| pocketstation-capture-linux | PARTIAL | audio-core / pocketstation-capture-linux / src/linux.rs | PipeWire path + snd-aloop fallback implemented (AUDIO-024); no CI runner with real PipeWire daemon; PipeWire graph model (node serial, ports, links) still first-pass | Phase 3 Wave C | Linux CI runner with PipeWire |
-| pocketstation-capture-windows | PARTIAL | audio-core / pocketstation-capture-windows / src/windows.rs | WASAPI system-wide loopback + process loopback implemented (Wave B); WASAPI session enumeration weak; no Windows CI runner | Phase 3 Wave B | Windows CI runner; wasapi crate |
-| pocketstation-capture (non-macOS/Linux/Windows) | STUB | audio-core / pocketstation-capture / src/lib.rs | `capture_system_audio()` stub returns `Err(CaptureError::NotSupported)` on unsupported platforms | Never (no target) | — |
-| JitterBuffer | PARTIAL | audio-core / pocketstation-codec | EWMA adaptive depth implemented; missing: PLC (caller gets GapDetected but no concealment audio); adaptation gains not tuned on real network jitter; no real-device validation | Phase 5 | Real network jitter measurement |
-| DHAT allocation check | RESOLVED | audio-core | Replaced with assert_no_alloc = "1.1" in `crates/pocketstation-audio/tests/alloc_check.rs`; `tools/pocketstation-alloccheck` deleted (was broken: workspace-inheritance without workspace member). | — | — |
+| Canonical Session execution | PARTIAL | pocketstation / `crates/pks-audio/src/session.rs` | W1 validates the declarative Session and then returns typed `RuntimeNotIntegrated`; no route is claimed to execute. AUDIO-029 assigns the future real engine to `pks-session`; migrate the façade and connect real capture-once bounded execution without retaining a second runtime in `pks-audio`. | Phase 2 W11 | AUDIO-029 implementation, compatibility re-export, and non-Rust lifecycle/lease conformance |
+| pocketstation-ml NoiseSuppressor | PARTIAL | pocketstation / pocketstation-ml / src/denoise.rs | Per-band RMS Wiener gate; missing full FFT-domain spectral subtraction (RNNoise/WebRTC NS quality) | Phase 5 | Phase 5: ONNX/RNNoise model |
+| pocketstation-ml EchoCanceller | PARTIAL | pocketstation / pocketstation-ml / src/aec.rs | NLMS 512-tap adaptive filter; missing delay estimation, double-talk detector, frequency-domain partitioned-block (WebRTC AEC3 quality) | Phase 5 | Phase 5: production AEC |
+| pocketstation-capture-macos (Application mode) | PARTIAL | pocketstation / pocketstation-capture-macos / src/macos_tap.rs | `CaptureMode::Application` uses CoreAudio tap; per-app routing works but sub-5 ms requires ASP plugin (Wave D). Public claim: macOS 14.4+ until 14.2/14.3 tested on device. | Phase 3 Wave D | libASPL submodule + HAL plugin deployment |
+| pocketstation-capture-macos (ASP plugin) | DEFERRED | pocketstation / pocketstation-capture-macos / asp/ | `pks_asp_is_installed()` returns 0 (stub); real plugin requires libASPL vendor submodule + signed deployment | Phase 3 Wave D | AUDIO-022; `vendor/libASPL` submodule (human operator step) |
+| pocketstation-capture-linux | PARTIAL | pocketstation / pocketstation-capture-linux / src/linux.rs | PipeWire path + snd-aloop fallback implemented (AUDIO-024); no CI runner with real PipeWire daemon; PipeWire graph model (node serial, ports, links) still first-pass | Phase 3 Wave C | Linux CI runner with PipeWire |
+| pocketstation-capture-windows | PARTIAL | pocketstation / pocketstation-capture-windows / src/windows.rs | WASAPI system-wide loopback + process loopback implemented (Wave B); WASAPI session enumeration weak; no Windows CI runner | Phase 3 Wave B | Windows CI runner; wasapi crate |
+| pocketstation-capture (non-macOS/Linux/Windows) | STUB | pocketstation / pocketstation-capture / src/lib.rs | `capture_system_audio()` stub returns `Err(CaptureError::NotSupported)` on unsupported platforms | Never (no target) | — |
+| JitterBuffer | PARTIAL | pocketstation / pocketstation-codec | EWMA adaptive depth implemented; missing: PLC (caller gets GapDetected but no concealment audio); adaptation gains not tuned on real network jitter; no real-device validation | Phase 5 | Real network jitter measurement |
+| DHAT allocation check | RESOLVED | pocketstation | Replaced with assert_no_alloc = "1.1" in `crates/pocketstation-audio/tests/alloc_check.rs`; `tools/pocketstation-alloccheck` deleted (was broken: workspace-inheritance without workspace member). | — | — |
 | TURN configuration | DEFERRED | relay | Production TURN credentials; STUN-only works on most networks | Phase 2 | TURN provider decision |
 | SFrame E2EE | DEFERRED | relay + SDKs | Frame-layer encryption per RFC 9605 | Phase 3 | ADR for per-platform insertion point |
-| Clock-domain (ASRC) adapter insertion | DEFERRED | audio-core / pocketstation-graph / src/compiler.rs | Channel adapter is done (Wave 10 `InsertAdapterNodesPass` auto-inserts `transform.mono_mix` on stereo→mono-only edges). The clock-domain ASRC/resampler that would *bridge* mismatched clocks is still not inserted — `ValidateClockDomainsPass` continues to *reject* cross-clock fan-in (industry-standard async sample-rate conversion, cf. WebRTC audio mixer) | Wave 11+ | ASRC node + sample-rate adapter insertion |
+| Clock-domain (ASRC) adapter insertion | DEFERRED | pocketstation / pocketstation-graph / src/compiler.rs | Channel adapter is done (Wave 10 `InsertAdapterNodesPass` auto-inserts `transform.mono_mix` on stereo→mono-only edges). The clock-domain ASRC/resampler that would *bridge* mismatched clocks is still not inserted — `ValidateClockDomainsPass` continues to *reject* cross-clock fan-in (industry-standard async sample-rate conversion, cf. WebRTC audio mixer) | Wave 11+ | ASRC node + sample-rate adapter insertion |
 
 ---
 
@@ -43,20 +44,20 @@ DEFERRED    Intentionally postponed; ADR or phase plan justifies it
 
 | Component | Status | Repo / File | Resolution |
 |---|---|---|---|
-| Opus encoder/decoder | resolved | audio-core / pocketstation-codec | Real libopus bindings via `opus = "0.3"`. `OpusEncoder` / `OpusDecoder` wrap libopus at 48 kHz / mono / VOIP per AUDIO-012. `MockOpusEncoder` / `MockOpusDecoder` are retained as legacy aliases that delegate to the real types. |
-| ClockSync | resolved | audio-core / pocketstation-bus | PI controller implemented per AUDIO-006. `kp = 0.1`, `ki = 0.001`. Output clamped to ±10 ms. Gains will be tuned in Phase 5 with real-world measurements. |
+| Opus encoder/decoder | resolved | pocketstation / pocketstation-codec | Real libopus bindings via `opus = "0.3"`. `OpusEncoder` / `OpusDecoder` wrap libopus at 48 kHz / mono / VOIP per AUDIO-012. `MockOpusEncoder` / `MockOpusDecoder` are retained as legacy aliases that delegate to the real types. |
+| ClockSync | resolved | pocketstation / pocketstation-bus | PI controller implemented per AUDIO-006. `kp = 0.1`, `ki = 0.001`. Output clamped to ±10 ms. Gains will be tuned in Phase 5 with real-world measurements. |
 
 ---
 
 ## Phase 1 burns (completed 2026-05-20)
 
-These rows were resolved at Phase 1 exit. Work landed in the `relay` repo, not in `audio-core`.
+These rows were resolved at Phase 1 exit. Work landed in the `relay` repo, not in `pocketstation`.
 
 | Component | Status | Repo / File | Resolution |
 |---|---|---|---|
-| Fake-source publisher | resolved | relay / cmd/fake-source | Implemented as P1-PROD-003. Binary publishes synthetic 0xAB RTP; it is a development tool, not an audio-core integration. |
-| Token authority | resolved | relay (relay owns issuance) | Implemented as P1-PROD-002. relay issues and validates JWTs; api-server integration deferred to Phase 2. |
-| Browser metrics | resolved | app-web-receiver | Completed as P1-PROD-006. Real RTCStats.getStats() values wired. |
+| Fake-source publisher | resolved | relay / cmd/fake-source | Implemented as P1-PROD-003. Binary publishes synthetic 0xAB RTP; it is a development tool, not an pocketstation integration. |
+| Token authority | resolved | relay (relay owns issuance) | Implemented as P1-PROD-002. relay issues and validates JWTs; control-plane integration deferred to Phase 2. |
+| Browser metrics | resolved | web-receiver | Completed as P1-PROD-006. Real RTCStats.getStats() values wired. |
 
 ## Permanent (intentional) scaffolds
 
@@ -64,11 +65,10 @@ These never become production — they exist for testing and development. They a
 
 | Component | Repo / File | Purpose |
 |---|---|---|
-| Sine wave source | audio-core / examples/sine_to_wav | Phase 0 smoke test, latency measurement |
-| Synthetic source node | audio-core / pocketstation-nodes / src/source.rs | Registered `source.synthetic` NodeFactory; steady sine tone for graph smoke tests + latency/observability measurement |
-| Recording sink node | audio-core / pocketstation-nodes / src/sink.rs | Registered `sink.recording` NodeFactory; atomic frame/sample tally for offline verification + soak counting |
-| File output sink | audio-core / pocketstation-route | Test recording, offline verification |
-| In-memory token store | api-server | Phase 1 only; Phase 2+ uses real persistence |
+| Sine wave source | pocketstation / examples/sine_to_wav | Phase 0 smoke test, latency measurement |
+| Synthetic source node | pocketstation / pocketstation-nodes / src/source.rs | Registered `source.synthetic` NodeFactory; steady sine tone for graph smoke tests + latency/observability measurement |
+| File output sink | pocketstation / pocketstation-route | Test recording, offline verification |
+| In-memory token store | control-plane | Phase 1 only; Phase 2+ uses real persistence |
 
 ---
 

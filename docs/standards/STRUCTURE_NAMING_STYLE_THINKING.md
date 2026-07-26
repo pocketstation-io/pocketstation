@@ -241,7 +241,7 @@ ConnectionState
 LatencyStats
 ```
 
-Static web app file structure (no framework, see v2.3 §14.3 app-web-receiver):
+Static web app file structure (no framework, see v2.3 §14.3 web-receiver):
 
 ```
 src/
@@ -461,10 +461,10 @@ Dependency changes require explicit human approval. Document the approval in the
 
 Every file change belongs to the current phase.
 
-Phase 0 (`audio-core`) may touch:
+Phase 0 (`pocketstation`) may touch:
 
 ```
-audio-core code
+pocketstation code
 docs/standards
 docs/adr
 tests

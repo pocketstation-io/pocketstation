@@ -2,9 +2,9 @@ use pks_caps::{AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection,
 use pks_frame::SampleFormat;
 
 use pks_graph::node::{
-    ConfigError, ExecutionClass, NodeConfig, NodeDescriptor, NodeError, NodeKind, NodeTypeId,
-    PrepareContext,
+    ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext,
 };
+use pks_graph::partition::ExecutionPartition;
 use pks_graph::{NodeFactory, RuntimeNode};
 use pks_ml::{AudioWatermark, EchoCanceller, NoiseSuppressor, VadProcessor};
 
@@ -70,10 +70,9 @@ fn transform_descriptor(type_id: &str, display_name: &'static str) -> NodeDescri
     NodeDescriptor {
         type_id: NodeTypeId::from(type_id),
         display_name,
-        kind: NodeKind::Transform,
         inputs: vec![audio_port("in", PortDirection::Input)],
         outputs: vec![audio_port("out", PortDirection::Output)],
-        execution: ExecutionClass::RealtimeCpu,
+        execution: ExecutionPartition::RealtimeCpu,
         realtime_safe: true,
         stateful: true,
     }
