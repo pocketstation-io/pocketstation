@@ -1,5 +1,69 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W11 callback capture ownership contract — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; `pks-capture` now owns a platform-neutral
+  prepare/open/stop-and-join contract for callback-oriented capture.
+- A `CaptureOwner` retains the native backend, bounded captured-frame stream,
+  typed runtime-event channel, and their authoritative observations. Prepared
+  and active owners are distinct, and a prepared backend can open only once.
+- Dropping the owner reclaims the backend through its RAII contract; explicit
+  `stop_and_join` returns final observations. The existing pull-oriented
+  `PlatformAdapter` remains a documented legacy compatibility path.
+- Forty-eight package tests, strict clippy, and full CODE_PROTOCOL pass.
+- Target-specific macOS, Windows, and Linux adapters are not implemented yet,
+  so this component contract is not real-path Session evidence.
+- No live scaffold, mock, fallback, helper process, provider implementation, or
+  loopback-only product path was introduced. Contract doubles are test-only.
+
+## W11 immutable Session declaration foundation — 2026-07-26
+
+- Status: `PARTIAL`; `pks-session` now owns a safe Rust declaration/freeze
+  foundation, while runtime compilation, startup, endpoint ownership, stopping,
+  the C conformance surface, and real-path migration remain open W11 work.
+- `Session` builds one versioned `SessionSpec` from application/microphone
+  selectors, open `OperatorId` plus `NodeTypeId` endpoint descriptors,
+  configuration values, stems, endpoints, and routes. No closed
+  provider/model/policy enum entered the crate.
+- Freezing consumes the public Session builder and closes the shared draft
+  before validation. Cloned stem handles cannot mutate a frozen draft; foreign
+  endpoint handles fail immediately and create no route.
+- The specification exposes immutable slices and typed identifiers. It exports
+  no graph IR, runtime plan, pool, Tokio type, Rust trait object, provider
+  client, platform object, or raw foreign handle.
+- Six focused tests pass for distinct routes, foreign endpoints, cloned/stale
+  post-freeze mutation, invalid open operator identity, and fail-closed
+  unrouted stems. Focused strict Clippy and format pass.
+- This step adds no `run`, `start`, `Running`, stop, runtime-success,
+  `RuntimeNotIntegrated`, C ABI, mock, scaffold, fallback, or loopback-only
+  path.
+
+## W11 bounded multi-source runtime runner — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; this is a reusable runtime component, not a complete
+  Session or a real-path W11 acceptance artifact.
+- `RealtimePlanRunner` owns one prepared `RealtimePlanExecutor` and drains
+  independent preallocated source-input rings with bounded round-robin work.
+  It spawns no thread and publishes no Session lifecycle state.
+- `PlanRunnerCancellation` prevents new source delivery after cancellation.
+  Finalization uses an explicit `DrainQueued` or `DiscardQueued` policy, a
+  caller-supplied frame budget, and counted discard observations. The owning
+  Session must stop capture producers before final drain so no producer can
+  race terminal resource reclamation.
+- Each source input exposes capacity, current/peak depth, enqueue/delivery,
+  full/cancelled rejection, and shutdown-discard counts. A full source input
+  drops only its newest frame.
+- Focused tests prove two sources dispatch independently, cancellation drains
+  no more than its declared frame budget, remaining frames discard explicitly,
+  discard-only finalization executes no frame, and prepared runner processing
+  performs zero heap allocation.
+- Acceptance passes: scoped format, locked package check, all 40 runtime unit
+  tests plus three allocation tests, strict all-target `pks-runtime` Clippy,
+  and the full CODE_PROTOCOL gate.
+- No Session type, lifecycle authority, worker thread, capture implementation,
+  endpoint policy, provider path, scaffold, mock, fallback, or loopback-only
+  product behavior was introduced.
+
 ## W11 immutable frame-lineage envelope — 2026-07-26
 
 - Status: `PARTIAL`; `pks-frame` now provides exclusive and shared audio
