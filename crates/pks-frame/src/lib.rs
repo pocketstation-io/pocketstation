@@ -605,6 +605,104 @@ impl SharedAudioFrame {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+pub enum FrameLineageError {
+    #[error("frame source id does not match its lineage")]
+    SourceMismatch,
+    #[error("frame sequence number does not match its lineage")]
+    SequenceMismatch,
+    #[error("frame timestamp does not match its lineage")]
+    TimestampMismatch,
+}
+
+/// An exclusive audio frame and the immutable lineage snapshot captured before
+/// the frame crosses a bounded edge.
+///
+/// This envelope keeps dynamic source-generation, discontinuity, and
+/// permission epochs attached to the samples they describe. Construction is
+/// allocation-free and validates the fields duplicated by `AudioFrame`.
+#[derive(Debug)]
+pub struct LineagedAudioFrame {
+    frame: AudioFrame,
+    lineage: FrameLineage,
+}
+
+impl LineagedAudioFrame {
+    pub fn new(frame: AudioFrame, lineage: FrameLineage) -> Result<Self, FrameLineageError> {
+        validate_frame_lineage(&frame, lineage)?;
+        Ok(Self { frame, lineage })
+    }
+
+    pub const fn frame(&self) -> &AudioFrame {
+        &self.frame
+    }
+
+    pub const fn frame_mut(&mut self) -> &mut AudioFrame {
+        &mut self.frame
+    }
+
+    pub const fn lineage(&self) -> FrameLineage {
+        self.lineage
+    }
+
+    pub fn into_parts(self) -> (AudioFrame, FrameLineage) {
+        (self.frame, self.lineage)
+    }
+
+    pub fn freeze(self) -> Option<SharedLineagedAudioFrame> {
+        Some(SharedLineagedAudioFrame {
+            frame: self.frame.freeze()?,
+            lineage: self.lineage,
+        })
+    }
+}
+
+#[derive(Debug)]
+pub struct SharedLineagedAudioFrame {
+    frame: SharedAudioFrame,
+    lineage: FrameLineage,
+}
+
+impl SharedLineagedAudioFrame {
+    pub const fn frame(&self) -> &SharedAudioFrame {
+        &self.frame
+    }
+
+    pub const fn lineage(&self) -> FrameLineage {
+        self.lineage
+    }
+
+    pub fn try_clone(&self) -> Option<Self> {
+        Some(Self {
+            frame: self.frame.try_clone()?,
+            lineage: self.lineage,
+        })
+    }
+
+    pub fn copy_to_pool(&self, pool: &Arc<AudioBufferPool>) -> Option<LineagedAudioFrame> {
+        Some(LineagedAudioFrame {
+            frame: self.frame.copy_to_pool(pool)?,
+            lineage: self.lineage,
+        })
+    }
+}
+
+fn validate_frame_lineage(
+    frame: &AudioFrame,
+    lineage: FrameLineage,
+) -> Result<(), FrameLineageError> {
+    if frame.source_id != lineage.source_id {
+        return Err(FrameLineageError::SourceMismatch);
+    }
+    if frame.sequence_number != lineage.sequence_num {
+        return Err(FrameLineageError::SequenceMismatch);
+    }
+    if frame.timestamp_ns != lineage.timestamp_start_ns {
+        return Err(FrameLineageError::TimestampMismatch);
+    }
+    Ok(())
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EncodedCodec {
     Opus,    // RFC 6716 single Opus payload
@@ -945,6 +1043,64 @@ mod tests {
 
         // When / Then
         assert_eq!(lineage.timestamp_end_ns(), u64::MAX);
+    }
+
+    #[test]
+    fn given_matching_frame_and_lineage_when_frozen_then_epochs_survive_fanout() {
+        // Given
+        let pool = Arc::new(AudioBufferPool::new(2, 4));
+        let mut buffer = pool.acquire().unwrap();
+        buffer.copy_from_slice(&[0.1, 0.2, 0.3, 0.4]);
+        let frame = AudioFrame::new(StreamId(1), SourceId(2), 3, 4, 1, buffer);
+        let lineage = FrameLineage {
+            session_id: SessionId(5),
+            source_id: SourceId(2),
+            stem_id: StemId(6),
+            clock_id: ClockDomainId(7),
+            sequence_num: 3,
+            timestamp_start_ns: 4,
+            duration_ns: 80_000,
+            source_generation: 8,
+            discontinuity_epoch: 9,
+            permission_epoch: 10,
+        };
+
+        // When
+        let exclusive = LineagedAudioFrame::new(frame, lineage).unwrap();
+        let shared = exclusive.freeze().unwrap();
+        let second_delivery = shared.try_clone().unwrap();
+        let copied = second_delivery.copy_to_pool(&pool).unwrap();
+
+        // Then
+        assert_eq!(shared.lineage(), lineage);
+        assert_eq!(copied.lineage(), lineage);
+        assert_eq!(copied.frame().buffer.as_slice(), &[0.1, 0.2, 0.3, 0.4]);
+    }
+
+    #[test]
+    fn given_mismatched_dynamic_frame_identity_when_enveloped_then_rejected() {
+        // Given
+        let pool = AudioBufferPool::new(1, 4);
+        let buffer = pool.acquire().unwrap();
+        let frame = AudioFrame::new(StreamId(1), SourceId(2), 3, 4, 1, buffer);
+        let lineage = FrameLineage {
+            session_id: SessionId(5),
+            source_id: SourceId(99),
+            stem_id: StemId(6),
+            clock_id: ClockDomainId(7),
+            sequence_num: 3,
+            timestamp_start_ns: 4,
+            duration_ns: 80_000,
+            source_generation: 8,
+            discontinuity_epoch: 9,
+            permission_epoch: 10,
+        };
+
+        // When
+        let result = LineagedAudioFrame::new(frame, lineage);
+
+        // Then
+        assert!(matches!(result, Err(FrameLineageError::SourceMismatch)));
     }
 
     #[test]

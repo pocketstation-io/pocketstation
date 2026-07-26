@@ -1,5 +1,18 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W11 immutable frame-lineage envelope — 2026-07-26
+
+- Status: `PARTIAL`; `pks-frame` now provides exclusive and shared audio
+  envelopes that retain the frozen `FrameLineage` snapshot through bounded
+  fan-out and `CopyToBranchPool`.
+- Construction rejects source, sequence, or timestamp mismatches without
+  allocation. Dynamic source-generation, discontinuity, and permission epochs
+  therefore remain attached to the samples they describe.
+- The focused `pks-frame` tests and clippy gate pass. Runtime edge integration
+  is still required before this becomes real Session-path evidence.
+- No scaffold, mock, provider implementation, fallback, helper process, or
+  loopback-only path was introduced.
+
 ## W11 Session ownership correction — 2026-07-26
 
 - Status: `PARTIAL`; the safe engine and portable adapter ownership contracts
