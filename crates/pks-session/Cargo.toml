@@ -11,3 +11,6 @@ pks-capture = { path = "../pks-capture", version = "0.1.0" }
 pks-frame = { path = "../pks-frame", version = "0.1.0" }
 pks-graph = { path = "../pks-graph", version = "0.1.0" }
 thiserror.workspace = true
+
+[dev-dependencies]
+pks-caps = { path = "../pks-caps", version = "0.1.0" }

@@ -1256,6 +1256,7 @@ dependencies = [
 name = "pks-session"
 version = "0.1.0"
 dependencies = [
+ "pks-caps",
  "pks-capture",
  "pks-frame",
  "pks-graph",

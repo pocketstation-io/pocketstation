@@ -1,9 +1,13 @@
+mod compiler;
 mod draft;
 mod endpoint;
 mod error;
 mod selector;
 mod spec;
 
+pub use compiler::{
+    CompiledSession, OperatorRegistry, OperatorRegistryError, SessionCompileError, SessionCompiler,
+};
 pub use draft::{EndpointHandle, Session, StemHandle};
 pub use endpoint::{EndpointConfiguration, EndpointDescriptor, OperatorId};
 pub use error::SessionError;
