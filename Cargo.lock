@@ -1105,6 +1105,7 @@ dependencies = [
  "pks-nodes",
  "pks-pipeline",
  "pks-runtime",
+ "pks-session",
  "pks-timing",
  "serde",
  "serde_json",

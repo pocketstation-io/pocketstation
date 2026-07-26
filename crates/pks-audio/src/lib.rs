@@ -1,11 +1,7 @@
 pub mod ffi;
-mod session;
 
 pub use ffi::{pks_encode_opus, pks_opus_encoder_create, pks_opus_encoder_destroy, PksOpusEncoder};
-pub use session::{
-    ApplicationSelector, ConnectorHandle, ConnectorKey, DeviceId, DeviceSelector, EndpointHandle,
-    ProcessId, Session, SessionError, SessionState, Source, StemHandle, StopHandle,
-};
+pub use pks_session::*;
 
 pub use pks_codec::*;
 pub use pks_frame::*;

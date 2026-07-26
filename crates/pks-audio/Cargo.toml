@@ -38,6 +38,7 @@ pks-caps = { path = "../pks-caps", version = "0.1.0" }
 pks-timing = { path = "../pks-timing", version = "0.1.0" }
 pks-graph = { path = "../pks-graph", version = "0.1.0" }
 pks-runtime = { path = "../pks-runtime", version = "0.1.0" }
+pks-session = { path = "../pks-session", version = "0.1.0" }
 pks-nodes = { path = "../pks-nodes", version = "0.1.0" }
 pks-pipeline = { path = "../pks-pipeline", version = "0.1.0" }
 pks-codec = { path = "../pks-codec", version = "0.1.0" }

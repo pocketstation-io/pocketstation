@@ -1,5 +1,29 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W11 pks-audio canonical Session facade — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; `pks-audio` now re-exports the authoritative
+  `pks-session` surface instead of owning a second Session declaration,
+  lifecycle state machine, stop handle, and `RuntimeNotIntegrated` result.
+- A complete repository search found no internal consumer of the removed
+  `ConnectorKey`, `ConnectorHandle`, `SessionState`, or `StopHandle` surface,
+  so no speculative compatibility aliases remain. The removed implementation
+  and its self-tests were the only consumers.
+- The `product_quickstart` compile target now declares the application and
+  microphone stems with canonical fallible handles, routes them to open
+  connector, browser, and grouped recording boundaries, and calls
+  `SessionEngine::start` with host-owned capture backends. It does not construct
+  a no-op endpoint, select a provider, or move transport policy into the
+  facade.
+- A focused facade test proves `pks_audio::Session` and
+  `pks_audio::SessionEngine` are the exact canonical types. All ten
+  `pks-audio` unit tests, its allocation test, pipeline integration test,
+  facade test, all 40 `pks-session` tests, strict all-target Clippy,
+  architecture constraints, the full CODE_PROTOCOL gate, and the release
+  quickstart build pass.
+- No scaffold, mock product path, fallback, helper process, provider
+  implementation, or loopback-only behavior was introduced.
+
 ## W11 canonical Session engine bootstrap — 2026-07-26
 
 - Status: `SAFE-TO-TEST`; `SessionEngineBuilder` now installs the fixed
