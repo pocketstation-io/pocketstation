@@ -1,5 +1,39 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W11 canonical Session engine bootstrap — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; `SessionEngineBuilder` now installs the fixed
+  structural node set once, validates open operator-to-node registrations, and
+  consumes all setup state before constructing the paired operator and
+  endpoint-driver registries. A failed registration or build cannot expose a
+  partially usable engine.
+- `SessionEngine::start` is the one reusable setup-time composition path from
+  a public `Session` declaration to the existing freeze, graph compile,
+  bounded runtime preparation, and transactional start owners. Freeze,
+  compile, prepare, and start failures remain separate typed variants;
+  `SessionStartFailure` remains available with its rollback failures and event
+  receiver instead of being converted to text.
+- Concrete callback capture backends and endpoint-driver factories remain
+  injected through the existing `pks-capture` and `pks-endpoint` contracts.
+  No platform capture, relay, recorder, connector, provider, artifact, or
+  proof-policy implementation moved into `pks-session`.
+- Four focused engine tests prove the complete application plus microphone
+  declaration with connector, browser, and grouped recording boundaries
+  reaches `Running`, all five prepared endpoint instances start behind the
+  closed Session gate, repeated stop is idempotent, duplicate and conflicting
+  registrations fail typed, unknown operators remain compile failures, and a
+  capture-open failure preserves the transactional start error.
+- All 40 `pks-session` tests, strict all-target Clippy, workspace formatting,
+  architecture constraints, the full CODE_PROTOCOL gate, and the release
+  `product_quickstart` example build pass. The initial architecture acceptance
+  command in the execution envelope named a nonexistent legacy path; execution
+  stopped, the envelope was corrected to the CI-authoritative
+  `scripts/lint/check-architecture-constraints.sh`, and the corrected gate
+  passed.
+- No scaffold, mock product path, fallback, helper process, provider
+  implementation, or loopback-only behavior was introduced. Test-only capture
+  and endpoint contract doubles remain under `cfg(test)`.
+
 ## W11 local CI correction and candidate gate — 2026-07-26
 
 - Status: `SAFE-TO-TEST`; GitHub PR #43 remains unmerged and must not be

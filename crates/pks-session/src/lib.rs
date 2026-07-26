@@ -1,6 +1,9 @@
 mod compiler;
 mod draft;
 mod endpoint;
+mod engine;
+#[cfg(test)]
+mod engine_tests;
 mod error;
 mod events;
 mod observations;
@@ -20,6 +23,10 @@ pub use compiler::{
 };
 pub use draft::{EndpointHandle, Session, StemHandle};
 pub use endpoint::{EndpointConfiguration, EndpointDescriptor, OperatorId};
+pub use engine::{
+    SessionEngine, SessionEngineBuildError, SessionEngineBuilder, SessionEngineRegistrationError,
+    SessionEngineStartError,
+};
 pub use error::SessionError;
 pub use events::{
     SessionComponentId, SessionControlFailure, SessionEndpointFailure, SessionEvent,
