@@ -301,6 +301,15 @@ fn source_node_config(session_id: SessionId, stem: &StemSpec) -> NodeConfig {
                 .with("selector_kind", "process_id")
                 .with("selector_value", &process_id.get().to_string());
         }
+        Source::Application(ApplicationSelector::ProcessInstance {
+            process_id,
+            stable_id,
+        }) => {
+            config = config
+                .with("selector_kind", "process_instance")
+                .with("selector_process_id", &process_id.get().to_string())
+                .with("selector_stable_id", &stable_id.stable_key);
+        }
         Source::Application(ApplicationSelector::StableId(source_id)) => {
             config = config
                 .with("selector_kind", "stable_id")
@@ -346,104 +355,15 @@ pub(crate) fn endpoint_node_config(
 
 #[cfg(test)]
 mod tests {
-    use std::sync::Arc;
-
-    use pks_caps::{AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec};
-    use pks_frame::SampleFormat;
-    use pks_graph::{
-        ConfigError, ExecutionPartition, NodeDescriptor, NodeError, NodeFactory, PrepareContext,
-        RuntimeNode,
-    };
-
     use super::*;
-    use crate::{EndpointConfiguration, Session};
+    use crate::{register_session_structural_nodes, EndpointConfiguration, Session};
 
     const TEST_CONNECTOR_OPERATOR_ID: &str = "example.connector.streaming-stt.v1";
 
-    struct CompileOnlyFactory {
-        descriptor: NodeDescriptor,
-    }
-
-    impl NodeFactory for CompileOnlyFactory {
-        fn descriptor(&self) -> NodeDescriptor {
-            self.descriptor.clone()
-        }
-
-        fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
-            Ok(())
-        }
-
-        fn instantiate(
-            &self,
-            _context: &PrepareContext,
-            _config: &NodeConfig,
-        ) -> Result<Box<dyn RuntimeNode>, NodeError> {
-            Err(NodeError::Prepare(
-                "compile-only test descriptor cannot execute".to_owned(),
-            ))
-        }
-    }
-
-    fn audio_port(name: &str, direction: PortDirection) -> PortSpec {
-        PortSpec {
-            name: name.to_owned(),
-            direction,
-            media: MediaCaps::Audio(AudioCaps {
-                sample_rate_hz: Some(48_000),
-                frame_samples: Some(960),
-                channel_layout: ChannelLayout::Mono,
-                format: SampleFormat::F32Interleaved,
-            }),
-            multiplicity: Multiplicity::One,
-            required: true,
-        }
-    }
-
-    fn source_descriptor(node_type_id: &'static str) -> NodeDescriptor {
-        NodeDescriptor {
-            type_id: NodeTypeId::from(node_type_id),
-            display_name: "Test source descriptor",
-            inputs: Vec::new(),
-            outputs: vec![audio_port(AUDIO_OUTPUT_PORT, PortDirection::Output)],
-            execution: ExecutionPartition::RealtimeCpu,
-            realtime_safe: true,
-            stateful: true,
-        }
-    }
-
-    fn endpoint_descriptor(node_type_id: &'static str) -> NodeDescriptor {
-        NodeDescriptor {
-            type_id: NodeTypeId::from(node_type_id),
-            display_name: "Test endpoint descriptor",
-            inputs: vec![audio_port(AUDIO_INPUT_PORT, PortDirection::Input)],
-            outputs: Vec::new(),
-            execution: ExecutionPartition::AsyncWorker,
-            realtime_safe: false,
-            stateful: true,
-        }
-    }
-
-    fn register_descriptor(registry: &mut NodeRegistry, descriptor: NodeDescriptor) {
-        registry.register(Arc::new(CompileOnlyFactory { descriptor }));
-    }
-
     fn registries() -> (NodeRegistry, OperatorRegistry) {
         let mut node_registry = NodeRegistry::new();
-        register_descriptor(
-            &mut node_registry,
-            source_descriptor(APPLICATION_SOURCE_NODE_TYPE_ID),
-        );
-        register_descriptor(
-            &mut node_registry,
-            source_descriptor(MICROPHONE_SOURCE_NODE_TYPE_ID),
-        );
-        for node_type_id in [
-            CONNECTOR_NODE_TYPE_ID,
-            BROWSER_NODE_TYPE_ID,
-            RECORDER_NODE_TYPE_ID,
-        ] {
-            register_descriptor(&mut node_registry, endpoint_descriptor(node_type_id));
-        }
+        register_session_structural_nodes(&mut node_registry)
+            .expect("Session structural registrations");
 
         let mut operator_registry = OperatorRegistry::new();
         operator_registry
@@ -580,19 +500,32 @@ mod tests {
     }
 
     #[test]
-    fn given_compile_only_descriptor_when_instantiated_then_execution_fails_visibly() {
-        let factory = CompileOnlyFactory {
-            descriptor: endpoint_descriptor(CONNECTOR_NODE_TYPE_ID),
-        };
-        let result = factory.instantiate(
-            &PrepareContext::new(pks_frame::SampleSpec::new(
-                48_000,
-                1,
-                SampleFormat::F32Interleaved,
-            )),
-            &NodeConfig::new(),
+    fn given_exact_process_instance_when_lowered_then_pid_and_stable_id_are_preserved() {
+        let stable_id = pks_capture::StableSourceId::new(
+            pks_frame::Platform::Windows,
+            pks_capture::SourceKind::Application,
+            "wasapi:pid:42:creation-100ns:133801234567890000",
         );
+        let session = Session::new();
+        let stem = session
+            .capture(Source::application(ApplicationSelector::process_instance(
+                crate::ProcessId::new(42),
+                stable_id,
+            )))
+            .expect("exact process-instance declaration");
+        let browser = session
+            .browser("wss://receiver.example.test")
+            .expect("browser declaration");
+        stem.send(browser).expect("browser route");
+        let spec = session.freeze().expect("exact process-instance spec");
+        let config = source_node_config(spec.session_id(), &spec.stems()[0]);
 
-        assert!(matches!(result, Err(NodeError::Prepare(_))));
+        assert_eq!(config.get("selector_kind"), Some("process_instance"));
+        assert_eq!(config.get("selector_process_id"), Some("42"));
+        assert_eq!(
+            config.get("selector_stable_id"),
+            Some("wasapi:pid:42:creation-100ns:133801234567890000")
+        );
+        assert_eq!(config.get("selector_value"), None);
     }
 }

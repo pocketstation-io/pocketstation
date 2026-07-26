@@ -10,6 +10,7 @@ mod running_tests;
 mod runtime_prepare;
 mod selector;
 mod spec;
+mod structural_nodes;
 
 pub use compiler::{
     CompiledSession, OperatorRegistry, OperatorRegistryError, SessionCompileError, SessionCompiler,
@@ -38,6 +39,9 @@ pub use runtime_prepare::{
 pub use selector::{ApplicationSelector, DeviceId, DeviceSelector, ProcessId, Source};
 pub use spec::{
     EndpointSpec, RouteSpec, SessionSpec, SessionSpecVersion, StemSpec, SESSION_SPEC_VERSION,
+};
+pub use structural_nodes::{
+    register_session_structural_nodes, SessionStructuralNodeRegistrationError,
 };
 
 pub use pks_frame::{ConnectorId, EndpointId, RouteId, SessionId, StemId};

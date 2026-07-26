@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt;
 use std::sync::Arc;
 
 use pks_caps::{EdgeContract, PortSpec};
@@ -12,6 +13,12 @@ pub struct NodeTypeId(Arc<str>);
 impl NodeTypeId {
     pub fn as_str(&self) -> &str {
         &self.0
+    }
+}
+
+impl fmt::Display for NodeTypeId {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter.write_str(self.as_str())
     }
 }
 
@@ -63,6 +70,10 @@ pub enum NodeError {
     Prepare(String),
     #[error("node process failed: {0}")]
     Process(String),
+    #[error(
+        "external boundary node type '{node_type_id}' must execute through its endpoint driver"
+    )]
+    ExternalBoundaryExecution { node_type_id: NodeTypeId },
     #[error(transparent)]
     Config(#[from] ConfigError),
 }

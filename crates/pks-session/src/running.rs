@@ -817,6 +817,13 @@ fn capture_mode(source: &Source) -> CaptureMode {
         Source::Application(ApplicationSelector::ProcessId(process_id)) => {
             CaptureMode::Process(process_id.get())
         }
+        Source::Application(ApplicationSelector::ProcessInstance {
+            process_id,
+            stable_id,
+        }) => CaptureMode::ExactApplication {
+            process_id: process_id.get(),
+            stable_id: stable_id.clone(),
+        },
         Source::Application(ApplicationSelector::StableId(stable_id)) => {
             CaptureMode::ExactApplicationStable {
                 stable_id: stable_id.clone(),
@@ -1258,5 +1265,35 @@ fn complete_start_failure(
         error,
         event_receiver: Some(event_receiver),
         rollback_failures: rollback_failures.into_boxed_slice(),
+    }
+}
+
+#[cfg(test)]
+mod selector_tests {
+    use pks_capture::{CaptureMode, SourceKind, StableSourceId};
+    use pks_frame::Platform;
+
+    use super::capture_mode;
+    use crate::{ApplicationSelector, ProcessId, Source};
+
+    #[test]
+    fn given_process_instance_selector_when_capture_mode_built_then_exact_identity_is_preserved() {
+        let stable_id = StableSourceId::new(
+            Platform::Windows,
+            SourceKind::Application,
+            "wasapi:pid:42:creation-100ns:133801234567890000",
+        );
+        let source = Source::application(ApplicationSelector::process_instance(
+            ProcessId::new(42),
+            stable_id.clone(),
+        ));
+
+        assert_eq!(
+            capture_mode(&source),
+            CaptureMode::ExactApplication {
+                process_id: 42,
+                stable_id,
+            }
+        );
     }
 }

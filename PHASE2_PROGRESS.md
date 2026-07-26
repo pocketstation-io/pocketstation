@@ -1,5 +1,31 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W11 reusable Session structural node registration — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; `pks-session::register_session_structural_nodes`
+  installs the fixed application/microphone ingress and
+  connector/browser/recording boundary descriptors required by the canonical
+  Session compiler and runtime. CLI and SDK adapters no longer need to
+  recreate compile-only placeholder factories.
+- Application and microphone structural nodes are real allocation-free
+  realtime ingress forwarders. Their configuration validation requires exact
+  Session/stem identity plus a selector form valid for that source kind,
+  including Windows process-instance PID and stable identity fields.
+- External destination descriptors remain `AsyncWorker` boundaries. Their
+  factories validate route and endpoint metadata, but any accidental
+  `RuntimeNode` instantiation returns the dedicated typed
+  `ExternalBoundaryExecution` error. Connector, relay/browser, and recording
+  work remains in `EndpointDriverFactory` implementations; no no-op endpoint
+  can report success.
+- Registration preflights all five stable node type IDs before mutation and
+  returns a typed duplicate error without partially changing the registry.
+  Compiler tests now consume the production registration seam instead of local
+  compile-only factories.
+- All 36 `pks-session` tests pass. Strict all-target Clippy for `pks-session`
+  and `pks-graph` and workspace formatting pass.
+- No provider implementation, relay algorithm, product policy, scaffold,
+  mock, fallback, helper process, or loopback-only path was introduced.
+
 ## W11 endpoint-driver lifecycle contract — 2026-07-26
 
 - Status: `SAFE-TO-TEST`; the new acyclic `pks-endpoint` crate owns the open
@@ -1099,3 +1125,25 @@
   C adapter, provider implementation, mock product path, fallback, helper
   process, or new loopback-only path was introduced. Those remain later W11
   gates.
+
+## W11 exact application process-instance declaration — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; the Session declaration now has an explicit
+  `ApplicationSelector::ProcessInstance` form that retains both the selected
+  process ID and the discovered stable application identity.
+- Compilation preserves the two values as separate typed source-node
+  configuration fields. Session startup lowers only this strong form to
+  `CaptureMode::ExactApplication`; it is never weakened to the legacy bare
+  `Process` or name-based modes.
+- The existing `ProcessId` selector remains explicitly process-lifetime scoped.
+  The existing stable-application selector remains stable-identity scoped.
+  Linux and macOS capture-mode behavior is unchanged; the Windows backend
+  continues to parse the stable process-incarnation fingerprint and verify the
+  PID plus creation time before and after WASAPI activation.
+- Focused tests prove compiled-configuration and runtime-mode preservation.
+  `cargo test -p pks-session -p pks-capture --locked` passes 36 and 50 tests,
+  strict focused Clippy passes, and both `pks-session` and
+  `pks-capture-windows` cross-check for `aarch64-pc-windows-msvc`. The full
+  108-file CODE_PROTOCOL gate passes.
+- No fallback, mock, scaffold, provider integration, CLI/SDK behavior, capture
+  hot-path work, or loopback-only product claim was introduced.

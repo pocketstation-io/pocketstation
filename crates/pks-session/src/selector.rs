@@ -32,6 +32,10 @@ impl DeviceId {
 pub enum ApplicationSelector {
     BundleId(String),
     ProcessId(ProcessId),
+    ProcessInstance {
+        process_id: ProcessId,
+        stable_id: StableSourceId,
+    },
     StableId(StableSourceId),
     Name(String),
 }
@@ -43,6 +47,13 @@ impl ApplicationSelector {
 
     pub const fn process_id(process_id: ProcessId) -> Self {
         Self::ProcessId(process_id)
+    }
+
+    pub fn process_instance(process_id: ProcessId, stable_id: StableSourceId) -> Self {
+        Self::ProcessInstance {
+            process_id,
+            stable_id,
+        }
     }
 
     pub fn stable_id(source_id: StableSourceId) -> Self {
@@ -65,12 +76,21 @@ impl ApplicationSelector {
                     reason: "application process id must be non-zero".to_owned(),
                 })
             }
-            Self::StableId(source_id) if source_id.kind != SourceKind::Application => {
+            Self::ProcessInstance { process_id, .. } if process_id.get() == 0 => {
+                Err(SessionError::InvalidSelector {
+                    reason: "application process instance id must be non-zero".to_owned(),
+                })
+            }
+            Self::ProcessInstance { stable_id, .. } | Self::StableId(stable_id)
+                if stable_id.kind != SourceKind::Application =>
+            {
                 Err(SessionError::InvalidSelector {
                     reason: "application stable id must identify an application".to_owned(),
                 })
             }
-            Self::StableId(source_id) if source_id.stable_key.trim().is_empty() => {
+            Self::ProcessInstance { stable_id, .. } | Self::StableId(stable_id)
+                if stable_id.stable_key.trim().is_empty() =>
+            {
                 Err(SessionError::InvalidSelector {
                     reason: "application stable id cannot be empty".to_owned(),
                 })
@@ -134,5 +154,61 @@ impl Source {
             Self::Application(selector) => selector.validate(),
             Self::Microphone(selector) => selector.validate(),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use pks_capture::{SourceKind, StableSourceId};
+    use pks_frame::Platform;
+
+    use super::{ApplicationSelector, ProcessId};
+    use crate::SessionError;
+
+    #[test]
+    fn given_zero_pid_when_process_instance_validated_then_selector_is_rejected() {
+        let selector = ApplicationSelector::process_instance(
+            ProcessId::new(0),
+            StableSourceId::new(
+                Platform::Windows,
+                SourceKind::Application,
+                "wasapi:pid:0:creation-100ns:133801234567890000",
+            ),
+        );
+
+        assert!(matches!(
+            selector.validate(),
+            Err(SessionError::InvalidSelector { .. })
+        ));
+    }
+
+    #[test]
+    fn given_non_application_identity_when_process_instance_validated_then_selector_is_rejected() {
+        let selector = ApplicationSelector::process_instance(
+            ProcessId::new(42),
+            StableSourceId::new(
+                Platform::Windows,
+                SourceKind::InputDevice,
+                "wasapi:pid:42:creation-100ns:133801234567890000",
+            ),
+        );
+
+        assert!(matches!(
+            selector.validate(),
+            Err(SessionError::InvalidSelector { .. })
+        ));
+    }
+
+    #[test]
+    fn given_empty_stable_key_when_process_instance_validated_then_selector_is_rejected() {
+        let selector = ApplicationSelector::process_instance(
+            ProcessId::new(42),
+            StableSourceId::new(Platform::Windows, SourceKind::Application, " "),
+        );
+
+        assert!(matches!(
+            selector.validate(),
+            Err(SessionError::InvalidSelector { .. })
+        ));
     }
 }

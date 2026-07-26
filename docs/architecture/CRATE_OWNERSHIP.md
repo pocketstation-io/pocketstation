@@ -77,7 +77,7 @@ by the lower layers without redefining them.
 
 | Crate | Owns | Must NOT own |
 |---|---|---|
-| `pks-session` | Safe Rust `SessionSpec`, public selectors/descriptors, declaration freeze, exact-source resolution orchestration, transactional startup/rollback, ownership of a running Session's capture/runtime/endpoint resources, cancellation, drain/join/finalization coordination, safe event/metric projections, and stable semantic errors | Graph compilation algorithms, plan scheduling/routing algorithms, buffer-pool implementation, native capture implementation, codec or recorder implementation, provider connectors, C ABI records/handle tables, language-SDK ergonomics, UI, or process-helper IPC |
+| `pks-session` | Safe Rust `SessionSpec`, public selectors/descriptors, declaration freeze, fixed Session source/external-boundary structural node registration, exact-source resolution orchestration, transactional startup/rollback, ownership of a running Session's capture/runtime/endpoint resources, cancellation, drain/join/finalization coordination, safe event/metric projections, and stable semantic errors | Graph compilation algorithms, plan scheduling/routing algorithms, buffer-pool implementation, native capture implementation, codec or recorder implementation, provider connectors, C ABI records/handle tables, language-SDK ergonomics, UI, or process-helper IPC |
 | `pks-session-c` | Versioned C records and status codes, ABI/capability negotiation, engine-scoped generational foreign handles, marshalling, bounded event/metric polling, bounded immutable audio-batch leases, panic containment, reproducible headers, and C conformance fixtures | Session lifecycle semantics, graph/runtime algorithms, capture or endpoint implementations, provider code, language-owned APIs, or a second scheduler |
 
 `pks-session-c` depends on `pks-session`; `pks-session` never depends on the
@@ -86,6 +86,13 @@ adapter. Python and Node may use direct PyO3 and Node-API adapters over
 projection or platform/generated wrappers. Every adapter preserves one Session
 engine and the same lifecycle, error, backpressure, lineage, and observation
 semantics.
+
+The fixed Session node registration is structural only. Application and
+microphone ingress nodes forward capture-owned frames through the compiled
+realtime plan. Connector, browser, and recording descriptors define external
+worker boundaries; their `RuntimeNode` instantiation fails with a typed
+external-boundary error. Concrete work and finalization remain exclusively in
+registered `EndpointDriverFactory` implementations.
 
 The embedded-versus-helper decision and portable ABI constraints are binding in
 [AUDIO-029](../adr/AUDIO-029-embedded-session-engine-boundary.md).
