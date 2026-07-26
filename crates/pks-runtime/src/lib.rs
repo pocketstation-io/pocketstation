@@ -11,6 +11,7 @@ pub mod edge_channel;
 pub mod executor;
 pub mod plan_executor;
 pub mod plan_router;
+pub mod plan_runner;
 pub mod scheduler;
 pub mod shared_edge_channel;
 
@@ -21,6 +22,11 @@ pub use plan_executor::{PlanExecutionSummary, RealtimePlanExecutor};
 pub use plan_router::{
     DispatchSummary, EdgeObservations, PlanEdgeFrame, PlanEdgeReceiver, PlanEdgeRouter,
     PlanRouterError,
+};
+pub use plan_runner::{
+    plan_source_channel, PlanRunnerCancellation, PlanRunnerDrainPolicy, PlanRunnerError,
+    PlanRunnerFinishSummary, PlanRunnerStepSummary, PlanSourceInput, PlanSourceInputObservations,
+    PlanSourceSendError, PlanSourceSender, RealtimePlanRunner,
 };
 pub use scheduler::PlanScheduler;
 pub use shared_edge_channel::{
