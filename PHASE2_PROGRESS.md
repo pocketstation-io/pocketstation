@@ -1,5 +1,41 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W11 bounded application-polled audio endpoint — 2026-07-26
+
+- Status: `SAFE-TO-TEST`; `pks-nodes` now owns a concrete external endpoint
+  worker that consumes the canonical compiled `PlanEdgeReceiver` path and
+  publishes immutable audio through fixed-capacity queues and preallocated
+  batch-lease ownership. `pks-session` exposes only the safe composition and
+  receipt projection needed by later language adapters.
+- The worker accepts only `LineagedAudioFrame` values delivered as
+  `PlanEdgeFrame::LineagedExclusive`. Raw exclusive, shared-reference, and
+  shared-lineaged variants fail closed and increment explicit ownership-drop
+  and endpoint-failure observations. This makes branch-copy plus lineage a
+  stored type invariant rather than a getter assertion.
+- One factory supports independent application and microphone endpoints.
+  Every leased frame retains Session, source, stem, clock, sequence,
+  timestamp, permission, endpoint, connector, and route identity. Samples
+  remain pool-owned and stable until the bounded lease is dropped.
+- Endpoint workers perform only bounded receiver pops, SPSC pushes, and atomic
+  observations per frame. Queue saturation drops the newest branch copy and
+  counts it. Queue depth is reserved before publication, checked on dequeue,
+  bounded under concurrent publish/poll, and reports any impossible underflow
+  without wrapping. Untrusted queue, batch, and lease capacities are capped
+  before allocation. Foreign polling and lease recycling may lock only on the
+  control thread; capture callbacks and realtime routing never call foreign
+  code, allocate, lock, block, or log.
+- A deterministic capture test proves the real
+  `CaptureDelivery → RunningSession → compiled runtime → endpoint worker →
+  receipt` path for the required application-plus-microphone topology. Focused
+  tests also prove all invalid ownership variants are counted, a held lease
+  preserves sample address and data through Session stop, and exhausted lease
+  capacity returns a typed result and observation.
+- All 52 `pks-nodes` tests and 44 `pks-session` tests pass, as does strict
+  all-target Clippy for both packages. No adapter-local injection queue,
+  provider implementation, production mock, fallback, hidden scaffold, or
+  loopback-only product claim remains in this step. The versioned C projection
+  and non-Rust conformance harness remain the next gated W11 task.
+
 ## W11 source-failure branch isolation — 2026-07-26
 
 - Status: `SAFE-TO-TEST`; the canonical Session runtime now stops and
@@ -442,9 +478,11 @@
   retains scheduling, execution, routing, and runtime observations;
   `pks-frame` retains pools and frames; native capture and endpoint
   implementations remain in their existing smallest owners.
-- `pks-session-c` is the sibling stable C projection. It owns ABI records,
-  generational handles, marshalling, polling, leases, panic containment,
-  reproducible headers, and C conformance. It does not own Session semantics.
+- The portable Session C projection remains a separate pending adapter task. It
+  does not exist as a checked-in crate today; when introduced it owns ABI
+  records, generational handles, marshalling, polling, leases, panic
+  containment, reproducible headers, and C conformance. It does not own
+  Session semantics.
 - Rust uses the future `pocketstation` façade directly over `pks-session`.
   Python and Node may use direct PyO3 and Node-API adapters. Swift and Kotlin
   may use language-owned adapters over the C/control boundary and setup-time

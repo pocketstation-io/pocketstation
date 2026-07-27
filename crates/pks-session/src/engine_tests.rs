@@ -1,5 +1,6 @@
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
+use std::time::{Duration, Instant};
 
 use pks_capture::{
     ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode,
@@ -10,12 +11,13 @@ use pks_endpoint::{
     EndpointDriverInput, EndpointDriverObservations, EndpointFailure, EndpointStartGate,
     PreparedEndpointDriver, RunningEndpointDriver,
 };
-use pks_frame::{SampleFormat, SampleSpec};
+use pks_frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId};
 use pks_graph::{NodeTypeId, PrepareContext};
 
 use crate::{
     ApplicationSelector, CaptureBackendSet, DeviceSelector, EndpointConfiguration, OperatorId,
-    Session, SessionCompileError, SessionEngineBuilder, SessionEngineRegistrationError,
+    PolledAudioEndpoint, PolledAudioEndpointConfig, PolledAudioPollError, Session,
+    SessionCompileError, SessionEngineBuilder, SessionEngineRegistrationError,
     SessionEngineStartError, SessionStartError, SessionStartOptions, Source, BROWSER_NODE_TYPE_ID,
     BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID,
 };
@@ -32,6 +34,10 @@ struct TestPreparedCapture {
 }
 
 struct TestActiveCapture;
+
+struct DeliveringCaptureBackend;
+
+struct DeliveringPreparedCapture;
 
 impl CallbackCaptureBackend for TestCaptureBackend {
     fn prepare(&self, _mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {
@@ -63,6 +69,26 @@ impl ActiveCaptureBackend for TestActiveCapture {
 
     fn stop_and_join(self: Box<Self>) -> Result<CaptureObservations, CaptureError> {
         Ok(CaptureObservations::default())
+    }
+}
+
+impl CallbackCaptureBackend for DeliveringCaptureBackend {
+    fn prepare(&self, _mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {
+        Ok(Box::new(DeliveringPreparedCapture))
+    }
+}
+
+impl PreparedCaptureBackend for DeliveringPreparedCapture {
+    fn open(
+        self: Box<Self>,
+        mut delivery: CaptureDelivery,
+    ) -> Result<Box<dyn ActiveCaptureBackend>, CaptureError> {
+        let pool = AudioBufferPool::new(1, 4);
+        let mut buffer = pool.acquire().expect("deterministic capture buffer");
+        buffer.copy_from_slice(&[0.125, 0.25, 0.5, 1.0]);
+        let frame = AudioFrame::new(StreamId(11), SourceId(12), 13, 14, 1, buffer);
+        let _ = delivery.frame_sender.try_send(frame);
+        Ok(Box::new(TestActiveCapture))
     }
 }
 
@@ -242,6 +268,137 @@ fn given_product_plan_when_prepared_then_stem_media_is_preserved() {
     assert_eq!(control.mono_inputs_total.load(Ordering::Relaxed), 3);
     assert!(running.stop().is_success());
     assert!(running.stop().is_success());
+}
+
+#[test]
+fn given_separated_engine_stages_when_started_then_canonical_owners_are_preserved() {
+    let control = Arc::new(TestEndpointControl::default());
+    let mut builder =
+        SessionEngineBuilder::new(prepare_context(), 8, SessionStartOptions::default())
+            .expect("engine builder");
+    for (operator_id, node_type_id) in [
+        (CONNECTOR_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID),
+        (BROWSER_OPERATOR_ID, BROWSER_NODE_TYPE_ID),
+        (RECORDER_OPERATOR_ID, RECORDER_NODE_TYPE_ID),
+    ] {
+        builder
+            .register_endpoint_driver(
+                OperatorId::new(operator_id),
+                NodeTypeId::from(node_type_id),
+                endpoint_factory(&control),
+            )
+            .expect("endpoint registration");
+    }
+    let engine = builder.build().expect("engine build");
+    let compiled = engine.compile(product_session()).expect("Session compile");
+    let capture = TestCaptureBackend::default();
+    let mut running = engine
+        .start_compiled(
+            compiled,
+            CaptureBackendSet {
+                application: &capture,
+                microphone: &capture,
+            },
+        )
+        .expect("prepared Session start");
+
+    assert!(running.stop().is_success());
+}
+
+#[test]
+fn given_deterministic_capture_when_polled_then_real_runtime_branch_copy_and_lineage_are_exposed() {
+    let endpoint = PolledAudioEndpoint::new(PolledAudioEndpointConfig {
+        queue_capacity_frames: 4,
+        max_batch_frames: 2,
+        max_outstanding_leases: 2,
+    })
+    .expect("polled endpoint");
+    let receipt = endpoint.receipt();
+    let mut builder =
+        SessionEngineBuilder::new(prepare_context(), 4, SessionStartOptions::default())
+            .expect("engine builder");
+    builder
+        .register_polled_audio_endpoint(&endpoint)
+        .expect("polled endpoint registration");
+    let engine = builder.build().expect("engine build");
+
+    let session = Session::new();
+    let session_id = session.id();
+    let application = session
+        .capture(Source::application(ApplicationSelector::name(
+            "deterministic application",
+        )))
+        .expect("application declaration");
+    let microphone = session
+        .capture(Source::microphone(DeviceSelector::default()))
+        .expect("microphone declaration");
+    let application_output = session
+        .polled_audio()
+        .expect("application output declaration");
+    let microphone_output = session
+        .polled_audio()
+        .expect("microphone output declaration");
+    let application_route = application
+        .send(application_output)
+        .expect("application polled route");
+    let microphone_route = microphone
+        .send(microphone_output)
+        .expect("microphone polled route");
+    let capture = DeliveringCaptureBackend;
+    let mut running = engine
+        .start(
+            session,
+            CaptureBackendSet {
+                application: &capture,
+                microphone: &capture,
+            },
+        )
+        .expect("canonical Session start");
+
+    let deadline = Instant::now() + Duration::from_secs(2);
+    let lease = loop {
+        match receipt.try_poll() {
+            Ok(lease) => break lease,
+            Err(PolledAudioPollError::Empty) if Instant::now() < deadline => {
+                std::thread::sleep(Duration::from_millis(1));
+            }
+            Err(error) => panic!("polled endpoint did not receive capture: {error}"),
+        }
+    };
+    let frame = lease.frame(0).expect("captured frame");
+    let samples_pointer = frame.samples().as_ptr();
+    assert_eq!(frame.samples(), &[0.125, 0.25, 0.5, 1.0]);
+    assert_eq!(frame.lineage().session_id, session_id);
+    if frame.lineage().stem_id == application.id() {
+        assert_eq!(frame.endpoint_id(), application_output.id());
+        assert_eq!(
+            frame.connector_id(),
+            application_output
+                .connector_id()
+                .expect("connector identity")
+        );
+        assert_eq!(frame.route_id(), application_route);
+    } else {
+        assert_eq!(frame.lineage().stem_id, microphone.id());
+        assert_eq!(frame.endpoint_id(), microphone_output.id());
+        assert_eq!(
+            frame.connector_id(),
+            microphone_output
+                .connector_id()
+                .expect("connector identity")
+        );
+        assert_eq!(frame.route_id(), microphone_route);
+    }
+    assert_eq!(frame.lineage().source_id, SourceId(12));
+    assert_eq!(frame.lineage().sequence_num, 13);
+    assert_eq!(frame.lineage().timestamp_start_ns, 14);
+    assert_eq!(receipt.observations().invalid_ownership_drops_total, 0);
+
+    assert!(running.stop().is_success());
+    assert_eq!(frame.samples().as_ptr(), samples_pointer);
+    assert_eq!(frame.samples(), &[0.125, 0.25, 0.5, 1.0]);
+    drop(lease);
+    assert_eq!(receipt.observations().outstanding_leases, 0);
 }
 
 #[test]

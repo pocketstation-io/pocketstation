@@ -1276,6 +1276,7 @@ dependencies = [
  "pks-endpoint",
  "pks-frame",
  "pks-graph",
+ "pks-nodes",
  "pks-runtime",
  "thiserror 1.0.69",
 ]

@@ -4,6 +4,7 @@
 //! can instantiate concrete nodes.
 
 mod bridge_sink;
+mod foreign_audio_endpoint;
 mod mic_source;
 mod mix;
 mod ml_nodes;
@@ -17,6 +18,11 @@ use std::sync::Arc;
 use pks_graph::{register_builtins, NodeRegistry};
 
 pub use bridge_sink::{BridgeSinkFactory, BridgeSinkNode, BridgeSinkTelemetry};
+pub use foreign_audio_endpoint::{
+    PolledAudioBatchLease, PolledAudioEndpointConfig, PolledAudioEndpointConfigError,
+    PolledAudioEndpointFactory, PolledAudioFrame, PolledAudioObservations, PolledAudioPollError,
+    PolledAudioReceipt,
+};
 pub use mic_source::{MicSourceFactory, MicSourceNode, MicTelemetry};
 pub use mix::{MixerSourceFactory, MixerSourceNode, MixerTelemetry, MonoMixFactory, MonoMixNode};
 pub use ml_nodes::{EchoCancelFactory, NoiseSuppressFactory, VadFactory, WatermarkFactory};

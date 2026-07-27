@@ -5,9 +5,10 @@ use pks_graph::{NodeRegistry, NodeTypeId, PrepareContext};
 
 use crate::{
     prepare_session_runtime, register_session_structural_nodes, start_prepared_session,
-    CaptureBackendSet, OperatorId, OperatorRegistry, OperatorRegistryError, RunningSession,
-    Session, SessionCompileError, SessionCompiler, SessionError, SessionPrepareError,
-    SessionStartFailure, SessionStartOptions, SessionStructuralNodeRegistrationError,
+    CaptureBackendSet, CompiledSession, OperatorId, OperatorRegistry, OperatorRegistryError,
+    RunningSession, Session, SessionCompileError, SessionCompiler, SessionError,
+    SessionPrepareError, SessionStartFailure, SessionStartOptions,
+    SessionStructuralNodeRegistrationError,
 };
 
 struct EndpointDriverRegistration {
@@ -132,14 +133,18 @@ pub struct SessionEngine {
 }
 
 impl SessionEngine {
-    pub fn start(
+    pub fn compile(&self, session: Session) -> Result<CompiledSession, SessionEngineStartError> {
+        let spec = session.freeze()?;
+        SessionCompiler::new(&self.node_registry, &self.operator_registry)
+            .compile(spec)
+            .map_err(SessionEngineStartError::Compile)
+    }
+
+    pub fn start_compiled(
         &self,
-        session: Session,
+        compiled: CompiledSession,
         capture_backends: CaptureBackendSet<'_>,
     ) -> Result<RunningSession, SessionEngineStartError> {
-        let spec = session.freeze()?;
-        let compiled =
-            SessionCompiler::new(&self.node_registry, &self.operator_registry).compile(spec)?;
         let prepared = prepare_session_runtime(
             compiled,
             &self.node_registry,
@@ -153,6 +158,15 @@ impl SessionEngine {
             self.start_options,
         )
         .map_err(SessionEngineStartError::Start)
+    }
+
+    pub fn start(
+        &self,
+        session: Session,
+        capture_backends: CaptureBackendSet<'_>,
+    ) -> Result<RunningSession, SessionEngineStartError> {
+        let compiled = self.compile(session)?;
+        self.start_compiled(compiled, capture_backends)
     }
 }
 

@@ -6,6 +6,7 @@ mod engine;
 mod engine_tests;
 mod error;
 mod events;
+mod foreign_audio;
 mod observations;
 mod running;
 #[cfg(test)]
@@ -33,6 +34,11 @@ pub use events::{
     SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionFinalizationFailure,
     SessionFinalizationStage, SessionLifecycleState, SessionRollbackFailure, SessionRollbackStage,
     SessionSourceFailure, SessionTerminalOutcome, SessionTerminalState,
+};
+pub use foreign_audio::{
+    PolledAudioBatchLease, PolledAudioEndpoint, PolledAudioEndpointConfig,
+    PolledAudioEndpointConfigError, PolledAudioFrame, PolledAudioObservations,
+    PolledAudioPollError, PolledAudioReceipt, POLLED_AUDIO_OPERATOR_ID,
 };
 pub use observations::SessionEventQueueObservations;
 pub use running::{
