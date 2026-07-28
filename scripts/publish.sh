@@ -11,7 +11,7 @@ elif [[ -n "${1:-}" ]]; then
     exit 2
 fi
 
-for command in awk cargo cmp cp jq sort tsort; do
+for command in awk cargo cmp cp curl grep jq python3 sed sort tsort; do
     if ! command -v "${command}" >/dev/null 2>&1; then
         echo "required command is unavailable: ${command}" >&2
         exit 2
@@ -27,13 +27,15 @@ direct_dependencies_file="$(
     mktemp "${TMPDIR:-/tmp}/pks-publish-direct-dependencies.XXXXXX"
 )"
 edges_file="$(mktemp "${TMPDIR:-/tmp}/pks-publish-edges.XXXXXX")"
+publish_log_file="$(mktemp "${TMPDIR:-/tmp}/pks-publish-command.XXXXXX")"
 trap 'rm -f \
     "${metadata_file}" \
     "${workspace_names_file}" \
     "${closure_file}" \
     "${next_closure_file}" \
     "${direct_dependencies_file}" \
-    "${edges_file}"' EXIT
+    "${edges_file}" \
+    "${publish_log_file}"' EXIT
 
 cargo metadata \
     --manifest-path "${repo_root}/Cargo.toml" \
@@ -174,12 +176,138 @@ if [[ "${crates[$last_index]}" != "pocketstation" ]]; then
 fi
 
 propagation_delay_seconds="${PKS_PUBLISH_PROPAGATION_DELAY_SECONDS:-35}"
+first_creation_delay_seconds="${PKS_PUBLISH_FIRST_CREATION_DELAY_SECONDS:-130}"
+publish_max_attempts="${PKS_PUBLISH_MAX_ATTEMPTS:-3}"
+retry_safety_seconds="${PKS_PUBLISH_RETRY_SAFETY_SECONDS:-5}"
+registry_api_base_url="${PKS_REGISTRY_API_BASE_URL:-https://crates.io/api/v1/crates}"
+
+for numeric_value in \
+    "${propagation_delay_seconds}" \
+    "${first_creation_delay_seconds}" \
+    "${retry_safety_seconds}"; do
+    if [[ ! "${numeric_value}" =~ ^[0-9]+$ ]]; then
+        echo "publish delay values must be non-negative integers" >&2
+        exit 2
+    fi
+done
+if [[ ! "${publish_max_attempts}" =~ ^[1-5]$ ]]; then
+    echo "PKS_PUBLISH_MAX_ATTEMPTS must be an integer from 1 through 5" >&2
+    exit 2
+fi
+
+registry_status() {
+    local url="$1"
+    local status
+
+    if ! status="$(
+        curl \
+            --silent \
+            --show-error \
+            --output /dev/null \
+            --write-out '%{http_code}' \
+            --header 'User-Agent: pocketstation-release-publisher' \
+            "${url}"
+    )"; then
+        echo "registry visibility query failed: ${url}" >&2
+        return 2
+    fi
+    case "${status}" in
+        200)
+            return 0
+            ;;
+        404)
+            return 1
+            ;;
+        *)
+            echo "registry visibility query returned HTTP ${status}: ${url}" >&2
+            return 2
+            ;;
+    esac
+}
+
+retry_wait_seconds() {
+    local retry_timestamp="$1"
+    local now_epoch_seconds
+
+    if [[ -n "${PKS_NOW_EPOCH_SECONDS:-}" ]]; then
+        now_epoch_seconds="${PKS_NOW_EPOCH_SECONDS}"
+    else
+        now_epoch_seconds="$(python3 -c 'import time; print(int(time.time()))')"
+    fi
+    python3 -c '
+import email.utils
+import sys
+
+retry_at = email.utils.parsedate_to_datetime(sys.argv[1])
+retry_epoch = int(retry_at.timestamp())
+now_epoch = int(sys.argv[2])
+safety = int(sys.argv[3])
+print(max(safety, retry_epoch - now_epoch + safety))
+' "${retry_timestamp}" "${now_epoch_seconds}" "${retry_safety_seconds}"
+}
+
+publish_crate() {
+    local crate="$1"
+    local attempt=1
+    local retry_timestamp
+    local wait_seconds
+
+    while true; do
+        if cargo publish \
+            --manifest-path "${repo_root}/Cargo.toml" \
+            --package "${crate}" \
+            --locked >"${publish_log_file}" 2>&1; then
+            cat "${publish_log_file}"
+            return 0
+        fi
+
+        cat "${publish_log_file}" >&2
+        if ! grep -Fq 'status 429 Too Many Requests' "${publish_log_file}"; then
+            echo "publish failed without a retryable crates.io 429: ${crate}" >&2
+            return 1
+        fi
+        if [[ "${attempt}" -ge "${publish_max_attempts}" ]]; then
+            echo "publish exhausted ${publish_max_attempts} attempts after crates.io 429: ${crate}" >&2
+            return 1
+        fi
+
+        retry_timestamp="$(
+            sed -n \
+                's/.*Please try again after \(.* GMT\) and see .*/\1/p' \
+                "${publish_log_file}" |
+                tail -n 1
+        )"
+        if [[ -z "${retry_timestamp}" ]]; then
+            echo "crates.io 429 omitted a parseable retry timestamp; refusing immediate retry" >&2
+            return 1
+        fi
+        if ! wait_seconds="$(retry_wait_seconds "${retry_timestamp}")"; then
+            echo "crates.io 429 retry timestamp is invalid: ${retry_timestamp}" >&2
+            return 1
+        fi
+
+        echo "crates.io requested retry after ${retry_timestamp}; waiting ${wait_seconds}s"
+        sleep "${wait_seconds}"
+        attempt=$((attempt + 1))
+    done
+}
+
 total="${#crates[@]}"
 for index in "${!crates[@]}"; do
     crate="${crates[$index]}"
+    crate_version="$(
+        jq -r \
+            --arg crate "${crate}" \
+            '.packages[] | select(.name == $crate) | .version' \
+            "${metadata_file}"
+    )"
+    if [[ -z "${crate_version}" || "${crate_version}" == "null" ]]; then
+        echo "workspace version is unavailable for ${crate}" >&2
+        exit 1
+    fi
     step=$((index + 1))
     if [[ "${dry_run}" == "true" ]]; then
-        echo "[${step}/${total}] Validate package: ${crate}"
+        echo "[${step}/${total}] Validate package: ${crate} ${crate_version}"
         cargo package \
             --manifest-path "${repo_root}/Cargo.toml" \
             --package "${crate}" \
@@ -190,13 +318,39 @@ for index in "${!crates[@]}"; do
             --package "${crate}" \
             --locked
     else
-        echo "[${step}/${total}] Publish: ${crate}"
-        cargo publish \
-            --manifest-path "${repo_root}/Cargo.toml" \
-            --package "${crate}" \
-            --locked
+        version_url="${registry_api_base_url}/${crate}/${crate_version}"
+        if registry_status "${version_url}"; then
+            echo "[${step}/${total}] Skip visible: ${crate} ${crate_version}"
+            continue
+        else
+            registry_result=$?
+            if [[ "${registry_result}" -ne 1 ]]; then
+                exit "${registry_result}"
+            fi
+        fi
+
+        crate_url="${registry_api_base_url}/${crate}"
+        if registry_status "${crate_url}"; then
+            first_creation=false
+        else
+            registry_result=$?
+            if [[ "${registry_result}" -ne 1 ]]; then
+                exit "${registry_result}"
+            fi
+            first_creation=true
+        fi
+
+        echo "[${step}/${total}] Publish missing: ${crate} ${crate_version}"
+        publish_crate "${crate}"
         if [[ "${step}" -lt "${total}" ]]; then
-            sleep "${propagation_delay_seconds}"
+            if [[ "${first_creation}" == "true" \
+                && "${first_creation_delay_seconds}" -gt 0 ]]; then
+                echo "Pacing first-crate creation for ${first_creation_delay_seconds}s"
+                sleep "${first_creation_delay_seconds}"
+            elif [[ "${first_creation}" != "true" \
+                && "${propagation_delay_seconds}" -gt 0 ]]; then
+                sleep "${propagation_delay_seconds}"
+            fi
         fi
     fi
 done
