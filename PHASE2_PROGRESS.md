@@ -1,5 +1,36 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W12 language-owned Rust Session façade — 2026-07-28
+
+- Status: `PARTIAL`; the central Rust façade and canonical-engine fixture pass,
+  while the independent Lab clean-consumer artifact remains the W12 acceptance
+  owner.
+- Added one Cargo package/library named `pocketstation`. Its public `Session`
+  and `RunningSession` are thin owners over the canonical `pks-session`
+  declaration, native host, capture/runtime transaction, bounded polled-audio
+  endpoint, events, metrics, cancellation, and idempotent stop. No scheduler,
+  capture backend, counter, or lifecycle rule was duplicated.
+- `Session::new()` is infallible and keeps engine setup internals out of the
+  developer declaration. `start()` builds the native host with bounded defaults
+  and reports host, compile, startup, missing-receipt, and missing-event states
+  through typed errors. The public quickstart contains no `PrepareContext`,
+  queue capacity, node ID, `CaptureBackendSet`, or CLI/subprocess delegation.
+- The default-disabled `conformance-fixtures` feature supplies deterministic,
+  distinct application and microphone frames to the same canonical host. It is
+  explicitly `LOOPBACK-ONLY`, inventoried, and cannot upgrade a product claim.
+  Three focused tests prove two independent stems cross bounded destinations,
+  lifecycle/events/metrics are observable, stop is idempotent, cancellation is
+  typed, and an invalid selector fails rather than reporting success.
+- `pks-audio` remains transitional compatibility/history for its existing
+  lower-level examples; it is no longer the claimed Rust Session identity.
+  Removing its remaining helpers is a separate ownership migration, not a
+  reason to duplicate them in `pocketstation`.
+- No provider code, first-party connector catalog, browser/relay implementation,
+  recording implementation, mock product path, per-frame foreign callback,
+  unbounded queue, or new device claim was introduced. Connector/browser/
+  recording parity remains outside this central façade slice until their
+  reusable owners are extracted from callers.
+
 ## W11 transactional capture-delivery start boundary — 2026-07-28
 
 - Status: `SAFE-TO-TEST`; the component correction is complete and the

@@ -75,8 +75,9 @@ not an aspirational crate diagram. W11 then completed the named migrations:
 - `pks-nodes` defines concrete factories and `MultistemRecording`, including
   explicit stop, join, and finalization outcomes;
 - the legacy `pks-pipeline` package is retired after caller migration;
-- `pks-audio` delegates Session semantics to `pks-session` and no longer owns a
-  duplicate `RuntimeNotIntegrated` implementation;
+- `pocketstation` is the language-owned Rust façade and delegates Session
+  semantics to `pks-session`; `pks-audio` is transitional compatibility only
+  and owns no duplicate `RuntimeNotIntegrated` implementation;
 - `pks-session-c` and `pks-codec-c` are separate, executable conformance
   boundaries; and
 - the `pks` proof command consumes the reusable Session engine and endpoint

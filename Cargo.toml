@@ -19,6 +19,7 @@ members = [
   "crates/pks-capture-windows",
   "crates/pks-capture-linux",
   "crates/pks-audio",
+  "crates/pocketstation",
   "examples/whisper-transcribe",
 ]
 

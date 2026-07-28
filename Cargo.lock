@@ -1325,6 +1325,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "pocketstation"
+version = "0.1.0"
+dependencies = [
+ "pks-capture",
+ "pks-frame",
+ "pks-graph",
+ "pks-session",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "ppv-lite86"
 version = "0.2.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"

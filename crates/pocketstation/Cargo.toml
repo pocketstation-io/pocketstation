@@ -1,0 +1,25 @@
+[package]
+name = "pocketstation"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Source-aware desktop audio Session SDK"
+
+[features]
+default = []
+conformance-fixtures = [
+  "dep:pks-capture",
+  "dep:pks-frame",
+  "dep:pks-graph",
+]
+
+[[example]]
+name = "product_quickstart"
+
+[dependencies]
+pks-session = { path = "../pks-session", version = "0.1.0" }
+pks-capture = { path = "../pks-capture", version = "0.1.0", optional = true }
+pks-frame = { path = "../pks-frame", version = "0.1.0", optional = true }
+pks-graph = { path = "../pks-graph", version = "0.1.0", optional = true }
+thiserror.workspace = true
