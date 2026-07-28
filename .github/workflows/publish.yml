@@ -4,6 +4,11 @@ name: publish-rust-facade
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing version-matched release tag to resume
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -30,10 +35,10 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@stable
 
-      - name: Require a version-matched release commit on main
-        if: github.event_name == 'release'
+      - name: Require a version-matched release and guarded main recovery
         env:
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          EVENT_NAME: ${{ github.event_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           workspace_version="$(
@@ -46,14 +51,35 @@ jobs:
             exit 1
           fi
           tag_commit="$(git rev-list -n 1 "${RELEASE_TAG}")"
-          if [[ "${tag_commit}" != "${GITHUB_SHA}" ]]; then
-            echo "release tag does not resolve to the checked-out commit" >&2
-            exit 1
-          fi
           git fetch origin main
           if ! git merge-base --is-ancestor "${tag_commit}" origin/main; then
             echo "release commit is not contained in origin/main" >&2
             exit 1
+          fi
+          if [[ "${EVENT_NAME}" == "release" ]]; then
+            if [[ "${tag_commit}" != "${GITHUB_SHA}" ]]; then
+              echo "release tag does not resolve to the checked-out commit" >&2
+              exit 1
+            fi
+          else
+            if [[ "${GITHUB_REF}" != "refs/heads/main" ]]; then
+              echo "publication recovery must run from main" >&2
+              exit 1
+            fi
+            if [[ "${GITHUB_SHA}" != "$(git rev-parse origin/main)" ]]; then
+              echo "publication recovery is not the current origin/main" >&2
+              exit 1
+            fi
+            unexpected_paths="$(
+              git diff --name-only "${tag_commit}..${GITHUB_SHA}" |
+                grep -Ev '^(\.github/workflows/publish\.yml|PHASE2_PROGRESS\.md|scripts/publish\.sh|scripts/test-publish-recovery\.sh)$' ||
+                true
+            )"
+            if [[ -n "${unexpected_paths}" ]]; then
+              echo "publication recovery contains package or product drift:" >&2
+              echo "${unexpected_paths}" >&2
+              exit 1
+            fi
           fi
           git diff --quiet
           git diff --cached --quiet
@@ -91,11 +117,17 @@ jobs:
       - name: Validate the exact crates.io facade closure
         run: bash scripts/publish.sh --dry-run
 
+      - name: Validate idempotent publication recovery
+        run: bash scripts/test-publish-recovery.sh
+
   publish:
     if: >-
-      github.event_name == 'release' &&
-      github.event.release.prerelease == false &&
-      startsWith(github.event.release.tag_name, 'pocketstation-v')
+      (
+        github.event_name == 'release' &&
+        github.event.release.prerelease == false &&
+        startsWith(github.event.release.tag_name, 'pocketstation-v')
+      ) ||
+      github.event_name == 'workflow_dispatch'
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 60

@@ -1675,3 +1675,23 @@
   publication closure, or release trigger. The publish job remains gated by
   the complete validation job.
 - No scaffold, mock, fallback, provider, or loopback-only path is introduced.
+
+## W12 crates.io partial-publication recovery — 2026-07-28
+
+- Status: `SAFE-TO-TEST`; the first protected `0.1.0` publication passed its
+  complete validation job and published six dependency crates before
+  crates.io rejected the seventh first-time crate with HTTP 429 and an
+  explicit retry timestamp.
+- Publication is now exact-version idempotent: registry-visible versions are
+  skipped, missing versions resume in dependency order, first-time crate names
+  use conservative pacing, and only a crates.io 429 with a parseable retry
+  timestamp can trigger a bounded retry. Registry-query failures and every
+  other publish error fail closed.
+- Manual recovery requires the exact version-matched release tag, current
+  `main`, the release commit as an ancestor, and a path allowlist proving that
+  no package or product source changed after the release.
+- A fake Cargo/registry/sleep contract proves six-version skip and nine-version
+  resume, 429 retry timing, and non-429 fail-closed behavior without network or
+  publication.
+- No crate source, public API, runtime behavior, scaffold, mock, provider, or
+  loopback-only path changed.
