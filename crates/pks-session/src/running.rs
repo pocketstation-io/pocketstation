@@ -12,7 +12,8 @@ use pks_capture::{
 use pks_endpoint::{
     endpoint_start_gate, EndpointDriverInput, EndpointDriverObservations, EndpointDriverRegistry,
     EndpointFailure, EndpointFinalizationOutcome, EndpointPrepareContext, EndpointPrepareError,
-    EndpointStartFailure, PreparedEndpoint, RunningEndpoint,
+    EndpointRouteContext, EndpointStartFailure, PreparedEndpoint, RunningEndpoint,
+    SessionTimelineOrigin,
 };
 use pks_frame::{EndpointId, RouteId, SessionId, StemId};
 use pks_runtime::{
@@ -521,6 +522,8 @@ pub fn start_prepared_session_cancellable(
             Vec::new(),
         ));
     }
+    let session_timeline_origin =
+        SessionTimelineOrigin::from_monotonic_timestamp_ns(pks_timing::monotonic_timestamp_ns());
     let (gate_controller, start_gate) = endpoint_start_gate();
     let (capture_gate_controller, capture_start_gate) = capture_delivery_start_gate();
     let source_ingress_observations = source_mappings
@@ -536,8 +539,12 @@ pub fn start_prepared_session_cancellable(
         })
         .collect::<Vec<_>>();
 
-    let mut prepared_endpoints = match prepare_endpoints(&spec, worker_mappings, endpoint_registry)
-    {
+    let mut prepared_endpoints = match prepare_endpoints(
+        &spec,
+        worker_mappings,
+        endpoint_registry,
+        session_timeline_origin,
+    ) {
         Ok(endpoints) => endpoints,
         Err((error, rollback_failures)) => {
             return Err(complete_start_failure(
@@ -858,6 +865,7 @@ fn prepare_endpoints(
     spec: &crate::SessionSpec,
     mut worker_mappings: Vec<PreparedWorkerMapping>,
     endpoint_registry: &EndpointDriverRegistry,
+    session_timeline_origin: SessionTimelineOrigin,
 ) -> Result<Vec<PreparedEndpointBinding>, (SessionStartError, Vec<SessionRollbackFailure>)> {
     let session_id = spec.session_id();
     let mut endpoints = Vec::with_capacity(worker_mappings.len());
@@ -935,6 +943,10 @@ fn prepare_endpoints(
                 grouped_endpoint.id(),
                 node_configuration,
                 mapping.prepare_context,
+            )
+            .with_session_route(
+                EndpointRouteContext::new(grouped_stem.id(), mapping.route_id),
+                session_timeline_origin,
             );
             identities.push((mapping.route_id, mapping.endpoint_id));
             inputs.push(EndpointDriverInput::new(mapping.receiver, context));

@@ -1,5 +1,5 @@
 use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
 use pks_caps::{AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec};
@@ -16,7 +16,8 @@ use pks_endpoint::{
     EndpointFailureStage, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver,
 };
 use pks_frame::{
-    AudioBufferPool, AudioFrame, Platform, SampleFormat, SampleSpec, SourceId, StreamId,
+    AudioBufferPool, AudioFrame, EndpointId, Platform, RouteId, SampleFormat, SampleSpec,
+    SessionId, SourceId, StemId, StreamId,
 };
 use pks_graph::{
     ConfigError, ExecutionPartition, NodeConfig, NodeDescriptor, NodeError, NodeFactory,
@@ -378,6 +379,15 @@ impl Drop for TestActiveCapture {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct PreparedRouteContextObservation {
+    session_id: SessionId,
+    endpoint_id: EndpointId,
+    stem_id: StemId,
+    route_id: RouteId,
+    session_timeline_origin_ns: u64,
+}
+
 #[derive(Default)]
 struct EndpointControl {
     prepare_calls_total: AtomicU64,
@@ -392,6 +402,7 @@ struct EndpointControl {
     fail_start_call: AtomicU64,
     fail_join_finalize: AtomicBool,
     consume_after_gate_delay_ms: AtomicU64,
+    prepared_route_contexts: Mutex<Vec<PreparedRouteContextObservation>>,
 }
 
 struct TestEndpointFactory {
@@ -426,6 +437,42 @@ impl EndpointDriverFactory for TestEndpointFactory {
                 "test endpoint prepare failure",
             ));
         }
+        let observations = inputs
+            .iter()
+            .map(|input| {
+                let context = input.context();
+                let route_context = context.route_context().ok_or_else(|| {
+                    EndpointFailure::new(
+                        EndpointFailureStage::Prepare,
+                        "Session endpoint input omitted its typed route context",
+                    )
+                })?;
+                let session_timeline_origin =
+                    context.session_timeline_origin().ok_or_else(|| {
+                        EndpointFailure::new(
+                            EndpointFailureStage::Prepare,
+                            "Session endpoint input omitted its timeline origin",
+                        )
+                    })?;
+                Ok(PreparedRouteContextObservation {
+                    session_id: context.session_id(),
+                    endpoint_id: context.endpoint_id(),
+                    stem_id: route_context.stem_id(),
+                    route_id: route_context.route_id(),
+                    session_timeline_origin_ns: session_timeline_origin.monotonic_timestamp_ns(),
+                })
+            })
+            .collect::<Result<Vec<_>, EndpointFailure>>()?;
+        self.control
+            .prepared_route_contexts
+            .lock()
+            .map_err(|_| {
+                EndpointFailure::new(
+                    EndpointFailureStage::Prepare,
+                    "test endpoint context observations are unavailable",
+                )
+            })?
+            .extend(observations);
         self.control
             .live_prepared_total
             .fetch_add(1, Ordering::Relaxed);
@@ -682,6 +729,37 @@ fn given_two_sources_when_started_then_gate_lineage_and_repeated_stop_are_truthf
             .count_ones(),
         2
     );
+    let prepared_route_contexts = endpoints
+        .prepared_route_contexts
+        .lock()
+        .expect("prepared route context observations must remain available");
+    assert_eq!(prepared_route_contexts.len(), 6);
+    let session_timeline_origin_ns = prepared_route_contexts[0].session_timeline_origin_ns;
+    assert!(session_timeline_origin_ns > 0);
+    assert!(prepared_route_contexts.iter().all(|context| {
+        context.session_id == running.session_id()
+            && context.session_timeline_origin_ns == session_timeline_origin_ns
+    }));
+    assert_eq!(
+        prepared_route_contexts
+            .iter()
+            .map(|context| context.route_id.0)
+            .collect::<std::collections::BTreeSet<_>>()
+            .len(),
+        6
+    );
+    assert_eq!(
+        prepared_route_contexts
+            .iter()
+            .map(|context| context.stem_id.0)
+            .collect::<std::collections::BTreeSet<_>>()
+            .len(),
+        2
+    );
+    assert!(prepared_route_contexts
+        .iter()
+        .all(|context| context.endpoint_id.0 > 0));
+    drop(prepared_route_contexts);
     assert_no_live_owners(&application, &microphone, &endpoints);
     let mut event_kinds = Vec::new();
     while let SessionEventReceive::Event(event) = events.try_recv() {

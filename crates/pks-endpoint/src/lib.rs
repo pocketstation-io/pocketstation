@@ -10,9 +10,9 @@ mod registry;
 pub use driver::{
     endpoint_start_gate, EndpointCancellationOutcome, EndpointDriverFinalization,
     EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointFinalizationOutcome,
-    EndpointPrepareContext, EndpointStartFailure, EndpointStartFailureCause, EndpointStartGate,
-    EndpointStartGateController, PreparedEndpoint, PreparedEndpointDriver, RunningEndpoint,
-    RunningEndpointDriver,
+    EndpointPrepareContext, EndpointRouteContext, EndpointStartFailure, EndpointStartFailureCause,
+    EndpointStartGate, EndpointStartGateController, PreparedEndpoint, PreparedEndpointDriver,
+    RunningEndpoint, RunningEndpointDriver, SessionTimelineOrigin,
 };
 pub use identity::{EndpointGroupId, OperatorId, OPERATOR_ID_SYNTAX_VERSION};
 pub use registry::{

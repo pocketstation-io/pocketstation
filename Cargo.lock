@@ -1254,6 +1254,7 @@ dependencies = [
  "pks-graph",
  "pks-nodes",
  "pks-runtime",
+ "pks-timing",
  "thiserror 1.0.69",
 ]
 

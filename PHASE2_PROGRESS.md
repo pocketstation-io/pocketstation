@@ -1,5 +1,28 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W12 Session-owned endpoint route and timeline context — 2026-07-28
+
+- Status: `SAFE-TO-TEST`; this is the additive setup-context prerequisite for
+  the Session-owned recording reference. Recorder composition and outcome
+  projection remain separate follow-up work.
+- `pks-endpoint` now defines typed `EndpointRouteContext` and
+  `SessionTimelineOrigin` values. Canonical endpoint preparation can consume
+  exact stem, route, and monotonic-origin identity without parsing reserved
+  string configuration.
+- The published `EndpointPrepareContext::new` signature remains unchanged.
+  Its additive Session-route context is absent for legacy callers and attached
+  explicitly by canonical `pks-session` startup.
+- `pks-session` samples the shared monotonic clock exactly once after the
+  initial cancellation gate and supplies that same origin to every endpoint
+  input in the startup transaction. Each input also receives its compiler-owned
+  stem and route identity.
+- Focused evidence passes: eight `pks-endpoint` tests and 49 `pks-session`
+  tests. The Session regression observes all six product routes, two distinct
+  stems, unique route IDs, and one identical nonzero timeline origin.
+- This changes no capture callback, realtime router, queue capacity, endpoint
+  worker, recorder behavior, public provider surface, scaffold, mock,
+  fallback, or loopback-only product claim.
+
 ## W12 language-owned Rust Session façade — 2026-07-28
 
 - Status: `PARTIAL`; the central Rust façade and canonical-engine fixture pass,
