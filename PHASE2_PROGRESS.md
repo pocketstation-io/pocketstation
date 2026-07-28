@@ -1662,3 +1662,16 @@
 - This policy does not publish crates and does not create a provider,
   compatibility path, mock, scaffold, fallback, or loopback-only product
   behavior.
+
+## W12 Linux protocol-gate dependency — 2026-07-28
+
+- Status: `SAFE-TO-TEST`; the CI and release-validation environments now
+  install `ripgrep` before invoking `scripts/check_protocol.sh`.
+- The first main-branch W12 run passed workspace tests, strict Clippy, the
+  release quickstart, and architecture constraints, then failed closed because
+  the Ubuntu runner did not provide the protocol scanner's required `rg`
+  executable.
+- The correction changes no Rust source, product API, runtime behavior,
+  publication closure, or release trigger. The publish job remains gated by
+  the complete validation job.
+- No scaffold, mock, fallback, provider, or loopback-only path is introduced.

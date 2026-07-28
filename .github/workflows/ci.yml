@@ -28,7 +28,8 @@ jobs:
             clang \
             libasound2-dev \
             libpipewire-0.3-dev \
-            pkg-config
+            pkg-config \
+            ripgrep
 
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
