@@ -2,6 +2,12 @@
 
 #[cfg(feature = "conformance-fixtures")]
 pub mod conformance;
+mod error_code;
+
+pub use error_code::{
+    polled_audio_poll_error_code, PolledAudioPollErrorCode, SessionRuntimeErrorCode,
+    SessionStartErrorCode, SessionStopCode,
+};
 
 pub use pks_session::{
     ApplicationSelector, DeviceId, DeviceSelector, EndpointHandle, ProcessId,

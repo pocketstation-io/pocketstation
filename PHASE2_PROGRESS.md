@@ -1,5 +1,18 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W12 stable public Session error codes — 2026-07-28
+
+- Status: `SAFE-TO-TEST`; the Rust façade now projects stable, namespaced,
+  language-neutral codes for start, runtime, bounded audio-poll, and
+  finalization outcomes.
+- The codes are additive to the published typed Rust errors. Existing error
+  enums and method signatures remain unchanged, while Python and Node can
+  normalize against values such as `session.start_cancelled`,
+  `session.invalid_selector`, and `audio.lease_capacity_exhausted`.
+- Focused façade tests and strict all-target Clippy pass.
+- This changes no engine, capture, recorder, queue, hot path, provider,
+  scaffold, mock, fallback, or product claim.
+
 ## W12 Session-owned endpoint route and timeline context — 2026-07-28
 
 - Status: `SAFE-TO-TEST`; this is the additive setup-context prerequisite for
