@@ -1753,3 +1753,36 @@
   CODE_PROTOCOL, Actionlint, and the 15-package closure dry run pass locally.
 - This correction changes no Session API, runtime behavior, capture path,
   provider integration, scaffold, mock, fallback, or loopback-only claim.
+
+## W12 Session-owned observed-lineage multistem recorder — 2026-07-28
+
+- Status: `SAFE-TO-TEST`; `pks-nodes` now exposes the additive
+  `SessionMultistemEndpointCoordinator::new(output_root, group_id)` declaration
+  without accepting caller-fabricated Session, endpoint, route, stem, source,
+  clock, generation, or permission identities.
+- Exact `prepare_batch` inputs supply the Session, endpoint, typed stem/route,
+  sample specification, label, recording group, and one common Session
+  timeline origin. Missing typed context, mixed origins, and duplicate
+  endpoint, route, stem, or label identities fail during preparation.
+- The first delivered frame for every stem must carry authoritative
+  `FrameLineage`. Its source, clock, source generation, and permission epoch
+  initialize the recorder manifest; raw frames and later identity drift fail
+  closed. Successful Session delivery records only
+  `SessionCaptureGrant/Allowed` and does not claim an operating-system
+  permission decision.
+- Both stems map the common `SessionTimelineOrigin` to Session time zero, so
+  independently captured application and microphone frames retain one
+  comparable recording timeline.
+- The public 0.1 `MultistemRecording::start` and explicit-config coordinator
+  remain source-compatible. Their raw-frame compatibility path is unchanged;
+  required-lineage behavior is selected by a private typed mode used only by
+  the canonical Session coordinator.
+- Focused tests prove two-stem derivation and final completion, common origin,
+  missing typed route rejection, raw first-frame rejection without an
+  artifact, and later permission-lineage mismatch with an incomplete outcome.
+  All 56 `pks-nodes` tests, strict all-target/all-feature Clippy, workspace
+  diff checks, and the complete 125-file CODE_PROTOCOL gate pass.
+- No provider, connector, mock, scaffold, fallback, operating-system
+  permission assertion, or loopback-only product claim was introduced. The
+  full Rust façade and Lab reference artifact remain separate W12 acceptance
+  gates.

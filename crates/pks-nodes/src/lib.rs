@@ -28,13 +28,13 @@ pub use mic_source::{MicSourceFactory, MicSourceNode, MicTelemetry};
 pub use mix::{MixerSourceFactory, MixerSourceNode, MixerTelemetry, MonoMixFactory, MonoMixNode};
 pub use multistem_endpoint::{
     MultistemEndpointCoordinator, MultistemEndpointError, MultistemEndpointStem,
-    MultistemRecordingReceipt,
+    MultistemRecordingReceipt, SessionMultistemEndpointCoordinator,
 };
 pub use multistem_recorder::{
     DiscontinuityKind, DiscontinuityRecord, MultistemRecording, PermissionDecision,
-    PermissionScope, RecorderError, RecorderStemConfig, RecordingObservations, RecordingOutcome,
-    RecordingRollbackFailure, RecordingRollbackWorkerFailure, RecordingState, RecordingStemOutcome,
-    StemLabel,
+    PermissionScope, RecorderError, RecorderLineageField, RecorderStemConfig,
+    RecordingObservations, RecordingOutcome, RecordingRollbackFailure,
+    RecordingRollbackWorkerFailure, RecordingState, RecordingStemOutcome, StemLabel,
 };
 pub use source::{SyntheticSourceFactory, SyntheticSourceNode};
 pub use system_source::{SystemOutputSourceFactory, SystemOutputSourceNode, SystemOutputTelemetry};

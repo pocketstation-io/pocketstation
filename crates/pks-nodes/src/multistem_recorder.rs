@@ -47,6 +47,15 @@ pub enum RecorderError {
         actual: u64,
         expected: u64,
     },
+    #[error("stem '{0}' received a raw frame without required Session lineage")]
+    MissingFrameLineage(String),
+    #[error("stem '{label}' frame lineage {field:?} is {actual}, expected {expected}")]
+    LineageMismatch {
+        label: String,
+        field: RecorderLineageField,
+        actual: u64,
+        expected: u64,
+    },
     #[error("stem '{label}' frame spec is {actual_rate_hz} Hz/{actual_channels} ch, expected {expected_rate_hz} Hz/{expected_channels} ch")]
     FrameSpecMismatch {
         label: String,
@@ -77,6 +86,16 @@ pub enum RecorderError {
     Wav(#[from] hound::Error),
     #[error("JSON error: {0}")]
     Json(#[from] serde_json::Error),
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RecorderLineageField {
+    Session,
+    Source,
+    Stem,
+    Clock,
+    SourceGeneration,
+    PermissionEpoch,
 }
 
 #[derive(Debug)]
@@ -258,7 +277,7 @@ impl MultistemRecording {
         session_id: SessionId,
         stems: Vec<(RecorderStemConfig, PlanEdgeReceiver)>,
     ) -> Result<Self, RecorderError> {
-        Self::start_with_gate(output_root, session_id, stems, None)
+        Self::start_with_inputs(output_root, session_id, compatibility_inputs(stems), None)
     }
 
     pub(crate) fn start_gated(
@@ -267,13 +286,35 @@ impl MultistemRecording {
         stems: Vec<(RecorderStemConfig, PlanEdgeReceiver)>,
         start_gate: Arc<EndpointStartGate>,
     ) -> Result<Self, RecorderError> {
-        Self::start_with_gate(output_root, session_id, stems, Some(start_gate))
+        Self::start_with_inputs(
+            output_root,
+            session_id,
+            compatibility_inputs(stems),
+            Some(start_gate),
+        )
     }
 
-    fn start_with_gate(
+    pub(crate) fn start_observed(
         output_root: impl AsRef<Path>,
         session_id: SessionId,
-        stems: Vec<(RecorderStemConfig, PlanEdgeReceiver)>,
+        stems: Vec<(RecorderStemConfig, PlanEdgeReceiver, PlanEdgeFrame)>,
+    ) -> Result<Self, RecorderError> {
+        let stems = stems
+            .into_iter()
+            .map(|(config, receiver, initial_frame)| RecorderStemInput {
+                config,
+                receiver,
+                initial_frame: Some(initial_frame),
+                lineage_mode: RecorderLineageMode::Required,
+            })
+            .collect();
+        Self::start_with_inputs(output_root, session_id, stems, None)
+    }
+
+    fn start_with_inputs(
+        output_root: impl AsRef<Path>,
+        session_id: SessionId,
+        stems: Vec<RecorderStemInput>,
         start_gate: Option<Arc<EndpointStartGate>>,
     ) -> Result<Self, RecorderError> {
         let session_dir = output_root
@@ -301,7 +342,8 @@ impl MultistemRecording {
         });
 
         let mut configs = Vec::with_capacity(stems.len());
-        for (config, _) in &stems {
+        for stem in &stems {
+            let config = &stem.config;
             if config.session_id != session_id {
                 return Err(RecorderError::SessionMismatch {
                     label: config.label.as_str().to_owned(),
@@ -345,11 +387,10 @@ impl MultistemRecording {
         )?;
 
         let mut workers = Vec::with_capacity(stems.len());
-        for (config, receiver) in stems {
+        for stem in stems {
             match RecorderWorker::spawn(
                 session_dir.clone(),
-                config,
-                receiver,
+                stem,
                 start_gate.clone(),
                 publication.clone(),
             ) {
@@ -517,6 +558,33 @@ impl MultistemRecording {
     }
 }
 
+fn compatibility_inputs(
+    stems: Vec<(RecorderStemConfig, PlanEdgeReceiver)>,
+) -> Vec<RecorderStemInput> {
+    stems
+        .into_iter()
+        .map(|(config, receiver)| RecorderStemInput {
+            config,
+            receiver,
+            initial_frame: None,
+            lineage_mode: RecorderLineageMode::Compatibility,
+        })
+        .collect()
+}
+
+struct RecorderStemInput {
+    config: RecorderStemConfig,
+    receiver: PlanEdgeReceiver,
+    initial_frame: Option<PlanEdgeFrame>,
+    lineage_mode: RecorderLineageMode,
+}
+
+#[derive(Clone, Copy)]
+enum RecorderLineageMode {
+    Compatibility,
+    Required,
+}
+
 impl Drop for MultistemRecording {
     fn drop(&mut self) {
         if self.finished {
@@ -580,11 +648,16 @@ struct RecorderWorker {
 impl RecorderWorker {
     fn spawn(
         session_dir: PathBuf,
-        config: RecorderStemConfig,
-        receiver: PlanEdgeReceiver,
+        stem: RecorderStemInput,
         start_gate: Option<Arc<EndpointStartGate>>,
         publication: Option<Arc<RecordingPublication>>,
     ) -> Result<Self, RecorderError> {
+        let RecorderStemInput {
+            config,
+            receiver,
+            initial_frame,
+            lineage_mode,
+        } = stem;
         let label = config.label.as_str().to_owned();
         let stop_requested = Arc::new(AtomicBool::new(false));
         let worker_stop = Arc::clone(&stop_requested);
@@ -593,15 +666,17 @@ impl RecorderWorker {
         let join_handle = thread::Builder::new()
             .name(format!("pks-recorder-{label}"))
             .spawn(move || {
-                run_stem_worker(
-                    &session_dir,
+                run_stem_worker(StemWorkerRuntime {
+                    session_dir,
                     config,
                     receiver,
-                    worker_stop,
+                    stop_requested: worker_stop,
                     start_gate,
                     publication,
-                    worker_telemetry,
-                )
+                    telemetry: worker_telemetry,
+                    initial_frame,
+                    lineage_mode,
+                })
             })?;
         Ok(Self {
             label,
@@ -675,44 +750,43 @@ struct StemWorkerReport {
     checksum_fnv1a64: String,
 }
 
-fn run_stem_worker(
-    session_dir: &Path,
+struct StemWorkerRuntime {
+    session_dir: PathBuf,
     config: RecorderStemConfig,
-    mut receiver: PlanEdgeReceiver,
+    receiver: PlanEdgeReceiver,
     stop_requested: Arc<AtomicBool>,
     start_gate: Option<Arc<EndpointStartGate>>,
     publication: Option<Arc<RecordingPublication>>,
     telemetry: Arc<RecorderWorkerTelemetry>,
-) -> StemWorkerOutcome {
-    let result = run_stem_worker_inner(
-        session_dir,
-        &config,
-        &mut receiver,
-        &stop_requested,
-        start_gate.as_deref(),
-        publication.as_deref(),
-        &telemetry,
-    );
+    initial_frame: Option<PlanEdgeFrame>,
+    lineage_mode: RecorderLineageMode,
+}
+
+fn run_stem_worker(mut runtime: StemWorkerRuntime) -> StemWorkerOutcome {
+    let result = runtime.run();
     if result.is_err() {
-        telemetry.failures_total.fetch_add(1, Ordering::Relaxed);
-        receiver.mark_worker_failure();
+        runtime
+            .telemetry
+            .failures_total
+            .fetch_add(1, Ordering::Relaxed);
+        runtime.receiver.mark_worker_failure();
     }
-    let observations = receiver.observations();
+    let observations = runtime.receiver.observations();
     match result {
         Ok(Some(report)) => StemWorkerOutcome {
-            label: config.label.as_str().to_owned(),
+            label: runtime.config.label.as_str().to_owned(),
             report: Some(report),
             error: None,
             observations,
         },
         Ok(None) => StemWorkerOutcome {
-            label: config.label.as_str().to_owned(),
+            label: runtime.config.label.as_str().to_owned(),
             report: None,
             error: None,
             observations,
         },
         Err(error) => StemWorkerOutcome {
-            label: config.label.as_str().to_owned(),
+            label: runtime.config.label.as_str().to_owned(),
             report: None,
             error: Some(error.to_string()),
             observations,
@@ -720,99 +794,132 @@ fn run_stem_worker(
     }
 }
 
-fn run_stem_worker_inner(
-    session_dir: &Path,
-    config: &RecorderStemConfig,
-    receiver: &mut PlanEdgeReceiver,
-    stop_requested: &AtomicBool,
-    start_gate: Option<&EndpointStartGate>,
-    publication: Option<&RecordingPublication>,
-    telemetry: &RecorderWorkerTelemetry,
-) -> Result<Option<StemWorkerReport>, RecorderError> {
-    if let Some(start_gate) = start_gate {
-        while !start_gate.is_open() {
-            if stop_requested.load(Ordering::Acquire) {
-                return Ok(None);
+impl StemWorkerRuntime {
+    fn run(&mut self) -> Result<Option<StemWorkerReport>, RecorderError> {
+        if let Some(start_gate) = self.start_gate.as_deref() {
+            while !start_gate.is_open() {
+                if self.stop_requested.load(Ordering::Acquire) {
+                    return Ok(None);
+                }
+                thread::park_timeout(Duration::from_millis(WORKER_IDLE_WAIT_MS));
             }
-            thread::park_timeout(Duration::from_millis(WORKER_IDLE_WAIT_MS));
+            self.publication
+                .as_deref()
+                .ok_or_else(|| {
+                    RecorderError::Publication(
+                        "gated recorder worker is missing publication ownership".to_owned(),
+                    )
+                })?
+                .publish()?;
         }
-        publication
-            .ok_or_else(|| {
-                RecorderError::Publication(
-                    "gated recorder worker is missing publication ownership".to_owned(),
-                )
-            })?
-            .publish()?;
-    }
-    let wav_path = session_dir
-        .join("stems")
-        .join(format!("{}.wav", config.label.as_str()));
-    let event_path = stem_event_path(session_dir, &config.label);
-    let mut writer = WavWriter::create(
-        &wav_path,
-        WavSpec {
-            channels: u16::from(config.channels),
-            sample_rate: config.sample_rate_hz,
-            bits_per_sample: 32,
-            sample_format: WavSampleFormat::Float,
-        },
-    )?;
-    let mut event_writer = BufWriter::new(File::create(event_path)?);
-    let mut state = StemWriteState::new(config.timeline_mapping.session_origin_ns);
+        let wav_path = self
+            .session_dir
+            .join("stems")
+            .join(format!("{}.wav", self.config.label.as_str()));
+        let event_path = stem_event_path(&self.session_dir, &self.config.label);
+        let mut writer = WavWriter::create(
+            &wav_path,
+            WavSpec {
+                channels: u16::from(self.config.channels),
+                sample_rate: self.config.sample_rate_hz,
+                bits_per_sample: 32,
+                sample_format: WavSampleFormat::Float,
+            },
+        )?;
+        let mut event_writer = BufWriter::new(File::create(event_path)?);
+        let mut state = StemWriteState::new(self.config.timeline_mapping.session_origin_ns);
 
-    loop {
-        if start_gate.is_some_and(|gate| !gate.is_open()) {
-            if stop_requested.load(Ordering::Acquire) {
+        if let Some(frame) = self.initial_frame.take() {
+            observe_and_write_frame(
+                &mut state,
+                &self.config,
+                &frame,
+                self.lineage_mode,
+                &mut writer,
+                &mut event_writer,
+                &self.telemetry,
+            )?;
+        }
+
+        loop {
+            if self
+                .start_gate
+                .as_deref()
+                .is_some_and(|gate| !gate.is_open())
+            {
+                if self.stop_requested.load(Ordering::Acquire) {
+                    break;
+                }
+                thread::park_timeout(Duration::from_millis(WORKER_IDLE_WAIT_MS));
+                continue;
+            }
+            if let Some(frame) = self.receiver.try_recv() {
+                observe_and_write_frame(
+                    &mut state,
+                    &self.config,
+                    &frame,
+                    self.lineage_mode,
+                    &mut writer,
+                    &mut event_writer,
+                    &self.telemetry,
+                )?;
+                continue;
+            }
+            if self.stop_requested.load(Ordering::Acquire) {
                 break;
             }
             thread::park_timeout(Duration::from_millis(WORKER_IDLE_WAIT_MS));
-            continue;
         }
-        if let Some(frame) = receiver.try_recv() {
-            telemetry
-                .frames_received_total
-                .fetch_add(1, Ordering::Relaxed);
-            let written_before = state.written_frames;
-            let stale_before = state.stale_frames;
-            let discontinuities_before = state.gap_ranges.len();
-            state.write_frame(config, &frame, &mut writer, &mut event_writer)?;
-            telemetry.frames_written_total.fetch_add(
-                state.written_frames.saturating_sub(written_before),
-                Ordering::Relaxed,
-            );
-            telemetry.frames_rejected_total.fetch_add(
-                state.stale_frames.saturating_sub(stale_before),
-                Ordering::Relaxed,
-            );
-            telemetry.discontinuities_total.fetch_add(
-                state
-                    .gap_ranges
-                    .len()
-                    .saturating_sub(discontinuities_before) as u64,
-                Ordering::Relaxed,
-            );
-            continue;
-        }
-        if stop_requested.load(Ordering::Acquire) {
-            break;
-        }
-        thread::park_timeout(Duration::from_millis(WORKER_IDLE_WAIT_MS));
-    }
 
-    event_writer.flush()?;
-    writer.finalize()?;
-    let wav_bytes = fs::metadata(&wav_path)?.len();
-    let checksum_fnv1a64 = checksum_fnv1a64(&wav_path)?;
-    Ok(Some(StemWorkerReport {
-        first_timestamp_ns: state.first_timestamp_ns,
-        final_timestamp_ns: state.expected_timestamp_ns,
-        written_frames: state.written_frames,
-        silence_filled_samples: state.silence_filled_samples,
-        stale_frames: state.stale_frames,
-        gap_ranges: state.gap_ranges,
-        wav_bytes,
-        checksum_fnv1a64,
-    }))
+        event_writer.flush()?;
+        writer.finalize()?;
+        let wav_bytes = fs::metadata(&wav_path)?.len();
+        let checksum_fnv1a64 = checksum_fnv1a64(&wav_path)?;
+        Ok(Some(StemWorkerReport {
+            first_timestamp_ns: state.first_timestamp_ns,
+            final_timestamp_ns: state.expected_timestamp_ns,
+            written_frames: state.written_frames,
+            silence_filled_samples: state.silence_filled_samples,
+            stale_frames: state.stale_frames,
+            gap_ranges: state.gap_ranges,
+            wav_bytes,
+            checksum_fnv1a64,
+        }))
+    }
+}
+
+fn observe_and_write_frame(
+    state: &mut StemWriteState,
+    config: &RecorderStemConfig,
+    frame: &PlanEdgeFrame,
+    lineage_mode: RecorderLineageMode,
+    writer: &mut WavWriter<BufWriter<File>>,
+    event_writer: &mut BufWriter<File>,
+    telemetry: &RecorderWorkerTelemetry,
+) -> Result<(), RecorderError> {
+    telemetry
+        .frames_received_total
+        .fetch_add(1, Ordering::Relaxed);
+    let written_before = state.written_frames;
+    let stale_before = state.stale_frames;
+    let discontinuities_before = state.gap_ranges.len();
+    state.write_frame(config, frame, lineage_mode, writer, event_writer)?;
+    telemetry.frames_written_total.fetch_add(
+        state.written_frames.saturating_sub(written_before),
+        Ordering::Relaxed,
+    );
+    telemetry.frames_rejected_total.fetch_add(
+        state.stale_frames.saturating_sub(stale_before),
+        Ordering::Relaxed,
+    );
+    telemetry.discontinuities_total.fetch_add(
+        state
+            .gap_ranges
+            .len()
+            .saturating_sub(discontinuities_before) as u64,
+        Ordering::Relaxed,
+    );
+    Ok(())
 }
 
 struct StemWriteState {
@@ -842,9 +949,13 @@ impl StemWriteState {
         &mut self,
         config: &RecorderStemConfig,
         frame: &PlanEdgeFrame,
+        lineage_mode: RecorderLineageMode,
         writer: &mut WavWriter<BufWriter<File>>,
         event_writer: &mut BufWriter<File>,
     ) -> Result<(), RecorderError> {
+        if matches!(lineage_mode, RecorderLineageMode::Required) {
+            validate_frame_lineage(config, frame)?;
+        }
         if frame.source_id() != config.source_id {
             return Err(RecorderError::SourceMismatch {
                 label: config.label.as_str().to_owned(),
@@ -978,6 +1089,68 @@ impl StemWriteState {
         self.gap_ranges.push(record);
         Ok(())
     }
+}
+
+fn validate_frame_lineage(
+    config: &RecorderStemConfig,
+    frame: &PlanEdgeFrame,
+) -> Result<(), RecorderError> {
+    let lineage = frame
+        .lineage()
+        .ok_or_else(|| RecorderError::MissingFrameLineage(config.label.as_str().to_owned()))?;
+    validate_lineage_field(
+        config,
+        RecorderLineageField::Session,
+        lineage.session_id.0,
+        config.session_id.0,
+    )?;
+    validate_lineage_field(
+        config,
+        RecorderLineageField::Source,
+        lineage.source_id.0,
+        config.source_id.0,
+    )?;
+    validate_lineage_field(
+        config,
+        RecorderLineageField::Stem,
+        lineage.stem_id.0,
+        config.stem_id.0,
+    )?;
+    validate_lineage_field(
+        config,
+        RecorderLineageField::Clock,
+        u64::from(lineage.clock_id.0),
+        u64::from(config.clock_id.0),
+    )?;
+    validate_lineage_field(
+        config,
+        RecorderLineageField::SourceGeneration,
+        u64::from(lineage.source_generation),
+        u64::from(config.source_generation),
+    )?;
+    validate_lineage_field(
+        config,
+        RecorderLineageField::PermissionEpoch,
+        lineage.permission_epoch,
+        config.permission_epoch,
+    )
+}
+
+fn validate_lineage_field(
+    config: &RecorderStemConfig,
+    field: RecorderLineageField,
+    actual: u64,
+    expected: u64,
+) -> Result<(), RecorderError> {
+    if actual == expected {
+        return Ok(());
+    }
+    Err(RecorderError::LineageMismatch {
+        label: config.label.as_str().to_owned(),
+        field,
+        actual,
+        expected,
+    })
 }
 
 fn duration_ns(samples_per_channel: usize, sample_rate_hz: u32) -> u64 {
