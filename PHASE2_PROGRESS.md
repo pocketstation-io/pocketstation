@@ -1698,3 +1698,22 @@
   order and the public façade-last invariant remain enforced by the publisher.
 - No crate source, public API, runtime behavior, scaffold, mock, provider, or
   loopback-only path changed.
+
+## W12 public façade docs.rs correction — 2026-07-28
+
+- Status: `SAFE-TO-MERGE`; docs.rs received `pocketstation 0.1.0` but build
+  `3978948` failed before rustdoc because its default Linux target selected the
+  native PipeWire backend and the docs.rs sandbox does not provide
+  `libpipewire-0.3`.
+- The public façade API surface is target-independent; native runtime backends
+  remain platform-specific. Documentation will use one explicitly pinned
+  Windows cross-compilation target, which exercises the public Rust surface
+  without requiring a host audio development package.
+- The façade patch release is independent from the unchanged `0.1.0` internal
+  dependency closure. CI and protected release validation cross-document the
+  configured docs.rs target before publication.
+- The exact cross-target `cargo doc`, normalized package inspection, full
+  workspace tests, strict Clippy, quickstart release build, architecture gate,
+  CODE_PROTOCOL, Actionlint, and the 15-package closure dry run pass locally.
+- This correction changes no Session API, runtime behavior, capture path,
+  provider integration, scaffold, mock, fallback, or loopback-only claim.
