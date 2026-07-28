@@ -1693,5 +1693,8 @@
 - A fake Cargo/registry/sleep contract proves six-version skip and nine-version
   resume, 429 retry timing, and non-429 fail-closed behavior without network or
   publication.
+- The partial-resume assertion compares the exact crate set rather than
+  platform-specific ordering among independent topological nodes; dependency
+  order and the public façade-last invariant remain enforced by the publisher.
 - No crate source, public API, runtime behavior, scaffold, mock, provider, or
   loopback-only path changed.
