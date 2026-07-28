@@ -30,12 +30,20 @@
   have truthful package descriptions. This is package readiness only; no crate
   was published and no registry-consumer claim is made before the dependency
   closure exists in the registry.
-- The release dry-run validates all 18 package manifests in dependency order
-  and keeps the public `pocketstation` package last. `cargo package --list`
-  validates the façade archive contents. A real package build remains
-  intentionally blocked until `pks-capture` and the rest of the internal
-  dependency closure are published; source-path consumption remains `PARTIAL`
-  and is not registry proof.
+- All 19 workspace packages declare an explicit registry role. The release
+  dry-run derives the exact 15-package normal/target dependency closure of the
+  public façade, validates it in Cargo dependency order, and keeps
+  `pocketstation` last. The codec C ABI, Session C ABI, and Whisper example
+  remain explicitly non-publishable rather than leaking into that closure.
+- Main/PR CI now runs workspace tests, strict all-target/all-feature Clippy,
+  the release quickstart build, architecture and CODE_PROTOCOL checks, and the
+  exact 15-package publish dry-run. The actual crates.io job is release-only:
+  it rejects prereleases, non-`pocketstation-v<workspace-version>` tags,
+  commits outside `main`, dirty checkouts, and any failed validation. It reads
+  the scoped token from the job environment and does not run `cargo login`.
+  GitHub's `crates-io` environment is the deployment boundary where repository
+  owners can require approval and scope the token. No crate was published by
+  this work.
 - No provider code, first-party connector catalog, browser/relay implementation,
   recording implementation, mock product path, per-frame foreign callback,
   unbounded queue, or new device claim was introduced. Connector/browser/

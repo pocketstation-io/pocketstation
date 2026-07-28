@@ -1,34 +1,55 @@
-name: ci-rust-audio-core
-# Run on PRs, and on push only to main (post-merge). The previous
-# `on: [pull_request, push]` ran every check TWICE on a PR branch (once for the
-# push event, once for the pull_request event) — wasteful and noisy.
-on:
+name: rust-facade-ci
+
+'on':
   push:
     branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rust-facade-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   rust:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
-      # The Linux capture backend depends on PipeWire (libspa-sys), whose build
-      # script needs the PipeWire dev headers + pkg-config, and bindgen needs
-      # libclang. Without these the workspace fails to build on Linux — which is
-      # why CI was red before this step existed.
+
       - name: Install Linux audio system deps (PipeWire + ALSA)
-        run: sudo apt-get update && sudo apt-get install -y libpipewire-0.3-dev libasound2-dev pkg-config clang
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            clang \
+            libasound2-dev \
+            libpipewire-0.3-dev \
+            pkg-config
+
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-      - run: cargo fmt --all -- --check
-      - run: cargo clippy --workspace --all-targets -- -D warnings
-      - run: cargo test --workspace
-      - name: Compile benchmarks
-        run: cargo bench --no-run -p pks-audio
-      - name: Alloc-free hot path check (integration test)
-        run: cargo test -p pks-audio --test alloc_check -- --nocapture
-      - name: Architecture constraint checks (CRATE_OWNERSHIP.md enforcement)
+
+      - name: Rust formatting
+        run: cargo fmt --all -- --check
+
+      - name: Workspace tests
+        run: cargo test --workspace --all-features --locked
+
+      - name: Strict workspace Clippy
+        run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
+
+      - name: Compile the public quickstart
+        run: cargo build --release -p pocketstation --example product_quickstart --locked
+
+      - name: Architecture constraints
         run: bash scripts/lint/check-architecture-constraints.sh
-      # Publish dry-run removed: it was guarded by `|| true` (could never fail =
-      # meaningless), and real publishing is handled by publish.yml.
+
+      - name: CODE_PROTOCOL
+        run: bash scripts/check_protocol.sh
+
+      - name: Validate the exact crates.io facade closure
+        run: bash scripts/publish.sh --dry-run
