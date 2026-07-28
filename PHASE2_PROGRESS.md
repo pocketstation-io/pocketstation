@@ -42,8 +42,10 @@
   commits outside `main`, dirty checkouts, and any failed validation. It reads
   the scoped token from the job environment and does not run `cargo login`.
   GitHub's `crates-io` environment is the deployment boundary where repository
-  owners can require approval and scope the token. No crate was published by
-  this work.
+  owners can require approval and scope the token. The token is explicitly a
+  first-release bootstrap: after `0.1.0`, each crate can authorize the
+  repository through crates.io trusted-publishing OIDC and the long-lived
+  secret must be retired. No crate was published by this work.
 - No provider code, first-party connector catalog, browser/relay implementation,
   recording implementation, mock product path, per-frame foreign callback,
   unbounded queue, or new device claim was introduced. Connector/browser/
