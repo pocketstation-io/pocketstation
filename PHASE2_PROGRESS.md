@@ -1523,3 +1523,21 @@
 - No provider implementation, mock, scaffold, fallback, new counter source, or
   loopback-only product path was introduced. Concrete endpoint adapters still
   own the next W11 integration step.
+
+## W11 portable codec build flags — 2026-07-28
+
+- Status: `SAFE-TO-TEST`; the repository no longer injects host-specific
+  `target-cpu=native` and `-march=native` flags into every Rust and C build.
+- The global flags made release artifacts depend on the build machine and
+  broke the real `aarch64-linux-android` codec archive at the NDK compiler
+  boundary. The NDK correctly rejected the inherited host-only C flag.
+- Native CPU tuning is now an explicit benchmark or local-development choice,
+  not an implicit workspace policy. Release and SDK artifacts use the selected
+  target toolchain's portable defaults.
+- `scripts/build-android-codec-c.sh` pins NDK `26.1.10909125`, API 29,
+  `aarch64-linux-android`, and `arm64-v8a`, supplies the exact NDK linker and
+  archiver, and writes the immutable archive layout consumed by the Android
+  SDK and lab gate.
+- This change introduces no scaffold, mock, fallback, or loopback-only path.
+  The Android linked-component gate remains responsible for proving the exact
+  archive, JNI shared library, definitions, unresolved symbols, and hashes.
