@@ -5,9 +5,10 @@ use std::time::Duration;
 use pks_caps::{AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec};
 use pks_capture::{
     ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode,
-    CaptureObservationCounters, CaptureObservations, CaptureRuntimeFailure,
-    CaptureRuntimeFailureClass, PreparedCaptureBackend, SourceGeneration, SourceKind,
-    SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventSender, StableSourceId,
+    CaptureObservationCounters, CaptureObservationHandle, CaptureObservations,
+    CaptureRuntimeFailure, CaptureRuntimeFailureClass, PreparedCaptureBackend, SourceGeneration,
+    SourceKind, SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventSender,
+    StableSourceId,
 };
 use pks_endpoint::{
     EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization,
@@ -285,6 +286,10 @@ impl Drop for TestPreparedCapture {
 }
 
 impl ActiveCaptureBackend for TestActiveCapture {
+    fn observation_handle(&self) -> CaptureObservationHandle {
+        self.counters.observation_handle()
+    }
+
     fn observations(&self) -> CaptureObservations {
         self.counters.snapshot()
     }

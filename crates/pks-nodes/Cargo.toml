@@ -10,7 +10,7 @@ pks-endpoint = { path = "../pks-endpoint" }
 pks-frame = { path = "../pks-frame" }
 pks-caps = { path = "../pks-caps" }
 pks-graph = { path = "../pks-graph" }
-pks-ml = { path = "../pks-ml" }
+pks-dsp = { path = "../pks-dsp", version = "0.1.0" }
 pks-runtime = { path = "../pks-runtime" }
 pks-timing.workspace = true
 hound.workspace = true

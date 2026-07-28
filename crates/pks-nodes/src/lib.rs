@@ -4,10 +4,10 @@
 //! can instantiate concrete nodes.
 
 mod bridge_sink;
+mod dsp_nodes;
 mod foreign_audio_endpoint;
 mod mic_source;
 mod mix;
-mod ml_nodes;
 mod multistem_endpoint;
 mod multistem_recorder;
 mod source;
@@ -18,6 +18,7 @@ use std::sync::Arc;
 use pks_graph::{register_builtins, NodeRegistry};
 
 pub use bridge_sink::{BridgeSinkFactory, BridgeSinkNode, BridgeSinkTelemetry};
+pub use dsp_nodes::{EchoCancelFactory, NoiseSuppressFactory, VadFactory, WatermarkFactory};
 pub use foreign_audio_endpoint::{
     PolledAudioBatchLease, PolledAudioEndpointConfig, PolledAudioEndpointConfigError,
     PolledAudioEndpointFactory, PolledAudioFrame, PolledAudioObservations, PolledAudioPollError,
@@ -25,7 +26,6 @@ pub use foreign_audio_endpoint::{
 };
 pub use mic_source::{MicSourceFactory, MicSourceNode, MicTelemetry};
 pub use mix::{MixerSourceFactory, MixerSourceNode, MixerTelemetry, MonoMixFactory, MonoMixNode};
-pub use ml_nodes::{EchoCancelFactory, NoiseSuppressFactory, VadFactory, WatermarkFactory};
 pub use multistem_endpoint::{
     MultistemEndpointCoordinator, MultistemEndpointError, MultistemEndpointStem,
     MultistemRecordingReceipt,

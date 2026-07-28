@@ -135,6 +135,17 @@ pub struct PlanSourceSender {
     telemetry: Arc<PlanSourceInputTelemetry>,
 }
 
+#[derive(Clone)]
+pub struct PlanSourceObservationHandle {
+    telemetry: Arc<PlanSourceInputTelemetry>,
+}
+
+impl PlanSourceObservationHandle {
+    pub fn observations(&self) -> PlanSourceInputObservations {
+        self.telemetry.snapshot()
+    }
+}
+
 impl PlanSourceSender {
     pub fn try_send(&mut self, frame: LineagedAudioFrame) -> PlanSourceSendOutcome {
         if self.cancellation.is_requested() {
@@ -165,6 +176,12 @@ impl PlanSourceSender {
 
     pub fn observations(&self) -> PlanSourceInputObservations {
         self.telemetry.snapshot()
+    }
+
+    pub fn observation_handle(&self) -> PlanSourceObservationHandle {
+        PlanSourceObservationHandle {
+            telemetry: Arc::clone(&self.telemetry),
+        }
     }
 }
 
@@ -682,6 +699,7 @@ mod tests {
         let cancellation = PlanRunnerCancellation::new();
         let (mut sender, input) =
             plan_source_channel(source_ids[0], 1, cancellation.clone()).unwrap();
+        let observation_handle = sender.observation_handle();
         assert!(matches!(
             sender.try_send(frame(11, 0)),
             PlanSourceSendOutcome::Enqueued
@@ -691,6 +709,7 @@ mod tests {
         cancellation.request();
         let cancelled_result = sender.try_send(frame(11, 2));
         let observations = input.observations();
+        let handle_observations = observation_handle.observations();
 
         assert!(matches!(
             full_result,
@@ -711,5 +730,6 @@ mod tests {
         assert_eq!(observations.frames_enqueued_total, 1);
         assert_eq!(observations.frames_rejected_full_total, 1);
         assert_eq!(observations.frames_rejected_cancelled_total, 1);
+        assert_eq!(handle_observations, observations);
     }
 }

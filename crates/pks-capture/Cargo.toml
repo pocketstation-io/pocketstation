@@ -12,3 +12,14 @@ pks-timing = { workspace = true }
 rtrb = { workspace = true }
 serde = { workspace = true }
 thiserror = { workspace = true }
+
+[dev-dependencies]
+criterion.workspace = true
+
+[[bench]]
+name = "captured_frame_stream"
+harness = false
+
+[[bench]]
+name = "capture_to_stream"
+harness = false

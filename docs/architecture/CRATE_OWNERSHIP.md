@@ -78,14 +78,15 @@ by the lower layers without redefining them.
 | Crate | Owns | Must NOT own |
 |---|---|---|
 | `pks-session` | Safe Rust `SessionSpec`, public selectors/descriptors, declaration freeze, fixed Session source/external-boundary structural node registration, exact-source resolution orchestration, transactional startup/rollback, ownership of a running Session's capture/runtime/endpoint resources, cancellation, drain/join/finalization coordination, safe event/metric projections, and stable semantic errors | Graph compilation algorithms, plan scheduling/routing algorithms, buffer-pool implementation, native capture implementation, codec or recorder implementation, provider connectors, C ABI records/handle tables, language-SDK ergonomics, UI, or process-helper IPC |
-| `pks-session-c` | Versioned C records and status codes, ABI/capability negotiation, engine-scoped generational foreign handles, marshalling, bounded event/metric polling, bounded immutable audio-batch leases, panic containment, reproducible headers, and C conformance fixtures | Session lifecycle semantics, graph/runtime algorithms, capture or endpoint implementations, provider code, language-owned APIs, or a second scheduler |
+| `pks-session-c` | Versioned C records and status codes, ABI/capability negotiation, engine-scoped generational foreign handles, marshalling, bounded event/metric polling, bounded immutable audio-batch leases, panic containment, reproducible headers, and C conformance fixtures | Session lifecycle semantics, graph/runtime algorithms, capture or endpoint implementations, provider code, language-owned APIs, codec compatibility symbols, or a second scheduler |
 
 `pks-session-c` depends on `pks-session`; `pks-session` never depends on the
-adapter. Python and Node may use direct PyO3 and Node-API adapters over
-`pks-session` instead of being forced through C. Swift and Kotlin may use the C
-projection or platform/generated wrappers. Every adapter preserves one Session
-engine and the same lifecycle, error, backpressure, lineage, and observation
-semantics.
+adapter. `pks-codec-c` is a separate compatibility boundary that depends only
+on `pks-codec` and owns the retained Opus C ABI. Python and Node may use direct
+PyO3 and Node-API adapters over `pks-session` instead of being forced through
+C. Swift and Kotlin may use the Session C projection or platform/generated
+wrappers. Every Session adapter preserves one Session engine and the same
+lifecycle, error, backpressure, lineage, and observation semantics.
 
 The fixed Session node registration is structural only. Application and
 microphone ingress nodes forward capture-owned frames through the compiled
@@ -221,8 +222,10 @@ ml.local_vad
 | `pks-capture-macos` | CoreAudio tap / ScreenCaptureKit / device capture | Non-macOS paths |
 | `pks-capture-windows` | WASAPI / process loopback | Non-Windows paths |
 | `pks-capture-linux` | PipeWire/Pulse implementation | Non-Linux paths |
-| `pks-audio` | Current compatibility façade: selected lower-crate re-exports, legacy Opus C exports, temporary Session declaration, and small demo/test helpers while ownership is migrated | `AudioBufferPool` or frame ownership, compiled graph/runtime ownership, a second Session engine, provider integrations, product workflows |
+| `pks-audio` | Current Rust compatibility façade: selected lower-crate re-exports, canonical Session re-exports, and small demo/test helpers | `AudioBufferPool` or frame ownership, compiled graph/runtime ownership, a second Session engine, C ABI ownership, provider integrations, product workflows |
 | `pks-codec` | Opus encode/decode, packet format, RTP timestamp metadata, jitter-adjacent helpers | WebRTC signaling, product logic |
+| `pks-codec-c` | Stable codec C compatibility surface, retained `pks_*` Opus symbols, reproducible checked header, and native library artifacts | Session lifecycle/control ABI, graph/runtime behavior, capture, provider integrations, or SDK-owned media logic |
+| `pks-session-c` | Minimal stable C projection over canonical `pks-session`: versioned records, typed generational handles, bounded polling and audio leases, panic containment, header packaging, and conformance fixtures excluded from the default ABI | Session compilation/runtime business logic, capture implementations, provider integrations, language-owned Rust/Python/Node APIs |
 
 ---
 
@@ -231,8 +234,7 @@ ml.local_vad
 | Crate | Owns | Must NOT own |
 |---|---|---|
 | `pks-nodes` | Current first-party factories/endpoints: synthetic, microphone, and system-output source factories; mono mixing; Bridge sink; VAD/denoise/AEC/watermark adapters; and explicit multistem recording lifecycle/finalization | Provider connectors, API-key fields, meeting/product workflows, or unimplemented operators presented as available |
-| `pks-ml` | Current bounded local DSP implementations: VAD, denoise, echo cancellation, and audio watermarking with slice-based hot-path cores and `RuntimeNode` integration | OpenAI chat, Ollama summarize, Deepgram cloud STT, ElevenLabs TTS, agent orchestration, meeting notes product logic, or an unimplemented generic model runtime |
-| `pks-pipeline` | Current legacy compatibility path: ring-backed `frame_bus`, linear `ProcessorGraph`, basic processors, and timing correction re-export until callers migrate to the compiled graph/runtime path | Product recipes falsely presented as implemented, compiled graph/runtime semantics, Session lifecycle, provider or model implementations |
+| `pks-dsp` | Current bounded local DSP implementations: VAD, denoise, echo cancellation, and audio watermarking with slice-based hot-path cores and `RuntimeNode` integration | OpenAI chat, Ollama summarize, Deepgram cloud STT, ElevenLabs TTS, agent orchestration, meeting notes product logic, or an unimplemented generic model runtime |
 
 ---
 
@@ -247,7 +249,7 @@ pks-frame
 
 pks-graph
   may depend on:      pks-frame, pks-caps, serde (manifest serialization)
-  must not depend on: pks-runtime, pks-nodes, pks-ml, any provider SDK
+  must not depend on: pks-runtime, pks-nodes, pks-dsp, any provider SDK
 
 pks-timing
   may depend on:      std / core / alloc only
@@ -285,25 +287,23 @@ pks-session-c
                       provider SDKs, Python/Node/Swift/Kotlin runtime packages,
                       or graph/runtime internals bypassing pks-session
 
+pks-codec-c
+  may depend on:      pks-codec and header-generation build dependencies
+  must not depend on: pks-session, graph/runtime crates, capture backends,
+                      provider SDKs, or language runtime packages
+
 pks-nodes
   may depend on:      pks-frame, pks-caps, pks-graph, pks-runtime, pks-endpoint,
-                      pks-timing, pks-ml
+                      pks-timing, pks-dsp
   must not contain:   provider connector clients, API-key fields, product workflows
 
-pks-ml
-  may depend on:      pks-frame, pks-graph, audio-ml/* algorithm crates
+pks-dsp
+  may depend on:      pks-frame, pks-graph
   must not contain:   cloud APIs, LLM orchestration, agent logic, meeting products
 
 examples/
   may depend on:      anything
 ```
-
-`pks-pipeline` currently depends on `pks-frame`, `pks-timing`, and `pks-codec`.
-It may compose timing correction primitives but must not own a second clock
-estimator/controller implementation. It is a legacy compatibility crate, not
-evidence that product recipes or the compiled Pipeline API already exist. A
-frame timestamp is one clock-domain observation; it is never itself a measured
-inter-clock offset.
 
 ---
 
@@ -349,7 +349,7 @@ Provider integrations live in:
 3. Community crates (optional connectors, only after real demand)
 4. User application code
 
-**Never in:** `pks-frame`, `pks-graph`, `pks-runtime`, `pks-caps`, `pks-nodes`, `pks-ml`.
+**Never in:** `pks-frame`, `pks-graph`, `pks-runtime`, `pks-caps`, `pks-nodes`, `pks-dsp`.
 
 ---
 

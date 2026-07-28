@@ -1,6 +1,6 @@
 use pks_capture::{
     ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode,
-    CaptureObservations, PreparedCaptureBackend,
+    CaptureObservationHandle, CaptureObservations, PreparedCaptureBackend,
 };
 
 use crate::DesktopCaptureSource;
@@ -43,6 +43,10 @@ impl PreparedCaptureBackend for PreparedDesktopCapture {
 }
 
 impl ActiveCaptureBackend for ActiveDesktopCapture {
+    fn observation_handle(&self) -> CaptureObservationHandle {
+        self.source.observation_handle()
+    }
+
     fn observations(&self) -> CaptureObservations {
         self.source.observations()
     }

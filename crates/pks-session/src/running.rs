@@ -5,26 +5,28 @@ use std::time::Duration;
 
 use pks_capture::{
     prepare_capture, CallbackCaptureBackend, CaptureError, CaptureLineageSeed, CaptureMode,
-    CapturePrepareRequest, CaptureStopOutcome, InputDeviceSelector, SourceRuntimeEventReceive,
+    CaptureObservationReceipt, CapturePrepareRequest, CaptureStopOutcome, InputDeviceSelector,
+    SourceRuntimeEventReceive,
 };
 use pks_endpoint::{
-    endpoint_start_gate, EndpointDriverInput, EndpointDriverRegistry, EndpointFailure,
-    EndpointFinalizationOutcome, EndpointPrepareContext, EndpointPrepareError,
+    endpoint_start_gate, EndpointDriverInput, EndpointDriverObservations, EndpointDriverRegistry,
+    EndpointFailure, EndpointFinalizationOutcome, EndpointPrepareContext, EndpointPrepareError,
     EndpointStartFailure, PreparedEndpoint, RunningEndpoint,
 };
 use pks_frame::{EndpointId, RouteId, SessionId, StemId};
 use pks_runtime::{
-    PlanRunnerDrainPolicy, PlanRunnerError, PlanRunnerFinishSummary, PlanSourceSendOutcome,
-    RealtimePlanRunner,
+    PlanEdgeObservationHandle, PlanRunnerDrainPolicy, PlanRunnerError, PlanRunnerFinishSummary,
+    PlanSourceObservationHandle, PlanSourceSendOutcome, RealtimePlanRunner,
 };
 
 use crate::compiler::endpoint_node_config;
 use crate::events::{session_event_channel, SessionEventSender};
 use crate::{
-    ApplicationSelector, DeviceSelector, PreparedSession, PreparedWorkerMapping,
-    SessionComponentId, SessionControlFailure, SessionEventReceiver, SessionFinalizationFailure,
-    SessionFinalizationStage, SessionLifecycleState, SessionRollbackFailure, SessionRollbackStage,
-    SessionSourceFailure, SessionTerminalOutcome, Source, RECORDING_GROUP_CONFIGURATION_KEY,
+    ApplicationSelector, DeviceSelector, EndpointObservationStage, PreparedSession,
+    PreparedWorkerMapping, SessionComponentId, SessionControlFailure, SessionEventReceiver,
+    SessionFinalizationFailure, SessionFinalizationStage, SessionLifecycleState,
+    SessionRollbackFailure, SessionRollbackStage, SessionRouteMetrics, SessionSourceFailure,
+    SessionSourceMetrics, SessionTerminalOutcome, Source, RECORDING_GROUP_CONFIGURATION_KEY,
 };
 
 pub struct CaptureBackendSet<'backend> {
@@ -52,6 +54,23 @@ impl Default for SessionStartOptions {
             runtime_ready_timeout_ms: 1_000,
             session_event_capacity_events: 32,
         }
+    }
+}
+
+/// Thread-safe cancellation request for a Session that has not reached
+/// `Running` yet.
+#[derive(Clone, Debug, Default)]
+pub struct SessionStartCancellation {
+    requested: Arc<AtomicBool>,
+}
+
+impl SessionStartCancellation {
+    pub fn request(&self) {
+        self.requested.store(true, Ordering::Release);
+    }
+
+    pub fn is_requested(&self) -> bool {
+        self.requested.load(Ordering::Acquire)
     }
 }
 
@@ -105,6 +124,8 @@ pub enum SessionStartError {
         message: String,
         rollback_failures_total: u64,
     },
+    #[error("Session start was cancelled")]
+    Cancelled { rollback_failures_total: u64 },
 }
 
 impl SessionStartError {
@@ -137,6 +158,9 @@ impl SessionStartError {
             | Self::RuntimeWorkerReady {
                 rollback_failures_total,
                 ..
+            }
+            | Self::Cancelled {
+                rollback_failures_total,
             } => *rollback_failures_total,
             Self::InvalidOptions { .. }
             | Self::UnsupportedSourceTopology
@@ -230,6 +254,26 @@ struct RunningEndpointBinding {
     endpoint: RunningEndpoint,
 }
 
+struct SourceObservationBinding {
+    stem_id: StemId,
+    capture: CaptureObservationReceipt,
+    ingress: PlanSourceObservationHandle,
+}
+
+struct RouteObservationBinding {
+    route_id: RouteId,
+    endpoint_id: EndpointId,
+    edge: PlanEdgeObservationHandle,
+}
+
+#[derive(Clone, Copy)]
+struct FinalEndpointObservation {
+    route_id: RouteId,
+    endpoint_id: EndpointId,
+    observations: EndpointDriverObservations,
+    finalization_failures_total: u64,
+}
+
 #[derive(Default)]
 struct StartupRollback {
     failures: Vec<SessionRollbackFailure>,
@@ -286,6 +330,9 @@ pub struct RunningSession {
     endpoints: Vec<RunningEndpointBinding>,
     event_sender: SessionEventSender,
     event_receiver: Option<SessionEventReceiver>,
+    source_observations: Vec<SourceObservationBinding>,
+    route_observations: Vec<RouteObservationBinding>,
+    final_endpoint_observations: Vec<FinalEndpointObservation>,
     stop_outcome: Option<SessionStopOutcome>,
 }
 
@@ -296,6 +343,39 @@ impl RunningSession {
 
     pub fn take_event_receiver(&mut self) -> Option<SessionEventReceiver> {
         self.event_receiver.take()
+    }
+
+    pub(crate) fn indexed_metrics(
+        &self,
+    ) -> (Box<[SessionSourceMetrics]>, Box<[SessionRouteMetrics]>) {
+        let sources = self
+            .source_observations
+            .iter()
+            .map(|binding| SessionSourceMetrics {
+                stem_id: binding.stem_id,
+                capture: binding.capture.observations(),
+                ingress: binding.ingress.observations(),
+            })
+            .collect::<Vec<_>>()
+            .into_boxed_slice();
+        let routes = self
+            .route_observations
+            .iter()
+            .map(|binding| {
+                let (endpoint, endpoint_observation_stage, finalization_failures_total) =
+                    self.endpoint_observations(binding.route_id, binding.endpoint_id);
+                SessionRouteMetrics {
+                    route_id: binding.route_id,
+                    endpoint_id: binding.endpoint_id,
+                    edge: binding.edge.observations(),
+                    endpoint,
+                    endpoint_observation_stage,
+                    endpoint_finalization_failures_total: finalization_failures_total,
+                }
+            })
+            .collect::<Vec<_>>()
+            .into_boxed_slice();
+        (sources, routes)
     }
 
     pub fn stop(&mut self) -> SessionStopOutcome {
@@ -323,6 +403,23 @@ impl RunningSession {
             .drain(..)
             .map(|binding| (binding.identities, binding.endpoint.join_and_finalize()))
             .collect::<Vec<_>>();
+        self.final_endpoint_observations = endpoint_outcomes
+            .iter()
+            .flat_map(|(identities, outcome)| {
+                identities
+                    .iter()
+                    .map(move |(route_id, endpoint_id)| FinalEndpointObservation {
+                        route_id: *route_id,
+                        endpoint_id: *endpoint_id,
+                        observations: outcome.observations,
+                        finalization_failures_total: u64::from(
+                            outcome.request_stop_result.is_err(),
+                        ) + u64::from(
+                            outcome.join_finalize_result.is_err(),
+                        ),
+                    })
+            })
+            .collect();
         let outcome = stop_outcome(&worker, &endpoint_outcomes);
         publish_terminal_events(
             self.session_id,
@@ -332,6 +429,39 @@ impl RunningSession {
             outcome,
         );
         outcome
+    }
+
+    fn endpoint_observations(
+        &self,
+        route_id: RouteId,
+        endpoint_id: EndpointId,
+    ) -> (
+        Option<EndpointDriverObservations>,
+        EndpointObservationStage,
+        u64,
+    ) {
+        if let Some(finalized) = self.final_endpoint_observations.iter().find(|observation| {
+            observation.route_id == route_id && observation.endpoint_id == endpoint_id
+        }) {
+            return (
+                Some(finalized.observations),
+                EndpointObservationStage::Finalized,
+                finalized.finalization_failures_total,
+            );
+        }
+        self.endpoints
+            .iter()
+            .find(|binding| binding.identities.contains(&(route_id, endpoint_id)))
+            .map_or(
+                (None, EndpointObservationStage::Unavailable, 0),
+                |binding| {
+                    (
+                        Some(binding.endpoint.observations()),
+                        EndpointObservationStage::Live,
+                        0,
+                    )
+                },
+            )
     }
 }
 
@@ -349,6 +479,22 @@ pub fn start_prepared_session(
     endpoint_registry: &EndpointDriverRegistry,
     options: SessionStartOptions,
 ) -> Result<RunningSession, SessionStartFailure> {
+    start_prepared_session_cancellable(
+        prepared,
+        capture_backends,
+        endpoint_registry,
+        options,
+        SessionStartCancellation::default(),
+    )
+}
+
+pub fn start_prepared_session_cancellable(
+    prepared: PreparedSession,
+    capture_backends: CaptureBackendSet<'_>,
+    endpoint_registry: &EndpointDriverRegistry,
+    options: SessionStartOptions,
+    start_cancellation: SessionStartCancellation,
+) -> Result<RunningSession, SessionStartFailure> {
     validate_start_options(options).map_err(SessionStartFailure::input)?;
     validate_source_topology(&prepared).map_err(SessionStartFailure::input)?;
     let PreparedSession {
@@ -363,7 +509,30 @@ pub fn start_prepared_session(
     let (event_sender, event_receiver) =
         session_event_channel(options.session_event_capacity_events);
     let _ = event_sender.publish_lifecycle(session_id, SessionLifecycleState::Starting);
+    if start_cancellation.is_requested() {
+        return Err(complete_start_failure(
+            session_id,
+            &event_sender,
+            event_receiver,
+            SessionStartError::Cancelled {
+                rollback_failures_total: 0,
+            },
+            Vec::new(),
+        ));
+    }
     let (gate_controller, start_gate) = endpoint_start_gate();
+    let source_ingress_observations = source_mappings
+        .iter()
+        .map(|mapping| (mapping.stem_id, mapping.sender.observation_handle()))
+        .collect::<Vec<_>>();
+    let route_observations = worker_mappings
+        .iter()
+        .map(|mapping| RouteObservationBinding {
+            route_id: mapping.route_id,
+            endpoint_id: mapping.endpoint_id,
+            edge: mapping.receiver.observation_handle(),
+        })
+        .collect::<Vec<_>>();
 
     let mut prepared_endpoints = match prepare_endpoints(&spec, worker_mappings, endpoint_registry)
     {
@@ -378,8 +547,34 @@ pub fn start_prepared_session(
             ));
         }
     };
+    if start_cancellation.is_requested() {
+        let rollback = rollback_prepared_endpoints(prepared_endpoints);
+        return Err(complete_start_failure(
+            session_id,
+            &event_sender,
+            event_receiver,
+            SessionStartError::Cancelled {
+                rollback_failures_total: rollback.failures_total(),
+            },
+            rollback.failures,
+        ));
+    }
     let mut running_endpoints = Vec::with_capacity(prepared_endpoints.len());
     while let Some(endpoint) = prepared_endpoints.pop() {
+        if start_cancellation.is_requested() {
+            prepared_endpoints.push(endpoint);
+            let mut rollback = rollback_running_endpoints(running_endpoints);
+            rollback.append(rollback_prepared_endpoints(prepared_endpoints));
+            return Err(complete_start_failure(
+                session_id,
+                &event_sender,
+                event_receiver,
+                SessionStartError::Cancelled {
+                    rollback_failures_total: rollback.failures_total(),
+                },
+                rollback.failures,
+            ));
+        }
         match endpoint.endpoint.start(Arc::clone(&start_gate)) {
             Ok(running) => running_endpoints.push(RunningEndpointBinding {
                 identities: endpoint.identities,
@@ -417,7 +612,32 @@ pub fn start_prepared_session(
             ));
         }
     };
+    if start_cancellation.is_requested() {
+        let mut rollback = rollback_captures(captures);
+        rollback.append(rollback_running_endpoints(running_endpoints));
+        return Err(complete_start_failure(
+            session_id,
+            &event_sender,
+            event_receiver,
+            SessionStartError::Cancelled {
+                rollback_failures_total: rollback.failures_total(),
+            },
+            rollback.failures,
+        ));
+    }
 
+    let source_observations = captures
+        .iter()
+        .zip(source_ingress_observations)
+        .map(|(capture, (stem_id, ingress))| {
+            debug_assert_eq!(capture.stem_id, stem_id);
+            SourceObservationBinding {
+                stem_id: capture.stem_id,
+                capture: capture.owner.observation_receipt(),
+                ingress,
+            }
+        })
+        .collect::<Vec<_>>();
     let runner = match RealtimePlanRunner::new(executor, source_inputs, cancellation) {
         Ok(runner) => runner,
         Err(source) => {
@@ -539,6 +759,33 @@ pub fn start_prepared_session(
         ));
     }
 
+    if start_cancellation.is_requested() {
+        stop_requested.store(true, Ordering::Release);
+        let mut rollback = match runtime_worker.join() {
+            Ok(Some(outcome)) => rollback_worker_outcome(outcome),
+            Ok(None) | Err(_) => StartupRollback {
+                failures: vec![SessionRollbackFailure::new(
+                    SessionRollbackStage::DiscardRuntimeQueues,
+                    SessionControlFailure::new(
+                        SessionComponentId::Runtime,
+                        "join_runtime_worker",
+                        "runtime worker did not return an outcome",
+                    ),
+                )],
+            },
+        };
+        rollback.append(rollback_running_endpoints(running_endpoints));
+        return Err(complete_start_failure(
+            session_id,
+            &event_sender,
+            event_receiver,
+            SessionStartError::Cancelled {
+                rollback_failures_total: rollback.failures_total(),
+            },
+            rollback.failures,
+        ));
+    }
+
     // `gate_controller` is the sole controller returned by `endpoint_start_gate`
     // and has not been shared or opened on any preceding path.
     let _opened = gate_controller.open();
@@ -550,6 +797,9 @@ pub fn start_prepared_session(
         endpoints: running_endpoints,
         event_sender,
         event_receiver: Some(event_receiver),
+        source_observations,
+        route_observations,
+        final_endpoint_observations: Vec::new(),
         stop_outcome: None,
     })
 }

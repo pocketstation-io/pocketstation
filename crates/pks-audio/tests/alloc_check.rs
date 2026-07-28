@@ -7,8 +7,8 @@
 
 use assert_no_alloc::*;
 use pks_audio::{
-    frame_bus, AudioBufferPool, AudioFrame, OpusDecoder, OpusEncoder, SourceId, StreamId,
-    OPUS_MAX_PACKET_BYTES, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,
+    captured_frame_stream, AudioBufferPool, AudioFrame, OpusDecoder, OpusEncoder, SourceId,
+    StreamId, OPUS_MAX_PACKET_BYTES, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,
 };
 
 #[cfg(test)]
@@ -21,7 +21,8 @@ static A: AllocDisabler = AllocDisabler;
 #[test]
 fn given_hot_path_when_100_frames_then_zero_heap_allocs() {
     let pool = AudioBufferPool::new(64, POOL_SLOT_SAMPLES);
-    let (mut prod, mut cons) = frame_bus(64);
+    let (mut sender, mut stream) =
+        captured_frame_stream(64).expect("bounded captured-frame stream");
     let mut encoder = OpusEncoder::default();
     let mut decoder = OpusDecoder::default();
 
@@ -34,8 +35,8 @@ fn given_hot_path_when_100_frames_then_zero_heap_allocs() {
         let mut h = pool.acquire().expect("pool exhausted on warmup");
         h.copy_from_slice(&pcm);
         let frame = AudioFrame::new(StreamId(1), SourceId(1), wu, wu * 20_000_000, 1, h);
-        let _ = prod.push_drop_newest(frame);
-        if let Some(f) = cons.pop() {
+        let _ = sender.try_send(frame);
+        if let Some(f) = stream.try_next() {
             encode_buf.clear();
             let n = encoder
                 .encode_into(f.buffer.as_slice(), &mut encode_buf)
@@ -53,8 +54,8 @@ fn given_hot_path_when_100_frames_then_zero_heap_allocs() {
             let mut h = pool.acquire().expect("pool exhausted on hot path");
             h.copy_from_slice(&pcm);
             let frame = AudioFrame::new(StreamId(1), SourceId(1), seq, seq * 20_000_000, 1, h);
-            let _ = prod.push_drop_newest(frame);
-            if let Some(f) = cons.pop() {
+            let _ = sender.try_send(frame);
+            if let Some(f) = stream.try_next() {
                 encode_buf.clear();
                 let n = encoder
                     .encode_into(f.buffer.as_slice(), &mut encode_buf)
@@ -69,7 +70,7 @@ fn given_hot_path_when_100_frames_then_zero_heap_allocs() {
     });
 
     assert_eq!(pool.acquire_failures(), 0);
-    assert_eq!(prod.dropped_newest(), 0);
+    assert_eq!(sender.stats().dropped_newest_frames, 0);
 }
 
 fn build_sine(start: u64, len: usize) -> Vec<f32> {

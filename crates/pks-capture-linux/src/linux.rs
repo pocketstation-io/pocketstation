@@ -36,7 +36,7 @@ use spa::param::audio::AudioFormat;
 
 use pks_capture::{
     monotonic_timestamp_ns, CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters,
-    CaptureObservations, CaptureSource, SourceKind, StableSourceId,
+    CaptureObservationHandle, CaptureObservations, CaptureSource, SourceKind, StableSourceId,
 };
 
 /// Stereo capture.
@@ -220,6 +220,10 @@ impl DesktopCaptureSource {
         self.source.observations()
     }
 
+    pub fn observation_handle(&self) -> CaptureObservationHandle {
+        self.source.observation_handle()
+    }
+
     pub fn stop_and_join(self) -> Result<CaptureObservations, LoopbackError> {
         self.source.stop_and_join()
     }
@@ -386,6 +390,10 @@ impl SystemLoopbackSource {
 
     pub fn observations(&self) -> CaptureObservations {
         self.counters.snapshot()
+    }
+
+    pub fn observation_handle(&self) -> CaptureObservationHandle {
+        self.counters.observation_handle()
     }
 
     pub fn stop_and_join(mut self) -> Result<CaptureObservations, LoopbackError> {

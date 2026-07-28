@@ -24,9 +24,8 @@ DEFERRED    Intentionally postponed; ADR or phase plan justifies it
 
 | Component | Status | Repo / File | What's missing | Replace by | Blocked on |
 |---|---|---|---|---|---|
-| Canonical Session execution | PARTIAL | pocketstation / `crates/pks-audio/src/session.rs` | W1 validates the declarative Session and then returns typed `RuntimeNotIntegrated`; no route is claimed to execute. AUDIO-029 assigns the future real engine to `pks-session`; migrate the façade and connect real capture-once bounded execution without retaining a second runtime in `pks-audio`. | Phase 2 W11 | AUDIO-029 implementation, compatibility re-export, and non-Rust lifecycle/lease conformance |
-| pocketstation-ml NoiseSuppressor | PARTIAL | pocketstation / pocketstation-ml / src/denoise.rs | Per-band RMS Wiener gate; missing full FFT-domain spectral subtraction (RNNoise/WebRTC NS quality) | Phase 5 | Phase 5: ONNX/RNNoise model |
-| pocketstation-ml EchoCanceller | PARTIAL | pocketstation / pocketstation-ml / src/aec.rs | NLMS 512-tap adaptive filter; missing delay estimation, double-talk detector, frequency-domain partitioned-block (WebRTC AEC3 quality) | Phase 5 | Phase 5: production AEC |
+| pks-dsp NoiseSuppressor | PARTIAL | pocketstation / `crates/pks-dsp/src/denoise.rs` | Per-band RMS Wiener gate; missing full FFT-domain spectral subtraction (RNNoise/WebRTC NS quality) | Phase 5 | Phase 5: ONNX/RNNoise model |
+| pks-dsp EchoCanceller | PARTIAL | pocketstation / `crates/pks-dsp/src/aec.rs` | NLMS 512-tap adaptive filter; missing delay estimation, double-talk detector, frequency-domain partitioned-block (WebRTC AEC3 quality) | Phase 5 | Phase 5: production AEC |
 | pocketstation-capture-macos (Application mode) | PARTIAL | pocketstation / pocketstation-capture-macos / src/macos_tap.rs | `CaptureMode::Application` uses CoreAudio tap; per-app routing works but sub-5 ms requires ASP plugin (Wave D). Public claim: macOS 14.4+ until 14.2/14.3 tested on device. | Phase 3 Wave D | libASPL submodule + HAL plugin deployment |
 | pocketstation-capture-macos (ASP plugin) | DEFERRED | pocketstation / pocketstation-capture-macos / asp/ | `pks_asp_is_installed()` returns 0 (stub); real plugin requires libASPL vendor submodule + signed deployment | Phase 3 Wave D | AUDIO-022; `vendor/libASPL` submodule (human operator step) |
 | pocketstation-capture-linux | PARTIAL | pocketstation / pocketstation-capture-linux / src/linux.rs | PipeWire path + snd-aloop fallback implemented (AUDIO-024); no CI runner with real PipeWire daemon; PipeWire graph model (node serial, ports, links) still first-pass | Phase 3 Wave C | Linux CI runner with PipeWire |
@@ -69,6 +68,7 @@ These never become production — they exist for testing and development. They a
 | Synthetic source node | pocketstation / pocketstation-nodes / src/source.rs | Registered `source.synthetic` NodeFactory; steady sine tone for graph smoke tests + latency/observability measurement |
 | File output sink | pocketstation / pocketstation-route | Test recording, offline verification |
 | In-memory token store | control-plane | Phase 1 only; Phase 2+ uses real persistence |
+| Session C conformance capture | pocketstation / `crates/pks-session-c/src/conformance_fixture.rs` | Feature-gated deterministic `CallbackCaptureBackend` used only by `scripts/test-session-c-conformance.sh` to prove successful C lifecycle, lineage, bounded lease exhaustion, held-buffer stability, double release, and panic containment through the canonical compiled runtime. The default library and public header do not expose the fixture symbols. |
 
 ---
 

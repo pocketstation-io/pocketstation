@@ -25,3 +25,7 @@ criterion.workspace = true
 [[bench]]
 name = "opus_encode"
 harness = false
+
+[[bench]]
+name = "opus_decode"
+harness = false

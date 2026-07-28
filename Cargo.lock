@@ -1090,7 +1090,6 @@ name = "pks-audio"
 version = "0.1.0"
 dependencies = [
  "assert_no_alloc",
- "cbindgen",
  "criterion",
  "hound",
  "pks-caps",
@@ -1103,7 +1102,6 @@ dependencies = [
  "pks-graph",
  "pks-metrics",
  "pks-nodes",
- "pks-pipeline",
  "pks-runtime",
  "pks-session",
  "pks-timing",
@@ -1125,6 +1123,7 @@ dependencies = [
 name = "pks-capture"
 version = "0.1.0"
 dependencies = [
+ "criterion",
  "pks-frame",
  "pks-timing",
  "rtrb",
@@ -1179,6 +1178,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "pks-codec-c"
+version = "0.1.0"
+dependencies = [
+ "cbindgen",
+ "pks-codec",
+]
+
+[[package]]
+name = "pks-dsp"
+version = "0.1.0"
+dependencies = [
+ "pks-frame",
+ "pks-graph",
+]
+
+[[package]]
 name = "pks-endpoint"
 version = "0.1.0"
 dependencies = [
@@ -1195,6 +1210,7 @@ dependencies = [
 name = "pks-frame"
 version = "0.1.0"
 dependencies = [
+ "criterion",
  "proptest",
  "thiserror 1.0.69",
 ]
@@ -1214,23 +1230,15 @@ name = "pks-metrics"
 version = "0.1.0"
 
 [[package]]
-name = "pks-ml"
-version = "0.1.0"
-dependencies = [
- "pks-frame",
- "pks-graph",
-]
-
-[[package]]
 name = "pks-nodes"
 version = "0.1.0"
 dependencies = [
  "hound",
  "pks-caps",
+ "pks-dsp",
  "pks-endpoint",
  "pks-frame",
  "pks-graph",
- "pks-ml",
  "pks-runtime",
  "pks-timing",
  "proptest",
@@ -1239,17 +1247,6 @@ dependencies = [
  "serde_json",
  "tempfile",
  "thiserror 1.0.69",
-]
-
-[[package]]
-name = "pks-pipeline"
-version = "0.1.0"
-dependencies = [
- "assert_no_alloc",
- "pks-codec",
- "pks-frame",
- "pks-timing",
- "rtrb",
 ]
 
 [[package]]
@@ -1273,11 +1270,25 @@ version = "0.1.0"
 dependencies = [
  "pks-caps",
  "pks-capture",
+ "pks-capture-linux",
+ "pks-capture-macos",
+ "pks-capture-windows",
  "pks-endpoint",
  "pks-frame",
  "pks-graph",
  "pks-nodes",
  "pks-runtime",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "pks-session-c"
+version = "0.1.0"
+dependencies = [
+ "pks-capture",
+ "pks-frame",
+ "pks-graph",
+ "pks-session",
  "thiserror 1.0.69",
 ]
 

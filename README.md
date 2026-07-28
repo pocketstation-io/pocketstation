@@ -37,8 +37,7 @@ The binding deadline, acceptance gate, and scope cuts are in the factory root
 | `pks-capture-windows` | Windows capture adapter (partial) |
 | `pks-capture-linux` | Linux capture adapter (partial) |
 | `pks-nodes` | First-party audio, transport-adjacent and recording operators |
-| `pks-ml` | Bounded local audio inference primitives |
-| `pks-pipeline` | Composition helpers |
+| `pks-dsp` | Bounded local audio DSP primitives |
 | `pks-audio` | Public facade and integration examples |
 
 Provider-specific model connectors belong in `examples/` or external/community

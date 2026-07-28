@@ -4,7 +4,7 @@ use std::time::{Duration, Instant};
 
 use pks_capture::{
     ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode,
-    CaptureObservations, PreparedCaptureBackend,
+    CaptureObservationHandle, CaptureObservations, PreparedCaptureBackend,
 };
 use pks_endpoint::{
     EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization,
@@ -63,6 +63,10 @@ impl PreparedCaptureBackend for TestPreparedCapture {
 }
 
 impl ActiveCaptureBackend for TestActiveCapture {
+    fn observation_handle(&self) -> CaptureObservationHandle {
+        CaptureObservationHandle::default()
+    }
+
     fn observations(&self) -> CaptureObservations {
         CaptureObservations::default()
     }

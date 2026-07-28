@@ -44,9 +44,9 @@ use wasapi::{AudioClient, DeviceEnumerator, Direction, SampleType, StreamMode, W
 
 use pks_capture::{
     monotonic_timestamp_ns, source_runtime_event_channel, CaptureError as LoopbackError,
-    CaptureMode, CaptureObservationCounters, CaptureObservations, CaptureRuntimeFailure,
-    CaptureRuntimeFailureClass, InputDeviceSelector, SourceGeneration, SourceKind,
-    SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventObservations,
+    CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations,
+    CaptureRuntimeFailure, CaptureRuntimeFailureClass, InputDeviceSelector, SourceGeneration,
+    SourceKind, SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventObservations,
     SourceRuntimeEventReceive, SourceRuntimeEventReceiver, SourceRuntimeEventSender,
     StableSourceId,
 };
@@ -111,6 +111,10 @@ impl DesktopCaptureSource {
 
     pub fn observations(&self) -> CaptureObservations {
         self.source.observations()
+    }
+
+    pub fn observation_handle(&self) -> CaptureObservationHandle {
+        self.source.observation_handle()
     }
 
     pub fn try_recv_runtime_event(&self) -> SourceRuntimeEventReceive {
@@ -605,6 +609,10 @@ impl SystemLoopbackSource {
 
     pub fn observations(&self) -> CaptureObservations {
         self.counters.snapshot()
+    }
+
+    pub fn observation_handle(&self) -> CaptureObservationHandle {
+        self.counters.observation_handle()
     }
 
     pub fn try_recv_runtime_event(&self) -> SourceRuntimeEventReceive {

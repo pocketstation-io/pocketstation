@@ -58,7 +58,6 @@ fi
 echo "  pass"
 
 echo "LAW-15: hot path purity..."
-cargo test --quiet -p pks-pipeline --test process_alloc
 cargo test --quiet -p pks-runtime --test plan_router_alloc
 cargo test --quiet -p pks-audio --test alloc_check
 echo "  pass"

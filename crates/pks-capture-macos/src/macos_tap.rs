@@ -10,8 +10,9 @@ use std::time::Duration;
 use pks_frame::{AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, Platform, StreamId};
 
 use pks_capture::{
-    CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservations,
-    CaptureSampleTimeline, CaptureSource, SourceKind, SourceState, StableSourceId,
+    CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters,
+    CaptureObservationHandle, CaptureObservations, CaptureSampleTimeline, CaptureSource,
+    SourceKind, SourceState, StableSourceId,
 };
 
 #[repr(C)]
@@ -441,6 +442,10 @@ impl TapLoopbackSource {
 
     pub fn observations(&self) -> CaptureObservations {
         self.counters.snapshot()
+    }
+
+    pub fn observation_handle(&self) -> CaptureObservationHandle {
+        self.counters.observation_handle()
     }
 
     pub(crate) fn stop_and_join(&mut self) -> Result<CaptureObservations, LoopbackError> {

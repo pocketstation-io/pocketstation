@@ -8,9 +8,10 @@ use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{BufferSize, SampleFormat, SupportedBufferSize};
 use pks_capture::{
     initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureError,
-    CaptureObservationCounters, CaptureObservations, CaptureRuntimeFailure,
-    CaptureRuntimeFailureClass, CaptureSource, InputDeviceSelector, SourceGeneration, SourceKind,
-    SourceRuntimeEvent, SourceRuntimeEventSender, SourceState, StableSourceId,
+    CaptureObservationCounters, CaptureObservationHandle, CaptureObservations,
+    CaptureRuntimeFailure, CaptureRuntimeFailureClass, CaptureSource, InputDeviceSelector,
+    SourceGeneration, SourceKind, SourceRuntimeEvent, SourceRuntimeEventSender, SourceState,
+    StableSourceId,
 };
 use pks_frame::{AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, Platform, StreamId};
 
@@ -211,6 +212,10 @@ impl MacosInputSource {
 
     pub fn observations(&self) -> CaptureObservations {
         self.counters.snapshot()
+    }
+
+    pub fn observation_handle(&self) -> CaptureObservationHandle {
+        self.counters.observation_handle()
     }
 
     pub fn stop_and_join(mut self) -> Result<CaptureObservations, CaptureError> {

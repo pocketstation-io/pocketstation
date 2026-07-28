@@ -22,8 +22,8 @@ use pks_frame::{AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, Sou
 
 use crate::macos_asp::AspReader;
 use pks_capture::{
-    CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservations,
-    CaptureSampleTimeline,
+    CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters,
+    CaptureObservationHandle, CaptureObservations, CaptureSampleTimeline,
 };
 
 // These paths are emitted as `cargo:rustc-env` by build.rs.
@@ -222,6 +222,13 @@ impl SystemLoopbackSource {
         match &self.0 {
             Impl::Tap(source) => source.observations(),
             Impl::Asp { counters, .. } => counters.snapshot(),
+        }
+    }
+
+    pub fn observation_handle(&self) -> CaptureObservationHandle {
+        match &self.0 {
+            Impl::Tap(source) => source.observation_handle(),
+            Impl::Asp { counters, .. } => counters.observation_handle(),
         }
     }
 

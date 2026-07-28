@@ -17,8 +17,8 @@
 ///
 /// Run:  cargo run -p pks-audio --example soak --release
 use pks_audio::{
-    frame_bus, AudioBufferPool, AudioFrame, OpusDecoder, OpusEncoder, SourceId, StreamId,
-    POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,
+    captured_frame_stream, AudioBufferPool, AudioFrame, OpusDecoder, OpusEncoder, SourceId,
+    StreamId, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,
 };
 use std::{f32::consts::PI, time::Instant};
 
@@ -37,7 +37,8 @@ fn build_sine_table() -> Vec<f32> {
 // ── Single-mode soak run ────────────────────────────────────────────────────
 fn run_soak(label: &str, complexity: i32, sine_table: &[f32]) {
     let pool = AudioBufferPool::new(64, POOL_SLOT_SAMPLES);
-    let (mut prod, mut cons) = frame_bus(64);
+    let (mut sender, mut stream) =
+        captured_frame_stream(64).expect("bounded captured-frame stream");
 
     let mut encoder = OpusEncoder::default();
     let mut decoder = OpusDecoder::default();
@@ -63,10 +64,10 @@ fn run_soak(label: &str, complexity: i32, sine_table: &[f32]) {
             *s = sine_table[(offset + i) % sine_table.len()];
         }
         let frame = AudioFrame::new(StreamId(1), SourceId(1), seq, seq * 20_000_000, 1, handle);
-        let _ = prod.push_drop_newest(frame);
+        let _ = sender.try_send(frame);
 
         // ── Consume (encode + decode) ────────────────────────────────────────
-        if let Some(frame) = cons.pop() {
+        if let Some(frame) = stream.try_next() {
             encode_buf.clear();
             let n_enc = encoder
                 .encode_into(frame.buffer.as_slice(), &mut encode_buf)
@@ -81,7 +82,7 @@ fn run_soak(label: &str, complexity: i32, sine_table: &[f32]) {
     }
 
     // Drain remainder.
-    while let Some(frame) = cons.pop() {
+    while let Some(frame) = stream.try_next() {
         encode_buf.clear();
         let n_enc = encoder
             .encode_into(frame.buffer.as_slice(), &mut encode_buf)
@@ -95,7 +96,7 @@ fn run_soak(label: &str, complexity: i32, sine_table: &[f32]) {
     }
 
     let elapsed = start.elapsed();
-    let dropped = prod.dropped_newest();
+    let dropped = sender.stats().dropped_newest_frames;
     let pool_fail = pool.acquire_failures();
     let expected = SOAK_FRAMES * POOL_SLOT_SAMPLES as u64;
     let fps = SOAK_FRAMES as f64 / elapsed.as_secs_f64();

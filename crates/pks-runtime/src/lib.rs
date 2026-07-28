@@ -26,7 +26,8 @@ pub use plan_router::{
 pub use plan_runner::{
     plan_source_channel, PlanRunnerCancellation, PlanRunnerDrainPolicy, PlanRunnerError,
     PlanRunnerFinishSummary, PlanRunnerStepSummary, PlanSourceInput, PlanSourceInputObservations,
-    PlanSourceSendError, PlanSourceSendOutcome, PlanSourceSender, RealtimePlanRunner,
+    PlanSourceObservationHandle, PlanSourceSendError, PlanSourceSendOutcome, PlanSourceSender,
+    RealtimePlanRunner,
 };
 pub use scheduler::PlanScheduler;
 pub use shared_edge_channel::{

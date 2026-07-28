@@ -7,6 +7,7 @@ mod engine_tests;
 mod error;
 mod events;
 mod foreign_audio;
+mod host;
 mod observations;
 mod running;
 #[cfg(test)]
@@ -40,10 +41,18 @@ pub use foreign_audio::{
     PolledAudioEndpointConfigError, PolledAudioFrame, PolledAudioObservations,
     PolledAudioPollError, PolledAudioReceipt, POLLED_AUDIO_OPERATOR_ID,
 };
-pub use observations::SessionEventQueueObservations;
+pub use host::{
+    NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuildError,
+    SessionEngineHostBuilder,
+};
+pub use observations::{
+    EndpointObservationStage, SessionEventQueueObservations, SessionMetricsSnapshot,
+    SessionRouteMetrics, SessionSourceMetrics,
+};
 pub use running::{
-    start_prepared_session, CaptureBackendSet, RunningSession, SessionStartError,
-    SessionStartFailure, SessionStartOptions, SessionStopOutcome,
+    start_prepared_session, start_prepared_session_cancellable, CaptureBackendSet, RunningSession,
+    SessionStartCancellation, SessionStartError, SessionStartFailure, SessionStartOptions,
+    SessionStopOutcome,
 };
 pub use runtime_prepare::{
     prepare_session_runtime, PreparedSession, PreparedSourceMapping, PreparedWorkerMapping,

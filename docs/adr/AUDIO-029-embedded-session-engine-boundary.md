@@ -14,8 +14,8 @@ mobile façades without creating another media runtime in each SDK.
 The central repository already owns compiled graph execution, bounded Bridges,
 shared pooled frames, capture capability truth, lifecycle events, and exact
 observations. It does not own a process IPC protocol or a signed helper
-lifecycle. The current C surface in `pks-audio` is a codec-specific Opus API;
-it is not a versioned Session control contract.
+lifecycle. The codec-specific Opus C surface is isolated in `pks-codec-c`; it
+is not the versioned Session control contract owned by `pks-session-c`.
 
 The engine boundary has two viable deployment shapes:
 
@@ -28,9 +28,8 @@ before an ABI or language SDK fixes the wrong process boundary.
 
 ## Decision
 
-W11 uses one **embedded native Session engine** owned by the new
-`pks-session` crate and one sibling portability adapter named
-`pks-session-c`.
+W11 uses one **embedded native Session engine** owned by `pks-session` and one
+sibling portability adapter named `pks-session-c`.
 
 `pks-session` owns the public, host-neutral Session specification and lifecycle
 composition. It freezes declarations, resolves exact sources, coordinates
@@ -47,9 +46,9 @@ polling and lease projections, panic containment, header generation, and C
 conformance fixtures. It must not become another Session engine.
 
 `pks-audio` may temporarily re-export the Rust Session façade for source
-compatibility. It must not retain or grow a second Session runtime. The
-codec-specific `pks_audio` ABI remains a separate compatibility surface and is
-not the W11 engine contract.
+compatibility. It must not retain or grow a second Session runtime.
+`pks-codec-c` owns the separate codec compatibility ABI and preserves its
+existing `pks_*` symbols; it is not the W11 engine contract.
 
 The portable conformance boundary is a versioned C ABI, but languages are not
 forced through it when a native Rust binding is safer or more idiomatic.

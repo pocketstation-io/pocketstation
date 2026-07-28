@@ -3,7 +3,8 @@ use pks_audio::*;
 fn main() {
     let pool = AudioBufferPool::new(64, POOL_SLOT_SAMPLES);
     // Ring sized to match the pool so all 50 frames fit without backpressure.
-    let (mut prod, mut cons) = frame_bus(64);
+    let (mut sender, mut stream) =
+        captured_frame_stream(64).expect("bounded captured-frame stream");
     let mut encoder = OpusEncoder::default();
     let mut decoder = OpusDecoder::default();
     let mut decoded_all = Vec::new();
@@ -15,10 +16,10 @@ fn main() {
         let frame = AudioFrame::new(StreamId(1), SourceId(1), seq, seq * 20_000_000, 1, handle);
         // push_drop_newest only drops if the ring is full; ring is sized to
         // prevent that in this single-threaded example.
-        let _ = prod.push_drop_newest(frame);
+        let _ = sender.try_send(frame);
     }
 
-    while let Some(frame) = cons.pop() {
+    while let Some(frame) = stream.try_next() {
         let encoded = encoder.encode(&frame).expect("encode failed");
         let decoded = decoder.decode_to_vec(&encoded).expect("decode failed");
         decoded_all.extend_from_slice(&decoded);

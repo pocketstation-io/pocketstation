@@ -15,3 +15,12 @@ pks-graph = { path = "../pks-graph", version = "0.1.0" }
 pks-nodes = { path = "../pks-nodes", version = "0.1.0" }
 pks-runtime = { path = "../pks-runtime", version = "0.1.0" }
 thiserror.workspace = true
+
+[target.'cfg(target_os = "macos")'.dependencies]
+pks-capture-macos = { path = "../pks-capture-macos", version = "0.1.0" }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+pks-capture-linux = { path = "../pks-capture-linux", version = "0.1.0" }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+pks-capture-windows = { path = "../pks-capture-windows", version = "0.1.0" }

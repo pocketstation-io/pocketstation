@@ -1,12 +1,8 @@
-pub mod ffi;
-
-pub use ffi::{pks_encode_opus, pks_opus_encoder_create, pks_opus_encoder_destroy, PksOpusEncoder};
 pub use pks_session::*;
 
 pub use pks_codec::*;
 pub use pks_frame::*;
 pub use pks_metrics::*;
-pub use pks_pipeline::*;
 pub use pks_timing::{ClockDriftEstimator, ClockDriftSnapshot};
 
 // frame owns the canonical graph-level EncodedFrame; codec's leaner Opus-packet
@@ -23,11 +19,12 @@ pub use pks_runtime::{
 };
 
 pub use pks_capture::{
-    capture_system_audio, capture_with_mode, discover_sources, open_best_source, AdapterError,
-    AudioOutputDescriptor, AudioOutputSink, AudioSourceDescriptor, AudioSourceStream, CaptureError,
-    CaptureMode, CaptureSource, LatencyClass, LoopbackError, OutputRequest, PlatformAdapter,
-    PlatformId, ReliabilityClass, SourceCapability, SourceKind, SourcePreference, SourceRequest,
-    SourceState, StableSourceId, SystemLoopbackSource,
+    capture_system_audio, capture_with_mode, captured_frame_stream, discover_sources,
+    open_best_source, AdapterError, AudioOutputDescriptor, AudioOutputSink, AudioSourceDescriptor,
+    AudioSourceStream, CaptureError, CaptureMode, CaptureSource, CapturedFrameDelivery,
+    CapturedFrameSender, CapturedFrameStream, CapturedFrameStreamStats, LatencyClass,
+    LoopbackError, OutputRequest, PlatformAdapter, PlatformId, ReliabilityClass, SourceCapability,
+    SourceKind, SourcePreference, SourceRequest, SourceState, StableSourceId, SystemLoopbackSource,
 };
 
 // Re-export capture's OutputTarget.

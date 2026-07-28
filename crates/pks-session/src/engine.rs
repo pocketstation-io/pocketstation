@@ -160,6 +160,28 @@ impl SessionEngine {
         .map_err(SessionEngineStartError::Start)
     }
 
+    pub fn start_compiled_cancellable(
+        &self,
+        compiled: CompiledSession,
+        capture_backends: CaptureBackendSet<'_>,
+        start_cancellation: crate::SessionStartCancellation,
+    ) -> Result<RunningSession, SessionEngineStartError> {
+        let prepared = prepare_session_runtime(
+            compiled,
+            &self.node_registry,
+            &self.prepare_context,
+            self.source_queue_capacity_frames,
+        )?;
+        crate::start_prepared_session_cancellable(
+            prepared,
+            capture_backends,
+            &self.endpoint_registry,
+            self.start_options,
+            start_cancellation,
+        )
+        .map_err(SessionEngineStartError::Start)
+    }
+
     pub fn start(
         &self,
         session: Session,

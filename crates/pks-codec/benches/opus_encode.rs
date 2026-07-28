@@ -28,6 +28,29 @@ fn pcm_sine(samples: usize) -> Vec<f32> {
 fn bench_opus_encode(c: &mut Criterion) {
     let mut group = c.benchmark_group("A2_OpusEncode");
 
+    // Silence keeps the legacy low-energy benchmark case attached to the
+    // codec owner instead of the compatibility façade.
+    {
+        let pcm = vec![0.0_f32; SAMPLES_20MS_MONO];
+        let config = OpusConfig {
+            sample_rate: OpusSampleRate::Hz48000,
+            channels: OpusChannels::Mono,
+            frame_duration: OpusFrameDuration::Ms20,
+            application: OpusApplication::Voip,
+            bitrate_kbps: Some(32),
+            complexity: 10,
+            dtx: false,
+            fec: false,
+        };
+        let mut enc = OpusEncoder::from_config(&config).expect("encoder");
+        let mut out = Vec::with_capacity(4096);
+        group.bench_function(BenchmarkId::new("voice20_mono_silence", ""), |b| {
+            b.iter(|| {
+                enc.encode_into(&pcm, &mut out).expect("encode");
+            })
+        });
+    }
+
     // voice20 — 20ms mono 32kbps (default broadcast profile).
     {
         let pcm = pcm_sine(SAMPLES_20MS_MONO);

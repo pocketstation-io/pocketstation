@@ -83,6 +83,13 @@ impl DesktopCaptureSource {
         }
     }
 
+    pub fn observation_handle(&self) -> pks_capture::CaptureObservationHandle {
+        match &self.0 {
+            DesktopCaptureImplementation::Input(source) => source.observation_handle(),
+            DesktopCaptureImplementation::Loopback(source) => source.observation_handle(),
+        }
+    }
+
     pub fn stop_and_join(
         self,
     ) -> Result<pks_capture::CaptureObservations, pks_capture::CaptureError> {

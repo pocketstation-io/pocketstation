@@ -6,9 +6,11 @@ use pks_frame::{
 
 use crate::{
     captured_frame_stream, source_runtime_event_channel, CaptureError, CaptureMode,
-    CaptureObservations, CapturedFrameSender, CapturedFrameStream, CapturedFrameStreamStats,
-    PermissionEpoch, SourceGeneration, SourceRuntimeEvent, SourceRuntimeEventObservations,
-    SourceRuntimeEventReceive, SourceRuntimeEventReceiver, SourceRuntimeEventSender,
+    CaptureObservationHandle, CaptureObservations, CapturedFrameObservationHandle,
+    CapturedFrameSender, CapturedFrameStream, CapturedFrameStreamStats, PermissionEpoch,
+    SourceGeneration, SourceRuntimeEvent, SourceRuntimeEventObservationHandle,
+    SourceRuntimeEventObservations, SourceRuntimeEventReceive, SourceRuntimeEventReceiver,
+    SourceRuntimeEventSender,
 };
 
 /// Monotonic timestamp domain used by native capture backends.
@@ -91,6 +93,8 @@ pub trait PreparedCaptureBackend: Send {
 /// reclaim the same resources from `Drop`. Dropping this owner is a
 /// control-thread operation, never an audio-callback or realtime operation.
 pub trait ActiveCaptureBackend: Send {
+    fn observation_handle(&self) -> CaptureObservationHandle;
+
     fn observations(&self) -> CaptureObservations;
 
     fn stop_and_join(self: Box<Self>) -> Result<CaptureObservations, CaptureError>;
@@ -111,11 +115,19 @@ pub struct PreparedCapture {
 
 impl PreparedCapture {
     pub fn open(self) -> Result<CaptureOwner, CaptureError> {
+        let frame_observations = self.frame_stream.observation_handle();
+        let runtime_event_observations = self.runtime_event_receiver.observation_handle();
         let active_backend = self.backend.open(self.delivery)?;
+        let observation_receipt = CaptureObservationReceipt {
+            backend: active_backend.observation_handle(),
+            frame_stream: frame_observations,
+            runtime_events: runtime_event_observations,
+        };
         Ok(CaptureOwner {
             active_backend,
             frame_stream: self.frame_stream,
             runtime_event_receiver: self.runtime_event_receiver,
+            observation_receipt,
             open_metadata: CaptureOpenMetadata {
                 session_id: self.lineage_seed.session_id(),
                 stem_id: self.lineage_seed.stem_id(),
@@ -138,6 +150,23 @@ pub struct CaptureOwnerObservations {
     pub runtime_events: SourceRuntimeEventObservations,
 }
 
+#[derive(Clone, Debug)]
+pub struct CaptureObservationReceipt {
+    backend: CaptureObservationHandle,
+    frame_stream: CapturedFrameObservationHandle,
+    runtime_events: SourceRuntimeEventObservationHandle,
+}
+
+impl CaptureObservationReceipt {
+    pub fn observations(&self) -> CaptureOwnerObservations {
+        CaptureOwnerObservations {
+            backend: self.backend.observations(),
+            frame_stream: self.frame_stream.observations(),
+            runtime_events: self.runtime_events.observations(),
+        }
+    }
+}
+
 /// Final observations returned only after backend stop and join complete.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct CaptureStopOutcome {
@@ -153,6 +182,7 @@ pub struct CaptureOwner {
     active_backend: Box<dyn ActiveCaptureBackend>,
     frame_stream: CapturedFrameStream,
     runtime_event_receiver: SourceRuntimeEventReceiver,
+    observation_receipt: CaptureObservationReceipt,
     open_metadata: CaptureOpenMetadata,
     source_generation: AtomicU32,
     discontinuity_epoch: AtomicU64,
@@ -213,28 +243,30 @@ impl CaptureOwner {
     }
 
     pub fn observations(&self) -> CaptureOwnerObservations {
-        CaptureOwnerObservations {
-            backend: self.active_backend.observations(),
-            frame_stream: self.frame_stream.stats(),
-            runtime_events: self.runtime_event_receiver.observations(),
-        }
+        self.observation_receipt.observations()
+    }
+
+    pub fn observation_receipt(&self) -> CaptureObservationReceipt {
+        self.observation_receipt.clone()
     }
 
     pub fn stop_and_join(self) -> Result<CaptureStopOutcome, CaptureError> {
         let Self {
             active_backend,
-            frame_stream,
-            runtime_event_receiver,
+            frame_stream: _,
+            runtime_event_receiver: _,
+            observation_receipt,
             open_metadata: _,
             source_generation: _,
             discontinuity_epoch: _,
         } = self;
         let backend = active_backend.stop_and_join()?;
+        let observations = observation_receipt.observations();
         Ok(CaptureStopOutcome {
             observations: CaptureOwnerObservations {
                 backend,
-                frame_stream: frame_stream.stats(),
-                runtime_events: runtime_event_receiver.observations(),
+                frame_stream: observations.frame_stream,
+                runtime_events: observations.runtime_events,
             },
         })
     }
@@ -309,6 +341,7 @@ mod tests {
     }
 
     struct TestActiveBackend {
+        counters: CaptureObservationCounters,
         stopped: Arc<AtomicBool>,
     }
 
@@ -330,6 +363,9 @@ mod tests {
             mut delivery: CaptureDelivery,
         ) -> Result<Box<dyn ActiveCaptureBackend>, CaptureError> {
             self.opened.store(true, Ordering::Release);
+            let counters = CaptureObservationCounters::default();
+            counters.observe_callback_buffer();
+            counters.observe_enqueued_frame();
             let pool = AudioBufferPool::new(1, 960);
             let handle = pool.acquire().expect("test pool slot must be available");
             let frame = AudioFrame::new(StreamId(1), SourceId(2), 3, 4, 1, handle);
@@ -351,19 +387,24 @@ mod tests {
                     },
                 });
             Ok(Box::new(TestActiveBackend {
+                counters,
                 stopped: Arc::clone(&self.stopped),
             }))
         }
     }
 
     impl ActiveCaptureBackend for TestActiveBackend {
+        fn observation_handle(&self) -> CaptureObservationHandle {
+            self.counters.observation_handle()
+        }
+
         fn observations(&self) -> CaptureObservations {
-            CaptureObservationCounters::default().snapshot()
+            self.counters.snapshot()
         }
 
         fn stop_and_join(self: Box<Self>) -> Result<CaptureObservations, CaptureError> {
             self.stopped.store(true, Ordering::Release);
-            Ok(CaptureObservationCounters::default().snapshot())
+            Ok(self.counters.snapshot())
         }
     }
 
@@ -413,11 +454,18 @@ mod tests {
             SourceGeneration::INITIAL.0
         );
         assert_eq!(frame.lineage().permission_epoch, PermissionEpoch::INITIAL.0);
+        let receipt = owner.observation_receipt();
         assert!(matches!(
             owner.try_recv_runtime_event(),
             SourceRuntimeEventReceive::Event(SourceRuntimeEvent::SourceUnavailable { .. })
         ));
         assert_eq!(owner.open_metadata().discontinuity_epoch, 1);
+        assert_eq!(receipt.observations().backend.callback_buffers_total, 1);
+        assert_eq!(receipt.observations().frame_stream.delivered_frames, 1);
+        assert_eq!(
+            receipt.observations().runtime_events.events_enqueued_total,
+            1
+        );
     }
 
     #[test]
@@ -440,12 +488,14 @@ mod tests {
         .expect("capture preparation must succeed")
         .open()
         .expect("capture open must succeed");
+        let receipt = owner.observation_receipt();
 
         let outcome = owner.stop_and_join().expect("capture stop must succeed");
 
         assert!(stopped.load(Ordering::Acquire));
         assert_eq!(outcome.observations.frame_stream.delivered_frames, 1);
         assert_eq!(outcome.observations.runtime_events.events_enqueued_total, 1);
+        assert_eq!(receipt.observations(), outcome.observations);
     }
 
     #[test]

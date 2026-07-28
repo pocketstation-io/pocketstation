@@ -9,13 +9,13 @@ mod frame_stream;
 
 pub use capture_owner::{
     join_capture_worker, prepare_capture, ActiveCaptureBackend, CallbackCaptureBackend,
-    CaptureDelivery, CaptureLineageSeed, CaptureOpenMetadata, CaptureOwner,
-    CaptureOwnerObservations, CapturePrepareRequest, CaptureStopOutcome, PreparedCapture,
-    PreparedCaptureBackend, CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID,
+    CaptureDelivery, CaptureLineageSeed, CaptureObservationReceipt, CaptureOpenMetadata,
+    CaptureOwner, CaptureOwnerObservations, CapturePrepareRequest, CaptureStopOutcome,
+    PreparedCapture, PreparedCaptureBackend, CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID,
 };
 pub use frame_stream::{
-    captured_frame_stream, CapturedFrameDelivery, CapturedFrameSender, CapturedFrameStream,
-    CapturedFrameStreamStats,
+    captured_frame_stream, CapturedFrameDelivery, CapturedFrameObservationHandle,
+    CapturedFrameSender, CapturedFrameStream, CapturedFrameStreamStats,
 };
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize)]
@@ -40,6 +40,17 @@ struct CaptureObservationValues {
     oversized_buffer_total: AtomicU64,
     stream_errors_total: AtomicU64,
     timestamp_epoch_clamps_total: AtomicU64,
+}
+
+#[derive(Clone, Debug, Default)]
+pub struct CaptureObservationHandle {
+    values: Arc<CaptureObservationValues>,
+}
+
+impl CaptureObservationHandle {
+    pub fn observations(&self) -> CaptureObservations {
+        CaptureObservationCounters::snapshot_values(&self.values)
+    }
 }
 
 /// Setup-time cloneable handle; every observation is one relaxed atomic
@@ -104,20 +115,26 @@ impl CaptureObservationCounters {
             .fetch_add(1, Ordering::Relaxed);
     }
 
+    pub fn observation_handle(&self) -> CaptureObservationHandle {
+        CaptureObservationHandle {
+            values: Arc::clone(&self.values),
+        }
+    }
+
     pub fn snapshot(&self) -> CaptureObservations {
+        Self::snapshot_values(&self.values)
+    }
+
+    fn snapshot_values(values: &CaptureObservationValues) -> CaptureObservations {
         CaptureObservations {
-            callback_buffers_total: self.values.callback_buffers_total.load(Ordering::Relaxed),
-            frames_enqueued_total: self.values.frames_enqueued_total.load(Ordering::Relaxed),
-            pool_exhausted_total: self.values.pool_exhausted_total.load(Ordering::Relaxed),
-            dispatch_queue_full_total: self
-                .values
-                .dispatch_queue_full_total
-                .load(Ordering::Relaxed),
-            invalid_buffer_total: self.values.invalid_buffer_total.load(Ordering::Relaxed),
-            oversized_buffer_total: self.values.oversized_buffer_total.load(Ordering::Relaxed),
-            stream_errors_total: self.values.stream_errors_total.load(Ordering::Relaxed),
-            timestamp_epoch_clamps_total: self
-                .values
+            callback_buffers_total: values.callback_buffers_total.load(Ordering::Relaxed),
+            frames_enqueued_total: values.frames_enqueued_total.load(Ordering::Relaxed),
+            pool_exhausted_total: values.pool_exhausted_total.load(Ordering::Relaxed),
+            dispatch_queue_full_total: values.dispatch_queue_full_total.load(Ordering::Relaxed),
+            invalid_buffer_total: values.invalid_buffer_total.load(Ordering::Relaxed),
+            oversized_buffer_total: values.oversized_buffer_total.load(Ordering::Relaxed),
+            stream_errors_total: values.stream_errors_total.load(Ordering::Relaxed),
+            timestamp_epoch_clamps_total: values
                 .timestamp_epoch_clamps_total
                 .load(Ordering::Relaxed),
         }
@@ -343,6 +360,20 @@ struct SourceRuntimeEventCounters {
 }
 
 #[derive(Debug, Clone)]
+pub struct SourceRuntimeEventObservationHandle {
+    counters: Arc<SourceRuntimeEventCounters>,
+}
+
+impl SourceRuntimeEventObservationHandle {
+    pub fn observations(&self) -> SourceRuntimeEventObservations {
+        SourceRuntimeEventObservations {
+            events_enqueued_total: self.counters.events_enqueued_total.load(Ordering::Relaxed),
+            events_dropped_total: self.counters.events_dropped_total.load(Ordering::Relaxed),
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
 pub struct SourceRuntimeEventSender {
     sender: std::sync::mpsc::SyncSender<SourceRuntimeEvent>,
     counters: Arc<SourceRuntimeEventCounters>,
@@ -372,9 +403,12 @@ impl SourceRuntimeEventSender {
     }
 
     pub fn observations(&self) -> SourceRuntimeEventObservations {
-        SourceRuntimeEventObservations {
-            events_enqueued_total: self.counters.events_enqueued_total.load(Ordering::Relaxed),
-            events_dropped_total: self.counters.events_dropped_total.load(Ordering::Relaxed),
+        self.observation_handle().observations()
+    }
+
+    pub fn observation_handle(&self) -> SourceRuntimeEventObservationHandle {
+        SourceRuntimeEventObservationHandle {
+            counters: Arc::clone(&self.counters),
         }
     }
 }
@@ -414,9 +448,12 @@ impl SourceRuntimeEventReceiver {
     }
 
     pub fn observations(&self) -> SourceRuntimeEventObservations {
-        SourceRuntimeEventObservations {
-            events_enqueued_total: self.counters.events_enqueued_total.load(Ordering::Relaxed),
-            events_dropped_total: self.counters.events_dropped_total.load(Ordering::Relaxed),
+        self.observation_handle().observations()
+    }
+
+    pub fn observation_handle(&self) -> SourceRuntimeEventObservationHandle {
+        SourceRuntimeEventObservationHandle {
+            counters: Arc::clone(&self.counters),
         }
     }
 }
@@ -1209,6 +1246,7 @@ mod tests {
     #[test]
     fn given_full_runtime_event_channel_when_published_then_newest_event_is_dropped_and_counted() {
         let (sender, _receiver) = source_runtime_event_channel(1).expect("valid capacity");
+        let observations = sender.observation_handle();
 
         assert_eq!(
             sender.try_send(runtime_backend_failure(1)),
@@ -1219,7 +1257,7 @@ mod tests {
             SourceRuntimeEventDelivery::DroppedFull
         );
         assert_eq!(
-            sender.observations(),
+            observations.observations(),
             SourceRuntimeEventObservations {
                 events_enqueued_total: 1,
                 events_dropped_total: 1,
@@ -1280,6 +1318,7 @@ mod tests {
     #[test]
     fn given_capture_events_when_observed_then_snapshot_preserves_each_boundary() {
         let counters = CaptureObservationCounters::default();
+        let observations = counters.observation_handle();
 
         counters.observe_callback_buffer();
         counters.observe_enqueued_frame();
@@ -1292,7 +1331,7 @@ mod tests {
         counters.observe_timestamp_epoch_clamp();
 
         assert_eq!(
-            counters.snapshot(),
+            observations.observations(),
             CaptureObservations {
                 callback_buffers_total: 1,
                 frames_enqueued_total: 1,

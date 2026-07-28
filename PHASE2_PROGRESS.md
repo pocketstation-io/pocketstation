@@ -1,5 +1,114 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W11 codec C ABI ownership extraction — 2026-07-28
+
+- Status: `PARTIAL`, `SAFE-TO-TEST`; the central Rust ownership correction is
+  complete. Mobile consumption remains source-level compatibility only until
+  the separate iOS and Android package/link migrations and native link tests
+  pass in their owning repositories.
+- Added sibling `pks-codec-c`, depending only on `pks-codec`, as the sole owner
+  of the retained Opus C compatibility ABI. The dynamic/static library retains
+  the existing `pks_encode_opus`, `pks_opus_encoder_create`,
+  `pks_opus_encoder_destroy`, and `pks_opus_encoder_set_bitrate` symbols.
+- Moved all ten ABI behavior tests to the new owner. `pks-audio` is now a Rust
+  façade only: it no longer owns C exports, a build script, cbindgen, or
+  `cdylib`/`staticlib` artifact types.
+- The checked header now lives at `crates/pks-codec-c/include/pks_codec.h`.
+  Builds generate only into Cargo `OUT_DIR` unless the caller explicitly sets
+  `PKS_CODEC_C_HEADER_OUTPUT`. The repository no longer has an ambiguous root
+  `ffi/` directory.
+- Replaced `scripts/sync-ffi-header.sh` with
+  `scripts/sync-codec-c-header.sh`. It generates outside the source tree and
+  targets the canonical SDK paths
+  `Sources/PocketStationCodecFFI/pks_codec.h` and
+  `sdk/src/main/cpp/pks_codec.h`.
+- `scripts/sync-codec-c-header.sh --check` is non-mutating and fails closed
+  when the generated header differs from the central checked copy or either
+  SDK compatibility copy. Unknown arguments fail instead of silently
+  triggering synchronization.
+- Focused evidence: all ten `pks-codec-c` tests pass; the checked header is
+  byte-identical to a fresh explicit-output build; and the debug dynamic
+  library exports exactly the four retained `pks_*` codec symbols.
+- The generated header is C++ compatible. A separate C++17 executable now
+  includes the checked header, links the actual `pks-codec-c` library, creates
+  an encoder, encodes one 20 ms frame, and destroys it. This prevents JNI
+  consumers from silently compiling against mangled C symbols.
+- This introduces no Session ABI, runtime, provider, scaffold, mock, fallback,
+  or loopback-only product path.
+
+## W11 portable Session C lifecycle and conformance — 2026-07-28
+
+- Status: `PARTIAL`, `SAFE-TO-TEST`; this checkpoint supersedes the current-
+  state claims in the earlier W11 Session-ownership, host-foundation, and
+  initial-C-boundary entries below. Those entries remain as historical
+  evidence and must not be read as the current implementation inventory.
+- `pks-session-c` now projects the real native `SessionEngineHost` through
+  versioned records and opaque generational engine, Session, and audio-batch
+  handles. The exported boundary covers the narrow application-plus-default-
+  microphone declaration, compile, start, stop, state and event polling,
+  bounded metric and audio polling, immutable frame access, explicit batch
+  release, Session destruction, and engine destruction.
+- Rust-record and checked-in C-header layout parity tests cover the complete
+  public record surface. ABI entry points validate output pointers before
+  acquiring engine, Session, or lease resources, and panic containment maps an
+  unwind to a typed status without crossing the foreign boundary.
+- The default executable C harness proves the real native-host failure path
+  with a deliberately missing application source. It verifies compiled-to-
+  failed lifecycle truth, foreign-handle rejection, stale engine rejection,
+  bounded event and metric access, and recovery after the failed Session. It
+  does not claim successful capture or audio delivery.
+- The `conformance-fixtures` feature is test-only. With that feature,
+  `scripts/test-session-c-conformance.sh` builds the adapter and compiles and
+  runs a separate C executable against it. The executable proves successful
+  application-plus-microphone execution through the canonical runtime, two
+  distinct source and stem lineages, bounded lease-exhaustion observations,
+  sample pointer and value stability while a lease is retained across Session
+  stop, stale double-release rejection, and usable ABI recovery after an
+  intentionally contained panic.
+- The fixture exports are absent from the default library and public header.
+  No synthetic capture symbol, test control, or panic trigger enters the
+  production ABI.
+- ABI version 1 intentionally permits exactly one Session for an engine's
+  lifetime. The engine-scoped polled-audio receipt is consequently isolated by
+  the ABI contract; concurrent or sequential Session reuse is not implied.
+- A concurrent foreign stop no longer waits for the global engine table or the
+  start-held runtime mutex before publishing its request. Each engine owns a
+  shared `SessionStartCancellation` token plus atomic C lifecycle state. A
+  blocking-open test observes `Starting`, requests stop from another thread,
+  observes `Stopping` while the open remains blocked, then requires the start
+  call to return `Cancelled`, the stop call to return success, and the terminal
+  C state to become `Stopped` within the bounded post-release window. A
+  compare-exchange owns the `Compiled` to `Starting` transition; a second
+  concurrent start fails typed and cannot overwrite a live transition or
+  running state.
+- `pks-session` now owns `SessionMetricsSnapshot`; `SessionEngineHost`
+  composes it from the authoritative bounded event queue, selected polled-audio
+  receipt, and setup-time read-only receipts retained by `RunningSession`.
+  Indexed source records expose stable stem identity, capture-owner,
+  captured-stream, runtime-event, and source-ingress observations. Indexed
+  route records expose stable route and endpoint identities, every
+  authoritative runtime-edge observation, endpoint observations, an explicit
+  unavailable/live/finalized stage, and endpoint-finalization failure count.
+  A defensive endpoint lookup miss is typed `Unavailable`; it cannot
+  masquerade as synthetic live zero observations.
+- C ABI 1.1 adds source/route count functions and count-indexed source and
+  route records while preserving the ABI 1.0 aggregate metrics record at
+  exactly 160 bytes. A compiled ABI 1.0 C canary requests minor version 0,
+  places a guard immediately after that record, polls metrics, and proves the
+  guard is unchanged. Invalid indexes fail with `IndexOutOfRange`; final route
+  observations remain readable after stop; destroyed Session handles fail
+  indexed access with `StaleHandle`. The integer stage field is safe for
+  normal C zero initialization and has named `UNAVAILABLE`, `LIVE`, and
+  `FINALIZED` values.
+- Focused acceptance passes: 48 `pks-session` tests, 12 `pks-session-c` tests,
+  the default executable C harness, the feature-gated successful C conformance
+  executable, and strict all-target Clippy for both crates.
+- W11 is not accepted by this component checkpoint. ABI v1 metrics deliberately
+  retain lower-layer counter ownership: the Session snapshot holds only
+  read-only capture, ingress, edge, and endpoint receipts. The frozen W11
+  acceptance matrix and evidence hashes remain open; this checkpoint does not
+  claim language-package consumption or a real-device product proof.
+
 ## W11 bounded application-polled audio endpoint — 2026-07-26
 
 - Status: `SAFE-TO-TEST`; `pks-nodes` now owns a concrete external endpoint
@@ -496,6 +605,51 @@
 - This correction adds no scaffold, mock, provider implementation, fallback,
   helper process, or loopback-only path.
 
+## W11 Session host foundation — 2026-07-27
+
+- Status: `SAFE-TO-TEST`; `pks-session` now exposes `SessionEngineHost` and
+  `SessionEngineHostBuilder` as the safe owner for the canonical Session
+  engine, the exact application and microphone capture backends, and any
+  retained bounded polled-audio receipts used for foreign projection.
+- The host builder reuses the real `SessionEngineBuilder` registration seam,
+  rejects missing application or microphone backends before a host exists, and
+  registers polled-audio endpoints only through the real bounded
+  `PolledAudioEndpoint` factory. No side runtime, synthetic queue, or adapter-
+  local media path was introduced.
+- The host starts only through the canonical engine and therefore preserves the
+  real compile, prepare, start, rollback, stop, and bounded lease path already
+  proven by `pks-session`.
+- Four focused host tests now prove typed missing-backend rejection, retained
+  receipt ownership, host-owned polled-audio delivery through the real runtime,
+  and typed capture-start failure propagation.
+- All 48 `pks-session` tests, strict `cargo clippy -p pks-session --all-targets
+  --locked -- -D warnings`, and the full workspace `bash scripts/check_protocol.sh`
+  pass on 2026-07-27.
+- `pks-session-c` still does not exist. Versioned ABI records, generational
+  foreign handles, header packaging, panic containment, and the real C
+  conformance harness remain the open W11 portable-binding work.
+
+## W11 initial pks-session-c boundary slice — 2026-07-27
+
+- Status: `SAFE-TO-TEST`; the sibling `pks-session-c` crate now exists and owns
+  the first real portable C boundary slice above `pks-session`.
+- The crate ships checked-in ABI version/status records, opaque generational
+  handle records, an internal handle table, panic-contained exported entry
+  points for ABI version query plus runtime open/close/live checks, and the
+  packaged public header `include/pks_session.h`.
+- Header packaging is non-hermetic: `build.rs` copies the checked-in header into
+  `OUT_DIR` only. It does not write back into source.
+- The first conformance fixture is compile-level only: a C translation unit
+  includes the public header, checks stable layout expectations, and compiles
+  against the exported symbol declarations. It does not yet execute the full
+  Session lifecycle from C.
+- Focused gates pass on 2026-07-27:
+  `cargo test -p pks-session-c --offline` and
+  `cargo clippy -p pks-session-c --all-targets --offline -- -D warnings`.
+- This is still `PARTIAL` W11 portable binding work. Real Session declaration,
+  lifecycle, bounded event/metric/audio polling, generational engine/session
+  handle ownership, and the executable C conformance harness remain open.
+
 ## W11 embedded Session engine boundary decision — 2026-07-25
 
 - Status: `PARTIAL`; W10 PASS opened W11 and the engine deployment/ownership
@@ -519,10 +673,9 @@
   lifecycle, error/event/metric projections, leases, and C ABI to the precise
   `pks-session` crate. `pks-runtime`, `pks-frame`, capture adapters, and endpoint
   implementations retain their existing lower-layer ownership.
-- The existing `pks-audio` Session still returns typed
-  `RuntimeNotIntegrated`; its `PARTIAL` scaffold inventory row remains live
-  until real execution migrates and the compatibility façade delegates to the
-  canonical engine.
+- The existing `pks-audio` façade now re-exports the canonical `pks-session`
+  surface. The remaining W11 gap is the portable C adapter and its conformance
+  harness, not a second Rust Session runtime.
 - This documentation slice adds no code, generated header, mock, scaffold,
   fallback, provider path, helper process, or loopback-only behavior. W11 exit
   still requires a non-Rust lifecycle/lease harness, typed panic containment,

@@ -10,4 +10,9 @@ description = "Audio frame types for the PocketStation real-time audio pipeline"
 thiserror.workspace = true
 
 [dev-dependencies]
+criterion.workspace = true
 proptest.workspace = true
+
+[[bench]]
+name = "audio_buffer_pool"
+harness = false

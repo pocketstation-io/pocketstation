@@ -24,6 +24,17 @@ struct CapturedFrameStreamCounters {
     dropped_newest_frames: AtomicU64,
 }
 
+#[derive(Clone, Debug)]
+pub struct CapturedFrameObservationHandle {
+    counters: Arc<CapturedFrameStreamCounters>,
+}
+
+impl CapturedFrameObservationHandle {
+    pub fn observations(&self) -> CapturedFrameStreamStats {
+        self.counters.snapshot()
+    }
+}
+
 impl CapturedFrameStreamCounters {
     fn snapshot(&self) -> CapturedFrameStreamStats {
         CapturedFrameStreamStats {
@@ -69,6 +80,12 @@ impl CapturedFrameSender {
     pub fn stats(&self) -> CapturedFrameStreamStats {
         self.counters.snapshot()
     }
+
+    pub fn observation_handle(&self) -> CapturedFrameObservationHandle {
+        CapturedFrameObservationHandle {
+            counters: Arc::clone(&self.counters),
+        }
+    }
 }
 
 /// Non-blocking consumer for captured `AudioFrame`s.
@@ -100,6 +117,12 @@ impl CapturedFrameStream {
 
     pub fn stats(&self) -> CapturedFrameStreamStats {
         self.counters.snapshot()
+    }
+
+    pub fn observation_handle(&self) -> CapturedFrameObservationHandle {
+        CapturedFrameObservationHandle {
+            counters: Arc::clone(&self.counters),
+        }
     }
 }
 
@@ -143,11 +166,13 @@ mod tests {
     fn given_available_capacity_when_frame_is_sent_then_stream_preserves_frame() {
         let pool = AudioBufferPool::new(2, 960);
         let (mut sender, mut stream) = captured_frame_stream(2).unwrap();
+        let observations = stream.observation_handle();
 
         assert_eq!(
             sender.try_send(frame(&pool, 17)),
             CapturedFrameDelivery::Delivered
         );
+        assert_eq!(observations.observations().delivered_frames, 1);
         assert_eq!(stream.try_next().unwrap().sequence_number, 17);
         assert_eq!(
             stream.stats(),

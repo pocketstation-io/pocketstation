@@ -2,15 +2,21 @@
 ## Program Document v3.0
 
 **Date:** 2026-06-26
-**Status:** Green-light version. AudioGraph is the product center. v2.3 core algorithm, platform specs, and engineering ADRs are fully preserved underneath the new graph abstraction. No further structural rewrites planned.
+**Status:** Historical vision and design record. This document is not the
+current product contract, repository map, milestone plan, or implementation
+status.
 **Supersedes:** v2.3 (Universal Audio Fabric / mobile-first SDK + relay positioning)
 
-> **Current product/topology override — 2026-07-16:** The binding narrow product
-> and 2026-08-15 deadline are in the factory-root
-> `PRODUCT_OPERATING_CONTRACT.md`; the audited repository/crate map is in
-> `PROJECT_STATE.md`. The central Rust workspace is `pocketstation` (formerly
-> `pocketstation`). Historical repo and phase descriptions below are preserved for
-> architectural context and do not override those current contracts.
+> **Canonical current contracts — 2026-07-28:** This file intentionally
+> preserves the earlier broad AudioGraph vision. It must not be copied into a
+> current status report or used as an implementation requirement. The binding
+> product and deadline contract is the factory-root
+> `PRODUCT_OPERATING_CONTRACT.md`; current repository and implementation truth
+> is `PROJECT_STATE.md`; execution order and acceptance are in
+> `CURRENT_PLAN.md` and `docs/PocketStation-BuildGuide.md`; current crate
+> boundaries are maintained locally in `CRATE_OWNERSHIP.md` and accepted ADRs.
+> Where this historical document disagrees with any of those sources, those
+> canonical contracts win.
 
 ---
 
@@ -1516,7 +1522,7 @@ pocketstation-io/pocketstation
     pocketstation-audio/     re-exports all above as single entry point
   benches/
   tests/
-  ffi/                       cbindgen → C headers for Swift/Kotlin
+  crates/pks-codec-c/        retained Opus C ABI + checked `pks_codec.h`
 ```
 
 #### Tier 1 — Graph Runtime (now crates inside the `pocketstation` workspace)
@@ -1558,7 +1564,11 @@ pocketstation-io/relay          Go + Pion v4 (GraphSession, AudioBus)
 pocketstation-io/control-plane     Go (control plane, graph/session/metrics APIs)
 ```
 
-#### Tier 5 — ML Nodes (legacy external workspace; active bounded primitives are `pks-ml`)
+#### Tier 5 — DSP and legacy model workspaces
+
+Active bounded VAD, denoise, AEC, and watermark primitives are in `pks-dsp`.
+The archived external `audio-ml` workspace below is not first-party provider
+scope for the current product slice.
 
 ```
 pocketstation-io/audio-ml

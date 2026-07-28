@@ -1,5 +1,12 @@
 use std::sync::atomic::{AtomicU64, Ordering};
 
+use pks_capture::CaptureOwnerObservations;
+use pks_endpoint::EndpointDriverObservations;
+use pks_frame::{EndpointId, RouteId, StemId};
+use pks_runtime::{EdgeObservations, PlanSourceInputObservations};
+
+use crate::PolledAudioObservations;
+
 /// Point-in-time observations for a session's bounded control-event queue.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct SessionEventQueueObservations {
@@ -9,6 +16,82 @@ pub struct SessionEventQueueObservations {
     pub events_enqueued_total: u64,
     pub events_dropped_total: u64,
     pub receiver_closed_total: u64,
+}
+
+/// Authoritative point-in-time observations for the current Session boundary.
+///
+/// The snapshot keeps control-event and foreign-audio queue truth together
+/// without exposing either counter owner to a language adapter.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct SessionMetricsSnapshot {
+    event_queue: SessionEventQueueObservations,
+    polled_audio: PolledAudioObservations,
+    sources: Box<[SessionSourceMetrics]>,
+    routes: Box<[SessionRouteMetrics]>,
+}
+
+impl SessionMetricsSnapshot {
+    pub(crate) const fn new(
+        event_queue: SessionEventQueueObservations,
+        polled_audio: PolledAudioObservations,
+        sources: Box<[SessionSourceMetrics]>,
+        routes: Box<[SessionRouteMetrics]>,
+    ) -> Self {
+        Self {
+            event_queue,
+            polled_audio,
+            sources,
+            routes,
+        }
+    }
+
+    pub const fn event_queue(&self) -> SessionEventQueueObservations {
+        self.event_queue
+    }
+
+    pub const fn polled_audio(&self) -> PolledAudioObservations {
+        self.polled_audio
+    }
+
+    pub fn source_count(&self) -> usize {
+        self.sources.len()
+    }
+
+    pub fn source(&self, index: usize) -> Option<&SessionSourceMetrics> {
+        self.sources.get(index)
+    }
+
+    pub fn route_count(&self) -> usize {
+        self.routes.len()
+    }
+
+    pub fn route(&self, index: usize) -> Option<&SessionRouteMetrics> {
+        self.routes.get(index)
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct SessionSourceMetrics {
+    pub stem_id: StemId,
+    pub capture: CaptureOwnerObservations,
+    pub ingress: PlanSourceInputObservations,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct SessionRouteMetrics {
+    pub route_id: RouteId,
+    pub endpoint_id: EndpointId,
+    pub edge: EdgeObservations,
+    pub endpoint: Option<EndpointDriverObservations>,
+    pub endpoint_observation_stage: EndpointObservationStage,
+    pub endpoint_finalization_failures_total: u64,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum EndpointObservationStage {
+    Unavailable,
+    Live,
+    Finalized,
 }
 
 #[derive(Debug)]

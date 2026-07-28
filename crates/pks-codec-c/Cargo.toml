@@ -1,0 +1,20 @@
+[package]
+name = "pks-codec-c"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Stable C compatibility boundary for the PocketStation Opus codec"
+
+[features]
+default = []
+real-opus = ["pks-codec/real-opus"]
+
+[lib]
+crate-type = ["cdylib", "staticlib", "rlib"]
+
+[dependencies]
+pks-codec = { path = "../pks-codec", version = "0.1.0" }
+
+[build-dependencies]
+cbindgen = "0.27"
