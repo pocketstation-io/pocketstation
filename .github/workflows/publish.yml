@@ -34,6 +34,8 @@ jobs:
           fetch-depth: 0
 
       - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
 
       - name: Require a version-matched release and guarded main recovery
         env:
@@ -104,6 +106,9 @@ jobs:
 
       - name: Strict workspace Clippy
         run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
+
+      - name: Cross-document public facade on the configured docs.rs target
+        run: cargo doc --locked --no-deps -p pocketstation --target x86_64-pc-windows-msvc
 
       - name: Compile the public quickstart
         run: cargo build --release -p pocketstation --example product_quickstart --locked
