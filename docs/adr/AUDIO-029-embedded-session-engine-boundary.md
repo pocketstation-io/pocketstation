@@ -57,10 +57,10 @@ Kotlin may use the C projection or generated/platform wrappers around it.
 Every adapter must preserve the same Session semantics and must not reimplement
 media execution.
 
-## Evidence from the accepted source tree
+## Evidence and W11 outcome
 
-This ownership decision follows the live source at the accepted W10 candidate,
-not an aspirational crate diagram:
+This ownership decision followed the live source at the accepted W10 candidate,
+not an aspirational crate diagram. W11 then completed the named migrations:
 
 - `pks-frame` defines `AudioBufferPool`, `AudioFrame`, and
   `SharedAudioFrame`;
@@ -74,14 +74,13 @@ not an aspirational crate diagram:
   target capture crates own native backend implementations;
 - `pks-nodes` defines concrete factories and `MultistemRecording`, including
   explicit stop, join, and finalization outcomes;
-- `pks-pipeline` currently contains the older ring-backed `frame_bus` and
-  linear `ProcessorGraph`; it is not the owner of the compiled graph runtime;
-- `pks-audio` currently aggregates/re-exports lower crates and contains a
-  declaration-only `Session` whose `run` returns `RuntimeNotIntegrated`; and
-- the accepted product orchestration is currently assembled by the `pks`
-  proof command. W11 extracts reusable lifecycle ownership from that command
-  into `pks-session`; it does not move proof policy or artifact rendering into
-  the engine.
+- the legacy `pks-pipeline` package is retired after caller migration;
+- `pks-audio` delegates Session semantics to `pks-session` and no longer owns a
+  duplicate `RuntimeNotIntegrated` implementation;
+- `pks-session-c` and `pks-codec-c` are separate, executable conformance
+  boundaries; and
+- the `pks` proof command consumes the reusable Session engine and endpoint
+  contracts while retaining only proof selection and artifact rendering.
 
 The dependency direction established by those facts is:
 

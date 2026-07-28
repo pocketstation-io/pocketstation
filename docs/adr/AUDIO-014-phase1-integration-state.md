@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted 2026-05-20.
+Superseded 2026-07-28 by AUDIO-029 and the accepted W11 Session/codec boundary.
+The body below is retained as Phase 1 decision history; it is not current FFI,
+package, relay-integration, or release guidance.
 
 ## Context
 

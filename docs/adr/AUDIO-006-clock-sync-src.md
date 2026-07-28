@@ -16,8 +16,8 @@ The PI controller was originally implemented as `pks_pipeline::ClockSync`.
 - `pks-timing::ClockCorrectionController` now owns the PI controller.
 - `pks-timing::ClockDriftEstimator` owns fixed-window drift measurement using
   source/runtime timestamp pairs normalized against their first observation.
-- `pks-pipeline` retains `ClockSync` only as a compatibility alias and no longer
-  owns a duplicate controller implementation.
+- The former `pks-pipeline::ClockSync` compatibility alias was retired in W11
+  after all callers moved to current timing/capture/runtime owners.
 - `ResampleNode` no longer treats an absolute frame timestamp as an inter-clock
   offset. Runtime code must call `observe_clock_offset()` after comparing two
   clock domains.

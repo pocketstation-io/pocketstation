@@ -52,7 +52,14 @@ work are deferred unless the product operating contract explicitly changes.
 - `pks-runtime`: scheduling, bounded Bridges, backpressure and fan-out.
 - `pks-capture-*`: permitted platform capture.
 - `pks-nodes`: first-party audio/recording operators.
-- `pks-ml`: bounded local audio inference, not cloud/provider clients.
+- `pks-dsp`: bounded local VAD, denoise, AEC, and watermark processing.
+- `pks-session`: canonical Session declaration, compilation coordination,
+  lifecycle, supervision, and finalization.
+- `pks-session-c`: versioned C projection of Session control and bounded
+  observations; never a second engine.
+- `pks-codec-c`: retained Opus codec compatibility ABI only.
+- `pks-audio`: temporary Rust compatibility façade over current owners; it
+  must not regain Session, runtime, codec-ABI, or provider ownership.
 - `examples/`: provider-specific connectors and customer workflows.
 
 RTP/RTCP pacing, sequence/timestamp translation, repair and clock lineage belong

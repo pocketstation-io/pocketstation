@@ -1578,3 +1578,15 @@
 - This change introduces no scaffold, mock, fallback, or loopback-only path.
   The Android linked-component gate remains responsible for proving the exact
   archive, JNI shared library, definitions, unresolved symbols, and hashes.
+
+## W11 active architecture truth — 2026-07-28
+
+- Active repository instructions now name `pks-dsp`, `pks-session`,
+  `pks-session-c`, and `pks-codec-c` according to their accepted ownership.
+- Superseded ADR implementation notes now distinguish retained decision history
+  from current package and FFI guidance.
+- The broad v3 AudioGraph document remains available as historical product
+  vision, but its header and footer both point to the binding product,
+  repository, execution, and crate contracts.
+- No implementation, API, wire behavior, product claim, scaffold, mock, or
+  loopback path changed.

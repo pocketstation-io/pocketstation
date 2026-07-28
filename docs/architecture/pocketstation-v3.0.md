@@ -2283,6 +2283,9 @@ When a model node fails or exceeds latency budget: does the graph pause, reroute
 
 ---
 
-*Document version 3.0 — green-light version. AudioGraph is the product center. v2.3 core algorithm, hot-path rules, platform specs, and FFI boundary contracts (DOCS-001 through DOCS-013) are fully preserved. New open questions: ADR-014 through ADR-022. Next revision trigger: Phase 0 exit criteria met and first crates.io publish at Phase 1 exit.*
+*Document version 3.0 — retained historical vision. Current product,
+repository, crate, vocabulary, milestone, and execution authority is listed at
+the top of this document. Historical AudioGraph, GraphSession, provider, and
+phase sketches below do not override those contracts.*
 
 *Kill criteria reviewed: 2026-06-26.*
