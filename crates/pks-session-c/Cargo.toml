@@ -5,6 +5,10 @@ edition.workspace = true
 license.workspace = true
 repository.workspace = true
 description = "Stable C projection of the PocketStation Session lifecycle"
+publish = false
+
+[package.metadata.pocketstation]
+registry-role = "deferred"
 
 [lib]
 crate-type = ["cdylib", "staticlib", "rlib"]

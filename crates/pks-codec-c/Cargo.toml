@@ -5,6 +5,10 @@ edition.workspace = true
 license.workspace = true
 repository.workspace = true
 description = "Stable C compatibility boundary for the PocketStation Opus codec"
+publish = false
+
+[package.metadata.pocketstation]
+registry-role = "deferred"
 
 [features]
 default = []

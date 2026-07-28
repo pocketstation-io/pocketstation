@@ -5,6 +5,10 @@ edition.workspace = true
 license.workspace = true
 repository.workspace = true
 description = "Opus codec encode/decode for the PocketStation real-time audio pipeline"
+publish = false
+
+[package.metadata.pocketstation]
+registry-role = "deferred"
 
 [features]
 default = []

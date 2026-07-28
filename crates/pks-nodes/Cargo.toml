@@ -6,6 +6,9 @@ license.workspace = true
 repository.workspace = true
 description = "First-party audio and recording operators for PocketStation"
 
+[package.metadata.pocketstation]
+registry-role = "facade-dependency"
+
 [dependencies]
 pks-endpoint = { path = "../pks-endpoint", version = "0.1.0" }
 pks-frame = { path = "../pks-frame", version = "0.1.0" }

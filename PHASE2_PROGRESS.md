@@ -1632,3 +1632,23 @@
   repository, execution, and crate contracts.
 - No implementation, API, wire behavior, product claim, scaffold, mock, or
   loopback path changed.
+
+## W12 Rust registry-role policy — 2026-07-28
+
+- Status: `SAFE-TO-TEST`; the workspace now identifies the supported public
+  Rust registry surface with machine-readable package roles.
+- `pocketstation` is the single `public-facade`. Only its exact transitive
+  workspace normal/target dependency closure is marked `facade-dependency`
+  and remains publishable.
+- `pks-codec`, `pks-codec-c`, and `pks-session-c` are explicitly `deferred`
+  and `publish = false`; the Whisper example is explicitly `example` and
+  remains non-publishable. These packages are not dependencies of the
+  supported façade.
+- `scripts/publish.sh` now derives and validates the façade closure instead of
+  selecting every publishable workspace package. It rejects missing/unknown
+  roles, role/closure drift, accidental non-closure publication, incomplete
+  dependency ordering, and any order that does not place `pocketstation`
+  last.
+- This policy does not publish crates and does not create a provider,
+  compatibility path, mock, scaffold, fallback, or loopback-only product
+  behavior.

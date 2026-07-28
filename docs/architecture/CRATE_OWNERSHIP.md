@@ -101,6 +101,25 @@ The embedded-versus-helper decision and portable ABI constraints are binding in
 `pks-audio` compatibility package was retired in W12 rather than preserving a
 second public identity.
 
+### Registry roles
+
+Every workspace package declares one machine-readable role in
+`package.metadata.pocketstation.registry-role`. The role controls registry
+support; it does not change crate names or repository layout.
+
+| Role | Registry state | Contract |
+|---|---|---|
+| `public-facade` | publishable | Exactly one package: `pocketstation` |
+| `facade-dependency` | publishable | Exact transitive workspace normal/target dependency closure of the public façade |
+| `deferred` | `publish = false` | Core or adapter package not required by the supported façade closure |
+| `example` | `publish = false` | Runnable example, never a registry package |
+
+Optional normal dependencies count toward the façade closure. Dev-only and
+build-only dependencies do not. `scripts/publish.sh` derives the closure from
+Cargo metadata, rejects role or `publish` drift, topologically validates only
+that closure, and requires `pocketstation` to be last. Publication remains a
+separate explicit release action.
+
 ---
 
 ## Signal contract — `SignalSpec` (pks-graph, Phase 2 prerequisite)

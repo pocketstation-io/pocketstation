@@ -6,6 +6,9 @@ license.workspace = true
 repository.workspace = true
 description = "Session declaration and lifecycle composition for PocketStation"
 
+[package.metadata.pocketstation]
+registry-role = "facade-dependency"
+
 [dependencies]
 pks-caps = { path = "../pks-caps", version = "0.1.0" }
 pks-capture = { path = "../pks-capture", version = "0.1.0" }

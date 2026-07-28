@@ -6,6 +6,9 @@ license.workspace = true
 repository.workspace = true
 description = "Typed graph compiler and runtime plans for PocketStation"
 
+[package.metadata.pocketstation]
+registry-role = "facade-dependency"
+
 [dependencies]
 pks-frame = { path = "../pks-frame", version = "0.1.0" }
 pks-caps = { path = "../pks-caps", version = "0.1.0" }

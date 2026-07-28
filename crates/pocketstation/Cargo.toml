@@ -11,6 +11,9 @@ documentation = "https://docs.rs/pocketstation"
 keywords = ["audio", "capture", "realtime", "session", "webrtc"]
 categories = ["multimedia::audio", "api-bindings"]
 
+[package.metadata.pocketstation]
+registry-role = "public-facade"
+
 [features]
 default = []
 conformance-fixtures = [

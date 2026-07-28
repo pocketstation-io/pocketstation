@@ -5,6 +5,9 @@ edition.workspace = true
 license.workspace = true
 publish = false
 
+[package.metadata.pocketstation]
+registry-role = "example"
+
 [dependencies]
 pks-frame = { path = "../../crates/pks-frame" }
 pks-graph = { path = "../../crates/pks-graph" }
