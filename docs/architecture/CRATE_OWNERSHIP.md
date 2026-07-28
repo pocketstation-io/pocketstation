@@ -97,8 +97,28 @@ registered `EndpointDriverFactory` implementations.
 
 The embedded-versus-helper decision and portable ABI constraints are binding in
 [AUDIO-029](../adr/AUDIO-029-embedded-session-engine-boundary.md).
-`pks-audio` may temporarily re-export Session types for source compatibility,
-but it must not own a parallel Session runtime.
+`pocketstation` is the sole public Rust Session façade. The unconsumed
+`pks-audio` compatibility package was retired in W12 rather than preserving a
+second public identity.
+
+### Registry roles
+
+Every workspace package declares one machine-readable role in
+`package.metadata.pocketstation.registry-role`. The role controls registry
+support; it does not change crate names or repository layout.
+
+| Role | Registry state | Contract |
+|---|---|---|
+| `public-facade` | publishable | Exactly one package: `pocketstation` |
+| `facade-dependency` | publishable | Exact transitive workspace normal/target dependency closure of the public façade |
+| `deferred` | `publish = false` | Core or adapter package not required by the supported façade closure |
+| `example` | `publish = false` | Runnable example, never a registry package |
+
+Optional normal dependencies count toward the façade closure. Dev-only and
+build-only dependencies do not. `scripts/publish.sh` derives the closure from
+Cargo metadata, rejects role or `publish` drift, topologically validates only
+that closure, and requires `pocketstation` to be last. Publication remains a
+separate explicit release action.
 
 ---
 
@@ -222,7 +242,7 @@ ml.local_vad
 | `pks-capture-macos` | CoreAudio tap / ScreenCaptureKit / device capture | Non-macOS paths |
 | `pks-capture-windows` | WASAPI / process loopback | Non-Windows paths |
 | `pks-capture-linux` | PipeWire/Pulse implementation | Non-Linux paths |
-| `pks-audio` | Current Rust compatibility façade: selected lower-crate re-exports, canonical Session re-exports, and small demo/test helpers | `AudioBufferPool` or frame ownership, compiled graph/runtime ownership, a second Session engine, C ABI ownership, provider integrations, product workflows |
+| `pocketstation` | Language-owned Rust `Session`/`RunningSession` façade over the canonical `pks-session` host, typed lifecycle, bounded audio polling, events, metrics, and the public quickstart | Engine setup internals, graph/runtime ownership, a second Session engine, C ABI ownership, provider integrations, CLI delegation, or product workflows |
 | `pks-codec` | Opus encode/decode, packet format, RTP timestamp metadata, jitter-adjacent helpers | WebRTC signaling, product logic |
 | `pks-codec-c` | Stable codec C compatibility surface, retained `pks_*` Opus symbols, reproducible checked header, and native library artifacts | Session lifecycle/control ABI, graph/runtime behavior, capture, provider integrations, or SDK-owned media logic |
 | `pks-session-c` | Minimal stable C projection over canonical `pks-session`: versioned records, typed generational handles, bounded polling and audio leases, panic containment, header packaging, and conformance fixtures excluded from the default ABI | Session compilation/runtime business logic, capture implementations, provider integrations, language-owned Rust/Python/Node APIs |

@@ -6,6 +6,9 @@ license.workspace = true
 repository.workspace = true
 description = "Bounded real-time audio DSP primitives for PocketStation"
 
+[package.metadata.pocketstation]
+registry-role = "facade-dependency"
+
 [dependencies]
 pks-graph = { path = "../pks-graph", version = "0.1.0" }
 pks-frame = { path = "../pks-frame", version = "0.1.0" }

@@ -4,9 +4,13 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
+description = "Capability and permission contracts for PocketStation"
+
+[package.metadata.pocketstation]
+registry-role = "facade-dependency"
 
 [dependencies]
-pks-frame = { path = "../pks-frame" }
+pks-frame = { path = "../pks-frame", version = "0.1.0" }
 
 [dev-dependencies]
 proptest.workspace = true

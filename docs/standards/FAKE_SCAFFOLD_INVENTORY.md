@@ -69,6 +69,7 @@ These never become production — they exist for testing and development. They a
 | File output sink | pocketstation / pocketstation-route | Test recording, offline verification |
 | In-memory token store | control-plane | Phase 1 only; Phase 2+ uses real persistence |
 | Session C conformance capture | pocketstation / `crates/pks-session-c/src/conformance_fixture.rs` | Feature-gated deterministic `CallbackCaptureBackend` used only by `scripts/test-session-c-conformance.sh` to prove successful C lifecycle, lineage, bounded lease exhaustion, held-buffer stability, double release, and panic containment through the canonical compiled runtime. The default library and public header do not expose the fixture symbols. |
+| Rust façade conformance capture | pocketstation / `crates/pocketstation/src/conformance.rs` | Feature-gated deterministic `CallbackCaptureBackend` used only by external clean-consumer and focused Rust façade gates. It traverses the canonical `pks-session` host, runtime, bounded endpoint, event, metric, cancellation, and stop paths. The feature is disabled by default and its result is `LOOPBACK-ONLY`. |
 
 ---
 

@@ -6,6 +6,9 @@ license.workspace = true
 repository.workspace = true
 description = "Audio frame types for the PocketStation real-time audio pipeline"
 
+[package.metadata.pocketstation]
+registry-role = "facade-dependency"
+
 [dependencies]
 thiserror.workspace = true
 

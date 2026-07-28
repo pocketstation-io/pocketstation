@@ -38,7 +38,7 @@ The binding deadline, acceptance gate, and scope cuts are in the factory root
 | `pks-capture-linux` | Linux capture adapter (partial) |
 | `pks-nodes` | First-party audio, transport-adjacent and recording operators |
 | `pks-dsp` | Bounded local audio DSP primitives |
-| `pks-audio` | Public facade and integration examples |
+| `pocketstation` | Public Rust `Session` façade over the canonical engine |
 
 Provider-specific model connectors belong in `examples/` or external/community
 packages. They do not belong in first-party `pks-ai-*` crates.
@@ -65,7 +65,8 @@ playout outside WebRTC.
 cargo fmt --all -- --check
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
-cargo run -p pks-audio --example holy_shit_demo
+cargo build -p pocketstation --example product_quickstart
+cargo run -p pks-nodes --example graph_runtime
 ```
 
 The narrow product is not complete merely because the workspace tests pass.

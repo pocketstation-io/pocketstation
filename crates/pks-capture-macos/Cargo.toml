@@ -6,6 +6,9 @@ license.workspace = true
 repository.workspace = true
 description = "macOS CoreAudio process tap and HAL plugin loopback capture for PocketStation"
 
+[package.metadata.pocketstation]
+registry-role = "facade-dependency"
+
 [dependencies]
 pks-capture = { path = "../pks-capture", version = "0.1.0" }
 pks-frame = { path = "../pks-frame", version = "0.1.0" }

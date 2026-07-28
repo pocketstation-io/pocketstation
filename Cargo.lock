@@ -1086,32 +1086,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "19f132c84eca552bf34cab8ec81f1c1dcc229b811638f9d283dceabe58c5569e"
 
 [[package]]
-name = "pks-audio"
-version = "0.1.0"
-dependencies = [
- "assert_no_alloc",
- "criterion",
- "hound",
- "pks-caps",
- "pks-capture",
- "pks-capture-linux",
- "pks-capture-macos",
- "pks-capture-windows",
- "pks-codec",
- "pks-frame",
- "pks-graph",
- "pks-metrics",
- "pks-nodes",
- "pks-runtime",
- "pks-session",
- "pks-timing",
- "serde",
- "serde_json",
- "thiserror 1.0.69",
- "tokio",
-]
-
-[[package]]
 name = "pks-caps"
 version = "0.1.0"
 dependencies = [
@@ -1170,6 +1144,7 @@ dependencies = [
 name = "pks-codec"
 version = "0.1.0"
 dependencies = [
+ "assert_no_alloc",
  "criterion",
  "hound",
  "opus",
@@ -1239,6 +1214,7 @@ dependencies = [
  "pks-endpoint",
  "pks-frame",
  "pks-graph",
+ "pks-metrics",
  "pks-runtime",
  "pks-timing",
  "proptest",
@@ -1322,6 +1298,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "51bae2ac328883f7acdfea3d66a7c35751187f870bc81f94563733a154d7a670"
 dependencies = [
  "plotters-backend",
+]
+
+[[package]]
+name = "pocketstation"
+version = "0.1.0"
+dependencies = [
+ "pks-capture",
+ "pks-frame",
+ "pks-graph",
+ "pks-session",
+ "thiserror 1.0.69",
 ]
 
 [[package]]

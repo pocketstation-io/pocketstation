@@ -6,4 +6,7 @@ license.workspace = true
 repository.workspace = true
 description = "Clock-domain estimation, correction, and experimental segment timing for PocketStation"
 
+[package.metadata.pocketstation]
+registry-role = "facade-dependency"
+
 [dependencies]

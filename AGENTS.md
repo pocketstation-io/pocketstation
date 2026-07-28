@@ -58,8 +58,8 @@ work are deferred unless the product operating contract explicitly changes.
 - `pks-session-c`: versioned C projection of Session control and bounded
   observations; never a second engine.
 - `pks-codec-c`: retained Opus codec compatibility ABI only.
-- `pks-audio`: temporary Rust compatibility façade over current owners; it
-  must not regain Session, runtime, codec-ABI, or provider ownership.
+- `pocketstation`: sole public Rust Session façade over `pks-session`; it must
+  not own a second runtime, engine setup internals, codec ABI, or providers.
 - `examples/`: provider-specific connectors and customer workflows.
 
 RTP/RTCP pacing, sequence/timestamp translation, repair and clock lineage belong
@@ -90,5 +90,6 @@ Use the smallest relevant subset first, then the full workspace before merge:
 cargo fmt --all -- --check
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
-cargo run -p pks-audio --example holy_shit_demo
+cargo build -p pocketstation --example product_quickstart
+cargo run -p pks-nodes --example graph_runtime
 ```

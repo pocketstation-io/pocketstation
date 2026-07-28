@@ -1,0 +1,33 @@
+[package]
+name = "pocketstation"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Source-aware desktop audio Session SDK"
+readme = "../../README.md"
+homepage = "https://github.com/pocketstation-io/pocketstation"
+documentation = "https://docs.rs/pocketstation"
+keywords = ["audio", "capture", "realtime", "session", "webrtc"]
+categories = ["multimedia::audio", "api-bindings"]
+
+[package.metadata.pocketstation]
+registry-role = "public-facade"
+
+[features]
+default = []
+conformance-fixtures = [
+  "dep:pks-capture",
+  "dep:pks-frame",
+  "dep:pks-graph",
+]
+
+[[example]]
+name = "product_quickstart"
+
+[dependencies]
+pks-session = { path = "../pks-session", version = "0.1.0" }
+pks-capture = { path = "../pks-capture", version = "0.1.0", optional = true }
+pks-frame = { path = "../pks-frame", version = "0.1.0", optional = true }
+pks-graph = { path = "../pks-graph", version = "0.1.0", optional = true }
+thiserror.workspace = true

@@ -1,5 +1,57 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W12 language-owned Rust Session façade — 2026-07-28
+
+- Status: `PARTIAL`; the central Rust façade and canonical-engine fixture pass,
+  while the independent Lab clean-consumer artifact remains the W12 acceptance
+  owner.
+- Added one Cargo package/library named `pocketstation`. Its public `Session`
+  and `RunningSession` are thin owners over the canonical `pks-session`
+  declaration, native host, capture/runtime transaction, bounded polled-audio
+  endpoint, events, metrics, cancellation, and idempotent stop. No scheduler,
+  capture backend, counter, or lifecycle rule was duplicated.
+- `Session::new()` is infallible and keeps engine setup internals out of the
+  developer declaration. `start()` builds the native host with bounded defaults
+  and reports host, compile, startup, missing-receipt, and missing-event states
+  through typed errors. The public quickstart contains no `PrepareContext`,
+  queue capacity, node ID, `CaptureBackendSet`, or CLI/subprocess delegation.
+- The default-disabled `conformance-fixtures` feature supplies deterministic,
+  distinct application and microphone frames to the same canonical host. It is
+  explicitly `LOOPBACK-ONLY`, inventoried, and cannot upgrade a product claim.
+  Three focused tests prove two independent stems cross bounded destinations,
+  lifecycle/events/metrics are observable, stop is idempotent, cancellation is
+  typed, and an invalid selector fails rather than reporting success.
+- The unconsumed `pks-audio` compatibility package is retired. Its allocation
+  gate moved to the codec owner, its executable graph example moved to the node
+  owner, and its obsolete duplicate quickstart/local-proof/soak helpers were
+  deleted rather than preserving a second public identity.
+- Every internal path dependency in the public façade's Cargo closure now also
+  carries its exact compatible version, and previously anonymous closure crates
+  have truthful package descriptions. This is package readiness only; no crate
+  was published and no registry-consumer claim is made before the dependency
+  closure exists in the registry.
+- All 19 workspace packages declare an explicit registry role. The release
+  dry-run derives the exact 15-package normal/target dependency closure of the
+  public façade, validates it in Cargo dependency order, and keeps
+  `pocketstation` last. The codec C ABI, Session C ABI, and Whisper example
+  remain explicitly non-publishable rather than leaking into that closure.
+- Main/PR CI now runs workspace tests, strict all-target/all-feature Clippy,
+  the release quickstart build, architecture and CODE_PROTOCOL checks, and the
+  exact 15-package publish dry-run. The actual crates.io job is release-only:
+  it rejects prereleases, non-`pocketstation-v<workspace-version>` tags,
+  commits outside `main`, dirty checkouts, and any failed validation. It reads
+  the scoped token from the job environment and does not run `cargo login`.
+  GitHub's `crates-io` environment is the deployment boundary where repository
+  owners can require approval and scope the token. The token is explicitly a
+  first-release bootstrap: after `0.1.0`, each crate can authorize the
+  repository through crates.io trusted-publishing OIDC and the long-lived
+  secret must be retired. No crate was published by this work.
+- No provider code, first-party connector catalog, browser/relay implementation,
+  recording implementation, mock product path, per-frame foreign callback,
+  unbounded queue, or new device claim was introduced. Connector/browser/
+  recording parity remains outside this central façade slice until their
+  reusable owners are extracted from callers.
+
 ## W11 transactional capture-delivery start boundary — 2026-07-28
 
 - Status: `SAFE-TO-TEST`; the component correction is complete and the
@@ -1590,3 +1642,23 @@
   repository, execution, and crate contracts.
 - No implementation, API, wire behavior, product claim, scaffold, mock, or
   loopback path changed.
+
+## W12 Rust registry-role policy — 2026-07-28
+
+- Status: `SAFE-TO-TEST`; the workspace now identifies the supported public
+  Rust registry surface with machine-readable package roles.
+- `pocketstation` is the single `public-facade`. Only its exact transitive
+  workspace normal/target dependency closure is marked `facade-dependency`
+  and remains publishable.
+- `pks-codec`, `pks-codec-c`, and `pks-session-c` are explicitly `deferred`
+  and `publish = false`; the Whisper example is explicitly `example` and
+  remains non-publishable. These packages are not dependencies of the
+  supported façade.
+- `scripts/publish.sh` now derives and validates the façade closure instead of
+  selecting every publishable workspace package. It rejects missing/unknown
+  roles, role/closure drift, accidental non-closure publication, incomplete
+  dependency ordering, and any order that does not place `pocketstation`
+  last.
+- This policy does not publish crates and does not create a provider,
+  compatibility path, mock, scaffold, fallback, or loopback-only product
+  behavior.

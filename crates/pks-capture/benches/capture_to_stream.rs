@@ -16,7 +16,7 @@
 //! See `pocketstation-bench/BENCHMARK_CLAIMS.md` for the claim boundary.
 //!
 //! Command:
-//!   cargo bench -p pks-audio --bench capture_framebus
+//!   cargo bench -p pks-capture --bench capture_to_stream
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use pks_capture::captured_frame_stream;

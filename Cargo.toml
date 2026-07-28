@@ -18,7 +18,7 @@ members = [
   "crates/pks-capture-macos",
   "crates/pks-capture-windows",
   "crates/pks-capture-linux",
-  "crates/pks-audio",
+  "crates/pocketstation",
   "examples/whisper-transcribe",
 ]
 
@@ -29,7 +29,7 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/pocketstation-io/pocketstation"
 
 [workspace.dependencies]
-pks-timing = { path = "crates/pks-timing" }
+pks-timing = { path = "crates/pks-timing", version = "0.1.0" }
 rtrb = "0.3"
 thiserror = "1"
 hound = "3"
