@@ -99,8 +99,8 @@ impl PreparedCaptureBackend for DeterministicPreparedCapture {
                 let frame = AudioFrame::new(
                     source.stream_id(),
                     source.source_id(),
-                    source.timestamp_ns(),
                     0,
+                    source.timestamp_ns(),
                     1,
                     buffer,
                 );

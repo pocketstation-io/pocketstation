@@ -21,6 +21,7 @@ thiserror.workspace = true
 [dev-dependencies]
 hound.workspace = true
 criterion.workspace = true
+assert_no_alloc.workspace = true
 
 [[bench]]
 name = "opus_encode"

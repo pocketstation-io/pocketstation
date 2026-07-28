@@ -59,7 +59,7 @@ echo "  pass"
 
 echo "LAW-15: hot path purity..."
 cargo test --quiet -p pks-runtime --test plan_router_alloc
-cargo test --quiet -p pks-audio --test alloc_check
+cargo test --quiet -p pks-codec --test hot_path_alloc
 echo "  pass"
 
 echo "LAW-16: test naming..."

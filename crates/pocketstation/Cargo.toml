@@ -5,6 +5,11 @@ edition.workspace = true
 license.workspace = true
 repository.workspace = true
 description = "Source-aware desktop audio Session SDK"
+readme = "../../README.md"
+homepage = "https://github.com/pocketstation-io/pocketstation"
+documentation = "https://docs.rs/pocketstation"
+keywords = ["audio", "capture", "realtime", "session", "webrtc"]
+categories = ["multimedia::audio", "api-bindings"]
 
 [features]
 default = []

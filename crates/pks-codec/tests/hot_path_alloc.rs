@@ -6,23 +6,19 @@
 // `tools/pocketstation-alloccheck`.
 
 use assert_no_alloc::*;
-use pks_audio::{
-    captured_frame_stream, AudioBufferPool, AudioFrame, OpusDecoder, OpusEncoder, SourceId,
-    StreamId, OPUS_MAX_PACKET_BYTES, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,
-};
+use pks_codec::{OpusDecoder, OpusEncoder, OPUS_MAX_PACKET_BYTES};
+use pks_frame::{AudioBufferPool, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ};
 
 #[cfg(test)]
 #[global_allocator]
 static A: AllocDisabler = AllocDisabler;
 
-/// Given the audio hot path (pool acquire → ring push → encode → ring pop → decode),
+/// Given the codec hot path (pool acquire → encode → decode),
 /// when 100 consecutive frames are processed,
 /// then zero heap allocations must occur.
 #[test]
 fn given_hot_path_when_100_frames_then_zero_heap_allocs() {
     let pool = AudioBufferPool::new(64, POOL_SLOT_SAMPLES);
-    let (mut sender, mut stream) =
-        captured_frame_stream(64).expect("bounded captured-frame stream");
     let mut encoder = OpusEncoder::default();
     let mut decoder = OpusDecoder::default();
 
@@ -31,46 +27,33 @@ fn given_hot_path_when_100_frames_then_zero_heap_allocs() {
     let mut decode_buf: Vec<f32> = Vec::with_capacity(POOL_SLOT_SAMPLES);
 
     // Warm up 10 frames to exhaust libopus lazy-init paths before the gate opens.
-    for wu in 0u64..10 {
+    for _ in 0..10 {
         let mut h = pool.acquire().expect("pool exhausted on warmup");
         h.copy_from_slice(&pcm);
-        let frame = AudioFrame::new(StreamId(1), SourceId(1), wu, wu * 20_000_000, 1, h);
-        let _ = sender.try_send(frame);
-        if let Some(f) = stream.try_next() {
+        encode_buf.clear();
+        let n = encoder.encode_into(h.as_slice(), &mut encode_buf).unwrap();
+        drop(h);
+        decode_buf.clear();
+        decoder
+            .decode_into(&encode_buf[..n], &mut decode_buf, false)
+            .unwrap();
+    }
+
+    assert_no_alloc(|| {
+        for _ in 0..100 {
+            let mut h = pool.acquire().expect("pool exhausted on hot path");
+            h.copy_from_slice(&pcm);
             encode_buf.clear();
-            let n = encoder
-                .encode_into(f.buffer.as_slice(), &mut encode_buf)
-                .unwrap();
-            drop(f);
+            let n = encoder.encode_into(h.as_slice(), &mut encode_buf).unwrap();
+            drop(h);
             decode_buf.clear();
             decoder
                 .decode_into(&encode_buf[..n], &mut decode_buf, false)
                 .unwrap();
         }
-    }
-
-    assert_no_alloc(|| {
-        for seq in 1u64..=100 {
-            let mut h = pool.acquire().expect("pool exhausted on hot path");
-            h.copy_from_slice(&pcm);
-            let frame = AudioFrame::new(StreamId(1), SourceId(1), seq, seq * 20_000_000, 1, h);
-            let _ = sender.try_send(frame);
-            if let Some(f) = stream.try_next() {
-                encode_buf.clear();
-                let n = encoder
-                    .encode_into(f.buffer.as_slice(), &mut encode_buf)
-                    .unwrap();
-                drop(f);
-                decode_buf.clear();
-                decoder
-                    .decode_into(&encode_buf[..n], &mut decode_buf, false)
-                    .unwrap();
-            }
-        }
     });
 
     assert_eq!(pool.acquire_failures(), 0);
-    assert_eq!(sender.stats().dropped_newest_frames, 0);
 }
 
 fn build_sine(start: u64, len: usize) -> Vec<f32> {

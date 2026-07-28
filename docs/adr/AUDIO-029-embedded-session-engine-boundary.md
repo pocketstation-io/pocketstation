@@ -45,8 +45,9 @@ owns only ABI records, generational foreign handles, marshalling, bounded
 polling and lease projections, panic containment, header generation, and C
 conformance fixtures. It must not become another Session engine.
 
-`pks-audio` may temporarily re-export the Rust Session façade for source
-compatibility. It must not retain or grow a second Session runtime.
+`pocketstation` is the sole public Rust Session façade. The unconsumed
+`pks-audio` compatibility package was retired in W12 rather than retaining a
+second Session identity.
 `pks-codec-c` owns the separate codec compatibility ABI and preserves its
 existing `pks_*` symbols; it is not the W11 engine contract.
 
@@ -76,8 +77,8 @@ not an aspirational crate diagram. W11 then completed the named migrations:
   explicit stop, join, and finalization outcomes;
 - the legacy `pks-pipeline` package is retired after caller migration;
 - `pocketstation` is the language-owned Rust façade and delegates Session
-  semantics to `pks-session`; `pks-audio` is transitional compatibility only
-  and owns no duplicate `RuntimeNotIntegrated` implementation;
+  semantics to `pks-session`; the duplicate `RuntimeNotIntegrated`
+  implementation and unconsumed `pks-audio` compatibility identity are gone;
 - `pks-session-c` and `pks-codec-c` are separate, executable conformance
   boundaries; and
 - the `pks` proof command consumes the reusable Session engine and endpoint
@@ -353,8 +354,8 @@ contract and would let foreign callers bypass compilation and hot-path safety.
   `pks-runtime` remains the owner of plan scheduling, execution, bounded edge
   routing, and runtime observations; platform crates remain the sole owners of
   capture implementation.
-- The existing `pks-audio` Session `PARTIAL` inventory row remains until the
-  real Session runtime migrates and the compatibility façade delegates to it.
+- The public `pocketstation` façade delegates to the real Session runtime; no
+  compatibility package retains a second Session identity.
 - Documentation and contract-only tests cannot claim bindability. W11 exit
   requires a non-Rust harness that executes version negotiation, lifecycle,
   cancellation, error mapping, polling, lease release, and panic containment.

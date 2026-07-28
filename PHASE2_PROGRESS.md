@@ -21,10 +21,21 @@
   Three focused tests prove two independent stems cross bounded destinations,
   lifecycle/events/metrics are observable, stop is idempotent, cancellation is
   typed, and an invalid selector fails rather than reporting success.
-- `pks-audio` remains transitional compatibility/history for its existing
-  lower-level examples; it is no longer the claimed Rust Session identity.
-  Removing its remaining helpers is a separate ownership migration, not a
-  reason to duplicate them in `pocketstation`.
+- The unconsumed `pks-audio` compatibility package is retired. Its allocation
+  gate moved to the codec owner, its executable graph example moved to the node
+  owner, and its obsolete duplicate quickstart/local-proof/soak helpers were
+  deleted rather than preserving a second public identity.
+- Every internal path dependency in the public façade's Cargo closure now also
+  carries its exact compatible version, and previously anonymous closure crates
+  have truthful package descriptions. This is package readiness only; no crate
+  was published and no registry-consumer claim is made before the dependency
+  closure exists in the registry.
+- The release dry-run validates all 18 package manifests in dependency order
+  and keeps the public `pocketstation` package last. `cargo package --list`
+  validates the façade archive contents. A real package build remains
+  intentionally blocked until `pks-capture` and the rest of the internal
+  dependency closure are published; source-path consumption remains `PARTIAL`
+  and is not registry proof.
 - No provider code, first-party connector catalog, browser/relay implementation,
   recording implementation, mock product path, per-frame foreign callback,
   unbounded queue, or new device claim was introduced. Connector/browser/

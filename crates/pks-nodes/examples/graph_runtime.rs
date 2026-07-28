@@ -50,7 +50,7 @@ fn main() {
     let plan = RuntimePlanner::new().plan(&ir).expect("graph plans");
 
     println!(
-        "holy_shit_demo: compiled {} nodes, {} edges → {} execution partition(s)",
+        "graph_runtime: compiled {} nodes, {} edges → {} execution partition(s)",
         ir.node_count(),
         ir.edge_count(),
         plan.partitions.len(),
@@ -86,7 +86,7 @@ fn main() {
             }
             Ok(None) => output_edge.record_dropped(),
             Err(e) => {
-                eprintln!("holy_shit_demo: executor error: {e}");
+                eprintln!("graph_runtime: executor error: {e}");
                 return;
             }
         }
@@ -94,7 +94,7 @@ fn main() {
 
     // 4. Report per-edge observability measured from the real output stream.
     println!(
-        "holy_shit_demo: ran {} realtime nodes for {} frames",
+        "graph_runtime: ran {} realtime nodes for {} frames",
         executor.node_count(),
         FRAMES_TO_RUN,
     );

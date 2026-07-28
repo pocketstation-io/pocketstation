@@ -52,6 +52,22 @@ if [[ "${#crates[@]}" -eq 0 ]]; then
     exit 1
 fi
 
+ordered_crates=()
+public_facade_found=false
+for crate in "${crates[@]}"; do
+    if [[ "${crate}" == "pocketstation" ]]; then
+        public_facade_found=true
+    else
+        ordered_crates+=("${crate}")
+    fi
+done
+if [[ "${public_facade_found}" != "true" ]]; then
+    echo "public pocketstation facade is absent from publishable workspace crates" >&2
+    exit 1
+fi
+ordered_crates+=("pocketstation")
+crates=("${ordered_crates[@]}")
+
 propagation_delay_seconds="${PKS_PUBLISH_PROPAGATION_DELAY_SECONDS:-35}"
 total="${#crates[@]}"
 for index in "${!crates[@]}"; do
