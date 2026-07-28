@@ -4,7 +4,7 @@ use std::time::{Duration, Instant};
 
 use pks_capture::{
     ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode,
-    CaptureObservationHandle, CaptureObservations, PreparedCaptureBackend,
+    CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend,
 };
 use pks_endpoint::{
     EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization,
@@ -38,6 +38,11 @@ struct TestActiveCapture;
 struct DeliveringCaptureBackend;
 
 struct DeliveringPreparedCapture;
+
+struct DeliveringActiveCapture {
+    stop_requested: Arc<AtomicBool>,
+    worker: Option<std::thread::JoinHandle<()>>,
+}
 
 impl CallbackCaptureBackend for TestCaptureBackend {
     fn prepare(&self, _mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {
@@ -85,14 +90,64 @@ impl CallbackCaptureBackend for DeliveringCaptureBackend {
 impl PreparedCaptureBackend for DeliveringPreparedCapture {
     fn open(
         self: Box<Self>,
-        mut delivery: CaptureDelivery,
+        delivery: CaptureDelivery,
     ) -> Result<Box<dyn ActiveCaptureBackend>, CaptureError> {
-        let pool = AudioBufferPool::new(1, 4);
-        let mut buffer = pool.acquire().expect("deterministic capture buffer");
-        buffer.copy_from_slice(&[0.125, 0.25, 0.5, 1.0]);
-        let frame = AudioFrame::new(StreamId(11), SourceId(12), 13, 14, 1, buffer);
-        let _ = delivery.frame_sender.try_send(frame);
-        Ok(Box::new(TestActiveCapture))
+        let stop_requested = Arc::new(AtomicBool::new(false));
+        let worker_stop_requested = Arc::clone(&stop_requested);
+        let worker = std::thread::spawn(move || {
+            let pool = AudioBufferPool::new(1, 4);
+            let mut frame_sender = delivery.frame_sender;
+            while !worker_stop_requested.load(Ordering::Acquire) {
+                let Some(mut buffer) = pool.acquire() else {
+                    std::thread::sleep(Duration::from_millis(1));
+                    continue;
+                };
+                buffer.copy_from_slice(&[0.125, 0.25, 0.5, 1.0]);
+                let frame = AudioFrame::new(StreamId(11), SourceId(12), 13, 14, 1, buffer);
+                match frame_sender.try_send(frame) {
+                    CapturedFrameDelivery::Delivered => break,
+                    CapturedFrameDelivery::DroppedNewest
+                    | CapturedFrameDelivery::DiscardedBeforeStart => {
+                        std::thread::sleep(Duration::from_millis(1));
+                    }
+                }
+            }
+        });
+        Ok(Box::new(DeliveringActiveCapture {
+            stop_requested,
+            worker: Some(worker),
+        }))
+    }
+}
+
+impl ActiveCaptureBackend for DeliveringActiveCapture {
+    fn observation_handle(&self) -> CaptureObservationHandle {
+        CaptureObservationHandle::default()
+    }
+
+    fn observations(&self) -> CaptureObservations {
+        CaptureObservations::default()
+    }
+
+    fn stop_and_join(mut self: Box<Self>) -> Result<CaptureObservations, CaptureError> {
+        self.stop_requested.store(true, Ordering::Release);
+        if let Some(worker) = self.worker.take() {
+            worker
+                .join()
+                .map_err(|_| CaptureError::CaptureWorkerPanicked {
+                    worker: "deterministic capture worker",
+                })?;
+        }
+        Ok(CaptureObservations::default())
+    }
+}
+
+impl Drop for DeliveringActiveCapture {
+    fn drop(&mut self) {
+        self.stop_requested.store(true, Ordering::Release);
+        if let Some(worker) = self.worker.take() {
+            let _ = worker.join();
+        }
     }
 }
 

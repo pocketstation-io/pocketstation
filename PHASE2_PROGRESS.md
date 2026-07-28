@@ -1,5 +1,42 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W11 transactional capture-delivery start boundary — 2026-07-28
+
+- Status: `SAFE-TO-TEST`; the component correction is complete and the
+  product-path lab rerun remains the acceptance gate.
+- The W11 product proof exposed a real startup defect: capture backends could
+  publish into their bounded streams while endpoint workers were still held
+  behind the Session start gate. The runtime then admitted that backlog as one
+  burst, overflowing otherwise healthy route edges.
+- `pks-capture` now owns a one-way, atomic capture-delivery start gate.
+  `pks-session` is its sole controller and opens endpoint workers first, then
+  capture delivery, immediately before publishing `Running`. Frames produced
+  before that transaction boundary are not admitted as product frames and are
+  counted explicitly as
+  `frames_discarded_before_start_total`.
+- The callback-side check remains allocation-free, lock-free, blocking-free,
+  async-free, log-free, and panic-free. No capacity changed; no sleep, retry,
+  pacing, endpoint dependency, or consumer coordination entered production
+  code.
+- A deterministic regression emits sixteen frames per source during backend
+  open and delays endpoint consumption. It proves those pre-`Running` frames
+  are explicitly accounted, each source delivers its first post-start frame,
+  every source-ingress rejection/discard counter stays zero, and every
+  destination-edge drop counter stays zero.
+- The C conformance fixture now delivers its observable audio after the
+  Session start boundary. The pre-start counter is deliberately not appended
+  to the ABI 1.1 source record: that output function has no caller-size
+  negotiation, so growing its 176-byte record would be unsafe for an older
+  compiled caller. The README names this projection gap instead of claiming
+  complete captured-stream observations. The ABI 1.0 aggregate canary remains
+  unchanged.
+- Focused acceptance passes: 51 `pks-capture` tests, 49 `pks-session` tests,
+  12 `pks-session-c` tests, two executable C harness tests, the standalone C
+  conformance script, formatting, and strict all-target/all-feature Clippy for
+  all three owners.
+- No production scaffold, mock, fallback, loopback-only path, queue inflation,
+  or duplicate lifecycle implementation was introduced.
+
 ## W11 codec C ABI ownership extraction — 2026-07-28
 
 - Status: `PARTIAL`, `SAFE-TO-TEST`; the central Rust ownership correction is

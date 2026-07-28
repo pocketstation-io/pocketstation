@@ -52,14 +52,17 @@ or route record with `pks_session_source_metrics_at` and
 `PKS_SESSION_STATUS_INDEX_OUT_OF_RANGE`.
 
 Each source record carries its stable stem ID, backend-owned capture
-observations, captured-stream delivery/drop observations, runtime-event
-observations, and source-ingress queue capacity/depth/peak plus delivery and
-discard totals. Each route record carries stable route and endpoint IDs, the
-complete authoritative runtime-edge snapshot, endpoint delivery/failure
-observations, an explicit `UNAVAILABLE`, `LIVE`, or `FINALIZED` stage, and
-endpoint-finalization failure count. Endpoint counters are authoritative only
-for `LIVE` or `FINALIZED`; `UNAVAILABLE` prevents a defensive lookup miss from
-masquerading as synthetic live zeroes.
+observations, captured-stream delivered and dropped-newest observations,
+runtime-event observations, and source-ingress queue capacity/depth/peak plus
+delivery and discard totals. The Rust observation additionally reports capture
+frames rejected by the Session start boundary. ABI 1.1 does not project that
+new counter because its indexed 176-byte output record has no caller-size
+negotiation and must not be grown unsafely. Each route record carries stable
+route and endpoint IDs, the complete authoritative runtime-edge snapshot,
+endpoint delivery/failure observations, an explicit `UNAVAILABLE`, `LIVE`, or
+`FINALIZED` stage, and endpoint-finalization failure count. Endpoint counters
+are authoritative only for `LIVE` or `FINALIZED`; `UNAVAILABLE` prevents a
+defensive lookup miss from masquerading as synthetic live zeroes.
 
 `RunningSession` retains only cloneable read-only receipts established during
 setup. The adapter never polls moved owners, reaches into capture callbacks,

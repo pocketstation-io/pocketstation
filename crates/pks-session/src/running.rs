@@ -4,7 +4,8 @@ use std::thread::JoinHandle;
 use std::time::Duration;
 
 use pks_capture::{
-    prepare_capture, CallbackCaptureBackend, CaptureError, CaptureLineageSeed, CaptureMode,
+    capture_delivery_start_gate, prepare_capture_with_start_gate, CallbackCaptureBackend,
+    CaptureDeliveryStartGate, CaptureError, CaptureLineageSeed, CaptureMode,
     CaptureObservationReceipt, CapturePrepareRequest, CaptureStopOutcome, InputDeviceSelector,
     SourceRuntimeEventReceive,
 };
@@ -521,6 +522,7 @@ pub fn start_prepared_session_cancellable(
         ));
     }
     let (gate_controller, start_gate) = endpoint_start_gate();
+    let (capture_gate_controller, capture_start_gate) = capture_delivery_start_gate();
     let source_ingress_observations = source_mappings
         .iter()
         .map(|mapping| (mapping.stem_id, mapping.sender.observation_handle()))
@@ -599,7 +601,12 @@ pub fn start_prepared_session_cancellable(
     }
     running_endpoints.reverse();
 
-    let captures = match prepare_and_open_captures(&spec, capture_backends, options) {
+    let captures = match prepare_and_open_captures(
+        &spec,
+        capture_backends,
+        options,
+        Arc::clone(&capture_start_gate),
+    ) {
         Ok(captures) => captures,
         Err(error) => {
             let (error, rollback_failures) = error.rollback(running_endpoints);
@@ -788,7 +795,8 @@ pub fn start_prepared_session_cancellable(
 
     // `gate_controller` is the sole controller returned by `endpoint_start_gate`
     // and has not been shared or opened on any preceding path.
-    let _opened = gate_controller.open();
+    let _endpoints_opened = gate_controller.open();
+    let _capture_delivery_opened = capture_gate_controller.open();
     let _ = event_sender.publish_lifecycle(session_id, SessionLifecycleState::Running);
     Ok(RunningSession {
         session_id,
@@ -959,6 +967,7 @@ fn prepare_and_open_captures(
     spec: &crate::SessionSpec,
     backends: CaptureBackendSet<'_>,
     options: SessionStartOptions,
+    start_gate: Arc<CaptureDeliveryStartGate>,
 ) -> Result<Vec<OpenedCapture>, CaptureAcquisitionError> {
     let mut captures = Vec::with_capacity(spec.stems().len());
     for stem in spec.stems() {
@@ -972,16 +981,17 @@ fn prepare_and_open_captures(
             frame_capacity_frames: options.capture_frame_capacity_frames,
             runtime_event_capacity_events: options.capture_runtime_event_capacity_events,
         };
-        let prepared = match prepare_capture(binding, request) {
-            Ok(prepared) => prepared,
-            Err(source) => {
-                return Err(CaptureAcquisitionError::Prepare {
-                    stem_id: stem.id(),
-                    source,
-                    prior_captures: captures,
-                });
-            }
-        };
+        let prepared =
+            match prepare_capture_with_start_gate(binding, request, Arc::clone(&start_gate)) {
+                Ok(prepared) => prepared,
+                Err(source) => {
+                    return Err(CaptureAcquisitionError::Prepare {
+                        stem_id: stem.id(),
+                        source,
+                        prior_captures: captures,
+                    });
+                }
+            };
         let capture = match prepared.open() {
             Ok(capture) => capture,
             Err(source) => {

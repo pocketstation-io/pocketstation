@@ -1,8 +1,10 @@
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
+use std::time::Duration;
 
 use pks_capture::{
     ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode,
-    CaptureObservationHandle, CaptureObservations, PreparedCaptureBackend,
+    CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend,
 };
 use pks_frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId};
 use pks_graph::PrepareContext;
@@ -17,7 +19,10 @@ struct DeterministicCaptureBackend;
 
 struct DeterministicPreparedCapture;
 
-struct DeterministicActiveCapture;
+struct DeterministicActiveCapture {
+    stop_requested: Arc<AtomicBool>,
+    worker: Option<std::thread::JoinHandle<()>>,
+}
 
 impl CallbackCaptureBackend for DeterministicCaptureBackend {
     fn prepare(&self, _mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {
@@ -37,7 +42,31 @@ impl PreparedCaptureBackend for DeterministicPreparedCapture {
         buffer.copy_from_slice(&[0.125, 0.25, 0.5, 1.0]);
         let frame = AudioFrame::new(StreamId(11), SourceId(12), 13, 14, 1, buffer);
         let _ = delivery.frame_sender.try_send(frame);
-        Ok(Box::new(DeterministicActiveCapture))
+
+        let stop_requested = Arc::new(AtomicBool::new(false));
+        let worker_stop_requested = Arc::clone(&stop_requested);
+        let worker = std::thread::spawn(move || {
+            let pool = AudioBufferPool::new(1, 4);
+            while !worker_stop_requested.load(Ordering::Acquire) {
+                let Some(mut buffer) = pool.acquire() else {
+                    std::thread::sleep(Duration::from_millis(1));
+                    continue;
+                };
+                buffer.copy_from_slice(&[0.125, 0.25, 0.5, 1.0]);
+                let frame = AudioFrame::new(StreamId(11), SourceId(12), 13, 14, 2, buffer);
+                match delivery.frame_sender.try_send(frame) {
+                    CapturedFrameDelivery::Delivered => break,
+                    CapturedFrameDelivery::DroppedNewest
+                    | CapturedFrameDelivery::DiscardedBeforeStart => {
+                        std::thread::sleep(Duration::from_millis(1));
+                    }
+                }
+            }
+        });
+        Ok(Box::new(DeterministicActiveCapture {
+            stop_requested,
+            worker: Some(worker),
+        }))
     }
 }
 
@@ -50,8 +79,25 @@ impl ActiveCaptureBackend for DeterministicActiveCapture {
         CaptureObservations::default()
     }
 
-    fn stop_and_join(self: Box<Self>) -> Result<CaptureObservations, CaptureError> {
+    fn stop_and_join(mut self: Box<Self>) -> Result<CaptureObservations, CaptureError> {
+        self.stop_requested.store(true, Ordering::Release);
+        if let Some(worker) = self.worker.take() {
+            worker
+                .join()
+                .map_err(|_| CaptureError::CaptureWorkerPanicked {
+                    worker: "C conformance capture worker",
+                })?;
+        }
         Ok(CaptureObservations::default())
+    }
+}
+
+impl Drop for DeterministicActiveCapture {
+    fn drop(&mut self) {
+        self.stop_requested.store(true, Ordering::Release);
+        if let Some(worker) = self.worker.take() {
+            let _ = worker.join();
+        }
     }
 }
 

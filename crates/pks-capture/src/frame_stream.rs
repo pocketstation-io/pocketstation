@@ -1,4 +1,4 @@
-use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
 
 use pks_frame::AudioFrame;
@@ -10,18 +10,21 @@ use crate::CaptureError;
 pub enum CapturedFrameDelivery {
     Delivered,
     DroppedNewest,
+    DiscardedBeforeStart,
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct CapturedFrameStreamStats {
     pub delivered_frames: u64,
     pub dropped_newest_frames: u64,
+    pub frames_discarded_before_start_total: u64,
 }
 
 #[derive(Debug, Default)]
 struct CapturedFrameStreamCounters {
     delivered_frames: AtomicU64,
     dropped_newest_frames: AtomicU64,
+    frames_discarded_before_start_total: AtomicU64,
 }
 
 #[derive(Clone, Debug)]
@@ -40,8 +43,55 @@ impl CapturedFrameStreamCounters {
         CapturedFrameStreamStats {
             delivered_frames: self.delivered_frames.load(Ordering::Relaxed),
             dropped_newest_frames: self.dropped_newest_frames.load(Ordering::Relaxed),
+            frames_discarded_before_start_total: self
+                .frames_discarded_before_start_total
+                .load(Ordering::Relaxed),
         }
     }
+}
+
+/// Read-only one-way start barrier checked by capture delivery callbacks.
+pub struct CaptureDeliveryStartGate {
+    open: AtomicBool,
+}
+
+impl CaptureDeliveryStartGate {
+    fn is_open(&self) -> bool {
+        self.open.load(Ordering::Acquire)
+    }
+
+    pub(crate) fn opened() -> Arc<Self> {
+        Arc::new(Self {
+            open: AtomicBool::new(true),
+        })
+    }
+}
+
+/// Session-owned authority that opens one capture delivery start gate.
+pub struct CaptureDeliveryStartGateController {
+    gate: Arc<CaptureDeliveryStartGate>,
+}
+
+impl CaptureDeliveryStartGateController {
+    pub fn open(&self) -> bool {
+        !self.gate.open.swap(true, Ordering::AcqRel)
+    }
+}
+
+/// Creates a closed Session-owned controller and callback-visible start gate.
+pub fn capture_delivery_start_gate() -> (
+    CaptureDeliveryStartGateController,
+    Arc<CaptureDeliveryStartGate>,
+) {
+    let gate = Arc::new(CaptureDeliveryStartGate {
+        open: AtomicBool::new(false),
+    });
+    (
+        CaptureDeliveryStartGateController {
+            gate: Arc::clone(&gate),
+        },
+        gate,
+    )
 }
 
 /// Single-producer endpoint passed into a platform capture callback.
@@ -51,10 +101,17 @@ impl CapturedFrameStreamCounters {
 pub struct CapturedFrameSender {
     producer: Producer<AudioFrame>,
     counters: Arc<CapturedFrameStreamCounters>,
+    start_gate: Arc<CaptureDeliveryStartGate>,
 }
 
 impl CapturedFrameSender {
     pub fn try_send(&mut self, frame: AudioFrame) -> CapturedFrameDelivery {
+        if !self.start_gate.is_open() {
+            self.counters
+                .frames_discarded_before_start_total
+                .fetch_add(1, Ordering::Relaxed);
+            return CapturedFrameDelivery::DiscardedBeforeStart;
+        }
         match self.producer.push(frame) {
             Ok(()) => {
                 self.counters
@@ -129,6 +186,13 @@ impl CapturedFrameStream {
 pub fn captured_frame_stream(
     capacity_frames: usize,
 ) -> Result<(CapturedFrameSender, CapturedFrameStream), CaptureError> {
+    captured_frame_stream_with_start_gate(capacity_frames, CaptureDeliveryStartGate::opened())
+}
+
+pub(crate) fn captured_frame_stream_with_start_gate(
+    capacity_frames: usize,
+    start_gate: Arc<CaptureDeliveryStartGate>,
+) -> Result<(CapturedFrameSender, CapturedFrameStream), CaptureError> {
     if capacity_frames == 0 {
         return Err(CaptureError::InvalidStreamCapacity);
     }
@@ -138,6 +202,7 @@ pub fn captured_frame_stream(
         CapturedFrameSender {
             producer,
             counters: Arc::clone(&counters),
+            start_gate,
         },
         CapturedFrameStream { consumer, counters },
     ))
@@ -179,8 +244,30 @@ mod tests {
             CapturedFrameStreamStats {
                 delivered_frames: 1,
                 dropped_newest_frames: 0,
+                frames_discarded_before_start_total: 0,
             }
         );
+    }
+
+    #[test]
+    fn given_closed_start_gate_when_frame_is_sent_then_frame_is_discarded_and_counted() {
+        let pool = AudioBufferPool::new(1, 960);
+        let (controller, gate) = capture_delivery_start_gate();
+        let (mut sender, mut stream) = captured_frame_stream_with_start_gate(1, gate).unwrap();
+
+        assert_eq!(
+            sender.try_send(frame(&pool, 1)),
+            CapturedFrameDelivery::DiscardedBeforeStart
+        );
+        assert_eq!(stream.stats().frames_discarded_before_start_total, 1);
+        assert!(stream.try_next().is_none());
+        assert!(controller.open());
+        assert_eq!(
+            sender.try_send(frame(&pool, 2)),
+            CapturedFrameDelivery::Delivered
+        );
+        assert_eq!(stream.try_next().unwrap().sequence_number, 2);
+        assert!(!controller.open());
     }
 
     #[test]

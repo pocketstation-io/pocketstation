@@ -1,14 +1,14 @@
 use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
 use std::sync::Arc;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use pks_caps::{AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec};
 use pks_capture::{
     ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode,
     CaptureObservationCounters, CaptureObservationHandle, CaptureObservations,
-    CaptureRuntimeFailure, CaptureRuntimeFailureClass, PreparedCaptureBackend, SourceGeneration,
-    SourceKind, SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventSender,
-    StableSourceId,
+    CaptureRuntimeFailure, CaptureRuntimeFailureClass, CapturedFrameDelivery,
+    PreparedCaptureBackend, SourceGeneration, SourceKind, SourceRecoveryRequirement,
+    SourceRuntimeEvent, SourceRuntimeEventSender, StableSourceId,
 };
 use pks_endpoint::{
     EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization,
@@ -187,6 +187,7 @@ fn context() -> PrepareContext {
 struct CaptureControl {
     prepare_calls_total: AtomicU64,
     open_calls_total: AtomicU64,
+    startup_frames_count: AtomicU64,
     live_prepared_total: AtomicUsize,
     live_active_total: AtomicUsize,
     stop_calls_total: AtomicU64,
@@ -209,6 +210,8 @@ struct TestPreparedCapture {
 struct TestActiveCapture {
     control: Arc<CaptureControl>,
     counters: CaptureObservationCounters,
+    stop_requested: Arc<AtomicBool>,
+    worker: Option<std::thread::JoinHandle<()>>,
     _runtime_event_sender: SourceRuntimeEventSender,
 }
 
@@ -233,7 +236,7 @@ impl CallbackCaptureBackend for TestCaptureBackend {
 impl PreparedCaptureBackend for TestPreparedCapture {
     fn open(
         self: Box<Self>,
-        mut delivery: CaptureDelivery,
+        delivery: CaptureDelivery,
     ) -> Result<Box<dyn ActiveCaptureBackend>, CaptureError> {
         self.control
             .open_calls_total
@@ -241,38 +244,84 @@ impl PreparedCaptureBackend for TestPreparedCapture {
         if self.control.fail_open.load(Ordering::Acquire) {
             return Err(CaptureError::BackendInit("test open failure".to_owned()));
         }
-        let pool = AudioBufferPool::new(1, 960);
-        let mut buffer = pool
-            .acquire()
-            .expect("test capture pool must provide one slot");
-        buffer.set_len(960);
-        let frame = AudioFrame::new(StreamId(self.source_id.0), self.source_id, 1, 2, 1, buffer);
-        let _ = delivery.frame_sender.try_send(frame);
-        if self.control.emit_source_unavailable.load(Ordering::Acquire) {
-            let _ = delivery
-                .runtime_event_sender
-                .try_send(SourceRuntimeEvent::SourceUnavailable {
-                    stable_id: StableSourceId::new(
-                        Platform::Unknown,
-                        SourceKind::Application,
-                        format!("test-source-{}", self.source_id.0),
-                    ),
-                    generation: SourceGeneration::INITIAL.next(),
-                    recovery_requirement:
-                        SourceRecoveryRequirement::ExplicitRediscoveryAndNewSession,
-                    failure: CaptureRuntimeFailure {
-                        operation: "test capture lifecycle",
-                        error_class: CaptureRuntimeFailureClass::SourceInstanceExited,
-                    },
-                });
+        let startup_frames_count = self
+            .control
+            .startup_frames_count
+            .load(Ordering::Acquire)
+            .max(1);
+        let CaptureDelivery {
+            mut frame_sender,
+            runtime_event_sender,
+        } = delivery;
+        let pool = AudioBufferPool::new(64, 960);
+        for sequence_num in 1..=startup_frames_count {
+            let mut buffer = pool
+                .acquire()
+                .expect("test capture pool must provide one slot per startup frame");
+            buffer.set_len(960);
+            let frame = AudioFrame::new(
+                StreamId(self.source_id.0),
+                self.source_id,
+                sequence_num,
+                sequence_num.saturating_mul(20_000_000),
+                1,
+                buffer,
+            );
+            let _ = frame_sender.try_send(frame);
         }
+        if self.control.emit_source_unavailable.load(Ordering::Acquire) {
+            let _ = runtime_event_sender.try_send(SourceRuntimeEvent::SourceUnavailable {
+                stable_id: StableSourceId::new(
+                    Platform::Unknown,
+                    SourceKind::Application,
+                    format!("test-source-{}", self.source_id.0),
+                ),
+                generation: SourceGeneration::INITIAL.next(),
+                recovery_requirement: SourceRecoveryRequirement::ExplicitRediscoveryAndNewSession,
+                failure: CaptureRuntimeFailure {
+                    operation: "test capture lifecycle",
+                    error_class: CaptureRuntimeFailureClass::SourceInstanceExited,
+                },
+            });
+        }
+        let stop_requested = Arc::new(AtomicBool::new(false));
+        let worker_stop_requested = Arc::clone(&stop_requested);
+        let source_id = self.source_id;
+        let worker = std::thread::spawn(move || {
+            let pool = AudioBufferPool::new(1, 960);
+            let sequence_num = startup_frames_count.saturating_add(1);
+            while !worker_stop_requested.load(Ordering::Acquire) {
+                let Some(mut buffer) = pool.acquire() else {
+                    std::thread::sleep(Duration::from_millis(1));
+                    continue;
+                };
+                buffer.set_len(960);
+                let frame = AudioFrame::new(
+                    StreamId(source_id.0),
+                    source_id,
+                    sequence_num,
+                    sequence_num.saturating_mul(20_000_000),
+                    1,
+                    buffer,
+                );
+                match frame_sender.try_send(frame) {
+                    CapturedFrameDelivery::Delivered => break,
+                    CapturedFrameDelivery::DroppedNewest
+                    | CapturedFrameDelivery::DiscardedBeforeStart => {
+                        std::thread::sleep(Duration::from_millis(1));
+                    }
+                }
+            }
+        });
         self.control
             .live_active_total
             .fetch_add(1, Ordering::Relaxed);
         Ok(Box::new(TestActiveCapture {
             control: Arc::clone(&self.control),
             counters: CaptureObservationCounters::default(),
-            _runtime_event_sender: delivery.runtime_event_sender,
+            stop_requested,
+            worker: Some(worker),
+            _runtime_event_sender: runtime_event_sender,
         }))
     }
 }
@@ -294,10 +343,18 @@ impl ActiveCaptureBackend for TestActiveCapture {
         self.counters.snapshot()
     }
 
-    fn stop_and_join(self: Box<Self>) -> Result<CaptureObservations, CaptureError> {
+    fn stop_and_join(mut self: Box<Self>) -> Result<CaptureObservations, CaptureError> {
         self.control
             .stop_calls_total
             .fetch_add(1, Ordering::Relaxed);
+        self.stop_requested.store(true, Ordering::Release);
+        if let Some(worker) = self.worker.take() {
+            worker
+                .join()
+                .map_err(|_| CaptureError::CaptureWorkerPanicked {
+                    worker: "test capture worker",
+                })?;
+        }
         if self.control.fail_stop.load(Ordering::Acquire) {
             Err(CaptureError::BackendStatus {
                 operation: "test capture stop",
@@ -311,6 +368,10 @@ impl ActiveCaptureBackend for TestActiveCapture {
 
 impl Drop for TestActiveCapture {
     fn drop(&mut self) {
+        self.stop_requested.store(true, Ordering::Release);
+        if let Some(worker) = self.worker.take() {
+            let _ = worker.join();
+        }
         self.control
             .live_active_total
             .fetch_sub(1, Ordering::Relaxed);
@@ -330,6 +391,7 @@ struct EndpointControl {
     fail_prepare_call: AtomicU64,
     fail_start_call: AtomicU64,
     fail_join_finalize: AtomicBool,
+    consume_after_gate_delay_ms: AtomicU64,
 }
 
 struct TestEndpointFactory {
@@ -408,6 +470,9 @@ impl PreparedEndpointDriver for TestPreparedEndpoint {
             while !start_gate.is_open() && !control.stop_requested.load(Ordering::Acquire) {
                 std::thread::sleep(Duration::from_millis(1));
             }
+            std::thread::sleep(Duration::from_millis(
+                control.consume_after_gate_delay_ms.load(Ordering::Acquire),
+            ));
             while !control.stop_requested.load(Ordering::Acquire) {
                 let mut delivery_observed = false;
                 for receiver in &mut receivers {
@@ -646,6 +711,67 @@ fn given_two_sources_when_started_then_gate_lineage_and_repeated_stop_are_truthf
 }
 
 #[test]
+fn given_capture_backlog_when_session_starts_then_no_destination_edge_overflows() {
+    let (nodes, operators) = registries();
+    let application = Arc::new(CaptureControl::default());
+    application
+        .startup_frames_count
+        .store(16, Ordering::Release);
+    let microphone = Arc::new(CaptureControl::default());
+    microphone.startup_frames_count.store(16, Ordering::Release);
+    let endpoints = Arc::new(EndpointControl::default());
+    endpoints
+        .consume_after_gate_delay_ms
+        .store(25, Ordering::Release);
+    let application_backend = capture_backend(&application, 11);
+    let microphone_backend = capture_backend(&microphone, 22);
+    let registry = endpoint_registry(&endpoints);
+
+    let mut running = start_prepared_session(
+        prepared_session(&nodes, &operators),
+        capture_backend_set(&application_backend, &microphone_backend),
+        &registry,
+        SessionStartOptions::default(),
+    )
+    .expect("transactional Session startup must succeed");
+    let delivery_deadline = Instant::now() + Duration::from_secs(1);
+    while endpoints.deliveries_total.load(Ordering::Acquire) < 6
+        && Instant::now() < delivery_deadline
+    {
+        std::thread::sleep(Duration::from_millis(1));
+    }
+    assert_eq!(
+        endpoints.deliveries_total.load(Ordering::Acquire),
+        6,
+        "both post-start source frames must reach all three destinations"
+    );
+    let (sources, routes) = running.indexed_metrics();
+    let outcome = running.stop();
+
+    assert!(outcome.is_success());
+    assert_eq!(sources.len(), 2);
+    assert!(sources.iter().all(|source| {
+        source
+            .capture
+            .frame_stream
+            .frames_discarded_before_start_total
+            >= 16
+            && source.ingress.frames_enqueued_total == 1
+            && source.ingress.frames_delivered_total == 1
+            && source.ingress.frames_rejected_full_total == 0
+            && source.ingress.frames_rejected_cancelled_total == 0
+            && source.ingress.frames_discarded_total == 0
+    }));
+    assert!(
+        routes
+            .iter()
+            .all(|route| route.edge.frames_dropped_total == 0),
+        "capture frames accumulated before Running must not overflow destination edges"
+    );
+    assert_no_live_owners(&application, &microphone, &endpoints);
+}
+
+#[test]
 fn given_one_source_failure_when_runtime_continues_then_healthy_source_frame_is_delivered() {
     let (nodes, operators) = registries();
     let application = Arc::new(CaptureControl::default());
@@ -672,7 +798,7 @@ fn given_one_source_failure_when_runtime_continues_then_healthy_source_frame_is_
     let outcome = running.stop();
 
     assert!(!outcome.is_success());
-    assert_eq!(endpoints.deliveries_total.load(Ordering::Relaxed), 6);
+    assert_eq!(endpoints.deliveries_total.load(Ordering::Relaxed), 3);
     let mut source_failures_total = 0;
     while let SessionEventReceive::Event(event) = events.try_recv() {
         if matches!(event.kind(), SessionEventKind::Source(_)) {

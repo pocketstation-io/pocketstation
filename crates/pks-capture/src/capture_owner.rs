@@ -1,16 +1,17 @@
 use std::sync::atomic::{AtomicU32, AtomicU64, Ordering};
+use std::sync::Arc;
 
 use pks_frame::{
     ClockDomainId, FrameLineage, FrameLineageError, LineagedAudioFrame, SessionId, StemId,
 };
 
+use crate::frame_stream::{captured_frame_stream_with_start_gate, CaptureDeliveryStartGate};
 use crate::{
-    captured_frame_stream, source_runtime_event_channel, CaptureError, CaptureMode,
-    CaptureObservationHandle, CaptureObservations, CapturedFrameObservationHandle,
-    CapturedFrameSender, CapturedFrameStream, CapturedFrameStreamStats, PermissionEpoch,
-    SourceGeneration, SourceRuntimeEvent, SourceRuntimeEventObservationHandle,
-    SourceRuntimeEventObservations, SourceRuntimeEventReceive, SourceRuntimeEventReceiver,
-    SourceRuntimeEventSender,
+    source_runtime_event_channel, CaptureError, CaptureMode, CaptureObservationHandle,
+    CaptureObservations, CapturedFrameObservationHandle, CapturedFrameSender, CapturedFrameStream,
+    CapturedFrameStreamStats, PermissionEpoch, SourceGeneration, SourceRuntimeEvent,
+    SourceRuntimeEventObservationHandle, SourceRuntimeEventObservations, SourceRuntimeEventReceive,
+    SourceRuntimeEventReceiver, SourceRuntimeEventSender,
 };
 
 /// Monotonic timestamp domain used by native capture backends.
@@ -287,8 +288,18 @@ pub fn prepare_capture(
     backend: &dyn CallbackCaptureBackend,
     request: CapturePrepareRequest,
 ) -> Result<PreparedCapture, CaptureError> {
+    prepare_capture_with_start_gate(backend, request, CaptureDeliveryStartGate::opened())
+}
+
+/// Prepares a bounded capture owner behind a caller-owned one-way start gate.
+pub fn prepare_capture_with_start_gate(
+    backend: &dyn CallbackCaptureBackend,
+    request: CapturePrepareRequest,
+    start_gate: Arc<CaptureDeliveryStartGate>,
+) -> Result<PreparedCapture, CaptureError> {
     let lineage_seed = request.lineage_seed;
-    let (frame_sender, frame_stream) = captured_frame_stream(request.frame_capacity_frames)?;
+    let (frame_sender, frame_stream) =
+        captured_frame_stream_with_start_gate(request.frame_capacity_frames, start_gate)?;
     let (runtime_event_sender, runtime_event_receiver) =
         source_runtime_event_channel(request.runtime_event_capacity_events)?;
     let prepared_backend = backend.prepare(request.mode)?;

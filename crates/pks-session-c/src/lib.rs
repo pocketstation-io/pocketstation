@@ -633,12 +633,14 @@ pub extern "C" fn pks_session_audio_batch_release(
 #[cfg(test)]
 mod tests {
     use std::mem::{offset_of, size_of};
+    use std::sync::atomic::{AtomicBool, Ordering};
     use std::sync::{Arc, Condvar, Mutex};
     use std::time::{Duration, Instant};
 
     use pks_capture::{
         ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode,
-        CaptureObservationHandle, CaptureObservations, PreparedCaptureBackend,
+        CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery,
+        PreparedCaptureBackend,
     };
     use pks_frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId};
     use pks_graph::PrepareContext;
@@ -663,7 +665,19 @@ mod tests {
 
     struct DeliveringPreparedCapture;
 
-    struct DeliveringActiveCapture;
+    struct DeliveringActiveCapture {
+        stop_requested: Arc<AtomicBool>,
+        worker: Option<std::thread::JoinHandle<()>>,
+    }
+
+    impl DeliveringActiveCapture {
+        fn idle() -> Self {
+            Self {
+                stop_requested: Arc::new(AtomicBool::new(false)),
+                worker: None,
+            }
+        }
+    }
 
     #[derive(Default)]
     struct BlockingOpenState {
@@ -700,7 +714,31 @@ mod tests {
             buffer.copy_from_slice(&[0.125, 0.25, 0.5, 1.0]);
             let frame = AudioFrame::new(StreamId(11), SourceId(12), 13, 14, 1, buffer);
             let _ = delivery.frame_sender.try_send(frame);
-            Ok(Box::new(DeliveringActiveCapture))
+
+            let stop_requested = Arc::new(AtomicBool::new(false));
+            let worker_stop_requested = Arc::clone(&stop_requested);
+            let worker = std::thread::spawn(move || {
+                let pool = AudioBufferPool::new(1, 4);
+                while !worker_stop_requested.load(Ordering::Acquire) {
+                    let Some(mut buffer) = pool.acquire() else {
+                        std::thread::sleep(Duration::from_millis(1));
+                        continue;
+                    };
+                    buffer.copy_from_slice(&[0.125, 0.25, 0.5, 1.0]);
+                    let frame = AudioFrame::new(StreamId(11), SourceId(12), 13, 14, 2, buffer);
+                    match delivery.frame_sender.try_send(frame) {
+                        CapturedFrameDelivery::Delivered => break,
+                        CapturedFrameDelivery::DroppedNewest
+                        | CapturedFrameDelivery::DiscardedBeforeStart => {
+                            std::thread::sleep(Duration::from_millis(1));
+                        }
+                    }
+                }
+            });
+            Ok(Box::new(DeliveringActiveCapture {
+                stop_requested,
+                worker: Some(worker),
+            }))
         }
     }
 
@@ -713,8 +751,25 @@ mod tests {
             CaptureObservations::default()
         }
 
-        fn stop_and_join(self: Box<Self>) -> Result<CaptureObservations, CaptureError> {
+        fn stop_and_join(mut self: Box<Self>) -> Result<CaptureObservations, CaptureError> {
+            self.stop_requested.store(true, Ordering::Release);
+            if let Some(worker) = self.worker.take() {
+                worker
+                    .join()
+                    .map_err(|_| CaptureError::CaptureWorkerPanicked {
+                        worker: "C ABI test capture worker",
+                    })?;
+            }
             Ok(CaptureObservations::default())
+        }
+    }
+
+    impl Drop for DeliveringActiveCapture {
+        fn drop(&mut self) {
+            self.stop_requested.store(true, Ordering::Release);
+            if let Some(worker) = self.worker.take() {
+                let _ = worker.join();
+            }
         }
     }
 
@@ -745,7 +800,7 @@ mod tests {
                     .wait(state)
                     .map_err(|_| CaptureError::BackendInit("blocking state poisoned".to_owned()))?;
             }
-            Ok(Box::new(DeliveringActiveCapture))
+            Ok(Box::new(DeliveringActiveCapture::idle()))
         }
     }
 
