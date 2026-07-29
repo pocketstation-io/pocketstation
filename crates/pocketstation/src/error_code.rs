@@ -1,102 +1,27 @@
 use crate::{
-    PolledAudioPollError, SessionRuntimeError, SessionStartError, SessionStopDisposition,
-    SessionStopResult,
+    SessionError, SessionRuntimeError, SessionStartError, SessionStopDisposition, SessionStopResult,
 };
-
-/// Stable language-neutral code for a public Session start failure.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum SessionStartErrorCode {
-    HostSetupFailed,
-    StartCancelled,
-    InvalidSelector,
-    DeclarationInvalid,
-    CompileFailed,
-    RuntimePrepareFailed,
-    TransactionalStartFailed,
-    MissingAudioReceipt,
-    MissingEventReceiver,
-}
-
-impl SessionStartErrorCode {
-    pub const fn as_str(self) -> &'static str {
-        match self {
-            Self::HostSetupFailed => "session.host_setup_failed",
-            Self::StartCancelled => "session.start_cancelled",
-            Self::InvalidSelector => "session.invalid_selector",
-            Self::DeclarationInvalid => "session.declaration_invalid",
-            Self::CompileFailed => "session.compile_failed",
-            Self::RuntimePrepareFailed => "session.runtime_prepare_failed",
-            Self::TransactionalStartFailed => "session.transactional_start_failed",
-            Self::MissingAudioReceipt => "session.missing_audio_receipt",
-            Self::MissingEventReceiver => "session.missing_event_receiver",
-        }
-    }
-}
-
-/// Stable language-neutral code for a public running-Session failure.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum SessionRuntimeErrorCode {
-    MissingMetricsSnapshot,
-}
-
-impl SessionRuntimeErrorCode {
-    pub const fn as_str(self) -> &'static str {
-        match self {
-            Self::MissingMetricsSnapshot => "session.missing_metrics_snapshot",
-        }
-    }
-}
-
-/// Stable language-neutral code for bounded polled-audio status.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum PolledAudioPollErrorCode {
-    Empty,
-    LeaseCapacityExhausted,
-    StatePoisoned,
-}
-
-impl PolledAudioPollErrorCode {
-    pub const fn as_str(self) -> &'static str {
-        match self {
-            Self::Empty => "audio.poll_empty",
-            Self::LeaseCapacityExhausted => "audio.lease_capacity_exhausted",
-            Self::StatePoisoned => "audio.receipt_state_poisoned",
-        }
-    }
-}
-
-/// Stable language-neutral result code for Session finalization.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum SessionStopCode {
-    Stopped,
-    AlreadyStopped,
-    FinalizationFailed,
-}
-
-impl SessionStopCode {
-    pub const fn as_str(self) -> &'static str {
-        match self {
-            Self::Stopped => "session.stopped",
-            Self::AlreadyStopped => "session.already_stopped",
-            Self::FinalizationFailed => "session.finalization_failed",
-        }
-    }
-}
+use pks_session::{SessionStartErrorCode, SessionStopCode, SessionStopFailureCode};
 
 impl SessionStartError {
     pub fn code(&self) -> SessionStartErrorCode {
         match self {
+            Self::Host(pks_session::SessionEngineHostBuildError::UnsupportedPlatform) => {
+                SessionStartErrorCode::UnsupportedPlatform
+            }
             Self::Host(_) => SessionStartErrorCode::HostSetupFailed,
             Self::Engine(error)
-                if matches!(
-                    error.start_failure().map(|failure| failure.error()),
-                    Some(pks_session::SessionStartError::Cancelled { .. })
-                ) =>
+                if error.start_failure().is_some_and(|failure| {
+                    matches!(
+                        failure.error(),
+                        pks_session::SessionStartError::Cancelled { .. }
+                    )
+                }) =>
             {
                 SessionStartErrorCode::StartCancelled
             }
             Self::Engine(pks_session::SessionEngineStartError::Freeze(
-                pks_session::SessionError::InvalidSelector { .. },
+                SessionError::InvalidSelector { .. },
             )) => SessionStartErrorCode::InvalidSelector,
             Self::Engine(pks_session::SessionEngineStartError::Freeze(_)) => {
                 SessionStartErrorCode::DeclarationInvalid
@@ -107,8 +32,8 @@ impl SessionStartError {
             Self::Engine(pks_session::SessionEngineStartError::Prepare(_)) => {
                 SessionStartErrorCode::RuntimePrepareFailed
             }
-            Self::Engine(pks_session::SessionEngineStartError::Start(_)) => {
-                SessionStartErrorCode::TransactionalStartFailed
+            Self::Engine(pks_session::SessionEngineStartError::Start(failure)) => {
+                pks_session::session_start_failure_code(failure.error())
             }
             Self::MissingAudioReceipt => SessionStartErrorCode::MissingAudioReceipt,
             Self::MissingEventReceiver => SessionStartErrorCode::MissingEventReceiver,
@@ -117,27 +42,19 @@ impl SessionStartError {
 }
 
 impl SessionRuntimeError {
-    pub const fn code(self) -> SessionRuntimeErrorCode {
+    pub const fn code(self) -> pks_session::SessionRuntimeErrorCode {
         match self {
-            Self::MissingMetricsSnapshot => SessionRuntimeErrorCode::MissingMetricsSnapshot,
+            Self::MissingMetricsSnapshot => {
+                pks_session::SessionRuntimeErrorCode::MissingMetricsSnapshot
+            }
         }
-    }
-}
-
-pub const fn polled_audio_poll_error_code(error: PolledAudioPollError) -> PolledAudioPollErrorCode {
-    match error {
-        PolledAudioPollError::Empty => PolledAudioPollErrorCode::Empty,
-        PolledAudioPollError::LeaseCapacityExhausted => {
-            PolledAudioPollErrorCode::LeaseCapacityExhausted
-        }
-        PolledAudioPollError::StatePoisoned => PolledAudioPollErrorCode::StatePoisoned,
     }
 }
 
 impl SessionStopResult {
     pub fn code(self) -> SessionStopCode {
         if !self.is_success() {
-            SessionStopCode::FinalizationFailed
+            SessionStopCode::StopFailed
         } else {
             match self.disposition() {
                 SessionStopDisposition::Stopped => SessionStopCode::Stopped,
@@ -145,33 +62,61 @@ impl SessionStopResult {
             }
         }
     }
+
+    pub fn failure_codes(self) -> Box<[SessionStopFailureCode]> {
+        pks_session::session_stop_failure_codes(&self.outcome())
+    }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{
-        polled_audio_poll_error_code, PolledAudioPollErrorCode, SessionRuntimeErrorCode,
-        SessionStartErrorCode, SessionStopCode,
+    use super::*;
+    use crate::SessionRuntimeError;
+    use pks_session::{
+        SessionDeclarationErrorCode, SessionRuntimeErrorCode, SessionStartErrorCode,
+        SessionStopCode,
     };
-    use crate::{PolledAudioPollError, SessionRuntimeError};
 
     #[test]
-    fn given_public_error_codes_when_serialized_then_values_are_stable_and_namespaced() {
+    fn given_facade_errors_when_mapped_then_codes_use_canonical_session_vocabulary() {
         assert_eq!(
-            SessionStartErrorCode::StartCancelled.as_str(),
-            "session.start_cancelled"
+            SessionStartError::Host(pks_session::SessionEngineHostBuildError::UnsupportedPlatform,)
+                .code(),
+            SessionStartErrorCode::UnsupportedPlatform
+        );
+        assert_eq!(
+            SessionStartError::Engine(pks_session::SessionEngineStartError::Freeze(
+                SessionError::InvalidSelector {
+                    reason: "invalid".to_owned(),
+                },
+            ))
+            .code(),
+            SessionStartErrorCode::InvalidSelector
+        );
+        assert_eq!(
+            SessionStartError::MissingAudioReceipt.code(),
+            SessionStartErrorCode::MissingAudioReceipt
+        );
+        assert_eq!(
+            SessionStartError::MissingEventReceiver.code(),
+            SessionStartErrorCode::MissingEventReceiver
         );
         assert_eq!(
             SessionRuntimeError::MissingMetricsSnapshot.code(),
             SessionRuntimeErrorCode::MissingMetricsSnapshot
         );
+    }
+
+    #[test]
+    fn given_reexported_codes_when_serialized_then_canonical_values_are_unchanged() {
         assert_eq!(
-            polled_audio_poll_error_code(PolledAudioPollError::LeaseCapacityExhausted),
-            PolledAudioPollErrorCode::LeaseCapacityExhausted
+            SessionDeclarationErrorCode::InvalidSelector.as_str(),
+            "session.invalid_selector"
         );
         assert_eq!(
-            SessionStopCode::FinalizationFailed.as_str(),
-            "session.finalization_failed"
+            SessionStartErrorCode::StartCancelled.as_str(),
+            "session.start_cancelled"
         );
+        assert_eq!(SessionStopCode::StopFailed.as_str(), "session.stop_failed");
     }
 }

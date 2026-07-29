@@ -2,14 +2,26 @@
 
 ## W12 stable public Session error codes — 2026-07-28
 
-- Status: `SAFE-TO-TEST`; the Rust façade now projects stable, namespaced,
-  language-neutral codes for start, runtime, bounded audio-poll, and
-  finalization outcomes.
+- Status: `SAFE-TO-TEST`; canonical `pks-session` now owns stable, namespaced,
+  language-neutral codes for declaration, start, runtime, bounded audio-poll,
+  stop status, and every retained stop-failure cause. The public Rust façade
+  re-exports this contract and owns only mappings from its wrapper errors.
 - The codes are additive to the published typed Rust errors. Existing error
   enums and method signatures remain unchanged, while Python and Node can
   normalize against values such as `session.start_cancelled`,
   `session.invalid_selector`, and `audio.lease_capacity_exhausted`.
-- Focused façade tests and strict all-target Clippy pass.
+- The string returned by `as_str()` is the compatibility contract; Rust enum
+  variant names and discriminants are not. Exhaustive tables pin every current
+  string and validate namespace syntax and uniqueness. Declaration variants,
+  nested capture/start classes, audio-poll cases, and stop-cause projections
+  have focused mapping coverage.
+- AUDIO-032 records the measured package-boundary repair: concrete multistem
+  recording moves from the broad `pks-nodes` package to `pks-recording`, while
+  bounded foreign-audio projection moves to its canonical Session owner.
+  Graph/caps/metrics and native-capture package convergence remain W15 work.
+- All 53 `pks-session` tests and three non-empty `pocketstation` façade tests
+  pass. Strict focused Clippy, CODE_PROTOCOL, and the recording extraction
+  remain the next acceptance steps for the active boundary-repair candidate.
 - This changes no engine, capture, recorder, queue, hot path, provider,
   scaffold, mock, fallback, or product claim.
 

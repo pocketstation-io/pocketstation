@@ -4,9 +4,10 @@
 pub mod conformance;
 mod error_code;
 
-pub use error_code::{
-    polled_audio_poll_error_code, PolledAudioPollErrorCode, SessionRuntimeErrorCode,
-    SessionStartErrorCode, SessionStopCode,
+pub use pks_session::{
+    polled_audio_poll_error_code, session_declaration_error_code, session_start_failure_code,
+    PolledAudioPollErrorCode, SessionDeclarationErrorCode, SessionRuntimeErrorCode,
+    SessionStartErrorCode, SessionStopCode, SessionStopFailureCode,
 };
 
 pub use pks_session::{

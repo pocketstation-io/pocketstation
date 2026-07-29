@@ -5,6 +5,7 @@ mod engine;
 #[cfg(test)]
 mod engine_tests;
 mod error;
+mod error_code;
 mod events;
 mod foreign_audio;
 mod host;
@@ -30,6 +31,11 @@ pub use engine::{
     SessionEngineStartError,
 };
 pub use error::SessionError;
+pub use error_code::{
+    polled_audio_poll_error_code, session_declaration_error_code, session_start_failure_code,
+    session_stop_failure_codes, PolledAudioPollErrorCode, SessionDeclarationErrorCode,
+    SessionRuntimeErrorCode, SessionStartErrorCode, SessionStopCode, SessionStopFailureCode,
+};
 pub use events::{
     SessionComponentId, SessionControlFailure, SessionEndpointFailure, SessionEvent,
     SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionFinalizationFailure,

@@ -320,6 +320,22 @@ impl SessionStopOutcome {
         self.endpoint_finalization_failures_total
     }
 
+    pub const fn runtime_worker_panicked(&self) -> bool {
+        self.runtime_worker_panicked
+    }
+
+    pub const fn runtime_failures_total(&self) -> u64 {
+        self.runtime_failures_total
+    }
+
+    pub const fn lineage_failures_total(&self) -> u64 {
+        self.lineage_failures_total
+    }
+
+    pub const fn source_send_rejections_total(&self) -> u64 {
+        self.source_send_rejections_total
+    }
+
     pub const fn runtime_events_total(&self) -> u64 {
         self.runtime_events_total
     }
