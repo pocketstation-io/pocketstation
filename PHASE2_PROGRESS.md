@@ -1825,3 +1825,27 @@
   permission assertion, or loopback-only product claim was introduced. The
   full Rust façade and Lab reference artifact remain separate W12 acceptance
   gates.
+
+## W12 central package-boundary repair — 2026-07-29
+
+- Status: `SAFE-TO-MERGE`; the package repair defined by AUDIO-032 is
+  complete on candidate `pks-20260729-w12-central-boundary-repair`.
+- `pks-session` now owns stable language-neutral Session result codes and the
+  bounded polled-audio projection consumed by foreign-language adapters. Its
+  supported implementation no longer depends on the transitional
+  `pks-nodes` package.
+- `pks-recording` now owns the concrete multistem WAV endpoint, recording
+  coordinator, finalization, manifest, and recording outcomes.
+  `pks-nodes` keeps deprecated compatibility re-exports only while callers
+  migrate.
+- `pks-nodes` and `pks-dsp` are non-publishable deferred packages. The
+  validated façade publication closure is now 14 packages and contains only
+  packages required by `pocketstation`.
+- Full workspace tests, strict workspace/all-target Clippy, formatting,
+  release-mode `product_quickstart`, architecture constraints,
+  `CODE_PROTOCOL`, and the 14-package publish dry run all pass at commit
+  `364ebac`.
+- This is a component and package-ownership result. It introduces no provider,
+  connector, scaffold, mock, fallback, loopback-only path, or product-proof
+  claim. The W12 Rust reference and Lab evidence remain the next acceptance
+  slice.
