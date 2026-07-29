@@ -15,9 +15,10 @@ pks-capture = { path = "../pks-capture", version = "0.1.0" }
 pks-endpoint = { path = "../pks-endpoint", version = "0.1.0" }
 pks-frame = { path = "../pks-frame", version = "0.1.0" }
 pks-graph = { path = "../pks-graph", version = "0.1.0" }
-pks-nodes = { path = "../pks-nodes", version = "0.1.0" }
+pks-recording = { path = "../pks-recording", version = "0.1.0" }
 pks-runtime = { path = "../pks-runtime", version = "0.1.0" }
 pks-timing = { path = "../pks-timing", version = "0.1.0" }
+rtrb.workspace = true
 thiserror.workspace = true
 
 [target.'cfg(target_os = "macos")'.dependencies]

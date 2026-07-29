@@ -12,6 +12,7 @@ members = [
   "crates/pks-graph",
   "crates/pks-dsp",
   "crates/pks-nodes",
+  "crates/pks-recording",
   "crates/pks-session",
   "crates/pks-session-c",
   "crates/pks-capture",

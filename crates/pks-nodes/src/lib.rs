@@ -5,11 +5,8 @@
 
 mod bridge_sink;
 mod dsp_nodes;
-mod foreign_audio_endpoint;
 mod mic_source;
 mod mix;
-mod multistem_endpoint;
-mod multistem_recorder;
 mod source;
 mod system_source;
 
@@ -19,22 +16,19 @@ use pks_graph::{register_builtins, NodeRegistry};
 
 pub use bridge_sink::{BridgeSinkFactory, BridgeSinkNode, BridgeSinkTelemetry};
 pub use dsp_nodes::{EchoCancelFactory, NoiseSuppressFactory, VadFactory, WatermarkFactory};
-pub use foreign_audio_endpoint::{
-    PolledAudioBatchLease, PolledAudioEndpointConfig, PolledAudioEndpointConfigError,
-    PolledAudioEndpointFactory, PolledAudioFrame, PolledAudioObservations, PolledAudioPollError,
-    PolledAudioReceipt,
-};
 pub use mic_source::{MicSourceFactory, MicSourceNode, MicTelemetry};
 pub use mix::{MixerSourceFactory, MixerSourceNode, MixerTelemetry, MonoMixFactory, MonoMixNode};
-pub use multistem_endpoint::{
-    MultistemEndpointCoordinator, MultistemEndpointError, MultistemEndpointStem,
-    MultistemRecordingReceipt, SessionMultistemEndpointCoordinator,
-};
-pub use multistem_recorder::{
-    DiscontinuityKind, DiscontinuityRecord, MultistemRecording, PermissionDecision,
+#[deprecated(
+    since = "0.1.1",
+    note = "recording implementation moved to the focused pks-recording package"
+)]
+pub use pks_recording::{
+    DiscontinuityKind, DiscontinuityRecord, MultistemEndpointCoordinator, MultistemEndpointError,
+    MultistemEndpointStem, MultistemRecording, MultistemRecordingReceipt, PermissionDecision,
     PermissionScope, RecorderError, RecorderLineageField, RecorderStemConfig,
     RecordingObservations, RecordingOutcome, RecordingRollbackFailure,
-    RecordingRollbackWorkerFailure, RecordingState, RecordingStemOutcome, StemLabel,
+    RecordingRollbackWorkerFailure, RecordingState, RecordingStemOutcome,
+    SessionMultistemEndpointCoordinator, StemLabel,
 };
 pub use source::{SyntheticSourceFactory, SyntheticSourceNode};
 pub use system_source::{SystemOutputSourceFactory, SystemOutputSourceNode, SystemOutputTelemetry};

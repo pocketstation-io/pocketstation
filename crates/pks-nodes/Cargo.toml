@@ -4,24 +4,20 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-description = "First-party audio and recording operators for PocketStation"
+description = "Transitional source and DSP graph operators for PocketStation"
+publish = false
 
 [package.metadata.pocketstation]
-registry-role = "facade-dependency"
+registry-role = "deferred"
 
 [dependencies]
-pks-endpoint = { path = "../pks-endpoint", version = "0.1.0" }
 pks-frame = { path = "../pks-frame", version = "0.1.0" }
 pks-caps = { path = "../pks-caps", version = "0.1.0" }
 pks-graph = { path = "../pks-graph", version = "0.1.0" }
 pks-dsp = { path = "../pks-dsp", version = "0.1.0" }
+pks-recording = { path = "../pks-recording", version = "0.1.0" }
 pks-runtime = { path = "../pks-runtime", version = "0.1.0" }
-pks-timing.workspace = true
-hound.workspace = true
 rtrb.workspace = true
-serde.workspace = true
-serde_json.workspace = true
-thiserror.workspace = true
 
 [dev-dependencies]
 pks-metrics = { path = "../pks-metrics", version = "0.1.0" }

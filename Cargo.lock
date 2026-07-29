@@ -1208,17 +1208,28 @@ version = "0.1.0"
 name = "pks-nodes"
 version = "0.1.0"
 dependencies = [
- "hound",
  "pks-caps",
  "pks-dsp",
- "pks-endpoint",
  "pks-frame",
  "pks-graph",
  "pks-metrics",
+ "pks-recording",
  "pks-runtime",
- "pks-timing",
  "proptest",
  "rtrb",
+ "tempfile",
+]
+
+[[package]]
+name = "pks-recording"
+version = "0.1.0"
+dependencies = [
+ "hound",
+ "pks-endpoint",
+ "pks-frame",
+ "pks-graph",
+ "pks-runtime",
+ "pks-timing",
  "serde",
  "serde_json",
  "tempfile",
@@ -1252,9 +1263,10 @@ dependencies = [
  "pks-endpoint",
  "pks-frame",
  "pks-graph",
- "pks-nodes",
+ "pks-recording",
  "pks-runtime",
  "pks-timing",
+ "rtrb",
  "thiserror 1.0.69",
 ]
 

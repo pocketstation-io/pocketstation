@@ -2,14 +2,14 @@ use std::sync::Arc;
 
 use pks_endpoint::EndpointDriverFactory;
 use pks_graph::NodeTypeId;
-use pks_nodes::PolledAudioEndpointFactory;
 
 use crate::{
     EndpointConfiguration, EndpointHandle, OperatorId, Session, SessionEngineBuilder,
     SessionEngineRegistrationError, SessionError, CONNECTOR_NODE_TYPE_ID,
 };
 
-pub use pks_nodes::{
+use crate::foreign_audio_endpoint::PolledAudioEndpointFactory;
+pub use crate::foreign_audio_endpoint::{
     PolledAudioBatchLease, PolledAudioEndpointConfig, PolledAudioEndpointConfigError,
     PolledAudioFrame, PolledAudioObservations, PolledAudioPollError, PolledAudioReceipt,
 };
@@ -18,9 +18,9 @@ pub const POLLED_AUDIO_OPERATOR_ID: &str = "io.pocketstation.endpoint.polled-aud
 
 /// Safe composition owner for application-polled audio.
 ///
-/// The concrete worker remains in `pks-nodes`; this type only keeps its
-/// registration authority and safe receipt together so every language adapter
-/// consumes the canonical compiled Session path.
+/// This type keeps the concrete bounded endpoint registration authority and
+/// safe receipt together so every language adapter consumes the canonical
+/// compiled Session path.
 pub struct PolledAudioEndpoint {
     factory: Arc<PolledAudioEndpointFactory>,
     receipt: PolledAudioReceipt,

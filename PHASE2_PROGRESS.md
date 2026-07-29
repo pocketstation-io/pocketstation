@@ -1,5 +1,32 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W12 focused recording and foreign-audio ownership — 2026-07-29
+
+- Status: `SAFE-TO-TEST`; concrete multistem WAV implementation now lives in
+  `pks-recording`, behind the unchanged `pks-endpoint` lifecycle. The generic
+  endpoint contract, graph declarations, runtime delivery, and Session
+  lifecycle remain in their existing owners.
+- The bounded polled-audio endpoint moved from the grab-bag `pks-nodes`
+  package into `pks-session`, which already owns its queue, batch, lease,
+  observation, and cross-language projection semantics.
+- `pks-session` no longer depends on `pks-nodes`. It registers the canonical
+  grouped recorder through `register_multistem_recording`, retains a safe
+  `SessionRecordingReceipt`, and exposes only terminal recording outcomes.
+  Callers supply an artifact root; Session route context and capture-owned
+  frame lineage remain authoritative.
+- `pks-nodes` retains a deprecated recording re-export for the 0.1 source
+  transition, but it and `pks-dsp` are now deferred non-registry packages.
+  The supported `pocketstation` publication closure derives to 14 packages
+  instead of 15 and contains `pks-recording`, not `pks-nodes` or `pks-dsp`.
+- Focused acceptance passes: 36 transitional-node tests, 15 recording tests,
+  59 Session tests, and three non-empty façade tests. The derived publication
+  dry run validates all 14 closure packages in dependency order, and strict
+  all-target Clippy passes for all four focused packages.
+- No recording behavior, queue bound, lineage rule, hot path, provider,
+  scaffold, mock, fallback, loopback classification, or product claim changed.
+  Full workspace, quickstart, architecture, and CODE_PROTOCOL gates remain
+  before the boundary candidate can pass.
+
 ## W12 stable public Session error codes — 2026-07-28
 
 - Status: `SAFE-TO-TEST`; canonical `pks-session` now owns stable, namespaced,
