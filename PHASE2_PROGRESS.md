@@ -1896,3 +1896,8 @@
   release quickstart compilation, `CODE_PROTOCOL`, architecture constraints,
   formatting, and the exact 14-package publication dry run pass for
   `pocketstation 0.1.2`.
+- The `pocketstation-v0.1.2` validation run correctly withheld publication
+  when its recovery test still expected the superseded 15-package closure.
+  The recovery fixture now expects six already-visible packages and the exact
+  eight missing packages, including `pks-recording` and excluding deferred
+  `pks-dsp` and `pks-nodes`; it expects seven inter-package pacing waits.
