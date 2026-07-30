@@ -77,7 +77,7 @@ by the lower layers without redefining them.
 
 | Crate | Owns | Must NOT own |
 |---|---|---|
-| `pks-session` | Safe Rust `SessionSpec`, public selectors/descriptors, declaration freeze, fixed Session source/external-boundary structural node registration, exact-source resolution orchestration, transactional startup/rollback, ownership of a running Session's capture/runtime/endpoint resources, cancellation, drain/join/finalization coordination, safe event/metric projections, and stable semantic errors | Graph compilation algorithms, plan scheduling/routing algorithms, buffer-pool implementation, native capture implementation, codec or recorder implementation, provider connectors, C ABI records/handle tables, language-SDK ergonomics, UI, or process-helper IPC |
+| `pks-session` | Safe Rust `SessionSpec`, public selectors/descriptors, declaration freeze, fixed Session source/external-boundary structural node registration, exact-source resolution orchestration, transactional startup/rollback, ownership of a running Session's capture/runtime/endpoint resources, cancellation, drain/join/finalization coordination, bounded foreign-audio projection, safe event/metric projections, and stable semantic errors/codes | Graph compilation algorithms, plan scheduling/routing algorithms, buffer-pool implementation, native capture implementation, codec or recorder implementation, provider connectors, C ABI records/handle tables, language-SDK ergonomics, UI, or process-helper IPC |
 | `pks-session-c` | Versioned C records and status codes, ABI/capability negotiation, engine-scoped generational foreign handles, marshalling, bounded event/metric polling, bounded immutable audio-batch leases, panic containment, reproducible headers, and C conformance fixtures | Session lifecycle semantics, graph/runtime algorithms, capture or endpoint implementations, provider code, language-owned APIs, codec compatibility symbols, or a second scheduler |
 
 `pks-session-c` depends on `pks-session`; `pks-session` never depends on the
@@ -253,7 +253,8 @@ ml.local_vad
 
 | Crate | Owns | Must NOT own |
 |---|---|---|
-| `pks-nodes` | Current first-party factories/endpoints: synthetic, microphone, and system-output source factories; mono mixing; Bridge sink; VAD/denoise/AEC/watermark adapters; and explicit multistem recording lifecycle/finalization | Provider connectors, API-key fields, meeting/product workflows, or unimplemented operators presented as available |
+| `pks-recording` | Concrete grouped multistem WAV endpoint implementation: staged artifacts, recorder workers, Session timeline mapping, discontinuity/permission sidecars, checksums, manifest, observations, outcomes, rollback, and finalization | Graph compilation, Session lifecycle policy, capture, public API ergonomics, provider connectors, generic endpoint contracts, or non-recording operators |
+| `pks-nodes` | Transitional source/example/DSP operator package: synthetic, microphone, and system-output source factories; mono mixing; Bridge sink; VAD/denoise/AEC/watermark adapters; temporary source-compatible recording re-exports during the 0.1 migration | Canonical Session semantics, new recording implementation, provider connectors, API-key fields, meeting/product workflows, or unimplemented operators presented as available |
 | `pks-dsp` | Current bounded local DSP implementations: VAD, denoise, echo cancellation, and audio watermarking with slice-based hot-path cores and `RuntimeNode` integration | OpenAI chat, Ollama summarize, Deepgram cloud STT, ElevenLabs TTS, agent orchestration, meeting notes product logic, or an unimplemented generic model runtime |
 
 ---
@@ -296,7 +297,7 @@ pks-capture
 pks-session
   may depend on:      pks-frame, pks-caps, pks-graph, pks-runtime, pks-endpoint,
                       pks-capture and target-selected capture adapters,
-                      pks-nodes, pks-metrics
+                      pks-recording, pks-metrics
   must not depend on: provider SDKs, app UI, language SDK packages,
                       helper-process IPC, or language-runtime types in its
                       public contract
@@ -314,8 +315,15 @@ pks-codec-c
 
 pks-nodes
   may depend on:      pks-frame, pks-caps, pks-graph, pks-runtime, pks-endpoint,
-                      pks-timing, pks-dsp
+                      pks-timing, pks-dsp, pks-recording during the additive
+                      0.1 compatibility migration
   must not contain:   provider connector clients, API-key fields, product workflows
+
+pks-recording
+  may depend on:      pks-frame, pks-graph, pks-runtime, pks-endpoint,
+                      pks-timing, serialization and file-I/O support
+  must not depend on: pks-session, pks-capture, pks-dsp, provider SDKs,
+                      language adapters, CLI, or product UI
 
 pks-dsp
   may depend on:      pks-frame, pks-graph

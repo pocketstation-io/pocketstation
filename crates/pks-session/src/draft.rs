@@ -196,6 +196,15 @@ impl Session {
         self.add_endpoint(descriptor, None)
     }
 
+    /// Returns whether this declaration contains a canonical multistem recording route.
+    pub fn declares_multistem_recording(&self) -> Result<bool, SessionError> {
+        let draft = self.shared.draft()?;
+        Ok(draft
+            .endpoints
+            .iter()
+            .any(|endpoint| endpoint.descriptor.operator_id().as_str() == RECORDER_OPERATOR_ID))
+    }
+
     pub fn freeze(self) -> Result<SessionSpec, SessionError> {
         let mut draft = self.shared.draft()?;
         draft.ensure_open(self.id())?;

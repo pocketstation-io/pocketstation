@@ -5,10 +5,13 @@ mod engine;
 #[cfg(test)]
 mod engine_tests;
 mod error;
+mod error_code;
 mod events;
 mod foreign_audio;
+mod foreign_audio_endpoint;
 mod host;
 mod observations;
+mod recording;
 mod running;
 #[cfg(test)]
 mod running_tests;
@@ -30,6 +33,11 @@ pub use engine::{
     SessionEngineStartError,
 };
 pub use error::SessionError;
+pub use error_code::{
+    polled_audio_poll_error_code, session_declaration_error_code, session_start_failure_code,
+    session_stop_failure_codes, PolledAudioPollErrorCode, SessionDeclarationErrorCode,
+    SessionRuntimeErrorCode, SessionStartErrorCode, SessionStopCode, SessionStopFailureCode,
+};
 pub use events::{
     SessionComponentId, SessionControlFailure, SessionEndpointFailure, SessionEvent,
     SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionFinalizationFailure,
@@ -48,6 +56,11 @@ pub use host::{
 pub use observations::{
     EndpointObservationStage, SessionEventQueueObservations, SessionMetricsSnapshot,
     SessionRouteMetrics, SessionSourceMetrics,
+};
+pub use recording::{
+    session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations,
+    SessionRecordingOutcome, SessionRecordingReceipt, SessionRecordingState,
+    SessionRecordingStemOutcome,
 };
 pub use running::{
     start_prepared_session, start_prepared_session_cancellable, CaptureBackendSet, RunningSession,

@@ -1,5 +1,80 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W12 focused recording and foreign-audio ownership — 2026-07-29
+
+- Status: `SAFE-TO-TEST`; concrete multistem WAV implementation now lives in
+  `pks-recording`, behind the unchanged `pks-endpoint` lifecycle. The generic
+  endpoint contract, graph declarations, runtime delivery, and Session
+  lifecycle remain in their existing owners.
+- The bounded polled-audio endpoint moved from the grab-bag `pks-nodes`
+  package into `pks-session`, which already owns its queue, batch, lease,
+  observation, and cross-language projection semantics.
+- `pks-session` no longer depends on `pks-nodes`. It registers the canonical
+  grouped recorder through `register_multistem_recording`, retains a safe
+  `SessionRecordingReceipt`, and exposes only terminal recording outcomes.
+  Callers supply an artifact root; Session route context and capture-owned
+  frame lineage remain authoritative.
+- `pks-nodes` retains a deprecated recording re-export for the 0.1 source
+  transition, but it and `pks-dsp` are now deferred non-registry packages.
+  The supported `pocketstation` publication closure derives to 14 packages
+  instead of 15 and contains `pks-recording`, not `pks-nodes` or `pks-dsp`.
+- Focused acceptance passes: 36 transitional-node tests, 15 recording tests,
+  59 Session tests, and three non-empty façade tests. The derived publication
+  dry run validates all 14 closure packages in dependency order, and strict
+  all-target Clippy passes for all four focused packages.
+- No recording behavior, queue bound, lineage rule, hot path, provider,
+  scaffold, mock, fallback, loopback classification, or product claim changed.
+  Full workspace, quickstart, architecture, and CODE_PROTOCOL gates remain
+  before the boundary candidate can pass.
+
+## W12 stable public Session error codes — 2026-07-28
+
+- Status: `SAFE-TO-TEST`; canonical `pks-session` now owns stable, namespaced,
+  language-neutral codes for declaration, start, runtime, bounded audio-poll,
+  stop status, and every retained stop-failure cause. The public Rust façade
+  re-exports this contract and owns only mappings from its wrapper errors.
+- The codes are additive to the published typed Rust errors. Existing error
+  enums and method signatures remain unchanged, while Python and Node can
+  normalize against values such as `session.start_cancelled`,
+  `session.invalid_selector`, and `audio.lease_capacity_exhausted`.
+- The string returned by `as_str()` is the compatibility contract; Rust enum
+  variant names and discriminants are not. Exhaustive tables pin every current
+  string and validate namespace syntax and uniqueness. Declaration variants,
+  nested capture/start classes, audio-poll cases, and stop-cause projections
+  have focused mapping coverage.
+- AUDIO-032 records the measured package-boundary repair: concrete multistem
+  recording moves from the broad `pks-nodes` package to `pks-recording`, while
+  bounded foreign-audio projection moves to its canonical Session owner.
+  Graph/caps/metrics and native-capture package convergence remain W15 work.
+- All 53 `pks-session` tests and three non-empty `pocketstation` façade tests
+  pass. Strict focused Clippy, CODE_PROTOCOL, and the recording extraction
+  remain the next acceptance steps for the active boundary-repair candidate.
+- This changes no engine, capture, recorder, queue, hot path, provider,
+  scaffold, mock, fallback, or product claim.
+
+## W12 Session-owned endpoint route and timeline context — 2026-07-28
+
+- Status: `SAFE-TO-TEST`; this is the additive setup-context prerequisite for
+  the Session-owned recording reference. Recorder composition and outcome
+  projection remain separate follow-up work.
+- `pks-endpoint` now defines typed `EndpointRouteContext` and
+  `SessionTimelineOrigin` values. Canonical endpoint preparation can consume
+  exact stem, route, and monotonic-origin identity without parsing reserved
+  string configuration.
+- The published `EndpointPrepareContext::new` signature remains unchanged.
+  Its additive Session-route context is absent for legacy callers and attached
+  explicitly by canonical `pks-session` startup.
+- `pks-session` samples the shared monotonic clock exactly once after the
+  initial cancellation gate and supplies that same origin to every endpoint
+  input in the startup transaction. Each input also receives its compiler-owned
+  stem and route identity.
+- Focused evidence passes: eight `pks-endpoint` tests and 49 `pks-session`
+  tests. The Session regression observes all six product routes, two distinct
+  stems, unique route IDs, and one identical nonzero timeline origin.
+- This changes no capture callback, realtime router, queue capacity, endpoint
+  worker, recorder behavior, public provider surface, scaffold, mock,
+  fallback, or loopback-only product claim.
+
 ## W12 language-owned Rust Session façade — 2026-07-28
 
 - Status: `PARTIAL`; the central Rust façade and canonical-engine fixture pass,
@@ -1717,3 +1792,90 @@
   CODE_PROTOCOL, Actionlint, and the 15-package closure dry run pass locally.
 - This correction changes no Session API, runtime behavior, capture path,
   provider integration, scaffold, mock, fallback, or loopback-only claim.
+
+## W12 Session-owned observed-lineage multistem recorder — 2026-07-28
+
+- Status: `SAFE-TO-TEST`; `pks-nodes` now exposes the additive
+  `SessionMultistemEndpointCoordinator::new(output_root, group_id)` declaration
+  without accepting caller-fabricated Session, endpoint, route, stem, source,
+  clock, generation, or permission identities.
+- Exact `prepare_batch` inputs supply the Session, endpoint, typed stem/route,
+  sample specification, label, recording group, and one common Session
+  timeline origin. Missing typed context, mixed origins, and duplicate
+  endpoint, route, stem, or label identities fail during preparation.
+- The first delivered frame for every stem must carry authoritative
+  `FrameLineage`. Its source, clock, source generation, and permission epoch
+  initialize the recorder manifest; raw frames and later identity drift fail
+  closed. Successful Session delivery records only
+  `SessionCaptureGrant/Allowed` and does not claim an operating-system
+  permission decision.
+- Both stems map the common `SessionTimelineOrigin` to Session time zero, so
+  independently captured application and microphone frames retain one
+  comparable recording timeline.
+- The public 0.1 `MultistemRecording::start` and explicit-config coordinator
+  remain source-compatible. Their raw-frame compatibility path is unchanged;
+  required-lineage behavior is selected by a private typed mode used only by
+  the canonical Session coordinator.
+- Focused tests prove two-stem derivation and final completion, common origin,
+  missing typed route rejection, raw first-frame rejection without an
+  artifact, and later permission-lineage mismatch with an incomplete outcome.
+  All 56 `pks-nodes` tests, strict all-target/all-feature Clippy, workspace
+  diff checks, and the complete 125-file CODE_PROTOCOL gate pass.
+- No provider, connector, mock, scaffold, fallback, operating-system
+  permission assertion, or loopback-only product claim was introduced. The
+  full Rust façade and Lab reference artifact remain separate W12 acceptance
+  gates.
+
+## W12 central package-boundary repair — 2026-07-29
+
+- Status: `SAFE-TO-MERGE`; the package repair defined by AUDIO-032 is
+  complete on candidate `pks-20260729-w12-central-boundary-repair`.
+- `pks-session` now owns stable language-neutral Session result codes and the
+  bounded polled-audio projection consumed by foreign-language adapters. Its
+  supported implementation no longer depends on the transitional
+  `pks-nodes` package.
+- `pks-recording` now owns the concrete multistem WAV endpoint, recording
+  coordinator, finalization, manifest, and recording outcomes.
+  `pks-nodes` keeps deprecated compatibility re-exports only while callers
+  migrate.
+- `pks-nodes` and `pks-dsp` are non-publishable deferred packages. The
+  validated façade publication closure is now 14 packages and contains only
+  packages required by `pocketstation`.
+- Full workspace tests, strict workspace/all-target Clippy, formatting,
+  release-mode `product_quickstart`, architecture constraints,
+  `CODE_PROTOCOL`, and the 14-package publish dry run all pass at commit
+  `364ebac`.
+- This is a component and package-ownership result. It introduces no provider,
+  connector, scaffold, mock, fallback, loopback-only path, or product-proof
+  claim. The W12 Rust reference and Lab evidence remain the next acceptance
+  slice.
+
+## W12 public recording reference integration — 2026-07-29
+
+- Status: `SAFE-TO-TEST`; the focused implementation and component gates pass,
+  while the exact registry-installed Lab artifact remains the W12 exit.
+- The accepted `pks-recording` coordinator, `StemHandle::record` declaration,
+  Session host registration, and safe recording receipt remain the canonical
+  owners. The active slice only projects their setup and outcomes through the
+  public `pocketstation` façade.
+- `Session::builder().recording_root(...)` registers that existing owner.
+  Recording routes without an explicit root fail with
+  `session.missing_recording_configuration`; `RunningSession` retains the
+  terminal recording outcome. Stable recording codes cover every concrete
+  recorder failure plus incomplete and not-yet-finalized outcomes without
+  exposing string-message matching to language adapters.
+- The public quickstart observes both source-aware stems under a bounded
+  deadline and requires complete two-stem finalization. The deterministic
+  conformance fixture emits truthful frame timing and proves that a saturated
+  bounded polled-audio branch drops independently while both recording edges
+  deliver 16 continuous frames without drops.
+- Focused acceptance passes: 17 recording tests, 59 Session tests, eight
+  façade tests including conformance, and strict all-target Clippy. The CLI
+  migration and Lab exact-registry artifact remain separate repository gates.
+- Registry patch identities now match the changed publication boundary:
+  `pks-endpoint 0.1.1`, new `pks-recording 0.1.0`, `pks-session 0.1.1`, and
+  public `pocketstation 0.1.1`. The other ten closure packages remain at their
+  already-visible `0.1.0` versions. The 14-package dry run passes in exact
+  dependency order; no version already visible on crates.io is overwritten.
+- No provider, new runtime, new package, mock, scaffold, fallback, or
+  loopback-only production path is introduced.

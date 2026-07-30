@@ -1,12 +1,17 @@
 #![cfg(feature = "conformance-fixtures")]
 
 use std::collections::BTreeSet;
+use std::path::PathBuf;
 use std::time::{Duration, Instant};
 
 use pocketstation::{
     conformance, ApplicationSelector, SessionEventReceive, SessionStartCancellation,
     SessionStartErrorKind, SessionStopDisposition, Source,
 };
+
+fn artifact_root(test_name: &str) -> PathBuf {
+    std::env::temp_dir().join(format!("pocketstation-{test_name}-{}", std::process::id()))
+}
 
 #[test]
 fn given_fixture_session_when_started_then_two_stems_cross_canonical_engine() {
@@ -81,4 +86,95 @@ fn given_empty_application_selector_when_declared_then_error_is_typed() {
     microphone.send(session.polled_audio().unwrap()).unwrap();
     let error = session.start().err().unwrap();
     assert_eq!(error.kind(), SessionStartErrorKind::InvalidSelector);
+}
+
+#[test]
+fn given_recording_routes_without_root_when_started_then_configuration_error_is_typed() {
+    let session = conformance::session().unwrap();
+    let application = session
+        .capture(Source::application(ApplicationSelector::name(
+            "conformance application",
+        )))
+        .unwrap();
+    let microphone = session.capture(Source::microphone_default()).unwrap();
+    application.record("application").unwrap();
+    microphone.record("microphone").unwrap();
+
+    let error = session.start().err().unwrap();
+    assert_eq!(
+        error.kind(),
+        SessionStartErrorKind::MissingRecordingConfiguration,
+        "{error:?}"
+    );
+    assert_eq!(
+        error.code().as_str(),
+        "session.missing_recording_configuration"
+    );
+}
+
+#[test]
+fn given_recording_root_when_two_stems_finish_then_terminal_outcome_is_exposed() {
+    let output_root = artifact_root("recording-outcome");
+    let session = conformance::session_with_recording(&output_root).unwrap();
+    let application = session
+        .capture(Source::application(ApplicationSelector::name(
+            "conformance application",
+        )))
+        .unwrap();
+    let microphone = session.capture(Source::microphone_default()).unwrap();
+    application.send(session.polled_audio().unwrap()).unwrap();
+    microphone.send(session.polled_audio().unwrap()).unwrap();
+    application.record("application").unwrap();
+    microphone.record("microphone").unwrap();
+
+    let mut running = session.start().unwrap();
+    let deadline = Instant::now() + Duration::from_secs(2);
+    let mut frame_counts = std::collections::BTreeMap::<u64, u64>::new();
+    while Instant::now() < deadline
+        && frame_counts.values().filter(|count| **count >= 3).count() < 2
+    {
+        if let Ok(batch) = running.try_poll_audio() {
+            for index in 0..batch.len() {
+                let stem_id = batch.frame(index).unwrap().lineage().stem_id.0;
+                *frame_counts.entry(stem_id).or_default() += 1;
+            }
+        }
+        std::thread::sleep(Duration::from_millis(1));
+    }
+    assert_eq!(frame_counts.len(), 2);
+    assert!(frame_counts.values().all(|count| *count >= 3));
+
+    // Deliberately stop consuming this bounded destination. The recorder is a
+    // separate branch and must continue to completion while this queue drops.
+    std::thread::sleep(Duration::from_millis(50));
+    let slow_branch = running.audio_observations();
+    assert!(slow_branch.queue_peak_frames <= slow_branch.queue_capacity_frames);
+    assert!(slow_branch.queue_full_drops_total > 0);
+
+    let stop = running.stop();
+    let mut terminal_events = Vec::new();
+    while let SessionEventReceive::Event(event) = running.try_recv_event() {
+        terminal_events.push(event);
+    }
+    let outcome = running.recording_outcome();
+    assert!(
+        stop.is_success(),
+        "{stop:?}; recording={outcome:?}; events={terminal_events:?}"
+    );
+    let outcome = outcome.unwrap();
+    assert_eq!(
+        outcome.state,
+        pocketstation::SessionRecordingState::Complete
+    );
+    assert_eq!(outcome.completed_stems, 2);
+    assert_eq!(outcome.failed_stems, 0);
+    assert_eq!(outcome.stems.len(), 2);
+    assert!(
+        outcome.stems.iter().all(|stem| stem.written_frames >= 16
+            && stem.error.is_none()
+            && stem.edge_observations.frames_dropped_total == 0
+            && stem.edge_observations.discontinuities_total == 0),
+        "{outcome:?}"
+    );
+    assert!(outcome.session_dir.exists());
 }

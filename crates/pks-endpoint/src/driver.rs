@@ -2,13 +2,57 @@ use std::fmt;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
-use pks_frame::{EndpointId, SessionId};
+use pks_frame::{EndpointId, RouteId, SessionId, StemId};
 use pks_graph::{NodeConfig, PrepareContext};
+
+/// One Session-owned anchor in PocketStation's monotonic nanosecond clock.
+///
+/// The Session samples this value once during startup and supplies the same
+/// value to every endpoint route prepared in that transaction.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct SessionTimelineOrigin {
+    monotonic_timestamp_ns: u64,
+}
+
+impl SessionTimelineOrigin {
+    pub const fn from_monotonic_timestamp_ns(monotonic_timestamp_ns: u64) -> Self {
+        Self {
+            monotonic_timestamp_ns,
+        }
+    }
+
+    pub const fn monotonic_timestamp_ns(self) -> u64 {
+        self.monotonic_timestamp_ns
+    }
+}
+
+/// Typed Session route identity supplied to one endpoint input.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct EndpointRouteContext {
+    stem_id: StemId,
+    route_id: RouteId,
+}
+
+impl EndpointRouteContext {
+    pub const fn new(stem_id: StemId, route_id: RouteId) -> Self {
+        Self { stem_id, route_id }
+    }
+
+    pub const fn stem_id(self) -> StemId {
+        self.stem_id
+    }
+
+    pub const fn route_id(self) -> RouteId {
+        self.route_id
+    }
+}
 
 #[derive(Debug, Clone)]
 pub struct EndpointPrepareContext {
     session_id: SessionId,
     endpoint_id: EndpointId,
+    route_context: Option<EndpointRouteContext>,
+    session_timeline_origin: Option<SessionTimelineOrigin>,
     node_configuration: NodeConfig,
     node_prepare_context: PrepareContext,
 }
@@ -23,9 +67,26 @@ impl EndpointPrepareContext {
         Self {
             session_id,
             endpoint_id,
+            route_context: None,
+            session_timeline_origin: None,
             node_configuration,
             node_prepare_context,
         }
+    }
+
+    /// Adds the authoritative typed route and Session timeline context.
+    ///
+    /// The original constructor intentionally remains valid for endpoint
+    /// integrations compiled against the 0.1 API. Canonical Session startup
+    /// always supplies this additive context.
+    pub fn with_session_route(
+        mut self,
+        route_context: EndpointRouteContext,
+        session_timeline_origin: SessionTimelineOrigin,
+    ) -> Self {
+        self.route_context = Some(route_context);
+        self.session_timeline_origin = Some(session_timeline_origin);
+        self
     }
 
     pub const fn session_id(&self) -> SessionId {
@@ -34,6 +95,14 @@ impl EndpointPrepareContext {
 
     pub const fn endpoint_id(&self) -> EndpointId {
         self.endpoint_id
+    }
+
+    pub const fn route_context(&self) -> Option<EndpointRouteContext> {
+        self.route_context
+    }
+
+    pub const fn session_timeline_origin(&self) -> Option<SessionTimelineOrigin> {
+        self.session_timeline_origin
     }
 
     pub const fn node_configuration(&self) -> &NodeConfig {
@@ -281,5 +350,57 @@ impl RunningEndpoint {
             request_stop_result,
             join_finalize_result: finalization.result,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use pks_frame::{EndpointId, RouteId, SampleFormat, SampleSpec, SessionId, StemId};
+    use pks_graph::{NodeConfig, PrepareContext};
+
+    use super::{EndpointPrepareContext, EndpointRouteContext, SessionTimelineOrigin};
+
+    fn prepare_context() -> PrepareContext {
+        PrepareContext::new(SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved))
+    }
+
+    #[test]
+    fn given_legacy_constructor_when_read_then_additive_session_route_is_absent() {
+        let context = EndpointPrepareContext::new(
+            SessionId(1),
+            EndpointId(2),
+            NodeConfig::new(),
+            prepare_context(),
+        );
+
+        assert_eq!(context.route_context(), None);
+        assert_eq!(context.session_timeline_origin(), None);
+    }
+
+    #[test]
+    fn given_session_route_when_attached_then_typed_identity_and_origin_round_trip() {
+        let context = EndpointPrepareContext::new(
+            SessionId(1),
+            EndpointId(2),
+            NodeConfig::new(),
+            prepare_context(),
+        )
+        .with_session_route(
+            EndpointRouteContext::new(StemId(3), RouteId(4)),
+            SessionTimelineOrigin::from_monotonic_timestamp_ns(5),
+        );
+
+        let route_context = context
+            .route_context()
+            .expect("typed route context must be present");
+        assert_eq!(route_context.stem_id(), StemId(3));
+        assert_eq!(route_context.route_id(), RouteId(4));
+        assert_eq!(
+            context
+                .session_timeline_origin()
+                .expect("Session timeline origin must be present")
+                .monotonic_timestamp_ns(),
+            5
+        );
     }
 }

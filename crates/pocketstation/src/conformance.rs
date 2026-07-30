@@ -4,8 +4,9 @@
 //! capture evidence.
 
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::Arc;
+use std::sync::{Arc, OnceLock};
 use std::time::Duration;
+use std::{path::PathBuf, thread};
 
 use pks_capture::{
     ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode,
@@ -14,7 +15,8 @@ use pks_capture::{
 use pks_frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId};
 use pks_graph::PrepareContext;
 use pks_session::{
-    NativeSessionEngineHostOptions, SessionEngineHostBuildError, SessionEngineHostBuilder,
+    NativeSessionEngineHostOptions, PolledAudioEndpointConfig, SessionEngineHostBuildError,
+    SessionEngineHostBuilder,
 };
 
 use crate::Session;
@@ -40,25 +42,28 @@ impl FixtureSource {
         }
     }
 
-    const fn timestamp_ns(self) -> u64 {
-        match self {
-            Self::Application => 1_000_000,
-            Self::Microphone => 2_000_000,
-        }
-    }
-
     const fn amplitude(self) -> f32 {
         match self {
             Self::Application => 0.25,
             Self::Microphone => 0.5,
         }
     }
+
+    const fn channels(self) -> u8 {
+        match self {
+            Self::Application => 2,
+            Self::Microphone => 1,
+        }
+    }
 }
 
-struct DeterministicCaptureBackend;
+struct DeterministicCaptureBackend {
+    timestamp_origin_ns: Arc<OnceLock<u64>>,
+}
 
 struct DeterministicPreparedCapture {
     source: FixtureSource,
+    timestamp_origin_ns: Arc<OnceLock<u64>>,
 }
 
 struct DeterministicActiveCapture {
@@ -76,7 +81,10 @@ impl CallbackCaptureBackend for DeterministicCaptureBackend {
             | CaptureMode::ExactApplication { .. }
             | CaptureMode::ExactApplicationStable { .. } => FixtureSource::Application,
         };
-        Ok(Box::new(DeterministicPreparedCapture { source }))
+        Ok(Box::new(DeterministicPreparedCapture {
+            source,
+            timestamp_origin_ns: Arc::clone(&self.timestamp_origin_ns),
+        }))
     }
 }
 
@@ -88,27 +96,36 @@ impl PreparedCaptureBackend for DeterministicPreparedCapture {
         let stop_requested = Arc::new(AtomicBool::new(false));
         let worker_stop_requested = Arc::clone(&stop_requested);
         let source = self.source;
+        let timestamp_origin_ns = *self
+            .timestamp_origin_ns
+            .get_or_init(|| pks_timing::monotonic_timestamp_ns().saturating_add(1_000_000));
         let worker = std::thread::spawn(move || {
-            let pool = AudioBufferPool::new(1, 4);
-            while !worker_stop_requested.load(Ordering::Acquire) {
+            let samples_per_frame = 4_usize.saturating_mul(usize::from(source.channels()));
+            let pool = AudioBufferPool::new(32, samples_per_frame);
+            let mut sequence = 0_u64;
+            while !worker_stop_requested.load(Ordering::Acquire) && sequence < 16 {
                 let Some(mut buffer) = pool.acquire() else {
-                    std::thread::sleep(Duration::from_millis(1));
+                    thread::sleep(Duration::from_millis(1));
                     continue;
                 };
-                buffer.copy_from_slice(&[source.amplitude(); 4]);
+                let samples = [source.amplitude(); 8];
+                buffer.copy_from_slice(&samples[..samples_per_frame]);
                 let frame = AudioFrame::new(
                     source.stream_id(),
                     source.source_id(),
-                    0,
-                    source.timestamp_ns(),
-                    1,
+                    sequence,
+                    timestamp_origin_ns + sequence.saturating_mul(83_333),
+                    source.channels(),
                     buffer,
                 );
                 match delivery.frame_sender.try_send(frame) {
-                    CapturedFrameDelivery::Delivered => break,
+                    CapturedFrameDelivery::Delivered => {
+                        sequence = sequence.saturating_add(1);
+                        thread::sleep(Duration::from_millis(3));
+                    }
                     CapturedFrameDelivery::DroppedNewest
                     | CapturedFrameDelivery::DiscardedBeforeStart => {
-                        std::thread::sleep(Duration::from_millis(1));
+                        thread::sleep(Duration::from_millis(1));
                     }
                 }
             }
@@ -151,7 +168,26 @@ impl Drop for DeterministicActiveCapture {
 }
 
 pub fn session() -> Result<Session, SessionEngineHostBuildError> {
-    let options = NativeSessionEngineHostOptions::default();
+    session_with_optional_recording(None)
+}
+
+/// Creates the deterministic canonical-engine fixture with multistem recording.
+pub fn session_with_recording(
+    output_root: impl Into<PathBuf>,
+) -> Result<Session, SessionEngineHostBuildError> {
+    session_with_optional_recording(Some(output_root.into()))
+}
+
+fn session_with_optional_recording(
+    output_root: Option<PathBuf>,
+) -> Result<Session, SessionEngineHostBuildError> {
+    let mut options = NativeSessionEngineHostOptions::default();
+    if output_root.is_some() {
+        options.polled_audio_endpoint = PolledAudioEndpointConfig {
+            queue_capacity_frames: 4,
+            ..PolledAudioEndpointConfig::default()
+        };
+    }
     let prepare_context =
         PrepareContext::new(SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved));
     let mut builder = SessionEngineHostBuilder::new(
@@ -159,10 +195,15 @@ pub fn session() -> Result<Session, SessionEngineHostBuildError> {
         options.source_queue_capacity_frames,
         options.start_options,
     )?;
-    let capture_backend: Arc<dyn CallbackCaptureBackend> = Arc::new(DeterministicCaptureBackend);
+    let capture_backend: Arc<dyn CallbackCaptureBackend> = Arc::new(DeterministicCaptureBackend {
+        timestamp_origin_ns: Arc::new(OnceLock::new()),
+    });
     builder
         .set_application_backend(Arc::clone(&capture_backend))
         .set_microphone_backend(capture_backend);
     let _ = builder.register_polled_audio_endpoint(options.polled_audio_endpoint)?;
+    if let Some(output_root) = output_root {
+        let _ = builder.register_multistem_recording(output_root)?;
+    }
     Session::with_host(builder.build()?)
 }

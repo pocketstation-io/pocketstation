@@ -1,13 +1,25 @@
 //! Language-owned Rust façade over the canonical `pks-session` engine.
 
+use std::path::PathBuf;
+
 #[cfg(feature = "conformance-fixtures")]
 pub mod conformance;
+mod error_code;
+
+pub use pks_session::{
+    polled_audio_poll_error_code, session_declaration_error_code,
+    session_recording_outcome_error_code, session_start_failure_code, PolledAudioPollErrorCode,
+    SessionDeclarationErrorCode, SessionRuntimeErrorCode, SessionStartErrorCode, SessionStopCode,
+    SessionStopFailureCode,
+};
 
 pub use pks_session::{
     ApplicationSelector, DeviceId, DeviceSelector, EndpointHandle, ProcessId,
     SessionControlFailure, SessionError, SessionEvent, SessionEventKind,
     SessionEventQueueObservations, SessionEventReceive, SessionLifecycleState,
-    SessionMetricsSnapshot, SessionStartCancellation, SessionStopOutcome, Source, StemHandle,
+    SessionMetricsSnapshot, SessionRecordingErrorCode, SessionRecordingObservations,
+    SessionRecordingOutcome, SessionRecordingState, SessionRecordingStemOutcome,
+    SessionStartCancellation, SessionStopOutcome, Source, StemHandle,
 };
 
 use pks_session::{
@@ -18,6 +30,32 @@ use pks_session::{
 pub struct Session {
     declaration: pks_session::Session,
     host: Option<SessionEngineHost>,
+    recording_root: Option<PathBuf>,
+}
+
+/// Setup-time configuration for the public Rust Session.
+#[derive(Debug, Default)]
+pub struct SessionBuilder {
+    recording_root: Option<PathBuf>,
+}
+
+impl SessionBuilder {
+    /// Configures the artifact root used by declared multistem recording routes.
+    #[must_use]
+    pub fn recording_root(mut self, output_root: impl Into<PathBuf>) -> Self {
+        self.recording_root = Some(output_root.into());
+        self
+    }
+
+    /// Builds the Session declaration owner.
+    #[must_use]
+    pub fn build(self) -> Session {
+        Session {
+            declaration: pks_session::Session::new(),
+            host: None,
+            recording_root: self.recording_root,
+        }
+    }
 }
 
 impl Session {
@@ -25,7 +63,12 @@ impl Session {
         Self {
             declaration: pks_session::Session::new(),
             host: None,
+            recording_root: None,
         }
+    }
+
+    pub fn builder() -> SessionBuilder {
+        SessionBuilder::default()
     }
 
     pub fn id(&self) -> pks_session::SessionId {
@@ -48,11 +91,35 @@ impl Session {
         self,
         cancellation: SessionStartCancellation,
     ) -> Result<RunningSession, SessionStartError> {
-        let host = match self.host {
+        let Self {
+            declaration,
+            host,
+            recording_root,
+        } = self;
+        let recording_declared = declaration
+            .declares_multistem_recording()
+            .map_err(|error| {
+                SessionStartError::Engine(pks_session::SessionEngineStartError::Freeze(error))
+            })?;
+        let host = match host {
             Some(host) => host,
-            None => SessionEngineHost::native(NativeSessionEngineHostOptions::default())?,
+            None => match recording_root {
+                Some(output_root) if !output_root.as_os_str().is_empty() => {
+                    SessionEngineHost::native_with_multistem_recording(
+                        NativeSessionEngineHostOptions::default(),
+                        output_root,
+                    )?
+                }
+                Some(_) | None => {
+                    SessionEngineHost::native(NativeSessionEngineHostOptions::default())?
+                }
+            },
         };
-        let compiled = host.compile(self.declaration)?;
+        let recording_receipt = host.recording_receipt(0);
+        if recording_declared && recording_receipt.is_none() {
+            return Err(SessionStartError::MissingRecordingConfiguration);
+        }
+        let compiled = host.compile(declaration)?;
         let receipt = host
             .polled_audio_receipt(0)
             .ok_or(SessionStartError::MissingAudioReceipt)?;
@@ -66,6 +133,7 @@ impl Session {
             running,
             events,
             receipt,
+            recording_receipt,
             stopped: false,
         })
     }
@@ -75,6 +143,7 @@ impl Session {
         Ok(Self {
             declaration: pks_session::Session::new(),
             host: Some(host),
+            recording_root: None,
         })
     }
 }
@@ -90,6 +159,7 @@ pub struct RunningSession {
     running: pks_session::RunningSession,
     events: pks_session::SessionEventReceiver,
     receipt: pks_session::PolledAudioReceipt,
+    recording_receipt: Option<pks_session::SessionRecordingReceipt>,
     stopped: bool,
 }
 
@@ -104,6 +174,12 @@ impl RunningSession {
 
     pub fn audio_observations(&self) -> PolledAudioObservations {
         self.receipt.observations()
+    }
+
+    pub fn recording_outcome(&self) -> Option<&pks_session::SessionRecordingOutcome> {
+        self.recording_receipt
+            .as_ref()
+            .and_then(pks_session::SessionRecordingReceipt::outcome)
     }
 
     pub fn try_recv_event(&self) -> SessionEventReceive {
@@ -146,6 +222,8 @@ pub enum SessionStartError {
     Engine(#[from] SessionEngineStartError),
     #[error("native Session host did not retain its bounded audio receipt")]
     MissingAudioReceipt,
+    #[error("recording routes require an explicit Session recording root")]
+    MissingRecordingConfiguration,
     #[error("canonical running Session did not retain its event receiver")]
     MissingEventReceiver,
 }
@@ -166,6 +244,9 @@ impl SessionStartError {
                 ..
             })) => SessionStartErrorKind::InvalidSelector,
             Self::Engine(_) => SessionStartErrorKind::Engine,
+            Self::MissingRecordingConfiguration => {
+                SessionStartErrorKind::MissingRecordingConfiguration
+            }
             Self::MissingAudioReceipt | Self::MissingEventReceiver => {
                 SessionStartErrorKind::Invariant
             }
@@ -183,6 +264,7 @@ pub enum SessionStartErrorKind {
     Engine,
     Cancelled,
     InvalidSelector,
+    MissingRecordingConfiguration,
     Invariant,
 }
 

@@ -15,7 +15,7 @@ use crate::{
     CaptureBackendSet, CompiledSession, PolledAudioEndpoint, PolledAudioEndpointConfig,
     PolledAudioEndpointConfigError, PolledAudioReceipt, RunningSession, Session, SessionEngine,
     SessionEngineBuildError, SessionEngineBuilder, SessionEngineRegistrationError,
-    SessionEngineStartError, SessionEventReceiver, SessionMetricsSnapshot,
+    SessionEngineStartError, SessionEventReceiver, SessionMetricsSnapshot, SessionRecordingReceipt,
     SessionStartCancellation, SessionStartOptions,
 };
 
@@ -30,13 +30,22 @@ pub struct SessionEngineHost {
     application_backend: Arc<dyn CallbackCaptureBackend>,
     microphone_backend: Arc<dyn CallbackCaptureBackend>,
     polled_audio_receipts: Box<[PolledAudioReceipt]>,
+    recording_receipts: Box<[SessionRecordingReceipt]>,
 }
 
 impl SessionEngineHost {
     pub fn native(
         options: NativeSessionEngineHostOptions,
     ) -> Result<Self, SessionEngineHostBuildError> {
-        build_native_host(options)
+        build_native_host(options, None)
+    }
+
+    /// Builds the native Session host with one canonical multistem recorder.
+    pub fn native_with_multistem_recording(
+        options: NativeSessionEngineHostOptions,
+        output_root: impl Into<std::path::PathBuf>,
+    ) -> Result<Self, SessionEngineHostBuildError> {
+        build_native_host(options, Some(output_root.into()))
     }
 
     pub fn compile(&self, session: Session) -> Result<CompiledSession, SessionEngineStartError> {
@@ -87,6 +96,14 @@ impl SessionEngineHost {
 
     pub fn polled_audio_receipts_total(&self) -> usize {
         self.polled_audio_receipts.len()
+    }
+
+    pub fn recording_receipt(&self, index: usize) -> Option<SessionRecordingReceipt> {
+        self.recording_receipts.get(index).cloned()
+    }
+
+    pub fn recording_receipts_total(&self) -> usize {
+        self.recording_receipts.len()
     }
 
     pub fn metrics_snapshot(
@@ -144,6 +161,7 @@ pub struct SessionEngineHostBuilder {
     application_backend: Option<Arc<dyn CallbackCaptureBackend>>,
     microphone_backend: Option<Arc<dyn CallbackCaptureBackend>>,
     polled_audio_receipts: Vec<PolledAudioReceipt>,
+    recording_receipts: Vec<SessionRecordingReceipt>,
 }
 
 impl SessionEngineHostBuilder {
@@ -161,6 +179,7 @@ impl SessionEngineHostBuilder {
             application_backend: None,
             microphone_backend: None,
             polled_audio_receipts: Vec::new(),
+            recording_receipts: Vec::new(),
         })
     }
 
@@ -196,6 +215,17 @@ impl SessionEngineHostBuilder {
         Ok(receipt)
     }
 
+    pub fn register_multistem_recording(
+        &mut self,
+        output_root: impl Into<std::path::PathBuf>,
+    ) -> Result<SessionRecordingReceipt, SessionEngineHostBuildError> {
+        let receipt = self
+            .engine_builder
+            .register_multistem_recording(output_root)?;
+        self.recording_receipts.push(receipt.clone());
+        Ok(receipt)
+    }
+
     pub fn build(self) -> Result<SessionEngineHost, SessionEngineHostBuildError> {
         let application_backend = self
             .application_backend
@@ -208,6 +238,7 @@ impl SessionEngineHostBuilder {
             application_backend,
             microphone_backend,
             polled_audio_receipts: self.polled_audio_receipts.into_boxed_slice(),
+            recording_receipts: self.recording_receipts.into_boxed_slice(),
         })
     }
 }
@@ -231,6 +262,7 @@ pub enum SessionEngineHostBuildError {
 #[cfg(any(target_os = "linux", target_os = "macos", target_os = "windows"))]
 fn build_native_host(
     options: NativeSessionEngineHostOptions,
+    recording_root: Option<std::path::PathBuf>,
 ) -> Result<SessionEngineHost, SessionEngineHostBuildError> {
     let prepare_context =
         PrepareContext::new(SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved));
@@ -244,12 +276,16 @@ fn build_native_host(
         .set_application_backend(Arc::clone(&capture_backend))
         .set_microphone_backend(capture_backend);
     let _ = builder.register_polled_audio_endpoint(options.polled_audio_endpoint)?;
+    if let Some(recording_root) = recording_root {
+        let _ = builder.register_multistem_recording(recording_root)?;
+    }
     builder.build()
 }
 
 #[cfg(not(any(target_os = "linux", target_os = "macos", target_os = "windows")))]
 fn build_native_host(
     _options: NativeSessionEngineHostOptions,
+    _recording_root: Option<std::path::PathBuf>,
 ) -> Result<SessionEngineHost, SessionEngineHostBuildError> {
     Err(SessionEngineHostBuildError::UnsupportedPlatform)
 }
@@ -542,6 +578,28 @@ mod tests {
                 .registered_endpoints,
             receipt.observations().registered_endpoints
         );
+    }
+
+    #[test]
+    fn given_registered_multistem_recorder_when_host_built_then_receipt_is_retained() {
+        let mut builder =
+            SessionEngineHostBuilder::new(prepare_context(), 8, SessionStartOptions::default())
+                .expect("host builder");
+        builder.set_application_backend(Arc::new(TestCaptureBackend::default()));
+        builder.set_microphone_backend(Arc::new(TestCaptureBackend::default()));
+        let output_root = std::env::temp_dir().join(format!(
+            "pks-session-recording-registration-{}",
+            std::process::id()
+        ));
+        let receipt = builder
+            .register_multistem_recording(output_root)
+            .expect("recording endpoint");
+
+        let host = builder.build().expect("host build");
+
+        assert_eq!(host.recording_receipts_total(), 1);
+        assert!(host.recording_receipt(0).is_some());
+        assert!(receipt.outcome().is_none());
     }
 
     #[test]
