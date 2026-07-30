@@ -21,6 +21,18 @@ use pks_session::{
 
 use crate::Session;
 
+const FRAME_SAMPLES_PER_CHANNEL: usize = 960;
+const FRAME_DURATION_NS: u64 = 20_000_000;
+const FRAME_PACING_MS: u64 = 20;
+const RECORDING_EDGE_CAPACITY_FRAMES: usize = pks_graph::plan::EDGE_RING_CAPACITY_FRAMES;
+const SLOW_BRANCH_QUEUE_CAPACITY_FRAMES: usize = RECORDING_EDGE_CAPACITY_FRAMES / 2;
+/// Frames emitted per source by the finite deterministic fixture.
+///
+/// This equals the canonical runtime edge capacity, so the recording branch
+/// remains lossless even if its worker is not scheduled until capture ends.
+/// The independently configured half-capacity polled branch still saturates.
+pub const FRAMES_PER_SOURCE: u64 = RECORDING_EDGE_CAPACITY_FRAMES as u64;
+
 #[derive(Clone, Copy)]
 enum FixtureSource {
     Application,
@@ -100,28 +112,28 @@ impl PreparedCaptureBackend for DeterministicPreparedCapture {
             .timestamp_origin_ns
             .get_or_init(|| pks_timing::monotonic_timestamp_ns().saturating_add(1_000_000));
         let worker = std::thread::spawn(move || {
-            let samples_per_frame = 4_usize.saturating_mul(usize::from(source.channels()));
+            let samples_per_frame =
+                FRAME_SAMPLES_PER_CHANNEL.saturating_mul(usize::from(source.channels()));
             let pool = AudioBufferPool::new(32, samples_per_frame);
             let mut sequence = 0_u64;
-            while !worker_stop_requested.load(Ordering::Acquire) && sequence < 16 {
+            while !worker_stop_requested.load(Ordering::Acquire) && sequence < FRAMES_PER_SOURCE {
                 let Some(mut buffer) = pool.acquire() else {
                     thread::sleep(Duration::from_millis(1));
                     continue;
                 };
-                let samples = [source.amplitude(); 8];
-                buffer.copy_from_slice(&samples[..samples_per_frame]);
+                buffer.as_mut_slice().fill(source.amplitude());
                 let frame = AudioFrame::new(
                     source.stream_id(),
                     source.source_id(),
                     sequence,
-                    timestamp_origin_ns + sequence.saturating_mul(83_333),
+                    timestamp_origin_ns + sequence.saturating_mul(FRAME_DURATION_NS),
                     source.channels(),
                     buffer,
                 );
                 match delivery.frame_sender.try_send(frame) {
                     CapturedFrameDelivery::Delivered => {
                         sequence = sequence.saturating_add(1);
-                        thread::sleep(Duration::from_millis(3));
+                        thread::sleep(Duration::from_millis(FRAME_PACING_MS));
                     }
                     CapturedFrameDelivery::DroppedNewest
                     | CapturedFrameDelivery::DiscardedBeforeStart => {
@@ -184,7 +196,7 @@ fn session_with_optional_recording(
     let mut options = NativeSessionEngineHostOptions::default();
     if output_root.is_some() {
         options.polled_audio_endpoint = PolledAudioEndpointConfig {
-            queue_capacity_frames: 4,
+            queue_capacity_frames: SLOW_BRANCH_QUEUE_CAPACITY_FRAMES,
             ..PolledAudioEndpointConfig::default()
         };
     }
