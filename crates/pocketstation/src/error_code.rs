@@ -36,6 +36,9 @@ impl SessionStartError {
                 pks_session::session_start_failure_code(failure.error())
             }
             Self::MissingAudioReceipt => SessionStartErrorCode::MissingAudioReceipt,
+            Self::MissingRecordingConfiguration => {
+                SessionStartErrorCode::MissingRecordingConfiguration
+            }
             Self::MissingEventReceiver => SessionStartErrorCode::MissingEventReceiver,
         }
     }
@@ -96,6 +99,10 @@ mod tests {
         assert_eq!(
             SessionStartError::MissingAudioReceipt.code(),
             SessionStartErrorCode::MissingAudioReceipt
+        );
+        assert_eq!(
+            SessionStartError::MissingRecordingConfiguration.code(),
+            SessionStartErrorCode::MissingRecordingConfiguration
         );
         assert_eq!(
             SessionStartError::MissingEventReceiver.code(),

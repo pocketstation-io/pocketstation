@@ -11,7 +11,7 @@ readme = "README.md"
 registry-role = "facade-dependency"
 
 [dependencies]
-pks-endpoint = { path = "../pks-endpoint", version = "0.1.0" }
+pks-endpoint = { path = "../pks-endpoint", version = "0.1.1" }
 pks-frame = { path = "../pks-frame", version = "0.1.0" }
 pks-runtime = { path = "../pks-runtime", version = "0.1.0" }
 pks-timing.workspace = true

@@ -37,7 +37,15 @@ impl SessionEngineHost {
     pub fn native(
         options: NativeSessionEngineHostOptions,
     ) -> Result<Self, SessionEngineHostBuildError> {
-        build_native_host(options)
+        build_native_host(options, None)
+    }
+
+    /// Builds the native Session host with one canonical multistem recorder.
+    pub fn native_with_multistem_recording(
+        options: NativeSessionEngineHostOptions,
+        output_root: impl Into<std::path::PathBuf>,
+    ) -> Result<Self, SessionEngineHostBuildError> {
+        build_native_host(options, Some(output_root.into()))
     }
 
     pub fn compile(&self, session: Session) -> Result<CompiledSession, SessionEngineStartError> {
@@ -254,6 +262,7 @@ pub enum SessionEngineHostBuildError {
 #[cfg(any(target_os = "linux", target_os = "macos", target_os = "windows"))]
 fn build_native_host(
     options: NativeSessionEngineHostOptions,
+    recording_root: Option<std::path::PathBuf>,
 ) -> Result<SessionEngineHost, SessionEngineHostBuildError> {
     let prepare_context =
         PrepareContext::new(SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved));
@@ -267,12 +276,16 @@ fn build_native_host(
         .set_application_backend(Arc::clone(&capture_backend))
         .set_microphone_backend(capture_backend);
     let _ = builder.register_polled_audio_endpoint(options.polled_audio_endpoint)?;
+    if let Some(recording_root) = recording_root {
+        let _ = builder.register_multistem_recording(recording_root)?;
+    }
     builder.build()
 }
 
 #[cfg(not(any(target_os = "linux", target_os = "macos", target_os = "windows")))]
 fn build_native_host(
     _options: NativeSessionEngineHostOptions,
+    _recording_root: Option<std::path::PathBuf>,
 ) -> Result<SessionEngineHost, SessionEngineHostBuildError> {
     Err(SessionEngineHostBuildError::UnsupportedPlatform)
 }

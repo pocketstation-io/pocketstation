@@ -1170,7 +1170,7 @@ dependencies = [
 
 [[package]]
 name = "pks-endpoint"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "pks-caps",
  "pks-frame",
@@ -1253,7 +1253,7 @@ dependencies = [
 
 [[package]]
 name = "pks-session"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "pks-caps",
  "pks-capture",
@@ -1321,6 +1321,7 @@ dependencies = [
  "pks-frame",
  "pks-graph",
  "pks-session",
+ "pks-timing",
  "thiserror 1.0.69",
 ]
 

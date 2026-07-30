@@ -53,6 +53,8 @@ impl SessionEngineBuilder {
 }
 
 pub use pks_recording::{
+    recording_outcome_error_code as session_recording_outcome_error_code,
+    RecordingErrorCode as SessionRecordingErrorCode,
     RecordingObservations as SessionRecordingObservations,
     RecordingOutcome as SessionRecordingOutcome, RecordingState as SessionRecordingState,
     RecordingStemOutcome as SessionRecordingStemOutcome,

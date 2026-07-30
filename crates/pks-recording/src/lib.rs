@@ -1,8 +1,10 @@
 //! Concrete multistem recording behind the generic endpoint lifecycle.
 
+mod error_code;
 mod multistem_endpoint;
 mod multistem_recorder;
 
+pub use error_code::{recording_outcome_error_code, RecordingErrorCode};
 pub use multistem_endpoint::{
     MultistemEndpointCoordinator, MultistemEndpointError, MultistemEndpointStem,
     MultistemRecordingReceipt, SessionMultistemEndpointCoordinator,

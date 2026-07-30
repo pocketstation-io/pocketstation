@@ -1849,3 +1849,33 @@
   connector, scaffold, mock, fallback, loopback-only path, or product-proof
   claim. The W12 Rust reference and Lab evidence remain the next acceptance
   slice.
+
+## W12 public recording reference integration — 2026-07-29
+
+- Status: `SAFE-TO-TEST`; the focused implementation and component gates pass,
+  while the exact registry-installed Lab artifact remains the W12 exit.
+- The accepted `pks-recording` coordinator, `StemHandle::record` declaration,
+  Session host registration, and safe recording receipt remain the canonical
+  owners. The active slice only projects their setup and outcomes through the
+  public `pocketstation` façade.
+- `Session::builder().recording_root(...)` registers that existing owner.
+  Recording routes without an explicit root fail with
+  `session.missing_recording_configuration`; `RunningSession` retains the
+  terminal recording outcome. Stable recording codes cover every concrete
+  recorder failure plus incomplete and not-yet-finalized outcomes without
+  exposing string-message matching to language adapters.
+- The public quickstart observes both source-aware stems under a bounded
+  deadline and requires complete two-stem finalization. The deterministic
+  conformance fixture emits truthful frame timing and proves that a saturated
+  bounded polled-audio branch drops independently while both recording edges
+  deliver 16 continuous frames without drops.
+- Focused acceptance passes: 17 recording tests, 59 Session tests, eight
+  façade tests including conformance, and strict all-target Clippy. The CLI
+  migration and Lab exact-registry artifact remain separate repository gates.
+- Registry patch identities now match the changed publication boundary:
+  `pks-endpoint 0.1.1`, new `pks-recording 0.1.0`, `pks-session 0.1.1`, and
+  public `pocketstation 0.1.1`. The other ten closure packages remain at their
+  already-visible `0.1.0` versions. The 14-package dry run passes in exact
+  dependency order; no version already visible on crates.io is overwritten.
+- No provider, new runtime, new package, mock, scaffold, fallback, or
+  loopback-only production path is introduced.

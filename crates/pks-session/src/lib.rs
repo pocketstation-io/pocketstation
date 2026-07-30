@@ -58,8 +58,9 @@ pub use observations::{
     SessionRouteMetrics, SessionSourceMetrics,
 };
 pub use recording::{
-    SessionRecordingObservations, SessionRecordingOutcome, SessionRecordingReceipt,
-    SessionRecordingState, SessionRecordingStemOutcome,
+    session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations,
+    SessionRecordingOutcome, SessionRecordingReceipt, SessionRecordingState,
+    SessionRecordingStemOutcome,
 };
 pub use running::{
     start_prepared_session, start_prepared_session_cancellable, CaptureBackendSet, RunningSession,

@@ -67,6 +67,7 @@ pub enum SessionStartErrorCode {
     EndpointStartFailed,
     RuntimeStartFailed,
     MissingAudioReceipt,
+    MissingRecordingConfiguration,
     MissingEventReceiver,
 }
 
@@ -91,6 +92,7 @@ impl SessionStartErrorCode {
             Self::EndpointStartFailed => "session.endpoint_start_failed",
             Self::RuntimeStartFailed => "session.runtime_start_failed",
             Self::MissingAudioReceipt => "session.missing_audio_receipt",
+            Self::MissingRecordingConfiguration => "session.missing_recording_configuration",
             Self::MissingEventReceiver => "session.missing_event_receiver",
         }
     }
