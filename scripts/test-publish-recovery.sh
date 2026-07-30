@@ -153,17 +153,16 @@ expected_missing="$(
         pks-capture-linux \
         pks-graph \
         pks-runtime \
-        pks-dsp \
         pks-endpoint \
-        pks-nodes \
+        pks-recording \
         pks-session \
         pocketstation
 )"
 actual_missing="$(sort "${fixture}/publish.log")"
 expected_missing="$(printf '%s\n' "${expected_missing}" | sort)"
 [[ "${actual_missing}" == "${expected_missing}" ]] ||
-    fail "partial recovery did not skip six visible versions and resume nine missing versions"
-[[ "$(wc -l <"${fixture}/sleep.log" | tr -d ' ')" == "8" ]] ||
+    fail "partial recovery did not skip six visible versions and resume eight missing versions"
+[[ "$(wc -l <"${fixture}/sleep.log" | tr -d ' ')" == "7" ]] ||
     fail "partial recovery did not pace each remaining first-crate creation"
 if awk '$0 != 130 { exit 1 }' "${fixture}/sleep.log"; then
     :
