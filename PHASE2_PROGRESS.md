@@ -1874,8 +1874,25 @@
   migration and Lab exact-registry artifact remain separate repository gates.
 - Registry patch identities now match the changed publication boundary:
   `pks-endpoint 0.1.1`, new `pks-recording 0.1.0`, `pks-session 0.1.1`, and
-  public `pocketstation 0.1.1`. The other ten closure packages remain at their
+  public `pocketstation 0.1.2`. The public façade advances past the already
+  published documentation-only `pocketstation 0.1.1`; the other ten closure
+  packages remain at their
   already-visible `0.1.0` versions. The 14-package dry run passes in exact
   dependency order; no version already visible on crates.io is overwritten.
 - No provider, new runtime, new package, mock, scaffold, fallback, or
   loopback-only production path is introduced.
+- The pre-publication registry audit found that the documentation-only
+  `pocketstation 0.1.1` release already occupies that façade version. The W12
+  façade therefore advances to unused version `0.1.2`; the new endpoint,
+  recording, and Session versions remain `0.1.1`, `0.1.0`, and `0.1.1`.
+- A repeated release-gate run exposed a scheduler-dependent conformance
+  failure: the finite fixture emitted four-sample frames on a three-millisecond
+  wall cadence, allowing its eight-frame recording edge to overflow. The
+  fixture now emits eight real 20-millisecond, 960-sample frames per source and
+  waits on source-completion and destination-saturation counters rather than a
+  sleep. The formerly failing recording-isolation case passes 20 consecutive
+  runs.
+- After that correction, full workspace tests, strict all-target Clippy,
+  release quickstart compilation, `CODE_PROTOCOL`, architecture constraints,
+  formatting, and the exact 14-package publication dry run pass for
+  `pocketstation 0.1.2`.

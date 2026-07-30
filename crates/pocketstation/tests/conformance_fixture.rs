@@ -146,8 +146,29 @@ fn given_recording_root_when_two_stems_finish_then_terminal_outcome_is_exposed()
 
     // Deliberately stop consuming this bounded destination. The recorder is a
     // separate branch and must continue to completion while this queue drops.
-    std::thread::sleep(Duration::from_millis(50));
-    let slow_branch = running.audio_observations();
+    let completion_deadline = Instant::now() + Duration::from_secs(2);
+    let mut sources_completed = false;
+    while Instant::now() < completion_deadline {
+        let metrics = running.metrics_snapshot().unwrap();
+        sources_completed = (0..metrics.source_count()).all(|index| {
+            metrics.source(index).is_some_and(|source| {
+                source.ingress.frames_delivered_total >= conformance::FRAMES_PER_SOURCE
+            })
+        });
+        if sources_completed {
+            break;
+        }
+        std::thread::sleep(Duration::from_millis(1));
+    }
+    assert!(sources_completed);
+    let saturation_deadline = Instant::now() + Duration::from_secs(2);
+    let slow_branch = loop {
+        let observations = running.audio_observations();
+        if observations.queue_full_drops_total > 0 || Instant::now() >= saturation_deadline {
+            break observations;
+        }
+        std::thread::sleep(Duration::from_millis(1));
+    };
     assert!(slow_branch.queue_peak_frames <= slow_branch.queue_capacity_frames);
     assert!(slow_branch.queue_full_drops_total > 0);
 
@@ -170,10 +191,13 @@ fn given_recording_root_when_two_stems_finish_then_terminal_outcome_is_exposed()
     assert_eq!(outcome.failed_stems, 0);
     assert_eq!(outcome.stems.len(), 2);
     assert!(
-        outcome.stems.iter().all(|stem| stem.written_frames >= 16
-            && stem.error.is_none()
-            && stem.edge_observations.frames_dropped_total == 0
-            && stem.edge_observations.discontinuities_total == 0),
+        outcome
+            .stems
+            .iter()
+            .all(|stem| stem.written_frames == conformance::FRAMES_PER_SOURCE
+                && stem.error.is_none()
+                && stem.edge_observations.frames_dropped_total == 0
+                && stem.edge_observations.discontinuities_total == 0),
         "{outcome:?}"
     );
     assert!(outcome.session_dir.exists());
