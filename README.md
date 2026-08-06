@@ -1,83 +1,76 @@
 # PocketStation
 
-PocketStation is the central open-source Rust runtime for turning permitted
-desktop application and microphone audio into independent, source-aware live
-stems that can be processed, fanned out, transported, and recorded.
-
-This workspace was formerly named `pocketstation`. It is now the product center;
-the individual `pks-*` crates keep narrow technical responsibilities. The
-current product proof is intentionally smaller than the long-term runtime:
+PocketStation is a local-first Rust capture primitive for turning one permitted
+desktop application and one microphone into independent, source-aware live
+stems that can be observed, fanned out, transported, and recorded.
 
 ```text
-one desktop application + one microphone
-                ↓
-    two independent timed stems
-                ↓
-example connector + browser/remote receiver + multistem recording
+application + microphone
+          ↓
+independent timed stems
+          ↓
+application callback + example transport + multistem recording
 ```
 
-The binding deadline, acceptance gate, and scope cuts are in the factory root
-`PRODUCT_OPERATING_CONTRACT.md`. Repository and crate ownership are in
-`PROJECT_STATE.md` and [CRATE_OWNERSHIP.md](docs/architecture/CRATE_OWNERSHIP.md).
+The product ships as one Cargo package, `pocketstation`. Its internal engine,
+capture backends, graph, runtime, recording, codec, timing, observations, and C
+projection are modules of that package. The native deliverable is
+`libpocketstation`; C consumers include `pocketstation.h`.
 
-## Workspace
+## Public Surface
 
-| Crate | Responsibility |
+The supported Rust entry point is `pocketstation::Session`. The narrow contract
+selects an application and microphone, starts capture, receives each stem
+independently, observes lifecycle/errors, stops, and receives recording
+outcomes. Provider and transport integrations belong in examples or external
+packages, not in the engine.
+
+The `internal-testing` Cargo feature exposes implementation types only to
+repository-owned conformance fixtures, the CLI, and the neutral benchmark. It
+is not a supported application API.
+
+## Internal Ownership
+
+| Module | Responsibility |
 |---|---|
-| `pks-frame` | Audio buffers, source/stem identity, timestamps, sequence and lineage |
-| `pks-timing` | Clock drift/correction and compiled experimental SegmentGate storage |
-| `pks-caps` | Capability, permission, media-edge and backpressure requirements |
-| `pks-codec` | Opus encode/decode and codec configuration |
-| `pks-metrics` | Runtime counters and bounded latency/drop observations |
-| `pks-graph` | Open signal/operator/endpoint contracts, compiler and plan |
-| `pks-runtime` | Realtime/async scheduling, bounded Bridges and fan-out |
-| `pks-endpoint` | Open endpoint-driver registry, gated lifecycle and finalization truth |
-| `pks-capture` | Platform-neutral permitted capture contract |
-| `pks-capture-macos` | macOS application/system/device capture adapter |
-| `pks-capture-windows` | Windows capture adapter (partial) |
-| `pks-capture-linux` | Linux capture adapter (partial) |
-| `pks-nodes` | First-party audio, transport-adjacent and recording operators |
-| `pks-dsp` | Bounded local audio DSP primitives |
-| `pocketstation` | Public Rust `Session` façade over the canonical engine |
+| `session` | Public lifecycle, composition, cancellation, polling, and outcomes |
+| `frame` | Buffers, source/stem identity, timestamps, sequence, and lineage |
+| `timing` | Clock-domain estimation and correction |
+| `graph` | Open signal/operator/endpoint contracts, compiler, and plan |
+| `runtime` | Execution, bounded Bridges, fan-out, drops, and observations |
+| `capture` | Capture contracts and macOS/Windows/Linux implementations |
+| `endpoint` | Open destination lifecycle and registration |
+| `recording` | Concrete aligned multistem recording |
+| `codec` | Codec behavior and compatibility ABI implementation |
+| `dsp` | Bounded local audio processing |
+| `abi` | C projection of the same Session and codec implementation |
 
-Provider-specific model connectors belong in `examples/` or external/community
-packages. They do not belong in first-party `pks-ai-*` crates.
+Metrics are operational observations owned by `runtime`; they are not a
+separate product subsystem or crate.
 
-## Timing Boundary
+## Artifact Names
 
-`pks-timing` owns runtime clock-domain estimation and correction. The relay
-owns live RTP sequence/timestamp continuity, pacing, repair, and RTCP clock
-lineage. WebRTC receivers own network jitter buffering and playout. The retired
-`media-clock` workspace is tagged history and is not a dependency of this
-workspace, the CLI, or the neutral benchmark.
+- Rust: `pocketstation`
+- C header: `pocketstation.h`
+- Unix library: `libpocketstation.a`, `libpocketstation.dylib`, or
+  `libpocketstation.so`
+- Windows library: `pocketstation.dll` / `pocketstation.lib`
+- Apple framework target: `PocketStation.framework`
 
-`pks_timing::experimental::SegmentGate` remains compiled and tested. It is
-preserved code for a future generated-audio endpoint, not a current product
-claim and not merely Git history.
-
-There is no accepted `pks-playout` crate. Add one only when a real native
-receiver needs decoder-side jitter buffering, FEC/PLC scheduling, and device
-playout outside WebRTC.
+Retained `pks_*` function symbols are temporary binary compatibility only.
+There are no separately marketed `*-core` or `*-c` products.
 
 ## Development
 
 ```bash
 cargo fmt --all -- --check
-cargo clippy --workspace --all-targets -- -D warnings
-cargo test --workspace
-cargo build -p pocketstation --example product_quickstart
-cargo run -p pks-nodes --example graph_runtime
+cargo clippy --all-targets --all-features --locked -- -D warnings
+cargo test --all-targets --all-features --locked
+cargo build --release --example product_quickstart --locked
+bash scripts/check_protocol.sh
 ```
 
-The narrow product is not complete merely because the workspace tests pass.
-Completion requires the external app+mic, three-destination, 60-minute and
-clean-checkout evidence defined in the product operating contract.
-
-## Current Status
-
-- Frame, graph, runtime, codec, core node and macOS capture foundations: REAL or
-  PARTIAL as recorded in `PHASE2_PROGRESS.md`.
-- Realtime-to-async partition execution, complete bounded multi-destination
-  fan-out, and multistem product workflow: current Phase 2 critical path.
-- Windows/Linux production capture, virtual devices, consumer apps, audio
-  memory and broad provider catalogs: deferred from the 2026-08-15 proof.
+Passing component tests is not a real-device claim. Product acceptance still
+requires the real-path permission, recovery, destination-failure, latency,
+drop-rate, soak, integrity, and clean-checkout evidence defined by the factory
+operating contract and execution registry.

@@ -1,55 +1,129 @@
-[workspace]
-resolver = "2"
-members = [
-  "crates/pks-frame",
-  "crates/pks-timing",
-  "crates/pks-caps",
-  "crates/pks-codec",
-  "crates/pks-codec-c",
-  "crates/pks-metrics",
-  "crates/pks-runtime",
-  "crates/pks-endpoint",
-  "crates/pks-graph",
-  "crates/pks-dsp",
-  "crates/pks-nodes",
-  "crates/pks-recording",
-  "crates/pks-session",
-  "crates/pks-session-c",
-  "crates/pks-capture",
-  "crates/pks-capture-macos",
-  "crates/pks-capture-windows",
-  "crates/pks-capture-linux",
-  "crates/pocketstation",
-  "examples/whisper-transcribe",
-]
-
-[workspace.package]
-version = "0.1.0"
+[package]
+name = "pocketstation"
+version = "0.1.2"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/pocketstation-io/pocketstation"
+homepage = "https://github.com/pocketstation-io/pocketstation"
+documentation = "https://docs.rs/pocketstation"
+description = "Source-aware desktop audio Session SDK"
+readme = "README.md"
+keywords = ["audio", "capture", "realtime", "session", "webrtc"]
+categories = ["multimedia::audio", "api-bindings"]
+include = [
+  "Cargo.toml",
+  "Cargo.lock",
+  "README.md",
+  "build.rs",
+  "src/**",
+  "native/**",
+  "include/**",
+  "examples/product_quickstart.rs",
+  "examples/platform/**",
+  "tests/**",
+  "benches/**",
+  "proptest-regressions/**",
+]
 
-[workspace.dependencies]
-pks-timing = { path = "crates/pks-timing", version = "0.1.0" }
+[package.metadata.pocketstation]
+registry-role = "public-product"
+
+[package.metadata.docs.rs]
+default-target = "x86_64-pc-windows-msvc"
+targets = []
+
+[lib]
+crate-type = ["rlib", "cdylib", "staticlib"]
+
+[features]
+default = []
+conformance-fixtures = []
+real-opus = []
+recording = []
+test-helpers = []
+internal-testing = []
+
+[dependencies]
 rtrb = "0.3"
 thiserror = "1"
 hound = "3"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 opus = "0.3"
+tokio = { version = "1", features = ["macros", "rt", "sync", "time"] }
+
+[dev-dependencies]
 proptest = "1"
 criterion = "0.5"
 assert_no_alloc = { version = "1.1", default-features = false }
+tempfile = "3"
+
+[build-dependencies]
+cc = "1"
+
+[target.'cfg(target_os = "macos")'.dependencies]
 cpal = "0.18.1"
 
-# Production release: full LTO + single codegen unit so LLVM can inline
-# across crate boundaries (Rust → libopus FFI call sites) and vectorize.
+[target.'cfg(target_os = "linux")'.dependencies]
+pipewire = "0.10"
+alsa = "0.11"
+libc = "0.2"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+wasapi = "0.23"
+windows = { version = "0.58", features = [
+  "implement",
+  "Win32_Media",
+  "Win32_Media_Audio",
+  "Win32_Security",
+  "Win32_System_Threading",
+  "Win32_System_Com",
+  "Win32_System_Variant",
+  "Win32_Foundation",
+] }
+windows-core = "0.58"
+
 [profile.release]
 opt-level = 3
 lto = "fat"
 codegen-units = 1
 
-# Bench profile inherits release but keeps debug symbols for profiling.
 [profile.bench]
 inherits = "release"
 debug = true
+
+[[bench]]
+name = "audio_buffer_pool"
+required-features = ["internal-testing"]
+
+[[bench]]
+name = "capture_to_stream"
+required-features = ["internal-testing"]
+
+[[bench]]
+name = "captured_frame_stream"
+required-features = ["internal-testing"]
+
+[[bench]]
+name = "opus_decode"
+required-features = ["internal-testing"]
+
+[[bench]]
+name = "opus_encode"
+required-features = ["internal-testing"]
+
+[[test]]
+name = "codec_hot_path_alloc"
+required-features = ["internal-testing"]
+
+[[test]]
+name = "codec_opus_roundtrip"
+required-features = ["internal-testing"]
+
+[[test]]
+name = "dsp_runtime_node"
+required-features = ["internal-testing"]
+
+[[test]]
+name = "runtime_plan_router_alloc"
+required-features = ["internal-testing"]

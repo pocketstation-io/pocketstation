@@ -1,11 +1,11 @@
 # AGENTS.md — pocketstation-io/pocketstation
 
-This repository is the central PocketStation Rust runtime workspace. It was
-formerly named `pocketstation`; current paths and new documentation must use
-`pocketstation`.
+This repository ships one Rust package and one native library product named
+`pocketstation`. Internal ownership is enforced with Rust modules, visibility,
+tests, and architecture checks—not separately versioned `pks-*` packages.
 
 The factory-root `AGENTS.md`, `PRODUCT_OPERATING_CONTRACT.md`, and
-`PROJECT_STATE.md` are binding. By 2026-08-15 the runtime must help prove one
+`PROJECT_STATE.md` are binding. By 2026-08-15 the implementation must prove one
 desktop application plus one microphone as independent stems fanning out to an
 example connector, browser/remote receiver, and multistem recording.
 
@@ -15,81 +15,87 @@ Read, in order:
 
 1. Factory-root `AGENTS.md`
 2. Factory-root `PRODUCT_OPERATING_CONTRACT.md`
-3. Factory-root `PROJECT_STATE.md`
-4. Factory-root `docs/standards/CODE_PROTOCOL.md`
+3. Factory-root `docs/standards/CODE_PROTOCOL.md`
+4. Factory-root `PROJECT_STATE.md`
 5. `docs/architecture/pocketstation-v3.0.md`
-6. `docs/architecture/CRATE_OWNERSHIP.md`
-7. `PHASE2_PROGRESS.md`
-8. `docs/standards/FAKE_SCAFFOLD_INVENTORY.md`
-9. Relevant ADRs
+6. Factory-root `docs/PocketStation-BuildGuide.md`
+7. Relevant ADRs
+8. `PHASE2_PROGRESS.md`
+9. Factory-root `docs/standards/FAKE_SCAFFOLD_INVENTORY.md`
 
-State the product-proof outcome, demo line, deadline milestone, owning crate,
-and next three acceptance commands before writing code.
+Before code, state the current task, owning module, product outcome, deadline
+milestone, next three acceptance commands, and any scaffold/mock/loopback path.
 
-## Active Phase
+## Active Product
 
-Phase 0 foundation and Phase 1 transport proof are complete under the recorded
-exit reports. Active work is the narrow Phase 2 product slice:
+The narrow Phase 2 product slice is:
 
 - independent application and microphone stems;
-- source/clock/timestamp lineage;
-- realtime-to-async Bridges;
-- bounded one-to-many fan-out and explicit backpressure;
-- example connector, browser/remote sink, and multistem recording;
-- permission, discontinuity, queue/drop, and latency observability.
+- source, clock, timestamp, sequence, lineage, and discontinuity truth;
+- bounded one-to-many fan-out with explicit backpressure;
+- application polling, example connector, browser/remote delivery, and
+  multistem recording;
+- permission lifecycle and operational observations.
 
 New platforms, virtual drivers, consumer apps, provider catalogs, and memory
-work are deferred unless the product operating contract explicitly changes.
+work remain deferred unless the product operating contract changes.
 
-## Ownership Locks
+## Package and Module Ownership
 
-- `pks-frame`: frame data and lineage.
-- `pks-timing`: drift/correction and compiled experimental SegmentGate storage.
-- `pks-caps`: capability and permission truth.
-- `pks-codec`: codec behavior only.
-- `pks-metrics`: runtime observations.
-- `pks-graph`: open manifests, signal/edge contracts, compiler and plan.
-- `pks-runtime`: scheduling, bounded Bridges, backpressure and fan-out.
-- `pks-capture-*`: permitted platform capture.
-- `pks-nodes`: first-party audio/recording operators.
-- `pks-dsp`: bounded local VAD, denoise, AEC, and watermark processing.
-- `pks-session`: canonical Session declaration, compilation coordination,
-  lifecycle, supervision, and finalization.
-- `pks-session-c`: versioned C projection of Session control and bounded
-  observations; never a second engine.
-- `pks-codec-c`: retained Opus codec compatibility ABI only.
-- `pocketstation`: sole public Rust Session façade over `pks-session`; it must
-  not own a second runtime, engine setup internals, codec ABI, or providers.
-- `examples/`: provider-specific connectors and customer workflows.
+There is exactly one central Cargo package: `pocketstation`.
 
-RTP/RTCP pacing, sequence/timestamp translation, repair and clock lineage belong
-to the relay. WebRTC receiver jitter buffering/playout belongs to the receiver.
-Do not recreate those as `pks-playout` without a real native receiver consumer.
+- `src/session`: public declaration and lifecycle semantics, orchestration,
+  cancellation, bounded polling, and final outcomes.
+- `src/frame`: buffers, source/stem identity, timestamps, sequence, and lineage.
+- `src/timing`: clock-domain estimation and correction.
+- `src/graph`: open manifests, signals, edges, compiler, and execution plan.
+- `src/runtime`: plan execution, bounded Bridges, backpressure, fan-out, and
+  runtime observations. Metrics are runtime observations, not a product or a
+  separately versioned package.
+- `src/capture`: platform-neutral capture contracts and target-selected native
+  implementations under `src/capture/platform`.
+- `src/endpoint`: open endpoint registration and lifecycle contracts.
+- `src/recording`: concrete multistem recording and finalization.
+- `src/codec`: codec implementation and compatibility symbols.
+- `src/dsp`: bounded local signal processing.
+- `src/abi`: the C projection of the same Session and codec implementation.
+- `examples`: provider-specific connectors and customer workflows.
 
-The legacy `media-clock` workspace is retired historical source. The live
-runtime, CLI, and benchmarks must not regain a dependency on it. The
-experimental Gate must remain compiled and tested in `pks-timing` until an
-explicit removal or promotion decision.
+The public Rust API is rooted at `pocketstation::Session`. Internal modules are
+private unless a deliberately documented extension surface requires exposure.
+The `internal-testing` feature exists only for repository-owned fixtures,
+benchmarks, the CLI, and migration tests; it is not a second SDK.
+
+The native deliverable is `libpocketstation` with `pocketstation.h`. There is no
+separate PocketStation C product. Retained `pks_*` C symbols are temporary ABI
+compatibility, not package or product names.
+
+A new package is blocked unless it has an independent consumer, versioning
+contract, shipped artifact, security/process boundary, or unavoidable native
+toolchain boundary that modules and target-specific Cargo dependencies cannot
+provide.
+
+RTP/RTCP pacing and continuity belong to the relay. Receiver jitter buffering
+and playout belong to the receiver. Provider implementations remain outside
+core.
 
 ## Required Quality
 
-- No allocation, blocking, mutex, I/O, or logging on audio callback/realtime
-  paths.
-- All queues are bounded and expose their overflow policy and counters.
-- Provider integrations do not enter first-party core crates.
-- No closed model/policy/provider enums in the graph contract.
-- Update `PHASE2_PROGRESS.md` before a commit.
-- Update the fake-scaffold inventory whenever a scaffold is added or burned.
-- Component tests do not justify a product claim; record real-path artifacts.
+- Audio callback/realtime paths are allocation-free, lock-free, blocking-free,
+  async-free, log-free, and panic-free.
+- Queues are bounded and expose overflow policy and counters.
+- Provider integrations do not enter first-party core modules.
+- No closed model/policy/provider enums enter graph contracts.
+- Update `PHASE2_PROGRESS.md` before a completed code step.
+- Update the fake-scaffold inventory when a scaffold is added or burned.
+- Component tests never justify a real-device product claim.
 
 ## Acceptance
 
-Use the smallest relevant subset first, then the full workspace before merge:
-
 ```bash
 cargo fmt --all -- --check
-cargo clippy --workspace --all-targets -- -D warnings
-cargo test --workspace
-cargo build -p pocketstation --example product_quickstart
-cargo run -p pks-nodes --example graph_runtime
+cargo clippy --all-targets --all-features --locked -- -D warnings
+cargo test --all-targets --all-features --locked
+cargo build --release --example product_quickstart --locked
+bash scripts/check_protocol.sh
 ```

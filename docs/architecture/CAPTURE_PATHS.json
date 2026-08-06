@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "product": "pocketstation",
+  "default_product_requires_virtual_audio_driver": false,
+  "sdk_performs_privileged_installation": false,
+  "sdk_restarts_audio_services": false,
+  "platforms": [
+    {
+      "platform": "macos",
+      "application_path": "coreaudio-process-tap",
+      "microphone_path": "coreaudio-input-device",
+      "requires_virtual_audio_driver": false,
+      "permission_observation": "authoritative-for-microphone-and-typed-open-result-for-process-tap",
+      "optional_fallback": "externally-provisioned-audioserverplugin-for-system-mix-on-older-macos",
+      "optional_fallback_is_product_default": false,
+      "optional_fallback_requires_privileged_provisioning": true,
+      "sdk_performs_privileged_installation": false,
+      "sdk_restarts_audio_services": false
+    },
+    {
+      "platform": "windows",
+      "application_path": "wasapi-process-loopback",
+      "microphone_path": "wasapi-input-device",
+      "requires_virtual_audio_driver": false,
+      "permission_observation": "typed-native-open-result",
+      "optional_fallback": null,
+      "optional_fallback_is_product_default": false,
+      "optional_fallback_requires_privileged_provisioning": false,
+      "sdk_performs_privileged_installation": false,
+      "sdk_restarts_audio_services": false
+    },
+    {
+      "platform": "linux",
+      "application_path": "pipewire-node-capture",
+      "microphone_path": "pipewire-input-node",
+      "requires_virtual_audio_driver": false,
+      "permission_observation": "portal-or-pipewire-policy-state-when-observable-otherwise-not-observable",
+      "optional_fallback": "externally-configured-alsa-loopback-for-system-mix-only",
+      "optional_fallback_is_product_default": false,
+      "optional_fallback_requires_privileged_provisioning": true,
+      "sdk_performs_privileged_installation": false,
+      "sdk_restarts_audio_services": false
+    }
+  ]
+}

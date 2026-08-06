@@ -3,19 +3,19 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 target_dir="${CARGO_TARGET_DIR:-${repo_root}/target}"
-fixture_source="${repo_root}/crates/pks-session-c/tests/c_success_conformance.c"
-include_dir="${repo_root}/crates/pks-session-c/include"
-output_dir="$(mktemp -d "${TMPDIR:-/tmp}/pks-session-c.XXXXXX")"
+fixture_source="${repo_root}/tests/abi_session_c_conformance.c"
+include_dir="${repo_root}/include"
+output_dir="$(mktemp -d "${TMPDIR:-/tmp}/pocketstation-abi.XXXXXX")"
 trap 'rm -rf "${output_dir}"' EXIT
 
 cargo build \
   --manifest-path "${repo_root}/Cargo.toml" \
-  --package pks-session-c \
+  --package pocketstation \
   --features conformance-fixtures \
   --locked
 
 compiler="${CC:-cc}"
-executable="${output_dir}/pks-session-c-success"
+executable="${output_dir}/pocketstation-abi-success"
 
 case "$(uname -s)" in
   Darwin)
@@ -23,7 +23,7 @@ case "$(uname -s)" in
     "${compiler}" "${fixture_source}" \
       -I "${include_dir}" \
       -L "${library_dir}" \
-      -lpks_session_c \
+      -lpocketstation \
       -Werror \
       -Wl,-rpath,"${library_dir}" \
       -o "${executable}"
@@ -33,7 +33,7 @@ case "$(uname -s)" in
     "${compiler}" "${fixture_source}" \
       -I "${include_dir}" \
       -L "${library_dir}" \
-      -lpks_session_c \
+      -lpocketstation \
       -Werror \
       -Wl,-rpath,"${library_dir}" \
       -o "${executable}"

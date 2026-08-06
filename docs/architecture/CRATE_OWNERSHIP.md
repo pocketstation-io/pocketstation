@@ -1,448 +1,112 @@
-# CRATE_OWNERSHIP.md — PocketStation crate ownership contract
+# PocketStation module ownership contract
 
-**Status:** Binding. Violations are BLOCKED in review. CI checks enforce this.
-**Source:** Architecture constraints from `dd` + `dd2` (2026-07-07).
+**Status:** Binding
+**Superseded package topology:** AUDIO-033
 
-The highest-leverage action against architecture drift is defining what each crate is allowed to own.
-If it is not listed under "Owns", it does not belong here.
+PocketStation ships one Cargo package. This document retains its historical
+filename so existing references do not break, but its contract is module
+ownership—not micro-crate ownership.
 
----
+## Governing rule
 
-## The rule in one sentence
+> Create a package only for an independently consumed, versioned, shipped, or
+> toolchain-isolated deliverable. Use modules for internal ownership.
 
-> PocketStation owns contracts, execution, timing, capability truth, and compilation.
-> PocketStation does not own provider meaning, product meaning, or future operator taxonomy.
+The only central package is `pocketstation`. The Rust developer surface is
+`pocketstation::Session`; the native surface is `pocketstation.h` linked against
+`libpocketstation`.
 
----
+## Ownership map
 
-## Public vs internal vocabulary
-
-These two vocabularies must not bleed into each other.
-
-**Public (developer-facing):**
-```
-Session, Source, Stream, Route, Bus, Pipeline, Stem, Mix
-```
-
-**Internal (compiler/runtime):**
-```
-GraphSpec, OperatorManifest, EndpointManifest, PortSpec, SignalSpec,
-EdgeContract, RuntimePlan, ExecutionPartition, Bridge
-```
-
----
-
-## Core five — the real foundation
-
-These five crates define the architecture. Everything else builds on them.
-
-| Crate | Owns | Must NOT own |
+| Module | Owns | Must not own |
 |---|---|---|
-| `pks-frame` | `AudioBufferPool`, exclusive/shared frame handles, `AudioFrame`, `SharedAudioFrame`, frame/stream/source/session IDs, sample specifications, timestamps, sequence numbers, deadlines, clock IDs, payload format metadata | Whisper, Ollama, Transcribe, Summarize, Ducking, Meeting recording, Deepgram, OpenAI, any product concept |
-| `pks-timing` | ClockDriftEstimator, ClockCorrectionController, clock-domain timing snapshots; compiled experimental SegmentGate storage until a generated-audio endpoint exists | Generic date/time utilities, WebRTC/NetEQ playout, provider APIs, product claims for experimental controls |
-| `pks-graph` | `GraphSpec`, registry-backed node declarations, `PortSpec`, **SignalSpec**, edge contracts, graph IR, `Compiler`, `RuntimePlanner`, `RuntimePlan`, memory/fan-out plans, **ExecutionPartition**, and **SafetyContract** | Concrete Whisper/Ollama/Deepgram providers, product UI, worker lifecycle, capture ownership, endpoint finalization |
-| `pks-runtime` | Execution of a compiled `RuntimePlan`: `PlanScheduler`, `RealtimePlanExecutor`, `PlanEdgeRouter`, independent bounded edge receivers, and edge/queue/discontinuity observations | Graph compilation or `RuntimePlan` definitions, complete product Session lifecycle, product UI, operator meaning, provider integrations, platform capture |
-| `pks-caps` | Capability, CapabilitySet, CapabilityRequirement, PlatformProfile, PermissionRequirement, UnsupportedReason | `SignalSpec` (lives in `pks-graph`), concrete implementations, provider meanings, product logic |
+| `frame` | buffers, source/stem/session IDs, formats, timestamps, sequences, discontinuities, lineage | provider or product meaning |
+| `timing` | clock-domain estimation and correction | RTP pacing, receiver playout, generic date/time utilities |
+| `graph` | `SignalSpec`, ports, open manifests, edge contracts, compiler, plan, partitions, safety contracts | worker lifecycle, capture, concrete providers |
+| `runtime` | compiled-plan execution, bounded Bridges, routing, backpressure, drops, latency and operational observations | graph compilation, Session policy, provider meaning |
+| `capture` | selection, permissions, stable source identity, source events, captured-frame streams, target-native backends | Session orchestration, endpoint finalization |
+| `endpoint` | open endpoint IDs, registration, preparation, start/stop/join/finalization contracts | concrete provider catalogs, Session transaction policy |
+| `recording` | staged multistem artifacts, aligned timeline mapping, WAV writing, checksums, outcomes, rollback | graph/runtime/session semantics |
+| `codec` | encode/decode, codec validation, retained compatibility symbols | transport signaling or product workflow |
+| `dsp` | bounded local audio operators | provider SDKs or model catalogs |
+| `session` | public declaration, exact-source resolution, compilation coordination, transactional lifecycle, cancellation, bounded polling, events, observations, final outcomes | duplicate compiler/runtime/capture/recording implementations |
+| `abi` | versioned C records, handles, marshalling, bounded polling, leases, panic containment | a second engine or separate product identity |
 
-**Boundary note:** `pks-caps` owns platform/runtime availability truth (can this capability run here?). `pks-graph` owns signal/edge contracts (what flows between ports). Related but distinct.
+`runtime::metrics` is merely the representation of runtime observations. It is
+not an independent metrics architecture, package, or public developer concept.
 
-## Endpoint lifecycle boundary
+## Dependency direction
 
-`pks-endpoint` is the acyclic contract between bounded runtime edges, concrete
-destination implementations, and Session transaction ownership. It is not a
-provider catalog or a second scheduler.
-
-| Crate | Owns | Must NOT own |
-|---|---|---|
-| `pks-endpoint` | Open `OperatorId`, explicit `EndpointGroupId`, exact `OperatorId` + `NodeTypeId` driver registration, one-input and explicit batch preparation, endpoint prepare/cancel/start-gate/running/stop/join-finalize state contracts, and authoritative endpoint observation/outcome records | Implicit grouping by operator, concrete connector/provider/relay/recording algorithms, Session transaction policy, graph execution, worker-thread creation, native capture, product workflows, or production no-op drivers |
-
-`pks-endpoint` depends downward on `pks-runtime` for `PlanEdgeReceiver` and on
-`pks-graph`/`pks-frame` for stable identities and setup context.
-`pks-runtime` never depends on `pks-endpoint`. Both `pks-session` and concrete
-endpoint packages such as `pks-nodes` may depend on `pks-endpoint`, preventing a
-`pks-nodes -> pks-session` cycle.
-
-Grouped lifecycle rules are binding in
-[AUDIO-030](../adr/AUDIO-030-grouped-endpoint-lifecycle.md): batches require one
-Session plus an exact `OperatorId`, `NodeTypeId`, `EndpointGroupId`, and declared
-endpoint set. Sharing only an operator or node type never authorizes grouping.
-
----
-
-## Session engine and language boundary
-
-`pks-session` is the one public Session engine owner. It is deliberately not a
-sixth foundation crate: it orchestrates the contracts and implementations owned
-by the lower layers without redefining them.
-
-| Crate | Owns | Must NOT own |
-|---|---|---|
-| `pks-session` | Safe Rust `SessionSpec`, public selectors/descriptors, declaration freeze, fixed Session source/external-boundary structural node registration, exact-source resolution orchestration, transactional startup/rollback, ownership of a running Session's capture/runtime/endpoint resources, cancellation, drain/join/finalization coordination, bounded foreign-audio projection, safe event/metric projections, and stable semantic errors/codes | Graph compilation algorithms, plan scheduling/routing algorithms, buffer-pool implementation, native capture implementation, codec or recorder implementation, provider connectors, C ABI records/handle tables, language-SDK ergonomics, UI, or process-helper IPC |
-| `pks-session-c` | Versioned C records and status codes, ABI/capability negotiation, engine-scoped generational foreign handles, marshalling, bounded event/metric polling, bounded immutable audio-batch leases, panic containment, reproducible headers, and C conformance fixtures | Session lifecycle semantics, graph/runtime algorithms, capture or endpoint implementations, provider code, language-owned APIs, codec compatibility symbols, or a second scheduler |
-
-`pks-session-c` depends on `pks-session`; `pks-session` never depends on the
-adapter. `pks-codec-c` is a separate compatibility boundary that depends only
-on `pks-codec` and owns the retained Opus C ABI. Python and Node may use direct
-PyO3 and Node-API adapters over `pks-session` instead of being forced through
-C. Swift and Kotlin may use the Session C projection or platform/generated
-wrappers. Every Session adapter preserves one Session engine and the same
-lifecycle, error, backpressure, lineage, and observation semantics.
-
-The fixed Session node registration is structural only. Application and
-microphone ingress nodes forward capture-owned frames through the compiled
-realtime plan. Connector, browser, and recording descriptors define external
-worker boundaries; their `RuntimeNode` instantiation fails with a typed
-external-boundary error. Concrete work and finalization remain exclusively in
-registered `EndpointDriverFactory` implementations.
-
-The embedded-versus-helper decision and portable ABI constraints are binding in
-[AUDIO-029](../adr/AUDIO-029-embedded-session-engine-boundary.md).
-`pocketstation` is the sole public Rust Session façade. The unconsumed
-`pks-audio` compatibility package was retired in W12 rather than preserving a
-second public identity.
-
-### Registry roles
-
-Every workspace package declares one machine-readable role in
-`package.metadata.pocketstation.registry-role`. The role controls registry
-support; it does not change crate names or repository layout.
-
-| Role | Registry state | Contract |
-|---|---|---|
-| `public-facade` | publishable | Exactly one package: `pocketstation` |
-| `facade-dependency` | publishable | Exact transitive workspace normal/target dependency closure of the public façade |
-| `deferred` | `publish = false` | Core or adapter package not required by the supported façade closure |
-| `example` | `publish = false` | Runnable example, never a registry package |
-
-Optional normal dependencies count toward the façade closure. Dev-only and
-build-only dependencies do not. `scripts/publish.sh` derives the closure from
-Cargo metadata, rejects role or `publish` drift, topologically validates only
-that closure, and requires `pocketstation` to be last. Publication remains a
-separate explicit release action.
-
----
-
-## Signal contract — `SignalSpec` (pks-graph, Phase 2 prerequisite)
-
-**Do not use `SignalType`.** The original `SignalType` enum had two problems:
-1. `Transcript`, `Tokens`, `VadEvents` are semantic roles, not fundamental signal classes — semantic creep through the back door
-2. `Custom(TypeId)` is a Rust `std::any::TypeId` — breaks cross-language (Python, Swift, Kotlin, Protobuf, remote operators, config manifests)
-
-The correct model is two-level: **class** (what kind of data) + **role** (what it means) + **optional schema**:
-
-```rust
-pub struct SignalSpec {
-    pub class:  SignalClass,
-    pub role:   Option<SemanticRole>,  // e.g. "transcript.partial", "vad.boundary"
-    pub schema: Option<SchemaRef>,
-}
-
-pub enum SignalClass {
-    PcmAudio(AudioFormat),
-    EncodedAudio(Codec),
-    Text(TextFormat),      // class for transcript, summary, LLM output, captions
-    Event(EventFormat),    // class for VAD events, emotion labels, keyword hits
-    Metrics,
-    Control,
-    Binary(BinaryFormat),
-    Custom(SignalId),       // stable string — survives cross-language and manifests
-}
-
-pub struct SignalId(pub Cow<'static, str>);       // "com.acme.sentiment.label.v1"
-pub struct SemanticRole(pub Cow<'static, str>);   // "transcript.partial"
-pub struct SchemaRef(pub Cow<'static, str>);
-```
-
-Port wiring examples:
-```text
-PcmAudio + role "voice"                  — mic audio
-PcmAudio + role "music"                  — system audio
-Text     + role "transcript.partial"     — STT rolling output
-Text     + role "summary.final"          — LLM summary result
-Text     + role "llm.token"              — streaming LLM token
-Event    + role "vad.boundary"           — speech start/stop
-Event    + role "emotion.stress"         — emotion classifier output
-Control  + role "route.patch"            — graph mutation
-Metrics  + role "edge.latency"           — observability
-Custom("com.acme.sentiment.label.v1")    — third-party extension
-```
-
-The compiler validates **class** compatibility. `SemanticRole` is for humans, tooling, and port-matching hints — not for the core to enumerate forever.
-
-`PortSpec` uses `SignalSpec`. Both `Operator` and `Endpoint` expose `Vec<PortSpec>`:
-```rust
-pub struct PortSpec {
-    pub name:   PortName,
-    pub signal: SignalSpec,
-    pub arity:  PortArity,
-    pub timing: TimingContract,
-}
-
-// Endpoints expose multiple ports — a relay, multi-stem recorder, browser sink
-// can have many inputs/outputs. Single-signal() is wrong.
-pub trait Endpoint: Send + Sync {
-    fn id(&self) -> EndpointId;
-    fn inputs(&self) -> Vec<PortSpec>;
-    fn outputs(&self) -> Vec<PortSpec>;
-    fn capabilities(&self) -> CapabilityRequirements;
-}
-```
-
----
-
-## Execution partitions and safety contracts (`pks-graph`)
-
-`ExecutionPartition` (WHERE code runs) and `SafetyContract` (WHAT it guarantees) are separate types. Do not conflate them.
-
-```rust
-pub enum ExecutionPartition {
-    AudioCallback,   // platform OS audio thread — strictest
-    RealtimeCpu,     // dedicated RT thread — no alloc/locks/blocking
-    AsyncWorker,     // Tokio task — can allocate, await, network
-    BlockingWorker,  // spawn_blocking — disk, database, CPU-heavy
-    External,        // remote service — always async, network required
-}
-
-pub enum SafetyContract {
-    RealtimeSafe,       // no alloc, no locks, no blocking — AudioCallback / RealtimeCpu only
-    AllocationAllowed,  // may heap-allocate
-    BlockingAllowed,    // may block the thread
-    NetworkAllowed,     // may make network calls
-    ExternalService,    // backed by a remote provider
-}
-```
-
-The compiler enforces: `SafetyContract::RealtimeSafe` → only `AudioCallback` or `RealtimeCpu` partition. Any edge crossing partitions gets a compiler-inserted `Bridge`. No cross-partition calls on the hot path.
-
----
-
-## Capability examples (pks-caps)
-
-`pks-caps` owns platform/runtime availability truth — can this run on this platform right now?
+Rust visibility and imports enforce the logical direction:
 
 ```text
-capture.microphone
-capture.system_audio
-capture.app_audio
-sink.virtual_mic
-sink.speaker
-record.multistem
-transport.webrtc
-codec.opus
-ml.local_vad
+frame + timing
+      ↓
+graph → runtime
+      ↓      ↓
+capture + endpoint + recording + codec
+                 ↓
+               session
+                 ↓
+         public façade + abi
 ```
 
----
+Cycles are blocked in review. A module may consume a lower contract but must
+not reproduce that lower layer's algorithms or semantic truth.
 
-## Platform and processing crates
+## Open contracts
 
-| Crate | Owns | Must NOT own |
-|---|---|---|
-| `pks-capture` | Platform-neutral discovery/selectors, source identity/generation and permission evidence, runtime source events, bounded captured-frame streams, capture/output traits, and adapter contracts | Platform-specific implementations or Session orchestration |
-| `pks-capture-macos` | CoreAudio tap / ScreenCaptureKit / device capture | Non-macOS paths |
-| `pks-capture-windows` | WASAPI / process loopback | Non-Windows paths |
-| `pks-capture-linux` | PipeWire/Pulse implementation | Non-Linux paths |
-| `pocketstation` | Language-owned Rust `Session`/`RunningSession` façade over the canonical `pks-session` host, typed lifecycle, bounded audio polling, events, metrics, and the public quickstart | Engine setup internals, graph/runtime ownership, a second Session engine, C ABI ownership, provider integrations, CLI delegation, or product workflows |
-| `pks-codec` | Opus encode/decode, packet format, RTP timestamp metadata, jitter-adjacent helpers | WebRTC signaling, product logic |
-| `pks-codec-c` | Stable codec C compatibility surface, retained `pks_*` Opus symbols, reproducible checked header, and native library artifacts | Session lifecycle/control ABI, graph/runtime behavior, capture, provider integrations, or SDK-owned media logic |
-| `pks-session-c` | Minimal stable C projection over canonical `pks-session`: versioned records, typed generational handles, bounded polling and audio leases, panic containment, header packaging, and conformance fixtures excluded from the default ABI | Session compilation/runtime business logic, capture implementations, provider integrations, language-owned Rust/Python/Node APIs |
+- `SignalSpec` is owned by `graph`; do not reintroduce `SignalType` elsewhere.
+- Operators, endpoints, and connectors use open IDs/manifests, never closed
+  provider/model enums.
+- `ExecutionPartition` states where work runs; `SafetyContract` states what it
+  guarantees. They remain distinct.
+- Every realtime crossing is a bounded Bridge with explicit overflow and
+  discontinuity observations.
+- Capture owns source identity and native timestamps. Session orchestrates but
+  does not fabricate them.
 
----
+## Language and ABI boundary
 
-## Operator and pipeline crates
+Python, Node, Swift, Kotlin, and C project the same Session semantics. They do
+not implement schedulers, capture engines, recording coordinators, or separate
+error vocabularies. Foreign frame delivery is bounded and batched; no per-frame
+Python/JavaScript/Swift/JNI callback is allowed on the capture hot path.
 
-| Crate | Owns | Must NOT own |
-|---|---|---|
-| `pks-recording` | Concrete grouped multistem WAV endpoint implementation: staged artifacts, recorder workers, Session timeline mapping, discontinuity/permission sidecars, checksums, manifest, observations, outcomes, rollback, and finalization | Graph compilation, Session lifecycle policy, capture, public API ergonomics, provider connectors, generic endpoint contracts, or non-recording operators |
-| `pks-nodes` | Transitional source/example/DSP operator package: synthetic, microphone, and system-output source factories; mono mixing; Bridge sink; VAD/denoise/AEC/watermark adapters; temporary source-compatible recording re-exports during the 0.1 migration | Canonical Session semantics, new recording implementation, provider connectors, API-key fields, meeting/product workflows, or unimplemented operators presented as available |
-| `pks-dsp` | Current bounded local DSP implementations: VAD, denoise, echo cancellation, and audio watermarking with slice-based hot-path cores and `RuntimeNode` integration | OpenAI chat, Ollama summarize, Deepgram cloud STT, ElevenLabs TTS, agent orchestration, meeting notes product logic, or an unimplemented generic model runtime |
+The C header is `include/pocketstation.h`. Retained `pks_*` symbols are a
+time-bounded ABI compatibility measure. New symbols and documentation use the
+PocketStation product identity without creating a `*-c` package.
 
----
+## Hot path
 
-## Dependency-direction rules
-
-These rules are binding. Violating the dependency direction breaks the architecture invariant.
+Audio callbacks, realtime partitions, and hot-path destructors are:
 
 ```text
-pks-frame
-  may depend on:      std / core / alloc only; small no_std-safe utilities
-  must not depend on: tokio, serde_json, tracing, platform crates, providers
-
-pks-graph
-  may depend on:      pks-frame, pks-caps, serde (manifest serialization)
-  must not depend on: pks-runtime, pks-nodes, pks-dsp, any provider SDK
-
-pks-timing
-  may depend on:      std / core / alloc only
-  must not depend on: pks-runtime, pks-graph, codecs, transports, provider SDKs
-
-pks-runtime
-  may depend on:      pks-frame, pks-graph, pks-metrics, pks-timing
-  must not depend on: OpenAI/Deepgram/Ollama SDKs, app UI, platform capture implementations
-
-pks-endpoint
-  may depend on:      pks-frame, pks-graph, pks-runtime, serde
-  must not depend on: pks-session, pks-nodes, platform capture implementations,
-                      provider SDKs, concrete relay/recorder algorithms
-
-pks-caps
-  may depend on:      pks-frame (types only)
-  must not depend on: pks-capture-macos/windows/linux concrete implementations
-
-pks-capture
-  may depend on:      pks-frame, pks-timing
-  must not depend on: target capture implementations, pks-runtime,
-                      pks-session, provider SDKs
-
-pks-session
-  may depend on:      pks-frame, pks-caps, pks-graph, pks-runtime, pks-endpoint,
-                      pks-capture and target-selected capture adapters,
-                      pks-recording, pks-metrics
-  must not depend on: provider SDKs, app UI, language SDK packages,
-                      helper-process IPC, or language-runtime types in its
-                      public contract
-
-pks-session-c
-  may depend on:      pks-session and minimal ABI-support crates
-  must not depend on: platform capture implementations directly, pks CLI,
-                      provider SDKs, Python/Node/Swift/Kotlin runtime packages,
-                      or graph/runtime internals bypassing pks-session
-
-pks-codec-c
-  may depend on:      pks-codec and header-generation build dependencies
-  must not depend on: pks-session, graph/runtime crates, capture backends,
-                      provider SDKs, or language runtime packages
-
-pks-nodes
-  may depend on:      pks-frame, pks-caps, pks-graph, pks-runtime, pks-endpoint,
-                      pks-timing, pks-dsp, pks-recording during the additive
-                      0.1 compatibility migration
-  must not contain:   provider connector clients, API-key fields, product workflows
-
-pks-recording
-  may depend on:      pks-frame, pks-graph, pks-runtime, pks-endpoint,
-                      pks-timing, serialization and file-I/O support
-  must not depend on: pks-session, pks-capture, pks-dsp, provider SDKs,
-                      language adapters, CLI, or product UI
-
-pks-dsp
-  may depend on:      pks-frame, pks-graph
-  must not contain:   cloud APIs, LLM orchestration, agent logic, meeting products
-
-examples/
-  may depend on:      anything
+allocation-free · lock-free · blocking-free · async-free · log-free · panic-free
 ```
 
----
+## Package exception gate
 
-## Plugin tier model
+A proposal for another Cargo package must demonstrate at least one:
 
-Not all operators are equal. The execution partition determines what is allowed.
+1. independently shipped binary/static/dynamic artifact;
+2. independent third-party consumption and versioning;
+3. a security or process isolation boundary;
+4. native toolchain isolation impossible to express with target-specific Cargo
+   dependencies;
+5. measured build isolation that materially benefits users.
 
-```text
-Tier 1 — Built-in / static Rust operators
-  compiled with the binary
-  can be RT-safe (RealtimeCpu / AudioCallback) if they obey SafetyContract
-  examples: Duck, Mixer, VAD, Gain
+Names, conceptual ownership, test grouping, or historical precedent are not
+sufficient.
 
-Tier 2 — Dynamic external operators
-  loaded at runtime via C ABI, abi_stable, or WASM Component Model
-  async/worker partition only by default — never in AudioCallback
-  must pass explicit RT certification to be promoted to RealtimeCpu
-  examples: community plugin, WASM calculator
-
-Tier 3 — Remote connectors
-  external service-backed; always External partition
-  async only; require explicit network capability declaration
-  examples: Deepgram, OpenAI realtime, ElevenLabs
-```
-
-The future "plugin marketplace" cannot attach to the RT engine by default. It lives in Tier 2 or Tier 3. RT promotion requires explicit `SafetyContract::RealtimeCertified`.
-
----
-
-## Forbidden first-party crates
-
-Do not create:
-- `pks-ai`
-- `pks-ai-whisper`
-- `pks-ai-ollama`
-- `pks-ai-openai`
-- `pks-ai-deepgram`
-- `pks-model-connectors` / `model-connectors`
-
-Provider integrations live in:
-1. `examples/` in the `pocketstation` workspace — reference implementations
-2. `docs/content/specs/recipes/` — runnable recipe docs
-3. Community crates (optional connectors, only after real demand)
-4. User application code
-
-**Never in:** `pks-frame`, `pks-graph`, `pks-runtime`, `pks-caps`, `pks-nodes`, `pks-dsp`.
-
----
-
-## OperatorId convention
-
-First-party operators use the `pks.*` namespace:
-```text
-pks.audio.duck.v1
-pks.audio.mix.v1
-pks.audio.gain.v1
-pks.record.multistem_wav.v1
-pks.transport.packetizer.v1
-pks.ml.vad.silero.v1
-```
-
-External/community operators use reverse-domain notation:
-```text
-local.whisper.transcribe.v1
-local.ollama.summarize.v1
-vendor.deepgram.streaming_stt.v1
-vendor.openai.realtime.v1
-vendor.elevenlabs.tts.v1
-```
-
-The core does not own the meaning of external operator IDs. It only validates signal class, port arity, and execution partition compatibility.
-
----
-
-## CI enforcement checks
-
-"Binding" without enforcement is a slogan. Add this script to CI:
+## Enforcement
 
 ```bash
-#!/usr/bin/env bash
-# scripts/lint/check-architecture-constraints.sh
-set -euo pipefail
-
-# 1. Forbid first-party AI connector crate directories
-if find . -maxdepth 4 -type d | grep -qE 'pks-ai(-|$)|model-connectors'; then
-  echo "FAIL: Forbidden first-party AI connector crate directory found" >&2
-  exit 1
-fi
-
-# 2. Forbid closed graph enums in core crates
-if grep -rq "enum ModelNode\|enum PolicyNode\|enum SinkNode" \
-    crates/pks-graph crates/pks-runtime 2>/dev/null; then
-  echo "FAIL: Closed graph enum forbidden in pks-graph / pks-runtime" >&2
-  exit 1
-fi
-
-# 3. Forbid provider names leaking into core
-if grep -rq "Whisper\|Ollama\|Deepgram\|ElevenLabs\|OpenAI" \
-    crates/pks-frame \
-    crates/pks-graph \
-    crates/pks-runtime 2>/dev/null; then
-  echo "FAIL: Provider name leaked into pks-frame / pks-graph / pks-runtime" >&2
-  exit 1
-fi
-
-# 4. Forbid Rust TypeId in pks-graph (breaks cross-language contract stability)
-if grep -rq "std::any::TypeId\|core::any::TypeId" \
-    crates/pks-graph 2>/dev/null; then
-  echo "FAIL: TypeId in pks-graph breaks cross-language contract stability" >&2
-  exit 1
-fi
-
-echo "Architecture constraint checks: PASS"
+cargo metadata --no-deps --format-version 1
+bash scripts/lint/check-architecture-constraints.sh
+bash scripts/check_protocol.sh
 ```
+
+Cargo metadata must report one workspace member and one package named
+`pocketstation`. Provider names must not leak into core modules, and no live
+manifest or dependency may restore a `pks-*`, `*-core`, or `*-c` package.

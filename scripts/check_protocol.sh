@@ -6,10 +6,10 @@ echo "=== CODE_PROTOCOL check ==="
 rust_files=()
 while IFS= read -r file; do
   rust_files+=("$file")
-done < <(rg --files src crates examples 2>/dev/null | rg '\.rs$' || true)
+done < <(rg --files src examples tests benches 2>/dev/null | rg '\.rs$' || true)
 
 if [ "${#rust_files[@]}" -eq 0 ]; then
-  echo "FAIL: no Rust source files found under src/, crates/, or examples/"
+  echo "FAIL: no Rust source files found under the single package"
   exit 1
 fi
 
@@ -58,8 +58,8 @@ fi
 echo "  pass"
 
 echo "LAW-15: hot path purity..."
-cargo test --quiet -p pks-runtime --test plan_router_alloc
-cargo test --quiet -p pks-codec --test hot_path_alloc
+cargo test --quiet --features internal-testing --test runtime_plan_router_alloc
+cargo test --quiet --features internal-testing --test codec_hot_path_alloc
 echo "  pass"
 
 echo "LAW-16: test naming..."
@@ -117,6 +117,6 @@ echo "Rust format..."
 cargo fmt --all -- --check
 
 echo "Rust clippy..."
-cargo clippy --workspace --all-targets -- -D warnings
+cargo clippy --all-targets --all-features -- -D warnings
 
 echo "=== All CODE_PROTOCOL checks passed ==="

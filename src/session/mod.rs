@@ -1,0 +1,107 @@
+mod compiler;
+mod draft;
+mod endpoint;
+mod engine;
+#[cfg(test)]
+mod engine_tests;
+mod error;
+mod error_code;
+mod events;
+mod flight_recorder;
+mod foreign_audio;
+mod foreign_audio_endpoint;
+mod host;
+mod observations;
+mod recording;
+mod running;
+#[cfg(test)]
+mod running_tests;
+mod runtime_prepare;
+mod selector;
+mod spec;
+mod structural_nodes;
+
+pub use compiler::{
+    CompiledSession, SessionCompileError, SessionCompiler, APPLICATION_SOURCE_NODE_TYPE_ID,
+    BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID,
+    DEFAULT_MULTISTEM_RECORDING_GROUP_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID,
+    RECORDER_OPERATOR_ID, RECORDING_GROUP_CONFIGURATION_KEY,
+};
+pub use draft::{DerivedStreamHandle, EndpointHandle, Operator, Session, StemHandle};
+pub use endpoint::{EndpointConfiguration, EndpointDescriptor, OperatorId};
+pub use engine::{
+    SessionEngine, SessionEngineBuildError, SessionEngineBuilder, SessionEngineStartError,
+};
+pub use error::SessionError;
+pub use error_code::{
+    polled_audio_poll_error_code, session_declaration_error_code, session_start_failure_code,
+    session_stop_failure_codes, PolledAudioPollErrorCode, SessionDeclarationErrorCode,
+    SessionRuntimeErrorCode, SessionStartErrorCode, SessionStopCode, SessionStopFailureCode,
+};
+pub use events::{
+    SessionComponentId, SessionControlFailure, SessionEndpointFailure, SessionEvent,
+    SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionFinalizationFailure,
+    SessionFinalizationStage, SessionLifecycleState, SessionRollbackFailure, SessionRollbackStage,
+    SessionSourceFailure, SessionTerminalOutcome, SessionTerminalState,
+};
+pub use flight_recorder::{
+    SessionFlightRecord, SessionFlightRecordKind, SessionFlightRecorder,
+    SessionFlightRecorderFinishError, SessionFlightRecorderHandle, SessionFlightRecorderOutcome,
+    SessionFlightRecorderStartError, SessionFlightReplay, SessionFlightReplayError,
+    SessionFlightTerminal, SessionFlightTrace,
+};
+pub use foreign_audio::{
+    PolledAudioBatchLease, PolledAudioEndpoint, PolledAudioEndpointConfig,
+    PolledAudioEndpointConfigError, PolledAudioFrame, PolledAudioObservations,
+    PolledAudioPollError, PolledAudioReceipt, POLLED_AUDIO_OPERATOR_ID,
+};
+pub use host::{
+    NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuildError,
+    SessionEngineHostBuilder,
+};
+pub use observations::{
+    EndpointObservationStage, SessionDerivedRouteMetrics, SessionEventQueueObservations,
+    SessionMetricsSnapshot, SessionOperatorMetrics, SessionRouteDropObservations,
+    SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit,
+    SessionRouteMetrics, SessionRouteObservationInterval, SessionSourceMetrics,
+};
+pub use recording::{
+    session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations,
+    SessionRecordingOutcome, SessionRecordingReceipt, SessionRecordingState,
+    SessionRecordingStemOutcome,
+};
+pub use running::{
+    start_prepared_session, start_prepared_session_cancellable, CaptureBackendSet, RunningSession,
+    SessionStartCancellation, SessionStartError, SessionStartFailure, SessionStartOptions,
+    SessionStopOutcome,
+};
+pub use runtime_prepare::{
+    prepare_session_runtime, PreparedSession, PreparedSourceMapping, PreparedWorkerMapping,
+    SessionPrepareError,
+};
+pub use selector::{ApplicationSelector, DeviceId, DeviceSelector, ProcessId, Source};
+pub use spec::{
+    DerivedRouteSpec, EndpointSpec, OperatorInstanceId, OperatorSpec, RouteSpec, SessionSpec,
+    SessionSpecVersion, StemSpec, SESSION_SPEC_VERSION,
+};
+pub use structural_nodes::{
+    register_session_structural_nodes, SessionStructuralNodeRegistrationError,
+};
+
+pub use crate::frame::{
+    AudioBufferPool, AudioFrame, ClockDomainId, ConnectorId, EncryptionMode, EndpointId,
+    FrameLineage, RouteId, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId,
+};
+pub use crate::graph::{
+    transcript_final_spec, transcript_partial_spec, AsyncEnvelope, AsyncNode, AsyncNodeFuture,
+    AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError, AsyncSignal,
+    AudioCaps, BackpressurePolicy, ChannelLayout, ClockDomain, ConfigError, CopyPolicy,
+    DeliverySemantics, DerivedSignalLineage, DerivedSignalLineageError, EdgeContract,
+    EdgeObservabilityLevel, ExecutionPartition, LossPolicy, MediaCaps, MediaKind, Multiplicity,
+    NodeConfig as OperatorConfiguration, NodeDefinition, NodeDescriptor, NodeError,
+    NodeRegistrationError, NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy,
+    OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection,
+    PortSpec, PrepareContext, SafetyContract, SemanticRole, SignalSpec, TextFormat,
+    TRANSCRIPT_FINAL_ROLE, TRANSCRIPT_PARTIAL_ROLE,
+};
+pub use crate::runtime::{AsyncOperatorOutputObservationHandle, AsyncOperatorOutputObservations};

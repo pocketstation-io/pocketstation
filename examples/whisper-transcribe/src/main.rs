@@ -1,7 +1,8 @@
 use std::path::PathBuf;
 
-use pks_frame::{SampleFormat, SampleSpec};
-use pks_graph::{AsyncEnvelope, AsyncNode, AsyncSignal, PrepareContext};
+use pocketstation::operator::{
+    AsyncEnvelope, AsyncNode, AsyncSignal, PrepareContext, SampleFormat, SampleSpec,
+};
 use whisper_transcribe_example::WhisperConnector;
 
 fn usage() -> ! {
@@ -31,6 +32,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let output = connector
         .process(AsyncEnvelope::new(AsyncSignal::Binary(wav_bytes), 0, 0))
         .await?
+        .into_iter()
+        .next()
         .ok_or("Whisper connector returned no transcript")?;
     match output.signal {
         AsyncSignal::Text(transcript) => println!("{transcript}"),

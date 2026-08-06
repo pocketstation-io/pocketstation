@@ -1,5 +1,99 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W13 recorder initialization observation repair — 2026-08-02
+
+- Status: `SAFE-TO-TEST`; candidate
+  `pks-20260802-w13-operational-trust-3` is frozen as
+  `pocketstation-0.1.2.crate` with SHA-256
+  `e6943cad4c16af22492d880a28e0e6c10b957d031352c675dd405efd41c42657`.
+- The Session multistem recorder now publishes received-frame progress as soon
+  as it accepts each authoritative first frame. Previously the outer endpoint
+  telemetry remained at zero while filesystem-backed recorder initialization
+  ran, so a valid received frame could be temporarily invisible under load.
+- The permission-epoch fail-closed test exposed the race during the full
+  all-target gate. The focused regression now passes without weakening the
+  permission lineage assertion or recording finalization behavior.
+- The complete central gate passes: 470 unit tests plus C/C++ ABI,
+  allocation, integration, façade, quickstart, package verification, strict
+  Clippy, CODE_PROTOCOL, and architecture constraints.
+- This changes observation timing only. It adds no queue, sleep, capture
+  fallback, scaffold, mock, or product claim.
+
+## Historical W13 `-2` Core Audio timeline candidate — 2026-08-02
+
+- Historical status: `PARTIAL`; candidate
+  `pks-20260802-w13-operational-trust-2` is frozen as
+  `pocketstation-0.1.2.crate` with SHA-256
+  `6d4de7597af33d5ceaba0724ba30420b2f3c170691f769018ba4e59ea01ae5bf`.
+- The macOS process-tap callback now publishes the native Core Audio host time
+  together with its absolute sample-frame position through a lock-free
+  seqlock snapshot. Rust converts that native sample timeline into the shared
+  PocketStation process-monotonic clock. It fails closed if the native
+  timeline is unavailable instead of anchoring time when Rust first polls.
+- The callback remains allocation-free, lock-free, blocking-free, async-free,
+  log-free, and panic-free. Focused timeline tests cover reader positions on
+  both sides of the callback anchor and native-host to process-clock mapping.
+- Central formatting, 470 unit tests plus C/C++ ABI, allocation and façade
+  tests, all-target/all-feature strict Clippy, CODE_PROTOCOL, architecture
+  constraints, package verification, CLI 195 tests plus strict Clippy,
+  neutral Bench 36 tests plus strict Clippy, and relay race tests pass.
+- Physical macOS evidence for the exact rebuilt CLI binary proves two distinct
+  application process incarnations, disappearance and explicit reselection,
+  two complete Sessions, independent application and microphone recording,
+  connector and same-host browser routes, browser reconnect, zero route drops,
+  zero continuity gaps, and complete common-clock latency sample coverage.
+- This does not prove denied/revoked permission transitions, Windows or Linux
+  native behavior, the final 3,600-second soak, or clean-source reproduction.
+  W13 remains `PARTIAL`; no scaffold, mock, fallback, or loopback-only product
+  path was added.
+
+## W16 single-package consolidation — 2026-08-02
+
+- Status: `SAFE-TO-MERGE`; W16 is `DONE` at its local consolidation boundary.
+  The central implementation is exactly one Cargo
+  package named `pocketstation`, with internal frame, timing, graph, runtime,
+  capture, endpoint, recording, codec, DSP, Session, observation, and ABI
+  modules. The old `crates/` package tree is removed.
+- The package emits Rust, static-library, and dynamic-library forms. Native
+  consumers include `pocketstation.h` and link `libpocketstation`; the former
+  Session and codec C packages are unified ABI modules. Retained `pks_*`
+  symbols are compatibility only.
+- The CLI, Python and Node native adapters, external examples, Lab fixtures,
+  and neutral benchmark now consume the root package. The CLI's 195 tests,
+  benchmark's 36 tests, strict Clippy, relay race tests, and central 463 unit
+  tests plus ABI/allocation/integration tests pass locally.
+- Fresh independent W12 Rust, W12 Python/Node, W15 real-whisper, and
+  flight-recorder artifact verifiers pass after consolidation. Their
+  classifications remain `LOOPBACK-ONLY` or `PARTIAL`; this work creates no
+  new physical-device claim.
+- AUDIO-033 supersedes the historical multi-package topology. `runtime::metrics`
+  is only the runtime observation implementation, not a separate product or
+  package. New Cargo packages require an independently consumed/shipped or
+  unavoidable toolchain boundary.
+- The packaged crate hash and W16 evidence events are recorded in the
+  workspace `docs/execution/evidence/`. W13 now owns fresh operational
+  requalification of this exact candidate.
+
+## W15 typed asynchronous STT local acceptance — 2026-07-30
+
+- Status: `DONE`, `LOOPBACK-ONLY`; the central implementation and strict live
+  Lab artifact are accepted at their named local evidence boundary.
+- Public `pocketstation::Session` owns typed operator registration,
+  `through(operator)`, terminal endpoints, 16 kHz signal propagation,
+  graceful finish, explicit cancellation, compiled-input observations, and
+  derived-route observations without a duplicate scheduler or counter owner.
+- The example-owned Whisper operator runs real whisper.cpp CPU processes and
+  records actual argv, PID, timestamps, logs, content hashes, transcript,
+  timeout/cancellation, and killed/waited/reaped outcomes.
+- The isolated external consumer proves typed partial/final lineage, bounded
+  derived pressure, and a healthy raw browser/recording branch. The success raw
+  branch delivered 751/751 frames with zero drops.
+- Central graph, runtime, endpoint, Session, portable C, façade, Whisper,
+  formatting, protocol, and strict Clippy gates pass. The embedded and
+  independent Lab verifiers pass against `/private/tmp/pks-w15-live-final`.
+- Capture uses a Lab speech fixture. This does not upgrade W15 to
+  `REAL-DEVICE-PROVEN`, introduce provider code in core, or start W16/mobile.
+
 ## W12 focused recording and foreign-audio ownership — 2026-07-29
 
 - Status: `SAFE-TO-TEST`; concrete multistem WAV implementation now lives in
@@ -1173,6 +1267,20 @@
   scaffold, mock, loopback-only path, hot-path allocation, lock, blocking,
   async work, logging, or panic was introduced.
 
+## W13 consolidated-candidate operational contract — 2026-08-02
+
+- Status: `PARTIAL`, active for the exact W16 single-package candidate.
+- The next focused gate binds already-owned capture authorization observations,
+  source-generation recovery, route drop accounting, common-clock latency
+  coverage, bounded queue/resource observations, and destination isolation into
+  one deterministic integration contract.
+- The contract must report attempted/delivered/dropped counts, explicit drop
+  reasons, nanosecond units, latency sample coverage, and queue capacity/peak;
+  zero samples or inferred permission state fail closed.
+- This is component evidence only. It adds no automatic source substitution,
+  permission guessing, virtual-driver dependency, provider implementation,
+  product fallback, or physical-device claim.
+
 ## W7.3 exact-source and authorization truth — 2026-07-19
 
 - Status: `SAFE-TO-TEST`; real permission-transition cells and the corrected
@@ -1901,3 +2009,18 @@
   The recovery fixture now expects six already-visible packages and the exact
   eight missing packages, including `pks-recording` and excluding deferred
   `pks-dsp` and `pks-nodes`; it expects seven inter-package pacing waits.
+
+## W13 macOS microphone authorization boundary — 2026-08-06
+
+- Status: `SAFE-TO-MERGE`; physical acceptance remains bound to a newly
+  committed and packaged candidate.
+- The macOS input backend now rejects `Denied`, `Restricted`, and `Revoked`
+  observations before opening CPAL, with the stable typed operation
+  `opening the macOS microphone input stream`. Allowed and non-authoritative
+  observations retain the native open path.
+- Focused permission tests and strict workspace all-target Clippy pass. No
+  prompt automation, permission inference, capture fallback, mock, scaffold,
+  or loopback-only product path was introduced.
+- Audit of the earlier frozen `pocketstation-0.1.2.crate` proved that it
+  predates this repair. Its physical permission artifacts are retained as
+  diagnostic history but cannot close exact-candidate W13 acceptance.
