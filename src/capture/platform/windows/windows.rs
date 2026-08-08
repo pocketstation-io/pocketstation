@@ -651,7 +651,7 @@ impl SystemLoopbackSource {
                 if worker_cancellation.is_cancelled() {
                     return;
                 }
-                apply_mmcss_audio_thread();
+                let _audio_thread_priority = WindowsAudioThreadPriorityGuard::enter();
 
                 let resolved_mode = match resolve_application_mode(mode) {
                     Ok(mode) => mode,
@@ -807,6 +807,7 @@ impl SystemLoopbackSource {
         let dispatch_thread = match std::thread::Builder::new()
             .name("pks-wasapi-dispatch".into())
             .spawn(move || {
+                let _audio_thread_priority = WindowsAudioThreadPriorityGuard::enter();
                 let mut callback = callback;
                 loop {
                     while let Ok(frame) = frame_consumer.pop() {
@@ -921,17 +922,52 @@ impl Drop for SystemLoopbackSource {
     }
 }
 
-fn apply_mmcss_audio_thread() {
-    use windows::Win32::Media::timeBeginPeriod;
-    use windows::Win32::System::Threading::AvSetMmThreadCharacteristicsW;
-    use windows_core::w;
+/// Registers one owned Windows audio worker with MMCSS for its lifetime.
+///
+/// This is an internal worker primitive, not a public product extension API.
+/// Unsupported or denied priority registration remains non-fatal, while the
+/// existing bounded-queue observations still fail closed on real loss.
+pub struct WindowsAudioThreadPriorityGuard {
+    mmcss_handle: Option<windows::Win32::Foundation::HANDLE>,
+    timer_period_active: bool,
+}
 
-    // SAFETY: both API calls are safe to call from any thread.
-    // Failure is non-fatal -- capture continues at normal priority.
-    unsafe {
-        timeBeginPeriod(1);
-        let mut task_index: u32 = 0;
-        let _ = AvSetMmThreadCharacteristicsW(w!("Audio"), &mut task_index);
+impl WindowsAudioThreadPriorityGuard {
+    pub fn enter() -> Self {
+        use windows::Win32::Media::timeBeginPeriod;
+        use windows::Win32::System::Threading::AvSetMmThreadCharacteristicsW;
+        use windows_core::w;
+
+        // SAFETY: both APIs affect only the calling thread/process timer
+        // request. Successful effects are paired in Drop on this same owned
+        // worker thread.
+        unsafe {
+            let timer_period_active = timeBeginPeriod(1) == 0;
+            let mut task_index: u32 = 0;
+            let mmcss_handle = AvSetMmThreadCharacteristicsW(w!("Audio"), &mut task_index).ok();
+            Self {
+                mmcss_handle,
+                timer_period_active,
+            }
+        }
+    }
+}
+
+impl Drop for WindowsAudioThreadPriorityGuard {
+    fn drop(&mut self) {
+        use windows::Win32::Media::timeEndPeriod;
+        use windows::Win32::System::Threading::AvRevertMmThreadCharacteristics;
+
+        // SAFETY: each handle and timer request was created by `enter` on this
+        // worker and is released exactly once during owned worker teardown.
+        unsafe {
+            if let Some(handle) = self.mmcss_handle.take() {
+                let _ = AvRevertMmThreadCharacteristics(handle);
+            }
+            if self.timer_period_active {
+                let _ = timeEndPeriod(1);
+            }
+        }
     }
 }
 

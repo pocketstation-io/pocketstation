@@ -2117,3 +2117,22 @@
 - Audit of the earlier frozen `pocketstation-0.1.2.crate` proved that it
   predates this repair. Its physical permission artifacts are retained as
   diagnostic history but cannot close exact-candidate W13 acceptance.
+
+## W13 Windows bounded-worker scheduling repair — 2026-08-08
+
+- Status: `SAFE-TO-TEST`; Windows guest acceptance remains a separate Lab
+  artifact and no physical-device claim is made.
+- A fresh W20-based ARM64 guest matrix passed system mix, exact application,
+  microphone, two restart rounds, exact-application isolation, and the
+  15-second concurrent app-plus-microphone Session proof. All three third
+  restart cells then failed closed with explicit bounded dispatch/capture
+  queue loss.
+- The WASAPI capture producer already joined the Windows `Audio` MMCSS task,
+  but its owned dispatch consumer did not. The consumer now joins the same
+  task for its lifetime so ordinary scheduler pressure cannot starve the
+  bounded handoff while the producer continues delivering packets.
+- MMCSS and the one-millisecond timer request are now paired with explicit
+  teardown on the owning worker. Registration remains fail-open, while every
+  existing drop counter remains authoritative and fail-closed.
+- No queue was made unbounded, no capacity or loss threshold changed, and no
+  fallback, mock, scaffold, loopback product path, or soak was introduced.
