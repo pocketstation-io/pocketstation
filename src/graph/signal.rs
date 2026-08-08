@@ -215,6 +215,35 @@ impl SignalSpec {
         }
     }
 
+    /// Stable language-neutral identifier for the fundamental wire class.
+    /// Semantic role and schema remain separate fields.
+    pub fn wire_id(&self) -> &str {
+        match &self.class {
+            SignalClass::Any => "pks.signal.any.v1",
+            SignalClass::PcmAudio => "pks.signal.pcm-audio.v1",
+            SignalClass::EncodedAudio(Codec::Opus) => "pks.signal.encoded.opus.v1",
+            SignalClass::EncodedAudio(Codec::Aac) => "pks.signal.encoded.aac.v1",
+            SignalClass::EncodedAudio(Codec::Mp3) => "pks.signal.encoded.mp3.v1",
+            SignalClass::EncodedAudio(Codec::G711Ulaw) => "pks.signal.encoded.g711-ulaw.v1",
+            SignalClass::EncodedAudio(Codec::G711Alaw) => "pks.signal.encoded.g711-alaw.v1",
+            SignalClass::EncodedAudio(Codec::WebmOpus) => "pks.signal.encoded.webm-opus.v1",
+            SignalClass::Text(TextFormat::Utf8) => "pks.signal.text.utf8.v1",
+            SignalClass::Text(TextFormat::Json) => "pks.signal.text.json.v1",
+            SignalClass::Text(TextFormat::Markdown) => "pks.signal.text.markdown.v1",
+            SignalClass::Event(EventFormat::Json) => "pks.signal.event.json.v1",
+            SignalClass::Event(EventFormat::Protobuf) => "pks.signal.event.protobuf.v1",
+            SignalClass::Event(EventFormat::Flatbuffers) => "pks.signal.event.flatbuffers.v1",
+            SignalClass::Event(EventFormat::Cbor) => "pks.signal.event.cbor.v1",
+            SignalClass::Metrics => "pks.signal.metrics.v1",
+            SignalClass::Control => "pks.signal.control.v1",
+            SignalClass::Binary(BinaryFormat::Raw) => "pks.signal.binary.raw.v1",
+            SignalClass::Binary(BinaryFormat::Protobuf) => "pks.signal.binary.protobuf.v1",
+            SignalClass::Binary(BinaryFormat::Flatbuffers) => "pks.signal.binary.flatbuffers.v1",
+            SignalClass::Binary(BinaryFormat::Cbor) => "pks.signal.binary.cbor.v1",
+            SignalClass::Custom(id) => id.as_str(),
+        }
+    }
+
     /// Convenience constructor for a deliberately open boundary port.
     pub fn any() -> Self {
         Self::new(SignalClass::Any)

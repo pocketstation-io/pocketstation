@@ -10,6 +10,9 @@ extern "C" {
 #define PKS_SESSION_ABI_MAJOR 1u
 #define PKS_SESSION_ABI_MINOR 1u
 
+#define PKS_EXTENSION_ABI_MAJOR 1u
+#define PKS_EXTENSION_ABI_MINOR 0u
+
 typedef uint32_t PksSessionStatusCode;
 #define PKS_SESSION_STATUS_OK 0u
 #define PKS_SESSION_STATUS_NULL_ARGUMENT 1u
@@ -83,6 +86,44 @@ typedef struct {
   const uint8_t *data;
   uint32_t len_bytes;
 } PksSessionUtf8;
+
+typedef uint32_t PksExtensionKind;
+#define PKS_EXTENSION_KIND_SOURCE 1u
+#define PKS_EXTENSION_KIND_OPERATOR 2u
+#define PKS_EXTENSION_KIND_ENDPOINT 3u
+
+typedef uint32_t PksExtensionPortDirection;
+#define PKS_EXTENSION_PORT_INPUT 1u
+#define PKS_EXTENSION_PORT_OUTPUT 2u
+
+typedef struct {
+  uint32_t struct_size_bytes;
+  uint16_t abi_major;
+  uint16_t abi_minor;
+} PksExtensionAbiVersion;
+
+typedef struct {
+  uint32_t struct_size_bytes;
+  uint16_t abi_major;
+  uint16_t abi_minor;
+  PksExtensionKind kind;
+  uint32_t revision;
+  uint32_t generation;
+  uint32_t port_count;
+  PksSessionUtf8 extension_id;
+} PksExtensionDescriptor;
+
+typedef struct {
+  uint32_t struct_size_bytes;
+  uint16_t abi_major;
+  uint16_t abi_minor;
+  PksExtensionPortDirection direction;
+  uint32_t required;
+  PksSessionUtf8 name;
+  PksSessionUtf8 signal_id;
+  PksSessionUtf8 semantic_role;
+  PksSessionUtf8 schema;
+} PksExtensionPort;
 
 typedef struct {
   uint32_t struct_size_bytes;
@@ -264,6 +305,16 @@ PksSessionStatus pks_session_abi_is_compatible(
     uint16_t requested_abi_major,
     uint16_t requested_abi_minor,
     uint32_t requested_struct_size_bytes);
+PksSessionStatus pks_extension_abi_get_version(
+    PksExtensionAbiVersion *output_version);
+PksSessionStatus pks_extension_abi_is_compatible(
+    uint16_t requested_abi_major,
+    uint16_t requested_abi_minor,
+    uint32_t requested_struct_size_bytes);
+PksSessionStatus pks_extension_descriptor_validate(
+    const PksExtensionDescriptor *descriptor,
+    const PksExtensionPort *ports,
+    uint32_t port_count);
 PksSessionStatus pks_session_engine_create(
     const PksSessionEngineConfig *config,
     PksSessionHandle *output_engine);

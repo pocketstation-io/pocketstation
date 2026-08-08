@@ -67,9 +67,10 @@ pub use crate::runtime::{
     AsyncOperatorNamedOutputBranchSpec, AsyncOperatorTypedInput, AsyncOperatorWorker,
     AsyncOperatorWorkerError, GeneratedAudioBridge, GeneratedAudioBridgeObservationHandle,
     GeneratedAudioBridgeObservations, GeneratedAudioBridgeSpec, GeneratedAudioBridgeStartError,
-    PlanRunnerCancellation, PlanSourceSender, TypedEdgeBranchSpec, TypedEdgeBuildError,
+    PlanRunnerCancellation, PlanSourceSender, SidecarMessage, SidecarMessageKind,
+    SidecarProtocolError, SidecarProtocolLimits, TypedEdgeBranchSpec, TypedEdgeBuildError,
     TypedEdgeFanout, TypedEdgeObservationHandle, TypedEdgeObservations, TypedEdgePublishError,
-    TypedEdgePublishReport, TypedEdgeReceiver,
+    TypedEdgePublishReport, TypedEdgeReceiver, SIDECAR_PROTOCOL_MAJOR, SIDECAR_PROTOCOL_MINOR,
 };
 pub use crate::session::{
     transcript_final_spec, transcript_partial_spec, ApplicationSelector, AsyncNode,
@@ -101,8 +102,8 @@ pub use crate::session::{
     SourceFactory, SourceId, SourceManifest, SourceManifestError, SourceOutputBranchSpec,
     SourceOutputReceiver, SourcePrepareContext, SourceRegistrationError, SourceRegistry,
     SourceRuntime, SourceRuntimeError, SourceRuntimeObservationHandle, SourceRuntimeObservations,
-    SourceTypeId, StemHandle, StemId, StreamId, TextFormat, TRANSCRIPT_FINAL_ROLE,
-    TRANSCRIPT_PARTIAL_ROLE,
+    SourceTypeId, StemHandle, StemId, Stream, StreamId, StreamSignal, TextFormat, TypedOperator,
+    TypedStreamError, TRANSCRIPT_FINAL_ROLE, TRANSCRIPT_PARTIAL_ROLE,
 };
 
 /// Canonical types required by an external asynchronous Operator package.

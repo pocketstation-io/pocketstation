@@ -13,6 +13,7 @@ pub mod nodes;
 pub mod plan_executor;
 pub mod plan_router;
 pub mod plan_runner;
+pub mod sidecar_protocol;
 pub mod typed_edge;
 
 pub use async_bridge::{AsyncBridge, AsyncBridgeReceiver, AsyncBridgeSendError, AsyncBridgeSender};
@@ -41,6 +42,10 @@ pub use plan_runner::{
     PlanRunnerFinishSummary, PlanRunnerStepSummary, PlanSourceInput, PlanSourceInputObservations,
     PlanSourceObservationHandle, PlanSourceSendError, PlanSourceSendOutcome, PlanSourceSender,
     RealtimePlanRunner,
+};
+pub use sidecar_protocol::{
+    SidecarMessage, SidecarMessageKind, SidecarProtocolError, SidecarProtocolLimits,
+    SIDECAR_PROTOCOL_MAJOR, SIDECAR_PROTOCOL_MINOR,
 };
 pub use typed_edge::{
     TypedEdgeBranchSpec, TypedEdgeBuildError, TypedEdgeFanout, TypedEdgeObservationHandle,

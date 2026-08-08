@@ -1,5 +1,32 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W20 Core 1.0 extension completeness — 2026-08-08
+
+- Status: `SAFE-TO-TEST`; the final commit-bound evidence record remains before
+  `DONE`.
+- The public Rust `Stream<T>` façade provides compile-time composition without
+  creating a generic runtime. External packages define marker types through
+  `StreamSignal`; runtime and cross-language identity remains the stable
+  `SignalSpec`, schema, named-port, edge-contract, and plan representation.
+- `pocketstation.h` now exposes a versioned source/operator/endpoint descriptor
+  ABI. Every record validates ABI version, struct size, pointer alignment,
+  lengths, UTF-8, port direction, unique names, and extension shape before any
+  caller memory can be retained.
+- The versioned `PKSS` sidecar frame carries stable signal identity, role,
+  schema, sequence, timestamp, bounded payload, terminal state, and control
+  kind. Decode rejects unknown versions, invalid flags, oversized fields,
+  invalid UTF-8, truncation, and trailing bytes. It performs no callback work.
+- The packaged `pocketstation 0.1.2` proof builds an exact-version external Rust
+  consumer, replays W18 open-source and W19 composition contracts, links a C
+  descriptor consumer to `libpocketstation`, and round-trips a Python sidecar.
+  The independently verified artifact remains `LOOPBACK-ONLY`; it upgrades no
+  platform or product claim.
+- Full central tests (494 unit tests plus ABI, allocation, façade, and
+  integration gates), strict all-target/all-feature Clippy, release quickstart,
+  Bench (36 tests), Python SDK (19 tests), and Node SDK (14 tests) pass.
+- No provider, customer, industrial/domain payload, second engine, scaffold,
+  mock, hot-path change, physical-device claim, or soak was introduced.
+
 ## W19 operator composition and generated-audio reentry — 2026-08-08
 
 - Status: `SAFE-TO-TEST`; focused composition, generated-audio, and external

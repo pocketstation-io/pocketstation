@@ -29,6 +29,19 @@ The `internal-testing` Cargo feature exposes implementation types only to
 repository-owned conformance fixtures, the CLI, and the neutral benchmark. It
 is not a supported application API.
 
+The extension surface is open rather than provider-named:
+
+- `SourceFactory` / `SourceDriver` add externally owned audio or typed sources;
+- `Operator` manifests declare stable named input/output ports;
+- `EndpointDriverFactory` owns external destinations;
+- `Stream<T>` gives Rust compile-time composition while `SignalSpec` and schema
+  remain the runtime, C, sidecar, and other-language identity;
+- the versioned bounded sidecar protocol lets managed-language processes extend
+  the one engine without executing managed code on audio callbacks.
+
+See [the documentation index](docs/README.md) and
+[extension guide](docs/guides/extensions.md).
+
 ## Internal Ownership
 
 | Module | Responsibility |

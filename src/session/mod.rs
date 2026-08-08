@@ -21,6 +21,7 @@ mod session_trace;
 mod source_extension;
 mod spec;
 mod structural_nodes;
+mod typed_stream;
 
 pub use compiler::{
     CompiledSession, SessionCompileError, SessionCompiler, APPLICATION_SOURCE_NODE_TYPE_ID,
@@ -95,6 +96,7 @@ pub use spec::{
 pub use structural_nodes::{
     register_session_structural_nodes, SessionStructuralNodeRegistrationError,
 };
+pub use typed_stream::{Stream, StreamSignal, TypedOperator, TypedStreamError};
 
 pub use crate::frame::{
     AudioBufferPool, AudioFrame, ClockDomainId, ConnectorId, EncryptionMode, EndpointId,
