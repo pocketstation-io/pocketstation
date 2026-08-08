@@ -1,9 +1,39 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W17 final signal/API hardening — 2026-08-08
+
+- Status: `SAFE-TO-MERGE`; all central gates and the clean external-contract
+  proof pass. Final executor `DONE` remains commit- and hash-binding work, not
+  an inferred result from these commands.
+- `SignalEnvelope` now has exactly five authorities: `payload`, `spec`,
+  `timing`, optional source-independent `lineage`, and optional generic
+  `derivation`. The former mutable mirror fields and audio-origin-only derived
+  lineage contract are removed.
+- `SignalDerivation` references generic upstream `SignalLineage` and
+  `SignalTiming`. `FrameLineage` is projected once when specialized
+  `AudioFrame` crosses into the typed lane; the realtime audio executor and
+  pooled frame representation remain specialized.
+- Transcript role constructors/constants moved to the external Whisper example.
+  The core event payload is now an open type-id/bytes record, generated audio
+  uses the generic `Generated` provenance tag, and the future diarization-only
+  frame field is removed. No provider, customer, industrial, `Flight*`, or
+  transcript-policy authority remains in the public core implementation.
+- The external Whisper package compiles warning-free and passes all 15 tests on
+  the canonical contract. The Lab hardening proof compiles a separate public-
+  API consumer, checks exact canonical fields and payload coverage, and proves
+  the removed duplicate API fails compilation for the intended reason.
+- Acceptance passes: 492 central unit tests plus every ABI/allocation/facade
+  target, strict all-target/all-feature Clippy, release `product_quickstart`,
+  `scripts/check_protocol.sh`, the Lab adversarial verifier, and the exact
+  candidate artifact verifier. No mock, scaffold, physical-device claim,
+  product-claim upgrade, or soak was introduced.
+
 ## W20 Core 1.0 extension completeness — 2026-08-08
 
-- Status: `SAFE-TO-TEST`; the final commit-bound evidence record remains before
-  `DONE`.
+- Status: `PARTIAL`; the component/package candidate passes, but Core 1.0 is
+  not frozen. The preserved artifact is package `0.1.2`, `LOOPBACK-ONLY`,
+  produced with `--allow-dirty --no-verify`, and explicitly records
+  `clean_worktree_claimed=false`.
 - The public Rust `Stream<T>` façade provides compile-time composition without
   creating a generic runtime. External packages define marker types through
   `StreamSignal`; runtime and cross-language identity remains the stable
@@ -26,11 +56,16 @@
   Bench (36 tests), Python SDK (19 tests), and Node SDK (14 tests) pass.
 - No provider, customer, industrial/domain payload, second engine, scaffold,
   mock, hot-path change, physical-device claim, or soak was introduced.
+- Remaining exit: executable C source/operator/endpoint registration,
+  Session-owned bounded sidecar lifecycle, completed W18/W19 Session paths,
+  clean installed or published external consumption, compatibility gates, and
+  a real `1.0.0` release.
 
 ## W19 operator composition and generated-audio reentry — 2026-08-08
 
-- Status: `SAFE-TO-TEST`; focused composition, generated-audio, and external
-  clean-consumer gates pass.
+- Status: `PARTIAL`; focused low-level composition and generated-audio gates
+  pass, but the execution fixture manually assembles workers, fanout,
+  plan-source ingress, and bridge outside Session.
 - `DerivedStreamHandle` can declare another `through(...)` stage. Explicit
   `through_ports(...)` and `output(...)` selection lower named operator ports
   into the Session graph; simple `through(...)` remains fail-closed 1x1 sugar.
@@ -47,10 +82,15 @@
 - Runtime policy and observations remain signal-generic. No transcript,
   provider, customer, telemetry, industrial, or other domain payload type was
   added; no scaffold, mock, physical-device claim, or soak was introduced.
+- Remaining exit: Session-owned execution of derived non-audio chains, one
+  operator instance with multiple named upstream inputs/outputs, and bounded
+  generated-audio route lifecycle with fault isolation.
 
 ## W18 open source registration and bounded typed ingress — 2026-08-08
 
-- Status: `SAFE-TO-TEST`; focused central and external-consumer gates pass.
+- Status: `PARTIAL`; focused low-level central and external-consumer gates
+  pass, but the fixture constructs `SourceRegistry` directly and does not
+  register or declare the external source through Session.
 - Public `SourceManifest`, `SourceTypeId`, `SourceFactory`, `SourceDriver`,
   `SourceRegistry`, configuration, emission, lifecycle, cancellation, and
   observation contracts accept externally owned source implementations without
@@ -67,11 +107,16 @@
   microphone capture remain unchanged. No named-port composition, operator
   chaining, generated-audio reentry, sidecar, provider behavior, scaffold,
   mock, or product-claim upgrade is introduced.
+- Remaining exit: public Session factory registration and external-source
+  declaration compiled into Session start/stop/cancel/replacement/fault and
+  observation semantics. Current Session still requires exactly one
+  application and one microphone source.
 
 ## W17 source-independent signal contract — 2026-08-08
 
-- Status: `SAFE-TO-TEST`; the central implementation gate passes and the Lab
-  clean-consumer artifact remains to be bound to the final committed candidate.
+- Historical status: `DONE` at the earlier named `LOOPBACK-ONLY` contract
+  boundary; superseded for Core 1.0 acceptance by the final W17 hardening task
+  above.
 - The public async boundary is now `SignalEnvelope` plus `SignalPayload`, with
   source-independent `SignalLineage` and `SignalTiming`. The optimized
   `AudioFrame` realtime lane is unchanged.

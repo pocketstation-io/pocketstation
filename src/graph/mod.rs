@@ -29,15 +29,13 @@ pub mod spec;
 
 pub use async_node::{
     AsyncNode, AsyncNodeFuture, SignalContinuityError, SignalContinuityObservation,
-    SignalContinuityTracker, SignalEnvelope, SignalEnvelopeError, SignalLineage, SignalPayload,
-    SignalTiming,
+    SignalContinuityTracker, SignalDerivation, SignalDerivationError, SignalEnvelope,
+    SignalEnvelopeError, SignalLineage, SignalPayload, SignalTiming,
 };
 pub use async_operator::{
-    transcript_final_spec, transcript_partial_spec, AsyncOperatorFactory, AsyncOperatorManifest,
-    AsyncOperatorManifestError, DerivedSignalLineage, DerivedSignalLineageError,
+    AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError,
     OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy,
-    OperatorOutputRolePolicy, OperatorPermissionPolicy, TRANSCRIPT_FINAL_ROLE,
-    TRANSCRIPT_PARTIAL_ROLE,
+    OperatorOutputRolePolicy, OperatorPermissionPolicy,
 };
 pub use builtins::register_builtins;
 pub use contracts::{

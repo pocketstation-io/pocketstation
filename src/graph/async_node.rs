@@ -1,12 +1,14 @@
 use std::future::Future;
 use std::pin::Pin;
 
-use crate::frame::{AudioFrame, ClockDomainId, FrameLineage, SessionId, SourceId, StreamId};
+use crate::frame::{
+    AudioFrame, ClockDomainId, ConnectorId, FrameLineage, SessionId, SourceId, StreamId,
+};
 use crate::graph::node::{NodeError, PrepareContext};
+use crate::graph::operator::OperatorId;
 use crate::graph::signal::{
     BinaryFormat, Codec, EventFormat, SignalClass, SignalId, SignalSpec, TextFormat,
 };
-use crate::graph::DerivedSignalLineage;
 
 pub type AsyncNodeFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;
 
@@ -121,40 +123,90 @@ impl SignalLineage {
     }
 }
 
+/// Source-independent record of the signal consumed by an operator.
+///
+/// Derivation deliberately references the upstream typed-signal identity and
+/// timing rather than `FrameLineage`. Audio is projected into these generic
+/// contracts exactly once at the realtime-to-async boundary.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SignalDerivation {
+    pub upstream_lineage: SignalLineage,
+    pub upstream_timing: SignalTiming,
+    pub operator_id: OperatorId,
+    pub operator_revision: u32,
+    pub operator_generation: u32,
+    pub connector_id: Option<ConnectorId>,
+}
+
+impl SignalDerivation {
+    pub fn new(
+        upstream_lineage: SignalLineage,
+        upstream_timing: SignalTiming,
+        operator_id: OperatorId,
+        operator_revision: u32,
+        operator_generation: u32,
+        connector_id: Option<ConnectorId>,
+    ) -> Result<Self, SignalDerivationError> {
+        if operator_id.as_str().trim().is_empty() {
+            return Err(SignalDerivationError::EmptyOperatorId);
+        }
+        if operator_revision == 0 || operator_generation == 0 {
+            return Err(SignalDerivationError::ZeroOperatorVersion);
+        }
+        if upstream_timing
+            .source_timestamp_ns
+            .zip(upstream_timing.duration_ns)
+            .is_some_and(|(start, duration)| start.checked_add(duration).is_none())
+        {
+            return Err(SignalDerivationError::InvalidTimestampRange);
+        }
+        Ok(Self {
+            upstream_lineage,
+            upstream_timing,
+            operator_id,
+            operator_revision,
+            operator_generation,
+            connector_id,
+        })
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+pub enum SignalDerivationError {
+    #[error("derived signal upstream timing is invalid")]
+    InvalidTimestampRange,
+    #[error("derived signal operator id is empty")]
+    EmptyOperatorId,
+    #[error("derived signal operator revision and generation must be non-zero")]
+    ZeroOperatorVersion,
+}
+
 #[derive(Debug)]
 pub struct SignalEnvelope {
-    pub signal: SignalPayload,
-    pub signal_spec: SignalSpec,
-    pub sequence_number: u64,
-    pub timestamp_ns: u64,
-    pub source_id: Option<SourceId>,
-    pub lineage: Option<FrameLineage>,
-    pub derived_lineage: Option<DerivedSignalLineage>,
+    pub payload: SignalPayload,
+    pub spec: SignalSpec,
     pub timing: SignalTiming,
-    pub signal_lineage: Option<SignalLineage>,
+    pub lineage: Option<SignalLineage>,
+    pub derivation: Option<SignalDerivation>,
 }
 
 impl SignalEnvelope {
-    pub fn new(signal: SignalPayload, sequence_number: u64, timestamp_ns: u64) -> Self {
-        let signal_spec = signal.signal_spec();
+    /// Creates an envelope for data that has not yet entered a source-aware
+    /// Session. Session sources must attach lineage before routing it.
+    pub fn untracked(payload: SignalPayload, observed_timestamp_ns: u64) -> Self {
+        let spec = payload.signal_spec();
         Self {
-            signal,
-            signal_spec,
-            sequence_number,
-            timestamp_ns,
-            source_id: None,
+            payload,
+            spec,
+            timing: SignalTiming::observed(observed_timestamp_ns),
             lineage: None,
-            derived_lineage: None,
-            timing: SignalTiming::observed(timestamp_ns),
-            signal_lineage: None,
+            derivation: None,
         }
     }
 
     pub fn from_audio(frame: AudioFrame, lineage: Option<FrameLineage>) -> Self {
-        let sequence_number = frame.sequence_number;
         let timestamp_ns = frame.timestamp_ns;
         let frame_stream_id = frame.stream_id;
-        let source_id = Some(frame.source_id);
         let signal_lineage =
             lineage.map(|lineage| SignalLineage::from_frame(frame_stream_id, lineage));
         let timing = lineage.map_or_else(
@@ -162,60 +214,71 @@ impl SignalEnvelope {
             |lineage| SignalTiming::from_frame(lineage, timestamp_ns),
         );
         Self {
-            signal: SignalPayload::Audio(frame),
-            signal_spec: SignalSpec::audio(),
-            sequence_number,
-            timestamp_ns,
-            source_id,
-            lineage,
-            derived_lineage: None,
+            payload: SignalPayload::Audio(frame),
+            spec: SignalSpec::audio(),
             timing,
-            signal_lineage,
+            lineage: signal_lineage,
+            derivation: None,
         }
     }
 
-    pub fn map_signal(mut self, signal: SignalPayload, signal_spec: SignalSpec) -> Self {
-        self.signal = signal;
-        self.signal_spec = signal_spec;
+    pub fn map_payload(mut self, payload: SignalPayload, spec: SignalSpec) -> Self {
+        self.payload = payload;
+        self.spec = spec;
         self
     }
 
-    pub fn with_signal_lineage(mut self, lineage: SignalLineage, timing: SignalTiming) -> Self {
-        self.sequence_number = lineage.sequence_number;
-        self.timestamp_ns = timing
-            .session_timestamp_ns
-            .or(timing.source_timestamp_ns)
-            .unwrap_or(timing.observed_timestamp_ns);
-        self.source_id = Some(lineage.source_id);
-        self.signal_lineage = Some(lineage);
+    pub fn with_lineage(mut self, lineage: SignalLineage, timing: SignalTiming) -> Self {
+        self.lineage = Some(lineage);
         self.timing = timing;
         self
     }
 
+    pub fn with_derivation(mut self, derivation: SignalDerivation) -> Self {
+        self.derivation = Some(derivation);
+        self
+    }
+
+    pub fn sequence_number(&self) -> Option<u64> {
+        self.lineage.map(|lineage| lineage.sequence_number).or(
+            if let SignalPayload::Audio(frame) = &self.payload {
+                Some(frame.sequence_number)
+            } else {
+                None
+            },
+        )
+    }
+
+    pub fn source_id(&self) -> Option<SourceId> {
+        self.lineage.map(|lineage| lineage.source_id).or({
+            if let SignalPayload::Audio(frame) = &self.payload {
+                Some(frame.source_id)
+            } else {
+                None
+            }
+        })
+    }
+
+    pub fn timestamp_ns(&self) -> u64 {
+        self.timing
+            .session_timestamp_ns
+            .or(self.timing.source_timestamp_ns)
+            .unwrap_or(self.timing.observed_timestamp_ns)
+    }
+
     pub fn validate(&self) -> Result<(), SignalEnvelopeError> {
-        let payload_spec = self.signal.signal_spec();
-        if payload_spec.class != self.signal_spec.class {
+        self.spec
+            .validate()
+            .map_err(|_| SignalEnvelopeError::InvalidSignalSpec)?;
+        let payload_spec = self.payload.signal_spec();
+        if payload_spec.class != self.spec.class {
             return Err(SignalEnvelopeError::PayloadSpecMismatch);
         }
-        if let Some(lineage) = self.signal_lineage {
-            if lineage.sequence_number != self.sequence_number {
+        if let (SignalPayload::Audio(frame), Some(lineage)) = (&self.payload, self.lineage) {
+            if frame.sequence_number != lineage.sequence_number {
                 return Err(SignalEnvelopeError::SequenceMismatch);
             }
-            if self
-                .source_id
-                .is_some_and(|source_id| source_id != lineage.source_id)
-            {
-                return Err(SignalEnvelopeError::SourceMismatch);
-            }
-        }
-        if let Some(frame_lineage) = self.lineage {
-            if frame_lineage.sequence_num != self.sequence_number {
-                return Err(SignalEnvelopeError::SequenceMismatch);
-            }
-            if self
-                .source_id
-                .is_some_and(|source_id| source_id != frame_lineage.source_id)
-            {
+            if frame.source_id != lineage.source_id || frame.stream_id != lineage.stream_id {
                 return Err(SignalEnvelopeError::SourceMismatch);
             }
         }
@@ -225,6 +288,8 @@ impl SignalEnvelope {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
 pub enum SignalEnvelopeError {
+    #[error("signal envelope has an invalid SignalSpec")]
+    InvalidSignalSpec,
     #[error("signal payload does not match its declared SignalSpec")]
     PayloadSpecMismatch,
     #[error("signal envelope sequence does not match its lineage")]
@@ -254,7 +319,7 @@ impl SignalContinuityTracker {
             .validate()
             .map_err(SignalContinuityError::InvalidEnvelope)?;
         let current = envelope
-            .signal_lineage
+            .lineage
             .ok_or(SignalContinuityError::MissingLineage)?;
         if let Some((previous, previous_timing)) = self.previous {
             if current.session_id != previous.session_id
@@ -428,22 +493,22 @@ mod tests {
         let mut node = EchoAsyncNode { prepared: false };
         block_on_ready(node.prepare(&prepare_cx())).unwrap();
 
-        let envelope = SignalEnvelope::new(SignalPayload::Control(Vec::new()), 7, 9);
+        let envelope = SignalEnvelope::untracked(SignalPayload::Control(Vec::new()), 9);
         let output = block_on_ready(node.process(envelope))
             .unwrap()
             .pop()
             .unwrap();
 
-        assert_eq!(output.sequence_number, 7);
-        assert_eq!(output.timestamp_ns, 9);
-        assert_eq!(output.signal_spec, SignalSpec::control());
-        assert!(matches!(output.signal, SignalPayload::Control(_)));
+        assert_eq!(output.sequence_number(), None);
+        assert_eq!(output.timestamp_ns(), 9);
+        assert_eq!(output.spec, SignalSpec::control());
+        assert!(matches!(output.payload, SignalPayload::Control(_)));
     }
 
     #[test]
     fn given_echo_async_node_when_process_before_prepare_then_error_is_returned() {
         let mut node = EchoAsyncNode { prepared: false };
-        let envelope = SignalEnvelope::new(SignalPayload::Control(Vec::new()), 0, 0);
+        let envelope = SignalEnvelope::untracked(SignalPayload::Control(Vec::new()), 0);
         let error = block_on_ready(node.process(envelope)).unwrap_err();
 
         assert!(matches!(error, NodeError::Process(_)));
@@ -476,14 +541,14 @@ mod tests {
         ];
 
         for payload in payloads {
-            assert!(SignalEnvelope::new(payload, 1, 2).validate().is_ok());
+            assert!(SignalEnvelope::untracked(payload, 2).validate().is_ok());
         }
     }
 
     #[test]
     fn given_payload_and_incompatible_spec_when_validated_then_rejected() {
-        let mut envelope = SignalEnvelope::new(SignalPayload::Metrics(vec![]), 1, 2);
-        envelope.signal_spec = SignalSpec::control();
+        let mut envelope = SignalEnvelope::untracked(SignalPayload::Metrics(vec![]), 2);
+        envelope.spec = SignalSpec::control();
 
         assert_eq!(
             envelope.validate(),
@@ -509,12 +574,11 @@ mod tests {
             session_timestamp_ns: Some(11),
             duration_ns: Some(20),
         };
-        let envelope = SignalEnvelope::new(SignalPayload::Metrics(vec![]), 0, 0)
-            .with_signal_lineage(lineage, timing);
+        let envelope = SignalEnvelope::untracked(SignalPayload::Metrics(vec![]), 0)
+            .with_lineage(lineage, timing);
 
         assert!(envelope.validate().is_ok());
-        assert_eq!(envelope.signal_lineage, Some(lineage));
-        assert!(envelope.lineage.is_none());
+        assert_eq!(envelope.lineage, Some(lineage));
         assert_eq!(envelope.timing.timestamp_end_ns(), Some(30));
     }
 
@@ -538,7 +602,7 @@ mod tests {
 
         assert!(envelope.validate().is_ok());
         assert_eq!(
-            envelope.signal_lineage,
+            envelope.lineage,
             Some(SignalLineage::from_frame(StreamId(2), frame_lineage))
         );
         assert_eq!(envelope.timing.timestamp_end_ns(), Some(30));
@@ -551,12 +615,7 @@ mod tests {
         discontinuity_epoch: u64,
         policy_epoch: u64,
     ) -> SignalEnvelope {
-        SignalEnvelope::new(
-            SignalPayload::Metrics(vec![]),
-            sequence_number,
-            timestamp_ns,
-        )
-        .with_signal_lineage(
+        SignalEnvelope::untracked(SignalPayload::Metrics(vec![]), timestamp_ns).with_lineage(
             SignalLineage {
                 session_id: SessionId(1),
                 stream_id: StreamId(2),

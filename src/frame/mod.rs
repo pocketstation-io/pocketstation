@@ -127,7 +127,7 @@ pub enum AudioMode {
 pub enum AudioSourceTag {
     #[default]
     Captured,
-    AiTts, // EU AI Act §50: watermark required before relay delivery (AUDIO-017)
+    Generated,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -445,8 +445,7 @@ pub struct AudioFrame {
     pub timestamp_ns: u64, // monotonic, never wall clock
     pub sequence_number: u64,
     pub buffer: AudioBufferHandle,
-    pub source_tag: AudioSourceTag, // AiTts triggers AUDIO-017 watermark
-    pub speaker_id: Option<u32>,    // assigned by diarization node (Phase 6)
+    pub source_tag: AudioSourceTag,
     pub encryption_mode: EncryptionMode,
 }
 
@@ -470,7 +469,6 @@ impl AudioFrame {
             sequence_number,
             buffer,
             source_tag: AudioSourceTag::Captured,
-            speaker_id: None,
             encryption_mode: EncryptionMode::None,
         }
     }
@@ -487,7 +485,6 @@ impl AudioFrame {
             sequence_number,
             buffer,
             source_tag,
-            speaker_id,
             encryption_mode,
         } = self;
         let buffer = buffer.freeze().ok()?;
@@ -502,7 +499,6 @@ impl AudioFrame {
             sequence_number,
             buffer,
             source_tag,
-            speaker_id,
             encryption_mode,
         })
     }
@@ -520,7 +516,6 @@ pub struct SharedAudioFrame {
     pub sequence_number: u64,
     pub buffer: SharedAudioBufferHandle,
     pub source_tag: AudioSourceTag,
-    pub speaker_id: Option<u32>,
     pub encryption_mode: EncryptionMode,
 }
 
@@ -537,7 +532,6 @@ impl SharedAudioFrame {
             sequence_number: self.sequence_number,
             buffer: self.buffer.try_clone()?,
             source_tag: self.source_tag,
-            speaker_id: self.speaker_id,
             encryption_mode: self.encryption_mode,
         })
     }
@@ -556,7 +550,6 @@ impl SharedAudioFrame {
             sequence_number: self.sequence_number,
             buffer,
             source_tag: self.source_tag,
-            speaker_id: self.speaker_id,
             encryption_mode: self.encryption_mode,
         })
     }
@@ -721,10 +714,18 @@ impl EncodedFrame {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum EventPayload {
-    VoiceActivity(bool),
-    Transcript { text: String, is_final: bool },
-    Metadata { key: String, value: String },
+pub struct EventPayload {
+    pub event_type: String,
+    pub bytes: Vec<u8>,
+}
+
+impl EventPayload {
+    pub fn new(event_type: impl Into<String>, bytes: impl Into<Vec<u8>>) -> Self {
+        Self {
+            event_type: event_type.into(),
+            bytes: bytes.into(),
+        }
+    }
 }
 
 /// Control/event-plane frame; produced off the audio callback thread, so the owned
@@ -898,7 +899,7 @@ mod tests {
             123_456_789,
             42,
             payload_bytes.clone(),
-            AudioSourceTag::AiTts,
+            AudioSourceTag::Generated,
             EncryptionMode::SFrame,
         );
 
@@ -912,53 +913,12 @@ mod tests {
         assert_eq!(frame.timestamp_ns, 123_456_789);
         assert_eq!(frame.sequence_number, 42);
         assert_eq!(frame.payload_bytes, payload_bytes);
-        assert_eq!(frame.source_tag, AudioSourceTag::AiTts);
+        assert_eq!(frame.source_tag, AudioSourceTag::Generated);
         assert_eq!(frame.encryption_mode, EncryptionMode::SFrame);
     }
 
     #[test]
-    fn given_voice_activity_payload_when_event_frame_new_then_payload_round_trips() {
-        // Given / When
-        let frame = EventFrame::new(
-            StreamId(1),
-            SourceId(2),
-            None,
-            10,
-            1,
-            EventPayload::VoiceActivity(true),
-        );
-
-        // Then
-        assert_eq!(frame.payload, EventPayload::VoiceActivity(true));
-    }
-
-    #[test]
-    fn given_transcript_payload_when_event_frame_new_then_payload_round_trips() {
-        // Given / When
-        let frame = EventFrame::new(
-            StreamId(1),
-            SourceId(2),
-            Some(BusId(9)),
-            20,
-            2,
-            EventPayload::Transcript {
-                text: "hello".to_string(),
-                is_final: true,
-            },
-        );
-
-        // Then
-        assert_eq!(
-            frame.payload,
-            EventPayload::Transcript {
-                text: "hello".to_string(),
-                is_final: true,
-            }
-        );
-    }
-
-    #[test]
-    fn given_metadata_payload_when_event_frame_new_then_payload_round_trips() {
+    fn given_open_event_payload_when_event_frame_new_then_identity_and_bytes_round_trip() {
         // Given / When
         let frame = EventFrame::new(
             StreamId(1),
@@ -966,19 +926,13 @@ mod tests {
             None,
             30,
             3,
-            EventPayload::Metadata {
-                key: "lang".to_string(),
-                value: "en".to_string(),
-            },
+            EventPayload::new("example.event.v1", vec![1, 2, 3]),
         );
 
         // Then
         assert_eq!(
             frame.payload,
-            EventPayload::Metadata {
-                key: "lang".to_string(),
-                value: "en".to_string(),
-            }
+            EventPayload::new("example.event.v1", vec![1, 2, 3])
         );
     }
 

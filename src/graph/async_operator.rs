@@ -1,21 +1,8 @@
-use crate::frame::{ConnectorId, FrameLineage};
-
 use crate::graph::{AsyncNode, SemanticRole};
 use crate::graph::{
     BackpressurePolicy, CopyPolicy, EdgeContract, ExecutionPartition, NodeConfig, NodeDescriptor,
-    NodeError, OperatorId, PortDirection, PortSpec, SafetyContract, SignalSpec, TextFormat,
+    NodeError, OperatorId, PortDirection, PortSpec, SafetyContract, SignalSpec,
 };
-
-pub const TRANSCRIPT_PARTIAL_ROLE: &str = "transcript.partial";
-pub const TRANSCRIPT_FINAL_ROLE: &str = "transcript.final";
-
-pub fn transcript_partial_spec() -> SignalSpec {
-    SignalSpec::text(TextFormat::Utf8).with_role(TRANSCRIPT_PARTIAL_ROLE)
-}
-
-pub fn transcript_final_spec() -> SignalSpec {
-    SignalSpec::text(TextFormat::Utf8).with_role(TRANSCRIPT_FINAL_ROLE)
-}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct OperatorPermissionPolicy {
@@ -270,57 +257,4 @@ pub trait AsyncOperatorFactory: Send + Sync {
         Ok(self.manifest().clone())
     }
     fn create(&self, configuration: &NodeConfig) -> Result<Box<dyn AsyncNode>, NodeError>;
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct DerivedSignalLineage {
-    pub base: FrameLineage,
-    pub timestamp_end_ns: u64,
-    pub operator_id: OperatorId,
-    pub operator_revision: u32,
-    pub operator_generation: u32,
-    pub connector_id: Option<ConnectorId>,
-}
-
-impl DerivedSignalLineage {
-    pub fn new(
-        base: FrameLineage,
-        timestamp_end_ns: u64,
-        operator_id: OperatorId,
-        operator_revision: u32,
-        operator_generation: u32,
-        connector_id: Option<ConnectorId>,
-    ) -> Result<Self, DerivedSignalLineageError> {
-        if timestamp_end_ns < base.timestamp_start_ns {
-            return Err(DerivedSignalLineageError::InvalidTimestampRange);
-        }
-        if operator_id.as_str().trim().is_empty() {
-            return Err(DerivedSignalLineageError::EmptyOperatorId);
-        }
-        if operator_revision == 0 || operator_generation == 0 {
-            return Err(DerivedSignalLineageError::ZeroOperatorVersion);
-        }
-        Ok(Self {
-            base,
-            timestamp_end_ns,
-            operator_id,
-            operator_revision,
-            operator_generation,
-            connector_id,
-        })
-    }
-
-    pub fn semantic_role<'signal>(&self, signal: &'signal SignalSpec) -> Option<&'signal str> {
-        signal.role.as_ref().map(SemanticRole::as_str)
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
-pub enum DerivedSignalLineageError {
-    #[error("derived timestamp range ends before its base frame")]
-    InvalidTimestampRange,
-    #[error("derived operator id is empty")]
-    EmptyOperatorId,
-    #[error("derived operator revision and generation must be non-zero")]
-    ZeroOperatorVersion,
 }

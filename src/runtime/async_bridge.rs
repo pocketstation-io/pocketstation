@@ -57,18 +57,18 @@ impl AsyncBridgeSender {
 
     pub fn send_audio(
         &mut self,
-        frame: AudioFrame,
+        mut frame: AudioFrame,
         sequence_number: u64,
         timestamp_ns: u64,
     ) -> Result<(), AudioFrame> {
-        let mut envelope = SignalEnvelope::from_audio(frame, None);
-        envelope.sequence_number = sequence_number;
-        envelope.timestamp_ns = timestamp_ns;
+        frame.sequence_number = sequence_number;
+        frame.timestamp_ns = timestamp_ns;
+        let envelope = SignalEnvelope::from_audio(frame, None);
         match self.producer.push(envelope) {
             Ok(()) => Ok(()),
             Err(rtrb::PushError::Full(envelope)) => {
                 self.dropped_count.fetch_add(1, Ordering::Relaxed);
-                let SignalPayload::Audio(frame) = envelope.signal else {
+                let SignalPayload::Audio(frame) = envelope.payload else {
                     return Ok(());
                 };
                 Err(frame)
@@ -115,9 +115,9 @@ mod tests {
             .unwrap();
 
         let envelope = receiver.recv().unwrap();
-        assert_eq!(envelope.sequence_number, 7);
-        assert_eq!(envelope.timestamp_ns, 11);
-        match envelope.signal {
+        assert_eq!(envelope.sequence_number(), Some(7));
+        assert_eq!(envelope.timestamp_ns(), 11);
+        match envelope.payload {
             SignalPayload::Audio(frame) => assert_eq!(frame.buffer.as_slice(), &[0.25, -0.5]),
             _ => panic!("expected audio envelope"),
         }

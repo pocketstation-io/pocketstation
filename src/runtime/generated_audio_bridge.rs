@@ -191,13 +191,16 @@ fn run_bridge(
             continue;
         };
         let SignalEnvelope {
-            signal,
-            sequence_number,
+            payload,
             timing,
-            signal_lineage,
+            lineage: signal_lineage,
             ..
         } = envelope;
-        let SignalPayload::Audio(input) = signal else {
+        let SignalPayload::Audio(input) = payload else {
+            observations.invalid_total.fetch_add(1, Ordering::Relaxed);
+            continue;
+        };
+        let Some(sequence_number) = signal_lineage.map(|lineage| lineage.sequence_number) else {
             observations.invalid_total.fetch_add(1, Ordering::Relaxed);
             continue;
         };
@@ -231,7 +234,6 @@ fn run_bridge(
         normalized.sample_rate_hz = specification.sample_spec.sample_rate_hz;
         normalized.format = specification.sample_spec.format;
         normalized.source_tag = input.source_tag;
-        normalized.speaker_id = input.speaker_id;
         normalized.encryption_mode = input.encryption_mode;
         let per_channel_samples = specification
             .samples_per_frame
@@ -314,7 +316,24 @@ mod tests {
             input_pool.acquire().expect("input buffer"),
         );
         fanout
-            .publish(SignalEnvelope::from_audio(frame, None), false)
+            .publish(
+                SignalEnvelope::from_audio(
+                    frame,
+                    Some(FrameLineage {
+                        session_id: SessionId(9),
+                        source_id: SourceId(40),
+                        stem_id: StemId(10),
+                        clock_id: ClockDomainId(11),
+                        sequence_num: 7,
+                        timestamp_start_ns: 10,
+                        duration_ns: 20_000_000,
+                        source_generation: 1,
+                        discontinuity_epoch: 0,
+                        permission_epoch: 1,
+                    }),
+                ),
+                false,
+            )
             .expect("publish");
         for _ in 0..100 {
             if bridge.observations().snapshot().enqueued_total == 1 {

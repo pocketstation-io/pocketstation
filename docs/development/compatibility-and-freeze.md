@@ -1,5 +1,9 @@
 # Compatibility and Core 1.0 freeze
 
+**Current state (2026-08-08): candidate policy only. Core 1.0 is not frozen.**
+W18 Session source integration, W19 Session composition/audio reentry, and the
+W20 executable C/sidecar/install/release gates remain incomplete.
+
 PocketStation has one engine: the Rust package and `libpocketstation`. Rust, C,
 managed SDKs, and sidecars project the same Session, signal, lineage, error,
 cancellation, observation, and outcome semantics.
@@ -16,9 +20,10 @@ Compatibility rules:
   language and process boundaries.
 - Existing compiled C consumers remain part of acceptance.
 
-Core 1.0 is a freeze decision, not a claim that every platform is equally
+Core 1.0 will be a freeze decision, not a claim that every platform is equally
 qualified. Its extension-completeness artifact can be `DONE` while desktop
-support remains honestly classified per W13 evidence.
+support remains honestly classified per W13 evidence, including a narrower
+macOS-first support declaration.
 
 For 24 months after the Core 1.0 freeze, customer/product behavior must be an
 external source, operator, endpoint/connector, transport, SDK projection, or

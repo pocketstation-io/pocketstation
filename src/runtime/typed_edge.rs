@@ -169,7 +169,29 @@ pub enum TypedEdgePublishError {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::graph::{EventFormat, SignalPayload, SignalSpec};
+    use crate::frame::{ClockDomainId, SessionId, SourceId, StreamId};
+    use crate::graph::{EventFormat, SignalLineage, SignalPayload, SignalSpec, SignalTiming};
+
+    fn envelope(payload: SignalPayload, sequence: u64) -> SignalEnvelope {
+        SignalEnvelope::untracked(payload, sequence).with_lineage(
+            SignalLineage {
+                session_id: SessionId(1),
+                stream_id: StreamId(2),
+                source_id: SourceId(3),
+                clock_id: ClockDomainId(4),
+                sequence_number: sequence,
+                source_generation: 1,
+                discontinuity_epoch: 0,
+                policy_epoch: 1,
+            },
+            SignalTiming {
+                source_timestamp_ns: Some(sequence),
+                observed_timestamp_ns: sequence,
+                session_timestamp_ns: Some(sequence),
+                duration_ns: None,
+            },
+        )
+    }
 
     #[test]
     fn given_independent_branches_when_one_saturates_then_other_continues() {
@@ -185,24 +207,19 @@ mod tests {
             },
         ])
         .unwrap();
-        let envelope = |sequence| {
-            SignalEnvelope::new(
-                SignalPayload::Event(vec![sequence as u8]),
-                sequence,
-                sequence,
-            )
-            .map_signal(
+        let event_envelope = |sequence| {
+            envelope(SignalPayload::Event(vec![sequence as u8]), sequence).map_payload(
                 SignalPayload::Event(vec![sequence as u8]),
                 SignalSpec::event(EventFormat::Json),
             )
         };
-        fanout.publish(envelope(1), false).unwrap();
-        let report = fanout.publish(envelope(2), false).unwrap();
+        fanout.publish(event_envelope(1), false).unwrap();
+        let report = fanout.publish(event_envelope(2), false).unwrap();
         assert_eq!(report.delivered_total, 1);
         assert_eq!(report.dropped_total, 1);
         assert_eq!(receivers[0].observations().dropped_total, 1);
-        assert_eq!(receivers[1].recv().unwrap().sequence_number, 1);
-        assert_eq!(receivers[1].recv().unwrap().sequence_number, 2);
+        assert_eq!(receivers[1].recv().unwrap().sequence_number(), Some(1));
+        assert_eq!(receivers[1].recv().unwrap().sequence_number(), Some(2));
     }
 
     #[test]
@@ -212,11 +229,10 @@ mod tests {
             edge_contract: EdgeContract::typed_default(),
         }])
         .unwrap();
-        let envelope =
-            |sequence| SignalEnvelope::new(SignalPayload::Control(Vec::new()), sequence, sequence);
-        fanout.publish(envelope(1), false).unwrap();
+        let control_envelope = |sequence| envelope(SignalPayload::Control(Vec::new()), sequence);
+        fanout.publish(control_envelope(1), false).unwrap();
         assert_eq!(
-            fanout.publish(envelope(2), true),
+            fanout.publish(control_envelope(2), true),
             Err(TypedEdgePublishError::RequiredBranchFull { branch_index: 0 })
         );
     }

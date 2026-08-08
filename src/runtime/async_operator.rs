@@ -277,19 +277,15 @@ impl AsyncOperatorWorkerSource {
                     .map_or(Ok(None), |envelope| match Arc::try_unwrap(envelope) {
                         Ok(envelope) => Ok(Some(envelope)),
                         Err(shared) => {
-                            let Some(signal) = clone_non_audio_payload(&shared.signal) else {
+                            let Some(payload) = clone_non_audio_payload(&shared.payload) else {
                                 return Err(AsyncOperatorWorkerError::SharedAudioTypedInput);
                             };
                             Ok(Some(SignalEnvelope {
-                                signal,
-                                signal_spec: shared.signal_spec.clone(),
-                                sequence_number: shared.sequence_number,
-                                timestamp_ns: shared.timestamp_ns,
-                                source_id: shared.source_id,
-                                lineage: shared.lineage,
-                                derived_lineage: shared.derived_lineage.clone(),
+                                payload,
+                                spec: shared.spec.clone(),
                                 timing: shared.timing,
-                                signal_lineage: shared.signal_lineage,
+                                lineage: shared.lineage,
+                                derivation: shared.derivation.clone(),
                             }))
                         }
                     })
@@ -349,9 +345,9 @@ impl AsyncOperatorWorkerInputs {
                     .ok_or_else(|| AsyncOperatorWorkerError::UnknownInputPort {
                         port_name: port_name.to_owned(),
                     })?;
-                if envelope.signal_spec.class != port.signal.class
-                    || envelope.signal_spec.schema != port.signal.schema
-                    || !port.media.supports_signal(&envelope.signal_spec)
+                if envelope.spec.class != port.signal.class
+                    || envelope.spec.schema != port.signal.schema
+                    || !port.media.supports_signal(&envelope.spec)
                 {
                     return Err(AsyncOperatorWorkerError::OutputSignalMismatch);
                 }
@@ -971,9 +967,9 @@ fn fan_out_outputs(
         let matching_ports = manifest
             .output_ports()
             .filter(|port| {
-                envelope.signal_spec.class == port.signal.class
-                    && envelope.signal_spec.schema == port.signal.schema
-                    && port.media.supports_signal(&envelope.signal_spec)
+                envelope.spec.class == port.signal.class
+                    && envelope.spec.schema == port.signal.schema
+                    && port.media.supports_signal(&envelope.spec)
             })
             .collect::<Vec<_>>();
         let output_contract = match matching_ports.as_slice() {
@@ -986,7 +982,7 @@ fn fan_out_outputs(
                         port.signal
                             .role
                             .as_ref()
-                            .zip(envelope.signal_spec.role.as_ref())
+                            .zip(envelope.spec.role.as_ref())
                             .is_some_and(|(declared, actual)| declared.as_str() == actual.as_str())
                     })
                     .collect::<Vec<_>>();
@@ -998,7 +994,7 @@ fn fan_out_outputs(
         };
         if !manifest
             .output_roles
-            .accepts(&envelope.signal_spec, &output_contract.signal)
+            .accepts(&envelope.spec, &output_contract.signal)
         {
             return Err(AsyncOperatorWorkerError::UndeclaredOutputRole);
         }
@@ -1006,20 +1002,20 @@ fn fan_out_outputs(
             .iter_mut()
             .find(|branches| branches.port_name == output_contract.name)
             .ok_or(AsyncOperatorWorkerError::MissingOutputContract)?;
-        let derived_lineage = envelope
-            .derived_lineage
+        let derivation = envelope
+            .derivation
             .as_ref()
             .ok_or(AsyncOperatorWorkerError::MissingDerivedLineage)?;
-        if derived_lineage.operator_id != manifest.operator_id
-            || derived_lineage.operator_revision != manifest.revision
-            || derived_lineage.operator_generation != manifest.generation
+        if derivation.operator_id != manifest.operator_id
+            || derivation.operator_revision != manifest.revision
+            || derivation.operator_generation != manifest.generation
         {
             return Err(AsyncOperatorWorkerError::DerivedLineageMismatch);
         }
         envelope
             .validate()
             .map_err(|_| AsyncOperatorWorkerError::OutputSignalMismatch)?;
-        let is_terminal = manifest.output_roles.is_terminal(&envelope.signal_spec);
+        let is_terminal = manifest.output_roles.is_terminal(&envelope.spec);
         if is_terminal {
             observations
                 .output_terminal_total
@@ -1063,19 +1059,29 @@ mod tests {
     use crate::graph::compiler::Compiler;
     use crate::graph::planner::RuntimePlanner;
     use crate::graph::{
-        register_builtins, transcript_final_spec, transcript_partial_spec, AudioCaps,
-        ChannelLayout, ConfigError, DerivedSignalLineage, EventFormat, ExecutionPartition,
+        register_builtins, AudioCaps, ChannelLayout, ConfigError, EventFormat, ExecutionPartition,
         MediaCaps, Multiplicity, NodeDescriptor, NodeRegistrationError, NodeRegistry, NodeTypeId,
         OperatorDeadlinePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy,
-        Pipeline, PortDirection, PortSpec, SafetyContract, SemanticRole, SignalSpec, TextFormat,
-        TRANSCRIPT_FINAL_ROLE, TRANSCRIPT_PARTIAL_ROLE,
+        Pipeline, PortDirection, PortSpec, SafetyContract, SemanticRole, SignalDerivation,
+        SignalLineage, SignalSpec, SignalTiming, TextFormat,
     };
 
     use super::*;
 
+    const TEST_NONTERMINAL_ROLE: &str = "test.output.nonterminal";
+    const TEST_TERMINAL_ROLE: &str = "test.output.terminal";
+
+    fn nonterminal_spec() -> SignalSpec {
+        SignalSpec::text(TextFormat::Utf8).with_role(TEST_NONTERMINAL_ROLE)
+    }
+
+    fn terminal_spec() -> SignalSpec {
+        SignalSpec::text(TextFormat::Utf8).with_role(TEST_TERMINAL_ROLE)
+    }
+
     #[derive(Clone, Copy)]
     enum TestBehavior {
-        Transcript,
+        NonterminalThenTerminal,
         FlushFinal,
         PrepareFail,
         WrongClass,
@@ -1117,8 +1123,7 @@ mod tests {
                 behavior: self.behavior,
                 outputs_total: AtomicUsize::new(0),
                 last_lineage: None,
-                last_sequence_number: 0,
-                last_timestamp_ns: 0,
+                last_timing: None,
                 closed: Arc::clone(&self.closed),
                 cancelled: Arc::clone(&self.cancelled),
                 operator_id: self.manifest.operator_id.clone(),
@@ -1131,9 +1136,8 @@ mod tests {
     struct TestNode {
         behavior: TestBehavior,
         outputs_total: AtomicUsize,
-        last_lineage: Option<FrameLineage>,
-        last_sequence_number: u64,
-        last_timestamp_ns: u64,
+        last_lineage: Option<SignalLineage>,
+        last_timing: Option<SignalTiming>,
         closed: Arc<AtomicBool>,
         cancelled: Arc<AtomicBool>,
         operator_id: OperatorId,
@@ -1170,49 +1174,49 @@ mod tests {
                 let base = input
                     .lineage
                     .ok_or_else(|| NodeError::Process("missing test lineage".to_owned()))?;
+                let timing = input.timing;
                 self.last_lineage = Some(base);
-                self.last_sequence_number = input.sequence_number;
-                self.last_timestamp_ns = input.timestamp_ns;
+                self.last_timing = Some(timing);
                 let (signal, specification) = match self.behavior {
-                    TestBehavior::Transcript
+                    TestBehavior::NonterminalThenTerminal
                     | TestBehavior::Slow
                     | TestBehavior::ReportedTimeout => {
                         let specification = if output_index == 0 {
-                            transcript_partial_spec()
+                            nonterminal_spec()
                         } else {
-                            transcript_final_spec()
+                            terminal_spec()
                         };
                         (
-                            SignalPayload::Text(format!("transcript-{output_index}")),
+                            SignalPayload::Text(format!("output-{output_index}")),
                             specification,
                         )
                     }
                     TestBehavior::FlushFinal => (
                         SignalPayload::Text(format!("partial-{output_index}")),
-                        transcript_partial_spec(),
+                        nonterminal_spec(),
                     ),
                     TestBehavior::PrepareFail => (
                         SignalPayload::Text("unreachable".to_owned()),
-                        transcript_partial_spec(),
+                        nonterminal_spec(),
                     ),
                     TestBehavior::WrongClass => (
                         SignalPayload::Event(Vec::new()),
-                        SignalSpec::event(EventFormat::Json).with_role(TRANSCRIPT_PARTIAL_ROLE),
+                        SignalSpec::event(EventFormat::Json).with_role(TEST_NONTERMINAL_ROLE),
                     ),
                     TestBehavior::WrongRole => (
                         SignalPayload::Text("summary".to_owned()),
                         SignalSpec::text(TextFormat::Utf8).with_role("summary.final"),
                     ),
                     TestBehavior::Audio => (
-                        std::mem::replace(&mut input.signal, SignalPayload::Control(Vec::new())),
+                        std::mem::replace(&mut input.payload, SignalPayload::Control(Vec::new())),
                         SignalSpec::audio(),
                     ),
                 };
-                let mut output = input.map_signal(signal, specification);
-                output.derived_lineage = Some(
-                    DerivedSignalLineage::new(
+                let mut output = input.map_payload(signal, specification);
+                output.derivation = Some(
+                    SignalDerivation::new(
                         base,
-                        base.timestamp_end_ns(),
+                        timing,
                         self.operator_id.clone(),
                         self.revision,
                         self.generation,
@@ -1231,21 +1235,21 @@ mod tests {
                 if !matches!(self.behavior, TestBehavior::FlushFinal) {
                     return Ok(Vec::new());
                 }
-                let Some(base) = self.last_lineage.take() else {
+                let (Some(base), Some(timing)) =
+                    (self.last_lineage.take(), self.last_timing.take())
+                else {
                     return Ok(Vec::new());
                 };
-                let mut output = SignalEnvelope::new(
+                let mut output = SignalEnvelope::untracked(
                     SignalPayload::Text("final".to_owned()),
-                    self.last_sequence_number,
-                    self.last_timestamp_ns,
-                );
-                output.signal_spec = transcript_final_spec();
-                output.source_id = Some(base.source_id);
-                output.lineage = Some(base);
-                output.derived_lineage = Some(
-                    DerivedSignalLineage::new(
+                    timing.observed_timestamp_ns,
+                )
+                .map_payload(SignalPayload::Text("final".to_owned()), terminal_spec())
+                .with_lineage(base, timing);
+                output.derivation = Some(
+                    SignalDerivation::new(
                         base,
-                        base.timestamp_end_ns(),
+                        timing,
                         self.operator_id.clone(),
                         self.revision,
                         self.generation,
@@ -1340,10 +1344,10 @@ mod tests {
             failure,
             output_roles: OperatorOutputRolePolicy {
                 allowed: vec![
-                    SemanticRole::new(TRANSCRIPT_PARTIAL_ROLE),
-                    SemanticRole::new(TRANSCRIPT_FINAL_ROLE),
+                    SemanticRole::new(TEST_NONTERMINAL_ROLE),
+                    SemanticRole::new(TEST_TERMINAL_ROLE),
                 ],
-                terminal: vec![SemanticRole::new(TRANSCRIPT_FINAL_ROLE)],
+                terminal: vec![SemanticRole::new(TEST_TERMINAL_ROLE)],
             },
         }
     }
@@ -1409,7 +1413,7 @@ mod tests {
         let factory = factory(
             operator_id,
             node_type_id,
-            TestBehavior::Transcript,
+            TestBehavior::NonterminalThenTerminal,
             100,
             OperatorFailurePolicy::Continue,
             Arc::new(AtomicBool::new(false)),
@@ -1430,7 +1434,7 @@ mod tests {
     }
 
     fn text_envelope(sequence_number: u64) -> SignalEnvelope {
-        envelope(sequence_number).map_signal(
+        envelope(sequence_number).map_payload(
             SignalPayload::Text(format!("input-{sequence_number}")),
             SignalSpec::text(TextFormat::Utf8),
         )
@@ -1443,7 +1447,7 @@ mod tests {
             factory(
                 "operator.chain.first",
                 "operator.chain.first.node",
-                TestBehavior::Transcript,
+                TestBehavior::NonterminalThenTerminal,
                 100,
                 OperatorFailurePolicy::Continue,
                 Arc::new(AtomicBool::new(false)),
@@ -1491,14 +1495,9 @@ mod tests {
             .receiver
             .recv()
             .expect("third output");
-        assert!(matches!(output.signal, SignalPayload::Text(_)));
+        assert!(matches!(output.payload, SignalPayload::Text(_)));
         assert_eq!(
-            output
-                .derived_lineage
-                .as_ref()
-                .unwrap()
-                .operator_id
-                .as_str(),
+            output.derivation.as_ref().unwrap().operator_id.as_str(),
             "operator.chain.third"
         );
     }
@@ -1525,14 +1524,14 @@ mod tests {
             ),
         ];
         manifest.node.outputs = vec![
-            port("partial", PortDirection::Output, transcript_partial_spec()),
-            port("final", PortDirection::Output, transcript_final_spec()),
+            port("partial", PortDirection::Output, nonterminal_spec()),
+            port("final", PortDirection::Output, terminal_spec()),
         ];
         manifest.input_edge.media = MediaCaps::Text;
         manifest.output_edge.media = MediaCaps::Text;
         let factory = Arc::new(TestFactory {
             manifest,
-            behavior: TestBehavior::Transcript,
+            behavior: TestBehavior::NonterminalThenTerminal,
             closed: Arc::new(AtomicBool::new(false)),
             cancelled: Arc::new(AtomicBool::new(false)),
         });
@@ -1575,12 +1574,12 @@ mod tests {
         let final_output = outputs[0].receiver.recv().expect("final output");
         let partial_output = outputs[1].receiver.recv().expect("partial output");
         assert_eq!(
-            final_output.signal_spec.role.as_ref().unwrap().as_str(),
-            TRANSCRIPT_FINAL_ROLE
+            final_output.spec.role.as_ref().unwrap().as_str(),
+            TEST_TERMINAL_ROLE
         );
         assert_eq!(
-            partial_output.signal_spec.role.as_ref().unwrap().as_str(),
-            TRANSCRIPT_PARTIAL_ROLE
+            partial_output.spec.role.as_ref().unwrap().as_str(),
+            TEST_NONTERMINAL_ROLE
         );
     }
 
@@ -1592,7 +1591,7 @@ mod tests {
             .register_async(factory(
                 "operator.first",
                 "operator.stt",
-                TestBehavior::Transcript,
+                TestBehavior::NonterminalThenTerminal,
                 100,
                 OperatorFailurePolicy::Continue,
                 Arc::clone(&closed),
@@ -1602,7 +1601,7 @@ mod tests {
         let result = registry.register_async(factory(
             "operator.second",
             "operator.stt",
-            TestBehavior::Transcript,
+            TestBehavior::NonterminalThenTerminal,
             100,
             OperatorFailurePolicy::Continue,
             closed,
@@ -1625,7 +1624,7 @@ mod tests {
         let operator_conflict = registry.register_async(factory(
             "operator.first",
             "operator.other-node",
-            TestBehavior::Transcript,
+            TestBehavior::NonterminalThenTerminal,
             100,
             OperatorFailurePolicy::Continue,
             Arc::new(AtomicBool::new(false)),
@@ -1650,7 +1649,7 @@ mod tests {
             factory(
                 "operator.overflow",
                 "operator.overflow.node",
-                TestBehavior::Transcript,
+                TestBehavior::NonterminalThenTerminal,
                 100,
                 OperatorFailurePolicy::Continue,
                 Arc::clone(&closed),
@@ -1675,13 +1674,13 @@ mod tests {
     }
 
     #[tokio::test(flavor = "current_thread")]
-    async fn given_two_transcript_inputs_when_processed_then_partial_and_final_reach_each_branch() {
+    async fn given_two_inputs_when_processed_then_nonterminal_and_terminal_reach_each_branch() {
         let closed = Arc::new(AtomicBool::new(false));
         let (mut worker, mut outputs) = AsyncOperatorWorker::spawn(
             factory(
                 "operator.transcript",
                 "operator.transcript.node",
-                TestBehavior::Transcript,
+                TestBehavior::NonterminalThenTerminal,
                 100,
                 OperatorFailurePolicy::Continue,
                 closed,
@@ -1700,18 +1699,14 @@ mod tests {
             let partial = output.recv().unwrap();
             let final_signal = output.recv().unwrap();
             assert_eq!(
-                partial.signal_spec.role.as_ref().map(|role| role.as_str()),
-                Some(TRANSCRIPT_PARTIAL_ROLE)
+                partial.spec.role.as_ref().map(|role| role.as_str()),
+                Some(TEST_NONTERMINAL_ROLE)
             );
             assert_eq!(
-                final_signal
-                    .signal_spec
-                    .role
-                    .as_ref()
-                    .map(|role| role.as_str()),
-                Some(TRANSCRIPT_FINAL_ROLE)
+                final_signal.spec.role.as_ref().map(|role| role.as_str()),
+                Some(TEST_TERMINAL_ROLE)
             );
-            assert!(partial.derived_lineage.is_some());
+            assert!(partial.derivation.is_some());
             assert_eq!(
                 output.observations(),
                 AsyncOperatorOutputObservations {
@@ -1756,21 +1751,21 @@ mod tests {
             output
                 .recv()
                 .unwrap()
-                .signal_spec
+                .spec
                 .role
                 .as_ref()
                 .map(|role| role.as_str()),
-            Some(TRANSCRIPT_PARTIAL_ROLE)
+            Some(TEST_NONTERMINAL_ROLE)
         );
         assert_eq!(
             output
                 .recv()
                 .unwrap()
-                .signal_spec
+                .spec
                 .role
                 .as_ref()
                 .map(|role| role.as_str()),
-            Some(TRANSCRIPT_FINAL_ROLE)
+            Some(TEST_TERMINAL_ROLE)
         );
         assert!(output.recv().is_none());
         let snapshot = observations.snapshot();
@@ -1842,13 +1837,26 @@ mod tests {
         let edge_id = receiver.edge_id();
         let input = envelope(0);
         let lineage = input.lineage.unwrap();
-        let SignalPayload::Audio(frame) = input.signal else {
+        let timing = input.timing;
+        let frame_lineage = FrameLineage {
+            session_id: lineage.session_id,
+            source_id: lineage.source_id,
+            stem_id: StemId(11),
+            clock_id: lineage.clock_id,
+            sequence_num: lineage.sequence_number,
+            timestamp_start_ns: timing.source_timestamp_ns.unwrap(),
+            duration_ns: timing.duration_ns.unwrap(),
+            source_generation: lineage.source_generation,
+            discontinuity_epoch: lineage.discontinuity_epoch,
+            permission_epoch: lineage.policy_epoch,
+        };
+        let SignalPayload::Audio(frame) = input.payload else {
             panic!("test envelope must contain audio");
         };
         let sent = router.dispatch_lineaged_from(
             source.id(),
             "out",
-            LineagedAudioFrame::new(frame, lineage).unwrap(),
+            LineagedAudioFrame::new(frame, frame_lineage).unwrap(),
             1,
         );
         assert_eq!(sent.enqueued_edges, 1);
@@ -1874,15 +1882,17 @@ mod tests {
 
         let partial = outputs[0].recv().unwrap();
         let final_output = outputs[0].recv().unwrap();
-        assert_eq!(partial.derived_lineage.as_ref().unwrap().base, lineage);
-        assert_eq!(final_output.derived_lineage.as_ref().unwrap().base, lineage);
         assert_eq!(
-            final_output
-                .signal_spec
-                .role
-                .as_ref()
-                .map(|role| role.as_str()),
-            Some(TRANSCRIPT_FINAL_ROLE)
+            partial.derivation.as_ref().unwrap().upstream_lineage,
+            lineage
+        );
+        assert_eq!(
+            final_output.derivation.as_ref().unwrap().upstream_lineage,
+            lineage
+        );
+        assert_eq!(
+            final_output.spec.role.as_ref().map(|role| role.as_str()),
+            Some(TEST_TERMINAL_ROLE)
         );
     }
 
@@ -1907,8 +1917,8 @@ mod tests {
         tokio::time::sleep(Duration::from_millis(10)).await;
         let partial = outputs[0].recv().unwrap();
         assert_eq!(
-            partial.signal_spec.role.as_ref().map(|role| role.as_str()),
-            Some(TRANSCRIPT_PARTIAL_ROLE)
+            partial.spec.role.as_ref().map(|role| role.as_str()),
+            Some(TEST_NONTERMINAL_ROLE)
         );
         let observations = worker.observations();
 
@@ -1984,22 +1994,22 @@ mod tests {
             outputs[0]
                 .recv()
                 .unwrap()
-                .signal_spec
+                .spec
                 .role
                 .as_ref()
                 .map(|role| role.as_str()),
-            Some(TRANSCRIPT_PARTIAL_ROLE)
+            Some(TEST_NONTERMINAL_ROLE)
         );
         assert!(outputs[0].recv().is_none());
         assert_eq!(
             outputs[1]
                 .recv()
                 .unwrap()
-                .signal_spec
+                .spec
                 .role
                 .as_ref()
                 .map(|role| role.as_str()),
-            Some(TRANSCRIPT_PARTIAL_ROLE)
+            Some(TEST_NONTERMINAL_ROLE)
         );
         assert!(outputs[1].recv().is_none());
     }

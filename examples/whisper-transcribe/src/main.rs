@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use pocketstation::operator::{
-    SignalEnvelope, AsyncNode, SignalPayload, PrepareContext, SampleFormat, SampleSpec,
+    AsyncNode, PrepareContext, SampleFormat, SampleSpec, SignalEnvelope, SignalPayload,
 };
 use whisper_transcribe_example::WhisperConnector;
 
@@ -30,12 +30,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         )))
         .await?;
     let output = connector
-        .process(SignalEnvelope::new(SignalPayload::Binary(wav_bytes), 0, 0))
+        .process(SignalEnvelope::untracked(
+            SignalPayload::Binary(wav_bytes),
+            0,
+        ))
         .await?
         .into_iter()
         .next()
         .ok_or("Whisper connector returned no transcript")?;
-    match output.signal {
+    match output.payload {
         SignalPayload::Text(transcript) => println!("{transcript}"),
         _ => return Err("Whisper connector returned a non-text signal".into()),
     }

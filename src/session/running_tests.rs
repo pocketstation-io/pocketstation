@@ -20,14 +20,13 @@ use crate::frame::{
     SessionId, SourceId, StemId, StreamId,
 };
 use crate::graph::{
-    transcript_final_spec, transcript_partial_spec, AsyncNode, AsyncNodeFuture,
-    AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, ChannelLayout, ConfigError, CopyPolicy,
-    DerivedSignalLineage, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig,
-    NodeDefinition, NodeDescriptor, NodeError, NodeFactory, NodeRegistry, NodeTypeId,
-    OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy,
+    AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps,
+    ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps,
+    Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeError, NodeFactory, NodeRegistry,
+    NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy,
     OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PrepareContext,
-    RuntimeNode, SafetyContract, SemanticRole, SignalEnvelope, SignalPayload, SignalSpec,
-    TextFormat, TRANSCRIPT_FINAL_ROLE, TRANSCRIPT_PARTIAL_ROLE,
+    RuntimeNode, SafetyContract, SemanticRole, SignalDerivation, SignalEnvelope, SignalLineage,
+    SignalPayload, SignalSpec, SignalTiming, TextFormat,
 };
 use crate::runtime::{PlanEdgeFrame, PlanEdgeReceiver};
 
@@ -46,6 +45,16 @@ const TEST_ASYNC_OPERATOR_ID: &str = "example.operator.running-stt.v1";
 const TEST_ASYNC_NODE_TYPE_ID: &str = "operator.running-stt.test";
 const TEST_TEXT_ENDPOINT_OPERATOR_ID: &str = "example.endpoint.running-text.v1";
 const TEST_TEXT_ENDPOINT_NODE_TYPE_ID: &str = "endpoint.running-text.test";
+const TEST_NONTERMINAL_ROLE: &str = "test.output.nonterminal";
+const TEST_TERMINAL_ROLE: &str = "test.output.terminal";
+
+fn test_nonterminal_spec() -> SignalSpec {
+    SignalSpec::text(TextFormat::Utf8).with_role(TEST_NONTERMINAL_ROLE)
+}
+
+fn test_terminal_spec() -> SignalSpec {
+    SignalSpec::text(TextFormat::Utf8).with_role(TEST_TERMINAL_ROLE)
+}
 
 struct TestNode;
 
@@ -720,10 +729,10 @@ impl RunningTestAsyncFactory {
                 failure: OperatorFailurePolicy::StopWorker,
                 output_roles: OperatorOutputRolePolicy {
                     allowed: vec![
-                        SemanticRole::new(TRANSCRIPT_PARTIAL_ROLE),
-                        SemanticRole::new(TRANSCRIPT_FINAL_ROLE),
+                        SemanticRole::new(TEST_NONTERMINAL_ROLE),
+                        SemanticRole::new(TEST_TERMINAL_ROLE),
                     ],
-                    terminal: vec![SemanticRole::new(TRANSCRIPT_FINAL_ROLE)],
+                    terminal: vec![SemanticRole::new(TEST_TERMINAL_ROLE)],
                 },
             },
         }
@@ -742,34 +751,33 @@ impl AsyncOperatorFactory for RunningTestAsyncFactory {
     fn create(&self, _configuration: &NodeConfig) -> Result<Box<dyn AsyncNode>, NodeError> {
         Ok(Box::new(RunningTestAsyncNode {
             control: Arc::clone(&self.control),
-            last_lineage: None,
+            last_input: None,
         }))
     }
 }
 
 struct RunningTestAsyncNode {
     control: Arc<AsyncOperatorControl>,
-    last_lineage: Option<crate::frame::FrameLineage>,
+    last_input: Option<(SignalLineage, SignalTiming)>,
 }
 
 impl RunningTestAsyncNode {
-    fn transcript(
-        lineage: crate::frame::FrameLineage,
+    fn output(
+        lineage: SignalLineage,
+        timing: SignalTiming,
         role: SignalSpec,
         text: &str,
     ) -> Result<SignalEnvelope, NodeError> {
-        let mut output = SignalEnvelope::new(
+        let mut output = SignalEnvelope::untracked(
             SignalPayload::Text(text.to_owned()),
-            lineage.sequence_num,
-            lineage.timestamp_start_ns,
-        );
-        output.signal_spec = role;
-        output.source_id = Some(lineage.source_id);
-        output.lineage = Some(lineage);
-        output.derived_lineage = Some(
-            DerivedSignalLineage::new(
+            timing.observed_timestamp_ns,
+        )
+        .map_payload(SignalPayload::Text(text.to_owned()), role)
+        .with_lineage(lineage, timing);
+        output.derivation = Some(
+            SignalDerivation::new(
                 lineage,
-                lineage.timestamp_end_ns(),
+                timing,
                 OperatorId::new(TEST_ASYNC_OPERATOR_ID),
                 1,
                 1,
@@ -811,13 +819,15 @@ impl AsyncNode for RunningTestAsyncNode {
             let lineage = input
                 .lineage
                 .ok_or_else(|| NodeError::Process("test input omitted lineage".to_owned()))?;
-            self.last_lineage = Some(lineage);
+            let timing = input.timing;
+            self.last_input = Some((lineage, timing));
             if self.control.block_process.load(Ordering::Acquire) {
                 std::future::pending::<()>().await;
             }
-            Ok(vec![Self::transcript(
+            Ok(vec![Self::output(
                 lineage,
-                transcript_partial_spec(),
+                timing,
+                test_nonterminal_spec(),
                 "partial",
             )?])
         })
@@ -825,12 +835,13 @@ impl AsyncNode for RunningTestAsyncNode {
 
     fn flush<'a>(&'a mut self) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
         Box::pin(async move {
-            self.last_lineage.take().map_or_else(
+            self.last_input.take().map_or_else(
                 || Ok(Vec::new()),
-                |lineage| {
-                    Ok(vec![Self::transcript(
+                |(lineage, timing)| {
+                    Ok(vec![Self::output(
                         lineage,
-                        transcript_final_spec(),
+                        timing,
+                        test_terminal_spec(),
                         "final",
                     )?])
                 },
@@ -978,11 +989,11 @@ impl RunningEndpointDriver for RunningDerivedTextEndpoint {
     fn join_and_finalize(mut self: Box<Self>) -> EndpointDriverFinalization {
         for output in &mut self.outputs {
             while let Some(envelope) = output.recv() {
-                match envelope.signal_spec.role.as_ref().map(SemanticRole::as_str) {
-                    Some(TRANSCRIPT_PARTIAL_ROLE) => {
+                match envelope.spec.role.as_ref().map(SemanticRole::as_str) {
+                    Some(TEST_NONTERMINAL_ROLE) => {
                         self.control.partial_total.fetch_add(1, Ordering::Relaxed);
                     }
-                    Some(TRANSCRIPT_FINAL_ROLE) => {
+                    Some(TEST_TERMINAL_ROLE) => {
                         self.control.final_total.fetch_add(1, Ordering::Relaxed);
                     }
                     _ => {}

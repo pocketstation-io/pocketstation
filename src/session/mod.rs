@@ -103,17 +103,16 @@ pub use crate::frame::{
     FrameLineage, RouteId, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId,
 };
 pub use crate::graph::{
-    transcript_final_spec, transcript_partial_spec, AsyncNode, AsyncNodeFuture,
-    AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError, AudioCaps,
-    BackpressurePolicy, BinaryFormat, ChannelLayout, ClockDomain, Codec, ConfigError, CopyPolicy,
-    DeliverySemantics, DerivedSignalLineage, DerivedSignalLineageError, EdgeContract,
+    AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest,
+    AsyncOperatorManifestError, AudioCaps, BackpressurePolicy, BinaryFormat, ChannelLayout,
+    ClockDomain, Codec, ConfigError, CopyPolicy, DeliverySemantics, EdgeContract,
     EdgeObservabilityLevel, EventFormat, ExecutionPartition, LossPolicy, MediaCaps, MediaKind,
     Multiplicity, NodeConfig as OperatorConfiguration, NodeDefinition, NodeDescriptor, NodeError,
     NodeRegistrationError, NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy,
     OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection,
     PortSpec, PrepareContext, SafetyContract, SchemaRef, SemanticRole, SignalClass,
-    SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker, SignalEnvelope,
-    SignalEnvelopeError, SignalId, SignalLineage, SignalPayload, SignalSpec, SignalSpecError,
-    SignalTiming, TextFormat, TRANSCRIPT_FINAL_ROLE, TRANSCRIPT_PARTIAL_ROLE,
+    SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker, SignalDerivation,
+    SignalDerivationError, SignalEnvelope, SignalEnvelopeError, SignalId, SignalLineage,
+    SignalPayload, SignalSpec, SignalSpecError, SignalTiming, TextFormat,
 };
 pub use crate::runtime::{AsyncOperatorOutputObservationHandle, AsyncOperatorOutputObservations};

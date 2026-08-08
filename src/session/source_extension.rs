@@ -361,9 +361,9 @@ fn run_source_driver(
         let output = manifest
             .output(&emission.output_port)
             .ok_or_else(|| SourceRuntimeError::UnknownOutput(emission.output_port.clone()))?;
-        if emission.envelope.signal_spec.class != output.signal.class
-            || emission.envelope.signal_spec.schema != output.signal.schema
-            || !output.media.supports_signal(&emission.envelope.signal_spec)
+        if emission.envelope.spec.class != output.signal.class
+            || emission.envelope.spec.schema != output.signal.schema
+            || !output.media.supports_signal(&emission.envelope.spec)
         {
             return Err(SourceRuntimeError::OutputContractMismatch);
         }

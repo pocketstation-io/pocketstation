@@ -11,7 +11,7 @@ Start here:
 - [Current architecture](architecture/overview.md)
 - [Signals and typed streams](concepts/signals-and-streams.md)
 - [External extensions](guides/extensions.md)
-- [Compatibility and Core 1.0 freeze](development/compatibility-and-freeze.md)
+- [Compatibility and Core 1.0 freeze candidate](development/compatibility-and-freeze.md)
 
 Product claims are evidence-scoped. Passing component or loopback tests does
 not establish physical-device, cross-network, or cross-platform parity.

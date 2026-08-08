@@ -599,8 +599,7 @@ mod tests {
         ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeDefinition,
         NodeDescriptor, NodeError, OperatorCancellationPolicy, OperatorDeadlinePolicy,
         OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection,
-        PortSpec, SafetyContract, SemanticRole, SignalSpec, TextFormat, TRANSCRIPT_FINAL_ROLE,
-        TRANSCRIPT_PARTIAL_ROLE,
+        PortSpec, SafetyContract, SemanticRole, SignalSpec, TextFormat,
     };
 
     use super::*;
@@ -616,6 +615,8 @@ mod tests {
     const TEST_TRANSFORM_NODE_TYPE_ID: &str = "operator.text-transform.test";
     const TEST_TEXT_ENDPOINT_OPERATOR_ID: &str = "example.endpoint.text.v1";
     const TEST_TEXT_ENDPOINT_NODE_TYPE_ID: &str = "endpoint.text.test";
+    const TEST_NONTERMINAL_ROLE: &str = "test.output.nonterminal";
+    const TEST_TERMINAL_ROLE: &str = "test.output.terminal";
 
     struct CompileOnlyEndpointFactory;
 
@@ -676,10 +677,10 @@ mod tests {
                     failure: OperatorFailurePolicy::StopWorker,
                     output_roles: OperatorOutputRolePolicy {
                         allowed: vec![
-                            SemanticRole::new(TRANSCRIPT_PARTIAL_ROLE),
-                            SemanticRole::new(TRANSCRIPT_FINAL_ROLE),
+                            SemanticRole::new(TEST_NONTERMINAL_ROLE),
+                            SemanticRole::new(TEST_TERMINAL_ROLE),
                         ],
-                        terminal: vec![SemanticRole::new(TRANSCRIPT_FINAL_ROLE)],
+                        terminal: vec![SemanticRole::new(TEST_TERMINAL_ROLE)],
                     },
                 },
             }

@@ -1,6 +1,6 @@
 # AUDIO-034: Core 1.0 extension completeness and freeze
 
-**Status:** Accepted
+**Status:** Provisional; boundary direction accepted, freeze not active
 **Date:** 2026-08-08
 **Decision owners:** PocketStation runtime maintainers
 **Scope:** Public extension contracts, language boundaries, and post-freeze ownership
@@ -18,9 +18,9 @@ PocketStation retains a specialized realtime `AudioFrame` lane and one
 source-independent typed async lane. Stable `SignalSpec`, schema, named ports,
 lineage/timing, `EdgeContract`, and `RuntimePlan` are runtime authority.
 
-External extension points are source factories/drivers, operator manifests and
-factories, endpoint drivers, the versioned C descriptor ABI, and the bounded
-versioned sidecar protocol. Rust additionally exposes declaration-only
+The intended external extension points are source factories/drivers, operator
+manifests and factories, endpoint drivers, an executable versioned C extension
+ABI, and a bounded versioned sidecar lifecycle. Rust additionally exposes declaration-only
 `Stream<T>`/`TypedOperator<I, O>` ergonomics. External packages own `T`; Rust
 type identity never crosses a language or process boundary.
 
@@ -34,8 +34,13 @@ compatibility, measured-regression, or unexpressible-execution-primitive cause.
 
 ## Evidence and limitations
 
-W17 proves generic signal identity; W18 open sources and shared bounded typed
-ingress; W19 chaining, named ports, and generated-audio reentry; W20 packaged
-Rust/C/Python extension consumption. W20 is a `LOOPBACK-ONLY` architecture and
-compatibility proof. W13 separately owns physical desktop qualification and
-must not be inferred from W20.
+W17 proves generic signal identity. The W18 artifact proves low-level source
+registration and shared bounded typed ingress but not Session source ingress.
+The W19 artifact proves declaration compilation and low-level composition and
+generated-audio primitives but not Session-owned execution. W20 proves
+descriptor validation, PKSS framing, a Python round trip, and locally patched
+packaged-source consumption; it does not prove executable C registration,
+Session-owned sidecar lifecycle, a clean installed/published artifact, or a
+`1.0.0` release. W20 remains a `LOOPBACK-ONLY` component/compatibility proof.
+W13 separately owns physical desktop qualification and must not be inferred
+from W20. This ADR becomes Accepted only when those exits pass.

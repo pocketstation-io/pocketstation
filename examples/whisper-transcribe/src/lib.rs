@@ -4,14 +4,13 @@ use std::process::Stdio;
 use std::time::Duration;
 
 use pocketstation::operator::{
-    transcript_final_spec, transcript_partial_spec, SignalEnvelope, AsyncNode, AsyncNodeFuture,
-    AsyncOperatorFactory, AsyncOperatorManifest, SignalPayload, AudioCaps, ChannelLayout,
-    ConfigError, CopyPolicy, DerivedSignalLineage, EdgeContract, ExecutionPartition, FrameLineage,
-    MediaCaps, Multiplicity, NodeDescriptor, NodeError, NodeTypeId, OperatorCancellationPolicy,
+    AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps,
+    ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps,
+    Multiplicity, NodeDescriptor, NodeError, NodeTypeId, OperatorCancellationPolicy,
     OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId,
     OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PrepareContext,
-    SafetyContract, SampleFormat, SemanticRole, SignalSpec, SourceId, TextFormat,
-    TRANSCRIPT_FINAL_ROLE, TRANSCRIPT_PARTIAL_ROLE,
+    SafetyContract, SampleFormat, SemanticRole, SignalDerivation, SignalEnvelope, SignalLineage,
+    SignalPayload, SignalSpec, SignalTiming, SourceId, TextFormat,
 };
 use tempfile::TempDir;
 use tokio::process::{Child, Command};
@@ -44,15 +43,25 @@ pub struct WhisperConnector {
 
 #[derive(Clone, Copy)]
 struct WindowOrigin {
-    sequence_number: u64,
     timestamp_ns: u64,
     source_id: Option<SourceId>,
-    lineage: Option<FrameLineage>,
+    lineage: Option<SignalLineage>,
+    timing: SignalTiming,
     last_sequence_number: u64,
     timestamp_end_ns: u64,
 }
 
 pub const WHISPER_OPERATOR_ID: &str = "community.whisper.cpp.stt.v1";
+pub const TRANSCRIPT_PARTIAL_ROLE: &str = "transcript.partial";
+pub const TRANSCRIPT_FINAL_ROLE: &str = "transcript.final";
+
+pub fn transcript_partial_spec() -> SignalSpec {
+    SignalSpec::text(TextFormat::Utf8).with_role(TRANSCRIPT_PARTIAL_ROLE)
+}
+
+pub fn transcript_final_spec() -> SignalSpec {
+    SignalSpec::text(TextFormat::Utf8).with_role(TRANSCRIPT_FINAL_ROLE)
+}
 const WHISPER_OPERATOR_REVISION: u32 = 1;
 const WHISPER_OPERATOR_GENERATION: u32 = 1;
 
@@ -540,7 +549,7 @@ impl WhisperConnector {
         &mut self,
         input: SignalEnvelope,
     ) -> Result<Option<SignalEnvelope>, NodeError> {
-        let frame = match &input.signal {
+        let frame = match &input.payload {
             SignalPayload::Audio(frame) => frame,
             _ => unreachable!("process_audio is called only for typed audio"),
         };
@@ -579,7 +588,7 @@ impl WhisperConnector {
         let frame_samples_per_channel = frame.buffer.len() / channels as usize;
         let frame_duration_ns =
             frame_samples_per_channel as u64 * 1_000_000_000 / u64::from(sample_rate_hz);
-        let frame_timestamp_end_ns = input.timestamp_ns.saturating_add(frame_duration_ns);
+        let frame_timestamp_end_ns = input.timestamp_ns().saturating_add(frame_duration_ns);
         if let Err(reason) = update_origin(&mut self.stream_origin, &input, frame_timestamp_end_ns)
         {
             self.reset_stream();
@@ -633,19 +642,14 @@ impl WhisperConnector {
         signal_spec: SignalSpec,
         origin: WindowOrigin,
     ) -> Result<SignalEnvelope, NodeError> {
-        let mut output = SignalEnvelope::new(
-            SignalPayload::Text(transcript),
-            origin.sequence_number,
-            origin.timestamp_ns,
-        );
-        output.signal_spec = signal_spec;
-        output.source_id = origin.source_id;
-        output.lineage = origin.lineage;
-        if let Some(base) = origin.lineage {
-            output.derived_lineage = Some(
-                DerivedSignalLineage::new(
-                    base,
-                    origin.timestamp_end_ns,
+        let mut output =
+            SignalEnvelope::untracked(SignalPayload::Text(transcript), origin.timestamp_ns);
+        output.spec = signal_spec;
+        if let Some(lineage) = origin.lineage {
+            output = output.with_lineage(lineage, origin.timing).with_derivation(
+                SignalDerivation::new(
+                    lineage,
+                    origin.timing,
                     OperatorId::new(WHISPER_OPERATOR_ID),
                     WHISPER_OPERATOR_REVISION,
                     WHISPER_OPERATOR_GENERATION,
@@ -673,12 +677,15 @@ fn update_origin(
     if let Some(origin) = origin.as_mut() {
         validate_window_continuation(origin, input, frame_timestamp_end_ns)
     } else {
+        let sequence_number = input
+            .sequence_number()
+            .ok_or_else(|| "audio input has no sequence authority".to_owned())?;
         *origin = Some(WindowOrigin {
-            sequence_number: input.sequence_number,
-            timestamp_ns: input.timestamp_ns,
-            source_id: input.source_id,
+            timestamp_ns: input.timestamp_ns(),
+            source_id: input.source_id(),
             lineage: input.lineage,
-            last_sequence_number: input.sequence_number,
+            timing: input.timing,
+            last_sequence_number: sequence_number,
             timestamp_end_ns: frame_timestamp_end_ns,
         });
         Ok(())
@@ -690,42 +697,46 @@ fn validate_window_continuation(
     input: &SignalEnvelope,
     frame_timestamp_end_ns: u64,
 ) -> Result<(), String> {
-    if origin.source_id != input.source_id {
+    if origin.source_id != input.source_id() {
         return Err("source identity changed inside a Whisper window".to_owned());
     }
     match (origin.lineage.as_mut(), input.lineage) {
         (Some(base), Some(next)) => {
             let identity_matches = base.session_id == next.session_id
                 && base.source_id == next.source_id
-                && base.stem_id == next.stem_id
+                && base.stream_id == next.stream_id
                 && base.clock_id == next.clock_id
                 && base.source_generation == next.source_generation
                 && base.discontinuity_epoch == next.discontinuity_epoch
-                && base.permission_epoch == next.permission_epoch;
+                && base.policy_epoch == next.policy_epoch;
             if !identity_matches {
                 return Err("lineage authority changed inside a Whisper window".to_owned());
             }
-            if next.sequence_num != origin.last_sequence_number + 1
-                || next.timestamp_start_ns != origin.timestamp_end_ns
-                || next.timestamp_end_ns() < next.timestamp_start_ns
+            if next.sequence_number != origin.last_sequence_number + 1
+                || input.timestamp_ns() != origin.timestamp_end_ns
+                || frame_timestamp_end_ns < input.timestamp_ns()
             {
                 return Err("lineage range is not contiguous inside a Whisper window".to_owned());
             }
-            origin.timestamp_end_ns = next.timestamp_end_ns();
-            base.duration_ns = origin
-                .timestamp_end_ns
-                .saturating_sub(base.timestamp_start_ns);
-            origin.last_sequence_number = next.sequence_num;
+            origin.timestamp_end_ns = frame_timestamp_end_ns;
+            origin.timing.duration_ns =
+                Some(origin.timestamp_end_ns.saturating_sub(origin.timestamp_ns));
+            origin.last_sequence_number = next.sequence_number;
         }
         (None, None) => {
-            if input.sequence_number != origin.last_sequence_number + 1
-                || input.timestamp_ns != origin.timestamp_end_ns
-                || frame_timestamp_end_ns < input.timestamp_ns
+            let sequence_number = input
+                .sequence_number()
+                .ok_or_else(|| "audio input has no sequence authority".to_owned())?;
+            if sequence_number != origin.last_sequence_number + 1
+                || input.timestamp_ns() != origin.timestamp_end_ns
+                || frame_timestamp_end_ns < input.timestamp_ns()
             {
                 return Err("timestamp range is not contiguous inside a Whisper window".to_owned());
             }
             origin.timestamp_end_ns = frame_timestamp_end_ns;
-            origin.last_sequence_number = input.sequence_number;
+            origin.timing.duration_ns =
+                Some(origin.timestamp_end_ns.saturating_sub(origin.timestamp_ns));
+            origin.last_sequence_number = sequence_number;
         }
         _ => {
             return Err("lineage presence changed inside a Whisper window".to_owned());
@@ -773,11 +784,13 @@ impl AsyncNode for WhisperConnector {
             if !self.prepared {
                 return Err(NodeError::Process("connector is not prepared".to_owned()));
             }
-            match &input.signal {
-                SignalPayload::Audio(_) => Ok(self.process_audio(input).await?.into_iter().collect()),
+            match &input.payload {
+                SignalPayload::Audio(_) => {
+                    Ok(self.process_audio(input).await?.into_iter().collect())
+                }
                 SignalPayload::Binary(bytes) => {
-                    let transcript = self.transcribe(bytes).await?;
-                    Ok(vec![input.map_signal(
+                    let transcript = self.transcribe(bytes.as_slice()).await?;
+                    Ok(vec![input.map_payload(
                         SignalPayload::Text(transcript),
                         transcript_final_spec(),
                     )])
@@ -848,10 +861,12 @@ mod tests {
     use std::os::unix::fs::PermissionsExt;
     use std::sync::Arc;
 
-    use pocketstation::internal::runtime::{AsyncBridge, AsyncOperatorOutputBranchSpec, AsyncOperatorWorker};
+    use pocketstation::internal::runtime::{
+        AsyncBridge, AsyncOperatorOutputBranchSpec, AsyncOperatorWorker,
+    };
     use pocketstation::operator::{
         AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, SampleFormat, SampleSpec,
-        SessionId, SignalSpec, SourceId, StemId, StreamId,
+        SessionId, SignalLineage, SignalSpec, SignalTiming, SourceId, StemId, StreamId,
     };
 
     use super::*;
@@ -916,6 +931,27 @@ mod tests {
         )
     }
 
+    fn binary_envelope(bytes: Vec<u8>, sequence_number: u64, timestamp_ns: u64) -> SignalEnvelope {
+        SignalEnvelope::untracked(SignalPayload::Binary(bytes), timestamp_ns).with_lineage(
+            SignalLineage {
+                session_id: SessionId(3),
+                stream_id: StreamId(7),
+                source_id: SourceId(23),
+                clock_id: ClockDomainId(7),
+                sequence_number,
+                source_generation: 1,
+                discontinuity_epoch: 0,
+                policy_epoch: 1,
+            },
+            SignalTiming {
+                source_timestamp_ns: Some(timestamp_ns),
+                observed_timestamp_ns: timestamp_ns,
+                session_timestamp_ns: Some(timestamp_ns),
+                duration_ns: None,
+            },
+        )
+    }
+
     async fn prepared_window_connector() -> (TempDir, WhisperConnector) {
         let (fixture, mut connector) = connector_fixture(None).await;
         connector = connector.with_window_duration_ms(20);
@@ -954,25 +990,21 @@ mod tests {
         let context = PrepareContext::new(SampleSpec::new(16_000, 1, SampleFormat::F32Interleaved));
         connector.prepare(&context).await.unwrap();
         let output = connector
-            .process(SignalEnvelope::new(
-                SignalPayload::Binary(b"RIFF fixture".to_vec()),
-                42,
-                99,
-            ))
+            .process(binary_envelope(b"RIFF fixture".to_vec(), 42, 99))
             .await
             .unwrap()
             .into_iter()
             .next()
             .unwrap();
 
-        assert_eq!(output.sequence_number, 42);
-        assert_eq!(output.timestamp_ns, 99);
+        assert_eq!(output.sequence_number(), Some(42));
+        assert_eq!(output.timestamp_ns(), 99);
         assert_eq!(
-            output.signal_spec.role.as_ref().map(|role| role.as_str()),
+            output.spec.role.as_ref().map(|role| role.as_str()),
             Some("transcript.final")
         );
         assert!(
-            matches!(output.signal, SignalPayload::Text(ref text) if text == "hello from local whisper")
+            matches!(output.payload, SignalPayload::Text(ref text) if text == "hello from local whisper")
         );
     }
 
@@ -999,11 +1031,7 @@ mod tests {
             .unwrap();
 
         let error = connector
-            .process(SignalEnvelope::new(
-                SignalPayload::Binary(b"RIFF fixture".to_vec()),
-                0,
-                0,
-            ))
+            .process(binary_envelope(b"RIFF fixture".to_vec(), 0, 0))
             .await
             .unwrap_err();
 
@@ -1027,11 +1055,7 @@ mod tests {
             .unwrap();
 
         connector
-            .process(SignalEnvelope::new(
-                SignalPayload::Binary(b"RIFF fixture".to_vec()),
-                0,
-                0,
-            ))
+            .process(binary_envelope(b"RIFF fixture".to_vec(), 0, 0))
             .await
             .unwrap();
 
@@ -1083,11 +1107,7 @@ mod tests {
             .unwrap();
 
         let error = connector
-            .process(SignalEnvelope::new(
-                SignalPayload::Binary(b"RIFF fixture".to_vec()),
-                0,
-                0,
-            ))
+            .process(binary_envelope(b"RIFF fixture".to_vec(), 0, 0))
             .await
             .unwrap_err();
 
@@ -1186,11 +1206,7 @@ mod tests {
             .await
             .unwrap();
         {
-            let process = connector.process(SignalEnvelope::new(
-                SignalPayload::Binary(b"RIFF fixture".to_vec()),
-                0,
-                0,
-            ));
+            let process = connector.process(binary_envelope(b"RIFF fixture".to_vec(), 0, 0));
             tokio::pin!(process);
             tokio::select! {
                 result = &mut process => panic!("provider unexpectedly completed: {result:?}"),
@@ -1231,10 +1247,10 @@ mod tests {
             .await
             .unwrap();
 
-        let first = SignalEnvelope::from_audio(audio_frame(source_id, 8), None);
+        let first = lineaged_envelope(source_id, 8, 0, 1);
         assert!(connector.process(first).await.unwrap().is_empty());
 
-        let second = SignalEnvelope::from_audio(audio_frame(source_id, 9), None);
+        let second = lineaged_envelope(source_id, 9, 0, 1);
         let output = connector
             .process(second)
             .await
@@ -1243,27 +1259,23 @@ mod tests {
             .next()
             .unwrap();
 
-        assert_eq!(output.sequence_number, 8);
-        assert_eq!(output.timestamp_ns, 80_000_000);
-        assert_eq!(output.source_id, Some(source_id));
+        assert_eq!(output.sequence_number(), Some(8));
+        assert_eq!(output.timestamp_ns(), 80_000_000);
+        assert_eq!(output.source_id(), Some(source_id));
         assert_eq!(
-            output.signal_spec.role.as_ref().map(|role| role.as_str()),
+            output.spec.role.as_ref().map(|role| role.as_str()),
             Some("transcript.partial")
         );
         assert!(
-            matches!(output.signal, SignalPayload::Text(ref text) if text == "hello from local whisper")
+            matches!(output.payload, SignalPayload::Text(ref text) if text == "hello from local whisper")
         );
 
         let final_output = connector.flush().await.unwrap().pop().unwrap();
-        assert_eq!(final_output.sequence_number, 8);
-        assert_eq!(final_output.timestamp_ns, 80_000_000);
-        assert_eq!(final_output.source_id, Some(source_id));
+        assert_eq!(final_output.sequence_number(), Some(8));
+        assert_eq!(final_output.timestamp_ns(), 80_000_000);
+        assert_eq!(final_output.source_id(), Some(source_id));
         assert_eq!(
-            final_output
-                .signal_spec
-                .role
-                .as_ref()
-                .map(|role| role.as_str()),
+            final_output.spec.role.as_ref().map(|role| role.as_str()),
             Some("transcript.final")
         );
         assert!(connector.flush().await.unwrap().is_empty());
@@ -1285,11 +1297,11 @@ mod tests {
             .into_iter()
             .next()
             .unwrap();
-        let derived = output.derived_lineage.unwrap();
+        let derived = output.derivation.unwrap();
 
-        assert_eq!(derived.base.timestamp_start_ns, 0);
-        assert_eq!(derived.base.duration_ns, 20_000_000);
-        assert_eq!(derived.timestamp_end_ns, 20_000_000);
+        assert_eq!(derived.upstream_timing.source_timestamp_ns, Some(0));
+        assert_eq!(derived.upstream_timing.duration_ns, Some(20_000_000));
+        assert_eq!(derived.upstream_timing.timestamp_end_ns(), Some(20_000_000));
         assert_eq!(derived.operator_id.as_str(), WHISPER_OPERATOR_ID);
     }
 
@@ -1309,26 +1321,22 @@ mod tests {
 
         assert_eq!(partials.len(), 2);
         assert!(partials.iter().all(|output| {
-            output.signal_spec.role.as_ref().map(|role| role.as_str()) == Some("transcript.partial")
+            output.spec.role.as_ref().map(|role| role.as_str()) == Some("transcript.partial")
         }));
 
         let finals = connector.flush().await.unwrap();
         assert_eq!(finals.len(), 1);
         let final_output = &finals[0];
         assert_eq!(
-            final_output
-                .signal_spec
-                .role
-                .as_ref()
-                .map(|role| role.as_str()),
+            final_output.spec.role.as_ref().map(|role| role.as_str()),
             Some("transcript.final")
         );
-        let derived = final_output.derived_lineage.as_ref().unwrap();
-        assert_eq!(derived.base.sequence_num, 0);
-        assert_eq!(derived.base.duration_ns, 40_000_000);
-        assert_eq!(derived.timestamp_end_ns, 40_000_000);
+        let derived = final_output.derivation.as_ref().unwrap();
+        assert_eq!(derived.upstream_lineage.sequence_number, 0);
+        assert_eq!(derived.upstream_timing.duration_ns, Some(40_000_000));
+        assert_eq!(derived.upstream_timing.timestamp_end_ns(), Some(40_000_000));
         assert!(matches!(
-            final_output.signal,
+            final_output.payload,
             SignalPayload::Text(ref text)
                 if text == "hello from local whisper hello from local whisper"
         ));
@@ -1403,25 +1411,12 @@ mod tests {
         let (mut browser_sender, mut browser_receiver) = AsyncBridge::new(1);
 
         for sequence_number in 0..8 {
-            let timestamp_ns = sequence_number * 10_000_000;
-            let _ = stt_sender.send_audio(
-                audio_frame(source_id, sequence_number),
-                sequence_number,
-                timestamp_ns,
-            );
+            let _ = stt_sender.send(lineaged_envelope(source_id, sequence_number, 0, 1));
             recording_sender
-                .send_audio(
-                    audio_frame(source_id, sequence_number),
-                    sequence_number,
-                    timestamp_ns,
-                )
+                .send(lineaged_envelope(source_id, sequence_number, 0, 1))
                 .unwrap();
             browser_sender
-                .send_audio(
-                    audio_frame(source_id, sequence_number),
-                    sequence_number,
-                    timestamp_ns,
-                )
+                .send(lineaged_envelope(source_id, sequence_number, 0, 1))
                 .unwrap();
             assert!(recording_receiver.recv().is_some());
             assert!(browser_receiver.recv().is_some());
@@ -1432,8 +1427,8 @@ mod tests {
         assert_eq!(browser_sender.dropped_count(), 0);
 
         let input = stt_receiver.recv().unwrap();
-        assert_eq!(input.source_id, Some(source_id));
-        assert_eq!(input.signal_spec, SignalSpec::audio());
+        assert_eq!(input.source_id(), Some(source_id));
+        assert_eq!(input.spec, SignalSpec::audio());
 
         let (_fixture, mut stt) = connector_fixture(Some("0.02")).await;
         stt = stt.with_window_duration_ms(10);
@@ -1452,21 +1447,17 @@ mod tests {
             .next()
             .unwrap();
 
-        assert_eq!(output.source_id, Some(source_id));
+        assert_eq!(output.source_id(), Some(source_id));
         assert_eq!(
-            output.signal_spec.role.as_ref().map(|role| role.as_str()),
+            output.spec.role.as_ref().map(|role| role.as_str()),
             Some("transcript.partial")
         );
         assert!(
-            matches!(output.signal, SignalPayload::Text(ref text) if text == "hello from local whisper")
+            matches!(output.payload, SignalPayload::Text(ref text) if text == "hello from local whisper")
         );
         let final_output = stt.flush().await.unwrap().pop().unwrap();
         assert_eq!(
-            final_output
-                .signal_spec
-                .role
-                .as_ref()
-                .map(|role| role.as_str()),
+            final_output.spec.role.as_ref().map(|role| role.as_str()),
             Some("transcript.final")
         );
     }
