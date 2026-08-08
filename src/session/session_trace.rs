@@ -13,7 +13,7 @@ use crate::session::{
     SessionRollbackStage, SessionTerminalState,
 };
 
-const TRACE_MAGIC: &[u8; 8] = b"PKSFLT01";
+const TRACE_MAGIC: &[u8; 8] = b"PKSTRC01";
 const TRACE_VERSION: u16 = 1;
 const HEADER_SIZE_BYTES: usize = 40;
 const RECORD_SIZE_BYTES: usize = 88;
@@ -24,7 +24,7 @@ const FNV_OFFSET_BASIS: u64 = 0xcbf2_9ce4_8422_2325;
 const FNV_PRIME: u64 = 0x0000_0100_0000_01b3;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum SessionFlightRecordKind {
+pub enum SessionTraceRecordKind {
     Lifecycle {
         state: SessionLifecycleState,
     },
@@ -52,22 +52,22 @@ pub enum SessionFlightRecordKind {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct SessionFlightRecord {
+pub struct SessionTraceRecord {
     pub sequence_index: u64,
     pub observed_at_ns: u64,
     pub session_id: SessionId,
-    pub kind: SessionFlightRecordKind,
+    pub kind: SessionTraceRecordKind,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub(crate) enum SessionFlightRecordDelivery {
+pub(crate) enum SessionTraceRecordDelivery {
     Enqueued,
     DroppedFull,
     Closed,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct SessionFlightRecorderOutcome {
+pub struct SessionTraceRecorderOutcome {
     pub path: PathBuf,
     pub records_attempted_total: u64,
     pub records_enqueued_total: u64,
@@ -76,7 +76,7 @@ pub struct SessionFlightRecorderOutcome {
     pub rolling_hash: u64,
 }
 
-impl SessionFlightRecorderOutcome {
+impl SessionTraceRecorderOutcome {
     pub fn is_complete(&self) -> bool {
         self.records_dropped_total == 0
             && self.records_attempted_total == self.records_enqueued_total
@@ -85,42 +85,42 @@ impl SessionFlightRecorderOutcome {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum SessionFlightRecorderStartError {
-    #[error("flight-recorder capacity must be greater than zero records")]
+pub enum SessionTraceRecorderStartError {
+    #[error("session trace capacity must be greater than zero records")]
     ZeroCapacity,
-    #[error("flight-recorder output already exists: {path}")]
+    #[error("session trace output already exists: {path}")]
     OutputExists { path: PathBuf },
-    #[error("flight-recorder I/O failed: {0}")]
+    #[error("session trace I/O failed: {0}")]
     Io(#[from] std::io::Error),
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum SessionFlightRecorderFinishError {
-    #[error("flight-recorder command channel closed before finalization")]
+pub enum SessionTraceRecorderFinishError {
+    #[error("session trace command channel closed before finalization")]
     ChannelClosed,
-    #[error("flight-recorder worker panicked")]
+    #[error("session trace worker panicked")]
     WorkerPanicked,
-    #[error("flight-recorder I/O failed: {0}")]
+    #[error("session trace I/O failed: {0}")]
     Io(#[from] std::io::Error),
 }
 
 #[derive(Clone, Debug)]
-pub struct SessionFlightRecorderHandle {
+pub struct SessionTraceRecorderHandle {
     sender: SyncSender<RecorderCommand>,
     counters: Arc<RecorderCounters>,
     accepting: Arc<AtomicBool>,
 }
 
-impl SessionFlightRecorderHandle {
-    pub(crate) fn try_record_event(&self, event: &SessionEvent) -> SessionFlightRecordDelivery {
+impl SessionTraceRecorderHandle {
+    pub(crate) fn try_record_event(&self, event: &SessionEvent) -> SessionTraceRecordDelivery {
         if !self.accepting.load(Ordering::Acquire) {
-            return SessionFlightRecordDelivery::Closed;
+            return SessionTraceRecordDelivery::Closed;
         }
         let sequence_index = self
             .counters
             .records_attempted_total
             .fetch_add(1, Ordering::Relaxed);
-        let record = SessionFlightRecord {
+        let record = SessionTraceRecord {
             sequence_index,
             observed_at_ns: crate::timing::monotonic_timestamp_ns(),
             session_id: event.session_id(),
@@ -131,45 +131,45 @@ impl SessionFlightRecorderHandle {
                 self.counters
                     .records_enqueued_total
                     .fetch_add(1, Ordering::Relaxed);
-                SessionFlightRecordDelivery::Enqueued
+                SessionTraceRecordDelivery::Enqueued
             }
             Err(TrySendError::Full(_)) => {
                 self.counters
                     .records_dropped_total
                     .fetch_add(1, Ordering::Relaxed);
-                SessionFlightRecordDelivery::DroppedFull
+                SessionTraceRecordDelivery::DroppedFull
             }
             Err(TrySendError::Disconnected(_)) => {
                 self.counters
                     .records_dropped_total
                     .fetch_add(1, Ordering::Relaxed);
-                SessionFlightRecordDelivery::Closed
+                SessionTraceRecordDelivery::Closed
             }
         }
     }
 }
 
-pub struct SessionFlightRecorder {
+pub struct SessionTraceRecorder {
     path: PathBuf,
-    handle: SessionFlightRecorderHandle,
+    handle: SessionTraceRecorderHandle,
     worker: Option<JoinHandle<Result<WriterOutcome, std::io::Error>>>,
-    outcome: Option<SessionFlightRecorderOutcome>,
+    outcome: Option<SessionTraceRecorderOutcome>,
 }
 
-impl SessionFlightRecorder {
+impl SessionTraceRecorder {
     pub fn start(
         path: impl Into<PathBuf>,
         session_id: SessionId,
         capacity_records: usize,
-    ) -> Result<Self, SessionFlightRecorderStartError> {
+    ) -> Result<Self, SessionTraceRecorderStartError> {
         if capacity_records == 0 {
-            return Err(SessionFlightRecorderStartError::ZeroCapacity);
+            return Err(SessionTraceRecorderStartError::ZeroCapacity);
         }
         let path = path.into();
         let file = match OpenOptions::new().write(true).create_new(true).open(&path) {
             Ok(file) => file,
             Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {
-                return Err(SessionFlightRecorderStartError::OutputExists { path });
+                return Err(SessionTraceRecorderStartError::OutputExists { path });
             }
             Err(error) => return Err(error.into()),
         };
@@ -180,11 +180,11 @@ impl SessionFlightRecorder {
         let accepting = Arc::new(AtomicBool::new(true));
         let worker_counters = Arc::clone(&counters);
         let worker = thread::Builder::new()
-            .name("pks-flight-recorder".to_owned())
+            .name("pks-session-trace".to_owned())
             .spawn(move || writer_loop(writer, receiver, worker_counters))?;
         Ok(Self {
             path,
-            handle: SessionFlightRecorderHandle {
+            handle: SessionTraceRecorderHandle {
                 sender,
                 counters,
                 accepting,
@@ -194,27 +194,27 @@ impl SessionFlightRecorder {
         })
     }
 
-    pub fn handle(&self) -> SessionFlightRecorderHandle {
+    pub fn handle(&self) -> SessionTraceRecorderHandle {
         self.handle.clone()
     }
 
     pub fn finish(
         &mut self,
-    ) -> Result<&SessionFlightRecorderOutcome, SessionFlightRecorderFinishError> {
+    ) -> Result<&SessionTraceRecorderOutcome, SessionTraceRecorderFinishError> {
         if self.outcome.is_none() {
             self.handle.accepting.store(false, Ordering::Release);
             self.handle
                 .sender
                 .send(RecorderCommand::Finish)
-                .map_err(|_| SessionFlightRecorderFinishError::ChannelClosed)?;
+                .map_err(|_| SessionTraceRecorderFinishError::ChannelClosed)?;
             let worker = self
                 .worker
                 .take()
-                .ok_or(SessionFlightRecorderFinishError::ChannelClosed)?;
+                .ok_or(SessionTraceRecorderFinishError::ChannelClosed)?;
             let writer_outcome = worker
                 .join()
-                .map_err(|_| SessionFlightRecorderFinishError::WorkerPanicked)??;
-            self.outcome = Some(SessionFlightRecorderOutcome {
+                .map_err(|_| SessionTraceRecorderFinishError::WorkerPanicked)??;
+            self.outcome = Some(SessionTraceRecorderOutcome {
                 path: self.path.clone(),
                 records_attempted_total: self
                     .handle
@@ -237,29 +237,29 @@ impl SessionFlightRecorder {
         }
         self.outcome
             .as_ref()
-            .ok_or(SessionFlightRecorderFinishError::ChannelClosed)
+            .ok_or(SessionTraceRecorderFinishError::ChannelClosed)
     }
 
-    pub fn outcome(&self) -> Option<&SessionFlightRecorderOutcome> {
+    pub fn outcome(&self) -> Option<&SessionTraceRecorderOutcome> {
         self.outcome.as_ref()
     }
 }
 
-impl Drop for SessionFlightRecorder {
+impl Drop for SessionTraceRecorder {
     fn drop(&mut self) {
         let _ = self.finish();
     }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct SessionFlightTrace {
+pub struct SessionTrace {
     session_id: SessionId,
-    records: Box<[SessionFlightRecord]>,
-    outcome: SessionFlightRecorderOutcome,
+    records: Box<[SessionTraceRecord]>,
+    outcome: SessionTraceRecorderOutcome,
 }
 
-impl SessionFlightTrace {
-    pub fn read(path: impl AsRef<Path>) -> Result<Self, SessionFlightReplayError> {
+impl SessionTrace {
+    pub fn read(path: impl AsRef<Path>) -> Result<Self, SessionTraceValidationError> {
         let path = path.as_ref();
         let bytes = std::fs::read(path)?;
         decode_trace(path, &bytes)
@@ -269,41 +269,41 @@ impl SessionFlightTrace {
         self.session_id
     }
 
-    pub fn records(&self) -> &[SessionFlightRecord] {
+    pub fn records(&self) -> &[SessionTraceRecord] {
         &self.records
     }
 
-    pub const fn outcome(&self) -> &SessionFlightRecorderOutcome {
+    pub const fn outcome(&self) -> &SessionTraceRecorderOutcome {
         &self.outcome
     }
 
-    pub fn replay(&self) -> Result<SessionFlightReplay, SessionFlightReplayError> {
+    pub fn validate(&self) -> Result<SessionTraceValidation, SessionTraceValidationError> {
         if !self.outcome.is_complete() {
-            return Err(SessionFlightReplayError::IncompleteTrace);
+            return Err(SessionTraceValidationError::IncompleteTrace);
         }
         let mut lifecycle = Vec::new();
         let mut terminal = None;
         let mut previous_timestamp_ns = None;
         for (expected_sequence_index, record) in self.records.iter().enumerate() {
             if record.sequence_index != expected_sequence_index as u64 {
-                return Err(SessionFlightReplayError::SequenceGap);
+                return Err(SessionTraceValidationError::SequenceGap);
             }
             if record.session_id != self.session_id {
-                return Err(SessionFlightReplayError::SessionMismatch);
+                return Err(SessionTraceValidationError::SessionMismatch);
             }
             if previous_timestamp_ns.is_some_and(|previous| record.observed_at_ns < previous) {
-                return Err(SessionFlightReplayError::TimestampRegression);
+                return Err(SessionTraceValidationError::TimestampRegression);
             }
             previous_timestamp_ns = Some(record.observed_at_ns);
             if terminal.is_some() {
-                return Err(SessionFlightReplayError::RecordAfterTerminal);
+                return Err(SessionTraceValidationError::RecordAfterTerminal);
             }
             match record.kind {
-                SessionFlightRecordKind::Lifecycle { state } => {
+                SessionTraceRecordKind::Lifecycle { state } => {
                     validate_lifecycle_transition(lifecycle.last().copied(), state)?;
                     lifecycle.push(state);
                 }
-                SessionFlightRecordKind::Terminal {
+                SessionTraceRecordKind::Terminal {
                     state,
                     source_failures_total,
                     endpoint_failures_total,
@@ -311,7 +311,7 @@ impl SessionFlightTrace {
                     finalization_failures_total,
                 } => {
                     validate_terminal(lifecycle.last().copied(), state)?;
-                    terminal = Some(SessionFlightTerminal {
+                    terminal = Some(SessionTraceTerminal {
                         state,
                         source_failures_total,
                         endpoint_failures_total,
@@ -319,24 +319,24 @@ impl SessionFlightTrace {
                         finalization_failures_total,
                     });
                 }
-                SessionFlightRecordKind::SourceFailure { .. }
-                | SessionFlightRecordKind::EndpointFailure { .. }
-                | SessionFlightRecordKind::RollbackFailure { .. }
-                | SessionFlightRecordKind::FinalizationFailure { .. } => {}
+                SessionTraceRecordKind::SourceFailure { .. }
+                | SessionTraceRecordKind::EndpointFailure { .. }
+                | SessionTraceRecordKind::RollbackFailure { .. }
+                | SessionTraceRecordKind::FinalizationFailure { .. } => {}
             }
         }
-        let terminal = terminal.ok_or(SessionFlightReplayError::MissingTerminal)?;
-        Ok(SessionFlightReplay {
+        let terminal = terminal.ok_or(SessionTraceValidationError::MissingTerminal)?;
+        Ok(SessionTraceValidation {
             session_id: self.session_id,
             lifecycle: lifecycle.into_boxed_slice(),
             terminal,
-            records_replayed_total: self.records.len() as u64,
+            records_validated_total: self.records.len() as u64,
         })
     }
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct SessionFlightTerminal {
+pub struct SessionTraceTerminal {
     pub state: SessionTerminalState,
     pub source_failures_total: u64,
     pub endpoint_failures_total: u64,
@@ -345,44 +345,44 @@ pub struct SessionFlightTerminal {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct SessionFlightReplay {
+pub struct SessionTraceValidation {
     pub session_id: SessionId,
     pub lifecycle: Box<[SessionLifecycleState]>,
-    pub terminal: SessionFlightTerminal,
-    pub records_replayed_total: u64,
+    pub terminal: SessionTraceTerminal,
+    pub records_validated_total: u64,
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum SessionFlightReplayError {
-    #[error("flight trace I/O failed: {0}")]
+pub enum SessionTraceValidationError {
+    #[error("Session trace I/O failed: {0}")]
     Io(#[from] std::io::Error),
-    #[error("flight trace magic is invalid")]
+    #[error("Session trace magic is invalid")]
     InvalidMagic,
-    #[error("flight trace version is unsupported")]
+    #[error("Session trace version is unsupported")]
     UnsupportedVersion,
-    #[error("flight trace layout is invalid")]
+    #[error("Session trace layout is invalid")]
     InvalidLayout,
-    #[error("flight trace is truncated")]
+    #[error("Session trace is truncated")]
     Truncated,
-    #[error("flight trace checksum is invalid")]
+    #[error("Session trace checksum is invalid")]
     InvalidChecksum,
-    #[error("flight trace is incomplete because records were dropped or not written")]
+    #[error("Session trace is incomplete because records were dropped or not written")]
     IncompleteTrace,
-    #[error("flight trace contains a non-contiguous record sequence")]
+    #[error("Session trace contains a non-contiguous record sequence")]
     SequenceGap,
-    #[error("flight trace contains a different Session identity")]
+    #[error("Session trace contains a different Session identity")]
     SessionMismatch,
-    #[error("flight trace monotonic timestamp regressed")]
+    #[error("Session trace monotonic timestamp regressed")]
     TimestampRegression,
-    #[error("flight trace lifecycle transition is invalid")]
+    #[error("Session trace lifecycle transition is invalid")]
     InvalidLifecycleTransition,
-    #[error("flight trace does not contain a terminal record")]
+    #[error("Session trace does not contain a terminal record")]
     MissingTerminal,
-    #[error("flight trace terminal state does not match lifecycle state")]
+    #[error("Session trace terminal state does not match lifecycle state")]
     TerminalMismatch,
-    #[error("flight trace contains a record after the terminal record")]
+    #[error("Session trace contains a record after the terminal record")]
     RecordAfterTerminal,
-    #[error("flight trace contains an unknown record type")]
+    #[error("Session trace contains an unknown record type")]
     UnknownRecordType,
 }
 
@@ -394,7 +394,7 @@ struct RecorderCounters {
 }
 
 enum RecorderCommand {
-    Record(SessionFlightRecord),
+    Record(SessionTraceRecord),
     Finish,
 }
 
@@ -440,28 +440,28 @@ fn writer_loop(
     }
     Err(std::io::Error::new(
         std::io::ErrorKind::BrokenPipe,
-        "flight-recorder command channel closed",
+        "session trace command channel closed",
     ))
 }
 
-fn record_kind(event: &SessionEventKind) -> SessionFlightRecordKind {
+fn record_kind(event: &SessionEventKind) -> SessionTraceRecordKind {
     match event {
-        SessionEventKind::Lifecycle(state) => SessionFlightRecordKind::Lifecycle { state: *state },
-        SessionEventKind::Source(failure) => SessionFlightRecordKind::SourceFailure {
+        SessionEventKind::Lifecycle(state) => SessionTraceRecordKind::Lifecycle { state: *state },
+        SessionEventKind::Source(failure) => SessionTraceRecordKind::SourceFailure {
             stem_id: failure.stem_id(),
         },
-        SessionEventKind::Endpoint(failure) => SessionFlightRecordKind::EndpointFailure {
+        SessionEventKind::Endpoint(failure) => SessionTraceRecordKind::EndpointFailure {
             route_id: failure.route_id(),
             endpoint_id: failure.endpoint_id(),
             stage_code: endpoint_stage_code(failure.stage()),
         },
-        SessionEventKind::Rollback(failure) => SessionFlightRecordKind::RollbackFailure {
+        SessionEventKind::Rollback(failure) => SessionTraceRecordKind::RollbackFailure {
             stage: failure.stage(),
         },
-        SessionEventKind::Finalization(failure) => SessionFlightRecordKind::FinalizationFailure {
+        SessionEventKind::Finalization(failure) => SessionTraceRecordKind::FinalizationFailure {
             stage: failure.stage(),
         },
-        SessionEventKind::Terminal(outcome) => SessionFlightRecordKind::Terminal {
+        SessionEventKind::Terminal(outcome) => SessionTraceRecordKind::Terminal {
             state: outcome.state(),
             source_failures_total: outcome.source_failures().len() as u64,
             endpoint_failures_total: outcome.endpoint_failures().len() as u64,
@@ -488,7 +488,7 @@ fn write_header(
     writer.write_all(&bytes)
 }
 
-fn encode_record(record: SessionFlightRecord) -> [u8; RECORD_SIZE_BYTES] {
+fn encode_record(record: SessionTraceRecord) -> [u8; RECORD_SIZE_BYTES] {
     let mut bytes = [0u8; RECORD_SIZE_BYTES];
     put_u32(&mut bytes, 0, RECORD_MARKER);
     let (kind_code, detail_code, values) = encode_kind(record.kind);
@@ -527,23 +527,23 @@ fn write_footer(
     writer.write_all(&bytes)
 }
 
-fn decode_trace(path: &Path, bytes: &[u8]) -> Result<SessionFlightTrace, SessionFlightReplayError> {
+fn decode_trace(path: &Path, bytes: &[u8]) -> Result<SessionTrace, SessionTraceValidationError> {
     if bytes.len() < HEADER_SIZE_BYTES + FOOTER_SIZE_BYTES {
-        return Err(SessionFlightReplayError::Truncated);
+        return Err(SessionTraceValidationError::Truncated);
     }
     if &bytes[..8] != TRACE_MAGIC {
-        return Err(SessionFlightReplayError::InvalidMagic);
+        return Err(SessionTraceValidationError::InvalidMagic);
     }
     if get_u16(bytes, 8)? != TRACE_VERSION {
-        return Err(SessionFlightReplayError::UnsupportedVersion);
+        return Err(SessionTraceValidationError::UnsupportedVersion);
     }
     if get_u16(bytes, 10)? as usize != HEADER_SIZE_BYTES
         || get_u16(bytes, 12)? as usize != RECORD_SIZE_BYTES
     {
-        return Err(SessionFlightReplayError::InvalidLayout);
+        return Err(SessionTraceValidationError::InvalidLayout);
     }
     if get_u64(bytes, 32)? != fnv1a(FNV_OFFSET_BASIS, &bytes[..32]) {
-        return Err(SessionFlightReplayError::InvalidChecksum);
+        return Err(SessionTraceValidationError::InvalidChecksum);
     }
     let session_id = SessionId(get_u64(bytes, 16)?);
     let footer_offset = bytes.len() - FOOTER_SIZE_BYTES;
@@ -552,37 +552,37 @@ fn decode_trace(path: &Path, bytes: &[u8]) -> Result<SessionFlightTrace, Session
         || get_u16(footer, 4)? != TRACE_VERSION
         || get_u16(footer, 6)? as usize != FOOTER_SIZE_BYTES
     {
-        return Err(SessionFlightReplayError::InvalidLayout);
+        return Err(SessionTraceValidationError::InvalidLayout);
     }
     if get_u64(footer, 48)? != fnv1a(FNV_OFFSET_BASIS, &footer[..48]) {
-        return Err(SessionFlightReplayError::InvalidChecksum);
+        return Err(SessionTraceValidationError::InvalidChecksum);
     }
     let records_written_total = get_u64(footer, 32)?;
     let record_bytes = &bytes[HEADER_SIZE_BYTES..footer_offset];
     if !record_bytes.len().is_multiple_of(RECORD_SIZE_BYTES)
         || record_bytes.len() / RECORD_SIZE_BYTES != records_written_total as usize
     {
-        return Err(SessionFlightReplayError::InvalidLayout);
+        return Err(SessionTraceValidationError::InvalidLayout);
     }
     let mut records = Vec::with_capacity(records_written_total as usize);
     let mut rolling_hash = FNV_OFFSET_BASIS;
     for encoded in record_bytes.chunks_exact(RECORD_SIZE_BYTES) {
         if get_u32(encoded, 0)? != RECORD_MARKER {
-            return Err(SessionFlightReplayError::InvalidLayout);
+            return Err(SessionTraceValidationError::InvalidLayout);
         }
         if get_u64(encoded, 80)? != fnv1a(FNV_OFFSET_BASIS, &encoded[..80]) {
-            return Err(SessionFlightReplayError::InvalidChecksum);
+            return Err(SessionTraceValidationError::InvalidChecksum);
         }
         rolling_hash = fnv1a(rolling_hash, encoded);
         records.push(decode_record(encoded)?);
     }
     if rolling_hash != get_u64(footer, 40)? {
-        return Err(SessionFlightReplayError::InvalidChecksum);
+        return Err(SessionTraceValidationError::InvalidChecksum);
     }
-    Ok(SessionFlightTrace {
+    Ok(SessionTrace {
         session_id,
         records: records.into_boxed_slice(),
-        outcome: SessionFlightRecorderOutcome {
+        outcome: SessionTraceRecorderOutcome {
             path: path.to_path_buf(),
             records_attempted_total: get_u64(footer, 8)?,
             records_enqueued_total: get_u64(footer, 16)?,
@@ -593,7 +593,7 @@ fn decode_trace(path: &Path, bytes: &[u8]) -> Result<SessionFlightTrace, Session
     })
 }
 
-fn decode_record(bytes: &[u8]) -> Result<SessionFlightRecord, SessionFlightReplayError> {
+fn decode_record(bytes: &[u8]) -> Result<SessionTraceRecord, SessionTraceValidationError> {
     let values = [
         get_u64(bytes, 32)?,
         get_u64(bytes, 40)?,
@@ -602,7 +602,7 @@ fn decode_record(bytes: &[u8]) -> Result<SessionFlightRecord, SessionFlightRepla
         get_u64(bytes, 64)?,
         get_u64(bytes, 72)?,
     ];
-    Ok(SessionFlightRecord {
+    Ok(SessionTraceRecord {
         sequence_index: get_u64(bytes, 8)?,
         observed_at_ns: get_u64(bytes, 16)?,
         session_id: SessionId(get_u64(bytes, 24)?),
@@ -610,22 +610,22 @@ fn decode_record(bytes: &[u8]) -> Result<SessionFlightRecord, SessionFlightRepla
     })
 }
 
-fn encode_kind(kind: SessionFlightRecordKind) -> (u8, u8, [u64; 6]) {
+fn encode_kind(kind: SessionTraceRecordKind) -> (u8, u8, [u64; 6]) {
     match kind {
-        SessionFlightRecordKind::Lifecycle { state } => (1, lifecycle_code(state), [0; 6]),
-        SessionFlightRecordKind::SourceFailure { stem_id } => (2, 0, [stem_id.0, 0, 0, 0, 0, 0]),
-        SessionFlightRecordKind::EndpointFailure {
+        SessionTraceRecordKind::Lifecycle { state } => (1, lifecycle_code(state), [0; 6]),
+        SessionTraceRecordKind::SourceFailure { stem_id } => (2, 0, [stem_id.0, 0, 0, 0, 0, 0]),
+        SessionTraceRecordKind::EndpointFailure {
             route_id,
             endpoint_id,
             stage_code,
         } => (3, stage_code, [route_id.0, endpoint_id.0, 0, 0, 0, 0]),
-        SessionFlightRecordKind::RollbackFailure { stage } => {
+        SessionTraceRecordKind::RollbackFailure { stage } => {
             (4, rollback_stage_code(stage), [0; 6])
         }
-        SessionFlightRecordKind::FinalizationFailure { stage } => {
+        SessionTraceRecordKind::FinalizationFailure { stage } => {
             (5, finalization_stage_code(stage), [0; 6])
         }
-        SessionFlightRecordKind::Terminal {
+        SessionTraceRecordKind::Terminal {
             state,
             source_failures_total,
             endpoint_failures_total,
@@ -650,41 +650,41 @@ fn decode_kind(
     kind_code: u8,
     detail_code: u8,
     values: [u64; 6],
-) -> Result<SessionFlightRecordKind, SessionFlightReplayError> {
+) -> Result<SessionTraceRecordKind, SessionTraceValidationError> {
     match kind_code {
-        1 => Ok(SessionFlightRecordKind::Lifecycle {
+        1 => Ok(SessionTraceRecordKind::Lifecycle {
             state: decode_lifecycle(detail_code)?,
         }),
-        2 => Ok(SessionFlightRecordKind::SourceFailure {
+        2 => Ok(SessionTraceRecordKind::SourceFailure {
             stem_id: StemId(values[0]),
         }),
-        3 if (1..=5).contains(&detail_code) => Ok(SessionFlightRecordKind::EndpointFailure {
+        3 if (1..=5).contains(&detail_code) => Ok(SessionTraceRecordKind::EndpointFailure {
             route_id: RouteId(values[0]),
             endpoint_id: EndpointId(values[1]),
             stage_code: detail_code,
         }),
-        3 => Err(SessionFlightReplayError::UnknownRecordType),
-        4 => Ok(SessionFlightRecordKind::RollbackFailure {
+        3 => Err(SessionTraceValidationError::UnknownRecordType),
+        4 => Ok(SessionTraceRecordKind::RollbackFailure {
             stage: decode_rollback_stage(detail_code)?,
         }),
-        5 => Ok(SessionFlightRecordKind::FinalizationFailure {
+        5 => Ok(SessionTraceRecordKind::FinalizationFailure {
             stage: decode_finalization_stage(detail_code)?,
         }),
-        6 => Ok(SessionFlightRecordKind::Terminal {
+        6 => Ok(SessionTraceRecordKind::Terminal {
             state: decode_terminal(detail_code)?,
             source_failures_total: values[0],
             endpoint_failures_total: values[1],
             rollback_failures_total: values[2],
             finalization_failures_total: values[3],
         }),
-        _ => Err(SessionFlightReplayError::UnknownRecordType),
+        _ => Err(SessionTraceValidationError::UnknownRecordType),
     }
 }
 
 fn validate_lifecycle_transition(
     previous: Option<SessionLifecycleState>,
     next: SessionLifecycleState,
-) -> Result<(), SessionFlightReplayError> {
+) -> Result<(), SessionTraceValidationError> {
     let valid = matches!(
         (previous, next),
         (None, SessionLifecycleState::Starting)
@@ -704,14 +704,14 @@ fn validate_lifecycle_transition(
     if valid {
         Ok(())
     } else {
-        Err(SessionFlightReplayError::InvalidLifecycleTransition)
+        Err(SessionTraceValidationError::InvalidLifecycleTransition)
     }
 }
 
 fn validate_terminal(
     lifecycle: Option<SessionLifecycleState>,
     terminal: SessionTerminalState,
-) -> Result<(), SessionFlightReplayError> {
+) -> Result<(), SessionTraceValidationError> {
     let matches = matches!(
         (lifecycle, terminal),
         (
@@ -725,7 +725,7 @@ fn validate_terminal(
     if matches {
         Ok(())
     } else {
-        Err(SessionFlightReplayError::TerminalMismatch)
+        Err(SessionTraceValidationError::TerminalMismatch)
     }
 }
 
@@ -739,14 +739,14 @@ fn lifecycle_code(state: SessionLifecycleState) -> u8 {
     }
 }
 
-fn decode_lifecycle(code: u8) -> Result<SessionLifecycleState, SessionFlightReplayError> {
+fn decode_lifecycle(code: u8) -> Result<SessionLifecycleState, SessionTraceValidationError> {
     match code {
         1 => Ok(SessionLifecycleState::Starting),
         2 => Ok(SessionLifecycleState::Running),
         3 => Ok(SessionLifecycleState::Stopping),
         4 => Ok(SessionLifecycleState::Stopped),
         5 => Ok(SessionLifecycleState::Failed),
-        _ => Err(SessionFlightReplayError::UnknownRecordType),
+        _ => Err(SessionTraceValidationError::UnknownRecordType),
     }
 }
 
@@ -757,11 +757,11 @@ fn terminal_code(state: SessionTerminalState) -> u8 {
     }
 }
 
-fn decode_terminal(code: u8) -> Result<SessionTerminalState, SessionFlightReplayError> {
+fn decode_terminal(code: u8) -> Result<SessionTerminalState, SessionTraceValidationError> {
     match code {
         1 => Ok(SessionTerminalState::Stopped),
         2 => Ok(SessionTerminalState::Failed),
-        _ => Err(SessionFlightReplayError::UnknownRecordType),
+        _ => Err(SessionTraceValidationError::UnknownRecordType),
     }
 }
 
@@ -775,14 +775,14 @@ fn rollback_stage_code(stage: SessionRollbackStage) -> u8 {
     }
 }
 
-fn decode_rollback_stage(code: u8) -> Result<SessionRollbackStage, SessionFlightReplayError> {
+fn decode_rollback_stage(code: u8) -> Result<SessionRollbackStage, SessionTraceValidationError> {
     match code {
         1 => Ok(SessionRollbackStage::CancelOperator),
         2 => Ok(SessionRollbackStage::CancelEndpointPreparation),
         3 => Ok(SessionRollbackStage::FinalizeStartedEndpoint),
         4 => Ok(SessionRollbackStage::StopOpenedCapture),
         5 => Ok(SessionRollbackStage::DiscardRuntimeQueues),
-        _ => Err(SessionFlightReplayError::UnknownRecordType),
+        _ => Err(SessionTraceValidationError::UnknownRecordType),
     }
 }
 
@@ -799,7 +799,7 @@ fn finalization_stage_code(stage: SessionFinalizationStage) -> u8 {
 
 fn decode_finalization_stage(
     code: u8,
-) -> Result<SessionFinalizationStage, SessionFlightReplayError> {
+) -> Result<SessionFinalizationStage, SessionTraceValidationError> {
     match code {
         1 => Ok(SessionFinalizationStage::StopCapture),
         2 => Ok(SessionFinalizationStage::DrainRuntime),
@@ -807,7 +807,7 @@ fn decode_finalization_stage(
         4 => Ok(SessionFinalizationStage::RequestEndpointStop),
         5 => Ok(SessionFinalizationStage::JoinEndpoint),
         6 => Ok(SessionFinalizationStage::FinalizeEndpoint),
-        _ => Err(SessionFlightReplayError::UnknownRecordType),
+        _ => Err(SessionTraceValidationError::UnknownRecordType),
     }
 }
 
@@ -841,28 +841,28 @@ fn put_u64(bytes: &mut [u8], offset: usize, value: u64) {
     bytes[offset..offset + 8].copy_from_slice(&value.to_le_bytes());
 }
 
-fn get_u16(bytes: &[u8], offset: usize) -> Result<u16, SessionFlightReplayError> {
+fn get_u16(bytes: &[u8], offset: usize) -> Result<u16, SessionTraceValidationError> {
     bytes
         .get(offset..offset + 2)
         .and_then(|value| value.try_into().ok())
         .map(u16::from_le_bytes)
-        .ok_or(SessionFlightReplayError::Truncated)
+        .ok_or(SessionTraceValidationError::Truncated)
 }
 
-fn get_u32(bytes: &[u8], offset: usize) -> Result<u32, SessionFlightReplayError> {
+fn get_u32(bytes: &[u8], offset: usize) -> Result<u32, SessionTraceValidationError> {
     bytes
         .get(offset..offset + 4)
         .and_then(|value| value.try_into().ok())
         .map(u32::from_le_bytes)
-        .ok_or(SessionFlightReplayError::Truncated)
+        .ok_or(SessionTraceValidationError::Truncated)
 }
 
-fn get_u64(bytes: &[u8], offset: usize) -> Result<u64, SessionFlightReplayError> {
+fn get_u64(bytes: &[u8], offset: usize) -> Result<u64, SessionTraceValidationError> {
     bytes
         .get(offset..offset + 8)
         .and_then(|value| value.try_into().ok())
         .map(u64::from_le_bytes)
-        .ok_or(SessionFlightReplayError::Truncated)
+        .ok_or(SessionTraceValidationError::Truncated)
 }
 
 #[cfg(test)]
@@ -874,9 +874,9 @@ mod tests {
         SessionEvent::new(session_id, kind)
     }
 
-    fn complete_trace(path: &Path) -> SessionFlightRecorderOutcome {
+    fn complete_trace(path: &Path) -> SessionTraceRecorderOutcome {
         let session_id = SessionId(17);
-        let mut recorder = SessionFlightRecorder::start(path, session_id, 16).unwrap();
+        let mut recorder = SessionTraceRecorder::start(path, session_id, 16).unwrap();
         let handle = recorder.handle();
         for kind in [
             SessionEventKind::Lifecycle(SessionLifecycleState::Starting),
@@ -893,7 +893,7 @@ mod tests {
         ] {
             assert_eq!(
                 handle.try_record_event(&event(session_id, kind)),
-                SessionFlightRecordDelivery::Enqueued
+                SessionTraceRecordDelivery::Enqueued
             );
         }
         recorder.finish().unwrap().clone()
@@ -903,9 +903,9 @@ mod tests {
         sequence_index: u64,
         observed_at_ns: u64,
         session_id: SessionId,
-        kind: SessionFlightRecordKind,
-    ) -> SessionFlightRecord {
-        SessionFlightRecord {
+        kind: SessionTraceRecordKind,
+    ) -> SessionTraceRecord {
+        SessionTraceRecord {
             sequence_index,
             observed_at_ns,
             session_id,
@@ -914,19 +914,19 @@ mod tests {
     }
 
     fn synthetic_trace(
-        records: Vec<SessionFlightRecord>,
-        outcome: SessionFlightRecorderOutcome,
-    ) -> SessionFlightTrace {
-        SessionFlightTrace {
+        records: Vec<SessionTraceRecord>,
+        outcome: SessionTraceRecorderOutcome,
+    ) -> SessionTrace {
+        SessionTrace {
             session_id: SessionId(17),
             records: records.into_boxed_slice(),
             outcome,
         }
     }
 
-    fn complete_outcome(record_count: u64) -> SessionFlightRecorderOutcome {
-        SessionFlightRecorderOutcome {
-            path: PathBuf::from("synthetic.pksflight"),
+    fn complete_outcome(record_count: u64) -> SessionTraceRecorderOutcome {
+        SessionTraceRecorderOutcome {
+            path: PathBuf::from("synthetic.pkstrace"),
             records_attempted_total: record_count,
             records_enqueued_total: record_count,
             records_dropped_total: 0,
@@ -935,14 +935,14 @@ mod tests {
         }
     }
 
-    fn stopped_records() -> Vec<SessionFlightRecord> {
+    fn stopped_records() -> Vec<SessionTraceRecord> {
         let session_id = SessionId(17);
         vec![
             record(
                 0,
                 10,
                 session_id,
-                SessionFlightRecordKind::Lifecycle {
+                SessionTraceRecordKind::Lifecycle {
                     state: SessionLifecycleState::Starting,
                 },
             ),
@@ -950,7 +950,7 @@ mod tests {
                 1,
                 20,
                 session_id,
-                SessionFlightRecordKind::Lifecycle {
+                SessionTraceRecordKind::Lifecycle {
                     state: SessionLifecycleState::Running,
                 },
             ),
@@ -958,7 +958,7 @@ mod tests {
                 2,
                 30,
                 session_id,
-                SessionFlightRecordKind::Lifecycle {
+                SessionTraceRecordKind::Lifecycle {
                     state: SessionLifecycleState::Stopping,
                 },
             ),
@@ -966,7 +966,7 @@ mod tests {
                 3,
                 40,
                 session_id,
-                SessionFlightRecordKind::Lifecycle {
+                SessionTraceRecordKind::Lifecycle {
                     state: SessionLifecycleState::Stopped,
                 },
             ),
@@ -974,7 +974,7 @@ mod tests {
                 4,
                 50,
                 session_id,
-                SessionFlightRecordKind::Terminal {
+                SessionTraceRecordKind::Terminal {
                     state: SessionTerminalState::Stopped,
                     source_failures_total: 0,
                     endpoint_failures_total: 0,
@@ -986,18 +986,18 @@ mod tests {
     }
 
     #[test]
-    fn given_complete_trace_when_replayed_then_lifecycle_and_terminal_match() {
+    fn given_complete_trace_when_validated_then_lifecycle_and_terminal_match() {
         let directory = tempfile::tempdir().unwrap();
-        let path = directory.path().join("session.pksflight");
+        let path = directory.path().join("session.pkstrace");
         let outcome = complete_trace(&path);
         assert!(outcome.is_complete());
 
-        let trace = SessionFlightTrace::read(&path).unwrap();
-        let replay = trace.replay().unwrap();
+        let trace = SessionTrace::read(&path).unwrap();
+        let validation = trace.validate().unwrap();
 
-        assert_eq!(replay.session_id, SessionId(17));
+        assert_eq!(validation.session_id, SessionId(17));
         assert_eq!(
-            replay.lifecycle.as_ref(),
+            validation.lifecycle.as_ref(),
             &[
                 SessionLifecycleState::Starting,
                 SessionLifecycleState::Running,
@@ -1005,61 +1005,61 @@ mod tests {
                 SessionLifecycleState::Stopped,
             ]
         );
-        assert_eq!(replay.terminal.state, SessionTerminalState::Stopped);
-        assert_eq!(replay.records_replayed_total, 5);
+        assert_eq!(validation.terminal.state, SessionTerminalState::Stopped);
+        assert_eq!(validation.records_validated_total, 5);
     }
 
     #[test]
     fn given_corrupted_record_when_read_then_checksum_is_rejected() {
         let directory = tempfile::tempdir().unwrap();
-        let path = directory.path().join("session.pksflight");
+        let path = directory.path().join("session.pkstrace");
         complete_trace(&path);
         let mut bytes = std::fs::read(&path).unwrap();
         bytes[HEADER_SIZE_BYTES + 20] ^= 0x80;
         std::fs::write(&path, bytes).unwrap();
 
         assert!(matches!(
-            SessionFlightTrace::read(&path),
-            Err(SessionFlightReplayError::InvalidChecksum)
+            SessionTrace::read(&path),
+            Err(SessionTraceValidationError::InvalidChecksum)
         ));
     }
 
     #[test]
     fn given_truncated_trace_when_read_then_truncation_is_rejected() {
         let directory = tempfile::tempdir().unwrap();
-        let path = directory.path().join("session.pksflight");
+        let path = directory.path().join("session.pkstrace");
         complete_trace(&path);
         let mut bytes = std::fs::read(&path).unwrap();
         bytes.truncate(HEADER_SIZE_BYTES + 12);
         std::fs::write(&path, bytes).unwrap();
 
         assert!(matches!(
-            SessionFlightTrace::read(&path),
-            Err(SessionFlightReplayError::Truncated)
+            SessionTrace::read(&path),
+            Err(SessionTraceValidationError::Truncated)
         ));
     }
 
     #[test]
     fn given_unknown_version_when_read_then_version_is_rejected() {
         let directory = tempfile::tempdir().unwrap();
-        let path = directory.path().join("session.pksflight");
+        let path = directory.path().join("session.pkstrace");
         complete_trace(&path);
         let mut bytes = std::fs::read(&path).unwrap();
         put_u16(&mut bytes, 8, TRACE_VERSION + 1);
         std::fs::write(&path, bytes).unwrap();
 
         assert!(matches!(
-            SessionFlightTrace::read(&path),
-            Err(SessionFlightReplayError::UnsupportedVersion)
+            SessionTrace::read(&path),
+            Err(SessionTraceValidationError::UnsupportedVersion)
         ));
     }
 
     #[test]
-    fn given_invalid_lifecycle_when_replayed_then_replay_fails_closed() {
+    fn given_invalid_lifecycle_when_validated_then_validation_fails_closed() {
         let directory = tempfile::tempdir().unwrap();
-        let path = directory.path().join("invalid.pksflight");
+        let path = directory.path().join("invalid.pkstrace");
         let session_id = SessionId(23);
-        let mut recorder = SessionFlightRecorder::start(&path, session_id, 8).unwrap();
+        let mut recorder = SessionTraceRecorder::start(&path, session_id, 8).unwrap();
         let handle = recorder.handle();
         for kind in [
             SessionEventKind::Lifecycle(SessionLifecycleState::Starting),
@@ -1075,27 +1075,27 @@ mod tests {
         ] {
             assert_eq!(
                 handle.try_record_event(&event(session_id, kind)),
-                SessionFlightRecordDelivery::Enqueued
+                SessionTraceRecordDelivery::Enqueued
             );
         }
         recorder.finish().unwrap();
 
-        let trace = SessionFlightTrace::read(&path).unwrap();
+        let trace = SessionTrace::read(&path).unwrap();
         assert!(matches!(
-            trace.replay(),
-            Err(SessionFlightReplayError::InvalidLifecycleTransition)
+            trace.validate(),
+            Err(SessionTraceValidationError::InvalidLifecycleTransition)
         ));
     }
 
     #[test]
     fn given_existing_output_when_started_then_recorder_fails_closed() {
         let directory = tempfile::tempdir().unwrap();
-        let path = directory.path().join("existing.pksflight");
+        let path = directory.path().join("existing.pkstrace");
         std::fs::write(&path, b"existing").unwrap();
 
         assert!(matches!(
-            SessionFlightRecorder::start(&path, SessionId(1), 8),
-            Err(SessionFlightRecorderStartError::OutputExists { .. })
+            SessionTraceRecorder::start(&path, SessionId(1), 8),
+            Err(SessionTraceRecorderStartError::OutputExists { .. })
         ));
         assert_eq!(std::fs::read(&path).unwrap(), b"existing");
     }
@@ -1103,22 +1103,22 @@ mod tests {
     #[test]
     fn given_zero_capacity_when_started_then_recorder_fails_closed() {
         let directory = tempfile::tempdir().unwrap();
-        let path = directory.path().join("zero-capacity.pksflight");
+        let path = directory.path().join("zero-capacity.pkstrace");
 
         assert!(matches!(
-            SessionFlightRecorder::start(&path, SessionId(1), 0),
-            Err(SessionFlightRecorderStartError::ZeroCapacity)
+            SessionTraceRecorder::start(&path, SessionId(1), 0),
+            Err(SessionTraceRecorderStartError::ZeroCapacity)
         ));
         assert!(!path.exists());
     }
 
     #[test]
-    fn given_dropped_records_when_replayed_then_trace_is_incomplete() {
+    fn given_dropped_records_when_validated_then_trace_is_incomplete() {
         let records = stopped_records();
         let trace = synthetic_trace(
             records,
-            SessionFlightRecorderOutcome {
-                path: PathBuf::from("synthetic.pksflight"),
+            SessionTraceRecorderOutcome {
+                path: PathBuf::from("synthetic.pkstrace"),
                 records_attempted_total: 6,
                 records_enqueued_total: 5,
                 records_dropped_total: 1,
@@ -1128,49 +1128,49 @@ mod tests {
         );
 
         assert!(matches!(
-            trace.replay(),
-            Err(SessionFlightReplayError::IncompleteTrace)
+            trace.validate(),
+            Err(SessionTraceValidationError::IncompleteTrace)
         ));
     }
 
     #[test]
-    fn given_sequence_gap_when_replayed_then_trace_is_rejected() {
+    fn given_sequence_gap_when_validated_then_trace_is_rejected() {
         let mut records = stopped_records();
         records[2].sequence_index = 3;
         let trace = synthetic_trace(records, complete_outcome(5));
 
         assert!(matches!(
-            trace.replay(),
-            Err(SessionFlightReplayError::SequenceGap)
+            trace.validate(),
+            Err(SessionTraceValidationError::SequenceGap)
         ));
     }
 
     #[test]
-    fn given_timestamp_regression_when_replayed_then_trace_is_rejected() {
+    fn given_timestamp_regression_when_validated_then_trace_is_rejected() {
         let mut records = stopped_records();
         records[2].observed_at_ns = 5;
         let trace = synthetic_trace(records, complete_outcome(5));
 
         assert!(matches!(
-            trace.replay(),
-            Err(SessionFlightReplayError::TimestampRegression)
+            trace.validate(),
+            Err(SessionTraceValidationError::TimestampRegression)
         ));
     }
 
     #[test]
-    fn given_record_after_terminal_when_replayed_then_trace_is_rejected() {
+    fn given_record_after_terminal_when_validated_then_trace_is_rejected() {
         let mut records = stopped_records();
         records.push(record(
             5,
             60,
             SessionId(17),
-            SessionFlightRecordKind::SourceFailure { stem_id: StemId(9) },
+            SessionTraceRecordKind::SourceFailure { stem_id: StemId(9) },
         ));
         let trace = synthetic_trace(records, complete_outcome(6));
 
         assert!(matches!(
-            trace.replay(),
-            Err(SessionFlightReplayError::RecordAfterTerminal)
+            trace.validate(),
+            Err(SessionTraceValidationError::RecordAfterTerminal)
         ));
     }
 }

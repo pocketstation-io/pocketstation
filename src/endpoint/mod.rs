@@ -24,8 +24,8 @@ pub use registry::{
 // implementation remains in this module; no separately versioned endpoint
 // package exists.
 pub use crate::graph::{
-    AsyncEnvelope, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity,
-    NodeConfig as OperatorConfiguration, NodeDefinition, NodeDescriptor, NodeTypeId, PortDirection,
-    PortSpec, SafetyContract, SignalSpec, TextFormat,
+    EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig as OperatorConfiguration,
+    NodeDefinition, NodeDescriptor, NodeTypeId, PortDirection, PortSpec, SafetyContract,
+    SignalEnvelope, SignalSpec, TextFormat,
 };
 pub use crate::runtime::{AsyncOperatorOutputObservationHandle, AsyncOperatorOutputObservations};

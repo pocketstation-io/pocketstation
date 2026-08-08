@@ -4,8 +4,8 @@ use std::process::Stdio;
 use std::time::Duration;
 
 use pocketstation::operator::{
-    transcript_final_spec, transcript_partial_spec, AsyncEnvelope, AsyncNode, AsyncNodeFuture,
-    AsyncOperatorFactory, AsyncOperatorManifest, AsyncSignal, AudioCaps, ChannelLayout,
+    transcript_final_spec, transcript_partial_spec, SignalEnvelope, AsyncNode, AsyncNodeFuture,
+    AsyncOperatorFactory, AsyncOperatorManifest, SignalPayload, AudioCaps, ChannelLayout,
     ConfigError, CopyPolicy, DerivedSignalLineage, EdgeContract, ExecutionPartition, FrameLineage,
     MediaCaps, Multiplicity, NodeDescriptor, NodeError, NodeTypeId, OperatorCancellationPolicy,
     OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId,
@@ -87,7 +87,7 @@ impl WhisperOperatorFactory {
         let mut input_edge = EdgeContract::voice_default();
         input_edge.media = audio;
         input_edge.copy_policy = CopyPolicy::CopyToBranchPool;
-        let mut output_edge = EdgeContract::model_default();
+        let mut output_edge = EdgeContract::typed_default();
         output_edge.media = MediaCaps::Text;
         Self {
             binary_path: binary_path.into(),
@@ -538,10 +538,10 @@ impl WhisperConnector {
 
     async fn process_audio(
         &mut self,
-        input: AsyncEnvelope,
-    ) -> Result<Option<AsyncEnvelope>, NodeError> {
+        input: SignalEnvelope,
+    ) -> Result<Option<SignalEnvelope>, NodeError> {
         let frame = match &input.signal {
-            AsyncSignal::Audio(frame) => frame,
+            SignalPayload::Audio(frame) => frame,
             _ => unreachable!("process_audio is called only for typed audio"),
         };
         let sample_rate_hz = self.sample_rate_hz.ok_or_else(|| {
@@ -632,9 +632,9 @@ impl WhisperConnector {
         transcript: String,
         signal_spec: SignalSpec,
         origin: WindowOrigin,
-    ) -> Result<AsyncEnvelope, NodeError> {
-        let mut output = AsyncEnvelope::new(
-            AsyncSignal::Text(transcript),
+    ) -> Result<SignalEnvelope, NodeError> {
+        let mut output = SignalEnvelope::new(
+            SignalPayload::Text(transcript),
             origin.sequence_number,
             origin.timestamp_ns,
         );
@@ -667,7 +667,7 @@ impl WhisperConnector {
 
 fn update_origin(
     origin: &mut Option<WindowOrigin>,
-    input: &AsyncEnvelope,
+    input: &SignalEnvelope,
     frame_timestamp_end_ns: u64,
 ) -> Result<(), String> {
     if let Some(origin) = origin.as_mut() {
@@ -687,7 +687,7 @@ fn update_origin(
 
 fn validate_window_continuation(
     origin: &mut WindowOrigin,
-    input: &AsyncEnvelope,
+    input: &SignalEnvelope,
     frame_timestamp_end_ns: u64,
 ) -> Result<(), String> {
     if origin.source_id != input.source_id {
@@ -767,18 +767,18 @@ impl AsyncNode for WhisperConnector {
 
     fn process<'a>(
         &'a mut self,
-        input: AsyncEnvelope,
-    ) -> AsyncNodeFuture<'a, Result<Vec<AsyncEnvelope>, NodeError>> {
+        input: SignalEnvelope,
+    ) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
         Box::pin(async move {
             if !self.prepared {
                 return Err(NodeError::Process("connector is not prepared".to_owned()));
             }
             match &input.signal {
-                AsyncSignal::Audio(_) => Ok(self.process_audio(input).await?.into_iter().collect()),
-                AsyncSignal::Binary(bytes) => {
+                SignalPayload::Audio(_) => Ok(self.process_audio(input).await?.into_iter().collect()),
+                SignalPayload::Binary(bytes) => {
                     let transcript = self.transcribe(bytes).await?;
                     Ok(vec![input.map_signal(
-                        AsyncSignal::Text(transcript),
+                        SignalPayload::Text(transcript),
                         transcript_final_spec(),
                     )])
                 }
@@ -790,7 +790,7 @@ impl AsyncNode for WhisperConnector {
         })
     }
 
-    fn flush<'a>(&'a mut self) -> AsyncNodeFuture<'a, Result<Vec<AsyncEnvelope>, NodeError>> {
+    fn flush<'a>(&'a mut self) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
         Box::pin(async move {
             if self.stream_origin.is_none() {
                 return Ok(Vec::new());
@@ -898,8 +898,8 @@ mod tests {
         sequence_number: u64,
         discontinuity_epoch: u64,
         permission_epoch: u64,
-    ) -> AsyncEnvelope {
-        AsyncEnvelope::from_audio(
+    ) -> SignalEnvelope {
+        SignalEnvelope::from_audio(
             audio_frame(source_id, sequence_number),
             Some(FrameLineage {
                 session_id: SessionId(3),
@@ -954,8 +954,8 @@ mod tests {
         let context = PrepareContext::new(SampleSpec::new(16_000, 1, SampleFormat::F32Interleaved));
         connector.prepare(&context).await.unwrap();
         let output = connector
-            .process(AsyncEnvelope::new(
-                AsyncSignal::Binary(b"RIFF fixture".to_vec()),
+            .process(SignalEnvelope::new(
+                SignalPayload::Binary(b"RIFF fixture".to_vec()),
                 42,
                 99,
             ))
@@ -972,7 +972,7 @@ mod tests {
             Some("transcript.final")
         );
         assert!(
-            matches!(output.signal, AsyncSignal::Text(ref text) if text == "hello from local whisper")
+            matches!(output.signal, SignalPayload::Text(ref text) if text == "hello from local whisper")
         );
     }
 
@@ -999,8 +999,8 @@ mod tests {
             .unwrap();
 
         let error = connector
-            .process(AsyncEnvelope::new(
-                AsyncSignal::Binary(b"RIFF fixture".to_vec()),
+            .process(SignalEnvelope::new(
+                SignalPayload::Binary(b"RIFF fixture".to_vec()),
                 0,
                 0,
             ))
@@ -1027,8 +1027,8 @@ mod tests {
             .unwrap();
 
         connector
-            .process(AsyncEnvelope::new(
-                AsyncSignal::Binary(b"RIFF fixture".to_vec()),
+            .process(SignalEnvelope::new(
+                SignalPayload::Binary(b"RIFF fixture".to_vec()),
                 0,
                 0,
             ))
@@ -1083,8 +1083,8 @@ mod tests {
             .unwrap();
 
         let error = connector
-            .process(AsyncEnvelope::new(
-                AsyncSignal::Binary(b"RIFF fixture".to_vec()),
+            .process(SignalEnvelope::new(
+                SignalPayload::Binary(b"RIFF fixture".to_vec()),
                 0,
                 0,
             ))
@@ -1133,7 +1133,7 @@ mod tests {
             PrepareContext::new(SampleSpec::new(16_000, 1, SampleFormat::F32Interleaved)),
             &[AsyncOperatorOutputBranchSpec {
                 capacity_signals: 1,
-                edge_contract: EdgeContract::model_default(),
+                edge_contract: EdgeContract::typed_default(),
             }],
         )
         .unwrap();
@@ -1186,8 +1186,8 @@ mod tests {
             .await
             .unwrap();
         {
-            let process = connector.process(AsyncEnvelope::new(
-                AsyncSignal::Binary(b"RIFF fixture".to_vec()),
+            let process = connector.process(SignalEnvelope::new(
+                SignalPayload::Binary(b"RIFF fixture".to_vec()),
                 0,
                 0,
             ));
@@ -1231,10 +1231,10 @@ mod tests {
             .await
             .unwrap();
 
-        let first = AsyncEnvelope::from_audio(audio_frame(source_id, 8), None);
+        let first = SignalEnvelope::from_audio(audio_frame(source_id, 8), None);
         assert!(connector.process(first).await.unwrap().is_empty());
 
-        let second = AsyncEnvelope::from_audio(audio_frame(source_id, 9), None);
+        let second = SignalEnvelope::from_audio(audio_frame(source_id, 9), None);
         let output = connector
             .process(second)
             .await
@@ -1251,7 +1251,7 @@ mod tests {
             Some("transcript.partial")
         );
         assert!(
-            matches!(output.signal, AsyncSignal::Text(ref text) if text == "hello from local whisper")
+            matches!(output.signal, SignalPayload::Text(ref text) if text == "hello from local whisper")
         );
 
         let final_output = connector.flush().await.unwrap().pop().unwrap();
@@ -1329,7 +1329,7 @@ mod tests {
         assert_eq!(derived.timestamp_end_ns, 40_000_000);
         assert!(matches!(
             final_output.signal,
-            AsyncSignal::Text(ref text)
+            SignalPayload::Text(ref text)
                 if text == "hello from local whisper hello from local whisper"
         ));
         assert!(connector.flush().await.unwrap().is_empty());
@@ -1458,7 +1458,7 @@ mod tests {
             Some("transcript.partial")
         );
         assert!(
-            matches!(output.signal, AsyncSignal::Text(ref text) if text == "hello from local whisper")
+            matches!(output.signal, SignalPayload::Text(ref text) if text == "hello from local whisper")
         );
         let final_output = stt.flush().await.unwrap().pop().unwrap();
         assert_eq!(

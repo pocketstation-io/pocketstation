@@ -1142,7 +1142,7 @@ mod tests {
         let sink = graph.add_node("test.text-sink", NodeConfig::new());
         let mut input_contract = EdgeContract::voice_default();
         input_contract.copy_policy = CopyPolicy::CopyToBranchPool;
-        let mut output_contract = EdgeContract::model_default();
+        let mut output_contract = EdgeContract::typed_default();
         output_contract.media = MediaCaps::Text;
         graph.connect_with(source.out("out"), operator.in_("audio"), input_contract);
         graph.connect_with(operator.out("transcript"), sink.in_("in"), output_contract);

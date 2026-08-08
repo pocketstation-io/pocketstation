@@ -70,10 +70,10 @@ fn given_public_facade_when_external_destinations_run_then_all_branches_receive_
 
 #[cfg(feature = "conformance-fixtures")]
 #[test]
-fn given_public_facade_when_flight_recording_enabled_then_trace_replays_complete_lifecycle() {
-    let directory = tempfile::tempdir().expect("temporary flight-recorder root");
-    let trace_path = directory.path().join("session.pksflight");
-    let session = pocketstation::conformance::session_with_flight_recording(&trace_path, 32)
+fn given_public_facade_when_session_trace_enabled_then_trace_replays_complete_lifecycle() {
+    let directory = tempfile::tempdir().expect("temporary session trace root");
+    let trace_path = directory.path().join("session.pkstrace");
+    let session = pocketstation::conformance::session_with_trace(&trace_path, 32)
         .expect("canonical conformance Session");
     let session_id = session.id();
     let application = session
@@ -97,16 +97,16 @@ fn given_public_facade_when_flight_recording_enabled_then_trace_replays_complete
     assert!(stop.is_success(), "Session must stop cleanly");
 
     let outcome = running
-        .flight_recording_outcome()
-        .expect("flight-recorder outcome")
-        .expect("flight-recorder finalization");
-    assert!(outcome.is_complete(), "flight trace must be lossless");
+        .session_trace_outcome()
+        .expect("session trace outcome")
+        .expect("session trace finalization");
+    assert!(outcome.is_complete(), "Session trace must be lossless");
 
-    let trace = pocketstation::SessionFlightTrace::read(&trace_path).expect("read flight trace");
-    let replay = trace.replay().expect("replay flight trace");
-    assert_eq!(replay.session_id, session_id);
+    let trace = pocketstation::SessionTrace::read(&trace_path).expect("read Session trace");
+    let validation = trace.validate().expect("validate Session trace");
+    assert_eq!(validation.session_id, session_id);
     assert_eq!(
-        replay.lifecycle.as_ref(),
+        validation.lifecycle.as_ref(),
         &[
             pocketstation::SessionLifecycleState::Starting,
             pocketstation::SessionLifecycleState::Running,
@@ -115,10 +115,10 @@ fn given_public_facade_when_flight_recording_enabled_then_trace_replays_complete
         ]
     );
     assert_eq!(
-        replay.terminal.state,
+        validation.terminal.state,
         pocketstation::SessionTerminalState::Stopped
     );
-    assert_eq!(replay.records_replayed_total, 5);
+    assert_eq!(validation.records_validated_total, 5);
 }
 
 #[cfg(feature = "conformance-fixtures")]

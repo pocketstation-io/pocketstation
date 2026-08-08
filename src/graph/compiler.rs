@@ -579,11 +579,14 @@ mod tests {
             direction,
             signal: match media {
                 MediaCaps::Audio(_) => crate::graph::SignalSpec::audio(),
+                MediaCaps::EncodedAudio(codec) => crate::graph::SignalSpec::encoded_audio(codec),
                 MediaCaps::Text => crate::graph::SignalSpec::text(crate::graph::TextFormat::Utf8),
                 MediaCaps::Event => {
                     crate::graph::SignalSpec::event(crate::graph::EventFormat::Json)
                 }
+                MediaCaps::Metrics => crate::graph::SignalSpec::metrics(),
                 MediaCaps::Control => crate::graph::SignalSpec::control(),
+                MediaCaps::Binary(format) => crate::graph::SignalSpec::binary(format),
                 MediaCaps::Any => crate::graph::SignalSpec::any(),
             },
             media,

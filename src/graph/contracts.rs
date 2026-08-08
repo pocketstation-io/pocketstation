@@ -4,7 +4,7 @@
 
 use crate::frame::{EncryptionMode, SampleFormat};
 
-use crate::graph::signal::SignalSpec;
+use crate::graph::signal::{BinaryFormat, Codec, SignalClass, SignalSpec};
 
 const VOICE_SAMPLE_RATE_HZ: u32 = 48_000; // internal canonical rate (ADR-013)
 const VOICE_FRAME_SAMPLES: usize = 960; // 20ms × 48kHz (ADR-012)
@@ -17,7 +17,9 @@ pub enum MediaKind {
     AudioEncoded,
     Text,
     Event,
+    Metrics,
     Control,
+    Binary,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -81,9 +83,12 @@ impl AudioCaps {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MediaCaps {
     Audio(AudioCaps),
+    EncodedAudio(Codec),
     Text,
     Event,
+    Metrics,
     Control,
+    Binary(BinaryFormat),
     Any, // wildcard port; has no single MediaKind
 }
 
@@ -91,9 +96,12 @@ impl MediaCaps {
     pub fn kind(&self) -> Option<MediaKind> {
         match self {
             Self::Audio(_) => Some(MediaKind::AudioPcm),
+            Self::EncodedAudio(_) => Some(MediaKind::AudioEncoded),
             Self::Text => Some(MediaKind::Text),
             Self::Event => Some(MediaKind::Event),
+            Self::Metrics => Some(MediaKind::Metrics),
             Self::Control => Some(MediaKind::Control),
+            Self::Binary(_) => Some(MediaKind::Binary),
             Self::Any => None,
         }
     }
@@ -102,9 +110,12 @@ impl MediaCaps {
         match (self, other) {
             (Self::Any, _) | (_, Self::Any) => true,
             (Self::Audio(a), Self::Audio(b)) => a.is_compatible_with(b),
+            (Self::EncodedAudio(a), Self::EncodedAudio(b)) => a == b,
             (Self::Text, Self::Text) => true,
             (Self::Event, Self::Event) => true,
+            (Self::Metrics, Self::Metrics) => true,
             (Self::Control, Self::Control) => true,
+            (Self::Binary(a), Self::Binary(b)) => a == b,
             _ => false,
         }
     }
@@ -115,10 +126,34 @@ impl MediaCaps {
             (Self::Audio(a), Self::Audio(b)) if a.is_compatible_with(b) => {
                 Some(Self::Audio(a.narrow(b)))
             }
+            (Self::EncodedAudio(a), Self::EncodedAudio(b)) if a == b => {
+                Some(Self::EncodedAudio(*a))
+            }
             (Self::Text, Self::Text) => Some(Self::Text),
             (Self::Event, Self::Event) => Some(Self::Event),
+            (Self::Metrics, Self::Metrics) => Some(Self::Metrics),
             (Self::Control, Self::Control) => Some(Self::Control),
+            (Self::Binary(a), Self::Binary(b)) if a == b => Some(Self::Binary(*a)),
             _ => None,
+        }
+    }
+
+    pub fn supports_signal(&self, signal: &SignalSpec) -> bool {
+        match (&signal.class, self) {
+            (_, Self::Any) | (SignalClass::Any, _) => true,
+            (SignalClass::PcmAudio, Self::Audio(_)) => true,
+            (SignalClass::EncodedAudio(signal_codec), Self::EncodedAudio(media_codec)) => {
+                signal_codec == media_codec
+            }
+            (SignalClass::Text(_), Self::Text) => true,
+            (SignalClass::Event(_), Self::Event) => true,
+            (SignalClass::Metrics, Self::Metrics) => true,
+            (SignalClass::Control, Self::Control) => true,
+            (SignalClass::Binary(signal_format), Self::Binary(media_format)) => {
+                signal_format == media_format
+            }
+            (SignalClass::Custom(_), Self::Binary(_)) => signal.schema.is_some(),
+            _ => false,
         }
     }
 }
@@ -184,8 +219,8 @@ pub enum CopyPolicy {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum LossPolicy {
-    ConcealForAudio,          // PLC-eligible; dropped audio is concealed downstream
-    NeverDropFinalTranscript, // final model output must survive backpressure
+    ConcealForAudio,   // PLC-eligible; dropped audio is concealed downstream
+    MustDeliverOrFail, // terminal output must be delivered or the branch fails visibly
     DropAllowed,
 }
 
@@ -241,14 +276,24 @@ impl EdgeContract {
         }
     }
 
-    pub fn model_default() -> Self {
+    pub fn typed_default() -> Self {
         Self {
             media: MediaCaps::Event,
+            clock: ClockDomain::Model,
+            latency_budget_ms: None,
+            jitter_budget_ms: None,
             backpressure: BackpressurePolicy::BoundedQueue,
-            loss: LossPolicy::NeverDropFinalTranscript,
             delivery: DeliverySemantics::Ordered,
-            ..Self::voice_default()
+            loss: LossPolicy::MustDeliverOrFail,
+            copy_policy: CopyPolicy::ShareReadOnly,
+            encryption: EncryptionMode::None,
+            observability: EdgeObservabilityLevel::Counters,
         }
+    }
+
+    #[deprecated(note = "use EdgeContract::typed_default")]
+    pub fn model_default() -> Self {
+        Self::typed_default()
     }
 }
 
@@ -355,18 +400,43 @@ mod tests {
     }
 
     #[test]
-    fn given_model_default_when_built_then_overrides_loss_and_backpressure() {
-        let edge = EdgeContract::model_default();
-        assert_eq!(edge.loss, LossPolicy::NeverDropFinalTranscript);
+    fn given_typed_default_when_built_then_contains_no_audio_budgets() {
+        let edge = EdgeContract::typed_default();
+        assert_eq!(edge.loss, LossPolicy::MustDeliverOrFail);
         assert_eq!(edge.backpressure, BackpressurePolicy::BoundedQueue);
         assert_eq!(edge.media, MediaCaps::Event);
         assert_eq!(edge.delivery, DeliverySemantics::Ordered);
+        assert_eq!(edge.clock, ClockDomain::Model);
+        assert_eq!(edge.latency_budget_ms, None);
+        assert_eq!(edge.jitter_budget_ms, None);
     }
 
     #[test]
     fn given_observability_levels_when_ranked_then_ordered_ascending() {
         assert!(EdgeObservabilityLevel::Off.rank() < EdgeObservabilityLevel::Counters.rank());
         assert!(EdgeObservabilityLevel::Counters.rank() < EdgeObservabilityLevel::Full.rank());
+    }
+
+    #[test]
+    fn given_supported_non_audio_signals_when_checked_then_media_is_symmetric() {
+        assert!(MediaCaps::EncodedAudio(Codec::Opus)
+            .supports_signal(&SignalSpec::encoded_audio(Codec::Opus)));
+        assert!(MediaCaps::Text.supports_signal(&SignalSpec::text(crate::graph::TextFormat::Json)));
+        assert!(MediaCaps::Event
+            .supports_signal(&SignalSpec::event(crate::graph::EventFormat::Protobuf)));
+        assert!(MediaCaps::Metrics.supports_signal(&SignalSpec::metrics()));
+        assert!(MediaCaps::Control.supports_signal(&SignalSpec::control()));
+        assert!(MediaCaps::Binary(BinaryFormat::Cbor)
+            .supports_signal(&SignalSpec::binary(BinaryFormat::Cbor)));
+        assert!(MediaCaps::Binary(BinaryFormat::Protobuf).supports_signal(
+            &SignalSpec::custom("com.acme.signal.v1").with_schema("proto:acme.Signal")
+        ));
+    }
+
+    #[test]
+    fn given_custom_signal_without_schema_when_checked_then_binary_media_rejects_it() {
+        assert!(!MediaCaps::Binary(BinaryFormat::Raw)
+            .supports_signal(&SignalSpec::custom("com.acme.signal.v1")));
     }
 
     fn any_layout() -> impl Strategy<Value = ChannelLayout> {

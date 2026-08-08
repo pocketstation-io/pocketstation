@@ -20,14 +20,14 @@ use crate::frame::{
     SessionId, SourceId, StemId, StreamId,
 };
 use crate::graph::{
-    transcript_final_spec, transcript_partial_spec, AsyncEnvelope, AsyncNode, AsyncNodeFuture,
-    AsyncOperatorFactory, AsyncOperatorManifest, AsyncSignal, AudioCaps, ChannelLayout,
-    ConfigError, CopyPolicy, DerivedSignalLineage, EdgeContract, ExecutionPartition, MediaCaps,
-    Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeError, NodeFactory, NodeRegistry,
-    NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy,
+    transcript_final_spec, transcript_partial_spec, AsyncNode, AsyncNodeFuture,
+    AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, ChannelLayout, ConfigError, CopyPolicy,
+    DerivedSignalLineage, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig,
+    NodeDefinition, NodeDescriptor, NodeError, NodeFactory, NodeRegistry, NodeTypeId,
+    OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy,
     OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PrepareContext,
-    RuntimeNode, SafetyContract, SemanticRole, SignalSpec, TextFormat, TRANSCRIPT_FINAL_ROLE,
-    TRANSCRIPT_PARTIAL_ROLE,
+    RuntimeNode, SafetyContract, SemanticRole, SignalEnvelope, SignalPayload, SignalSpec,
+    TextFormat, TRANSCRIPT_FINAL_ROLE, TRANSCRIPT_PARTIAL_ROLE,
 };
 use crate::runtime::{PlanEdgeFrame, PlanEdgeReceiver};
 
@@ -675,7 +675,7 @@ impl RunningTestAsyncFactory {
         let mut input_edge = EdgeContract::voice_default();
         input_edge.media = audio;
         input_edge.copy_policy = CopyPolicy::CopyToBranchPool;
-        let mut output_edge = EdgeContract::model_default();
+        let mut output_edge = EdgeContract::typed_default();
         output_edge.media = MediaCaps::Text;
         Self {
             control,
@@ -757,9 +757,9 @@ impl RunningTestAsyncNode {
         lineage: crate::frame::FrameLineage,
         role: SignalSpec,
         text: &str,
-    ) -> Result<AsyncEnvelope, NodeError> {
-        let mut output = AsyncEnvelope::new(
-            AsyncSignal::Text(text.to_owned()),
+    ) -> Result<SignalEnvelope, NodeError> {
+        let mut output = SignalEnvelope::new(
+            SignalPayload::Text(text.to_owned()),
             lineage.sequence_num,
             lineage.timestamp_start_ns,
         );
@@ -802,8 +802,8 @@ impl AsyncNode for RunningTestAsyncNode {
 
     fn process<'a>(
         &'a mut self,
-        input: AsyncEnvelope,
-    ) -> AsyncNodeFuture<'a, Result<Vec<AsyncEnvelope>, NodeError>> {
+        input: SignalEnvelope,
+    ) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
         Box::pin(async move {
             self.control
                 .process_started_total
@@ -823,7 +823,7 @@ impl AsyncNode for RunningTestAsyncNode {
         })
     }
 
-    fn flush<'a>(&'a mut self) -> AsyncNodeFuture<'a, Result<Vec<AsyncEnvelope>, NodeError>> {
+    fn flush<'a>(&'a mut self) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
         Box::pin(async move {
             self.last_lineage.take().map_or_else(
                 || Ok(Vec::new()),

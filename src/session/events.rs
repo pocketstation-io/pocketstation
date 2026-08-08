@@ -8,7 +8,7 @@ use crate::endpoint::{EndpointFailure, EndpointFailureStage};
 use crate::frame::{EndpointId, RouteId, SessionId, StemId};
 
 use crate::session::observations::{SessionEventQueueCounters, SessionEventQueueObservations};
-use crate::session::{OperatorInstanceId, SessionFlightRecorderHandle};
+use crate::session::{OperatorInstanceId, SessionTraceRecorderHandle};
 
 /// Public lifecycle states emitted by a running session.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -327,7 +327,7 @@ pub(crate) enum SessionEventDelivery {
 pub(crate) struct SessionEventSender {
     sender: SyncSender<SessionEvent>,
     counters: Arc<SessionEventQueueCounters>,
-    flight_recorder: Option<SessionFlightRecorderHandle>,
+    session_trace_recorder: Option<SessionTraceRecorderHandle>,
 }
 
 impl SessionEventSender {
@@ -394,8 +394,8 @@ impl SessionEventSender {
     }
 
     fn try_send(&self, event: SessionEvent) -> SessionEventDelivery {
-        if let Some(flight_recorder) = &self.flight_recorder {
-            let _ = flight_recorder.try_record_event(&event);
+        if let Some(session_trace_recorder) = &self.session_trace_recorder {
+            let _ = session_trace_recorder.try_record_event(&event);
         }
         if !self.counters.reserve_event() {
             return SessionEventDelivery::DroppedFull;
@@ -452,7 +452,7 @@ impl SessionEventReceiver {
 
 pub(crate) fn session_event_channel(
     capacity_events: usize,
-    flight_recorder: Option<SessionFlightRecorderHandle>,
+    session_trace_recorder: Option<SessionTraceRecorderHandle>,
 ) -> (SessionEventSender, SessionEventReceiver) {
     assert!(
         capacity_events > 0,
@@ -464,7 +464,7 @@ pub(crate) fn session_event_channel(
         SessionEventSender {
             sender,
             counters: Arc::clone(&counters),
-            flight_recorder,
+            session_trace_recorder,
         },
         SessionEventReceiver { receiver, counters },
     )

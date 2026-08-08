@@ -62,30 +62,32 @@ pub use crate::endpoint::{
     PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin,
 };
 pub use crate::session::{
-    transcript_final_spec, transcript_partial_spec, ApplicationSelector, AsyncEnvelope, AsyncNode,
+    transcript_final_spec, transcript_partial_spec, ApplicationSelector, AsyncNode,
     AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError,
-    AsyncOperatorOutputObservationHandle, AsyncOperatorOutputObservations, AsyncSignal,
-    AudioBufferPool, AudioCaps, AudioFrame, BackpressurePolicy, ChannelLayout, ClockDomain,
-    ClockDomainId, ConfigError, CopyPolicy, DeliverySemantics, DerivedSignalLineage,
+    AsyncOperatorOutputObservationHandle, AsyncOperatorOutputObservations, AudioBufferPool,
+    AudioCaps, AudioFrame, BackpressurePolicy, BinaryFormat, ChannelLayout, ClockDomain,
+    ClockDomainId, Codec, ConfigError, CopyPolicy, DeliverySemantics, DerivedSignalLineage,
     DerivedSignalLineageError, DerivedStreamHandle, DeviceId, DeviceSelector, EdgeContract,
     EdgeObservabilityLevel, EncryptionMode, EndpointConfiguration, EndpointDescriptor,
-    EndpointHandle, ExecutionPartition, FrameLineage, LossPolicy, MediaCaps, MediaKind,
-    Multiplicity, NodeDefinition, NodeDescriptor, NodeError, NodeTypeId, Operator,
+    EndpointHandle, EventFormat, ExecutionPartition, FrameLineage, LossPolicy, MediaCaps,
+    MediaKind, Multiplicity, NodeDefinition, NodeDescriptor, NodeError, NodeTypeId, Operator,
     OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy,
     OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy,
     PortDirection, PortSpec, PrepareContext, ProcessId, SafetyContract, SampleFormat, SampleSpec,
-    SemanticRole, SessionControlFailure, SessionDerivedRouteMetrics, SessionError, SessionEvent,
-    SessionEventKind, SessionEventQueueObservations, SessionEventReceive, SessionFlightRecorder,
-    SessionFlightRecorderFinishError, SessionFlightRecorderOutcome,
-    SessionFlightRecorderStartError, SessionFlightReplay, SessionFlightReplayError,
-    SessionFlightTrace, SessionId, SessionLifecycleState, SessionMetricsSnapshot,
-    SessionOperatorMetrics, SessionRecordingErrorCode, SessionRecordingObservations,
-    SessionRecordingOutcome, SessionRecordingState, SessionRecordingStemOutcome,
-    SessionRouteDropObservations, SessionRouteLatencyBoundary, SessionRouteLatencyObservations,
-    SessionRouteLatencyUnit, SessionRouteMetrics, SessionRouteObservationInterval,
-    SessionSourceMetrics, SessionStartCancellation, SessionStopOutcome, SessionTerminalState,
-    SignalSpec, Source, SourceId, StemHandle, StemId, StreamId, TextFormat, TRANSCRIPT_FINAL_ROLE,
-    TRANSCRIPT_PARTIAL_ROLE,
+    SchemaRef, SemanticRole, SessionControlFailure, SessionDerivedRouteMetrics, SessionError,
+    SessionEvent, SessionEventKind, SessionEventQueueObservations, SessionEventReceive, SessionId,
+    SessionLifecycleState, SessionMetricsSnapshot, SessionOperatorMetrics,
+    SessionRecordingErrorCode, SessionRecordingObservations, SessionRecordingOutcome,
+    SessionRecordingState, SessionRecordingStemOutcome, SessionRouteDropObservations,
+    SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit,
+    SessionRouteMetrics, SessionRouteObservationInterval, SessionSourceMetrics,
+    SessionStartCancellation, SessionStopOutcome, SessionTerminalState, SessionTrace,
+    SessionTraceRecorder, SessionTraceRecorderFinishError, SessionTraceRecorderOutcome,
+    SessionTraceRecorderStartError, SessionTraceValidation, SessionTraceValidationError,
+    SignalClass, SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker,
+    SignalEnvelope, SignalEnvelopeError, SignalId, SignalLineage, SignalPayload, SignalSpec,
+    SignalSpecError, SignalTiming, Source, SourceId, StemHandle, StemId, StreamId, TextFormat,
+    TRANSCRIPT_FINAL_ROLE, TRANSCRIPT_PARTIAL_ROLE,
 };
 
 /// Canonical types required by an external asynchronous Operator package.
@@ -94,19 +96,21 @@ pub use crate::session::{
 /// PocketStation's internal graph or runtime crates.
 pub mod operator {
     pub use crate::session::{
-        transcript_final_spec, transcript_partial_spec, AsyncEnvelope, AsyncNode, AsyncNodeFuture,
+        transcript_final_spec, transcript_partial_spec, AsyncNode, AsyncNodeFuture,
         AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError,
-        AsyncOperatorOutputObservationHandle, AsyncOperatorOutputObservations, AsyncSignal,
-        AudioBufferPool, AudioCaps, AudioFrame, BackpressurePolicy, ChannelLayout, ClockDomain,
-        ClockDomainId, ConfigError, CopyPolicy, DeliverySemantics, DerivedSignalLineage,
+        AsyncOperatorOutputObservationHandle, AsyncOperatorOutputObservations, AudioBufferPool,
+        AudioCaps, AudioFrame, BackpressurePolicy, BinaryFormat, ChannelLayout, ClockDomain,
+        ClockDomainId, Codec, ConfigError, CopyPolicy, DeliverySemantics, DerivedSignalLineage,
         DerivedSignalLineageError, EdgeContract, EdgeObservabilityLevel, EncryptionMode,
-        ExecutionPartition, FrameLineage, LossPolicy, MediaCaps, MediaKind, Multiplicity,
-        NodeDefinition, NodeDescriptor, NodeError, NodeTypeId, Operator,
+        EventFormat, ExecutionPartition, FrameLineage, LossPolicy, MediaCaps, MediaKind,
+        Multiplicity, NodeDefinition, NodeDescriptor, NodeError, NodeTypeId, Operator,
         OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy,
         OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy,
         PortDirection, PortSpec, PrepareContext, SafetyContract, SampleFormat, SampleSpec,
-        SemanticRole, SessionId, SignalSpec, SourceId, StemId, StreamId, TextFormat,
-        TRANSCRIPT_FINAL_ROLE, TRANSCRIPT_PARTIAL_ROLE,
+        SchemaRef, SemanticRole, SessionId, SignalClass, SignalContinuityError,
+        SignalContinuityObservation, SignalContinuityTracker, SignalEnvelope, SignalEnvelopeError,
+        SignalId, SignalLineage, SignalPayload, SignalSpec, SignalSpecError, SignalTiming,
+        SourceId, StemId, StreamId, TextFormat, TRANSCRIPT_FINAL_ROLE, TRANSCRIPT_PARTIAL_ROLE,
     };
 }
 
@@ -199,7 +203,7 @@ pub struct Session {
     endpoint_definitions: Mutex<Vec<Arc<dyn NodeDefinition>>>,
     operator_registrations: Mutex<Vec<Arc<dyn AsyncOperatorFactory>>>,
     capture_backends: Option<CaptureBackendConfiguration>,
-    flight_recording: Option<FlightRecordingConfiguration>,
+    session_trace: Option<SessionTraceConfiguration>,
 }
 
 struct CaptureBackendConfiguration {
@@ -213,7 +217,7 @@ struct EndpointDriverRegistration {
     factory: Arc<dyn EndpointDriverFactory>,
 }
 
-struct FlightRecordingConfiguration {
+struct SessionTraceConfiguration {
     path: PathBuf,
     capacity_records: usize,
 }
@@ -223,7 +227,7 @@ pub struct SessionBuilder {
     recording_root: Option<PathBuf>,
     sample_spec: SampleSpec,
     capture_backends: Option<CaptureBackendConfiguration>,
-    flight_recording: Option<FlightRecordingConfiguration>,
+    session_trace: Option<SessionTraceConfiguration>,
 }
 
 impl Default for SessionBuilder {
@@ -232,7 +236,7 @@ impl Default for SessionBuilder {
             recording_root: None,
             sample_spec: SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved),
             capture_backends: None,
-            flight_recording: None,
+            session_trace: None,
         }
     }
 }
@@ -268,14 +272,14 @@ impl SessionBuilder {
         self
     }
 
-    /// Enables the bounded Session control-flight recorder.
+    /// Enables the bounded Session Session trace recorder.
     ///
     /// The output path must not exist. Records are transferred to a dedicated
     /// non-realtime writer through a bounded queue; overflow remains explicit
     /// and makes deterministic replay fail closed.
     #[must_use]
-    pub fn flight_recording(mut self, path: impl Into<PathBuf>, capacity_records: usize) -> Self {
-        self.flight_recording = Some(FlightRecordingConfiguration {
+    pub fn session_trace(mut self, path: impl Into<PathBuf>, capacity_records: usize) -> Self {
+        self.session_trace = Some(SessionTraceConfiguration {
             path: path.into(),
             capacity_records,
         });
@@ -295,7 +299,7 @@ impl SessionBuilder {
             endpoint_definitions: Mutex::new(Vec::new()),
             operator_registrations: Mutex::new(Vec::new()),
             capture_backends: self.capture_backends,
-            flight_recording: self.flight_recording,
+            session_trace: self.session_trace,
         }
     }
 }
@@ -312,7 +316,7 @@ impl Session {
             endpoint_definitions: Mutex::new(Vec::new()),
             operator_registrations: Mutex::new(Vec::new()),
             capture_backends: None,
-            flight_recording: None,
+            session_trace: None,
         }
     }
 
@@ -438,11 +442,11 @@ impl Session {
             endpoint_definitions,
             operator_registrations,
             capture_backends,
-            flight_recording,
+            session_trace,
         } = self;
-        let mut flight_recorder = flight_recording
+        let mut session_trace_recorder = session_trace
             .map(|configuration| {
-                SessionFlightRecorder::start(
+                SessionTraceRecorder::start(
                     configuration.path,
                     declaration.id(),
                     configuration.capacity_records,
@@ -494,10 +498,10 @@ impl Session {
         for factory in operator_registrations {
             let _ = host_builder.register_async_operator(factory)?;
         }
-        if let Some(recorder) = &flight_recorder {
+        if let Some(recorder) = &session_trace_recorder {
             let _ = host_builder
                 .engine_builder()
-                .set_flight_recorder(recorder.handle());
+                .set_session_trace(recorder.handle());
         }
         if let Some(output_root) = recording_root.filter(|root| !root.as_os_str().is_empty()) {
             let _ = host_builder.register_multistem_recording(output_root)?;
@@ -522,8 +526,8 @@ impl Session {
             events,
             receipt,
             recording_receipt,
-            flight_recorder: flight_recorder.take(),
-            flight_recording_result: None,
+            session_trace_recorder: session_trace_recorder.take(),
+            session_trace_result: None,
             stopped: false,
         })
     }
@@ -544,7 +548,7 @@ impl Session {
             endpoint_definitions: Mutex::new(Vec::new()),
             operator_registrations: Mutex::new(Vec::new()),
             capture_backends: None,
-            flight_recording: None,
+            session_trace: None,
         })
     }
 }
@@ -561,9 +565,9 @@ pub struct RunningSession {
     events: crate::session::SessionEventReceiver,
     receipt: crate::session::PolledAudioReceipt,
     recording_receipt: Option<crate::session::SessionRecordingReceipt>,
-    flight_recorder: Option<SessionFlightRecorder>,
-    flight_recording_result:
-        Option<Result<SessionFlightRecorderOutcome, SessionFlightRecorderFinishError>>,
+    session_trace_recorder: Option<SessionTraceRecorder>,
+    session_trace_result:
+        Option<Result<SessionTraceRecorderOutcome, SessionTraceRecorderFinishError>>,
     stopped: bool,
 }
 
@@ -600,10 +604,10 @@ impl RunningSession {
             .ok_or(SessionRuntimeError::MissingMetricsSnapshot)
     }
 
-    pub fn flight_recording_outcome(
+    pub fn session_trace_outcome(
         &self,
-    ) -> Option<Result<&SessionFlightRecorderOutcome, &SessionFlightRecorderFinishError>> {
-        self.flight_recording_result
+    ) -> Option<Result<&SessionTraceRecorderOutcome, &SessionTraceRecorderFinishError>> {
+        self.session_trace_result
             .as_ref()
             .map(|result| result.as_ref())
     }
@@ -616,7 +620,7 @@ impl RunningSession {
             SessionStopDisposition::Stopped
         };
         let outcome = self.running.stop();
-        self.finish_flight_recording();
+        self.finish_session_trace();
         SessionStopResult {
             disposition,
             outcome,
@@ -633,21 +637,21 @@ impl RunningSession {
             SessionCancelDisposition::Cancelled
         };
         let outcome = self.running.cancel();
-        self.finish_flight_recording();
+        self.finish_session_trace();
         SessionCancelResult {
             disposition,
             outcome,
         }
     }
 
-    fn finish_flight_recording(&mut self) {
-        if self.flight_recording_result.is_some() {
+    fn finish_session_trace(&mut self) {
+        if self.session_trace_result.is_some() {
             return;
         }
-        let Some(recorder) = &mut self.flight_recorder else {
+        let Some(recorder) = &mut self.session_trace_recorder else {
             return;
         };
-        self.flight_recording_result = Some(recorder.finish().cloned());
+        self.session_trace_result = Some(recorder.finish().cloned());
     }
 }
 
@@ -657,8 +661,8 @@ pub use crate::session::{
 
 #[derive(Debug, thiserror::Error)]
 pub enum SessionStartError {
-    #[error("Session flight-recorder setup failed: {0}")]
-    FlightRecorder(#[from] SessionFlightRecorderStartError),
+    #[error("Session session trace setup failed: {0}")]
+    TraceRecorder(#[from] SessionTraceRecorderStartError),
     #[error("native Session host setup failed: {0}")]
     Host(#[from] SessionEngineHostBuildError),
     #[error("canonical Session start failed: {0}")]
@@ -678,7 +682,7 @@ pub enum SessionStartError {
 impl SessionStartError {
     pub fn kind(&self) -> SessionStartErrorKind {
         match self {
-            Self::Host(_) | Self::FlightRecorder(_) => SessionStartErrorKind::Host,
+            Self::Host(_) | Self::TraceRecorder(_) => SessionStartErrorKind::Host,
             Self::Engine(error)
                 if matches!(
                     error.start_failure().map(|failure| failure.error()),

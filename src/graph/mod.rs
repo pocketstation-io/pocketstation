@@ -27,7 +27,11 @@ pub mod runtime_node;
 pub mod signal;
 pub mod spec;
 
-pub use async_node::{AsyncEnvelope, AsyncNode, AsyncNodeFuture, AsyncSignal};
+pub use async_node::{
+    AsyncNode, AsyncNodeFuture, SignalContinuityError, SignalContinuityObservation,
+    SignalContinuityTracker, SignalEnvelope, SignalEnvelopeError, SignalLineage, SignalPayload,
+    SignalTiming,
+};
 pub use async_operator::{
     transcript_final_spec, transcript_partial_spec, AsyncOperatorFactory, AsyncOperatorManifest,
     AsyncOperatorManifestError, DerivedSignalLineage, DerivedSignalLineageError,
@@ -51,6 +55,6 @@ pub use registry::{
 pub use runtime_node::RuntimeNode;
 pub use signal::{
     BinaryFormat, Codec, EventFormat, SchemaRef, SemanticRole, SignalClass, SignalId, SignalSpec,
-    TextFormat,
+    SignalSpecError, TextFormat,
 };
 pub use spec::{EdgeId, EdgeSpec, GraphSpec, InputPortRef, NodeId, NodeSpec, OutputPortRef};

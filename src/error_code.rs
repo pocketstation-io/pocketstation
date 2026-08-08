@@ -10,7 +10,7 @@ impl SessionStartError {
                 SessionStartErrorCode::UnsupportedPlatform
             }
             Self::Host(_) => SessionStartErrorCode::HostSetupFailed,
-            Self::FlightRecorder(_) => SessionStartErrorCode::FlightRecorderSetupFailed,
+            Self::TraceRecorder(_) => SessionStartErrorCode::TraceRecorderSetupFailed,
             Self::Engine(error)
                 if error.start_failure().is_some_and(|failure| {
                     matches!(
@@ -114,11 +114,11 @@ mod tests {
             SessionStartErrorCode::MissingEventReceiver
         );
         assert_eq!(
-            SessionStartError::FlightRecorder(
-                crate::session::SessionFlightRecorderStartError::ZeroCapacity,
+            SessionStartError::TraceRecorder(
+                crate::session::SessionTraceRecorderStartError::ZeroCapacity,
             )
             .code(),
-            SessionStartErrorCode::FlightRecorderSetupFailed
+            SessionStartErrorCode::TraceRecorderSetupFailed
         );
         assert_eq!(
             SessionRuntimeError::MissingMetricsSnapshot.code(),

@@ -203,13 +203,13 @@ pub fn session_with_recording(
 }
 
 /// Creates the deterministic canonical-engine fixture with a bounded Session
-/// control-flight recorder.
-pub fn session_with_flight_recording(
+/// Session diagnostic trace recorder.
+pub fn session_with_trace(
     path: impl Into<PathBuf>,
     capacity_records: usize,
 ) -> Result<Session, SessionEngineHostBuildError> {
     let mut session = session_with_optional_recording(None)?;
-    session.flight_recording = Some(crate::FlightRecordingConfiguration {
+    session.session_trace = Some(crate::SessionTraceConfiguration {
         path: path.into(),
         capacity_records,
     });
@@ -217,14 +217,14 @@ pub fn session_with_flight_recording(
 }
 
 /// Creates the deterministic canonical-engine fixture with both aligned
-/// multistem recording and bounded Session control-flight recording.
-pub fn session_with_recording_and_flight_recording(
+/// multistem recording and a bounded Session diagnostic trace.
+pub fn session_with_recording_and_trace(
     output_root: impl Into<PathBuf>,
     trace_path: impl Into<PathBuf>,
     capacity_records: usize,
 ) -> Result<Session, SessionEngineHostBuildError> {
     let mut session = session_with_optional_recording(Some(output_root.into()))?;
-    session.flight_recording = Some(crate::FlightRecordingConfiguration {
+    session.session_trace = Some(crate::SessionTraceConfiguration {
         path: trace_path.into(),
         capacity_records,
     });

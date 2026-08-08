@@ -75,7 +75,7 @@ pub enum SessionStartErrorCode {
     MissingAudioReceipt,
     MissingRecordingConfiguration,
     MissingEventReceiver,
-    FlightRecorderSetupFailed,
+    TraceRecorderSetupFailed,
 }
 
 impl SessionStartErrorCode {
@@ -101,7 +101,7 @@ impl SessionStartErrorCode {
             Self::MissingAudioReceipt => "session.missing_audio_receipt",
             Self::MissingRecordingConfiguration => "session.missing_recording_configuration",
             Self::MissingEventReceiver => "session.missing_event_receiver",
-            Self::FlightRecorderSetupFailed => "session.flight_recorder_setup_failed",
+            Self::TraceRecorderSetupFailed => "session.trace_recorder_setup_failed",
         }
     }
 }
@@ -338,7 +338,7 @@ mod tests {
             SessionStartErrorCode::MissingAudioReceipt.as_str(),
             SessionStartErrorCode::MissingRecordingConfiguration.as_str(),
             SessionStartErrorCode::MissingEventReceiver.as_str(),
-            SessionStartErrorCode::FlightRecorderSetupFailed.as_str(),
+            SessionStartErrorCode::TraceRecorderSetupFailed.as_str(),
             SessionRuntimeErrorCode::MissingMetricsSnapshot.as_str(),
             PolledAudioPollErrorCode::Empty.as_str(),
             PolledAudioPollErrorCode::LeaseCapacityExhausted.as_str(),

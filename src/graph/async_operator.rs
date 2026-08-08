@@ -185,6 +185,20 @@ impl AsyncOperatorManifest {
             .output_ports()
             .next()
             .ok_or(AsyncOperatorManifestError::MissingOutputPort)?;
+        input_port
+            .signal
+            .validate()
+            .map_err(|_| AsyncOperatorManifestError::InvalidInputSignal)?;
+        output_port
+            .signal
+            .validate()
+            .map_err(|_| AsyncOperatorManifestError::InvalidOutputSignal)?;
+        if !input_port.media.supports_signal(&input_port.signal) {
+            return Err(AsyncOperatorManifestError::InputSignalMediaMismatch);
+        }
+        if !output_port.media.supports_signal(&output_port.signal) {
+            return Err(AsyncOperatorManifestError::OutputSignalMediaMismatch);
+        }
         if !self.input_edge.media.is_compatible_with(&input_port.media) {
             return Err(AsyncOperatorManifestError::InputEdgeMediaMismatch);
         }
@@ -245,6 +259,14 @@ pub enum AsyncOperatorManifestError {
     InputEdgeMediaMismatch,
     #[error("operator output edge media does not match its typed output port")]
     OutputEdgeMediaMismatch,
+    #[error("operator input SignalSpec is invalid")]
+    InvalidInputSignal,
+    #[error("operator output SignalSpec is invalid")]
+    InvalidOutputSignal,
+    #[error("operator input SignalSpec does not have a compatible payload representation")]
+    InputSignalMediaMismatch,
+    #[error("operator output SignalSpec does not have a compatible payload representation")]
+    OutputSignalMediaMismatch,
     #[error("operator output role declarations cannot be empty strings")]
     EmptyOutputRole,
     #[error("operator output role declarations cannot contain duplicates")]

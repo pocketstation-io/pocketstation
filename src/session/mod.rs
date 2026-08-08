@@ -7,7 +7,6 @@ mod engine_tests;
 mod error;
 mod error_code;
 mod events;
-mod flight_recorder;
 mod foreign_audio;
 mod foreign_audio_endpoint;
 mod host;
@@ -18,6 +17,7 @@ mod running;
 mod running_tests;
 mod runtime_prepare;
 mod selector;
+mod session_trace;
 mod spec;
 mod structural_nodes;
 
@@ -43,12 +43,6 @@ pub use events::{
     SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionFinalizationFailure,
     SessionFinalizationStage, SessionLifecycleState, SessionRollbackFailure, SessionRollbackStage,
     SessionSourceFailure, SessionTerminalOutcome, SessionTerminalState,
-};
-pub use flight_recorder::{
-    SessionFlightRecord, SessionFlightRecordKind, SessionFlightRecorder,
-    SessionFlightRecorderFinishError, SessionFlightRecorderHandle, SessionFlightRecorderOutcome,
-    SessionFlightRecorderStartError, SessionFlightReplay, SessionFlightReplayError,
-    SessionFlightTerminal, SessionFlightTrace,
 };
 pub use foreign_audio::{
     PolledAudioBatchLease, PolledAudioEndpoint, PolledAudioEndpointConfig,
@@ -80,6 +74,12 @@ pub use runtime_prepare::{
     SessionPrepareError,
 };
 pub use selector::{ApplicationSelector, DeviceId, DeviceSelector, ProcessId, Source};
+pub use session_trace::{
+    SessionTrace, SessionTraceRecord, SessionTraceRecordKind, SessionTraceRecorder,
+    SessionTraceRecorderFinishError, SessionTraceRecorderHandle, SessionTraceRecorderOutcome,
+    SessionTraceRecorderStartError, SessionTraceTerminal, SessionTraceValidation,
+    SessionTraceValidationError,
+};
 pub use spec::{
     DerivedRouteSpec, EndpointSpec, OperatorInstanceId, OperatorSpec, RouteSpec, SessionSpec,
     SessionSpecVersion, StemSpec, SESSION_SPEC_VERSION,
@@ -93,15 +93,17 @@ pub use crate::frame::{
     FrameLineage, RouteId, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId,
 };
 pub use crate::graph::{
-    transcript_final_spec, transcript_partial_spec, AsyncEnvelope, AsyncNode, AsyncNodeFuture,
-    AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError, AsyncSignal,
-    AudioCaps, BackpressurePolicy, ChannelLayout, ClockDomain, ConfigError, CopyPolicy,
+    transcript_final_spec, transcript_partial_spec, AsyncNode, AsyncNodeFuture,
+    AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError, AudioCaps,
+    BackpressurePolicy, BinaryFormat, ChannelLayout, ClockDomain, Codec, ConfigError, CopyPolicy,
     DeliverySemantics, DerivedSignalLineage, DerivedSignalLineageError, EdgeContract,
-    EdgeObservabilityLevel, ExecutionPartition, LossPolicy, MediaCaps, MediaKind, Multiplicity,
-    NodeConfig as OperatorConfiguration, NodeDefinition, NodeDescriptor, NodeError,
+    EdgeObservabilityLevel, EventFormat, ExecutionPartition, LossPolicy, MediaCaps, MediaKind,
+    Multiplicity, NodeConfig as OperatorConfiguration, NodeDefinition, NodeDescriptor, NodeError,
     NodeRegistrationError, NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy,
     OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection,
-    PortSpec, PrepareContext, SafetyContract, SemanticRole, SignalSpec, TextFormat,
-    TRANSCRIPT_FINAL_ROLE, TRANSCRIPT_PARTIAL_ROLE,
+    PortSpec, PrepareContext, SafetyContract, SchemaRef, SemanticRole, SignalClass,
+    SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker, SignalEnvelope,
+    SignalEnvelopeError, SignalId, SignalLineage, SignalPayload, SignalSpec, SignalSpecError,
+    SignalTiming, TextFormat, TRANSCRIPT_FINAL_ROLE, TRANSCRIPT_PARTIAL_ROLE,
 };
 pub use crate::runtime::{AsyncOperatorOutputObservationHandle, AsyncOperatorOutputObservations};

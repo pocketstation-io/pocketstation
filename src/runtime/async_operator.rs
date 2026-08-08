@@ -4,9 +4,9 @@ use std::time::Duration;
 
 use crate::frame::{AudioFrame, SessionId, SourceId, StemId};
 use crate::graph::{
-    AsyncEnvelope, AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AsyncSignal,
-    EdgeContract, LossPolicy, NodeConfig, NodeError, OperatorCancellationPolicy,
-    OperatorFailurePolicy, PrepareContext, TRANSCRIPT_FINAL_ROLE, TRANSCRIPT_PARTIAL_ROLE,
+    AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, EdgeContract, LossPolicy, NodeConfig,
+    NodeError, OperatorCancellationPolicy, OperatorFailurePolicy, PrepareContext, SignalEnvelope,
+    SignalPayload,
 };
 use crate::graph::{EdgeId, NodeId};
 use rtrb::{Consumer, Producer, RingBuffer};
@@ -25,8 +25,8 @@ struct AsyncOperatorObservationState {
     processed_total: AtomicU64,
     output_emitted_total: AtomicU64,
     output_dropped_total: AtomicU64,
-    transcript_partial_total: AtomicU64,
-    transcript_final_total: AtomicU64,
+    output_nonterminal_total: AtomicU64,
+    output_terminal_total: AtomicU64,
     process_failure_total: AtomicU64,
     timeout_total: AtomicU64,
     cancellation_total: AtomicU64,
@@ -45,8 +45,8 @@ pub struct AsyncOperatorObservations {
     pub processed_total: u64,
     pub output_emitted_total: u64,
     pub output_dropped_total: u64,
-    pub transcript_partial_total: u64,
-    pub transcript_final_total: u64,
+    pub output_nonterminal_total: u64,
+    pub output_terminal_total: u64,
     pub process_failure_total: u64,
     pub timeout_total: u64,
     pub cancellation_total: u64,
@@ -69,8 +69,8 @@ impl AsyncOperatorObservationHandle {
             processed_total: self.state.processed_total.load(Ordering::Relaxed),
             output_emitted_total: self.state.output_emitted_total.load(Ordering::Relaxed),
             output_dropped_total: self.state.output_dropped_total.load(Ordering::Relaxed),
-            transcript_partial_total: self.state.transcript_partial_total.load(Ordering::Relaxed),
-            transcript_final_total: self.state.transcript_final_total.load(Ordering::Relaxed),
+            output_nonterminal_total: self.state.output_nonterminal_total.load(Ordering::Relaxed),
+            output_terminal_total: self.state.output_terminal_total.load(Ordering::Relaxed),
             process_failure_total: self.state.process_failure_total.load(Ordering::Relaxed),
             timeout_total: self.state.timeout_total.load(Ordering::Relaxed),
             cancellation_total: self.state.cancellation_total.load(Ordering::Relaxed),
@@ -115,7 +115,7 @@ pub struct AsyncOperatorInput {
 pub struct AsyncOperatorInputAccessError;
 
 impl AsyncOperatorInput {
-    pub fn send(&mut self, envelope: AsyncEnvelope) -> Result<(), AsyncBridgeSendError> {
+    pub fn send(&mut self, envelope: SignalEnvelope) -> Result<(), AsyncBridgeSendError> {
         self.observations
             .input_attempted_total
             .fetch_add(1, Ordering::Relaxed);
@@ -148,7 +148,7 @@ impl AsyncOperatorInput {
 }
 
 pub struct AsyncOperatorOutput {
-    receiver: Consumer<Arc<AsyncEnvelope>>,
+    receiver: Consumer<Arc<SignalEnvelope>>,
     observations: Arc<AsyncOperatorOutputObservationState>,
 }
 
@@ -176,7 +176,7 @@ pub struct AsyncOperatorOutputObservations {
 }
 
 impl AsyncOperatorOutput {
-    pub fn recv(&mut self) -> Option<Arc<AsyncEnvelope>> {
+    pub fn recv(&mut self) -> Option<Arc<SignalEnvelope>> {
         self.receiver.pop().ok()
     }
 
@@ -233,8 +233,8 @@ pub enum AsyncOperatorWorkerError {
     UndeclaredOutputRole,
     #[error("async operator manifest has no output port at runtime")]
     MissingOutputContract,
-    #[error("final transcript was rejected by full output branch {branch_index}")]
-    FinalOutputDropped { branch_index: usize },
+    #[error("terminal output was rejected by full output branch {branch_index}")]
+    TerminalOutputDropped { branch_index: usize },
     #[error("operator worker task failed: {0}")]
     Join(#[from] tokio::task::JoinError),
     #[error("compiled async input requires a lineaged exclusive plan-edge frame, received {kind}")]
@@ -261,7 +261,7 @@ pub struct CompiledOperatorInputContract {
 }
 
 impl AsyncOperatorWorkerSource {
-    fn recv(&mut self) -> Result<Option<AsyncEnvelope>, AsyncOperatorWorkerError> {
+    fn recv(&mut self) -> Result<Option<SignalEnvelope>, AsyncOperatorWorkerError> {
         match self {
             Self::Direct(receiver) => Ok(receiver.recv()),
             Self::Compiled {
@@ -278,7 +278,7 @@ impl AsyncOperatorWorkerSource {
                     {
                         return Err(AsyncOperatorWorkerError::PlanInputLineageMismatch);
                     }
-                    Ok(Some(AsyncEnvelope::from_audio(frame, Some(lineage))))
+                    Ok(Some(SignalEnvelope::from_audio(frame, Some(lineage))))
                 }
                 PlanEdgeFrame::Exclusive(_) => Err(AsyncOperatorWorkerError::InvalidPlanInput {
                     kind: "raw exclusive",
@@ -312,7 +312,7 @@ pub struct AsyncOperatorWorker {
 }
 
 type AsyncOperatorOutputSender = (
-    Producer<Arc<AsyncEnvelope>>,
+    Producer<Arc<SignalEnvelope>>,
     Arc<AsyncOperatorOutputObservationState>,
     LossPolicy,
 );
@@ -604,7 +604,7 @@ async fn run_operator_loop(
     timeout_duration: Duration,
 ) -> Result<(), AsyncOperatorWorkerError> {
     enum ProcessAttempt {
-        Completed(Result<Vec<AsyncEnvelope>, NodeError>),
+        Completed(Result<Vec<SignalEnvelope>, NodeError>),
         TimedOut,
         Cancelled,
     }
@@ -730,7 +730,7 @@ async fn cancel_node(
 
 fn fan_out_outputs(
     manifest: &AsyncOperatorManifest,
-    emitted: Vec<AsyncEnvelope>,
+    emitted: Vec<SignalEnvelope>,
     output_branches: &mut [AsyncOperatorOutputSender],
     observations: &AsyncOperatorObservationState,
 ) -> Result<(), AsyncOperatorWorkerError> {
@@ -739,11 +739,12 @@ fn fan_out_outputs(
         .next()
         .ok_or(AsyncOperatorWorkerError::MissingOutputContract)?;
     for envelope in emitted {
-        if matches!(&envelope.signal, AsyncSignal::Audio(_)) {
+        if matches!(&envelope.signal, SignalPayload::Audio(_)) {
             return Err(AsyncOperatorWorkerError::UnsupportedAudioOutput);
         }
         if envelope.signal_spec.class != output_contract.signal.class
             || envelope.signal_spec.schema != output_contract.signal.schema
+            || !output_contract.media.supports_signal(&envelope.signal_spec)
         {
             return Err(AsyncOperatorWorkerError::OutputSignalMismatch);
         }
@@ -763,20 +764,31 @@ fn fan_out_outputs(
         {
             return Err(AsyncOperatorWorkerError::DerivedLineageMismatch);
         }
-        observe_transcript_role(&envelope, observations);
+        envelope
+            .validate()
+            .map_err(|_| AsyncOperatorWorkerError::OutputSignalMismatch)?;
         let is_terminal = manifest.output_roles.is_terminal(&envelope.signal_spec);
+        if is_terminal {
+            observations
+                .output_terminal_total
+                .fetch_add(1, Ordering::Relaxed);
+        } else {
+            observations
+                .output_nonterminal_total
+                .fetch_add(1, Ordering::Relaxed);
+        }
         if is_terminal {
             for (branch_index, (branch, branch_observations, loss_policy)) in
                 output_branches.iter().enumerate()
             {
-                if *loss_policy == LossPolicy::NeverDropFinalTranscript && branch.is_full() {
+                if *loss_policy == LossPolicy::MustDeliverOrFail && branch.is_full() {
                     observations
                         .output_dropped_total
                         .fetch_add(1, Ordering::Relaxed);
                     branch_observations
                         .dropped_total
                         .fetch_add(1, Ordering::Relaxed);
-                    return Err(AsyncOperatorWorkerError::FinalOutputDropped { branch_index });
+                    return Err(AsyncOperatorWorkerError::TerminalOutputDropped { branch_index });
                 }
             }
         }
@@ -800,30 +812,16 @@ fn fan_out_outputs(
                     branch_observations
                         .dropped_total
                         .fetch_add(1, Ordering::Relaxed);
-                    if is_terminal && *loss_policy == LossPolicy::NeverDropFinalTranscript {
-                        return Err(AsyncOperatorWorkerError::FinalOutputDropped { branch_index });
+                    if is_terminal && *loss_policy == LossPolicy::MustDeliverOrFail {
+                        return Err(AsyncOperatorWorkerError::TerminalOutputDropped {
+                            branch_index,
+                        });
                     }
                 }
             }
         }
     }
     Ok(())
-}
-
-fn observe_transcript_role(envelope: &AsyncEnvelope, observations: &AsyncOperatorObservationState) {
-    match envelope.signal_spec.role.as_ref().map(|role| role.as_str()) {
-        Some(TRANSCRIPT_PARTIAL_ROLE) => {
-            observations
-                .transcript_partial_total
-                .fetch_add(1, Ordering::Relaxed);
-        }
-        Some(TRANSCRIPT_FINAL_ROLE) => {
-            observations
-                .transcript_final_total
-                .fetch_add(1, Ordering::Relaxed);
-        }
-        _ => {}
-    }
 }
 
 #[cfg(test)]
@@ -842,6 +840,7 @@ mod tests {
         MediaCaps, Multiplicity, NodeDescriptor, NodeRegistrationError, NodeRegistry, NodeTypeId,
         OperatorDeadlinePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy,
         Pipeline, PortDirection, PortSpec, SafetyContract, SemanticRole, SignalSpec, TextFormat,
+        TRANSCRIPT_FINAL_ROLE, TRANSCRIPT_PARTIAL_ROLE,
     };
 
     use super::*;
@@ -930,8 +929,8 @@ mod tests {
 
         fn process<'a>(
             &'a mut self,
-            mut input: AsyncEnvelope,
-        ) -> crate::graph::AsyncNodeFuture<'a, Result<Vec<AsyncEnvelope>, NodeError>> {
+            mut input: SignalEnvelope,
+        ) -> crate::graph::AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
             Box::pin(async move {
                 if matches!(self.behavior, TestBehavior::Slow) {
                     tokio::time::sleep(Duration::from_millis(50)).await;
@@ -956,28 +955,28 @@ mod tests {
                             transcript_final_spec()
                         };
                         (
-                            AsyncSignal::Text(format!("transcript-{output_index}")),
+                            SignalPayload::Text(format!("transcript-{output_index}")),
                             specification,
                         )
                     }
                     TestBehavior::FlushFinal => (
-                        AsyncSignal::Text(format!("partial-{output_index}")),
+                        SignalPayload::Text(format!("partial-{output_index}")),
                         transcript_partial_spec(),
                     ),
                     TestBehavior::PrepareFail => (
-                        AsyncSignal::Text("unreachable".to_owned()),
+                        SignalPayload::Text("unreachable".to_owned()),
                         transcript_partial_spec(),
                     ),
                     TestBehavior::WrongClass => (
-                        AsyncSignal::Event(Vec::new()),
+                        SignalPayload::Event(Vec::new()),
                         SignalSpec::event(EventFormat::Json).with_role(TRANSCRIPT_PARTIAL_ROLE),
                     ),
                     TestBehavior::WrongRole => (
-                        AsyncSignal::Text("summary".to_owned()),
+                        SignalPayload::Text("summary".to_owned()),
                         SignalSpec::text(TextFormat::Utf8).with_role("summary.final"),
                     ),
                     TestBehavior::Audio => (
-                        std::mem::replace(&mut input.signal, AsyncSignal::Control(Vec::new())),
+                        std::mem::replace(&mut input.signal, SignalPayload::Control(Vec::new())),
                         SignalSpec::audio(),
                     ),
                 };
@@ -999,7 +998,7 @@ mod tests {
 
         fn flush<'a>(
             &'a mut self,
-        ) -> crate::graph::AsyncNodeFuture<'a, Result<Vec<AsyncEnvelope>, NodeError>> {
+        ) -> crate::graph::AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
             Box::pin(async move {
                 if !matches!(self.behavior, TestBehavior::FlushFinal) {
                     return Ok(Vec::new());
@@ -1007,8 +1006,8 @@ mod tests {
                 let Some(base) = self.last_lineage.take() else {
                     return Ok(Vec::new());
                 };
-                let mut output = AsyncEnvelope::new(
-                    AsyncSignal::Text("final".to_owned()),
+                let mut output = SignalEnvelope::new(
+                    SignalPayload::Text("final".to_owned()),
                     self.last_sequence_number,
                     self.last_timestamp_ns,
                 );
@@ -1080,7 +1079,7 @@ mod tests {
             format: SampleFormat::F32Interleaved,
         });
         input_edge.copy_policy = crate::graph::CopyPolicy::CopyToBranchPool;
-        let mut output_edge = crate::graph::EdgeContract::model_default();
+        let mut output_edge = crate::graph::EdgeContract::typed_default();
         output_edge.media = MediaCaps::Text;
         AsyncOperatorManifest {
             operator_id: OperatorId::new(operator_id),
@@ -1137,7 +1136,7 @@ mod tests {
         })
     }
 
-    fn envelope(sequence_number: u64) -> AsyncEnvelope {
+    fn envelope(sequence_number: u64) -> SignalEnvelope {
         let pool = AudioBufferPool::new(1, 160);
         let buffer = pool.acquire().unwrap();
         let source_id = SourceId(5);
@@ -1150,7 +1149,7 @@ mod tests {
             buffer,
         );
         frame.sample_rate_hz = 16_000;
-        AsyncEnvelope::from_audio(
+        SignalEnvelope::from_audio(
             frame,
             Some(FrameLineage {
                 session_id: SessionId(7),
@@ -1174,7 +1173,7 @@ mod tests {
     fn output_branch(capacity_signals: usize) -> AsyncOperatorOutputBranchSpec {
         AsyncOperatorOutputBranchSpec {
             capacity_signals,
-            edge_contract: crate::graph::EdgeContract::model_default(),
+            edge_contract: crate::graph::EdgeContract::typed_default(),
         }
     }
 
@@ -1317,8 +1316,8 @@ mod tests {
         let observations = worker.observations();
         worker.cancel_and_join().await.unwrap();
         let snapshot = observations.snapshot();
-        assert_eq!(snapshot.transcript_partial_total, 1);
-        assert_eq!(snapshot.transcript_final_total, 1);
+        assert_eq!(snapshot.output_nonterminal_total, 1);
+        assert_eq!(snapshot.output_terminal_total, 1);
         assert_eq!(snapshot.output_emitted_total, 4);
         assert!(snapshot.joined);
     }
@@ -1368,8 +1367,8 @@ mod tests {
         );
         assert!(output.recv().is_none());
         let snapshot = observations.snapshot();
-        assert_eq!(snapshot.transcript_partial_total, 1);
-        assert_eq!(snapshot.transcript_final_total, 1);
+        assert_eq!(snapshot.output_nonterminal_total, 1);
+        assert_eq!(snapshot.output_terminal_total, 1);
         assert_eq!(snapshot.graceful_finish_total, 1);
         assert_eq!(snapshot.cancellation_total, 0);
         assert!(snapshot.joined);
@@ -1436,7 +1435,7 @@ mod tests {
         let edge_id = receiver.edge_id();
         let input = envelope(0);
         let lineage = input.lineage.unwrap();
-        let AsyncSignal::Audio(frame) = input.signal else {
+        let SignalPayload::Audio(frame) = input.signal else {
             panic!("test envelope must contain audio");
         };
         let sent = router.dispatch_lineaged_from(
@@ -1510,7 +1509,7 @@ mod tests {
 
         assert!(outputs[0].recv().is_none());
         let snapshot = observations.snapshot();
-        assert_eq!(snapshot.transcript_final_total, 0);
+        assert_eq!(snapshot.output_terminal_total, 0);
         assert_eq!(snapshot.graceful_finish_total, 0);
         assert_eq!(snapshot.cancellation_total, 1);
         assert!(closed.load(Ordering::Acquire));
@@ -1570,7 +1569,7 @@ mod tests {
 
         assert!(matches!(
             error,
-            AsyncOperatorWorkerError::FinalOutputDropped { branch_index: 1 }
+            AsyncOperatorWorkerError::TerminalOutputDropped { branch_index: 1 }
         ));
         assert_eq!(outputs[0].observations().dropped_total, 0);
         assert_eq!(outputs[1].observations().dropped_total, 1);
@@ -1696,7 +1695,7 @@ mod tests {
         let snapshot = observations.snapshot();
         assert_eq!(snapshot.timeout_total, 1);
         assert_eq!(snapshot.cancellation_total, 1);
-        assert_eq!(snapshot.transcript_final_total, 0);
+        assert_eq!(snapshot.output_terminal_total, 0);
         assert_eq!(snapshot.graceful_finish_total, 0);
         assert!(snapshot.joined);
         assert!(closed.load(Ordering::Acquire));

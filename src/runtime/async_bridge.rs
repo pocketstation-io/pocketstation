@@ -7,7 +7,7 @@
 use std::sync::atomic::{AtomicU64, Ordering};
 
 use crate::frame::AudioFrame;
-use crate::graph::async_node::{AsyncEnvelope, AsyncSignal};
+use crate::graph::async_node::{SignalEnvelope, SignalPayload};
 use rtrb::{Consumer, Producer, RingBuffer};
 
 pub struct AsyncBridge;
@@ -15,7 +15,7 @@ pub struct AsyncBridge;
 impl AsyncBridge {
     #[allow(clippy::new_ret_no_self)]
     pub fn new(capacity_frames: usize) -> (AsyncBridgeSender, AsyncBridgeReceiver) {
-        let (producer, consumer) = RingBuffer::<AsyncEnvelope>::new(capacity_frames);
+        let (producer, consumer) = RingBuffer::<SignalEnvelope>::new(capacity_frames);
         (
             AsyncBridgeSender {
                 producer,
@@ -27,23 +27,23 @@ impl AsyncBridge {
 }
 
 pub struct AsyncBridgeSender {
-    producer: Producer<AsyncEnvelope>,
+    producer: Producer<SignalEnvelope>,
     dropped_count: AtomicU64,
 }
 
 #[derive(Debug)]
 pub struct AsyncBridgeSendError {
-    rejected: Box<AsyncEnvelope>,
+    rejected: Box<SignalEnvelope>,
 }
 
 impl AsyncBridgeSendError {
-    pub fn into_rejected(self) -> AsyncEnvelope {
+    pub fn into_rejected(self) -> SignalEnvelope {
         *self.rejected
     }
 }
 
 impl AsyncBridgeSender {
-    pub fn send(&mut self, envelope: AsyncEnvelope) -> Result<(), AsyncBridgeSendError> {
+    pub fn send(&mut self, envelope: SignalEnvelope) -> Result<(), AsyncBridgeSendError> {
         match self.producer.push(envelope) {
             Ok(()) => Ok(()),
             Err(rtrb::PushError::Full(envelope)) => {
@@ -61,14 +61,14 @@ impl AsyncBridgeSender {
         sequence_number: u64,
         timestamp_ns: u64,
     ) -> Result<(), AudioFrame> {
-        let mut envelope = AsyncEnvelope::from_audio(frame, None);
+        let mut envelope = SignalEnvelope::from_audio(frame, None);
         envelope.sequence_number = sequence_number;
         envelope.timestamp_ns = timestamp_ns;
         match self.producer.push(envelope) {
             Ok(()) => Ok(()),
             Err(rtrb::PushError::Full(envelope)) => {
                 self.dropped_count.fetch_add(1, Ordering::Relaxed);
-                let AsyncSignal::Audio(frame) = envelope.signal else {
+                let SignalPayload::Audio(frame) = envelope.signal else {
                     return Ok(());
                 };
                 Err(frame)
@@ -82,11 +82,11 @@ impl AsyncBridgeSender {
 }
 
 pub struct AsyncBridgeReceiver {
-    consumer: Consumer<AsyncEnvelope>,
+    consumer: Consumer<SignalEnvelope>,
 }
 
 impl AsyncBridgeReceiver {
-    pub fn recv(&mut self) -> Option<AsyncEnvelope> {
+    pub fn recv(&mut self) -> Option<SignalEnvelope> {
         self.consumer.pop().ok()
     }
 
@@ -118,7 +118,7 @@ mod tests {
         assert_eq!(envelope.sequence_number, 7);
         assert_eq!(envelope.timestamp_ns, 11);
         match envelope.signal {
-            AsyncSignal::Audio(frame) => assert_eq!(frame.buffer.as_slice(), &[0.25, -0.5]),
+            SignalPayload::Audio(frame) => assert_eq!(frame.buffer.as_slice(), &[0.25, -0.5]),
             _ => panic!("expected audio envelope"),
         }
         assert_eq!(sender.dropped_count(), 0);

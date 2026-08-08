@@ -9,9 +9,9 @@ use crate::graph::{
 use crate::session::structural_nodes::register_session_structural_nodes_with_sample_spec;
 use crate::session::{
     prepare_session_runtime, CaptureBackendSet, CompiledSession, OperatorId, RunningSession,
-    Session, SessionCompileError, SessionCompiler, SessionError, SessionFlightRecorderHandle,
-    SessionPrepareError, SessionStartFailure, SessionStartOptions,
-    SessionStructuralNodeRegistrationError,
+    Session, SessionCompileError, SessionCompiler, SessionError, SessionPrepareError,
+    SessionStartFailure, SessionStartOptions, SessionStructuralNodeRegistrationError,
+    SessionTraceRecorderHandle,
 };
 
 /// Setup-time builder for one canonical Session composition environment.
@@ -25,7 +25,7 @@ pub struct SessionEngineBuilder {
     source_queue_capacity_frames: usize,
     start_options: SessionStartOptions,
     endpoint_registry: EndpointDriverRegistry,
-    flight_recorder: Option<SessionFlightRecorderHandle>,
+    session_trace_recorder: Option<SessionTraceRecorderHandle>,
 }
 
 impl SessionEngineBuilder {
@@ -45,15 +45,15 @@ impl SessionEngineBuilder {
             source_queue_capacity_frames,
             start_options,
             endpoint_registry: EndpointDriverRegistry::new(),
-            flight_recorder: None,
+            session_trace_recorder: None,
         })
     }
 
-    pub fn set_flight_recorder(
+    pub fn set_session_trace(
         &mut self,
-        flight_recorder: SessionFlightRecorderHandle,
+        session_trace_recorder: SessionTraceRecorderHandle,
     ) -> &mut Self {
-        self.flight_recorder = Some(flight_recorder);
+        self.session_trace_recorder = Some(session_trace_recorder);
         self
     }
 
@@ -98,7 +98,7 @@ impl SessionEngineBuilder {
             prepare_context: self.prepare_context,
             source_queue_capacity_frames: self.source_queue_capacity_frames,
             start_options: self.start_options,
-            flight_recorder: self.flight_recorder,
+            session_trace_recorder: self.session_trace_recorder,
         })
     }
 }
@@ -114,7 +114,7 @@ pub struct SessionEngine {
     prepare_context: PrepareContext,
     source_queue_capacity_frames: usize,
     start_options: SessionStartOptions,
-    flight_recorder: Option<SessionFlightRecorderHandle>,
+    session_trace_recorder: Option<SessionTraceRecorderHandle>,
 }
 
 impl SessionEngine {
@@ -136,13 +136,13 @@ impl SessionEngine {
             &self.prepare_context,
             self.source_queue_capacity_frames,
         )?;
-        crate::session::running::start_prepared_session_cancellable_with_flight_recorder(
+        crate::session::running::start_prepared_session_cancellable_with_trace(
             prepared,
             capture_backends,
             &self.endpoint_registry,
             self.start_options,
             crate::session::SessionStartCancellation::default(),
-            self.flight_recorder.clone(),
+            self.session_trace_recorder.clone(),
         )
         .map_err(SessionEngineStartError::Start)
     }
@@ -159,13 +159,13 @@ impl SessionEngine {
             &self.prepare_context,
             self.source_queue_capacity_frames,
         )?;
-        crate::session::running::start_prepared_session_cancellable_with_flight_recorder(
+        crate::session::running::start_prepared_session_cancellable_with_trace(
             prepared,
             capture_backends,
             &self.endpoint_registry,
             self.start_options,
             start_cancellation,
-            self.flight_recorder.clone(),
+            self.session_trace_recorder.clone(),
         )
         .map_err(SessionEngineStartError::Start)
     }

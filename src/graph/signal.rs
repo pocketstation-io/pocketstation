@@ -250,6 +250,11 @@ impl SignalSpec {
         Self::new(SignalClass::Control)
     }
 
+    /// Convenience constructor for opaque or schema-backed binary ports.
+    pub fn binary(format: BinaryFormat) -> Self {
+        Self::new(SignalClass::Binary(format))
+    }
+
     /// Convenience constructor for custom / vendor extension ports.
     pub fn custom(id: impl Into<SignalId>) -> Self {
         Self::new(SignalClass::Custom(id.into()))
@@ -274,6 +279,37 @@ impl SignalSpec {
     pub fn is_compatible_with(&self, other: &SignalSpec) -> bool {
         self.class.is_compatible_with(&other.class)
     }
+
+    pub fn validate(&self) -> Result<(), SignalSpecError> {
+        if matches!(&self.class, SignalClass::Custom(id) if id.as_str().trim().is_empty()) {
+            return Err(SignalSpecError::EmptyCustomId);
+        }
+        if self
+            .role
+            .as_ref()
+            .is_some_and(|role| role.as_str().trim().is_empty())
+        {
+            return Err(SignalSpecError::EmptyRole);
+        }
+        if self
+            .schema
+            .as_ref()
+            .is_some_and(|schema| schema.as_str().trim().is_empty())
+        {
+            return Err(SignalSpecError::EmptySchema);
+        }
+        Ok(())
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+pub enum SignalSpecError {
+    #[error("custom signal identifier cannot be empty")]
+    EmptyCustomId,
+    #[error("signal semantic role cannot be empty")]
+    EmptyRole,
+    #[error("signal schema reference cannot be empty")]
+    EmptySchema,
 }
 
 #[cfg(test)]
@@ -350,5 +386,23 @@ mod tests {
     fn given_semantic_role_when_as_str_then_returns_inner() {
         let role = SemanticRole::new("transcript.partial");
         assert_eq!(role.as_str(), "transcript.partial");
+    }
+
+    #[test]
+    fn given_empty_custom_id_role_or_schema_when_validated_then_rejected() {
+        assert_eq!(
+            SignalSpec::custom("").validate(),
+            Err(SignalSpecError::EmptyCustomId)
+        );
+        assert_eq!(
+            SignalSpec::control().with_role("").validate(),
+            Err(SignalSpecError::EmptyRole)
+        );
+        assert_eq!(
+            SignalSpec::binary(BinaryFormat::Raw)
+                .with_schema("")
+                .validate(),
+            Err(SignalSpecError::EmptySchema)
+        );
     }
 }

@@ -31,9 +31,9 @@ use crate::session::{
     ApplicationSelector, DeviceSelector, EndpointObservationStage, OperatorInstanceId,
     PreparedSession, PreparedWorkerMapping, SessionComponentId, SessionControlFailure,
     SessionDerivedRouteMetrics, SessionEventReceiver, SessionFinalizationFailure,
-    SessionFinalizationStage, SessionFlightRecorderHandle, SessionLifecycleState,
-    SessionOperatorMetrics, SessionRollbackFailure, SessionRollbackStage, SessionRouteMetrics,
-    SessionSourceFailure, SessionSourceMetrics, SessionTerminalOutcome, Source,
+    SessionFinalizationStage, SessionLifecycleState, SessionOperatorMetrics,
+    SessionRollbackFailure, SessionRollbackStage, SessionRouteMetrics, SessionSourceFailure,
+    SessionSourceMetrics, SessionTerminalOutcome, SessionTraceRecorderHandle, Source,
     RECORDING_GROUP_CONFIGURATION_KEY,
 };
 
@@ -714,7 +714,7 @@ pub fn start_prepared_session_cancellable(
     options: SessionStartOptions,
     start_cancellation: SessionStartCancellation,
 ) -> Result<RunningSession, SessionStartFailure> {
-    start_prepared_session_cancellable_with_flight_recorder(
+    start_prepared_session_cancellable_with_trace(
         prepared,
         capture_backends,
         endpoint_registry,
@@ -724,13 +724,13 @@ pub fn start_prepared_session_cancellable(
     )
 }
 
-pub(crate) fn start_prepared_session_cancellable_with_flight_recorder(
+pub(crate) fn start_prepared_session_cancellable_with_trace(
     prepared: PreparedSession,
     capture_backends: CaptureBackendSet<'_>,
     endpoint_registry: &EndpointDriverRegistry,
     options: SessionStartOptions,
     start_cancellation: SessionStartCancellation,
-    flight_recorder: Option<SessionFlightRecorderHandle>,
+    session_trace_recorder: Option<SessionTraceRecorderHandle>,
 ) -> Result<RunningSession, SessionStartFailure> {
     validate_start_options(options).map_err(SessionStartFailure::input)?;
     validate_source_topology(&prepared).map_err(SessionStartFailure::input)?;
@@ -744,8 +744,10 @@ pub(crate) fn start_prepared_session_cancellable_with_flight_recorder(
         cancellation,
     } = prepared;
     let session_id = spec.session_id();
-    let (event_sender, event_receiver) =
-        session_event_channel(options.session_event_capacity_events, flight_recorder);
+    let (event_sender, event_receiver) = session_event_channel(
+        options.session_event_capacity_events,
+        session_trace_recorder,
+    );
     let _ = event_sender.publish_lifecycle(session_id, SessionLifecycleState::Starting);
     if start_cancellation.is_requested() {
         return Err(complete_start_failure(

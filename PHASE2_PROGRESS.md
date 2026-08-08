@@ -1,5 +1,30 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W17 source-independent signal contract — 2026-08-08
+
+- Status: `SAFE-TO-TEST`; the central implementation gate passes and the Lab
+  clean-consumer artifact remains to be bound to the final committed candidate.
+- The public async boundary is now `SignalEnvelope` plus `SignalPayload`, with
+  source-independent `SignalLineage` and `SignalTiming`. The optimized
+  `AudioFrame` realtime lane is unchanged.
+- Schema-backed custom signals, encoded audio, text, events, metrics, control,
+  and binary payloads have explicit `SignalSpec`/`MediaCaps` symmetry. Invalid
+  payload/specification pairs fail closed.
+- `SignalContinuityTracker` validates stable identity, monotonic timestamps,
+  sequence continuity, declared discontinuities, source generations, and
+  policy epochs deterministically. Generic terminal delivery is
+  `MustDeliverOrFail`; the runtime no longer owns transcript-named policy or
+  observation concepts.
+- The misleading public `SessionFlight*` vocabulary is removed before API
+  freeze. Session lifecycle diagnostics now use `SessionTrace*`,
+  `session_trace(...)`, `.pkstrace`, and `trace.validate()` consistently.
+- Full central acceptance passes: 482 unit tests plus C/C++ ABI, allocation,
+  conformance and façade tests; strict all-target/all-feature Clippy; and the
+  release `product_quickstart` build.
+- No source factory, typed source ingress, operator chaining, named-port API,
+  generated-audio bridge, sidecar, provider integration, scaffold, mock, or
+  product-claim upgrade is introduced in this step.
+
 ## W13 recorder initialization observation repair — 2026-08-02
 
 - Status: `SAFE-TO-TEST`; candidate
@@ -63,7 +88,7 @@
   benchmark's 36 tests, strict Clippy, relay race tests, and central 463 unit
   tests plus ABI/allocation/integration tests pass locally.
 - Fresh independent W12 Rust, W12 Python/Node, W15 real-whisper, and
-  flight-recorder artifact verifiers pass after consolidation. Their
+  session trace artifact verifiers pass after consolidation. Their
   classifications remain `LOOPBACK-ONLY` or `PARTIAL`; this work creates no
   new physical-device claim.
 - AUDIO-033 supersedes the historical multi-package topology. `runtime::metrics`

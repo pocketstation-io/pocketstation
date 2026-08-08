@@ -563,7 +563,7 @@ mod tests {
         fn new() -> Self {
             let mut input_edge = EdgeContract::voice_default();
             input_edge.copy_policy = crate::graph::CopyPolicy::CopyToBranchPool;
-            let mut output_edge = EdgeContract::model_default();
+            let mut output_edge = EdgeContract::typed_default();
             output_edge.media = MediaCaps::Text;
             Self {
                 manifest: AsyncOperatorManifest {
