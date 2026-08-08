@@ -1,5 +1,26 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W19 operator composition and generated-audio reentry — 2026-08-08
+
+- Status: `SAFE-TO-TEST`; focused composition, generated-audio, and external
+  clean-consumer gates pass.
+- `DerivedStreamHandle` can declare another `through(...)` stage. Explicit
+  `through_ports(...)` and `output(...)` selection lower named operator ports
+  into the Session graph; simple `through(...)` remains fail-closed 1x1 sugar.
+- `AsyncOperatorWorker::spawn_composed(...)` executes multiple named bounded
+  typed inputs and outputs. Three independently registered external operators
+  execute in sequence through the shared `TypedEdgeFanout` runtime, and
+  multi-input/multi-output manifests route by declared `SignalSpec`, schema,
+  media, and semantic role.
+- Asynchronously produced PCM is accepted only through
+  `GeneratedAudioBridge`: an exclusive typed branch validates format and frame
+  size, copies into a dedicated bounded pool, restores authoritative timing and
+  lineage, then performs a nonblocking send into the existing plan-source
+  ingress. The realtime callback/executor contract is unchanged.
+- Runtime policy and observations remain signal-generic. No transcript,
+  provider, customer, telemetry, industrial, or other domain payload type was
+  added; no scaffold, mock, physical-device claim, or soak was introduced.
+
 ## W18 open source registration and bounded typed ingress — 2026-08-08
 
 - Status: `SAFE-TO-TEST`; focused central and external-consumer gates pass.

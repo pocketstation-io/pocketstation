@@ -163,51 +163,39 @@ impl AsyncOperatorManifest {
         {
             return Err(AsyncOperatorManifestError::NetworkPermissionMismatch);
         }
-        let input_port_count = self.input_ports().count();
-        if input_port_count == 0 {
+        if self.input_ports().next().is_none() {
             return Err(AsyncOperatorManifestError::MissingInputPort);
         }
-        if input_port_count > 1 {
-            return Err(AsyncOperatorManifestError::AmbiguousInputPort);
-        }
-        let output_port_count = self.output_ports().count();
-        if output_port_count == 0 {
+        if self.output_ports().next().is_none() {
             return Err(AsyncOperatorManifestError::MissingOutputPort);
         }
-        if output_port_count > 1 {
-            return Err(AsyncOperatorManifestError::AmbiguousOutputPort);
+        for input_port in self.input_ports() {
+            input_port
+                .signal
+                .validate()
+                .map_err(|_| AsyncOperatorManifestError::InvalidInputSignal)?;
+            if !input_port.media.supports_signal(&input_port.signal) {
+                return Err(AsyncOperatorManifestError::InputSignalMediaMismatch);
+            }
+            if !self.input_edge.media.is_compatible_with(&input_port.media) {
+                return Err(AsyncOperatorManifestError::InputEdgeMediaMismatch);
+            }
         }
-        let input_port = self
-            .input_ports()
-            .next()
-            .ok_or(AsyncOperatorManifestError::MissingInputPort)?;
-        let output_port = self
-            .output_ports()
-            .next()
-            .ok_or(AsyncOperatorManifestError::MissingOutputPort)?;
-        input_port
-            .signal
-            .validate()
-            .map_err(|_| AsyncOperatorManifestError::InvalidInputSignal)?;
-        output_port
-            .signal
-            .validate()
-            .map_err(|_| AsyncOperatorManifestError::InvalidOutputSignal)?;
-        if !input_port.media.supports_signal(&input_port.signal) {
-            return Err(AsyncOperatorManifestError::InputSignalMediaMismatch);
-        }
-        if !output_port.media.supports_signal(&output_port.signal) {
-            return Err(AsyncOperatorManifestError::OutputSignalMediaMismatch);
-        }
-        if !self.input_edge.media.is_compatible_with(&input_port.media) {
-            return Err(AsyncOperatorManifestError::InputEdgeMediaMismatch);
-        }
-        if !self
-            .output_edge
-            .media
-            .is_compatible_with(&output_port.media)
-        {
-            return Err(AsyncOperatorManifestError::OutputEdgeMediaMismatch);
+        for output_port in self.output_ports() {
+            output_port
+                .signal
+                .validate()
+                .map_err(|_| AsyncOperatorManifestError::InvalidOutputSignal)?;
+            if !output_port.media.supports_signal(&output_port.signal) {
+                return Err(AsyncOperatorManifestError::OutputSignalMediaMismatch);
+            }
+            if !self
+                .output_edge
+                .media
+                .is_compatible_with(&output_port.media)
+            {
+                return Err(AsyncOperatorManifestError::OutputEdgeMediaMismatch);
+            }
         }
         if self.input_edge.backpressure != BackpressurePolicy::DropNewest {
             return Err(AsyncOperatorManifestError::UnsupportedBackpressure);
@@ -243,12 +231,8 @@ pub enum AsyncOperatorManifestError {
     NetworkPermissionMismatch,
     #[error("operator manifest has no typed input port")]
     MissingInputPort,
-    #[error("operator manifest has multiple inputs but through(operator) has no port selection")]
-    AmbiguousInputPort,
     #[error("operator manifest has no typed output port")]
     MissingOutputPort,
-    #[error("operator manifest has multiple outputs but through(operator) has no port selection")]
-    AmbiguousOutputPort,
     #[error("async operator bridge currently requires DropNewest backpressure")]
     UnsupportedBackpressure,
     #[error("async operator bridge requires CopyToBranchPool input ownership")]

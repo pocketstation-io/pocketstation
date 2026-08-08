@@ -7,6 +7,7 @@
 pub mod async_bridge;
 pub mod async_host;
 pub mod async_operator;
+pub mod generated_audio_bridge;
 pub mod metrics;
 pub mod nodes;
 pub mod plan_executor;
@@ -17,10 +18,15 @@ pub mod typed_edge;
 pub use async_bridge::{AsyncBridge, AsyncBridgeReceiver, AsyncBridgeSendError, AsyncBridgeSender};
 pub use async_host::{AsyncRuntimeHost, AsyncRuntimeHostError};
 pub use async_operator::{
-    AsyncOperatorInput, AsyncOperatorInputAccessError, AsyncOperatorObservationHandle,
-    AsyncOperatorObservations, AsyncOperatorOutput, AsyncOperatorOutputBranchSpec,
-    AsyncOperatorOutputObservationHandle, AsyncOperatorOutputObservations, AsyncOperatorWorker,
+    AsyncOperatorInput, AsyncOperatorInputAccessError, AsyncOperatorNamedOutput,
+    AsyncOperatorNamedOutputBranchSpec, AsyncOperatorObservationHandle, AsyncOperatorObservations,
+    AsyncOperatorOutput, AsyncOperatorOutputBranchSpec, AsyncOperatorOutputObservationHandle,
+    AsyncOperatorOutputObservations, AsyncOperatorTypedInput, AsyncOperatorWorker,
     AsyncOperatorWorkerError, CompiledOperatorInputContract,
+};
+pub use generated_audio_bridge::{
+    GeneratedAudioBridge, GeneratedAudioBridgeObservationHandle, GeneratedAudioBridgeObservations,
+    GeneratedAudioBridgeSpec, GeneratedAudioBridgeStartError,
 };
 pub use metrics::{
     BusMetrics, Counter, EdgeMetrics, EdgeObservation, Gauge, SimpleHistogram, SILENCE_FLOOR_DBFS,

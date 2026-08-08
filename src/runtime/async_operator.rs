@@ -14,7 +14,7 @@ use tokio::task::JoinHandle;
 
 use crate::runtime::{
     AsyncBridge, AsyncBridgeReceiver, AsyncBridgeSendError, AsyncBridgeSender, TypedEdgeFanout,
-    TypedEdgePublishError,
+    TypedEdgePublishError, TypedEdgeReceiver,
 };
 use crate::runtime::{PlanEdgeFrame, PlanEdgeReceiver};
 
@@ -154,6 +154,22 @@ pub type AsyncOperatorOutputObservationHandle = crate::runtime::TypedEdgeObserva
 pub type AsyncOperatorOutputBranchSpec = crate::runtime::TypedEdgeBranchSpec;
 pub type AsyncOperatorOutputObservations = crate::runtime::TypedEdgeObservations;
 
+pub struct AsyncOperatorTypedInput {
+    pub port_name: String,
+    pub receiver: TypedEdgeReceiver,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct AsyncOperatorNamedOutputBranchSpec<'a> {
+    pub output_port: &'a str,
+    pub branch: AsyncOperatorOutputBranchSpec,
+}
+
+pub struct AsyncOperatorNamedOutput {
+    pub output_port: String,
+    pub receiver: AsyncOperatorOutput,
+}
+
 #[derive(Debug, thiserror::Error)]
 pub enum AsyncOperatorWorkerError {
     #[error("operator prepare failed: {0}")]
@@ -172,8 +188,6 @@ pub enum AsyncOperatorWorkerError {
     Cancel(NodeError),
     #[error("operator cancellation cleanup exceeded {timeout_ms} ms")]
     CancelTimeout { timeout_ms: u32 },
-    #[error("async derived fan-out does not accept audio output")]
-    UnsupportedAudioOutput,
     #[error("async operator output has no derived lineage")]
     MissingDerivedLineage,
     #[error("async operator output lineage does not match its registered manifest")]
@@ -184,6 +198,14 @@ pub enum AsyncOperatorWorkerError {
     UndeclaredOutputRole,
     #[error("async operator manifest has no output port at runtime")]
     MissingOutputContract,
+    #[error("async operator input port '{port_name}' is not declared by its manifest")]
+    UnknownInputPort { port_name: String },
+    #[error("async operator output port '{port_name}' is not declared by its manifest")]
+    UnknownOutputPort { port_name: String },
+    #[error("async operator output matches no declared output port")]
+    UnmatchedOutputPort,
+    #[error("async operator output matches multiple declared output ports")]
+    AmbiguousOutputPort,
     #[error("terminal output was rejected by full output branch {branch_index}")]
     TerminalOutputDropped { branch_index: usize },
     #[error("operator worker task failed: {0}")]
@@ -192,6 +214,8 @@ pub enum AsyncOperatorWorkerError {
     InvalidPlanInput { kind: &'static str },
     #[error("compiled async input lineage does not match its Session stem contract")]
     PlanInputLineageMismatch,
+    #[error("shared audio typed input requires an exclusive generated-audio branch")]
+    SharedAudioTypedInput,
 }
 
 enum AsyncOperatorWorkerSource {
@@ -199,6 +223,10 @@ enum AsyncOperatorWorkerSource {
     Compiled {
         receiver: PlanEdgeReceiver,
         lineage: CompiledOperatorInputContract,
+    },
+    Typed {
+        port_name: String,
+        receiver: TypedEdgeReceiver,
     },
 }
 
@@ -243,6 +271,29 @@ impl AsyncOperatorWorkerSource {
                     })
                 }
             }),
+            Self::Typed { receiver, .. } => {
+                receiver
+                    .recv()
+                    .map_or(Ok(None), |envelope| match Arc::try_unwrap(envelope) {
+                        Ok(envelope) => Ok(Some(envelope)),
+                        Err(shared) => {
+                            let Some(signal) = clone_non_audio_payload(&shared.signal) else {
+                                return Err(AsyncOperatorWorkerError::SharedAudioTypedInput);
+                            };
+                            Ok(Some(SignalEnvelope {
+                                signal,
+                                signal_spec: shared.signal_spec.clone(),
+                                sequence_number: shared.sequence_number,
+                                timestamp_ns: shared.timestamp_ns,
+                                source_id: shared.source_id,
+                                lineage: shared.lineage,
+                                derived_lineage: shared.derived_lineage.clone(),
+                                timing: shared.timing,
+                                signal_lineage: shared.signal_lineage,
+                            }))
+                        }
+                    })
+            }
         }
     }
 
@@ -250,7 +301,109 @@ impl AsyncOperatorWorkerSource {
         match self {
             Self::Direct(receiver) => receiver.is_abandoned(),
             Self::Compiled { receiver, .. } => receiver.is_abandoned(),
+            Self::Typed { receiver, .. } => receiver.is_abandoned(),
         }
+    }
+
+    fn port_name<'a>(&'a self, manifest: &'a AsyncOperatorManifest) -> Option<&'a str> {
+        match self {
+            Self::Direct(_) | Self::Compiled { .. } => {
+                manifest.input_ports().next().map(|port| port.name.as_str())
+            }
+            Self::Typed { port_name, .. } => Some(port_name),
+        }
+    }
+}
+
+struct AsyncOperatorWorkerInputs {
+    sources: Vec<AsyncOperatorWorkerSource>,
+    next_index: usize,
+}
+
+impl AsyncOperatorWorkerInputs {
+    fn one(source: AsyncOperatorWorkerSource) -> Self {
+        Self {
+            sources: vec![source],
+            next_index: 0,
+        }
+    }
+
+    fn recv(
+        &mut self,
+        manifest: &AsyncOperatorManifest,
+    ) -> Result<Option<SignalEnvelope>, AsyncOperatorWorkerError> {
+        if self.sources.is_empty() {
+            return Ok(None);
+        }
+        for offset in 0..self.sources.len() {
+            let index = (self.next_index + offset) % self.sources.len();
+            if let Some(envelope) = self.sources[index].recv()? {
+                let port_name = self.sources[index].port_name(manifest).ok_or(
+                    AsyncOperatorWorkerError::UnknownInputPort {
+                        port_name: String::new(),
+                    },
+                )?;
+                let port = manifest
+                    .input_ports()
+                    .find(|port| port.name == port_name)
+                    .ok_or_else(|| AsyncOperatorWorkerError::UnknownInputPort {
+                        port_name: port_name.to_owned(),
+                    })?;
+                if envelope.signal_spec.class != port.signal.class
+                    || envelope.signal_spec.schema != port.signal.schema
+                    || !port.media.supports_signal(&envelope.signal_spec)
+                {
+                    return Err(AsyncOperatorWorkerError::OutputSignalMismatch);
+                }
+                self.next_index = (index + 1) % self.sources.len();
+                return Ok(Some(envelope));
+            }
+        }
+        Ok(None)
+    }
+
+    fn is_abandoned(&self) -> bool {
+        self.sources
+            .iter()
+            .all(AsyncOperatorWorkerSource::is_abandoned)
+    }
+}
+
+struct NamedOutputFanout {
+    port_name: String,
+    fanout: TypedEdgeFanout,
+}
+
+fn clone_non_audio_payload(payload: &SignalPayload) -> Option<SignalPayload> {
+    match payload {
+        SignalPayload::Audio(_) => None,
+        SignalPayload::EncodedAudio { codec, bytes } => Some(SignalPayload::EncodedAudio {
+            codec: *codec,
+            bytes: bytes.clone(),
+        }),
+        SignalPayload::Text(text) => Some(SignalPayload::Text(text.clone())),
+        SignalPayload::FormattedText { format, text } => Some(SignalPayload::FormattedText {
+            format: *format,
+            text: text.clone(),
+        }),
+        SignalPayload::Event(bytes) => Some(SignalPayload::Event(bytes.clone())),
+        SignalPayload::StructuredEvent { format, bytes } => Some(SignalPayload::StructuredEvent {
+            format: *format,
+            bytes: bytes.clone(),
+        }),
+        SignalPayload::Metrics(bytes) => Some(SignalPayload::Metrics(bytes.clone())),
+        SignalPayload::Binary(bytes) => Some(SignalPayload::Binary(bytes.clone())),
+        SignalPayload::StructuredBinary { format, bytes } => {
+            Some(SignalPayload::StructuredBinary {
+                format: *format,
+                bytes: bytes.clone(),
+            })
+        }
+        SignalPayload::Control(bytes) => Some(SignalPayload::Control(bytes.clone())),
+        SignalPayload::Custom { signal_id, bytes } => Some(SignalPayload::Custom {
+            signal_id: signal_id.clone(),
+            bytes: bytes.clone(),
+        }),
     }
 }
 
@@ -263,9 +416,81 @@ pub struct AsyncOperatorWorker {
 }
 
 fn build_output_branches(
+    manifest: &AsyncOperatorManifest,
     output_branch_specs: &[AsyncOperatorOutputBranchSpec],
-) -> Result<(TypedEdgeFanout, Vec<AsyncOperatorOutput>), NodeError> {
-    TypedEdgeFanout::new(output_branch_specs).map_err(|error| NodeError::Prepare(error.to_string()))
+) -> Result<(Vec<NamedOutputFanout>, Vec<AsyncOperatorOutput>), NodeError> {
+    let mut output_ports = manifest.output_ports();
+    let output_port = output_ports
+        .next()
+        .ok_or_else(|| NodeError::Prepare("async operator has no output port".to_owned()))?;
+    if output_ports.next().is_some() {
+        return Err(NodeError::Prepare(
+            "simple async operator spawn requires exactly one output port".to_owned(),
+        ));
+    }
+    let (fanout, outputs) = TypedEdgeFanout::new(output_branch_specs)
+        .map_err(|error| NodeError::Prepare(error.to_string()))?;
+    Ok((
+        vec![NamedOutputFanout {
+            port_name: output_port.name.clone(),
+            fanout,
+        }],
+        outputs,
+    ))
+}
+
+fn build_named_output_branches(
+    manifest: &AsyncOperatorManifest,
+    output_branch_specs: &[AsyncOperatorNamedOutputBranchSpec<'_>],
+) -> Result<(Vec<NamedOutputFanout>, Vec<AsyncOperatorNamedOutput>), NodeError> {
+    if output_branch_specs.is_empty() {
+        return Err(NodeError::Prepare(
+            "async operator requires at least one output branch".to_owned(),
+        ));
+    }
+    let mut fanouts = Vec::new();
+    let mut outputs = Vec::with_capacity(output_branch_specs.len());
+    for port in manifest.output_ports() {
+        let matching = output_branch_specs
+            .iter()
+            .filter(|specification| specification.output_port == port.name)
+            .collect::<Vec<_>>();
+        if matching.is_empty() {
+            continue;
+        }
+        let branches = matching
+            .iter()
+            .map(|specification| specification.branch)
+            .collect::<Vec<_>>();
+        let (fanout, receivers) = TypedEdgeFanout::new(&branches)
+            .map_err(|error| NodeError::Prepare(error.to_string()))?;
+        outputs.extend(
+            receivers
+                .into_iter()
+                .map(|receiver| AsyncOperatorNamedOutput {
+                    output_port: port.name.clone(),
+                    receiver,
+                }),
+        );
+        fanouts.push(NamedOutputFanout {
+            port_name: port.name.clone(),
+            fanout,
+        });
+    }
+    if outputs.len() != output_branch_specs.len() {
+        let unknown = output_branch_specs
+            .iter()
+            .find(|specification| {
+                !manifest
+                    .output_ports()
+                    .any(|port| port.name == specification.output_port)
+            })
+            .map_or("", |specification| specification.output_port);
+        return Err(NodeError::Prepare(format!(
+            "async operator output port '{unknown}' is not declared"
+        )));
+    }
+    Ok((fanouts, outputs))
 }
 
 impl AsyncOperatorWorker {
@@ -289,6 +514,83 @@ impl AsyncOperatorWorker {
             AsyncOperatorWorkerSource::Direct(input_receiver),
             Some(input),
         )
+    }
+
+    pub fn spawn_composed(
+        factory: Arc<dyn AsyncOperatorFactory>,
+        configuration: &NodeConfig,
+        prepare_context: PrepareContext,
+        typed_inputs: Vec<AsyncOperatorTypedInput>,
+        output_branch_specs: &[AsyncOperatorNamedOutputBranchSpec<'_>],
+    ) -> Result<(Self, Vec<AsyncOperatorNamedOutput>), NodeError> {
+        if typed_inputs.is_empty() {
+            return Err(NodeError::Prepare(
+                "composed async operator requires at least one typed input".to_owned(),
+            ));
+        }
+        let manifest = factory.resolve_manifest(configuration)?;
+        manifest
+            .validate()
+            .map_err(|error| NodeError::Prepare(error.to_string()))?;
+        for input in &typed_inputs {
+            if !manifest
+                .input_ports()
+                .any(|port| port.name == input.port_name)
+            {
+                return Err(NodeError::Prepare(format!(
+                    "async operator input port '{}' is not declared",
+                    input.port_name
+                )));
+            }
+        }
+        let node = factory.create(configuration)?;
+        let observations = Arc::new(AsyncOperatorObservationState::default());
+        let cancellation = Arc::new(AtomicBool::new(false));
+        let cancellation_notify = Arc::new(Notify::new());
+        let (output_senders, outputs) =
+            build_named_output_branches(&manifest, output_branch_specs)?;
+        let input_sources = typed_inputs
+            .into_iter()
+            .map(|input| AsyncOperatorWorkerSource::Typed {
+                port_name: input.port_name,
+                receiver: input.receiver,
+            })
+            .collect();
+        let task_observations = Arc::clone(&observations);
+        let task_cancellation = Arc::clone(&cancellation);
+        let task_cancellation_notify = Arc::clone(&cancellation_notify);
+        let join = tokio::spawn(async move {
+            let result = run_worker(
+                manifest,
+                node,
+                prepare_context,
+                AsyncOperatorWorkerInputs {
+                    sources: input_sources,
+                    next_index: 0,
+                },
+                output_senders,
+                task_cancellation,
+                task_cancellation_notify,
+                Arc::clone(&task_observations),
+            )
+            .await;
+            task_observations.joined.store(true, Ordering::Release);
+            task_observations.ready_notify.notify_waiters();
+            task_observations.terminal_notify.notify_waiters();
+            result
+        });
+        Ok((
+            Self {
+                input: None,
+                cancellation,
+                cancellation_notify,
+                observations: AsyncOperatorObservationHandle {
+                    state: observations,
+                },
+                join,
+            },
+            outputs,
+        ))
     }
 
     pub async fn prepare_and_spawn_from_plan_edge(
@@ -338,7 +640,7 @@ impl AsyncOperatorWorker {
         observations.ready.store(true, Ordering::Release);
         let cancellation = Arc::new(AtomicBool::new(false));
         let cancellation_notify = Arc::new(Notify::new());
-        let (output_senders, outputs) = build_output_branches(output_branch_specs)
+        let (output_senders, outputs) = build_output_branches(&manifest, output_branch_specs)
             .map_err(AsyncOperatorWorkerError::Prepare)?;
         let task_observations = Arc::clone(&observations);
         let task_cancellation = Arc::clone(&cancellation);
@@ -347,10 +649,10 @@ impl AsyncOperatorWorker {
             let result = run_prepared_worker(
                 manifest,
                 node,
-                AsyncOperatorWorkerSource::Compiled {
+                AsyncOperatorWorkerInputs::one(AsyncOperatorWorkerSource::Compiled {
                     receiver: input_receiver,
                     lineage: input_contract,
-                },
+                }),
                 output_senders,
                 task_cancellation,
                 task_cancellation_notify,
@@ -404,7 +706,7 @@ impl AsyncOperatorWorker {
         }
         let cancellation = Arc::new(AtomicBool::new(false));
         let cancellation_notify = Arc::new(Notify::new());
-        let (output_senders, outputs) = build_output_branches(output_branch_specs)?;
+        let (output_senders, outputs) = build_output_branches(&manifest, output_branch_specs)?;
         let task_observations = Arc::clone(&observations);
         let task_cancellation = Arc::clone(&cancellation);
         let task_cancellation_notify = Arc::clone(&cancellation_notify);
@@ -413,7 +715,7 @@ impl AsyncOperatorWorker {
                 manifest,
                 node,
                 prepare_context,
-                input_source,
+                AsyncOperatorWorkerInputs::one(input_source),
                 output_senders,
                 task_cancellation,
                 task_cancellation_notify,
@@ -465,8 +767,8 @@ async fn run_worker(
     manifest: AsyncOperatorManifest,
     mut node: Box<dyn AsyncNode>,
     prepare_context: PrepareContext,
-    input: AsyncOperatorWorkerSource,
-    output_branches: TypedEdgeFanout,
+    input: AsyncOperatorWorkerInputs,
+    output_branches: Vec<NamedOutputFanout>,
     cancellation: Arc<AtomicBool>,
     cancellation_notify: Arc<Notify>,
     observations: Arc<AsyncOperatorObservationState>,
@@ -495,8 +797,8 @@ async fn run_worker(
 async fn run_prepared_worker(
     manifest: AsyncOperatorManifest,
     mut node: Box<dyn AsyncNode>,
-    mut input: AsyncOperatorWorkerSource,
-    mut output_branches: TypedEdgeFanout,
+    mut input: AsyncOperatorWorkerInputs,
+    mut output_branches: Vec<NamedOutputFanout>,
     cancellation: Arc<AtomicBool>,
     cancellation_notify: Arc<Notify>,
     observations: Arc<AsyncOperatorObservationState>,
@@ -527,8 +829,8 @@ async fn run_prepared_worker(
 async fn run_operator_loop(
     manifest: &AsyncOperatorManifest,
     node: &mut dyn AsyncNode,
-    input: &mut AsyncOperatorWorkerSource,
-    output_branches: &mut TypedEdgeFanout,
+    input: &mut AsyncOperatorWorkerInputs,
+    output_branches: &mut [NamedOutputFanout],
     cancellation: &AtomicBool,
     cancellation_notify: &Notify,
     observations: &AsyncOperatorObservationState,
@@ -553,12 +855,12 @@ async fn run_operator_loop(
             if manifest.cancellation == OperatorCancellationPolicy::DiscardQueued {
                 break;
             }
-            let Some(envelope) = input.recv()? else {
+            let Some(envelope) = input.recv(manifest)? else {
                 break;
             };
             envelope
         } else {
-            let Some(envelope) = input.recv()? else {
+            let Some(envelope) = input.recv(manifest)? else {
                 if input.is_abandoned() {
                     let emitted = match tokio::time::timeout(timeout_duration, node.flush()).await {
                         Ok(Ok(emitted)) => emitted,
@@ -662,29 +964,48 @@ async fn cancel_node(
 fn fan_out_outputs(
     manifest: &AsyncOperatorManifest,
     emitted: Vec<SignalEnvelope>,
-    output_branches: &mut TypedEdgeFanout,
+    output_branches: &mut [NamedOutputFanout],
     observations: &AsyncOperatorObservationState,
 ) -> Result<(), AsyncOperatorWorkerError> {
-    let output_contract = manifest
-        .output_ports()
-        .next()
-        .ok_or(AsyncOperatorWorkerError::MissingOutputContract)?;
     for envelope in emitted {
-        if matches!(&envelope.signal, SignalPayload::Audio(_)) {
-            return Err(AsyncOperatorWorkerError::UnsupportedAudioOutput);
-        }
-        if envelope.signal_spec.class != output_contract.signal.class
-            || envelope.signal_spec.schema != output_contract.signal.schema
-            || !output_contract.media.supports_signal(&envelope.signal_spec)
-        {
-            return Err(AsyncOperatorWorkerError::OutputSignalMismatch);
-        }
+        let matching_ports = manifest
+            .output_ports()
+            .filter(|port| {
+                envelope.signal_spec.class == port.signal.class
+                    && envelope.signal_spec.schema == port.signal.schema
+                    && port.media.supports_signal(&envelope.signal_spec)
+            })
+            .collect::<Vec<_>>();
+        let output_contract = match matching_ports.as_slice() {
+            [] => return Err(AsyncOperatorWorkerError::OutputSignalMismatch),
+            [output] => *output,
+            _ => {
+                let exact_roles = matching_ports
+                    .iter()
+                    .filter(|port| {
+                        port.signal
+                            .role
+                            .as_ref()
+                            .zip(envelope.signal_spec.role.as_ref())
+                            .is_some_and(|(declared, actual)| declared.as_str() == actual.as_str())
+                    })
+                    .collect::<Vec<_>>();
+                match exact_roles.as_slice() {
+                    [output] => **output,
+                    _ => return Err(AsyncOperatorWorkerError::AmbiguousOutputPort),
+                }
+            }
+        };
         if !manifest
             .output_roles
             .accepts(&envelope.signal_spec, &output_contract.signal)
         {
             return Err(AsyncOperatorWorkerError::UndeclaredOutputRole);
         }
+        let output_branches = output_branches
+            .iter_mut()
+            .find(|branches| branches.port_name == output_contract.name)
+            .ok_or(AsyncOperatorWorkerError::MissingOutputContract)?;
         let derived_lineage = envelope
             .derived_lineage
             .as_ref()
@@ -708,7 +1029,7 @@ fn fan_out_outputs(
                 .output_nonterminal_total
                 .fetch_add(1, Ordering::Relaxed);
         }
-        match output_branches.publish(envelope, is_terminal) {
+        match output_branches.fanout.publish(envelope, is_terminal) {
             Ok(report) => {
                 observations
                     .output_emitted_total
@@ -1082,6 +1403,185 @@ mod tests {
             capacity_signals,
             edge_contract: crate::graph::EdgeContract::typed_default(),
         }
+    }
+
+    fn text_input_factory(operator_id: &str, node_type_id: &str) -> Arc<TestFactory> {
+        let factory = factory(
+            operator_id,
+            node_type_id,
+            TestBehavior::Transcript,
+            100,
+            OperatorFailurePolicy::Continue,
+            Arc::new(AtomicBool::new(false)),
+        );
+        let mut manifest = factory.manifest.clone();
+        manifest.node.inputs = vec![port(
+            "input",
+            PortDirection::Input,
+            SignalSpec::text(TextFormat::Utf8),
+        )];
+        manifest.input_edge.media = MediaCaps::Text;
+        Arc::new(TestFactory {
+            manifest,
+            behavior: factory.behavior,
+            closed: Arc::clone(&factory.closed),
+            cancelled: Arc::clone(&factory.cancelled),
+        })
+    }
+
+    fn text_envelope(sequence_number: u64) -> SignalEnvelope {
+        envelope(sequence_number).map_signal(
+            SignalPayload::Text(format!("input-{sequence_number}")),
+            SignalSpec::text(TextFormat::Utf8),
+        )
+    }
+
+    #[tokio::test(flavor = "current_thread")]
+    async fn given_operator_composition_with_three_external_operators_then_derived_output_crosses_each_bounded_edge(
+    ) {
+        let (mut first, mut first_outputs) = AsyncOperatorWorker::spawn(
+            factory(
+                "operator.chain.first",
+                "operator.chain.first.node",
+                TestBehavior::Transcript,
+                100,
+                OperatorFailurePolicy::Continue,
+                Arc::new(AtomicBool::new(false)),
+            ),
+            &NodeConfig::new(),
+            prepare_context(),
+            &[output_branch(4)],
+        )
+        .unwrap();
+        let (second, mut second_outputs) = AsyncOperatorWorker::spawn_composed(
+            text_input_factory("operator.chain.second", "operator.chain.second.node"),
+            &NodeConfig::new(),
+            prepare_context(),
+            vec![AsyncOperatorTypedInput {
+                port_name: "input".to_owned(),
+                receiver: first_outputs.remove(0),
+            }],
+            &[AsyncOperatorNamedOutputBranchSpec {
+                output_port: "transcript",
+                branch: output_branch(4),
+            }],
+        )
+        .unwrap();
+        let (third, mut third_outputs) = AsyncOperatorWorker::spawn_composed(
+            text_input_factory("operator.chain.third", "operator.chain.third.node"),
+            &NodeConfig::new(),
+            prepare_context(),
+            vec![AsyncOperatorTypedInput {
+                port_name: "input".to_owned(),
+                receiver: second_outputs.remove(0).receiver,
+            }],
+            &[AsyncOperatorNamedOutputBranchSpec {
+                output_port: "transcript",
+                branch: output_branch(4),
+            }],
+        )
+        .unwrap();
+        first.input_mut().unwrap().send(envelope(1)).unwrap();
+        first.finish_and_join().await.unwrap();
+        second.finish_and_join().await.unwrap();
+        third.finish_and_join().await.unwrap();
+
+        let output = third_outputs
+            .remove(0)
+            .receiver
+            .recv()
+            .expect("third output");
+        assert!(matches!(output.signal, SignalPayload::Text(_)));
+        assert_eq!(
+            output
+                .derived_lineage
+                .as_ref()
+                .unwrap()
+                .operator_id
+                .as_str(),
+            "operator.chain.third"
+        );
+    }
+
+    #[tokio::test(flavor = "current_thread")]
+    async fn given_operator_composition_with_named_multi_input_output_manifest_then_each_declared_port_executes(
+    ) {
+        let mut manifest = manifest(
+            "operator.named",
+            "operator.named.node",
+            100,
+            OperatorFailurePolicy::Continue,
+        );
+        manifest.node.inputs = vec![
+            port(
+                "left",
+                PortDirection::Input,
+                SignalSpec::text(TextFormat::Utf8),
+            ),
+            port(
+                "right",
+                PortDirection::Input,
+                SignalSpec::text(TextFormat::Utf8),
+            ),
+        ];
+        manifest.node.outputs = vec![
+            port("partial", PortDirection::Output, transcript_partial_spec()),
+            port("final", PortDirection::Output, transcript_final_spec()),
+        ];
+        manifest.input_edge.media = MediaCaps::Text;
+        manifest.output_edge.media = MediaCaps::Text;
+        let factory = Arc::new(TestFactory {
+            manifest,
+            behavior: TestBehavior::Transcript,
+            closed: Arc::new(AtomicBool::new(false)),
+            cancelled: Arc::new(AtomicBool::new(false)),
+        });
+        let branch = output_branch(2);
+        let (mut left_sender, mut left_receivers) = TypedEdgeFanout::new(&[branch]).unwrap();
+        let (mut right_sender, mut right_receivers) = TypedEdgeFanout::new(&[branch]).unwrap();
+        let (worker, mut outputs) = AsyncOperatorWorker::spawn_composed(
+            factory,
+            &NodeConfig::new(),
+            prepare_context(),
+            vec![
+                AsyncOperatorTypedInput {
+                    port_name: "left".to_owned(),
+                    receiver: left_receivers.remove(0),
+                },
+                AsyncOperatorTypedInput {
+                    port_name: "right".to_owned(),
+                    receiver: right_receivers.remove(0),
+                },
+            ],
+            &[
+                AsyncOperatorNamedOutputBranchSpec {
+                    output_port: "partial",
+                    branch: output_branch(2),
+                },
+                AsyncOperatorNamedOutputBranchSpec {
+                    output_port: "final",
+                    branch: output_branch(2),
+                },
+            ],
+        )
+        .unwrap();
+        left_sender.publish(text_envelope(1), false).unwrap();
+        right_sender.publish(text_envelope(2), false).unwrap();
+        drop(left_sender);
+        drop(right_sender);
+        worker.finish_and_join().await.unwrap();
+
+        outputs.sort_by(|left, right| left.output_port.cmp(&right.output_port));
+        let final_output = outputs[0].receiver.recv().expect("final output");
+        let partial_output = outputs[1].receiver.recv().expect("partial output");
+        assert_eq!(
+            final_output.signal_spec.role.as_ref().unwrap().as_str(),
+            TRANSCRIPT_FINAL_ROLE
+        );
+        assert_eq!(
+            partial_output.signal_spec.role.as_ref().unwrap().as_str(),
+            TRANSCRIPT_PARTIAL_ROLE
+        );
     }
 
     #[test]
@@ -1553,7 +2053,7 @@ mod tests {
     }
 
     #[tokio::test(flavor = "current_thread")]
-    async fn given_audio_output_when_processed_then_derived_worker_rejects_it() {
+    async fn given_audio_output_without_audio_port_when_processed_then_worker_rejects_it() {
         let (mut worker, _outputs) = AsyncOperatorWorker::spawn(
             factory(
                 "operator.audio-output",
@@ -1572,7 +2072,7 @@ mod tests {
 
         assert!(matches!(
             worker.finish_and_join().await.unwrap_err(),
-            AsyncOperatorWorkerError::UnsupportedAudioOutput
+            AsyncOperatorWorkerError::OutputSignalMismatch
         ));
     }
 

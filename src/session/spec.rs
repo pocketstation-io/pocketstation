@@ -7,7 +7,7 @@ use crate::session::{
     EndpointConfiguration, OperatorConfiguration, OperatorId, SessionError, Source,
 };
 
-pub const SESSION_SPEC_VERSION: SessionSpecVersion = SessionSpecVersion::new(1, 1);
+pub const SESSION_SPEC_VERSION: SessionSpecVersion = SessionSpecVersion::new(1, 2);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct OperatorInstanceId(u64);
@@ -115,8 +115,19 @@ pub struct OperatorSpec {
     instance_id: OperatorInstanceId,
     input_route_id: RouteId,
     source_stem_id: StemId,
+    input_origin: OperatorInputOrigin,
+    input_port: Option<String>,
     operator_id: OperatorId,
     configuration: OperatorConfiguration,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum OperatorInputOrigin {
+    Stem(StemId),
+    OperatorOutput {
+        operator_instance_id: OperatorInstanceId,
+        output_port: Option<String>,
+    },
 }
 
 impl OperatorSpec {
@@ -132,6 +143,14 @@ impl OperatorSpec {
         self.source_stem_id
     }
 
+    pub const fn input_origin(&self) -> &OperatorInputOrigin {
+        &self.input_origin
+    }
+
+    pub fn input_port(&self) -> Option<&str> {
+        self.input_port.as_deref()
+    }
+
     pub const fn operator_id(&self) -> &OperatorId {
         &self.operator_id
     }
@@ -141,24 +160,29 @@ impl OperatorSpec {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DerivedRouteSpec {
     route_id: RouteId,
     operator_instance_id: OperatorInstanceId,
     endpoint_id: EndpointId,
+    output_port: Option<String>,
 }
 
 impl DerivedRouteSpec {
-    pub const fn id(self) -> RouteId {
+    pub const fn id(&self) -> RouteId {
         self.route_id
     }
 
-    pub const fn operator_instance_id(self) -> OperatorInstanceId {
+    pub const fn operator_instance_id(&self) -> OperatorInstanceId {
         self.operator_instance_id
     }
 
-    pub const fn endpoint_id(self) -> EndpointId {
+    pub const fn endpoint_id(&self) -> EndpointId {
         self.endpoint_id
+    }
+
+    pub fn output_port(&self) -> Option<&str> {
+        self.output_port.as_deref()
     }
 }
 
@@ -319,6 +343,32 @@ impl SessionSpec {
                     stem_id: operator.source_stem_id,
                 });
             }
+            match &operator.input_origin {
+                OperatorInputOrigin::Stem(stem_id) => {
+                    if !stem_ids.contains(stem_id) || *stem_id != operator.source_stem_id {
+                        return Err(SessionError::UnknownStem { stem_id: *stem_id });
+                    }
+                }
+                OperatorInputOrigin::OperatorOutput {
+                    operator_instance_id,
+                    ..
+                } => {
+                    let Some(upstream) = self
+                        .operators
+                        .iter()
+                        .find(|candidate| candidate.instance_id == *operator_instance_id)
+                    else {
+                        return Err(SessionError::UnknownOperatorInstance {
+                            operator_instance_id: *operator_instance_id,
+                        });
+                    };
+                    if upstream.source_stem_id != operator.source_stem_id {
+                        return Err(SessionError::InvalidOperator {
+                            reason: "chained operator source stem identity changed".to_owned(),
+                        });
+                    }
+                }
+            }
             if operator.operator_id.as_str().trim().is_empty() {
                 return Err(SessionError::InvalidOperator {
                     reason: "operator id cannot be empty".to_owned(),
@@ -348,6 +398,15 @@ impl SessionSpec {
                 .derived_routes
                 .iter()
                 .any(|route| route.operator_instance_id == operator.instance_id)
+                && !self.operators.iter().any(|candidate| {
+                    matches!(
+                        candidate.input_origin,
+                        OperatorInputOrigin::OperatorOutput {
+                            operator_instance_id,
+                            ..
+                        } if operator_instance_id == operator.instance_id
+                    )
+                })
             {
                 return Err(SessionError::OperatorHasNoDestination {
                     operator_instance_id: operator.instance_id,
@@ -394,6 +453,8 @@ pub(crate) fn operator_spec(
     instance_id: OperatorInstanceId,
     input_route_id: RouteId,
     source_stem_id: StemId,
+    input_origin: OperatorInputOrigin,
+    input_port: Option<String>,
     operator_id: OperatorId,
     configuration: OperatorConfiguration,
 ) -> OperatorSpec {
@@ -401,20 +462,24 @@ pub(crate) fn operator_spec(
         instance_id,
         input_route_id,
         source_stem_id,
+        input_origin,
+        input_port,
         operator_id,
         configuration,
     }
 }
 
-pub(crate) const fn derived_route_spec(
+pub(crate) fn derived_route_spec(
     route_id: RouteId,
     operator_instance_id: OperatorInstanceId,
     endpoint_id: EndpointId,
+    output_port: Option<String>,
 ) -> DerivedRouteSpec {
     DerivedRouteSpec {
         route_id,
         operator_instance_id,
         endpoint_id,
+        output_port,
     }
 }
 
@@ -458,13 +523,13 @@ mod tests {
 
         assert!(matches!(
             spec.validate(),
-            Err(SessionError::UnsupportedVersion { major: 1, minor: 2 })
+            Err(SessionError::UnsupportedVersion { major: 1, minor: 3 })
         ));
     }
 
     #[test]
     fn given_current_schema_when_version_read_then_derived_route_extension_is_recorded() {
-        assert_eq!(SESSION_SPEC_VERSION, SessionSpecVersion::new(1, 1));
+        assert_eq!(SESSION_SPEC_VERSION, SessionSpecVersion::new(1, 2));
     }
 
     #[test]
@@ -474,6 +539,8 @@ mod tests {
             OperatorInstanceId::new(1),
             RouteId(2),
             StemId(1),
+            OperatorInputOrigin::Stem(StemId(1)),
+            None,
             OperatorId::new("example.operator.test.v1"),
             OperatorConfiguration::new(),
         ));

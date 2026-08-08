@@ -10,8 +10,8 @@ use crate::graph::{
 };
 
 use crate::session::{
-    ApplicationSelector, DeviceSelector, EndpointSpec, OperatorInstanceId, OperatorSpec,
-    SessionError, SessionId, SessionSpec, Source, StemSpec,
+    ApplicationSelector, DeviceSelector, EndpointSpec, OperatorInputOrigin, OperatorInstanceId,
+    OperatorSpec, SessionError, SessionId, SessionSpec, Source, StemSpec,
 };
 
 pub const APPLICATION_SOURCE_NODE_TYPE_ID: &str = "source.application";
@@ -84,6 +84,17 @@ pub enum SessionCompileError {
     AmbiguousDerivedEndpointInput {
         node_type_id: String,
         input_ports_total: usize,
+    },
+    #[error("operator {operator_id} requires explicit {direction} port selection")]
+    AmbiguousOperatorPort {
+        operator_id: String,
+        direction: &'static str,
+    },
+    #[error("operator {operator_id} has no {direction} port named '{port_name}'")]
+    UnknownOperatorPort {
+        operator_id: String,
+        direction: &'static str,
+        port_name: String,
     },
     #[error("required source node type {node_type_id} is not registered")]
     UnknownSourceNodeType { node_type_id: String },
@@ -301,7 +312,8 @@ impl<'registry> SessionCompiler<'registry> {
             }
         }
 
-        let mut operator_nodes = HashMap::with_capacity(spec.operators().len());
+        let mut operator_nodes: HashMap<OperatorInstanceId, LoweredOperator> =
+            HashMap::with_capacity(spec.operators().len());
         for operator in spec.operators() {
             let factory = self
                 .node_registry
@@ -310,26 +322,39 @@ impl<'registry> SessionCompiler<'registry> {
                     operator_id: operator.operator_id().as_str().to_owned(),
                 })?;
             let manifest = factory.manifest();
-            let input_port = manifest
-                .input_ports()
-                .next()
-                .expect("registered async manifests have exactly one input");
-            let output_port = manifest
-                .output_ports()
-                .next()
-                .expect("registered async manifests have exactly one output");
-            let source_node =
-                source_nodes
-                    .get(&operator.source_stem_id())
-                    .ok_or(SessionError::UnknownStem {
-                        stem_id: operator.source_stem_id(),
-                    })?;
+            let input_port = select_operator_port(
+                manifest,
+                crate::graph::PortDirection::Input,
+                operator.input_port(),
+            )?;
+            let source_output = match operator.input_origin() {
+                OperatorInputOrigin::Stem(stem_id) => source_nodes
+                    .get(stem_id)
+                    .ok_or(SessionError::UnknownStem { stem_id: *stem_id })?
+                    .out(AUDIO_OUTPUT_PORT),
+                OperatorInputOrigin::OperatorOutput {
+                    operator_instance_id,
+                    output_port,
+                } => {
+                    let upstream = operator_nodes.get(operator_instance_id).ok_or(
+                        SessionError::UnknownOperatorInstance {
+                            operator_instance_id: *operator_instance_id,
+                        },
+                    )?;
+                    let output = select_operator_port(
+                        &upstream.manifest,
+                        crate::graph::PortDirection::Output,
+                        output_port.as_deref(),
+                    )?;
+                    upstream.node.out(&output.name)
+                }
+            };
             let operator_node = pipeline.add_node(
                 manifest.node.type_id.clone(),
                 operator_node_config(spec.session_id(), operator, manifest),
             );
             pipeline.connect_with(
-                source_node.out(AUDIO_OUTPUT_PORT),
+                source_output,
                 operator_node.in_(&input_port.name),
                 manifest.input_edge,
             );
@@ -337,8 +362,7 @@ impl<'registry> SessionCompiler<'registry> {
                 operator.instance_id(),
                 LoweredOperator {
                     node: operator_node,
-                    output_port: output_port.name.clone(),
-                    output_edge: manifest.output_edge,
+                    manifest: manifest.clone(),
                     source_stem_id: operator.source_stem_id(),
                 },
             );
@@ -387,9 +411,16 @@ impl<'registry> SessionCompiler<'registry> {
                 endpoint_node_config(spec.session_id(), stem, endpoint, route.id()),
             );
             pipeline.connect_with(
-                operator.node.out(&operator.output_port),
+                operator.node.out(
+                    &select_operator_port(
+                        &operator.manifest,
+                        crate::graph::PortDirection::Output,
+                        route.output_port(),
+                    )?
+                    .name,
+                ),
                 endpoint_node.in_(&input_ports[0].name),
-                operator.output_edge,
+                operator.manifest.output_edge,
             );
         }
         Ok(pipeline.into_spec())
@@ -423,9 +454,40 @@ fn recording_edge_contract(media: Option<MediaCaps>) -> EdgeContract {
 
 struct LoweredOperator {
     node: NodeHandle,
-    output_port: String,
-    output_edge: EdgeContract,
+    manifest: crate::graph::AsyncOperatorManifest,
     source_stem_id: crate::session::StemId,
+}
+
+fn select_operator_port<'a>(
+    manifest: &'a crate::graph::AsyncOperatorManifest,
+    direction: crate::graph::PortDirection,
+    selected: Option<&str>,
+) -> Result<&'a crate::graph::PortSpec, SessionCompileError> {
+    let mut ports = match direction {
+        crate::graph::PortDirection::Input => manifest.input_ports().collect::<Vec<_>>(),
+        crate::graph::PortDirection::Output => manifest.output_ports().collect::<Vec<_>>(),
+    };
+    let direction_name = match direction {
+        crate::graph::PortDirection::Input => "input",
+        crate::graph::PortDirection::Output => "output",
+    };
+    if let Some(selected) = selected {
+        return ports
+            .into_iter()
+            .find(|port| port.name == selected)
+            .ok_or_else(|| SessionCompileError::UnknownOperatorPort {
+                operator_id: manifest.operator_id.as_str().to_owned(),
+                direction: direction_name,
+                port_name: selected.to_owned(),
+            });
+    }
+    if ports.len() != 1 {
+        return Err(SessionCompileError::AmbiguousOperatorPort {
+            operator_id: manifest.operator_id.as_str().to_owned(),
+            direction: direction_name,
+        });
+    }
+    Ok(ports.remove(0))
 }
 
 fn source_node_type_id(source: &Source) -> NodeTypeId {
@@ -550,6 +612,8 @@ mod tests {
     const TEST_CONNECTOR_OPERATOR_ID: &str = "example.connector.streaming-stt.v1";
     const TEST_ASYNC_OPERATOR_ID: &str = "example.operator.streaming-stt.v1";
     const TEST_ASYNC_NODE_TYPE_ID: &str = "operator.transcription.test";
+    const TEST_TRANSFORM_OPERATOR_ID: &str = "example.operator.text-transform.v1";
+    const TEST_TRANSFORM_NODE_TYPE_ID: &str = "operator.text-transform.test";
     const TEST_TEXT_ENDPOINT_OPERATOR_ID: &str = "example.endpoint.text.v1";
     const TEST_TEXT_ENDPOINT_NODE_TYPE_ID: &str = "endpoint.text.test";
 
@@ -619,6 +683,22 @@ mod tests {
                     },
                 },
             }
+        }
+
+        fn text_transform() -> Self {
+            let mut factory = Self::new();
+            factory.manifest.operator_id = OperatorId::new(TEST_TRANSFORM_OPERATOR_ID);
+            factory.manifest.node.type_id = NodeTypeId::from(TEST_TRANSFORM_NODE_TYPE_ID);
+            factory.manifest.node.inputs = vec![PortSpec {
+                name: "text".to_owned(),
+                direction: PortDirection::Input,
+                signal: SignalSpec::text(TextFormat::Utf8).with_role("transcript"),
+                media: MediaCaps::Text,
+                multiplicity: Multiplicity::One,
+                required: true,
+            }];
+            factory.manifest.input_edge.media = MediaCaps::Text;
+            factory
         }
     }
 
@@ -727,6 +807,9 @@ mod tests {
         node_registry
             .register_async(Arc::new(CompileOnlyAsyncFactory::new()))
             .expect("async operator registration");
+        node_registry
+            .register_async(Arc::new(CompileOnlyAsyncFactory::text_transform()))
+            .expect("text transform registration");
         node_registry
             .register_definition(Arc::new(CompileOnlyTextEndpointDefinition))
             .expect("text endpoint node registration");
@@ -917,6 +1000,58 @@ mod tests {
             operator_node.spec.config.get("operator_id"),
             Some(TEST_ASYNC_OPERATOR_ID)
         );
+    }
+
+    #[test]
+    fn given_derived_stream_chain_when_compiled_then_operator_output_feeds_next_named_input() {
+        let session = Session::new();
+        let microphone = session
+            .capture(Source::microphone_default())
+            .expect("microphone");
+        let terminal = session
+            .endpoint(EndpointDescriptor::new(
+                NodeTypeId::from(TEST_TEXT_ENDPOINT_NODE_TYPE_ID),
+                OperatorId::new(TEST_TEXT_ENDPOINT_OPERATOR_ID),
+            ))
+            .expect("terminal");
+        let first = microphone
+            .through(Operator::new(
+                OperatorId::new(TEST_ASYNC_OPERATOR_ID),
+                OperatorConfiguration::new(),
+            ))
+            .expect("first");
+        let second = first
+            .through_ports(
+                Operator::new(
+                    OperatorId::new(TEST_TRANSFORM_OPERATOR_ID),
+                    OperatorConfiguration::new(),
+                ),
+                Some("text".to_owned()),
+                Some("transcript".to_owned()),
+            )
+            .expect("second");
+        second.send(terminal).expect("route");
+        let specification = session.freeze().expect("specification");
+        let (node_registry, endpoint_registry) = derived_registries();
+
+        let compiled = SessionCompiler::new(&node_registry, &endpoint_registry)
+            .compile(specification)
+            .expect("compiled chain");
+
+        assert_eq!(compiled.node_count(), 4);
+        assert_eq!(compiled.edge_count(), 3);
+        assert_eq!(compiled.runtime_plan.typed_edges.len(), 2);
+        assert!(compiled.graph_ir.edges.iter().any(|edge| {
+            compiled
+                .graph_ir
+                .node(edge.spec.from.node)
+                .is_some_and(|node| node.spec.type_id.as_str() == TEST_ASYNC_NODE_TYPE_ID)
+                && compiled
+                    .graph_ir
+                    .node(edge.spec.to.node)
+                    .is_some_and(|node| node.spec.type_id.as_str() == TEST_TRANSFORM_NODE_TYPE_ID)
+                && edge.spec.to.port == "text"
+        }));
     }
 
     #[test]

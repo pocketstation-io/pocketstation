@@ -61,9 +61,15 @@ pub use crate::endpoint::{
     EndpointRouteContext, EndpointStartFailure, EndpointStartFailureCause, EndpointStartGate,
     PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin,
 };
+pub use crate::graph::{NodeConfig, NodeId};
 pub use crate::runtime::{
-    TypedEdgeBranchSpec, TypedEdgeBuildError, TypedEdgeFanout, TypedEdgeObservationHandle,
-    TypedEdgeObservations, TypedEdgePublishError, TypedEdgePublishReport, TypedEdgeReceiver,
+    plan_source_channel, AsyncOperatorInput, AsyncOperatorNamedOutput,
+    AsyncOperatorNamedOutputBranchSpec, AsyncOperatorTypedInput, AsyncOperatorWorker,
+    AsyncOperatorWorkerError, GeneratedAudioBridge, GeneratedAudioBridgeObservationHandle,
+    GeneratedAudioBridgeObservations, GeneratedAudioBridgeSpec, GeneratedAudioBridgeStartError,
+    PlanRunnerCancellation, PlanSourceSender, TypedEdgeBranchSpec, TypedEdgeBuildError,
+    TypedEdgeFanout, TypedEdgeObservationHandle, TypedEdgeObservations, TypedEdgePublishError,
+    TypedEdgePublishReport, TypedEdgeReceiver,
 };
 pub use crate::session::{
     transcript_final_spec, transcript_partial_spec, ApplicationSelector, AsyncNode,
@@ -76,26 +82,27 @@ pub use crate::session::{
     EndpointHandle, EventFormat, ExecutionPartition, FrameLineage, LossPolicy, MediaCaps,
     MediaKind, Multiplicity, NodeDefinition, NodeDescriptor, NodeError, NodeTypeId, Operator,
     OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy,
-    OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy,
-    PortDirection, PortSpec, PrepareContext, ProcessId, SafetyContract, SampleFormat, SampleSpec,
-    SchemaRef, SemanticRole, SessionControlFailure, SessionDerivedRouteMetrics, SessionError,
-    SessionEvent, SessionEventKind, SessionEventQueueObservations, SessionEventReceive, SessionId,
-    SessionLifecycleState, SessionMetricsSnapshot, SessionOperatorMetrics,
-    SessionRecordingErrorCode, SessionRecordingObservations, SessionRecordingOutcome,
-    SessionRecordingState, SessionRecordingStemOutcome, SessionRouteDropObservations,
-    SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit,
-    SessionRouteMetrics, SessionRouteObservationInterval, SessionSourceMetrics,
-    SessionStartCancellation, SessionStopOutcome, SessionTerminalState, SessionTrace,
-    SessionTraceRecorder, SessionTraceRecorderFinishError, SessionTraceRecorderOutcome,
-    SessionTraceRecorderStartError, SessionTraceValidation, SessionTraceValidationError,
-    SignalClass, SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker,
-    SignalEnvelope, SignalEnvelopeError, SignalId, SignalLineage, SignalPayload, SignalSpec,
-    SignalSpecError, SignalTiming, Source, SourceCancellation, SourceConfiguration, SourceDriver,
-    SourceDriverError, SourceEmission, SourceFactory, SourceId, SourceManifest,
-    SourceManifestError, SourceOutputBranchSpec, SourceOutputReceiver, SourcePrepareContext,
-    SourceRegistrationError, SourceRegistry, SourceRuntime, SourceRuntimeError,
-    SourceRuntimeObservationHandle, SourceRuntimeObservations, SourceTypeId, StemHandle, StemId,
-    StreamId, TextFormat, TRANSCRIPT_FINAL_ROLE, TRANSCRIPT_PARTIAL_ROLE,
+    OperatorFailurePolicy, OperatorId, OperatorInputOrigin, OperatorOutputRolePolicy,
+    OperatorPermissionPolicy, PortDirection, PortSpec, PrepareContext, ProcessId, SafetyContract,
+    SampleFormat, SampleSpec, SchemaRef, SemanticRole, SessionControlFailure,
+    SessionDerivedRouteMetrics, SessionError, SessionEvent, SessionEventKind,
+    SessionEventQueueObservations, SessionEventReceive, SessionId, SessionLifecycleState,
+    SessionMetricsSnapshot, SessionOperatorMetrics, SessionRecordingErrorCode,
+    SessionRecordingObservations, SessionRecordingOutcome, SessionRecordingState,
+    SessionRecordingStemOutcome, SessionRouteDropObservations, SessionRouteLatencyBoundary,
+    SessionRouteLatencyObservations, SessionRouteLatencyUnit, SessionRouteMetrics,
+    SessionRouteObservationInterval, SessionSourceMetrics, SessionStartCancellation,
+    SessionStopOutcome, SessionTerminalState, SessionTrace, SessionTraceRecorder,
+    SessionTraceRecorderFinishError, SessionTraceRecorderOutcome, SessionTraceRecorderStartError,
+    SessionTraceValidation, SessionTraceValidationError, SignalClass, SignalContinuityError,
+    SignalContinuityObservation, SignalContinuityTracker, SignalEnvelope, SignalEnvelopeError,
+    SignalId, SignalLineage, SignalPayload, SignalSpec, SignalSpecError, SignalTiming, Source,
+    SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission,
+    SourceFactory, SourceId, SourceManifest, SourceManifestError, SourceOutputBranchSpec,
+    SourceOutputReceiver, SourcePrepareContext, SourceRegistrationError, SourceRegistry,
+    SourceRuntime, SourceRuntimeError, SourceRuntimeObservationHandle, SourceRuntimeObservations,
+    SourceTypeId, StemHandle, StemId, StreamId, TextFormat, TRANSCRIPT_FINAL_ROLE,
+    TRANSCRIPT_PARTIAL_ROLE,
 };
 
 /// Canonical types required by an external asynchronous Operator package.
@@ -103,6 +110,11 @@ pub use crate::session::{
 /// Provider implementations depend on this public module instead of importing
 /// PocketStation's internal graph or runtime crates.
 pub mod operator {
+    pub use crate::graph::NodeConfig;
+    pub use crate::runtime::{
+        AsyncOperatorInput, AsyncOperatorNamedOutput, AsyncOperatorNamedOutputBranchSpec,
+        AsyncOperatorTypedInput, AsyncOperatorWorker, AsyncOperatorWorkerError,
+    };
     pub use crate::session::{
         transcript_final_spec, transcript_partial_spec, AsyncNode, AsyncNodeFuture,
         AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError,

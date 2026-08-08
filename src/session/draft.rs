@@ -15,7 +15,7 @@ use crate::session::spec::{
 };
 use crate::session::{
     EndpointConfiguration, EndpointDescriptor, OperatorConfiguration, OperatorId,
-    OperatorInstanceId, SessionError, SessionSpec, Source,
+    OperatorInputOrigin, OperatorInstanceId, SessionError, SessionSpec, Source,
 };
 
 static NEXT_SESSION_ID: AtomicU64 = AtomicU64::new(1);
@@ -45,6 +45,8 @@ struct OperatorDraft {
     instance_id: OperatorInstanceId,
     input_route_id: RouteId,
     source_stem_id: StemId,
+    input_origin: OperatorInputOrigin,
+    input_port: Option<String>,
     operator: Operator,
 }
 
@@ -53,6 +55,7 @@ struct DerivedRouteDraft {
     route_id: RouteId,
     operator_instance_id: OperatorInstanceId,
     endpoint_id: EndpointId,
+    output_port: Option<String>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -298,6 +301,8 @@ impl Session {
                         operator.instance_id,
                         operator.input_route_id,
                         operator.source_stem_id,
+                        operator.input_origin.clone(),
+                        operator.input_port.clone(),
                         operator.operator.operator_id.clone(),
                         operator.operator.configuration.clone(),
                     )
@@ -311,6 +316,7 @@ impl Session {
                         route.route_id,
                         route.operator_instance_id,
                         route.endpoint_id,
+                        route.output_port.clone(),
                     )
                 })
                 .collect(),
@@ -411,6 +417,15 @@ impl StemHandle {
     }
 
     pub fn through(&self, operator: Operator) -> Result<DerivedStreamHandle, SessionError> {
+        self.through_ports(operator, None::<String>, None::<String>)
+    }
+
+    pub fn through_ports(
+        &self,
+        operator: Operator,
+        input_port: impl Into<Option<String>>,
+        output_port: impl Into<Option<String>>,
+    ) -> Result<DerivedStreamHandle, SessionError> {
         if operator.operator_id.as_str().trim().is_empty() {
             return Err(SessionError::InvalidOperator {
                 reason: "operator id cannot be empty".to_owned(),
@@ -424,12 +439,16 @@ impl StemHandle {
             instance_id,
             input_route_id,
             source_stem_id: self.stem_id,
+            input_origin: OperatorInputOrigin::Stem(self.stem_id),
+            input_port: input_port.into(),
             operator,
         });
         Ok(DerivedStreamHandle {
             shared: Arc::clone(&self.shared),
             session_id: self.session_id,
             operator_instance_id: instance_id,
+            source_stem_id: self.stem_id,
+            output_port: output_port.into(),
         })
     }
 
@@ -475,6 +494,8 @@ pub struct DerivedStreamHandle {
     shared: Arc<SessionShared>,
     session_id: SessionId,
     operator_instance_id: OperatorInstanceId,
+    source_stem_id: StemId,
+    output_port: Option<String>,
 }
 
 impl DerivedStreamHandle {
@@ -484,6 +505,65 @@ impl DerivedStreamHandle {
 
     pub const fn operator_instance_id(&self) -> OperatorInstanceId {
         self.operator_instance_id
+    }
+
+    pub fn output_port(&self) -> Option<&str> {
+        self.output_port.as_deref()
+    }
+
+    pub fn output(&self, port_name: impl Into<String>) -> Result<Self, SessionError> {
+        let port_name = port_name.into();
+        if port_name.trim().is_empty() {
+            return Err(SessionError::InvalidOperator {
+                reason: "operator output port cannot be empty".to_owned(),
+            });
+        }
+        Ok(Self {
+            shared: Arc::clone(&self.shared),
+            session_id: self.session_id,
+            operator_instance_id: self.operator_instance_id,
+            source_stem_id: self.source_stem_id,
+            output_port: Some(port_name),
+        })
+    }
+
+    pub fn through(&self, operator: Operator) -> Result<DerivedStreamHandle, SessionError> {
+        self.through_ports(operator, None::<String>, None::<String>)
+    }
+
+    pub fn through_ports(
+        &self,
+        operator: Operator,
+        input_port: impl Into<Option<String>>,
+        output_port: impl Into<Option<String>>,
+    ) -> Result<DerivedStreamHandle, SessionError> {
+        if operator.operator_id.as_str().trim().is_empty() {
+            return Err(SessionError::InvalidOperator {
+                reason: "operator id cannot be empty".to_owned(),
+            });
+        }
+        let mut draft = self.shared.draft()?;
+        draft.ensure_open(self.session_id)?;
+        let instance_id = draft.allocate_operator_instance_id()?;
+        let input_route_id = draft.allocate_route_id()?;
+        draft.operators.push(OperatorDraft {
+            instance_id,
+            input_route_id,
+            source_stem_id: self.source_stem_id,
+            input_origin: OperatorInputOrigin::OperatorOutput {
+                operator_instance_id: self.operator_instance_id,
+                output_port: self.output_port.clone(),
+            },
+            input_port: input_port.into(),
+            operator,
+        });
+        Ok(DerivedStreamHandle {
+            shared: Arc::clone(&self.shared),
+            session_id: self.session_id,
+            operator_instance_id: instance_id,
+            source_stem_id: self.source_stem_id,
+            output_port: output_port.into(),
+        })
     }
 
     pub fn send(&self, endpoint: EndpointHandle) -> Result<RouteId, SessionError> {
@@ -500,6 +580,7 @@ impl DerivedStreamHandle {
             route_id,
             operator_instance_id: self.operator_instance_id,
             endpoint_id: endpoint.endpoint_id,
+            output_port: self.output_port.clone(),
         });
         Ok(route_id)
     }
@@ -511,6 +592,7 @@ impl fmt::Debug for DerivedStreamHandle {
             .debug_struct("DerivedStreamHandle")
             .field("session_id", &self.session_id)
             .field("operator_instance_id", &self.operator_instance_id)
+            .field("output_port", &self.output_port)
             .finish()
     }
 }
@@ -567,6 +649,43 @@ mod tests {
             .expect("connector declaration");
 
         assert_eq!(connector.connector_id(), Some(ConnectorId(1)));
+    }
+
+    #[test]
+    fn given_derived_stream_when_through_called_again_then_chain_is_preserved_in_session_spec() {
+        let session = Session::new();
+        let microphone = session
+            .capture(Source::microphone(DeviceSelector::default()))
+            .expect("microphone");
+        let first = microphone
+            .through(Operator::new(
+                OperatorId::new("example.operator.first.v1"),
+                OperatorConfiguration::new(),
+            ))
+            .expect("first operator");
+        let second = first
+            .through(Operator::new(
+                OperatorId::new("example.operator.second.v1"),
+                OperatorConfiguration::new(),
+            ))
+            .expect("second operator");
+        let endpoint = session
+            .endpoint(EndpointDescriptor::new(
+                NodeTypeId::from("endpoint.derived.test"),
+                OperatorId::new("example.endpoint.derived.v1"),
+            ))
+            .expect("endpoint");
+        second.send(endpoint).expect("derived route");
+
+        let specification = session.freeze().expect("valid chained specification");
+        assert_eq!(specification.operators().len(), 2);
+        assert!(matches!(
+            specification.operators()[1].input_origin(),
+            OperatorInputOrigin::OperatorOutput {
+                operator_instance_id,
+                output_port: None,
+            } if *operator_instance_id == specification.operators()[0].instance_id()
+        ));
     }
 
     #[test]

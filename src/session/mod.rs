@@ -89,8 +89,8 @@ pub use source_extension::{
     SourceTypeId,
 };
 pub use spec::{
-    DerivedRouteSpec, EndpointSpec, OperatorInstanceId, OperatorSpec, RouteSpec, SessionSpec,
-    SessionSpecVersion, StemSpec, SESSION_SPEC_VERSION,
+    DerivedRouteSpec, EndpointSpec, OperatorInputOrigin, OperatorInstanceId, OperatorSpec,
+    RouteSpec, SessionSpec, SessionSpecVersion, StemSpec, SESSION_SPEC_VERSION,
 };
 pub use structural_nodes::{
     register_session_structural_nodes, SessionStructuralNodeRegistrationError,

@@ -54,6 +54,10 @@ impl TypedEdgeReceiver {
     pub fn observation_handle(&self) -> TypedEdgeObservationHandle {
         self.observations.clone()
     }
+
+    pub fn is_abandoned(&self) -> bool {
+        self.receiver.is_abandoned()
+    }
 }
 
 struct TypedEdgeBranchSender {

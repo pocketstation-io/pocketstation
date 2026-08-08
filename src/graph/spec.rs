@@ -8,6 +8,11 @@ use crate::graph::node::{NodeConfig, NodeTypeId};
 pub struct NodeId(pub(crate) u32);
 
 impl NodeId {
+    /// Creates a stable runtime node identifier for externally assembled plans.
+    pub const fn from_index(index: u32) -> Self {
+        Self(index)
+    }
+
     pub fn index(self) -> u32 {
         self.0
     }
