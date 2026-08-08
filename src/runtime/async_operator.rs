@@ -4,16 +4,18 @@ use std::time::Duration;
 
 use crate::frame::{AudioFrame, SessionId, SourceId, StemId};
 use crate::graph::{
-    AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, EdgeContract, LossPolicy, NodeConfig,
-    NodeError, OperatorCancellationPolicy, OperatorFailurePolicy, PrepareContext, SignalEnvelope,
+    AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, NodeConfig, NodeError,
+    OperatorCancellationPolicy, OperatorFailurePolicy, PrepareContext, SignalEnvelope,
     SignalPayload,
 };
 use crate::graph::{EdgeId, NodeId};
-use rtrb::{Consumer, Producer, RingBuffer};
 use tokio::sync::Notify;
 use tokio::task::JoinHandle;
 
-use crate::runtime::{AsyncBridge, AsyncBridgeReceiver, AsyncBridgeSendError, AsyncBridgeSender};
+use crate::runtime::{
+    AsyncBridge, AsyncBridgeReceiver, AsyncBridgeSendError, AsyncBridgeSender, TypedEdgeFanout,
+    TypedEdgePublishError,
+};
 use crate::runtime::{PlanEdgeFrame, PlanEdgeReceiver};
 
 const ASYNC_OPERATOR_IDLE_POLL_INTERVAL: Duration = Duration::from_millis(1);
@@ -147,61 +149,10 @@ impl AsyncOperatorInput {
     }
 }
 
-pub struct AsyncOperatorOutput {
-    receiver: Consumer<Arc<SignalEnvelope>>,
-    observations: Arc<AsyncOperatorOutputObservationState>,
-}
-
-#[derive(Clone)]
-pub struct AsyncOperatorOutputObservationHandle {
-    observations: Arc<AsyncOperatorOutputObservationState>,
-}
-
-#[derive(Debug, Clone, Copy)]
-pub struct AsyncOperatorOutputBranchSpec {
-    pub capacity_signals: usize,
-    pub edge_contract: EdgeContract,
-}
-
-#[derive(Default)]
-struct AsyncOperatorOutputObservationState {
-    delivered_total: AtomicU64,
-    dropped_total: AtomicU64,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct AsyncOperatorOutputObservations {
-    pub delivered_total: u64,
-    pub dropped_total: u64,
-}
-
-impl AsyncOperatorOutput {
-    pub fn recv(&mut self) -> Option<Arc<SignalEnvelope>> {
-        self.receiver.pop().ok()
-    }
-
-    pub fn observations(&self) -> AsyncOperatorOutputObservations {
-        AsyncOperatorOutputObservations {
-            delivered_total: self.observations.delivered_total.load(Ordering::Relaxed),
-            dropped_total: self.observations.dropped_total.load(Ordering::Relaxed),
-        }
-    }
-
-    pub fn observation_handle(&self) -> AsyncOperatorOutputObservationHandle {
-        AsyncOperatorOutputObservationHandle {
-            observations: Arc::clone(&self.observations),
-        }
-    }
-}
-
-impl AsyncOperatorOutputObservationHandle {
-    pub fn snapshot(&self) -> AsyncOperatorOutputObservations {
-        AsyncOperatorOutputObservations {
-            delivered_total: self.observations.delivered_total.load(Ordering::Relaxed),
-            dropped_total: self.observations.dropped_total.load(Ordering::Relaxed),
-        }
-    }
-}
+pub type AsyncOperatorOutput = crate::runtime::TypedEdgeReceiver;
+pub type AsyncOperatorOutputObservationHandle = crate::runtime::TypedEdgeObservationHandle;
+pub type AsyncOperatorOutputBranchSpec = crate::runtime::TypedEdgeBranchSpec;
+pub type AsyncOperatorOutputObservations = crate::runtime::TypedEdgeObservations;
 
 #[derive(Debug, thiserror::Error)]
 pub enum AsyncOperatorWorkerError {
@@ -311,31 +262,10 @@ pub struct AsyncOperatorWorker {
     join: JoinHandle<Result<(), AsyncOperatorWorkerError>>,
 }
 
-type AsyncOperatorOutputSender = (
-    Producer<Arc<SignalEnvelope>>,
-    Arc<AsyncOperatorOutputObservationState>,
-    LossPolicy,
-);
-
 fn build_output_branches(
     output_branch_specs: &[AsyncOperatorOutputBranchSpec],
-) -> (Vec<AsyncOperatorOutputSender>, Vec<AsyncOperatorOutput>) {
-    let mut output_senders = Vec::with_capacity(output_branch_specs.len());
-    let mut outputs = Vec::with_capacity(output_branch_specs.len());
-    for branch in output_branch_specs {
-        let (sender, receiver) = RingBuffer::new(branch.capacity_signals);
-        let branch_observations = Arc::new(AsyncOperatorOutputObservationState::default());
-        output_senders.push((
-            sender,
-            Arc::clone(&branch_observations),
-            branch.edge_contract.loss,
-        ));
-        outputs.push(AsyncOperatorOutput {
-            receiver,
-            observations: branch_observations,
-        });
-    }
-    (output_senders, outputs)
+) -> Result<(TypedEdgeFanout, Vec<AsyncOperatorOutput>), NodeError> {
+    TypedEdgeFanout::new(output_branch_specs).map_err(|error| NodeError::Prepare(error.to_string()))
 }
 
 impl AsyncOperatorWorker {
@@ -408,7 +338,8 @@ impl AsyncOperatorWorker {
         observations.ready.store(true, Ordering::Release);
         let cancellation = Arc::new(AtomicBool::new(false));
         let cancellation_notify = Arc::new(Notify::new());
-        let (output_senders, outputs) = build_output_branches(output_branch_specs);
+        let (output_senders, outputs) = build_output_branches(output_branch_specs)
+            .map_err(AsyncOperatorWorkerError::Prepare)?;
         let task_observations = Arc::clone(&observations);
         let task_cancellation = Arc::clone(&cancellation);
         let task_cancellation_notify = Arc::clone(&cancellation_notify);
@@ -473,7 +404,7 @@ impl AsyncOperatorWorker {
         }
         let cancellation = Arc::new(AtomicBool::new(false));
         let cancellation_notify = Arc::new(Notify::new());
-        let (output_senders, outputs) = build_output_branches(output_branch_specs);
+        let (output_senders, outputs) = build_output_branches(output_branch_specs)?;
         let task_observations = Arc::clone(&observations);
         let task_cancellation = Arc::clone(&cancellation);
         let task_cancellation_notify = Arc::clone(&cancellation_notify);
@@ -535,7 +466,7 @@ async fn run_worker(
     mut node: Box<dyn AsyncNode>,
     prepare_context: PrepareContext,
     input: AsyncOperatorWorkerSource,
-    output_branches: Vec<AsyncOperatorOutputSender>,
+    output_branches: TypedEdgeFanout,
     cancellation: Arc<AtomicBool>,
     cancellation_notify: Arc<Notify>,
     observations: Arc<AsyncOperatorObservationState>,
@@ -565,7 +496,7 @@ async fn run_prepared_worker(
     manifest: AsyncOperatorManifest,
     mut node: Box<dyn AsyncNode>,
     mut input: AsyncOperatorWorkerSource,
-    mut output_branches: Vec<AsyncOperatorOutputSender>,
+    mut output_branches: TypedEdgeFanout,
     cancellation: Arc<AtomicBool>,
     cancellation_notify: Arc<Notify>,
     observations: Arc<AsyncOperatorObservationState>,
@@ -597,7 +528,7 @@ async fn run_operator_loop(
     manifest: &AsyncOperatorManifest,
     node: &mut dyn AsyncNode,
     input: &mut AsyncOperatorWorkerSource,
-    output_branches: &mut [AsyncOperatorOutputSender],
+    output_branches: &mut TypedEdgeFanout,
     cancellation: &AtomicBool,
     cancellation_notify: &Notify,
     observations: &AsyncOperatorObservationState,
@@ -731,7 +662,7 @@ async fn cancel_node(
 fn fan_out_outputs(
     manifest: &AsyncOperatorManifest,
     emitted: Vec<SignalEnvelope>,
-    output_branches: &mut [AsyncOperatorOutputSender],
+    output_branches: &mut TypedEdgeFanout,
     observations: &AsyncOperatorObservationState,
 ) -> Result<(), AsyncOperatorWorkerError> {
     let output_contract = manifest
@@ -777,47 +708,23 @@ fn fan_out_outputs(
                 .output_nonterminal_total
                 .fetch_add(1, Ordering::Relaxed);
         }
-        if is_terminal {
-            for (branch_index, (branch, branch_observations, loss_policy)) in
-                output_branches.iter().enumerate()
-            {
-                if *loss_policy == LossPolicy::MustDeliverOrFail && branch.is_full() {
-                    observations
-                        .output_dropped_total
-                        .fetch_add(1, Ordering::Relaxed);
-                    branch_observations
-                        .dropped_total
-                        .fetch_add(1, Ordering::Relaxed);
-                    return Err(AsyncOperatorWorkerError::TerminalOutputDropped { branch_index });
-                }
+        match output_branches.publish(envelope, is_terminal) {
+            Ok(report) => {
+                observations
+                    .output_emitted_total
+                    .fetch_add(report.delivered_total, Ordering::Relaxed);
+                observations
+                    .output_dropped_total
+                    .fetch_add(report.dropped_total, Ordering::Relaxed);
             }
-        }
-        let shared = Arc::new(envelope);
-        for (branch_index, (branch, branch_observations, loss_policy)) in
-            output_branches.iter_mut().enumerate()
-        {
-            match branch.push(Arc::clone(&shared)) {
-                Ok(()) => {
-                    observations
-                        .output_emitted_total
-                        .fetch_add(1, Ordering::Relaxed);
-                    branch_observations
-                        .delivered_total
-                        .fetch_add(1, Ordering::Relaxed);
-                }
-                Err(rtrb::PushError::Full(_)) => {
-                    observations
-                        .output_dropped_total
-                        .fetch_add(1, Ordering::Relaxed);
-                    branch_observations
-                        .dropped_total
-                        .fetch_add(1, Ordering::Relaxed);
-                    if is_terminal && *loss_policy == LossPolicy::MustDeliverOrFail {
-                        return Err(AsyncOperatorWorkerError::TerminalOutputDropped {
-                            branch_index,
-                        });
-                    }
-                }
+            Err(TypedEdgePublishError::RequiredBranchFull { branch_index }) => {
+                observations
+                    .output_dropped_total
+                    .fetch_add(1, Ordering::Relaxed);
+                return Err(AsyncOperatorWorkerError::TerminalOutputDropped { branch_index });
+            }
+            Err(TypedEdgePublishError::InvalidEnvelope(_)) => {
+                return Err(AsyncOperatorWorkerError::OutputSignalMismatch);
             }
         }
     }

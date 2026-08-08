@@ -18,6 +18,7 @@ mod running_tests;
 mod runtime_prepare;
 mod selector;
 mod session_trace;
+mod source_extension;
 mod spec;
 mod structural_nodes;
 
@@ -79,6 +80,13 @@ pub use session_trace::{
     SessionTraceRecorderFinishError, SessionTraceRecorderHandle, SessionTraceRecorderOutcome,
     SessionTraceRecorderStartError, SessionTraceTerminal, SessionTraceValidation,
     SessionTraceValidationError,
+};
+pub use source_extension::{
+    SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission,
+    SourceFactory, SourceManifest, SourceManifestError, SourceOutputBranchSpec,
+    SourceOutputReceiver, SourcePrepareContext, SourceRegistrationError, SourceRegistry,
+    SourceRuntime, SourceRuntimeError, SourceRuntimeObservationHandle, SourceRuntimeObservations,
+    SourceTypeId,
 };
 pub use spec::{
     DerivedRouteSpec, EndpointSpec, OperatorInstanceId, OperatorSpec, RouteSpec, SessionSpec,

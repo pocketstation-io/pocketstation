@@ -12,6 +12,7 @@ pub mod nodes;
 pub mod plan_executor;
 pub mod plan_router;
 pub mod plan_runner;
+pub mod typed_edge;
 
 pub use async_bridge::{AsyncBridge, AsyncBridgeReceiver, AsyncBridgeSendError, AsyncBridgeSender};
 pub use async_host::{AsyncRuntimeHost, AsyncRuntimeHostError};
@@ -34,4 +35,8 @@ pub use plan_runner::{
     PlanRunnerFinishSummary, PlanRunnerStepSummary, PlanSourceInput, PlanSourceInputObservations,
     PlanSourceObservationHandle, PlanSourceSendError, PlanSourceSendOutcome, PlanSourceSender,
     RealtimePlanRunner,
+};
+pub use typed_edge::{
+    TypedEdgeBranchSpec, TypedEdgeBuildError, TypedEdgeFanout, TypedEdgeObservationHandle,
+    TypedEdgeObservations, TypedEdgePublishError, TypedEdgePublishReport, TypedEdgeReceiver,
 };

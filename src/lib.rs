@@ -61,6 +61,10 @@ pub use crate::endpoint::{
     EndpointRouteContext, EndpointStartFailure, EndpointStartFailureCause, EndpointStartGate,
     PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin,
 };
+pub use crate::runtime::{
+    TypedEdgeBranchSpec, TypedEdgeBuildError, TypedEdgeFanout, TypedEdgeObservationHandle,
+    TypedEdgeObservations, TypedEdgePublishError, TypedEdgePublishReport, TypedEdgeReceiver,
+};
 pub use crate::session::{
     transcript_final_spec, transcript_partial_spec, ApplicationSelector, AsyncNode,
     AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError,
@@ -86,8 +90,12 @@ pub use crate::session::{
     SessionTraceRecorderStartError, SessionTraceValidation, SessionTraceValidationError,
     SignalClass, SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker,
     SignalEnvelope, SignalEnvelopeError, SignalId, SignalLineage, SignalPayload, SignalSpec,
-    SignalSpecError, SignalTiming, Source, SourceId, StemHandle, StemId, StreamId, TextFormat,
-    TRANSCRIPT_FINAL_ROLE, TRANSCRIPT_PARTIAL_ROLE,
+    SignalSpecError, SignalTiming, Source, SourceCancellation, SourceConfiguration, SourceDriver,
+    SourceDriverError, SourceEmission, SourceFactory, SourceId, SourceManifest,
+    SourceManifestError, SourceOutputBranchSpec, SourceOutputReceiver, SourcePrepareContext,
+    SourceRegistrationError, SourceRegistry, SourceRuntime, SourceRuntimeError,
+    SourceRuntimeObservationHandle, SourceRuntimeObservations, SourceTypeId, StemHandle, StemId,
+    StreamId, TextFormat, TRANSCRIPT_FINAL_ROLE, TRANSCRIPT_PARTIAL_ROLE,
 };
 
 /// Canonical types required by an external asynchronous Operator package.

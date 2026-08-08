@@ -1,5 +1,25 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W18 open source registration and bounded typed ingress — 2026-08-08
+
+- Status: `SAFE-TO-TEST`; focused central and external-consumer gates pass.
+- Public `SourceManifest`, `SourceTypeId`, `SourceFactory`, `SourceDriver`,
+  `SourceRegistry`, configuration, emission, lifecycle, cancellation, and
+  observation contracts accept externally owned source implementations without
+  provider or domain enums in core.
+- `TypedEdgeFanout` is the one bounded source-independent fan-out owner for
+  external typed sources and async operator outputs. Each branch has explicit
+  capacity, delivery/drop counters, and fail-closed `MustDeliverOrFail`
+  terminal behavior.
+- Source outputs validate declared port, `SignalSpec`, schema, `MediaCaps`,
+  lineage, sequence, time, discontinuity, generation, and replacement before
+  delivery. External audio remains on the non-callback source boundary and
+  retains authoritative `FrameLineage` projection.
+- The specialized realtime `AudioFrame` executor and native application and
+  microphone capture remain unchanged. No named-port composition, operator
+  chaining, generated-audio reentry, sidecar, provider behavior, scaffold,
+  mock, or product-claim upgrade is introduced.
+
 ## W17 source-independent signal contract — 2026-08-08
 
 - Status: `SAFE-TO-TEST`; the central implementation gate passes and the Lab
