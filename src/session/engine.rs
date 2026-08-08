@@ -6,6 +6,9 @@ use crate::graph::{
     PrepareContext,
 };
 
+use crate::session::source_extension::{
+    SourceFactory, SourceManifest, SourceRegistrationError, SourceRegistry, SourceTypeId,
+};
 use crate::session::structural_nodes::register_session_structural_nodes_with_sample_spec;
 use crate::session::{
     prepare_session_runtime, CaptureBackendSet, CompiledSession, OperatorId, RunningSession,
@@ -25,6 +28,7 @@ pub struct SessionEngineBuilder {
     source_queue_capacity_frames: usize,
     start_options: SessionStartOptions,
     endpoint_registry: EndpointDriverRegistry,
+    source_registry: SourceRegistry,
     session_trace_recorder: Option<SessionTraceRecorderHandle>,
 }
 
@@ -45,6 +49,7 @@ impl SessionEngineBuilder {
             source_queue_capacity_frames,
             start_options,
             endpoint_registry: EndpointDriverRegistry::new(),
+            source_registry: SourceRegistry::default(),
             session_trace_recorder: None,
         })
     }
@@ -76,6 +81,23 @@ impl SessionEngineBuilder {
         Ok(self)
     }
 
+    /// Registers one externally implemented source contract by stable type ID.
+    ///
+    /// Registration validates the complete manifest and rejects duplicate IDs;
+    /// a later registration can never silently replace the first factory.
+    pub fn register_source_factory(
+        &mut self,
+        factory: Arc<dyn SourceFactory>,
+    ) -> Result<&mut Self, SourceRegistrationError> {
+        self.source_registry.register(factory)?;
+        Ok(self)
+    }
+
+    /// Returns the validated manifest currently registered for `source_type_id`.
+    pub fn source_manifest(&self, source_type_id: &SourceTypeId) -> Option<&SourceManifest> {
+        self.source_registry.manifest(source_type_id)
+    }
+
     pub fn register_endpoint_definition(
         &mut self,
         definition: Arc<dyn NodeDefinition>,
@@ -95,6 +117,7 @@ impl SessionEngineBuilder {
         Ok(SessionEngine {
             node_registry: self.node_registry,
             endpoint_registry: self.endpoint_registry,
+            source_registry: self.source_registry,
             prepare_context: self.prepare_context,
             source_queue_capacity_frames: self.source_queue_capacity_frames,
             start_options: self.start_options,
@@ -111,6 +134,7 @@ impl SessionEngineBuilder {
 pub struct SessionEngine {
     node_registry: NodeRegistry,
     endpoint_registry: EndpointDriverRegistry,
+    source_registry: SourceRegistry,
     prepare_context: PrepareContext,
     source_queue_capacity_frames: usize,
     start_options: SessionStartOptions,
@@ -118,6 +142,11 @@ pub struct SessionEngine {
 }
 
 impl SessionEngine {
+    /// Returns the validated source manifest retained by this engine.
+    pub fn source_manifest(&self, source_type_id: &SourceTypeId) -> Option<&SourceManifest> {
+        self.source_registry.manifest(source_type_id)
+    }
+
     pub fn compile(&self, session: Session) -> Result<CompiledSession, SessionEngineStartError> {
         let spec = session.freeze()?;
         SessionCompiler::new(&self.node_registry, &self.endpoint_registry)

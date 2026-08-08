@@ -142,6 +142,12 @@ pub struct SourceRegistry {
 }
 
 impl SourceRegistry {
+    pub fn manifest(&self, source_type_id: &SourceTypeId) -> Option<&SourceManifest> {
+        self.factories
+            .get(source_type_id)
+            .map(|factory| factory.manifest())
+    }
+
     pub fn register(
         &mut self,
         factory: Arc<dyn SourceFactory>,

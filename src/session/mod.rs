@@ -19,6 +19,8 @@ mod runtime_prepare;
 mod selector;
 mod session_trace;
 mod source_extension;
+#[cfg(test)]
+mod source_registration;
 mod spec;
 mod structural_nodes;
 mod typed_stream;

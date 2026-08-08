@@ -2181,3 +2181,22 @@
   existing drop counter remains authoritative and fail-closed.
 - No queue was made unbounded, no capacity or loss threshold changed, and no
   fallback, mock, scaffold, loopback product path, or soak was introduced.
+
+## W18 public Session engine source registration — 2026-08-08
+
+- Status: `SAFE-TO-MERGE` for the registration slice only; Session source
+  declaration, compilation, preparation, and runtime lifecycle remain separate
+  W18 acceptance tasks and are not claimed here.
+- `SessionEngineBuilder::register_source_factory` now owns the validated open
+  `SourceFactory` registry. `build()` transfers that registry into the one
+  `SessionEngine`; read-only manifest lookup proves the registration is retained
+  rather than written into an unused temporary registry.
+- Registration is keyed by open `SourceTypeId`. Complete manifest validation is
+  enforced at the public boundary, zero revisions fail typed, and a duplicate
+  stable identity cannot silently replace the first registered revision.
+- Three focused `session::source_registration` tests, strict all-target and
+  all-feature Clippy, the release `product_quickstart` build, and the full
+  `CODE_PROTOCOL` gate pass.
+- No closed source enum, industry/customer vocabulary, capture callback change,
+  runtime source worker, scaffold, mock, fallback, loopback-only path, platform
+  matrix, or soak was introduced.
