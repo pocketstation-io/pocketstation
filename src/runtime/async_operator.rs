@@ -236,6 +236,62 @@ enum AsyncOperatorWorkerSource {
     },
 }
 
+pub(crate) enum SessionOperatorInput {
+    Compiled {
+        receiver: PlanEdgeReceiver,
+        contract: CompiledOperatorInputContract,
+    },
+    Typed(AsyncOperatorTypedInput),
+}
+
+impl SessionOperatorInput {
+    fn prepare_edge(&self) -> Result<AsyncOperatorEdgePrepareContext, NodeError> {
+        match self {
+            Self::Compiled { receiver, contract } => {
+                if receiver.edge_id() != contract.edge_id
+                    || receiver.to().node != contract.operator_node
+                {
+                    return Err(NodeError::Prepare(
+                        "compiled async input receiver does not match its edge/node contract"
+                            .to_owned(),
+                    ));
+                }
+                prepare_edge(
+                    Some(contract.edge_id),
+                    &contract.input_port,
+                    PortDirection::Input,
+                    contract.signal_spec.clone(),
+                    contract.media,
+                    contract.edge_contract,
+                    contract.capacity_signals,
+                )
+            }
+            Self::Typed(input) => prepare_edge(
+                input.edge_id,
+                &input.port_name,
+                PortDirection::Input,
+                input.signal_spec.clone(),
+                input.media,
+                input.edge_contract,
+                input.capacity_signals,
+            ),
+        }
+    }
+
+    fn into_source(self) -> AsyncOperatorWorkerSource {
+        match self {
+            Self::Compiled { receiver, contract } => AsyncOperatorWorkerSource::Compiled {
+                receiver,
+                lineage: Box::new(contract),
+            },
+            Self::Typed(input) => AsyncOperatorWorkerSource::Typed {
+                port_name: input.port_name,
+                receiver: input.receiver,
+            },
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CompiledOperatorInputContract {
     pub edge_id: EdgeId,
@@ -338,7 +394,7 @@ impl AsyncOperatorWorkerInputs {
     fn recv(
         &mut self,
         manifest: &AsyncOperatorManifest,
-    ) -> Result<Option<SignalEnvelope>, AsyncOperatorWorkerError> {
+    ) -> Result<Option<(String, SignalEnvelope)>, AsyncOperatorWorkerError> {
         if self.sources.is_empty() {
             return Ok(None);
         }
@@ -363,7 +419,7 @@ impl AsyncOperatorWorkerInputs {
                     return Err(AsyncOperatorWorkerError::OutputSignalMismatch);
                 }
                 self.next_index = (index + 1) % self.sources.len();
-                return Ok(Some(envelope));
+                return Ok(Some((port_name.to_owned(), envelope)));
             }
         }
         Ok(None)
@@ -623,6 +679,40 @@ fn composed_prepare_context(
     Ok(context)
 }
 
+fn session_composed_prepare_context(
+    manifest: &AsyncOperatorManifest,
+    inputs: &[SessionOperatorInput],
+    output_branch_specs: &[AsyncOperatorNamedOutputBranchSpec<'_>],
+) -> Result<AsyncOperatorPrepareContext, NodeError> {
+    let mut edges = Vec::with_capacity(inputs.len() + output_branch_specs.len());
+    for input in inputs {
+        edges.push(input.prepare_edge()?);
+    }
+    for output in output_branch_specs {
+        let port = manifest
+            .output_ports()
+            .find(|port| port.name == output.output_port)
+            .ok_or_else(|| {
+                NodeError::Prepare(format!(
+                    "async operator output port '{}' is not declared",
+                    output.output_port
+                ))
+            })?;
+        edges.push(prepare_edge(
+            None,
+            output.output_port,
+            PortDirection::Output,
+            port.signal.clone(),
+            port.media,
+            output.branch.edge_contract,
+            output.branch.capacity_signals,
+        )?);
+    }
+    let context = AsyncOperatorPrepareContext::new(manifest.node.execution, edges)?;
+    validate_prepare_context(manifest, &context)?;
+    Ok(context)
+}
+
 fn validate_prepare_context(
     manifest: &AsyncOperatorManifest,
     context: &AsyncOperatorPrepareContext,
@@ -776,6 +866,85 @@ impl AsyncOperatorWorker {
                 manifest,
                 node,
                 prepare_context,
+                AsyncOperatorWorkerInputs {
+                    sources: input_sources,
+                    next_index: 0,
+                },
+                output_senders,
+                task_cancellation,
+                task_cancellation_notify,
+                Arc::clone(&task_observations),
+            )
+            .await;
+            task_observations.joined.store(true, Ordering::Release);
+            task_observations.ready_notify.notify_waiters();
+            task_observations.terminal_notify.notify_waiters();
+            result
+        });
+        Ok((
+            Self {
+                input: None,
+                cancellation,
+                cancellation_notify,
+                observations: AsyncOperatorObservationHandle {
+                    state: observations,
+                },
+                join,
+            },
+            outputs,
+        ))
+    }
+
+    pub(crate) async fn prepare_and_spawn_session_composed(
+        factory: Arc<dyn AsyncOperatorFactory>,
+        configuration: &NodeConfig,
+        inputs: Vec<SessionOperatorInput>,
+        output_branch_specs: &[AsyncOperatorNamedOutputBranchSpec<'_>],
+    ) -> Result<(Self, Vec<AsyncOperatorNamedOutput>), AsyncOperatorWorkerError> {
+        if inputs.is_empty() {
+            return Err(AsyncOperatorWorkerError::Prepare(NodeError::Prepare(
+                "Session-composed async operator requires at least one input".to_owned(),
+            )));
+        }
+        let manifest = factory
+            .resolve_manifest(configuration)
+            .map_err(NodeError::Config)
+            .map_err(AsyncOperatorWorkerError::Prepare)?;
+        manifest.validate().map_err(|error| {
+            AsyncOperatorWorkerError::Prepare(NodeError::Prepare(error.to_string()))
+        })?;
+        let prepare_context =
+            session_composed_prepare_context(&manifest, &inputs, output_branch_specs)
+                .map_err(AsyncOperatorWorkerError::Prepare)?;
+        let mut node = factory
+            .create(configuration)
+            .map_err(AsyncOperatorWorkerError::Prepare)?;
+        let timeout_duration =
+            Duration::from_millis(u64::from(manifest.deadline.process_timeout_ms));
+        tokio::time::timeout(timeout_duration, node.prepare(&prepare_context))
+            .await
+            .map_err(|_| AsyncOperatorWorkerError::PrepareTimeout {
+                timeout_ms: manifest.deadline.process_timeout_ms,
+            })?
+            .map_err(AsyncOperatorWorkerError::Prepare)?;
+
+        let observations = Arc::new(AsyncOperatorObservationState::default());
+        observations.ready.store(true, Ordering::Release);
+        let cancellation = Arc::new(AtomicBool::new(false));
+        let cancellation_notify = Arc::new(Notify::new());
+        let (output_senders, outputs) = build_named_output_branches(&manifest, output_branch_specs)
+            .map_err(AsyncOperatorWorkerError::Prepare)?;
+        let input_sources = inputs
+            .into_iter()
+            .map(SessionOperatorInput::into_source)
+            .collect();
+        let task_observations = Arc::clone(&observations);
+        let task_cancellation = Arc::clone(&cancellation);
+        let task_cancellation_notify = Arc::clone(&cancellation_notify);
+        let join = tokio::spawn(async move {
+            let result = run_prepared_worker(
+                manifest,
+                node,
                 AsyncOperatorWorkerInputs {
                     sources: input_sources,
                     next_index: 0,
@@ -1059,7 +1228,7 @@ async fn run_operator_loop(
 
     let mut cancellation_cleanup_done = false;
     loop {
-        let envelope = if cancellation.load(Ordering::Acquire) {
+        let (input_port, envelope) = if cancellation.load(Ordering::Acquire) {
             if !cancellation_cleanup_done {
                 observations
                     .cancellation_total
@@ -1114,7 +1283,7 @@ async fn run_operator_loop(
             envelope
         };
         let process_attempt = {
-            let process = node.process(envelope);
+            let process = node.process_port(&input_port, envelope);
             tokio::pin!(process);
             tokio::select! {
                 result = &mut process => ProcessAttempt::Completed(result),

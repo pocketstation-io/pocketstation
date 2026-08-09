@@ -18,6 +18,7 @@ pub mod typed_edge;
 
 pub use async_bridge::{AsyncBridge, AsyncBridgeReceiver, AsyncBridgeSendError, AsyncBridgeSender};
 pub use async_host::{AsyncRuntimeHost, AsyncRuntimeHostError};
+pub(crate) use async_operator::SessionOperatorInput;
 pub use async_operator::{
     AsyncOperatorInput, AsyncOperatorInputAccessError, AsyncOperatorNamedOutput,
     AsyncOperatorNamedOutputBranchSpec, AsyncOperatorObservationHandle, AsyncOperatorObservations,

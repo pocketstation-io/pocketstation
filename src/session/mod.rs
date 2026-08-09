@@ -68,10 +68,10 @@ pub use host::{
 };
 pub use observations::{
     EndpointObservationStage, SessionDerivedRouteMetrics, SessionEventQueueObservations,
-    SessionExternalSourceMetrics, SessionMetricsSnapshot, SessionOperatorMetrics,
-    SessionRouteDropObservations, SessionRouteLatencyBoundary, SessionRouteLatencyObservations,
-    SessionRouteLatencyUnit, SessionRouteMetrics, SessionRouteObservationInterval,
-    SessionSourceMetrics,
+    SessionExternalSourceMetrics, SessionMetricsSnapshot, SessionOperatorInputMetrics,
+    SessionOperatorMetrics, SessionRouteDropObservations, SessionRouteLatencyBoundary,
+    SessionRouteLatencyObservations, SessionRouteLatencyUnit, SessionRouteMetrics,
+    SessionRouteObservationInterval, SessionSourceMetrics,
 };
 pub use recording::{
     session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations,

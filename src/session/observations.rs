@@ -225,7 +225,13 @@ impl SessionRouteMetrics {
     }
 }
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct SessionOperatorInputMetrics {
+    pub port_name: String,
+    pub edge: EdgeObservations,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SessionOperatorMetrics {
     pub operator_instance_id: OperatorInstanceId,
     /// Sole counter authority for input delivered by the compiled Session plan.
@@ -234,11 +240,17 @@ pub struct SessionOperatorMetrics {
     /// direct `AsyncOperatorInput` API. Compiled Session operators consume this
     /// plan edge, so callers must use these observations for input accounting.
     pub input_edge: EdgeObservations,
+    /// Exact per-port input accounting. `input_edge` is the compatibility
+    /// aggregate across this slice.
+    pub input_ports: Box<[SessionOperatorInputMetrics]>,
     pub worker: AsyncOperatorObservations,
     pub finalization_failures_total: u64,
 }
 
 impl SessionOperatorMetrics {
+    pub fn input_port(&self, name: &str) -> Option<&SessionOperatorInputMetrics> {
+        self.input_ports.iter().find(|port| port.port_name == name)
+    }
     pub const fn input_queue_capacity_frames(&self) -> u64 {
         self.input_edge.queue_capacity_frames
     }

@@ -84,7 +84,7 @@ pub enum SessionPrepareError {
     MissingAsyncOperatorFactory { node_id: NodeId },
     #[error("compiled operator node {node_id:?} does not match Session operator declaration")]
     OperatorDeclarationMismatch { node_id: NodeId },
-    #[error("compiled operator node {node_id:?} has more than one input receiver")]
+    #[error("compiled operator node {node_id:?} received the same input edge more than once")]
     DuplicateOperatorInput { node_id: NodeId },
     #[error("derived edge {edge_id:?} has no compiled operator input")]
     MissingDerivedOperatorInput { edge_id: EdgeId },
@@ -168,6 +168,17 @@ pub(crate) struct PreparedExternalSourceBranch {
 pub(crate) enum PreparedExternalSourceTarget {
     AudioIngress(PreparedExternalAudioIngress),
     TypedEndpoint(PreparedExternalTypedRoute),
+    OperatorInput(PreparedExternalOperatorInput),
+}
+
+pub(crate) struct PreparedExternalOperatorInput {
+    pub(crate) operator_instance_id: crate::session::OperatorInstanceId,
+    pub(crate) input_port: String,
+    pub(crate) edge_id: EdgeId,
+    pub(crate) signal_spec: SignalSpec,
+    pub(crate) media: MediaCaps,
+    pub(crate) edge_contract: EdgeContract,
+    pub(crate) capacity_signals: usize,
 }
 
 pub(crate) struct PreparedExternalAudioIngress {
@@ -194,7 +205,8 @@ pub(crate) struct PreparedExternalTypedRoute {
 
 pub struct PreparedDerivedRouteMapping {
     pub(crate) route_id: RouteId,
-    pub(crate) stem_id: StemId,
+    pub(crate) stem_id: Option<StemId>,
+    pub(crate) signal_origin: Option<(SourceId, StreamId)>,
     pub(crate) endpoint_id: EndpointId,
     pub(crate) node_configuration: NodeConfig,
     pub(crate) prepare_context: PrepareContext,
@@ -207,7 +219,7 @@ impl PreparedDerivedRouteMapping {
         self.route_id
     }
 
-    pub const fn stem_id(&self) -> StemId {
+    pub const fn stem_id(&self) -> Option<StemId> {
         self.stem_id
     }
 
@@ -219,16 +231,57 @@ impl PreparedDerivedRouteMapping {
 pub struct PreparedOperatorMapping {
     pub(crate) node_id: NodeId,
     pub(crate) instance_id: crate::session::OperatorInstanceId,
-    pub(crate) stem_id: StemId,
     pub(crate) factory: Arc<dyn AsyncOperatorFactory>,
     pub(crate) node_configuration: NodeConfig,
-    pub(crate) input_port: String,
-    pub(crate) input_signal_spec: SignalSpec,
-    pub(crate) input_media: MediaCaps,
-    pub(crate) input_edge_contract: EdgeContract,
-    pub(crate) input_capacity_signals: usize,
-    pub(crate) receiver: PlanEdgeReceiver,
-    pub(crate) derived_routes: Vec<PreparedDerivedRouteMapping>,
+    pub(crate) inputs: Vec<PreparedOperatorInputMapping>,
+    pub(crate) outputs: Vec<PreparedOperatorOutputMapping>,
+}
+
+pub(crate) enum PreparedOperatorInputMapping {
+    Compiled {
+        stem_id: StemId,
+        input_port: String,
+        signal_spec: SignalSpec,
+        media: MediaCaps,
+        edge_contract: EdgeContract,
+        capacity_signals: usize,
+        receiver: PlanEdgeReceiver,
+    },
+    Typed {
+        edge_id: EdgeId,
+        input_port: String,
+        signal_spec: SignalSpec,
+        media: MediaCaps,
+        edge_contract: EdgeContract,
+        capacity_signals: usize,
+        origin: PreparedTypedInputOrigin,
+    },
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+pub(crate) enum PreparedTypedInputOrigin {
+    SourceOutput {
+        source_instance_id: SourceInstanceId,
+        output_port: String,
+    },
+    OperatorOutput {
+        operator_instance_id: crate::session::OperatorInstanceId,
+        output_port: String,
+    },
+}
+
+pub(crate) struct PreparedOperatorOutputMapping {
+    pub(crate) output_port: String,
+    pub(crate) branch: AsyncOperatorOutputBranchSpec,
+    pub(crate) target: PreparedOperatorOutputTarget,
+}
+
+pub(crate) enum PreparedOperatorOutputTarget {
+    OperatorInput {
+        operator_instance_id: crate::session::OperatorInstanceId,
+        input_port: String,
+    },
+    DerivedEndpoint(Box<PreparedDerivedRouteMapping>),
 }
 
 impl PreparedOperatorMapping {
@@ -236,8 +289,18 @@ impl PreparedOperatorMapping {
         self.node_id
     }
 
-    pub fn derived_routes(&self) -> &[PreparedDerivedRouteMapping] {
-        &self.derived_routes
+    pub fn output_count(&self) -> usize {
+        self.outputs.len()
+    }
+
+    pub fn derived_routes(&self) -> Vec<&PreparedDerivedRouteMapping> {
+        self.outputs
+            .iter()
+            .filter_map(|output| match &output.target {
+                PreparedOperatorOutputTarget::DerivedEndpoint(route) => Some(route.as_ref()),
+                PreparedOperatorOutputTarget::OperatorInput { .. } => None,
+            })
+            .collect()
     }
 }
 
@@ -527,6 +590,62 @@ fn prepare_external_sources(
                     ),
                 });
             }
+            for connection in spec.operator_connections().iter().filter(|connection| {
+                matches!(
+                    connection.input_origin(),
+                    crate::session::OperatorInputOrigin::SourceOutput {
+                        source_instance_id,
+                        output_port,
+                        ..
+                    } if *source_instance_id == source.instance_id()
+                        && output_port == output.output_port()
+                )
+            }) {
+                let instance = connection.operator_instance_id().value().to_string();
+                let edge = graph_ir
+                    .edges
+                    .iter()
+                    .find(|edge| {
+                        graph_ir.node(edge.spec.from.node).is_some_and(|origin| {
+                            origin.spec.config.get("source_instance_id")
+                                == Some(source.instance_id().value().to_string().as_str())
+                                && edge.spec.from.port == output.output_port()
+                        }) && graph_ir.node(edge.spec.to.node).is_some_and(|target| {
+                            target.spec.config.get("operator_instance_id")
+                                == Some(instance.as_str())
+                                && connection
+                                    .input_port()
+                                    .is_none_or(|port| port == edge.spec.to.port)
+                        })
+                    })
+                    .ok_or(SessionPrepareError::OperatorDeclarationMismatch {
+                        node_id: NodeId::from_index(u32::MAX),
+                    })?;
+                let typed_edge = runtime_plan.typed_edge(edge.spec.id).ok_or(
+                    SessionPrepareError::MissingTypedEdgePlan {
+                        edge_id: edge.spec.id,
+                    },
+                )?;
+                branches.push(PreparedExternalSourceBranch {
+                    output_port: output.output_port().to_owned(),
+                    stream_id: output.stream_id(),
+                    branch: TypedEdgeBranchSpec {
+                        capacity_signals: typed_edge.capacity_signals,
+                        edge_contract: typed_edge.contract,
+                    },
+                    target: PreparedExternalSourceTarget::OperatorInput(
+                        PreparedExternalOperatorInput {
+                            operator_instance_id: connection.operator_instance_id(),
+                            input_port: edge.spec.to.port.clone(),
+                            edge_id: edge.spec.id,
+                            signal_spec: typed_edge.signal.clone(),
+                            media: typed_edge.media,
+                            edge_contract: typed_edge.contract,
+                            capacity_signals: typed_edge.capacity_signals,
+                        },
+                    ),
+                });
+            }
         }
         prepared.push(PreparedExternalSourceMapping {
             instance_id: source.instance_id(),
@@ -602,9 +721,43 @@ fn map_worker_receivers(
     let mut mappings = Vec::with_capacity(worker_receivers.len());
     let mut operator_mappings = Vec::with_capacity(spec.operators().len());
     let mut operator_indices = HashMap::with_capacity(spec.operators().len());
-    let mut pending_derived = Vec::with_capacity(spec.derived_routes().len());
+    let mut instance_indices = HashMap::with_capacity(spec.operators().len());
     let mut derived_edge_ids = HashSet::with_capacity(spec.derived_routes().len());
     let mut mapped_derived_routes = HashSet::with_capacity(spec.derived_routes().len());
+    let mut mapped_operator_input_edges = HashSet::with_capacity(spec.operator_connections().len());
+
+    for declaration in spec.operators() {
+        let instance = declaration.instance_id().value().to_string();
+        let node = graph_ir
+            .nodes
+            .iter()
+            .find(|node| node.spec.config.get("operator_instance_id") == Some(instance.as_str()))
+            .ok_or(SessionPrepareError::OperatorDeclarationMismatch {
+                node_id: NodeId::from_index(u32::MAX),
+            })?;
+        let factory = node_registry
+            .async_factory(&node.spec.type_id)
+            .ok_or(SessionPrepareError::MissingAsyncOperatorFactory { node_id: node.id() })?;
+        if declaration.operator_id() != &factory.manifest().operator_id {
+            return Err(SessionPrepareError::OperatorDeclarationMismatch { node_id: node.id() });
+        }
+        let index = operator_mappings.len();
+        if operator_indices.insert(node.id(), index).is_some()
+            || instance_indices
+                .insert(declaration.instance_id(), index)
+                .is_some()
+        {
+            return Err(SessionPrepareError::OperatorDeclarationMismatch { node_id: node.id() });
+        }
+        operator_mappings.push(PreparedOperatorMapping {
+            node_id: node.id(),
+            instance_id: declaration.instance_id(),
+            factory: Arc::clone(factory),
+            node_configuration: node.spec.config.clone(),
+            inputs: Vec::new(),
+            outputs: Vec::new(),
+        });
+    }
 
     for edge in &graph_ir.edges {
         let source =
@@ -622,16 +775,93 @@ fn map_worker_receivers(
                 .ok_or(SessionPrepareError::MissingWorkerTarget {
                     edge_id: edge.spec.id,
                 })?;
+        if node_registry.async_factory(&target.spec.type_id).is_some() {
+            let target_instance = crate::session::OperatorInstanceId::new(parse_metadata(
+                &target.spec.config,
+                edge.spec.id,
+                "operator_instance_id",
+            )?);
+            let typed_edge = runtime_plan.typed_edge(edge.spec.id).ok_or(
+                SessionPrepareError::MissingTypedEdgePlan {
+                    edge_id: edge.spec.id,
+                },
+            )?;
+            let output = factory
+                .manifest()
+                .output_ports()
+                .find(|port| port.name == edge.spec.from.port)
+                .ok_or(SessionPrepareError::OperatorDeclarationMismatch {
+                    node_id: source.id(),
+                })?;
+            let source_index = operator_indices[&source.id()];
+            operator_mappings[source_index]
+                .outputs
+                .push(PreparedOperatorOutputMapping {
+                    output_port: edge.spec.from.port.clone(),
+                    branch: AsyncOperatorOutputBranchSpec {
+                        capacity_signals: typed_edge.capacity_signals,
+                        edge_contract: typed_edge.contract,
+                    },
+                    target: PreparedOperatorOutputTarget::OperatorInput {
+                        operator_instance_id: target_instance,
+                        input_port: edge.spec.to.port.clone(),
+                    },
+                });
+            if !output.media.is_compatible_with(&edge.media) {
+                return Err(SessionPrepareError::OperatorDeclarationMismatch {
+                    node_id: source.id(),
+                });
+            }
+            continue;
+        }
         let route_id = RouteId(parse_metadata(
             &target.spec.config,
             edge.spec.id,
             "route_id",
         )?);
-        let stem_id = StemId(parse_metadata(
-            &target.spec.config,
-            edge.spec.id,
-            "stem_id",
-        )?);
+        let stem_id = target
+            .spec
+            .config
+            .get("stem_id")
+            .map(|value| {
+                value
+                    .parse()
+                    .map(StemId)
+                    .map_err(|_| SessionPrepareError::InvalidWorkerMetadata {
+                        edge_id: edge.spec.id,
+                        key: "stem_id",
+                        value: value.to_owned(),
+                    })
+            })
+            .transpose()?;
+        let signal_origin = match (
+            target.spec.config.get("source_id"),
+            target.spec.config.get("stream_id"),
+        ) {
+            (Some(source_id), Some(stream_id)) => Some((
+                SourceId(source_id.parse().map_err(|_| {
+                    SessionPrepareError::InvalidWorkerMetadata {
+                        edge_id: edge.spec.id,
+                        key: "source_id",
+                        value: source_id.to_owned(),
+                    }
+                })?),
+                StreamId(stream_id.parse().map_err(|_| {
+                    SessionPrepareError::InvalidWorkerMetadata {
+                        edge_id: edge.spec.id,
+                        key: "stream_id",
+                        value: stream_id.to_owned(),
+                    }
+                })?),
+            )),
+            (None, None) => None,
+            _ => {
+                return Err(SessionPrepareError::DerivedRouteMismatch {
+                    edge_id: edge.spec.id,
+                    route_id,
+                });
+            }
+        };
         let endpoint_id = EndpointId(parse_metadata(
             &target.spec.config,
             edge.spec.id,
@@ -660,7 +890,7 @@ fn map_worker_receivers(
             })?;
         if route.endpoint_id() != endpoint_id
             || route.operator_instance_id() != operator_instance_id
-            || operator_source_stem_id(spec, operator_instance_id) != Some(stem_id)
+            || operator_source_stem_id(spec, operator_instance_id) != stem_id
         {
             return Err(SessionPrepareError::DerivedRouteMismatch {
                 edge_id: edge.spec.id,
@@ -673,7 +903,7 @@ fn map_worker_receivers(
         let signal_spec = factory
             .manifest()
             .output_ports()
-            .next()
+            .find(|port| port.name == edge.spec.from.port)
             .ok_or(SessionPrepareError::DerivedRouteMismatch {
                 edge_id: edge.spec.id,
                 route_id,
@@ -686,22 +916,31 @@ fn map_worker_receivers(
             },
         )?;
         derived_edge_ids.insert(edge.spec.id);
-        pending_derived.push((
-            source.id(),
-            edge.spec.id,
-            PreparedDerivedRouteMapping {
-                route_id,
-                stem_id,
-                endpoint_id,
-                node_configuration: target.spec.config.clone(),
-                prepare_context: default_prepare_context.clone(),
-                signal_spec,
-                output_branch: AsyncOperatorOutputBranchSpec {
+        let source_index = operator_indices[&source.id()];
+        operator_mappings[source_index]
+            .outputs
+            .push(PreparedOperatorOutputMapping {
+                output_port: edge.spec.from.port.clone(),
+                branch: AsyncOperatorOutputBranchSpec {
                     capacity_signals: typed_edge.capacity_signals,
                     edge_contract: typed_edge.contract,
                 },
-            },
-        ));
+                target: PreparedOperatorOutputTarget::DerivedEndpoint(Box::new(
+                    PreparedDerivedRouteMapping {
+                        route_id,
+                        stem_id,
+                        signal_origin,
+                        endpoint_id,
+                        node_configuration: target.spec.config.clone(),
+                        prepare_context: default_prepare_context.clone(),
+                        signal_spec,
+                        output_branch: AsyncOperatorOutputBranchSpec {
+                            capacity_signals: typed_edge.capacity_signals,
+                            edge_contract: typed_edge.contract,
+                        },
+                    },
+                )),
+            });
     }
 
     for receiver in worker_receivers {
@@ -759,12 +998,6 @@ fn map_worker_receivers(
                 edge_id,
                 "operator_instance_id",
             )?);
-            let input_route_id = RouteId(parse_metadata(
-                &target.spec.config,
-                edge_id,
-                "input_route_id",
-            )?);
-            let stem_id = StemId(parse_metadata(&target.spec.config, edge_id, "stem_id")?);
             let declaration = spec
                 .operators()
                 .iter()
@@ -777,44 +1010,65 @@ fn map_worker_receivers(
                 .iter()
                 .find(|connection| {
                     connection.operator_instance_id() == instance_id
-                        && connection.route_id() == input_route_id
+                        && connection.input_port().map_or_else(
+                            || {
+                                let mut ports = factory.manifest().input_ports();
+                                ports
+                                    .next()
+                                    .is_some_and(|port| port.name == edge.spec.to.port)
+                                    && ports.next().is_none()
+                            },
+                            |port| port == edge.spec.to.port,
+                        )
                 })
                 .ok_or(SessionPrepareError::OperatorDeclarationMismatch {
                     node_id: target.id(),
                 })?;
-            if connection
-                .input_port()
-                .is_some_and(|port| port != edge.spec.to.port)
-                || operator_source_stem_id(spec, instance_id) != Some(stem_id)
-                || declaration.operator_id() != &factory.manifest().operator_id
-            {
+            let stem_id = match connection.input_origin() {
+                crate::session::OperatorInputOrigin::Stem(stem_id) => *stem_id,
+                crate::session::OperatorInputOrigin::SourceOutput {
+                    source_instance_id,
+                    output_port,
+                    ..
+                } => spec
+                    .source_outputs()
+                    .iter()
+                    .find(|output| {
+                        output.source_instance_id() == *source_instance_id
+                            && output.output_port() == output_port
+                    })
+                    .map(|output| external_audio_stem_id(spec, output))
+                    .ok_or(SessionPrepareError::OperatorDeclarationMismatch {
+                        node_id: target.id(),
+                    })?,
+                crate::session::OperatorInputOrigin::OperatorOutput { .. } => {
+                    return Err(SessionPrepareError::OperatorDeclarationMismatch {
+                        node_id: target.id(),
+                    });
+                }
+            };
+            if declaration.operator_id() != &factory.manifest().operator_id {
                 return Err(SessionPrepareError::OperatorDeclarationMismatch {
                     node_id: target.id(),
                 });
             }
-            let mapping_index = operator_mappings.len();
-            if operator_indices
-                .insert(target.id(), mapping_index)
-                .is_some()
-            {
+            if !mapped_operator_input_edges.insert(edge_id) {
                 return Err(SessionPrepareError::DuplicateOperatorInput {
                     node_id: target.id(),
                 });
             }
-            operator_mappings.push(PreparedOperatorMapping {
-                node_id: target.id(),
-                instance_id,
-                stem_id,
-                factory: Arc::clone(factory),
-                node_configuration: target.spec.config.clone(),
-                input_port: edge.spec.to.port.clone(),
-                input_signal_spec: input_port.signal.clone(),
-                input_media: edge.media,
-                input_edge_contract,
-                input_capacity_signals,
-                receiver,
-                derived_routes: Vec::new(),
-            });
+            let mapping_index = operator_indices[&target.id()];
+            operator_mappings[mapping_index]
+                .inputs
+                .push(PreparedOperatorInputMapping::Compiled {
+                    stem_id,
+                    input_port: edge.spec.to.port.clone(),
+                    signal_spec: input_port.signal.clone(),
+                    media: edge.media,
+                    edge_contract: input_edge_contract,
+                    capacity_signals: input_capacity_signals,
+                    receiver,
+                });
             continue;
         }
 
@@ -902,14 +1156,102 @@ fn map_worker_receivers(
             origin: PreparedWorkerOrigin::Stem(stem_id),
         });
     }
-    for (operator_node_id, edge_id, derived) in pending_derived {
-        let mapping_index = operator_indices
-            .get(&operator_node_id)
-            .copied()
-            .ok_or(SessionPrepareError::MissingDerivedOperatorInput { edge_id })?;
+    for edge in &graph_ir.edges {
+        if mapped_operator_input_edges.contains(&edge.spec.id) {
+            continue;
+        }
+        let Some(target) = graph_ir.node(edge.spec.to.node) else {
+            continue;
+        };
+        let Some(factory) = node_registry.async_factory(&target.spec.type_id) else {
+            continue;
+        };
+        let instance_id = crate::session::OperatorInstanceId::new(parse_metadata(
+            &target.spec.config,
+            edge.spec.id,
+            "operator_instance_id",
+        )?);
+        let connection = spec
+            .operator_connections()
+            .iter()
+            .find(|connection| {
+                connection.operator_instance_id() == instance_id
+                    && connection.input_port().map_or_else(
+                        || {
+                            let mut ports = factory.manifest().input_ports();
+                            ports
+                                .next()
+                                .is_some_and(|port| port.name == edge.spec.to.port)
+                                && ports.next().is_none()
+                        },
+                        |port| port == edge.spec.to.port,
+                    )
+            })
+            .ok_or(SessionPrepareError::OperatorDeclarationMismatch {
+                node_id: target.id(),
+            })?;
+        let origin = match connection.input_origin() {
+            crate::session::OperatorInputOrigin::SourceOutput {
+                source_instance_id,
+                output_port,
+                ..
+            } => PreparedTypedInputOrigin::SourceOutput {
+                source_instance_id: *source_instance_id,
+                output_port: output_port.clone(),
+            },
+            crate::session::OperatorInputOrigin::OperatorOutput {
+                operator_instance_id,
+                output_port,
+            } => {
+                let upstream = instance_indices[operator_instance_id];
+                let selected = output_port.clone().or_else(|| {
+                    let mut ports = operator_mappings[upstream]
+                        .factory
+                        .manifest()
+                        .output_ports();
+                    let port = ports.next()?;
+                    ports.next().is_none().then(|| port.name.clone())
+                });
+                PreparedTypedInputOrigin::OperatorOutput {
+                    operator_instance_id: *operator_instance_id,
+                    output_port: selected.ok_or(
+                        SessionPrepareError::OperatorDeclarationMismatch {
+                            node_id: target.id(),
+                        },
+                    )?,
+                }
+            }
+            crate::session::OperatorInputOrigin::Stem(_) => {
+                return Err(SessionPrepareError::MissingDerivedOperatorInput {
+                    edge_id: edge.spec.id,
+                });
+            }
+        };
+        let input = factory
+            .manifest()
+            .input_ports()
+            .find(|port| port.name == edge.spec.to.port)
+            .ok_or_else(|| SessionPrepareError::InvalidOperatorInputPort {
+                edge_id: edge.spec.id,
+                port_name: edge.spec.to.port.clone(),
+            })?;
+        let typed_edge = runtime_plan.typed_edge(edge.spec.id).ok_or(
+            SessionPrepareError::MissingTypedEdgePlan {
+                edge_id: edge.spec.id,
+            },
+        )?;
+        let mapping_index = operator_indices[&target.id()];
         operator_mappings[mapping_index]
-            .derived_routes
-            .push(derived);
+            .inputs
+            .push(PreparedOperatorInputMapping::Typed {
+                edge_id: edge.spec.id,
+                input_port: edge.spec.to.port.clone(),
+                signal_spec: input.signal.clone(),
+                media: edge.media,
+                edge_contract: typed_edge.contract,
+                capacity_signals: typed_edge.capacity_signals,
+                origin,
+            });
     }
     let expected_audio_source_routes = mappings
         .iter()
@@ -919,20 +1261,29 @@ fn map_worker_receivers(
         || operator_mappings.len() != spec.operators().len()
         || operator_mappings
             .iter()
-            .map(|mapping| mapping.derived_routes.len())
+            .map(|mapping| mapping.inputs.len())
             .sum::<usize>()
-            != spec.derived_routes().len()
+            != spec.operator_connections().len()
     {
         return Err(SessionPrepareError::WorkerTopologyMismatch {
             expected: spec.routes().len() + expected_audio_source_routes,
             actual: mappings.len(),
-            expected_operator_inputs: spec.operators().len(),
-            actual_operator_inputs: operator_mappings.len(),
+            expected_operator_inputs: spec.operator_connections().len(),
+            actual_operator_inputs: operator_mappings
+                .iter()
+                .map(|mapping| mapping.inputs.len())
+                .sum(),
             expected_derived: spec.derived_routes().len(),
             actual_derived: operator_mappings
                 .iter()
-                .map(|mapping| mapping.derived_routes.len())
-                .sum(),
+                .flat_map(|mapping| &mapping.outputs)
+                .filter(|mapping| {
+                    matches!(
+                        mapping.target,
+                        PreparedOperatorOutputTarget::DerivedEndpoint(_)
+                    )
+                })
+                .count(),
         });
     }
     Ok((mappings, operator_mappings))

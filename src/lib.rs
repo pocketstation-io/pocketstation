@@ -92,24 +92,24 @@ pub use crate::session::{
     SemanticRole, SessionControlFailure, SessionDerivedRouteMetrics, SessionError, SessionEvent,
     SessionEventKind, SessionEventQueueObservations, SessionEventReceive,
     SessionExternalSourceMetrics, SessionId, SessionLifecycleState, SessionMetricsSnapshot,
-    SessionOperatorMetrics, SessionRecordingErrorCode, SessionRecordingObservations,
-    SessionRecordingOutcome, SessionRecordingState, SessionRecordingStemOutcome,
-    SessionRouteDropObservations, SessionRouteLatencyBoundary, SessionRouteLatencyObservations,
-    SessionRouteLatencyUnit, SessionRouteMetrics, SessionRouteObservationInterval,
-    SessionSourceMetrics, SessionStartCancellation, SessionStopOutcome, SessionTerminalState,
-    SessionTrace, SessionTraceRecorder, SessionTraceRecorderFinishError,
-    SessionTraceRecorderOutcome, SessionTraceRecorderStartError, SessionTraceValidation,
-    SessionTraceValidationError, SignalClass, SignalContinuityError, SignalContinuityObservation,
-    SignalContinuityTracker, SignalDerivation, SignalDerivationError, SignalEnvelope,
-    SignalEnvelopeError, SignalId, SignalLineage, SignalPayload, SignalSpec, SignalSpecError,
-    SignalTiming, Source, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError,
-    SourceEmission, SourceFactory, SourceId, SourceInstanceHandle, SourceInstanceId,
-    SourceInstanceSpec, SourceManifest, SourceManifestError, SourceOutputBranchSpec,
-    SourceOutputHandle, SourceOutputIdentity, SourceOutputReceiver, SourceOutputSpec,
-    SourcePrepareContext, SourceRegistrationError, SourceRegistry, SourceRouteSpec, SourceRuntime,
-    SourceRuntimeError, SourceRuntimeObservationHandle, SourceRuntimeObservations,
-    SourceSessionContext, SourceTypeId, StemHandle, StemId, Stream, StreamId, StreamSignal,
-    TextFormat, TypedOperator, TypedStreamError,
+    SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRecordingErrorCode,
+    SessionRecordingObservations, SessionRecordingOutcome, SessionRecordingState,
+    SessionRecordingStemOutcome, SessionRouteDropObservations, SessionRouteLatencyBoundary,
+    SessionRouteLatencyObservations, SessionRouteLatencyUnit, SessionRouteMetrics,
+    SessionRouteObservationInterval, SessionSourceMetrics, SessionStartCancellation,
+    SessionStopOutcome, SessionTerminalState, SessionTrace, SessionTraceRecorder,
+    SessionTraceRecorderFinishError, SessionTraceRecorderOutcome, SessionTraceRecorderStartError,
+    SessionTraceValidation, SessionTraceValidationError, SignalClass, SignalContinuityError,
+    SignalContinuityObservation, SignalContinuityTracker, SignalDerivation, SignalDerivationError,
+    SignalEnvelope, SignalEnvelopeError, SignalId, SignalLineage, SignalPayload, SignalSpec,
+    SignalSpecError, SignalTiming, Source, SourceCancellation, SourceConfiguration, SourceDriver,
+    SourceDriverError, SourceEmission, SourceFactory, SourceId, SourceInstanceHandle,
+    SourceInstanceId, SourceInstanceSpec, SourceManifest, SourceManifestError,
+    SourceOutputBranchSpec, SourceOutputHandle, SourceOutputIdentity, SourceOutputReceiver,
+    SourceOutputSpec, SourcePrepareContext, SourceRegistrationError, SourceRegistry,
+    SourceRouteSpec, SourceRuntime, SourceRuntimeError, SourceRuntimeObservationHandle,
+    SourceRuntimeObservations, SourceSessionContext, SourceTypeId, StemHandle, StemId, Stream,
+    StreamId, StreamSignal, TextFormat, TypedOperator, TypedStreamError,
 };
 
 /// Canonical types required by an external asynchronous Operator package.
@@ -674,6 +674,22 @@ impl RunningSession {
         self.host
             .metrics_snapshot(&self.events, 0, Some(&self.running))
             .ok_or(SessionRuntimeError::MissingMetricsSnapshot)
+    }
+
+    /// Returns one finalizable observation handle per Session-owned operator
+    /// instance, including exact per-input-port edge counters.
+    pub fn operator_metrics(&self) -> Box<[SessionOperatorMetrics]> {
+        self.running.operator_metrics()
+    }
+
+    /// Returns one observation handle per Session-owned external source.
+    pub fn external_source_metrics(&self) -> Box<[SessionExternalSourceMetrics]> {
+        self.running.external_source_metrics()
+    }
+
+    /// Returns one observation handle per derived operator-output route.
+    pub fn derived_route_metrics(&self) -> Box<[SessionDerivedRouteMetrics]> {
+        self.running.derived_route_metrics()
     }
 
     pub fn session_trace_outcome(

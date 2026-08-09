@@ -539,6 +539,7 @@ impl<'registry> SessionCompiler<'registry> {
                     spec.session_id(),
                     SourceOriginMetadata::from(route),
                     endpoint,
+                    route.id(),
                 ),
             );
             if endpoint.operator_id().as_str() == RECORDER_OPERATOR_ID {
@@ -667,7 +668,7 @@ impl<'registry> SessionCompiler<'registry> {
             } else if let Ok(source_origin) =
                 source_origin_for_operator(spec, route.operator_instance_id())
             {
-                source_endpoint_node_config(spec.session_id(), source_origin, endpoint)
+                source_endpoint_node_config(spec.session_id(), source_origin, endpoint, route.id())
             } else {
                 derived_endpoint_node_config(
                     spec.session_id(),
@@ -1011,7 +1012,6 @@ fn external_audio_ingress_node_config(
 
 #[derive(Clone)]
 struct SourceOriginMetadata {
-    route_id: crate::session::RouteId,
     source_instance_id: SourceInstanceId,
     output_port: String,
     stream_id: crate::frame::StreamId,
@@ -1021,7 +1021,6 @@ struct SourceOriginMetadata {
 impl From<&SourceRouteSpec> for SourceOriginMetadata {
     fn from(route: &SourceRouteSpec) -> Self {
         Self {
-            route_id: route.id(),
             source_instance_id: route.source_instance_id(),
             output_port: route.output_port().to_owned(),
             stream_id: route.stream_id(),
@@ -1034,6 +1033,7 @@ fn source_endpoint_node_config(
     session_id: SessionId,
     origin: SourceOriginMetadata,
     endpoint: &EndpointSpec,
+    route_id: crate::session::RouteId,
 ) -> NodeConfig {
     let mut config = NodeConfig::new()
         .with("session_id", &session_id.0.to_string())
@@ -1045,7 +1045,7 @@ fn source_endpoint_node_config(
         .with("stream_id", &origin.stream_id.0.to_string())
         .with("source_output_port", &origin.output_port)
         .with("endpoint_id", &endpoint.id().0.to_string())
-        .with("route_id", &origin.route_id.0.to_string())
+        .with("route_id", &route_id.0.to_string())
         .with("operator_id", endpoint.operator_id().as_str());
     if let Some(connector_id) = endpoint.connector_id() {
         config = config.with("connector_id", &connector_id.0.to_string());
@@ -1087,7 +1087,6 @@ fn source_origin_for_operator(
                 source_id,
             } => {
                 return Ok(SourceOriginMetadata {
-                    route_id: current.route_id(),
                     source_instance_id: *source_instance_id,
                     output_port: output_port.clone(),
                     stream_id: *stream_id,

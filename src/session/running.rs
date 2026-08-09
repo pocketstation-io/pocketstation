@@ -18,28 +18,30 @@ use crate::endpoint::{
 };
 use crate::frame::{ClockDomainId, EndpointId, RouteId, SessionId, StemId};
 use crate::runtime::{
-    AsyncOperatorObservationHandle, AsyncOperatorObservations, AsyncOperatorOutput,
-    AsyncOperatorOutputObservationHandle, AsyncOperatorWorker, AsyncRuntimeHost,
-    CompiledOperatorInputContract, GeneratedAudioBridge, GeneratedAudioBridgeSpec,
-    PlanEdgeObservationHandle, PlanRunnerDrainPolicy, PlanRunnerError, PlanRunnerFinishSummary,
-    PlanSourceObservationHandle, PlanSourceSendOutcome, RealtimePlanRunner,
+    AsyncOperatorNamedOutputBranchSpec, AsyncOperatorObservationHandle, AsyncOperatorObservations,
+    AsyncOperatorOutput, AsyncOperatorOutputObservationHandle, AsyncOperatorTypedInput,
+    AsyncOperatorWorker, AsyncRuntimeHost, CompiledOperatorInputContract, GeneratedAudioBridge,
+    GeneratedAudioBridgeSpec, PlanEdgeObservationHandle, PlanRunnerDrainPolicy, PlanRunnerError,
+    PlanRunnerFinishSummary, PlanSourceObservationHandle, PlanSourceSendOutcome,
+    RealtimePlanRunner, SessionOperatorInput, TypedEdgeObservationHandle,
 };
 
 use crate::session::events::{session_event_channel, SessionEventSender};
 use crate::session::runtime_prepare::{
     PreparedDerivedRouteMapping, PreparedExternalSourceMapping, PreparedExternalSourceTarget,
-    PreparedOperatorMapping, PreparedWorkerOrigin,
+    PreparedOperatorInputMapping, PreparedOperatorMapping, PreparedOperatorOutputTarget,
+    PreparedWorkerOrigin,
 };
 use crate::session::{
     ApplicationSelector, DeviceSelector, EndpointObservationStage, OperatorInstanceId,
     PreparedSession, PreparedSourceRuntime, PreparedWorkerMapping, SessionComponentId,
     SessionControlFailure, SessionDerivedRouteMetrics, SessionEventReceiver,
     SessionExternalSourceMetrics, SessionFinalizationFailure, SessionFinalizationStage,
-    SessionLifecycleState, SessionOperatorMetrics, SessionRollbackFailure, SessionRollbackStage,
-    SessionRouteMetrics, SessionSourceFailure, SessionSourceMetrics, SessionTerminalOutcome,
-    SessionTraceRecorderHandle, Source, SourceOutputBranchSpec, SourceOutputIdentity,
-    SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceSessionContext,
-    RECORDING_GROUP_CONFIGURATION_KEY,
+    SessionLifecycleState, SessionOperatorInputMetrics, SessionOperatorMetrics,
+    SessionRollbackFailure, SessionRollbackStage, SessionRouteMetrics, SessionSourceFailure,
+    SessionSourceMetrics, SessionTerminalOutcome, SessionTraceRecorderHandle, Source,
+    SourceOutputBranchSpec, SourceOutputIdentity, SourceRegistry, SourceRuntime,
+    SourceRuntimeObservationHandle, SourceSessionContext, RECORDING_GROUP_CONFIGURATION_KEY,
 };
 
 pub struct CaptureBackendSet<'backend> {
@@ -323,7 +325,7 @@ struct PendingDerivedEndpointInput {
 struct PreparedOperatorRuntime {
     instance_id: OperatorInstanceId,
     worker: AsyncOperatorWorker,
-    input_edge: PlanEdgeObservationHandle,
+    input_edges: Vec<OperatorInputObservationBinding>,
     observations: AsyncOperatorObservationHandle,
     lifecycle_timeout: Duration,
     derived_inputs: Vec<PendingDerivedEndpointInput>,
@@ -332,9 +334,126 @@ struct PreparedOperatorRuntime {
 struct RunningOperatorBinding {
     instance_id: OperatorInstanceId,
     worker: AsyncOperatorWorker,
-    input_edge: PlanEdgeObservationHandle,
+    input_edges: Vec<OperatorInputObservationBinding>,
     observations: AsyncOperatorObservationHandle,
     lifecycle_timeout: Duration,
+}
+
+struct PendingOperatorTypedInput {
+    operator_instance_id: OperatorInstanceId,
+    input_port: String,
+    input: AsyncOperatorTypedInput,
+}
+
+enum OperatorInputObservation {
+    Plan(PlanEdgeObservationHandle),
+    Typed(TypedEdgeObservationHandle),
+}
+
+struct OperatorInputObservationBinding {
+    port_name: String,
+    capacity_signals: usize,
+    observation: OperatorInputObservation,
+}
+
+fn operator_input_observations(
+    inputs: &[OperatorInputObservationBinding],
+) -> crate::runtime::EdgeObservations {
+    if let [OperatorInputObservationBinding {
+        observation: OperatorInputObservation::Plan(handle),
+        ..
+    }] = inputs
+    {
+        return handle.observations();
+    }
+    let mut aggregate = crate::runtime::EdgeObservations::default();
+    for input in inputs {
+        match &input.observation {
+            OperatorInputObservation::Plan(handle) => {
+                let edge = handle.observations();
+                aggregate.queue_capacity_frames = aggregate
+                    .queue_capacity_frames
+                    .saturating_add(edge.queue_capacity_frames);
+                aggregate.queue_depth_frames = aggregate
+                    .queue_depth_frames
+                    .saturating_add(edge.queue_depth_frames);
+                aggregate.queue_peak_frames = aggregate
+                    .queue_peak_frames
+                    .saturating_add(edge.queue_peak_frames);
+                aggregate.frames_enqueued_total = aggregate
+                    .frames_enqueued_total
+                    .saturating_add(edge.frames_enqueued_total);
+                aggregate.frames_delivered_total = aggregate
+                    .frames_delivered_total
+                    .saturating_add(edge.frames_delivered_total);
+                aggregate.frames_dropped_total = aggregate
+                    .frames_dropped_total
+                    .saturating_add(edge.frames_dropped_total);
+                aggregate.overruns_total =
+                    aggregate.overruns_total.saturating_add(edge.overruns_total);
+                aggregate.queue_full_drops_total = aggregate
+                    .queue_full_drops_total
+                    .saturating_add(edge.queue_full_drops_total);
+                aggregate.discontinuities_total = aggregate
+                    .discontinuities_total
+                    .saturating_add(edge.discontinuities_total);
+                aggregate.worker_failures_total = aggregate
+                    .worker_failures_total
+                    .saturating_add(edge.worker_failures_total);
+                aggregate.shutdown_discarded_total = aggregate
+                    .shutdown_discarded_total
+                    .saturating_add(edge.shutdown_discarded_total);
+            }
+            OperatorInputObservation::Typed(handle) => {
+                let edge = handle.snapshot();
+                aggregate.queue_capacity_frames = aggregate
+                    .queue_capacity_frames
+                    .saturating_add(input.capacity_signals as u64);
+                aggregate.frames_enqueued_total = aggregate
+                    .frames_enqueued_total
+                    .saturating_add(edge.delivered_total);
+                aggregate.frames_delivered_total = aggregate
+                    .frames_delivered_total
+                    .saturating_add(edge.delivered_total);
+                aggregate.frames_dropped_total = aggregate
+                    .frames_dropped_total
+                    .saturating_add(edge.dropped_total);
+                aggregate.queue_full_drops_total = aggregate
+                    .queue_full_drops_total
+                    .saturating_add(edge.dropped_total);
+            }
+        }
+    }
+    aggregate
+}
+
+fn operator_input_port_observations(
+    inputs: &[OperatorInputObservationBinding],
+) -> Box<[SessionOperatorInputMetrics]> {
+    inputs
+        .iter()
+        .map(|input| {
+            let edge = match &input.observation {
+                OperatorInputObservation::Plan(handle) => handle.observations(),
+                OperatorInputObservation::Typed(handle) => {
+                    let typed = handle.snapshot();
+                    crate::runtime::EdgeObservations {
+                        queue_capacity_frames: input.capacity_signals as u64,
+                        frames_enqueued_total: typed.delivered_total,
+                        frames_delivered_total: typed.delivered_total,
+                        frames_dropped_total: typed.dropped_total,
+                        queue_full_drops_total: typed.dropped_total,
+                        ..crate::runtime::EdgeObservations::default()
+                    }
+                }
+            };
+            SessionOperatorInputMetrics {
+                port_name: input.port_name.clone(),
+                edge,
+            }
+        })
+        .collect::<Vec<_>>()
+        .into_boxed_slice()
 }
 
 struct SourceObservationBinding {
@@ -392,10 +511,11 @@ struct FinalEndpointObservation {
     finalization_failures_total: u64,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 struct FinalOperatorObservation {
     operator_instance_id: OperatorInstanceId,
     input_edge: crate::runtime::EdgeObservations,
+    input_ports: Box<[SessionOperatorInputMetrics]>,
     observations: AsyncOperatorObservations,
     finalization_failures_total: u64,
 }
@@ -403,11 +523,12 @@ struct FinalOperatorObservation {
 struct OperatorFinalizationOutcome {
     operator_instance_id: OperatorInstanceId,
     input_edge: crate::runtime::EdgeObservations,
+    input_ports: Box<[SessionOperatorInputMetrics]>,
     observations: AsyncOperatorObservations,
     error: Option<String>,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Eq, PartialEq)]
 enum OperatorTermination {
     Finish,
     Cancel,
@@ -513,6 +634,18 @@ impl RunningSession {
         self.event_receiver.take()
     }
 
+    pub fn operator_metrics(&self) -> Box<[SessionOperatorMetrics]> {
+        self.indexed_metrics_full().3
+    }
+
+    pub fn external_source_metrics(&self) -> Box<[SessionExternalSourceMetrics]> {
+        self.indexed_metrics_full().1
+    }
+
+    pub fn derived_route_metrics(&self) -> Box<[SessionDerivedRouteMetrics]> {
+        self.indexed_metrics_full().4
+    }
+
     pub(crate) fn indexed_metrics(
         &self,
     ) -> (Box<[SessionSourceMetrics]>, Box<[SessionRouteMetrics]>) {
@@ -573,8 +706,12 @@ impl RunningSession {
                     SessionOperatorMetrics {
                         operator_instance_id: binding.instance_id,
                         input_edge: finalized.map_or_else(
-                            || binding.input_edge.observations(),
+                            || operator_input_observations(&binding.input_edges),
                             |observation| observation.input_edge,
+                        ),
+                        input_ports: finalized.map_or_else(
+                            || operator_input_port_observations(&binding.input_edges),
+                            |observation| observation.input_ports.clone(),
                         ),
                         worker: finalized.map_or_else(
                             || binding.observations.snapshot(),
@@ -595,6 +732,7 @@ impl RunningSession {
                         .map(|observation| SessionOperatorMetrics {
                             operator_instance_id: observation.operator_instance_id,
                             input_edge: observation.input_edge,
+                            input_ports: observation.input_ports.clone(),
                             worker: observation.observations,
                             finalization_failures_total: observation.finalization_failures_total,
                         }),
@@ -689,6 +827,7 @@ impl RunningSession {
             .map(|outcome| FinalOperatorObservation {
                 operator_instance_id: outcome.operator_instance_id,
                 input_edge: outcome.input_edge,
+                input_ports: outcome.input_ports.clone(),
                 observations: outcome.observations,
                 finalization_failures_total: u64::from(outcome.error.is_some()),
             })
@@ -865,6 +1004,7 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
         external_audio_bridges,
         mut prepared_external_endpoints,
         external_route_observations,
+        pending_source_operator_inputs,
     ) = match prepare_external_source_runtimes(
         session_id,
         external_source_mappings,
@@ -1154,7 +1294,12 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
         }
     };
     let mut prepared_operators = match async_runtime_host.as_ref() {
-        Some(host) => match prepare_operator_runtimes(host, session_id, operator_mappings) {
+        Some(host) => match prepare_operator_runtimes(
+            host,
+            session_id,
+            operator_mappings,
+            pending_source_operator_inputs,
+        ) {
             Ok(operators) => operators,
             Err((mut error, operator_rollback_failures)) => {
                 let mut rollback = StartupRollback {
@@ -1270,7 +1415,7 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
         .map(|operator| RunningOperatorBinding {
             instance_id: operator.instance_id,
             worker: operator.worker,
-            input_edge: operator.input_edge,
+            input_edges: operator.input_edges,
             observations: operator.observations,
             lifecycle_timeout: operator.lifecycle_timeout,
         })
@@ -1372,6 +1517,7 @@ type ExternalSourcePreparation = (
     Vec<GeneratedAudioBridge>,
     Vec<PreparedEndpointBinding>,
     Vec<DerivedRouteObservationBinding>,
+    Vec<PendingOperatorTypedInput>,
 );
 
 fn prepare_external_source_runtimes(
@@ -1385,6 +1531,7 @@ fn prepare_external_source_runtimes(
     let mut bridges = Vec::new();
     let mut endpoints = Vec::new();
     let mut route_observations = Vec::new();
+    let mut operator_inputs = Vec::new();
     for mapping in mappings {
         let branch_specs = mapping
             .branches
@@ -1517,6 +1664,21 @@ fn prepare_external_source_runtimes(
                         endpoint,
                     });
                 }
+                PreparedExternalSourceTarget::OperatorInput(input) => {
+                    operator_inputs.push(PendingOperatorTypedInput {
+                        operator_instance_id: input.operator_instance_id,
+                        input_port: input.input_port.clone(),
+                        input: AsyncOperatorTypedInput {
+                            port_name: input.input_port,
+                            receiver: receiver.receiver,
+                            edge_id: Some(input.edge_id),
+                            signal_spec: input.signal_spec,
+                            media: input.media,
+                            edge_contract: input.edge_contract,
+                            capacity_signals: input.capacity_signals,
+                        },
+                    });
+                }
             }
         }
         sources.push(PreparedExternalRuntimeBinding {
@@ -1525,7 +1687,13 @@ fn prepare_external_source_runtimes(
             runtime,
         });
     }
-    Ok((sources, bridges, endpoints, route_observations))
+    Ok((
+        sources,
+        bridges,
+        endpoints,
+        route_observations,
+        operator_inputs,
+    ))
 }
 
 fn validate_start_options(options: SessionStartOptions) -> Result<(), SessionStartError> {
@@ -1705,54 +1873,183 @@ fn prepare_operator_runtimes(
     host: &AsyncRuntimeHost,
     session_id: SessionId,
     operator_mappings: Vec<PreparedOperatorMapping>,
+    mut pending_inputs: Vec<PendingOperatorTypedInput>,
 ) -> Result<Vec<PreparedOperatorRuntime>, (SessionStartError, Vec<SessionRollbackFailure>)> {
     let mut prepared = Vec::with_capacity(operator_mappings.len());
-    for mapping in operator_mappings {
+    let typed_contracts = operator_mappings
+        .iter()
+        .flat_map(|mapping| {
+            mapping.inputs.iter().filter_map(|input| match input {
+                PreparedOperatorInputMapping::Typed {
+                    edge_id,
+                    input_port,
+                    signal_spec,
+                    media,
+                    edge_contract,
+                    capacity_signals,
+                    ..
+                } => Some((
+                    (mapping.instance_id, input_port.clone()),
+                    (
+                        *edge_id,
+                        signal_spec.clone(),
+                        *media,
+                        *edge_contract,
+                        *capacity_signals,
+                    ),
+                )),
+                PreparedOperatorInputMapping::Compiled { .. } => None,
+            })
+        })
+        .collect::<std::collections::HashMap<_, _>>();
+    let mut remaining = operator_mappings;
+    while !remaining.is_empty() {
+        let ready_index = remaining.iter().position(|mapping| {
+            mapping.inputs.iter().all(|input| match input {
+                PreparedOperatorInputMapping::Compiled { .. } => true,
+                PreparedOperatorInputMapping::Typed { input_port, .. } => {
+                    pending_inputs.iter().any(|pending| {
+                        pending.operator_instance_id == mapping.instance_id
+                            && pending.input_port == *input_port
+                    })
+                }
+            })
+        });
+        let Some(ready_index) = ready_index else {
+            let instance_id = remaining[0].instance_id;
+            let rollback = rollback_operator_runtimes(host, prepared);
+            return Err((
+                SessionStartError::OperatorPrepare {
+                    operator_instance_id: instance_id,
+                    message: "operator dependency topology produced no runnable instance"
+                        .to_owned(),
+                    rollback_failures_total: rollback.failures_total(),
+                },
+                rollback.failures,
+            ));
+        };
+        let mapping = remaining.remove(ready_index);
         let PreparedOperatorMapping {
             node_id,
             instance_id,
-            stem_id,
             factory,
             node_configuration,
-            input_port,
-            input_signal_spec,
-            input_media,
-            input_edge_contract,
-            input_capacity_signals,
-            receiver,
-            derived_routes,
+            inputs,
+            mut outputs,
         } = mapping;
-        let input_contract = CompiledOperatorInputContract {
-            edge_id: receiver.edge_id(),
-            operator_node: node_id,
-            session_id,
-            stem_id,
-            source_id: None,
-            input_port,
-            signal_spec: input_signal_spec,
-            media: input_media,
-            edge_contract: input_edge_contract,
-            capacity_signals: input_capacity_signals,
-        };
-        let input_edge = receiver.observation_handle();
+        outputs.sort_by_key(|output| {
+            factory
+                .manifest()
+                .output_ports()
+                .position(|port| port.name == output.output_port)
+                .unwrap_or(usize::MAX)
+        });
+        let mut worker_inputs = Vec::with_capacity(inputs.len());
+        let mut input_edges = Vec::with_capacity(inputs.len());
+        for input in inputs {
+            match input {
+                PreparedOperatorInputMapping::Compiled {
+                    stem_id,
+                    input_port,
+                    signal_spec,
+                    media,
+                    edge_contract,
+                    capacity_signals,
+                    receiver,
+                } => {
+                    input_edges.push(OperatorInputObservationBinding {
+                        port_name: input_port.clone(),
+                        capacity_signals,
+                        observation: OperatorInputObservation::Plan(receiver.observation_handle()),
+                    });
+                    worker_inputs.push(SessionOperatorInput::Compiled {
+                        contract: CompiledOperatorInputContract {
+                            edge_id: receiver.edge_id(),
+                            operator_node: node_id,
+                            session_id,
+                            stem_id,
+                            source_id: None,
+                            input_port,
+                            signal_spec,
+                            media,
+                            edge_contract,
+                            capacity_signals,
+                        },
+                        receiver,
+                    });
+                }
+                PreparedOperatorInputMapping::Typed {
+                    edge_id,
+                    input_port,
+                    signal_spec,
+                    media,
+                    edge_contract,
+                    capacity_signals,
+                    origin,
+                } => {
+                    let index = pending_inputs
+                        .iter()
+                        .position(|pending| {
+                            pending.operator_instance_id == instance_id
+                                && pending.input_port == input_port
+                        })
+                        .expect("ready operator has every typed input");
+                    let pending = pending_inputs.remove(index);
+                    if pending.input.edge_id != Some(edge_id)
+                        || pending.input.signal_spec != signal_spec
+                        || pending.input.media != media
+                        || pending.input.edge_contract != edge_contract
+                        || pending.input.capacity_signals != capacity_signals
+                    {
+                        let rollback = rollback_operator_runtimes(host, prepared);
+                        return Err((
+                            SessionStartError::OperatorPrepare {
+                                operator_instance_id: instance_id,
+                                message: format!(
+                                    "typed input '{input_port}' disagrees with compiled edge {edge_id:?} from {origin:?}"
+                                ),
+                                rollback_failures_total: rollback.failures_total(),
+                            },
+                            rollback.failures,
+                        ));
+                    }
+                    input_edges.push(OperatorInputObservationBinding {
+                        port_name: input_port,
+                        capacity_signals,
+                        observation: OperatorInputObservation::Typed(
+                            pending.input.receiver.observation_handle(),
+                        ),
+                    });
+                    worker_inputs.push(SessionOperatorInput::Typed(pending.input));
+                }
+            }
+        }
         let lifecycle_timeout = Duration::from_millis(
             u64::from(factory.manifest().deadline.process_timeout_ms).saturating_add(250),
         );
-        let output_branches = derived_routes
+        let output_branches = outputs
             .iter()
-            .map(|route| route.output_branch)
+            .map(|output| (output.output_port.clone(), output.branch))
             .collect::<Vec<_>>();
+        let factory_for_spawn = Arc::clone(&factory);
+        let configuration_for_spawn = node_configuration.clone();
         let result = host.execute(lifecycle_timeout, async move {
-            AsyncOperatorWorker::prepare_and_spawn_from_plan_edge(
-                factory,
-                &node_configuration,
-                receiver,
-                input_contract,
-                &output_branches,
+            let specifications = output_branches
+                .iter()
+                .map(|(output_port, branch)| AsyncOperatorNamedOutputBranchSpec {
+                    output_port,
+                    branch: *branch,
+                })
+                .collect::<Vec<_>>();
+            AsyncOperatorWorker::prepare_and_spawn_session_composed(
+                factory_for_spawn,
+                &configuration_for_spawn,
+                worker_inputs,
+                &specifications,
             )
             .await
         });
-        let (worker, outputs) = match result {
+        let (worker, runtime_outputs) = match result {
             Ok(Ok(prepared_worker)) => prepared_worker,
             Ok(Err(error)) => {
                 let rollback = rollback_operator_runtimes(host, prepared);
@@ -1777,12 +2074,12 @@ fn prepare_operator_runtimes(
                 ));
             }
         };
-        if outputs.len() != derived_routes.len() {
+        if runtime_outputs.len() != outputs.len() {
             let observations = worker.observations();
             let mut incomplete = vec![PreparedOperatorRuntime {
                 instance_id,
                 worker,
-                input_edge,
+                input_edges,
                 observations,
                 lifecycle_timeout,
                 derived_inputs: Vec::new(),
@@ -1800,19 +2097,81 @@ fn prepare_operator_runtimes(
             ));
         }
         let observations = worker.observations();
-        let derived_inputs = derived_routes
-            .into_iter()
-            .zip(outputs)
-            .map(|(mapping, output)| PendingDerivedEndpointInput { mapping, output })
-            .collect();
+        let mut derived_inputs = Vec::new();
+        for (mapping, output) in outputs.into_iter().zip(runtime_outputs) {
+            if mapping.output_port != output.output_port {
+                let mut incomplete = vec![PreparedOperatorRuntime {
+                    instance_id,
+                    worker,
+                    input_edges,
+                    observations,
+                    lifecycle_timeout,
+                    derived_inputs,
+                }];
+                incomplete.append(&mut prepared);
+                let rollback = rollback_operator_runtimes(host, incomplete);
+                return Err((
+                    SessionStartError::OperatorPrepare {
+                        operator_instance_id: instance_id,
+                        message: "operator output port order did not match compiled routes"
+                            .to_owned(),
+                        rollback_failures_total: rollback.failures_total(),
+                    },
+                    rollback.failures,
+                ));
+            }
+            match mapping.target {
+                PreparedOperatorOutputTarget::DerivedEndpoint(mapping) => {
+                    derived_inputs.push(PendingDerivedEndpointInput {
+                        mapping: *mapping,
+                        output: output.receiver,
+                    });
+                }
+                PreparedOperatorOutputTarget::OperatorInput {
+                    operator_instance_id,
+                    input_port,
+                } => {
+                    let (edge_id, signal_spec, media, edge_contract, capacity_signals) =
+                        typed_contracts
+                            .get(&(operator_instance_id, input_port.clone()))
+                            .cloned()
+                            .expect("compiled downstream typed input contract");
+                    pending_inputs.push(PendingOperatorTypedInput {
+                        operator_instance_id,
+                        input_port: input_port.clone(),
+                        input: AsyncOperatorTypedInput {
+                            port_name: input_port,
+                            receiver: output.receiver,
+                            edge_id: Some(edge_id),
+                            signal_spec,
+                            media,
+                            edge_contract,
+                            capacity_signals,
+                        },
+                    });
+                }
+            }
+        }
         prepared.push(PreparedOperatorRuntime {
             instance_id,
             worker,
-            input_edge,
+            input_edges,
             observations,
             lifecycle_timeout,
             derived_inputs,
         });
+    }
+    if !pending_inputs.is_empty() {
+        let instance_id = pending_inputs[0].operator_instance_id;
+        let rollback = rollback_operator_runtimes(host, prepared);
+        return Err((
+            SessionStartError::OperatorPrepare {
+                operator_instance_id: instance_id,
+                message: "Session retained an unconsumed operator input receiver".to_owned(),
+                rollback_failures_total: rollback.failures_total(),
+            },
+            rollback.failures,
+        ));
     }
     Ok(prepared)
 }
@@ -1882,17 +2241,34 @@ fn prepare_derived_endpoints(
         let mut grouped_observations = Vec::with_capacity(grouped_inputs.len());
         for input in grouped_inputs {
             let mapping = input.mapping;
-            let context = EndpointPrepareContext::new(
-                session_id,
-                mapping.endpoint_id,
-                mapping.node_configuration,
-                mapping.prepare_context,
-            )
-            .with_session_route(
-                EndpointRouteContext::new(mapping.stem_id, mapping.route_id),
-                session_timeline_origin,
-            )
-            .with_derived_contract(
+            let mut context = mapping.stem_id.map_or_else(
+                || {
+                    EndpointPrepareContext::new_signal(
+                        session_id,
+                        mapping.endpoint_id,
+                        mapping.node_configuration.clone(),
+                    )
+                },
+                |stem_id| {
+                    EndpointPrepareContext::new(
+                        session_id,
+                        mapping.endpoint_id,
+                        mapping.node_configuration.clone(),
+                        mapping.prepare_context.clone(),
+                    )
+                    .with_session_route(
+                        EndpointRouteContext::new(stem_id, mapping.route_id),
+                        session_timeline_origin,
+                    )
+                },
+            );
+            if let Some((source_id, stream_id)) = mapping.signal_origin {
+                context = context.with_signal_route(
+                    EndpointSignalRouteContext::new(mapping.route_id, source_id, stream_id),
+                    session_timeline_origin,
+                );
+            }
+            let context = context.with_derived_contract(
                 mapping.signal_spec,
                 mapping.output_branch.edge_contract.media,
                 mapping.output_branch.edge_contract,
@@ -2217,9 +2593,12 @@ fn rollback_operator_runtimes(
 
 fn terminate_operators(
     host: &AsyncRuntimeHost,
-    operators: Vec<RunningOperatorBinding>,
+    mut operators: Vec<RunningOperatorBinding>,
     termination: OperatorTermination,
 ) -> Vec<OperatorFinalizationOutcome> {
+    if termination == OperatorTermination::Cancel {
+        operators.reverse();
+    }
     operators
         .into_iter()
         .map(|operator| {
@@ -2240,7 +2619,8 @@ fn terminate_operators(
             };
             OperatorFinalizationOutcome {
                 operator_instance_id: operator.instance_id,
-                input_edge: operator.input_edge.observations(),
+                input_edge: operator_input_observations(&operator.input_edges),
+                input_ports: operator_input_port_observations(&operator.input_edges),
                 observations: operator.observations.snapshot(),
                 error,
             }

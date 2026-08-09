@@ -678,7 +678,7 @@ impl RunningTestAsyncFactory {
         let audio = MediaCaps::Audio(AudioCaps {
             sample_rate_hz: Some(sample_rate_hz),
             frame_samples: None,
-            channel_layout: ChannelLayout::Mono,
+            channel_layout: ChannelLayout::Any,
             format: SampleFormat::F32Interleaved,
         });
         let mut input_edge = EdgeContract::voice_default();
@@ -1496,6 +1496,439 @@ fn given_one_source_failure_when_runtime_continues_then_healthy_source_frame_is_
     }
     assert_eq!(source_failures_total, 1);
     assert_no_live_owners(&application, &microphone, &endpoints);
+}
+
+mod composed_runtime {
+    use super::*;
+
+    const STAGE_TWO_OPERATOR_ID: &str = "example.operator.session-stage-two.v1";
+    const STAGE_TWO_NODE_ID: &str = "operator.session-stage-two.test";
+    const STAGE_THREE_OPERATOR_ID: &str = "example.operator.session-stage-three.v1";
+    const STAGE_THREE_NODE_ID: &str = "operator.session-stage-three.test";
+    const MULTI_OPERATOR_ID: &str = "example.operator.session-multi.v1";
+    const MULTI_NODE_ID: &str = "operator.session-multi.test";
+    const TEXT_ROLE: &str = "session.composed.text";
+    const LEFT_ROLE: &str = "session.composed.left";
+    const RIGHT_ROLE: &str = "session.composed.right";
+
+    #[derive(Default)]
+    struct ComposedControl {
+        process_total: AtomicU64,
+        left_total: AtomicU64,
+        right_total: AtomicU64,
+        close_total: AtomicU64,
+    }
+
+    struct ComposedFactory {
+        operator_id: &'static str,
+        output_role: &'static str,
+        control: Arc<ComposedControl>,
+        manifest: AsyncOperatorManifest,
+    }
+
+    impl ComposedFactory {
+        fn transform(
+            operator_id: &'static str,
+            node_type_id: &'static str,
+            control: Arc<ComposedControl>,
+        ) -> Self {
+            Self::new(
+                operator_id,
+                node_type_id,
+                vec![text_port("input", PortDirection::Input, None)],
+                vec![text_port("output", PortDirection::Output, Some(TEXT_ROLE))],
+                TEXT_ROLE,
+                control,
+            )
+        }
+
+        fn multi(control: Arc<ComposedControl>) -> Self {
+            Self::new(
+                MULTI_OPERATOR_ID,
+                MULTI_NODE_ID,
+                vec![
+                    text_port("left", PortDirection::Input, None),
+                    text_port("right", PortDirection::Input, None),
+                ],
+                vec![
+                    text_port("left_out", PortDirection::Output, Some(LEFT_ROLE)),
+                    text_port("right_out", PortDirection::Output, Some(RIGHT_ROLE)),
+                ],
+                LEFT_ROLE,
+                control,
+            )
+        }
+
+        fn new(
+            operator_id: &'static str,
+            node_type_id: &'static str,
+            inputs: Vec<PortSpec>,
+            outputs: Vec<PortSpec>,
+            output_role: &'static str,
+            control: Arc<ComposedControl>,
+        ) -> Self {
+            let mut input_edge = EdgeContract::typed_default();
+            input_edge.media = MediaCaps::Text;
+            input_edge.backpressure = crate::graph::BackpressurePolicy::DropNewest;
+            input_edge.copy_policy = CopyPolicy::CopyToBranchPool;
+            let mut output_edge = EdgeContract::typed_default();
+            output_edge.media = MediaCaps::Text;
+            let allowed = outputs
+                .iter()
+                .filter_map(|port| port.signal.role.clone())
+                .collect::<Vec<_>>();
+            Self {
+                operator_id,
+                output_role,
+                control,
+                manifest: AsyncOperatorManifest {
+                    operator_id: OperatorId::new(operator_id),
+                    revision: 1,
+                    generation: 1,
+                    node: NodeDescriptor {
+                        type_id: NodeTypeId::from(node_type_id),
+                        display_name: "Session composed-runtime test operator",
+                        inputs,
+                        outputs,
+                        execution: ExecutionPartition::AsyncWorker,
+                        safety: SafetyContract::AllocationAllowed,
+                        stateful: true,
+                    },
+                    input_edge,
+                    output_edge,
+                    queue_capacity_frames: 8,
+                    permission: OperatorPermissionPolicy {
+                        network_allowed: false,
+                        filesystem_allowed: false,
+                    },
+                    deadline: OperatorDeadlinePolicy {
+                        process_timeout_ms: 500,
+                    },
+                    cancellation: OperatorCancellationPolicy::DiscardQueued,
+                    failure: OperatorFailurePolicy::StopWorker,
+                    output_roles: OperatorOutputRolePolicy {
+                        allowed,
+                        terminal: Vec::new(),
+                    },
+                },
+            }
+        }
+    }
+
+    fn text_port(name: &str, direction: PortDirection, role: Option<&str>) -> PortSpec {
+        let signal = role.map_or_else(
+            || SignalSpec::text(TextFormat::Utf8),
+            |role| SignalSpec::text(TextFormat::Utf8).with_role(role),
+        );
+        PortSpec {
+            name: name.to_owned(),
+            direction,
+            signal,
+            media: MediaCaps::Text,
+            multiplicity: Multiplicity::One,
+            required: true,
+        }
+    }
+
+    impl AsyncOperatorFactory for ComposedFactory {
+        fn manifest(&self) -> &AsyncOperatorManifest {
+            &self.manifest
+        }
+
+        fn validate_config(&self, _configuration: &NodeConfig) -> Result<(), ConfigError> {
+            Ok(())
+        }
+
+        fn create(&self, _configuration: &NodeConfig) -> Result<Box<dyn AsyncNode>, NodeError> {
+            Ok(Box::new(ComposedNode {
+                operator_id: self.operator_id,
+                output_role: self.output_role,
+                control: Arc::clone(&self.control),
+            }))
+        }
+    }
+
+    struct ComposedNode {
+        operator_id: &'static str,
+        output_role: &'static str,
+        control: Arc<ComposedControl>,
+    }
+
+    impl ComposedNode {
+        fn emit(
+            &self,
+            input: SignalEnvelope,
+            role: &'static str,
+        ) -> Result<SignalEnvelope, NodeError> {
+            let lineage = input
+                .lineage
+                .ok_or_else(|| NodeError::Process("composed input omitted lineage".to_owned()))?;
+            let timing = input.timing;
+            let spec = SignalSpec::text(TextFormat::Utf8).with_role(role);
+            let mut output = SignalEnvelope::untracked(
+                SignalPayload::Text(role.to_owned()),
+                timing.observed_timestamp_ns,
+            )
+            .map_payload(SignalPayload::Text(role.to_owned()), spec)
+            .with_lineage(lineage, timing);
+            output.derivation = Some(
+                SignalDerivation::new(
+                    lineage,
+                    timing,
+                    OperatorId::new(self.operator_id),
+                    1,
+                    1,
+                    None,
+                )
+                .map_err(|error| NodeError::Process(error.to_string()))?,
+            );
+            Ok(output)
+        }
+    }
+
+    impl AsyncNode for ComposedNode {
+        fn prepare<'a>(
+            &'a mut self,
+            context: &'a crate::graph::AsyncOperatorPrepareContext,
+        ) -> AsyncNodeFuture<'a, Result<(), NodeError>> {
+            Box::pin(async move {
+                if context.inputs().is_empty() || context.outputs().is_empty() {
+                    return Err(NodeError::Prepare(
+                        "composed operator requires negotiated inputs and outputs".to_owned(),
+                    ));
+                }
+                Ok(())
+            })
+        }
+
+        fn process<'a>(
+            &'a mut self,
+            input: SignalEnvelope,
+        ) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
+            Box::pin(async move { Ok(vec![self.emit(input, self.output_role)?]) })
+        }
+
+        fn process_port<'a>(
+            &'a mut self,
+            input_port: &'a str,
+            input: SignalEnvelope,
+        ) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
+            Box::pin(async move {
+                self.control.process_total.fetch_add(1, Ordering::Relaxed);
+                let role = match input_port {
+                    "left" => {
+                        self.control.left_total.fetch_add(1, Ordering::Relaxed);
+                        LEFT_ROLE
+                    }
+                    "right" => {
+                        self.control.right_total.fetch_add(1, Ordering::Relaxed);
+                        RIGHT_ROLE
+                    }
+                    _ => self.output_role,
+                };
+                Ok(vec![self.emit(input, role)?])
+            })
+        }
+
+        fn close<'a>(&'a mut self) -> AsyncNodeFuture<'a, Result<(), NodeError>> {
+            Box::pin(async move {
+                self.control.close_total.fetch_add(1, Ordering::Relaxed);
+                Ok(())
+            })
+        }
+    }
+
+    fn endpoint(session: &Session) -> crate::session::EndpointHandle {
+        session
+            .endpoint(EndpointDescriptor::new(
+                NodeTypeId::from(TEST_TEXT_ENDPOINT_NODE_TYPE_ID),
+                OperatorId::new(TEST_TEXT_ENDPOINT_OPERATOR_ID),
+            ))
+            .expect("text endpoint declaration")
+    }
+
+    #[test]
+    fn given_public_session_when_composed_then_three_stages_and_named_ports_run_under_one_owner() {
+        let stage_one = Arc::new(AsyncOperatorControl::default());
+        let stage_two = Arc::new(ComposedControl::default());
+        let stage_three = Arc::new(ComposedControl::default());
+        let multi = Arc::new(ComposedControl::default());
+        let derived_endpoints = Arc::new(DerivedEndpointControl::default());
+        let raw_endpoints = Arc::new(EndpointControl::default());
+
+        let mut builder = SessionEngineBuilder::new(context(), 8, SessionStartOptions::default())
+            .expect("composed engine builder");
+        builder
+            .register_endpoint_driver(
+                OperatorId::new(TEST_CONNECTOR_OPERATOR_ID),
+                NodeTypeId::from(CONNECTOR_NODE_TYPE_ID),
+                Arc::new(TestEndpointFactory {
+                    control: Arc::clone(&raw_endpoints),
+                }),
+            )
+            .expect("raw connector registration");
+        builder
+            .register_async_operator(Arc::new(RunningTestAsyncFactory::new(
+                Arc::clone(&stage_one),
+                48_000,
+            )))
+            .expect("stage one registration");
+        builder
+            .register_async_operator(Arc::new(ComposedFactory::transform(
+                STAGE_TWO_OPERATOR_ID,
+                STAGE_TWO_NODE_ID,
+                Arc::clone(&stage_two),
+            )))
+            .expect("stage two registration");
+        builder
+            .register_async_operator(Arc::new(ComposedFactory::transform(
+                STAGE_THREE_OPERATOR_ID,
+                STAGE_THREE_NODE_ID,
+                Arc::clone(&stage_three),
+            )))
+            .expect("stage three registration");
+        builder
+            .register_async_operator(Arc::new(ComposedFactory::multi(Arc::clone(&multi))))
+            .expect("multi registration");
+        builder
+            .register_endpoint_definition(Arc::new(TextEndpointDefinition))
+            .expect("text endpoint definition");
+        builder
+            .register_endpoint_driver(
+                OperatorId::new(TEST_TEXT_ENDPOINT_OPERATOR_ID),
+                NodeTypeId::from(TEST_TEXT_ENDPOINT_NODE_TYPE_ID),
+                Arc::new(DerivedTextEndpointFactory {
+                    control: Arc::clone(&derived_endpoints),
+                }),
+            )
+            .expect("text endpoint driver");
+        let engine = builder.build().expect("composed engine");
+
+        let session = Session::new();
+        let application = session
+            .capture(Source::application(ApplicationSelector::name(
+                "Composed runtime application",
+            )))
+            .expect("application declaration");
+        let microphone = session
+            .capture(Source::microphone_default())
+            .expect("microphone declaration");
+        application
+            .send(
+                session
+                    .connector(
+                        OperatorId::new(TEST_CONNECTOR_OPERATOR_ID),
+                        EndpointConfiguration::new(),
+                    )
+                    .expect("raw connector declaration"),
+            )
+            .expect("raw application route");
+        let application_text = application
+            .through(Operator::new(
+                OperatorId::new(TEST_ASYNC_OPERATOR_ID),
+                OperatorConfiguration::new(),
+            ))
+            .expect("application text stage");
+        let first = microphone
+            .through(Operator::new(
+                OperatorId::new(TEST_ASYNC_OPERATOR_ID),
+                OperatorConfiguration::new(),
+            ))
+            .expect("stage one declaration");
+        let second = first
+            .through(Operator::new(
+                OperatorId::new(STAGE_TWO_OPERATOR_ID),
+                OperatorConfiguration::new(),
+            ))
+            .expect("stage two declaration");
+        let third = second
+            .through(Operator::new(
+                OperatorId::new(STAGE_THREE_OPERATOR_ID),
+                OperatorConfiguration::new(),
+            ))
+            .expect("stage three declaration");
+        let named = session
+            .operator(Operator::new(
+                OperatorId::new(MULTI_OPERATOR_ID),
+                OperatorConfiguration::new(),
+            ))
+            .expect("named operator declaration");
+        first
+            .connect(named.input("left").expect("left input"))
+            .expect("left connection");
+        application_text
+            .connect(named.input("right").expect("right input"))
+            .expect("right connection");
+        third.send(endpoint(&session)).expect("third stage route");
+        named
+            .output("left_out")
+            .expect("left output")
+            .send(endpoint(&session))
+            .expect("left endpoint route");
+        named
+            .output("right_out")
+            .expect("right output")
+            .send(endpoint(&session))
+            .expect("right endpoint route");
+
+        let application = Arc::new(CaptureControl::default());
+        let microphone_control = Arc::new(CaptureControl::default());
+        let application_backend = capture_backend(&application, 11);
+        let microphone_backend = capture_backend(&microphone_control, 22);
+        let mut running = engine
+            .start(
+                session,
+                capture_backend_set(&application_backend, &microphone_backend),
+            )
+            .expect("public composed Session start");
+
+        let deadline = Instant::now() + Duration::from_secs(2);
+        while (stage_three.process_total.load(Ordering::Acquire) == 0
+            || multi.left_total.load(Ordering::Acquire) == 0
+            || multi.right_total.load(Ordering::Acquire) == 0)
+            && Instant::now() < deadline
+        {
+            std::thread::sleep(Duration::from_millis(1));
+        }
+        assert!(stage_two.process_total.load(Ordering::Acquire) > 0);
+        assert!(stage_three.process_total.load(Ordering::Acquire) > 0);
+        assert!(multi.left_total.load(Ordering::Acquire) > 0);
+        assert!(multi.right_total.load(Ordering::Acquire) > 0);
+
+        let outcome = running.stop();
+        let (_, _, _, operators, derived_routes) = running.indexed_metrics_full();
+        assert!(outcome.is_success());
+        assert_eq!(operators.len(), 5);
+        let multi_metrics = operators
+            .iter()
+            .find(|metrics| metrics.input_port("left").is_some())
+            .expect("multi-input metrics");
+        assert_eq!(multi_metrics.input_ports.len(), 2);
+        assert!(
+            multi_metrics
+                .input_port("left")
+                .unwrap()
+                .edge
+                .frames_delivered_total
+                > 0
+        );
+        assert!(
+            multi_metrics
+                .input_port("right")
+                .unwrap()
+                .edge
+                .frames_delivered_total
+                > 0
+        );
+        assert_eq!(derived_routes.len(), 3);
+        assert!(operators
+            .iter()
+            .all(|operator| operator.worker.joined && operator.finalization_failures_total == 0));
+        assert_eq!(stage_two.close_total.load(Ordering::Acquire), 1);
+        assert_eq!(stage_three.close_total.load(Ordering::Acquire), 1);
+        assert_eq!(multi.close_total.load(Ordering::Acquire), 1);
+        assert_no_live_owners(&application, &microphone_control, &raw_endpoints);
+    }
 }
 
 #[test]

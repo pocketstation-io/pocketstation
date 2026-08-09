@@ -2323,3 +2323,32 @@
 - No runtime owner, callback, audio pool, hot-path executor, provider/customer
   vocabulary, scaffold, mock, fallback, loopback-only path, platform matrix,
   release, or soak was introduced.
+
+## W19 Session-owned composed operator runtime — 2026-08-08
+
+- Status: `SAFE-TO-MERGE` for `W19-SESSION-COMPOSED-RUNTIME` only.
+  Generated-audio reentry, the W19 fault matrix, and every W20 release/freeze
+  task remain separately gated and are not claimed here.
+- `PreparedSession` and `RunningSession` now own one worker per declared
+  operator instance across compiled audio inputs, external typed-source inputs,
+  and upstream operator outputs. Three-stage chains and named multi-input/output
+  instances use one bounded typed-edge implementation and retain exact port,
+  signal, media, edge-contract, capacity, lifecycle, cancellation, join, and
+  finalization observations.
+- Public `RunningSession` metrics expose each Session-owned external source,
+  operator instance, exact input port, and derived route without exposing
+  internal worker or fanout constructors. Shutdown cancels composed operators
+  in reverse dependency order and preserves the existing graceful drain order.
+- The external public-Session consumer found and fixed a compiler authority
+  defect: a derived endpoint whose chain originated at an external source had
+  inherited the source-input connection route ID. Endpoint configuration now
+  always carries the actual derived route ID while source identity remains
+  independent metadata.
+- The focused public-Session composition test passes, all 517 library tests and
+  every integration/ABI/hot-path target pass, strict all-target/all-feature
+  Clippy passes, the release `product_quickstart` builds, and the complete
+  `CODE_PROTOCOL` gate passes.
+- This slice changes no capture callback, audio pool, or realtime executor. It
+  adds no unbounded queue, manual fixture worker/fanout, generated-audio claim,
+  provider/customer/domain vocabulary, scaffold, mock, loopback product path,
+  platform matrix, release, freeze, or soak.

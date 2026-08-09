@@ -560,6 +560,16 @@ pub trait AsyncNode: Send {
         input: SignalEnvelope,
     ) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>>;
 
+    /// Port-aware processing entry point used by composed Session operators.
+    /// Existing one-input implementations remain source compatible.
+    fn process_port<'a>(
+        &'a mut self,
+        _input_port: &'a str,
+        input: SignalEnvelope,
+    ) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
+        self.process(input)
+    }
+
     fn flush<'a>(&'a mut self) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
         Box::pin(async { Ok(Vec::new()) })
     }
