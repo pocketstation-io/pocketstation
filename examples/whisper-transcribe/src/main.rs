@@ -1,7 +1,9 @@
 use std::path::PathBuf;
 
 use pocketstation::operator::{
-    AsyncNode, PrepareContext, SampleFormat, SampleSpec, SignalEnvelope, SignalPayload,
+    AsyncNode, AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext, AudioCaps,
+    ChannelLayout, EdgeContract, ExecutionPartition, MediaCaps, PortDirection, SampleFormat,
+    SignalEnvelope, SignalPayload, SignalSpec, TextFormat,
 };
 use whisper_transcribe_example::WhisperConnector;
 
@@ -22,13 +24,40 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let wav_bytes = tokio::fs::read(wav_path).await?;
     let mut connector = WhisperConnector::new(binary_path, model_path, "en");
-    connector
-        .prepare(&PrepareContext::new(SampleSpec::new(
-            16_000,
-            1,
-            SampleFormat::F32Interleaved,
-        )))
-        .await?;
+    let audio = MediaCaps::Audio(AudioCaps {
+        sample_rate_hz: Some(16_000),
+        frame_samples: None,
+        channel_layout: ChannelLayout::Mono,
+        format: SampleFormat::F32Interleaved,
+    });
+    let mut input_contract = EdgeContract::voice_default();
+    input_contract.media = audio;
+    let mut output_contract = EdgeContract::typed_default();
+    output_contract.media = MediaCaps::Text;
+    let prepare_context = AsyncOperatorPrepareContext::new(
+        ExecutionPartition::BlockingWorker,
+        vec![
+            AsyncOperatorEdgePrepareContext::new(
+                None,
+                "audio",
+                PortDirection::Input,
+                SignalSpec::audio(),
+                audio,
+                input_contract,
+                32,
+            )?,
+            AsyncOperatorEdgePrepareContext::new(
+                None,
+                "transcript",
+                PortDirection::Output,
+                SignalSpec::text(TextFormat::Utf8).with_role("transcript"),
+                MediaCaps::Text,
+                output_contract,
+                8,
+            )?,
+        ],
+    )?;
+    connector.prepare(&prepare_context).await?;
     let output = connector
         .process(SignalEnvelope::untracked(
             SignalPayload::Binary(wav_bytes),

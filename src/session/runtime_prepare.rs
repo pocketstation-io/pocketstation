@@ -47,8 +47,14 @@ pub enum SessionPrepareError {
     MissingWorkerTarget { edge_id: EdgeId },
     #[error("worker edge {edge_id:?} is absent from the compiled graph")]
     MissingWorkerEdge { edge_id: EdgeId },
-    #[error("worker edge {edge_id:?} has no concrete audio sample specification")]
+    #[error("worker edge {edge_id:?} has no negotiated edge contract")]
+    MissingWorkerEdgeContract { edge_id: EdgeId },
+    #[error("worker edge {edge_id:?} has no bounded runtime capacity")]
+    MissingWorkerCapacity { edge_id: EdgeId },
+    #[error("audio endpoint worker edge {edge_id:?} has no concrete audio sample specification")]
     MissingWorkerSampleSpec { edge_id: EdgeId },
+    #[error("worker edge {edge_id:?} target port '{port_name}' is absent or disagrees with the compiled signal/media")]
+    InvalidOperatorInputPort { edge_id: EdgeId, port_name: String },
     #[error("worker edge {edge_id:?} target is missing configuration key {key}")]
     MissingWorkerMetadata { edge_id: EdgeId, key: &'static str },
     #[error("worker edge {edge_id:?} target has invalid {key} value {value:?}")]
@@ -216,7 +222,11 @@ pub struct PreparedOperatorMapping {
     pub(crate) stem_id: StemId,
     pub(crate) factory: Arc<dyn AsyncOperatorFactory>,
     pub(crate) node_configuration: NodeConfig,
-    pub(crate) prepare_context: PrepareContext,
+    pub(crate) input_port: String,
+    pub(crate) input_signal_spec: SignalSpec,
+    pub(crate) input_media: MediaCaps,
+    pub(crate) input_edge_contract: EdgeContract,
+    pub(crate) input_capacity_signals: usize,
     pub(crate) receiver: PlanEdgeReceiver,
     pub(crate) derived_routes: Vec<PreparedDerivedRouteMapping>,
 }
@@ -705,8 +715,45 @@ fn map_worker_receivers(
             .node(receiver.to().node)
             .ok_or(SessionPrepareError::MissingWorkerTarget { edge_id })?;
         if let Some(factory) = node_registry.async_factory(&target.spec.type_id) {
-            let prepare_context = prepare_context_for_media(edge.media)
-                .ok_or(SessionPrepareError::MissingWorkerSampleSpec { edge_id })?;
+            let input_port = target
+                .descriptor
+                .inputs
+                .iter()
+                .find(|port| port.name == edge.spec.to.port)
+                .ok_or_else(|| SessionPrepareError::InvalidOperatorInputPort {
+                    edge_id,
+                    port_name: edge.spec.to.port.clone(),
+                })?;
+            if input_port.signal
+                != factory
+                    .manifest()
+                    .input_ports()
+                    .find(|port| port.name == edge.spec.to.port)
+                    .ok_or_else(|| SessionPrepareError::InvalidOperatorInputPort {
+                        edge_id,
+                        port_name: edge.spec.to.port.clone(),
+                    })?
+                    .signal
+                || !input_port.media.is_compatible_with(&edge.media)
+            {
+                return Err(SessionPrepareError::InvalidOperatorInputPort {
+                    edge_id,
+                    port_name: edge.spec.to.port.clone(),
+                });
+            }
+            let input_edge_contract = edge
+                .contract
+                .ok_or(SessionPrepareError::MissingWorkerEdgeContract { edge_id })?;
+            let input_capacity_signals = runtime_plan
+                .typed_edge(edge_id)
+                .map(|plan| plan.capacity_signals)
+                .or_else(|| {
+                    runtime_plan
+                        .memory_plan
+                        .edge_buffer(edge_id)
+                        .map(|plan| plan.capacity_frames)
+                })
+                .ok_or(SessionPrepareError::MissingWorkerCapacity { edge_id })?;
             let instance_id = crate::session::OperatorInstanceId::new(parse_metadata(
                 &target.spec.config,
                 edge_id,
@@ -748,7 +795,11 @@ fn map_worker_receivers(
                 stem_id,
                 factory: Arc::clone(factory),
                 node_configuration: target.spec.config.clone(),
-                prepare_context,
+                input_port: edge.spec.to.port.clone(),
+                input_signal_spec: input_port.signal.clone(),
+                input_media: edge.media,
+                input_edge_contract,
+                input_capacity_signals,
                 receiver,
                 derived_routes: Vec::new(),
             });

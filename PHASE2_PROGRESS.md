@@ -2262,3 +2262,34 @@
 - No closed source enum, industry/customer vocabulary, capture callback change,
   runtime source worker, scaffold, mock, fallback, loopback-only path, platform
   matrix, or soak was introduced.
+
+## W19 signal-aware async Operator preparation — 2026-08-08
+
+- Status: `SAFE-TO-MERGE` for `W19-ASYNC-PREPARE-CONTEXT` only. Public named
+  Session composition, Session-owned multi-stage runtime, and generated-audio
+  reentry remain separate gated W19 tasks.
+- `AsyncNode::prepare` now receives an `AsyncOperatorPrepareContext` containing
+  the exact execution partition and bounded input/output edge records. Each
+  record carries its named port, negotiated `SignalSpec`, `MediaCaps`, complete
+  `EdgeContract`, optional compiled `EdgeId`, and capacity in signals.
+- Session runtime preparation no longer converts an Operator input through
+  `prepare_context_for_media` or fabricates `SampleSpec`. It preserves the
+  compiler's named input, negotiated media and contract, and the exact bounded
+  capacity from the typed-edge or audio-edge plan. Audio endpoint workers keep
+  their specialized audio-only `PrepareContext`.
+- Direct external harnesses with wildcard manifests can supply an explicitly
+  negotiated signal-shaped context through `spawn_with_context`; its ports,
+  contracts, and capacities must agree with the actual bounded worker edges or
+  preparation fails closed.
+- Real prepare execution is covered for text, event, metrics, control, binary,
+  and schema-backed custom signals. A rejection test proves that a capacity
+  mismatch cannot pass as accepted preparation. The existing Session-owned
+  audio-to-Operator route and the external Whisper connector both pass using
+  negotiated audio media.
+- Focused async-operator and graph gates, all 508 library tests plus all
+  integration/ABI/hot-path targets, strict all-target/all-feature Clippy,
+  Whisper's 15 tests and strict Clippy, release `product_quickstart`, and the
+  complete `CODE_PROTOCOL` gate pass.
+- No realtime callback, audio pool, hot-path executor, provider vocabulary,
+  customer/domain type, scaffold, mock, fallback, loopback-only product path,
+  platform matrix, release, or soak was introduced.

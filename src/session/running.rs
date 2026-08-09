@@ -1714,7 +1714,11 @@ fn prepare_operator_runtimes(
             stem_id,
             factory,
             node_configuration,
-            prepare_context,
+            input_port,
+            input_signal_spec,
+            input_media,
+            input_edge_contract,
+            input_capacity_signals,
             receiver,
             derived_routes,
         } = mapping;
@@ -1724,6 +1728,11 @@ fn prepare_operator_runtimes(
             session_id,
             stem_id,
             source_id: None,
+            input_port,
+            signal_spec: input_signal_spec,
+            media: input_media,
+            edge_contract: input_edge_contract,
+            capacity_signals: input_capacity_signals,
         };
         let input_edge = receiver.observation_handle();
         let lifecycle_timeout = Duration::from_millis(
@@ -1737,7 +1746,6 @@ fn prepare_operator_runtimes(
             AsyncOperatorWorker::prepare_and_spawn_from_plan_edge(
                 factory,
                 &node_configuration,
-                prepare_context,
                 receiver,
                 input_contract,
                 &output_branches,

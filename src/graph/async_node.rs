@@ -4,13 +4,155 @@ use std::pin::Pin;
 use crate::frame::{
     AudioFrame, ClockDomainId, ConnectorId, FrameLineage, SessionId, SourceId, StreamId,
 };
-use crate::graph::node::{NodeError, PrepareContext};
+use crate::graph::node::NodeError;
 use crate::graph::operator::OperatorId;
 use crate::graph::signal::{
     BinaryFormat, Codec, EventFormat, SignalClass, SignalId, SignalSpec, TextFormat,
 };
+use crate::graph::{EdgeContract, EdgeId, ExecutionPartition, MediaCaps, PortDirection};
 
 pub type AsyncNodeFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;
+
+/// Exact bounded graph edge supplied to an asynchronous Operator at prepare time.
+///
+/// This contract is signal-shaped, not audio-shaped. An audio edge carries
+/// audio `MediaCaps`; text, event, metrics, control, binary, and custom edges
+/// carry their own media and never receive a fabricated `SampleSpec`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct AsyncOperatorEdgePrepareContext {
+    edge_id: Option<EdgeId>,
+    port_name: String,
+    direction: PortDirection,
+    signal: SignalSpec,
+    media: MediaCaps,
+    edge_contract: EdgeContract,
+    capacity_signals: usize,
+}
+
+impl AsyncOperatorEdgePrepareContext {
+    pub fn new(
+        edge_id: Option<EdgeId>,
+        port_name: impl Into<String>,
+        direction: PortDirection,
+        signal: SignalSpec,
+        media: MediaCaps,
+        edge_contract: EdgeContract,
+        capacity_signals: usize,
+    ) -> Result<Self, NodeError> {
+        let port_name = port_name.into();
+        if port_name.trim().is_empty() {
+            return Err(NodeError::Prepare(
+                "async operator prepare port name cannot be empty".to_owned(),
+            ));
+        }
+        if capacity_signals == 0 {
+            return Err(NodeError::Prepare(format!(
+                "async operator prepare port '{port_name}' has zero capacity"
+            )));
+        }
+        signal
+            .validate()
+            .map_err(|error| NodeError::Prepare(error.to_string()))?;
+        if !media.supports_signal(&signal) {
+            return Err(NodeError::Prepare(format!(
+                "async operator prepare port '{port_name}' has incompatible signal/media"
+            )));
+        }
+        if !edge_contract.media.is_compatible_with(&media) {
+            return Err(NodeError::Prepare(format!(
+                "async operator prepare port '{port_name}' has incompatible edge media"
+            )));
+        }
+        Ok(Self {
+            edge_id,
+            port_name,
+            direction,
+            signal,
+            media,
+            edge_contract,
+            capacity_signals,
+        })
+    }
+
+    pub const fn edge_id(&self) -> Option<EdgeId> {
+        self.edge_id
+    }
+
+    pub fn port_name(&self) -> &str {
+        &self.port_name
+    }
+
+    pub const fn direction(&self) -> PortDirection {
+        self.direction
+    }
+
+    pub const fn signal(&self) -> &SignalSpec {
+        &self.signal
+    }
+
+    pub const fn media(&self) -> MediaCaps {
+        self.media
+    }
+
+    pub const fn edge_contract(&self) -> EdgeContract {
+        self.edge_contract
+    }
+
+    pub const fn capacity_signals(&self) -> usize {
+        self.capacity_signals
+    }
+}
+
+/// Complete graph-owned preparation contract for one asynchronous Operator.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct AsyncOperatorPrepareContext {
+    execution_partition: ExecutionPartition,
+    inputs: Vec<AsyncOperatorEdgePrepareContext>,
+    outputs: Vec<AsyncOperatorEdgePrepareContext>,
+}
+
+impl AsyncOperatorPrepareContext {
+    pub fn new(
+        execution_partition: ExecutionPartition,
+        edges: Vec<AsyncOperatorEdgePrepareContext>,
+    ) -> Result<Self, NodeError> {
+        if execution_partition.requires_realtime_safety() {
+            return Err(NodeError::Prepare(
+                "async operator cannot prepare in a realtime partition".to_owned(),
+            ));
+        }
+        let mut inputs = Vec::new();
+        let mut outputs = Vec::new();
+        for edge in edges {
+            match edge.direction() {
+                PortDirection::Input => inputs.push(edge),
+                PortDirection::Output => outputs.push(edge),
+            }
+        }
+        if inputs.is_empty() || outputs.is_empty() {
+            return Err(NodeError::Prepare(
+                "async operator prepare requires bounded input and output edges".to_owned(),
+            ));
+        }
+        Ok(Self {
+            execution_partition,
+            inputs,
+            outputs,
+        })
+    }
+
+    pub const fn execution_partition(&self) -> ExecutionPartition {
+        self.execution_partition
+    }
+
+    pub fn inputs(&self) -> &[AsyncOperatorEdgePrepareContext] {
+        &self.inputs
+    }
+
+    pub fn outputs(&self) -> &[AsyncOperatorEdgePrepareContext] {
+        &self.outputs
+    }
+}
 
 #[derive(Debug)]
 pub enum SignalPayload {
@@ -410,7 +552,7 @@ pub enum SignalContinuityError {
 pub trait AsyncNode: Send {
     fn prepare<'a>(
         &'a mut self,
-        cx: &'a PrepareContext,
+        cx: &'a AsyncOperatorPrepareContext,
     ) -> AsyncNodeFuture<'a, Result<(), NodeError>>;
 
     fn process<'a>(
@@ -434,10 +576,37 @@ pub trait AsyncNode: Send {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::frame::{AudioBufferPool, SampleFormat, SampleSpec, StemId};
+    use crate::frame::{AudioBufferPool, StemId};
 
-    fn prepare_cx() -> PrepareContext {
-        PrepareContext::new(SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved))
+    fn prepare_cx() -> AsyncOperatorPrepareContext {
+        let mut contract = EdgeContract::typed_default();
+        contract.media = MediaCaps::Control;
+        AsyncOperatorPrepareContext::new(
+            ExecutionPartition::AsyncWorker,
+            vec![
+                AsyncOperatorEdgePrepareContext::new(
+                    None,
+                    "input",
+                    PortDirection::Input,
+                    SignalSpec::control(),
+                    MediaCaps::Control,
+                    contract,
+                    8,
+                )
+                .unwrap(),
+                AsyncOperatorEdgePrepareContext::new(
+                    None,
+                    "output",
+                    PortDirection::Output,
+                    SignalSpec::control(),
+                    MediaCaps::Control,
+                    contract,
+                    8,
+                )
+                .unwrap(),
+            ],
+        )
+        .unwrap()
     }
 
     fn block_on_ready<T>(future: AsyncNodeFuture<'_, T>) -> T {
@@ -458,7 +627,7 @@ mod tests {
     impl AsyncNode for EchoAsyncNode {
         fn prepare<'a>(
             &'a mut self,
-            _cx: &'a PrepareContext,
+            _cx: &'a AsyncOperatorPrepareContext,
         ) -> AsyncNodeFuture<'a, Result<(), NodeError>> {
             Box::pin(async move {
                 self.prepared = true;

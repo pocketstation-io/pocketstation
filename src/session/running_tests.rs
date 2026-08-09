@@ -792,13 +792,22 @@ impl RunningTestAsyncNode {
 impl AsyncNode for RunningTestAsyncNode {
     fn prepare<'a>(
         &'a mut self,
-        context: &'a PrepareContext,
+        context: &'a crate::graph::AsyncOperatorPrepareContext,
     ) -> AsyncNodeFuture<'a, Result<(), NodeError>> {
         Box::pin(async move {
-            self.control.prepared_sample_rate_hz.store(
-                u64::from(context.sample_spec.sample_rate_hz),
-                Ordering::Release,
-            );
+            let sample_rate_hz = context
+                .inputs()
+                .first()
+                .and_then(|input| match input.media() {
+                    MediaCaps::Audio(audio) => audio.sample_rate_hz,
+                    _ => None,
+                })
+                .ok_or_else(|| {
+                    NodeError::Prepare("test operator requires concrete PCM input media".to_owned())
+                })?;
+            self.control
+                .prepared_sample_rate_hz
+                .store(u64::from(sample_rate_hz), Ordering::Release);
             if self.control.fail_prepare.load(Ordering::Acquire) {
                 return Err(NodeError::Prepare(
                     "test operator prepare failure".to_owned(),

@@ -30,9 +30,10 @@ mod source;
 pub mod spec;
 
 pub use async_node::{
-    AsyncNode, AsyncNodeFuture, SignalContinuityError, SignalContinuityObservation,
-    SignalContinuityTracker, SignalDerivation, SignalDerivationError, SignalEnvelope,
-    SignalEnvelopeError, SignalLineage, SignalPayload, SignalTiming,
+    AsyncNode, AsyncNodeFuture, AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext,
+    SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker, SignalDerivation,
+    SignalDerivationError, SignalEnvelope, SignalEnvelopeError, SignalLineage, SignalPayload,
+    SignalTiming,
 };
 pub use async_operator::{
     AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError,

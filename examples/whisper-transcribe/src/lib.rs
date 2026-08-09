@@ -4,13 +4,13 @@ use std::process::Stdio;
 use std::time::Duration;
 
 use pocketstation::operator::{
-    AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps,
-    ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps,
-    Multiplicity, NodeDescriptor, NodeError, NodeTypeId, OperatorCancellationPolicy,
-    OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId,
-    OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PrepareContext,
-    SafetyContract, SampleFormat, SemanticRole, SignalDerivation, SignalEnvelope, SignalLineage,
-    SignalPayload, SignalSpec, SignalTiming, SourceId, TextFormat,
+    AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest,
+    AsyncOperatorPrepareContext, AudioCaps, ChannelLayout, ConfigError, CopyPolicy, EdgeContract,
+    ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeError, NodeTypeId,
+    OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy,
+    OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy,
+    PortDirection, PortSpec, SafetyContract, SampleFormat, SemanticRole, SignalDerivation,
+    SignalEnvelope, SignalLineage, SignalPayload, SignalSpec, SignalTiming, SourceId, TextFormat,
 };
 use tempfile::TempDir;
 use tokio::process::{Child, Command};
@@ -748,7 +748,7 @@ fn validate_window_continuation(
 impl AsyncNode for WhisperConnector {
     fn prepare<'a>(
         &'a mut self,
-        context: &'a PrepareContext,
+        context: &'a AsyncOperatorPrepareContext,
     ) -> AsyncNodeFuture<'a, Result<(), NodeError>> {
         Box::pin(async move {
             Self::require_file(&self.binary_path, "whisper-cli").await?;
@@ -763,13 +763,28 @@ impl AsyncNode for WhisperConnector {
                     "Whisper process timeout must be greater than zero".to_owned(),
                 ));
             }
-            if context.sample_spec.format != SampleFormat::F32Interleaved {
+            let audio = context
+                .inputs()
+                .iter()
+                .find_map(|input| match input.media() {
+                    MediaCaps::Audio(audio) => Some(audio),
+                    _ => None,
+                })
+                .ok_or_else(|| {
+                    NodeError::Prepare("Whisper requires a negotiated PCM input edge".to_owned())
+                })?;
+            if audio.format != SampleFormat::F32Interleaved {
                 return Err(NodeError::Prepare(
                     "Whisper typed audio requires interleaved f32 PCM".to_owned(),
                 ));
             }
-            self.sample_rate_hz = Some(context.sample_spec.sample_rate_hz);
-            self.channels = Some(context.sample_spec.channels);
+            self.sample_rate_hz = audio.sample_rate_hz;
+            self.channels = audio.channel_layout.channel_count();
+            if self.sample_rate_hz.is_none() || self.channels.is_none() {
+                return Err(NodeError::Prepare(
+                    "Whisper requires concrete PCM sample rate and channel layout".to_owned(),
+                ));
+            }
             self.reset_stream();
             self.prepared = true;
             Ok(())
@@ -865,11 +880,56 @@ mod tests {
         AsyncBridge, AsyncOperatorOutputBranchSpec, AsyncOperatorWorker,
     };
     use pocketstation::operator::{
-        AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, SampleFormat, SampleSpec,
-        SessionId, SignalLineage, SignalSpec, SignalTiming, SourceId, StemId, StreamId,
+        AsyncOperatorEdgePrepareContext, AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage,
+        SampleFormat, SampleSpec, SessionId, SignalLineage, SignalSpec, SignalTiming, SourceId,
+        StemId, StreamId,
     };
 
     use super::*;
+
+    fn test_prepare_context(sample_spec: SampleSpec) -> AsyncOperatorPrepareContext {
+        let channel_layout = match sample_spec.channels {
+            1 => ChannelLayout::Mono,
+            2 => ChannelLayout::Stereo,
+            _ => ChannelLayout::Any,
+        };
+        let audio = MediaCaps::Audio(AudioCaps {
+            sample_rate_hz: Some(sample_spec.sample_rate_hz),
+            frame_samples: None,
+            channel_layout,
+            format: sample_spec.format,
+        });
+        let mut input_contract = EdgeContract::voice_default();
+        input_contract.media = audio;
+        let mut output_contract = EdgeContract::typed_default();
+        output_contract.media = MediaCaps::Text;
+        AsyncOperatorPrepareContext::new(
+            ExecutionPartition::BlockingWorker,
+            vec![
+                AsyncOperatorEdgePrepareContext::new(
+                    None,
+                    "audio",
+                    PortDirection::Input,
+                    SignalSpec::audio(),
+                    audio,
+                    input_contract,
+                    32,
+                )
+                .unwrap(),
+                AsyncOperatorEdgePrepareContext::new(
+                    None,
+                    "transcript",
+                    PortDirection::Output,
+                    SignalSpec::text(TextFormat::Utf8).with_role("transcript"),
+                    MediaCaps::Text,
+                    output_contract,
+                    8,
+                )
+                .unwrap(),
+            ],
+        )
+        .unwrap()
+    }
 
     async fn connector_fixture(delay_seconds: Option<&str>) -> (TempDir, WhisperConnector) {
         let fixture = TempDir::new().unwrap();
@@ -956,7 +1016,7 @@ mod tests {
         let (fixture, mut connector) = connector_fixture(None).await;
         connector = connector.with_window_duration_ms(20);
         connector
-            .prepare(&PrepareContext::new(SampleSpec::new(
+            .prepare(&test_prepare_context(SampleSpec::new(
                 16_000,
                 1,
                 SampleFormat::F32Interleaved,
@@ -987,7 +1047,8 @@ mod tests {
     #[tokio::test]
     async fn given_wav_envelope_when_connector_runs_then_text_lineage_is_preserved() {
         let (_fixture, mut connector) = connector_fixture(None).await;
-        let context = PrepareContext::new(SampleSpec::new(16_000, 1, SampleFormat::F32Interleaved));
+        let context =
+            test_prepare_context(SampleSpec::new(16_000, 1, SampleFormat::F32Interleaved));
         connector.prepare(&context).await.unwrap();
         let output = connector
             .process(binary_envelope(b"RIFF fixture".to_vec(), 42, 99))
@@ -1011,7 +1072,8 @@ mod tests {
     #[tokio::test]
     async fn given_missing_binary_when_prepare_runs_then_connector_fails_closed() {
         let mut connector = WhisperConnector::new("/missing/whisper-cli", "/missing/model", "en");
-        let context = PrepareContext::new(SampleSpec::new(16_000, 1, SampleFormat::F32Interleaved));
+        let context =
+            test_prepare_context(SampleSpec::new(16_000, 1, SampleFormat::F32Interleaved));
 
         let error = connector.prepare(&context).await.unwrap_err();
         assert!(matches!(error, NodeError::Prepare(_)));
@@ -1022,7 +1084,7 @@ mod tests {
         let (_fixture, mut connector) = connector_fixture(Some("1")).await;
         connector = connector.with_process_timeout_ms(5);
         connector
-            .prepare(&PrepareContext::new(SampleSpec::new(
+            .prepare(&test_prepare_context(SampleSpec::new(
                 16_000,
                 1,
                 SampleFormat::F32Interleaved,
@@ -1046,7 +1108,7 @@ mod tests {
             .with_process_evidence(evidence_root.path(), "success")
             .unwrap();
         connector
-            .prepare(&PrepareContext::new(SampleSpec::new(
+            .prepare(&test_prepare_context(SampleSpec::new(
                 16_000,
                 1,
                 SampleFormat::F32Interleaved,
@@ -1098,7 +1160,7 @@ mod tests {
             .with_process_evidence(evidence_root.path(), "timeout")
             .unwrap();
         connector
-            .prepare(&PrepareContext::new(SampleSpec::new(
+            .prepare(&test_prepare_context(SampleSpec::new(
                 16_000,
                 1,
                 SampleFormat::F32Interleaved,
@@ -1130,7 +1192,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn given_one_ms_provider_timeout_when_worker_runs_then_receipt_is_reaped_before_runtime_deadline(
+    async fn given_provider_timeout_when_worker_runs_then_receipt_is_reaped_before_runtime_deadline(
     ) {
         let evidence_root = TempDir::new().unwrap();
         let (fixture, _) = connector_fixture(Some("1")).await;
@@ -1141,19 +1203,21 @@ mod tests {
         ));
         let configuration = OperatorConfiguration::new()
             .with(WINDOW_DURATION_MS_CONFIGURATION_KEY, "10")
-            .with(PROCESS_TIMEOUT_MS_CONFIGURATION_KEY, "1")
+            .with(PROCESS_TIMEOUT_MS_CONFIGURATION_KEY, "25")
             .with(
                 EVIDENCE_ROOT_CONFIGURATION_KEY,
                 evidence_root.path().to_string_lossy().as_ref(),
             )
             .with(EVIDENCE_CASE_ID_CONFIGURATION_KEY, "worker-timeout");
-        let (mut worker, _outputs) = AsyncOperatorWorker::spawn(
+        let mut output_contract = EdgeContract::typed_default();
+        output_contract.media = MediaCaps::Text;
+        let (mut worker, _outputs) = AsyncOperatorWorker::spawn_with_context(
             factory,
             &configuration,
-            PrepareContext::new(SampleSpec::new(16_000, 1, SampleFormat::F32Interleaved)),
+            test_prepare_context(SampleSpec::new(16_000, 1, SampleFormat::F32Interleaved)),
             &[AsyncOperatorOutputBranchSpec {
-                capacity_signals: 1,
-                edge_contract: EdgeContract::typed_default(),
+                capacity_signals: 8,
+                edge_contract: output_contract,
             }],
         )
         .unwrap();
@@ -1166,10 +1230,15 @@ mod tests {
 
         let error = worker.finish_and_join().await.unwrap_err();
 
-        assert!(matches!(
-            error,
-            pocketstation::internal::runtime::AsyncOperatorWorkerError::Timeout { timeout_ms: 1 }
-        ));
+        assert!(
+            matches!(
+                error,
+                pocketstation::internal::runtime::AsyncOperatorWorkerError::Timeout {
+                    timeout_ms: 25
+                }
+            ),
+            "unexpected worker error: {error:?}"
+        );
         let snapshot = observations.snapshot();
         assert_eq!(snapshot.timeout_total, 1);
         assert_eq!(snapshot.process_failure_total, 0);
@@ -1198,7 +1267,7 @@ mod tests {
             .with_process_evidence(evidence_root.path(), "cancel")
             .unwrap();
         connector
-            .prepare(&PrepareContext::new(SampleSpec::new(
+            .prepare(&test_prepare_context(SampleSpec::new(
                 16_000,
                 1,
                 SampleFormat::F32Interleaved,
@@ -1239,7 +1308,7 @@ mod tests {
         let (_fixture, mut connector) = connector_fixture(None).await;
         connector = connector.with_window_duration_ms(20);
         connector
-            .prepare(&PrepareContext::new(SampleSpec::new(
+            .prepare(&test_prepare_context(SampleSpec::new(
                 16_000,
                 1,
                 SampleFormat::F32Interleaved,
@@ -1432,7 +1501,7 @@ mod tests {
 
         let (_fixture, mut stt) = connector_fixture(Some("0.02")).await;
         stt = stt.with_window_duration_ms(10);
-        stt.prepare(&PrepareContext::new(SampleSpec::new(
+        stt.prepare(&test_prepare_context(SampleSpec::new(
             16_000,
             1,
             SampleFormat::F32Interleaved,

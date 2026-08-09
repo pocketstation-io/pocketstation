@@ -62,7 +62,9 @@ pub use crate::endpoint::{
     EndpointStartFailureCause, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver,
     SessionTimelineOrigin,
 };
-pub use crate::graph::{NodeConfig, NodeId};
+pub use crate::graph::{
+    AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext, NodeConfig, NodeId,
+};
 pub use crate::runtime::{
     plan_source_channel, AsyncOperatorInput, AsyncOperatorNamedOutput,
     AsyncOperatorNamedOutputBranchSpec, AsyncOperatorTypedInput, AsyncOperatorWorker,
@@ -114,7 +116,9 @@ pub use crate::session::{
 /// Provider implementations depend on this public module instead of importing
 /// PocketStation's internal graph or runtime crates.
 pub mod operator {
-    pub use crate::graph::NodeConfig;
+    pub use crate::graph::{
+        AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext, NodeConfig,
+    };
     pub use crate::runtime::{
         AsyncOperatorInput, AsyncOperatorNamedOutput, AsyncOperatorNamedOutputBranchSpec,
         AsyncOperatorTypedInput, AsyncOperatorWorker, AsyncOperatorWorkerError,
