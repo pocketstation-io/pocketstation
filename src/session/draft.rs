@@ -2,7 +2,7 @@ use std::fmt;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex, MutexGuard};
 
-use crate::frame::{ConnectorId, EndpointId, RouteId, SessionId, StemId};
+use crate::frame::{ConnectorId, EndpointId, RouteId, SessionId, SourceId, StemId, StreamId};
 use crate::graph::NodeTypeId;
 
 use crate::session::compiler::{
@@ -11,11 +11,13 @@ use crate::session::compiler::{
     RECORDING_GROUP_CONFIGURATION_KEY,
 };
 use crate::session::spec::{
-    derived_route_spec, endpoint_spec, operator_spec, route_spec, stem_spec,
+    derived_route_spec, endpoint_spec, operator_spec, route_spec, source_instance_spec,
+    source_output_spec, source_route_spec, stem_spec, SessionSpecDeclarations,
 };
 use crate::session::{
     EndpointConfiguration, EndpointDescriptor, OperatorConfiguration, OperatorId,
     OperatorInputOrigin, OperatorInstanceId, SessionError, SessionSpec, Source,
+    SourceConfiguration, SourceInstanceId, SourceTypeId,
 };
 
 static NEXT_SESSION_ID: AtomicU64 = AtomicU64::new(1);
@@ -24,6 +26,21 @@ static NEXT_SESSION_ID: AtomicU64 = AtomicU64::new(1);
 struct StemDraft {
     stem_id: StemId,
     source: Source,
+}
+
+#[derive(Debug)]
+struct SourceInstanceDraft {
+    instance_id: SourceInstanceId,
+    source_id: SourceId,
+    source_type_id: SourceTypeId,
+    configuration: SourceConfiguration,
+}
+
+#[derive(Debug)]
+struct SourceOutputDraft {
+    source_instance_id: SourceInstanceId,
+    output_port: String,
+    stream_id: StreamId,
 }
 
 #[derive(Debug)]
@@ -41,10 +58,21 @@ struct RouteDraft {
 }
 
 #[derive(Debug)]
+struct SourceRouteDraft {
+    route_id: RouteId,
+    source_instance_id: SourceInstanceId,
+    output_port: String,
+    stream_id: StreamId,
+    source_id: SourceId,
+    endpoint_id: EndpointId,
+    endpoint_input_port: Option<String>,
+}
+
+#[derive(Debug)]
 struct OperatorDraft {
     instance_id: OperatorInstanceId,
     input_route_id: RouteId,
-    source_stem_id: StemId,
+    source_stem_id: Option<StemId>,
     input_origin: OperatorInputOrigin,
     input_port: Option<String>,
     operator: Operator,
@@ -72,9 +100,15 @@ struct SessionDraft {
     next_connector_id: u64,
     next_route_id: u64,
     next_operator_instance_id: u64,
+    next_source_instance_id: u64,
+    next_external_source_id: u64,
+    next_stream_id: u64,
     stems: Vec<StemDraft>,
+    source_instances: Vec<SourceInstanceDraft>,
+    source_outputs: Vec<SourceOutputDraft>,
     endpoints: Vec<EndpointDraft>,
     routes: Vec<RouteDraft>,
+    source_routes: Vec<SourceRouteDraft>,
     operators: Vec<OperatorDraft>,
     derived_routes: Vec<DerivedRouteDraft>,
 }
@@ -88,9 +122,15 @@ impl Default for SessionDraft {
             next_connector_id: 0,
             next_route_id: 0,
             next_operator_instance_id: 0,
+            next_source_instance_id: 0,
+            next_external_source_id: 0,
+            next_stream_id: 0,
             stems: Vec::new(),
+            source_instances: Vec::new(),
+            source_outputs: Vec::new(),
             endpoints: Vec::new(),
             routes: Vec::new(),
+            source_routes: Vec::new(),
             operators: Vec::new(),
             derived_routes: Vec::new(),
         }
@@ -144,6 +184,30 @@ impl SessionDraft {
             .checked_add(1)
             .ok_or(SessionError::IdExhausted)?;
         Ok(OperatorInstanceId::new(self.next_operator_instance_id))
+    }
+
+    fn allocate_source_instance_id(&mut self) -> Result<SourceInstanceId, SessionError> {
+        self.next_source_instance_id = self
+            .next_source_instance_id
+            .checked_add(1)
+            .ok_or(SessionError::IdExhausted)?;
+        Ok(SourceInstanceId::new(self.next_source_instance_id))
+    }
+
+    fn allocate_external_source_id(&mut self) -> Result<SourceId, SessionError> {
+        self.next_external_source_id = self
+            .next_external_source_id
+            .checked_add(1)
+            .ok_or(SessionError::IdExhausted)?;
+        Ok(SourceId(self.next_external_source_id))
+    }
+
+    fn allocate_stream_id(&mut self) -> Result<StreamId, SessionError> {
+        self.next_stream_id = self
+            .next_stream_id
+            .checked_add(1)
+            .ok_or(SessionError::IdExhausted)?;
+        Ok(StreamId(self.next_stream_id))
     }
 }
 
@@ -213,6 +277,34 @@ impl Session {
         })
     }
 
+    /// Declares one externally implemented source instance.
+    ///
+    /// The source type remains an open stable identifier. Output names are
+    /// selected separately and resolved against the registered manifest when
+    /// the Session is compiled by a `SessionEngine`.
+    pub fn source(
+        &self,
+        source_type_id: SourceTypeId,
+        configuration: SourceConfiguration,
+    ) -> Result<SourceInstanceHandle, SessionError> {
+        let mut draft = self.shared.draft()?;
+        draft.ensure_open(self.id())?;
+        let instance_id = draft.allocate_source_instance_id()?;
+        let source_id = draft.allocate_external_source_id()?;
+        draft.source_instances.push(SourceInstanceDraft {
+            instance_id,
+            source_id,
+            source_type_id,
+            configuration,
+        });
+        Ok(SourceInstanceHandle {
+            shared: Arc::clone(&self.shared),
+            session_id: self.id(),
+            instance_id,
+            source_id,
+        })
+    }
+
     pub fn endpoint(&self, descriptor: EndpointDescriptor) -> Result<EndpointHandle, SessionError> {
         descriptor.validate()?;
         self.add_endpoint(descriptor, None)
@@ -268,14 +360,36 @@ impl Session {
         draft.ensure_open(self.id())?;
         draft.status = DraftStatus::Frozen;
 
-        let spec = SessionSpec::new(
-            self.id(),
-            draft
+        let declarations = SessionSpecDeclarations {
+            stems: draft
                 .stems
                 .iter()
                 .map(|stem| stem_spec(stem.stem_id, stem.source.clone()))
                 .collect(),
-            draft
+            source_instances: draft
+                .source_instances
+                .iter()
+                .map(|source| {
+                    source_instance_spec(
+                        source.instance_id,
+                        source.source_id,
+                        source.source_type_id.clone(),
+                        source.configuration.clone(),
+                    )
+                })
+                .collect(),
+            source_outputs: draft
+                .source_outputs
+                .iter()
+                .map(|output| {
+                    source_output_spec(
+                        output.source_instance_id,
+                        output.output_port.clone(),
+                        output.stream_id,
+                    )
+                })
+                .collect(),
+            endpoints: draft
                 .endpoints
                 .iter()
                 .map(|endpoint| {
@@ -288,12 +402,27 @@ impl Session {
                     )
                 })
                 .collect(),
-            draft
+            routes: draft
                 .routes
                 .iter()
                 .map(|route| route_spec(route.route_id, route.stem_id, route.endpoint_id))
                 .collect(),
-            draft
+            source_routes: draft
+                .source_routes
+                .iter()
+                .map(|route| {
+                    source_route_spec(
+                        route.route_id,
+                        route.source_instance_id,
+                        route.output_port.clone(),
+                        route.stream_id,
+                        route.source_id,
+                        route.endpoint_id,
+                        route.endpoint_input_port.clone(),
+                    )
+                })
+                .collect(),
+            operators: draft
                 .operators
                 .iter()
                 .map(|operator| {
@@ -308,7 +437,7 @@ impl Session {
                     )
                 })
                 .collect(),
-            draft
+            derived_routes: draft
                 .derived_routes
                 .iter()
                 .map(|route| {
@@ -320,7 +449,8 @@ impl Session {
                     )
                 })
                 .collect(),
-        );
+        };
+        let spec = SessionSpec::new(self.id(), declarations);
         spec.validate()?;
         Ok(spec)
     }
@@ -438,7 +568,7 @@ impl StemHandle {
         draft.operators.push(OperatorDraft {
             instance_id,
             input_route_id,
-            source_stem_id: self.stem_id,
+            source_stem_id: Some(self.stem_id),
             input_origin: OperatorInputOrigin::Stem(self.stem_id),
             input_port: input_port.into(),
             operator,
@@ -447,7 +577,7 @@ impl StemHandle {
             shared: Arc::clone(&self.shared),
             session_id: self.session_id,
             operator_instance_id: instance_id,
-            source_stem_id: self.stem_id,
+            source_stem_id: Some(self.stem_id),
             output_port: output_port.into(),
         })
     }
@@ -494,8 +624,201 @@ pub struct DerivedStreamHandle {
     shared: Arc<SessionShared>,
     session_id: SessionId,
     operator_instance_id: OperatorInstanceId,
-    source_stem_id: StemId,
+    source_stem_id: Option<StemId>,
     output_port: Option<String>,
+}
+
+#[derive(Clone)]
+pub struct SourceInstanceHandle {
+    shared: Arc<SessionShared>,
+    session_id: SessionId,
+    instance_id: SourceInstanceId,
+    source_id: SourceId,
+}
+
+impl SourceInstanceHandle {
+    pub const fn session_id(&self) -> SessionId {
+        self.session_id
+    }
+
+    pub const fn instance_id(&self) -> SourceInstanceId {
+        self.instance_id
+    }
+
+    pub const fn source_id(&self) -> SourceId {
+        self.source_id
+    }
+
+    pub fn output(
+        &self,
+        output_port: impl Into<String>,
+    ) -> Result<SourceOutputHandle, SessionError> {
+        let output_port = output_port.into();
+        if output_port.trim().is_empty() {
+            return Err(SessionError::InvalidRoute {
+                reason: "external source output port cannot be empty".to_owned(),
+            });
+        }
+        let mut draft = self.shared.draft()?;
+        draft.ensure_open(self.session_id)?;
+        let stream_id = if let Some(existing) = draft.source_outputs.iter().find(|output| {
+            output.source_instance_id == self.instance_id && output.output_port == output_port
+        }) {
+            existing.stream_id
+        } else {
+            let stream_id = draft.allocate_stream_id()?;
+            draft.source_outputs.push(SourceOutputDraft {
+                source_instance_id: self.instance_id,
+                output_port: output_port.clone(),
+                stream_id,
+            });
+            stream_id
+        };
+        Ok(SourceOutputHandle {
+            shared: Arc::clone(&self.shared),
+            session_id: self.session_id,
+            source_instance_id: self.instance_id,
+            source_id: self.source_id,
+            stream_id,
+            output_port,
+        })
+    }
+}
+
+impl fmt::Debug for SourceInstanceHandle {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("SourceInstanceHandle")
+            .field("session_id", &self.session_id)
+            .field("instance_id", &self.instance_id)
+            .field("source_id", &self.source_id)
+            .finish()
+    }
+}
+
+#[derive(Clone)]
+pub struct SourceOutputHandle {
+    shared: Arc<SessionShared>,
+    session_id: SessionId,
+    source_instance_id: SourceInstanceId,
+    source_id: SourceId,
+    stream_id: StreamId,
+    output_port: String,
+}
+
+impl SourceOutputHandle {
+    pub const fn session_id(&self) -> SessionId {
+        self.session_id
+    }
+
+    pub const fn source_instance_id(&self) -> SourceInstanceId {
+        self.source_instance_id
+    }
+
+    pub const fn source_id(&self) -> SourceId {
+        self.source_id
+    }
+
+    pub const fn stream_id(&self) -> StreamId {
+        self.stream_id
+    }
+
+    pub fn output_port(&self) -> &str {
+        &self.output_port
+    }
+
+    pub fn send(&self, endpoint: EndpointHandle) -> Result<RouteId, SessionError> {
+        self.send_to(endpoint, None::<String>)
+    }
+
+    pub fn send_to(
+        &self,
+        endpoint: EndpointHandle,
+        endpoint_input_port: impl Into<Option<String>>,
+    ) -> Result<RouteId, SessionError> {
+        if endpoint.session_id != self.session_id {
+            return Err(SessionError::ForeignEndpoint {
+                expected: self.session_id,
+                actual: endpoint.session_id,
+            });
+        }
+        let endpoint_input_port = endpoint_input_port.into();
+        if endpoint_input_port
+            .as_deref()
+            .is_some_and(|port| port.trim().is_empty())
+        {
+            return Err(SessionError::InvalidRoute {
+                reason: "endpoint input port cannot be empty".to_owned(),
+            });
+        }
+        let mut draft = self.shared.draft()?;
+        draft.ensure_open(self.session_id)?;
+        let route_id = draft.allocate_route_id()?;
+        draft.source_routes.push(SourceRouteDraft {
+            route_id,
+            source_instance_id: self.source_instance_id,
+            output_port: self.output_port.clone(),
+            stream_id: self.stream_id,
+            source_id: self.source_id,
+            endpoint_id: endpoint.endpoint_id,
+            endpoint_input_port,
+        });
+        Ok(route_id)
+    }
+
+    pub fn through(&self, operator: Operator) -> Result<DerivedStreamHandle, SessionError> {
+        self.through_ports(operator, None::<String>, None::<String>)
+    }
+
+    pub fn through_ports(
+        &self,
+        operator: Operator,
+        input_port: impl Into<Option<String>>,
+        output_port: impl Into<Option<String>>,
+    ) -> Result<DerivedStreamHandle, SessionError> {
+        if operator.operator_id.as_str().trim().is_empty() {
+            return Err(SessionError::InvalidOperator {
+                reason: "operator id cannot be empty".to_owned(),
+            });
+        }
+        let mut draft = self.shared.draft()?;
+        draft.ensure_open(self.session_id)?;
+        let instance_id = draft.allocate_operator_instance_id()?;
+        let input_route_id = draft.allocate_route_id()?;
+        draft.operators.push(OperatorDraft {
+            instance_id,
+            input_route_id,
+            source_stem_id: None,
+            input_origin: OperatorInputOrigin::SourceOutput {
+                source_instance_id: self.source_instance_id,
+                output_port: self.output_port.clone(),
+                stream_id: self.stream_id,
+                source_id: self.source_id,
+            },
+            input_port: input_port.into(),
+            operator,
+        });
+        Ok(DerivedStreamHandle {
+            shared: Arc::clone(&self.shared),
+            session_id: self.session_id,
+            operator_instance_id: instance_id,
+            source_stem_id: None,
+            output_port: output_port.into(),
+        })
+    }
+}
+
+impl fmt::Debug for SourceOutputHandle {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("SourceOutputHandle")
+            .field("session_id", &self.session_id)
+            .field("source_instance_id", &self.source_instance_id)
+            .field("source_id", &self.source_id)
+            .field("stream_id", &self.stream_id)
+            .field("output_port", &self.output_port)
+            .finish()
+    }
 }
 
 impl DerivedStreamHandle {

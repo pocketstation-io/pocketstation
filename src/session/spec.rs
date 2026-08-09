@@ -1,13 +1,27 @@
 use std::collections::HashSet;
 
-use crate::frame::{ConnectorId, EndpointId, RouteId, SessionId, StemId};
+use crate::frame::{ConnectorId, EndpointId, RouteId, SessionId, SourceId, StemId, StreamId};
 use crate::graph::NodeTypeId;
 
 use crate::session::{
     EndpointConfiguration, OperatorConfiguration, OperatorId, SessionError, Source,
+    SourceConfiguration, SourceTypeId,
 };
 
-pub const SESSION_SPEC_VERSION: SessionSpecVersion = SessionSpecVersion::new(1, 2);
+pub const SESSION_SPEC_VERSION: SessionSpecVersion = SessionSpecVersion::new(1, 3);
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct SourceInstanceId(u64);
+
+impl SourceInstanceId {
+    pub const fn new(value: u64) -> Self {
+        Self(value)
+    }
+
+    pub const fn value(self) -> u64 {
+        self.0
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct OperatorInstanceId(u64);
@@ -46,6 +60,53 @@ impl SessionSpecVersion {
 pub struct StemSpec {
     stem_id: StemId,
     source: Source,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SourceInstanceSpec {
+    instance_id: SourceInstanceId,
+    source_id: SourceId,
+    source_type_id: SourceTypeId,
+    configuration: SourceConfiguration,
+}
+
+impl SourceInstanceSpec {
+    pub const fn instance_id(&self) -> SourceInstanceId {
+        self.instance_id
+    }
+
+    pub const fn source_id(&self) -> SourceId {
+        self.source_id
+    }
+
+    pub const fn source_type_id(&self) -> &SourceTypeId {
+        &self.source_type_id
+    }
+
+    pub const fn configuration(&self) -> &SourceConfiguration {
+        &self.configuration
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SourceOutputSpec {
+    source_instance_id: SourceInstanceId,
+    output_port: String,
+    stream_id: StreamId,
+}
+
+impl SourceOutputSpec {
+    pub const fn source_instance_id(&self) -> SourceInstanceId {
+        self.source_instance_id
+    }
+
+    pub fn output_port(&self) -> &str {
+        &self.output_port
+    }
+
+    pub const fn stream_id(&self) -> StreamId {
+        self.stream_id
+    }
 }
 
 impl StemSpec {
@@ -96,6 +157,47 @@ pub struct RouteSpec {
     endpoint_id: EndpointId,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SourceRouteSpec {
+    route_id: RouteId,
+    source_instance_id: SourceInstanceId,
+    output_port: String,
+    stream_id: StreamId,
+    source_id: SourceId,
+    endpoint_id: EndpointId,
+    endpoint_input_port: Option<String>,
+}
+
+impl SourceRouteSpec {
+    pub const fn id(&self) -> RouteId {
+        self.route_id
+    }
+
+    pub const fn source_instance_id(&self) -> SourceInstanceId {
+        self.source_instance_id
+    }
+
+    pub fn output_port(&self) -> &str {
+        &self.output_port
+    }
+
+    pub const fn stream_id(&self) -> StreamId {
+        self.stream_id
+    }
+
+    pub const fn source_id(&self) -> SourceId {
+        self.source_id
+    }
+
+    pub const fn endpoint_id(&self) -> EndpointId {
+        self.endpoint_id
+    }
+
+    pub fn endpoint_input_port(&self) -> Option<&str> {
+        self.endpoint_input_port.as_deref()
+    }
+}
+
 impl RouteSpec {
     pub const fn id(self) -> RouteId {
         self.route_id
@@ -114,7 +216,7 @@ impl RouteSpec {
 pub struct OperatorSpec {
     instance_id: OperatorInstanceId,
     input_route_id: RouteId,
-    source_stem_id: StemId,
+    source_stem_id: Option<StemId>,
     input_origin: OperatorInputOrigin,
     input_port: Option<String>,
     operator_id: OperatorId,
@@ -124,6 +226,12 @@ pub struct OperatorSpec {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum OperatorInputOrigin {
     Stem(StemId),
+    SourceOutput {
+        source_instance_id: SourceInstanceId,
+        output_port: String,
+        stream_id: StreamId,
+        source_id: SourceId,
+    },
     OperatorOutput {
         operator_instance_id: OperatorInstanceId,
         output_port: Option<String>,
@@ -139,7 +247,7 @@ impl OperatorSpec {
         self.input_route_id
     }
 
-    pub const fn source_stem_id(&self) -> StemId {
+    pub const fn source_stem_id(&self) -> Option<StemId> {
         self.source_stem_id
     }
 
@@ -191,29 +299,39 @@ pub struct SessionSpec {
     version: SessionSpecVersion,
     session_id: SessionId,
     stems: Vec<StemSpec>,
+    source_instances: Vec<SourceInstanceSpec>,
+    source_outputs: Vec<SourceOutputSpec>,
     endpoints: Vec<EndpointSpec>,
     routes: Vec<RouteSpec>,
+    source_routes: Vec<SourceRouteSpec>,
     operators: Vec<OperatorSpec>,
     derived_routes: Vec<DerivedRouteSpec>,
 }
 
+pub(crate) struct SessionSpecDeclarations {
+    pub(crate) stems: Vec<StemSpec>,
+    pub(crate) source_instances: Vec<SourceInstanceSpec>,
+    pub(crate) source_outputs: Vec<SourceOutputSpec>,
+    pub(crate) endpoints: Vec<EndpointSpec>,
+    pub(crate) routes: Vec<RouteSpec>,
+    pub(crate) source_routes: Vec<SourceRouteSpec>,
+    pub(crate) operators: Vec<OperatorSpec>,
+    pub(crate) derived_routes: Vec<DerivedRouteSpec>,
+}
+
 impl SessionSpec {
-    pub(crate) fn new(
-        session_id: SessionId,
-        stems: Vec<StemSpec>,
-        endpoints: Vec<EndpointSpec>,
-        routes: Vec<RouteSpec>,
-        operators: Vec<OperatorSpec>,
-        derived_routes: Vec<DerivedRouteSpec>,
-    ) -> Self {
+    pub(crate) fn new(session_id: SessionId, declarations: SessionSpecDeclarations) -> Self {
         Self {
             version: SESSION_SPEC_VERSION,
             session_id,
-            stems,
-            endpoints,
-            routes,
-            operators,
-            derived_routes,
+            stems: declarations.stems,
+            source_instances: declarations.source_instances,
+            source_outputs: declarations.source_outputs,
+            endpoints: declarations.endpoints,
+            routes: declarations.routes,
+            source_routes: declarations.source_routes,
+            operators: declarations.operators,
+            derived_routes: declarations.derived_routes,
         }
     }
 
@@ -229,12 +347,24 @@ impl SessionSpec {
         &self.stems
     }
 
+    pub fn source_instances(&self) -> &[SourceInstanceSpec] {
+        &self.source_instances
+    }
+
+    pub fn source_outputs(&self) -> &[SourceOutputSpec] {
+        &self.source_outputs
+    }
+
     pub fn endpoints(&self) -> &[EndpointSpec] {
         &self.endpoints
     }
 
     pub fn routes(&self) -> &[RouteSpec] {
         &self.routes
+    }
+
+    pub fn source_routes(&self) -> &[SourceRouteSpec] {
+        &self.source_routes
     }
 
     pub fn operators(&self) -> &[OperatorSpec] {
@@ -254,13 +384,28 @@ impl SessionSpec {
                 minor: self.version.minor,
             });
         }
-        if self.stems.is_empty() {
+        if self.stems.is_empty() && self.source_instances.is_empty() {
             return Err(SessionError::NoSources);
         }
         if self.version.minor < 1 && (!self.operators.is_empty() || !self.derived_routes.is_empty())
         {
             return Err(SessionError::InvalidOperator {
                 reason: "derived operators require Session schema version 1.1 or newer".to_owned(),
+            });
+        }
+        if self.version.minor < 3
+            && (!self.source_instances.is_empty()
+                || !self.source_outputs.is_empty()
+                || !self.source_routes.is_empty()
+                || self.operators.iter().any(|operator| {
+                    matches!(
+                        operator.input_origin,
+                        OperatorInputOrigin::SourceOutput { .. }
+                    )
+                }))
+        {
+            return Err(SessionError::InvalidRoute {
+                reason: "external sources require Session schema version 1.3 or newer".to_owned(),
             });
         }
 
@@ -279,10 +424,72 @@ impl SessionSpec {
                 && !self
                     .operators
                     .iter()
-                    .any(|operator| operator.source_stem_id == stem.stem_id)
+                    .any(|operator| operator.source_stem_id == Some(stem.stem_id))
             {
                 return Err(SessionError::NoRoutes {
                     stem_id: stem.stem_id,
+                });
+            }
+        }
+
+        let mut source_instance_ids = HashSet::with_capacity(self.source_instances.len());
+        let mut source_ids = HashSet::with_capacity(self.source_instances.len());
+        for source in &self.source_instances {
+            if !source_instance_ids.insert(source.instance_id)
+                || !source_ids.insert(source.source_id)
+            {
+                return Err(SessionError::InvalidRoute {
+                    reason: "duplicate external source instance or source identity".to_owned(),
+                });
+            }
+            if !self
+                .source_outputs
+                .iter()
+                .any(|output| output.source_instance_id == source.instance_id)
+            {
+                return Err(SessionError::NoSourceOutputs {
+                    source_instance_id: source.instance_id,
+                });
+            }
+        }
+
+        let mut source_output_keys = HashSet::with_capacity(self.source_outputs.len());
+        let mut stream_ids = HashSet::with_capacity(self.source_outputs.len());
+        for output in &self.source_outputs {
+            if !source_instance_ids.contains(&output.source_instance_id) {
+                return Err(SessionError::UnknownSourceInstance {
+                    source_instance_id: output.source_instance_id,
+                });
+            }
+            if output.output_port.trim().is_empty()
+                || !source_output_keys
+                    .insert((output.source_instance_id, output.output_port.clone()))
+                || !stream_ids.insert(output.stream_id)
+            {
+                return Err(SessionError::InvalidRoute {
+                    reason: "external source outputs require unique non-empty ports and stream identities"
+                        .to_owned(),
+                });
+            }
+            let directly_routed = self.source_routes.iter().any(|route| {
+                route.source_instance_id == output.source_instance_id
+                    && route.output_port == output.output_port
+            });
+            let operator_routed = self.operators.iter().any(|operator| {
+                matches!(
+                    &operator.input_origin,
+                    OperatorInputOrigin::SourceOutput {
+                        source_instance_id,
+                        output_port,
+                        ..
+                    } if *source_instance_id == output.source_instance_id
+                        && output_port == &output.output_port
+                )
+            });
+            if !directly_routed && !operator_routed {
+                return Err(SessionError::NoSourceOutputRoutes {
+                    source_instance_id: output.source_instance_id,
+                    output_port: output.output_port.clone(),
                 });
             }
         }
@@ -326,6 +533,41 @@ impl SessionSpec {
             }
         }
 
+        for route in &self.source_routes {
+            if !route_ids.insert(route.route_id) {
+                return Err(SessionError::InvalidRoute {
+                    reason: format!("duplicate route id {:?}", route.route_id),
+                });
+            }
+            let Some(output) = self.source_outputs.iter().find(|output| {
+                output.source_instance_id == route.source_instance_id
+                    && output.output_port == route.output_port
+            }) else {
+                return Err(SessionError::UnknownSourceOutput {
+                    source_instance_id: route.source_instance_id,
+                    output_port: route.output_port.clone(),
+                });
+            };
+            let source = self
+                .source_instances
+                .iter()
+                .find(|source| source.instance_id == route.source_instance_id)
+                .ok_or(SessionError::UnknownSourceInstance {
+                    source_instance_id: route.source_instance_id,
+                })?;
+            if output.stream_id != route.stream_id || source.source_id != route.source_id {
+                return Err(SessionError::InvalidRoute {
+                    reason: "external source route changed assigned stream or source identity"
+                        .to_owned(),
+                });
+            }
+            if !endpoint_ids.contains(&route.endpoint_id) {
+                return Err(SessionError::UnknownEndpoint {
+                    endpoint_id: route.endpoint_id,
+                });
+            }
+        }
+
         let mut operator_instance_ids = HashSet::with_capacity(self.operators.len());
         for operator in &self.operators {
             if !operator_instance_ids.insert(operator.instance_id) {
@@ -338,15 +580,51 @@ impl SessionSpec {
                     reason: format!("duplicate route id {:?}", operator.input_route_id),
                 });
             }
-            if !stem_ids.contains(&operator.source_stem_id) {
-                return Err(SessionError::UnknownStem {
-                    stem_id: operator.source_stem_id,
-                });
+            if let Some(stem_id) = operator.source_stem_id {
+                if !stem_ids.contains(&stem_id) {
+                    return Err(SessionError::UnknownStem { stem_id });
+                }
             }
             match &operator.input_origin {
                 OperatorInputOrigin::Stem(stem_id) => {
-                    if !stem_ids.contains(stem_id) || *stem_id != operator.source_stem_id {
+                    if !stem_ids.contains(stem_id) || Some(*stem_id) != operator.source_stem_id {
                         return Err(SessionError::UnknownStem { stem_id: *stem_id });
+                    }
+                }
+                OperatorInputOrigin::SourceOutput {
+                    source_instance_id,
+                    output_port,
+                    stream_id,
+                    source_id,
+                } => {
+                    if operator.source_stem_id.is_some() {
+                        return Err(SessionError::InvalidOperator {
+                            reason: "external source operator input cannot claim a built-in stem"
+                                .to_owned(),
+                        });
+                    }
+                    let Some(output) = self.source_outputs.iter().find(|output| {
+                        output.source_instance_id == *source_instance_id
+                            && output.output_port == *output_port
+                    }) else {
+                        return Err(SessionError::UnknownSourceOutput {
+                            source_instance_id: *source_instance_id,
+                            output_port: output_port.clone(),
+                        });
+                    };
+                    let source = self
+                        .source_instances
+                        .iter()
+                        .find(|source| source.instance_id == *source_instance_id)
+                        .ok_or(SessionError::UnknownSourceInstance {
+                            source_instance_id: *source_instance_id,
+                        })?;
+                    if output.stream_id != *stream_id || source.source_id != *source_id {
+                        return Err(SessionError::InvalidOperator {
+                            reason:
+                                "external operator input changed assigned stream or source identity"
+                                    .to_owned(),
+                        });
                     }
                 }
                 OperatorInputOrigin::OperatorOutput {
@@ -421,6 +699,32 @@ pub(crate) fn stem_spec(stem_id: StemId, source: Source) -> StemSpec {
     StemSpec { stem_id, source }
 }
 
+pub(crate) fn source_instance_spec(
+    instance_id: SourceInstanceId,
+    source_id: SourceId,
+    source_type_id: SourceTypeId,
+    configuration: SourceConfiguration,
+) -> SourceInstanceSpec {
+    SourceInstanceSpec {
+        instance_id,
+        source_id,
+        source_type_id,
+        configuration,
+    }
+}
+
+pub(crate) fn source_output_spec(
+    source_instance_id: SourceInstanceId,
+    output_port: String,
+    stream_id: StreamId,
+) -> SourceOutputSpec {
+    SourceOutputSpec {
+        source_instance_id,
+        output_port,
+        stream_id,
+    }
+}
+
 pub(crate) fn endpoint_spec(
     endpoint_id: EndpointId,
     node_type_id: NodeTypeId,
@@ -449,10 +753,30 @@ pub(crate) const fn route_spec(
     }
 }
 
+pub(crate) fn source_route_spec(
+    route_id: RouteId,
+    source_instance_id: SourceInstanceId,
+    output_port: String,
+    stream_id: StreamId,
+    source_id: SourceId,
+    endpoint_id: EndpointId,
+    endpoint_input_port: Option<String>,
+) -> SourceRouteSpec {
+    SourceRouteSpec {
+        route_id,
+        source_instance_id,
+        output_port,
+        stream_id,
+        source_id,
+        endpoint_id,
+        endpoint_input_port,
+    }
+}
+
 pub(crate) fn operator_spec(
     instance_id: OperatorInstanceId,
     input_route_id: RouteId,
-    source_stem_id: StemId,
+    source_stem_id: Option<StemId>,
     input_origin: OperatorInputOrigin,
     input_port: Option<String>,
     operator_id: OperatorId,
@@ -496,6 +820,8 @@ mod tests {
                 StemId(1),
                 Source::microphone(DeviceSelector::default()),
             )],
+            source_instances: Vec::new(),
+            source_outputs: Vec::new(),
             endpoints: vec![endpoint_spec(
                 EndpointId(1),
                 NodeTypeId::from("endpoint.test"),
@@ -504,6 +830,7 @@ mod tests {
                 None,
             )],
             routes: vec![route_spec(RouteId(1), StemId(1), EndpointId(1))],
+            source_routes: Vec::new(),
             operators: Vec::new(),
             derived_routes: Vec::new(),
         }
@@ -523,13 +850,13 @@ mod tests {
 
         assert!(matches!(
             spec.validate(),
-            Err(SessionError::UnsupportedVersion { major: 1, minor: 3 })
+            Err(SessionError::UnsupportedVersion { major: 1, minor: 4 })
         ));
     }
 
     #[test]
     fn given_current_schema_when_version_read_then_derived_route_extension_is_recorded() {
-        assert_eq!(SESSION_SPEC_VERSION, SessionSpecVersion::new(1, 2));
+        assert_eq!(SESSION_SPEC_VERSION, SessionSpecVersion::new(1, 3));
     }
 
     #[test]
@@ -538,7 +865,7 @@ mod tests {
         spec.operators.push(operator_spec(
             OperatorInstanceId::new(1),
             RouteId(2),
-            StemId(1),
+            Some(StemId(1)),
             OperatorInputOrigin::Stem(StemId(1)),
             None,
             OperatorId::new("example.operator.test.v1"),

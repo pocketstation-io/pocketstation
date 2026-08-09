@@ -11,7 +11,8 @@ use crate::graph::{
 
 use crate::session::{
     ApplicationSelector, DeviceSelector, EndpointSpec, OperatorInputOrigin, OperatorInstanceId,
-    OperatorSpec, SessionError, SessionId, SessionSpec, Source, StemSpec,
+    OperatorSpec, SessionError, SessionId, SessionSpec, Source, SourceInstanceId,
+    SourceInstanceSpec, SourceRegistry, SourceRouteSpec, SourceTypeId, StemSpec,
 };
 
 pub const APPLICATION_SOURCE_NODE_TYPE_ID: &str = "source.application";
@@ -31,15 +32,19 @@ const AUDIO_INPUT_PORT: &str = "audio";
 // With the canonical 20 ms frame this plans 20 slots (400 ms). Overflow is
 // still explicit and observable; the capture/realtime producer never blocks.
 const RECORDING_SCHEDULER_HEADROOM_MS: u32 = 400;
-const RESERVED_ENDPOINT_CONFIGURATION_KEYS: [&str; 6] = [
+const RESERVED_ENDPOINT_CONFIGURATION_KEYS: [&str; 10] = [
     "session_id",
     "stem_id",
     "endpoint_id",
     "route_id",
     "operator_id",
     "connector_id",
+    "source_instance_id",
+    "source_id",
+    "stream_id",
+    "source_output_port",
 ];
-const RESERVED_OPERATOR_CONFIGURATION_KEYS: [&str; 8] = [
+const RESERVED_OPERATOR_CONFIGURATION_KEYS: [&str; 12] = [
     "session_id",
     "stem_id",
     "input_route_id",
@@ -48,6 +53,10 @@ const RESERVED_OPERATOR_CONFIGURATION_KEYS: [&str; 8] = [
     "operator_revision",
     "operator_generation",
     "node_type_id",
+    "source_instance_id",
+    "source_id",
+    "stream_id",
+    "source_output_port",
 ];
 
 #[derive(Debug, thiserror::Error)]
@@ -98,6 +107,25 @@ pub enum SessionCompileError {
     },
     #[error("required source node type {node_type_id} is not registered")]
     UnknownSourceNodeType { node_type_id: String },
+    #[error("external source type {source_type_id} is not registered on SessionEngine")]
+    UnknownExternalSource { source_type_id: SourceTypeId },
+    #[error(
+        "external source type {source_type_id} has no declared output port named '{output_port}'"
+    )]
+    UnknownExternalSourceOutput {
+        source_type_id: SourceTypeId,
+        output_port: String,
+    },
+    #[error("external source type {source_type_id} configuration is invalid: {reason}")]
+    InvalidExternalSourceConfiguration {
+        source_type_id: SourceTypeId,
+        reason: String,
+    },
+    #[error("endpoint node type {node_type_id} has no input port named '{port_name}'")]
+    UnknownEndpointInputPort {
+        node_type_id: String,
+        port_name: String,
+    },
     #[error(transparent)]
     GraphCompile(#[from] CompileError),
     #[error(transparent)]
@@ -123,6 +151,10 @@ impl CompiledSession {
         self.spec.stems()
     }
 
+    pub fn external_source_declarations(&self) -> &[SourceInstanceSpec] {
+        self.spec.source_instances()
+    }
+
     pub fn endpoint_declarations(&self) -> &[EndpointSpec] {
         self.spec.endpoints()
     }
@@ -137,6 +169,21 @@ impl CompiledSession {
 
     pub fn planned_edge_count(&self) -> usize {
         self.runtime_plan.edge_count
+    }
+
+    #[cfg(test)]
+    pub(crate) fn planned_source_output_count(&self) -> usize {
+        self.runtime_plan.source_outputs.len()
+    }
+
+    #[cfg(test)]
+    pub(crate) fn planned_typed_edge_count(&self) -> usize {
+        self.runtime_plan.typed_edges.len()
+    }
+
+    #[cfg(test)]
+    pub(crate) fn planned_audio_edge_count(&self) -> usize {
+        self.runtime_plan.memory_plan.edge_buffers.len()
     }
 
     pub(crate) fn into_runtime_parts(
@@ -154,6 +201,7 @@ impl CompiledSession {
 pub struct SessionCompiler<'registry> {
     node_registry: &'registry NodeRegistry,
     endpoint_registry: &'registry EndpointDriverRegistry,
+    source_registry: Option<&'registry SourceRegistry>,
 }
 
 impl<'registry> SessionCompiler<'registry> {
@@ -164,12 +212,26 @@ impl<'registry> SessionCompiler<'registry> {
         Self {
             node_registry,
             endpoint_registry,
+            source_registry: None,
+        }
+    }
+
+    pub const fn with_sources(
+        node_registry: &'registry NodeRegistry,
+        endpoint_registry: &'registry EndpointDriverRegistry,
+        source_registry: &'registry SourceRegistry,
+    ) -> Self {
+        Self {
+            node_registry,
+            endpoint_registry,
+            source_registry: Some(source_registry),
         }
     }
 
     pub fn compile(&self, spec: SessionSpec) -> Result<CompiledSession, SessionCompileError> {
         spec.validate()?;
         self.validate_source_node_types(&spec)?;
+        self.validate_external_sources(&spec)?;
         self.validate_endpoint_operators(&spec)?;
         self.validate_async_operators(&spec)?;
 
@@ -187,6 +249,48 @@ impl<'registry> SessionCompiler<'registry> {
     fn validate_source_node_types(&self, spec: &SessionSpec) -> Result<(), SessionCompileError> {
         for stem in spec.stems() {
             let node_type_id = source_node_type_id(stem.source());
+            if !self.node_registry.contains(&node_type_id) {
+                return Err(SessionCompileError::UnknownSourceNodeType {
+                    node_type_id: node_type_id.as_str().to_owned(),
+                });
+            }
+        }
+        Ok(())
+    }
+
+    fn validate_external_sources(&self, spec: &SessionSpec) -> Result<(), SessionCompileError> {
+        for source in spec.source_instances() {
+            let registry =
+                self.source_registry
+                    .ok_or_else(|| SessionCompileError::UnknownExternalSource {
+                        source_type_id: source.source_type_id().clone(),
+                    })?;
+            let manifest = registry.manifest(source.source_type_id()).ok_or_else(|| {
+                SessionCompileError::UnknownExternalSource {
+                    source_type_id: source.source_type_id().clone(),
+                }
+            })?;
+            registry
+                .validate_config(source.source_type_id(), source.configuration())
+                .map_err(
+                    |error| SessionCompileError::InvalidExternalSourceConfiguration {
+                        source_type_id: source.source_type_id().clone(),
+                        reason: error.to_string(),
+                    },
+                )?;
+            for output in spec
+                .source_outputs()
+                .iter()
+                .filter(|output| output.source_instance_id() == source.instance_id())
+            {
+                if manifest.output_port(output.output_port()).is_none() {
+                    return Err(SessionCompileError::UnknownExternalSourceOutput {
+                        source_type_id: source.source_type_id().clone(),
+                        output_port: output.output_port().to_owned(),
+                    });
+                }
+            }
+            let node_type_id = NodeTypeId::from(source.source_type_id().as_str());
             if !self.node_registry.contains(&node_type_id) {
                 return Err(SessionCompileError::UnknownSourceNodeType {
                     node_type_id: node_type_id.as_str().to_owned(),
@@ -256,6 +360,7 @@ impl<'registry> SessionCompiler<'registry> {
     ) -> Result<crate::graph::GraphSpec, SessionCompileError> {
         let mut pipeline = Pipeline::new();
         let mut source_nodes = HashMap::with_capacity(spec.stems().len());
+        let mut external_source_nodes = HashMap::with_capacity(spec.source_instances().len());
 
         for stem in spec.stems() {
             let source_node = pipeline.add_node(
@@ -263,6 +368,14 @@ impl<'registry> SessionCompiler<'registry> {
                 source_node_config(spec.session_id(), stem),
             );
             source_nodes.insert(stem.id(), source_node);
+        }
+
+        for source in spec.source_instances() {
+            let source_node = pipeline.add_node(
+                NodeTypeId::from(source.source_type_id().as_str()),
+                external_source_node_config(spec.session_id(), source),
+            );
+            external_source_nodes.insert(source.instance_id(), source_node);
         }
 
         for route in spec.routes() {
@@ -312,6 +425,57 @@ impl<'registry> SessionCompiler<'registry> {
             }
         }
 
+        for route in spec.source_routes() {
+            let source = spec
+                .source_instances()
+                .iter()
+                .find(|source| source.instance_id() == route.source_instance_id())
+                .ok_or(SessionError::UnknownSourceInstance {
+                    source_instance_id: route.source_instance_id(),
+                })?;
+            let endpoint = spec
+                .endpoints()
+                .iter()
+                .find(|endpoint| endpoint.id() == route.endpoint_id())
+                .ok_or(SessionError::UnknownEndpoint {
+                    endpoint_id: route.endpoint_id(),
+                })?;
+            let source_node = external_source_nodes.get(&source.instance_id()).ok_or(
+                SessionError::UnknownSourceInstance {
+                    source_instance_id: source.instance_id(),
+                },
+            )?;
+            let endpoint_descriptor = self
+                .node_registry
+                .definition(endpoint.node_type_id())
+                .ok_or_else(|| SessionCompileError::UnknownDerivedEndpointNodeType {
+                    node_type_id: endpoint.node_type_id().as_str().to_owned(),
+                })?
+                .descriptor();
+            let endpoint_input =
+                select_endpoint_input(&endpoint_descriptor, route.endpoint_input_port())?;
+            let endpoint_node = pipeline.add_node(
+                endpoint.node_type_id().clone(),
+                source_endpoint_node_config(
+                    spec.session_id(),
+                    SourceOriginMetadata::from(route),
+                    endpoint,
+                ),
+            );
+            if endpoint.operator_id().as_str() == RECORDER_OPERATOR_ID {
+                pipeline.connect_with(
+                    source_node.out(route.output_port()),
+                    endpoint_node.in_(&endpoint_input.name),
+                    recording_edge_contract(Some(endpoint_input.media)),
+                );
+            } else {
+                pipeline.connect(
+                    source_node.out(route.output_port()),
+                    endpoint_node.in_(&endpoint_input.name),
+                );
+            }
+        }
+
         let mut operator_nodes: HashMap<OperatorInstanceId, LoweredOperator> =
             HashMap::with_capacity(spec.operators().len());
         for operator in spec.operators() {
@@ -332,6 +496,16 @@ impl<'registry> SessionCompiler<'registry> {
                     .get(stem_id)
                     .ok_or(SessionError::UnknownStem { stem_id: *stem_id })?
                     .out(AUDIO_OUTPUT_PORT),
+                OperatorInputOrigin::SourceOutput {
+                    source_instance_id,
+                    output_port,
+                    ..
+                } => external_source_nodes
+                    .get(source_instance_id)
+                    .ok_or(SessionError::UnknownSourceInstance {
+                        source_instance_id: *source_instance_id,
+                    })?
+                    .out(output_port),
                 OperatorInputOrigin::OperatorOutput {
                     operator_instance_id,
                     output_port,
@@ -374,13 +548,6 @@ impl<'registry> SessionCompiler<'registry> {
                     operator_instance_id: route.operator_instance_id(),
                 },
             )?;
-            let stem = spec
-                .stems()
-                .iter()
-                .find(|stem| stem.id() == operator.source_stem_id)
-                .ok_or(SessionError::UnknownStem {
-                    stem_id: operator.source_stem_id,
-                })?;
             let endpoint = spec
                 .endpoints()
                 .iter()
@@ -395,21 +562,19 @@ impl<'registry> SessionCompiler<'registry> {
                     node_type_id: endpoint.node_type_id().as_str().to_owned(),
                 })?
                 .descriptor();
-            let input_ports = descriptor
-                .inputs
-                .iter()
-                .filter(|port| port.direction == crate::graph::PortDirection::Input)
-                .collect::<Vec<_>>();
-            if input_ports.len() != 1 {
-                return Err(SessionCompileError::AmbiguousDerivedEndpointInput {
-                    node_type_id: endpoint.node_type_id().as_str().to_owned(),
-                    input_ports_total: input_ports.len(),
-                });
-            }
-            let endpoint_node = pipeline.add_node(
-                endpoint.node_type_id().clone(),
-                endpoint_node_config(spec.session_id(), stem, endpoint, route.id()),
-            );
+            let endpoint_input = select_endpoint_input(&descriptor, None)?;
+            let endpoint_config = if let Some(stem_id) = operator.source_stem_id {
+                let stem = spec
+                    .stems()
+                    .iter()
+                    .find(|stem| stem.id() == stem_id)
+                    .ok_or(SessionError::UnknownStem { stem_id })?;
+                endpoint_node_config(spec.session_id(), stem, endpoint, route.id())
+            } else {
+                let source_origin = source_origin_for_operator(spec, route.operator_instance_id())?;
+                source_endpoint_node_config(spec.session_id(), source_origin, endpoint)
+            };
+            let endpoint_node = pipeline.add_node(endpoint.node_type_id().clone(), endpoint_config);
             pipeline.connect_with(
                 operator.node.out(
                     &select_operator_port(
@@ -419,7 +584,7 @@ impl<'registry> SessionCompiler<'registry> {
                     )?
                     .name,
                 ),
-                endpoint_node.in_(&input_ports[0].name),
+                endpoint_node.in_(&endpoint_input.name),
                 operator.manifest.output_edge,
             );
         }
@@ -455,7 +620,34 @@ fn recording_edge_contract(media: Option<MediaCaps>) -> EdgeContract {
 struct LoweredOperator {
     node: NodeHandle,
     manifest: crate::graph::AsyncOperatorManifest,
-    source_stem_id: crate::session::StemId,
+    source_stem_id: Option<crate::session::StemId>,
+}
+
+fn select_endpoint_input<'a>(
+    descriptor: &'a crate::graph::NodeDescriptor,
+    selected: Option<&str>,
+) -> Result<&'a crate::graph::PortSpec, SessionCompileError> {
+    let mut inputs = descriptor
+        .inputs
+        .iter()
+        .filter(|port| port.direction == crate::graph::PortDirection::Input)
+        .collect::<Vec<_>>();
+    if let Some(selected) = selected {
+        return inputs
+            .into_iter()
+            .find(|port| port.name == selected)
+            .ok_or_else(|| SessionCompileError::UnknownEndpointInputPort {
+                node_type_id: descriptor.type_id.as_str().to_owned(),
+                port_name: selected.to_owned(),
+            });
+    }
+    if inputs.len() != 1 {
+        return Err(SessionCompileError::AmbiguousDerivedEndpointInput {
+            node_type_id: descriptor.type_id.as_str().to_owned(),
+            input_ports_total: inputs.len(),
+        });
+    }
+    Ok(inputs.remove(0))
 }
 
 fn select_operator_port<'a>(
@@ -548,11 +740,10 @@ fn operator_node_config(
     operator: &OperatorSpec,
     manifest: &crate::graph::AsyncOperatorManifest,
 ) -> NodeConfig {
-    operator
+    let mut config = operator
         .configuration()
         .clone()
         .with("session_id", &session_id.0.to_string())
-        .with("stem_id", &operator.source_stem_id().0.to_string())
         .with("input_route_id", &operator.input_route_id().0.to_string())
         .with(
             "operator_instance_id",
@@ -561,7 +752,142 @@ fn operator_node_config(
         .with("operator_id", manifest.operator_id.as_str())
         .with("operator_revision", &manifest.revision.to_string())
         .with("operator_generation", &manifest.generation.to_string())
-        .with("node_type_id", manifest.node.type_id.as_str())
+        .with("node_type_id", manifest.node.type_id.as_str());
+    match operator.input_origin() {
+        OperatorInputOrigin::Stem(stem_id) => {
+            config = config.with("stem_id", &stem_id.0.to_string());
+        }
+        OperatorInputOrigin::SourceOutput {
+            source_instance_id,
+            output_port,
+            stream_id,
+            source_id,
+        } => {
+            config = config
+                .with(
+                    "source_instance_id",
+                    &source_instance_id.value().to_string(),
+                )
+                .with("source_id", &source_id.0.to_string())
+                .with("stream_id", &stream_id.0.to_string())
+                .with("source_output_port", output_port);
+        }
+        OperatorInputOrigin::OperatorOutput { .. } => {
+            if let Some(stem_id) = operator.source_stem_id() {
+                config = config.with("stem_id", &stem_id.0.to_string());
+            }
+        }
+    }
+    config
+}
+
+fn external_source_node_config(session_id: SessionId, source: &SourceInstanceSpec) -> NodeConfig {
+    let manifest_prefix = crate::session::source_extension::SOURCE_CONFIGURATION_PREFIX;
+    let mut config = NodeConfig::new()
+        .with("session_id", &session_id.0.to_string())
+        .with(
+            "source_instance_id",
+            &source.instance_id().value().to_string(),
+        )
+        .with("source_id", &source.source_id().0.to_string())
+        .with("source_type_id", source.source_type_id().as_str());
+    for (key, value) in source.configuration().iter() {
+        config = config.with(&format!("{manifest_prefix}{key}"), value);
+    }
+    config
+}
+
+#[derive(Clone)]
+struct SourceOriginMetadata {
+    route_id: crate::session::RouteId,
+    source_instance_id: SourceInstanceId,
+    output_port: String,
+    stream_id: crate::frame::StreamId,
+    source_id: crate::frame::SourceId,
+}
+
+impl From<&SourceRouteSpec> for SourceOriginMetadata {
+    fn from(route: &SourceRouteSpec) -> Self {
+        Self {
+            route_id: route.id(),
+            source_instance_id: route.source_instance_id(),
+            output_port: route.output_port().to_owned(),
+            stream_id: route.stream_id(),
+            source_id: route.source_id(),
+        }
+    }
+}
+
+fn source_endpoint_node_config(
+    session_id: SessionId,
+    origin: SourceOriginMetadata,
+    endpoint: &EndpointSpec,
+) -> NodeConfig {
+    let mut config = NodeConfig::new()
+        .with("session_id", &session_id.0.to_string())
+        .with(
+            "source_instance_id",
+            &origin.source_instance_id.value().to_string(),
+        )
+        .with("source_id", &origin.source_id.0.to_string())
+        .with("stream_id", &origin.stream_id.0.to_string())
+        .with("source_output_port", &origin.output_port)
+        .with("endpoint_id", &endpoint.id().0.to_string())
+        .with("route_id", &origin.route_id.0.to_string())
+        .with("operator_id", endpoint.operator_id().as_str());
+    if let Some(connector_id) = endpoint.connector_id() {
+        config = config.with("connector_id", &connector_id.0.to_string());
+    }
+    for (key, value) in endpoint.configuration().iter() {
+        config = config.with(key, value);
+    }
+    config
+}
+
+fn source_origin_for_operator(
+    spec: &SessionSpec,
+    operator_instance_id: OperatorInstanceId,
+) -> Result<SourceOriginMetadata, SessionCompileError> {
+    let mut current = spec
+        .operators()
+        .iter()
+        .find(|operator| operator.instance_id() == operator_instance_id)
+        .ok_or(SessionError::UnknownOperatorInstance {
+            operator_instance_id,
+        })?;
+    loop {
+        match current.input_origin() {
+            OperatorInputOrigin::SourceOutput {
+                source_instance_id,
+                output_port,
+                stream_id,
+                source_id,
+            } => {
+                return Ok(SourceOriginMetadata {
+                    route_id: current.input_route_id(),
+                    source_instance_id: *source_instance_id,
+                    output_port: output_port.clone(),
+                    stream_id: *stream_id,
+                    source_id: *source_id,
+                });
+            }
+            OperatorInputOrigin::OperatorOutput {
+                operator_instance_id,
+                ..
+            } => {
+                current = spec
+                    .operators()
+                    .iter()
+                    .find(|operator| operator.instance_id() == *operator_instance_id)
+                    .ok_or(SessionError::UnknownOperatorInstance {
+                        operator_instance_id: *operator_instance_id,
+                    })?;
+            }
+            OperatorInputOrigin::Stem(stem_id) => {
+                return Err(SessionError::UnknownStem { stem_id: *stem_id }.into());
+            }
+        }
+    }
 }
 
 pub(crate) fn endpoint_node_config(

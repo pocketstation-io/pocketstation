@@ -1,13 +1,24 @@
 use crate::frame::{EndpointId, SessionId, StemId};
 
-use crate::session::OperatorInstanceId;
+use crate::session::{OperatorInstanceId, SourceInstanceId};
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
 pub enum SessionError {
-    #[error("session must contain at least one capture source")]
+    #[error("session must contain at least one built-in or external source")]
     NoSources,
     #[error("stem {stem_id:?} has no destination route")]
     NoRoutes { stem_id: StemId },
+    #[error("external source instance {source_instance_id:?} has no declared output")]
+    NoSourceOutputs {
+        source_instance_id: SourceInstanceId,
+    },
+    #[error(
+        "external source instance {source_instance_id:?} output '{output_port}' has no destination route"
+    )]
+    NoSourceOutputRoutes {
+        source_instance_id: SourceInstanceId,
+        output_port: String,
+    },
     #[error("invalid source selector: {reason}")]
     InvalidSelector { reason: String },
     #[error("endpoint descriptor is invalid: {reason}")]
@@ -33,6 +44,17 @@ pub enum SessionError {
     UnknownEndpoint { endpoint_id: EndpointId },
     #[error("route references unknown stem {stem_id:?}")]
     UnknownStem { stem_id: StemId },
+    #[error("route references unknown external source instance {source_instance_id:?}")]
+    UnknownSourceInstance {
+        source_instance_id: SourceInstanceId,
+    },
+    #[error(
+        "route references unknown output '{output_port}' on external source instance {source_instance_id:?}"
+    )]
+    UnknownSourceOutput {
+        source_instance_id: SourceInstanceId,
+        output_port: String,
+    },
     #[error("route references unknown operator instance {operator_instance_id:?}")]
     UnknownOperatorInstance {
         operator_instance_id: OperatorInstanceId,

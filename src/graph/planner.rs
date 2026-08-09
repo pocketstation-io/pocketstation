@@ -29,6 +29,7 @@ impl RuntimePlanner {
         self.validate_fan_out_ownership(&fan_out, &memory_plan)?;
         let edge_metrics = self.instrument_edges(ir);
         let typed_edges = self.plan_typed_edges(ir, &edge_metrics)?;
+        let source_outputs = self.plan_source_outputs(ir)?;
         let node_order: Vec<NodeId> = ir.topo_order().to_vec();
         Ok(RuntimePlan {
             node_order,
@@ -38,8 +39,49 @@ impl RuntimePlanner {
             fan_out,
             fan_in,
             typed_edges,
+            source_outputs,
             edge_count: ir.edge_count(),
         })
+    }
+
+    fn plan_source_outputs(&self, ir: &GraphIr) -> Result<Vec<SourceOutputPlan>, PlanError> {
+        let mut plans = Vec::new();
+        for node in &ir.nodes {
+            if !node.descriptor.inputs.is_empty() {
+                continue;
+            }
+            for output in &node.descriptor.outputs {
+                let branch_edges = ir
+                    .edges
+                    .iter()
+                    .filter(|edge| {
+                        edge.spec.from.node == node.id() && edge.spec.from.port == output.name
+                    })
+                    .map(|edge| edge.spec.id)
+                    .collect::<Vec<_>>();
+                if branch_edges.is_empty() {
+                    continue;
+                }
+                let media = ir
+                    .edges
+                    .iter()
+                    .find(|edge| edge.spec.id == branch_edges[0])
+                    .map(|edge| edge.media)
+                    .ok_or(PlanError::MissingOutputSignal {
+                        edge: branch_edges[0],
+                    })?;
+                plans.push(SourceOutputPlan {
+                    from: OutputPortRef {
+                        node: node.id(),
+                        port: output.name.clone(),
+                    },
+                    signal: output.signal.clone(),
+                    media,
+                    branch_edges,
+                });
+            }
+        }
+        Ok(plans)
     }
 
     fn lower_fan_out(&self, ir: &GraphIr) -> Vec<FanOutGroup> {

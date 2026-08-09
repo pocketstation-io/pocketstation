@@ -54,6 +54,12 @@ impl NodeConfig {
     pub fn get_u32(&self, key: &str) -> Option<u32> {
         self.get(key).and_then(|raw| raw.parse().ok())
     }
+
+    pub fn iter(&self) -> impl Iterator<Item = (&str, &str)> {
+        self.values
+            .iter()
+            .map(|(key, value)| (key.as_str(), value.as_str()))
+    }
 }
 
 #[derive(Debug, thiserror::Error)]

@@ -381,7 +381,7 @@ fn map_worker_receivers(
             })?;
         if route.endpoint_id() != endpoint_id
             || route.operator_instance_id() != operator_instance_id
-            || operator.source_stem_id() != stem_id
+            || operator.source_stem_id() != Some(stem_id)
         {
             return Err(SessionPrepareError::DerivedRouteMismatch {
                 edge_id: edge.spec.id,
@@ -457,7 +457,7 @@ fn map_worker_receivers(
                     node_id: target.id(),
                 })?;
             if declaration.input_route_id() != input_route_id
-                || declaration.source_stem_id() != stem_id
+                || declaration.source_stem_id() != Some(stem_id)
                 || declaration.operator_id() != &factory.manifest().operator_id
             {
                 return Err(SessionPrepareError::OperatorDeclarationMismatch {

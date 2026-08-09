@@ -98,11 +98,13 @@ pub use crate::session::{
     SignalContinuityObservation, SignalContinuityTracker, SignalDerivation, SignalDerivationError,
     SignalEnvelope, SignalEnvelopeError, SignalId, SignalLineage, SignalPayload, SignalSpec,
     SignalSpecError, SignalTiming, Source, SourceCancellation, SourceConfiguration, SourceDriver,
-    SourceDriverError, SourceEmission, SourceFactory, SourceId, SourceManifest,
-    SourceManifestError, SourceOutputBranchSpec, SourceOutputReceiver, SourcePrepareContext,
-    SourceRegistrationError, SourceRegistry, SourceRuntime, SourceRuntimeError,
-    SourceRuntimeObservationHandle, SourceRuntimeObservations, SourceTypeId, StemHandle, StemId,
-    Stream, StreamId, StreamSignal, TextFormat, TypedOperator, TypedStreamError,
+    SourceDriverError, SourceEmission, SourceFactory, SourceId, SourceInstanceHandle,
+    SourceInstanceId, SourceInstanceSpec, SourceManifest, SourceManifestError,
+    SourceOutputBranchSpec, SourceOutputHandle, SourceOutputReceiver, SourceOutputSpec,
+    SourcePrepareContext, SourceRegistrationError, SourceRegistry, SourceRouteSpec, SourceRuntime,
+    SourceRuntimeError, SourceRuntimeObservationHandle, SourceRuntimeObservations, SourceTypeId,
+    StemHandle, StemId, Stream, StreamId, StreamSignal, TextFormat, TypedOperator,
+    TypedStreamError,
 };
 
 /// Canonical types required by an external asynchronous Operator package.
@@ -222,6 +224,7 @@ pub struct Session {
     endpoint_registrations: Mutex<Vec<EndpointDriverRegistration>>,
     endpoint_definitions: Mutex<Vec<Arc<dyn NodeDefinition>>>,
     operator_registrations: Mutex<Vec<Arc<dyn AsyncOperatorFactory>>>,
+    source_registrations: Mutex<Vec<Arc<dyn SourceFactory>>>,
     capture_backends: Option<CaptureBackendConfiguration>,
     session_trace: Option<SessionTraceConfiguration>,
 }
@@ -318,6 +321,7 @@ impl SessionBuilder {
             endpoint_registrations: Mutex::new(Vec::new()),
             endpoint_definitions: Mutex::new(Vec::new()),
             operator_registrations: Mutex::new(Vec::new()),
+            source_registrations: Mutex::new(Vec::new()),
             capture_backends: self.capture_backends,
             session_trace: self.session_trace,
         }
@@ -335,6 +339,7 @@ impl Session {
             endpoint_registrations: Mutex::new(Vec::new()),
             endpoint_definitions: Mutex::new(Vec::new()),
             operator_registrations: Mutex::new(Vec::new()),
+            source_registrations: Mutex::new(Vec::new()),
             capture_backends: None,
             session_trace: None,
         }
@@ -350,6 +355,30 @@ impl Session {
 
     pub fn capture(&self, source: Source) -> Result<StemHandle, SessionError> {
         self.declaration.capture(source)
+    }
+
+    /// Declares one instance of an open external source type.
+    ///
+    /// The selected output names are validated against the registered source
+    /// manifest when this Session is compiled by the canonical engine.
+    pub fn source(
+        &self,
+        source_type_id: SourceTypeId,
+        configuration: SourceConfiguration,
+    ) -> Result<SourceInstanceHandle, SessionError> {
+        self.declaration.source(source_type_id, configuration)
+    }
+
+    /// Retains an external source factory for this Session's canonical engine.
+    pub fn register_source(
+        &self,
+        factory: Arc<dyn SourceFactory>,
+    ) -> Result<(), SessionSourceError> {
+        self.source_registrations
+            .lock()
+            .map_err(|_| SessionSourceError::RegistrationStateUnavailable)?
+            .push(factory);
+        Ok(())
     }
 
     pub fn endpoint(&self, descriptor: EndpointDescriptor) -> Result<EndpointHandle, SessionError> {
@@ -461,6 +490,7 @@ impl Session {
             endpoint_registrations,
             endpoint_definitions,
             operator_registrations,
+            source_registrations,
             capture_backends,
             session_trace,
         } = self;
@@ -518,6 +548,14 @@ impl Session {
         for factory in operator_registrations {
             let _ = host_builder.register_async_operator(factory)?;
         }
+        let source_registrations = source_registrations
+            .into_inner()
+            .map_err(|_| SessionStartError::SourceRegistrationStateUnavailable)?;
+        for factory in source_registrations {
+            let _ = host_builder
+                .engine_builder()
+                .register_source_factory(factory)?;
+        }
         if let Some(recorder) = &session_trace_recorder {
             let _ = host_builder
                 .engine_builder()
@@ -567,6 +605,7 @@ impl Session {
             endpoint_registrations: Mutex::new(Vec::new()),
             endpoint_definitions: Mutex::new(Vec::new()),
             operator_registrations: Mutex::new(Vec::new()),
+            source_registrations: Mutex::new(Vec::new()),
             capture_backends: None,
             session_trace: None,
         })
@@ -697,6 +736,10 @@ pub enum SessionStartError {
     EndpointRegistrationStateUnavailable,
     #[error("Session operator-registration state became unavailable before start")]
     OperatorRegistrationStateUnavailable,
+    #[error("Session source-registration state became unavailable before start")]
+    SourceRegistrationStateUnavailable,
+    #[error("Session source registration failed: {0}")]
+    SourceRegistration(#[from] SourceRegistrationError),
 }
 
 impl SessionStartError {
@@ -721,7 +764,9 @@ impl SessionStartError {
             Self::MissingAudioReceipt
             | Self::MissingEventReceiver
             | Self::EndpointRegistrationStateUnavailable
-            | Self::OperatorRegistrationStateUnavailable => SessionStartErrorKind::Invariant,
+            | Self::OperatorRegistrationStateUnavailable
+            | Self::SourceRegistrationStateUnavailable => SessionStartErrorKind::Invariant,
+            Self::SourceRegistration(_) => SessionStartErrorKind::Engine,
         }
     }
 
@@ -739,6 +784,12 @@ pub enum SessionEndpointError {
 #[derive(Debug, thiserror::Error)]
 pub enum SessionOperatorError {
     #[error("Session operator-registration state is unavailable")]
+    RegistrationStateUnavailable,
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum SessionSourceError {
+    #[error("Session source-registration state is unavailable")]
     RegistrationStateUnavailable,
 }
 

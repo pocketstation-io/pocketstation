@@ -7,7 +7,8 @@ use crate::graph::{
 };
 
 use crate::session::source_extension::{
-    SourceFactory, SourceManifest, SourceRegistrationError, SourceRegistry, SourceTypeId,
+    source_node_definition, SourceFactory, SourceManifest, SourceRegistrationError, SourceRegistry,
+    SourceTypeId,
 };
 use crate::session::structural_nodes::register_session_structural_nodes_with_sample_spec;
 use crate::session::{
@@ -89,6 +90,21 @@ impl SessionEngineBuilder {
         &mut self,
         factory: Arc<dyn SourceFactory>,
     ) -> Result<&mut Self, SourceRegistrationError> {
+        factory
+            .manifest()
+            .validate()
+            .map_err(SourceRegistrationError::InvalidManifest)?;
+        let source_type_id = factory.manifest().source_type_id.clone();
+        if self.source_registry.manifest(&source_type_id).is_some() {
+            return Err(SourceRegistrationError::DuplicateSourceType(source_type_id));
+        }
+        let node_type_id = NodeTypeId::from(source_type_id.as_str());
+        if self.node_registry.contains(&node_type_id) {
+            return Err(SourceRegistrationError::NodeTypeConflict(source_type_id));
+        }
+        self.node_registry
+            .register_definition(source_node_definition(Arc::clone(&factory)))
+            .map_err(|_| SourceRegistrationError::NodeTypeConflict(source_type_id.clone()))?;
         self.source_registry.register(factory)?;
         Ok(self)
     }
@@ -149,9 +165,13 @@ impl SessionEngine {
 
     pub fn compile(&self, session: Session) -> Result<CompiledSession, SessionEngineStartError> {
         let spec = session.freeze()?;
-        SessionCompiler::new(&self.node_registry, &self.endpoint_registry)
-            .compile(spec)
-            .map_err(SessionEngineStartError::Compile)
+        SessionCompiler::with_sources(
+            &self.node_registry,
+            &self.endpoint_registry,
+            &self.source_registry,
+        )
+        .compile(spec)
+        .map_err(SessionEngineStartError::Compile)
     }
 
     pub fn start_compiled(

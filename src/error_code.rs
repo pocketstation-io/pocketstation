@@ -42,7 +42,9 @@ impl SessionStartError {
             }
             Self::MissingEventReceiver => SessionStartErrorCode::MissingEventReceiver,
             Self::EndpointRegistrationStateUnavailable
-            | Self::OperatorRegistrationStateUnavailable => SessionStartErrorCode::HostSetupFailed,
+            | Self::OperatorRegistrationStateUnavailable
+            | Self::SourceRegistrationStateUnavailable => SessionStartErrorCode::HostSetupFailed,
+            Self::SourceRegistration(_) => SessionStartErrorCode::CompileFailed,
         }
     }
 }

@@ -25,6 +25,8 @@ pub mod planner;
 pub mod registry;
 pub mod runtime_node;
 pub mod signal;
+#[cfg(test)]
+mod source;
 pub mod spec;
 
 pub use async_node::{

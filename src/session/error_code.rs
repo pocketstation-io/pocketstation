@@ -10,6 +10,7 @@ use crate::session::{PolledAudioPollError, SessionError, SessionStartError, Sess
 pub enum SessionDeclarationErrorCode {
     NoSources,
     NoRoutes,
+    NoSourceOutputs,
     InvalidSelector,
     InvalidEndpoint,
     InvalidOperator,
@@ -21,6 +22,7 @@ pub enum SessionDeclarationErrorCode {
     UnsupportedVersion,
     UnknownEndpoint,
     UnknownStem,
+    UnknownSource,
     UnknownOperatorInstance,
     OperatorHasNoDestination,
 }
@@ -30,6 +32,7 @@ impl SessionDeclarationErrorCode {
         match self {
             Self::NoSources => "session.no_sources",
             Self::NoRoutes => "session.no_routes",
+            Self::NoSourceOutputs => "session.no_source_outputs",
             Self::InvalidSelector => "session.invalid_selector",
             Self::InvalidEndpoint => "session.invalid_endpoint",
             Self::InvalidOperator => "session.invalid_operator",
@@ -41,6 +44,7 @@ impl SessionDeclarationErrorCode {
             Self::UnsupportedVersion => "session.unsupported_version",
             Self::UnknownEndpoint => "session.unknown_endpoint",
             Self::UnknownStem => "session.unknown_stem",
+            Self::UnknownSource => "session.unknown_source",
             Self::UnknownOperatorInstance => "session.unknown_operator_instance",
             Self::OperatorHasNoDestination => "session.operator_has_no_destination",
         }
@@ -192,6 +196,9 @@ pub const fn session_declaration_error_code(error: &SessionError) -> SessionDecl
     match error {
         SessionError::NoSources => SessionDeclarationErrorCode::NoSources,
         SessionError::NoRoutes { .. } => SessionDeclarationErrorCode::NoRoutes,
+        SessionError::NoSourceOutputs { .. } | SessionError::NoSourceOutputRoutes { .. } => {
+            SessionDeclarationErrorCode::NoSourceOutputs
+        }
         SessionError::InvalidSelector { .. } => SessionDeclarationErrorCode::InvalidSelector,
         SessionError::InvalidEndpoint { .. } => SessionDeclarationErrorCode::InvalidEndpoint,
         SessionError::InvalidOperator { .. } => SessionDeclarationErrorCode::InvalidOperator,
@@ -203,6 +210,9 @@ pub const fn session_declaration_error_code(error: &SessionError) -> SessionDecl
         SessionError::UnsupportedVersion { .. } => SessionDeclarationErrorCode::UnsupportedVersion,
         SessionError::UnknownEndpoint { .. } => SessionDeclarationErrorCode::UnknownEndpoint,
         SessionError::UnknownStem { .. } => SessionDeclarationErrorCode::UnknownStem,
+        SessionError::UnknownSourceInstance { .. } | SessionError::UnknownSourceOutput { .. } => {
+            SessionDeclarationErrorCode::UnknownSource
+        }
         SessionError::UnknownOperatorInstance { .. } => {
             SessionDeclarationErrorCode::UnknownOperatorInstance
         }

@@ -1,5 +1,35 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W18 Session source declaration and compiler lowering — 2026-08-08
+
+- Status: `SAFE-TO-MERGE` for task `W18-SESSION-SOURCE-COMPILER`; W18 as a
+  whole remains `PARTIAL` until the next executor task proves source worker
+  lifecycle, cancellation, replacement, failure, saturation, observations,
+  and an external public-API consumer.
+- The shipping public `Session` now declares an external source by open
+  `SourceTypeId`, retains caller-owned `SourceFactory` registrations, selects
+  named manifest outputs, and exposes stable Session-assigned source, stream,
+  and instance identities. The internal declaration owner freezes those values
+  into Session schema 1.3 without adding a closed `Source` variant.
+- `SessionEngineBuilder` validates and registers each source manifest as a
+  zero-input graph definition. Session compilation resolves the exact source
+  factory and configuration, validates every selected output, lowers direct
+  and operator-bound routes through the normal graph compiler, and records
+  connected root outputs in `RuntimePlan`.
+- Audio outputs use the existing bounded audio memory plan; custom typed
+  outputs use the existing bounded typed-edge plan. No signal-specific queue,
+  invented non-audio `SampleSpec`, worker lifecycle, or alternate graph/runtime
+  was introduced. Application and microphone declarations retain their
+  optimized path.
+- Acceptance passes: 503 unit tests plus every ABI, allocation, conformance,
+  façade, and integration target; 8 focused public/Session source tests; the
+  neutral graph-root boundedness predicate; strict all-target/all-feature
+  Clippy; release `product_quickstart`; formatting; and
+  `scripts/check_protocol.sh`.
+- No scaffold, mock, loopback path, provider/customer/industrial type,
+  realtime callback change, physical-device claim, product-claim upgrade, or
+  soak was introduced.
+
 ## W17 final signal/API hardening — 2026-08-08
 
 - Status: `SAFE-TO-MERGE`; all central gates and the clean external-contract

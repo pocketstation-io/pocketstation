@@ -104,6 +104,19 @@ pub struct TypedEdgePlan {
     pub metric_id: EdgeMetricId,
 }
 
+/// One connected output of a graph root that runtime preparation must feed.
+///
+/// Each referenced edge has its bounded capacity in either `typed_edges` or
+/// `memory_plan.edge_buffers`; this record supplies the source/output identity
+/// without introducing a signal-specific queue.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SourceOutputPlan {
+    pub from: OutputPortRef,
+    pub signal: SignalSpec,
+    pub media: MediaCaps,
+    pub branch_edges: Vec<EdgeId>,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RuntimePlan {
     pub node_order: Vec<NodeId>,
@@ -113,6 +126,7 @@ pub struct RuntimePlan {
     pub fan_out: Vec<FanOutGroup>,
     pub fan_in: Vec<FanInGroup>,
     pub typed_edges: Vec<TypedEdgePlan>,
+    pub source_outputs: Vec<SourceOutputPlan>,
     pub edge_count: usize,
 }
 
@@ -134,5 +148,9 @@ impl RuntimePlan {
 
     pub fn typed_edge(&self, edge: EdgeId) -> Option<&TypedEdgePlan> {
         self.typed_edges.iter().find(|plan| plan.edge == edge)
+    }
+
+    pub fn source_output(&self, from: &OutputPortRef) -> Option<&SourceOutputPlan> {
+        self.source_outputs.iter().find(|plan| &plan.from == from)
     }
 }

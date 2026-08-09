@@ -7,6 +7,8 @@ mod engine_tests;
 mod error;
 mod error_code;
 mod events;
+#[cfg(test)]
+mod external_source;
 mod foreign_audio;
 mod foreign_audio_endpoint;
 mod host;
@@ -31,7 +33,10 @@ pub use compiler::{
     DEFAULT_MULTISTEM_RECORDING_GROUP_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID,
     RECORDER_OPERATOR_ID, RECORDING_GROUP_CONFIGURATION_KEY,
 };
-pub use draft::{DerivedStreamHandle, EndpointHandle, Operator, Session, StemHandle};
+pub use draft::{
+    DerivedStreamHandle, EndpointHandle, Operator, Session, SourceInstanceHandle,
+    SourceOutputHandle, StemHandle,
+};
 pub use endpoint::{EndpointConfiguration, EndpointDescriptor, OperatorId};
 pub use engine::{
     SessionEngine, SessionEngineBuildError, SessionEngineBuilder, SessionEngineStartError,
@@ -93,7 +98,8 @@ pub use source_extension::{
 };
 pub use spec::{
     DerivedRouteSpec, EndpointSpec, OperatorInputOrigin, OperatorInstanceId, OperatorSpec,
-    RouteSpec, SessionSpec, SessionSpecVersion, StemSpec, SESSION_SPEC_VERSION,
+    RouteSpec, SessionSpec, SessionSpecVersion, SourceInstanceId, SourceInstanceSpec,
+    SourceOutputSpec, SourceRouteSpec, StemSpec, SESSION_SPEC_VERSION,
 };
 pub use structural_nodes::{
     register_session_structural_nodes, SessionStructuralNodeRegistrationError,

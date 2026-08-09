@@ -4,8 +4,8 @@ use std::sync::Arc;
 use std::thread::JoinHandle;
 
 use crate::graph::{
-    ConfigError, ExecutionPartition, PortDirection, PortSpec, SafetyContract,
-    SignalContinuityTracker, SignalEnvelope,
+    ConfigError, ExecutionPartition, NodeConfig, NodeDefinition, NodeDescriptor, NodeTypeId,
+    PortDirection, PortSpec, SafetyContract, SignalContinuityTracker, SignalEnvelope,
 };
 use crate::runtime::{
     TypedEdgeBranchSpec, TypedEdgeBuildError, TypedEdgeFanout, TypedEdgePublishError,
@@ -41,6 +41,12 @@ impl SourceConfiguration {
 
     pub fn get(&self, key: &str) -> Option<&str> {
         self.values.get(key).map(String::as_str)
+    }
+
+    pub fn iter(&self) -> impl Iterator<Item = (&str, &str)> {
+        self.values
+            .iter()
+            .map(|(key, value)| (key.as_str(), value.as_str()))
     }
 }
 
@@ -90,7 +96,7 @@ impl SourceManifest {
         Ok(())
     }
 
-    fn output(&self, name: &str) -> Option<&PortSpec> {
+    pub fn output_port(&self, name: &str) -> Option<&PortSpec> {
         self.outputs.iter().find(|output| output.name == name)
     }
 }
@@ -162,6 +168,20 @@ impl SourceRegistry {
         }
         self.factories.insert(source_type_id, factory);
         Ok(())
+    }
+
+    pub fn validate_config(
+        &self,
+        source_type_id: &SourceTypeId,
+        configuration: &SourceConfiguration,
+    ) -> Result<(), SourceRuntimeError> {
+        let factory = self
+            .factories
+            .get(source_type_id)
+            .ok_or_else(|| SourceRuntimeError::UnregisteredSource(source_type_id.clone()))?;
+        factory
+            .validate_config(configuration)
+            .map_err(SourceRuntimeError::InvalidConfiguration)
     }
 
     pub fn spawn(
@@ -365,7 +385,7 @@ fn run_source_driver(
             break;
         };
         let output = manifest
-            .output(&emission.output_port)
+            .output_port(&emission.output_port)
             .ok_or_else(|| SourceRuntimeError::UnknownOutput(emission.output_port.clone()))?;
         if emission.envelope.spec.class != output.signal.class
             || emission.envelope.spec.schema != output.signal.schema
@@ -424,6 +444,43 @@ pub enum SourceRegistrationError {
     InvalidManifest(SourceManifestError),
     #[error("source type {0} is already registered")]
     DuplicateSourceType(SourceTypeId),
+    #[error("source type {0} conflicts with an existing graph node type")]
+    NodeTypeConflict(SourceTypeId),
+}
+
+pub(crate) const SOURCE_CONFIGURATION_PREFIX: &str = "source.config.";
+
+pub(crate) fn source_node_definition(factory: Arc<dyn SourceFactory>) -> Arc<dyn NodeDefinition> {
+    Arc::new(SourceNodeDefinition { factory })
+}
+
+struct SourceNodeDefinition {
+    factory: Arc<dyn SourceFactory>,
+}
+
+impl NodeDefinition for SourceNodeDefinition {
+    fn descriptor(&self) -> NodeDescriptor {
+        let manifest = self.factory.manifest();
+        NodeDescriptor {
+            type_id: NodeTypeId::from(manifest.source_type_id.as_str()),
+            display_name: "External source",
+            inputs: Vec::new(),
+            outputs: manifest.outputs.clone(),
+            execution: manifest.execution,
+            safety: manifest.safety,
+            stateful: true,
+        }
+    }
+
+    fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {
+        let mut source_configuration = SourceConfiguration::default();
+        for (key, value) in config.iter() {
+            if let Some(key) = key.strip_prefix(SOURCE_CONFIGURATION_PREFIX) {
+                source_configuration.insert(key, value);
+            }
+        }
+        self.factory.validate_config(&source_configuration)
+    }
 }
 
 impl std::fmt::Display for SourceTypeId {
