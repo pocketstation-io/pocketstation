@@ -1,5 +1,37 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W18 Session-owned external source lifecycle — 2026-08-08
+
+- Status: `SAFE-TO-MERGE` for task `W18-SOURCE-LIFECYCLE-EVIDENCE`.
+  Central gates and the external public-Session artifact pass; executor
+  completion remains hash-binding work and is not inferred from this label.
+- `PreparedSession` now owns external source branch mappings. Startup prepares
+  every source driver, bounded typed branch, endpoint, and PCM ingress bridge
+  behind the common closed start gate; only a fully prepared transaction
+  starts workers. `RunningSession` owns cancellation, joins, final source
+  observations, and failure accounting.
+- Custom typed signals use the shared bounded typed-edge runtime without an
+  invented audio `SampleSpec`. External PCM crosses one bounded generated-audio
+  ingress boundary into the existing specialized audio plan. The realtime
+  callback, audio pool owner, and realtime executor are unchanged.
+- `SourcePrepareContext` supplies the exact Session, source, and named-output
+  stream identities. Runtime emissions fail closed on identity mismatch and
+  observe generation, discontinuity, recovery, and policy transitions.
+  Endpoint preparation receives a typed source-route identity; non-audio
+  endpoint preparation no longer manufactures an audio context.
+- Deterministic tests prove a typed-only Session, external PCM, saturated-branch
+  isolation, generation/discontinuity transition, independent-source survival
+  after another source fails, transactional gate ordering, cancellation, join,
+  and clean driver close. The existing application/microphone suite remains
+  green.
+- Acceptance passes: 506 central unit tests plus all ABI, allocation,
+  conformance, facade, integration, and quickstart targets; strict all-target/
+  all-feature Clippy; release `product_quickstart`; and the external Lab
+  verifier/artifact using public `Session` only.
+- No scaffold, mock, provider/customer/domain type, direct-registry acceptance
+  fixture, realtime hot-path change, physical-device claim, product-claim
+  upgrade, or soak was introduced.
+
 ## W18 Session source declaration and compiler lowering — 2026-08-08
 
 - Status: `SAFE-TO-MERGE` for task `W18-SESSION-SOURCE-COMPILER`; W18 as a

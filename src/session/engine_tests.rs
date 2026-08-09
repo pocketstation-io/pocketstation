@@ -190,12 +190,19 @@ impl EndpointDriverFactory for TestEndpointFactory {
                     input
                         .context()
                         .node_prepare_context()
+                        .expect("audio endpoint prepare context")
                         .sample_spec
                         .sample_rate_hz,
                 ),
                 Ordering::Relaxed,
             );
-            match input.context().node_prepare_context().sample_spec.channels {
+            match input
+                .context()
+                .node_prepare_context()
+                .expect("audio endpoint prepare context")
+                .sample_spec
+                .channels
+            {
                 1 => {
                     self.control
                         .mono_inputs_total

@@ -247,7 +247,7 @@ fn run_bridge(
             session_id: specification.session_id,
             source_id: specification.source_id,
             stem_id: specification.stem_id,
-            clock_id: specification.clock_id,
+            clock_id: signal_lineage.map_or(specification.clock_id, |lineage| lineage.clock_id),
             sequence_num: sequence_number,
             timestamp_start_ns: timestamp_ns,
             duration_ns,

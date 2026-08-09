@@ -230,6 +230,10 @@ pub const fn session_start_failure_code(error: &SessionStartError) -> SessionSta
         }
         SessionStartError::OperatorRuntimeHost { .. } => SessionStartErrorCode::RuntimeStartFailed,
         SessionStartError::OperatorPrepare { .. } => SessionStartErrorCode::RuntimePrepareFailed,
+        SessionStartError::ExternalSourcePrepare { .. }
+        | SessionStartError::ExternalAudioBridge { .. } => {
+            SessionStartErrorCode::RuntimePrepareFailed
+        }
         SessionStartError::MissingEndpointDeclaration { .. } => {
             SessionStartErrorCode::MissingEndpointDeclaration
         }
@@ -239,7 +243,10 @@ pub const fn session_start_failure_code(error: &SessionStartError) -> SessionSta
         SessionStartError::EndpointStart { .. } => SessionStartErrorCode::EndpointStartFailed,
         SessionStartError::RuntimeRunner { .. }
         | SessionStartError::RuntimeWorkerSpawn { .. }
-        | SessionStartError::RuntimeWorkerReady { .. } => SessionStartErrorCode::RuntimeStartFailed,
+        | SessionStartError::RuntimeWorkerReady { .. }
+        | SessionStartError::ExternalSourceStart { .. } => {
+            SessionStartErrorCode::RuntimeStartFailed
+        }
         SessionStartError::Cancelled { .. } => SessionStartErrorCode::StartCancelled,
     }
 }

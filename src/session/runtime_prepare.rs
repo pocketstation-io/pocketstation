@@ -1,23 +1,24 @@
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 
-use crate::frame::{EndpointId, RouteId, SessionId, StemId};
+use crate::frame::{EndpointId, RouteId, SessionId, SourceId, StemId, StreamId};
 use crate::frame::{SampleFormat, SampleSpec};
 use crate::graph::ir::GraphIr;
 use crate::graph::{
-    AsyncOperatorFactory, EdgeId, NodeConfig, NodeId, NodeRegistry, NodeTypeId, PrepareContext,
-    SignalSpec,
+    AsyncOperatorFactory, EdgeContract, EdgeId, NodeConfig, NodeId, NodeRegistry, NodeTypeId,
+    PrepareContext, SignalSpec,
 };
 use crate::graph::{ChannelLayout, MediaCaps};
 use crate::runtime::{
     plan_source_channel, AsyncOperatorOutputBranchSpec, ExecError, PlanEdgeReceiver,
     PlanRunnerCancellation, PlanRunnerError, PlanSourceInput, PlanSourceSender,
-    RealtimePlanExecutor,
+    RealtimePlanExecutor, TypedEdgeBranchSpec,
 };
 
+use crate::session::compiler::EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID;
 use crate::session::{
-    CompiledSession, SessionSpec, Source, APPLICATION_SOURCE_NODE_TYPE_ID,
-    MICROPHONE_SOURCE_NODE_TYPE_ID,
+    CompiledSession, SessionSpec, Source, SourceConfiguration, SourceInstanceId, SourceTypeId,
+    APPLICATION_SOURCE_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID,
 };
 
 #[derive(Debug, thiserror::Error)]
@@ -30,6 +31,18 @@ pub enum SessionPrepareError {
     MissingSourceNode { stem_id: StemId },
     #[error("compiled stem {stem_id:?} maps to more than one source node")]
     DuplicateSourceNode { stem_id: StemId },
+    #[error("compiled external source instance {source_instance_id:?} output '{output_port}' has no matching audio ingress node")]
+    MissingExternalAudioIngress {
+        source_instance_id: SourceInstanceId,
+        output_port: String,
+    },
+    #[error("external source instance {source_instance_id:?} output '{output_port}' has incompatible or non-concrete PCM media")]
+    InvalidExternalAudioMedia {
+        source_instance_id: SourceInstanceId,
+        output_port: String,
+    },
+    #[error("compiled external source route {route_id:?} has no matching edge")]
+    MissingExternalSourceRouteEdge { route_id: RouteId },
     #[error("worker edge {edge_id:?} target is absent from the compiled graph")]
     MissingWorkerTarget { edge_id: EdgeId },
     #[error("worker edge {edge_id:?} is absent from the compiled graph")]
@@ -110,6 +123,67 @@ pub struct PreparedWorkerMapping {
     pub(crate) node_configuration: NodeConfig,
     pub(crate) receiver: PlanEdgeReceiver,
     pub(crate) prepare_context: PrepareContext,
+    pub(crate) origin: PreparedWorkerOrigin,
+}
+
+#[derive(Clone, Copy, Debug)]
+pub(crate) enum PreparedWorkerOrigin {
+    Stem(StemId),
+    ExternalAudio {
+        stem_id: StemId,
+        source_id: SourceId,
+        stream_id: StreamId,
+    },
+}
+
+impl PreparedWorkerOrigin {
+    pub(crate) const fn stem_id(&self) -> StemId {
+        match self {
+            Self::Stem(stem_id) | Self::ExternalAudio { stem_id, .. } => *stem_id,
+        }
+    }
+}
+
+pub(crate) struct PreparedExternalSourceMapping {
+    pub(crate) instance_id: SourceInstanceId,
+    pub(crate) source_id: SourceId,
+    pub(crate) source_type_id: SourceTypeId,
+    pub(crate) configuration: SourceConfiguration,
+    pub(crate) branches: Vec<PreparedExternalSourceBranch>,
+}
+
+pub(crate) struct PreparedExternalSourceBranch {
+    pub(crate) output_port: String,
+    pub(crate) stream_id: StreamId,
+    pub(crate) branch: TypedEdgeBranchSpec,
+    pub(crate) target: PreparedExternalSourceTarget,
+}
+
+pub(crate) enum PreparedExternalSourceTarget {
+    AudioIngress(PreparedExternalAudioIngress),
+    TypedEndpoint(PreparedExternalTypedRoute),
+}
+
+pub(crate) struct PreparedExternalAudioIngress {
+    pub(crate) stem_id: StemId,
+    pub(crate) stream_id: StreamId,
+    pub(crate) source_id: SourceId,
+    pub(crate) sample_spec: SampleSpec,
+    pub(crate) samples_per_frame: usize,
+    pub(crate) sender: PlanSourceSender,
+}
+
+pub(crate) struct PreparedExternalTypedRoute {
+    pub(crate) route_id: RouteId,
+    pub(crate) endpoint_id: EndpointId,
+    pub(crate) endpoint_operator_id: crate::endpoint::OperatorId,
+    pub(crate) endpoint_node_type_id: NodeTypeId,
+    pub(crate) stream_id: StreamId,
+    pub(crate) source_id: SourceId,
+    pub(crate) node_configuration: NodeConfig,
+    pub(crate) signal_spec: SignalSpec,
+    pub(crate) media: MediaCaps,
+    pub(crate) edge_contract: EdgeContract,
 }
 
 pub struct PreparedDerivedRouteMapping {
@@ -195,6 +269,7 @@ pub struct PreparedSession {
     pub(crate) source_inputs: Vec<PlanSourceInput>,
     pub(crate) worker_mappings: Vec<PreparedWorkerMapping>,
     pub(crate) operator_mappings: Vec<PreparedOperatorMapping>,
+    pub(crate) external_source_mappings: Vec<PreparedExternalSourceMapping>,
     pub(crate) cancellation: PlanRunnerCancellation,
 }
 
@@ -249,11 +324,21 @@ pub fn prepare_session_runtime(
     let (executor, worker_receivers) =
         RealtimePlanExecutor::new(&runtime_plan, &graph_ir, node_registry, prepare_context)?;
     let cancellation = PlanRunnerCancellation::new();
-    let (source_mappings, source_inputs) = prepare_sources(
+    let (source_mappings, mut source_inputs) = prepare_sources(
         &spec,
         &graph_ir,
         source_queue_capacity_frames,
         &cancellation,
+    )?;
+    let external_source_mappings = prepare_external_sources(
+        &spec,
+        &graph_ir,
+        &runtime_plan,
+        node_registry,
+        prepare_context,
+        source_queue_capacity_frames,
+        &cancellation,
+        &mut source_inputs,
     )?;
     let (worker_mappings, operator_mappings) = map_worker_receivers(
         &spec,
@@ -271,8 +356,192 @@ pub fn prepare_session_runtime(
         source_inputs,
         worker_mappings,
         operator_mappings,
+        external_source_mappings,
         cancellation,
     })
+}
+
+#[allow(clippy::too_many_arguments)]
+fn prepare_external_sources(
+    spec: &SessionSpec,
+    graph_ir: &GraphIr,
+    runtime_plan: &crate::graph::plan::RuntimePlan,
+    node_registry: &NodeRegistry,
+    default_prepare_context: &PrepareContext,
+    source_queue_capacity_frames: usize,
+    cancellation: &PlanRunnerCancellation,
+    source_inputs: &mut Vec<PlanSourceInput>,
+) -> Result<Vec<PreparedExternalSourceMapping>, SessionPrepareError> {
+    let mut prepared = Vec::with_capacity(spec.source_instances().len());
+    for source in spec.source_instances() {
+        let descriptor = node_registry
+            .definition(&NodeTypeId::from(source.source_type_id().as_str()))
+            .expect("compiled external source definition");
+        let manifest = descriptor.descriptor();
+        let mut branches = Vec::new();
+        for port in &manifest.outputs {
+            let Some(output) = spec.source_outputs().iter().find(|output| {
+                output.source_instance_id() == source.instance_id()
+                    && output.output_port() == port.name
+            }) else {
+                continue;
+            };
+            if port.signal.class.is_audio() {
+                let node = graph_ir
+                    .nodes
+                    .iter()
+                    .find(|node| {
+                        node.spec.type_id.as_str() == EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID
+                            && node.spec.config.get("source_instance_id")
+                                == Some(source.instance_id().value().to_string().as_str())
+                            && node.spec.config.get("source_output_port")
+                                == Some(output.output_port())
+                    })
+                    .ok_or_else(|| SessionPrepareError::MissingExternalAudioIngress {
+                        source_instance_id: source.instance_id(),
+                        output_port: output.output_port().to_owned(),
+                    })?;
+                let MediaCaps::Audio(audio) = port.media else {
+                    return Err(SessionPrepareError::InvalidExternalAudioMedia {
+                        source_instance_id: source.instance_id(),
+                        output_port: output.output_port().to_owned(),
+                    });
+                };
+                let channels = match audio.channel_layout {
+                    ChannelLayout::Mono => 1,
+                    ChannelLayout::Stereo => 2,
+                    ChannelLayout::Any => default_prepare_context.sample_spec.channels,
+                };
+                let sample_spec = SampleSpec::new(
+                    audio
+                        .sample_rate_hz
+                        .unwrap_or(default_prepare_context.sample_spec.sample_rate_hz),
+                    channels,
+                    audio.format,
+                );
+                if sample_spec != default_prepare_context.sample_spec {
+                    return Err(SessionPrepareError::InvalidExternalAudioMedia {
+                        source_instance_id: source.instance_id(),
+                        output_port: output.output_port().to_owned(),
+                    });
+                }
+                let frame_samples = audio.frame_samples.ok_or_else(|| {
+                    SessionPrepareError::InvalidExternalAudioMedia {
+                        source_instance_id: source.instance_id(),
+                        output_port: output.output_port().to_owned(),
+                    }
+                })?;
+                let (sender, input) = plan_source_channel(
+                    node.id(),
+                    source_queue_capacity_frames,
+                    cancellation.clone(),
+                )?;
+                source_inputs.push(input);
+                let mut edge_contract = EdgeContract::voice_default();
+                edge_contract.media = port.media;
+                branches.push(PreparedExternalSourceBranch {
+                    output_port: output.output_port().to_owned(),
+                    stream_id: output.stream_id(),
+                    branch: TypedEdgeBranchSpec {
+                        capacity_signals: source_queue_capacity_frames,
+                        edge_contract,
+                    },
+                    target: PreparedExternalSourceTarget::AudioIngress(
+                        PreparedExternalAudioIngress {
+                            stem_id: external_audio_stem_id(spec, output),
+                            stream_id: output.stream_id(),
+                            source_id: source.source_id(),
+                            sample_spec,
+                            samples_per_frame: frame_samples.saturating_mul(usize::from(channels)),
+                            sender,
+                        },
+                    ),
+                });
+                continue;
+            }
+
+            for route in spec.source_routes().iter().filter(|route| {
+                route.source_instance_id() == source.instance_id()
+                    && route.output_port() == output.output_port()
+            }) {
+                let route_id = route.id().0.to_string();
+                let edge = graph_ir
+                    .edges
+                    .iter()
+                    .find(|edge| {
+                        graph_ir.node(edge.spec.to.node).is_some_and(|target| {
+                            target.spec.config.get("route_id") == Some(route_id.as_str())
+                        })
+                    })
+                    .ok_or(SessionPrepareError::MissingExternalSourceRouteEdge {
+                        route_id: route.id(),
+                    })?;
+                let typed_edge = runtime_plan.typed_edge(edge.spec.id).ok_or(
+                    SessionPrepareError::MissingTypedEdgePlan {
+                        edge_id: edge.spec.id,
+                    },
+                )?;
+                let target = graph_ir.node(edge.spec.to.node).ok_or(
+                    SessionPrepareError::MissingWorkerTarget {
+                        edge_id: edge.spec.id,
+                    },
+                )?;
+                let endpoint = spec
+                    .endpoints()
+                    .iter()
+                    .find(|endpoint| endpoint.id() == route.endpoint_id())
+                    .ok_or(SessionPrepareError::UnknownWorkerRoute {
+                        edge_id: edge.spec.id,
+                        route_id: route.id(),
+                    })?;
+                branches.push(PreparedExternalSourceBranch {
+                    output_port: output.output_port().to_owned(),
+                    stream_id: output.stream_id(),
+                    branch: TypedEdgeBranchSpec {
+                        capacity_signals: typed_edge.capacity_signals,
+                        edge_contract: typed_edge.contract,
+                    },
+                    target: PreparedExternalSourceTarget::TypedEndpoint(
+                        PreparedExternalTypedRoute {
+                            route_id: route.id(),
+                            endpoint_id: route.endpoint_id(),
+                            endpoint_operator_id: endpoint.operator_id().clone(),
+                            endpoint_node_type_id: endpoint.node_type_id().clone(),
+                            stream_id: route.stream_id(),
+                            source_id: route.source_id(),
+                            node_configuration: target.spec.config.clone(),
+                            signal_spec: typed_edge.signal.clone(),
+                            media: typed_edge.media,
+                            edge_contract: typed_edge.contract,
+                        },
+                    ),
+                });
+            }
+        }
+        prepared.push(PreparedExternalSourceMapping {
+            instance_id: source.instance_id(),
+            source_id: source.source_id(),
+            source_type_id: source.source_type_id().clone(),
+            configuration: source.configuration().clone(),
+            branches,
+        });
+    }
+    Ok(prepared)
+}
+
+fn external_audio_stem_id(spec: &SessionSpec, output: &crate::session::SourceOutputSpec) -> StemId {
+    let built_in_max = spec
+        .stems()
+        .iter()
+        .map(|stem| stem.id().0)
+        .max()
+        .unwrap_or(0);
+    let output_index = spec
+        .source_outputs()
+        .iter()
+        .position(|candidate| candidate == output)
+        .unwrap_or(0) as u64;
+    StemId(built_in_max.saturating_add(output_index).saturating_add(1))
 }
 
 fn prepare_sources(
@@ -494,8 +763,54 @@ fn map_worker_receivers(
         let prepare_context = prepare_context_for_media(edge.media)
             .ok_or(SessionPrepareError::MissingWorkerSampleSpec { edge_id })?;
         let route_id = RouteId(parse_metadata(&target.spec.config, edge_id, "route_id")?);
-        let stem_id = StemId(parse_metadata(&target.spec.config, edge_id, "stem_id")?);
         let endpoint_id = EndpointId(parse_metadata(&target.spec.config, edge_id, "endpoint_id")?);
+        if let Some(source_instance_id) = target.spec.config.get("source_instance_id") {
+            let source_instance_id =
+                SourceInstanceId::new(source_instance_id.parse().map_err(|_| {
+                    SessionPrepareError::InvalidWorkerMetadata {
+                        edge_id,
+                        key: "source_instance_id",
+                        value: source_instance_id.to_owned(),
+                    }
+                })?);
+            let route = spec
+                .source_routes()
+                .iter()
+                .find(|route| route.id() == route_id)
+                .ok_or(SessionPrepareError::UnknownWorkerRoute { edge_id, route_id })?;
+            if route.source_instance_id() != source_instance_id
+                || route.endpoint_id() != endpoint_id
+            {
+                return Err(SessionPrepareError::UnknownWorkerRoute { edge_id, route_id });
+            }
+            if !mapped_routes.insert(route_id) {
+                return Err(SessionPrepareError::DuplicateWorkerRoute { route_id });
+            }
+            let output = spec
+                .source_outputs()
+                .iter()
+                .find(|output| {
+                    output.source_instance_id() == source_instance_id
+                        && output.output_port() == route.output_port()
+                })
+                .ok_or(SessionPrepareError::UnknownWorkerRoute { edge_id, route_id })?;
+            let stem_id = external_audio_stem_id(spec, output);
+            mappings.push(PreparedWorkerMapping {
+                route_id,
+                stem_id,
+                endpoint_id,
+                node_configuration: target.spec.config.clone(),
+                receiver,
+                prepare_context,
+                origin: PreparedWorkerOrigin::ExternalAudio {
+                    stem_id,
+                    source_id: route.source_id(),
+                    stream_id: route.stream_id(),
+                },
+            });
+            continue;
+        }
+        let stem_id = StemId(parse_metadata(&target.spec.config, edge_id, "stem_id")?);
         let route = spec
             .routes()
             .iter()
@@ -521,6 +836,7 @@ fn map_worker_receivers(
             node_configuration: target.spec.config.clone(),
             receiver,
             prepare_context,
+            origin: PreparedWorkerOrigin::Stem(stem_id),
         });
     }
     for (operator_node_id, edge_id, derived) in pending_derived {
@@ -532,7 +848,11 @@ fn map_worker_receivers(
             .derived_routes
             .push(derived);
     }
-    if mappings.len() != spec.routes().len()
+    let expected_audio_source_routes = mappings
+        .iter()
+        .filter(|mapping| matches!(mapping.origin, PreparedWorkerOrigin::ExternalAudio { .. }))
+        .count();
+    if mappings.len() != spec.routes().len() + expected_audio_source_routes
         || operator_mappings.len() != spec.operators().len()
         || operator_mappings
             .iter()
@@ -541,7 +861,7 @@ fn map_worker_receivers(
             != spec.derived_routes().len()
     {
         return Err(SessionPrepareError::WorkerTopologyMismatch {
-            expected: spec.routes().len(),
+            expected: spec.routes().len() + expected_audio_source_routes,
             actual: mappings.len(),
             expected_operator_inputs: spec.operators().len(),
             actual_operator_inputs: operator_mappings.len(),

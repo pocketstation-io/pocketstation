@@ -6,7 +6,7 @@ use crate::graph::ir::GraphIr;
 use crate::graph::planner::RuntimePlanner;
 use crate::graph::{
     BackpressurePolicy, CopyPolicy, EdgeContract, EdgeObservabilityLevel, LossPolicy, MediaCaps,
-    NodeConfig, NodeHandle, NodeRegistry, NodeTypeId, Pipeline,
+    NodeConfig, NodeHandle, NodeRegistry, NodeTypeId, OutputPortRef, Pipeline,
 };
 
 use crate::session::{
@@ -17,6 +17,7 @@ use crate::session::{
 
 pub const APPLICATION_SOURCE_NODE_TYPE_ID: &str = "source.application";
 pub const MICROPHONE_SOURCE_NODE_TYPE_ID: &str = "source.microphone";
+pub(crate) const EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID: &str = "source.external-audio-ingress";
 pub const CONNECTOR_NODE_TYPE_ID: &str = "endpoint.connector.external";
 pub const BROWSER_NODE_TYPE_ID: &str = "endpoint.browser.remote";
 pub const BROWSER_OPERATOR_ID: &str = "io.pocketstation.browser.webrtc.v1";
@@ -361,6 +362,7 @@ impl<'registry> SessionCompiler<'registry> {
         let mut pipeline = Pipeline::new();
         let mut source_nodes = HashMap::with_capacity(spec.stems().len());
         let mut external_source_nodes = HashMap::with_capacity(spec.source_instances().len());
+        let mut external_audio_ingress_nodes = HashMap::new();
 
         for stem in spec.stems() {
             let source_node = pipeline.add_node(
@@ -375,7 +377,35 @@ impl<'registry> SessionCompiler<'registry> {
                 NodeTypeId::from(source.source_type_id().as_str()),
                 external_source_node_config(spec.session_id(), source),
             );
-            external_source_nodes.insert(source.instance_id(), source_node);
+            external_source_nodes.insert(source.instance_id(), source_node.id());
+            let manifest = self
+                .source_registry
+                .and_then(|registry| registry.manifest(source.source_type_id()))
+                .ok_or_else(|| SessionCompileError::UnknownExternalSource {
+                    source_type_id: source.source_type_id().clone(),
+                })?;
+            for output in spec
+                .source_outputs()
+                .iter()
+                .filter(|output| output.source_instance_id() == source.instance_id())
+            {
+                let port = manifest.output_port(output.output_port()).ok_or_else(|| {
+                    SessionCompileError::UnknownExternalSourceOutput {
+                        source_type_id: source.source_type_id().clone(),
+                        output_port: output.output_port().to_owned(),
+                    }
+                })?;
+                if port.signal.class.is_audio() {
+                    let ingress = pipeline.add_node(
+                        NodeTypeId::from(EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID),
+                        external_audio_ingress_node_config(spec.session_id(), source, output),
+                    );
+                    external_audio_ingress_nodes.insert(
+                        (source.instance_id(), output.output_port().to_owned()),
+                        ingress.id(),
+                    );
+                }
+            }
         }
 
         for route in spec.routes() {
@@ -440,10 +470,11 @@ impl<'registry> SessionCompiler<'registry> {
                 .ok_or(SessionError::UnknownEndpoint {
                     endpoint_id: route.endpoint_id(),
                 })?;
-            let source_node = external_source_nodes.get(&source.instance_id()).ok_or(
-                SessionError::UnknownSourceInstance {
-                    source_instance_id: source.instance_id(),
-                },
+            let source_output = external_source_output_ref(
+                source.instance_id(),
+                route.output_port(),
+                &external_source_nodes,
+                &external_audio_ingress_nodes,
             )?;
             let endpoint_descriptor = self
                 .node_registry
@@ -464,15 +495,12 @@ impl<'registry> SessionCompiler<'registry> {
             );
             if endpoint.operator_id().as_str() == RECORDER_OPERATOR_ID {
                 pipeline.connect_with(
-                    source_node.out(route.output_port()),
+                    source_output,
                     endpoint_node.in_(&endpoint_input.name),
                     recording_edge_contract(Some(endpoint_input.media)),
                 );
             } else {
-                pipeline.connect(
-                    source_node.out(route.output_port()),
-                    endpoint_node.in_(&endpoint_input.name),
-                );
+                pipeline.connect(source_output, endpoint_node.in_(&endpoint_input.name));
             }
         }
 
@@ -500,12 +528,12 @@ impl<'registry> SessionCompiler<'registry> {
                     source_instance_id,
                     output_port,
                     ..
-                } => external_source_nodes
-                    .get(source_instance_id)
-                    .ok_or(SessionError::UnknownSourceInstance {
-                        source_instance_id: *source_instance_id,
-                    })?
-                    .out(output_port),
+                } => external_source_output_ref(
+                    *source_instance_id,
+                    output_port,
+                    &external_source_nodes,
+                    &external_audio_ingress_nodes,
+                )?,
                 OperatorInputOrigin::OperatorOutput {
                     operator_instance_id,
                     output_port,
@@ -590,6 +618,28 @@ impl<'registry> SessionCompiler<'registry> {
         }
         Ok(pipeline.into_spec())
     }
+}
+
+fn external_source_output_ref(
+    source_instance_id: SourceInstanceId,
+    output_port: &str,
+    source_nodes: &HashMap<SourceInstanceId, crate::graph::NodeId>,
+    audio_ingress_nodes: &HashMap<(SourceInstanceId, String), crate::graph::NodeId>,
+) -> Result<OutputPortRef, SessionCompileError> {
+    if let Some(node) = audio_ingress_nodes.get(&(source_instance_id, output_port.to_owned())) {
+        return Ok(OutputPortRef {
+            node: *node,
+            port: AUDIO_OUTPUT_PORT.to_owned(),
+        });
+    }
+    let node = source_nodes
+        .get(&source_instance_id)
+        .copied()
+        .ok_or(SessionError::UnknownSourceInstance { source_instance_id })?;
+    Ok(OutputPortRef {
+        node,
+        port: output_port.to_owned(),
+    })
 }
 
 fn recording_edge_contract(media: Option<MediaCaps>) -> EdgeContract {
@@ -795,6 +845,22 @@ fn external_source_node_config(session_id: SessionId, source: &SourceInstanceSpe
         config = config.with(&format!("{manifest_prefix}{key}"), value);
     }
     config
+}
+
+fn external_audio_ingress_node_config(
+    session_id: SessionId,
+    source: &SourceInstanceSpec,
+    output: &crate::session::SourceOutputSpec,
+) -> NodeConfig {
+    NodeConfig::new()
+        .with("session_id", &session_id.0.to_string())
+        .with(
+            "source_instance_id",
+            &source.instance_id().value().to_string(),
+        )
+        .with("source_id", &source.source_id().0.to_string())
+        .with("stream_id", &output.stream_id().0.to_string())
+        .with("source_output_port", output.output_port())
 }
 
 #[derive(Clone)]

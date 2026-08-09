@@ -117,21 +117,24 @@ impl SessionEngineHost {
         self.polled_audio_receipts
             .get(polled_audio_receipt_index)
             .map(|receipt| {
-                let (sources, routes, operators, derived_routes) = running_session.map_or_else(
-                    || {
-                        (
-                            Box::default(),
-                            Box::default(),
-                            Box::default(),
-                            Box::default(),
-                        )
-                    },
-                    RunningSession::indexed_metrics_full,
-                );
+                let (sources, external_sources, routes, operators, derived_routes) =
+                    running_session.map_or_else(
+                        || {
+                            (
+                                Box::default(),
+                                Box::default(),
+                                Box::default(),
+                                Box::default(),
+                                Box::default(),
+                            )
+                        },
+                        RunningSession::indexed_metrics_full,
+                    );
                 SessionMetricsSnapshot::new(
                     events.observations(),
                     receipt.observations(),
                     sources,
+                    external_sources,
                     routes,
                     operators,
                     derived_routes,

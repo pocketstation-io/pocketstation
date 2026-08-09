@@ -2,13 +2,15 @@ use std::sync::atomic::{AtomicU64, Ordering};
 
 use crate::capture::CaptureOwnerObservations;
 use crate::endpoint::EndpointDriverObservations;
-use crate::frame::{EndpointId, RouteId, StemId};
+use crate::frame::{EndpointId, RouteId, SourceId, StemId};
 use crate::runtime::{
     AsyncOperatorObservations, AsyncOperatorOutputObservations, EdgeObservations,
     PlanSourceInputObservations,
 };
 
-use crate::session::{OperatorInstanceId, PolledAudioObservations};
+use crate::session::{
+    OperatorInstanceId, PolledAudioObservations, SourceInstanceId, SourceRuntimeObservations,
+};
 
 /// Point-in-time observations for a session's bounded control-event queue.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -30,6 +32,7 @@ pub struct SessionMetricsSnapshot {
     event_queue: SessionEventQueueObservations,
     polled_audio: PolledAudioObservations,
     sources: Box<[SessionSourceMetrics]>,
+    external_sources: Box<[SessionExternalSourceMetrics]>,
     routes: Box<[SessionRouteMetrics]>,
     operators: Box<[SessionOperatorMetrics]>,
     derived_routes: Box<[SessionDerivedRouteMetrics]>,
@@ -40,6 +43,7 @@ impl SessionMetricsSnapshot {
         event_queue: SessionEventQueueObservations,
         polled_audio: PolledAudioObservations,
         sources: Box<[SessionSourceMetrics]>,
+        external_sources: Box<[SessionExternalSourceMetrics]>,
         routes: Box<[SessionRouteMetrics]>,
         operators: Box<[SessionOperatorMetrics]>,
         derived_routes: Box<[SessionDerivedRouteMetrics]>,
@@ -48,6 +52,7 @@ impl SessionMetricsSnapshot {
             event_queue,
             polled_audio,
             sources,
+            external_sources,
             routes,
             operators,
             derived_routes,
@@ -68,6 +73,14 @@ impl SessionMetricsSnapshot {
 
     pub fn source(&self, index: usize) -> Option<&SessionSourceMetrics> {
         self.sources.get(index)
+    }
+
+    pub fn external_source_count(&self) -> usize {
+        self.external_sources.len()
+    }
+
+    pub fn external_source(&self, index: usize) -> Option<&SessionExternalSourceMetrics> {
+        self.external_sources.get(index)
     }
 
     pub fn route_count(&self) -> usize {
@@ -100,6 +113,13 @@ pub struct SessionSourceMetrics {
     pub stem_id: StemId,
     pub capture: CaptureOwnerObservations,
     pub ingress: PlanSourceInputObservations,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct SessionExternalSourceMetrics {
+    pub source_instance_id: SourceInstanceId,
+    pub source_id: SourceId,
+    pub runtime: SourceRuntimeObservations,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

@@ -13,27 +13,32 @@ use crate::endpoint::{
     endpoint_start_gate, DerivedEndpointDriverInput, EndpointDriverInput,
     EndpointDriverObservations, EndpointDriverRegistry, EndpointFailure,
     EndpointFinalizationOutcome, EndpointPrepareContext, EndpointPrepareError,
-    EndpointRouteContext, EndpointStartFailure, PreparedEndpoint, RunningEndpoint,
-    SessionTimelineOrigin,
+    EndpointRouteContext, EndpointSignalRouteContext, EndpointStartFailure, PreparedEndpoint,
+    RunningEndpoint, SessionTimelineOrigin,
 };
-use crate::frame::{EndpointId, RouteId, SessionId, StemId};
+use crate::frame::{ClockDomainId, EndpointId, RouteId, SessionId, StemId};
 use crate::runtime::{
     AsyncOperatorObservationHandle, AsyncOperatorObservations, AsyncOperatorOutput,
     AsyncOperatorOutputObservationHandle, AsyncOperatorWorker, AsyncRuntimeHost,
-    CompiledOperatorInputContract, PlanEdgeObservationHandle, PlanRunnerDrainPolicy,
-    PlanRunnerError, PlanRunnerFinishSummary, PlanSourceObservationHandle, PlanSourceSendOutcome,
-    RealtimePlanRunner,
+    CompiledOperatorInputContract, GeneratedAudioBridge, GeneratedAudioBridgeSpec,
+    PlanEdgeObservationHandle, PlanRunnerDrainPolicy, PlanRunnerError, PlanRunnerFinishSummary,
+    PlanSourceObservationHandle, PlanSourceSendOutcome, RealtimePlanRunner,
 };
 
 use crate::session::events::{session_event_channel, SessionEventSender};
-use crate::session::runtime_prepare::{PreparedDerivedRouteMapping, PreparedOperatorMapping};
+use crate::session::runtime_prepare::{
+    PreparedDerivedRouteMapping, PreparedExternalSourceMapping, PreparedExternalSourceTarget,
+    PreparedOperatorMapping, PreparedWorkerOrigin,
+};
 use crate::session::{
     ApplicationSelector, DeviceSelector, EndpointObservationStage, OperatorInstanceId,
-    PreparedSession, PreparedWorkerMapping, SessionComponentId, SessionControlFailure,
-    SessionDerivedRouteMetrics, SessionEventReceiver, SessionFinalizationFailure,
-    SessionFinalizationStage, SessionLifecycleState, SessionOperatorMetrics,
-    SessionRollbackFailure, SessionRollbackStage, SessionRouteMetrics, SessionSourceFailure,
-    SessionSourceMetrics, SessionTerminalOutcome, SessionTraceRecorderHandle, Source,
+    PreparedSession, PreparedSourceRuntime, PreparedWorkerMapping, SessionComponentId,
+    SessionControlFailure, SessionDerivedRouteMetrics, SessionEventReceiver,
+    SessionExternalSourceMetrics, SessionFinalizationFailure, SessionFinalizationStage,
+    SessionLifecycleState, SessionOperatorMetrics, SessionRollbackFailure, SessionRollbackStage,
+    SessionRouteMetrics, SessionSourceFailure, SessionSourceMetrics, SessionTerminalOutcome,
+    SessionTraceRecorderHandle, Source, SourceOutputBranchSpec, SourceOutputIdentity,
+    SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceSessionContext,
     RECORDING_GROUP_CONFIGURATION_KEY,
 };
 
@@ -88,6 +93,21 @@ pub enum SessionStartError {
     InvalidOptions { reason: &'static str },
     #[error("Session requires exactly one application and one microphone source")]
     UnsupportedSourceTopology,
+    #[error("external source preparation failed: {message}")]
+    ExternalSourcePrepare {
+        message: String,
+        rollback_failures_total: u64,
+    },
+    #[error("external source audio ingress failed: {message}")]
+    ExternalAudioBridge {
+        message: String,
+        rollback_failures_total: u64,
+    },
+    #[error("external source start failed: {message}")]
+    ExternalSourceStart {
+        message: String,
+        rollback_failures_total: u64,
+    },
     #[error("async operator runtime host could not start: {message}")]
     OperatorRuntimeHost {
         message: String,
@@ -185,6 +205,18 @@ impl SessionStartError {
                 ..
             }
             | Self::OperatorPrepare {
+                rollback_failures_total,
+                ..
+            }
+            | Self::ExternalSourcePrepare {
+                rollback_failures_total,
+                ..
+            }
+            | Self::ExternalAudioBridge {
+                rollback_failures_total,
+                ..
+            }
+            | Self::ExternalSourceStart {
                 rollback_failures_total,
                 ..
             }
@@ -323,8 +355,22 @@ struct DerivedRouteObservationBinding {
     output: AsyncOperatorOutputObservationHandle,
 }
 
+struct PreparedExternalRuntimeBinding {
+    instance_id: crate::session::SourceInstanceId,
+    source_id: crate::frame::SourceId,
+    runtime: PreparedSourceRuntime,
+}
+
+struct RunningExternalRuntimeBinding {
+    instance_id: crate::session::SourceInstanceId,
+    source_id: crate::frame::SourceId,
+    runtime: SourceRuntime,
+    observations: SourceRuntimeObservationHandle,
+}
+
 type IndexedSessionMetrics = (
     Box<[SessionSourceMetrics]>,
+    Box<[SessionExternalSourceMetrics]>,
     Box<[SessionRouteMetrics]>,
     Box<[SessionOperatorMetrics]>,
     Box<[SessionDerivedRouteMetrics]>,
@@ -448,10 +494,13 @@ pub struct RunningSession {
     event_sender: SessionEventSender,
     event_receiver: Option<SessionEventReceiver>,
     source_observations: Vec<SourceObservationBinding>,
+    external_sources: Vec<RunningExternalRuntimeBinding>,
+    external_audio_bridges: Vec<GeneratedAudioBridge>,
     route_observations: Vec<RouteObservationBinding>,
     derived_route_observations: Vec<DerivedRouteObservationBinding>,
     final_operator_observations: Vec<FinalOperatorObservation>,
     final_endpoint_observations: Vec<FinalEndpointObservation>,
+    final_external_source_observations: Vec<SessionExternalSourceMetrics>,
     stop_outcome: Option<SessionStopOutcome>,
 }
 
@@ -499,6 +548,21 @@ impl RunningSession {
 
     pub(crate) fn indexed_metrics_full(&self) -> IndexedSessionMetrics {
         let (sources, routes) = self.indexed_metrics();
+        let external_sources = if self.external_sources.is_empty() {
+            self.final_external_source_observations
+                .clone()
+                .into_boxed_slice()
+        } else {
+            self.external_sources
+                .iter()
+                .map(|binding| SessionExternalSourceMetrics {
+                    source_instance_id: binding.instance_id,
+                    source_id: binding.source_id,
+                    runtime: binding.observations.snapshot(),
+                })
+                .collect::<Vec<_>>()
+                .into_boxed_slice()
+        };
         let operators =
             self.operators
                 .iter()
@@ -554,7 +618,7 @@ impl RunningSession {
             })
             .collect::<Vec<_>>()
             .into_boxed_slice();
-        (sources, routes, operators, derived_routes)
+        (sources, external_sources, routes, operators, derived_routes)
     }
 
     pub fn stop(&mut self) -> SessionStopOutcome {
@@ -583,7 +647,29 @@ impl RunningSession {
         let _ = self
             .event_sender
             .publish_lifecycle(self.session_id, SessionLifecycleState::Stopping);
+        for source in &self.external_sources {
+            source.runtime.cancel();
+        }
         self.stop_requested.store(true, Ordering::Release);
+        let mut final_external_source_observations =
+            Vec::with_capacity(self.external_sources.len());
+        let external_source_failures_total = self
+            .external_sources
+            .drain(..)
+            .map(|mut source| {
+                let failed = u64::from(source.runtime.join().is_err());
+                final_external_source_observations.push(SessionExternalSourceMetrics {
+                    source_instance_id: source.instance_id,
+                    source_id: source.source_id,
+                    runtime: source.observations.snapshot(),
+                });
+                failed
+            })
+            .sum::<u64>();
+        self.final_external_source_observations = final_external_source_observations;
+        for bridge in self.external_audio_bridges.drain(..) {
+            bridge.cancel_and_join();
+        }
         let worker = self.runtime_worker.take().map(JoinHandle::join);
         let (operator_outcomes, operator_runtime_shutdown_error) =
             self.async_runtime_host.take().map_or_else(
@@ -638,6 +724,12 @@ impl RunningSession {
             operator_runtime_shutdown_error.as_deref(),
             &endpoint_outcomes,
         );
+        let outcome = SessionStopOutcome {
+            runtime_failures_total: outcome
+                .runtime_failures_total
+                .saturating_add(external_source_failures_total),
+            ..outcome
+        };
         publish_terminal_events(
             self.session_id,
             &self.event_sender,
@@ -714,10 +806,12 @@ pub fn start_prepared_session_cancellable(
     options: SessionStartOptions,
     start_cancellation: SessionStartCancellation,
 ) -> Result<RunningSession, SessionStartFailure> {
+    let source_registry = SourceRegistry::default();
     start_prepared_session_cancellable_with_trace(
         prepared,
         capture_backends,
         endpoint_registry,
+        &source_registry,
         options,
         start_cancellation,
         None,
@@ -728,6 +822,7 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
     prepared: PreparedSession,
     capture_backends: CaptureBackendSet<'_>,
     endpoint_registry: &EndpointDriverRegistry,
+    source_registry: &SourceRegistry,
     options: SessionStartOptions,
     start_cancellation: SessionStartCancellation,
     session_trace_recorder: Option<SessionTraceRecorderHandle>,
@@ -741,6 +836,7 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
         source_inputs,
         worker_mappings,
         operator_mappings,
+        external_source_mappings,
         cancellation,
     } = prepared;
     let session_id = spec.session_id();
@@ -764,6 +860,29 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
         SessionTimelineOrigin::from_monotonic_timestamp_ns(crate::timing::monotonic_timestamp_ns());
     let (gate_controller, start_gate) = endpoint_start_gate();
     let (capture_gate_controller, capture_start_gate) = capture_delivery_start_gate();
+    let (
+        mut prepared_external_sources,
+        external_audio_bridges,
+        mut prepared_external_endpoints,
+        external_route_observations,
+    ) = match prepare_external_source_runtimes(
+        session_id,
+        external_source_mappings,
+        source_registry,
+        endpoint_registry,
+        session_timeline_origin,
+    ) {
+        Ok(prepared) => prepared,
+        Err((error, rollback_failures)) => {
+            return Err(complete_start_failure(
+                session_id,
+                &event_sender,
+                event_receiver,
+                error,
+                rollback_failures,
+            ));
+        }
+    };
     let source_ingress_observations = source_mappings
         .iter()
         .map(|mapping| (mapping.stem_id, mapping.sender.observation_handle()))
@@ -794,6 +913,7 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
             ));
         }
     };
+    prepared_endpoints.append(&mut prepared_external_endpoints);
     if start_cancellation.is_requested() {
         let rollback = rollback_prepared_endpoints(prepared_endpoints);
         return Err(complete_start_failure(
@@ -1156,6 +1276,49 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
         })
         .collect::<Vec<_>>();
 
+    let mut external_sources: Vec<RunningExternalRuntimeBinding> =
+        Vec::with_capacity(prepared_external_sources.len());
+    while let Some(prepared_source) = prepared_external_sources.pop() {
+        let observations;
+        let runtime = match prepared_source.runtime.start() {
+            Ok(runtime) => {
+                observations = runtime.observations();
+                runtime
+            }
+            Err(error) => {
+                for source in &external_sources {
+                    source.runtime.cancel();
+                }
+                for mut source in external_sources {
+                    let _ = source.runtime.join();
+                }
+                let running_derived_endpoints = running_endpoints.split_off(raw_endpoint_count);
+                let mut rollback = rollback_running_endpoints(running_derived_endpoints);
+                if let Some(host) = async_runtime_host.as_ref() {
+                    rollback.append(rollback_running_operators(host, running_operators));
+                }
+                rollback.append(rollback_started_runtime(&stop_requested, runtime_worker));
+                rollback.append(rollback_running_endpoints(running_endpoints));
+                return Err(complete_start_failure(
+                    session_id,
+                    &event_sender,
+                    event_receiver,
+                    SessionStartError::ExternalSourceStart {
+                        message: error.to_string(),
+                        rollback_failures_total: rollback.failures_total(),
+                    },
+                    rollback.failures,
+                ));
+            }
+        };
+        external_sources.push(RunningExternalRuntimeBinding {
+            instance_id: prepared_source.instance_id,
+            source_id: prepared_source.source_id,
+            runtime,
+            observations,
+        });
+    }
+
     if start_cancellation.is_requested() {
         let running_derived_endpoints = running_endpoints.split_off(raw_endpoint_count);
         let mut rollback = rollback_running_endpoints(running_derived_endpoints);
@@ -1190,12 +1353,179 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
         event_sender,
         event_receiver: Some(event_receiver),
         source_observations,
+        external_sources,
+        external_audio_bridges,
         route_observations,
-        derived_route_observations,
+        derived_route_observations: derived_route_observations
+            .into_iter()
+            .chain(external_route_observations)
+            .collect(),
         final_operator_observations: Vec::new(),
         final_endpoint_observations: Vec::new(),
+        final_external_source_observations: Vec::new(),
         stop_outcome: None,
     })
+}
+
+type ExternalSourcePreparation = (
+    Vec<PreparedExternalRuntimeBinding>,
+    Vec<GeneratedAudioBridge>,
+    Vec<PreparedEndpointBinding>,
+    Vec<DerivedRouteObservationBinding>,
+);
+
+fn prepare_external_source_runtimes(
+    session_id: SessionId,
+    mappings: Vec<PreparedExternalSourceMapping>,
+    source_registry: &SourceRegistry,
+    endpoint_registry: &EndpointDriverRegistry,
+    session_timeline_origin: SessionTimelineOrigin,
+) -> Result<ExternalSourcePreparation, (SessionStartError, Vec<SessionRollbackFailure>)> {
+    let mut sources = Vec::with_capacity(mappings.len());
+    let mut bridges = Vec::new();
+    let mut endpoints = Vec::new();
+    let mut route_observations = Vec::new();
+    for mapping in mappings {
+        let branch_specs = mapping
+            .branches
+            .iter()
+            .map(|branch| SourceOutputBranchSpec {
+                output_port: branch.output_port.clone(),
+                branch: branch.branch,
+            })
+            .collect::<Vec<_>>();
+        let mut output_identities = Vec::new();
+        for branch in &mapping.branches {
+            if !output_identities
+                .iter()
+                .any(|identity: &SourceOutputIdentity| identity.output_port == branch.output_port)
+            {
+                output_identities.push(SourceOutputIdentity {
+                    output_port: branch.output_port.clone(),
+                    stream_id: branch.stream_id,
+                });
+            }
+        }
+        let (runtime, receivers) = match source_registry.prepare_session(
+            &mapping.source_type_id,
+            &mapping.configuration,
+            &branch_specs,
+            SourceSessionContext {
+                session_id,
+                source_id: mapping.source_id,
+                outputs: output_identities,
+            },
+        ) {
+            Ok(prepared) => prepared,
+            Err(error) => {
+                let rollback = rollback_prepared_endpoints(endpoints);
+                return Err((
+                    SessionStartError::ExternalSourcePrepare {
+                        message: error.to_string(),
+                        rollback_failures_total: rollback.failures_total(),
+                    },
+                    rollback.failures,
+                ));
+            }
+        };
+        if receivers.len() != mapping.branches.len() {
+            let rollback = rollback_prepared_endpoints(endpoints);
+            return Err((
+                SessionStartError::ExternalSourcePrepare {
+                    message: "prepared source receiver topology does not match compiled branches"
+                        .to_owned(),
+                    rollback_failures_total: rollback.failures_total(),
+                },
+                rollback.failures,
+            ));
+        }
+        for (branch, receiver) in mapping.branches.into_iter().zip(receivers) {
+            debug_assert_eq!(branch.output_port, receiver.output_port);
+            match branch.target {
+                PreparedExternalSourceTarget::AudioIngress(audio) => {
+                    let pool_slots = branch.branch.capacity_signals.clamp(1, 64);
+                    let bridge = GeneratedAudioBridge::spawn(
+                        receiver.receiver,
+                        audio.sender,
+                        GeneratedAudioBridgeSpec {
+                            session_id,
+                            stem_id: audio.stem_id,
+                            stream_id: audio.stream_id,
+                            source_id: audio.source_id,
+                            clock_id: ClockDomainId(0),
+                            sample_spec: audio.sample_spec,
+                            samples_per_frame: audio.samples_per_frame,
+                            pool_slots,
+                        },
+                    )
+                    .map_err(|error| {
+                        let rollback = rollback_prepared_endpoints(std::mem::take(&mut endpoints));
+                        (
+                            SessionStartError::ExternalAudioBridge {
+                                message: error.to_string(),
+                                rollback_failures_total: rollback.failures_total(),
+                            },
+                            rollback.failures,
+                        )
+                    })?;
+                    bridges.push(bridge);
+                }
+                PreparedExternalSourceTarget::TypedEndpoint(route) => {
+                    let observation = receiver.receiver.observation_handle();
+                    let context = EndpointPrepareContext::new_signal(
+                        session_id,
+                        route.endpoint_id,
+                        route.node_configuration,
+                    )
+                    .with_signal_route(
+                        EndpointSignalRouteContext::new(
+                            route.route_id,
+                            route.source_id,
+                            route.stream_id,
+                        ),
+                        session_timeline_origin,
+                    )
+                    .with_derived_contract(
+                        route.signal_spec,
+                        route.media,
+                        route.edge_contract,
+                    );
+                    let endpoint = match endpoint_registry.prepare_derived_batch(
+                        &route.endpoint_operator_id,
+                        &route.endpoint_node_type_id,
+                        vec![DerivedEndpointDriverInput::new(receiver.receiver, context)],
+                    ) {
+                        Ok(endpoint) => endpoint,
+                        Err(source) => {
+                            let rollback = rollback_prepared_endpoints(endpoints);
+                            return Err((
+                                SessionStartError::EndpointPrepare {
+                                    source,
+                                    rollback_failures_total: rollback.failures_total(),
+                                },
+                                rollback.failures,
+                            ));
+                        }
+                    };
+                    route_observations.push(DerivedRouteObservationBinding {
+                        route_id: route.route_id,
+                        endpoint_id: route.endpoint_id,
+                        output: observation,
+                    });
+                    endpoints.push(PreparedEndpointBinding {
+                        identities: vec![(route.route_id, route.endpoint_id)],
+                        endpoint,
+                    });
+                }
+            }
+        }
+        sources.push(PreparedExternalRuntimeBinding {
+            instance_id: mapping.instance_id,
+            source_id: mapping.source_id,
+            runtime,
+        });
+    }
+    Ok((sources, bridges, endpoints, route_observations))
 }
 
 fn validate_start_options(options: SessionStartOptions) -> Result<(), SessionStartError> {
@@ -1233,7 +1563,11 @@ fn validate_source_topology(prepared: &PreparedSession) -> Result<(), SessionSta
         .iter()
         .filter(|stem| matches!(stem.source(), Source::Microphone(_)))
         .count();
-    if application_sources == 1 && microphone_sources == 1 {
+    let built_in_topology_valid = (application_sources == 0 && microphone_sources == 0)
+        || (application_sources == 1 && microphone_sources == 1);
+    if built_in_topology_valid
+        && (!prepared.spec.source_instances().is_empty() || application_sources == 1)
+    {
         Ok(())
     } else {
         Err(SessionStartError::UnsupportedSourceTopology)
@@ -1310,21 +1644,36 @@ fn prepare_endpoints(
                         Vec::new(),
                     )
                 })?;
-            let grouped_stem = spec
-                .stems()
-                .iter()
-                .find(|candidate| candidate.id() == mapping.stem_id)
-                .ok_or_else(|| (SessionStartError::UnsupportedSourceTopology, Vec::new()))?;
-            let context = EndpointPrepareContext::new(
+            if let PreparedWorkerOrigin::Stem(stem_id) = mapping.origin {
+                if !spec
+                    .stems()
+                    .iter()
+                    .any(|candidate| candidate.id() == stem_id)
+                {
+                    return Err((SessionStartError::UnsupportedSourceTopology, Vec::new()));
+                }
+            }
+            let mut context = EndpointPrepareContext::new(
                 session_id,
                 grouped_endpoint.id(),
                 mapping.node_configuration,
                 mapping.prepare_context,
             )
             .with_session_route(
-                EndpointRouteContext::new(grouped_stem.id(), mapping.route_id),
+                EndpointRouteContext::new(mapping.origin.stem_id(), mapping.route_id),
                 session_timeline_origin,
             );
+            if let PreparedWorkerOrigin::ExternalAudio {
+                source_id,
+                stream_id,
+                ..
+            } = mapping.origin
+            {
+                context = context.with_signal_route(
+                    EndpointSignalRouteContext::new(mapping.route_id, source_id, stream_id),
+                    session_timeline_origin,
+                );
+            }
             identities.push((mapping.route_id, mapping.endpoint_id));
             inputs.push(EndpointDriverInput::new(mapping.receiver, context));
         }

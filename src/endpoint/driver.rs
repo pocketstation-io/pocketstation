@@ -2,7 +2,7 @@ use std::fmt;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
-use crate::frame::{EndpointId, RouteId, SessionId, StemId};
+use crate::frame::{EndpointId, RouteId, SessionId, SourceId, StemId, StreamId};
 use crate::graph::{EdgeContract, MediaCaps, NodeConfig, PrepareContext, SignalSpec};
 
 /// One Session-owned anchor in PocketStation's monotonic nanosecond clock.
@@ -33,6 +33,39 @@ pub struct EndpointRouteContext {
     route_id: RouteId,
 }
 
+/// Stable route identity for a signal produced by an open external source.
+///
+/// This is intentionally separate from [`EndpointRouteContext`]: a typed
+/// signal is not an audio stem and must not be assigned a synthetic stem ID.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct EndpointSignalRouteContext {
+    route_id: RouteId,
+    source_id: SourceId,
+    stream_id: StreamId,
+}
+
+impl EndpointSignalRouteContext {
+    pub const fn new(route_id: RouteId, source_id: SourceId, stream_id: StreamId) -> Self {
+        Self {
+            route_id,
+            source_id,
+            stream_id,
+        }
+    }
+
+    pub const fn route_id(self) -> RouteId {
+        self.route_id
+    }
+
+    pub const fn source_id(self) -> SourceId {
+        self.source_id
+    }
+
+    pub const fn stream_id(self) -> StreamId {
+        self.stream_id
+    }
+}
+
 impl EndpointRouteContext {
     pub const fn new(stem_id: StemId, route_id: RouteId) -> Self {
         Self { stem_id, route_id }
@@ -52,9 +85,10 @@ pub struct EndpointPrepareContext {
     session_id: SessionId,
     endpoint_id: EndpointId,
     route_context: Option<EndpointRouteContext>,
+    signal_route_context: Option<EndpointSignalRouteContext>,
     session_timeline_origin: Option<SessionTimelineOrigin>,
     node_configuration: NodeConfig,
-    node_prepare_context: PrepareContext,
+    node_prepare_context: Option<PrepareContext>,
     derived_signal_spec: Option<SignalSpec>,
     derived_media: Option<MediaCaps>,
     derived_edge_contract: Option<EdgeContract>,
@@ -71,9 +105,31 @@ impl EndpointPrepareContext {
             session_id,
             endpoint_id,
             route_context: None,
+            signal_route_context: None,
             session_timeline_origin: None,
             node_configuration,
-            node_prepare_context,
+            node_prepare_context: Some(node_prepare_context),
+            derived_signal_spec: None,
+            derived_media: None,
+            derived_edge_contract: None,
+        }
+    }
+
+    /// Creates context for a non-audio signal without manufacturing an audio
+    /// `SampleSpec` merely to satisfy an endpoint API.
+    pub fn new_signal(
+        session_id: SessionId,
+        endpoint_id: EndpointId,
+        node_configuration: NodeConfig,
+    ) -> Self {
+        Self {
+            session_id,
+            endpoint_id,
+            route_context: None,
+            signal_route_context: None,
+            session_timeline_origin: None,
+            node_configuration,
+            node_prepare_context: None,
             derived_signal_spec: None,
             derived_media: None,
             derived_edge_contract: None,
@@ -91,6 +147,16 @@ impl EndpointPrepareContext {
         session_timeline_origin: SessionTimelineOrigin,
     ) -> Self {
         self.route_context = Some(route_context);
+        self.session_timeline_origin = Some(session_timeline_origin);
+        self
+    }
+
+    pub fn with_signal_route(
+        mut self,
+        route_context: EndpointSignalRouteContext,
+        session_timeline_origin: SessionTimelineOrigin,
+    ) -> Self {
+        self.signal_route_context = Some(route_context);
         self.session_timeline_origin = Some(session_timeline_origin);
         self
     }
@@ -119,6 +185,10 @@ impl EndpointPrepareContext {
         self.route_context
     }
 
+    pub const fn signal_route_context(&self) -> Option<EndpointSignalRouteContext> {
+        self.signal_route_context
+    }
+
     pub const fn session_timeline_origin(&self) -> Option<SessionTimelineOrigin> {
         self.session_timeline_origin
     }
@@ -127,8 +197,8 @@ impl EndpointPrepareContext {
         &self.node_configuration
     }
 
-    pub const fn node_prepare_context(&self) -> &PrepareContext {
-        &self.node_prepare_context
+    pub const fn node_prepare_context(&self) -> Option<&PrepareContext> {
+        self.node_prepare_context.as_ref()
     }
 
     pub const fn derived_signal_spec(&self) -> Option<&SignalSpec> {

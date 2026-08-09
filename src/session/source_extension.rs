@@ -3,6 +3,7 @@ use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
 use std::thread::JoinHandle;
 
+use crate::frame::{SessionId, SourceId, StreamId};
 use crate::graph::{
     ConfigError, ExecutionPartition, NodeConfig, NodeDefinition, NodeDescriptor, NodeTypeId,
     PortDirection, PortSpec, SafetyContract, SignalContinuityTracker, SignalEnvelope,
@@ -104,6 +105,28 @@ impl SourceManifest {
 #[derive(Debug, Clone)]
 pub struct SourcePrepareContext {
     pub manifest: SourceManifest,
+    pub session: Option<SourceSessionContext>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SourceOutputIdentity {
+    pub output_port: String,
+    pub stream_id: StreamId,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SourceSessionContext {
+    pub session_id: SessionId,
+    pub source_id: SourceId,
+    pub outputs: Vec<SourceOutputIdentity>,
+}
+
+impl SourceSessionContext {
+    pub fn output(&self, output_port: &str) -> Option<&SourceOutputIdentity> {
+        self.outputs
+            .iter()
+            .find(|output| output.output_port == output_port)
+    }
 }
 
 #[derive(Clone)]
@@ -190,12 +213,37 @@ impl SourceRegistry {
         configuration: &SourceConfiguration,
         branch_specs: &[SourceOutputBranchSpec],
     ) -> Result<(SourceRuntime, Vec<SourceOutputReceiver>), SourceRuntimeError> {
+        let (prepared, receivers) = self.prepare(source_type_id, configuration, branch_specs)?;
+        Ok((prepared.start()?, receivers))
+    }
+
+    pub fn prepare(
+        &self,
+        source_type_id: &SourceTypeId,
+        configuration: &SourceConfiguration,
+        branch_specs: &[SourceOutputBranchSpec],
+    ) -> Result<(PreparedSourceRuntime, Vec<SourceOutputReceiver>), SourceRuntimeError> {
         let factory = self
             .factories
             .get(source_type_id)
             .cloned()
             .ok_or_else(|| SourceRuntimeError::UnregisteredSource(source_type_id.clone()))?;
-        SourceRuntime::spawn(factory, configuration, branch_specs)
+        PreparedSourceRuntime::prepare(factory, configuration, branch_specs, None)
+    }
+
+    pub fn prepare_session(
+        &self,
+        source_type_id: &SourceTypeId,
+        configuration: &SourceConfiguration,
+        branch_specs: &[SourceOutputBranchSpec],
+        session: SourceSessionContext,
+    ) -> Result<(PreparedSourceRuntime, Vec<SourceOutputReceiver>), SourceRuntimeError> {
+        let factory = self
+            .factories
+            .get(source_type_id)
+            .cloned()
+            .ok_or_else(|| SourceRuntimeError::UnregisteredSource(source_type_id.clone()))?;
+        PreparedSourceRuntime::prepare(factory, configuration, branch_specs, Some(session))
     }
 }
 
@@ -216,6 +264,9 @@ struct SourceRuntimeObservationState {
     dropped_total: AtomicU64,
     failure_total: AtomicU64,
     cancellation_total: AtomicU64,
+    discontinuity_total: AtomicU64,
+    recovery_total: AtomicU64,
+    policy_change_total: AtomicU64,
     ready: AtomicBool,
     joined: AtomicBool,
 }
@@ -226,6 +277,9 @@ pub struct SourceRuntimeObservations {
     pub dropped_total: u64,
     pub failure_total: u64,
     pub cancellation_total: u64,
+    pub discontinuity_total: u64,
+    pub recovery_total: u64,
+    pub policy_change_total: u64,
     pub ready: bool,
     pub joined: bool,
 }
@@ -242,6 +296,9 @@ impl SourceRuntimeObservationHandle {
             dropped_total: self.state.dropped_total.load(Ordering::Relaxed),
             failure_total: self.state.failure_total.load(Ordering::Relaxed),
             cancellation_total: self.state.cancellation_total.load(Ordering::Relaxed),
+            discontinuity_total: self.state.discontinuity_total.load(Ordering::Relaxed),
+            recovery_total: self.state.recovery_total.load(Ordering::Relaxed),
+            policy_change_total: self.state.policy_change_total.load(Ordering::Relaxed),
             ready: self.state.ready.load(Ordering::Acquire),
             joined: self.state.joined.load(Ordering::Acquire),
         }
@@ -254,11 +311,23 @@ pub struct SourceRuntime {
     join: Option<JoinHandle<Result<(), SourceRuntimeError>>>,
 }
 
-impl SourceRuntime {
-    pub fn spawn(
+/// Fully validated source resources which have not started producing signals.
+///
+/// Keeping this state distinct is what lets Session prepare every bounded
+/// branch and endpoint transactionally before the first source callback runs.
+pub struct PreparedSourceRuntime {
+    driver: Option<Box<dyn SourceDriver>>,
+    manifest: SourceManifest,
+    fanouts: Option<BTreeMap<String, TypedEdgeFanout>>,
+    session: Option<SourceSessionContext>,
+}
+
+impl PreparedSourceRuntime {
+    fn prepare(
         factory: Arc<dyn SourceFactory>,
         configuration: &SourceConfiguration,
         branch_specs: &[SourceOutputBranchSpec],
+        session: Option<SourceSessionContext>,
     ) -> Result<(Self, Vec<SourceOutputReceiver>), SourceRuntimeError> {
         factory
             .manifest()
@@ -300,24 +369,48 @@ impl SourceRuntime {
         driver
             .prepare(&SourcePrepareContext {
                 manifest: manifest.clone(),
+                session: session.clone(),
             })
             .map_err(SourceRuntimeError::Driver)?;
+        Ok((
+            Self {
+                driver: Some(driver),
+                manifest,
+                fanouts: Some(fanouts),
+                session,
+            },
+            receivers,
+        ))
+    }
+
+    pub fn start(mut self) -> Result<SourceRuntime, SourceRuntimeError> {
+        let mut driver = self
+            .driver
+            .take()
+            .ok_or(SourceRuntimeError::PreparedStateConsumed)?;
+        let manifest = self.manifest.clone();
+        let mut fanouts = self
+            .fanouts
+            .take()
+            .ok_or(SourceRuntimeError::PreparedStateConsumed)?;
+        let session = self.session.clone();
         let cancellation = SourceCancellation {
             cancelled: Arc::new(AtomicBool::new(false)),
         };
         let task_cancellation = cancellation.clone();
         let state = Arc::new(SourceRuntimeObservationState::default());
-        state.ready.store(true, Ordering::Release);
         let task_state = Arc::clone(&state);
         let join = std::thread::Builder::new()
             .name("pks-typed-source".to_owned())
             .spawn(move || {
+                task_state.ready.store(true, Ordering::Release);
                 let result = run_source_driver(
                     driver.as_mut(),
                     &manifest,
                     &mut fanouts,
                     &task_cancellation,
                     &task_state,
+                    session.as_ref(),
                 );
                 if result.is_err() {
                     task_state.failure_total.fetch_add(1, Ordering::Relaxed);
@@ -332,14 +425,31 @@ impl SourceRuntime {
                 result.and(close_result)
             })
             .map_err(SourceRuntimeError::Spawn)?;
-        Ok((
-            Self {
-                cancellation,
-                observations: SourceRuntimeObservationHandle { state },
-                join: Some(join),
-            },
-            receivers,
-        ))
+        Ok(SourceRuntime {
+            cancellation,
+            observations: SourceRuntimeObservationHandle { state },
+            join: Some(join),
+        })
+    }
+}
+
+impl Drop for PreparedSourceRuntime {
+    fn drop(&mut self) {
+        if let Some(driver) = self.driver.as_mut() {
+            let _ = driver.close();
+        }
+    }
+}
+
+impl SourceRuntime {
+    pub fn spawn(
+        factory: Arc<dyn SourceFactory>,
+        configuration: &SourceConfiguration,
+        branch_specs: &[SourceOutputBranchSpec],
+    ) -> Result<(Self, Vec<SourceOutputReceiver>), SourceRuntimeError> {
+        let (prepared, receivers) =
+            PreparedSourceRuntime::prepare(factory, configuration, branch_specs, None)?;
+        Ok((prepared.start()?, receivers))
     }
 
     pub fn cancel(&self) {
@@ -375,6 +485,7 @@ fn run_source_driver(
     fanouts: &mut BTreeMap<String, TypedEdgeFanout>,
     cancellation: &SourceCancellation,
     observations: &SourceRuntimeObservationState,
+    session: Option<&SourceSessionContext>,
 ) -> Result<(), SourceRuntimeError> {
     let mut continuity = BTreeMap::<String, SignalContinuityTracker>::new();
     while !cancellation.is_cancelled() {
@@ -393,11 +504,39 @@ fn run_source_driver(
         {
             return Err(SourceRuntimeError::OutputContractMismatch);
         }
-        continuity
+        if let Some(session) = session {
+            let identity = session
+                .output(&emission.output_port)
+                .ok_or_else(|| SourceRuntimeError::UnknownOutput(emission.output_port.clone()))?;
+            let lineage = emission
+                .envelope
+                .lineage
+                .ok_or(SourceRuntimeError::MissingSessionLineage)?;
+            if lineage.session_id != session.session_id
+                || lineage.source_id != session.source_id
+                || lineage.stream_id != identity.stream_id
+            {
+                return Err(SourceRuntimeError::OutputIdentityMismatch);
+            }
+        }
+        let continuity_observation = continuity
             .entry(emission.output_port.clone())
             .or_default()
             .observe(&emission.envelope)
             .map_err(SourceRuntimeError::Continuity)?;
+        if continuity_observation.discontinuity_observed {
+            observations
+                .discontinuity_total
+                .fetch_add(1, Ordering::Relaxed);
+        }
+        if continuity_observation.source_recovered {
+            observations.recovery_total.fetch_add(1, Ordering::Relaxed);
+        }
+        if continuity_observation.policy_changed {
+            observations
+                .policy_change_total
+                .fetch_add(1, Ordering::Relaxed);
+        }
         let fanout = fanouts
             .get_mut(&emission.output_port)
             .ok_or_else(|| SourceRuntimeError::UnroutedOutput(emission.output_port.clone()))?;
@@ -513,6 +652,10 @@ pub enum SourceRuntimeError {
     UnroutedOutput(String),
     #[error("source output does not match its manifest contract")]
     OutputContractMismatch,
+    #[error("Session-owned source output is missing signal lineage")]
+    MissingSessionLineage,
+    #[error("source output identity does not match the Session prepare context")]
+    OutputIdentityMismatch,
     #[error("source continuity validation failed: {0}")]
     Continuity(crate::graph::SignalContinuityError),
     #[error("typed source publish failed: {0}")]
@@ -523,6 +666,8 @@ pub enum SourceRuntimeError {
     WorkerPanicked,
     #[error("source worker has already been joined")]
     AlreadyJoined,
+    #[error("prepared source state has already been consumed")]
+    PreparedStateConsumed,
     #[error("source type {0} is not registered")]
     UnregisteredSource(SourceTypeId),
 }

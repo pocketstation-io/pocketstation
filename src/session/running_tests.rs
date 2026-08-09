@@ -1116,7 +1116,8 @@ fn given_typed_operator_routes_when_stopped_then_partial_final_and_metrics_are_t
         .expect("typed derived Session start");
     wait_for_operator_process(&operator);
     let outcome = running.stop();
-    let (_sources, raw_routes, operators, derived_routes) = running.indexed_metrics_full();
+    let (_sources, _external_sources, raw_routes, operators, derived_routes) =
+        running.indexed_metrics_full();
 
     assert!(outcome.is_success());
     assert_eq!(raw_routes.len(), 1);
@@ -1182,7 +1183,8 @@ fn given_blocked_operator_when_cancelled_then_session_cancellation_is_bounded_an
     let started = Instant::now();
     let outcome = running.cancel();
     let elapsed = started.elapsed();
-    let (_sources, _raw_routes, operators, derived_routes) = running.indexed_metrics_full();
+    let (_sources, _external_sources, _raw_routes, operators, derived_routes) =
+        running.indexed_metrics_full();
 
     assert!(outcome.is_success());
     assert!(

@@ -10,15 +10,17 @@ use crate::graph::{
     NodeFactory, NodeRegistry, NodeTypeId, PrepareContext, RuntimeNode,
 };
 
+use crate::session::compiler::EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID;
 use crate::session::{
     APPLICATION_SOURCE_NODE_TYPE_ID, BROWSER_NODE_TYPE_ID, CONNECTOR_NODE_TYPE_ID,
     MICROPHONE_SOURCE_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID,
 };
 
 const AUDIO_PORT: &str = "audio";
-const STRUCTURAL_NODE_TYPE_IDS: [&str; 5] = [
+const STRUCTURAL_NODE_TYPE_IDS: [&str; 6] = [
     APPLICATION_SOURCE_NODE_TYPE_ID,
     MICROPHONE_SOURCE_NODE_TYPE_ID,
+    EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID,
     CONNECTOR_NODE_TYPE_ID,
     BROWSER_NODE_TYPE_ID,
     RECORDER_NODE_TYPE_ID,
@@ -54,6 +56,7 @@ pub(crate) fn register_session_structural_nodes_with_sample_spec(
     for factory in [
         SourceIngressFactory::application(sample_spec),
         SourceIngressFactory::microphone(sample_spec),
+        SourceIngressFactory::external_audio(sample_spec),
     ] {
         let node_type_id = factory.node_type_id().to_owned();
         registry.register(Arc::new(factory)).map_err(|_| {
@@ -75,10 +78,11 @@ pub(crate) fn register_session_structural_nodes_with_sample_spec(
     Ok(())
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 enum SourceIngressKind {
     Application,
     Microphone,
+    ExternalAudio,
 }
 
 struct SourceIngressFactory {
@@ -101,10 +105,18 @@ impl SourceIngressFactory {
         }
     }
 
+    const fn external_audio(sample_spec: SampleSpec) -> Self {
+        Self {
+            kind: SourceIngressKind::ExternalAudio,
+            sample_spec,
+        }
+    }
+
     fn node_type_id(&self) -> &'static str {
         match self.kind {
             SourceIngressKind::Application => APPLICATION_SOURCE_NODE_TYPE_ID,
             SourceIngressKind::Microphone => MICROPHONE_SOURCE_NODE_TYPE_ID,
+            SourceIngressKind::ExternalAudio => EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID,
         }
     }
 
@@ -112,13 +124,19 @@ impl SourceIngressFactory {
         match self.kind {
             SourceIngressKind::Application => "Application Capture Ingress",
             SourceIngressKind::Microphone => "Microphone Capture Ingress",
+            SourceIngressKind::ExternalAudio => "External Audio Ingress",
         }
     }
 
-    const fn channel_layout(&self) -> ChannelLayout {
+    fn channel_layout(&self) -> ChannelLayout {
         match self.kind {
             SourceIngressKind::Application => ChannelLayout::Stereo,
             SourceIngressKind::Microphone => ChannelLayout::Mono,
+            SourceIngressKind::ExternalAudio => match self.sample_spec.channels {
+                1 => ChannelLayout::Mono,
+                2 => ChannelLayout::Stereo,
+                _ => ChannelLayout::Any,
+            },
         }
     }
 }
@@ -142,6 +160,13 @@ impl NodeFactory for SourceIngressFactory {
 
     fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {
         require_nonempty(config, "session_id")?;
+        if self.kind == SourceIngressKind::ExternalAudio {
+            require_nonempty(config, "source_instance_id")?;
+            require_nonempty(config, "source_id")?;
+            require_nonempty(config, "stream_id")?;
+            require_nonempty(config, "source_output_port")?;
+            return Ok(());
+        }
         require_nonempty(config, "stem_id")?;
         let selector_kind = require_nonempty(config, "selector_kind")?;
         match (self.kind, selector_kind) {
@@ -159,6 +184,7 @@ impl NodeFactory for SourceIngressFactory {
                 require_nonempty(config, "selector_value")?;
                 Ok(())
             }
+            (SourceIngressKind::ExternalAudio, _) => unreachable!(),
             _ => Err(ConfigError::Invalid {
                 key: "selector_kind".to_owned(),
                 reason: format!(

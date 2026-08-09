@@ -9,6 +9,8 @@ mod error_code;
 mod events;
 #[cfg(test)]
 mod external_source;
+#[cfg(test)]
+mod external_source_lifecycle;
 mod foreign_audio;
 mod foreign_audio_endpoint;
 mod host;
@@ -64,9 +66,10 @@ pub use host::{
 };
 pub use observations::{
     EndpointObservationStage, SessionDerivedRouteMetrics, SessionEventQueueObservations,
-    SessionMetricsSnapshot, SessionOperatorMetrics, SessionRouteDropObservations,
-    SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit,
-    SessionRouteMetrics, SessionRouteObservationInterval, SessionSourceMetrics,
+    SessionExternalSourceMetrics, SessionMetricsSnapshot, SessionOperatorMetrics,
+    SessionRouteDropObservations, SessionRouteLatencyBoundary, SessionRouteLatencyObservations,
+    SessionRouteLatencyUnit, SessionRouteMetrics, SessionRouteObservationInterval,
+    SessionSourceMetrics,
 };
 pub use recording::{
     session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations,
@@ -90,11 +93,11 @@ pub use session_trace::{
     SessionTraceValidationError,
 };
 pub use source_extension::{
-    SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission,
-    SourceFactory, SourceManifest, SourceManifestError, SourceOutputBranchSpec,
-    SourceOutputReceiver, SourcePrepareContext, SourceRegistrationError, SourceRegistry,
-    SourceRuntime, SourceRuntimeError, SourceRuntimeObservationHandle, SourceRuntimeObservations,
-    SourceTypeId,
+    PreparedSourceRuntime, SourceCancellation, SourceConfiguration, SourceDriver,
+    SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError,
+    SourceOutputBranchSpec, SourceOutputIdentity, SourceOutputReceiver, SourcePrepareContext,
+    SourceRegistrationError, SourceRegistry, SourceRuntime, SourceRuntimeError,
+    SourceRuntimeObservationHandle, SourceRuntimeObservations, SourceSessionContext, SourceTypeId,
 };
 pub use spec::{
     DerivedRouteSpec, EndpointSpec, OperatorInputOrigin, OperatorInstanceId, OperatorSpec,

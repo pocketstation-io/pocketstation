@@ -185,7 +185,15 @@ impl EndpointDriverFactory for MultistemEndpointCoordinator {
                     declaration.recorder.label.as_str()
                 )));
             }
-            let sample_spec = context.node_prepare_context().sample_spec;
+            let sample_spec = context
+                .node_prepare_context()
+                .ok_or_else(|| {
+                    EndpointFailure::new(
+                        EndpointFailureStage::Prepare,
+                        "multistem recording requires an audio prepare context",
+                    )
+                })?
+                .sample_spec;
             if sample_spec.sample_rate_hz != declaration.recorder.sample_rate_hz
                 || sample_spec.channels != declaration.recorder.channels
             {
@@ -343,7 +351,15 @@ impl EndpointDriverFactory for SessionMultistemEndpointCoordinator {
                     label.as_str()
                 )));
             }
-            let sample_spec = context.node_prepare_context().sample_spec;
+            let sample_spec = context
+                .node_prepare_context()
+                .ok_or_else(|| {
+                    EndpointFailure::new(
+                        EndpointFailureStage::Prepare,
+                        "multistem recording requires an audio prepare context",
+                    )
+                })?
+                .sample_spec;
             if sample_spec.sample_rate_hz == 0 || sample_spec.channels == 0 {
                 return Err(prepare_failure(format!(
                     "endpoint {:?} has invalid sample spec {} Hz/{} ch",
