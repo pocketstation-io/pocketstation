@@ -17,6 +17,8 @@ pub mod compiler;
 pub mod contracts;
 pub mod dsl;
 pub mod ir;
+#[cfg(test)]
+mod named_ports;
 pub mod node;
 pub mod operator;
 pub mod partition;

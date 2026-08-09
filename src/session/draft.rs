@@ -11,8 +11,9 @@ use crate::session::compiler::{
     RECORDING_GROUP_CONFIGURATION_KEY,
 };
 use crate::session::spec::{
-    derived_route_spec, endpoint_spec, operator_spec, route_spec, source_instance_spec,
-    source_output_spec, source_route_spec, stem_spec, SessionSpecDeclarations,
+    derived_route_spec, endpoint_spec, operator_connection_spec, operator_spec, route_spec,
+    source_instance_spec, source_output_spec, source_route_spec, stem_spec,
+    SessionSpecDeclarations,
 };
 use crate::session::{
     EndpointConfiguration, EndpointDescriptor, OperatorConfiguration, OperatorId,
@@ -71,11 +72,15 @@ struct SourceRouteDraft {
 #[derive(Debug)]
 struct OperatorDraft {
     instance_id: OperatorInstanceId,
-    input_route_id: RouteId,
-    source_stem_id: Option<StemId>,
+    operator: Operator,
+}
+
+#[derive(Debug)]
+struct OperatorConnectionDraft {
+    route_id: RouteId,
+    operator_instance_id: OperatorInstanceId,
     input_origin: OperatorInputOrigin,
     input_port: Option<String>,
-    operator: Operator,
 }
 
 #[derive(Debug)]
@@ -110,6 +115,7 @@ struct SessionDraft {
     routes: Vec<RouteDraft>,
     source_routes: Vec<SourceRouteDraft>,
     operators: Vec<OperatorDraft>,
+    operator_connections: Vec<OperatorConnectionDraft>,
     derived_routes: Vec<DerivedRouteDraft>,
 }
 
@@ -132,6 +138,7 @@ impl Default for SessionDraft {
             routes: Vec::new(),
             source_routes: Vec::new(),
             operators: Vec::new(),
+            operator_connections: Vec::new(),
             derived_routes: Vec::new(),
         }
     }
@@ -208,6 +215,65 @@ impl SessionDraft {
             .checked_add(1)
             .ok_or(SessionError::IdExhausted)?;
         Ok(StreamId(self.next_stream_id))
+    }
+
+    fn declare_operator(&mut self, operator: Operator) -> Result<OperatorInstanceId, SessionError> {
+        if operator.operator_id.as_str().trim().is_empty() {
+            return Err(SessionError::InvalidOperator {
+                reason: "operator id cannot be empty".to_owned(),
+            });
+        }
+        let instance_id = self.allocate_operator_instance_id()?;
+        self.operators.push(OperatorDraft {
+            instance_id,
+            operator,
+        });
+        Ok(instance_id)
+    }
+
+    fn connect_operator_input(
+        &mut self,
+        operator_instance_id: OperatorInstanceId,
+        input_origin: OperatorInputOrigin,
+        input_port: Option<String>,
+    ) -> Result<RouteId, SessionError> {
+        if !self
+            .operators
+            .iter()
+            .any(|operator| operator.instance_id == operator_instance_id)
+        {
+            return Err(SessionError::UnknownOperatorInstance {
+                operator_instance_id,
+            });
+        }
+        if input_port
+            .as_deref()
+            .is_some_and(|port| port.trim().is_empty())
+        {
+            return Err(SessionError::InvalidOperator {
+                reason: "operator input port cannot be empty".to_owned(),
+            });
+        }
+        if let Some(input_port) = &input_port {
+            if self.operator_connections.iter().any(|connection| {
+                connection.operator_instance_id == operator_instance_id
+                    && connection.input_port.as_ref() == Some(input_port)
+            }) {
+                return Err(SessionError::InvalidOperator {
+                    reason: format!(
+                        "operator instance {operator_instance_id:?} input port '{input_port}' is already connected"
+                    ),
+                });
+            }
+        }
+        let route_id = self.allocate_route_id()?;
+        self.operator_connections.push(OperatorConnectionDraft {
+            route_id,
+            operator_instance_id,
+            input_origin,
+            input_port,
+        });
+        Ok(route_id)
     }
 }
 
@@ -302,6 +368,22 @@ impl Session {
             session_id: self.id(),
             instance_id,
             source_id,
+        })
+    }
+
+    /// Declares exactly one Session-owned operator instance.
+    ///
+    /// Inputs and outputs are selected separately by stable manifest port
+    /// names. The compiler resolves and validates every connection before any
+    /// runtime is started.
+    pub fn operator(&self, operator: Operator) -> Result<OperatorInstanceHandle, SessionError> {
+        let mut draft = self.shared.draft()?;
+        draft.ensure_open(self.id())?;
+        let instance_id = draft.declare_operator(operator)?;
+        Ok(OperatorInstanceHandle {
+            shared: Arc::clone(&self.shared),
+            session_id: self.id(),
+            instance_id,
         })
     }
 
@@ -428,12 +510,20 @@ impl Session {
                 .map(|operator| {
                     operator_spec(
                         operator.instance_id,
-                        operator.input_route_id,
-                        operator.source_stem_id,
-                        operator.input_origin.clone(),
-                        operator.input_port.clone(),
                         operator.operator.operator_id.clone(),
                         operator.operator.configuration.clone(),
+                    )
+                })
+                .collect(),
+            operator_connections: draft
+                .operator_connections
+                .iter()
+                .map(|connection| {
+                    operator_connection_spec(
+                        connection.route_id,
+                        connection.operator_instance_id,
+                        connection.input_origin.clone(),
+                        connection.input_port.clone(),
                     )
                 })
                 .collect(),
@@ -519,6 +609,85 @@ pub struct StemHandle {
     stem_id: StemId,
 }
 
+#[derive(Clone)]
+pub struct OperatorInstanceHandle {
+    shared: Arc<SessionShared>,
+    session_id: SessionId,
+    instance_id: OperatorInstanceId,
+}
+
+#[derive(Clone)]
+pub struct OperatorInputHandle {
+    shared: Arc<SessionShared>,
+    session_id: SessionId,
+    operator_instance_id: OperatorInstanceId,
+    port_name: String,
+}
+
+impl OperatorInstanceHandle {
+    pub const fn session_id(&self) -> SessionId {
+        self.session_id
+    }
+
+    pub const fn instance_id(&self) -> OperatorInstanceId {
+        self.instance_id
+    }
+
+    pub fn input(&self, port_name: impl Into<String>) -> Result<OperatorInputHandle, SessionError> {
+        let port_name = port_name.into();
+        if port_name.trim().is_empty() {
+            return Err(SessionError::InvalidOperator {
+                reason: "operator input port cannot be empty".to_owned(),
+            });
+        }
+        Ok(OperatorInputHandle {
+            shared: Arc::clone(&self.shared),
+            session_id: self.session_id,
+            operator_instance_id: self.instance_id,
+            port_name,
+        })
+    }
+
+    pub fn output(
+        &self,
+        port_name: impl Into<String>,
+    ) -> Result<DerivedStreamHandle, SessionError> {
+        let port_name = port_name.into();
+        if port_name.trim().is_empty() {
+            return Err(SessionError::InvalidOperator {
+                reason: "operator output port cannot be empty".to_owned(),
+            });
+        }
+        Ok(DerivedStreamHandle {
+            shared: Arc::clone(&self.shared),
+            session_id: self.session_id,
+            operator_instance_id: self.instance_id,
+            output_port: Some(port_name),
+        })
+    }
+}
+
+impl fmt::Debug for OperatorInstanceHandle {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("OperatorInstanceHandle")
+            .field("session_id", &self.session_id)
+            .field("instance_id", &self.instance_id)
+            .finish()
+    }
+}
+
+impl fmt::Debug for OperatorInputHandle {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("OperatorInputHandle")
+            .field("session_id", &self.session_id)
+            .field("operator_instance_id", &self.operator_instance_id)
+            .field("port_name", &self.port_name)
+            .finish()
+    }
+}
+
 impl StemHandle {
     pub const fn session_id(&self) -> SessionId {
         self.session_id
@@ -546,6 +715,21 @@ impl StemHandle {
         Ok(route_id)
     }
 
+    pub fn connect(&self, input: OperatorInputHandle) -> Result<RouteId, SessionError> {
+        if input.session_id != self.session_id || !Arc::ptr_eq(&input.shared, &self.shared) {
+            return Err(SessionError::InvalidOperator {
+                reason: "operator input belongs to a different Session".to_owned(),
+            });
+        }
+        let mut draft = self.shared.draft()?;
+        draft.ensure_open(self.session_id)?;
+        draft.connect_operator_input(
+            input.operator_instance_id,
+            OperatorInputOrigin::Stem(self.stem_id),
+            Some(input.port_name),
+        )
+    }
+
     pub fn through(&self, operator: Operator) -> Result<DerivedStreamHandle, SessionError> {
         self.through_ports(operator, None::<String>, None::<String>)
     }
@@ -556,28 +740,18 @@ impl StemHandle {
         input_port: impl Into<Option<String>>,
         output_port: impl Into<Option<String>>,
     ) -> Result<DerivedStreamHandle, SessionError> {
-        if operator.operator_id.as_str().trim().is_empty() {
-            return Err(SessionError::InvalidOperator {
-                reason: "operator id cannot be empty".to_owned(),
-            });
-        }
         let mut draft = self.shared.draft()?;
         draft.ensure_open(self.session_id)?;
-        let instance_id = draft.allocate_operator_instance_id()?;
-        let input_route_id = draft.allocate_route_id()?;
-        draft.operators.push(OperatorDraft {
+        let instance_id = draft.declare_operator(operator)?;
+        draft.connect_operator_input(
             instance_id,
-            input_route_id,
-            source_stem_id: Some(self.stem_id),
-            input_origin: OperatorInputOrigin::Stem(self.stem_id),
-            input_port: input_port.into(),
-            operator,
-        });
+            OperatorInputOrigin::Stem(self.stem_id),
+            input_port.into(),
+        )?;
         Ok(DerivedStreamHandle {
             shared: Arc::clone(&self.shared),
             session_id: self.session_id,
             operator_instance_id: instance_id,
-            source_stem_id: Some(self.stem_id),
             output_port: output_port.into(),
         })
     }
@@ -624,7 +798,6 @@ pub struct DerivedStreamHandle {
     shared: Arc<SessionShared>,
     session_id: SessionId,
     operator_instance_id: OperatorInstanceId,
-    source_stem_id: Option<StemId>,
     output_port: Option<String>,
 }
 
@@ -731,6 +904,26 @@ impl SourceOutputHandle {
         self.send_to(endpoint, None::<String>)
     }
 
+    pub fn connect(&self, input: OperatorInputHandle) -> Result<RouteId, SessionError> {
+        if input.session_id != self.session_id || !Arc::ptr_eq(&input.shared, &self.shared) {
+            return Err(SessionError::InvalidOperator {
+                reason: "operator input belongs to a different Session".to_owned(),
+            });
+        }
+        let mut draft = self.shared.draft()?;
+        draft.ensure_open(self.session_id)?;
+        draft.connect_operator_input(
+            input.operator_instance_id,
+            OperatorInputOrigin::SourceOutput {
+                source_instance_id: self.source_instance_id,
+                output_port: self.output_port.clone(),
+                stream_id: self.stream_id,
+                source_id: self.source_id,
+            },
+            Some(input.port_name),
+        )
+    }
+
     pub fn send_to(
         &self,
         endpoint: EndpointHandle,
@@ -776,33 +969,23 @@ impl SourceOutputHandle {
         input_port: impl Into<Option<String>>,
         output_port: impl Into<Option<String>>,
     ) -> Result<DerivedStreamHandle, SessionError> {
-        if operator.operator_id.as_str().trim().is_empty() {
-            return Err(SessionError::InvalidOperator {
-                reason: "operator id cannot be empty".to_owned(),
-            });
-        }
         let mut draft = self.shared.draft()?;
         draft.ensure_open(self.session_id)?;
-        let instance_id = draft.allocate_operator_instance_id()?;
-        let input_route_id = draft.allocate_route_id()?;
-        draft.operators.push(OperatorDraft {
+        let instance_id = draft.declare_operator(operator)?;
+        draft.connect_operator_input(
             instance_id,
-            input_route_id,
-            source_stem_id: None,
-            input_origin: OperatorInputOrigin::SourceOutput {
+            OperatorInputOrigin::SourceOutput {
                 source_instance_id: self.source_instance_id,
                 output_port: self.output_port.clone(),
                 stream_id: self.stream_id,
                 source_id: self.source_id,
             },
-            input_port: input_port.into(),
-            operator,
-        });
+            input_port.into(),
+        )?;
         Ok(DerivedStreamHandle {
             shared: Arc::clone(&self.shared),
             session_id: self.session_id,
             operator_instance_id: instance_id,
-            source_stem_id: None,
             output_port: output_port.into(),
         })
     }
@@ -845,9 +1028,26 @@ impl DerivedStreamHandle {
             shared: Arc::clone(&self.shared),
             session_id: self.session_id,
             operator_instance_id: self.operator_instance_id,
-            source_stem_id: self.source_stem_id,
             output_port: Some(port_name),
         })
+    }
+
+    pub fn connect(&self, input: OperatorInputHandle) -> Result<RouteId, SessionError> {
+        if input.session_id != self.session_id || !Arc::ptr_eq(&input.shared, &self.shared) {
+            return Err(SessionError::InvalidOperator {
+                reason: "operator input belongs to a different Session".to_owned(),
+            });
+        }
+        let mut draft = self.shared.draft()?;
+        draft.ensure_open(self.session_id)?;
+        draft.connect_operator_input(
+            input.operator_instance_id,
+            OperatorInputOrigin::OperatorOutput {
+                operator_instance_id: self.operator_instance_id,
+                output_port: self.output_port.clone(),
+            },
+            Some(input.port_name),
+        )
     }
 
     pub fn through(&self, operator: Operator) -> Result<DerivedStreamHandle, SessionError> {
@@ -860,31 +1060,21 @@ impl DerivedStreamHandle {
         input_port: impl Into<Option<String>>,
         output_port: impl Into<Option<String>>,
     ) -> Result<DerivedStreamHandle, SessionError> {
-        if operator.operator_id.as_str().trim().is_empty() {
-            return Err(SessionError::InvalidOperator {
-                reason: "operator id cannot be empty".to_owned(),
-            });
-        }
         let mut draft = self.shared.draft()?;
         draft.ensure_open(self.session_id)?;
-        let instance_id = draft.allocate_operator_instance_id()?;
-        let input_route_id = draft.allocate_route_id()?;
-        draft.operators.push(OperatorDraft {
+        let instance_id = draft.declare_operator(operator)?;
+        draft.connect_operator_input(
             instance_id,
-            input_route_id,
-            source_stem_id: self.source_stem_id,
-            input_origin: OperatorInputOrigin::OperatorOutput {
+            OperatorInputOrigin::OperatorOutput {
                 operator_instance_id: self.operator_instance_id,
                 output_port: self.output_port.clone(),
             },
-            input_port: input_port.into(),
-            operator,
-        });
+            input_port.into(),
+        )?;
         Ok(DerivedStreamHandle {
             shared: Arc::clone(&self.shared),
             session_id: self.session_id,
             operator_instance_id: instance_id,
-            source_stem_id: self.source_stem_id,
             output_port: output_port.into(),
         })
     }
@@ -1002,8 +1192,9 @@ mod tests {
 
         let specification = session.freeze().expect("valid chained specification");
         assert_eq!(specification.operators().len(), 2);
+        assert_eq!(specification.operator_connections().len(), 2);
         assert!(matches!(
-            specification.operators()[1].input_origin(),
+            specification.operator_connections()[1].input_origin(),
             OperatorInputOrigin::OperatorOutput {
                 operator_instance_id,
                 output_port: None,
@@ -1132,7 +1323,7 @@ mod tests {
             spec.operators()[0].instance_id(),
             derived.operator_instance_id()
         );
-        assert_ne!(spec.operators()[0].input_route_id(), output_route_id);
+        assert_ne!(spec.operator_connections()[0].route_id(), output_route_id);
         assert_eq!(
             spec.operators()[0].configuration().get("language"),
             Some("auto")

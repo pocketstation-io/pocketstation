@@ -8,7 +8,7 @@ use crate::session::{
     SourceConfiguration, SourceTypeId,
 };
 
-pub const SESSION_SPEC_VERSION: SessionSpecVersion = SessionSpecVersion::new(1, 3);
+pub const SESSION_SPEC_VERSION: SessionSpecVersion = SessionSpecVersion::new(1, 4);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct SourceInstanceId(u64);
@@ -213,14 +213,18 @@ impl RouteSpec {
 }
 
 #[derive(Debug, Clone)]
-pub struct OperatorSpec {
+pub struct OperatorInstanceSpec {
     instance_id: OperatorInstanceId,
-    input_route_id: RouteId,
-    source_stem_id: Option<StemId>,
-    input_origin: OperatorInputOrigin,
-    input_port: Option<String>,
     operator_id: OperatorId,
     configuration: OperatorConfiguration,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct OperatorConnectionSpec {
+    route_id: RouteId,
+    operator_instance_id: OperatorInstanceId,
+    input_origin: OperatorInputOrigin,
+    input_port: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -238,25 +242,9 @@ pub enum OperatorInputOrigin {
     },
 }
 
-impl OperatorSpec {
+impl OperatorInstanceSpec {
     pub const fn instance_id(&self) -> OperatorInstanceId {
         self.instance_id
-    }
-
-    pub const fn input_route_id(&self) -> RouteId {
-        self.input_route_id
-    }
-
-    pub const fn source_stem_id(&self) -> Option<StemId> {
-        self.source_stem_id
-    }
-
-    pub const fn input_origin(&self) -> &OperatorInputOrigin {
-        &self.input_origin
-    }
-
-    pub fn input_port(&self) -> Option<&str> {
-        self.input_port.as_deref()
     }
 
     pub const fn operator_id(&self) -> &OperatorId {
@@ -267,6 +255,27 @@ impl OperatorSpec {
         &self.configuration
     }
 }
+
+impl OperatorConnectionSpec {
+    pub const fn route_id(&self) -> RouteId {
+        self.route_id
+    }
+
+    pub const fn operator_instance_id(&self) -> OperatorInstanceId {
+        self.operator_instance_id
+    }
+
+    pub const fn input_origin(&self) -> &OperatorInputOrigin {
+        &self.input_origin
+    }
+
+    pub fn input_port(&self) -> Option<&str> {
+        self.input_port.as_deref()
+    }
+}
+
+#[deprecated(note = "use OperatorInstanceSpec")]
+pub type OperatorSpec = OperatorInstanceSpec;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DerivedRouteSpec {
@@ -304,7 +313,8 @@ pub struct SessionSpec {
     endpoints: Vec<EndpointSpec>,
     routes: Vec<RouteSpec>,
     source_routes: Vec<SourceRouteSpec>,
-    operators: Vec<OperatorSpec>,
+    operators: Vec<OperatorInstanceSpec>,
+    operator_connections: Vec<OperatorConnectionSpec>,
     derived_routes: Vec<DerivedRouteSpec>,
 }
 
@@ -315,7 +325,8 @@ pub(crate) struct SessionSpecDeclarations {
     pub(crate) endpoints: Vec<EndpointSpec>,
     pub(crate) routes: Vec<RouteSpec>,
     pub(crate) source_routes: Vec<SourceRouteSpec>,
-    pub(crate) operators: Vec<OperatorSpec>,
+    pub(crate) operators: Vec<OperatorInstanceSpec>,
+    pub(crate) operator_connections: Vec<OperatorConnectionSpec>,
     pub(crate) derived_routes: Vec<DerivedRouteSpec>,
 }
 
@@ -331,6 +342,7 @@ impl SessionSpec {
             routes: declarations.routes,
             source_routes: declarations.source_routes,
             operators: declarations.operators,
+            operator_connections: declarations.operator_connections,
             derived_routes: declarations.derived_routes,
         }
     }
@@ -367,8 +379,12 @@ impl SessionSpec {
         &self.source_routes
     }
 
-    pub fn operators(&self) -> &[OperatorSpec] {
+    pub fn operators(&self) -> &[OperatorInstanceSpec] {
         &self.operators
+    }
+
+    pub fn operator_connections(&self) -> &[OperatorConnectionSpec] {
+        &self.operator_connections
     }
 
     pub fn derived_routes(&self) -> &[DerivedRouteSpec] {
@@ -387,7 +403,10 @@ impl SessionSpec {
         if self.stems.is_empty() && self.source_instances.is_empty() {
             return Err(SessionError::NoSources);
         }
-        if self.version.minor < 1 && (!self.operators.is_empty() || !self.derived_routes.is_empty())
+        if self.version.minor < 1
+            && (!self.operators.is_empty()
+                || !self.operator_connections.is_empty()
+                || !self.derived_routes.is_empty())
         {
             return Err(SessionError::InvalidOperator {
                 reason: "derived operators require Session schema version 1.1 or newer".to_owned(),
@@ -397,15 +416,21 @@ impl SessionSpec {
             && (!self.source_instances.is_empty()
                 || !self.source_outputs.is_empty()
                 || !self.source_routes.is_empty()
-                || self.operators.iter().any(|operator| {
+                || self.operator_connections.iter().any(|connection| {
                     matches!(
-                        operator.input_origin,
+                        connection.input_origin,
                         OperatorInputOrigin::SourceOutput { .. }
                     )
                 }))
         {
             return Err(SessionError::InvalidRoute {
                 reason: "external sources require Session schema version 1.3 or newer".to_owned(),
+            });
+        }
+        if self.version.minor < 4 && !self.operator_connections.is_empty() {
+            return Err(SessionError::InvalidOperator {
+                reason: "named operator connections require Session schema version 1.4 or newer"
+                    .to_owned(),
             });
         }
 
@@ -422,9 +447,11 @@ impl SessionSpec {
                 .iter()
                 .any(|route| route.stem_id == stem.stem_id)
                 && !self
-                    .operators
+                    .operator_connections
                     .iter()
-                    .any(|operator| operator.source_stem_id == Some(stem.stem_id))
+                    .any(|connection| {
+                        matches!(connection.input_origin, OperatorInputOrigin::Stem(stem_id) if stem_id == stem.stem_id)
+                    })
             {
                 return Err(SessionError::NoRoutes {
                     stem_id: stem.stem_id,
@@ -475,9 +502,9 @@ impl SessionSpec {
                 route.source_instance_id == output.source_instance_id
                     && route.output_port == output.output_port
             });
-            let operator_routed = self.operators.iter().any(|operator| {
+            let operator_routed = self.operator_connections.iter().any(|connection| {
                 matches!(
-                    &operator.input_origin,
+                    &connection.input_origin,
                     OperatorInputOrigin::SourceOutput {
                         source_instance_id,
                         output_port,
@@ -575,19 +602,47 @@ impl SessionSpec {
                     reason: format!("duplicate operator instance id {:?}", operator.instance_id),
                 });
             }
-            if !route_ids.insert(operator.input_route_id) {
-                return Err(SessionError::InvalidRoute {
-                    reason: format!("duplicate route id {:?}", operator.input_route_id),
+            if operator.operator_id.as_str().trim().is_empty() {
+                return Err(SessionError::InvalidOperator {
+                    reason: "operator id cannot be empty".to_owned(),
                 });
             }
-            if let Some(stem_id) = operator.source_stem_id {
-                if !stem_ids.contains(&stem_id) {
-                    return Err(SessionError::UnknownStem { stem_id });
+        }
+
+        let mut connected_inputs = HashSet::with_capacity(self.operator_connections.len());
+        for connection in &self.operator_connections {
+            if !route_ids.insert(connection.route_id) {
+                return Err(SessionError::InvalidRoute {
+                    reason: format!("duplicate route id {:?}", connection.route_id),
+                });
+            }
+            if !operator_instance_ids.contains(&connection.operator_instance_id) {
+                return Err(SessionError::UnknownOperatorInstance {
+                    operator_instance_id: connection.operator_instance_id,
+                });
+            }
+            if connection
+                .input_port
+                .as_deref()
+                .is_some_and(|port| port.trim().is_empty())
+            {
+                return Err(SessionError::InvalidOperator {
+                    reason: "operator input port cannot be empty".to_owned(),
+                });
+            }
+            if let Some(input_port) = &connection.input_port {
+                if !connected_inputs.insert((connection.operator_instance_id, input_port.clone())) {
+                    return Err(SessionError::InvalidOperator {
+                        reason: format!(
+                            "operator instance {:?} input port '{}' is connected more than once",
+                            connection.operator_instance_id, input_port
+                        ),
+                    });
                 }
             }
-            match &operator.input_origin {
+            match &connection.input_origin {
                 OperatorInputOrigin::Stem(stem_id) => {
-                    if !stem_ids.contains(stem_id) || Some(*stem_id) != operator.source_stem_id {
+                    if !stem_ids.contains(stem_id) {
                         return Err(SessionError::UnknownStem { stem_id: *stem_id });
                     }
                 }
@@ -597,12 +652,6 @@ impl SessionSpec {
                     stream_id,
                     source_id,
                 } => {
-                    if operator.source_stem_id.is_some() {
-                        return Err(SessionError::InvalidOperator {
-                            reason: "external source operator input cannot claim a built-in stem"
-                                .to_owned(),
-                        });
-                    }
                     let Some(output) = self.source_outputs.iter().find(|output| {
                         output.source_instance_id == *source_instance_id
                             && output.output_port == *output_port
@@ -631,7 +680,7 @@ impl SessionSpec {
                     operator_instance_id,
                     ..
                 } => {
-                    let Some(upstream) = self
+                    let Some(_upstream) = self
                         .operators
                         .iter()
                         .find(|candidate| candidate.instance_id == *operator_instance_id)
@@ -640,16 +689,20 @@ impl SessionSpec {
                             operator_instance_id: *operator_instance_id,
                         });
                     };
-                    if upstream.source_stem_id != operator.source_stem_id {
-                        return Err(SessionError::InvalidOperator {
-                            reason: "chained operator source stem identity changed".to_owned(),
-                        });
-                    }
                 }
             }
-            if operator.operator_id.as_str().trim().is_empty() {
+        }
+        for operator in &self.operators {
+            if !self
+                .operator_connections
+                .iter()
+                .any(|connection| connection.operator_instance_id == operator.instance_id)
+            {
                 return Err(SessionError::InvalidOperator {
-                    reason: "operator id cannot be empty".to_owned(),
+                    reason: format!(
+                        "operator instance {:?} has no input connection",
+                        operator.instance_id
+                    ),
                 });
             }
         }
@@ -676,9 +729,9 @@ impl SessionSpec {
                 .derived_routes
                 .iter()
                 .any(|route| route.operator_instance_id == operator.instance_id)
-                && !self.operators.iter().any(|candidate| {
+                && !self.operator_connections.iter().any(|connection| {
                     matches!(
-                        candidate.input_origin,
+                        connection.input_origin,
                         OperatorInputOrigin::OperatorOutput {
                             operator_instance_id,
                             ..
@@ -775,21 +828,27 @@ pub(crate) fn source_route_spec(
 
 pub(crate) fn operator_spec(
     instance_id: OperatorInstanceId,
-    input_route_id: RouteId,
-    source_stem_id: Option<StemId>,
-    input_origin: OperatorInputOrigin,
-    input_port: Option<String>,
     operator_id: OperatorId,
     configuration: OperatorConfiguration,
-) -> OperatorSpec {
-    OperatorSpec {
+) -> OperatorInstanceSpec {
+    OperatorInstanceSpec {
         instance_id,
-        input_route_id,
-        source_stem_id,
-        input_origin,
-        input_port,
         operator_id,
         configuration,
+    }
+}
+
+pub(crate) fn operator_connection_spec(
+    route_id: RouteId,
+    operator_instance_id: OperatorInstanceId,
+    input_origin: OperatorInputOrigin,
+    input_port: Option<String>,
+) -> OperatorConnectionSpec {
+    OperatorConnectionSpec {
+        route_id,
+        operator_instance_id,
+        input_origin,
+        input_port,
     }
 }
 
@@ -832,6 +891,7 @@ mod tests {
             routes: vec![route_spec(RouteId(1), StemId(1), EndpointId(1))],
             source_routes: Vec::new(),
             operators: Vec::new(),
+            operator_connections: Vec::new(),
             derived_routes: Vec::new(),
         }
     }
@@ -850,13 +910,13 @@ mod tests {
 
         assert!(matches!(
             spec.validate(),
-            Err(SessionError::UnsupportedVersion { major: 1, minor: 4 })
+            Err(SessionError::UnsupportedVersion { major: 1, minor: 5 })
         ));
     }
 
     #[test]
     fn given_current_schema_when_version_read_then_derived_route_extension_is_recorded() {
-        assert_eq!(SESSION_SPEC_VERSION, SessionSpecVersion::new(1, 3));
+        assert_eq!(SESSION_SPEC_VERSION, SessionSpecVersion::new(1, 4));
     }
 
     #[test]
@@ -864,13 +924,22 @@ mod tests {
         let mut spec = valid_legacy_compatible_spec();
         spec.operators.push(operator_spec(
             OperatorInstanceId::new(1),
-            RouteId(2),
-            Some(StemId(1)),
-            OperatorInputOrigin::Stem(StemId(1)),
-            None,
             OperatorId::new("example.operator.test.v1"),
             OperatorConfiguration::new(),
         ));
+        spec.operator_connections.push(operator_connection_spec(
+            RouteId(2),
+            OperatorInstanceId::new(1),
+            OperatorInputOrigin::Stem(StemId(1)),
+            None,
+        ));
+
+        #[allow(deprecated)]
+        let compatibility_alias: &OperatorSpec = &spec.operators[0];
+        assert_eq!(
+            compatibility_alias.instance_id(),
+            OperatorInstanceId::new(1)
+        );
 
         assert!(matches!(
             spec.validate(),

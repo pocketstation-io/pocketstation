@@ -2293,3 +2293,33 @@
 - No realtime callback, audio pool, hot-path executor, provider vocabulary,
   customer/domain type, scaffold, mock, fallback, loopback-only product path,
   platform matrix, release, or soak was introduced.
+
+## W19 Session operator instance and named-connection declaration — 2026-08-08
+
+- Status: `SAFE-TO-MERGE` for `W19-OPERATOR-INSTANCE-CONNECTIONS` only.
+  Session-owned multi-input runtime execution remains the next separately gated
+  task; this checkpoint does not claim that a multi-input Session can start.
+- `Session::operator` now declares exactly one `OperatorInstanceSpec`.
+  `StemHandle`, `SourceOutputHandle`, and `DerivedStreamHandle` connect to an
+  exact `OperatorInputHandle`, while `OperatorInstanceHandle::output` exposes
+  exact named outputs. `through()` writes the same instance and connection
+  records and is no longer a separate one-input schema.
+- Session schema 1.4 separates operator identity/configuration from
+  `OperatorConnectionSpec`. One instance can own multiple named input
+  connections and multiple named derived routes without hidden duplicate
+  nodes. The previous `OperatorSpec` name remains only as an explicitly
+  deprecated compatibility alias.
+- The Session compiler creates all declared operator nodes before wiring
+  connections. This permits operator-to-operator references independent of
+  declaration order and validates unknown ports, missing required inputs,
+  duplicate single-multiplicity inputs, signal/media compatibility, direction,
+  and graph cycles before runtime preparation.
+- Focused `session::operator_connections` and `graph::named_ports` gates pass.
+  Compiler tests prove that two independent audio stems enter one two-input
+  operator node and that its two named outputs leave that same node. All 516
+  library tests and every integration/ABI/hot-path target pass, as do strict
+  all-target/all-feature Clippy, release `product_quickstart`, architecture
+  constraints, formatting, and the complete `CODE_PROTOCOL` gate.
+- No runtime owner, callback, audio pool, hot-path executor, provider/customer
+  vocabulary, scaffold, mock, fallback, loopback-only path, platform matrix,
+  release, or soak was introduced.

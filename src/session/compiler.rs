@@ -10,9 +10,9 @@ use crate::graph::{
 };
 
 use crate::session::{
-    ApplicationSelector, DeviceSelector, EndpointSpec, OperatorInputOrigin, OperatorInstanceId,
-    OperatorSpec, SessionError, SessionId, SessionSpec, Source, SourceInstanceId,
-    SourceInstanceSpec, SourceRegistry, SourceRouteSpec, SourceTypeId, StemSpec,
+    ApplicationSelector, DeviceSelector, EndpointSpec, OperatorConnectionSpec, OperatorInputOrigin,
+    OperatorInstanceId, OperatorInstanceSpec, SessionError, SessionId, SessionSpec, Source,
+    SourceInstanceId, SourceInstanceSpec, SourceRegistry, SourceRouteSpec, SourceTypeId, StemSpec,
 };
 
 pub const APPLICATION_SOURCE_NODE_TYPE_ID: &str = "source.application";
@@ -104,6 +104,16 @@ pub enum SessionCompileError {
     UnknownOperatorPort {
         operator_id: String,
         direction: &'static str,
+        port_name: String,
+    },
+    #[error("operator instance {operator_instance_id:?} required input port '{port_name}' is not connected")]
+    MissingRequiredOperatorInput {
+        operator_instance_id: OperatorInstanceId,
+        port_name: String,
+    },
+    #[error("operator instance {operator_instance_id:?} input port '{port_name}' is connected more than once")]
+    DuplicateOperatorInputConnection {
+        operator_instance_id: OperatorInstanceId,
         port_name: String,
     },
     #[error("required source node type {node_type_id} is not registered")]
@@ -352,6 +362,44 @@ impl<'registry> SessionCompiler<'registry> {
                 });
             }
         }
+        for operator in spec.operators() {
+            let factory = self
+                .node_registry
+                .async_factory_by_operator(operator.operator_id())
+                .ok_or_else(|| SessionCompileError::UnknownAsyncOperator {
+                    operator_id: operator.operator_id().as_str().to_owned(),
+                })?;
+            let manifest = factory.manifest();
+            let connections = spec
+                .operator_connections()
+                .iter()
+                .filter(|connection| connection.operator_instance_id() == operator.instance_id())
+                .collect::<Vec<_>>();
+            let mut selected_inputs = HashMap::<String, usize>::new();
+            for connection in connections {
+                let input = select_operator_port(
+                    manifest,
+                    crate::graph::PortDirection::Input,
+                    connection.input_port(),
+                )?;
+                let count = selected_inputs.entry(input.name.clone()).or_default();
+                *count += 1;
+                if *count > 1 && input.multiplicity == crate::graph::Multiplicity::One {
+                    return Err(SessionCompileError::DuplicateOperatorInputConnection {
+                        operator_instance_id: operator.instance_id(),
+                        port_name: input.name.clone(),
+                    });
+                }
+            }
+            for input in manifest.input_ports().filter(|input| input.required) {
+                if !selected_inputs.contains_key(&input.name) {
+                    return Err(SessionCompileError::MissingRequiredOperatorInput {
+                        operator_instance_id: operator.instance_id(),
+                        port_name: input.name.clone(),
+                    });
+                }
+            }
+        }
         Ok(())
     }
 
@@ -514,12 +562,42 @@ impl<'registry> SessionCompiler<'registry> {
                     operator_id: operator.operator_id().as_str().to_owned(),
                 })?;
             let manifest = factory.manifest();
+            let connections = spec
+                .operator_connections()
+                .iter()
+                .filter(|connection| connection.operator_instance_id() == operator.instance_id())
+                .collect::<Vec<_>>();
+            let operator_node = pipeline.add_node(
+                manifest.node.type_id.clone(),
+                operator_node_config(
+                    spec.session_id(),
+                    operator,
+                    manifest,
+                    (connections.len() == 1).then_some(connections[0]),
+                ),
+            );
+            operator_nodes.insert(
+                operator.instance_id(),
+                LoweredOperator {
+                    node: operator_node,
+                    manifest: manifest.clone(),
+                    source_stem_id: operator_source_stem_id(spec, operator.instance_id()),
+                },
+            );
+        }
+
+        for connection in spec.operator_connections() {
+            let operator = operator_nodes
+                .get(&connection.operator_instance_id())
+                .ok_or(SessionError::UnknownOperatorInstance {
+                    operator_instance_id: connection.operator_instance_id(),
+                })?;
             let input_port = select_operator_port(
-                manifest,
+                &operator.manifest,
                 crate::graph::PortDirection::Input,
-                operator.input_port(),
+                connection.input_port(),
             )?;
-            let source_output = match operator.input_origin() {
+            let source_output = match connection.input_origin() {
                 OperatorInputOrigin::Stem(stem_id) => source_nodes
                     .get(stem_id)
                     .ok_or(SessionError::UnknownStem { stem_id: *stem_id })?
@@ -551,22 +629,10 @@ impl<'registry> SessionCompiler<'registry> {
                     upstream.node.out(&output.name)
                 }
             };
-            let operator_node = pipeline.add_node(
-                manifest.node.type_id.clone(),
-                operator_node_config(spec.session_id(), operator, manifest),
-            );
             pipeline.connect_with(
                 source_output,
-                operator_node.in_(&input_port.name),
-                manifest.input_edge,
-            );
-            operator_nodes.insert(
-                operator.instance_id(),
-                LoweredOperator {
-                    node: operator_node,
-                    manifest: manifest.clone(),
-                    source_stem_id: operator.source_stem_id(),
-                },
+                operator.node.in_(&input_port.name),
+                operator.manifest.input_edge,
             );
         }
 
@@ -598,9 +664,17 @@ impl<'registry> SessionCompiler<'registry> {
                     .find(|stem| stem.id() == stem_id)
                     .ok_or(SessionError::UnknownStem { stem_id })?;
                 endpoint_node_config(spec.session_id(), stem, endpoint, route.id())
-            } else {
-                let source_origin = source_origin_for_operator(spec, route.operator_instance_id())?;
+            } else if let Ok(source_origin) =
+                source_origin_for_operator(spec, route.operator_instance_id())
+            {
                 source_endpoint_node_config(spec.session_id(), source_origin, endpoint)
+            } else {
+                derived_endpoint_node_config(
+                    spec.session_id(),
+                    route.operator_instance_id(),
+                    endpoint,
+                    route.id(),
+                )
             };
             let endpoint_node = pipeline.add_node(endpoint.node_type_id().clone(), endpoint_config);
             pipeline.connect_with(
@@ -787,14 +861,14 @@ fn source_node_config(session_id: SessionId, stem: &StemSpec) -> NodeConfig {
 
 fn operator_node_config(
     session_id: SessionId,
-    operator: &OperatorSpec,
+    operator: &OperatorInstanceSpec,
     manifest: &crate::graph::AsyncOperatorManifest,
+    sole_connection: Option<&OperatorConnectionSpec>,
 ) -> NodeConfig {
     let mut config = operator
         .configuration()
         .clone()
         .with("session_id", &session_id.0.to_string())
-        .with("input_route_id", &operator.input_route_id().0.to_string())
         .with(
             "operator_instance_id",
             &operator.instance_id().value().to_string(),
@@ -803,7 +877,11 @@ fn operator_node_config(
         .with("operator_revision", &manifest.revision.to_string())
         .with("operator_generation", &manifest.generation.to_string())
         .with("node_type_id", manifest.node.type_id.as_str());
-    match operator.input_origin() {
+    let Some(connection) = sole_connection else {
+        return config;
+    };
+    config = config.with("input_route_id", &connection.route_id().0.to_string());
+    match connection.input_origin() {
         OperatorInputOrigin::Stem(stem_id) => {
             config = config.with("stem_id", &stem_id.0.to_string());
         }
@@ -822,11 +900,79 @@ fn operator_node_config(
                 .with("stream_id", &stream_id.0.to_string())
                 .with("source_output_port", output_port);
         }
-        OperatorInputOrigin::OperatorOutput { .. } => {
-            if let Some(stem_id) = operator.source_stem_id() {
-                config = config.with("stem_id", &stem_id.0.to_string());
+        OperatorInputOrigin::OperatorOutput { .. } => {}
+    }
+    config
+}
+
+fn operator_source_stem_id(
+    spec: &SessionSpec,
+    operator_instance_id: OperatorInstanceId,
+) -> Option<crate::session::StemId> {
+    fn visit(
+        spec: &SessionSpec,
+        operator_instance_id: OperatorInstanceId,
+        visiting: &mut Vec<OperatorInstanceId>,
+        stems: &mut Vec<crate::session::StemId>,
+    ) -> bool {
+        if visiting.contains(&operator_instance_id) {
+            return false;
+        }
+        visiting.push(operator_instance_id);
+        let connections = spec
+            .operator_connections()
+            .iter()
+            .filter(|connection| connection.operator_instance_id() == operator_instance_id)
+            .collect::<Vec<_>>();
+        if connections.is_empty() {
+            return false;
+        }
+        for connection in connections {
+            match connection.input_origin() {
+                OperatorInputOrigin::Stem(stem_id) => stems.push(*stem_id),
+                OperatorInputOrigin::OperatorOutput {
+                    operator_instance_id,
+                    ..
+                } => {
+                    if !visit(spec, *operator_instance_id, visiting, stems) {
+                        return false;
+                    }
+                }
+                OperatorInputOrigin::SourceOutput { .. } => return false,
             }
         }
+        visiting.pop();
+        true
+    }
+
+    let mut stems = Vec::new();
+    if !visit(spec, operator_instance_id, &mut Vec::new(), &mut stems) {
+        return None;
+    }
+    let first = *stems.first()?;
+    stems.iter().all(|stem| *stem == first).then_some(first)
+}
+
+fn derived_endpoint_node_config(
+    session_id: SessionId,
+    operator_instance_id: OperatorInstanceId,
+    endpoint: &EndpointSpec,
+    route_id: crate::session::RouteId,
+) -> NodeConfig {
+    let mut config = NodeConfig::new()
+        .with("session_id", &session_id.0.to_string())
+        .with(
+            "operator_instance_id",
+            &operator_instance_id.value().to_string(),
+        )
+        .with("endpoint_id", &endpoint.id().0.to_string())
+        .with("route_id", &route_id.0.to_string())
+        .with("operator_id", endpoint.operator_id().as_str());
+    if let Some(connector_id) = endpoint.connector_id() {
+        config = config.with("connector_id", &connector_id.0.to_string());
+    }
+    for (key, value) in endpoint.configuration().iter() {
+        config = config.with(key, value);
     }
     config
 }
@@ -914,14 +1060,25 @@ fn source_origin_for_operator(
     spec: &SessionSpec,
     operator_instance_id: OperatorInstanceId,
 ) -> Result<SourceOriginMetadata, SessionCompileError> {
-    let mut current = spec
-        .operators()
-        .iter()
-        .find(|operator| operator.instance_id() == operator_instance_id)
-        .ok_or(SessionError::UnknownOperatorInstance {
-            operator_instance_id,
-        })?;
+    let mut current_instance_id = operator_instance_id;
     loop {
+        let mut connections = spec
+            .operator_connections()
+            .iter()
+            .filter(|connection| connection.operator_instance_id() == current_instance_id);
+        let current = connections
+            .next()
+            .ok_or(SessionError::UnknownOperatorInstance {
+                operator_instance_id: current_instance_id,
+            })?;
+        if connections.next().is_some() {
+            return Err(SessionError::InvalidOperator {
+                reason: format!(
+                    "operator instance {current_instance_id:?} has multiple source origins"
+                ),
+            }
+            .into());
+        }
         match current.input_origin() {
             OperatorInputOrigin::SourceOutput {
                 source_instance_id,
@@ -930,7 +1087,7 @@ fn source_origin_for_operator(
                 source_id,
             } => {
                 return Ok(SourceOriginMetadata {
-                    route_id: current.input_route_id(),
+                    route_id: current.route_id(),
                     source_instance_id: *source_instance_id,
                     output_port: output_port.clone(),
                     stream_id: *stream_id,
@@ -941,13 +1098,7 @@ fn source_origin_for_operator(
                 operator_instance_id,
                 ..
             } => {
-                current = spec
-                    .operators()
-                    .iter()
-                    .find(|operator| operator.instance_id() == *operator_instance_id)
-                    .ok_or(SessionError::UnknownOperatorInstance {
-                        operator_instance_id: *operator_instance_id,
-                    })?;
+                current_instance_id = *operator_instance_id;
             }
             OperatorInputOrigin::Stem(stem_id) => {
                 return Err(SessionError::UnknownStem { stem_id: *stem_id }.into());
@@ -1005,6 +1156,8 @@ mod tests {
     const TEST_ASYNC_NODE_TYPE_ID: &str = "operator.transcription.test";
     const TEST_TRANSFORM_OPERATOR_ID: &str = "example.operator.text-transform.v1";
     const TEST_TRANSFORM_NODE_TYPE_ID: &str = "operator.text-transform.test";
+    const TEST_NAMED_OPERATOR_ID: &str = "example.operator.named-composition.v1";
+    const TEST_NAMED_NODE_TYPE_ID: &str = "operator.named-composition.test";
     const TEST_TEXT_ENDPOINT_OPERATOR_ID: &str = "example.endpoint.text.v1";
     const TEST_TEXT_ENDPOINT_NODE_TYPE_ID: &str = "endpoint.text.test";
     const TEST_NONTERMINAL_ROLE: &str = "test.output.nonterminal";
@@ -1091,6 +1244,36 @@ mod tests {
                 required: true,
             }];
             factory.manifest.input_edge.media = MediaCaps::Text;
+            factory
+        }
+
+        fn named_composition() -> Self {
+            let mut factory = Self::new();
+            factory.manifest.operator_id = OperatorId::new(TEST_NAMED_OPERATOR_ID);
+            factory.manifest.node.type_id = NodeTypeId::from(TEST_NAMED_NODE_TYPE_ID);
+            let audio = |name: &str| PortSpec {
+                name: name.to_owned(),
+                direction: PortDirection::Input,
+                signal: SignalSpec::audio(),
+                media: MediaCaps::Audio(AudioCaps {
+                    sample_rate_hz: Some(48_000),
+                    frame_samples: None,
+                    channel_layout: ChannelLayout::Any,
+                    format: SampleFormat::F32Interleaved,
+                }),
+                multiplicity: Multiplicity::One,
+                required: true,
+            };
+            let text = |name: &str| PortSpec {
+                name: name.to_owned(),
+                direction: PortDirection::Output,
+                signal: SignalSpec::text(TextFormat::Utf8).with_role("transcript"),
+                media: MediaCaps::Text,
+                multiplicity: Multiplicity::One,
+                required: true,
+            };
+            factory.manifest.node.inputs = vec![audio("application"), audio("microphone")];
+            factory.manifest.node.outputs = vec![text("primary"), text("diagnostics")];
             factory
         }
     }
@@ -1204,6 +1387,9 @@ mod tests {
             .register_async(Arc::new(CompileOnlyAsyncFactory::text_transform()))
             .expect("text transform registration");
         node_registry
+            .register_async(Arc::new(CompileOnlyAsyncFactory::named_composition()))
+            .expect("named composition registration");
+        node_registry
             .register_definition(Arc::new(CompileOnlyTextEndpointDefinition))
             .expect("text endpoint node registration");
         endpoint_registry
@@ -1235,6 +1421,128 @@ mod tests {
             .expect("operator declaration");
         transcript.send(terminal).expect("derived terminal route");
         session.freeze().expect("derived spec")
+    }
+
+    #[test]
+    fn given_one_named_operator_instance_when_compiled_then_all_named_connections_share_one_node() {
+        let session = Session::new();
+        let application = session
+            .capture(Source::application(ApplicationSelector::name(
+                "Meeting App",
+            )))
+            .expect("application");
+        let microphone = session
+            .capture(Source::microphone_default())
+            .expect("microphone");
+        let declared = session
+            .operator(Operator::new(
+                OperatorId::new(TEST_NAMED_OPERATOR_ID),
+                OperatorConfiguration::new(),
+            ))
+            .expect("operator instance");
+        application
+            .connect(declared.input("application").expect("application input"))
+            .expect("application connection");
+        microphone
+            .connect(declared.input("microphone").expect("microphone input"))
+            .expect("microphone connection");
+        let terminal = session
+            .endpoint(EndpointDescriptor::new(
+                NodeTypeId::from(TEST_TEXT_ENDPOINT_NODE_TYPE_ID),
+                OperatorId::new(TEST_TEXT_ENDPOINT_OPERATOR_ID),
+            ))
+            .expect("terminal");
+        declared
+            .output("primary")
+            .expect("primary output")
+            .send(terminal)
+            .expect("primary route");
+        declared
+            .output("diagnostics")
+            .expect("diagnostics output")
+            .send(terminal)
+            .expect("diagnostics route");
+        let spec = session.freeze().expect("named spec");
+        let (nodes, endpoints) = derived_registries();
+
+        let compiled = SessionCompiler::new(&nodes, &endpoints)
+            .compile(spec)
+            .expect("named compile");
+
+        let operator_nodes = compiled
+            .graph_ir
+            .nodes
+            .iter()
+            .filter(|node| node.spec.type_id.as_str() == TEST_NAMED_NODE_TYPE_ID)
+            .collect::<Vec<_>>();
+        assert_eq!(operator_nodes.len(), 1);
+        let node_id = operator_nodes[0].id();
+        assert_eq!(
+            compiled
+                .graph_ir
+                .edges
+                .iter()
+                .filter(|edge| edge.spec.to.node == node_id)
+                .map(|edge| edge.spec.to.port.as_str())
+                .collect::<Vec<_>>(),
+            ["application", "microphone"]
+        );
+        assert_eq!(
+            compiled
+                .graph_ir
+                .edges
+                .iter()
+                .filter(|edge| edge.spec.from.node == node_id)
+                .map(|edge| edge.spec.from.port.as_str())
+                .collect::<Vec<_>>(),
+            ["primary", "diagnostics"]
+        );
+    }
+
+    #[test]
+    fn given_required_named_input_missing_when_compiled_then_failure_precedes_graph_runtime() {
+        let session = Session::new();
+        let application = session
+            .capture(Source::application(ApplicationSelector::name(
+                "Meeting App",
+            )))
+            .expect("application");
+        let microphone = session
+            .capture(Source::microphone_default())
+            .expect("microphone");
+        let declared = session
+            .operator(Operator::new(
+                OperatorId::new(TEST_NAMED_OPERATOR_ID),
+                OperatorConfiguration::new(),
+            ))
+            .expect("operator instance");
+        application
+            .connect(declared.input("application").expect("application input"))
+            .expect("application connection");
+        let terminal = session
+            .endpoint(EndpointDescriptor::new(
+                NodeTypeId::from(TEST_TEXT_ENDPOINT_NODE_TYPE_ID),
+                OperatorId::new(TEST_TEXT_ENDPOINT_OPERATOR_ID),
+            ))
+            .expect("terminal");
+        declared
+            .output("primary")
+            .expect("primary output")
+            .send(terminal)
+            .expect("primary route");
+        microphone
+            .send(session.browser("wss://receiver.test").expect("browser"))
+            .expect("microphone destination");
+        let spec = session.freeze().expect("structurally valid spec");
+        let (nodes, endpoints) = derived_registries();
+
+        let result = SessionCompiler::new(&nodes, &endpoints).compile(spec);
+
+        assert!(matches!(
+            result,
+            Err(SessionCompileError::MissingRequiredOperatorInput { port_name, .. })
+                if port_name == "microphone"
+        ));
     }
 
     fn two_destination_derived_spec() -> SessionSpec {

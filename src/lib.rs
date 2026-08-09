@@ -84,11 +84,12 @@ pub use crate::session::{
     EdgeObservabilityLevel, EncryptionMode, EndpointConfiguration, EndpointDescriptor,
     EndpointHandle, EventFormat, ExecutionPartition, FrameLineage, LossPolicy, MediaCaps,
     MediaKind, Multiplicity, NodeDefinition, NodeDescriptor, NodeError, NodeTypeId, Operator,
-    OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy,
-    OperatorFailurePolicy, OperatorId, OperatorInputOrigin, OperatorOutputRolePolicy,
-    OperatorPermissionPolicy, PortDirection, PortSpec, PrepareContext, PreparedSourceRuntime,
-    ProcessId, SafetyContract, SampleFormat, SampleSpec, SchemaRef, SemanticRole,
-    SessionControlFailure, SessionDerivedRouteMetrics, SessionError, SessionEvent,
+    OperatorCancellationPolicy, OperatorConfiguration, OperatorConnectionSpec,
+    OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorInputHandle,
+    OperatorInputOrigin, OperatorInstanceHandle, OperatorInstanceId, OperatorInstanceSpec,
+    OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PrepareContext,
+    PreparedSourceRuntime, ProcessId, SafetyContract, SampleFormat, SampleSpec, SchemaRef,
+    SemanticRole, SessionControlFailure, SessionDerivedRouteMetrics, SessionError, SessionEvent,
     SessionEventKind, SessionEventQueueObservations, SessionEventReceive,
     SessionExternalSourceMetrics, SessionId, SessionLifecycleState, SessionMetricsSnapshot,
     SessionOperatorMetrics, SessionRecordingErrorCode, SessionRecordingObservations,
@@ -373,6 +374,12 @@ impl Session {
         configuration: SourceConfiguration,
     ) -> Result<SourceInstanceHandle, SessionError> {
         self.declaration.source(source_type_id, configuration)
+    }
+
+    /// Declares exactly one operator instance. Connect streams to named inputs
+    /// and select named outputs through the returned Session-scoped handle.
+    pub fn operator(&self, operator: Operator) -> Result<OperatorInstanceHandle, SessionError> {
+        self.declaration.operator(operator)
     }
 
     /// Retains an external source factory for this Session's canonical engine.

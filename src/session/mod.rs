@@ -15,6 +15,8 @@ mod foreign_audio;
 mod foreign_audio_endpoint;
 mod host;
 mod observations;
+#[cfg(test)]
+mod operator_connections;
 mod recording;
 mod running;
 #[cfg(test)]
@@ -36,8 +38,8 @@ pub use compiler::{
     RECORDER_OPERATOR_ID, RECORDING_GROUP_CONFIGURATION_KEY,
 };
 pub use draft::{
-    DerivedStreamHandle, EndpointHandle, Operator, Session, SourceInstanceHandle,
-    SourceOutputHandle, StemHandle,
+    DerivedStreamHandle, EndpointHandle, Operator, OperatorInputHandle, OperatorInstanceHandle,
+    Session, SourceInstanceHandle, SourceOutputHandle, StemHandle,
 };
 pub use endpoint::{EndpointConfiguration, EndpointDescriptor, OperatorId};
 pub use engine::{
@@ -99,10 +101,12 @@ pub use source_extension::{
     SourceRegistrationError, SourceRegistry, SourceRuntime, SourceRuntimeError,
     SourceRuntimeObservationHandle, SourceRuntimeObservations, SourceSessionContext, SourceTypeId,
 };
+#[allow(deprecated)]
 pub use spec::{
-    DerivedRouteSpec, EndpointSpec, OperatorInputOrigin, OperatorInstanceId, OperatorSpec,
-    RouteSpec, SessionSpec, SessionSpecVersion, SourceInstanceId, SourceInstanceSpec,
-    SourceOutputSpec, SourceRouteSpec, StemSpec, SESSION_SPEC_VERSION,
+    DerivedRouteSpec, EndpointSpec, OperatorConnectionSpec, OperatorInputOrigin,
+    OperatorInstanceId, OperatorInstanceSpec, OperatorSpec, RouteSpec, SessionSpec,
+    SessionSpecVersion, SourceInstanceId, SourceInstanceSpec, SourceOutputSpec, SourceRouteSpec,
+    StemSpec, SESSION_SPEC_VERSION,
 };
 pub use structural_nodes::{
     register_session_structural_nodes, SessionStructuralNodeRegistrationError,

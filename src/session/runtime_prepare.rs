@@ -650,7 +650,7 @@ fn map_worker_receivers(
             edge.spec.id,
             "operator_instance_id",
         )?);
-        let operator = spec
+        let _operator = spec
             .operators()
             .iter()
             .find(|operator| operator.instance_id() == operator_instance_id)
@@ -660,7 +660,7 @@ fn map_worker_receivers(
             })?;
         if route.endpoint_id() != endpoint_id
             || route.operator_instance_id() != operator_instance_id
-            || operator.source_stem_id() != Some(stem_id)
+            || operator_source_stem_id(spec, operator_instance_id) != Some(stem_id)
         {
             return Err(SessionPrepareError::DerivedRouteMismatch {
                 edge_id: edge.spec.id,
@@ -772,8 +772,20 @@ fn map_worker_receivers(
                 .ok_or(SessionPrepareError::OperatorDeclarationMismatch {
                     node_id: target.id(),
                 })?;
-            if declaration.input_route_id() != input_route_id
-                || declaration.source_stem_id() != Some(stem_id)
+            let connection = spec
+                .operator_connections()
+                .iter()
+                .find(|connection| {
+                    connection.operator_instance_id() == instance_id
+                        && connection.route_id() == input_route_id
+                })
+                .ok_or(SessionPrepareError::OperatorDeclarationMismatch {
+                    node_id: target.id(),
+                })?;
+            if connection
+                .input_port()
+                .is_some_and(|port| port != edge.spec.to.port)
+                || operator_source_stem_id(spec, instance_id) != Some(stem_id)
                 || declaration.operator_id() != &factory.manifest().operator_id
             {
                 return Err(SessionPrepareError::OperatorDeclarationMismatch {
@@ -924,6 +936,54 @@ fn map_worker_receivers(
         });
     }
     Ok((mappings, operator_mappings))
+}
+
+fn operator_source_stem_id(
+    spec: &SessionSpec,
+    operator_instance_id: crate::session::OperatorInstanceId,
+) -> Option<StemId> {
+    fn visit(
+        spec: &SessionSpec,
+        operator_instance_id: crate::session::OperatorInstanceId,
+        visiting: &mut Vec<crate::session::OperatorInstanceId>,
+        stems: &mut Vec<StemId>,
+    ) -> bool {
+        if visiting.contains(&operator_instance_id) {
+            return false;
+        }
+        visiting.push(operator_instance_id);
+        let connections = spec
+            .operator_connections()
+            .iter()
+            .filter(|connection| connection.operator_instance_id() == operator_instance_id)
+            .collect::<Vec<_>>();
+        if connections.is_empty() {
+            return false;
+        }
+        for connection in connections {
+            match connection.input_origin() {
+                crate::session::OperatorInputOrigin::Stem(stem_id) => stems.push(*stem_id),
+                crate::session::OperatorInputOrigin::OperatorOutput {
+                    operator_instance_id,
+                    ..
+                } => {
+                    if !visit(spec, *operator_instance_id, visiting, stems) {
+                        return false;
+                    }
+                }
+                crate::session::OperatorInputOrigin::SourceOutput { .. } => return false,
+            }
+        }
+        visiting.pop();
+        true
+    }
+
+    let mut stems = Vec::new();
+    if !visit(spec, operator_instance_id, &mut Vec::new(), &mut stems) {
+        return None;
+    }
+    let first = *stems.first()?;
+    stems.iter().all(|stem| *stem == first).then_some(first)
 }
 
 fn prepare_context_for_media(media: MediaCaps) -> Option<PrepareContext> {
