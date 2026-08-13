@@ -1,12 +1,13 @@
 # Compatibility and Core 1.0 freeze
 
-**Current state (2026-08-13): release candidate accepted; publication is in
-progress and the Core 1.0 freeze is not active yet.** W18 Session source
-integration, W19 Session composition/audio reentry, and the W20 executable C
-ABI, sidecar, cross-language, installed-consumer, requalification, physical
-macOS, compatibility, and performance gates are hash-accepted. Publication of
-immutable `1.0.0` and independent registry consumption remain the final entry
-gate for the dated freeze.
+**Current state: Core 1.0 is published, independently consumed, and the
+24-month extension-first freeze is active from 2026-08-13 through
+2028-08-13.** W18
+Session source integration, W19 Session composition/audio reentry, and the W20
+executable C ABI, sidecar, cross-language, installed-consumer,
+requalification, physical macOS, compatibility, performance, and registry
+release gates are hash-accepted. Documentation corrections through `1.0.2`
+do not change the accepted runtime, Rust API, C ABI, or PKSS contract.
 
 PocketStation has one engine: the Rust package and `libpocketstation`. Rust, C,
 managed SDKs, and sidecars project the same Session, signal, lineage, error,
@@ -24,17 +25,23 @@ Compatibility rules:
   language and process boundaries.
 - Existing compiled C consumers remain part of acceptance.
 
-Core 1.0 will be a freeze decision, not a claim that every platform is equally
-qualified. Its extension-completeness artifact can be `DONE` while desktop
-support remains honestly classified per W13 evidence, including a narrower
-macOS-first support declaration.
+Core 1.0 is an architecture freeze, not a claim that every platform is equally
+qualified. Extension completeness can be `DONE` while desktop support remains
+honestly classified per W13 evidence, including a narrower macOS-first support
+declaration.
 
-For 24 months after the Core 1.0 freeze, customer/product behavior must be an
-external source, operator, endpoint/connector, transport, SDK projection, or
-sidecar whenever the frozen contracts can express it. Central changes are
-limited to correctness, security, OS/toolchain compatibility, measured
-performance regressions, API/ABI repairs, or a genuinely new execution
-primitive that the extension model cannot represent.
+Through 2028-08-13, customer/product behavior must be an external source,
+operator, endpoint/connector, transport, SDK projection, or sidecar whenever
+the frozen contracts can express it. Central changes are limited to
+correctness, security, OS/toolchain compatibility, measured performance
+regressions, API/ABI repairs, or a genuinely new execution primitive that the
+extension model cannot represent. Every central change records that category,
+the extension-model analysis, compatibility impact, realtime impact, and
+evidence in its review.
 
 Adding a provider, customer protocol, exporter, model, or application policy is
 not such a primitive.
+
+PocketStation may be described as a systems/developer-platform innovation in
+the integration of these contracts. Claims of first-of-kind novelty or overall
+superiority require separate prior-art or neutral comparative evidence.

@@ -1,7 +1,8 @@
 # AUDIO-034: Core 1.0 extension completeness and freeze
 
-**Status:** Provisional; boundary direction accepted, freeze not active
-**Date:** 2026-08-08
+**Status:** Accepted; 24-month extension-first freeze active
+**Decision date:** 2026-08-13
+**Freeze window:** 2026-08-13 through 2028-08-13
 **Decision owners:** PocketStation runtime maintainers
 **Scope:** Public extension contracts, language boundaries, and post-freeze ownership
 
@@ -28,9 +29,11 @@ Provider, customer, industrial/domain, exporter, and application-policy types
 remain outside core. Managed-language work and IPC never execute on audio
 callbacks. No second engine is permitted in an SDK.
 
-After the evidence-bound Core 1.0 freeze, this boundary is binding for 24
-months. Central changes require correctness, security, OS/toolchain,
-compatibility, measured-regression, or unexpressible-execution-primitive cause.
+This boundary is binding from 2026-08-13 through 2028-08-13. Central changes
+require a recorded correctness, security, OS/toolchain, compatibility,
+measured-regression, or unexpressible-execution-primitive cause. A provider,
+customer protocol, model, exporter, storage system, or application policy is
+not a missing execution primitive.
 
 ## Evidence and limitations
 
@@ -42,5 +45,9 @@ hash-accepted. The cross-language and neutral comparison evidence remains
 honestly `LOOPBACK-ONLY`; physical desktop qualification remains owned by W13
 and the accepted macOS final proof.
 
-This ADR remains Provisional until immutable `1.0.0` registry publication is
-independently consumed and the dated freeze policy is activated.
+Immutable Core 1.0 registry bytes were published and independently consumed
+from a clean external repository. Documentation corrections through `1.0.2`
+preserve the accepted Rust API, C ABI, PKSS wire contract, and realtime data
+path. The accepted registry artifact remains `LOOPBACK-ONLY`; activation of
+this architecture boundary does not upgrade Windows/Linux physical-device
+evidence or establish novelty or overall superiority over another system.

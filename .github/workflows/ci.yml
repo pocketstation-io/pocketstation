@@ -54,6 +54,9 @@ jobs:
       - name: Architecture constraints
         run: bash scripts/lint/check-architecture-constraints.sh
 
+      - name: Core 1.0 extension-first freeze
+        run: bash tools/check-core-freeze-policy.sh
+
       - name: CODE_PROTOCOL
         run: bash scripts/check_protocol.sh
 

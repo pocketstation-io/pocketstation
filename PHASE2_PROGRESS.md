@@ -1,5 +1,21 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## Core 1.0 extension-first freeze activation — 2026-08-13
+
+- Status: `REAL` governance boundary after immutable Core 1.0 publication and
+  independent registry consumption; active through 2028-08-13.
+- AUDIO-034 is accepted. Provider, customer, model, exporter, storage and
+  application-policy behavior must remain outside Core whenever a source,
+  operator, endpoint/connector, transport, SDK projection or sidecar can
+  express it.
+- The pull-request template requires one approved Core-change category plus
+  extension-model, compatibility and realtime analysis. CI and
+  `CODE_PROTOCOL` run `tools/check-core-freeze-policy.sh` so the dated
+  authority and review contract cannot silently disappear.
+- This activates an ownership rule, not a new platform or performance claim.
+  Windows/Linux evidence keeps its existing classification, and overall
+  novelty or superiority still requires separate evidence.
+
 ## W20 final performance qualification — 2026-08-13
 
 - Status: `SAFE-TO-MERGE` component gate within hash-accepted candidate

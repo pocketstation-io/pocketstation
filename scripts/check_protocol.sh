@@ -20,6 +20,7 @@ fi
 echo "scope: full workspace (${#rust_files[@]} Rust files)"
 
 "${script_dir}/check_pks_single_engine_boundary.sh"
+"${repo_root}/tools/check-core-freeze-policy.sh"
 
 echo "LAW-1: unit suffixes..."
 violations="$(
