@@ -57,7 +57,6 @@ fn given_normal_crate_root_when_scanned_then_implementation_owners_are_private()
         "PlanRunnerCancellation",
         "PlanSourceSender",
         "PreparedSourceRuntime",
-        "SidecarMessage",
         "SourceOutputBranchSpec",
         "SourceOutputReceiver",
         "SourceRegistry",

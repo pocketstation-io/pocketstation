@@ -15,6 +15,12 @@
 - This activates an ownership rule, not a new platform or performance claim.
   Windows/Linux evidence keeps its existing classification, and overall
   novelty or superiority still requires separate evidence.
+- The first remote CI run found a stale public-boundary assertion that still
+  classified `SidecarMessage` as private even though public `RunningSession`
+  signal methods and every immutable 1.0 release expose the bounded PKSS
+  projection. The allowlist/test now preserve that shipped SemVer contract
+  while keeping process-host workers, queues and framing I/O private. No
+  runtime, callback, pool, queue or protocol byte changed.
 
 ## W20 final performance qualification — 2026-08-13
 

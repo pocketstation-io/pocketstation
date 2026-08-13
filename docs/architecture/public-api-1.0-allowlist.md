@@ -70,9 +70,16 @@ SessionEngineHost / SessionEngineBuilder / PreparedSession
 SourceRegistry / SourceRuntime / PreparedSourceRuntime
 EndpointDriverRegistry / PreparedEndpoint / RunningEndpoint
 compiler passes, RuntimePlan builders, structural-node registration
-sidecar framing messages or process-host internals
+sidecar process-host workers, channels, child-process handles, or framing I/O
 capture consumers, CaptureOwner, or platform backend implementations
 ```
+
+The bounded PKSS wire projection is public compatibility surface:
+`SidecarMessage`, `SidecarMessageKind`, `SidecarProtocolLimits`, protocol
+errors, process declaration, deadlines, state, and observations. Public
+Session methods use those values; callers cannot access the process host,
+queues, reader/writer workers, or lifecycle implementation. Control-message
+validity remains enforced by the Session-owned host.
 
 The source contract in `tests/public_api_boundary.rs`, external consumer
 fixture, rustdoc gate, and SemVer report enforce this allowlist.
