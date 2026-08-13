@@ -25,6 +25,12 @@
   `PolledAudioFrame::sequence_number()` call. The example now reads sequence
   from `FrameLineage`, matching the published API. This is documentation-only
   and changes no runtime contract.
+- The following Linux CI run passed doctests and then exposed an existing
+  recording-test scheduling race: its 200 one-millisecond polls could expire
+  before a loaded runner scheduled the nested recorder failure. The test now
+  uses a monotonic two-second deadline and retains the exact fail-closed and
+  final-accounting assertions. Production timeout, worker, queue and recording
+  behavior are unchanged.
 
 ## W20 final performance qualification — 2026-08-13
 

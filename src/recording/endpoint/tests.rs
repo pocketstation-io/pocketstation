@@ -1,6 +1,6 @@
 use std::fs::File;
 use std::thread;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use crate::endpoint::{
     endpoint_start_gate, EndpointDriverRegistry, EndpointPrepareContext, EndpointRouteContext,
@@ -176,7 +176,8 @@ fn wait_for_received(running: &crate::endpoint::RunningEndpoint, expected_frames
 }
 
 fn wait_for_failure(running: &crate::endpoint::RunningEndpoint) {
-    for _ in 0..200 {
+    let deadline = Instant::now() + Duration::from_secs(2);
+    while Instant::now() < deadline {
         if running.observations().failures_total > 0 {
             return;
         }
