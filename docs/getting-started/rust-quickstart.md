@@ -15,6 +15,9 @@ stems, stops, and reads the recording outcome. The compiling reference is
 Important boundaries:
 
 - the host chooses selectors and handles operating-system consent UX;
+- `PermissionObservation::NotObservable` is an unknown preflight state, never
+  an implicit grant; prepare/open returns the authoritative result for the
+  selected backend;
 - every destination is bounded and may fail independently;
 - source, stem, clock, sequence, permission epoch, and discontinuity identity
   come from captured frame lineage, not caller strings;

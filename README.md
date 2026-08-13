@@ -160,6 +160,16 @@ Applications own operating-system permission prompts and source selection UX.
 PocketStation reports typed permission, source-loss, discontinuity, saturation,
 and lifecycle outcomes.
 
+### Permission semantics
+
+`microphone_permission_observation()` is a non-prompting preflight query. macOS
+provides an authoritative process authorization state. Windows and Linux may
+return `PermissionObservation::NotObservable` because their effective access
+can depend on application identity, sandbox/portal policy, device ACLs, and the
+selected backend. `NotObservable` means neither granted nor denied. On every
+platform, Session preparation and source opening still return the authoritative
+typed success or failure for the selected source.
+
 ## Native dependencies
 
 macOS requires the Xcode command-line tools. Linux development packages depend

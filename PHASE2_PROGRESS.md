@@ -2922,3 +2922,8 @@
   archive and discover its versioned package root, allowing the patch release
   to be checked directly against immutable `1.0.0` bytes instead of only the
   pre-release `0.1.2` baseline.
+- Public permission documentation now distinguishes an unavailable preflight
+  observation from actual capture authorization: macOS provides the current
+  authoritative query, while every backend reports the authoritative selected
+  source result during Session prepare/open. `NotObservable` is explicitly
+  neither success nor denial.
