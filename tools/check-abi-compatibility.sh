@@ -5,7 +5,7 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 workspace_root="$(cd "${repo_root}/../.." && pwd -P)"
 baseline="${repo_root}/docs/compatibility/c-abi-v1.baseline"
 baseline_crate="${PKS_ABI_BASELINE_CRATE:-${workspace_root}/pocketstation-lab/artifacts/w20-final-requalification/pks-20260812-w20-final-requalification-9/run-1/package/pocketstation-0.1.2.crate}"
-expected_baseline_sha="$(awk -F= '$1 == "baseline_crate_sha256" {print $2}' "${baseline}")"
+expected_baseline_sha="${PKS_ABI_BASELINE_SHA256:-$(awk -F= '$1 == "baseline_crate_sha256" {print $2}' "${baseline}")}"
 expected_header_sha="$(awk -F= '$1 == "header_sha256" {print $2}' "${baseline}")"
 
 [[ -f "${baseline_crate}" ]] || {
@@ -26,7 +26,11 @@ actual_header_sha="$(shasum -a 256 "${repo_root}/include/pocketstation.h" | awk 
 scratch="$(mktemp -d "${TMPDIR:-/tmp}/pks-abi-compatibility.XXXXXX")"
 trap 'rm -rf "${scratch}"' EXIT
 tar -xf "${baseline_crate}" -C "${scratch}"
-baseline_source="${scratch}/pocketstation-0.1.2"
+baseline_source="$(find "${scratch}" -mindepth 1 -maxdepth 1 -type d -print -quit)"
+[[ -n "${baseline_source}" ]] || {
+  echo "C ABI baseline archive has no package root" >&2
+  exit 1
+}
 cmp "${baseline_source}/include/pocketstation.h" "${repo_root}/include/pocketstation.h"
 
 cc -std=c11 -Wall -Wextra -Werror \

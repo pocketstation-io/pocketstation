@@ -4,7 +4,8 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 workspace_root="$(cd "${repo_root}/../.." && pwd -P)"
 baseline_crate="${PKS_API_BASELINE_CRATE:-${workspace_root}/pocketstation-lab/artifacts/w20-final-requalification/pks-20260812-w20-final-requalification-9/run-1/package/pocketstation-0.1.2.crate}"
-expected_baseline_sha="4b41973fe910c6571836e0393a7bcf300bd74f81b0acb1997cb9bb1b899a97d4"
+expected_baseline_sha="${PKS_API_BASELINE_SHA256:-4b41973fe910c6571836e0393a7bcf300bd74f81b0acb1997cb9bb1b899a97d4}"
+release_type="${PKS_API_RELEASE_TYPE:-minor}"
 required_tool_version="cargo-semver-checks 0.48.0"
 
 [[ -f "${baseline_crate}" ]] || {
@@ -24,12 +25,17 @@ actual_baseline_sha="$(shasum -a 256 "${baseline_crate}" | awk '{print $1}')"
 scratch="$(mktemp -d "${TMPDIR:-/tmp}/pks-api-compatibility.XXXXXX")"
 trap 'rm -rf "${scratch}"' EXIT
 tar -xf "${baseline_crate}" -C "${scratch}"
+baseline_root="$(find "${scratch}" -mindepth 1 -maxdepth 1 -type d -print -quit)"
+[[ -n "${baseline_root}" ]] || {
+  echo "Rust API baseline archive has no package root" >&2
+  exit 1
+}
 
 cargo semver-checks check-release \
   --manifest-path "${repo_root}/Cargo.toml" \
-  --baseline-root "${scratch}/pocketstation-0.1.2" \
+  --baseline-root "${baseline_root}" \
   --default-features \
-  --release-type minor \
+  --release-type "${release_type}" \
   --color never
 
 echo "Rust API compatibility: PASS"

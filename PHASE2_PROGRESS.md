@@ -2918,3 +2918,7 @@
   Clippy also passes. No callback algorithm, pool capacity, queue policy,
   `AudioFrame`, codec, timing, C ABI, PKSS frame, or Session execution semantic
   changed.
+- The compatibility tools now accept an explicitly hash-pinned registry
+  archive and discover its versioned package root, allowing the patch release
+  to be checked directly against immutable `1.0.0` bytes instead of only the
+  pre-release `0.1.2` baseline.
