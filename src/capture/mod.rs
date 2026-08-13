@@ -24,9 +24,10 @@ mod timeline;
 
 pub use authorization::*;
 #[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
+pub use capture_owner::join_capture_worker;
+#[cfg(any(test, feature = "internal-testing"))]
 pub use capture_owner::{
-    join_capture_worker, prepare_capture, CaptureOpenMetadata, PreparedCapture,
-    CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID,
+    prepare_capture, CaptureOpenMetadata, PreparedCapture, CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID,
 };
 pub use capture_owner::{
     prepare_capture_with_start_gate, ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery,
@@ -52,7 +53,7 @@ pub use observations::CaptureObservationCounters;
 pub use observations::{CaptureObservationHandle, CaptureObservations};
 pub use query::*;
 pub use selection::*;
-#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
+#[cfg(any(test, feature = "internal-testing"))]
 pub use timeline::CaptureSampleTimelineError;
 #[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
 pub use timeline::{

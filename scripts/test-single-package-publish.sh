@@ -22,7 +22,7 @@ package_files="$(cargo package \
   --manifest-path "${repo_root}/Cargo.toml" \
   --locked \
   --list)"
-for forbidden_prefix in .github/ AGENTS.md PHASE docs/ scripts/; do
+for forbidden_prefix in .github/ AGENTS.md PHASE scripts/; do
   while IFS= read -r package_file; do
     if [[ "${package_file}" == "${forbidden_prefix}"* ]]; then
       echo "internal execution material leaked into package: ${forbidden_prefix}" >&2
@@ -30,7 +30,37 @@ for forbidden_prefix in .github/ AGENTS.md PHASE docs/ scripts/; do
     fi
   done <<<"${package_files}"
 done
-for required_path in Cargo.toml README.md build.rs include/pocketstation.h src/lib.rs; do
+
+# The archive may carry only the curated developer-facing documentation. ADRs,
+# execution evidence, compatibility fixtures, and repository standards remain
+# private to the source repository.
+while IFS= read -r package_file; do
+  case "${package_file}" in
+    docs/README.md | \
+      docs/architecture/overview.md | \
+      docs/concepts/signals-and-streams.md | \
+      docs/development/compatibility-and-freeze.md | \
+      docs/getting-started/rust-quickstart.md | \
+      docs/guides/extensions.md) ;;
+    docs/*)
+      echo "internal documentation leaked into package: ${package_file}" >&2
+      exit 1
+      ;;
+  esac
+done <<<"${package_files}"
+
+for required_path in \
+  Cargo.toml \
+  README.md \
+  build.rs \
+  docs/README.md \
+  docs/architecture/overview.md \
+  docs/concepts/signals-and-streams.md \
+  docs/development/compatibility-and-freeze.md \
+  docs/getting-started/rust-quickstart.md \
+  docs/guides/extensions.md \
+  include/pocketstation.h \
+  src/lib.rs; do
   if ! grep -Fx "${required_path}" <<<"${package_files}" >/dev/null; then
     echo "required package file is missing: ${required_path}" >&2
     exit 1

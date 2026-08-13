@@ -2910,6 +2910,10 @@
   model, realtime guarantees, extension contracts, platform evidence
   boundaries, prerequisites, and direct documentation paths. The linked public
   guides are included in the crate archive.
+- The single-package publish guard permits exactly those six curated public
+  documentation files and rejects every other `docs/` path, preserving the
+  original ban on execution evidence, ADRs, internal standards, and historical
+  reports in the registry artifact.
 - Contracts-only Clippy and rustdoc pass with warnings denied; all-feature
   Clippy also passes. No callback algorithm, pool capacity, queue policy,
   `AudioFrame`, codec, timing, C ABI, PKSS frame, or Session execution semantic
