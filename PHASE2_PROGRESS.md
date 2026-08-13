@@ -2985,3 +2985,15 @@
 - Strict workspace Clippy passes with all targets, all features, the locked
   dependency graph, and warnings denied. No capture behavior, callback code,
   pool capacity, queue policy, permission semantics, or public API changed.
+
+## Registry documentation gate alignment — 2026-08-13
+
+- Status: `SAFE-TO-MERGE`. CI and release validation now execute the exact
+  documentation configuration declared for docs.rs: native Linux,
+  `default-features = false`, and no dependency documentation.
+- The stale Ubuntu-to-Windows MSVC documentation command was invalid because
+  the non-Rust Opus build requires a native Windows toolchain. Windows runtime
+  qualification remains an independent native-platform gate and is not
+  reclassified by this documentation correction.
+- No Rust source, public API, ABI, capture path, codec behavior, or realtime
+  execution contract changed.
