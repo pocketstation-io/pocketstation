@@ -68,7 +68,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     "stem={} source={} sequence={}",
                     frame.lineage().stem_id().get(),
                     frame.lineage().source_id().get(),
-                    frame.sequence_number()
+                    frame.lineage().sequence_number()
                 );
             }
         }

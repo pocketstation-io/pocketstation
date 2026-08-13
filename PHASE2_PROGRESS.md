@@ -21,6 +21,10 @@
   projection. The allowlist/test now preserve that shipped SemVer contract
   while keeping process-host workers, queues and framing I/O private. No
   runtime, callback, pool, queue or protocol byte changed.
+- The next remote run reached the new README doctest and rejected one stale
+  `PolledAudioFrame::sequence_number()` call. The example now reads sequence
+  from `FrameLineage`, matching the published API. This is documentation-only
+  and changes no runtime contract.
 
 ## W20 final performance qualification — 2026-08-13
 
