@@ -1,5 +1,5 @@
 const MACOS_INPUT: &str = include_str!("../src/capture/platform/macos/input.rs");
-const LINUX_CAPTURE: &str = include_str!("../src/capture/platform/linux/linux.rs");
+const LINUX_CAPTURE: &str = include_str!("../src/capture/platform/linux/pipewire.rs");
 const WINDOWS_CAPTURE: &str = include_str!("../src/capture/platform/windows/windows.rs");
 const MACOS_NATIVE_TAP: &str = include_str!("../native/macos/asp/source_discovery.m");
 const MACOS_ASP_RING: &str = include_str!("../native/macos/asp/SharedRing.h");

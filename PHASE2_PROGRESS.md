@@ -2974,3 +2974,14 @@
   PipeWire/WirePlumber, direct ALSA, ACL, sandbox, and container policy do not
   expose one stable process-wide microphone permission authority. Selected
   source prepare/open outcomes remain authoritative on every platform.
+
+## Linux capture module ownership correction — 2026-08-13
+
+- Status: `SAFE-TO-MERGE`. The Linux platform module now names its concrete
+  PipeWire/ALSA implementation `pipewire` instead of nesting a second `linux`
+  module inside `capture::platform::linux`.
+- The callback source-contract test follows the renamed implementation and
+  continues to audit the same realtime callback source.
+- Strict workspace Clippy passes with all targets, all features, the locked
+  dependency graph, and warnings denied. No capture behavior, callback code,
+  pool capacity, queue policy, permission semantics, or public API changed.
