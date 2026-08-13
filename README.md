@@ -22,14 +22,14 @@ PocketStation is built for workflows such as:
 
 ```toml
 [dependencies]
-pocketstation = "1.0.1"
+pocketstation = "1.0.2"
 ```
 
 PocketStation requires Rust 1.95 or newer. Native capture is enabled by
 default. A contracts-only build for documentation or tooling can disable it:
 
 ```toml
-pocketstation = { version = "1.0.1", default-features = false }
+pocketstation = { version = "1.0.2", default-features = false }
 ```
 
 ## Quick start
@@ -163,12 +163,14 @@ and lifecycle outcomes.
 ### Permission semantics
 
 `microphone_permission_observation()` is a non-prompting preflight query. macOS
-provides an authoritative process authorization state. Windows and Linux may
-return `PermissionObservation::NotObservable` because their effective access
-can depend on application identity, sandbox/portal policy, device ACLs, and the
-selected backend. `NotObservable` means neither granted nor denied. On every
-platform, Session preparation and source opening still return the authoritative
-typed success or failure for the selected source.
+uses its process authorization state. Windows 10 version 1903 and newer uses
+the current process' `Microphone` AppCapability status and can report allowed,
+denied, restricted, or prompt-required without displaying UI. Linux returns
+`PermissionObservation::NotObservable` because PipeWire portals, session
+policy, direct ALSA access, device ACLs, and containers do not share one
+authoritative process-wide query. `NotObservable` means neither granted nor
+denied. On every platform, Session preparation and source opening still return
+the authoritative typed success or failure for the selected source.
 
 ## Native dependencies
 

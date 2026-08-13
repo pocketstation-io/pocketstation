@@ -1,3 +1,5 @@
+#[cfg(target_os = "windows")]
+mod authorization;
 #[cfg(any(target_os = "windows", test))]
 mod open_lifecycle;
 #[cfg(any(target_os = "windows", test))]
@@ -12,6 +14,8 @@ mod session_backend;
 #[cfg(target_os = "windows")]
 mod windows;
 
+#[cfg(target_os = "windows")]
+pub(crate) use authorization::microphone_permission_observation;
 #[cfg(target_os = "windows")]
 pub use session_backend::DesktopCaptureBackend;
 #[cfg(target_os = "windows")]

@@ -45,15 +45,23 @@ pub use crate::capture::{
 
 /// Reads the current microphone authorization state without prompting.
 ///
-/// macOS exposes an authoritative query. Other desktop backends currently
-/// return `NotObservable`; callers must not reinterpret that value as allowed
-/// or denied. Permission prompting remains an explicit host-application action.
+/// macOS and supported Windows hosts expose authoritative non-prompting
+/// queries. Linux currently returns `NotObservable`; callers must not
+/// reinterpret that value as allowed or denied. Permission prompting remains
+/// an explicit host-application action.
 pub fn microphone_permission_observation() -> PermissionObservation {
     #[cfg(all(target_os = "macos", feature = "native-capture"))]
     {
         crate::capture::platform::macos::microphone_permission_observation()
     }
-    #[cfg(not(all(target_os = "macos", feature = "native-capture")))]
+    #[cfg(all(target_os = "windows", feature = "native-capture"))]
+    {
+        crate::capture::platform::windows::microphone_permission_observation()
+    }
+    #[cfg(not(all(
+        feature = "native-capture",
+        any(target_os = "macos", target_os = "windows")
+    )))]
     {
         PermissionObservation::NotObservable
     }

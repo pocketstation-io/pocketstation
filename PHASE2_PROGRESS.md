@@ -2927,3 +2927,18 @@
   authoritative query, while every backend reports the authoritative selected
   source result during Session prepare/open. `NotObservable` is explicitly
   neither success nor denial.
+
+## Windows microphone permission preflight — 2026-08-13
+
+- Status: `SAFE-TO-TEST` for patch `1.0.2`. Windows 10 version 1903 and newer
+  now uses the non-prompting `AppCapability("Microphone").CheckAccess()`
+  authority. Allowed, user-denied, system-restricted/not-declared, and
+  prompt-required states map to the existing stable permission vocabulary;
+  API or platform failure remains honestly `NotObservable`.
+- The query initializes WinRT only on the calling control thread, accepts an
+  already initialized apartment, balances initialization ownership, never
+  requests access, and never runs on a capture callback.
+- Linux intentionally remains `NotObservable` at preflight because XDG portal,
+  PipeWire/WirePlumber, direct ALSA, ACL, sandbox, and container policy do not
+  expose one stable process-wide microphone permission authority. Selected
+  source prepare/open outcomes remain authoritative on every platform.
