@@ -43,8 +43,7 @@ use crate::capture::platform::windows::runtime_lifecycle::{
     classify_platform_status, WindowsRuntimeFailureDisposition,
 };
 use crate::frame::{
-    AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, Platform, SourceId, StreamId,
-    POOL_MAX_SLOTS, SAMPLE_RATE_HZ,
+    AudioBufferPool, AudioFrame, Platform, SourceId, StreamId, POOL_MAX_SLOTS, SAMPLE_RATE_HZ,
 };
 use wasapi::{AudioClient, DeviceEnumerator, Direction, SampleType, StreamMode, WaveFormat};
 
@@ -1015,7 +1014,10 @@ fn deliver_packet(
         // SAFETY: sample_index is bounded by raw.len() / size_of::<f32>().
         *sample = unsafe { src_ptr.add(sample_index).read_unaligned() };
     }
-    handle.set_len(sample_count);
+    if handle.try_set_len(sample_count).is_err() {
+        counters.observe_oversized_buffer();
+        return;
+    }
 
     let frame_sequence_number = sequence_number.fetch_add(1, Ordering::Relaxed);
     let timestamp_ns = monotonic_timestamp_ns();
@@ -1027,8 +1029,6 @@ fn deliver_packet(
         CAPTURE_CHANNEL_COUNT,
         handle,
     );
-    frame.source_tag = AudioSourceTag::Captured;
-    frame.encryption_mode = EncryptionMode::None;
     frame.sample_rate_hz = SAMPLE_RATE_HZ;
     callback(frame);
 }

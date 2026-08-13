@@ -8,7 +8,8 @@
 //! Pass threshold: p99 ≤ 2ms (2_000_000 ns).
 
 use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
-use pocketstation::internal::{
+use opus::{Application, Channels};
+use pocketstation::internal::codec::{
     OpusApplication, OpusChannels, OpusConfig, OpusEncoder, OpusFrameDuration, OpusSampleRate,
 };
 
@@ -71,6 +72,34 @@ fn bench_opus_encode(c: &mut Criterion) {
                 enc.encode_into(&pcm, &mut out).expect("encode");
             })
         });
+    }
+
+    // Same-process backend calibration. This is intentionally adjacent to the
+    // wrapper case so a host scheduling or power-state change cannot be
+    // mistaken for PocketStation wrapper overhead.
+    {
+        let pcm = pcm_sine(SAMPLES_20MS_MONO);
+        let mut encoder = opus::Encoder::new(48_000, Channels::Mono, Application::Voip)
+            .expect("direct libopus encoder");
+        encoder
+            .set_bitrate(opus::Bitrate::Bits(32_000))
+            .expect("direct bitrate");
+        encoder.set_complexity(10).expect("direct complexity");
+        let mut converted = [0_i16; SAMPLES_20MS_MONO];
+        let mut output = vec![0_u8; 4_000];
+        group.bench_function(
+            BenchmarkId::new("calibration_direct_libopus_voice20_mono_32k", ""),
+            |b| {
+                b.iter(|| {
+                    for (destination, &source) in converted.iter_mut().zip(pcm.iter()) {
+                        *destination = (source.clamp(-1.0, 1.0) * 32_767.0) as i16;
+                    }
+                    encoder
+                        .encode(&converted, &mut output)
+                        .expect("direct encode");
+                })
+            },
+        );
     }
 
     // agent10 — 10ms mono 32kbps (voice-agent low-latency profile).

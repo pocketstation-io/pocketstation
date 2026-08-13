@@ -1,8 +1,12 @@
 # Compatibility and Core 1.0 freeze
 
-**Current state (2026-08-08): candidate policy only. Core 1.0 is not frozen.**
-W18 Session source integration, W19 Session composition/audio reentry, and the
-W20 executable C/sidecar/install/release gates remain incomplete.
+**Current state (2026-08-13): release candidate accepted; publication is in
+progress and the Core 1.0 freeze is not active yet.** W18 Session source
+integration, W19 Session composition/audio reentry, and the W20 executable C
+ABI, sidecar, cross-language, installed-consumer, requalification, physical
+macOS, compatibility, and performance gates are hash-accepted. Publication of
+immutable `1.0.0` and independent registry consumption remain the final entry
+gate for the dated freeze.
 
 PocketStation has one engine: the Rust package and `libpocketstation`. Rust, C,
 managed SDKs, and sidecars project the same Session, signal, lineage, error,

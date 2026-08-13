@@ -247,10 +247,12 @@ impl CaptureOwner {
         }
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn frame_stream_closed(&self) -> bool {
         self.frame_stream.is_closed()
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn observations(&self) -> CaptureOwnerObservations {
         self.observation_receipt.observations()
     }
@@ -292,6 +294,7 @@ impl CaptureOwner {
 }
 
 /// Prepares a bounded capture owner without starting native delivery.
+#[cfg(any(test, feature = "internal-testing"))]
 pub fn prepare_capture(
     backend: &dyn CallbackCaptureBackend,
     request: CapturePrepareRequest,

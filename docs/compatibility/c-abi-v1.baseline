@@ -1,0 +1,75 @@
+baseline=pks-20260812-w20-final-requalification-9
+baseline_crate_sha256=4b41973fe910c6571836e0393a7bcf300bd74f81b0acb1997cb9bb1b899a97d4
+header_sha256=78926f273d93cd7508285abd7018dc3ef2498986f89cd32abd70b760338993c4
+session_abi=1.1
+extension_abi=1.1
+pkss_protocol=1.0
+pkss_magic=PKSS
+pkss_header_bytes=52
+type PksSessionAbiVersion size=8 align=4
+type PksSessionHandle size=24 align=8
+type PksSessionStatus size=8 align=4
+type PksSessionUtf8 size=16 align=8
+type PksExtensionAbiVersion size=8 align=4
+type PksExtensionDescriptor size=40 align=8
+type PksExtensionPort size=80 align=8
+type PksExtensionSignalView size=56 align=8
+type PksExtensionSignalBuffer size=56 align=8
+type PksExtensionCallbacks size=104 align=8
+type PksExtensionPipelineDeclaration size=120 align=8
+type PksExtensionMetricsSnapshot size=232 align=8
+type PksSessionEngineConfig size=56 align=8
+type PksSessionAppMicDeclaration size=24 align=8
+type PksSessionEvent size=64 align=8
+type PksSessionMetricsSnapshot size=160 align=8
+type PksSessionSourceMetrics size=176 align=8
+type PksSessionRouteMetrics size=352 align=8
+type PksSessionAudioBatch size=40 align=8
+type PksSessionAudioFrame size=144 align=8
+field PksExtensionCallbacks.struct_size_bytes offset=0
+field PksExtensionCallbacks.abi_major offset=4
+field PksExtensionCallbacks.abi_minor offset=6
+field PksExtensionCallbacks.registration_context offset=8
+field PksExtensionCallbacks.max_payload_bytes offset=16
+field PksExtensionCallbacks.reserved offset=20
+field PksExtensionCallbacks.validate_configuration offset=24
+field PksExtensionCallbacks.create offset=32
+field PksExtensionCallbacks.prepare offset=40
+field PksExtensionCallbacks.source_next offset=48
+field PksExtensionCallbacks.operator_process offset=56
+field PksExtensionCallbacks.endpoint_consume offset=64
+field PksExtensionCallbacks.request_stop offset=72
+field PksExtensionCallbacks.finish offset=80
+field PksExtensionCallbacks.destroy_instance offset=88
+field PksExtensionCallbacks.destroy_registration offset=96
+symbol pks_encode_opus
+symbol pks_extension_abi_get_version
+symbol pks_extension_abi_is_compatible
+symbol pks_extension_descriptor_validate
+symbol pks_opus_encoder_create
+symbol pks_opus_encoder_destroy
+symbol pks_opus_encoder_set_bitrate
+symbol pks_opus_max_packet_bytes
+symbol pks_session_abi_get_version
+symbol pks_session_abi_is_compatible
+symbol pks_session_audio_batch_frame
+symbol pks_session_audio_batch_release
+symbol pks_session_audio_poll
+symbol pks_session_compile
+symbol pks_session_create_app_mic
+symbol pks_session_create_extension_pipeline
+symbol pks_session_destroy
+symbol pks_session_engine_create
+symbol pks_session_engine_destroy
+symbol pks_session_engine_is_live
+symbol pks_session_engine_register_extension
+symbol pks_session_event_poll
+symbol pks_session_extension_metrics_poll
+symbol pks_session_get_state
+symbol pks_session_metrics_poll
+symbol pks_session_route_metrics_at
+symbol pks_session_route_metrics_count
+symbol pks_session_source_metrics_at
+symbol pks_session_source_metrics_count
+symbol pks_session_start
+symbol pks_session_stop

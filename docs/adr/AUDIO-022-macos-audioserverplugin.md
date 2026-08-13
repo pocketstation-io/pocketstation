@@ -1,6 +1,6 @@
 # AUDIO-022 — macOS AudioServerPlugin (ASP) for System Audio Capture
 
-**Status:** Accepted  
+**Status:** Superseded in part by the direct Core Audio implementation
 **Date:** 2026-06-10  
 **Deciders:** Raphael Avocegamou  
 **Related:** AUDIO-011 (SPSC ring), AUDIO-020 (capture benchmark)
@@ -20,8 +20,9 @@ device is available to the host process at CoreAudio buffer sizes (typically
 256 or 512 frames at 48 kHz = 5–10 ms, configurable down to 64 frames
 = ~1.3 ms).
 
-libASPL (<https://github.com/appleasp/libASPL>) is a C++17 helper library
-that wraps the low-level `AudioServerPlugIn.h` interface.
+The first proposal used libASPL. The shipping package no longer has that
+dependency: it compiles a direct `AudioServerPlugIn.h` implementation and uses
+the public Core Audio process-tap API on macOS 14.4 and later.
 
 ## Decision
 
@@ -35,15 +36,18 @@ Wave A of the loopback improvement ships:
    for `Application(bundle_id)` on macOS.
 4. `with_excludes_current_process_audio(true)` on all SCKit streams to
    prevent the CLI capture loop.
-5. An `asp` Cargo feature (off by default) that compiles `asp/Plugin.cpp`
-   with libASPL when the `vendor/libASPL` submodule is present.
-6. A `pks_asp_is_installed()` C bridge stub compiled unconditionally so
-   `asp_is_installed()` is always callable regardless of the feature flag.
-7. `macos_asp::asp_is_installed()` as a public Rust API for runtime
-   plugin presence detection.
+5. Compile the direct process-tap bridge, authorization query and ASP shared
+   memory reader on macOS.
+6. Compile `Plugin.cpp` as an unsigned driver bundle build artifact without a
+   libASPL submodule only when the explicit `macos-asp-driver-artifact` feature
+   is enabled.
+7. Keep installation, signing and `coreaudiod` restart outside the SDK.
+8. `macos_asp::asp_is_installed()` reports only a running, ABI-compatible
+   shared-memory producer; no stub reports synthetic availability.
 
-The libASPL **submodule add is a human operator step** and is not performed
-by the agent.  All code compiles and all tests pass without it.
+No vendor submodule is required. All normal SDK builds compile and link the
+process-tap, authorization and ASP-reader boundaries without producing a
+driver bundle.
 
 ## Alternatives considered
 
@@ -55,10 +59,10 @@ by the agent.  All code compiles and all tests pass without it.
 
 ## Consequences
 
-- The `asp` feature is permanently off by default; CI does not require libASPL.
+- CI does not require an installed ASP and the crate has no libASPL dependency.
 - Wave B/C (Windows WASAPI, Linux PipeWire) use `CaptureMode` from this ADR.
-- When the ASP plugin is installed, callers can query `asp_is_installed()`
-  and route capture accordingly (future Wave D work).
+- macOS 14.4+ uses the process-tap path first; older systems may use an
+  externally installed compatible ASP for system-mix capture.
 - Deployment of the ASP plugin requires a signed HAL plugin + `coreaudiod`
   restart; this is a separate operational procedure not automated here.
 

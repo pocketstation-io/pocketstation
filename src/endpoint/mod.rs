@@ -3,29 +3,35 @@
 //! This crate owns setup-time endpoint state transitions. It does not implement
 //! connectors, relay protocols, recording algorithms, or worker threads.
 
-mod driver;
+mod contract;
 mod identity;
+mod polled_audio;
+mod polled_audio_driver;
 mod registry;
+mod runtime;
 
-pub use driver::{
-    endpoint_start_gate, EndpointCancellationOutcome, EndpointDriverFinalization,
-    EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointFinalizationOutcome,
-    EndpointPrepareContext, EndpointRouteContext, EndpointSignalRouteContext, EndpointStartFailure,
-    EndpointStartFailureCause, EndpointStartGate, EndpointStartGateController, PreparedEndpoint,
-    PreparedEndpointDriver, RunningEndpoint, RunningEndpointDriver, SessionTimelineOrigin,
+pub use contract::{
+    EndpointAudioFrame, EndpointAudioReceiver, EndpointDriverFactory, EndpointPortInput,
+    EndpointReceiver, EndpointSignalReceiver,
 };
-pub use identity::{EndpointGroupId, OperatorId, OPERATOR_ID_SYNTAX_VERSION};
-pub use registry::{
-    DerivedEndpointDriverInput, EndpointDriverFactory, EndpointDriverInput, EndpointDriverRegistry,
-    EndpointDriverRegistryError, EndpointPrepareError,
+pub(crate) use identity::OperatorId;
+pub use identity::{EndpointGroupId, EndpointPreparationGroup};
+pub use polled_audio::PolledAudioEndpoint;
+pub(crate) use polled_audio::POLLED_AUDIO_OPERATOR_ID;
+pub use polled_audio_driver::{
+    PolledAudioBatchLease, PolledAudioEndpointConfig, PolledAudioEndpointConfigError,
+    PolledAudioFrame, PolledAudioObservations, PolledAudioPollError, PolledAudioReceipt,
 };
-
-// Public extension contract for external endpoint-driver packages. The
-// implementation remains in this module; no separately versioned endpoint
-// package exists.
-pub use crate::graph::{
-    EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig as OperatorConfiguration,
-    NodeDefinition, NodeDescriptor, NodeTypeId, PortDirection, PortSpec, SafetyContract,
-    SignalEnvelope, SignalSpec, TextFormat,
+pub(crate) use registry::{
+    EndpointDriverRegistry, EndpointDriverRegistryError, EndpointPrepareError,
 };
-pub use crate::runtime::{AsyncOperatorOutputObservationHandle, AsyncOperatorOutputObservations};
+pub(crate) use runtime::{
+    endpoint_start_gate, EndpointFinalizationOutcome, EndpointStartFailure, PreparedEndpoint,
+    RunningEndpoint,
+};
+pub use runtime::{
+    EndpointCancellationOutcome, EndpointDriverFinalization, EndpointDriverObservations,
+    EndpointFailure, EndpointFailureStage, EndpointInputOrigin, EndpointPrepareContext,
+    EndpointRouteContext, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver,
+    SessionTimelineOrigin,
+};

@@ -20,7 +20,6 @@ fi
 
 package_files="$(cargo package \
   --manifest-path "${repo_root}/Cargo.toml" \
-  --allow-dirty \
   --locked \
   --list)"
 for forbidden_prefix in .github/ AGENTS.md PHASE docs/ scripts/; do

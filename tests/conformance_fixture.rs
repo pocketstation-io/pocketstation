@@ -33,7 +33,7 @@ fn given_fixture_session_when_started_then_two_stems_cross_canonical_engine() {
     while Instant::now() < deadline && stem_ids.len() < 2 {
         if let Ok(batch) = running.try_poll_audio() {
             for index in 0..batch.len() {
-                stem_ids.insert(batch.frame(index).unwrap().lineage().stem_id.0);
+                stem_ids.insert(batch.frame(index).unwrap().lineage().stem_id().get());
             }
         }
         std::thread::sleep(Duration::from_millis(1));
@@ -135,7 +135,7 @@ fn given_recording_root_when_two_stems_finish_then_terminal_outcome_is_exposed()
     {
         if let Ok(batch) = running.try_poll_audio() {
             for index in 0..batch.len() {
-                let stem_id = batch.frame(index).unwrap().lineage().stem_id.0;
+                let stem_id = batch.frame(index).unwrap().lineage().stem_id().get();
                 *frame_counts.entry(stem_id).or_default() += 1;
             }
         }

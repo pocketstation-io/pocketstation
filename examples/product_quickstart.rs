@@ -31,7 +31,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                 let frame = batch
                     .frame(index)
                     .ok_or("bounded audio batch returned an invalid frame index")?;
-                let count = frames_by_stem.entry(frame.lineage().stem_id.0).or_default();
+                let count = frames_by_stem
+                    .entry(frame.lineage().stem_id().get())
+                    .or_default();
                 *count = count.saturating_add(1);
             }
         }

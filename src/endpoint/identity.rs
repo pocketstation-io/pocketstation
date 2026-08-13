@@ -1,4 +1,4 @@
-pub use crate::graph::{OperatorId, OPERATOR_ID_SYNTAX_VERSION};
+pub(crate) use crate::graph::OperatorId;
 
 /// Explicit Session-scoped grouping key for endpoints that share one lifecycle.
 ///
@@ -16,4 +16,11 @@ impl EndpointGroupId {
     pub fn as_str(&self) -> &str {
         &self.0
     }
+}
+
+/// Factory-owned decision for batching endpoint inputs into one lifecycle.
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum EndpointPreparationGroup {
+    Route(crate::frame::RouteId),
+    Shared(EndpointGroupId),
 }

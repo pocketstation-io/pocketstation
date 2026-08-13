@@ -113,6 +113,9 @@ impl<T> HandleTable<T> {
     }
 
     fn validate_owner(&self, handle: PksSessionHandle) -> Result<(), AbiError> {
+        if handle.kind == PksSessionHandleKind::Invalid {
+            return Err(AbiError::InvalidHandle);
+        }
         if handle.kind != self.kind {
             return Err(AbiError::InvalidHandle);
         }

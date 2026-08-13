@@ -7,10 +7,4 @@ use crate::graph::node::{NodeError, PrepareContext};
 pub trait RuntimeNode: Send {
     fn prepare(&mut self, cx: &PrepareContext) -> Result<(), NodeError>;
     fn process(&mut self, frame: AudioFrame) -> Result<Option<AudioFrame>, NodeError>;
-    fn flush(&mut self) -> Result<(), NodeError> {
-        Ok(())
-    }
-    fn close(&mut self) -> Result<(), NodeError> {
-        Ok(())
-    }
 }

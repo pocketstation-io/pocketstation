@@ -2,10 +2,16 @@ use std::sync::atomic::{AtomicU32, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex, OnceLock};
 
 use crate::session::{
-    ApplicationSelector, CompiledSession, NativeSessionEngineHostOptions, PolledAudioBatchLease,
-    PolledAudioPollError, RunningSession, Session, SessionEngineHost, SessionEvent,
-    SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionLifecycleState,
-    SessionMetricsSnapshot, SessionStartCancellation, SessionStartError, Source,
+    ApplicationSelector, CompiledSession, EndpointConfiguration, EndpointDescriptor,
+    NativeSessionEngineHostOptions, Operator, OperatorConfiguration, OperatorId,
+    PolledAudioBatchLease, PolledAudioPollError, RunningSession, Session, SessionEngineHost,
+    SessionEngineHostBuilder, SessionEvent, SessionEventKind, SessionEventReceive,
+    SessionEventReceiver, SessionLifecycleState, SessionMetricsSnapshot, SessionStartCancellation,
+    SessionStartError, Source, SourceConfiguration, SourceTypeId,
+};
+
+use crate::abi::executable_extension::{
+    ExecutableExtensionPipeline, ExecutableExtensionRegistration,
 };
 
 use crate::abi::session::abi::{
@@ -89,7 +95,9 @@ impl SessionObject {
 }
 
 pub struct SessionRuntime {
-    host: SessionEngineHost,
+    host: Option<SessionEngineHost>,
+    options: NativeSessionEngineHostOptions,
+    executable_extensions: Vec<ExecutableExtensionRegistration>,
     sessions: HandleTable<SessionObject>,
     leases: HandleTable<PolledAudioBatchLease>,
     session_created: bool,
@@ -99,14 +107,37 @@ pub struct SessionRuntime {
 impl SessionRuntime {
     fn new(options: NativeSessionEngineHostOptions) -> Result<Self, AbiError> {
         let lease_capacity_count = options.polled_audio_endpoint.max_outstanding_leases;
-        let host = SessionEngineHost::native(options).map_err(|_| AbiError::BackendFailure)?;
-        Ok(Self::with_host(host, lease_capacity_count))
+        Ok(Self::with_options(options, lease_capacity_count))
     }
 
+    fn with_options(options: NativeSessionEngineHostOptions, lease_capacity_count: usize) -> Self {
+        let scope_id = NEXT_ENGINE_SCOPE_ID.fetch_add(1, Ordering::Relaxed).max(2);
+        Self {
+            host: None,
+            options,
+            executable_extensions: Vec::new(),
+            sessions: HandleTable::new(
+                DEFAULT_SESSION_CAPACITY_COUNT,
+                PksSessionHandleKind::Session,
+                scope_id,
+            ),
+            leases: HandleTable::new(
+                lease_capacity_count,
+                PksSessionHandleKind::AudioBatch,
+                scope_id,
+            ),
+            session_created: false,
+            session_scope_id: scope_id,
+        }
+    }
+
+    #[cfg(any(test, feature = "conformance-fixtures"))]
     fn with_host(host: SessionEngineHost, lease_capacity_count: usize) -> Self {
         let scope_id = NEXT_ENGINE_SCOPE_ID.fetch_add(1, Ordering::Relaxed).max(2);
         Self {
-            host,
+            host: Some(host),
+            options: NativeSessionEngineHostOptions::default(),
+            executable_extensions: Vec::new(),
             sessions: HandleTable::new(
                 DEFAULT_SESSION_CAPACITY_COUNT,
                 PksSessionHandleKind::Session,
@@ -128,6 +159,11 @@ impl SessionRuntime {
     ) -> Result<PksSessionHandle, AbiError> {
         if self.session_created || self.sessions.active_count() != 0 {
             return Err(AbiError::NoCapacity);
+        }
+        if self.host.is_none() {
+            self.host = Some(
+                SessionEngineHost::native(self.options).map_err(|_| AbiError::BackendFailure)?,
+            );
         }
         let session = Session::new();
         let application = session
@@ -152,6 +188,132 @@ impl SessionRuntime {
         Ok(handle)
     }
 
+    pub fn register_executable_extension(
+        &mut self,
+        registration: ExecutableExtensionRegistration,
+    ) -> Result<(), AbiError> {
+        if self.session_created || self.host.is_some() {
+            return Err(AbiError::InvalidLifecycleState);
+        }
+        if self
+            .executable_extensions
+            .iter()
+            .any(|existing| existing.id() == registration.id())
+        {
+            return Err(AbiError::InvalidArgument);
+        }
+        self.executable_extensions.push(registration);
+        Ok(())
+    }
+
+    pub fn create_executable_extension_session(
+        &mut self,
+        pipeline: ExecutableExtensionPipeline,
+    ) -> Result<PksSessionHandle, AbiError> {
+        if self.session_created || self.sessions.active_count() != 0 || self.host.is_some() {
+            return Err(AbiError::NoCapacity);
+        }
+        let source_factory = self
+            .executable_extensions
+            .iter()
+            .find_map(|registration| match registration {
+                ExecutableExtensionRegistration::Source { id, factory }
+                    if id == &pipeline.source_id =>
+                {
+                    Some(Arc::clone(factory))
+                }
+                _ => None,
+            })
+            .ok_or(AbiError::InvalidArgument)?;
+        let operator_factory = self
+            .executable_extensions
+            .iter()
+            .find_map(|registration| match registration {
+                ExecutableExtensionRegistration::Operator { id, factory }
+                    if id == &pipeline.operator_id =>
+                {
+                    Some(Arc::clone(factory))
+                }
+                _ => None,
+            })
+            .ok_or(AbiError::InvalidArgument)?;
+        let (endpoint_definition, endpoint_factory) = self
+            .executable_extensions
+            .iter()
+            .find_map(|registration| match registration {
+                ExecutableExtensionRegistration::Endpoint {
+                    id,
+                    definition,
+                    factory,
+                } if id == &pipeline.endpoint_id => {
+                    Some((Arc::clone(definition), Arc::clone(factory)))
+                }
+                _ => None,
+            })
+            .ok_or(AbiError::InvalidArgument)?;
+
+        let mut host_builder =
+            SessionEngineHostBuilder::native(self.options).map_err(|_| AbiError::BackendFailure)?;
+        host_builder
+            .engine_builder()
+            .register_source_factory(source_factory)
+            .map_err(|_| AbiError::InvalidArgument)?;
+        host_builder
+            .register_async_operator(operator_factory)
+            .map_err(|_| AbiError::InvalidArgument)?;
+        host_builder
+            .register_endpoint(
+                OperatorId::new(pipeline.endpoint_id.clone()),
+                endpoint_definition,
+                endpoint_factory,
+            )
+            .map_err(|_| AbiError::InvalidArgument)?;
+        self.host = Some(host_builder.build().map_err(|_| AbiError::BackendFailure)?);
+
+        let session = Session::new();
+        let source = session
+            .source(
+                SourceTypeId::new(pipeline.source_id.clone())
+                    .map_err(|_| AbiError::InvalidArgument)?,
+                SourceConfiguration::default(),
+            )
+            .map_err(|_| AbiError::InvalidArgument)?;
+        let source_output = source
+            .output(pipeline.source_output_port)
+            .map_err(|_| AbiError::InvalidArgument)?;
+        let operator = session
+            .operator(Operator::new(
+                OperatorId::new(pipeline.operator_id),
+                OperatorConfiguration::new(),
+            ))
+            .map_err(|_| AbiError::InvalidArgument)?;
+        source_output
+            .connect(
+                operator
+                    .input(pipeline.operator_input_port)
+                    .map_err(|_| AbiError::InvalidArgument)?,
+            )
+            .map_err(|_| AbiError::InvalidArgument)?;
+        let endpoint = session
+            .endpoint(
+                EndpointDescriptor::new(
+                    crate::graph::NodeTypeId::from(pipeline.endpoint_id.as_str()),
+                    OperatorId::new(pipeline.endpoint_id),
+                )
+                .with_configuration(EndpointConfiguration::new()),
+            )
+            .map_err(|_| AbiError::InvalidArgument)?;
+        operator
+            .output(pipeline.operator_output_port)
+            .map_err(|_| AbiError::InvalidArgument)?
+            .send_to(endpoint, Some(pipeline.endpoint_input_port))
+            .map_err(|_| AbiError::InvalidArgument)?;
+
+        let handle = self.sessions.insert(SessionObject::Draft(session))?;
+        self.session_created = true;
+        Ok(handle)
+    }
+
     pub fn compile_session(&mut self, handle: PksSessionHandle) -> Result<(), AbiError> {
         let object = self.sessions.get_mut(handle)?;
         let current = std::mem::replace(object, SessionObject::Transitioning);
@@ -159,7 +321,8 @@ impl SessionRuntime {
             *object = current;
             return Err(AbiError::InvalidLifecycleState);
         };
-        match self.host.compile(session) {
+        let host = self.host.as_ref().ok_or(AbiError::InvalidLifecycleState)?;
+        match host.compile(session) {
             Ok(compiled) => {
                 *object = SessionObject::Compiled(compiled);
                 Ok(())
@@ -182,10 +345,8 @@ impl SessionRuntime {
             *object = current;
             return Err(AbiError::InvalidLifecycleState);
         };
-        match self
-            .host
-            .start_compiled_cancellable(compiled, start_cancellation)
-        {
+        let host = self.host.as_ref().ok_or(AbiError::InvalidLifecycleState)?;
+        match host.start_compiled_cancellable(compiled, start_cancellation) {
             Ok(mut session) => {
                 let events = session.take_event_receiver();
                 *object = SessionObject::Running {
@@ -251,6 +412,8 @@ impl SessionRuntime {
                 session, events, ..
             } => self
                 .host
+                .as_ref()
+                .ok_or(AbiError::InvalidLifecycleState)?
                 .metrics_snapshot(
                     events.as_ref().ok_or(AbiError::InvalidLifecycleState)?,
                     0,
@@ -259,6 +422,8 @@ impl SessionRuntime {
                 .ok_or(AbiError::BackendFailure),
             SessionObject::Failed { events } => self
                 .host
+                .as_ref()
+                .ok_or(AbiError::InvalidLifecycleState)?
                 .metrics_snapshot(
                     events.as_ref().ok_or(AbiError::InvalidLifecycleState)?,
                     0,
@@ -280,6 +445,8 @@ impl SessionRuntime {
         }
         let lease = self
             .host
+            .as_ref()
+            .ok_or(AbiError::InvalidLifecycleState)?
             .polled_audio_receipt(0)
             .ok_or(AbiError::BackendFailure)?
             .try_poll()
@@ -593,6 +760,36 @@ impl RuntimeState {
             .lock()
             .map_err(|_| AbiError::BackendFailure)?
             .create_app_mic_session(application_name)?;
+        engine
+            .session_handle
+            .set(handle)
+            .map_err(|_| AbiError::NoCapacity)?;
+        engine.session_live.store(true, Ordering::Release);
+        engine.set_state(PksSessionLifecycleState::Draft);
+        Ok(handle)
+    }
+
+    pub fn register_executable_extension(
+        &self,
+        engine_handle: PksSessionHandle,
+        registration: ExecutableExtensionRegistration,
+    ) -> Result<(), AbiError> {
+        self.with_engine_mut(engine_handle, |runtime| {
+            runtime.register_executable_extension(registration)
+        })
+    }
+
+    pub fn create_executable_extension_session(
+        &self,
+        engine_handle: PksSessionHandle,
+        pipeline: ExecutableExtensionPipeline,
+    ) -> Result<PksSessionHandle, AbiError> {
+        let engine = self.engine(engine_handle)?;
+        let handle = engine
+            .runtime
+            .lock()
+            .map_err(|_| AbiError::BackendFailure)?
+            .create_executable_extension_session(pipeline)?;
         engine
             .session_handle
             .set(handle)

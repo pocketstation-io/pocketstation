@@ -1,8 +1,7 @@
 use std::sync::Arc;
 
 use crate::frame::SampleFormat;
-use crate::graph::compiler::Compiler;
-use crate::graph::planner::RuntimePlanner;
+use crate::graph::compile::{Compiler, RuntimePlanner};
 use crate::graph::{
     AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps,
     Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeRegistry, NodeTypeId, Pipeline,

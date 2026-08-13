@@ -5,17 +5,14 @@ mod error;
 mod handle;
 mod runtime;
 
-// The exported functions below use only a subset directly; the complete set
-// remains the single internal ABI vocabulary and is exercised by the C gate.
-#[allow(unused_imports)]
 pub use abi::{
     PksSessionAbiVersion, PksSessionAppMicDeclaration, PksSessionAudioBatch, PksSessionAudioFrame,
-    PksSessionEndpointObservationStage, PksSessionEngineConfig, PksSessionEvent,
-    PksSessionEventKind, PksSessionHandle, PksSessionHandleKind, PksSessionLifecycleState,
-    PksSessionMetricsSnapshot, PksSessionRouteMetrics, PksSessionSampleFormat,
-    PksSessionSourceMetrics, PksSessionStatus, PksSessionStatusCode, PksSessionUtf8,
-    PKS_SESSION_ABI_MAJOR, PKS_SESSION_ABI_MINOR,
+    PksSessionEndpointObservationStage, PksSessionEngineConfig, PksSessionEvent, PksSessionHandle,
+    PksSessionMetricsSnapshot, PksSessionRouteMetrics, PksSessionSourceMetrics, PksSessionStatus,
+    PksSessionStatusCode, PksSessionUtf8, PKS_SESSION_ABI_MAJOR, PKS_SESSION_ABI_MINOR,
 };
+#[cfg(test)]
+use abi::{PksSessionLifecycleState, PksSessionSampleFormat};
 
 use std::mem::{align_of, size_of};
 use std::panic::{catch_unwind, AssertUnwindSafe};
@@ -34,6 +31,33 @@ use runtime::RuntimeState;
 fn runtime_state() -> &'static RuntimeState {
     static RUNTIME: OnceLock<RuntimeState> = OnceLock::new();
     RUNTIME.get_or_init(RuntimeState::new)
+}
+
+pub(crate) fn register_executable_extension(
+    engine: PksSessionHandle,
+    registration: crate::abi::executable_extension::ExecutableExtensionRegistration,
+) -> Result<(), PksSessionStatus> {
+    runtime_state()
+        .register_executable_extension(engine, registration)
+        .map_err(AbiError::status)
+}
+
+pub(crate) fn create_executable_extension_session(
+    engine: PksSessionHandle,
+    pipeline: crate::abi::executable_extension::ExecutableExtensionPipeline,
+) -> Result<PksSessionHandle, PksSessionStatus> {
+    runtime_state()
+        .create_executable_extension_session(engine, pipeline)
+        .map_err(AbiError::status)
+}
+
+pub(crate) fn executable_extension_metrics(
+    engine: PksSessionHandle,
+    session: PksSessionHandle,
+) -> Result<crate::session::SessionMetricsSnapshot, PksSessionStatus> {
+    runtime_state()
+        .with_engine(engine, |runtime| runtime.metrics(session))
+        .map_err(AbiError::status)
 }
 
 fn guard_abi_version(requested_abi_major: u16, requested_abi_minor: u16) -> Result<(), AbiError> {
@@ -720,7 +744,9 @@ mod tests {
             let mut buffer = pool
                 .acquire()
                 .ok_or_else(|| CaptureError::BackendInit("test buffer unavailable".to_owned()))?;
-            buffer.copy_from_slice(&[0.125, 0.25, 0.5, 1.0]);
+            buffer
+                .try_copy_from_slice(&[0.125, 0.25, 0.5, 1.0])
+                .expect("fixture samples fit the fixed-capacity buffer");
             let frame = AudioFrame::new(StreamId(11), SourceId(12), 13, 14, 1, buffer);
             let _ = delivery.frame_sender.try_send(frame);
 
@@ -733,7 +759,9 @@ mod tests {
                         std::thread::sleep(Duration::from_millis(1));
                         continue;
                     };
-                    buffer.copy_from_slice(&[0.125, 0.25, 0.5, 1.0]);
+                    buffer
+                        .try_copy_from_slice(&[0.125, 0.25, 0.5, 1.0])
+                        .expect("fixture samples fit the fixed-capacity buffer");
                     let frame = AudioFrame::new(StreamId(11), SourceId(12), 13, 14, 2, buffer);
                     match delivery.frame_sender.try_send(frame) {
                         CapturedFrameDelivery::Delivered => break,

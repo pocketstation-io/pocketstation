@@ -1,13 +1,9 @@
-use crate::frame::AudioFrame;
 use opus::{Application, Channels, Encoder};
 
-use crate::codec::constants::{
-    I16_SCALE, OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, VOICE_AGENT_FRAME_SAMPLES,
-};
+use crate::codec::constants::{I16_SCALE, OPUS_MAX_PACKET_BYTES};
 
-/// Opus frame duration.  20 ms is the AUDIO-012 default; 10 ms is available for
-/// voice-agent mode once CPU/overhead benchmarks justify it.
-#[derive(Debug, Clone, Copy)]
+/// Supported Opus frame duration at 48 kHz.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OpusFrameDuration {
     Ms10,
     Ms20,
@@ -108,11 +104,7 @@ impl Default for OpusConfig {
 }
 
 impl OpusConfig {
-    /// Standard voice broadcast config (AUDIO-012 default).
-    ///
-    /// FEC is enabled so that the decoder can recover from isolated packet
-    /// loss using redundancy embedded in the following packet.  This requires
-    /// the decoder to pass `fec=true` when a gap is detected (see decoder.rs).
+    /// Standard 20 ms mono voice transport profile with in-band FEC.
     pub fn voice_broadcast() -> Self {
         Self {
             fec: true,
@@ -120,21 +112,7 @@ impl OpusConfig {
         }
     }
 
-    /// Low-latency voice-agent config: 10 ms frames, RESTRICTED_LOWDELAY.
-    pub fn voice_agent(bitrate_kbps: u32) -> Self {
-        Self {
-            sample_rate: OpusSampleRate::Hz48000,
-            channels: OpusChannels::Mono,
-            frame_duration: OpusFrameDuration::Ms10,
-            application: OpusApplication::LowDelay,
-            bitrate_kbps: Some(bitrate_kbps),
-            complexity: 5,
-            dtx: false,
-            fec: false,
-        }
-    }
-
-    /// Broadcast stereo music config: 20 ms frames, Audio mode.
+    /// 20 ms stereo audio transport profile with an explicit bitrate.
     pub fn stereo_broadcast(bitrate_kbps: u32) -> Self {
         Self {
             sample_rate: OpusSampleRate::Hz48000,
@@ -149,21 +127,15 @@ impl OpusConfig {
     }
 }
 
-#[derive(Debug)]
-pub struct EncodedFrame {
-    pub sequence_number: u64,
-    pub timestamp_ns: u64,
-    pub payload: Vec<u8>,
-}
-
 #[derive(Debug, thiserror::Error)]
 pub enum OpusEncodeError {
     #[error(
-        "Opus frame has {sample_count} interleaved samples for {channels} channels; expected 480 or 960 samples per channel"
+        "Opus frame has {sample_count} interleaved samples; expected {expected_sample_count} for {channels} channels"
     )]
     InvalidFrameSampleCount {
         sample_count: usize,
         channels: usize,
+        expected_sample_count: usize,
     },
     #[error("Opus encode failed: {0}")]
     Opus(#[from] opus::Error),
@@ -177,40 +149,24 @@ pub enum OpusEncodeError {
 /// # Heap allocation notes
 ///
 /// - `new()` allocates the libopus encoder state once; no per-frame allocation
-///   inside libopus itself after that.
+///   occurs inside the wrapper after that.
 /// - `encode_into()` writes into a caller-supplied `Vec<u8>` (pre-allocated,
 ///   cleared per call).  The only allocation that may occur is if the caller
 ///   passes a `Vec` whose capacity is smaller than `OPUS_MAX_PACKET_BYTES`; the
 ///   `Vec` will then grow once and remain stable for subsequent calls.
-/// - `encode()` allocates one `Vec<u8>` per call and is intended for tests and
-///   examples only.  Hot-path callers must use `encode_into()` with a pooled
-///   output buffer.
 pub struct OpusEncoder {
     pub(crate) inner: Encoder,
     /// Channel count (1 = mono, 2 = stereo). Stored so `encode_into` can validate
     /// the interleaved frame length (samples-per-channel × channels) and size its
     /// conversion buffer for the widest case (20 ms stereo = 1920 samples).
     channels: usize,
+    frame_samples_per_channel: usize,
 }
 
 impl OpusEncoder {
     /// Create a new encoder with default config (48 kHz, mono, Voip, 20 ms).
     pub fn new() -> Result<Self, opus::Error> {
         Self::from_config(&OpusConfig::default())
-    }
-
-    /// Create a low-latency voice-agent encoder using OPUS_APPLICATION_RESTRICTED_LOWDELAY.
-    ///
-    /// `bitrate_kbps` must be at least 32 (minimum for 10 ms mono Opus at acceptable quality).
-    pub fn voice_agent(channels: OpusChannels, bitrate_kbps: u32) -> Result<Self, opus::Error> {
-        Self::from_config(&OpusConfig {
-            channels,
-            frame_duration: OpusFrameDuration::Ms10,
-            application: OpusApplication::LowDelay,
-            bitrate_kbps: Some(bitrate_kbps),
-            complexity: 5,
-            ..OpusConfig::default()
-        })
     }
 
     /// Create an encoder from an explicit OpusConfig.
@@ -242,6 +198,7 @@ impl OpusEncoder {
         Ok(Self {
             inner: enc,
             channels,
+            frame_samples_per_channel: config.frame_duration.samples_at_48k(),
         })
     }
 
@@ -251,17 +208,15 @@ impl OpusEncoder {
     /// pointer, so an unsupported count fails typed without indexing a fixed
     /// conversion buffer or advancing the encoder.
     pub fn validate_frame_sample_count(&self, sample_count: usize) -> Result<(), OpusEncodeError> {
-        let valid_frame = sample_count.is_multiple_of(self.channels)
-            && matches!(
-                sample_count / self.channels,
-                OPUS_FRAME_SAMPLES | VOICE_AGENT_FRAME_SAMPLES
-            );
+        let expected_sample_count = self.frame_samples_per_channel * self.channels;
+        let valid_frame = sample_count == expected_sample_count;
         if valid_frame {
             Ok(())
         } else {
             Err(OpusEncodeError::InvalidFrameSampleCount {
                 sample_count,
                 channels: self.channels,
+                expected_sample_count,
             })
         }
     }
@@ -269,9 +224,9 @@ impl OpusEncoder {
     /// Encode an interleaved PCM slice into `out`.
     ///
     /// `pcm` is interleaved across channels: its length must be
-    /// `samples_per_channel × channels`, where samples-per-channel is 960 (20 ms)
-    /// or 480 (10 ms). For mono that is 960/480; for stereo, 1920/960. Any other
-    /// length returns [`OpusEncodeError::InvalidFrameSampleCount`].
+    /// `samples_per_channel × channels` for the duration declared in the
+    /// encoder's [`OpusConfig`]. Any other length returns
+    /// [`OpusEncodeError::InvalidFrameSampleCount`].
     ///
     /// Converts f32 → i16 (multiply by 32 767.0, clamp) then calls
     /// `encoder.encode()`.  Returns the number of compressed bytes written.
@@ -286,15 +241,6 @@ impl OpusEncoder {
         out.clear();
         self.validate_frame_sample_count(frame_len)?;
 
-        // f32 → i16.  Written as a plain iterator loop so LLVM auto-vectorises
-        // to NEON/AVX2 when compiled with target-cpu=native (.cargo/config.toml).
-        // Sized for the widest case (20 ms stereo = 1920 interleaved samples) so
-        // both mono and stereo fit on the stack with no allocation.
-        let mut i16_buf = [0i16; OPUS_FRAME_SAMPLES * 2];
-        for (dst, &src) in i16_buf[..frame_len].iter_mut().zip(pcm.iter()) {
-            *dst = (src.clamp(-1.0, 1.0) * I16_SCALE) as i16;
-        }
-
         // Avoid the 4 000-byte zero-fill that `resize(cap, 0)` performs.
         if out.capacity() < OPUS_MAX_PACKET_BYTES {
             out.reserve(OPUS_MAX_PACKET_BYTES);
@@ -303,7 +249,14 @@ impl OpusEncoder {
         // byte of its output; `truncate(n)` then hides the unwritten tail.
         unsafe { out.set_len(OPUS_MAX_PACKET_BYTES) };
 
-        let n = match self.inner.encode(&i16_buf[..frame_len], out) {
+        let encoded = if frame_len <= 1_920 {
+            let mut scratch = [0_i16; 1_920];
+            encode_pcm(&mut self.inner, pcm, out, &mut scratch[..frame_len])
+        } else {
+            let mut scratch = [0_i16; 5_760];
+            encode_pcm(&mut self.inner, pcm, out, &mut scratch[..frame_len])
+        };
+        let n = match encoded {
             Ok(written_bytes) => written_bytes,
             Err(error) => {
                 out.clear();
@@ -332,18 +285,18 @@ impl OpusEncoder {
         };
         self.inner.set_bitrate(bitrate)
     }
+}
 
-    /// Convenience wrapper that allocates a `Vec<u8>` per call.
-    /// For tests and examples only; hot-path callers must use `encode_into()`.
-    pub fn encode(&mut self, frame: &AudioFrame) -> Result<EncodedFrame, OpusEncodeError> {
-        let mut payload = Vec::with_capacity(OPUS_MAX_PACKET_BYTES);
-        self.encode_into(frame.buffer.as_slice(), &mut payload)?;
-        Ok(EncodedFrame {
-            sequence_number: frame.sequence_number,
-            timestamp_ns: frame.timestamp_ns,
-            payload,
-        })
+fn encode_pcm(
+    encoder: &mut Encoder,
+    pcm: &[f32],
+    output: &mut [u8],
+    scratch: &mut [i16],
+) -> Result<usize, opus::Error> {
+    for (destination, &source) in scratch.iter_mut().zip(pcm.iter()) {
+        *destination = (source.clamp(-1.0, 1.0) * I16_SCALE) as i16;
     }
+    encoder.encode(scratch, output)
 }
 
 impl Default for OpusEncoder {
@@ -352,51 +305,28 @@ impl Default for OpusEncoder {
     }
 }
 
-// Legacy mock alias — kept so that existing tests continue to compile without
-// modification.  Delegates to the real encoder.
-// Remove in Phase 5 once all call sites have been migrated.
-
-/// Deprecated alias for [`OpusEncoder`].  Use `OpusEncoder` directly.
-#[cfg(any(test, feature = "test-helpers"))]
-pub struct MockOpusEncoder {
-    pub inner: OpusEncoder,
-}
-
-#[cfg(any(test, feature = "test-helpers"))]
-impl MockOpusEncoder {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            inner: OpusEncoder::default(),
-        }
-    }
-
-    /// Allocation-free encode into a caller-supplied buffer.
-    pub fn encode_into(&mut self, frame: &AudioFrame, out: &mut Vec<u8>) -> usize {
-        self.inner
-            .encode_into(frame.buffer.as_slice(), out)
-            .expect("MockOpusEncoder.encode_into failed")
-    }
-
-    /// Allocates per call — for tests and examples only.
-    pub fn encode(&mut self, frame: &AudioFrame) -> EncodedFrame {
-        self.inner
-            .encode(frame)
-            .expect("MockOpusEncoder.encode failed")
-    }
-}
-
-#[cfg(any(test, feature = "test-helpers"))]
-impl Default for MockOpusEncoder {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::frame::{AudioBufferPool, AudioFrame, SourceId, StreamId};
+    use crate::codec::constants::{OPUS_FRAME_SAMPLES, VOICE_AGENT_FRAME_SAMPLES};
+
+    fn explicit_config(
+        channels: OpusChannels,
+        frame_duration: OpusFrameDuration,
+        application: OpusApplication,
+        bitrate_kbps: u32,
+    ) -> OpusConfig {
+        OpusConfig {
+            sample_rate: OpusSampleRate::Hz48000,
+            channels,
+            frame_duration,
+            application,
+            bitrate_kbps: Some(bitrate_kbps),
+            complexity: 10,
+            dtx: false,
+            fec: false,
+        }
+    }
 
     #[test]
     fn given_20ms_opus_frame_when_sampled_at_48khz_then_contains_960_samples() {
@@ -431,6 +361,7 @@ mod tests {
             OpusEncodeError::InvalidFrameSampleCount {
                 sample_count,
                 channels: 1,
+                expected_sample_count: OPUS_FRAME_SAMPLES,
             } if sample_count == OPUS_FRAME_SAMPLES * 3
         ));
         assert!(output.is_empty());
@@ -438,7 +369,13 @@ mod tests {
 
     #[test]
     fn given_partial_stereo_frame_when_encoded_then_error_is_typed() {
-        let mut encoder = OpusEncoder::from_config(&OpusConfig::stereo_broadcast(128)).unwrap();
+        let mut encoder = OpusEncoder::from_config(&explicit_config(
+            OpusChannels::Stereo,
+            OpusFrameDuration::Ms20,
+            OpusApplication::Audio,
+            128,
+        ))
+        .unwrap();
         let pcm = vec![0.0_f32; OPUS_FRAME_SAMPLES * 2 - 1];
         let mut output = Vec::with_capacity(OPUS_MAX_PACKET_BYTES);
 
@@ -449,7 +386,9 @@ mod tests {
             OpusEncodeError::InvalidFrameSampleCount {
                 sample_count,
                 channels: 2,
+                expected_sample_count,
             } if sample_count == OPUS_FRAME_SAMPLES * 2 - 1
+                && expected_sample_count == OPUS_FRAME_SAMPLES * 2
         ));
     }
 
@@ -492,9 +431,14 @@ mod tests {
         // Given: a 20 ms STEREO frame (1920 interleaved L/R samples). The left
         // channel carries a 440 Hz tone; the right channel is silent — a signal a
         // mono downmix would destroy by averaging L and R into one channel. This
-        // is the Stage-A gate for the stereo music pipeline (stereo_broadcast =
-        // Opus Audio mode, complexity 10).
-        let mut enc = OpusEncoder::from_config(&OpusConfig::stereo_broadcast(128)).unwrap();
+        // is the Stage-A gate for explicit stereo Opus Audio mode.
+        let mut enc = OpusEncoder::from_config(&explicit_config(
+            OpusChannels::Stereo,
+            OpusFrameDuration::Ms20,
+            OpusApplication::Audio,
+            128,
+        ))
+        .unwrap();
         let mut dec =
             crate::codec::decoder::OpusDecoder::with_channels(OpusChannels::Stereo).unwrap();
 
@@ -537,23 +481,6 @@ mod tests {
             rms_l > rms_r * 4.0,
             "channels must stay distinct (true stereo), rms_l={rms_l:.4} rms_r={rms_r:.4}"
         );
-    }
-
-    #[test]
-    fn given_legacy_mock_api_when_round_trip_runs_then_samples_are_decoded() {
-        // Given: legacy API used by sine_to_wav example
-        let pool = AudioBufferPool::new(2, OPUS_FRAME_SAMPLES);
-        let handle = pool.acquire().unwrap();
-        let frame = AudioFrame::new(StreamId(1), SourceId(1), 0, 0, 1, handle);
-        let mut enc = MockOpusEncoder::default();
-        let mut dec = crate::codec::decoder::MockOpusDecoder::default();
-
-        // When
-        let encoded = enc.encode(&frame);
-        let decoded = dec.decode_to_vec(&encoded);
-
-        // Then: decoded samples equal one frame
-        assert_eq!(decoded.len(), OPUS_FRAME_SAMPLES);
     }
 
     /// Proof that the set_len optimisation produces byte-for-byte identical
@@ -607,7 +534,13 @@ mod tests {
     #[test]
     fn given_voice_agent_mode_when_encode_480_samples_then_valid_packet() {
         // Given: voice-agent encoder + 480 silent samples (10 ms at 48 kHz)
-        let mut enc = OpusEncoder::voice_agent(OpusChannels::Mono, 32).unwrap();
+        let mut enc = OpusEncoder::from_config(&explicit_config(
+            OpusChannels::Mono,
+            OpusFrameDuration::Ms10,
+            OpusApplication::LowDelay,
+            32,
+        ))
+        .unwrap();
         let pcm = vec![0.0f32; VOICE_AGENT_FRAME_SAMPLES];
         let mut out = Vec::new();
 
@@ -620,11 +553,53 @@ mod tests {
     }
 
     #[test]
+    fn given_configured_20ms_encoder_when_10ms_frame_arrives_then_exact_duration_is_enforced() {
+        let mut encoder = OpusEncoder::new().unwrap();
+        let pcm = vec![0.0_f32; VOICE_AGENT_FRAME_SAMPLES];
+        let mut output = Vec::with_capacity(OPUS_MAX_PACKET_BYTES);
+
+        let error = encoder.encode_into(&pcm, &mut output).unwrap_err();
+
+        assert!(matches!(
+            error,
+            OpusEncodeError::InvalidFrameSampleCount {
+                sample_count: VOICE_AGENT_FRAME_SAMPLES,
+                channels: 1,
+                expected_sample_count: OPUS_FRAME_SAMPLES,
+            }
+        ));
+    }
+
+    #[test]
+    fn given_60ms_stereo_configuration_when_exact_frame_arrives_then_fixed_scratch_accepts_it() {
+        let mut encoder = OpusEncoder::from_config(&explicit_config(
+            OpusChannels::Stereo,
+            OpusFrameDuration::Ms60,
+            OpusApplication::Audio,
+            128,
+        ))
+        .unwrap();
+        let pcm = vec![0.0_f32; OpusFrameDuration::Ms60.samples_at_48k() * 2];
+        let mut output = Vec::with_capacity(OPUS_MAX_PACKET_BYTES);
+
+        let encoded_bytes = encoder.encode_into(&pcm, &mut output).unwrap();
+
+        assert!(encoded_bytes > 0);
+        assert_eq!(output.len(), encoded_bytes);
+    }
+
+    #[test]
     fn given_voice_agent_frame_when_round_trip_then_snr_above_minus_6db() {
         use std::f32::consts::PI;
 
         // Given: 480-sample 440 Hz sine at 48 kHz, amplitude 0.25
-        let mut enc = OpusEncoder::voice_agent(OpusChannels::Mono, 32).unwrap();
+        let mut enc = OpusEncoder::from_config(&explicit_config(
+            OpusChannels::Mono,
+            OpusFrameDuration::Ms10,
+            OpusApplication::LowDelay,
+            32,
+        ))
+        .unwrap();
         let mut dec = crate::codec::decoder::OpusDecoder::new().unwrap();
 
         let pcm_in: Vec<f32> = (0..VOICE_AGENT_FRAME_SAMPLES)

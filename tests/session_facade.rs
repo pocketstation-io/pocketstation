@@ -50,10 +50,10 @@ fn given_public_facade_when_external_destinations_run_then_all_branches_receive_
     wait_for_external_routes(
         &running,
         &[
-            app_connector_route.0,
-            mic_connector_route.0,
-            app_browser_route.0,
-            mic_browser_route.0,
+            app_connector_route.get(),
+            mic_connector_route.get(),
+            app_browser_route.get(),
+            mic_browser_route.get(),
         ],
     );
 
@@ -152,7 +152,7 @@ fn wait_for_both_stems(running: &pocketstation::RunningSession) {
         if let Ok(batch) = running.try_poll_audio() {
             for index in 0..batch.len() {
                 let frame = batch.frame(index).expect("valid bounded audio frame");
-                stems.insert(frame.lineage().stem_id.0);
+                stems.insert(frame.lineage().stem_id().get());
             }
             if stems.len() == 2 {
                 return;
@@ -173,7 +173,7 @@ fn wait_for_external_routes(running: &pocketstation::RunningSession, expected_ro
         let snapshot = running.metrics_snapshot().expect("Session metrics");
         let routes: Vec<_> = (0..snapshot.route_count())
             .filter_map(|index| snapshot.route(index).copied())
-            .filter(|route| expected_route_ids.contains(&route.route_id.0))
+            .filter(|route| expected_route_ids.contains(&route.route_id.get()))
             .collect();
         if routes.len() == expected_route_ids.len()
             && routes.iter().all(|route| {

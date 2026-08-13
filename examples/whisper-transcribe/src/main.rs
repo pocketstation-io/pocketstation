@@ -1,9 +1,9 @@
 use std::path::PathBuf;
 
-use pocketstation::operator::{
-    AsyncNode, AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext, AudioCaps,
-    ChannelLayout, EdgeContract, ExecutionPartition, MediaCaps, PortDirection, SampleFormat,
-    SignalEnvelope, SignalPayload, SignalSpec, TextFormat,
+use pocketstation::{
+    AsyncNode, AsyncOperatorPrepareContext, AudioCaps,
+    BinaryFormat, ChannelLayout, EdgeContract, ExecutionPartition, MediaCaps, PortDirection,
+    PortPrepareContext, SampleFormat, SignalEnvelope, SignalPayload, SignalSpec, TextFormat,
 };
 use whisper_transcribe_example::WhisperConnector;
 
@@ -30,14 +30,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         channel_layout: ChannelLayout::Mono,
         format: SampleFormat::F32Interleaved,
     });
-    let mut input_contract = EdgeContract::voice_default();
-    input_contract.media = audio;
-    let mut output_contract = EdgeContract::typed_default();
-    output_contract.media = MediaCaps::Text;
+    let input_contract = EdgeContract::realtime_audio().with_media(audio);
+    let output_contract = EdgeContract::bounded_async().with_media(MediaCaps::Text);
     let prepare_context = AsyncOperatorPrepareContext::new(
         ExecutionPartition::BlockingWorker,
         vec![
-            AsyncOperatorEdgePrepareContext::new(
+            PortPrepareContext::new(
                 None,
                 "audio",
                 PortDirection::Input,
@@ -46,7 +44,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 input_contract,
                 32,
             )?,
-            AsyncOperatorEdgePrepareContext::new(
+            PortPrepareContext::new(
                 None,
                 "transcript",
                 PortDirection::Output,
@@ -60,14 +58,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     connector.prepare(&prepare_context).await?;
     let output = connector
         .process(SignalEnvelope::untracked(
-            SignalPayload::Binary(wav_bytes),
+            SignalPayload::Bytes(wav_bytes),
+            SignalSpec::binary(BinaryFormat::Raw),
             0,
         ))
         .await?
         .into_iter()
         .next()
         .ok_or("Whisper connector returned no transcript")?;
-    match output.payload {
+    match output.into_payload() {
         SignalPayload::Text(transcript) => println!("{transcript}"),
         _ => return Err("Whisper connector returned a non-text signal".into()),
     }

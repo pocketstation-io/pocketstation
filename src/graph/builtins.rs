@@ -2,13 +2,13 @@ use std::sync::Arc;
 
 use crate::frame::{AudioFrame, SampleFormat};
 
-use crate::graph::contracts::{
-    AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec,
-};
 use crate::graph::node::{
     ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext,
 };
 use crate::graph::partition::{ExecutionPartition, SafetyContract};
+use crate::graph::ports::{
+    AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec,
+};
 use crate::graph::registry::{NodeFactory, NodeRegistry};
 use crate::graph::runtime_node::RuntimeNode;
 use crate::graph::signal::SignalSpec;
@@ -205,7 +205,10 @@ impl RuntimeNode for MonoMixNode {
                 samples[sample_index] =
                     MONO_MIX_SCALE * (samples[stereo_index] + samples[stereo_index + 1]);
             }
-            frame.buffer.set_len(mono_sample_count);
+            frame
+                .buffer
+                .try_set_len(mono_sample_count)
+                .map_err(|error| NodeError::Process(error.to_string()))?;
             frame.channels = MONO_CHANNEL_COUNT;
         }
         Ok(Some(frame))
@@ -237,7 +240,9 @@ mod tests {
     fn frame_with_channels(samples: &[f32], channels: u8) -> AudioFrame {
         let pool = AudioBufferPool::new(1, samples.len());
         let mut handle = pool.acquire().unwrap();
-        handle.copy_from_slice(samples);
+        handle
+            .try_copy_from_slice(samples)
+            .expect("test samples fit the fixed-capacity buffer");
         AudioFrame::new(StreamId(0), SourceId(0), 0, 0, channels, handle)
     }
 

@@ -1,7 +1,7 @@
 use assert_no_alloc::{assert_no_alloc, AllocDisabler};
 use pocketstation::internal::frame::{
-    AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, SessionId,
-    SourceId, StemId, StreamId,
+    AudioBufferHandle, AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage,
+    LineagedAudioFrame, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId,
 };
 use pocketstation::internal::graph::compiler::Compiler;
 use pocketstation::internal::graph::dsl::Pipeline;
@@ -18,19 +18,38 @@ use pocketstation::internal::runtime::{
 static ALLOCATOR: AllocDisabler = AllocDisabler;
 
 fn with_lineage(frame: AudioFrame) -> LineagedAudioFrame {
-    let lineage = FrameLineage {
-        session_id: SessionId(42),
-        source_id: frame.source_id,
-        stem_id: StemId(frame.source_id.0),
-        clock_id: ClockDomainId(3),
-        sequence_num: frame.sequence_number,
-        timestamp_start_ns: frame.timestamp_ns,
-        duration_ns: 20_000_000,
-        source_generation: 4,
-        discontinuity_epoch: 5,
-        permission_epoch: 6,
-    };
+    let lineage = FrameLineage::try_new(
+        SessionId::new(42),
+        frame.source_id(),
+        StemId::new(frame.source_id().get()),
+        ClockDomainId::new(3),
+        frame.sequence_number(),
+        frame.timestamp_ns(),
+        20_000_000,
+        4,
+        5,
+        6,
+    )
+    .unwrap();
     LineagedAudioFrame::new(frame, lineage).unwrap()
+}
+
+fn audio_frame(
+    stream_id: StreamId,
+    source_id: SourceId,
+    sequence_number: u64,
+    timestamp_ns: u64,
+    buffer: AudioBufferHandle,
+) -> AudioFrame {
+    AudioFrame::try_new(
+        stream_id,
+        source_id,
+        sequence_number,
+        timestamp_ns,
+        SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved),
+        buffer,
+    )
+    .unwrap()
 }
 
 #[test]
@@ -52,11 +71,17 @@ fn given_preallocated_three_edge_router_when_frame_dispatched_then_no_heap_alloc
     let (mut router, _receivers) = PlanEdgeRouter::new(&plan, &ir).unwrap();
     let pool = AudioBufferPool::new(1, 2);
     let mut buffer = pool.acquire().unwrap();
-    buffer.copy_from_slice(&[0.25, -0.5]);
-    let frame = with_lineage(AudioFrame::new(StreamId(1), SourceId(2), 3, 4, 1, buffer));
+    buffer.try_copy_from_slice(&[0.25, -0.5]).unwrap();
+    let frame = with_lineage(audio_frame(
+        StreamId::new(1),
+        SourceId::new(2),
+        3,
+        4,
+        buffer,
+    ));
 
     // When
-    let summary = assert_no_alloc(|| router.dispatch_lineaged_from(source_id, "out", frame, 5));
+    let summary = assert_no_alloc(|| router.dispatch_from(source_id, "out", frame, 5));
 
     // Then
     assert_eq!(summary.enqueued_edges, 3);
@@ -89,11 +114,17 @@ fn given_prepared_realtime_plan_when_connected_nodes_execute_then_no_heap_alloca
     assert!(workers.is_empty());
     let pool = AudioBufferPool::new(1, 2);
     let mut buffer = pool.acquire().unwrap();
-    buffer.copy_from_slice(&[0.25, -0.5]);
-    let frame = with_lineage(AudioFrame::new(StreamId(1), SourceId(2), 3, 4, 1, buffer));
+    buffer.try_copy_from_slice(&[0.25, -0.5]).unwrap();
+    let frame = with_lineage(audio_frame(
+        StreamId::new(1),
+        SourceId::new(2),
+        3,
+        4,
+        buffer,
+    ));
 
     // When
-    let summary = assert_no_alloc(|| executor.execute_lineaged_from(source_id, frame, 5)).unwrap();
+    let summary = assert_no_alloc(|| executor.execute_from(source_id, frame, 5)).unwrap();
 
     // Then
     assert_eq!(summary.nodes_executed, 4);
@@ -135,13 +166,12 @@ fn given_prepared_multi_source_runner_when_ready_frames_process_then_no_heap_all
     let second_pool = AudioBufferPool::new(1, 2);
     let mut first_buffer = first_pool.acquire().unwrap();
     let mut second_buffer = second_pool.acquire().unwrap();
-    first_buffer.copy_from_slice(&[0.25, -0.5]);
-    second_buffer.copy_from_slice(&[-0.25, 0.5]);
+    first_buffer.try_copy_from_slice(&[0.25, -0.5]).unwrap();
+    second_buffer.try_copy_from_slice(&[-0.25, 0.5]).unwrap();
     assert!(matches!(
-        first_sender.try_send(with_lineage(AudioFrame::new(
-            StreamId(1),
-            SourceId(1),
-            1,
+        first_sender.try_send(with_lineage(audio_frame(
+            StreamId::new(1),
+            SourceId::new(1),
             1,
             1,
             first_buffer,
@@ -149,10 +179,9 @@ fn given_prepared_multi_source_runner_when_ready_frames_process_then_no_heap_all
         PlanSourceSendOutcome::Enqueued
     ));
     assert!(matches!(
-        second_sender.try_send(with_lineage(AudioFrame::new(
-            StreamId(2),
-            SourceId(2),
-            1,
+        second_sender.try_send(with_lineage(audio_frame(
+            StreamId::new(2),
+            SourceId::new(2),
             1,
             1,
             second_buffer,

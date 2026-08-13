@@ -13,10 +13,9 @@
 //! No allocation, locking, logging, or panicking on the audio delivery path.
 //! Pool slot acquisition is lock-free (CAS bitset in `AudioBufferPool::acquire`).
 
-use std::sync::Arc;
 use std::time::Duration;
 
-use crate::frame::{AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, StreamId};
+use crate::frame::{AudioBufferPool, AudioFrame, StreamId};
 
 use crate::capture::platform::macos::macos_asp::AspReader;
 use crate::capture::{
@@ -35,7 +34,6 @@ const POOL_CAPACITY_FRAMES: usize = 8;
 enum Impl {
     // TapLoopbackSource is held for RAII; it stops capture on Drop.
     // The inner value is never read — only dropped.
-    #[allow(dead_code)]
     Tap(crate::capture::platform::macos::macos_tap::TapLoopbackSource),
     Asp {
         reader_thread: Option<std::thread::JoinHandle<()>>,
@@ -52,17 +50,10 @@ enum Impl {
 /// Drop this value to stop capture.
 // The inner Impl is read-only from Rust; it is kept alive for Drop/RAII and
 // accessed exclusively through the C FFI callbacks.
-#[allow(dead_code)]
 pub struct SystemLoopbackSource(Impl);
 
 impl SystemLoopbackSource {
-    pub fn capture<F>(callback: F) -> Result<Self, LoopbackError>
-    where
-        F: FnMut(AudioFrame) + Send + 'static,
-    {
-        Self::capture_mode(CaptureMode::SystemMix, callback)
-    }
-
+    #[cfg(feature = "internal-testing")]
     pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
     where
         F: FnMut(AudioFrame) + Send + 'static,
@@ -115,10 +106,7 @@ impl SystemLoopbackSource {
         .source_id();
         let callback_frame_count: u32 = sample_rate_hz / 50; // 20 ms
         let buffer_capacity_samples = callback_frame_count as usize * channel_count as usize;
-        let pool = Arc::new(AudioBufferPool::new(
-            POOL_CAPACITY_FRAMES,
-            buffer_capacity_samples,
-        ));
+        let pool = AudioBufferPool::new(POOL_CAPACITY_FRAMES, buffer_capacity_samples);
 
         let (stop_tx, stop_rx) = std::sync::mpsc::sync_channel::<()>(1);
         let counters = CaptureObservationCounters::default();
@@ -211,7 +199,10 @@ impl SystemLoopbackSource {
                             continue;
                         }
                         dst[..sample_count].copy_from_slice(&buffer[..sample_count]);
-                        handle.set_len(sample_count);
+                        if handle.try_set_len(sample_count).is_err() {
+                            capture_counters.observe_oversized_buffer();
+                            continue;
+                        }
                         let mut frame = AudioFrame::new(
                             StreamId(0),
                             source_id,
@@ -220,8 +211,6 @@ impl SystemLoopbackSource {
                             channel_count,
                             handle,
                         );
-                        frame.source_tag = AudioSourceTag::Captured;
-                        frame.encryption_mode = EncryptionMode::None;
                         frame.sample_rate_hz = sample_rate_hz;
                         capture_counters.observe_enqueued_frame();
                         callback(frame);

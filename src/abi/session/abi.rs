@@ -31,7 +31,7 @@ pub struct PksSessionHandle {
 }
 
 impl PksSessionHandle {
-    #[allow(dead_code)]
+    #[cfg(test)]
     pub const fn invalid() -> Self {
         Self {
             kind: PksSessionHandleKind::Invalid,
@@ -45,7 +45,6 @@ impl PksSessionHandle {
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum PksSessionHandleKind {
-    #[allow(dead_code)]
     Invalid = 0,
     Engine = 1,
     Session = 2,
@@ -80,8 +79,6 @@ impl PksSessionStatus {
 pub enum PksSessionStatusCode {
     Ok = 0,
     NullArgument = 1,
-    #[allow(dead_code)]
-    BufferTooSmall = 2,
     UnsupportedAbiMajor = 3,
     InvalidStructSize = 4,
     InvalidHandle = 5,
@@ -154,7 +151,7 @@ pub struct PksSessionAppMicDeclaration {
 }
 
 impl PksSessionAppMicDeclaration {
-    #[allow(dead_code)]
+    #[cfg(test)]
     pub const fn new(application_name: PksSessionUtf8) -> Self {
         Self {
             struct_size_bytes: size_of::<Self>() as u32,

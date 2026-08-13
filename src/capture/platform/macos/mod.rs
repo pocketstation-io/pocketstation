@@ -12,25 +12,27 @@ pub mod macos_tap;
 mod session_backend;
 
 #[cfg(target_os = "macos")]
-pub use authorization::microphone_permission_observation;
+pub(crate) use authorization::microphone_permission_observation;
 #[cfg(target_os = "macos")]
 pub use input::{discover_input_sources_native, MacosInputSource};
 #[cfg(target_os = "macos")]
-pub use loopback::SystemLoopbackSource;
+use loopback::SystemLoopbackSource;
+#[cfg(all(target_os = "macos", feature = "internal-testing"))]
+pub use loopback::SystemLoopbackSource as InternalSystemLoopbackSource;
 #[cfg(target_os = "macos")]
-pub use macos_asp::{asp_is_installed, AspReader};
+pub use macos_tap::{discover_sources_native, tap_available};
 #[cfg(target_os = "macos")]
-pub use macos_tap::{discover_sources_native, tap_available, TapLoopbackSource};
-#[cfg(target_os = "macos")]
-pub use session_backend::DesktopCaptureBackend;
+pub(crate) use session_backend::DesktopCaptureBackend;
+#[cfg(all(target_os = "macos", feature = "internal-testing"))]
+pub use session_backend::DesktopCaptureBackend as InternalDesktopCaptureBackend;
+#[cfg(all(target_os = "macos", feature = "internal-testing"))]
+pub use DesktopCaptureSource as InternalDesktopCaptureSource;
 
 #[cfg(target_os = "macos")]
 // The implementation is held for RAII; dropping it stops the selected capture source.
-#[allow(dead_code)]
 pub struct DesktopCaptureSource(DesktopCaptureImplementation);
 
 #[cfg(target_os = "macos")]
-#[allow(dead_code)]
 enum DesktopCaptureImplementation {
     Input(MacosInputSource),
     Loopback(SystemLoopbackSource),
@@ -38,6 +40,7 @@ enum DesktopCaptureImplementation {
 
 #[cfg(target_os = "macos")]
 impl DesktopCaptureSource {
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn capture_mode<F>(
         mode: crate::capture::CaptureMode,
         callback: F,

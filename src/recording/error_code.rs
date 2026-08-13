@@ -14,7 +14,6 @@ pub enum RecordingErrorCode {
     PermissionDenied,
     InvalidSampleSpec,
     SourceMismatch,
-    MissingLineage,
     LineageMismatch,
     FrameSpecMismatch,
     UnalignedSamples,
@@ -22,9 +21,6 @@ pub enum RecordingErrorCode {
     GapTooLarge,
     TooManyGaps,
     WorkerPanicked,
-    PublicationFailed,
-    RollbackAfterStart,
-    RollbackFailed,
     IoFailed,
     WavFailed,
     JsonFailed,
@@ -42,7 +38,6 @@ impl RecordingErrorCode {
             Self::PermissionDenied => "recording.permission_denied",
             Self::InvalidSampleSpec => "recording.invalid_sample_spec",
             Self::SourceMismatch => "recording.source_mismatch",
-            Self::MissingLineage => "recording.missing_lineage",
             Self::LineageMismatch => "recording.lineage_mismatch",
             Self::FrameSpecMismatch => "recording.frame_spec_mismatch",
             Self::UnalignedSamples => "recording.unaligned_samples",
@@ -50,9 +45,6 @@ impl RecordingErrorCode {
             Self::GapTooLarge => "recording.gap_too_large",
             Self::TooManyGaps => "recording.too_many_gaps",
             Self::WorkerPanicked => "recording.worker_panicked",
-            Self::PublicationFailed => "recording.publication_failed",
-            Self::RollbackAfterStart => "recording.rollback_after_start",
-            Self::RollbackFailed => "recording.rollback_failed",
             Self::IoFailed => "recording.io_failed",
             Self::WavFailed => "recording.wav_failed",
             Self::JsonFailed => "recording.json_failed",
@@ -63,6 +55,7 @@ impl RecordingErrorCode {
 }
 
 impl RecorderError {
+    #[cfg(any(test, feature = "internal-testing"))]
     pub const fn code(&self) -> RecordingErrorCode {
         match self {
             Self::OutputExists(_) => RecordingErrorCode::OutputExists,
@@ -72,7 +65,6 @@ impl RecorderError {
             Self::PermissionDenied(_) => RecordingErrorCode::PermissionDenied,
             Self::InvalidSampleSpec { .. } => RecordingErrorCode::InvalidSampleSpec,
             Self::SourceMismatch { .. } => RecordingErrorCode::SourceMismatch,
-            Self::MissingFrameLineage(_) => RecordingErrorCode::MissingLineage,
             Self::LineageMismatch { .. } => RecordingErrorCode::LineageMismatch,
             Self::FrameSpecMismatch { .. } => RecordingErrorCode::FrameSpecMismatch,
             Self::UnalignedSamples(_) => RecordingErrorCode::UnalignedSamples,
@@ -80,9 +72,6 @@ impl RecorderError {
             Self::GapTooLarge { .. } => RecordingErrorCode::GapTooLarge,
             Self::TooManyGaps(_) => RecordingErrorCode::TooManyGaps,
             Self::WorkerPanicked(_) => RecordingErrorCode::WorkerPanicked,
-            Self::Publication(_) => RecordingErrorCode::PublicationFailed,
-            Self::RollbackAfterStart => RecordingErrorCode::RollbackAfterStart,
-            Self::Rollback(_) => RecordingErrorCode::RollbackFailed,
             Self::Io(_) => RecordingErrorCode::IoFailed,
             Self::Wav(_) => RecordingErrorCode::WavFailed,
             Self::Json(_) => RecordingErrorCode::JsonFailed,
@@ -103,7 +92,7 @@ pub const fn recording_outcome_error_code(
 #[cfg(test)]
 mod tests {
     use super::{recording_outcome_error_code, RecordingErrorCode};
-    use crate::recording::{RecorderError, RecordingOutcome, RecordingState};
+    use crate::recording::{RecordingOutcome, RecordingState};
 
     #[test]
     fn given_recording_codes_when_serialized_then_values_are_exact_and_unique() {
@@ -134,10 +123,6 @@ mod tests {
                 "recording.source_mismatch",
             ),
             (
-                RecordingErrorCode::MissingLineage,
-                "recording.missing_lineage",
-            ),
-            (
                 RecordingErrorCode::LineageMismatch,
                 "recording.lineage_mismatch",
             ),
@@ -159,18 +144,6 @@ mod tests {
                 RecordingErrorCode::WorkerPanicked,
                 "recording.worker_panicked",
             ),
-            (
-                RecordingErrorCode::PublicationFailed,
-                "recording.publication_failed",
-            ),
-            (
-                RecordingErrorCode::RollbackAfterStart,
-                "recording.rollback_after_start",
-            ),
-            (
-                RecordingErrorCode::RollbackFailed,
-                "recording.rollback_failed",
-            ),
             (RecordingErrorCode::IoFailed, "recording.io_failed"),
             (RecordingErrorCode::WavFailed, "recording.wav_failed"),
             (RecordingErrorCode::JsonFailed, "recording.json_failed"),
@@ -185,11 +158,7 @@ mod tests {
     }
 
     #[test]
-    fn given_lineage_and_terminal_failures_when_projected_then_codes_are_typed() {
-        assert_eq!(
-            RecorderError::MissingFrameLineage("application".to_owned()).code(),
-            RecordingErrorCode::MissingLineage
-        );
+    fn given_terminal_failure_when_projected_then_code_is_typed() {
         let incomplete = RecordingOutcome {
             session_dir: std::path::PathBuf::from("session-1"),
             state: RecordingState::Incomplete,

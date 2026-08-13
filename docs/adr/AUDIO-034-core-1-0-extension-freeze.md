@@ -34,13 +34,13 @@ compatibility, measured-regression, or unexpressible-execution-primitive cause.
 
 ## Evidence and limitations
 
-W17 proves generic signal identity. The W18 artifact proves low-level source
-registration and shared bounded typed ingress but not Session source ingress.
-The W19 artifact proves declaration compilation and low-level composition and
-generated-audio primitives but not Session-owned execution. W20 proves
-descriptor validation, PKSS framing, a Python round trip, and locally patched
-packaged-source consumption; it does not prove executable C registration,
-Session-owned sidecar lifecycle, a clean installed/published artifact, or a
-`1.0.0` release. W20 remains a `LOOPBACK-ONLY` component/compatibility proof.
-W13 separately owns physical desktop qualification and must not be inferred
-from W20. This ADR becomes Accepted only when those exits pass.
+W17 generic signal identity, W18 public Session source ingress, W19 named
+composition and generated-audio reentry, and the W20 executable C ABI,
+Session-owned sidecar, cross-language, clean installed-consumer,
+requalification, physical macOS, compatibility, and performance gates are
+hash-accepted. The cross-language and neutral comparison evidence remains
+honestly `LOOPBACK-ONLY`; physical desktop qualification remains owned by W13
+and the accepted macOS final proof.
+
+This ADR remains Provisional until immutable `1.0.0` registry publication is
+independently consumed and the dated freeze policy is activated.

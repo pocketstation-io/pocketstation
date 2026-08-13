@@ -7,9 +7,7 @@
 use std::ptr::NonNull;
 use std::time::Duration;
 
-use crate::frame::{
-    AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, Platform, StreamId,
-};
+use crate::frame::{AudioBufferPool, AudioFrame, Platform, StreamId};
 
 use crate::capture::{
     initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureError as LoopbackError,
@@ -60,8 +58,6 @@ extern "C" {
     fn pks_tap_drop_count(tap: *const std::ffi::c_void) -> u64;
     fn pks_tap_sample_rate(tap: *const std::ffi::c_void) -> u32;
     fn pks_tap_channels(tap: *const std::ffi::c_void) -> u32;
-    // Reserved for future audio-level diagnostic (capture-path signal-level probe).
-    #[allow(dead_code)]
     fn pks_tap_level(tap: *const std::ffi::c_void) -> f32;
 }
 
@@ -80,7 +76,10 @@ extern "C" {
 pub fn tap_available() -> bool {
     // SAFETY: The linked shim exposes a zero-argument availability probe with
     // no borrowed memory and no ownership transfer.
-    unsafe { pks_process_tap_available() != 0 }
+    unsafe {
+        let _diagnostic_symbol = pks_tap_level;
+        pks_process_tap_available() != 0
+    }
 }
 
 /// Enumerate all running processes that have audio output.
@@ -435,13 +434,6 @@ pub struct TapLoopbackSource {
 }
 
 impl TapLoopbackSource {
-    pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
-    where
-        F: FnMut(AudioFrame) + Send + 'static,
-    {
-        Self::capture_mode_with_runtime_event_sender(mode, callback, None)
-    }
-
     pub(crate) fn capture_mode_with_runtime_event_sender<F>(
         mode: CaptureMode,
         mut callback: F,
@@ -531,10 +523,7 @@ impl TapLoopbackSource {
         let host_to_process = TimelineMapping::new(host_time_midpoint_ns, process_time_ns);
         let callback_frame_count: u32 = sample_rate_hz / 50; // 20 ms
         let buffer_capacity_samples = callback_frame_count as usize * channel_count as usize;
-        let pool = std::sync::Arc::new(AudioBufferPool::new(
-            POOL_CAPACITY_FRAMES,
-            buffer_capacity_samples,
-        ));
+        let pool = AudioBufferPool::new(POOL_CAPACITY_FRAMES, buffer_capacity_samples);
         let (stop_tx, stop_rx) = std::sync::mpsc::sync_channel::<()>(1);
         let counters = CaptureObservationCounters::default();
         let capture_counters = counters.clone();
@@ -599,7 +588,10 @@ impl TapLoopbackSource {
                             continue;
                         }
                         dst[..sample_count].copy_from_slice(&buffer[..sample_count]);
-                        handle.set_len(sample_count);
+                        if handle.try_set_len(sample_count).is_err() {
+                            capture_counters.observe_oversized_buffer();
+                            continue;
+                        }
                         let mut frame = AudioFrame::new(
                             StreamId(0),
                             source_id,
@@ -608,8 +600,6 @@ impl TapLoopbackSource {
                             channel_count,
                             handle,
                         );
-                        frame.source_tag = AudioSourceTag::Captured;
-                        frame.encryption_mode = EncryptionMode::None;
                         frame.sample_rate_hz = sample_rate_hz;
                         capture_counters.observe_enqueued_frame();
                         callback(frame);

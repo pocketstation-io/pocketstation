@@ -23,51 +23,54 @@ impl StreamSignal for DerivedSignal {
 }
 
 fn manifest(id: &str) -> AsyncOperatorManifest {
-    let mut input_edge = EdgeContract::voice_default();
-    input_edge.copy_policy = CopyPolicy::CopyToBranchPool;
-    let mut output_edge = EdgeContract::typed_default();
-    output_edge.media = MediaCaps::Control;
-    AsyncOperatorManifest {
-        operator_id: OperatorId::new(id),
-        revision: 1,
-        generation: 1,
-        node: NodeDescriptor {
-            type_id: NodeTypeId::from("dev.pocketstation.test.typed-node.v1"),
-            display_name: "typed extension conformance",
-            inputs: vec![PortSpec {
-                name: "in".to_owned(),
-                direction: PortDirection::Input,
-                signal: CapturedSignal::signal_spec(),
-                media: input_edge.media,
-                multiplicity: Multiplicity::One,
-                required: true,
-            }],
-            outputs: vec![PortSpec {
-                name: "out".to_owned(),
-                direction: PortDirection::Output,
-                signal: DerivedSignal::signal_spec(),
-                media: MediaCaps::Control,
-                multiplicity: Multiplicity::Many,
-                required: true,
-            }],
-            execution: ExecutionPartition::AsyncWorker,
-            safety: SafetyContract::AllocationAllowed,
-            stateful: false,
-        },
+    let input_edge = EdgeContract::realtime_audio().with_copy_policy(CopyPolicy::CopyToBranchPool);
+    let output_edge = EdgeContract::bounded_async().with_media(MediaCaps::Control);
+    let node = NodeDescriptor::new(
+        NodeTypeId::from("dev.pocketstation.test.typed-node.v1"),
+        "typed extension conformance",
+        vec![PortSpec::new(
+            "in",
+            PortDirection::Input,
+            CapturedSignal::signal_spec(),
+            input_edge.media(),
+            Multiplicity::One,
+            true,
+        )
+        .expect("input port")],
+        vec![PortSpec::new(
+            "out",
+            PortDirection::Output,
+            DerivedSignal::signal_spec(),
+            MediaCaps::Control,
+            Multiplicity::Many,
+            true,
+        )
+        .expect("output port")],
+        ExecutionPartition::AsyncWorker,
+        SafetyContract::AllocationAllowed,
+        false,
+    )
+    .expect("node descriptor");
+    AsyncOperatorManifest::new(
+        OperatorId::new(id),
+        1,
+        1,
+        node,
         input_edge,
         output_edge,
-        queue_capacity_frames: 2,
-        permission: OperatorPermissionPolicy {
+        2,
+        OperatorPermissionPolicy {
             network_allowed: false,
             filesystem_allowed: false,
         },
-        deadline: OperatorDeadlinePolicy {
+        OperatorDeadlinePolicy {
             process_timeout_ms: 100,
         },
-        cancellation: OperatorCancellationPolicy::DiscardQueued,
-        failure: OperatorFailurePolicy::StopWorker,
-        output_roles: OperatorOutputRolePolicy::default(),
-    }
+        OperatorCancellationPolicy::DiscardQueued,
+        OperatorFailurePolicy::StopWorker,
+        OperatorOutputRolePolicy::default(),
+    )
+    .expect("operator manifest")
 }
 
 #[test]

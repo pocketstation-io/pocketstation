@@ -1,9 +1,7 @@
 use opus::{Channels, Decoder};
 
-use crate::codec::constants::{I16_SCALE, OPUS_FRAME_SAMPLES, OPUS_SAMPLE_RATE_HZ};
-use crate::codec::encoder::{EncodedFrame, OpusChannels, OpusFrameDuration};
-
-const OPUS_MAX_FRAME_SAMPLES_PER_CHANNEL: usize = 2_880; // 60 ms at 48 kHz
+use crate::codec::constants::{I16_SCALE, OPUS_SAMPLE_RATE_HZ};
+use crate::codec::encoder::{OpusChannels, OpusFrameDuration};
 
 /// Real Opus decoder wrapping libopus via the `opus` crate.
 ///
@@ -14,13 +12,26 @@ const OPUS_MAX_FRAME_SAMPLES_PER_CHANNEL: usize = 2_880; // 60 ms at 48 kHz
 /// - `new()` allocates the libopus decoder state once.
 /// - `decode_into()` writes into a caller-supplied `Vec<f32>` (no internal
 ///   allocation after the first call, provided the `Vec` has enough capacity).
-/// - `decode_to_vec()` allocates one `Vec<f32>` per call — tests/examples only.
 pub struct OpusDecoder {
     inner: Decoder,
     /// Channel count (1 = mono, 2 = stereo). libopus decodes `frame_size`
     /// samples per channel and writes `frame_size × channels` interleaved values,
     /// so the output sizing depends on this.
     channels: usize,
+    maximum_frame_samples_per_channel: usize,
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum OpusDecodeError {
+    #[error(
+        "requested {requested_samples_per_channel} Opus samples per channel exceeds configured maximum {maximum_samples_per_channel}"
+    )]
+    FrameDurationExceedsConfiguredMaximum {
+        requested_samples_per_channel: usize,
+        maximum_samples_per_channel: usize,
+    },
+    #[error("Opus decode failed: {0}")]
+    Opus(#[from] opus::Error),
 }
 
 impl OpusDecoder {
@@ -29,9 +40,20 @@ impl OpusDecoder {
         Self::with_channels(OpusChannels::Mono)
     }
 
-    /// Decoder for an explicit channel layout. Use `Stereo` to decode the music
-    /// pipeline's stereo Opus stream into interleaved L/R f32.
+    /// Decoder for an explicit channel layout and a maximum 20 ms packet.
     pub fn with_channels(channels: OpusChannels) -> Result<Self, opus::Error> {
+        Self::with_max_frame_duration(channels, OpusFrameDuration::Ms20)
+    }
+
+    /// Decoder with an explicit maximum packet duration.
+    ///
+    /// The declared maximum selects a fixed stack scratch bound. This keeps
+    /// normal 10/20 ms decoding cache-local while making 40/60 ms support
+    /// explicit rather than silently oversized.
+    pub fn with_max_frame_duration(
+        channels: OpusChannels,
+        maximum_frame_duration: OpusFrameDuration,
+    ) -> Result<Self, opus::Error> {
         let (ch, n) = match channels {
             OpusChannels::Mono => (Channels::Mono, 1),
             OpusChannels::Stereo => (Channels::Stereo, 2),
@@ -39,6 +61,7 @@ impl OpusDecoder {
         Ok(Self {
             inner: Decoder::new(OPUS_SAMPLE_RATE_HZ, ch)?,
             channels: n,
+            maximum_frame_samples_per_channel: maximum_frame_duration.samples_at_48k(),
         })
     }
 
@@ -60,23 +83,29 @@ impl OpusDecoder {
         payload: &[u8],
         out: &mut Vec<f32>,
         fec: bool,
-    ) -> Result<usize, opus::Error> {
-        let before = out.len();
-        // Sized for the widest case (20 ms stereo = 1920 interleaved samples).
-        let mut i16_buf = [0i16; OPUS_FRAME_SAMPLES * 2];
-        // libopus returns samples-PER-CHANNEL; the buffer holds that many × channels
-        // interleaved values.
-        let per_channel = self.inner.decode(payload, &mut i16_buf, fec)?;
-        let total = per_channel * self.channels;
-
-        // Pre-size output then write with a plain loop.  Avoids the per-element
-        // bounds check inside `push` and is auto-vectorised by LLVM (NEON/AVX2)
-        // when target-cpu=native is set.
-        out.resize(before + total, 0.0f32);
-        for (dst, &src) in out[before..].iter_mut().zip(&i16_buf[..total]) {
-            *dst = src as f32 / I16_SCALE;
+    ) -> Result<usize, OpusDecodeError> {
+        let maximum_interleaved_samples = self.maximum_frame_samples_per_channel * self.channels;
+        if maximum_interleaved_samples <= 1_920 {
+            let mut scratch = [0_i16; 1_920];
+            decode_packet(
+                &mut self.inner,
+                self.channels,
+                payload,
+                out,
+                fec,
+                &mut scratch[..maximum_interleaved_samples],
+            )
+        } else {
+            let mut scratch = [0_i16; 5_760];
+            decode_packet(
+                &mut self.inner,
+                self.channels,
+                payload,
+                out,
+                fec,
+                &mut scratch[..maximum_interleaved_samples],
+            )
         }
-        Ok(total)
     }
 
     /// Conceal one missing packet while preserving libopus decoder state.
@@ -88,83 +117,63 @@ impl OpusDecoder {
         &mut self,
         frame_duration: OpusFrameDuration,
         out: &mut Vec<f32>,
-    ) -> Result<usize, opus::Error> {
+    ) -> Result<usize, OpusDecodeError> {
         let frame_samples_per_channel = frame_duration.samples_at_48k();
         let total_samples = frame_samples_per_channel * self.channels;
-        let before_samples = out.len();
-        let mut i16_buf = [0i16; OPUS_MAX_FRAME_SAMPLES_PER_CHANNEL * 2];
-        let decoded_samples_per_channel =
-            self.inner
-                .decode(&[], &mut i16_buf[..total_samples], false)?;
-        let decoded_samples = decoded_samples_per_channel * self.channels;
-
-        out.resize(before_samples + decoded_samples, 0.0);
-        for (dst, &src) in out[before_samples..]
-            .iter_mut()
-            .zip(&i16_buf[..decoded_samples])
-        {
-            *dst = src as f32 / I16_SCALE;
+        if frame_samples_per_channel > self.maximum_frame_samples_per_channel {
+            return Err(OpusDecodeError::FrameDurationExceedsConfiguredMaximum {
+                requested_samples_per_channel: frame_samples_per_channel,
+                maximum_samples_per_channel: self.maximum_frame_samples_per_channel,
+            });
         }
-        Ok(decoded_samples)
+        if total_samples <= 1_920 {
+            let mut scratch = [0_i16; 1_920];
+            decode_packet(
+                &mut self.inner,
+                self.channels,
+                &[],
+                out,
+                false,
+                &mut scratch[..total_samples],
+            )
+        } else {
+            let mut scratch = [0_i16; 5_760];
+            decode_packet(
+                &mut self.inner,
+                self.channels,
+                &[],
+                out,
+                false,
+                &mut scratch[..total_samples],
+            )
+        }
     }
+}
 
-    /// Convenience wrapper allocating a `Vec<f32>` — tests/examples only.
-    pub fn decode_to_vec(&mut self, encoded: &EncodedFrame) -> Result<Vec<f32>, opus::Error> {
-        let mut out = Vec::with_capacity(OPUS_FRAME_SAMPLES);
-        self.decode_into(&encoded.payload, &mut out, false)?;
-        Ok(out)
+fn decode_packet(
+    decoder: &mut Decoder,
+    channels: usize,
+    payload: &[u8],
+    output: &mut Vec<f32>,
+    fec: bool,
+    scratch: &mut [i16],
+) -> Result<usize, OpusDecodeError> {
+    let decoded_samples_per_channel = decoder.decode(payload, scratch, fec)?;
+    let decoded_samples = decoded_samples_per_channel * channels;
+    let before_samples = output.len();
+    output.resize(before_samples + decoded_samples, 0.0);
+    for (destination, &source) in output[before_samples..]
+        .iter_mut()
+        .zip(&scratch[..decoded_samples])
+    {
+        *destination = source as f32 / I16_SCALE;
     }
+    Ok(decoded_samples)
 }
 
 impl Default for OpusDecoder {
     fn default() -> Self {
         Self::new().expect("OpusDecoder::new failed with fixed parameters — libopus not linked?")
-    }
-}
-
-// Legacy mock alias — kept so that existing tests continue to compile without
-// modification.  Delegates to the real decoder.
-// Remove in Phase 5 once all call sites have been migrated.
-
-/// Deprecated alias for [`OpusDecoder`].  Use `OpusDecoder` directly.
-#[cfg(any(test, feature = "test-helpers"))]
-pub struct MockOpusDecoder {
-    inner: OpusDecoder,
-}
-
-#[cfg(any(test, feature = "test-helpers"))]
-impl MockOpusDecoder {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        Self {
-            inner: OpusDecoder::default(),
-        }
-    }
-
-    /// Allocation-free decode from a raw byte slice.
-    pub fn decode_slice_into(&mut self, payload: &[u8], out: &mut Vec<f32>) -> usize {
-        self.inner
-            .decode_into(payload, out, false)
-            .expect("MockOpusDecoder.decode_slice_into failed")
-    }
-
-    /// Allocation-free decode from an [`EncodedFrame`].
-    pub fn decode_into(&mut self, encoded: &EncodedFrame, out: &mut Vec<f32>) -> usize {
-        self.decode_slice_into(&encoded.payload, out)
-    }
-
-    /// Allocates per call — for tests and examples only.
-    pub fn decode_to_vec(&mut self, encoded: &EncodedFrame) -> Vec<f32> {
-        self.inner
-            .decode_to_vec(encoded)
-            .expect("MockOpusDecoder.decode_to_vec failed")
-    }
-}
-
-#[cfg(any(test, feature = "test-helpers"))]
-impl Default for MockOpusDecoder {
-    fn default() -> Self {
-        Self::new()
     }
 }
 
@@ -234,5 +243,24 @@ mod tests {
             .unwrap();
 
         assert_eq!(pcm_out.capacity(), initial_capacity_samples);
+    }
+
+    #[test]
+    fn given_20ms_decoder_when_60ms_concealment_is_requested_then_typed_bound_error_is_returned() {
+        let mut decoder = OpusDecoder::new().unwrap();
+        let mut pcm_out = Vec::new();
+
+        let error = decoder
+            .decode_plc_into(OpusFrameDuration::Ms60, &mut pcm_out)
+            .unwrap_err();
+
+        assert!(matches!(
+            error,
+            OpusDecodeError::FrameDurationExceedsConfiguredMaximum {
+                requested_samples_per_channel: 2_880,
+                maximum_samples_per_channel: 960,
+            }
+        ));
+        assert!(pcm_out.is_empty());
     }
 }

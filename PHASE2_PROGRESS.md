@@ -1,5 +1,181 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W20 final performance qualification — 2026-08-13
+
+- Status: `SAFE-TO-MERGE` component gate within hash-accepted candidate
+  `pks-20260813-final-performance-16`; competitive classification is
+  `LOOPBACK-ONLY`.
+- The exact candidate passes nine callback/codec/router no-allocation cells,
+  the complete boundedness/recovery unit suite, and 20 Criterion cases with
+  nanosecond distributions, throughput, process CPU and accepted-baseline
+  deltas. The largest non-lifecycle component p99 is 106,499 ns against the
+  20,000,000 ns audio-frame budget.
+- The protocol naming gate exposed three compatibility/profile tests that did
+  not use mandatory `given_when_then` names. Only those test names changed;
+  public API, ABI, callbacks, pools, queues and runtime behavior did not.
+- No long soak, physical-device rerun, Windows/Linux rerun, remote transport,
+  publication, fastest claim, or Core-freeze claim is added.
+
+## W20 API/ABI/package compatibility — 2026-08-13
+
+- Status: `SAFE-TO-MERGE` for candidate
+  `pks-20260813-w20-api-abi-freeze-15`; all three executor predicates are
+  hash-accepted.
+- The default Rust surface passes 196 pinned SemVer checks against the accepted
+  0.1.2 baseline. The accepted C header remains byte-identical; public type
+  layouts, exported symbols, callback-table prefix compatibility and the PKSS
+  1.0 golden wire vector pass.
+- Previous Session C, Extension ABI 1.0 C, executable Extension ABI 1.1 C and
+  codec C++ consumer paths compile against their preserved headers and execute
+  against the current library.
+- Cargo created and verified the locked crate from an exact clean committed
+  snapshot without `--allow-dirty`, `--no-verify` or source patches. This gate
+  changes no callback, pool, bounded queue or realtime executor and makes no
+  publication, comparative-performance or Core-freeze claim.
+
+## W20 public single-engine CLI projection — 2026-08-13
+
+- Status: `SAFE-TO-TEST` inside active candidate 12; physical acceptance is
+  pending.
+- Central `CaptureSource` now owns selector-persistence and process-tree scope
+  observations, so the CLI no longer reconstructs private capture modes.
+- `EndpointAudioReceiver` exposes immutable public edge observations, allowing
+  external process and relay connector packages to receive bounded audio
+  without importing `PlanEdge*` runtime machinery.
+- The protocol gate now runs `scripts/check_pks_single_engine_boundary.sh`,
+  which rejects any return of a CLI-owned capture/compiler/runtime/pool/queue
+  authority or private connector access.
+- The realtime callback, fixed pools, bounded SPSC edges, saturation policy and
+  audio execution path are unchanged. No soak or comparative claim was added.
+
+## W20 public source-discovery ownership — 2026-08-13
+
+- Status: `SAFE-TO-TEST` inside the active pks single-engine closure.
+- Canonical capture now exposes platform-neutral source discovery and query
+  contracts through the public SDK. macOS application/input discovery,
+  Windows discovery and Linux discovery are merged and deduplicated in the
+  capture owner; the CLI no longer requires `internal-testing` merely to list
+  or resolve sources.
+- `application_capture_available()` is a control-plane capability query only:
+  it opens no capture source and creates no callback, pool, queue, compiler or
+  runtime owner.
+- The realtime capture implementation, pool sizes, bounded edges, saturation
+  semantics and callback code are unchanged. No scaffold, mock, provider path,
+  physical claim or soak was added.
+
+## W20 Session-owned sidecar host — 2026-08-12
+
+- Status: `SAFE-TO-MERGE` for candidate
+  `pks-20260812-w20-sidecar-host-6`; acceptance is executor-manifest bound.
+- Public `Session::register_sidecar` retains a versioned process contract and
+  the canonical engine transactionally spawns and attaches every child.
+- The bounded PKSS host owns separate data and reserved control queues, the
+  `Spawned -> Hello -> Manifest -> Configure -> Ready -> Running` handshake,
+  close/cancel acknowledgement, deadlines, typed failures, kill/wait/reap and
+  final Session observations. Foreign work stays off realtime callbacks.
+- The external Python fixture proves typed signal echo, close and cancel state
+  transitions, data saturation with control delivery, crash isolation,
+  hung-child deadline/kill/reap and malformed-frame failure during Session
+  start. Exact acceptance, strict Clippy and release quickstart gates pass.
+- No callback, audio pool or hot executor changed, so no endurance gate was
+  triggered. Cross-language conformance and Core 1.0 freeze remain pending.
+
+## W20 registered built-in lowering closure — 2026-08-12
+
+- Status: `SAFE-TO-MERGE` for candidate
+  `pks-20260812-w20-builtin-lowering-closure-5`; acceptance remains bound to
+  the executor manifest rather than inferred from code existence.
+- Generic Session compilation no longer matches application/microphone source
+  variants or owns built-in/external-audio node type IDs. One typed
+  `SessionSourceLoweringContext` carries the pipeline, source registry, typed
+  node maps, and compiled bindings to component-owned lowerers.
+- Session engine bootstrap no longer constructs a fixed structural node list or
+  a separate lowerer list. Component registration derives collision checks from
+  the registered descriptors and returns the exact lowerers installed for that
+  engine.
+- Built-in application/microphone capture, registered custom sources, registered
+  PCM sources, and generated-audio reentry now lower through the same compiler
+  extension seam while retaining their specialized runtime execution paths.
+- Gates pass: the static boundary predicate, 443 unit tests plus all targets,
+  ABI/integration and allocation tests, every benchmark target, strict Clippy,
+  default-feature check, release quickstart, and the full protocol check.
+- No callback, frame pool, `rtrb` edge, saturation policy, hot-path `Drop`,
+  realtime executor, provider/domain type, physical claim, or soak changed.
+
+## W19 composition fault and bounded-scaling closure — 2026-08-08
+
+- Status: `SAFE-TO-MERGE`; all W19 executor tasks and mandatory predicates are
+  `DONE`/`PASS` and execution is deliberately `PAUSED` before W20.
+- Ten exact deterministic cells prove Session branch saturation isolation,
+  independent source survival after another source fails, operator timeout and
+  bounded cancellation, typed-edge branch isolation, recorder-branch failure
+  isolation, generated-audio pool/ingress exhaustion accounting, composed
+  Session ownership, and transactional endpoint-start rollback.
+- The hash-verified artifact binds capacity 8, peak depth 4, final depth 0,
+  eight pool slots, 960 samples per frame, and the exact 61,440-byte queued
+  audio upper bound. Four signals were enqueued and received with zero
+  unexplained loss.
+- W19 starts no sidecar child process; process lifecycle remains a gated W20
+  concern. No physical-device, remote-network, endurance, or product claim was
+  added, and no soak ran.
+
+## W19 Session-owned generated-audio reentry — 2026-08-08
+
+- Status: `SAFE-TO-MERGE` for task `W19-GENERATED-AUDIO-REENTRY`; its three
+  mandatory predicates are bound to the hashed acceptance manifest. The later
+  deterministic fault/scaling task also passed, so W19 is now `DONE`.
+- Public `Session` owns an exclusive bounded typed-PCM receiver, normalization
+  bridge, dedicated pool, authoritative lineage projection, existing
+  plan-source ingress, cancellation, graceful finish, join, and final metrics.
+  Operator PCM output stays on the typed async lane until this explicit bridge;
+  captured realtime audio stays on the specialized audio lane.
+- The generic typed edge now reports exact capacity, current/peak depth,
+  enqueue, receive, and declared-drop counters. Its final fan-out branch moves
+  the sole `Arc` rather than retaining a racing publisher reference, making
+  exclusive generated-audio ownership deterministic.
+- Compilation rejects a second consumer of the same named PCM output, including
+  a second reentry. Deterministic tests cover ingress saturation, pool
+  exhaustion, graceful drain, source/operator/bridge close, and a downstream
+  endpoint-delivery scheduling race; the public Session test passes 25 repeated
+  runs.
+- Final gates pass: 390 unit tests plus every target/integration, strict
+  all-target/all-feature Clippy, no-default check, quickstart, hot-path
+  allocation tests, full code protocol, and the external public-API consumer.
+- No callback, pool ownership, hot executor, provider/domain type, mock,
+  physical-device claim, product-claim upgrade, or soak was introduced.
+
+## W17 central Core 1.0 boundary corrections — 2026-08-08
+
+- Status: `SAFE-TO-MERGE` for task
+  `W17-CENTRAL-BOUNDARY-CORRECTIONS`; executor completion is bound to the
+  hashed acceptance manifest, not inferred from component test success.
+- Public `SignalSpec`, `PortSpec`, `EdgeContract`, `NodeDescriptor`, operator
+  manifests, source manifests, envelopes, frames, and lineage records expose
+  checked construction and read-only access rather than mutable public
+  representations.
+- `SessionSpec` owns one `ConnectionSpec` collection. Captured stems, external
+  source outputs, and operator outputs delegate through one internal stream
+  handle; Rust `Stream<T>` remains declaration-time typing over stable
+  `SignalSpec`, not a second runtime or an ABI type.
+- Graph preparation has one port-aware record. The asynchronous bridge and
+  typed fan-out now use one bounded `SignalEdge` implementation with explicit
+  owned versus shared payload ownership; the specialized audio edge remains
+  separate.
+- The generic Session compiler no longer switches on connector, browser,
+  recorder, or generated-audio identities. Endpoint-owned configuration is
+  copied generically and the audio-reentry package enters through the
+  registered graph-lowering seam.
+- Unaccepted DSP, codec profile/mock, capture compatibility, recording
+  coordination, runtime-node, and experimental timing scaffolds are absent
+  from the shipping package. The empty experimental directory was removed and
+  is not recoverable except from version control.
+- Acceptance passes: strict no-default dead/unused check, 385 central unit
+  tests plus all targets and integrations, strict Clippy, release quickstart,
+  protocol/hot-path laws, and the external public-consumer artifact with an
+  adversarial verifier self-test.
+- No audio callback execution, buffer-pool ownership, or hot executor changed;
+  W10 endurance evidence remains applicable and no soak was run.
+
 ## W18 Session-owned external source lifecycle — 2026-08-08
 
 - Status: `SAFE-TO-MERGE` for task `W18-SOURCE-LIFECYCLE-EVIDENCE`.
@@ -91,6 +267,56 @@
   product-claim upgrade, or soak was introduced.
 
 ## W20 Core 1.0 extension completeness — 2026-08-08
+
+- 2026-08-09 ownership-remediation slice: `RUNNING`, not accepted. The central
+  package is being reorganized around explicit authorities:
+  `session/{declaration,compile,prepare,lifecycle,extensions}`,
+  `runtime/{audio,signal,bridge,lifecycle}`, split frame/capture/graph/endpoint/
+  recording modules, and restored codec/timing owners. Empty legacy module
+  directories are gone; no DSP placeholder was restored.
+- `CompiledSessionBindings` is now the sole typed bridge from lowered graph
+  nodes to Session declarations. Built-in application/microphone selectors are
+  no longer serialized into `NodeConfig`; structural ingress nodes receive an
+  empty configuration and runtime preparation consumes the typed Session
+  declaration. External source, operator, and endpoint configuration remains
+  extension-owned and opaque.
+- Connector identity now follows the same typed path: `ConnectorId` is retained
+  by the endpoint declaration, frozen into `EndpointSpec`, lowered into the
+  compiled endpoint binding, and supplied through `EndpointPrepareContext`.
+  The former `"connector_id"` configuration injection and endpoint-side
+  string parser are removed.
+- Endpoint authoring contracts now have one public Rust location at the crate
+  root. The endpoint implementation namespace is private, and root contracts
+  are re-exported from their actual graph, frame, declaration, extension, and
+  lifecycle owners instead of being presented as Session-owned machinery.
+- Realtime/session numeric identities retain their compact scalar layout and
+  internal zero-cost field access, but the tuple field is no longer public.
+  External consumers use `Id::new(...)` and `.get()`, preventing the scalar
+  representation from becoming a frozen public-field contract. The central
+  examples, integration targets, active CLI, and Lab fixtures were migrated;
+  archived `audio-ml` remains archived rather than being pulled into Core.
+- The former mixed graph signal file is now separated into payload,
+  timing, lineage/derivation, envelope validation, continuity, asynchronous
+  preparation, and operator-contract modules. `SignalTiming` and
+  `SignalLineage` now have checked constructors and read-only accessors;
+  `SignalDerivation` is read-only after construction. Current external examples
+  and Lab fixtures were migrated away from writable representation fields.
+- Capture remains an explicit owner in this cleanup. Platform adapters retain
+  fixed-capacity audio pools, bounded `rtrb` crossings, nonblocking saturation
+  accounting, and the callback prohibition on allocation, locking, blocking,
+  async work, logging, and panic. Existing capture/pool Criterion targets are
+  preserved. This slice changes no callback, pool, queue, or drop semantics.
+- The misleading `capture/source/` namespace was removed. Capture selection,
+  authorization, stable native identity, callback observations, runtime events,
+  and sample-time mapping now have direct modules under `capture/`; the generic
+  extensible Source contract remains exclusively under `session/extensions/`.
+- The lifecycle start/stop contract has been separated from the Session
+  runtime orchestrator, and language-neutral signal identifiers are opaque
+  rather than public tuple representations. No provider/customer/domain type,
+  second engine, mock, fallback, or loopback path was introduced.
+- Verification is deliberately deferred by user direction. This entry records
+  implementation state only and does not upgrade W20, Core 1.0, performance,
+  platform, or release acceptance.
 
 - Status: `PARTIAL`; the component/package candidate passes, but Core 1.0 is
   not frozen. The preserved artifact is package `0.1.2`, `LOOPBACK-ONLY`,
@@ -2352,3 +2578,318 @@
   adds no unbounded queue, manual fixture worker/fanout, generated-audio claim,
   provider/customer/domain vocabulary, scaffold, mock, loopback product path,
   platform matrix, release, freeze, or soak.
+
+## W20 typed compiled Session bindings — 2026-08-09
+
+- Status: `SAFE-TO-MERGE` for `W20-TYPED-SESSION-BINDINGS` only. Endpoint and
+  recording ownership, public API reduction, module decomposition, executable
+  extension ABI, sidecar lifecycle, packaging, release, and Core 1.0 freeze
+  remain separately gated.
+- `CompiledSession` now owns a typed `CompiledSessionBindings` table keyed by
+  compiled `NodeId`. Each Session-created node carries its exact source, stem,
+  operator, endpoint route, stream origin, or generated-audio ownership without
+  encoding those identities into `NodeConfig` string keys.
+- Runtime preparation consumes those typed bindings for built-in and external
+  sources, operator inputs and outputs, raw and derived endpoints, and generated
+  audio ingress. Missing or incompatible bindings fail with typed preparation
+  errors; Session metadata is no longer reparsed from extension configuration.
+- `NodeConfig` remains the open, opaque extension-owned configuration surface.
+  An external endpoint may use a key that previously collided with an internal
+  metadata name without overriding the compiled Session identity. No provider,
+  customer, or domain enum was introduced.
+- The polled-audio endpoint now receives its route through typed
+  `EndpointRouteContext`; this removed its last dependency on a string route ID
+  and fixed every affected Session host and C-ABI regression cell.
+- Focused compiler tests pass 13/13, focused runtime-preparation tests pass 5/5,
+  and all 410 all-target/all-feature tests pass. Strict Clippy, the release
+  `product_quickstart`, formatting, hot-path checks, and the complete
+  `CODE_PROTOCOL` gate pass.
+- This slice changes no capture callback, audio buffer pool, realtime executor,
+  queue capacity, platform implementation, product path, scaffold, mock,
+  loopback claim, physical evidence, release, freeze, or soak.
+
+## W20 endpoint and recording ownership — 2026-08-09
+
+- Status: `SAFE-TO-MERGE` for `W20-ENDPOINT-RECORDING-OWNERSHIP` only. Public
+  API reduction, module decomposition, executable extension ABI, sidecar
+  lifecycle, packaging, release, and Core 1.0 freeze remain separately gated.
+- Every endpoint input now uses one `EndpointPortInput` containing its exact
+  port, `SignalSpec`, media, `EdgeContract`, receiver, and required typed
+  Session route context. `EndpointReceiver` represents either the bounded
+  realtime audio receiver with its prepare context or the bounded signal
+  receiver; provenance does not select a different endpoint interface.
+- `EndpointDriverFactory` has one `prepare` method and
+  `EndpointDriverRegistry` has one `prepare_batch` dispatch. The former
+  `prepare_derived`, `DerivedEndpointDriverInput`, separate signal-route
+  context, and derived-contract option fields are removed.
+- Raw audio and operator-derived routes are assembled into the same pending
+  input representation and enter one endpoint batch-preparation function.
+  Default factories own one lifecycle per route; factories may declare an open
+  typed shared group without Session recognizing recorder or provider names.
+- The multistem recording factory now owns group selection and validation.
+  Recorder descriptor/configuration construction and the `record` convenience
+  API live in the recording-specific Session extension; generic Session draft
+  and runtime code no longer inspect recording group policy.
+- Focused endpoint tests pass 31/31 and recording tests pass 12/12. All 410
+  all-target/all-feature tests, strict Clippy, release `product_quickstart`,
+  formatting, hot-path checks, and the complete `CODE_PROTOCOL` gate pass.
+- This slice changes no capture callback, audio buffer pool, realtime executor,
+  queue capacity, platform implementation, scaffold, mock, physical proof,
+  release, freeze, or soak.
+
+## W20 capability and performance recovery — 2026-08-09
+
+- Status: `SAFE-TO-MERGE` for the named recovery task; candidate
+  `pks-20260809-capability-performance-recovery-3` is bound by the hashed
+  acceptance manifest. This is not public API, release, Core 1.0 freeze,
+  physical-platform, or competitive acceptance.
+- Real libopus encode/decode/PLC and deterministic timing drift/correction are
+  again compiled in the single `pocketstation` engine. Focused codec/timing,
+  100-frame allocation gates, and the previously compiled C++ codec consumer
+  pass. Criterion encode/decode/PLC targets compile; measured baselines remain
+  pending.
+- The Rust capture handoff now has direct zero-allocation gates for normal
+  delivery, full-ring drop-newest, closed-start discard, and pool exhaustion.
+  Seventy-one focused capture tests pass. These gates do not substitute for
+  physical CoreAudio, PipeWire, or WASAPI callback evidence.
+- Typed asynchronous edges now enforce both count and byte bounds: 64 signals
+  maximum per branch, 1 MiB default payload, and 16 MiB hard payload maximum.
+  Oversized payloads are rejected before partial fan-out, and observations
+  expose maximum payload and maximum buffered payload bytes. Focused
+  typed-edge and async-operator tests pass; measured baselines remain pending.
+- The stale empty `src/dsp/` and `src/runtime/nodes/` directories were removed.
+  Simplified historical AEC/denoise/VAD/watermark code remains deliberately
+  absent rather than being restored as a production claim.
+- No long soak, provider/customer/domain vocabulary, unbounded queue, second
+  engine, or LiveKit superiority claim was introduced.
+
+### Measured recovery update
+
+- Corrected every Criterion target to use `harness = false`; the benches now
+  execute rather than merely compile under Rust's default benchmark harness.
+- Added measured local baselines for pool acquire/drop, synthetic capture
+  handoff, captured-frame SPSC, Opus encode/decode/PLC, typed one/three-branch
+  fan-out, three-branch runtime routing, realtime executor, two-source runner,
+  generated-audio reentry, and public two-source Session lifecycle. Exact
+  intervals and limitations are recorded in
+  `docs/execution/evidence/W20-CAPABILITY-PERFORMANCE-RECOVERY/LOCAL_SHORT_BASELINE_2026-08-09.md`.
+- Replaced the generated-audio bridge's 1 ms idle polling dependency with an
+  explicit non-realtime consumer-thread wakeup. The local typed-PCM to pooled
+  audio round trip measured 3.2206–3.3499–3.5198 us. A 100 ms timeout remains
+  only as lost-wakeup/abandonment fallback.
+- Added a standalone `conformance-fixtures` feature compile correction; it no
+  longer relies on `internal-testing` to name the crate-private capture delivery
+  result. The Session lifecycle benchmark is explicitly `LOOPBACK-ONLY`.
+- The queue inventory found variable-size control events that were count-bound
+  but not byte-bound. Capture-runtime events now enforce a 64 KiB per-event and
+  `capacity × 64 KiB` owned-memory ceiling; Session events enforce 1 MiB and
+  `capacity × 1 MiB`. Both expose byte depth/peak and oversized-drop truth and
+  have direct rejection tests. Fixed-size trace records and capacity-one async
+  lifecycle rendezvous are now explicit in the capability ledger.
+- Removed historical codec policy profiles from Core. Explicit `OpusConfig`
+  remains the codec primitive; product/transport presets belong outside Core.
+- `pocketstation::codec` and `pocketstation::timing` are now deliberate public
+  capability namespaces. The Opus API uses caller-owned buffers, validates the
+  configured frame duration, supports bounded 10/20/40/60 ms frames, and has no
+  shipping mock encoder/decoder or allocating vector convenience path.
+- Added direct-libopus calibration cases beside the wrapper Criterion cases.
+  The later local wrapper slowdown matched direct libopus in the same process,
+  so it is recorded as a host power/scheduling regime change rather than a Core
+  regression; no unsupported threshold or LiveKit comparison is claimed.
+- Audited the target capture boundaries in source. Rust CPAL, PipeWire, and
+  WASAPI paths plus the native macOS tap/ASP ring paths now have a protocol
+  regression gate forbidding allocation, locks, blocking, async, logging, and
+  panic operations at their callback/write boundary. macOS RMS calculation was
+  moved from the tap callback to the non-realtime reader. Physical target proof
+  remains separately pending and is not inferred from this source audit.
+- Added a measured timing baseline for drift observation/snapshot and PI
+  correction tick. Exact intervals, command lines, host limitations, and all
+  other local measurements remain in the named evidence document.
+- All 440 unit tests plus integration/ABI/allocation targets pass. Strict
+  all-target/all-feature Clippy, release quickstart, all benchmark compilation,
+  and `CODE_PROTOCOL` pass. Physical platform and competitive claims remain
+  pending and are not inferred from these local component measurements.
+
+## W20 ownership remediation in progress — 2026-08-09
+
+- Status: `PARTIAL`. These edits are implementation work on the dirty current
+  candidate and have not been rerun through acceptance. Earlier green evidence
+  does not approve them.
+- Session lifecycle telemetry no longer lives inside `running.rs`: operator
+  input aggregation and runtime/final metric bindings now have private,
+  lifecycle-owned modules. This changes no queue, counter, pool, capture
+  callback, worker scheduling, or endpoint behavior.
+- The async signal runtime now separates bounded operator I/O, observation
+  state, and worker failure vocabulary from worker execution. The existing
+  typed-edge count/byte bounds and saturation outcomes remain the authority;
+  no unbounded or realtime signal queue was introduced.
+- Session compilation and preparation now separate immutable compiled output,
+  typed runtime mappings, and compile/prepare errors from their coordinating
+  algorithms. The compiler still emits `CompiledSessionBindings` and runtime
+  preparation still consumes those bindings directly; `NodeConfig` remains
+  extension configuration rather than an internal identity transport.
+- The deferred gate remains unchanged: no tests, benchmarks, soak, platform
+  claim, public API acceptance, ABI acceptance, release, or Core 1.0 freeze is
+  inferred from this structural slice.
+
+## W20 public API boundary — 2026-08-12
+
+- Status: `SAFE-TO-MERGE` for `W20-PUBLIC-API-BOUNDARY`; this does not accept
+  module decomposition, native ABI callbacks, sidecar hosting, release, or the
+  Core 1.0 freeze.
+- The normal crate root now exposes the Session façade, checked signal and
+  audio ownership contracts, source/operator/endpoint authoring contracts,
+  stable errors, and immutable observations. Runtime workers, routers, queue
+  constructors, registries, compiler/preparation owners, and sidecar framing
+  remain private; the hidden `internal-testing` feature is the only benchmark
+  reach-through.
+- `Stream<T>` remains Rust compile-time façade metadata. Runtime and ABI
+  identity remain `SignalSpec` plus stable schema identifiers; no Rust `T`,
+  provider type, customer type, or industry vocabulary entered the engine.
+- A packaged external repository compiled and ran supported capture, source,
+  operator, endpoint, typed-stream, and Session declarations without
+  `internal-testing` or a source-tree reach-through.
+- The exact all-target/all-feature tests, all-feature rustdoc, packaged
+  consumer, strict Clippy, release `product_quickstart`, and `CODE_PROTOCOL`
+  gates pass. The acceptance manifest is
+  `docs/execution/evidence/W20-PUBLIC-API-BOUNDARY.acceptance.json` in the
+  workspace execution authority.
+- No capture callback, pool ownership, queue capacity, realtime executor,
+  physical platform path, competitive claim, or endurance claim changed.
+
+## W20 module decomposition — 2026-08-12
+
+- Status: `SAFE-TO-MERGE` for `W20-MODULE-DECOMPOSITION`; native callbacks,
+  sidecar hosting, release, and Core 1.0 remain unaccepted.
+- Graph contracts now have the canonical public `pocketstation::graph`
+  namespace while compiler, plan, registry, and runtime machinery stay private.
+- Session composition for polled audio and recording now lives under Session
+  extensions; lower frame, capture, graph, runtime, endpoint, recording,
+  codec, and timing modules do not import Session.
+- Legacy direct operator-worker construction is test/internal-only. The public
+  shipping path is Session-owned composition, not a second runtime.
+- No source directory is empty. Codec and timing are compiled owners; advanced
+  DSP remains intentionally external rather than represented by a placeholder.
+- All-target/all-feature tests, strict Clippy, release quickstart, and protocol
+  gates pass. The acceptance manifest is
+  `docs/execution/evidence/W20-MODULE-DECOMPOSITION.acceptance.json`.
+- No callback, pool, bounded queue, hot-path `Drop`, realtime executor,
+  physical path, or endurance claim changed, so no new long soak is required.
+
+## W20 native executable ABI — 2026-08-12
+
+- Status: `SAFE-TO-MERGE` for `W20-NATIVE-EXECUTABLE-ABI`; candidate
+  `pks-20260812-w20-native-abi-3` is hash-accepted. This does not accept the
+  sidecar, managed SDK parity, release, physical proof, or Core freeze.
+- Extension ABI 1.1 copies descriptor data and owns validation, create,
+  prepare, produce/process/consume, request-stop, finish, instance destroy,
+  and registration destroy through the existing Session engine. C callbacks
+  execute only on source/operator/endpoint workers and cannot declare the
+  reserved realtime PCM signal namespace.
+- Payload buffers and typed queues are bounded. A C metrics snapshot projects
+  the native Session source/operator/route/endpoint counters, byte ceilings,
+  saturation, and failures; a typed-only Session reports no synthetic audio
+  queue.
+- The packaged installed-header consumer passes success and operator-failure
+  lifecycle cases with C11 atomic observations. A consumer compiled against a
+  frozen Extension ABI 1.0 header still links and runs against the candidate.
+- All 443 unit tests plus integration/ABI/allocation/benchmark targets, strict
+  Clippy, release quickstart, and `CODE_PROTOCOL` pass. Acceptance is
+  `docs/execution/evidence/W20-NATIVE-EXECUTABLE-ABI.acceptance.json`.
+- No capture callback, audio pool, `rtrb` edge, realtime executor, or hot-path
+  `Drop` changed; no new endurance run is required.
+- Sidecar lifecycle, managed-language conformance, release, and Core freeze are
+  explicitly outside this task.
+
+## W20 cross-language conformance — 2026-08-12
+
+- Status: `LOOPBACK-ONLY` and hash-accepted for
+  `W20-CROSS-LANGUAGE-CONFORMANCE`; candidate
+  `pks-20260808-w20-language-conformance-4` is not a product, remote,
+  physical-device, release, or Core 1.0 claim.
+- Rust `Stream<T>`, executable C source/operator/endpoint callbacks, Python,
+  JavaScript, and a Python PKSS sidecar execute the canonical public Session
+  implementation from the same installed `pocketstation-0.1.2.crate` source
+  artifact.
+- Every embedded language matches one neutral success and injected
+  operator-failure vector: stable `SignalSpec`/schema/role identity, source,
+  operator and endpoint lifecycle counts, bounded queue/route capacities,
+  maximum buffered bytes, terminal observations, and stop outcome.
+- The Session-owned sidecar additionally proves stable signal/schema identity,
+  success echo, crash isolation, and deterministic child reaping through the
+  bounded PKSS protocol.
+- Rust `T` remains façade-local. `TypeId`, `PhantomData`, and `Stream<T>` do
+  not cross the C header, language-neutral vector, or PKSS protocol. The C ABI
+  remains C++-parsable, fixed-width, explicitly sized/versioned, and based on
+  opaque Session handles, which is the frozen contract for later Swift/Kotlin
+  projections without implementing another engine now.
+- The exact three acceptance commands and independent verifier pass. The
+  acceptance manifest is
+  `docs/execution/evidence/W20-CROSS-LANGUAGE-CONFORMANCE.acceptance.json` in
+  the workspace authority.
+- No capture callback, audio pool, `rtrb` edge, realtime executor, codec, or
+  timing owner changed; no long soak was run or required.
+
+## W20 clean installed consumer — 2026-08-12
+
+- Status: `LOOPBACK-ONLY` and hash-accepted for
+  `W20-CLEAN-INSTALLED-CONSUMER`; no product, remote, physical-device,
+  release, or Core 1.0 claim is inferred.
+- The proof creates and commits a separate source repository, resolves Cargo
+  only to the extracted `pocketstation-0.1.2.crate`, installs a built Python
+  wheel and JavaScript native module, links the installed C header/library,
+  and drives the installed bounded PKSS sidecar protocol.
+- The clean repository supplies typed and PCM sources, three chained
+  operators, a named multi-input/output operator, typed and audio endpoints,
+  generated-audio reentry, executable C callbacks, Python, JavaScript, and a
+  Python sidecar without a workspace reference, relative dependency, source
+  patch, `internal-testing`, or a core edit.
+- Generated audio delivers four PCM frames with queue peak 4/8, exact 61,440
+  byte queue-plus-pool bound, zero unexplained loss, and joined Session-owned
+  lifecycle. The committed external Git tree remains byte-clean after all
+  consumers execute.
+- The exact three acceptance commands and independent hash verifier pass. The
+  acceptance manifest is
+  `docs/execution/evidence/W20-CLEAN-INSTALLED-CONSUMER.acceptance.json` in the
+  workspace authority.
+- No capture callback, pool, realtime queue/executor, codec, timing, or hot
+  path changed; no endurance run was performed.
+
+## W20 final W14-W17 requalification — 2026-08-12
+
+- Status: `LOOPBACK-ONLY` and hash-accepted for
+  `W20-FINAL-REQUALIFICATION`; candidate
+  `pks-20260812-w20-final-requalification-9` is the accepted installed-package
+  regression candidate, not a physical, remote, release, or Core 1.0 claim.
+- The extracted package passed 443 all-feature unit tests, public Session and
+  SessionTrace tests, signal/core-extension tests, C and C++ ABI conformance,
+  all-target/all-feature compilation, and the public quickstart build.
+- The packaged native surface contains the real process-tap, authorization,
+  ASP reader and explicitly opt-in direct ASP driver sources. The obsolete
+  native stub and broken platform example are absent from the package.
+- The external Whisper provider and its consumer compile and test against the
+  extracted package without `internal-testing` or private runtime imports.
+- The public Session real-Whisper cell delivered 60 raw frames on an
+  independent audio branch and one typed transcript through two successful
+  real provider invocations. Bounded saturation accounted for two input drops;
+  source close, operator process, lineage, endpoint, runtime and finalization
+  outcomes remained clean and Session stop succeeded.
+- Immutable W15, W16 and W17 artifacts were independently reverified without
+  rerunning W10 endurance or changing any historical evidence classification.
+  Acceptance is
+  `docs/execution/evidence/W20-FINAL-REQUALIFICATION.acceptance.json` in the
+  workspace execution authority.
+
+## W20 Core 1.0 release preparation — 2026-08-13
+
+- Status: `SAFE-TO-TEST` for release candidate
+  `pks-20260813-w20-release-1-0-0-17`; publication and independent registry
+  consumption remain acceptance predicates and are not claimed here.
+- The single package version is `1.0.0`. Release notes state the exact
+  extension-complete architecture and preserve the accepted physical,
+  loopback, platform, and competitive evidence boundaries.
+- The package includes the native sources and public C header. The publish
+  gate no longer permits `--allow-dirty` or `--no-verify`; publication must
+  originate from one clean intentional release commit.
+- No Session behavior, public Rust API, C ABI, PKSS protocol, callback, pool,
+  queue, codec, timing, or runtime execution path changed in this slice.

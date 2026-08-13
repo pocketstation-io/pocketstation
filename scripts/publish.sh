@@ -33,9 +33,9 @@ if [[ "${registry_role}" != "public-product" ]]; then
   exit 1
 fi
 
-cargo package --manifest-path "${repo_root}/Cargo.toml" --locked --allow-dirty
+cargo package --manifest-path "${repo_root}/Cargo.toml" --locked
 if [[ "${dry_run}" == true ]]; then
-  cargo publish --manifest-path "${repo_root}/Cargo.toml" --locked --allow-dirty --dry-run
+  cargo publish --manifest-path "${repo_root}/Cargo.toml" --locked --dry-run
 else
   cargo publish --manifest-path "${repo_root}/Cargo.toml" --locked
 fi

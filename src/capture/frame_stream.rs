@@ -60,6 +60,7 @@ impl CaptureDeliveryStartGate {
         self.open.load(Ordering::Acquire)
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub(crate) fn opened() -> Arc<Self> {
         Arc::new(Self {
             open: AtomicBool::new(true),
@@ -160,10 +161,12 @@ impl CapturedFrameStream {
         self.consumer.pop().ok()
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn capacity_frames(&self) -> usize {
         self.consumer.buffer().capacity()
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn is_closed(&self) -> bool {
         let abandoned = self.consumer.is_abandoned();
         if abandoned {
@@ -172,6 +175,7 @@ impl CapturedFrameStream {
         abandoned
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn stats(&self) -> CapturedFrameStreamStats {
         self.counters.snapshot()
     }
@@ -183,13 +187,15 @@ impl CapturedFrameStream {
     }
 }
 
+#[cfg(any(test, feature = "internal-testing"))]
 pub fn captured_frame_stream(
     capacity_frames: usize,
 ) -> Result<(CapturedFrameSender, CapturedFrameStream), CaptureError> {
     captured_frame_stream_with_start_gate(capacity_frames, CaptureDeliveryStartGate::opened())
 }
 
-pub(crate) fn captured_frame_stream_with_start_gate(
+#[doc(hidden)]
+pub fn captured_frame_stream_with_start_gate(
     capacity_frames: usize,
     start_gate: Arc<CaptureDeliveryStartGate>,
 ) -> Result<(CapturedFrameSender, CapturedFrameStream), CaptureError> {

@@ -1,8 +1,8 @@
 //! GraphSpec — the immutable description a builder produces and the compiler consumes.
 //! Node specifications are preserved verbatim (type id + config); nothing is discarded.
 
-use crate::graph::contracts::EdgeContract;
 use crate::graph::node::{NodeConfig, NodeTypeId};
+use crate::graph::ports::EdgeContract;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct NodeId(pub(crate) u32);
@@ -61,12 +61,15 @@ pub struct GraphSpec {
 }
 
 impl GraphSpec {
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn node_count(&self) -> usize {
         self.nodes.len()
     }
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn edge_count(&self) -> usize {
         self.edges.len()
     }
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn node(&self, id: NodeId) -> Option<&NodeSpec> {
         self.nodes.iter().find(|n| n.id == id)
     }

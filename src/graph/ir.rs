@@ -2,8 +2,8 @@
 //! Resolution attaches each node's descriptor; the verification passes fill the
 //! negotiated media, edge contracts, and topological order in place.
 
-use crate::graph::contracts::{EdgeContract, MediaCaps};
 use crate::graph::node::NodeDescriptor;
+use crate::graph::ports::{EdgeContract, MediaCaps};
 use crate::graph::spec::{EdgeSpec, NodeId, NodeSpec};
 
 #[derive(Debug, Clone)]
@@ -36,6 +36,7 @@ pub struct GraphIr {
 }
 
 impl GraphIr {
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn node_count(&self) -> usize {
         self.nodes.len()
     }

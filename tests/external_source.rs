@@ -34,7 +34,7 @@ mod session {
             assert_eq!(source.source_id(), output.source_id());
             assert_eq!(source.instance_id(), output.source_instance_id());
             assert_eq!(output.output_port(), "signal");
-            assert_ne!(output.stream_id().0, 0);
+            assert_ne!(output.stream_id().get(), 0);
         }
     }
 }

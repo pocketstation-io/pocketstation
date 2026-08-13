@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::graph::compiler::{CompileError, Compiler};
+use crate::graph::compile::{CompileError, Compiler};
 use crate::graph::{
     ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition,
     NodeDescriptor, NodeRegistry, NodeTypeId, Pipeline, PortDirection, PortSpec, SafetyContract,

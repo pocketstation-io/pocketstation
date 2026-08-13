@@ -39,7 +39,9 @@ impl PreparedCaptureBackend for DeterministicPreparedCapture {
         let mut buffer = pool.acquire().ok_or_else(|| {
             CaptureError::BackendInit("conformance capture buffer unavailable".to_owned())
         })?;
-        buffer.copy_from_slice(&[0.125, 0.25, 0.5, 1.0]);
+        buffer
+            .try_copy_from_slice(&[0.125, 0.25, 0.5, 1.0])
+            .expect("fixture samples fit the fixed-capacity buffer");
         let frame = AudioFrame::new(StreamId(11), SourceId(12), 13, 14, 1, buffer);
         let _ = delivery.frame_sender.try_send(frame);
 
@@ -52,7 +54,9 @@ impl PreparedCaptureBackend for DeterministicPreparedCapture {
                     std::thread::sleep(Duration::from_millis(1));
                     continue;
                 };
-                buffer.copy_from_slice(&[0.125, 0.25, 0.5, 1.0]);
+                buffer
+                    .try_copy_from_slice(&[0.125, 0.25, 0.5, 1.0])
+                    .expect("fixture samples fit the fixed-capacity buffer");
                 let frame = AudioFrame::new(StreamId(11), SourceId(12), 13, 14, 2, buffer);
                 match delivery.frame_sender.try_send(frame) {
                     CapturedFrameDelivery::Delivered => break,

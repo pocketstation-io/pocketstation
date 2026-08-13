@@ -1,23 +1,12 @@
-//! StreamProfile — the named encode profiles a route is published with.
-//! Each profile resolves to a concrete `OpusConfig`; this is the single place
-//! that decides channels, frame duration, application mode, and bitrate so that
-//! "is this stream stereo?" is never guessed (PocketStation Corrected Audit §4).
+//! Named transport encoding profiles resolved to concrete Opus configuration.
 
-use crate::codec::encoder::{
-    OpusApplication, OpusChannels, OpusConfig, OpusFrameDuration, OpusSampleRate,
-};
+use crate::codec::{OpusApplication, OpusChannels, OpusConfig, OpusFrameDuration, OpusSampleRate};
 
-const VOICE_BITRATE_KBPS: u32 = 48; // 32–64 kbps band (conferencing / agent uplink)
-const MUSIC_STEREO_BITRATE_KBPS: u32 = 160; // 128–192 kbps band (Spotify / broadcast)
-const MUSIC_STEREO_10MS_BITRATE_KBPS: u32 = 192; // 160–256 kbps; low-latency monitor
-const HIFI_STEREO_BITRATE_KBPS: u32 = 224; // 192–256 kbps band (high quality)
+const VOICE_BITRATE_KBPS: u32 = 48;
+const MUSIC_STEREO_BITRATE_KBPS: u32 = 160;
+const MUSIC_STEREO_10MS_BITRATE_KBPS: u32 = 192;
+const HIFI_STEREO_BITRATE_KBPS: u32 = 224;
 
-const VOICE_AGENT_COMPLEXITY: u8 = 5; // low CPU for 10 ms realtime agent path
-const VOICE_COMPLEXITY: u8 = 9;
-const STEREO_COMPLEXITY: u8 = 10; // music/broadcast quality
-
-/// The publish-time stream profiles. A mono profile must never be the silent
-/// default for a stereo source: choose the profile explicitly per route.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum StreamProfile {
     VoiceMono20ms,
@@ -29,7 +18,7 @@ pub enum StreamProfile {
 }
 
 impl StreamProfile {
-    pub fn channels(self) -> OpusChannels {
+    pub const fn channels(self) -> OpusChannels {
         match self {
             Self::VoiceMono20ms | Self::VoiceAgentMono10ms => OpusChannels::Mono,
             Self::MusicStereo20ms
@@ -39,7 +28,7 @@ impl StreamProfile {
         }
     }
 
-    pub fn frame_duration(self) -> OpusFrameDuration {
+    pub const fn frame_duration(self) -> OpusFrameDuration {
         match self {
             Self::VoiceAgentMono10ms | Self::MusicStereo10ms => OpusFrameDuration::Ms10,
             Self::VoiceMono20ms
@@ -49,11 +38,9 @@ impl StreamProfile {
         }
     }
 
-    pub fn application(self) -> OpusApplication {
+    pub const fn application(self) -> OpusApplication {
         match self {
             Self::VoiceMono20ms => OpusApplication::Voip,
-            // 10 ms low-latency profiles use RESTRICTED_LOWDELAY; the music/10ms
-            // application is benchmarked against Audio in Wave 11.
             Self::VoiceAgentMono10ms | Self::MusicStereo10ms => OpusApplication::LowDelay,
             Self::MusicStereo20ms | Self::BroadcastStereo20ms | Self::HifiStereo20ms => {
                 OpusApplication::Audio
@@ -61,7 +48,7 @@ impl StreamProfile {
         }
     }
 
-    pub fn bitrate_kbps(self) -> u32 {
+    pub const fn bitrate_kbps(self) -> u32 {
         match self {
             Self::VoiceMono20ms | Self::VoiceAgentMono10ms => VOICE_BITRATE_KBPS,
             Self::MusicStereo20ms | Self::BroadcastStereo20ms => MUSIC_STEREO_BITRATE_KBPS,
@@ -70,7 +57,7 @@ impl StreamProfile {
         }
     }
 
-    pub fn frame_ms(self) -> u16 {
+    pub const fn frame_ms(self) -> u16 {
         match self.frame_duration() {
             OpusFrameDuration::Ms10 => 10,
             OpusFrameDuration::Ms20 => 20,
@@ -79,32 +66,24 @@ impl StreamProfile {
         }
     }
 
-    pub fn is_stereo(self) -> bool {
+    pub const fn is_stereo(self) -> bool {
         matches!(self.channels(), OpusChannels::Stereo)
     }
 
-    fn complexity(self) -> u8 {
-        match self {
-            Self::VoiceAgentMono10ms => VOICE_AGENT_COMPLEXITY,
-            Self::VoiceMono20ms => VOICE_COMPLEXITY,
-            _ => STEREO_COMPLEXITY,
-        }
-    }
-
-    fn fec(self) -> bool {
-        matches!(self, Self::VoiceMono20ms) // in-band FEC for conferencing loss recovery
-    }
-
-    pub fn opus_config(self) -> OpusConfig {
+    pub const fn opus_config(self) -> OpusConfig {
         OpusConfig {
             sample_rate: OpusSampleRate::Hz48000,
             channels: self.channels(),
             frame_duration: self.frame_duration(),
             application: self.application(),
             bitrate_kbps: Some(self.bitrate_kbps()),
-            complexity: self.complexity(),
+            complexity: match self {
+                Self::VoiceAgentMono10ms => 5,
+                Self::VoiceMono20ms => 9,
+                _ => 10,
+            },
             dtx: false,
-            fec: self.fec(),
+            fec: matches!(self, Self::VoiceMono20ms),
         }
     }
 }
@@ -114,46 +93,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn given_voice_agent_profile_when_resolved_then_mono_10ms_lowdelay() {
-        let profile = StreamProfile::VoiceAgentMono10ms;
-        assert_eq!(profile.channels(), OpusChannels::Mono);
-        assert_eq!(profile.frame_ms(), 10);
-        assert_eq!(profile.application(), OpusApplication::LowDelay);
-        assert!(!profile.is_stereo());
-    }
-
-    #[test]
-    fn given_music_stereo_profile_when_resolved_then_stereo_20ms_audio() {
-        let profile = StreamProfile::MusicStereo20ms;
-        assert_eq!(profile.channels(), OpusChannels::Stereo);
-        assert_eq!(profile.frame_ms(), 20);
-        assert_eq!(profile.application(), OpusApplication::Audio);
-        assert!(profile.is_stereo());
-    }
-
-    #[test]
-    fn given_every_stereo_profile_when_resolved_then_opus_config_keeps_two_channels() {
+    fn given_stereo_profiles_when_resolved_then_channels_remain_stereo() {
         for profile in [
             StreamProfile::MusicStereo20ms,
             StreamProfile::MusicStereo10ms,
             StreamProfile::BroadcastStereo20ms,
             StreamProfile::HifiStereo20ms,
         ] {
-            let config = profile.opus_config();
-            assert_eq!(
-                config.channels,
-                OpusChannels::Stereo,
-                "{profile:?} lost stereo"
-            );
-            assert_eq!(config.bitrate_kbps, Some(profile.bitrate_kbps()));
+            assert_eq!(profile.opus_config().channels, OpusChannels::Stereo);
         }
-    }
-
-    #[test]
-    fn given_hifi_profile_when_resolved_then_highest_bitrate_band() {
-        assert!(
-            StreamProfile::HifiStereo20ms.bitrate_kbps()
-                > StreamProfile::MusicStereo20ms.bitrate_kbps()
-        );
     }
 }

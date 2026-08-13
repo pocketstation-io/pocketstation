@@ -17,6 +17,11 @@ capture backends, graph, runtime, recording, codec, timing, observations, and C
 projection are modules of that package. The native deliverable is
 `libpocketstation`; C consumers include `pocketstation.h`.
 
+```toml
+[dependencies]
+pocketstation = "1.0.0"
+```
+
 ## Public Surface
 
 The supported Rust entry point is `pocketstation::Session`. The narrow contract
@@ -55,8 +60,11 @@ See [the documentation index](docs/README.md) and
 | `endpoint` | Open destination lifecycle and registration |
 | `recording` | Concrete aligned multistem recording |
 | `codec` | Codec behavior and compatibility ABI implementation |
-| `dsp` | Bounded local audio processing |
 | `abi` | C projection of the same Session and codec implementation |
+
+Advanced denoise, echo cancellation, voice activity detection, inference, and
+other product algorithms are external Operators rather than built-in Core
+modules.
 
 Metrics are operational observations owned by `runtime`; they are not a
 separate product subsystem or crate.

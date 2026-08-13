@@ -1508,33 +1508,38 @@ github.com/pocketstation-examples/ standalone examples, one per use case
 
 ### 14.3 The Full Repo Map
 
-#### Tier 0 — Core Rust (Cargo workspace)
+#### Tier 0 — Core Rust (single product package)
 
 ```
 pocketstation-io/pocketstation
-  crates/
-    pocketstation-frame/     AudioFrame, AudioBufferPool, SampleFormat
-    pocketstation-bus/       FrameBus, SpscRingBuffer, ClockSync
-    pocketstation-graph/     AudioGraphNode trait, ProcessorGraph, EdgeMetrics
-    pocketstation-codec/     OpusEncoder, OpusDecoder, JitterBuffer
-    pocketstation-route/     SourceCapability, SourceIdentity, RoutePlan
-    pocketstation-metrics/   BusMetrics, OTEL integration
-    pocketstation-audio/     re-exports all above as single entry point
+  src/
+    frame/                    pooled AudioFrame ownership and audio lineage
+    capture/                  platform capture and bounded callback handoff
+    graph/                    open signal, port, compiler, and plan contracts
+    runtime/                  specialized audio and bounded signal execution
+    timing/                   timeline mapping and drift/correction
+    codec/                    Opus encode/decode/PLC primitives
+    endpoint/                 endpoint contract, registry, and lifecycle
+    recording/                recording endpoint and file writer
+    session/                  public declaration and engine ownership
+    abi/                      one versioned libpocketstation boundary
   benches/
   tests/
-  crates/pks-codec-c/        retained Opus C ABI + checked `pks_codec.h`
+  include/pocketstation.h
 ```
 
-#### Tier 1 — Graph Runtime (now crates inside the `pocketstation` workspace)
+Historical `pks-*`, `pocketstation-*`, `pks-codec-c`, and `pks-session-c`
+packages are not active product boundaries after W16. Retained C symbols are
+compatibility projections of `libpocketstation`, not separate engines.
+
+#### Tier 1 — Graph Runtime (inside the same package)
 
 ```
-pocketstation-io/audio-graph
-  crates/
-    pocketstation-graph-api/    AudioGraph, AudioGraphNode, PortSpec, EdgeSpec
-    pocketstation-graph-nodes/  SourceNode, TransformNode, PolicyNode, ModelNode, TransportNode, SinkNode
-    pocketstation-graph-runtime/ Graph compile, validation, execution planner
-    pocketstation-graph-observe/ EdgeMetrics, GraphMetrics, tracing integration
-  examples/
+pocketstation::graph
+  declaration -> resolved graph -> validated/negotiated graph -> RuntimePlan
+
+pocketstation::runtime
+  realtime AudioFrame lane + bounded asynchronous SignalEnvelope lane
 ```
 
 #### Tier 2 — Protocol (created Phase 2)
@@ -1566,8 +1571,10 @@ pocketstation-io/control-plane     Go (control plane, graph/session/metrics APIs
 
 #### Tier 5 — DSP and legacy model workspaces
 
-Active bounded VAD, denoise, AEC, and watermark primitives are in `pks-dsp`.
-The archived external `audio-ml` workspace below is not first-party provider
+Sophisticated VAD, denoise, AEC, separation, and watermark algorithms have no
+shipping Core owner. They belong in external registered Operator packages with
+their own quality and performance evidence. The archived external `audio-ml`
+workspace below is not first-party provider
 scope for the current product slice.
 
 ```

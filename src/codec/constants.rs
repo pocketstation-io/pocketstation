@@ -5,7 +5,7 @@ pub const OPUS_SAMPLE_RATE_HZ: u32 = 48_000;
 pub const OPUS_FRAME_SAMPLES: usize = 960;
 
 /// 10 ms frame = 480 samples at 48 kHz (voice-agent low-latency mode, RFC 6716 §3.1).
-/// Used with [`OpusEncoder::voice_agent`] and OPUS_APPLICATION_RESTRICTED_LOWDELAY.
+/// Ten milliseconds of mono PCM at 48 kHz.
 pub const VOICE_AGENT_FRAME_SAMPLES: usize = 480;
 
 /// Maximum number of bytes the Opus encoder can emit per 20 ms frame.

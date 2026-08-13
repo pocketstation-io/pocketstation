@@ -1,53 +1,5 @@
-use crate::session::{SessionStartErrorCode, SessionStopCode, SessionStopFailureCode};
-use crate::{
-    SessionError, SessionRuntimeError, SessionStartError, SessionStopDisposition, SessionStopResult,
-};
-
-impl SessionStartError {
-    pub fn code(&self) -> SessionStartErrorCode {
-        match self {
-            Self::Host(crate::session::SessionEngineHostBuildError::UnsupportedPlatform) => {
-                SessionStartErrorCode::UnsupportedPlatform
-            }
-            Self::Host(_) => SessionStartErrorCode::HostSetupFailed,
-            Self::TraceRecorder(_) => SessionStartErrorCode::TraceRecorderSetupFailed,
-            Self::Engine(error)
-                if error.start_failure().is_some_and(|failure| {
-                    matches!(
-                        failure.error(),
-                        crate::session::SessionStartError::Cancelled { .. }
-                    )
-                }) =>
-            {
-                SessionStartErrorCode::StartCancelled
-            }
-            Self::Engine(crate::session::SessionEngineStartError::Freeze(
-                SessionError::InvalidSelector { .. },
-            )) => SessionStartErrorCode::InvalidSelector,
-            Self::Engine(crate::session::SessionEngineStartError::Freeze(_)) => {
-                SessionStartErrorCode::DeclarationInvalid
-            }
-            Self::Engine(crate::session::SessionEngineStartError::Compile(_)) => {
-                SessionStartErrorCode::CompileFailed
-            }
-            Self::Engine(crate::session::SessionEngineStartError::Prepare(_)) => {
-                SessionStartErrorCode::RuntimePrepareFailed
-            }
-            Self::Engine(crate::session::SessionEngineStartError::Start(failure)) => {
-                crate::session::session_start_failure_code(failure.error())
-            }
-            Self::MissingAudioReceipt => SessionStartErrorCode::MissingAudioReceipt,
-            Self::MissingRecordingConfiguration => {
-                SessionStartErrorCode::MissingRecordingConfiguration
-            }
-            Self::MissingEventReceiver => SessionStartErrorCode::MissingEventReceiver,
-            Self::EndpointRegistrationStateUnavailable
-            | Self::OperatorRegistrationStateUnavailable
-            | Self::SourceRegistrationStateUnavailable => SessionStartErrorCode::HostSetupFailed,
-            Self::SourceRegistration(_) => SessionStartErrorCode::CompileFailed,
-        }
-    }
-}
+use crate::session::{SessionStopCode, SessionStopFailureCode};
+use crate::{SessionRuntimeError, SessionStopDisposition, SessionStopResult};
 
 impl SessionRuntimeError {
     pub const fn code(self) -> crate::session::SessionRuntimeErrorCode {
@@ -78,24 +30,23 @@ impl SessionStopResult {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::session::{
         SessionDeclarationErrorCode, SessionRuntimeErrorCode, SessionStartErrorCode,
         SessionStopCode,
     };
-    use crate::SessionRuntimeError;
+    use crate::{SessionError, SessionRuntimeError, SessionStartError};
 
     #[test]
     fn given_facade_errors_when_mapped_then_codes_use_canonical_session_vocabulary() {
         assert_eq!(
-            SessionStartError::Host(
+            SessionStartError::from(
                 crate::session::SessionEngineHostBuildError::UnsupportedPlatform,
             )
             .code(),
             SessionStartErrorCode::UnsupportedPlatform
         );
         assert_eq!(
-            SessionStartError::Engine(crate::session::SessionEngineStartError::Freeze(
+            SessionStartError::from(crate::session::SessionEngineStartError::Freeze(
                 SessionError::InvalidSelector {
                     reason: "invalid".to_owned(),
                 },
@@ -104,22 +55,8 @@ mod tests {
             SessionStartErrorCode::InvalidSelector
         );
         assert_eq!(
-            SessionStartError::MissingAudioReceipt.code(),
-            SessionStartErrorCode::MissingAudioReceipt
-        );
-        assert_eq!(
-            SessionStartError::MissingRecordingConfiguration.code(),
-            SessionStartErrorCode::MissingRecordingConfiguration
-        );
-        assert_eq!(
-            SessionStartError::MissingEventReceiver.code(),
-            SessionStartErrorCode::MissingEventReceiver
-        );
-        assert_eq!(
-            SessionStartError::TraceRecorder(
-                crate::session::SessionTraceRecorderStartError::ZeroCapacity,
-            )
-            .code(),
+            SessionStartError::from(crate::session::SessionTraceRecorderStartError::ZeroCapacity)
+                .code(),
             SessionStartErrorCode::TraceRecorderSetupFailed
         );
         assert_eq!(

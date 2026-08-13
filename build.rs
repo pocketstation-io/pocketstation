@@ -1,13 +1,17 @@
 fn main() {
     #[cfg(target_os = "macos")]
-    build_macos_capture();
+    {
+        build_macos_capture_bridge();
+        if std::env::var_os("CARGO_FEATURE_MACOS_ASP_DRIVER_ARTIFACT").is_some() {
+            build_macos_asp_driver_artifact();
+        }
+    }
 }
 
 #[cfg(target_os = "macos")]
-fn build_macos_capture() {
+fn build_macos_capture_bridge() {
     use std::path::PathBuf;
 
-    let out_dir = PathBuf::from(std::env::var("OUT_DIR").expect("OUT_DIR"));
     let manifest = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").expect("manifest dir"));
     let asp = manifest.join("native/macos/asp");
 
@@ -35,8 +39,6 @@ fn build_macos_capture() {
         "source_discovery.h",
         "authorization.m",
         "authorization.h",
-        "Plugin.cpp",
-        "Info.plist",
     ] {
         println!("cargo:rerun-if-changed={}", asp.join(file).display());
     }
@@ -46,6 +48,18 @@ fn build_macos_capture() {
     println!("cargo:rustc-link-lib=framework=CoreMedia");
     println!("cargo:rustc-link-lib=framework=Foundation");
     println!("cargo:rustc-link-lib=framework=AppKit");
+}
+
+#[cfg(target_os = "macos")]
+fn build_macos_asp_driver_artifact() {
+    use std::path::PathBuf;
+
+    let out_dir = PathBuf::from(std::env::var("OUT_DIR").expect("OUT_DIR"));
+    let manifest = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").expect("manifest dir"));
+    let asp = manifest.join("native/macos/asp");
+    for file in ["Plugin.cpp", "Info.plist", "SharedRing.h"] {
+        println!("cargo:rerun-if-changed={}", asp.join(file).display());
+    }
 
     let dylib = out_dir.join("PocketStationLoopback.dylib");
     let contents = out_dir.join("PocketStationLoopback.driver/Contents");

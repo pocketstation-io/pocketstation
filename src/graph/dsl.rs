@@ -1,8 +1,8 @@
 //! Ergonomic builder frontend. It only assembles a GraphSpec — it never executes.
 //! Compilation (Wave 4) and execution (Wave 6) consume the spec downstream.
 
-use crate::graph::contracts::EdgeContract;
 use crate::graph::node::{NodeConfig, NodeTypeId};
+use crate::graph::ports::EdgeContract;
 use crate::graph::spec::{
     EdgeId, EdgeSpec, GraphSpec, InputPortRef, NodeId, NodeSpec, OutputPortRef,
 };
@@ -82,6 +82,7 @@ impl Pipeline {
         id
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn spec(&self) -> &GraphSpec {
         &self.spec
     }
@@ -132,7 +133,7 @@ mod tests {
         graph.connect_with(
             a.out("audio"),
             b.in_("audio"),
-            EdgeContract::voice_default(),
+            EdgeContract::realtime_audio(),
         );
 
         let spec = graph.into_spec();

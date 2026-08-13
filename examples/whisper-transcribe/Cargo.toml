@@ -10,7 +10,7 @@ registry-role = "example"
 
 [dependencies]
 hound = "3"
-pocketstation = { path = "../..", features = ["internal-testing"] }
+pocketstation = { path = "../.." }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tempfile = "3"

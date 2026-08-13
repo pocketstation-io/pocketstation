@@ -11,12 +11,11 @@ extern "C" {
 #define PKS_SESSION_ABI_MINOR 1u
 
 #define PKS_EXTENSION_ABI_MAJOR 1u
-#define PKS_EXTENSION_ABI_MINOR 0u
+#define PKS_EXTENSION_ABI_MINOR 1u
 
 typedef uint32_t PksSessionStatusCode;
 #define PKS_SESSION_STATUS_OK 0u
 #define PKS_SESSION_STATUS_NULL_ARGUMENT 1u
-#define PKS_SESSION_STATUS_BUFFER_TOO_SMALL 2u
 #define PKS_SESSION_STATUS_UNSUPPORTED_ABI_MAJOR 3u
 #define PKS_SESSION_STATUS_INVALID_STRUCT_SIZE 4u
 #define PKS_SESSION_STATUS_INVALID_HANDLE 5u
@@ -124,6 +123,140 @@ typedef struct {
   PksSessionUtf8 semantic_role;
   PksSessionUtf8 schema;
 } PksExtensionPort;
+
+#define PKS_EXTENSION_SIGNAL_END_OF_STREAM 1u
+#define PKS_EXTENSION_SIGNAL_TERMINAL 2u
+
+typedef struct {
+  uint32_t struct_size_bytes;
+  uint16_t abi_major;
+  uint16_t abi_minor;
+  const uint8_t *data;
+  uint32_t len_bytes;
+  uint32_t flags;
+  uint64_t observed_timestamp_ns;
+  uint64_t source_timestamp_ns;
+  uint64_t duration_ns;
+  uint64_t sequence_number;
+} PksExtensionSignalView;
+
+typedef struct {
+  uint32_t struct_size_bytes;
+  uint16_t abi_major;
+  uint16_t abi_minor;
+  uint8_t *data;
+  uint32_t capacity_bytes;
+  uint32_t len_bytes;
+  uint32_t flags;
+  uint64_t observed_timestamp_ns;
+  uint64_t source_timestamp_ns;
+  uint64_t duration_ns;
+} PksExtensionSignalBuffer;
+
+typedef PksSessionStatus (*PksExtensionPrepareCallback)(void *context);
+/*
+ * Extension callbacks execute only on PocketStation control, blocking, or
+ * asynchronous worker threads. PocketStation never invokes them from a
+ * capture callback or realtime audio partition. Calls for one instance are
+ * serialized. A callback must not retain signal view/buffer pointers after it
+ * returns. Returning a non-OK status records a typed extension failure.
+ *
+ * registration_context remains caller-owned until destroy_registration.
+ * Each successful create transfers one instance context to PocketStation;
+ * destroy_instance is invoked exactly once after all calls for that instance
+ * finish. destroy_registration is invoked exactly once after the final
+ * instance and registration use finish. No callback may unwind across this C
+ * boundary.
+ */
+typedef PksSessionStatus (*PksExtensionValidateConfigurationCallback)(
+    void *registration_context,
+    PksSessionUtf8 configuration);
+typedef PksSessionStatus (*PksExtensionCreateCallback)(
+    void *registration_context,
+    PksSessionUtf8 configuration,
+    void **output_instance_context);
+typedef PksSessionStatus (*PksExtensionSourceNextCallback)(
+    void *context,
+    uint32_t cancellation_requested,
+    PksExtensionSignalBuffer *output);
+typedef PksSessionStatus (*PksExtensionOperatorProcessCallback)(
+    void *context,
+    const PksExtensionSignalView *input,
+    PksExtensionSignalBuffer *output);
+typedef PksSessionStatus (*PksExtensionEndpointConsumeCallback)(
+    void *context,
+    const PksExtensionSignalView *input);
+typedef PksSessionStatus (*PksExtensionStopCallback)(void *context);
+typedef PksSessionStatus (*PksExtensionFinishCallback)(void *context);
+typedef void (*PksExtensionDestroyCallback)(void *context);
+
+typedef struct {
+  uint32_t struct_size_bytes;
+  uint16_t abi_major;
+  uint16_t abi_minor;
+  void *registration_context;
+  uint32_t max_payload_bytes;
+  uint32_t reserved;
+  PksExtensionValidateConfigurationCallback validate_configuration;
+  PksExtensionCreateCallback create;
+  PksExtensionPrepareCallback prepare;
+  PksExtensionSourceNextCallback source_next;
+  PksExtensionOperatorProcessCallback operator_process;
+  PksExtensionEndpointConsumeCallback endpoint_consume;
+  PksExtensionStopCallback request_stop;
+  PksExtensionFinishCallback finish;
+  PksExtensionDestroyCallback destroy_instance;
+  PksExtensionDestroyCallback destroy_registration;
+} PksExtensionCallbacks;
+
+typedef struct {
+  uint32_t struct_size_bytes;
+  uint16_t abi_major;
+  uint16_t abi_minor;
+  PksSessionUtf8 source_id;
+  PksSessionUtf8 source_output_port;
+  PksSessionUtf8 operator_id;
+  PksSessionUtf8 operator_input_port;
+  PksSessionUtf8 operator_output_port;
+  PksSessionUtf8 endpoint_id;
+  PksSessionUtf8 endpoint_input_port;
+} PksExtensionPipelineDeclaration;
+
+typedef struct {
+  uint32_t struct_size_bytes;
+  uint16_t abi_major;
+  uint16_t abi_minor;
+  uint32_t external_source_count;
+  uint32_t operator_count;
+  uint32_t derived_route_count;
+  uint32_t reserved;
+  uint64_t maximum_buffered_payload_bytes;
+  uint64_t source_emitted_total;
+  uint64_t source_dropped_total;
+  uint64_t source_failure_total;
+  uint64_t source_cancellation_total;
+  uint64_t operator_input_capacity_signals;
+  uint64_t operator_input_depth_signals;
+  uint64_t operator_input_peak_signals;
+  uint64_t operator_input_enqueued_total;
+  uint64_t operator_input_dropped_total;
+  uint64_t operator_processed_total;
+  uint64_t operator_output_emitted_total;
+  uint64_t operator_output_dropped_total;
+  uint64_t operator_process_failure_total;
+  uint64_t operator_timeout_total;
+  uint64_t operator_cancellation_total;
+  uint64_t route_capacity_signals;
+  uint64_t route_depth_signals;
+  uint64_t route_peak_signals;
+  uint64_t route_enqueued_total;
+  uint64_t route_received_total;
+  uint64_t route_dropped_total;
+  uint64_t endpoint_received_total;
+  uint64_t endpoint_delivered_total;
+  uint64_t endpoint_dropped_total;
+  uint64_t endpoint_failure_total;
+} PksExtensionMetricsSnapshot;
 
 typedef struct {
   uint32_t struct_size_bytes;
@@ -315,6 +448,21 @@ PksSessionStatus pks_extension_descriptor_validate(
     const PksExtensionDescriptor *descriptor,
     const PksExtensionPort *ports,
     uint32_t port_count);
+PksSessionStatus pks_session_engine_register_extension(
+    PksSessionHandle engine,
+    const PksExtensionDescriptor *descriptor,
+    const PksExtensionPort *ports,
+    uint32_t port_count,
+    const PksExtensionCallbacks *callbacks);
+PksSessionStatus pks_session_create_extension_pipeline(
+    PksSessionHandle engine,
+    const PksExtensionPipelineDeclaration *declaration,
+    PksSessionHandle *output_session);
+
+PksSessionStatus pks_session_extension_metrics_poll(
+    PksSessionHandle engine,
+    PksSessionHandle session,
+    PksExtensionMetricsSnapshot *output_metrics);
 PksSessionStatus pks_session_engine_create(
     const PksSessionEngineConfig *config,
     PksSessionHandle *output_engine);
@@ -383,7 +531,7 @@ PksSessionStatus pks_session_audio_batch_release(
 
 /*
  * Compatibility codec ABI. These symbols remain in libpocketstation for the
- * current Swift/Kotlin migration window; there is no separate codec library.
+ * current Swift/Kotlin migration window; there is no separate codec engine.
  */
 typedef enum PksCodecErrorCode {
   PksCodecErrorCode_InvalidPointer = -1,

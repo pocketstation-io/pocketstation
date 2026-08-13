@@ -19,6 +19,8 @@ fi
 
 echo "scope: full workspace (${#rust_files[@]} Rust files)"
 
+"${script_dir}/check_pks_single_engine_boundary.sh"
+
 echo "LAW-1: unit suffixes..."
 violations="$(
   rg -nio --pcre2 \
@@ -62,8 +64,10 @@ fi
 echo "  pass"
 
 echo "LAW-15: hot path purity..."
-cargo test --quiet --features internal-testing --test runtime_plan_router_alloc
+cargo test --quiet --test capture_callback_source_contract
+cargo test --quiet --features internal-testing --test capture_hot_path_alloc
 cargo test --quiet --features internal-testing --test codec_hot_path_alloc
+cargo test --quiet --features internal-testing --test runtime_plan_router_alloc
 echo "  pass"
 
 echo "LAW-16: test naming..."

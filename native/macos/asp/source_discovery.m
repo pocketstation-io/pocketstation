@@ -7,6 +7,7 @@
 #pragma clang diagnostic ignored "-Wunguarded-availability"
 
 #import <Foundation/Foundation.h>
+#import <math.h>
 #import <CoreAudio/CoreAudio.h>
 #import <CoreAudio/CATapDescription.h>
 #import <CoreAudio/AudioHardwareTapping.h>
@@ -16,7 +17,6 @@
 #import <libproc.h>
 #import <mach/mach_time.h>
 #import <stdatomic.h>
-#import <math.h>
 #import <string.h>
 #import <stdlib.h>
 
@@ -123,7 +123,6 @@ static OSStatus tap_io_proc(
     const AudioBuffer *buf0 = &input->mBuffers[0];
     uint32_t frames;
     uint64_t head = atomic_load_explicit(&ring->write_head, memory_order_relaxed);
-    float sumSq = 0.0f;
 
     bool interleaved = (input->mNumberBuffers == 1 && buf0->mNumberChannels > 1);
 
@@ -131,13 +130,17 @@ static OSStatus tap_io_proc(
         uint32_t srcCh = buf0->mNumberChannels;
         frames = buf0->mDataByteSize / (srcCh * sizeof(float));
         if (frames == 0) return noErr;
+        if (frames > TAP_RING_FRAMES) {
+            atomic_fetch_add_explicit(
+                &ring->drop_count, frames, memory_order_relaxed);
+            return noErr;
+        }
         const float *src = (const float *)buf0->mData;
         for (uint32_t i = 0; i < frames; i++) {
             uint32_t slot = (uint32_t)((head + i) & TAP_RING_MASK);
             for (uint32_t c = 0; c < TAP_RING_CHANNELS; c++) {
                 float s = (c < srcCh) ? src[i * srcCh + c] : 0.0f;
                 ring->data[slot * TAP_RING_CHANNELS + c] = s;
-                sumSq += s * s;
             }
         }
     } else {
@@ -145,6 +148,11 @@ static OSStatus tap_io_proc(
         uint32_t nbufs = input->mNumberBuffers;
         frames = buf0->mDataByteSize / sizeof(float);
         if (frames == 0) return noErr;
+        if (frames > TAP_RING_FRAMES) {
+            atomic_fetch_add_explicit(
+                &ring->drop_count, frames, memory_order_relaxed);
+            return noErr;
+        }
         for (uint32_t i = 0; i < frames; i++) {
             uint32_t slot = (uint32_t)((head + i) & TAP_RING_MASK);
             for (uint32_t c = 0; c < TAP_RING_CHANNELS; c++) {
@@ -154,7 +162,6 @@ static OSStatus tap_io_proc(
                     s = chBuf[i];
                 }
                 ring->data[slot * TAP_RING_CHANNELS + c] = s;
-                sumSq += s * s;
             }
         }
     }
@@ -170,8 +177,6 @@ static OSStatus tap_io_proc(
     atomic_store_explicit(&ring->anchor_host_time, host_time, memory_order_relaxed);
     atomic_fetch_add_explicit(&ring->timeline_sequence, 1, memory_order_release);
     atomic_store_explicit(&ring->write_head, head + frames, memory_order_release);
-    float rms = sqrtf(sumSq / (float)(frames * TAP_RING_CHANNELS + 1));
-    ring_store_level(ring, rms);
     return noErr;
 }
 
@@ -702,6 +707,14 @@ uint32_t pks_tap_read_frames_timed(PksProcessTapHandle *tap, float *out,
         uint32_t slot = (uint32_t)((rHead + i) & TAP_RING_MASK);
         for (uint32_t c = 0; c < TAP_RING_CHANNELS; c++)
             out[i * TAP_RING_CHANNELS + c] = ring->data[slot * TAP_RING_CHANNELS + c];
+    }
+    if (toRead > 0) {
+        float sum_sq = 0.0f;
+        uint32_t sample_count = toRead * TAP_RING_CHANNELS;
+        for (uint32_t sample = 0; sample < sample_count; sample++) {
+            sum_sq += out[sample] * out[sample];
+        }
+        ring_store_level(ring, sqrtf(sum_sq / (float)sample_count));
     }
     ring->read_head = rHead + toRead;
     return toRead;

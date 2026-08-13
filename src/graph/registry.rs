@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use crate::graph::async_operator::{AsyncOperatorFactory, AsyncOperatorManifestError};
 use crate::graph::node::{
     ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext,
 };
 use crate::graph::runtime_node::RuntimeNode;
+use crate::graph::signal::{AsyncOperatorFactory, AsyncOperatorManifestError};
 use crate::graph::OperatorId;
 
 pub trait NodeFactory: Send + Sync {
@@ -156,6 +156,7 @@ impl NodeRegistry {
         self.async_factory(node_type_id)
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn async_node_type_id(&self, operator_id: &OperatorId) -> Option<&NodeTypeId> {
         self.async_operator_types.get(operator_id)
     }
@@ -164,14 +165,17 @@ impl NodeRegistry {
         self.entries.contains_key(type_id)
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn len(&self) -> usize {
         self.entries.len()
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn is_empty(&self) -> bool {
         self.entries.is_empty()
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn type_ids(&self) -> impl Iterator<Item = &NodeTypeId> {
         self.entries.keys()
     }

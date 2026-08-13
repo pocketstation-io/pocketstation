@@ -1,23 +1,19 @@
 //! PocketStation's source-aware desktop audio SDK.
 
-// Internal module APIs replace the former cross-crate public surfaces. A
-// normal consumer cannot reach them, so rustc would classify those retained
-// implementation/test entry points as dead. Repository validation enables
-// `internal-testing`, where every such surface is compiled and linted with
-// warnings denied.
-#![cfg_attr(not(feature = "internal-testing"), allow(dead_code, unused_imports))]
-
 mod abi;
 mod capture;
-mod codec;
-mod dsp;
-pub mod endpoint;
+pub mod codec;
+mod endpoint;
 mod frame;
-mod graph;
+/// Stable signal, port, capability, partition, and extension contracts.
+///
+/// Compiler IR, registries, runtime plans, and execution machinery remain
+/// private even though the contract namespace is public.
+pub mod graph;
 mod recording;
 mod runtime;
 mod session;
-mod timing;
+pub mod timing;
 
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
@@ -26,17 +22,25 @@ use std::sync::{Arc, Mutex};
 pub mod conformance;
 mod error_code;
 
-pub use crate::session::{
-    polled_audio_poll_error_code, session_declaration_error_code,
-    session_recording_outcome_error_code, session_start_failure_code, PolledAudioPollErrorCode,
-    SessionDeclarationErrorCode, SessionRuntimeErrorCode, SessionStartErrorCode, SessionStopCode,
-    SessionStopFailureCode,
+pub use crate::session::error_code::{
+    polled_audio_poll_error_code, session_declaration_error_code, session_start_failure_code,
+    PolledAudioPollErrorCode, SessionDeclarationErrorCode, SessionRuntimeErrorCode,
+    SessionStartErrorCode, SessionStopCode, SessionStopFailureCode,
 };
 
 pub use crate::capture::{
-    CallbackCaptureBackend, CaptureAuthorizationSnapshot, CaptureCapabilityState,
-    CaptureOpenOutcome, CapturePermissionLifecycle, CapturePermissionTransition, CaptureScope,
-    CaptureSessionGrant, PermissionEpoch, PermissionObservation, SourceLifecycleEventKind,
+    application_capture_available, discover_sources, resolve_query, ActiveCaptureBackend,
+    CallbackCaptureBackend, CaptureAuthorizationSnapshot, CaptureCapabilityState, CaptureDelivery,
+    CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CaptureOpenOutcome,
+    CapturePermissionLifecycle, CapturePermissionTransition, CaptureRuntimeFailure,
+    CaptureRuntimeFailureClass, CaptureScope, CaptureSessionGrant, CaptureSource,
+    CapturedFrameDelivery, CapturedFrameObservationHandle, CapturedFrameSender,
+    CapturedFrameStreamStats, InputDeviceSelector, LocalSourceProvider, PermissionEpoch,
+    PermissionObservation, PreparedCaptureBackend, ProcessTreeScope, SelectorPersistenceScope,
+    SourceGeneration, SourceIdentityStrength, SourceKind, SourceLifecycleEventKind, SourceProvider,
+    SourceQuery, SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventDelivery,
+    SourceRuntimeEventObservationHandle, SourceRuntimeEventObservations, SourceRuntimeEventSender,
+    SourceState, StableSourceId,
 };
 
 /// Reads the current microphone authorization state without prompting.
@@ -55,93 +59,73 @@ pub fn microphone_permission_observation() -> PermissionObservation {
     }
 }
 pub use crate::endpoint::{
-    DerivedEndpointDriverInput, EndpointCancellationOutcome, EndpointDriverFactory,
-    EndpointDriverFinalization, EndpointDriverInput, EndpointDriverObservations, EndpointFailure,
-    EndpointFailureStage, EndpointFinalizationOutcome, EndpointPrepareContext,
-    EndpointRouteContext, EndpointSignalRouteContext, EndpointStartFailure,
-    EndpointStartFailureCause, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver,
-    SessionTimelineOrigin,
+    EndpointAudioFrame, EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory,
+    EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage,
+    EndpointInputOrigin, EndpointPortInput, EndpointPrepareContext, EndpointReceiver,
+    EndpointRouteContext, EndpointSignalReceiver, EndpointStartGate, PreparedEndpointDriver,
+    RunningEndpointDriver, SessionTimelineOrigin,
+};
+pub use crate::frame::{
+    AudioBufferPool, AudioFrame, AudioFrameBuildError, ClockDomainId, ConnectorId, EndpointId,
+    FrameLineage, FrameLineageBuildError, RouteId, SampleFormat, SampleSpec, SessionId, SourceId,
+    StemId, StreamId,
 };
 pub use crate::graph::{
-    AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext, NodeConfig, NodeId,
+    AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest,
+    AsyncOperatorManifestError, AsyncOperatorPrepareContext, AudioCaps, BackpressurePolicy,
+    BinaryFormat, ChannelLayout, ClockDomain, Codec, ConfigError, CopyPolicy, DeliverySemantics,
+    EdgeContract, EdgeObservabilityLevel, EventFormat, ExecutionPartition, LossPolicy, MediaCaps,
+    MediaKind, Multiplicity, NodeConfig as OperatorConfiguration, NodeDefinition, NodeDescriptor,
+    NodeError, NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy,
+    OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy,
+    PortDirection, PortPrepareContext, PortSpec, SafetyContract, SchemaRef, SemanticRole,
+    SignalClass, SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker,
+    SignalDerivation, SignalDerivationError, SignalEnvelope, SignalEnvelopeError, SignalId,
+    SignalLineage, SignalLineageError, SignalPayload, SignalSpec, SignalSpecError, SignalTiming,
+    SignalTimingError, TextFormat,
 };
-pub use crate::runtime::{
-    plan_source_channel, AsyncOperatorInput, AsyncOperatorNamedOutput,
-    AsyncOperatorNamedOutputBranchSpec, AsyncOperatorTypedInput, AsyncOperatorWorker,
-    AsyncOperatorWorkerError, GeneratedAudioBridge, GeneratedAudioBridgeObservationHandle,
-    GeneratedAudioBridgeObservations, GeneratedAudioBridgeSpec, GeneratedAudioBridgeStartError,
-    PlanRunnerCancellation, PlanSourceSender, SidecarMessage, SidecarMessageKind,
-    SidecarProtocolError, SidecarProtocolLimits, TypedEdgeBranchSpec, TypedEdgeBuildError,
-    TypedEdgeFanout, TypedEdgeObservationHandle, TypedEdgeObservations, TypedEdgePublishError,
-    TypedEdgePublishReport, TypedEdgeReceiver, SIDECAR_PROTOCOL_MAJOR, SIDECAR_PROTOCOL_MINOR,
+pub use crate::session::declaration::{
+    ApplicationSelector, ConnectionSpec, ConnectionTarget, DerivedStreamHandle, DeviceId,
+    DeviceSelector, EndpointConfiguration, EndpointDescriptor, EndpointHandle, Operator,
+    OperatorInputHandle, OperatorInstanceHandle, OperatorInstanceId, OperatorInstanceSpec,
+    ProcessId, Source, SourceInstanceHandle, SourceInstanceId, SourceInstanceSpec,
+    SourceOutputHandle, SourceOutputSpec, StemHandle, Stream, StreamOrigin, StreamSignal,
+    TypedOperator, TypedStreamError,
+};
+pub use crate::session::error::SessionError;
+pub use crate::session::extensions::{
+    SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission,
+    SourceFactory, SourceManifest, SourceManifestError, SourceOutputIdentity, SourcePrepareContext,
+    SourceRegistrationError, SourceRuntimeObservations, SourceSessionContext, SourceTypeId,
+};
+pub use crate::session::lifecycle::{
+    SessionAudioReentryMetrics, SessionControlFailure, SessionDerivedRouteMetrics, SessionEvent,
+    SessionEventKind, SessionEventQueueObservations, SessionEventReceive,
+    SessionExternalSourceMetrics, SessionLifecycleState, SessionMetricsSnapshot,
+    SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteDropObservations,
+    SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit,
+    SessionRouteMetrics, SessionRouteObservationInterval, SessionSidecarMetrics,
+    SessionSourceMetrics, SessionStartCancellation, SessionStopOutcome, SessionTerminalState,
+    SessionTrace, SessionTraceRecorder, SessionTraceRecorderFinishError,
+    SessionTraceRecorderOutcome, SessionTraceRecorderStartError, SessionTraceValidation,
+    SessionTraceValidationError,
 };
 pub use crate::session::{
-    ApplicationSelector, AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest,
-    AsyncOperatorManifestError, AsyncOperatorOutputObservationHandle,
-    AsyncOperatorOutputObservations, AudioBufferPool, AudioCaps, AudioFrame, BackpressurePolicy,
-    BinaryFormat, ChannelLayout, ClockDomain, ClockDomainId, Codec, ConfigError, CopyPolicy,
-    DeliverySemantics, DerivedStreamHandle, DeviceId, DeviceSelector, EdgeContract,
-    EdgeObservabilityLevel, EncryptionMode, EndpointConfiguration, EndpointDescriptor,
-    EndpointHandle, EventFormat, ExecutionPartition, FrameLineage, LossPolicy, MediaCaps,
-    MediaKind, Multiplicity, NodeDefinition, NodeDescriptor, NodeError, NodeTypeId, Operator,
-    OperatorCancellationPolicy, OperatorConfiguration, OperatorConnectionSpec,
-    OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorInputHandle,
-    OperatorInputOrigin, OperatorInstanceHandle, OperatorInstanceId, OperatorInstanceSpec,
-    OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PrepareContext,
-    PreparedSourceRuntime, ProcessId, SafetyContract, SampleFormat, SampleSpec, SchemaRef,
-    SemanticRole, SessionControlFailure, SessionDerivedRouteMetrics, SessionError, SessionEvent,
-    SessionEventKind, SessionEventQueueObservations, SessionEventReceive,
-    SessionExternalSourceMetrics, SessionId, SessionLifecycleState, SessionMetricsSnapshot,
-    SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRecordingErrorCode,
-    SessionRecordingObservations, SessionRecordingOutcome, SessionRecordingState,
-    SessionRecordingStemOutcome, SessionRouteDropObservations, SessionRouteLatencyBoundary,
-    SessionRouteLatencyObservations, SessionRouteLatencyUnit, SessionRouteMetrics,
-    SessionRouteObservationInterval, SessionSourceMetrics, SessionStartCancellation,
-    SessionStopOutcome, SessionTerminalState, SessionTrace, SessionTraceRecorder,
-    SessionTraceRecorderFinishError, SessionTraceRecorderOutcome, SessionTraceRecorderStartError,
-    SessionTraceValidation, SessionTraceValidationError, SignalClass, SignalContinuityError,
-    SignalContinuityObservation, SignalContinuityTracker, SignalDerivation, SignalDerivationError,
-    SignalEnvelope, SignalEnvelopeError, SignalId, SignalLineage, SignalPayload, SignalSpec,
-    SignalSpecError, SignalTiming, Source, SourceCancellation, SourceConfiguration, SourceDriver,
-    SourceDriverError, SourceEmission, SourceFactory, SourceId, SourceInstanceHandle,
-    SourceInstanceId, SourceInstanceSpec, SourceManifest, SourceManifestError,
-    SourceOutputBranchSpec, SourceOutputHandle, SourceOutputIdentity, SourceOutputReceiver,
-    SourceOutputSpec, SourcePrepareContext, SourceRegistrationError, SourceRegistry,
-    SourceRouteSpec, SourceRuntime, SourceRuntimeError, SourceRuntimeObservationHandle,
-    SourceRuntimeObservations, SourceSessionContext, SourceTypeId, StemHandle, StemId, Stream,
-    StreamId, StreamSignal, TextFormat, TypedOperator, TypedStreamError,
+    session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations,
+    SessionRecordingOutcome, SessionRecordingState, SessionRecordingStemOutcome,
 };
 
-/// Canonical types required by an external asynchronous Operator package.
-///
-/// Provider implementations depend on this public module instead of importing
-/// PocketStation's internal graph or runtime crates.
-pub mod operator {
-    pub use crate::graph::{
-        AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext, NodeConfig,
-    };
-    pub use crate::runtime::{
-        AsyncOperatorInput, AsyncOperatorNamedOutput, AsyncOperatorNamedOutputBranchSpec,
-        AsyncOperatorTypedInput, AsyncOperatorWorker, AsyncOperatorWorkerError,
-    };
-    pub use crate::session::{
-        AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest,
-        AsyncOperatorManifestError, AsyncOperatorOutputObservationHandle,
-        AsyncOperatorOutputObservations, AudioBufferPool, AudioCaps, AudioFrame,
-        BackpressurePolicy, BinaryFormat, ChannelLayout, ClockDomain, ClockDomainId, Codec,
-        ConfigError, CopyPolicy, DeliverySemantics, EdgeContract, EdgeObservabilityLevel,
-        EncryptionMode, EventFormat, ExecutionPartition, FrameLineage, LossPolicy, MediaCaps,
-        MediaKind, Multiplicity, NodeDefinition, NodeDescriptor, NodeError, NodeTypeId, Operator,
-        OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy,
-        OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy,
-        PortDirection, PortSpec, PrepareContext, SafetyContract, SampleFormat, SampleSpec,
-        SchemaRef, SemanticRole, SessionId, SignalClass, SignalContinuityError,
-        SignalContinuityObservation, SignalContinuityTracker, SignalDerivation,
-        SignalDerivationError, SignalEnvelope, SignalEnvelopeError, SignalId, SignalLineage,
-        SignalPayload, SignalSpec, SignalSpecError, SignalTiming, SourceId, StemId, StreamId,
-        TextFormat,
-    };
-}
+pub use crate::frame::{
+    AudioBufferHandle, AudioBufferWriteError, Platform, SharedAudioBufferHandle, SharedAudioFrame,
+};
+pub use crate::runtime::{
+    AsyncOperatorObservations, AsyncOperatorOutputObservations, EdgeObservations,
+    PlanSourceInputObservations,
+};
+pub use crate::runtime::{
+    SidecarDeadlines, SidecarHostError, SidecarHostSnapshot, SidecarMessage, SidecarMessageKind,
+    SidecarProcessSpec, SidecarProtocolLimits, SidecarState,
+};
 
 /// Non-product exports used only by PocketStation's own integration tests and
 /// benchmarks. This module is absent from normal builds.
@@ -156,35 +140,46 @@ pub mod internal {
         }
         #[cfg(target_os = "macos")]
         pub mod macos {
-            pub use crate::capture::platform::macos::*;
+            pub use crate::capture::platform::macos::{
+                discover_input_sources_native, discover_sources_native, tap_available,
+                InternalDesktopCaptureBackend as DesktopCaptureBackend,
+                InternalDesktopCaptureSource as DesktopCaptureSource,
+                InternalSystemLoopbackSource as SystemLoopbackSource, MacosInputSource,
+            };
         }
         #[cfg(target_os = "windows")]
         pub mod windows {
             pub use crate::capture::platform::windows::*;
         }
     }
-    pub mod codec {
-        pub use crate::codec::*;
-    }
-    pub mod dsp {
-        pub use crate::dsp::*;
-    }
     pub mod frame {
         pub use crate::frame::*;
     }
+    pub mod codec {
+        pub use crate::codec::*;
+    }
     pub mod graph {
         pub use crate::graph::*;
+        pub mod compile {
+            pub use crate::graph::compile::*;
+        }
         pub mod compiler {
-            pub use crate::graph::compiler::*;
+            pub use crate::graph::compile::Compiler;
         }
         pub mod dsl {
             pub use crate::graph::dsl::*;
         }
+        pub mod ir {
+            pub use crate::graph::ir::*;
+        }
         pub mod node {
             pub use crate::graph::node::*;
         }
+        pub mod plan {
+            pub use crate::graph::plan::*;
+        }
         pub mod planner {
-            pub use crate::graph::planner::*;
+            pub use crate::graph::compile::RuntimePlanner;
         }
         pub mod registry {
             pub use crate::graph::registry::*;
@@ -207,10 +202,6 @@ pub mod internal {
     }
 
     pub use capture::captured_frame_stream;
-    pub use codec::{
-        OpusApplication, OpusChannels, OpusConfig, OpusDecoder, OpusEncoder, OpusFrameDuration,
-        OpusSampleRate, OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES,
-    };
     pub use frame::{
         AudioBufferPool, AudioFrame, SourceId, StreamId, POOL_MAX_SLOTS, POOL_SLOT_SAMPLES,
     };
@@ -229,9 +220,10 @@ pub struct Session {
     recording_root: Option<PathBuf>,
     sample_spec: SampleSpec,
     endpoint_registrations: Mutex<Vec<EndpointDriverRegistration>>,
-    endpoint_definitions: Mutex<Vec<Arc<dyn NodeDefinition>>>,
+    endpoint_extensions: Mutex<Vec<EndpointExtensionRegistration>>,
     operator_registrations: Mutex<Vec<Arc<dyn AsyncOperatorFactory>>>,
     source_registrations: Mutex<Vec<Arc<dyn SourceFactory>>>,
+    sidecar_registrations: Mutex<Vec<SidecarProcessSpec>>,
     capture_backends: Option<CaptureBackendConfiguration>,
     session_trace: Option<SessionTraceConfiguration>,
 }
@@ -244,6 +236,12 @@ struct CaptureBackendConfiguration {
 struct EndpointDriverRegistration {
     operator_id: OperatorId,
     node_type_id: crate::session::NodeTypeId,
+    factory: Arc<dyn EndpointDriverFactory>,
+}
+
+struct EndpointExtensionRegistration {
+    operator_id: OperatorId,
+    definition: Arc<dyn NodeDefinition>,
     factory: Arc<dyn EndpointDriverFactory>,
 }
 
@@ -326,9 +324,10 @@ impl SessionBuilder {
             recording_root: self.recording_root,
             sample_spec: self.sample_spec,
             endpoint_registrations: Mutex::new(Vec::new()),
-            endpoint_definitions: Mutex::new(Vec::new()),
+            endpoint_extensions: Mutex::new(Vec::new()),
             operator_registrations: Mutex::new(Vec::new()),
             source_registrations: Mutex::new(Vec::new()),
+            sidecar_registrations: Mutex::new(Vec::new()),
             capture_backends: self.capture_backends,
             session_trace: self.session_trace,
         }
@@ -344,9 +343,10 @@ impl Session {
             recording_root: None,
             sample_spec: SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved),
             endpoint_registrations: Mutex::new(Vec::new()),
-            endpoint_definitions: Mutex::new(Vec::new()),
+            endpoint_extensions: Mutex::new(Vec::new()),
             operator_registrations: Mutex::new(Vec::new()),
             source_registrations: Mutex::new(Vec::new()),
+            sidecar_registrations: Mutex::new(Vec::new()),
             capture_backends: None,
             session_trace: None,
         }
@@ -394,6 +394,16 @@ impl Session {
         Ok(())
     }
 
+    /// Registers one language-neutral sidecar under this Session's bounded
+    /// process lifecycle. The child is spawned only during transactional start.
+    pub fn register_sidecar(&self, spec: SidecarProcessSpec) -> Result<(), SessionSidecarError> {
+        self.sidecar_registrations
+            .lock()
+            .map_err(|_| SessionSidecarError::RegistrationStateUnavailable)?
+            .push(spec);
+        Ok(())
+    }
+
     pub fn endpoint(&self, descriptor: EndpointDescriptor) -> Result<EndpointHandle, SessionError> {
         self.declaration.endpoint(descriptor)
     }
@@ -429,7 +439,7 @@ impl Session {
         operator_id: OperatorId,
         factory: Arc<dyn EndpointDriverFactory>,
     ) -> Result<(), SessionEndpointError> {
-        self.register_endpoint_driver(
+        self.register_audio_endpoint_driver(
             operator_id,
             crate::session::NodeTypeId::from(CONNECTOR_NODE_TYPE_ID),
             factory,
@@ -447,14 +457,14 @@ impl Session {
         &self,
         factory: Arc<dyn EndpointDriverFactory>,
     ) -> Result<(), SessionEndpointError> {
-        self.register_endpoint_driver(
+        self.register_audio_endpoint_driver(
             OperatorId::new(BROWSER_OPERATOR_ID),
             crate::session::NodeTypeId::from(BROWSER_NODE_TYPE_ID),
             factory,
         )
     }
 
-    pub fn register_endpoint_driver(
+    fn register_audio_endpoint_driver(
         &self,
         operator_id: OperatorId,
         node_type_id: NodeTypeId,
@@ -472,17 +482,23 @@ impl Session {
         Ok(())
     }
 
-    /// Registers the compiler-visible contract for an externally owned typed
-    /// endpoint. The endpoint package owns both this definition and its driver;
-    /// PocketStation owns validation and lifecycle execution.
-    pub fn register_endpoint_definition(
+    /// Registers one externally owned endpoint as a single compiler/runtime
+    /// extension. The endpoint definition and driver cannot be installed
+    /// independently through this authority.
+    pub fn register_endpoint(
         &self,
+        operator_id: OperatorId,
         definition: Arc<dyn NodeDefinition>,
+        factory: Arc<dyn EndpointDriverFactory>,
     ) -> Result<(), SessionEndpointError> {
-        self.endpoint_definitions
+        self.endpoint_extensions
             .lock()
             .map_err(|_| SessionEndpointError::RegistrationStateUnavailable)?
-            .push(definition);
+            .push(EndpointExtensionRegistration {
+                operator_id,
+                definition,
+                factory,
+            });
         Ok(())
     }
 
@@ -501,9 +517,10 @@ impl Session {
             recording_root,
             sample_spec,
             endpoint_registrations,
-            endpoint_definitions,
+            endpoint_extensions,
             operator_registrations,
             source_registrations,
+            sidecar_registrations,
             capture_backends,
             session_trace,
         } = self;
@@ -519,7 +536,7 @@ impl Session {
         let recording_declared = declaration
             .declares_multistem_recording()
             .map_err(|error| {
-                SessionStartError::Engine(crate::session::SessionEngineStartError::Freeze(error))
+                SessionStartError::from(crate::session::SessionEngineStartError::Freeze(error))
             })?;
         let mut host_builder = match host_builder {
             Some(builder) => builder,
@@ -539,17 +556,21 @@ impl Session {
             },
         };
         let _ = host_builder.register_polled_audio_endpoint(polled_audio_endpoint)?;
-        let endpoint_definitions = endpoint_definitions
+        let endpoint_extensions = endpoint_extensions
             .into_inner()
-            .map_err(|_| SessionStartError::EndpointRegistrationStateUnavailable)?;
-        for definition in endpoint_definitions {
-            let _ = host_builder.register_endpoint_definition(definition)?;
+            .map_err(|_| SessionStartError::invariant("endpoint registration state unavailable"))?;
+        for registration in endpoint_extensions {
+            let _ = host_builder.register_endpoint(
+                registration.operator_id,
+                registration.definition,
+                registration.factory,
+            )?;
         }
         let endpoint_registrations = endpoint_registrations
             .into_inner()
-            .map_err(|_| SessionStartError::EndpointRegistrationStateUnavailable)?;
+            .map_err(|_| SessionStartError::invariant("endpoint registration state unavailable"))?;
         for registration in endpoint_registrations {
-            let _ = host_builder.register_endpoint_driver(
+            let _ = host_builder.register_audio_endpoint_driver(
                 registration.operator_id,
                 registration.node_type_id,
                 registration.factory,
@@ -557,17 +578,23 @@ impl Session {
         }
         let operator_registrations = operator_registrations
             .into_inner()
-            .map_err(|_| SessionStartError::OperatorRegistrationStateUnavailable)?;
+            .map_err(|_| SessionStartError::invariant("operator registration state unavailable"))?;
         for factory in operator_registrations {
             let _ = host_builder.register_async_operator(factory)?;
         }
         let source_registrations = source_registrations
             .into_inner()
-            .map_err(|_| SessionStartError::SourceRegistrationStateUnavailable)?;
+            .map_err(|_| SessionStartError::invariant("source registration state unavailable"))?;
         for factory in source_registrations {
             let _ = host_builder
                 .engine_builder()
                 .register_source_factory(factory)?;
+        }
+        let sidecar_registrations = sidecar_registrations
+            .into_inner()
+            .map_err(|_| SessionStartError::invariant("sidecar registration state unavailable"))?;
+        for spec in sidecar_registrations {
+            let _ = host_builder.register_sidecar_process(spec)?;
         }
         if let Some(recorder) = &session_trace_recorder {
             let _ = host_builder
@@ -580,16 +607,25 @@ impl Session {
         let host = host_builder.build()?;
         let recording_receipt = host.recording_receipt(0);
         if recording_declared && recording_receipt.is_none() {
-            return Err(SessionStartError::MissingRecordingConfiguration);
+            return Err(SessionStartError::new(
+                SessionStartErrorCode::MissingRecordingConfiguration,
+                "recording routes require an explicit Session recording root",
+            ));
         }
         let compiled = host.compile(declaration)?;
-        let receipt = host
-            .polled_audio_receipt(0)
-            .ok_or(SessionStartError::MissingAudioReceipt)?;
+        let receipt = host.polled_audio_receipt(0).ok_or_else(|| {
+            SessionStartError::new(
+                SessionStartErrorCode::MissingAudioReceipt,
+                "native Session host did not retain its bounded audio receipt",
+            )
+        })?;
         let mut running = host.start_compiled_cancellable(compiled, cancellation)?;
         let Some(events) = running.take_event_receiver() else {
             let _ = running.stop();
-            return Err(SessionStartError::MissingEventReceiver);
+            return Err(SessionStartError::new(
+                SessionStartErrorCode::MissingEventReceiver,
+                "canonical running Session did not retain its event receiver",
+            ));
         };
         Ok(RunningSession {
             host,
@@ -616,9 +652,10 @@ impl Session {
             recording_root,
             sample_spec: SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved),
             endpoint_registrations: Mutex::new(Vec::new()),
-            endpoint_definitions: Mutex::new(Vec::new()),
+            endpoint_extensions: Mutex::new(Vec::new()),
             operator_registrations: Mutex::new(Vec::new()),
             source_registrations: Mutex::new(Vec::new()),
+            sidecar_registrations: Mutex::new(Vec::new()),
             capture_backends: None,
             session_trace: None,
         })
@@ -687,9 +724,41 @@ impl RunningSession {
         self.running.external_source_metrics()
     }
 
+    pub fn sidecar_metrics(&self) -> Box<[SessionSidecarMetrics]> {
+        self.running.sidecar_metrics()
+    }
+
+    pub fn try_send_sidecar_signal(
+        &self,
+        sidecar_id: u64,
+        message: SidecarMessage,
+    ) -> Result<(), SidecarHostError> {
+        self.running.try_send_sidecar_signal(sidecar_id, message)
+    }
+
+    pub fn try_receive_sidecar_signal(
+        &self,
+        sidecar_id: u64,
+    ) -> Result<Option<SidecarMessage>, SidecarHostError> {
+        self.running.try_receive_sidecar_signal(sidecar_id)
+    }
+
+    pub fn receive_sidecar_signal(
+        &self,
+        sidecar_id: u64,
+    ) -> Result<SidecarMessage, SidecarHostError> {
+        self.running.receive_sidecar_signal(sidecar_id)
+    }
+
     /// Returns one observation handle per derived operator-output route.
     pub fn derived_route_metrics(&self) -> Box<[SessionDerivedRouteMetrics]> {
         self.running.derived_route_metrics()
+    }
+
+    /// Returns exact queue, pool, loss, and lifecycle accounting for every
+    /// Session-owned typed-PCM reentry into the specialized audio lane.
+    pub fn audio_reentry_metrics(&self) -> Box<[SessionAudioReentryMetrics]> {
+        self.running.audio_reentry_metrics()
     }
 
     pub fn session_trace_outcome(
@@ -747,55 +816,51 @@ pub use crate::session::{
     PolledAudioBatchLease, PolledAudioFrame, PolledAudioObservations, PolledAudioPollError,
 };
 
-#[derive(Debug, thiserror::Error)]
-pub enum SessionStartError {
-    #[error("Session session trace setup failed: {0}")]
-    TraceRecorder(#[from] SessionTraceRecorderStartError),
-    #[error("native Session host setup failed: {0}")]
-    Host(#[from] SessionEngineHostBuildError),
-    #[error("canonical Session start failed: {0}")]
-    Engine(#[from] SessionEngineStartError),
-    #[error("native Session host did not retain its bounded audio receipt")]
-    MissingAudioReceipt,
-    #[error("recording routes require an explicit Session recording root")]
-    MissingRecordingConfiguration,
-    #[error("canonical running Session did not retain its event receiver")]
-    MissingEventReceiver,
-    #[error("Session endpoint-registration state became unavailable before start")]
-    EndpointRegistrationStateUnavailable,
-    #[error("Session operator-registration state became unavailable before start")]
-    OperatorRegistrationStateUnavailable,
-    #[error("Session source-registration state became unavailable before start")]
-    SourceRegistrationStateUnavailable,
-    #[error("Session source registration failed: {0}")]
-    SourceRegistration(#[from] SourceRegistrationError),
+/// Stable façade error for Session startup.
+///
+/// Internal compiler, runtime, capture-owner, and host error types never cross
+/// this boundary. Language bindings and external Rust callers consume the
+/// stable code and diagnostic message instead of depending on engine owners.
+#[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
+#[error("{message}")]
+pub struct SessionStartError {
+    code: SessionStartErrorCode,
+    message: String,
 }
 
 impl SessionStartError {
+    fn new(code: SessionStartErrorCode, message: impl Into<String>) -> Self {
+        Self {
+            code,
+            message: message.into(),
+        }
+    }
+
+    fn invariant(message: impl Into<String>) -> Self {
+        Self::new(SessionStartErrorCode::HostSetupFailed, message)
+    }
+
+    pub const fn code(&self) -> SessionStartErrorCode {
+        self.code
+    }
+
+    pub fn message(&self) -> &str {
+        &self.message
+    }
+
     pub fn kind(&self) -> SessionStartErrorKind {
-        match self {
-            Self::Host(_) | Self::TraceRecorder(_) => SessionStartErrorKind::Host,
-            Self::Engine(error)
-                if matches!(
-                    error.start_failure().map(|failure| failure.error()),
-                    Some(crate::session::SessionStartError::Cancelled { .. })
-                ) =>
-            {
-                SessionStartErrorKind::Cancelled
-            }
-            Self::Engine(SessionEngineStartError::Freeze(SessionError::InvalidSelector {
-                ..
-            })) => SessionStartErrorKind::InvalidSelector,
-            Self::Engine(_) => SessionStartErrorKind::Engine,
-            Self::MissingRecordingConfiguration => {
+        match self.code {
+            SessionStartErrorCode::StartCancelled => SessionStartErrorKind::Cancelled,
+            SessionStartErrorCode::InvalidSelector => SessionStartErrorKind::InvalidSelector,
+            SessionStartErrorCode::MissingRecordingConfiguration => {
                 SessionStartErrorKind::MissingRecordingConfiguration
             }
-            Self::MissingAudioReceipt
-            | Self::MissingEventReceiver
-            | Self::EndpointRegistrationStateUnavailable
-            | Self::OperatorRegistrationStateUnavailable
-            | Self::SourceRegistrationStateUnavailable => SessionStartErrorKind::Invariant,
-            Self::SourceRegistration(_) => SessionStartErrorKind::Engine,
+            SessionStartErrorCode::MissingAudioReceipt
+            | SessionStartErrorCode::MissingEventReceiver => SessionStartErrorKind::Invariant,
+            SessionStartErrorCode::HostSetupFailed
+            | SessionStartErrorCode::UnsupportedPlatform
+            | SessionStartErrorCode::TraceRecorderSetupFailed => SessionStartErrorKind::Host,
+            _ => SessionStartErrorKind::Engine,
         }
     }
 
@@ -804,9 +869,63 @@ impl SessionStartError {
     }
 }
 
+impl From<SessionTraceRecorderStartError> for SessionStartError {
+    fn from(error: SessionTraceRecorderStartError) -> Self {
+        Self::new(
+            SessionStartErrorCode::TraceRecorderSetupFailed,
+            format!("Session trace setup failed: {error}"),
+        )
+    }
+}
+
+impl From<SessionEngineHostBuildError> for SessionStartError {
+    fn from(error: SessionEngineHostBuildError) -> Self {
+        let code = if matches!(
+            error,
+            crate::session::SessionEngineHostBuildError::UnsupportedPlatform
+        ) {
+            SessionStartErrorCode::UnsupportedPlatform
+        } else {
+            SessionStartErrorCode::HostSetupFailed
+        };
+        Self::new(code, format!("native Session host setup failed: {error}"))
+    }
+}
+
+impl From<SessionEngineStartError> for SessionStartError {
+    fn from(error: SessionEngineStartError) -> Self {
+        let code = match &error {
+            SessionEngineStartError::Freeze(SessionError::InvalidSelector { .. }) => {
+                SessionStartErrorCode::InvalidSelector
+            }
+            SessionEngineStartError::Freeze(_) => SessionStartErrorCode::DeclarationInvalid,
+            SessionEngineStartError::Compile(_) => SessionStartErrorCode::CompileFailed,
+            SessionEngineStartError::Prepare(_) => SessionStartErrorCode::RuntimePrepareFailed,
+            SessionEngineStartError::Start(failure) => session_start_failure_code(failure.error()),
+            SessionEngineStartError::Sidecar(_) => SessionStartErrorCode::RuntimeStartFailed,
+        };
+        Self::new(code, format!("canonical Session start failed: {error}"))
+    }
+}
+
+impl From<SourceRegistrationError> for SessionStartError {
+    fn from(error: SourceRegistrationError) -> Self {
+        Self::new(
+            SessionStartErrorCode::CompileFailed,
+            format!("Session source registration failed: {error}"),
+        )
+    }
+}
+
 #[derive(Debug, thiserror::Error)]
 pub enum SessionEndpointError {
     #[error("Session endpoint-registration state is unavailable")]
+    RegistrationStateUnavailable,
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum SessionSidecarError {
+    #[error("Session sidecar-registration state is unavailable")]
     RegistrationStateUnavailable,
 }
 

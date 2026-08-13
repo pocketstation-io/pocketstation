@@ -1,7 +1,8 @@
 [package]
 name = "pocketstation"
-version = "0.1.2"
+version = "1.0.0"
 edition = "2021"
+rust-version = "1.95.0"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/pocketstation-io/pocketstation"
 homepage = "https://github.com/pocketstation-io/pocketstation"
@@ -11,18 +12,18 @@ readme = "README.md"
 keywords = ["audio", "capture", "realtime", "session", "webrtc"]
 categories = ["multimedia::audio", "api-bindings"]
 include = [
-  "Cargo.toml",
-  "Cargo.lock",
-  "README.md",
-  "build.rs",
-  "src/**",
-  "native/**",
-  "include/**",
-  "examples/product_quickstart.rs",
-  "examples/platform/**",
-  "tests/**",
-  "benches/**",
-  "proptest-regressions/**",
+  "/Cargo.toml",
+  "/Cargo.lock",
+  "/README.md",
+  "/RELEASE_NOTES_1.0.0.md",
+  "/build.rs",
+  "/src/**",
+  "/native/**",
+  "/include/**",
+  "/examples/product_quickstart.rs",
+  "/tests/**",
+  "/benches/**",
+  "/proptest-regressions/**",
 ]
 
 [package.metadata.pocketstation]
@@ -38,10 +39,8 @@ crate-type = ["rlib", "cdylib", "staticlib"]
 [features]
 default = []
 conformance-fixtures = []
-real-opus = []
-recording = []
-test-helpers = []
 internal-testing = []
+macos-asp-driver-artifact = []
 
 [dependencies]
 rtrb = "0.3"
@@ -94,22 +93,52 @@ debug = true
 
 [[bench]]
 name = "audio_buffer_pool"
+harness = false
 required-features = ["internal-testing"]
 
 [[bench]]
 name = "capture_to_stream"
+harness = false
 required-features = ["internal-testing"]
 
 [[bench]]
 name = "captured_frame_stream"
+harness = false
 required-features = ["internal-testing"]
 
 [[bench]]
 name = "opus_decode"
+harness = false
 required-features = ["internal-testing"]
 
 [[bench]]
 name = "opus_encode"
+harness = false
+required-features = ["internal-testing"]
+
+[[bench]]
+name = "typed_edge"
+harness = false
+required-features = ["internal-testing"]
+
+[[bench]]
+name = "runtime_plan"
+harness = false
+required-features = ["internal-testing"]
+
+[[bench]]
+name = "generated_audio_bridge"
+harness = false
+required-features = ["internal-testing"]
+
+[[bench]]
+name = "session_lifecycle"
+harness = false
+required-features = ["conformance-fixtures"]
+
+[[bench]]
+name = "timing"
+harness = false
 required-features = ["internal-testing"]
 
 [[test]]
@@ -117,11 +146,11 @@ name = "codec_hot_path_alloc"
 required-features = ["internal-testing"]
 
 [[test]]
-name = "codec_opus_roundtrip"
+name = "capture_hot_path_alloc"
 required-features = ["internal-testing"]
 
 [[test]]
-name = "dsp_runtime_node"
+name = "codec_opus_roundtrip"
 required-features = ["internal-testing"]
 
 [[test]]

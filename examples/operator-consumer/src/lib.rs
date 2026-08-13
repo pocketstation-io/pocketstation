@@ -7,15 +7,15 @@
 mod tests {
     use std::sync::Arc;
 
-    use pocketstation::endpoint::{
-        DerivedEndpointDriverInput, EndpointCancellationOutcome, EndpointDriverFactory,
-        EndpointDriverFinalization, EndpointDriverInput, EndpointDriverObservations,
-        EndpointFailure, EndpointFailureStage, EndpointStartGate, ExecutionPartition, MediaCaps,
-        Multiplicity, NodeDefinition, NodeDescriptor, OperatorConfiguration, PortDirection,
-        PortSpec, PreparedEndpointDriver, RunningEndpointDriver, SafetyContract, SignalSpec,
+    use pocketstation::{
+        EndpointCancellationOutcome, EndpointDescriptor, EndpointDriverFactory,
+        EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure,
+        EndpointFailureStage, EndpointPortInput, EndpointReceiver, EndpointStartGate,
+        ExecutionPartition, MediaCaps, Multiplicity, NodeDefinition, NodeDescriptor, NodeTypeId,
+        Operator, OperatorConfiguration, OperatorId, PortDirection, PortSpec,
+        PreparedEndpointDriver, RunningEndpointDriver, SafetyContract, Session, SignalSpec, Source,
         TextFormat,
     };
-    use pocketstation::{EndpointDescriptor, NodeTypeId, Operator, OperatorId, Session, Source};
     use whisper_transcribe_example::{WhisperOperatorFactory, WHISPER_OPERATOR_ID};
 
     const TEXT_ENDPOINT_OPERATOR_ID: &str = "example.endpoint.transcript.v1";
@@ -25,22 +25,24 @@ mod tests {
 
     impl NodeDefinition for TextEndpointDefinition {
         fn descriptor(&self) -> NodeDescriptor {
-            NodeDescriptor {
-                type_id: NodeTypeId::from(TEXT_ENDPOINT_NODE_TYPE_ID),
-                display_name: "Example transcript endpoint",
-                inputs: vec![PortSpec {
-                    name: "transcript".to_owned(),
-                    direction: PortDirection::Input,
-                    signal: SignalSpec::text(TextFormat::Utf8).with_role("transcript"),
-                    media: MediaCaps::Text,
-                    multiplicity: Multiplicity::One,
-                    required: true,
-                }],
-                outputs: Vec::new(),
-                execution: ExecutionPartition::External,
-                safety: SafetyContract::ExternalService,
-                stateful: true,
-            }
+            NodeDescriptor::new(
+                NodeTypeId::from(TEXT_ENDPOINT_NODE_TYPE_ID),
+                "Example transcript endpoint",
+                vec![PortSpec::new(
+                    "transcript",
+                    PortDirection::Input,
+                    SignalSpec::text(TextFormat::Utf8).with_role("transcript"),
+                    MediaCaps::Text,
+                    Multiplicity::One,
+                    true,
+                )
+                .expect("text endpoint input")],
+                Vec::new(),
+                ExecutionPartition::External,
+                SafetyContract::ExternalService,
+                true,
+            )
+            .expect("text endpoint descriptor")
         }
 
         fn validate_config(
@@ -56,24 +58,23 @@ mod tests {
     impl EndpointDriverFactory for TextEndpointFactory {
         fn prepare(
             &self,
-            _inputs: Vec<EndpointDriverInput>,
+            inputs: Vec<EndpointPortInput>,
         ) -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {
-            Err(EndpointFailure::new(
-                EndpointFailureStage::Prepare,
-                "text endpoint accepts only typed derived signals",
-            ))
-        }
-
-        fn prepare_derived(
-            &self,
-            inputs: Vec<DerivedEndpointDriverInput>,
-        ) -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {
+            if inputs
+                .iter()
+                .any(|input| !matches!(input.receiver(), EndpointReceiver::Signal(_)))
+            {
+                return Err(EndpointFailure::new(
+                    EndpointFailureStage::Prepare,
+                    "text endpoint requires a signal receiver",
+                ));
+            }
             Ok(Box::new(PreparedTextEndpoint { inputs }))
         }
     }
 
     struct PreparedTextEndpoint {
-        inputs: Vec<DerivedEndpointDriverInput>,
+        inputs: Vec<EndpointPortInput>,
     }
 
     impl PreparedEndpointDriver for PreparedTextEndpoint {
@@ -96,7 +97,7 @@ mod tests {
     }
 
     struct RunningTextEndpoint {
-        inputs: Vec<DerivedEndpointDriverInput>,
+        inputs: Vec<EndpointPortInput>,
         observations: EndpointDriverObservations,
     }
 
@@ -136,15 +137,12 @@ mod tests {
             ))
             .expect("endpoint declaration");
         session
-            .register_endpoint_definition(Arc::new(TextEndpointDefinition))
-            .expect("typed endpoint definition registration");
-        session
-            .register_endpoint_driver(
+            .register_endpoint(
                 OperatorId::new(TEXT_ENDPOINT_OPERATOR_ID),
-                NodeTypeId::from(TEXT_ENDPOINT_NODE_TYPE_ID),
+                Arc::new(TextEndpointDefinition),
                 Arc::new(TextEndpointFactory),
             )
-            .expect("typed endpoint registration");
+            .expect("typed endpoint extension registration");
 
         let microphone = session
             .capture(Source::microphone_default())

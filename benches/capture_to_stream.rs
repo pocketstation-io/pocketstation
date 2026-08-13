@@ -21,6 +21,7 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use pocketstation::internal::captured_frame_stream;
 use pocketstation::internal::{AudioBufferPool, AudioFrame, SourceId, StreamId, POOL_SLOT_SAMPLES};
+use pocketstation::{SampleFormat, SampleSpec};
 
 /// Simulate one audio callback: fill a pool slot with synthetic PCM,
 /// wrap it in an AudioFrame, and push it to the captured-frame stream.
@@ -49,17 +50,20 @@ fn bench_capture_framebus(c: &mut Criterion) {
             let mut handle = pool.acquire().expect("pool exhausted in bench");
 
             // Step 2: copy PCM into the slot (simulates DMA → pool copy).
-            handle.copy_from_slice(black_box(&synthetic_pcm));
+            handle
+                .try_copy_from_slice(black_box(&synthetic_pcm))
+                .expect("benchmark samples fit the fixed slot");
 
             // Step 3: wrap in AudioFrame (zero-copy header construction).
-            let frame = AudioFrame::new(
-                StreamId(1),
-                SourceId(1),
+            let frame = AudioFrame::try_new(
+                StreamId::new(1),
+                SourceId::new(1),
                 black_box(0u64), // capture_ts_ns
                 black_box(0u64), // sequence_id
-                1,               // channel_count
+                SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved),
                 handle,
-            );
+            )
+            .expect("valid benchmark frame");
 
             // Step 4: publish through the bounded capture SPSC stream.
             // This is the exact end of the §11.3 A1 segment.

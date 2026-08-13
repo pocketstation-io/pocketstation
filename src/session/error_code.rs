@@ -231,7 +231,8 @@ pub const fn session_start_failure_code(error: &SessionStartError) -> SessionSta
         SessionStartError::OperatorRuntimeHost { .. } => SessionStartErrorCode::RuntimeStartFailed,
         SessionStartError::OperatorPrepare { .. } => SessionStartErrorCode::RuntimePrepareFailed,
         SessionStartError::ExternalSourcePrepare { .. }
-        | SessionStartError::ExternalAudioBridge { .. } => {
+        | SessionStartError::ExternalAudioBridge { .. }
+        | SessionStartError::GeneratedAudioBridge { .. } => {
             SessionStartErrorCode::RuntimePrepareFailed
         }
         SessionStartError::MissingEndpointDeclaration { .. } => {

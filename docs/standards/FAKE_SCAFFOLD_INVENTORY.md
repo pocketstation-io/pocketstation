@@ -11,11 +11,11 @@ Use only the project status labels defined by the workspace `AGENTS.md`.
 
 | Component | Status | File | Exact boundary |
 |---|---|---|---|
-| Noise suppressor | `PARTIAL` | `src/dsp/denoise.rs` | Real bounded DSP implementation; it is not production RNNoise/WebRTC NS quality. |
-| Echo canceller | `PARTIAL` | `src/dsp/aec.rs` | Real bounded NLMS implementation; delay estimation, double-talk handling, and production AEC3-class behavior remain absent. |
-| macOS Audio Server Plug-in bridge | `STUB` | `native/macos/asp/bridge_stub.c`, `src/capture/platform/macos/loopback.rs` | The SDK detects externally provisioned plug-in support but does not install, restart, or silently emulate it. |
+| macOS Audio Server Plug-in fallback | `PARTIAL` | `native/macos/asp/Plugin.cpp`, `src/capture/platform/macos/loopback.rs` | The real direct ASP and versioned shared-memory reader compile; SDK installation/restart is deliberately excluded and final physical qualification remains required. |
 | Linux capture | `PARTIAL` | `src/capture/platform/linux/` | PipeWire/ALSA paths are implemented and VM-proven; physical-device and full lifecycle requalification belongs to W13. |
 | Windows capture | `PARTIAL` | `src/capture/platform/windows/` | WASAPI paths are implemented and VM-proven; physical-device and full lifecycle requalification belongs to W13. |
+| Native extension authoring | `REAL` | `src/abi/extension.rs`, `src/abi/executable_extension.rs` | Extension ABI 1.1 executes bounded source/operator/endpoint callbacks through the existing Session engine, preserves append-only ABI 1.0 compatibility, contains unwind, and keeps foreign calls off audio callbacks. Broader cross-language parity remains a separate W20 gate. |
+| Sidecar execution | `REAL` | `src/runtime/lifecycle/sidecar_protocol.rs`, `src/runtime/lifecycle/sidecar_host.rs` | Public Session registration owns bounded data and reserved control queues, negotiated startup, typed transport, deadlines, close/cancel, observations and kill/wait/reap; external Python crash/hang/malformed/saturation fixtures pass. |
 | Unsupported operating systems | `STUB` | `src/capture/platform/mod.rs` | Unsupported targets fail with a typed not-supported error; they never fabricate media. |
 
 ## Intentional test-only paths
@@ -24,8 +24,19 @@ Use only the project status labels defined by the workspace `AGENTS.md`.
 |---|---|---|---|
 | Public Session conformance capture | `MOCKED`, `LOOPBACK-ONLY` | `src/conformance.rs` | Feature-gated deterministic capture for external-consumer lifecycle, lineage, bounded-route, cancellation, recording, and replay tests. Disabled by default. |
 | Native ABI conformance capture | `MOCKED`, `LOOPBACK-ONLY` | `src/abi/session/conformance_fixture.rs` | Feature-gated deterministic capture for C/C++ ABI lifecycle, lease, bounds, lineage, and panic-containment tests. Disabled by default. |
-| Synthetic source operator | `MOCKED`, `LOOPBACK-ONLY` | `src/runtime/nodes/synthetic_source.rs` | Deterministic tone source used only by component and benchmark tests. |
 
 None of these paths may be presented as physical-device evidence. W10 retains
 the accepted macOS proof; W13 owns fresh operational requalification of the
 single-package candidate.
+
+## Removed from the shipping package
+
+The former simplified AEC, noise suppression, VAD, and watermark modules were
+not consumed by the public Session path and did not meet a production algorithm
+claim. They were removed during the Core 1.0 boundary correction instead of
+remaining compiled scaffolds. Future implementations belong in external
+Operator packages with their own quality evidence.
+
+The deleted `src/runtime/nodes/` shipping path and empty `src/dsp/` directory
+were removed during capability recovery. No source directory is currently
+empty and no documentation may name DSP experiments as compiled Core owners.

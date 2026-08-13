@@ -3,8 +3,8 @@
 //! sizing, fan-out/fan-in groupings, and stable metric handles the runtime
 //! (Wave 6) consumes. No node is executed here; this is the plan, not the run.
 
-use crate::graph::contracts::{CopyPolicy, EdgeContract, MediaCaps};
 use crate::graph::partition::ExecutionPartition;
+use crate::graph::ports::{CopyPolicy, EdgeContract, MediaCaps};
 use crate::graph::signal::SignalSpec;
 use crate::graph::spec::{EdgeId, InputPortRef, NodeId, OutputPortRef};
 
@@ -131,14 +131,17 @@ pub struct RuntimePlan {
 }
 
 impl RuntimePlan {
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn node_count(&self) -> usize {
         self.node_order.len()
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn partition(&self, ep: ExecutionPartition) -> Option<&PartitionGroup> {
         self.partitions.iter().find(|group| group.execution == ep)
     }
 
+    #[cfg(any(test, feature = "internal-testing"))]
     pub fn metric_id(&self, edge: EdgeId) -> Option<EdgeMetricId> {
         self.edge_metrics
             .iter()
@@ -148,9 +151,5 @@ impl RuntimePlan {
 
     pub fn typed_edge(&self, edge: EdgeId) -> Option<&TypedEdgePlan> {
         self.typed_edges.iter().find(|plan| plan.edge == edge)
-    }
-
-    pub fn source_output(&self, from: &OutputPortRef) -> Option<&SourceOutputPlan> {
-        self.source_outputs.iter().find(|plan| &plan.from == from)
     }
 }

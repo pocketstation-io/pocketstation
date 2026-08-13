@@ -9,7 +9,6 @@ extern "C" {
     fn pks_asp_sample_rate(r: *mut std::ffi::c_void) -> c_uint;
     fn pks_asp_channels(r: *mut std::ffi::c_void) -> c_uint;
     // Monitoring metric: cumulative frames rejected before publication.
-    #[allow(dead_code)]
     fn pks_asp_drop_count(r: *mut std::ffi::c_void) -> u64;
     fn pks_asp_timeline_reject_callback_count(r: *mut std::ffi::c_void) -> u64;
     fn pks_asp_read_frames(
@@ -63,7 +62,6 @@ impl AspReader {
     }
 
     /// Returns the cumulative number of frames rejected before publication.
-    #[allow(dead_code)]
     pub fn drop_count(&self) -> u64 {
         // SAFETY: self.0 is valid (checked in open()).
         unsafe { pks_asp_drop_count(self.0) }

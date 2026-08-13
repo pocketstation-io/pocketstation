@@ -11,9 +11,7 @@ use crate::capture::{
     PermissionObservation, SourceGeneration, SourceKind, SourceRuntimeEvent,
     SourceRuntimeEventSender, SourceState, StableSourceId,
 };
-use crate::frame::{
-    AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, Platform, StreamId,
-};
+use crate::frame::{AudioBufferPool, AudioFrame, Platform, StreamId};
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use cpal::{BufferSize, SampleFormat, SupportedBufferSize};
 
@@ -76,13 +74,6 @@ pub struct MacosInputSource {
 }
 
 impl MacosInputSource {
-    pub fn capture<F>(selector: InputDeviceSelector, callback: F) -> Result<Self, CaptureError>
-    where
-        F: FnMut(AudioFrame) + Send + 'static,
-    {
-        Self::capture_with_runtime_event_sender(selector, callback, None)
-    }
-
     pub(crate) fn capture_with_runtime_event_sender<F>(
         selector: InputDeviceSelector,
         mut callback: F,
@@ -126,7 +117,7 @@ impl MacosInputSource {
             .ok()
             .and_then(|frames| frames.checked_mul(usize::from(channels)))
             .ok_or_else(|| CaptureError::BackendInit("input pool size overflow".to_owned()))?;
-        let pool = Arc::new(AudioBufferPool::new(POOL_CAPACITY_FRAMES, slot_samples));
+        let pool = AudioBufferPool::new(POOL_CAPACITY_FRAMES, slot_samples);
         let (mut producer, mut consumer) = rtrb::RingBuffer::new(QUEUE_CAPACITY_FRAMES);
         let running = Arc::new(AtomicBool::new(true));
         let counters = CaptureObservationCounters::default();
@@ -153,8 +144,10 @@ impl MacosInputSource {
                 callback_counters.observe_pool_exhaustion();
                 return;
             };
-            handle.as_mut_slice()[..data.len()].copy_from_slice(data);
-            handle.set_len(data.len());
+            if handle.try_copy_from_slice(data).is_err() {
+                callback_counters.observe_oversized_buffer();
+                return;
+            }
             let mut frame = AudioFrame::new(
                 StreamId(source_id.0),
                 source_id,
@@ -163,8 +156,6 @@ impl MacosInputSource {
                 channels,
                 handle,
             );
-            frame.source_tag = AudioSourceTag::Captured;
-            frame.encryption_mode = EncryptionMode::None;
             frame.sample_rate_hz = sample_rate_hz;
             if producer.push(frame).is_err() {
                 callback_counters.observe_dispatch_queue_full();
@@ -264,75 +255,34 @@ impl Drop for MacosInputSource {
 
 pub fn discover_input_sources_native() -> Vec<CaptureSource> {
     let host = cpal::default_host();
-    let diagnostics_enabled = std::env::var_os("PKS_INPUT_DISCOVERY_DIAG").is_some();
     let default_id = host
         .default_input_device()
         .and_then(|device| device.id().ok())
         .map(|id| id.to_string());
-    if diagnostics_enabled {
-        eprintln!(
-            "input_discovery_diag: default_device_id={}",
-            default_id.as_deref().unwrap_or("none")
-        );
-    }
-    let devices = match host.input_devices() {
-        Ok(devices) => devices,
-        Err(error) => {
-            if diagnostics_enabled {
-                eprintln!("input_discovery_diag: enumerate_error={error}");
-            }
-            return Vec::new();
-        }
+    let Ok(devices) = host.input_devices() else {
+        return Vec::new();
     };
-    let mut sources = Vec::new();
-    for device in devices {
-        let id = match device.id() {
-            Ok(id) => id.to_string(),
-            Err(error) => {
-                if diagnostics_enabled {
-                    eprintln!("input_discovery_diag: device_id_error={error}");
-                }
-                continue;
-            }
-        };
-        let description = match device.description() {
-            Ok(description) => description,
-            Err(error) => {
-                if diagnostics_enabled {
-                    eprintln!("input_discovery_diag: device_id={id} description_error={error}");
-                }
-                continue;
-            }
-        };
-        let config = match select_f32_input_config(&device) {
-            Ok(config) => config,
-            Err(error) => {
-                if diagnostics_enabled {
-                    eprintln!("input_discovery_diag: device_id={id} config_error={error}");
-                }
-                continue;
-            }
-        };
-        if diagnostics_enabled {
-            eprintln!(
-                "input_discovery_diag: device_id={id} name={} sample_rate_hz={} channels={} default={}",
-                description.name(),
-                config.sample_rate(),
-                config.channels(),
-                default_id.as_deref() == Some(id.as_str())
-            );
-        }
-        sources.push(CaptureSource {
-            stable_id: StableSourceId::new(Platform::Macos, SourceKind::InputDevice, id.clone()),
-            name: description.name().to_owned(),
-            process_id: None,
-            app_id: None,
-            device_uid: Some(id),
-            state: SourceState::Available,
-            sample_rate_hz: config.sample_rate(),
-            channels: config.channels(),
-        });
-    }
+    let mut sources = devices
+        .filter_map(|device| {
+            let id = device.id().ok()?.to_string();
+            let description = device.description().ok()?;
+            let config = select_f32_input_config(&device).ok()?;
+            Some(CaptureSource {
+                stable_id: StableSourceId::new(
+                    Platform::Macos,
+                    SourceKind::InputDevice,
+                    id.clone(),
+                ),
+                name: description.name().to_owned(),
+                process_id: None,
+                app_id: None,
+                device_uid: Some(id),
+                state: SourceState::Available,
+                sample_rate_hz: config.sample_rate(),
+                channels: config.channels(),
+            })
+        })
+        .collect::<Vec<_>>();
     sources.sort_by_key(|source| {
         let is_default = default_id.as_deref() == source.device_uid.as_deref();
         (!is_default, source.name.clone())

@@ -26,8 +26,8 @@ use std::thread;
 use std::time::Duration;
 
 use crate::frame::{
-    AudioBufferHandle, AudioBufferPool, AudioFrame, AudioSourceTag, EncryptionMode, Platform,
-    SourceId, StreamId, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,
+    AudioBufferHandle, AudioBufferPool, AudioFrame, Platform, SourceId, StreamId,
+    POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ,
 };
 use pipewire as pw;
 use pw::properties::properties;
@@ -895,7 +895,10 @@ where
                         process_counters.observe_invalid_buffer();
                         return;
                     }
-                    handle.set_len(copy_count);
+                    if handle.try_set_len(copy_count).is_err() {
+                        process_counters.observe_oversized_buffer();
+                        return;
+                    }
 
                     let s = seq_cb.fetch_add(1, Ordering::Relaxed);
 
@@ -907,8 +910,6 @@ where
                         output_channel_count,
                         handle,
                     );
-                    frame.source_tag = AudioSourceTag::Captured;
-                    frame.encryption_mode = EncryptionMode::None;
                     frame.sample_rate_hz = sample_rate_hz;
 
                     enqueue_capture_frame(&mut frame_producer, frame, &process_counters);
@@ -1421,7 +1422,10 @@ where
                         process_counters.observe_invalid_buffer();
                         return;
                     }
-                    handle.set_len(copy_count);
+                    if handle.try_set_len(copy_count).is_err() {
+                        process_counters.observe_oversized_buffer();
+                        return;
+                    }
 
                     let s = seq_cb.fetch_add(1, Ordering::Relaxed);
 
@@ -1433,8 +1437,6 @@ where
                         output_channel_count,
                         handle,
                     );
-                    frame.source_tag = AudioSourceTag::Captured;
-                    frame.encryption_mode = EncryptionMode::None;
                     frame.sample_rate_hz = sample_rate_hz;
 
                     enqueue_capture_frame(&mut frame_producer, frame, &process_counters);
@@ -1728,7 +1730,10 @@ where
                             continue;
                         }
                         dst[..sample_count].copy_from_slice(&buf[..sample_count]);
-                        handle.set_len(sample_count);
+                        if handle.try_set_len(sample_count).is_err() {
+                            capture_counters.observe_oversized_buffer();
+                            continue;
+                        }
 
                         let s = seq.fetch_add(1, Ordering::Relaxed);
 
@@ -1740,8 +1745,6 @@ where
                             CAPTURE_CHANNEL_COUNT,
                             handle,
                         );
-                        frame.source_tag = AudioSourceTag::Captured;
-                        frame.encryption_mode = EncryptionMode::None;
                         frame.sample_rate_hz = negotiated_sample_rate_hz.get();
                         capture_counters.observe_enqueued_frame();
                         callback(frame);

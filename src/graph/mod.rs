@@ -1,63 +1,65 @@
-//! pocketstation-graph — builds a typed GraphSpec.
+//! Stable graph-extension contracts.
 //!
-//! The builder (`dsl::Pipeline`) only assembles a `GraphSpec`; it does not execute.
-//! Compilation (verification + lowering → RuntimePlan) and execution live downstream
-//! (Waves 4–6). Nodes are registry-backed (`registry::NodeRegistry`), not closed enums,
-//! so third parties register `NodeFactory`s instead of editing this crate.
-//!
-//! Phase 2 additions (CRATE_OWNERSHIP.md):
-//!   - `signal`: `SignalSpec`, `SignalClass`, `SemanticRole`, `SchemaRef`, `SignalId`
-//!   - `partition`: `ExecutionPartition` (WHERE), `SafetyContract` (WHAT)
-//!   - `async_node`: `AsyncNode` for model/connector work outside realtime partitions
+//! This namespace exposes signal, media, port, partition, and extension
+//! contracts. Declaration builders, registries, compiler stages, IR, runtime
+//! plans, and executable nodes are private engine implementation.
 
-pub mod async_node;
-pub mod async_operator;
+#[cfg(any(test, feature = "internal-testing"))]
 pub mod builtins;
-pub mod compiler;
-pub mod contracts;
-pub mod dsl;
-pub mod ir;
+pub(crate) mod compile;
+pub(crate) mod dsl;
+pub(crate) mod ir;
 #[cfg(test)]
 mod named_ports;
-pub mod node;
-pub mod operator;
-pub mod partition;
-pub mod plan;
-pub mod planner;
-pub mod registry;
-pub mod runtime_node;
-pub mod signal;
+pub(crate) mod node;
+pub(crate) mod operator;
+pub(crate) mod partition;
+pub(crate) mod plan;
+pub(crate) mod ports;
+pub(crate) mod registry;
+pub(crate) mod runtime_node;
+pub(crate) mod signal;
 #[cfg(test)]
 mod source;
-pub mod spec;
+pub(crate) mod spec;
 
-pub use async_node::{
+#[cfg(any(test, feature = "internal-testing"))]
+pub use builtins::register_builtins;
+pub use dsl::{NodeHandle, Pipeline};
+pub use node::{
+    ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PortPrepareContext,
+    PrepareContext,
+};
+pub use operator::OperatorId;
+#[cfg(any(test, feature = "internal-testing"))]
+pub use operator::OPERATOR_ID_SYNTAX_VERSION;
+pub use partition::{ExecutionPartition, SafetyContract};
+#[cfg(test)]
+pub(crate) use ports::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES;
+pub use ports::{
+    AudioCaps, BackpressurePolicy, ChannelLayout, ClockDomain, CopyPolicy, DeliverySemantics,
+    EdgeContract, EdgeObservabilityLevel, LossPolicy, MediaCaps, MediaKind, Multiplicity,
+    PortDirection, PortSpec, MAX_ASYNC_PAYLOAD_BYTES,
+};
+#[cfg(any(test, feature = "internal-testing"))]
+pub use registry::NodeDefinitionRef;
+pub use registry::{NodeDefinition, NodeFactory, NodeRegistrationError, NodeRegistry};
+pub use runtime_node::RuntimeNode;
+pub use signal::{
     AsyncNode, AsyncNodeFuture, AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext,
     SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker, SignalDerivation,
-    SignalDerivationError, SignalEnvelope, SignalEnvelopeError, SignalLineage, SignalPayload,
-    SignalTiming,
+    SignalDerivationError, SignalEnvelope, SignalEnvelopeError, SignalLineage, SignalLineageError,
+    SignalPayload, SignalTiming, SignalTimingError,
 };
-pub use async_operator::{
+pub use signal::{
     AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError,
     OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy,
     OperatorOutputRolePolicy, OperatorPermissionPolicy,
 };
-pub use builtins::register_builtins;
-pub use contracts::{
-    AudioCaps, BackpressurePolicy, ChannelLayout, ClockDomain, CopyPolicy, DeliverySemantics,
-    EdgeContract, EdgeObservabilityLevel, LossPolicy, MediaCaps, MediaKind, Multiplicity,
-    PortDirection, PortSpec,
-};
-pub use dsl::{NodeHandle, Pipeline};
-pub use node::{ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext};
-pub use operator::{OperatorId, OPERATOR_ID_SYNTAX_VERSION};
-pub use partition::{ExecutionPartition, SafetyContract};
-pub use registry::{
-    NodeDefinition, NodeDefinitionRef, NodeFactory, NodeRegistrationError, NodeRegistry,
-};
-pub use runtime_node::RuntimeNode;
 pub use signal::{
     BinaryFormat, Codec, EventFormat, SchemaRef, SemanticRole, SignalClass, SignalId, SignalSpec,
     SignalSpecError, TextFormat,
 };
-pub use spec::{EdgeId, EdgeSpec, GraphSpec, InputPortRef, NodeId, NodeSpec, OutputPortRef};
+pub use spec::{EdgeId, GraphSpec, NodeId, OutputPortRef};
+#[cfg(any(test, feature = "internal-testing"))]
+pub use spec::{EdgeSpec, InputPortRef, NodeSpec};
