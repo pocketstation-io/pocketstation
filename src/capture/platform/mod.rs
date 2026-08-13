@@ -1,6 +1,6 @@
-#[cfg(target_os = "linux")]
+#[cfg(all(target_os = "linux", feature = "native-capture"))]
 pub(crate) mod linux;
-#[cfg(target_os = "macos")]
+#[cfg(all(target_os = "macos", feature = "native-capture"))]
 pub(crate) mod macos;
-#[cfg(target_os = "windows")]
+#[cfg(all(target_os = "windows", feature = "native-capture"))]
 pub(crate) mod windows;

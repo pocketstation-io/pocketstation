@@ -1,4 +1,4 @@
-//! PocketStation's source-aware desktop audio SDK.
+#![doc = include_str!("../README.md")]
 
 mod abi;
 mod capture;
@@ -49,11 +49,11 @@ pub use crate::capture::{
 /// return `NotObservable`; callers must not reinterpret that value as allowed
 /// or denied. Permission prompting remains an explicit host-application action.
 pub fn microphone_permission_observation() -> PermissionObservation {
-    #[cfg(target_os = "macos")]
+    #[cfg(all(target_os = "macos", feature = "native-capture"))]
     {
         crate::capture::platform::macos::microphone_permission_observation()
     }
-    #[cfg(not(target_os = "macos"))]
+    #[cfg(not(all(target_os = "macos", feature = "native-capture")))]
     {
         PermissionObservation::NotObservable
     }
@@ -134,11 +134,11 @@ pub use crate::runtime::{
 pub mod internal {
     pub mod capture {
         pub use crate::capture::*;
-        #[cfg(target_os = "linux")]
+        #[cfg(all(target_os = "linux", feature = "native-capture"))]
         pub mod linux {
             pub use crate::capture::platform::linux::*;
         }
-        #[cfg(target_os = "macos")]
+        #[cfg(all(target_os = "macos", feature = "native-capture"))]
         pub mod macos {
             pub use crate::capture::platform::macos::{
                 discover_input_sources_native, discover_sources_native, tap_available,
@@ -147,7 +147,7 @@ pub mod internal {
                 InternalSystemLoopbackSource as SystemLoopbackSource, MacosInputSource,
             };
         }
-        #[cfg(target_os = "windows")]
+        #[cfg(all(target_os = "windows", feature = "native-capture"))]
         pub mod windows {
             pub use crate::capture::platform::windows::*;
         }

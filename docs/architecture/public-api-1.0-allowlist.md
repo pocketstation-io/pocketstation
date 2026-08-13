@@ -1,6 +1,6 @@
 # PocketStation Core 1.0 Rust API allowlist
 
-Status: W20 review candidate. This file defines the intentional normal-build
+Status: Core 1.0 reviewed baseline. This file defines the intentional normal-build
 Rust surface. `internal-testing` is not a product API and is excluded.
 
 ## One-engine rule

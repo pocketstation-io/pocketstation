@@ -2893,3 +2893,24 @@
   originate from one clean intentional release commit.
 - No Session behavior, public Rust API, C ABI, PKSS protocol, callback, pool,
   queue, codec, timing, or runtime execution path changed in this slice.
+
+## Core 1.0.1 documentation and packaging correction — 2026-08-13
+
+- Status: `SAFE-TO-TEST`. Version `1.0.0` was published, but docs.rs selected
+  the configured Windows target on its Linux builder and failed while building
+  bundled Opus with an incompatible cross toolchain. The Core freeze remains
+  gated until the corrective patch is published, documented, and independently
+  consumed.
+- Version `1.0.1` selects docs.rs' native Linux target and builds the public
+  contracts with `default-features = false`. Native capture remains the default
+  product feature on macOS, Windows, and Linux; disabling default features now
+  provides an explicit contracts-only build for rustdoc and tooling.
+- The public README is now the crate-level docs.rs landing page and leads with
+  developer outcomes, a compiling Session example, the two-lane execution
+  model, realtime guarantees, extension contracts, platform evidence
+  boundaries, prerequisites, and direct documentation paths. The linked public
+  guides are included in the crate archive.
+- Contracts-only Clippy and rustdoc pass with warnings denied; all-feature
+  Clippy also passes. No callback algorithm, pool capacity, queue policy,
+  `AudioFrame`, codec, timing, C ABI, PKSS frame, or Session execution semantic
+  changed.

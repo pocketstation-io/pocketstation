@@ -35,17 +35,19 @@ pub struct CaptureObservationHandle {
 
 impl CaptureObservationHandle {
     pub fn observations(&self) -> CaptureObservations {
-        CaptureObservationCounters::snapshot_values(&self.values)
+        snapshot_values(&self.values)
     }
 }
 
 /// Setup-time cloneable handle; every observation is one relaxed atomic
 /// operation and remains allocation-free, lock-free, and log-free.
 #[derive(Clone, Debug, Default)]
+#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
 pub struct CaptureObservationCounters {
     values: Arc<CaptureObservationValues>,
 }
 
+#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
 impl CaptureObservationCounters {
     pub fn observe_callback_buffer(&self) {
         self.values
@@ -109,21 +111,19 @@ impl CaptureObservationCounters {
     }
 
     pub fn snapshot(&self) -> CaptureObservations {
-        Self::snapshot_values(&self.values)
+        snapshot_values(&self.values)
     }
+}
 
-    fn snapshot_values(values: &CaptureObservationValues) -> CaptureObservations {
-        CaptureObservations {
-            callback_buffers_total: values.callback_buffers_total.load(Ordering::Relaxed),
-            frames_enqueued_total: values.frames_enqueued_total.load(Ordering::Relaxed),
-            pool_exhausted_total: values.pool_exhausted_total.load(Ordering::Relaxed),
-            dispatch_queue_full_total: values.dispatch_queue_full_total.load(Ordering::Relaxed),
-            invalid_buffer_total: values.invalid_buffer_total.load(Ordering::Relaxed),
-            oversized_buffer_total: values.oversized_buffer_total.load(Ordering::Relaxed),
-            stream_errors_total: values.stream_errors_total.load(Ordering::Relaxed),
-            timestamp_epoch_clamps_total: values
-                .timestamp_epoch_clamps_total
-                .load(Ordering::Relaxed),
-        }
+fn snapshot_values(values: &CaptureObservationValues) -> CaptureObservations {
+    CaptureObservations {
+        callback_buffers_total: values.callback_buffers_total.load(Ordering::Relaxed),
+        frames_enqueued_total: values.frames_enqueued_total.load(Ordering::Relaxed),
+        pool_exhausted_total: values.pool_exhausted_total.load(Ordering::Relaxed),
+        dispatch_queue_full_total: values.dispatch_queue_full_total.load(Ordering::Relaxed),
+        invalid_buffer_total: values.invalid_buffer_total.load(Ordering::Relaxed),
+        oversized_buffer_total: values.oversized_buffer_total.load(Ordering::Relaxed),
+        stream_errors_total: values.stream_errors_total.load(Ordering::Relaxed),
+        timestamp_epoch_clamps_total: values.timestamp_epoch_clamps_total.load(Ordering::Relaxed),
     }
 }

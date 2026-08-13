@@ -1,8 +1,12 @@
 //! Control-plane source discovery queries used by the first-party CLI.
 
+#[cfg(feature = "native-capture")]
 use std::collections::HashSet;
 
-use super::{CaptureSource, SourceKind, SourceState, StableSourceId};
+#[cfg(feature = "native-capture")]
+use super::StableSourceId;
+use super::{CaptureSource, SourceKind, SourceState};
+#[cfg(feature = "native-capture")]
 use crate::frame::Platform;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -58,63 +62,75 @@ impl SourceProvider for LocalSourceProvider {
 /// This is a control-plane capability query. It does not open a device, prompt
 /// for permission, or create a capture/runtime owner.
 pub fn application_capture_available() -> bool {
-    #[cfg(target_os = "macos")]
+    #[cfg(all(target_os = "macos", feature = "native-capture"))]
     {
         super::platform::macos::tap_available()
     }
-    #[cfg(any(target_os = "windows", target_os = "linux"))]
+    #[cfg(all(
+        feature = "native-capture",
+        any(target_os = "windows", target_os = "linux")
+    ))]
     {
         true
     }
-    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
+    #[cfg(not(all(
+        feature = "native-capture",
+        any(target_os = "macos", target_os = "windows", target_os = "linux")
+    )))]
     {
         false
     }
 }
 
 pub fn discover_sources() -> Vec<CaptureSource> {
-    #[cfg(target_os = "macos")]
-    let platform = Platform::Macos;
-    #[cfg(target_os = "windows")]
-    let platform = Platform::Windows;
-    #[cfg(target_os = "linux")]
-    let platform = Platform::Linux;
-    #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
-    let platform = Platform::Unknown;
+    #[cfg(not(feature = "native-capture"))]
+    return Vec::new();
 
-    let mut sources = vec![CaptureSource {
-        stable_id: StableSourceId::new(platform, SourceKind::SystemMix, "system:mix"),
-        name: "System Mix".to_owned(),
-        process_id: None,
-        app_id: None,
-        device_uid: None,
-        state: SourceState::Available,
-        sample_rate_hz: 48_000,
-        channels: 2,
-    }];
-
-    #[cfg(target_os = "macos")]
+    #[cfg(feature = "native-capture")]
     {
-        sources.extend(super::platform::macos::discover_input_sources_native());
-        sources.extend(super::platform::macos::discover_sources_native());
+        #[cfg(target_os = "macos")]
+        let platform = Platform::Macos;
+        #[cfg(target_os = "windows")]
+        let platform = Platform::Windows;
+        #[cfg(target_os = "linux")]
+        let platform = Platform::Linux;
+        #[cfg(not(any(target_os = "macos", target_os = "windows", target_os = "linux")))]
+        let platform = Platform::Unknown;
+
+        let mut sources = vec![CaptureSource {
+            stable_id: StableSourceId::new(platform, SourceKind::SystemMix, "system:mix"),
+            name: "System Mix".to_owned(),
+            process_id: None,
+            app_id: None,
+            device_uid: None,
+            state: SourceState::Available,
+            sample_rate_hz: 48_000,
+            channels: 2,
+        }];
+
+        #[cfg(all(target_os = "macos", feature = "native-capture"))]
+        {
+            sources.extend(super::platform::macos::discover_input_sources_native());
+            sources.extend(super::platform::macos::discover_sources_native());
+        }
+
+        #[cfg(all(target_os = "windows", feature = "native-capture"))]
+        sources.extend(super::platform::windows::discover_sources_windows());
+
+        #[cfg(all(target_os = "linux", feature = "native-capture"))]
+        sources.extend(super::platform::linux::discover_sources_linux());
+
+        let mut seen = HashSet::new();
+        sources
+            .into_iter()
+            .filter(|source| {
+                seen.insert((
+                    source.stable_id.platform,
+                    source.stable_id.kind,
+                    source.stable_id.stable_key.clone(),
+                    source.process_id,
+                ))
+            })
+            .collect()
     }
-
-    #[cfg(target_os = "windows")]
-    sources.extend(super::platform::windows::discover_sources_windows());
-
-    #[cfg(target_os = "linux")]
-    sources.extend(super::platform::linux::discover_sources_linux());
-
-    let mut seen = HashSet::new();
-    sources
-        .into_iter()
-        .filter(|source| {
-            seen.insert((
-                source.stable_id.platform,
-                source.stable_id.kind,
-                source.stable_id.stable_key.clone(),
-                source.process_id,
-            ))
-        })
-        .collect()
 }

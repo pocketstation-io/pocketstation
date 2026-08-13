@@ -1,6 +1,6 @@
 [package]
 name = "pocketstation"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 rust-version = "1.95.0"
 license = "MIT OR Apache-2.0"
@@ -16,7 +16,14 @@ include = [
   "/Cargo.lock",
   "/README.md",
   "/RELEASE_NOTES_1.0.0.md",
+  "/RELEASE_NOTES_1.0.1.md",
   "/build.rs",
+  "/docs/README.md",
+  "/docs/architecture/overview.md",
+  "/docs/concepts/signals-and-streams.md",
+  "/docs/development/compatibility-and-freeze.md",
+  "/docs/getting-started/rust-quickstart.md",
+  "/docs/guides/extensions.md",
   "/src/**",
   "/native/**",
   "/include/**",
@@ -30,14 +37,24 @@ include = [
 registry-role = "public-product"
 
 [package.metadata.docs.rs]
-default-target = "x86_64-pc-windows-msvc"
+default-target = "x86_64-unknown-linux-gnu"
 targets = []
+no-default-features = true
 
 [lib]
 crate-type = ["rlib", "cdylib", "staticlib"]
 
 [features]
-default = []
+default = ["native-capture"]
+native-capture = [
+  "dep:cpal",
+  "dep:pipewire",
+  "dep:alsa",
+  "dep:libc",
+  "dep:wasapi",
+  "dep:windows",
+  "dep:windows-core",
+]
 conformance-fixtures = []
 internal-testing = []
 macos-asp-driver-artifact = []
@@ -61,16 +78,16 @@ tempfile = "3"
 cc = "1"
 
 [target.'cfg(target_os = "macos")'.dependencies]
-cpal = "0.18.1"
+cpal = { version = "0.18.1", optional = true }
 
 [target.'cfg(target_os = "linux")'.dependencies]
-pipewire = "0.10"
-alsa = "0.11"
-libc = "0.2"
+pipewire = { version = "0.10", optional = true }
+alsa = { version = "0.11", optional = true }
+libc = { version = "0.2", optional = true }
 
 [target.'cfg(target_os = "windows")'.dependencies]
-wasapi = "0.23"
-windows = { version = "0.58", features = [
+wasapi = { version = "0.23", optional = true }
+windows = { version = "0.58", optional = true, features = [
   "implement",
   "Win32_Media",
   "Win32_Media_Audio",
@@ -80,7 +97,7 @@ windows = { version = "0.58", features = [
   "Win32_System_Variant",
   "Win32_Foundation",
 ] }
-windows-core = "0.58"
+windows-core = { version = "0.58", optional = true }
 
 [profile.release]
 opt-level = 3

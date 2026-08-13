@@ -8,11 +8,11 @@ use crate::graph::{
 };
 use crate::runtime::SidecarProcessSpec;
 
-#[cfg(target_os = "linux")]
+#[cfg(all(target_os = "linux", feature = "native-capture"))]
 use crate::capture::platform::linux::DesktopCaptureBackend as NativeDesktopCaptureBackend;
-#[cfg(target_os = "macos")]
+#[cfg(all(target_os = "macos", feature = "native-capture"))]
 use crate::capture::platform::macos::DesktopCaptureBackend as NativeDesktopCaptureBackend;
-#[cfg(target_os = "windows")]
+#[cfg(all(target_os = "windows", feature = "native-capture"))]
 use crate::capture::platform::windows::DesktopCaptureBackend as NativeDesktopCaptureBackend;
 
 use crate::session::{
@@ -216,7 +216,10 @@ impl SessionEngineHostBuilder {
 
     /// Creates the production host builder with the platform's native capture
     /// backend, leaving endpoint registration open to the owning application.
-    #[cfg(any(target_os = "linux", target_os = "macos", target_os = "windows"))]
+    #[cfg(all(
+        feature = "native-capture",
+        any(target_os = "linux", target_os = "macos", target_os = "windows")
+    ))]
     pub fn native(
         options: NativeSessionEngineHostOptions,
     ) -> Result<Self, SessionEngineHostBuildError> {
@@ -227,7 +230,10 @@ impl SessionEngineHostBuilder {
 
     /// Returns a typed unsupported-platform error on targets without a native
     /// PocketStation capture backend.
-    #[cfg(not(any(target_os = "linux", target_os = "macos", target_os = "windows")))]
+    #[cfg(not(all(
+        feature = "native-capture",
+        any(target_os = "linux", target_os = "macos", target_os = "windows")
+    )))]
     pub fn native(
         _options: NativeSessionEngineHostOptions,
     ) -> Result<Self, SessionEngineHostBuildError> {
@@ -372,7 +378,10 @@ pub enum SessionEngineHostBuildError {
     UnsupportedPlatform,
 }
 
-#[cfg(any(target_os = "linux", target_os = "macos", target_os = "windows"))]
+#[cfg(all(
+    feature = "native-capture",
+    any(target_os = "linux", target_os = "macos", target_os = "windows")
+))]
 fn build_native_host(
     options: NativeSessionEngineHostOptions,
     recording_root: Option<std::path::PathBuf>,
@@ -385,7 +394,10 @@ fn build_native_host(
     builder.build()
 }
 
-#[cfg(not(any(target_os = "linux", target_os = "macos", target_os = "windows")))]
+#[cfg(not(all(
+    feature = "native-capture",
+    any(target_os = "linux", target_os = "macos", target_os = "windows")
+)))]
 fn build_native_host(
     _options: NativeSessionEngineHostOptions,
     _recording_root: Option<std::path::PathBuf>,

@@ -276,6 +276,7 @@ impl SourceRuntimeEventSender {
 
 /// Publishes one exact post-open backend failure without introducing another
 /// event queue or worker.
+#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
 pub fn publish_backend_failure(
     sender: &SourceRuntimeEventSender,
     stable_id: StableSourceId,

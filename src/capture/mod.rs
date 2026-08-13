@@ -23,15 +23,15 @@ mod selection;
 mod timeline;
 
 pub use authorization::*;
+#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
 pub use capture_owner::{
-    join_capture_worker, prepare_capture_with_start_gate, ActiveCaptureBackend,
-    CallbackCaptureBackend, CaptureDelivery, CaptureLineageSeed, CaptureObservationReceipt,
-    CaptureOwner, CaptureOwnerObservations, CapturePrepareRequest, CaptureStopOutcome,
-    PreparedCaptureBackend,
+    join_capture_worker, prepare_capture, CaptureOpenMetadata, PreparedCapture,
+    CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID,
 };
-#[cfg(any(test, feature = "internal-testing"))]
 pub use capture_owner::{
-    prepare_capture, CaptureOpenMetadata, PreparedCapture, CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID,
+    prepare_capture_with_start_gate, ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery,
+    CaptureLineageSeed, CaptureObservationReceipt, CaptureOwner, CaptureOwnerObservations,
+    CapturePrepareRequest, CaptureStopOutcome, PreparedCaptureBackend,
 };
 pub use events::*;
 pub use frame_stream::{
@@ -47,11 +47,14 @@ pub use frame_stream::{
 pub use identity::*;
 #[cfg(feature = "internal-testing")]
 pub use lifecycle_registry::*;
-pub use observations::{CaptureObservationCounters, CaptureObservationHandle, CaptureObservations};
+#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
+pub use observations::CaptureObservationCounters;
+pub use observations::{CaptureObservationHandle, CaptureObservations};
 pub use query::*;
 pub use selection::*;
-#[cfg(any(test, feature = "internal-testing"))]
+#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
 pub use timeline::CaptureSampleTimelineError;
+#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
 pub use timeline::{
     initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureSampleTimeline,
 };

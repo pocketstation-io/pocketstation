@@ -4,10 +4,10 @@ Applications depend on one package:
 
 ```toml
 [dependencies]
-pocketstation = "0.1.2"
+pocketstation = "1.0.1"
 ```
 
-The supported product path declares one application and one microphone,
+The primary desktop path declares one application and one microphone,
 routes each source-aware stem independently, starts one Session, observes both
 stems, stops, and reads the recording outcome. The compiling reference is
 [`examples/product_quickstart.rs`](../../examples/product_quickstart.rs).
@@ -28,5 +28,16 @@ Build the exact reference with:
 cargo build --release --example product_quickstart --locked
 ```
 
+## Native prerequisites
+
+macOS requires the Xcode command-line tools. Windows requires the MSVC Rust
+toolchain and Windows SDK. Debian/Ubuntu requires:
+
+```bash
+sudo apt install build-essential cmake pkg-config \
+  libasound2-dev libpipewire-0.3-dev
+```
+
 The example compiling does not prove that a selected physical source exists or
-that the current host granted permission. Those are runtime/evidence facts.
+that the current host granted permission. Those remain runtime facts surfaced
+as typed outcomes.

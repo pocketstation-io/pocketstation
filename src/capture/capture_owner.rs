@@ -330,6 +330,7 @@ pub fn prepare_capture_with_start_gate(
 ///
 /// This is a control-thread operation. Callers with multiple workers must call
 /// it for every owned handle before returning the first failure.
+#[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
 pub fn join_capture_worker(
     worker_thread: std::thread::JoinHandle<()>,
     worker: &'static str,
