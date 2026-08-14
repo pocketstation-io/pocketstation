@@ -55,14 +55,14 @@ the same compiler, lifecycle, observations, and failure model.
 
 ```toml
 [dependencies]
-pocketstation = "1.0.3"
+pocketstation = "1.0.4"
 ```
 
 PocketStation requires Rust 1.95 or newer. Native capture is enabled by
 default. A contracts-only build for documentation or tooling can disable it:
 
 ```toml
-pocketstation = { version = "1.0.3", default-features = false }
+pocketstation = { version = "1.0.4", default-features = false }
 ```
 
 ## Quick start

@@ -3020,10 +3020,11 @@
 
 ## PocketStation 1.0.3 documentation patch release — 2026-08-14
 
-- Status: `SAFE-TO-TEST` for release candidate
-  `pks-20260814-w20-docs-release-21`; publication and external consumption are
-  not claimed until the immutable registry, docs.rs, and clean-consumer gates
-  pass.
+- Status: `BLOCKED` for release candidate
+  `pks-20260814-w20-docs-release-21`. The immutable source tag and GitHub
+  Release exist, but publication stopped before crates.io because the clean
+  runner's `CODE_PROTOCOL` gate unconditionally required a sibling `pks`
+  checkout. Workflow `31850004592` preserves the failed gate.
 - The package version and public install snippets advance from `1.0.2` to
   `1.0.3`, and the accepted W20 public narrative is included in the registry
   archive and crate-level docs.
@@ -3035,3 +3036,17 @@
   change dependencies, feature defaults, Rust API, C ABI, PKSS protocol,
   capture, callback, pool, queue, codec, timing, graph, Session runtime, or
   evidence classifications.
+
+## PocketStation 1.0.4 documentation patch release — 2026-08-14
+
+- Status: `SAFE-TO-TEST` for replacement candidate
+  `pks-20260814-w20-docs-release-22`; publication and external consumption are
+  not claimed until the immutable registry, docs.rs, and clean-consumer gates
+  pass.
+- The deterministic failure is reduced to the standalone Core checkout. The
+  cross-repository `pks` ownership assertion now reports `NOT OBSERVABLE` when
+  its sibling checkout is absent and remains fully enforced when the sibling
+  is present. This changes release qualification only, not product runtime.
+- The package version and public install snippets advance to `1.0.4`. The
+  canonical 1.x `RELEASE_NOTES.md` records both the failed 1.0.3 publication
+  attempt and this correction without recreating numbered patch-note files.

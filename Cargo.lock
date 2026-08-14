@@ -1015,7 +1015,7 @@ dependencies = [
 
 [[package]]
 name = "pocketstation"
-version = "1.0.3"
+version = "1.0.4"
 dependencies = [
  "alsa",
  "assert_no_alloc",

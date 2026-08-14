@@ -37,13 +37,24 @@ new Core category whenever the 1.x contracts can express it.
 
 ## Release history
 
-### 1.0.3
+### 1.0.4
 
 - Reframed the public documentation around the concrete capture-once workflow
   and provenance-preserving bounded execution contract.
 - Replaced self-awarded novelty language with implemented guarantees,
   extension boundaries, and exact evidence.
 - Consolidated patch notes into this canonical 1.x document.
+- Corrected the standalone Core release gate so a missing sibling CLI checkout
+  is reported explicitly instead of aborting an otherwise self-contained Core
+  qualification. Full-workspace qualification continues to enforce the CLI
+  ownership boundary when that repository is present.
+
+### 1.0.3
+
+- Created an immutable source tag and GitHub Release for the documentation
+  update.
+- Publication stopped before crates.io when the clean runner exposed the
+  standalone-checkout release-gate defect corrected in 1.0.4.
 
 ### 1.0.2
 

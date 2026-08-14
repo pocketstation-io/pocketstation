@@ -2,7 +2,15 @@
 set -euo pipefail
 
 engine_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-pks_root="$(cd "$engine_root/../pks" && pwd)"
+pks_root="$engine_root/../pks"
+
+if [[ ! -d "$pks_root/src" || ! -d "$pks_root/connectors" ]]; then
+  echo "pks single-engine ownership boundary: NOT OBSERVABLE (sibling pks checkout absent)"
+  echo "standalone Core checks continue; workspace qualification must run this gate with pks present"
+  exit 0
+fi
+
+pks_root="$(cd "$pks_root" && pwd)"
 pks_source="$pks_root/src"
 connector_source="$pks_root/connectors"
 
