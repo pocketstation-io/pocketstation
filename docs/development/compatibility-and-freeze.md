@@ -42,6 +42,9 @@ evidence in its review.
 Adding a provider, customer protocol, exporter, model, or application policy is
 not such a primitive.
 
-PocketStation may be described as a systems/developer-platform innovation in
-the integration of these contracts. Claims of first-of-kind novelty or overall
+The freeze protects implementation contracts; it does not freeze clearer
+documentation, better examples, onboarding repairs, or evidence-backed product
+language. Public documentation should demonstrate the concrete developer
+workflow and the implemented cross-boundary contract rather than awarding the
+project labels such as "innovative." Claims of first-of-kind novelty or overall
 superiority require separate prior-art or neutral comparative evidence.

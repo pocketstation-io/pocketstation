@@ -1,9 +1,14 @@
 # PocketStation developer documentation
 
-PocketStation is one Session engine for realtime audio and typed signals. Use
-this documentation to integrate the Rust package, understand its execution
-model, or author an external source, Operator, Endpoint, native extension, or
-sidecar.
+PocketStation captures a desktop application and microphone once, preserves
+them as independent source-aware stems, and fans them out through one bounded
+`Session` to application code, external Operators, remote delivery, and
+multistem recording.
+
+The central contract preserves provenance, timing, discontinuities,
+backpressure, lifecycle, and failure observations across realtime audio, typed
+signals, Rust, C, and process sidecars. Use these guides to build on that
+contract without creating a second media runtime inside each integration.
 
 ## Start here
 

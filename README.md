@@ -1,22 +1,55 @@
 # PocketStation
 
-PocketStation is a realtime media and signal engine for Rust. Capture desktop
-audio once, keep every source independently identifiable, and route it through
-bounded Operators and Endpoints without putting application code on the audio
-callback.
+**Capture once. Keep every source. Build the live media pipeline your
+application needs.**
+
+PocketStation gives Rust developers one `Session` for capturing a desktop
+application and microphone as independent, source-aware live stems. The same
+capture can flow concurrently to AI Operators, application callbacks, a remote
+receiver, and aligned multistem recording without moving application or model
+work onto the audio callback.
 
 [![crates.io](https://img.shields.io/crates/v/pocketstation.svg)](https://crates.io/crates/pocketstation)
 [![docs.rs](https://img.shields.io/docsrs/pocketstation)](https://docs.rs/pocketstation/latest/pocketstation/)
 [![license](https://img.shields.io/crates/l/pocketstation.svg)](https://github.com/pocketstation-io/pocketstation)
 
-PocketStation is built for workflows such as:
+```text
+desktop application ─┐
+                     ├─ capture once ─ source-aware Session ─┬─ AI / model connector
+microphone ──────────┘                                      ├─ browser / remote receiver
+                                                            └─ aligned multistem recording
+```
 
-- independent application and microphone stems for agents and meeting tools;
-- one capture feeding transcription, recording, transport, and monitoring at
-  the same time;
-- typed telemetry or control sources feeding custom analysis and storage;
-- speech-to-speech pipelines that return generated PCM to the audio runtime;
-- native or managed extensions that share one Session lifecycle.
+Build workflows such as:
+
+- live translation or captioning that keeps application speech and microphone
+  speech distinguishable;
+- meeting agents and copilots that send the same live stems to inference,
+  monitoring, transport, and recording;
+- support, accessibility, and QA tools that isolate a slow or failed
+  destination instead of stalling every branch;
+- speech-to-speech systems that return generated PCM through an explicit
+  bounded Bridge;
+- native and managed integrations that participate in the same Session
+  lifecycle rather than building another media runtime.
+
+## The contract is the product
+
+PocketStation does not reduce live media to an anonymous `AudioFrame`. Its
+execution contract keeps the information needed to reason about a running
+system:
+
+| Contract | What remains explicit |
+|---|---|
+| Provenance | source, stream, and stem identity |
+| Time | sequence, timestamp, clock, and derivation |
+| Change | source generation, discontinuity, and permission epochs |
+| Delivery | route capacity, backpressure, copy, and loss policy |
+| Operations | queue depth, saturation, drops, failures, cancellation, and final outcome |
+
+Those semantics remain coherent as work crosses realtime audio, typed signals,
+Rust, the versioned C ABI, and bounded process sidecars. Each integration uses
+the same compiler, lifecycle, observations, and failure model.
 
 ## Install
 
@@ -86,35 +119,47 @@ fn main() -> Result<(), Box<dyn Error>> {
 The complete compiling example is
 [`examples/product_quickstart.rs`](examples/product_quickstart.rs).
 
-## One engine, two execution lanes
+## One Session, two execution lanes
 
 ```text
-application · microphone · external source
-                    │
-                    ▼
-                  Session
-                    │
-            compiled RuntimePlan
-          ┌─────────┴──────────┐
-          ▼                    ▼
- realtime audio lane     typed signal lane
- pooled AudioFrame       SignalEnvelope
-          └─────────┬──────────┘
-                    ▼
-         independent bounded routes
-       source · Operator · Endpoint
+OS capture · typed source · generated audio
+                     │
+                     ▼
+        source identity + immutable lineage
+                     │
+                     ▼
+                   Session
+                     │
+             compiled RuntimePlan
+           ┌─────────┴──────────┐
+           ▼                    ▼
+  realtime audio lane     typed signal lane
+  pooled AudioFrame       SignalEnvelope
+           └─────────┬──────────┘
+                     ▼
+          independent bounded routes
+       Operator · Endpoint · recording
+                     │
+                     ▼
+              Rust · C · sidecar
 ```
 
 The audio lane is specialized for fixed-capacity, predictable work. The typed
 lane carries text, events, control data, metrics, binary data, and
-schema-identified custom signals. `SignalSpec`, lineage, timing, named ports,
-and edge policy remain stable across Rust, C, and process boundaries.
+schema-identified custom signals. The explicit Bridge between them allows
+async work to produce audio without making a managed runtime or model provider
+part of the capture callback.
+
+`SignalSpec`, lineage, timing, named ports, and edge policy are the stable
+cross-language contract. Operators can be composed without each connector
+inventing its own source identity, buffering, cancellation, or failure
+semantics.
 
 Rust `Stream<T>` provides compile-time composition. `T` is developer-facing
 metadata; it is not the runtime storage format and never crosses the C ABI or
 sidecar protocol.
 
-## Realtime guarantees
+## Realtime engineering guarantees
 
 Audio callbacks and realtime partitions are designed and gated to remain:
 
@@ -148,7 +193,7 @@ they do not implement another engine.
 See the [extension guide](docs/guides/extensions.md) and
 [signal model](docs/concepts/signals-and-streams.md).
 
-## Platform support
+## Platform and evidence boundaries
 
 | Platform | Native implementation | Current evidence boundary |
 |---|---|---|
@@ -159,6 +204,10 @@ See the [extension guide](docs/guides/extensions.md) and
 Applications own operating-system permission prompts and source selection UX.
 PocketStation reports typed permission, source-loss, discontinuity, saturation,
 and lifecycle outcomes.
+
+These classifications are deliberately narrow. Physical macOS proof does not
+silently become a physical Windows or Linux claim, and local cross-language or
+transport evidence does not become a universal performance claim.
 
 ### Permission semantics
 

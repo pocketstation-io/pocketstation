@@ -2997,3 +2997,23 @@
   reclassified by this documentation correction.
 - No Rust source, public API, ABI, capture path, codec behavior, or realtime
   execution contract changed.
+
+## W20 public documentation narrative correction — 2026-08-14
+
+- Status: `SAFE-TO-MERGE` for documentation candidate
+  `pks-20260814-w20-public-docs-20`; Core 1.0 remains frozen.
+- The public README now leads with the implemented developer workflow: capture
+  one desktop application and microphone once, preserve independent
+  source-aware stems, and fan them out concurrently to Operators, application
+  callbacks, remote delivery, and aligned multistem recording.
+- Public documentation now explains the stronger architectural boundary as a
+  provenance-preserving bounded execution contract across realtime audio,
+  typed signals, Rust, C, and process sidecars. Established realtime
+  primitives remain engineering guarantees rather than novelty claims.
+- The compatibility guide no longer assigns PocketStation the label
+  "innovative." It requires concrete workflow, contract, and evidence language
+  and preserves the separate burden for novelty or superiority claims.
+- Contracts-only rustdoc with warnings denied, the release public quickstart,
+  the complete `CODE_PROTOCOL` gate, and the Core freeze-policy gate pass. No
+  Rust source, API, ABI, PKSS protocol, callback, pool, queue, runtime behavior,
+  scaffold, mock, fallback, provider, or evidence classification changed.
