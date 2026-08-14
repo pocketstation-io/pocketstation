@@ -3017,3 +3017,21 @@
   the complete `CODE_PROTOCOL` gate, and the Core freeze-policy gate pass. No
   Rust source, API, ABI, PKSS protocol, callback, pool, queue, runtime behavior,
   scaffold, mock, fallback, provider, or evidence classification changed.
+
+## PocketStation 1.0.3 documentation patch release — 2026-08-14
+
+- Status: `SAFE-TO-TEST` for release candidate
+  `pks-20260814-w20-docs-release-21`; publication and external consumption are
+  not claimed until the immutable registry, docs.rs, and clean-consumer gates
+  pass.
+- The package version and public install snippets advance from `1.0.2` to
+  `1.0.3`, and the accepted W20 public narrative is included in the registry
+  archive and crate-level docs.
+- Release notes now live in one canonical 1.x-focused `RELEASE_NOTES.md` with a
+  concise compatible-line contract and release history. Immutable tags and
+  GitHub Releases preserve exact earlier bytes. The numbered top-level
+  patch-note files are removed from the current source and package archive.
+- This patch changes only documentation and release metadata. It does not
+  change dependencies, feature defaults, Rust API, C ABI, PKSS protocol,
+  capture, callback, pool, queue, codec, timing, graph, Session runtime, or
+  evidence classifications.

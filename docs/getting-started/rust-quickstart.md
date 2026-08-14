@@ -4,7 +4,7 @@ Applications depend on one package:
 
 ```toml
 [dependencies]
-pocketstation = "1.0.2"
+pocketstation = "1.0.3"
 ```
 
 The primary desktop path declares one application and one microphone,

@@ -1,6 +1,6 @@
 [package]
 name = "pocketstation"
-version = "1.0.2"
+version = "1.0.3"
 edition = "2021"
 rust-version = "1.95.0"
 license = "MIT OR Apache-2.0"
@@ -15,9 +15,7 @@ include = [
   "/Cargo.toml",
   "/Cargo.lock",
   "/README.md",
-  "/RELEASE_NOTES_1.0.0.md",
-  "/RELEASE_NOTES_1.0.1.md",
-  "/RELEASE_NOTES_1.0.2.md",
+  "/RELEASE_NOTES.md",
   "/build.rs",
   "/docs/README.md",
   "/docs/architecture/overview.md",

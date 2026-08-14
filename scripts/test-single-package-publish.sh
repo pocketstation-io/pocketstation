@@ -52,6 +52,7 @@ done <<<"${package_files}"
 for required_path in \
   Cargo.toml \
   README.md \
+  RELEASE_NOTES.md \
   build.rs \
   docs/README.md \
   docs/architecture/overview.md \
@@ -66,5 +67,10 @@ for required_path in \
     exit 1
   fi
 done
+
+if rg -q '^RELEASE_NOTES_[0-9]' <<<"${package_files}"; then
+  echo "numbered patch release notes leaked into package" >&2
+  exit 1
+fi
 
 echo "single-package publish contract: PASS"
