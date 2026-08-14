@@ -9,7 +9,7 @@ case "${1:-}" in
   *) echo "usage: $0 [--dry-run]" >&2; exit 2 ;;
 esac
 
-for command in cargo jq; do
+for command in cargo curl jq; do
   command -v "${command}" >/dev/null 2>&1 || {
     echo "required command is unavailable: ${command}" >&2
     exit 2
@@ -22,6 +22,7 @@ metadata="$(cargo metadata --manifest-path "${repo_root}/Cargo.toml" --no-deps -
 package_count="$(jq '.packages | length' <<<"${metadata}")"
 workspace_count="$(jq '.workspace_members | length' <<<"${metadata}")"
 package_name="$(jq -r '.packages[0].name' <<<"${metadata}")"
+package_version="$(jq -r '.packages[0].version' <<<"${metadata}")"
 registry_role="$(jq -r '.packages[0].metadata.pocketstation["registry-role"] // ""' <<<"${metadata}")"
 
 if [[ "${package_count}" != "1" || "${workspace_count}" != "1" || "${package_name}" != "pocketstation" ]]; then
@@ -37,5 +38,31 @@ cargo package --manifest-path "${repo_root}/Cargo.toml" --locked
 if [[ "${dry_run}" == true ]]; then
   cargo publish --manifest-path "${repo_root}/Cargo.toml" --locked --dry-run
 else
-  cargo publish --manifest-path "${repo_root}/Cargo.toml" --locked
+  registry_api_base_url="${PKS_REGISTRY_API_BASE_URL:-https://crates.io/api/v1/crates}"
+  registry_url="${registry_api_base_url}/${package_name}/${package_version}"
+  if ! registry_status="$(
+    curl \
+      --silent \
+      --show-error \
+      --output /dev/null \
+      --write-out '%{http_code}' \
+      --header 'User-Agent: pocketstation-release-publisher' \
+      "${registry_url}"
+  )"; then
+    echo "registry visibility query failed: ${registry_url}" >&2
+    exit 1
+  fi
+
+  case "${registry_status}" in
+    200)
+      echo "${package_name} ${package_version} is already visible on crates.io; publication is complete"
+      ;;
+    404)
+      cargo publish --manifest-path "${repo_root}/Cargo.toml" --locked
+      ;;
+    *)
+      echo "registry visibility query returned HTTP ${registry_status}: ${registry_url}" >&2
+      exit 1
+      ;;
+  esac
 fi

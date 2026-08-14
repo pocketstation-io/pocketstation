@@ -37,7 +37,7 @@ new Core category whenever the 1.x contracts can express it.
 
 ## Release history
 
-### 1.0.4
+### 1.0.5
 
 - Reframed the public documentation around the concrete capture-once workflow
   and provenance-preserving bounded execution contract.
@@ -48,6 +48,17 @@ new Core category whenever the 1.x contracts can express it.
   is reported explicitly instead of aborting an otherwise self-contained Core
   qualification. Full-workspace qualification continues to enforce the CLI
   ownership boundary when that repository is present.
+- Restored exact-version idempotent publication recovery for the consolidated
+  single package: an already-visible version succeeds without republishing,
+  a missing version publishes once, and registry errors fail closed.
+
+### 1.0.4
+
+- Created an immutable source tag and GitHub Release carrying the corrected
+  standalone-checkout protocol gate.
+- Publication stopped before crates.io because the workflow still referenced a
+  recovery-contract script removed during single-package consolidation. The
+  single-package recovery contract is restored in 1.0.5.
 
 ### 1.0.3
 

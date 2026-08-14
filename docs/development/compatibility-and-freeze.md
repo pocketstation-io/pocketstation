@@ -6,7 +6,7 @@
 Session source integration, W19 Session composition/audio reentry, and the W20
 executable C ABI, sidecar, cross-language, installed-consumer,
 requalification, physical macOS, compatibility, performance, and registry
-release gates are hash-accepted. Documentation corrections through `1.0.4`
+release gates are hash-accepted. Documentation corrections through `1.0.5`
 do not change the accepted runtime, Rust API, C ABI, or PKSS contract.
 
 PocketStation has one engine: the Rust package and `libpocketstation`. Rust, C,

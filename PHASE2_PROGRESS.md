@@ -3039,10 +3039,11 @@
 
 ## PocketStation 1.0.4 documentation patch release — 2026-08-14
 
-- Status: `SAFE-TO-TEST` for replacement candidate
-  `pks-20260814-w20-docs-release-22`; publication and external consumption are
-  not claimed until the immutable registry, docs.rs, and clean-consumer gates
-  pass.
+- Status: `BLOCKED` for replacement candidate
+  `pks-20260814-w20-docs-release-22`. The clean workflow passed the corrected
+  protocol and package dry-run, then stopped before crates.io because it still
+  referenced a recovery-test script removed during single-package
+  consolidation. Workflow `31851000841` preserves the failed gate.
 - The deterministic failure is reduced to the standalone Core checkout. The
   cross-repository `pks` ownership assertion now reports `NOT OBSERVABLE` when
   its sibling checkout is absent and remains fully enforced when the sibling
@@ -3050,3 +3051,17 @@
 - The package version and public install snippets advance to `1.0.4`. The
   canonical 1.x `RELEASE_NOTES.md` records both the failed 1.0.3 publication
   attempt and this correction without recreating numbered patch-note files.
+
+## PocketStation 1.0.5 documentation patch release — 2026-08-14
+
+- Status: `SAFE-TO-TEST` for replacement candidate
+  `pks-20260814-w20-docs-release-23`; publication and external consumption are
+  not claimed until the immutable registry, docs.rs, and clean-consumer gates
+  pass.
+- `scripts/publish.sh` now checks the exact package version on crates.io before
+  an actual upload. A visible version completes idempotently, a missing version
+  publishes once, and an unavailable or unexpected registry response fails
+  closed without attempting publication.
+- `scripts/test-publish-recovery.sh` deterministically covers all four cases
+  for the consolidated single package. No product runtime or frozen contract
+  changes.
