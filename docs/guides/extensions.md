@@ -13,7 +13,8 @@ Choose the boundary that matches the work:
 | New computation | operator manifest/factory | Declare ports, schemas, partition, permissions, deadline, cancellation, and failure policy |
 | New destination | endpoint driver/factory | Consume a bounded route and expose lifecycle/failure observations |
 | Rust type safety | `Stream<T>` / `TypedOperator<I, O>` | Declaration-only; runtime identity remains `SignalSpec` |
-| Native C extension | `pocketstation.h` extension ABI | Versioned callback tables with explicit context ownership and bounded worker execution |
+| Native C extension | `pocketstation.h` Extension ABI | Versioned callback tables with explicit context ownership and bounded worker execution |
+| Packaged native library | `pks_extension_library_v1` + `Session::load_native_extension_library` | Absolute-path import, transactional registration, and code retained through callback destruction |
 | Managed process | `PKSS` sidecar protocol | Bounded framed IPC outside audio callbacks |
 
 An extension must not require `internal-testing` or edits to central. It must
@@ -38,3 +39,46 @@ The installed-consumer conformance artifact proves these contracts from a
 published package in a clean repository. Its `LOOPBACK-ONLY` classification is
 specific and intentional: it proves packaging and execution, not a remote or
 physical-device deployment.
+
+## Packaged native libraries
+
+Extension ABI 1.2 adds a transport for the executable callback tables already
+accepted by Core. A trusted library exports one `pks_extension_library_v1`
+entrypoint. The entrypoint reports a bounded registration count and an acquire
+callback; each acquisition returns one source, operator, or endpoint
+descriptor, borrowed port records, and its callback table.
+
+```rust,no_run
+use pocketstation::Session;
+
+# fn main() -> Result<(), Box<dyn std::error::Error>> {
+let session = Session::new();
+let loaded = session.load_native_extension_library(
+    "/opt/pocketstation/extensions/example.so",
+)?;
+for registration in loaded.registrations() {
+    println!("{} {:?}", registration.id(), registration.kind());
+}
+# Ok(())
+# }
+```
+
+The path must be absolute and is canonicalized before loading. PocketStation
+does not use an ambient DLL or shared-library search path. Every library and
+registration record is ABI-checked, every descriptor and port is copied, and
+duplicate identifiers are rejected before the `Session` registries change.
+Failure is all-or-none.
+
+An OK acquisition transfers the returned `registration_context` to
+PocketStation. `destroy_instance` and `destroy_registration` remain
+exactly-once terminal callbacks. Core retains the dynamic-library handle in
+every acquired callback adapter, so executable code cannot unload before those
+terminal calls complete. Entry, acquisition, lifecycle, and payload callbacks
+are unwind-contained and execute only during setup or on the existing
+blocking, async, and external partitions—never on capture callbacks or the
+realtime PCM lane.
+
+Python, JavaScript, Rust clients, and future SDKs should bind the same Session
+method. They must not implement their own loader search rules, callback
+lifetime owner, extension registry, or execution engine. Platform wheels or
+native packages remain responsible for distributing compatible library bytes.

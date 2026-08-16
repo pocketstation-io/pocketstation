@@ -17,12 +17,6 @@ actual_baseline_sha="$(shasum -a 256 "${baseline_crate}" | awk '{print $1}')"
   echo "C ABI baseline crate hash mismatch" >&2
   exit 1
 }
-actual_header_sha="$(shasum -a 256 "${repo_root}/include/pocketstation.h" | awk '{print $1}')"
-[[ "${actual_header_sha}" == "${expected_header_sha}" ]] || {
-  echo "public C header changed from the reviewed Core 1.0 baseline" >&2
-  exit 1
-}
-
 scratch="$(mktemp -d "${TMPDIR:-/tmp}/pks-abi-compatibility.XXXXXX")"
 trap 'rm -rf "${scratch}"' EXIT
 tar -xf "${baseline_crate}" -C "${scratch}"
@@ -31,14 +25,28 @@ baseline_source="$(find "${scratch}" -mindepth 1 -maxdepth 1 -type d -print -qui
   echo "C ABI baseline archive has no package root" >&2
   exit 1
 }
-cmp "${baseline_source}/include/pocketstation.h" "${repo_root}/include/pocketstation.h"
+actual_baseline_header_sha="$(shasum -a 256 "${baseline_source}/include/pocketstation.h" | awk '{print $1}')"
+[[ "${actual_baseline_header_sha}" == "${expected_header_sha}" ]] || {
+  echo "accepted C ABI baseline header hash mismatch" >&2
+  exit 1
+}
+actual_header_sha="$(shasum -a 256 "${repo_root}/include/pocketstation.h" | awk '{print $1}')"
 
 cc -std=c11 -Wall -Wextra -Werror \
   -I"${repo_root}/include" "${repo_root}/tools/abi-layout-probe.c" \
   -o "${scratch}/current-layout"
 "${scratch}/current-layout" >"${scratch}/current-layout.txt"
 awk '/^(type|field) / {print}' "${baseline}" >"${scratch}/expected-layout.txt"
-diff -u "${scratch}/expected-layout.txt" "${scratch}/current-layout.txt"
+awk '/^(type|field) / {print}' "${scratch}/current-layout.txt" >"${scratch}/current-layout-contract.txt"
+sort -u "${scratch}/expected-layout.txt" -o "${scratch}/expected-layout.txt"
+sort -u "${scratch}/current-layout-contract.txt" -o "${scratch}/current-layout-contract.txt"
+comm -23 "${scratch}/expected-layout.txt" "${scratch}/current-layout-contract.txt" \
+  >"${scratch}/missing-layout.txt"
+[[ ! -s "${scratch}/missing-layout.txt" ]] || {
+  echo "accepted C ABI type or field layout is missing or changed:" >&2
+  cat "${scratch}/missing-layout.txt" >&2
+  exit 1
+}
 
 cargo build --manifest-path "${repo_root}/Cargo.toml" --locked --release --lib
 case "$(uname -s)" in
@@ -64,12 +72,18 @@ esac
   exit 1
 }
 awk '/^symbol / {print $2}' "${baseline}" | sort -u >"${scratch}/expected-symbols.txt"
-diff -u "${scratch}/expected-symbols.txt" "${scratch}/current-symbols.txt"
+comm -23 "${scratch}/expected-symbols.txt" "${scratch}/current-symbols.txt" \
+  >"${scratch}/missing-symbols.txt"
+[[ ! -s "${scratch}/missing-symbols.txt" ]] || {
+  echo "accepted C ABI symbol is missing:" >&2
+  cat "${scratch}/missing-symbols.txt" >&2
+  exit 1
+}
 
 rg -q '^#define PKS_SESSION_ABI_MAJOR 1u$' "${repo_root}/include/pocketstation.h"
 rg -q '^#define PKS_SESSION_ABI_MINOR 1u$' "${repo_root}/include/pocketstation.h"
 rg -q '^#define PKS_EXTENSION_ABI_MAJOR 1u$' "${repo_root}/include/pocketstation.h"
-rg -q '^#define PKS_EXTENSION_ABI_MINOR 1u$' "${repo_root}/include/pocketstation.h"
+rg -q '^#define PKS_EXTENSION_ABI_MINOR 2u$' "${repo_root}/include/pocketstation.h"
 cargo test --manifest-path "${repo_root}/Cargo.toml" --locked \
   --test protocol_compatibility
 

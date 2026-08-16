@@ -10,6 +10,7 @@ mod frame;
 /// Compiler IR, registries, runtime plans, and execution machinery remain
 /// private even though the contract namespace is public.
 pub mod graph;
+pub mod native_extension;
 mod recording;
 mod runtime;
 mod session;

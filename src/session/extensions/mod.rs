@@ -6,6 +6,7 @@
 pub(crate) mod audio_reentry;
 #[cfg(test)]
 mod external_source_tests;
+mod native_library;
 mod polled_audio;
 mod recording;
 pub(crate) mod source;

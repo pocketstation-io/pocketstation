@@ -3082,3 +3082,30 @@
   reuse hold. No replacement package was published by this step. No runtime,
   Rust API, C ABI, PKSS, capture, hot-path, scaffold, mock, or evidence
   classification changed.
+
+## W21 SDK-neutral native extension library host — 2026-08-16
+
+- Status: `SAFE-TO-MERGE` for candidate
+  `pks-20260816-w21-core-native-extension-host-bridge-1`. The focused dynamic
+  library tests, full all-feature/all-target suite, strict Clippy, formatting,
+  no-default-features check, release quickstart, C ABI compatibility gate,
+  CODE_PROTOCOL gate, and executor document/state validators pass.
+- The prior Python blocker was narrowed after a complete engine audit: Core
+  already executes C source/operator/endpoint callbacks through the canonical
+  Session. The missing primitive was a versioned packaged-library entrypoint,
+  absolute-path loader, atomic import into the public Rust `Session`, and a
+  retained executable-code lifetime.
+- Extension ABI 1.2 adds `pks_extension_library_v1` without introducing a new
+  descriptor, callback model, registry, compiler, runtime, graph, or lifecycle
+  owner. Extension ABI 1.1 layouts, offsets, and Core symbols remain the
+  required compatibility baseline subset.
+- A separately compiled dynamic-library fixture passes six focused tests:
+  canonical source → operator → endpoint execution, exactly-once instance and
+  registration destruction, relative-path rejection, missing entrypoint,
+  unsupported ABI, malformed acquired-registration cleanup, and transactional
+  duplicate import.
+- Foreign callbacks remain on blocking/async/external partitions. No callback,
+  allocation, dynamic loading, locking, or managed execution was added to the
+  capture or realtime PCM path. The plugin is a conformance fixture only; this
+  step does not claim remote, physical-device, language-SDK parity, or release
+  readiness.

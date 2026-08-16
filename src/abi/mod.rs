@@ -1,4 +1,4 @@
 mod codec;
-mod executable_extension;
-mod extension;
-mod session;
+pub(crate) mod executable_extension;
+pub(crate) mod extension;
+pub(crate) mod session;

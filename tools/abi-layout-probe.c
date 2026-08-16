@@ -19,6 +19,7 @@ int main(void) {
   TYPE_LAYOUT(PksExtensionSignalView);
   TYPE_LAYOUT(PksExtensionSignalBuffer);
   TYPE_LAYOUT(PksExtensionCallbacks);
+  TYPE_LAYOUT(PksExtensionLibrary);
   TYPE_LAYOUT(PksExtensionPipelineDeclaration);
   TYPE_LAYOUT(PksExtensionMetricsSnapshot);
   TYPE_LAYOUT(PksSessionEngineConfig);
@@ -46,5 +47,12 @@ int main(void) {
   FIELD_OFFSET(PksExtensionCallbacks, finish);
   FIELD_OFFSET(PksExtensionCallbacks, destroy_instance);
   FIELD_OFFSET(PksExtensionCallbacks, destroy_registration);
+  FIELD_OFFSET(PksExtensionLibrary, struct_size_bytes);
+  FIELD_OFFSET(PksExtensionLibrary, abi_major);
+  FIELD_OFFSET(PksExtensionLibrary, abi_minor);
+  FIELD_OFFSET(PksExtensionLibrary, registration_count);
+  FIELD_OFFSET(PksExtensionLibrary, reserved);
+  FIELD_OFFSET(PksExtensionLibrary, library_context);
+  FIELD_OFFSET(PksExtensionLibrary, acquire_registration);
   return 0;
 }

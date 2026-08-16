@@ -41,6 +41,7 @@ use crate::{
 };
 
 const MAX_CALLBACK_PAYLOAD_BYTES: u32 = 1_048_576;
+pub(crate) const MAX_LIBRARY_REGISTRATIONS: u32 = 64;
 const SIGNAL_FLAG_END_OF_STREAM: u32 = 1;
 const SIGNAL_FLAG_TERMINAL: u32 = 2;
 
@@ -105,6 +106,32 @@ pub struct PksExtensionCallbacks {
     pub destroy_instance: PksExtensionDestroyCallback,
     pub destroy_registration: PksExtensionDestroyCallback,
 }
+
+pub type PksExtensionAcquireRegistrationCallback = Option<
+    unsafe extern "C-unwind" fn(
+        library_context: *mut c_void,
+        registration_index: u32,
+        output_descriptor: *mut PksExtensionDescriptor,
+        output_ports: *mut *const PksExtensionPort,
+        output_port_count: *mut u32,
+        output_callbacks: *mut PksExtensionCallbacks,
+    ) -> PksSessionStatus,
+>;
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct PksExtensionLibrary {
+    pub struct_size_bytes: u32,
+    pub abi_major: u16,
+    pub abi_minor: u16,
+    pub registration_count: u32,
+    pub reserved: u32,
+    pub library_context: *mut c_void,
+    pub acquire_registration: PksExtensionAcquireRegistrationCallback,
+}
+
+pub type PksExtensionLibraryEntrypoint =
+    unsafe extern "C-unwind" fn(output_library: *mut PksExtensionLibrary) -> PksSessionStatus;
 
 #[repr(C)]
 #[derive(Clone, Copy)]
@@ -216,6 +243,14 @@ impl ExecutableExtensionRegistration {
     pub(crate) fn id(&self) -> &str {
         match self {
             Self::Source { id, .. } | Self::Operator { id, .. } | Self::Endpoint { id, .. } => id,
+        }
+    }
+
+    pub(crate) const fn kind(&self) -> PksExtensionKind {
+        match self {
+            Self::Source { .. } => PksExtensionKind::Source,
+            Self::Operator { .. } => PksExtensionKind::Operator,
+            Self::Endpoint { .. } => PksExtensionKind::Endpoint,
         }
     }
 }
@@ -442,6 +477,7 @@ struct ForeignCallbacks {
     instance_destroyed: Arc<AtomicBool>,
     registration_destroyed: Arc<AtomicBool>,
     call_lock: Arc<Mutex<()>>,
+    _code_lease: Option<Arc<libloading::Library>>,
 }
 
 // SAFETY: callbacks are serialized by call_lock. The C registration contract
@@ -450,26 +486,10 @@ unsafe impl Send for ForeignCallbacks {}
 unsafe impl Sync for ForeignCallbacks {}
 
 impl ForeignCallbacks {
-    fn new(callbacks: PksExtensionCallbacks) -> Result<Self, AbiExtensionError> {
-        guard_versioned(
-            callbacks.struct_size_bytes,
-            callbacks.abi_major,
-            callbacks.abi_minor,
-            size_of::<PksExtensionCallbacks>(),
-        )?;
-        if callbacks.registration_context.is_null()
-            || callbacks.max_payload_bytes == 0
-            || callbacks.max_payload_bytes > MAX_CALLBACK_PAYLOAD_BYTES
-            || callbacks.validate_configuration.is_none()
-            || callbacks.create.is_none()
-            || callbacks.prepare.is_none()
-            || callbacks.request_stop.is_none()
-            || callbacks.finish.is_none()
-            || callbacks.destroy_instance.is_none()
-            || callbacks.destroy_registration.is_none()
-        {
-            return Err(AbiExtensionError::InvalidArgument);
-        }
+    fn new_validated(
+        callbacks: PksExtensionCallbacks,
+        code_lease: Option<Arc<libloading::Library>>,
+    ) -> Result<Self, AbiExtensionError> {
         let empty_configuration = PksSessionUtf8 {
             data: std::ptr::NonNull::<u8>::dangling().as_ptr().cast_const(),
             len_bytes: 0,
@@ -513,6 +533,7 @@ impl ForeignCallbacks {
             instance_destroyed: Arc::new(AtomicBool::new(false)),
             registration_destroyed: Arc::new(AtomicBool::new(false)),
             call_lock: Arc::new(Mutex::new(())),
+            _code_lease: code_lease,
         })
     }
 
@@ -668,13 +689,20 @@ fn destroy_unretained_registration(
             let _ = catch_unwind(AssertUnwindSafe(|| unsafe { destroy(instance_context) }));
         }
     }
-    if let Some(destroy) = callbacks.destroy_registration {
+    if !callbacks.registration_context.is_null() {
+        let Some(destroy) = callbacks.destroy_registration else {
+            return;
+        };
         // SAFETY: registration failed before retention, so ownership returns
         // exactly once through this terminal callback.
         let _ = catch_unwind(AssertUnwindSafe(|| unsafe {
             destroy(callbacks.registration_context)
         }));
     }
+}
+
+pub(crate) fn destroy_acquired_registration(callbacks: &PksExtensionCallbacks) {
+    destroy_unretained_registration(callbacks, std::ptr::null_mut());
 }
 
 struct ForeignOutput {
@@ -1058,17 +1086,127 @@ fn build_registration(
     ports: &[PksExtensionPort],
     callbacks: PksExtensionCallbacks,
 ) -> Result<ExecutableExtensionRegistration, AbiExtensionError> {
+    build_registration_with_library(descriptor, ports, callbacks, None, false)
+}
+
+pub(crate) fn build_registration_with_library(
+    descriptor: PksExtensionDescriptor,
+    ports: &[PksExtensionPort],
+    callbacks: PksExtensionCallbacks,
+    code_lease: Option<Arc<libloading::Library>>,
+    destroy_registration_on_preparation_error: bool,
+) -> Result<ExecutableExtensionRegistration, AbiExtensionError> {
+    let port_count = u32::try_from(ports.len()).map_err(|_| AbiExtensionError::InvalidArgument)?;
+    // SAFETY: descriptor is one readable local record and ports is a readable,
+    // bounded slice for this synchronous validation call.
+    let descriptor_status =
+        unsafe { pks_extension_descriptor_validate(&descriptor, ports.as_ptr(), port_count) };
+    if let Err(error) = status_result(descriptor_status) {
+        if destroy_registration_on_preparation_error {
+            destroy_unretained_registration(&callbacks, std::ptr::null_mut());
+        }
+        return Err(error);
+    }
+    if let Err(error) = validate_callback_shape(&callbacks) {
+        if destroy_registration_on_preparation_error {
+            destroy_unretained_registration(&callbacks, std::ptr::null_mut());
+        }
+        return Err(error);
+    }
+
+    let prepared = match prepare_registration(descriptor, ports, &callbacks) {
+        Ok(prepared) => prepared,
+        Err(error) => {
+            if destroy_registration_on_preparation_error {
+                destroy_unretained_registration(&callbacks, std::ptr::null_mut());
+            }
+            return Err(error);
+        }
+    };
+    let callbacks = ForeignCallbacks::new_validated(callbacks, code_lease)?;
+    Ok(prepared.with_callbacks(callbacks))
+}
+
+fn validate_callback_shape(callbacks: &PksExtensionCallbacks) -> Result<(), AbiExtensionError> {
+    guard_versioned(
+        callbacks.struct_size_bytes,
+        callbacks.abi_major,
+        callbacks.abi_minor,
+        size_of::<PksExtensionCallbacks>(),
+    )?;
+    if callbacks.registration_context.is_null()
+        || callbacks.max_payload_bytes == 0
+        || callbacks.max_payload_bytes > MAX_CALLBACK_PAYLOAD_BYTES
+        || callbacks.validate_configuration.is_none()
+        || callbacks.create.is_none()
+        || callbacks.prepare.is_none()
+        || callbacks.request_stop.is_none()
+        || callbacks.finish.is_none()
+        || callbacks.destroy_instance.is_none()
+        || callbacks.destroy_registration.is_none()
+    {
+        Err(AbiExtensionError::InvalidArgument)
+    } else {
+        Ok(())
+    }
+}
+
+enum PreparedExtensionRegistration {
+    Source {
+        id: String,
+        manifest: SourceManifest,
+    },
+    Operator {
+        id: String,
+        manifest: Box<AsyncOperatorManifest>,
+    },
+    Endpoint {
+        id: String,
+        descriptor: NodeDescriptor,
+    },
+}
+
+impl PreparedExtensionRegistration {
+    fn with_callbacks(self, callbacks: ForeignCallbacks) -> ExecutableExtensionRegistration {
+        match self {
+            Self::Source { id, manifest } => ExecutableExtensionRegistration::Source {
+                id,
+                factory: Arc::new(ForeignSourceFactory {
+                    manifest,
+                    callbacks,
+                }),
+            },
+            Self::Operator { id, manifest } => ExecutableExtensionRegistration::Operator {
+                id,
+                factory: Arc::new(ForeignOperatorFactory {
+                    manifest: *manifest,
+                    callbacks,
+                }),
+            },
+            Self::Endpoint { id, descriptor } => ExecutableExtensionRegistration::Endpoint {
+                id,
+                definition: Arc::new(ForeignEndpointDefinition { descriptor }),
+                factory: Arc::new(ForeignEndpointFactory { callbacks }),
+            },
+        }
+    }
+}
+
+fn prepare_registration(
+    descriptor: PksExtensionDescriptor,
+    ports: &[PksExtensionPort],
+    callbacks: &PksExtensionCallbacks,
+) -> Result<PreparedExtensionRegistration, AbiExtensionError> {
     let id = copy_text(descriptor.extension_id, false)?;
-    let callbacks = ForeignCallbacks::new(callbacks)?;
     let owned_ports = ports
         .iter()
         .map(owned_port)
         .collect::<Result<Vec<_>, _>>()?;
     match descriptor.kind {
         value if value == PksExtensionKind::Source as u32 => {
-            if callbacks.callbacks.source_next.is_none()
-                || callbacks.callbacks.operator_process.is_some()
-                || callbacks.callbacks.endpoint_consume.is_some()
+            if callbacks.source_next.is_none()
+                || callbacks.operator_process.is_some()
+                || callbacks.endpoint_consume.is_some()
                 || owned_ports.len() != 1
                 || owned_ports[0].direction() != PortDirection::Output
             {
@@ -1083,18 +1221,12 @@ fn build_registration(
                 SafetyContract::BlockingAllowed,
             )
             .map_err(|_| AbiExtensionError::InvalidArgument)?;
-            Ok(ExecutableExtensionRegistration::Source {
-                id,
-                factory: Arc::new(ForeignSourceFactory {
-                    manifest,
-                    callbacks,
-                }),
-            })
+            Ok(PreparedExtensionRegistration::Source { id, manifest })
         }
         value if value == PksExtensionKind::Operator as u32 => {
-            if callbacks.callbacks.operator_process.is_none()
-                || callbacks.callbacks.source_next.is_some()
-                || callbacks.callbacks.endpoint_consume.is_some()
+            if callbacks.operator_process.is_none()
+                || callbacks.source_next.is_some()
+                || callbacks.endpoint_consume.is_some()
                 || owned_ports.len() != 2
             {
                 return Err(AbiExtensionError::InvalidArgument);
@@ -1130,10 +1262,10 @@ fn build_registration(
                 .with_media(media)
                 .with_backpressure(BackpressurePolicy::DropNewest)
                 .with_copy_policy(CopyPolicy::CopyToBranchPool)
-                .with_max_payload_bytes(callbacks.max_payload_bytes());
+                .with_max_payload_bytes(callbacks.max_payload_bytes as usize);
             let output_edge = EdgeContract::bounded_async()
                 .with_media(media)
-                .with_max_payload_bytes(callbacks.max_payload_bytes());
+                .with_max_payload_bytes(callbacks.max_payload_bytes as usize);
             let manifest = AsyncOperatorManifest::new(
                 OperatorId::new(id.clone()),
                 descriptor.revision,
@@ -1154,18 +1286,15 @@ fn build_registration(
                 OperatorOutputRolePolicy::default(),
             )
             .map_err(|_| AbiExtensionError::InvalidArgument)?;
-            Ok(ExecutableExtensionRegistration::Operator {
+            Ok(PreparedExtensionRegistration::Operator {
                 id,
-                factory: Arc::new(ForeignOperatorFactory {
-                    manifest,
-                    callbacks,
-                }),
+                manifest: Box::new(manifest),
             })
         }
         value if value == PksExtensionKind::Endpoint as u32 => {
-            if callbacks.callbacks.endpoint_consume.is_none()
-                || callbacks.callbacks.source_next.is_some()
-                || callbacks.callbacks.operator_process.is_some()
+            if callbacks.endpoint_consume.is_none()
+                || callbacks.source_next.is_some()
+                || callbacks.operator_process.is_some()
                 || owned_ports.len() != 1
                 || owned_ports[0].direction() != PortDirection::Input
             {
@@ -1181,11 +1310,7 @@ fn build_registration(
                 true,
             )
             .map_err(|_| AbiExtensionError::InvalidArgument)?;
-            Ok(ExecutableExtensionRegistration::Endpoint {
-                id,
-                definition: Arc::new(ForeignEndpointDefinition { descriptor }),
-                factory: Arc::new(ForeignEndpointFactory { callbacks }),
-            })
+            Ok(PreparedExtensionRegistration::Endpoint { id, descriptor })
         }
         _ => Err(AbiExtensionError::InvalidArgument),
     }
@@ -1380,7 +1505,8 @@ fn extension_call(operation: impl FnOnce() -> Result<(), AbiExtensionError>) -> 
     }
 }
 
-enum AbiExtensionError {
+#[derive(Debug)]
+pub(crate) enum AbiExtensionError {
     Null,
     Misaligned,
     UnsupportedMajor,
@@ -1392,6 +1518,19 @@ enum AbiExtensionError {
 }
 
 impl AbiExtensionError {
+    pub(crate) const fn code(&self) -> &'static str {
+        match self {
+            Self::Null => "NULL_POINTER",
+            Self::Misaligned => "MISALIGNED_POINTER",
+            Self::UnsupportedMajor => "UNSUPPORTED_ABI_MAJOR",
+            Self::UnsupportedMinor => "UNSUPPORTED_ABI_MINOR",
+            Self::InvalidSize => "INVALID_STRUCT_SIZE",
+            Self::InvalidArgument => "INVALID_ARGUMENT",
+            Self::Status(_) => "CALLBACK_STATUS",
+            Self::Session(_) => "SESSION_STATUS",
+        }
+    }
+
     fn status(self) -> PksSessionStatus {
         match self {
             Self::Null => PksSessionStatus::new(PksSessionStatusCode::NullArgument, 0),

@@ -5,7 +5,7 @@ use std::slice;
 use crate::abi::session::{PksSessionStatus, PksSessionStatusCode, PksSessionUtf8};
 
 pub const PKS_EXTENSION_ABI_MAJOR: u16 = 1;
-pub const PKS_EXTENSION_ABI_MINOR: u16 = 1;
+pub const PKS_EXTENSION_ABI_MINOR: u16 = 2;
 const MAX_PORTS: u32 = 64;
 const MAX_IDENTIFIER_BYTES: u32 = 1_024;
 

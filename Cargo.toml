@@ -59,6 +59,7 @@ internal-testing = []
 macos-asp-driver-artifact = []
 
 [dependencies]
+libloading = "0.8.9"
 rtrb = "0.3"
 thiserror = "1"
 hound = "3"

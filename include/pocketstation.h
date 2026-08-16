@@ -11,7 +11,8 @@ extern "C" {
 #define PKS_SESSION_ABI_MINOR 1u
 
 #define PKS_EXTENSION_ABI_MAJOR 1u
-#define PKS_EXTENSION_ABI_MINOR 1u
+#define PKS_EXTENSION_ABI_MINOR 2u
+#define PKS_EXTENSION_LIBRARY_ENTRYPOINT_V1 "pks_extension_library_v1"
 
 typedef uint32_t PksSessionStatusCode;
 #define PKS_SESSION_STATUS_OK 0u
@@ -208,6 +209,44 @@ typedef struct {
   PksExtensionDestroyCallback destroy_instance;
   PksExtensionDestroyCallback destroy_registration;
 } PksExtensionCallbacks;
+
+/*
+ * A packaged native extension exports exactly one function named
+ * pks_extension_library_v1 with the PksExtensionLibraryEntrypoint signature.
+ * The host resolves that symbol from a caller-supplied absolute library path.
+ * It never searches the ambient process library path.
+ *
+ * acquire_registration writes one descriptor and callback table by value and
+ * returns a borrowed port array. PocketStation copies all descriptor and port
+ * data before the call for the next index. On OK, ownership of the callback
+ * registration_context transfers to PocketStation and ends through exactly
+ * one destroy_registration call. On error, ownership remains with the
+ * extension library.
+ *
+ * PocketStation keeps the library loaded until every acquired instance and
+ * registration context has been destroyed. Entry-point and acquisition calls,
+ * like all executable extension callbacks, must not unwind across C.
+ */
+typedef PksSessionStatus (*PksExtensionAcquireRegistrationCallback)(
+    void *library_context,
+    uint32_t registration_index,
+    PksExtensionDescriptor *output_descriptor,
+    const PksExtensionPort **output_ports,
+    uint32_t *output_port_count,
+    PksExtensionCallbacks *output_callbacks);
+
+typedef struct {
+  uint32_t struct_size_bytes;
+  uint16_t abi_major;
+  uint16_t abi_minor;
+  uint32_t registration_count;
+  uint32_t reserved;
+  void *library_context;
+  PksExtensionAcquireRegistrationCallback acquire_registration;
+} PksExtensionLibrary;
+
+typedef PksSessionStatus (*PksExtensionLibraryEntrypoint)(
+    PksExtensionLibrary *output_library);
 
 typedef struct {
   uint32_t struct_size_bytes;
@@ -448,6 +487,9 @@ PksSessionStatus pks_extension_descriptor_validate(
     const PksExtensionDescriptor *descriptor,
     const PksExtensionPort *ports,
     uint32_t port_count);
+/* Implemented and exported by a packaged extension library, not by Core. */
+PksSessionStatus pks_extension_library_v1(
+    PksExtensionLibrary *output_library);
 PksSessionStatus pks_session_engine_register_extension(
     PksSessionHandle engine,
     const PksExtensionDescriptor *descriptor,

@@ -183,12 +183,19 @@ PocketStation keeps product and provider behavior outside the engine:
 | Destination or connector | `EndpointDriverFactory` |
 | Strongly typed Rust pipeline | `Stream<T>` / `TypedOperator<I, O>` |
 | Native C integration | versioned callbacks in `pocketstation.h` |
-| Python, JavaScript, or another process | bounded PKSS sidecar lifecycle |
+| Packaged compiled extension | `pks_extension_library_v1` loaded into the same `Session` |
+| Python, JavaScript, or another managed process | bounded PKSS sidecar lifecycle for out-of-process work |
 
 Operators can be chained, can expose multiple named inputs and outputs, and can
 return generated PCM through the bounded audio-reentry Bridge. Extensions use
 the same Session compiler, runtime, observations, cancellation, and shutdown;
 they do not implement another engine.
+
+Language SDKs bind these same Session authorities. A trusted compiled package
+is loaded only from a canonical absolute path, all registrations are imported
+transactionally, and Core retains its executable library until every callback
+context is destroyed. SDKs do not own a second loader policy or Session
+runtime.
 
 See the [extension guide](docs/guides/extensions.md) and
 [signal model](docs/concepts/signals-and-streams.md).
