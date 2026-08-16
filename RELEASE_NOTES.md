@@ -35,59 +35,23 @@ The extension-first Core freeze is active through 2028-08-13. A new provider,
 model, customer workflow, or exporter belongs in an extension rather than a
 new Core category whenever the 1.x contracts can express it.
 
-## Release history
+## What ships in 1.x
 
-### 1.0.5
-
-- Reframed the public documentation around the concrete capture-once workflow
-  and provenance-preserving bounded execution contract.
-- Replaced self-awarded novelty language with implemented guarantees,
-  extension boundaries, and exact evidence.
-- Consolidated patch notes into this canonical 1.x document.
-- Corrected the standalone Core release gate so a missing sibling CLI checkout
-  is reported explicitly instead of aborting an otherwise self-contained Core
-  qualification. Full-workspace qualification continues to enforce the CLI
-  ownership boundary when that repository is present.
-- Restored exact-version idempotent publication recovery for the consolidated
-  single package: an already-visible version succeeds without republishing,
-  a missing version publishes once, and registry errors fail closed.
-
-### 1.0.4
-
-- Created an immutable source tag and GitHub Release carrying the corrected
-  standalone-checkout protocol gate.
-- Publication stopped before crates.io because the workflow still referenced a
-  recovery-contract script removed during single-package consolidation. The
-  single-package recovery contract is restored in 1.0.5.
-
-### 1.0.3
-
-- Created an immutable source tag and GitHub Release for the documentation
-  update.
-- Publication stopped before crates.io when the clean runner exposed the
-  standalone-checkout release-gate defect corrected in 1.0.4.
-
-### 1.0.2
-
-- Added a non-prompting Windows microphone `AppCapability` observation on
-  supported Windows hosts.
-- Kept Linux preflight explicitly `NotObservable`; selected-source
-  prepare/open remains authoritative on every platform.
-
-### 1.0.1
-
-- Corrected docs.rs packaging to build the contracts-only surface on its native
-  Linux target.
-- Added the public quickstart, extension guide, architecture links, platform
-  prerequisites, and evidence boundaries to the crate archive.
-
-### 1.0.0
-
-- Froze the first extension-complete single engine: source-aware capture,
-  bounded realtime and typed lanes, open extension contracts, named
-  composition, generated-audio reentry, multistem recording, observations,
-  explicit lifecycle/fault outcomes, executable C callbacks, and bounded
+- Source-aware application and microphone capture with independent stems.
+- Bounded realtime audio and typed-signal lanes with explicit capacity,
+  backpressure, loss, discontinuity, and lifecycle behavior.
+- Open Operator, Endpoint, Connector, external-source, and generated-audio
+  extension contracts rather than closed provider categories.
+- Named composition, generated-audio reentry, aligned multistem recording,
+  runtime observations, and explicit stop and fault outcomes.
+- A versioned C ABI with executable callbacks and bounded PKSS process
   sidecars.
+- Non-prompting microphone permission observation where the operating system
+  exposes an authoritative query. `NotObservable` remains unknown; selected
+  source prepare/open is authoritative on every platform.
+- A self-contained Core release gate, exact-version publication recovery, a
+  compiling public quickstart, extension guidance, platform prerequisites,
+  and explicit evidence boundaries.
 
 Realtime callbacks remain allocation-free, lock-free, blocking-free,
 async-free, log-free, and panic-free by contract and accepted gates. Evidence

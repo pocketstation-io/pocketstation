@@ -3065,3 +3065,20 @@
 - `scripts/test-publish-recovery.sh` deterministically covers all four cases
   for the consolidated single package. No product runtime or frozen contract
   changes.
+
+## Canonical 1.0.0 registry reset — 2026-08-16
+
+- Status: `SAFE-TO-MERGE`. The owner deleted the complete `pocketstation`
+  package from crates.io; the registry subsequently returned `404` for the
+  package name. The source package, lockfile, and public install snippets are
+  reset to the canonical `1.0.0` version.
+- `RELEASE_NOTES.md` now describes the compatible 1.x product and contract
+  globally instead of presenting documentation-only publication attempts as
+  product releases. Historical evidence above remains unchanged.
+- `cargo package --allow-dirty --locked` verified the generated
+  `pocketstation-1.0.0.crate`, and
+  `cargo build --release --example product_quickstart --locked` passed.
+- The immediate crates.io upload was rejected by the registry's deleted-name
+  reuse hold. No replacement package was published by this step. No runtime,
+  Rust API, C ABI, PKSS, capture, hot-path, scaffold, mock, or evidence
+  classification changed.

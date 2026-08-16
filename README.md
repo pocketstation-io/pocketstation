@@ -16,8 +16,8 @@ work onto the audio callback.
 ```text
 desktop application ─┐
                      ├─ capture once ─ source-aware Session ─┬─ AI / model connector
-microphone ──────────┘                                      ├─ browser / remote receiver
-                                                            └─ aligned multistem recording
+microphone ──────────┘                                       ├─ browser / remote receiver
+                                                             └─ aligned multistem recording
 ```
 
 Build workflows such as:
@@ -33,7 +33,7 @@ Build workflows such as:
 - native and managed integrations that participate in the same Session
   lifecycle rather than building another media runtime.
 
-## The contract is the product
+## Contract
 
 PocketStation does not reduce live media to an anonymous `AudioFrame`. Its
 execution contract keeps the information needed to reason about a running
@@ -55,14 +55,14 @@ the same compiler, lifecycle, observations, and failure model.
 
 ```toml
 [dependencies]
-pocketstation = "1.0.5"
+pocketstation = "1.0.0"
 ```
 
 PocketStation requires Rust 1.95 or newer. Native capture is enabled by
 default. A contracts-only build for documentation or tooling can disable it:
 
 ```toml
-pocketstation = { version = "1.0.5", default-features = false }
+pocketstation = { version = "1.0.0", default-features = false }
 ```
 
 ## Quick start
