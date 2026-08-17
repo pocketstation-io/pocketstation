@@ -3136,3 +3136,14 @@
   extension/sidecar boundaries. The current native extension ABI remains
   typed-signal-only, so this step does not claim arbitrary pure-Python or
   pure-JavaScript PCM connector authoring.
+
+## W21 connector grouping public-surface correction — 2026-08-17
+
+- The first independent Relay connector implementation exposed a public API
+  omission: `EndpointDriverFactory::preparation_group` returned grouping types
+  that the crate did not re-export for external implementations.
+- Core now re-exports the existing `EndpointPreparationGroup` and
+  `EndpointGroupId` without changing grouping, preparation, or runtime
+  semantics. An external-style connector test names and returns a shared group.
+- This correction adds no provider dependency, protocol, worker, queue,
+  registry, or execution path. Relay implementation remains outside Core.

@@ -71,9 +71,9 @@ pub fn microphone_permission_observation() -> PermissionObservation {
 pub use crate::endpoint::{
     EndpointAudioFrame, EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory,
     EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage,
-    EndpointInputOrigin, EndpointPortInput, EndpointPrepareContext, EndpointReceiver,
-    EndpointRouteContext, EndpointSignalReceiver, EndpointStartGate, PreparedEndpointDriver,
-    RunningEndpointDriver, SessionTimelineOrigin,
+    EndpointGroupId, EndpointInputOrigin, EndpointPortInput, EndpointPreparationGroup,
+    EndpointPrepareContext, EndpointReceiver, EndpointRouteContext, EndpointSignalReceiver,
+    EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin,
 };
 pub use crate::frame::{
     AudioBufferPool, AudioFrame, AudioFrameBuildError, ClockDomainId, ConnectorId, EndpointId,
