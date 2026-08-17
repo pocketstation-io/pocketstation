@@ -142,7 +142,7 @@ impl ConnectorError {
                 EndpointFailureRetryability::ReconfigurationRequired
             }
         };
-        EndpointFailure::new(stage, self.message)
+        EndpointFailure::new(stage, format!("{}: {}", self.code, self.message))
             .with_external_details(self.code.as_str(), retryability)
     }
 
