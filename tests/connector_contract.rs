@@ -1,5 +1,5 @@
 #[cfg(feature = "conformance-fixtures")]
-use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::atomic::{AtomicU64, AtomicU8, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 #[cfg(feature = "conformance-fixtures")]
@@ -263,6 +263,7 @@ struct FaultControl {
     cancelled_preparations_total: AtomicU64,
     run_calls_total: AtomicU64,
     completed_runs_total: AtomicU64,
+    shutdown_mode: AtomicU8,
 }
 
 #[cfg(feature = "conformance-fixtures")]
@@ -369,6 +370,14 @@ impl ConnectorWorker for FaultWorker {
                 let _ = context.wait_for_stop(Duration::from_millis(1));
             }
         }
+        self.control.shutdown_mode.store(
+            match context.shutdown_mode() {
+                Some(pocketstation::EndpointShutdownMode::Drain) => 1,
+                Some(pocketstation::EndpointShutdownMode::Abort) => 2,
+                None => 0,
+            },
+            Ordering::Release,
+        );
         self.control
             .completed_runs_total
             .fetch_add(1, Ordering::Relaxed);
@@ -491,7 +500,18 @@ fn given_grouped_connector_when_session_stops_then_one_worker_is_joined_and_obse
     assert!(running.stop().is_success());
     assert_eq!(control.run_calls_total.load(Ordering::Relaxed), 1);
     assert_eq!(control.completed_runs_total.load(Ordering::Relaxed), 1);
+    assert_eq!(control.shutdown_mode.load(Ordering::Acquire), 1);
     assert_eq!(registered.observations().expect("snapshots").len(), 1);
+}
+
+#[cfg(feature = "conformance-fixtures")]
+#[test]
+fn given_grouped_connector_when_session_is_cancelled_then_abort_intent_reaches_worker() {
+    let (session, _registered, _endpoint, control) = routed_fault_session("normal");
+    let mut running = session.start().expect("running Session");
+    assert!(running.cancel().is_success());
+    assert_eq!(control.completed_runs_total.load(Ordering::Relaxed), 1);
+    assert_eq!(control.shutdown_mode.load(Ordering::Acquire), 2);
 }
 
 #[cfg(feature = "conformance-fixtures")]

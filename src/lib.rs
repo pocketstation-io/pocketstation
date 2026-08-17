@@ -72,8 +72,9 @@ pub use crate::endpoint::{
     EndpointAudioFrame, EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory,
     EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage,
     EndpointGroupId, EndpointInputOrigin, EndpointPortInput, EndpointPreparationGroup,
-    EndpointPrepareContext, EndpointReceiver, EndpointRouteContext, EndpointSignalReceiver,
-    EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin,
+    EndpointPrepareContext, EndpointReceiver, EndpointRouteContext, EndpointShutdownMode,
+    EndpointSignalReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver,
+    SessionTimelineOrigin,
 };
 pub use crate::frame::{
     AudioBufferPool, AudioFrame, AudioFrameBuildError, ClockDomainId, ConnectorId, EndpointId,

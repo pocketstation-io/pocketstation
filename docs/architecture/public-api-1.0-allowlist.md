@@ -28,7 +28,8 @@ the same engine through stable signal/schema identities.
 - Endpoint extension: `EndpointDriverFactory`, `EndpointPortInput`, opaque
   `EndpointAudioReceiver`, `EndpointAudioFrame`, opaque
   `EndpointSignalReceiver`, endpoint context, start gate, prepared/running
-  driver traits, observations, finalization records, and errors.
+  driver traits, drain/abort shutdown intent, observations, finalization
+  records, and errors.
 - Capture extension: callback/prepared/active backend traits, bounded delivery
   producers, exact capture selectors/identity, observations, runtime events,
   and capture errors. Capture consumers, Session capture owners, and platform

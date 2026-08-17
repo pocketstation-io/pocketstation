@@ -1,5 +1,23 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W21 Endpoint shutdown-intent correction — 2026-08-17
+
+- Status: `SAFE-TO-TEST` inside active candidate
+  `pks-20260817-w21-relay-connector-package-7`; full repository and real Relay
+  gates remain pending.
+- The canonical Endpoint lifecycle now distinguishes graceful drain from
+  cancellation abort. `RunningSession::stop` requests
+  `EndpointShutdownMode::Drain`; `RunningSession::cancel` requests
+  `EndpointShutdownMode::Abort`.
+- The Connector worker token preserves that intent without introducing a
+  Connector lifecycle. Abort monotonically upgrades drain and cannot be
+  downgraded. Existing Endpoint drivers remain source-compatible through the
+  default `request_shutdown` adapter to `request_stop`.
+- Public Session tests prove drain and abort reach a grouped connector worker.
+  The canonical Relay package separately proves graceful queue drain and fast
+  abort semantics. No capture callback, realtime queue, graph compiler,
+  provider protocol, or platform backend changed.
+
 ## W21 connector runtime authoring correction — 2026-08-17
 
 - Status: `SAFE-TO-TEST` inside active candidate
@@ -23,7 +41,7 @@
   orthogonal provider status, startup-readiness timeout, canonical delivery
   observations, saturation, joined stop, terminal failure, panic containment,
   and dependency direction.
-- The exact Core candidate passes 445 library tests plus every integration,
+- The exact Core candidate passes 446 library tests plus every integration,
   example, and benchmark target; strict all-target/all-feature Clippy;
   warnings-as-errors contracts-only rustdoc; the release quickstart;
   architecture constraints; `CODE_PROTOCOL`; and the Core freeze-policy gate.

@@ -303,7 +303,33 @@ pub trait RunningEndpointDriver: Send {
 
     fn request_stop(&mut self) -> Result<(), EndpointFailure>;
 
+    fn request_shutdown(&mut self, mode: EndpointShutdownMode) -> Result<(), EndpointFailure> {
+        let _ = mode;
+        self.request_stop()
+    }
+
     fn join_and_finalize(self: Box<Self>) -> EndpointDriverFinalization;
+}
+
+/// Session shutdown intent delivered to an active endpoint.
+///
+/// `Drain` permits already accepted work to finish. `Abort` asks the endpoint
+/// to stop without accepting or waiting for additional work. Endpoint drivers
+/// that only implement the legacy `request_stop` method retain their existing
+/// behavior through the default `request_shutdown` adapter.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum EndpointShutdownMode {
+    Drain,
+    Abort,
+}
+
+impl EndpointShutdownMode {
+    const fn priority(self) -> u8 {
+        match self {
+            Self::Drain => 1,
+            Self::Abort => 2,
+        }
+    }
 }
 
 /// Read-only one-way start barrier shared by endpoint drivers in one startup.
@@ -363,7 +389,7 @@ impl PreparedEndpoint {
         match self.driver.start(start_gate) {
             Ok(driver) => Ok(RunningEndpoint {
                 driver,
-                request_stop_result: None,
+                shutdown_request: None,
             }),
             Err(failure) => Err(EndpointStartFailure {
                 cause: EndpointStartFailureCause::Driver(failure),
@@ -419,7 +445,7 @@ impl std::error::Error for EndpointStartFailure {}
 
 pub struct RunningEndpoint {
     driver: Box<dyn RunningEndpointDriver>,
-    request_stop_result: Option<Result<(), EndpointFailure>>,
+    shutdown_request: Option<(EndpointShutdownMode, Result<(), EndpointFailure>)>,
 }
 
 impl RunningEndpoint {
@@ -428,16 +454,34 @@ impl RunningEndpoint {
     }
 
     pub fn request_stop(&mut self) -> &Result<(), EndpointFailure> {
-        self.request_stop_result
-            .get_or_insert_with(|| self.driver.request_stop())
+        self.request_shutdown(EndpointShutdownMode::Drain)
+    }
+
+    pub fn request_shutdown(&mut self, mode: EndpointShutdownMode) -> &Result<(), EndpointFailure> {
+        let should_request = self
+            .shutdown_request
+            .as_ref()
+            .is_none_or(|(current, _)| mode.priority() > current.priority());
+        if should_request {
+            let result = self.driver.request_shutdown(mode);
+            self.shutdown_request = Some((mode, result));
+        }
+        &self
+            .shutdown_request
+            .as_ref()
+            .expect("shutdown request is installed")
+            .1
     }
 
     pub fn join_and_finalize(self) -> EndpointFinalizationOutcome {
         let Self {
             mut driver,
-            request_stop_result,
+            shutdown_request,
         } = self;
-        let request_stop_result = request_stop_result.unwrap_or_else(|| driver.request_stop());
+        let request_stop_result = shutdown_request.map_or_else(
+            || driver.request_shutdown(EndpointShutdownMode::Drain),
+            |(_, result)| result,
+        );
         let finalization = driver.join_and_finalize();
         EndpointFinalizationOutcome {
             observations: finalization.observations,

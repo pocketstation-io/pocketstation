@@ -32,6 +32,6 @@ pub(crate) use runtime::{
 pub use runtime::{
     EndpointCancellationOutcome, EndpointDriverFinalization, EndpointDriverObservations,
     EndpointFailure, EndpointFailureStage, EndpointInputOrigin, EndpointPrepareContext,
-    EndpointRouteContext, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver,
-    SessionTimelineOrigin,
+    EndpointRouteContext, EndpointShutdownMode, EndpointStartGate, PreparedEndpointDriver,
+    RunningEndpointDriver, SessionTimelineOrigin,
 };

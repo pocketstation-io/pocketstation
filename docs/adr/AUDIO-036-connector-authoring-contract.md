@@ -79,6 +79,12 @@ recovery            Idle     | Reconnecting
 Endpoint finalization is the authority for terminal success or failure.
 Session is the authority for starting and stopping. A connector therefore does
 not expose `Starting`, `Stopping`, `Stopped`, or `Failed` as competing state.
+Session conveys endpoint shutdown intent through the existing Endpoint
+lifecycle: `stop` requests `EndpointShutdownMode::Drain`, while `cancel`
+requests `EndpointShutdownMode::Abort`. The connector stop token preserves
+that distinction, permits abort to upgrade an earlier drain request, and never
+downgrades abort to drain. Existing Endpoint drivers that implement only
+`request_stop` retain their 1.x behavior through the default adapter.
 
 The old public `Session::connector` plus `register_connector_driver` path is
 retained only for 1.x source compatibility and is deprecated. New connector
@@ -107,8 +113,9 @@ canonical deterministic Session. They cover configuration rejection, secret
 redaction, duplicate identity, preparation rollback and cancellation, grouped
 application-plus-microphone ownership, service-status separation, startup
 readiness, saturation accounting, stop and joined shutdown, terminal worker
-failure, and panic containment. Source-boundary tests reject downward Endpoint
-dependencies and reintroduction of duplicated Connector policy.
+failure, panic containment, and distinct drain/abort delivery. Source-boundary
+tests reject downward Endpoint dependencies and reintroduction of duplicated
+Connector policy.
 
 The design follows inspect-before-run and capability principles from
 GStreamer, typed sensitive configuration principles from Kafka `ConfigDef`,

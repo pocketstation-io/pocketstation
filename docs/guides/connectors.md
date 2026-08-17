@@ -44,7 +44,7 @@ The author does not create an Endpoint lifecycle or a Session registry. The
 private adapter supplies:
 
 - execution behind the closed Session start gate;
-- one stop token shared with the worker;
+- one shutdown token shared with the worker, preserving drain versus abort;
 - startup-readiness deadline supervision;
 - panic containment and terminal error classification;
 - preparation cancellation;
@@ -116,8 +116,14 @@ The worker must:
 1. acquire resources in `prepare` without consuming media;
 2. report ready only after the provider can accept delivery;
 3. poll or block only on bounded/non-realtime integration primitives;
-4. stop when `ConnectorContext::is_stop_requested` becomes true; and
+4. inspect `ConnectorContext::shutdown_mode` when shutdown is requested,
+   draining already accepted work for `Drain` and stopping immediately for
+   `Abort`; and
 5. return a truthful success or classified failure outcome.
+
+`ConnectorContext::is_stop_requested` remains the concise common check, and
+`is_abort_requested` supports fast cancellation. Shutdown intent is monotonic:
+an abort can upgrade drain, but a later drain cannot weaken an abort.
 
 ## Package and language boundary
 

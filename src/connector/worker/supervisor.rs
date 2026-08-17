@@ -2,7 +2,7 @@ use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
 use crate::endpoint::EndpointDriverObservationHandle;
-use crate::EndpointStartGate;
+use crate::{EndpointShutdownMode, EndpointStartGate};
 
 use super::context::ConnectorStopToken;
 use crate::connector::{
@@ -117,7 +117,7 @@ pub(super) fn supervise_startup_readiness(
                     ConnectorErrorStage::Readiness,
                     error.to_string(),
                 ));
-                stop.request();
+                stop.request(EndpointShutdownMode::Abort);
                 return;
             }
         }
@@ -128,7 +128,7 @@ pub(super) fn supervise_startup_readiness(
                 ConnectorErrorStage::Readiness,
                 "connector did not become ready before its declared startup deadline",
             ));
-            stop.request();
+            stop.request(EndpointShutdownMode::Abort);
             return;
         }
         let wait = policy

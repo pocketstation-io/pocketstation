@@ -6,7 +6,8 @@ use crate::endpoint::EndpointDriverObservationHandle;
 use crate::{
     EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization,
     EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointPortInput,
-    EndpointPreparationGroup, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver,
+    EndpointPreparationGroup, EndpointShutdownMode, EndpointStartGate, PreparedEndpointDriver,
+    RunningEndpointDriver,
 };
 
 use super::context::{ConnectorStopToken, ReadinessProbeState};
@@ -162,7 +163,7 @@ impl PreparedEndpointDriver for PreparedConnectorWorker {
         let watchdog_handle = match watchdog_handle {
             Ok(handle) => handle,
             Err(error) => {
-                stop.request();
+                stop.request(EndpointShutdownMode::Abort);
                 let _ = worker_handle.join();
                 let error = internal_connector_error(
                     "core.readiness_supervisor_spawn",
@@ -223,7 +224,7 @@ fn spawn_worker(
                     ConnectorErrorStage::Startup,
                     "connector worker ownership was unavailable",
                 ));
-                stop.request();
+                stop.request(EndpointShutdownMode::Abort);
                 return;
             };
             if !wait_for_start_gate(&stop, &start_gate) {
@@ -253,7 +254,7 @@ fn spawn_worker(
                     "connector worker panicked",
                 )),
             }
-            stop.request();
+            stop.request(EndpointShutdownMode::Abort);
         })
         .map_err(|error| {
             internal_connector_error(
@@ -297,7 +298,9 @@ struct RunningConnectorWorker {
 impl RunningConnectorWorker {
     fn stop_and_join(&mut self) {
         self.state.mark_stopping();
-        self.stop.request();
+        if !self.stop.is_requested() {
+            self.stop.request(EndpointShutdownMode::Abort);
+        }
         if let Some(watchdog) = self.watchdog_handle.take() {
             if watchdog.join().is_err() {
                 self.state.record_terminal(internal_connector_error(
@@ -325,8 +328,12 @@ impl RunningEndpointDriver for RunningConnectorWorker {
     }
 
     fn request_stop(&mut self) -> Result<(), EndpointFailure> {
+        self.request_shutdown(EndpointShutdownMode::Drain)
+    }
+
+    fn request_shutdown(&mut self, mode: EndpointShutdownMode) -> Result<(), EndpointFailure> {
         self.state.mark_stopping();
-        self.stop.request();
+        self.stop.request(mode);
         Ok(())
     }
 

@@ -512,8 +512,12 @@ impl RunningSession {
             .iter()
             .flat_map(|outcome| outcome.audio_reentries.iter().copied())
             .collect();
+        let endpoint_shutdown = match operator_termination {
+            OperatorTermination::Finish => crate::EndpointShutdownMode::Drain,
+            OperatorTermination::Cancel => crate::EndpointShutdownMode::Abort,
+        };
         for endpoint in &mut self.endpoints {
-            let _ = endpoint.endpoint.request_stop();
+            let _ = endpoint.endpoint.request_shutdown(endpoint_shutdown);
         }
         let endpoint_outcomes = self
             .endpoints
