@@ -41,6 +41,14 @@ struct NodeConfigValue {
     sensitive: bool,
 }
 
+impl Drop for NodeConfigValue {
+    fn drop(&mut self) {
+        if self.sensitive {
+            crate::secret::clear_string(&mut self.value);
+        }
+    }
+}
+
 impl NodeConfig {
     pub fn new() -> Self {
         Self::default()

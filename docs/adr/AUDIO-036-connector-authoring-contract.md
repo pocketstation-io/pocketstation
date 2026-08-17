@@ -33,13 +33,13 @@ Core already owned.
 does not define another execution engine:
 
 ```text
-ConnectorManifest + ConnectorFactory + ConnectorWorker
-                         ↓
-               private Endpoint adapter
-                         ↓
-              Session::register_endpoint
-                         ↓
-       canonical prepare / gate / stop / join transaction
+ConnectorManifest + ManagedConnectorFactory + ManagedConnector
+                              ↓
+                    private Endpoint adapter
+                              ↓
+                   Session::register_endpoint
+                              ↓
+            canonical prepare / gate / stop / join transaction
 ```
 
 Connector owns only:
@@ -51,8 +51,11 @@ Connector owns only:
   classification;
 - orthogonal provider-service facts: delivery readiness, health, and recovery;
 - connector-specific retry, reconnect, failure, and last-error observations;
-- a worker adapter that contains panics, supervises the startup-readiness
-  deadline, provides a stop token, and reports through the Endpoint SPI; and
+- a managed worker adapter that owns bounded receiver polling, fair delivery,
+  drain versus abort, accounting, panic containment, startup-readiness
+  supervision, and joined finalization through the Endpoint SPI;
+- a lower-level `ConnectorFactory` escape hatch for integrations that must own
+  a specialized off-realtime worker; and
 - a feature-gated connector conformance protocol and deterministic Core tests.
 
 Connector explicitly does not own:
@@ -93,26 +96,29 @@ Endpoint extensions use `Session::register_endpoint` directly.
 
 ## Package ownership
 
-Core defines what a Connector means. Relay defines language-neutral service
-and wire semantics. Each executable consumer owns the provider implementation
-appropriate to its language and packaging boundary:
+Core defines what a Connector means. Protocol defines language-neutral Relay
+wire semantics and conformance vectors. One externally packaged Rust
+implementation owns the PocketStation Relay protocol behavior:
 
 ```text
-pks             Rust ConnectorFactory and ConnectorWorker implementation
-Python SDK      private PyO3/Rust projection over the canonical Session
-JavaScript SDK  private Node-API/Rust projection over the canonical Session
-benchmark       measurement-only adapter
+pocketstation-io/connectors/relay  authoritative pocketstation-relay package
+pks                              thin CLI consumer
+Python SDK                       PyO3 projection and Python API
+JavaScript SDK                   Node-API projection and TypeScript API
+benchmark                        measurement consumer only
 ```
 
-No consumer imports a CLI-owned implementation, and the Relay service
-repository does not become the owner of every SDK runtime. Shared behavior is
-portable protocol semantics and conformance vectors, not Rust type identity.
-The historical standalone `pocketstation-relay` package is preserved as
-evidence until live consumers have migrated, then retired without destructive
-deletion.
+The shared implementation is not provider code inside Core and is not owned by
+the CLI. SDKs own their public APIs, native packaging, cancellation, typing,
+and installed-consumer proof while projecting the same qualified native Relay
+implementation. They do not duplicate signaling, ICE/DTLS, packetization, or
+media delivery engines. Cross-language protocol conformance remains mandatory
+for any future independent implementation.
 
-Rust implementations use `ConnectorFactory` and `ConnectorWorker`. Managed
-callbacks never run on capture callbacks or realtime partitions. The current
+Rust implementations normally use `ManagedConnectorFactory` and
+`ManagedConnector`; advanced integrations may use `ConnectorFactory` and
+`ConnectorWorker`. Managed callbacks never run on capture callbacks or
+realtime partitions. The current
 native extension ABI remains typed-signal-only; this decision does not claim
 arbitrary dynamic raw-PCM connector authoring from Python or JavaScript.
 Third-party any-language audio connector authoring requires a separately
@@ -122,10 +128,12 @@ versioned native-audio or managed-audio boundary and conformance proof.
 
 Core tests execute the public registration and declaration path through the
 canonical deterministic Session. They cover configuration rejection, secret
-redaction, duplicate identity, preparation rollback and cancellation, grouped
+redaction and sensitive-value destruction, duplicate identity, preparation
+rollback and cancellation, grouped
 application-plus-microphone ownership, service-status separation, startup
-readiness, saturation accounting, stop and joined shutdown, terminal worker
-failure, panic containment, and distinct drain/abort delivery. Source-boundary
+readiness, Core-owned managed delivery, per-route edge authority, saturation
+accounting, structured terminal errors, stop and joined shutdown, terminal
+worker failure, panic containment, and distinct drain/abort delivery. Source-boundary
 tests reject downward Endpoint dependencies and reintroduction of duplicated
 Connector policy.
 

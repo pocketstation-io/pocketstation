@@ -161,11 +161,21 @@ pub enum EndpointFailureStage {
     JoinFinalize,
 }
 
+/// Machine-readable recovery classification retained in Session outcomes.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum EndpointFailureRetryability {
+    Never,
+    Retryable,
+    ReconfigurationRequired,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
 #[error("endpoint {stage:?} failed: {message}")]
 pub struct EndpointFailure {
     stage: EndpointFailureStage,
     message: String,
+    code: Option<String>,
+    retryability: Option<EndpointFailureRetryability>,
 }
 
 impl EndpointFailure {
@@ -173,7 +183,22 @@ impl EndpointFailure {
         Self {
             stage,
             message: message.into(),
+            code: None,
+            retryability: None,
         }
+    }
+
+    /// Attaches stable external failure details without changing Endpoint's
+    /// provider-neutral lifecycle authority.
+    #[must_use]
+    pub fn with_external_details(
+        mut self,
+        code: impl Into<String>,
+        retryability: EndpointFailureRetryability,
+    ) -> Self {
+        self.code = Some(code.into());
+        self.retryability = Some(retryability);
+        self
     }
 
     pub const fn stage(&self) -> EndpointFailureStage {
@@ -184,8 +209,18 @@ impl EndpointFailure {
         &self.message
     }
 
+    pub fn code(&self) -> Option<&str> {
+        self.code.as_deref()
+    }
+
+    pub const fn retryability(&self) -> Option<EndpointFailureRetryability> {
+        self.retryability
+    }
+
     pub(crate) fn owned_heap_bytes(&self) -> usize {
-        self.message.capacity()
+        self.message
+            .capacity()
+            .saturating_add(self.code.as_ref().map_or(0, String::capacity))
     }
 }
 

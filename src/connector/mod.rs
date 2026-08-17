@@ -38,7 +38,10 @@ pub use service_status::{
     ConnectorReadinessPolicyError, ConnectorRecovery, ConnectorServiceStatus,
     MAX_CONNECTOR_READINESS_THRESHOLD, MAX_CONNECTOR_READINESS_TIMEOUT,
 };
-pub use worker::{ConnectorContext, ConnectorFactory, ConnectorRunOutcome, ConnectorWorker};
+pub use worker::{
+    ConnectorContext, ConnectorDeliveryOutcome, ConnectorFactory, ConnectorInputDescriptor,
+    ConnectorItem, ConnectorRunOutcome, ConnectorWorker, ManagedConnector, ManagedConnectorFactory,
+};
 
 pub struct Connector {
     manifest: Arc<ConnectorManifest>,
@@ -57,6 +60,30 @@ impl Connector {
             worker::connector_endpoint_factory(factory, observations.clone(), manifest.readiness());
         Ok(Self {
             manifest: Arc::new(manifest),
+            endpoint_factory,
+            observations,
+        })
+    }
+
+    /// Builds a connector whose bounded receiver loop is owned by Core.
+    ///
+    /// Managed connector authors implement item delivery and provider-specific
+    /// state only. Endpoint remains authoritative for preparation, start-gate,
+    /// shutdown, join, rollback, and finalization semantics.
+    pub fn managed(
+        manifest: ConnectorManifest,
+        factory: Arc<dyn ManagedConnectorFactory>,
+    ) -> Result<Self, ConnectorManifestError> {
+        manifest.validate()?;
+        let manifest = Arc::new(manifest);
+        let observations = ConnectorObservationStore::new();
+        let endpoint_factory = worker::managed_connector_endpoint_factory(
+            factory,
+            observations.clone(),
+            Arc::clone(&manifest),
+        );
+        Ok(Self {
+            manifest,
             endpoint_factory,
             observations,
         })
@@ -113,13 +140,34 @@ impl RegisteredConnector {
                 requested: session.id(),
             });
         }
+        self.declare_with_input_edge(session, configuration, self.manifest.input_edge())
+    }
+
+    /// Declares one connector endpoint with the exact route contract selected
+    /// by the Session author.
+    ///
+    /// This avoids treating the manifest's compatibility default as authority
+    /// for every route. Graph compilation remains authoritative for validating
+    /// the selected edge against the connector's declared input ports.
+    pub fn declare_with_input_edge(
+        &self,
+        session: &Session,
+        configuration: ConnectorConfiguration,
+        input_edge: crate::EdgeContract,
+    ) -> Result<EndpointHandle, ConnectorDeclarationError> {
+        if session.id() != self.session_id {
+            return Err(ConnectorDeclarationError::WrongSession {
+                registered: self.session_id,
+                requested: session.id(),
+            });
+        }
         let configuration = self.manifest.configuration().resolve(&configuration)?;
         let descriptor = EndpointDescriptor::new(
             self.manifest.node().type_id().clone(),
             self.manifest.operator_id().clone(),
         )
         .with_configuration(configuration.into_endpoint_configuration())
-        .with_input_edge(self.manifest.input_edge());
+        .with_input_edge(input_edge);
         Ok(session.declaration.connector_endpoint(descriptor)?)
     }
 }

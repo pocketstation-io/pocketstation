@@ -1,5 +1,5 @@
 #[cfg(feature = "conformance-fixtures")]
-use std::sync::atomic::{AtomicU64, AtomicU8, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, AtomicU8, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 #[cfg(feature = "conformance-fixtures")]
@@ -13,6 +13,11 @@ use pocketstation::connector::{
     ConnectorErrorCode, ConnectorErrorStage, ConnectorFactory, ConnectorHealth, ConnectorManifest,
     ConnectorReadinessPolicy, ConnectorRecovery, ConnectorRetryability, ConnectorRunOutcome,
     ConnectorSecret, ConnectorWorker, MAX_CONNECTOR_ERROR_MESSAGE_BYTES,
+};
+#[cfg(feature = "conformance-fixtures")]
+use pocketstation::connector::{
+    ConnectorDeliveryOutcome, ConnectorInputDescriptor, ConnectorItem, ManagedConnector,
+    ManagedConnectorFactory,
 };
 use pocketstation::{
     AudioCaps, ChannelLayout, EdgeContract, EndpointPortInput, EndpointPreparationGroup,
@@ -234,15 +239,20 @@ fn given_connector_error_when_inspected_then_code_is_stable_and_machine_readable
         "x".repeat(MAX_CONNECTOR_ERROR_MESSAGE_BYTES + 1),
     )
     .is_err());
+    let delivery_failure = connector_error(
+        "test.delivery_failure",
+        ConnectorErrorStage::Delivery,
+        "delivery failed",
+    )
+    .into_endpoint_failure();
     assert_eq!(
-        connector_error(
-            "test.delivery_failure",
-            ConnectorErrorStage::Delivery,
-            "delivery failed",
-        )
-        .into_endpoint_failure()
-        .stage(),
+        delivery_failure.stage(),
         pocketstation::EndpointFailureStage::JoinFinalize
+    );
+    assert_eq!(delivery_failure.code(), Some("test.delivery_failure"));
+    assert_eq!(
+        delivery_failure.retryability(),
+        Some(pocketstation::EndpointFailureRetryability::Never)
     );
     assert_eq!(
         connector_error(
@@ -442,6 +452,151 @@ fn routed_fault_session(
 }
 
 #[cfg(feature = "conformance-fixtures")]
+#[derive(Default)]
+struct ManagedControl {
+    prepared_inputs_total: AtomicU64,
+    delivered_items_total: AtomicU64,
+    typed_secret_observed: AtomicBool,
+    route_edge_observed: AtomicBool,
+    shutdown_mode: AtomicU8,
+}
+
+#[cfg(feature = "conformance-fixtures")]
+struct ManagedFactory {
+    control: Arc<ManagedControl>,
+}
+
+#[cfg(feature = "conformance-fixtures")]
+impl ManagedConnectorFactory for ManagedFactory {
+    fn preparation_group(
+        &self,
+        _route_id: pocketstation::RouteId,
+        configuration: &pocketstation::connector::ResolvedConnectorConfiguration,
+    ) -> Result<EndpointPreparationGroup, ConnectorError> {
+        if matches!(
+            configuration.get("token"),
+            Some(ConnectorConfigurationValue::Secret(_))
+        ) {
+            self.control
+                .typed_secret_observed
+                .store(true, Ordering::Release);
+        }
+        Ok(EndpointPreparationGroup::Shared(
+            pocketstation::EndpointGroupId::new("managed-connector-contract-test"),
+        ))
+    }
+
+    fn prepare(
+        &self,
+        inputs: &[ConnectorInputDescriptor],
+    ) -> Result<Box<dyn ManagedConnector>, ConnectorError> {
+        self.control
+            .prepared_inputs_total
+            .store(inputs.len() as u64, Ordering::Release);
+        self.control.route_edge_observed.store(
+            inputs
+                .iter()
+                .all(|input| input.edge_contract().jitter_budget_ms() == Some(9)),
+            Ordering::Release,
+        );
+        Ok(Box::new(ManagedHandler {
+            control: Arc::clone(&self.control),
+        }))
+    }
+}
+
+#[cfg(feature = "conformance-fixtures")]
+struct ManagedHandler {
+    control: Arc<ManagedControl>,
+}
+
+#[cfg(feature = "conformance-fixtures")]
+impl ManagedConnector for ManagedHandler {
+    fn deliver(
+        &mut self,
+        item: ConnectorItem<'_>,
+        _context: &pocketstation::connector::ConnectorContext,
+    ) -> Result<ConnectorDeliveryOutcome, ConnectorError> {
+        assert_eq!(item.input().port_name(), "audio");
+        assert!(matches!(item, ConnectorItem::Audio { .. }));
+        self.control
+            .delivered_items_total
+            .fetch_add(1, Ordering::Relaxed);
+        Ok(ConnectorDeliveryOutcome::Delivered)
+    }
+
+    fn shutdown(
+        &mut self,
+        mode: pocketstation::EndpointShutdownMode,
+        _context: &pocketstation::connector::ConnectorContext,
+    ) -> Result<(), ConnectorError> {
+        self.control.shutdown_mode.store(
+            match mode {
+                pocketstation::EndpointShutdownMode::Drain => 1,
+                pocketstation::EndpointShutdownMode::Abort => 2,
+            },
+            Ordering::Release,
+        );
+        Ok(())
+    }
+}
+
+#[cfg(feature = "conformance-fixtures")]
+#[test]
+fn given_managed_connector_when_two_stems_run_then_core_owns_typed_delivery_and_drain() {
+    let control = Arc::new(ManagedControl::default());
+    let session = pocketstation::conformance::session().expect("conformance Session");
+    let registered = session
+        .register_connector(
+            Connector::managed(
+                manifest(),
+                Arc::new(ManagedFactory {
+                    control: Arc::clone(&control),
+                }),
+            )
+            .expect("managed connector"),
+        )
+        .expect("managed connector registration");
+    let edge = EdgeContract::realtime_audio().with_jitter_budget_ms(Some(9));
+    let endpoint = registered
+        .declare_with_input_edge(&session, configuration(), edge)
+        .expect("managed endpoint");
+    let application = session
+        .capture(pocketstation::Source::application(
+            pocketstation::ApplicationSelector::name("PocketStation Fixture"),
+        ))
+        .expect("application stem");
+    let microphone = session
+        .capture(pocketstation::Source::microphone_default())
+        .expect("microphone stem");
+    application.send(endpoint).expect("application route");
+    microphone.send(endpoint).expect("microphone route");
+
+    let mut running = session.start().expect("running Session");
+    let deadline = Instant::now() + Duration::from_secs(2);
+    while control.delivered_items_total.load(Ordering::Acquire) < 2 {
+        assert!(Instant::now() < deadline, "managed connector must deliver");
+        std::thread::sleep(Duration::from_millis(2));
+    }
+    assert!(running.stop().is_success());
+    assert_eq!(control.prepared_inputs_total.load(Ordering::Acquire), 2);
+    assert!(control.typed_secret_observed.load(Ordering::Acquire));
+    assert!(control.route_edge_observed.load(Ordering::Acquire));
+    assert_eq!(control.shutdown_mode.load(Ordering::Acquire), 1);
+    let observation = registered
+        .observations()
+        .expect("managed observations")
+        .into_iter()
+        .next()
+        .expect("managed runtime observation");
+    assert!(observation.endpoint.frames_received_total >= 2);
+    assert_eq!(
+        observation.endpoint.frames_received_total,
+        observation.endpoint.frames_delivered_total
+    );
+}
+
+#[cfg(feature = "conformance-fixtures")]
 #[test]
 fn given_prior_preparation_when_connector_prepare_fails_then_prior_work_rolls_back() {
     let control = Arc::new(FaultControl::default());
@@ -602,6 +757,20 @@ fn given_worker_failure_or_panic_when_session_stops_then_endpoint_finalization_i
         let mut running = session.start().expect("running Session");
         std::thread::sleep(Duration::from_millis(20));
         assert!(!running.stop().is_success(), "{mode} must be terminal");
+        if mode == "terminal_fail" {
+            let mut structured_failure = None;
+            while let pocketstation::SessionEventReceive::Event(event) = running.try_recv_event() {
+                if let pocketstation::SessionEventKind::Endpoint(failure) = event.kind() {
+                    structured_failure = Some(failure.failure().clone());
+                }
+            }
+            let failure = structured_failure.expect("terminal endpoint failure event");
+            assert_eq!(failure.code(), Some("test.terminal_failure"));
+            assert_eq!(
+                failure.retryability(),
+                Some(pocketstation::EndpointFailureRetryability::Never)
+            );
+        }
         let observation = registered
             .observation(endpoint)
             .expect("same Session")

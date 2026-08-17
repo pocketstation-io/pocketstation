@@ -11,14 +11,15 @@ use crate::{
 };
 
 use super::context::{ConnectorStopToken, ReadinessProbeState};
+use super::managed::{prepare_managed_worker, ManagedConnectorFactory};
 use super::supervisor::{
     internal_connector_error, supervise_startup_readiness, wait_for_start_gate,
     ConnectorWorkerState,
 };
 use super::{ConnectorContext, ConnectorFactory, ConnectorWorker};
 use crate::connector::{
-    ConnectorError, ConnectorErrorStage, ConnectorObservationHandle, ConnectorObservationStore,
-    ConnectorReadinessPolicy,
+    ConnectorError, ConnectorErrorStage, ConnectorManifest, ConnectorObservationHandle,
+    ConnectorObservationStore, ConnectorReadinessPolicy,
 };
 
 pub(crate) fn connector_endpoint_factory(
@@ -31,6 +32,86 @@ pub(crate) fn connector_endpoint_factory(
         observations,
         readiness_policy,
     })
+}
+
+pub(crate) fn managed_connector_endpoint_factory(
+    factory: Arc<dyn ManagedConnectorFactory>,
+    observations: ConnectorObservationStore,
+    manifest: Arc<ConnectorManifest>,
+) -> Arc<dyn EndpointDriverFactory> {
+    Arc::new(ManagedConnectorEndpointAdapter {
+        factory,
+        observations,
+        manifest,
+    })
+}
+
+struct ManagedConnectorEndpointAdapter {
+    factory: Arc<dyn ManagedConnectorFactory>,
+    observations: ConnectorObservationStore,
+    manifest: Arc<ConnectorManifest>,
+}
+
+impl EndpointDriverFactory for ManagedConnectorEndpointAdapter {
+    fn preparation_group(
+        &self,
+        route_id: crate::RouteId,
+        configuration: &crate::graph::NodeConfig,
+    ) -> Result<EndpointPreparationGroup, EndpointFailure> {
+        let configuration = self
+            .manifest
+            .configuration()
+            .resolve_node_config(configuration)
+            .map_err(configuration_endpoint_failure)?;
+        self.factory
+            .preparation_group(route_id, &configuration)
+            .map_err(ConnectorError::into_endpoint_failure)
+    }
+
+    fn prepare(
+        &self,
+        inputs: Vec<EndpointPortInput>,
+    ) -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {
+        let endpoint_ids = endpoint_ids(&inputs)?;
+        let connector_observations = ConnectorObservationHandle::new();
+        let endpoint_observations = EndpointDriverObservationHandle::default();
+        self.observations.install(
+            endpoint_ids,
+            connector_observations.clone(),
+            endpoint_observations.clone(),
+        );
+        let configurations = inputs
+            .iter()
+            .map(|input| {
+                self.manifest
+                    .configuration()
+                    .resolve_node_config(input.context().node_configuration())
+            })
+            .collect::<Result<Vec<_>, _>>()
+            .map_err(configuration_endpoint_failure)?;
+        match prepare_managed_worker(self.factory.as_ref(), inputs, configurations) {
+            Ok(worker) => Ok(Box::new(PreparedConnectorWorker {
+                worker: Some(worker),
+                state: ConnectorWorkerState::new(connector_observations, endpoint_observations),
+                readiness_policy: self.manifest.readiness(),
+            })),
+            Err(error) => {
+                let state =
+                    ConnectorWorkerState::new(connector_observations, endpoint_observations);
+                state.record_terminal(error.clone());
+                Err(error.into_endpoint_failure())
+            }
+        }
+    }
+}
+
+fn configuration_endpoint_failure(
+    error: crate::connector::ConnectorConfigurationError,
+) -> EndpointFailure {
+    EndpointFailure::new(
+        EndpointFailureStage::Prepare,
+        format!("{}: {error}", error.code().as_str()),
+    )
 }
 
 struct ConnectorEndpointAdapter {

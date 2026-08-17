@@ -6,28 +6,39 @@ customer boundary without adding that provider to Core.
 
 ## Authoring surface
 
-Implement `ConnectorFactory` to validate and acquire provider resources, then
-return one `ConnectorWorker`. Core adapts that worker to the canonical Endpoint
-transaction:
+Implement `ManagedConnectorFactory` to validate and acquire provider
+resources, then return one `ManagedConnector`. Core owns bounded input polling,
+delivery accounting, drain/abort, and the canonical Endpoint transaction:
 
 ```rust,no_run
 use std::sync::Arc;
 use pocketstation::connector::{
-    Connector, ConnectorConfiguration, ConnectorError, ConnectorFactory,
-    ConnectorWorker,
+    Connector, ConnectorConfiguration, ConnectorDeliveryOutcome,
+    ConnectorError, ConnectorInputDescriptor, ConnectorItem,
+    ManagedConnector, ManagedConnectorFactory,
 };
-use pocketstation::{EndpointPortInput, Session};
+use pocketstation::Session;
 
 # fn manifest() -> pocketstation::connector::ConnectorManifest { todo!() }
 # struct RelayFactory;
-# impl ConnectorFactory for RelayFactory {
-#   fn prepare(&self, _: Vec<EndpointPortInput>)
-#     -> Result<Box<dyn ConnectorWorker>, ConnectorError>
+# impl ManagedConnectorFactory for RelayFactory {
+#   fn prepare(&self, _: &[ConnectorInputDescriptor])
+#     -> Result<Box<dyn ManagedConnector>, ConnectorError>
 #   { todo!() }
+# }
+# struct Relay;
+# impl ManagedConnector for Relay {
+#   fn deliver(
+#     &mut self,
+#     _: ConnectorItem<'_>,
+#     _: &pocketstation::connector::ConnectorContext,
+#   ) -> Result<ConnectorDeliveryOutcome, ConnectorError> {
+#     Ok(ConnectorDeliveryOutcome::Delivered)
+#   }
 # }
 # fn main() -> Result<(), Box<dyn std::error::Error>> {
 let session = Session::new();
-let package = Connector::new(manifest(), Arc::new(RelayFactory))?;
+let package = Connector::managed(manifest(), Arc::new(RelayFactory))?;
 let relay = session.register_connector(package)?;
 let endpoint = relay.declare(&session, ConnectorConfiguration::new())?;
 # let _ = endpoint;
@@ -51,9 +62,10 @@ private adapter supplies:
 - joined shutdown; and
 - canonical `EndpointDriverObservations` for delivery accounting.
 
-The Connector worker consumes the bounded `EndpointPortInput` receivers,
-reports delivery through `ConnectorContext`, and exits only after stop is
-requested or with a `ConnectorRunOutcome::failure`.
+The managed adapter consumes the bounded `EndpointPortInput` receivers. The
+provider handles typed `ConnectorItem` values and returns an explicit delivered
+or dropped result. `ConnectorFactory` and `ConnectorWorker` remain the advanced
+escape hatch when a protocol requires a specialized off-realtime worker.
 
 ## Manifest and routing
 
@@ -77,10 +89,11 @@ Use `ConnectorConfigurationValue` instead of parsing an untyped map. Unknown
 fields, missing required values, wrong types, invalid defaults, and constraint
 violations fail before Session compilation.
 
-Use `ConnectorSecret` for credentials. Its `Debug` output is redacted, and the
+Use `ConnectorSecret` for credentials. Its `Debug` output is redacted, the
 sensitive classification survives lowering into `EndpointConfiguration` and
-`NodeConfig`. A connector may explicitly read a secret during setup or worker
-execution; it must never copy it into errors, logs, metrics, or observations.
+`NodeConfig`, and sensitive owned strings are overwritten on destruction. A
+connector may explicitly read a secret during setup or worker execution; it
+must never copy it into errors, logs, metrics, or observations.
 
 ## Service status and failures
 
@@ -105,34 +118,31 @@ for queue capacity, backpressure, and route drops.
 
 ## Grouping and shutdown
 
-Override `ConnectorFactory::preparation_group` when several declared routes
+Override `ManagedConnectorFactory::preparation_group` when several declared routes
 must share one provider connection. Returning one shared
 `EndpointPreparationGroup` lets application and microphone buses use one
 worker and one joined provider lifecycle while retaining independent route and
 lineage identities.
 
-The worker must:
+The managed connector must:
 
 1. acquire resources in `prepare` without consuming media;
 2. report ready only after the provider can accept delivery;
-3. poll or block only on bounded/non-realtime integration primitives;
-4. inspect `ConnectorContext::shutdown_mode` when shutdown is requested,
-   draining already accepted work for `Drain` and stopping immediately for
-   `Abort`; and
-5. return a truthful success or classified failure outcome.
+3. keep each provider operation finite and off realtime;
+4. return an explicit delivery result or structured error; and
+5. finalize provider resources in `shutdown`.
 
-`ConnectorContext::is_stop_requested` remains the concise common check, and
-`is_abort_requested` supports fast cancellation. Shutdown intent is monotonic:
-an abort can upgrade drain, but a later drain cannot weaken an abort.
+Core handles receiver polling and monotonic shutdown: an abort can upgrade
+drain, but a later drain cannot weaken an abort. Low-level Connector workers
+remain responsible for their own bounded loop and must follow the same rule.
 
 ## Package and language boundary
 
-Do not add provider dependencies to `pocketstation`. Production providers live
-outside Core and are owned by the executable consumer that ships them. `pks`
-owns its Rust PocketStation Relay connector; Python and JavaScript own private
-native projections over their canonical Session; the benchmark owns only a
-measurement adapter. Relay owns the portable wire semantics and conformance
-vectors, not one Rust implementation consumed by every language.
+Do not add provider dependencies to `pocketstation`. The authoritative
+`pocketstation-relay` implementation lives in `pocketstation-io/connectors/relay`.
+`pks`, Python, JavaScript, Lab, and Bench consume or project that package; none
+owns a second Relay media engine. Protocol owns portable wire semantics and
+conformance vectors.
 
 A Python or JavaScript process may use its supported native projection or a
 bounded sidecar/extension boundary, but it never runs managed code on the

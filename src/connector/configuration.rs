@@ -45,6 +45,12 @@ impl fmt::Debug for ConnectorSecret {
     }
 }
 
+impl Drop for ConnectorSecret {
+    fn drop(&mut self) {
+        crate::secret::clear_string(&mut self.0);
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ConnectorConfigurationValueKind {
     Text,

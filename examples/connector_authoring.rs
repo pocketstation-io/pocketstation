@@ -5,27 +5,27 @@ use std::time::Duration;
 use pocketstation::connector::{
     Connector, ConnectorConfiguration, ConnectorConfigurationConstraint,
     ConnectorConfigurationField, ConnectorConfigurationRequirement, ConnectorConfigurationSchema,
-    ConnectorConfigurationValue, ConnectorConfigurationValueKind, ConnectorContext, ConnectorError,
-    ConnectorErrorCode, ConnectorErrorStage, ConnectorFactory, ConnectorManifest,
-    ConnectorReadinessPolicy, ConnectorRetryability, ConnectorRunOutcome, ConnectorSecret,
-    ConnectorWorker,
+    ConnectorConfigurationValue, ConnectorConfigurationValueKind, ConnectorDeliveryOutcome,
+    ConnectorError, ConnectorErrorCode, ConnectorErrorStage, ConnectorInputDescriptor,
+    ConnectorItem, ConnectorManifest, ConnectorReadinessPolicy, ConnectorRetryability,
+    ConnectorSecret, ManagedConnector, ManagedConnectorFactory,
 };
 use pocketstation::{
-    ApplicationSelector, AudioCaps, ChannelLayout, EdgeContract, EndpointPortInput,
-    EndpointReceiver, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId,
-    OperatorId, PortDirection, PortSpec, SafetyContract, SampleFormat, Session, SignalSpec, Source,
+    ApplicationSelector, AudioCaps, ChannelLayout, EdgeContract, ExecutionPartition, MediaCaps,
+    Multiplicity, NodeDescriptor, NodeTypeId, OperatorId, PortDirection, PortSpec, SafetyContract,
+    SampleFormat, Session, SignalSpec, Source,
 };
 
 struct ExampleConnectorFactory;
 
-impl ConnectorFactory for ExampleConnectorFactory {
+impl ManagedConnectorFactory for ExampleConnectorFactory {
     fn prepare(
         &self,
-        inputs: Vec<EndpointPortInput>,
-    ) -> Result<Box<dyn ConnectorWorker>, ConnectorError> {
+        inputs: &[ConnectorInputDescriptor],
+    ) -> Result<Box<dyn ManagedConnector>, ConnectorError> {
         let configuration = inputs
             .first()
-            .map(|input| input.context().node_configuration())
+            .map(ConnectorInputDescriptor::configuration)
             .ok_or_else(|| {
                 connector_error("example.input_missing", "connector input is missing")
             })?;
@@ -35,39 +35,33 @@ impl ConnectorFactory for ExampleConnectorFactory {
                 "validated connector configuration is missing",
             ));
         }
-        Ok(Box::new(ExampleConnectorWorker { inputs }))
+        Ok(Box::new(ExampleConnector))
     }
 }
 
-struct ExampleConnectorWorker {
-    inputs: Vec<EndpointPortInput>,
-}
+struct ExampleConnector;
 
-impl ConnectorWorker for ExampleConnectorWorker {
-    fn run(self: Box<Self>, context: ConnectorContext) -> ConnectorRunOutcome {
-        let mut receivers: Vec<_> = self
-            .inputs
-            .into_iter()
-            .filter_map(|input| match input.into_parts().0 {
-                EndpointReceiver::Audio { receiver, .. } => Some(receiver),
-                EndpointReceiver::Signal(_) => None,
-            })
-            .collect();
-        let _ = context.set_ready();
-        while !context.is_stop_requested() {
-            let mut progressed = false;
-            for receiver in &mut receivers {
-                if receiver.try_recv().is_some() {
-                    context.record_frame_received(1);
-                    context.record_frame_delivered(1);
-                    progressed = true;
-                }
-            }
-            if !progressed {
-                let _ = context.wait_for_stop(Duration::from_millis(1));
-            }
+impl ManagedConnector for ExampleConnector {
+    fn deliver(
+        &mut self,
+        item: ConnectorItem<'_>,
+        _context: &pocketstation::connector::ConnectorContext,
+    ) -> Result<ConnectorDeliveryOutcome, ConnectorError> {
+        match item {
+            ConnectorItem::Audio { input, frame } => println!(
+                "port={} stem={} source={} sequence={}",
+                input.port_name(),
+                frame.lineage().stem_id().get(),
+                frame.lineage().source_id().get(),
+                frame.lineage().sequence_number()
+            ),
+            ConnectorItem::Signal { input, signal } => println!(
+                "port={} signal_timestamp_ns={}",
+                input.port_name(),
+                signal.timestamp_ns()
+            ),
         }
-        ConnectorRunOutcome::success()
+        Ok(ConnectorDeliveryOutcome::Delivered)
     }
 }
 
@@ -140,7 +134,7 @@ fn connector_manifest() -> Result<ConnectorManifest, Box<dyn Error>> {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let session = Session::new();
-    let connector = Connector::new(connector_manifest()?, Arc::new(ExampleConnectorFactory))?;
+    let connector = Connector::managed(connector_manifest()?, Arc::new(ExampleConnectorFactory))?;
     let registered = session.register_connector(connector)?;
     let endpoint = registered.declare(
         &session,

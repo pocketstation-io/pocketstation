@@ -1,5 +1,6 @@
 mod context;
 mod endpoint_adapter;
+mod managed;
 mod supervisor;
 
 use crate::{EndpointPortInput, EndpointPreparationGroup};
@@ -7,7 +8,11 @@ use crate::{EndpointPortInput, EndpointPreparationGroup};
 use super::ConnectorError;
 
 pub use context::ConnectorContext;
-pub(crate) use endpoint_adapter::connector_endpoint_factory;
+pub(crate) use endpoint_adapter::{connector_endpoint_factory, managed_connector_endpoint_factory};
+pub use managed::{
+    ConnectorDeliveryOutcome, ConnectorInputDescriptor, ConnectorItem, ManagedConnector,
+    ManagedConnectorFactory,
+};
 
 pub trait ConnectorFactory: Send + Sync {
     fn preparation_group(

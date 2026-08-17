@@ -1,5 +1,32 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W21 Connector managed-authoring maturity correction — 2026-08-17
+
+- Status: `SAFE-TO-TEST`; complete Core freeze qualification and legal release
+  remain pending.
+- `Connector::managed` now provides the preferred provider-authoring path.
+  Core owns bounded receiver polling, fair grouped delivery, delivery/drop and
+  discontinuity accounting, drain/abort, startup supervision, panic
+  containment, and joined Endpoint finalization. Provider code handles typed
+  items and provider state instead of reconstructing an Endpoint worker loop.
+- Managed factories receive `ResolvedConnectorConfiguration`; secret values do
+  not regress to an author-facing string map. Sensitive Connector,
+  EndpointConfiguration, and NodeConfig strings are overwritten on destruction
+  and remain redacted in debug output.
+- `RegisteredConnector::declare_with_input_edge` makes the exact Session route
+  contract explicit; the manifest edge remains a 1.x compatibility default,
+  not universal authority for every route.
+- Connector error code and retryability now survive as structured
+  `EndpointFailure` details in final Session outcomes.
+- The compiling authoring example no longer contains a manual receiver polling
+  loop. The focused connector suite now passes 12 tests, including a real
+  deterministic two-stem managed delivery and graceful-drain case.
+- AUDIO-036 and the connector guide now enforce one authoritative shared
+  `pocketstation-relay` package outside Core, with pks/Python/JavaScript as
+  consumers or projections rather than duplicated Relay engines.
+- This work adds no provider, protocol, scaffold, mock, loopback path, remote
+  claim, or competitive-performance claim.
+
 ## W21 Connector Core authority requalification — 2026-08-17
 
 - Status: `SAFE-TO-MERGE` for candidate

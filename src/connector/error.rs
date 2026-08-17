@@ -1,7 +1,7 @@
 use std::fmt;
 use std::sync::Arc;
 
-use crate::{EndpointFailure, EndpointFailureStage};
+use crate::{EndpointFailure, EndpointFailureRetryability, EndpointFailureStage};
 
 pub const MAX_CONNECTOR_ERROR_CODE_BYTES: usize = 160;
 pub const MAX_CONNECTOR_ERROR_MESSAGE_BYTES: usize = 4_096;
@@ -135,7 +135,15 @@ impl ConnectorError {
             | ConnectorErrorStage::Retry
             | ConnectorErrorStage::Join => EndpointFailureStage::JoinFinalize,
         };
-        EndpointFailure::new(stage, format!("{}: {}", self.code, self.message))
+        let retryability = match self.retryability {
+            ConnectorRetryability::Never => EndpointFailureRetryability::Never,
+            ConnectorRetryability::Retryable => EndpointFailureRetryability::Retryable,
+            ConnectorRetryability::RetryAfterReconfiguration => {
+                EndpointFailureRetryability::ReconfigurationRequired
+            }
+        };
+        EndpointFailure::new(stage, self.message)
+            .with_external_details(self.code.as_str(), retryability)
     }
 
     pub(crate) fn internal(

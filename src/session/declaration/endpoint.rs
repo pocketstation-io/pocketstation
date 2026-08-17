@@ -20,6 +20,14 @@ struct EndpointConfigurationValue {
     sensitive: bool,
 }
 
+impl Drop for EndpointConfigurationValue {
+    fn drop(&mut self) {
+        if self.sensitive {
+            crate::secret::clear_string(&mut self.value);
+        }
+    }
+}
+
 impl EndpointConfiguration {
     pub fn new() -> Self {
         Self::default()
