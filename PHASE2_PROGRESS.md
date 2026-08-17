@@ -1,5 +1,28 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W21 Connector Core authority requalification — 2026-08-17
+
+- Status: `SAFE-TO-MERGE` for candidate
+  `pks-20260817-w21-connector-core-authority-requalification-1`; the separate
+  exact-package release/refreeze task remains pending.
+- Source audit confirms `pocketstation::connector` is a thin authoring layer:
+  Graph and Session own declarations and bounded routing, Endpoint owns the
+  prepare/start/stop/join transaction and delivery observations, and Session
+  extensions own registration. Connector adds typed provider configuration,
+  redacted secrets, a focused manifest, classified failures, orthogonal
+  provider-service status, an Endpoint-backed worker adapter, and conformance.
+- Stale documentation that assigned every language to one shared
+  `pocketstation-relay` Rust package is corrected. Relay owns portable wire
+  semantics; `pks`, Python, JavaScript, and the benchmark each own the
+  executable integration appropriate to their boundary.
+- This task adds no provider implementation, protocol, queue, runtime engine,
+  scaffold, mock, loopback path, remote claim, or performance claim.
+- Acceptance passes: 11 focused connector contract tests, the external
+  grouping surface, 446 library tests plus every integration/example/benchmark
+  target, strict all-feature Clippy, warnings-as-errors rustdoc, release
+  quickstart, architecture constraints, `CODE_PROTOCOL`, Core freeze policy,
+  and executor schema/state validation.
+
 ## W21 Endpoint shutdown-intent correction — 2026-08-17
 
 - Status: `SAFE-TO-TEST` inside active candidate

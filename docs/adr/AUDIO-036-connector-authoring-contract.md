@@ -93,18 +93,30 @@ Endpoint extensions use `Session::register_endpoint` directly.
 
 ## Package ownership
 
-Core defines what a Connector means. Concrete providers remain separate.
-PocketStation Relay is the `pocketstation-relay` crate in the dedicated
-`pocketstation-io/connectors` repository. Future LiveKit, WHIP, process, or
-customer implementations use the same contract without adding provider enums
-or provider dependencies to Core.
+Core defines what a Connector means. Relay defines language-neutral service
+and wire semantics. Each executable consumer owns the provider implementation
+appropriate to its language and packaging boundary:
 
-Rust packages implement `ConnectorFactory` and `ConnectorWorker`. Python,
-JavaScript, and other managed SDKs consume packaged native connectors or use a
-supported bounded sidecar/native-extension boundary. Managed callbacks never
-run on capture callbacks or realtime partitions. The current native extension
-ABI remains typed-signal-only; this decision does not claim arbitrary dynamic
-raw-PCM connector authoring from Python or JavaScript.
+```text
+pks             Rust ConnectorFactory and ConnectorWorker implementation
+Python SDK      private PyO3/Rust projection over the canonical Session
+JavaScript SDK  private Node-API/Rust projection over the canonical Session
+benchmark       measurement-only adapter
+```
+
+No consumer imports a CLI-owned implementation, and the Relay service
+repository does not become the owner of every SDK runtime. Shared behavior is
+portable protocol semantics and conformance vectors, not Rust type identity.
+The historical standalone `pocketstation-relay` package is preserved as
+evidence until live consumers have migrated, then retired without destructive
+deletion.
+
+Rust implementations use `ConnectorFactory` and `ConnectorWorker`. Managed
+callbacks never run on capture callbacks or realtime partitions. The current
+native extension ABI remains typed-signal-only; this decision does not claim
+arbitrary dynamic raw-PCM connector authoring from Python or JavaScript.
+Third-party any-language audio connector authoring requires a separately
+versioned native-audio or managed-audio boundary and conformance proof.
 
 ## Evidence and boundaries
 

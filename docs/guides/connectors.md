@@ -128,13 +128,18 @@ an abort can upgrade drain, but a later drain cannot weaken an abort.
 ## Package and language boundary
 
 Do not add provider dependencies to `pocketstation`. Production providers live
-in independent connector packages. The first-party PocketStation Relay package
-is named `pocketstation-relay` and is owned by the connectors repository.
+outside Core and are owned by the executable consumer that ships them. `pks`
+owns its Rust PocketStation Relay connector; Python and JavaScript own private
+native projections over their canonical Session; the benchmark owns only a
+measurement adapter. Relay owns the portable wire semantics and conformance
+vectors, not one Rust implementation consumed by every language.
 
-Managed SDK users configure and consume packaged connector implementations. A
-Python or JavaScript process may use a supported bounded sidecar or extension
-boundary, but it never runs managed code on the realtime PCM path. The current
-native extension ABI does not provide arbitrary dynamic PCM Endpoint authoring.
+A Python or JavaScript process may use its supported native projection or a
+bounded sidecar/extension boundary, but it never runs managed code on the
+realtime PCM path. The current native extension ABI does not provide arbitrary
+dynamic PCM Endpoint authoring. Do not claim that third-party Python or
+JavaScript code can author an audio connector until a versioned managed/native
+audio boundary and cross-language conformance suite exist.
 
 Enable `conformance-fixtures` and implement every
 `REQUIRED_CONNECTOR_CONFORMANCE_CASES` case. Core component conformance is not
