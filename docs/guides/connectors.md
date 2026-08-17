@@ -1,24 +1,28 @@
 # Build a connector
 
-A connector is an externally packaged endpoint implementation. It consumes
-one or more named Session routes and publishes them to a protocol, provider or
-customer boundary without changing Core.
+A Connector is an externally packaged Endpoint integration. It consumes one
+or more named Session routes and publishes them to a protocol, provider, or
+customer boundary without adding that provider to Core.
 
-## Contract
+## Authoring surface
 
-Create a `ConnectorManifest` and an `EndpointDriverFactory`, then register the
-package once and declare one or more configured instances:
+Implement `ConnectorFactory` to validate and acquire provider resources, then
+return one `ConnectorWorker`. Core adapts that worker to the canonical Endpoint
+transaction:
 
 ```rust,no_run
 use std::sync::Arc;
-use pocketstation::connector::{Connector, ConnectorConfiguration};
-use pocketstation::Session;
+use pocketstation::connector::{
+    Connector, ConnectorConfiguration, ConnectorError, ConnectorFactory,
+    ConnectorWorker,
+};
+use pocketstation::{EndpointPortInput, Session};
 
 # fn manifest() -> pocketstation::connector::ConnectorManifest { todo!() }
 # struct RelayFactory;
-# impl pocketstation::EndpointDriverFactory for RelayFactory {
-#   fn prepare(&self, _: Vec<pocketstation::EndpointPortInput>)
-#     -> Result<Box<dyn pocketstation::PreparedEndpointDriver>, pocketstation::EndpointFailure>
+# impl ConnectorFactory for RelayFactory {
+#   fn prepare(&self, _: Vec<EndpointPortInput>)
+#     -> Result<Box<dyn ConnectorWorker>, ConnectorError>
 #   { todo!() }
 # }
 # fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -31,68 +35,103 @@ let endpoint = relay.declare(&session, ConnectorConfiguration::new())?;
 # }
 ```
 
-The full compiling example is
+The complete compiling example is
 [`examples/connector_authoring.rs`](../../examples/connector_authoring.rs).
 
-## Manifest
+## What Core supplies
 
-The manifest is inspectable before execution. It contains:
+The author does not create an Endpoint lifecycle or a Session registry. The
+private adapter supplies:
+
+- execution behind the closed Session start gate;
+- one stop token shared with the worker;
+- startup-readiness deadline supervision;
+- panic containment and terminal error classification;
+- preparation cancellation;
+- joined shutdown; and
+- canonical `EndpointDriverObservations` for delivery accounting.
+
+The Connector worker consumes the bounded `EndpointPortInput` receivers,
+reports delivery through `ConnectorContext`, and exits only after stop is
+requested or with a `ConnectorRunOutcome::failure`.
+
+## Manifest and routing
+
+`ConnectorManifest` is inspectable before execution. It contains:
 
 - stable open operator and node type identities;
 - package and manifest revisions;
-- named input ports with `SignalSpec` and `MediaCaps`;
-- typed configuration fields, defaults, constraints and deprecations;
-- delivery, worker-queue, retry, timeout and readiness policies;
+- named inputs with the existing `SignalSpec` and `MediaCaps`;
+- typed configuration fields, defaults, constraints, and deprecations;
+- the existing `EdgeContract` for bounded route behavior;
+- a finite startup-readiness deadline and probe thresholds; and
 - open capability and resource-requirement identifiers.
 
-Connector API revision 1 models an endpoint, so it requires at least one input
-and rejects outputs. Generated audio returns through the existing audio-reentry
-Bridge, not through a connector output port.
+Connector API revision 1 is an Endpoint integration: it requires at least one
+input and rejects outputs. Generated audio re-enters through the existing audio
+Bridge, not through a Connector output port.
 
 ## Configuration and secrets
 
 Use `ConnectorConfigurationValue` instead of parsing an untyped map. Unknown
-fields, missing required values, wrong types, invalid defaults and constraint
+fields, missing required values, wrong types, invalid defaults, and constraint
 violations fail before Session compilation.
 
-Use `ConnectorSecret` for credentials. Its normal `Debug` output is redacted,
-and the sensitive classification survives lowering into the existing
-`EndpointConfiguration` and `NodeConfig`. A factory may explicitly read the
-secret during setup or worker execution; it must not copy it into errors,
-logs, metrics or serialized observations.
+Use `ConnectorSecret` for credentials. Its `Debug` output is redacted, and the
+sensitive classification survives lowering into `EndpointConfiguration` and
+`NodeConfig`. A connector may explicitly read a secret during setup or worker
+execution; it must never copy it into errors, logs, metrics, or observations.
 
-## Lifecycle
+## Service status and failures
 
-The existing endpoint lifecycle remains authoritative:
+Call `ConnectorContext::report_readiness_success` or
+`report_readiness_failure` when using thresholds, or set readiness directly
+after a provider handshake. Report health and recovery independently:
 
-1. `prepare` acquires resources but does not consume media.
-2. `start` creates the running owner behind the closed `EndpointStartGate`.
-3. Media can be consumed only after the Session opens the gate.
-4. `request_stop` is idempotent and non-panicking.
-5. `join_and_finalize` waits for owned workers and reports final observations.
-6. `Drop` only signals and releases ownership; it never blocks the realtime
-   path.
+```text
+Ready + Healthy + Idle          normal delivery
+Ready + Degraded + Idle         delivering with reduced service quality
+NotReady + Degraded + Reconnecting  reconnect in progress
+```
 
-Use `ConnectorObservationHandle` for readiness and connector-level counters.
-Use `ConnectorErrorCode`, stage and retryability for machine-readable failures.
-Retries and provider protocol state remain owned by the concrete connector;
-they must obey the finite manifest policy.
+Use `ConnectorErrorCode`, `ConnectorErrorStage`, and
+`ConnectorRetryability` for machine-readable failures. Connector packages own
+their actual retry/backoff protocol and must keep it finite. Core does not
+pretend to enforce an unused generic retry policy.
 
-## Package boundary
+`RegisteredConnector::observations` returns provider observations beside the
+canonical Endpoint observations. Session route metrics remain authoritative
+for queue capacity, backpressure, and route drops.
 
-Do not add provider dependencies to `pocketstation`. Put the implementation in
-an independent connector package and keep only the provider-neutral contract
-in Core.
+## Grouping and shutdown
 
-Managed SDK users configure and consume packaged connector implementations.
-Rust authors implement `EndpointDriverFactory` directly. A Python or
-JavaScript process may use the bounded sidecar or native-extension boundary
-for supported signals, but it never runs a managed callback on the realtime
-PCM path. The current native extension ABI does not provide arbitrary dynamic
-PCM endpoint authoring.
+Override `ConnectorFactory::preparation_group` when several declared routes
+must share one provider connection. Returning one shared
+`EndpointPreparationGroup` lets application and microphone buses use one
+worker and one joined provider lifecycle while retaining independent route and
+lineage identities.
 
-Enable `conformance-fixtures` and use `pocketstation::connector::conformance`
-for the canonical deterministic Session. A supported connector package must
-cover every `REQUIRED_CONNECTOR_CONFORMANCE_CASES` entry and add real protocol
-integration evidence in its own repository.
+The worker must:
 
+1. acquire resources in `prepare` without consuming media;
+2. report ready only after the provider can accept delivery;
+3. poll or block only on bounded/non-realtime integration primitives;
+4. stop when `ConnectorContext::is_stop_requested` becomes true; and
+5. return a truthful success or classified failure outcome.
+
+## Package and language boundary
+
+Do not add provider dependencies to `pocketstation`. Production providers live
+in independent connector packages. The first-party PocketStation Relay package
+is named `pocketstation-relay` and is owned by the connectors repository.
+
+Managed SDK users configure and consume packaged connector implementations. A
+Python or JavaScript process may use a supported bounded sidecar or extension
+boundary, but it never runs managed code on the realtime PCM path. The current
+native extension ABI does not provide arbitrary dynamic PCM Endpoint authoring.
+
+Enable `conformance-fixtures` and implement every
+`REQUIRED_CONNECTOR_CONFORMANCE_CASES` case. Core component conformance is not
+provider proof: a supported package must also test its real authentication,
+network setup, readiness, reconnect, multi-bus delivery, and receiver-visible
+outcome in its owning repository.

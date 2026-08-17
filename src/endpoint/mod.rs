@@ -26,8 +26,8 @@ pub(crate) use registry::{
     EndpointDriverRegistry, EndpointDriverRegistryError, EndpointPrepareError,
 };
 pub(crate) use runtime::{
-    endpoint_start_gate, EndpointFinalizationOutcome, EndpointStartFailure, PreparedEndpoint,
-    RunningEndpoint,
+    endpoint_start_gate, EndpointDriverObservationHandle, EndpointFinalizationOutcome,
+    EndpointStartFailure, PreparedEndpoint, RunningEndpoint,
 };
 pub use runtime::{
     EndpointCancellationOutcome, EndpointDriverFinalization, EndpointDriverObservations,

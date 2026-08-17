@@ -83,3 +83,60 @@ fn given_normal_crate_root_when_scanned_then_implementation_owners_are_private()
     }
     assert!(public_prelude.contains("pub mod graph;"));
 }
+
+#[test]
+fn given_endpoint_spi_when_source_is_scanned_then_connector_policy_never_flows_downward() {
+    let endpoint_root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("src/endpoint");
+    for path in rust_sources(&endpoint_root) {
+        let source = std::fs::read_to_string(&path).expect("endpoint source");
+        assert!(
+            !source.contains("crate::connector") && !source.contains("connector::"),
+            "endpoint SPI must not depend on connector policy: {}",
+            path.display()
+        );
+    }
+}
+
+#[test]
+fn given_connector_authoring_layer_when_scanned_then_it_does_not_duplicate_core_runtime_policy() {
+    let connector_root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("src/connector");
+    let sources = rust_sources(&connector_root);
+    let combined = sources
+        .iter()
+        .map(|path| std::fs::read_to_string(path).expect("connector source"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    for forbidden in [
+        "enum ConnectorLifecycle",
+        "enum ConnectorReadiness {",
+        "struct ConnectorDeliveryPolicy",
+        "struct ConnectorRetryPolicy",
+        "worker_queue_capacity_items",
+        "items_received_total",
+        "items_delivered_total",
+        "items_dropped_total",
+        "endpoint_extensions.lock",
+        "endpoint_registrations.lock",
+    ] {
+        assert!(
+            !combined.contains(forbidden),
+            "connector authoring layer duplicated canonical runtime policy: {forbidden}"
+        );
+    }
+}
+
+fn rust_sources(root: &std::path::Path) -> Vec<std::path::PathBuf> {
+    let mut pending = vec![root.to_path_buf()];
+    let mut sources = Vec::new();
+    while let Some(directory) = pending.pop() {
+        for entry in std::fs::read_dir(directory).expect("source directory") {
+            let path = entry.expect("source entry").path();
+            if path.is_dir() {
+                pending.push(path);
+            } else if path.extension().and_then(std::ffi::OsStr::to_str) == Some("rs") {
+                sources.push(path);
+            }
+        }
+    }
+    sources
+}

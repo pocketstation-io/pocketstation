@@ -1,38 +1,24 @@
 #[cfg(feature = "conformance-fixtures")]
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
+use std::time::Duration;
 #[cfg(feature = "conformance-fixtures")]
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
 use pocketstation::connector::{
     Connector, ConnectorConfiguration, ConnectorConfigurationConstraint,
     ConnectorConfigurationErrorCode, ConnectorConfigurationField,
     ConnectorConfigurationRequirement, ConnectorConfigurationSchema, ConnectorConfigurationValue,
-    ConnectorConfigurationValueKind, ConnectorDeliveryPolicy, ConnectorError, ConnectorErrorCode,
-    ConnectorErrorStage, ConnectorManifest, ConnectorObservationHandle, ConnectorReadiness,
-    ConnectorReadinessPolicy, ConnectorRetryPolicy, ConnectorRetryability, ConnectorSecret,
-    MAX_CONNECTOR_ERROR_MESSAGE_BYTES,
+    ConnectorConfigurationValueKind, ConnectorDeliveryReadiness, ConnectorError,
+    ConnectorErrorCode, ConnectorErrorStage, ConnectorFactory, ConnectorHealth, ConnectorManifest,
+    ConnectorReadinessPolicy, ConnectorRecovery, ConnectorRetryability, ConnectorRunOutcome,
+    ConnectorSecret, ConnectorWorker, MAX_CONNECTOR_ERROR_MESSAGE_BYTES,
 };
 use pocketstation::{
-    AudioCaps, ChannelLayout, EdgeContract, EndpointDriverFactory, EndpointFailure,
-    EndpointFailureStage, EndpointPortInput, ExecutionPartition, MediaCaps, Multiplicity,
-    NodeDescriptor, NodeTypeId, OperatorId, PortDirection, PortSpec, PreparedEndpointDriver,
-    SafetyContract, SampleFormat, SignalSpec,
+    AudioCaps, ChannelLayout, EdgeContract, EndpointPortInput, EndpointPreparationGroup,
+    ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, OperatorId,
+    PortDirection, PortSpec, SafetyContract, SampleFormat, SignalSpec,
 };
-
-struct RejectingFactory;
-
-impl EndpointDriverFactory for RejectingFactory {
-    fn prepare(
-        &self,
-        _inputs: Vec<EndpointPortInput>,
-    ) -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {
-        Err(EndpointFailure::new(
-            EndpointFailureStage::Prepare,
-            "test factory is declaration-only",
-        ))
-    }
-}
 
 fn configuration_schema() -> ConnectorConfigurationSchema {
     ConnectorConfigurationSchema::new(
@@ -68,10 +54,11 @@ fn configuration_schema() -> ConnectorConfigurationSchema {
             .with_constraint(ConnectorConfigurationConstraint::OneOf(vec![
                 "normal".to_owned(),
                 "prepare_fail".to_owned(),
-                "start_fail".to_owned(),
-                "join_fail".to_owned(),
+                "terminal_fail".to_owned(),
                 "worker_panic".to_owned(),
                 "saturate".to_owned(),
+                "degraded".to_owned(),
+                "never_ready".to_owned(),
             ])),
         ],
     )
@@ -79,6 +66,13 @@ fn configuration_schema() -> ConnectorConfigurationSchema {
 }
 
 fn manifest() -> ConnectorManifest {
+    manifest_with_readiness(
+        ConnectorReadinessPolicy::new(Duration::from_secs(10), Duration::from_millis(25), 1, 3)
+            .expect("readiness policy"),
+    )
+}
+
+fn manifest_with_readiness(readiness: ConnectorReadinessPolicy) -> ConnectorManifest {
     let media = MediaCaps::Audio(AudioCaps {
         sample_rate_hz: None,
         frame_samples: None,
@@ -110,9 +104,8 @@ fn manifest() -> ConnectorManifest {
         "1.0.0",
         node,
         configuration_schema(),
-        ConnectorDeliveryPolicy::new(EdgeContract::realtime_audio(), 64).expect("delivery policy"),
-        ConnectorRetryPolicy::new(5, 2_000, 100, 2_000, 10_000, 2_000, 20).expect("retry policy"),
-        ConnectorReadinessPolicy::new(10_000, 250, 1, 3).expect("readiness policy"),
+        EdgeContract::realtime_audio(),
+        readiness,
     )
     .expect("connector manifest")
 }
@@ -124,6 +117,35 @@ fn configuration() -> ConnectorConfiguration {
             ConnectorSecret::new("test-secret-value").expect("secret"),
         ),
     )
+}
+
+fn fault_configuration(mode: &str) -> ConnectorConfiguration {
+    configuration().with("mode", ConnectorConfigurationValue::Text(mode.to_owned()))
+}
+
+fn connector_error(code: &str, stage: ConnectorErrorStage, message: &str) -> ConnectorError {
+    ConnectorError::new(
+        ConnectorErrorCode::new(code).expect("static connector error code"),
+        stage,
+        ConnectorRetryability::Never,
+        message,
+    )
+    .expect("static connector error")
+}
+
+struct RejectingFactory;
+
+impl ConnectorFactory for RejectingFactory {
+    fn prepare(
+        &self,
+        _inputs: Vec<EndpointPortInput>,
+    ) -> Result<Box<dyn ConnectorWorker>, ConnectorError> {
+        Err(connector_error(
+            "test.prepare_rejected",
+            ConnectorErrorStage::Prepare,
+            "test factory is declaration-only",
+        ))
+    }
 }
 
 #[test]
@@ -200,33 +222,6 @@ fn given_duplicate_connector_identity_when_registered_then_registration_is_rejec
 }
 
 #[test]
-fn given_connector_observations_when_state_changes_then_degradation_and_loss_are_explicit() {
-    let observations = ConnectorObservationHandle::new();
-    assert!(observations
-        .transition(ConnectorReadiness::Ready)
-        .expect("ready transition"));
-    observations.record_received(12);
-    observations.record_delivered(10);
-    observations.record_dropped(2);
-    observations.record_retry();
-    assert!(observations
-        .transition(ConnectorReadiness::Reconnecting)
-        .expect("reconnect transition"));
-    assert!(observations
-        .transition(ConnectorReadiness::Failed)
-        .expect("failed transition"));
-    assert!(observations.transition(ConnectorReadiness::Ready).is_err());
-
-    let snapshot = observations.snapshot().expect("observations");
-    assert_eq!(snapshot.readiness, ConnectorReadiness::Failed);
-    assert_eq!(snapshot.items_received_total, 12);
-    assert_eq!(snapshot.items_delivered_total, 10);
-    assert_eq!(snapshot.items_dropped_total, 2);
-    assert_eq!(snapshot.retry_attempts_total, 1);
-    assert_eq!(snapshot.reconnects_total, 1);
-}
-
-#[test]
 fn given_connector_error_when_inspected_then_code_is_stable_and_machine_readable() {
     let code =
         ConnectorErrorCode::new("relay.signaling.answer_timeout").expect("stable error code");
@@ -239,6 +234,26 @@ fn given_connector_error_when_inspected_then_code_is_stable_and_machine_readable
         "x".repeat(MAX_CONNECTOR_ERROR_MESSAGE_BYTES + 1),
     )
     .is_err());
+    assert_eq!(
+        connector_error(
+            "test.delivery_failure",
+            ConnectorErrorStage::Delivery,
+            "delivery failed",
+        )
+        .into_endpoint_failure()
+        .stage(),
+        pocketstation::EndpointFailureStage::JoinFinalize
+    );
+    assert_eq!(
+        connector_error(
+            "test.shutdown_failure",
+            ConnectorErrorStage::Shutdown,
+            "shutdown failed",
+        )
+        .into_endpoint_failure()
+        .stage(),
+        pocketstation::EndpointFailureStage::RequestStop
+    );
 }
 
 #[cfg(feature = "conformance-fixtures")]
@@ -246,9 +261,8 @@ fn given_connector_error_when_inspected_then_code_is_stable_and_machine_readable
 struct FaultControl {
     prepare_calls_total: AtomicU64,
     cancelled_preparations_total: AtomicU64,
-    start_calls_total: AtomicU64,
-    stop_calls_total: AtomicU64,
-    join_calls_total: AtomicU64,
+    run_calls_total: AtomicU64,
+    completed_runs_total: AtomicU64,
 }
 
 #[cfg(feature = "conformance-fixtures")]
@@ -257,11 +271,26 @@ struct FaultFactory {
 }
 
 #[cfg(feature = "conformance-fixtures")]
-impl EndpointDriverFactory for FaultFactory {
+impl ConnectorFactory for FaultFactory {
+    fn preparation_group(
+        &self,
+        route_id: pocketstation::RouteId,
+        configuration: &pocketstation::graph::NodeConfig,
+    ) -> Result<EndpointPreparationGroup, ConnectorError> {
+        if configuration.get("mode") == Some("normal")
+            || configuration.get("mode") == Some("degraded")
+        {
+            return Ok(EndpointPreparationGroup::Shared(
+                pocketstation::EndpointGroupId::new("connector-contract-test"),
+            ));
+        }
+        Ok(EndpointPreparationGroup::Route(route_id))
+    }
+
     fn prepare(
         &self,
         inputs: Vec<EndpointPortInput>,
-    ) -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {
+    ) -> Result<Box<dyn ConnectorWorker>, ConnectorError> {
         self.control
             .prepare_calls_total
             .fetch_add(1, Ordering::Relaxed);
@@ -271,12 +300,13 @@ impl EndpointDriverFactory for FaultFactory {
             .unwrap_or("normal")
             .to_owned();
         if mode == "prepare_fail" {
-            return Err(EndpointFailure::new(
-                EndpointFailureStage::Prepare,
+            return Err(connector_error(
+                "test.prepare_failure",
+                ConnectorErrorStage::Prepare,
                 "injected connector preparation failure",
             ));
         }
-        Ok(Box::new(FaultPrepared {
+        Ok(Box::new(FaultWorker {
             control: Arc::clone(&self.control),
             mode,
             inputs,
@@ -285,132 +315,72 @@ impl EndpointDriverFactory for FaultFactory {
 }
 
 #[cfg(feature = "conformance-fixtures")]
-struct FaultPrepared {
+struct FaultWorker {
     control: Arc<FaultControl>,
     mode: String,
     inputs: Vec<EndpointPortInput>,
 }
 
 #[cfg(feature = "conformance-fixtures")]
-impl PreparedEndpointDriver for FaultPrepared {
-    fn start(
+impl ConnectorWorker for FaultWorker {
+    fn run(
         self: Box<Self>,
-        start_gate: Arc<pocketstation::EndpointStartGate>,
-    ) -> Result<Box<dyn pocketstation::RunningEndpointDriver>, EndpointFailure> {
-        self.control
-            .start_calls_total
-            .fetch_add(1, Ordering::Relaxed);
-        if self.mode == "start_fail" {
-            return Err(EndpointFailure::new(
-                EndpointFailureStage::Start,
-                "injected connector start failure",
+        context: pocketstation::connector::ConnectorContext,
+    ) -> ConnectorRunOutcome {
+        self.control.run_calls_total.fetch_add(1, Ordering::Relaxed);
+        if self.mode != "never_ready" {
+            let _ = context.report_readiness_success();
+        }
+        if self.mode == "worker_panic" {
+            panic!("injected connector worker panic");
+        }
+        if self.mode == "terminal_fail" {
+            return ConnectorRunOutcome::failure(connector_error(
+                "test.terminal_failure",
+                ConnectorErrorStage::Delivery,
+                "injected connector terminal failure",
             ));
         }
-        let stop_requested = Arc::new(AtomicBool::new(false));
-        let worker = if self.mode == "worker_panic" {
-            let stop_requested = Arc::clone(&stop_requested);
-            Some(std::thread::spawn(move || {
-                while !start_gate.is_open() && !stop_requested.load(Ordering::Acquire) {
-                    std::thread::yield_now();
+        if self.mode == "degraded" {
+            let reason = ConnectorErrorCode::new("test.provider_degraded").expect("reason");
+            let _ = context.set_degraded(reason.clone());
+            let _ = context.set_reconnecting(reason);
+        }
+        let mut receivers: Vec<_> = self
+            .inputs
+            .into_iter()
+            .filter_map(|input| match input.into_parts().0 {
+                pocketstation::EndpointReceiver::Audio { receiver, .. } => Some(receiver),
+                pocketstation::EndpointReceiver::Signal(_) => None,
+            })
+            .collect();
+        while !context.is_stop_requested() {
+            let mut progressed = false;
+            if self.mode != "saturate" {
+                for receiver in &mut receivers {
+                    if receiver.try_recv().is_some() {
+                        context.record_frame_received(1);
+                        context.record_frame_delivered(1);
+                        progressed = true;
+                    }
                 }
-                panic!("injected connector worker panic");
-            }))
-        } else {
-            None
-        };
-        Ok(Box::new(FaultRunning {
-            control: Arc::clone(&self.control),
-            mode: self.mode,
-            _inputs: self.inputs,
-            stop_requested,
-            worker,
-        }))
+            }
+            if !progressed {
+                let _ = context.wait_for_stop(Duration::from_millis(1));
+            }
+        }
+        self.control
+            .completed_runs_total
+            .fetch_add(1, Ordering::Relaxed);
+        ConnectorRunOutcome::success()
     }
 
-    fn cancel_preparation(self: Box<Self>) -> pocketstation::EndpointCancellationOutcome {
+    fn cancel_preparation(self: Box<Self>) -> Result<(), ConnectorError> {
         self.control
             .cancelled_preparations_total
             .fetch_add(1, Ordering::Relaxed);
-        pocketstation::EndpointCancellationOutcome {
-            observations: pocketstation::EndpointDriverObservations::default(),
-            result: Ok(()),
-        }
-    }
-}
-
-#[cfg(feature = "conformance-fixtures")]
-struct FaultRunning {
-    control: Arc<FaultControl>,
-    mode: String,
-    _inputs: Vec<EndpointPortInput>,
-    stop_requested: Arc<AtomicBool>,
-    worker: Option<std::thread::JoinHandle<()>>,
-}
-
-#[cfg(feature = "conformance-fixtures")]
-impl pocketstation::RunningEndpointDriver for FaultRunning {
-    fn observations(&self) -> pocketstation::EndpointDriverObservations {
-        pocketstation::EndpointDriverObservations::default()
-    }
-
-    fn request_stop(&mut self) -> Result<(), EndpointFailure> {
-        self.control
-            .stop_calls_total
-            .fetch_add(1, Ordering::Relaxed);
-        self.stop_requested.store(true, Ordering::Release);
         Ok(())
     }
-
-    fn join_and_finalize(mut self: Box<Self>) -> pocketstation::EndpointDriverFinalization {
-        self.control
-            .join_calls_total
-            .fetch_add(1, Ordering::Relaxed);
-        let worker_result = self.worker.take().map_or(Ok(()), |worker| {
-            worker.join().map_err(|_| {
-                EndpointFailure::new(
-                    EndpointFailureStage::JoinFinalize,
-                    "connector worker panicked",
-                )
-            })
-        });
-        let result = if self.mode == "join_fail" {
-            Err(EndpointFailure::new(
-                EndpointFailureStage::JoinFinalize,
-                "injected connector join failure",
-            ))
-        } else {
-            worker_result
-        };
-        pocketstation::EndpointDriverFinalization {
-            observations: self.observations(),
-            result,
-        }
-    }
-}
-
-#[cfg(feature = "conformance-fixtures")]
-impl Drop for FaultRunning {
-    fn drop(&mut self) {
-        self.stop_requested.store(true, Ordering::Release);
-        let _ = self.worker.take();
-    }
-}
-
-#[cfg(feature = "conformance-fixtures")]
-fn fault_configuration(mode: &str) -> ConnectorConfiguration {
-    configuration().with("mode", ConnectorConfigurationValue::Text(mode.to_owned()))
-}
-
-#[cfg(feature = "conformance-fixtures")]
-fn fault_session(
-    control: Arc<FaultControl>,
-) -> (
-    pocketstation::Session,
-    pocketstation::connector::RegisteredConnector,
-) {
-    let session = pocketstation::conformance::session().expect("conformance Session");
-    let registered = register_fault_connector(&session, control);
-    (session, registered)
 }
 
 #[cfg(feature = "conformance-fixtures")]
@@ -418,18 +388,56 @@ fn register_fault_connector(
     session: &pocketstation::Session,
     control: Arc<FaultControl>,
 ) -> pocketstation::connector::RegisteredConnector {
-    let connector =
-        Connector::new(manifest(), Arc::new(FaultFactory { control })).expect("fault connector");
+    register_fault_connector_with_manifest(session, control, manifest())
+}
+
+#[cfg(feature = "conformance-fixtures")]
+fn register_fault_connector_with_manifest(
+    session: &pocketstation::Session,
+    control: Arc<FaultControl>,
+    manifest: ConnectorManifest,
+) -> pocketstation::connector::RegisteredConnector {
     session
-        .register_connector(connector)
+        .register_connector(
+            Connector::new(manifest, Arc::new(FaultFactory { control })).expect("fault connector"),
+        )
         .expect("fault connector registration")
+}
+
+#[cfg(feature = "conformance-fixtures")]
+fn routed_fault_session(
+    mode: &str,
+) -> (
+    pocketstation::Session,
+    pocketstation::connector::RegisteredConnector,
+    pocketstation::EndpointHandle,
+    Arc<FaultControl>,
+) {
+    let control = Arc::new(FaultControl::default());
+    let session = pocketstation::conformance::session().expect("conformance Session");
+    let registered = register_fault_connector(&session, Arc::clone(&control));
+    let endpoint = registered
+        .declare(&session, fault_configuration(mode))
+        .expect("fault endpoint");
+    let application = session
+        .capture(pocketstation::Source::application(
+            pocketstation::ApplicationSelector::name("PocketStation Fixture"),
+        ))
+        .expect("application stem");
+    let microphone = session
+        .capture(pocketstation::Source::microphone_default())
+        .expect("microphone stem");
+    application.send(endpoint).expect("application route");
+    microphone.send(endpoint).expect("microphone route");
+    (session, registered, endpoint, control)
 }
 
 #[cfg(feature = "conformance-fixtures")]
 #[test]
 fn given_prior_preparation_when_connector_prepare_fails_then_prior_work_rolls_back() {
     let control = Arc::new(FaultControl::default());
-    let (session, connector) = fault_session(Arc::clone(&control));
+    let session = pocketstation::conformance::session().expect("conformance Session");
+    let connector = register_fault_connector(&session, Arc::clone(&control));
     let first = connector
         .declare(&session, fault_configuration("normal"))
         .expect("normal endpoint");
@@ -457,86 +465,137 @@ fn given_prior_preparation_when_connector_prepare_fails_then_prior_work_rolls_ba
 
 #[cfg(feature = "conformance-fixtures")]
 #[test]
-fn given_prepared_connectors_when_connector_start_fails_then_start_is_transactional() {
-    let control = Arc::new(FaultControl::default());
-    let (session, connector) = fault_session(Arc::clone(&control));
-    let endpoint = connector
-        .declare(&session, fault_configuration("start_fail"))
-        .expect("start-failing endpoint");
-    let application = session
-        .capture(pocketstation::Source::application(
-            pocketstation::ApplicationSelector::name("PocketStation Fixture"),
-        ))
-        .expect("application stem");
-    let microphone = session
-        .capture(pocketstation::Source::microphone_default())
-        .expect("microphone stem");
-    application.send(endpoint).expect("route");
-    microphone.send(endpoint).expect("microphone route");
-
-    assert!(session.start().is_err());
-    assert_eq!(control.start_calls_total.load(Ordering::Relaxed), 1);
-}
-
-#[cfg(feature = "conformance-fixtures")]
-#[test]
-fn given_running_connector_when_session_stops_then_stop_and_join_are_called() {
-    let control = Arc::new(FaultControl::default());
-    let (session, connector) = fault_session(Arc::clone(&control));
-    let endpoint = connector
-        .declare(&session, fault_configuration("normal"))
-        .expect("normal endpoint");
-    let application = session
-        .capture(pocketstation::Source::application(
-            pocketstation::ApplicationSelector::name("PocketStation Fixture"),
-        ))
-        .expect("application stem");
-    let microphone = session
-        .capture(pocketstation::Source::microphone_default())
-        .expect("microphone stem");
-    application.send(endpoint).expect("route");
-    microphone.send(endpoint).expect("microphone route");
+fn given_grouped_connector_when_session_stops_then_one_worker_is_joined_and_observed() {
+    let (session, registered, endpoint, control) = routed_fault_session("normal");
     let mut running = session.start().expect("running Session");
-
-    assert!(running.cancel().is_success());
-    assert_eq!(control.stop_calls_total.load(Ordering::Relaxed), 2);
-    assert_eq!(control.join_calls_total.load(Ordering::Relaxed), 2);
-}
-
-#[cfg(feature = "conformance-fixtures")]
-fn run_terminal_fault(mode: &str) -> bool {
-    let control = Arc::new(FaultControl::default());
-    let (session, connector) = fault_session(control);
-    let endpoint = connector
-        .declare(&session, fault_configuration(mode))
-        .expect("fault endpoint");
-    let application = session
-        .capture(pocketstation::Source::application(
-            pocketstation::ApplicationSelector::name("PocketStation Fixture"),
-        ))
-        .expect("application stem");
-    let microphone = session
-        .capture(pocketstation::Source::microphone_default())
-        .expect("microphone stem");
-    application.send(endpoint).expect("route");
-    microphone.send(endpoint).expect("microphone route");
-    let mut running = session.start().expect("running Session");
-    if mode == "worker_panic" {
-        std::thread::sleep(Duration::from_millis(10));
+    let deadline = Instant::now() + Duration::from_secs(2);
+    loop {
+        let snapshots = registered.observations().expect("snapshots");
+        if snapshots
+            .first()
+            .is_some_and(|snapshot| snapshot.endpoint.frames_delivered_total > 0)
+        {
+            break;
+        }
+        assert!(Instant::now() < deadline, "connector must deliver");
+        std::thread::sleep(Duration::from_millis(2));
     }
-    running.stop().is_success()
+    assert!(registered
+        .observation(endpoint)
+        .expect("same Session")
+        .expect("observation")
+        .snapshot()
+        .expect("snapshot")
+        .service_status
+        .accepts_delivery());
+    assert!(running.stop().is_success());
+    assert_eq!(control.run_calls_total.load(Ordering::Relaxed), 1);
+    assert_eq!(control.completed_runs_total.load(Ordering::Relaxed), 1);
+    assert_eq!(registered.observations().expect("snapshots").len(), 1);
 }
 
 #[cfg(feature = "conformance-fixtures")]
 #[test]
-fn given_join_failure_or_worker_panic_when_session_stops_then_failure_is_terminal() {
-    assert!(!run_terminal_fault("join_fail"));
-    assert!(!run_terminal_fault("worker_panic"));
+fn given_orthogonal_provider_status_when_reconnecting_then_endpoint_metrics_remain_canonical() {
+    let (session, registered, endpoint, _control) = routed_fault_session("degraded");
+    let mut running = session.start().expect("running Session");
+    let deadline = Instant::now() + Duration::from_secs(2);
+    loop {
+        let observation = registered
+            .observation(endpoint)
+            .expect("same Session")
+            .expect("observation")
+            .snapshot()
+            .expect("snapshot");
+        if observation.service_status.recovery() == ConnectorRecovery::Reconnecting {
+            assert_eq!(
+                observation.service_status.delivery_readiness(),
+                ConnectorDeliveryReadiness::NotReady
+            );
+            assert_eq!(
+                observation.service_status.health(),
+                ConnectorHealth::Degraded
+            );
+            assert!(!observation.service_status.accepts_delivery());
+            assert_eq!(observation.reconnects_total, 1);
+            break;
+        }
+        assert!(Instant::now() < deadline, "connector must report recovery");
+        std::thread::sleep(Duration::from_millis(2));
+    }
+    assert!(running.stop().is_success());
 }
 
 #[cfg(feature = "conformance-fixtures")]
 #[test]
-fn given_saturated_connector_route_when_observed_then_drops_are_visible_in_metrics() {
+fn given_connector_never_ready_when_startup_deadline_expires_then_failure_is_terminal() {
+    let control = Arc::new(FaultControl::default());
+    let session = pocketstation::conformance::session().expect("conformance Session");
+    let readiness =
+        ConnectorReadinessPolicy::new(Duration::from_millis(40), Duration::from_millis(5), 1, 1)
+            .expect("short readiness policy");
+    let registered = register_fault_connector_with_manifest(
+        &session,
+        control,
+        manifest_with_readiness(readiness),
+    );
+    let endpoint = registered
+        .declare(&session, fault_configuration("never_ready"))
+        .expect("not-ready endpoint");
+    let application = session
+        .capture(pocketstation::Source::application(
+            pocketstation::ApplicationSelector::name("PocketStation Fixture"),
+        ))
+        .expect("application stem");
+    let microphone = session
+        .capture(pocketstation::Source::microphone_default())
+        .expect("microphone stem");
+    application.send(endpoint).expect("application route");
+    microphone.send(endpoint).expect("microphone route");
+    let mut running = session.start().expect("running Session");
+    std::thread::sleep(Duration::from_millis(80));
+    assert!(!running.stop().is_success());
+    let observation = registered
+        .observation(endpoint)
+        .expect("same Session")
+        .expect("retained observation")
+        .snapshot()
+        .expect("terminal snapshot");
+    assert_eq!(
+        observation
+            .last_error
+            .as_ref()
+            .map(|error| error.code().as_str()),
+        Some("core.readiness_timeout")
+    );
+    assert_eq!(
+        observation.service_status.delivery_readiness(),
+        ConnectorDeliveryReadiness::NotReady
+    );
+}
+
+#[cfg(feature = "conformance-fixtures")]
+#[test]
+fn given_worker_failure_or_panic_when_session_stops_then_endpoint_finalization_is_terminal() {
+    for mode in ["terminal_fail", "worker_panic"] {
+        let (session, registered, endpoint, _control) = routed_fault_session(mode);
+        let mut running = session.start().expect("running Session");
+        std::thread::sleep(Duration::from_millis(20));
+        assert!(!running.stop().is_success(), "{mode} must be terminal");
+        let observation = registered
+            .observation(endpoint)
+            .expect("same Session")
+            .expect("retained observation")
+            .snapshot()
+            .expect("terminal snapshot");
+        assert_eq!(observation.failures_total, 1);
+        assert!(observation.last_error.is_some());
+    }
+}
+
+#[cfg(feature = "conformance-fixtures")]
+#[test]
+fn given_saturated_connector_route_when_observed_then_drops_are_visible_in_session_metrics() {
     let control = Arc::new(FaultControl::default());
     let session = pocketstation::conformance::session_for_saturation()
         .expect("saturation conformance Session");
@@ -569,5 +628,5 @@ fn given_saturated_connector_route_when_observed_then_drops_are_visible_in_metri
         assert!(Instant::now() < deadline, "route must visibly saturate");
         std::thread::sleep(Duration::from_millis(5));
     }
-    let _ = running.stop();
+    assert!(running.stop().is_success());
 }

@@ -1,5 +1,36 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W21 connector runtime authoring correction — 2026-08-17
+
+- Status: `SAFE-TO-TEST` inside active candidate
+  `pks-20260817-w21-relay-connector-package-7`; full repository and real Relay
+  gates remain pending.
+- Connector no longer exposes a competing lifecycle, delivery policy, retry
+  policy, worker-queue capacity, delivery counters, or Session registry path.
+  Delivery readiness, health, and recovery remain separate provider-service
+  facts; Endpoint finalization remains the terminal authority.
+- `Connector::new` lowers `ConnectorFactory` and `ConnectorWorker` into the
+  canonical Endpoint lifecycle. Core owns the worker thread, closed start gate,
+  stop token, startup-readiness deadline, joined shutdown, panic containment,
+  terminal error propagation, and canonical Endpoint observations.
+- `Session::register_connector` delegates to the existing atomic
+  `Session::register_endpoint` extension authority. The earlier raw
+  `Session::connector` and `register_connector_driver` pair remains deprecated
+  for 1.x source compatibility only.
+- Ten public Connector tests and four API-boundary tests pass. They prove
+  typed configuration and redaction, duplicate rejection, preparation
+  rollback/cancellation, grouped application-plus-microphone ownership,
+  orthogonal provider status, startup-readiness timeout, canonical delivery
+  observations, saturation, joined stop, terminal failure, panic containment,
+  and dependency direction.
+- The exact Core candidate passes 445 library tests plus every integration,
+  example, and benchmark target; strict all-target/all-feature Clippy;
+  warnings-as-errors contracts-only rustdoc; the release quickstart;
+  architecture constraints; `CODE_PROTOCOL`; and the Core freeze-policy gate.
+- Provider protocols, network clients, codecs, queues, retry decisions, and
+  credentials remain outside Core. No callback, realtime queue, capture path,
+  platform, soak, remote, or competitive-performance claim is changed.
+
 ## Core 1.0 extension-first freeze activation — 2026-08-13
 
 - Status: `REAL` governance boundary after immutable Core 1.0 publication and
@@ -3112,7 +3143,8 @@
 
 ## W21 provider-neutral connector authoring contract — 2026-08-17
 
-- Status: `SAFE-TO-MERGE` for candidate
+- Status: `PARTIAL` historical predecessor, superseded by the connector runtime
+  authoring correction at the top of this file. It was `SAFE-TO-MERGE` for candidate
   `pks-20260817-w21-connector-authoring-contract-1`; every mandatory executor
   predicate is bound to the task acceptance manifest.
 - `pocketstation::connector` now provides an inspectable manifest, typed and

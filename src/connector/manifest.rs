@@ -1,11 +1,8 @@
 use std::collections::BTreeSet;
 
-use crate::graph::{ExecutionPartition, NodeDescriptor, OperatorId};
+use crate::graph::{EdgeContract, ExecutionPartition, NodeDescriptor, OperatorId};
 
-use super::{
-    ConnectorConfigurationSchema, ConnectorDeliveryPolicy, ConnectorReadinessPolicy,
-    ConnectorRetryPolicy,
-};
+use super::{ConnectorConfigurationSchema, ConnectorReadinessPolicy};
 
 pub const CONNECTOR_API_REVISION: u32 = 1;
 pub const MAX_CONNECTOR_MANIFEST_ENTRIES: usize = 128;
@@ -82,8 +79,7 @@ pub struct ConnectorManifest {
     package_version: String,
     node: NodeDescriptor,
     configuration: ConnectorConfigurationSchema,
-    delivery: ConnectorDeliveryPolicy,
-    retry: ConnectorRetryPolicy,
+    input_edge: EdgeContract,
     readiness: ConnectorReadinessPolicy,
     capabilities: Vec<ConnectorCapability>,
     requirements: Vec<ConnectorRequirement>,
@@ -97,8 +93,7 @@ impl ConnectorManifest {
         package_version: impl Into<String>,
         node: NodeDescriptor,
         configuration: ConnectorConfigurationSchema,
-        delivery: ConnectorDeliveryPolicy,
-        retry: ConnectorRetryPolicy,
+        input_edge: EdgeContract,
         readiness: ConnectorReadinessPolicy,
     ) -> Result<Self, ConnectorManifestError> {
         let manifest = Self {
@@ -108,8 +103,7 @@ impl ConnectorManifest {
             package_version: package_version.into(),
             node,
             configuration,
-            delivery,
-            retry,
+            input_edge,
             readiness,
             capabilities: Vec::new(),
             requirements: Vec::new(),
@@ -154,12 +148,8 @@ impl ConnectorManifest {
         &self.configuration
     }
 
-    pub const fn delivery(&self) -> ConnectorDeliveryPolicy {
-        self.delivery
-    }
-
-    pub const fn retry(&self) -> ConnectorRetryPolicy {
-        self.retry
+    pub const fn input_edge(&self) -> EdgeContract {
+        self.input_edge
     }
 
     pub const fn readiness(&self) -> ConnectorReadinessPolicy {
@@ -204,13 +194,12 @@ impl ConnectorManifest {
         ) {
             return Err(ConnectorManifestError::RealtimeExecutionForbidden);
         }
-        if self.node.inputs().iter().any(|port| {
-            !self
-                .delivery
-                .input_edge()
-                .media()
-                .is_compatible_with(&port.media())
-        }) {
+        if self
+            .node
+            .inputs()
+            .iter()
+            .any(|port| !self.input_edge.media().is_compatible_with(&port.media()))
+        {
             return Err(ConnectorManifestError::DeliveryMediaMismatch);
         }
         validate_unique_entries(

@@ -130,12 +130,36 @@ impl ConnectorError {
             ConnectorErrorStage::Startup | ConnectorErrorStage::Readiness => {
                 EndpointFailureStage::Start
             }
+            ConnectorErrorStage::Shutdown => EndpointFailureStage::RequestStop,
             ConnectorErrorStage::Delivery
             | ConnectorErrorStage::Retry
-            | ConnectorErrorStage::Shutdown => EndpointFailureStage::RequestStop,
-            ConnectorErrorStage::Join => EndpointFailureStage::JoinFinalize,
+            | ConnectorErrorStage::Join => EndpointFailureStage::JoinFinalize,
         };
         EndpointFailure::new(stage, format!("{}: {}", self.code, self.message))
+    }
+
+    pub(crate) fn internal(
+        code: &'static str,
+        stage: ConnectorErrorStage,
+        message: impl Into<String>,
+    ) -> Self {
+        let mut message = message.into();
+        if message.len() > MAX_CONNECTOR_ERROR_MESSAGE_BYTES {
+            let mut boundary = MAX_CONNECTOR_ERROR_MESSAGE_BYTES;
+            while boundary > 0 && !message.is_char_boundary(boundary) {
+                boundary -= 1;
+            }
+            message.truncate(boundary);
+        }
+        if message.trim().is_empty() {
+            message = "internal connector failure".to_owned();
+        }
+        Self {
+            code: ConnectorErrorCode(Arc::from(code)),
+            stage,
+            retryability: ConnectorRetryability::Never,
+            message,
+        }
     }
 }
 

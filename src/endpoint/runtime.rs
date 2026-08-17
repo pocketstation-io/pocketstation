@@ -1,5 +1,5 @@
 use std::fmt;
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
 
 use crate::frame::{ConnectorId, EndpointId, RouteId, SessionId, SourceId, StemId, StreamId};
@@ -196,6 +196,58 @@ pub struct EndpointDriverObservations {
     pub frames_dropped_total: u64,
     pub discontinuities_total: u64,
     pub failures_total: u64,
+}
+
+#[derive(Clone, Default)]
+pub(crate) struct EndpointDriverObservationHandle {
+    inner: Arc<EndpointDriverObservationState>,
+}
+
+#[derive(Default)]
+struct EndpointDriverObservationState {
+    frames_received_total: AtomicU64,
+    frames_delivered_total: AtomicU64,
+    frames_dropped_total: AtomicU64,
+    discontinuities_total: AtomicU64,
+    failures_total: AtomicU64,
+}
+
+impl EndpointDriverObservationHandle {
+    pub(crate) fn record_received(&self, amount: u64) {
+        increment(&self.inner.frames_received_total, amount);
+    }
+
+    pub(crate) fn record_delivered(&self, amount: u64) {
+        increment(&self.inner.frames_delivered_total, amount);
+    }
+
+    pub(crate) fn record_dropped(&self, amount: u64) {
+        increment(&self.inner.frames_dropped_total, amount);
+    }
+
+    pub(crate) fn record_discontinuity(&self, amount: u64) {
+        increment(&self.inner.discontinuities_total, amount);
+    }
+
+    pub(crate) fn record_failure(&self, amount: u64) {
+        increment(&self.inner.failures_total, amount);
+    }
+
+    pub(crate) fn snapshot(&self) -> EndpointDriverObservations {
+        EndpointDriverObservations {
+            frames_received_total: self.inner.frames_received_total.load(Ordering::Relaxed),
+            frames_delivered_total: self.inner.frames_delivered_total.load(Ordering::Relaxed),
+            frames_dropped_total: self.inner.frames_dropped_total.load(Ordering::Relaxed),
+            discontinuities_total: self.inner.discontinuities_total.load(Ordering::Relaxed),
+            failures_total: self.inner.failures_total.load(Ordering::Relaxed),
+        }
+    }
+}
+
+fn increment(counter: &AtomicU64, amount: u64) {
+    let _ = counter.fetch_update(Ordering::Relaxed, Ordering::Relaxed, |value| {
+        Some(value.saturating_add(amount))
+    });
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

@@ -301,25 +301,26 @@ pub fn observed_connector(
     .map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;
     let configuration = crate::connector::ConnectorConfigurationSchema::new(1, Vec::new())
         .map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;
-    let delivery =
-        crate::connector::ConnectorDeliveryPolicy::new(crate::EdgeContract::realtime_audio(), 64)
-            .map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;
-    let readiness = crate::connector::ConnectorReadinessPolicy::new(2_000, 10, 1, 1)
-        .map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;
+    let readiness = crate::connector::ConnectorReadinessPolicy::new(
+        Duration::from_secs(2),
+        Duration::from_millis(10),
+        1,
+        1,
+    )
+    .map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;
     let manifest = crate::connector::ConnectorManifest::new(
         1,
         OperatorId::new(OBSERVED_CONNECTOR_OPERATOR_ID),
         env!("CARGO_PKG_VERSION"),
         node,
         configuration,
-        delivery,
-        crate::connector::ConnectorRetryPolicy::disabled(),
+        crate::EdgeContract::realtime_audio(),
         readiness,
     )
     .map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;
     let connector = crate::connector::Connector::new(
         manifest,
-        Arc::new(ObservedEndpointFactory { per_frame_delay }),
+        Arc::new(ObservedConnectorFactory { per_frame_delay }),
     )
     .map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;
     let registered = session.register_connector(connector)?;
@@ -353,6 +354,62 @@ pub enum ObservedEndpointError {
 
 struct ObservedEndpointFactory {
     per_frame_delay: Duration,
+}
+
+struct ObservedConnectorFactory {
+    per_frame_delay: Duration,
+}
+
+impl crate::connector::ConnectorFactory for ObservedConnectorFactory {
+    fn prepare(
+        &self,
+        inputs: Vec<EndpointPortInput>,
+    ) -> Result<Box<dyn crate::connector::ConnectorWorker>, crate::connector::ConnectorError> {
+        Ok(Box::new(ObservedConnectorWorker {
+            inputs,
+            per_frame_delay: self.per_frame_delay,
+        }))
+    }
+}
+
+struct ObservedConnectorWorker {
+    inputs: Vec<EndpointPortInput>,
+    per_frame_delay: Duration,
+}
+
+impl crate::connector::ConnectorWorker for ObservedConnectorWorker {
+    fn run(
+        self: Box<Self>,
+        context: crate::connector::ConnectorContext,
+    ) -> crate::connector::ConnectorRunOutcome {
+        let mut receivers: Vec<_> = self
+            .inputs
+            .into_iter()
+            .map(EndpointPortInput::into_parts)
+            .filter_map(|(receiver, _context)| match receiver {
+                EndpointReceiver::Audio { receiver, .. } => Some(receiver),
+                EndpointReceiver::Signal(_) => None,
+            })
+            .collect();
+        let _ = context.report_readiness_success();
+        while !context.is_stop_requested() {
+            let mut received = false;
+            for receiver in &mut receivers {
+                if receiver.try_recv().is_some() {
+                    context.record_frame_received(1);
+                    context.record_frame_delivered(1);
+                    received = true;
+                    if !self.per_frame_delay.is_zero() {
+                        thread::sleep(self.per_frame_delay);
+                    }
+                }
+            }
+            if !received {
+                let _ = context.wait_for_stop(Duration::from_millis(1));
+            }
+        }
+        crate::connector::ConnectorRunOutcome::success()
+    }
 }
 
 impl EndpointDriverFactory for ObservedEndpointFactory {

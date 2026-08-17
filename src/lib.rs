@@ -435,6 +435,10 @@ impl Session {
 
     /// Declares an external connector. Register its implementation after route
     /// identities are available with [`Self::register_connector_driver`].
+    #[deprecated(
+        since = "1.0.0",
+        note = "use pocketstation::connector::Connector and Session::register_connector"
+    )]
     pub fn connector(
         &self,
         operator_id: OperatorId,
@@ -444,6 +448,10 @@ impl Session {
     }
 
     /// Registers the externally owned implementation for a declared connector.
+    #[deprecated(
+        since = "1.0.0",
+        note = "use pocketstation::connector::Connector and Session::register_connector"
+    )]
     pub fn register_connector_driver(
         &self,
         operator_id: OperatorId,
@@ -501,14 +509,43 @@ impl Session {
         definition: Arc<dyn NodeDefinition>,
         factory: Arc<dyn EndpointDriverFactory>,
     ) -> Result<(), SessionEndpointError> {
-        self.endpoint_extensions
+        let node_type_id = definition.descriptor().type_id().clone();
+        let mut extensions = self
+            .endpoint_extensions
             .lock()
-            .map_err(|_| SessionEndpointError::RegistrationStateUnavailable)?
-            .push(EndpointExtensionRegistration {
-                operator_id,
-                definition,
-                factory,
+            .map_err(|_| SessionEndpointError::RegistrationStateUnavailable)?;
+        let registrations = self
+            .endpoint_registrations
+            .lock()
+            .map_err(|_| SessionEndpointError::RegistrationStateUnavailable)?;
+        if extensions
+            .iter()
+            .any(|entry| entry.operator_id == operator_id)
+            || registrations
+                .iter()
+                .any(|entry| entry.operator_id == operator_id)
+        {
+            return Err(SessionEndpointError::DuplicateOperatorId {
+                operator_id: operator_id.as_str().to_owned(),
             });
+        }
+        if extensions
+            .iter()
+            .any(|entry| entry.definition.descriptor().type_id() == &node_type_id)
+            || registrations
+                .iter()
+                .any(|entry| entry.node_type_id == node_type_id)
+        {
+            return Err(SessionEndpointError::DuplicateNodeTypeId {
+                node_type_id: node_type_id.as_str().to_owned(),
+            });
+        }
+        drop(registrations);
+        extensions.push(EndpointExtensionRegistration {
+            operator_id,
+            definition,
+            factory,
+        });
         Ok(())
     }
 
@@ -931,6 +968,10 @@ impl From<SourceRegistrationError> for SessionStartError {
 pub enum SessionEndpointError {
     #[error("Session endpoint-registration state is unavailable")]
     RegistrationStateUnavailable,
+    #[error("Session endpoint operator id '{operator_id}' is already registered")]
+    DuplicateOperatorId { operator_id: String },
+    #[error("Session endpoint node type id '{node_type_id}' is already registered")]
+    DuplicateNodeTypeId { node_type_id: String },
 }
 
 #[derive(Debug, thiserror::Error)]

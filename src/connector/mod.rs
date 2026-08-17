@@ -3,9 +3,9 @@ mod configuration;
 pub mod conformance;
 mod error;
 mod manifest;
-mod observation;
-mod policy;
-mod readiness;
+mod observations;
+mod service_status;
+mod worker;
 
 use std::sync::Arc;
 
@@ -28,30 +28,37 @@ pub use manifest::{
     ConnectorCapability, ConnectorManifest, ConnectorManifestError, ConnectorRequirement,
     CONNECTOR_API_REVISION, MAX_CONNECTOR_MANIFEST_ENTRIES, MAX_CONNECTOR_MANIFEST_TEXT_BYTES,
 };
-pub use observation::{
+pub(crate) use observations::ConnectorObservationStore;
+pub use observations::{
     ConnectorObservationError, ConnectorObservationHandle, ConnectorObservations,
+    ConnectorRuntimeObservations,
 };
-pub use policy::{
-    ConnectorDeliveryPolicy, ConnectorPolicyError, ConnectorReadinessPolicy, ConnectorRetryPolicy,
-    MAX_CONNECTOR_ATTEMPTS, MAX_CONNECTOR_READINESS_THRESHOLD, MAX_CONNECTOR_TIMEOUT_MS,
-    MAX_CONNECTOR_WORKER_QUEUE_ITEMS,
+pub use service_status::{
+    ConnectorDeliveryReadiness, ConnectorHealth, ConnectorReadinessPolicy,
+    ConnectorReadinessPolicyError, ConnectorRecovery, ConnectorServiceStatus,
+    MAX_CONNECTOR_READINESS_THRESHOLD, MAX_CONNECTOR_READINESS_TIMEOUT,
 };
-pub use readiness::{ConnectorReadiness, ConnectorReadinessTransitionError};
+pub use worker::{ConnectorContext, ConnectorFactory, ConnectorRunOutcome, ConnectorWorker};
 
 pub struct Connector {
     manifest: Arc<ConnectorManifest>,
-    factory: Arc<dyn EndpointDriverFactory>,
+    endpoint_factory: Arc<dyn EndpointDriverFactory>,
+    observations: ConnectorObservationStore,
 }
 
 impl Connector {
     pub fn new(
         manifest: ConnectorManifest,
-        factory: Arc<dyn EndpointDriverFactory>,
+        factory: Arc<dyn ConnectorFactory>,
     ) -> Result<Self, ConnectorManifestError> {
         manifest.validate()?;
+        let observations = ConnectorObservationStore::new();
+        let endpoint_factory =
+            worker::connector_endpoint_factory(factory, observations.clone(), manifest.readiness());
         Ok(Self {
             manifest: Arc::new(manifest),
-            factory,
+            endpoint_factory,
+            observations,
         })
     }
 
@@ -64,6 +71,7 @@ impl Connector {
 pub struct RegisteredConnector {
     session_id: crate::SessionId,
     manifest: Arc<ConnectorManifest>,
+    observations: ConnectorObservationStore,
 }
 
 impl RegisteredConnector {
@@ -73,6 +81,25 @@ impl RegisteredConnector {
 
     pub fn manifest(&self) -> &ConnectorManifest {
         &self.manifest
+    }
+
+    pub fn observation(
+        &self,
+        endpoint: EndpointHandle,
+    ) -> Result<Option<ConnectorObservationHandle>, ConnectorObservationLookupError> {
+        if endpoint.session_id() != self.session_id {
+            return Err(ConnectorObservationLookupError::WrongSession {
+                registered: self.session_id,
+                requested: endpoint.session_id(),
+            });
+        }
+        Ok(self.observations.observation(endpoint.id()))
+    }
+
+    pub fn observations(
+        &self,
+    ) -> Result<Vec<ConnectorRuntimeObservations>, ConnectorObservationError> {
+        self.observations.snapshots()
     }
 
     pub fn declare(
@@ -92,7 +119,7 @@ impl RegisteredConnector {
             self.manifest.operator_id().clone(),
         )
         .with_configuration(configuration.into_endpoint_configuration())
-        .with_input_edge(self.manifest.delivery().input_edge());
+        .with_input_edge(self.manifest.input_edge());
         Ok(session.declaration.connector_endpoint(descriptor)?)
     }
 }
@@ -124,52 +151,17 @@ impl Session {
         connector: Connector,
     ) -> Result<RegisteredConnector, ConnectorRegistrationError> {
         connector.manifest.validate()?;
-        let operator_id = connector.manifest.operator_id().clone();
-        let node_type_id = connector.manifest.node().type_id().clone();
-
-        let mut extensions = self
-            .endpoint_extensions
-            .lock()
-            .map_err(|_| ConnectorRegistrationError::RegistrationStateUnavailable)?;
-        let registrations = self
-            .endpoint_registrations
-            .lock()
-            .map_err(|_| ConnectorRegistrationError::RegistrationStateUnavailable)?;
-
-        if extensions
-            .iter()
-            .any(|entry| entry.operator_id == operator_id)
-            || registrations
-                .iter()
-                .any(|entry| entry.operator_id == operator_id)
-        {
-            return Err(ConnectorRegistrationError::DuplicateOperatorId {
-                operator_id: operator_id.as_str().to_owned(),
-            });
-        }
-        if extensions
-            .iter()
-            .any(|entry| entry.definition.descriptor().type_id() == &node_type_id)
-            || registrations
-                .iter()
-                .any(|entry| entry.node_type_id == node_type_id)
-        {
-            return Err(ConnectorRegistrationError::DuplicateNodeTypeId {
-                node_type_id: node_type_id.as_str().to_owned(),
-            });
-        }
-        drop(registrations);
-
-        extensions.push(crate::EndpointExtensionRegistration {
-            operator_id,
-            definition: Arc::new(ConnectorDefinition {
+        self.register_endpoint(
+            connector.manifest.operator_id().clone(),
+            Arc::new(ConnectorDefinition {
                 manifest: Arc::clone(&connector.manifest),
             }),
-            factory: connector.factory,
-        });
+            connector.endpoint_factory,
+        )?;
         Ok(RegisteredConnector {
             session_id: self.id(),
             manifest: connector.manifest,
+            observations: connector.observations,
         })
     }
 }
@@ -178,12 +170,8 @@ impl Session {
 pub enum ConnectorRegistrationError {
     #[error(transparent)]
     InvalidManifest(#[from] ConnectorManifestError),
-    #[error("connector registration state is unavailable")]
-    RegistrationStateUnavailable,
-    #[error("connector operator id '{operator_id}' is already registered")]
-    DuplicateOperatorId { operator_id: String },
-    #[error("connector node type id '{node_type_id}' is already registered")]
-    DuplicateNodeTypeId { node_type_id: String },
+    #[error(transparent)]
+    Session(#[from] crate::SessionEndpointError),
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -197,4 +185,13 @@ pub enum ConnectorDeclarationError {
     Configuration(#[from] ConnectorConfigurationError),
     #[error(transparent)]
     Session(#[from] SessionError),
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+pub enum ConnectorObservationLookupError {
+    #[error("connector is registered to Session {registered:?}, not Session {requested:?}")]
+    WrongSession {
+        registered: crate::SessionId,
+        requested: crate::SessionId,
+    },
 }

@@ -3,97 +3,120 @@
 **Status:** Accepted correction under AUDIO-034  
 **Decision date:** 2026-08-17  
 **Decision owners:** PocketStation runtime maintainers  
-**Cause:** Missing execution and distribution convention
+**Cause:** Missing authoring convention over the existing Endpoint SPI
 
 ## Context
 
-Core already owns the strong endpoint transaction:
+Session, Graph, and Endpoint already own the runtime contract:
 
 ```text
-compile and validate
-  → prepare
-  → rollback on failure
-  → start behind a closed Session gate
-  → deliver through bounded routes
-  → request stop
-  → join and finalize
+Session / Graph
+  declaration · identity · EdgeContract · routing · compilation
+
+Endpoint
+  prepare · rollback · closed start gate · stop request · joined finalization
+
+Session extensions
+  external Source · Operator · Endpoint registration and loading
 ```
 
-Concrete endpoint packages could use that lifecycle, but they had no common
-connector manifest, typed configuration, secret classification, delivery and
-retry policy, readiness model, stable error identity, observation model, or
-connector-specific conformance surface. The PocketStation Relay integration
-therefore repeated integration policy that another transport would also need.
+Provider packages could implement `EndpointDriverFactory`, but every package
+had to reconstruct configuration, readiness, error classification,
+observations, worker containment, and conformance conventions. The first
+Connector draft corrected discovery but went too far: it duplicated queue,
+retry, lifecycle, delivery counters, and Session registration concepts that
+Core already owned.
 
 ## Decision
 
-Core adds `pocketstation::connector` as an authoring and inspection layer over
-the existing endpoint runtime:
+`pocketstation::connector` is a thin provider-integration authoring layer. It
+does not define another execution engine:
 
 ```text
-ConnectorManifest + EndpointDriverFactory
-                  ↓
-        Session::register_connector
-                  ↓
-          RegisteredConnector::declare
-                  ↓
-  existing NodeDefinition + endpoint registry
-                  ↓
- existing prepare/start-gate/stop/join transaction
+ConnectorManifest + ConnectorFactory + ConnectorWorker
+                         ↓
+               private Endpoint adapter
+                         ↓
+              Session::register_endpoint
+                         ↓
+       canonical prepare / gate / stop / join transaction
 ```
 
-The module provides:
+Connector owns only:
 
-- open connector identity through `OperatorId` and `NodeTypeId`;
-- the existing named `PortSpec`, `SignalSpec`, and `MediaCaps` contracts;
-- a versioned, typed and finite configuration schema;
-- `ConnectorSecret`, whose normal debug representation is redacted;
-- finite edge, worker-queue, retry, deadline and readiness policies;
-- explicit `Starting`, `Ready`, `Degraded`, `Reconnecting`, `Stopping`,
-  `Stopped`, and `Failed` states;
-- stable open error codes, stage and retryability classification;
-- saturating counters and a typed observation snapshot; and
-- feature-gated deterministic Session conformance for rollback, gate
-  isolation, saturation, cancellation, finalization failure and worker panic.
+- typed finite provider configuration and redacted secrets;
+- a focused manifest built from the existing `NodeDescriptor`, `PortSpec`,
+  `SignalSpec`, `MediaCaps`, and `EdgeContract`;
+- stable connector error codes, provider stage, and retryability
+  classification;
+- orthogonal provider-service facts: delivery readiness, health, and recovery;
+- connector-specific retry, reconnect, failure, and last-error observations;
+- a worker adapter that contains panics, supervises the startup-readiness
+  deadline, provides a stop token, and reports through the Endpoint SPI; and
+- a feature-gated connector conformance protocol and deterministic Core tests.
 
-`Connector` does not create a worker, queue, retry loop, protocol client, or
-second execution engine. The concrete package implements
-`EndpointDriverFactory`; Core validates the manifest and configuration and
-then uses the existing endpoint transaction unchanged.
+Connector explicitly does not own:
+
+- Session registration or registry locks;
+- route capacity, loss, or backpressure policy beyond the existing
+  `EdgeContract`;
+- generic received, delivered, dropped, discontinuity, or finalization
+  counters already owned by `EndpointDriverObservations` and Session metrics;
+- a second lifecycle enum;
+- a declarative retry policy that Core does not execute; or
+- provider protocols, codecs, credentials, network clients, or reconnection
+  decisions.
+
+`ConnectorServiceStatus` is not a process lifecycle. Its three axes answer
+separate operational questions:
+
+```text
+delivery_readiness  NotReady | Ready
+health              Healthy  | Degraded
+recovery            Idle     | Reconnecting
+```
+
+Endpoint finalization is the authority for terminal success or failure.
+Session is the authority for starting and stopping. A connector therefore does
+not expose `Starting`, `Stopping`, `Stopped`, or `Failed` as competing state.
+
+The old public `Session::connector` plus `register_connector_driver` path is
+retained only for 1.x source compatibility and is deprecated. New connector
+packages use `Connector` and `Session::register_connector`; advanced generic
+Endpoint extensions use `Session::register_endpoint` directly.
 
 ## Package ownership
 
-Core defines what a connector means. Provider and protocol packages remain
-outside the Core crate. The first concrete package is owned by the dedicated
-`pocketstation-io/connectors` repository and implements PocketStation Relay.
-Future LiveKit, WHIP or customer transports use the same Core contract without
-adding provider enums or dependencies to Core.
+Core defines what a Connector means. Concrete providers remain separate.
+PocketStation Relay is the `pocketstation-relay` crate in the dedicated
+`pocketstation-io/connectors` repository. Future LiveKit, WHIP, process, or
+customer implementations use the same contract without adding provider enums
+or provider dependencies to Core.
 
-Rust packages implement the in-process factory directly. Python, JavaScript
-and other managed SDKs consume a packaged native connector or configure a
-bounded sidecar/native extension where its signal contract permits it. Pure
-managed callbacks never execute on capture callbacks or realtime partitions.
-The current native extension ABI remains typed-signal-only; this decision does
-not claim that arbitrary raw-PCM connectors can be authored entirely in
-Python or JavaScript.
+Rust packages implement `ConnectorFactory` and `ConnectorWorker`. Python,
+JavaScript, and other managed SDKs consume packaged native connectors or use a
+supported bounded sidecar/native-extension boundary. Managed callbacks never
+run on capture callbacks or realtime partitions. The current native extension
+ABI remains typed-signal-only; this decision does not claim arbitrary dynamic
+raw-PCM connector authoring from Python or JavaScript.
 
 ## Evidence and boundaries
 
-The connector tests run the public registration and declaration path through
-the canonical deterministic Session. They cover typed configuration rejection,
-secret redaction, duplicate identity, Session ownership, preparation rollback,
-start failure, readiness transitions, route saturation, cancellation, stop,
-join/finalization failure and worker-panic containment.
+Core tests execute the public registration and declaration path through the
+canonical deterministic Session. They cover configuration rejection, secret
+redaction, duplicate identity, preparation rollback and cancellation, grouped
+application-plus-microphone ownership, service-status separation, startup
+readiness, saturation accounting, stop and joined shutdown, terminal worker
+failure, and panic containment. Source-boundary tests reject downward Endpoint
+dependencies and reintroduction of duplicated Connector policy.
 
-The design follows the inspect-before-run and capability-negotiation principles
-in GStreamer, typed and sensitive configuration principles in Kafka
-`ConfigDef`, finite queue/retry/timeout principles in OpenTelemetry Collector,
-separate readiness and liveness semantics in Kubernetes, readiness-driven
-backpressure in Tower, joined shutdown in Tokio, C-compatible dynamic-library
-boundaries in the Rust Reference, and provider-owned transport setup in WHIP
-RFC 9725.
+The design follows inspect-before-run and capability principles from
+GStreamer, typed sensitive configuration principles from Kafka `ConfigDef`,
+finite queue/timeout principles from OpenTelemetry Collector, separate
+readiness and liveness concepts from Kubernetes, joined task ownership from
+Tokio, C-compatible dynamic-library boundaries from the Rust Reference, and
+provider-owned transport setup from WHIP RFC 9725.
 
-This decision does not implement Relay, LiveKit, WHIP or another provider in
+This decision does not implement Relay, LiveKit, WHIP, or another provider in
 Core. It does not claim universal connector compatibility, remote delivery,
 physical-device proof, or performance superiority.
-
