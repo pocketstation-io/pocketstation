@@ -15,8 +15,8 @@ use crate::capture::{
 use crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId};
 use crate::graph::PrepareContext;
 use crate::session::{
-    EndpointConfiguration, EndpointHandle, NativeSessionEngineHostOptions, OperatorId,
-    PolledAudioEndpointConfig, SessionEngineHostBuildError, SessionEngineHostBuilder,
+    EndpointHandle, NativeSessionEngineHostOptions, OperatorId, PolledAudioEndpointConfig,
+    SessionEngineHostBuildError, SessionEngineHostBuilder,
 };
 
 use crate::{
@@ -77,11 +77,13 @@ impl FixtureSource {
 
 struct DeterministicCaptureBackend {
     timestamp_origin_ns: Arc<OnceLock<u64>>,
+    frames_per_source: u64,
 }
 
 struct DeterministicPreparedCapture {
     source: FixtureSource,
     timestamp_origin_ns: Arc<OnceLock<u64>>,
+    frames_per_source: u64,
 }
 
 struct DeterministicActiveCapture {
@@ -103,6 +105,7 @@ impl CallbackCaptureBackend for DeterministicCaptureBackend {
         Ok(Box::new(DeterministicPreparedCapture {
             source,
             timestamp_origin_ns: Arc::clone(&self.timestamp_origin_ns),
+            frames_per_source: self.frames_per_source,
         }))
     }
 }
@@ -115,6 +118,7 @@ impl PreparedCaptureBackend for DeterministicPreparedCapture {
         let stop_requested = Arc::new(AtomicBool::new(false));
         let worker_stop_requested = Arc::clone(&stop_requested);
         let source = self.source;
+        let frames_per_source = self.frames_per_source;
         let timestamp_origin_ns = *self
             .timestamp_origin_ns
             .get_or_init(|| crate::timing::monotonic_timestamp_ns().saturating_add(1_000_000));
@@ -123,7 +127,7 @@ impl PreparedCaptureBackend for DeterministicPreparedCapture {
                 FRAME_SAMPLES_PER_CHANNEL.saturating_mul(usize::from(source.channels()));
             let pool = AudioBufferPool::new(32, samples_per_frame);
             let mut sequence = 0_u64;
-            while !worker_stop_requested.load(Ordering::Acquire) && sequence < FRAMES_PER_SOURCE {
+            while !worker_stop_requested.load(Ordering::Acquire) && sequence < frames_per_source {
                 let Some(mut buffer) = pool.acquire() else {
                     thread::sleep(Duration::from_millis(1));
                     continue;
@@ -192,14 +196,20 @@ impl Drop for DeterministicActiveCapture {
 }
 
 pub fn session() -> Result<Session, SessionEngineHostBuildError> {
-    session_with_optional_recording(None)
+    session_with_options(None, FRAMES_PER_SOURCE)
+}
+
+/// Creates a finite fixture that produces enough frames to overflow a
+/// deliberately unconsumed canonical route.
+pub fn session_for_saturation() -> Result<Session, SessionEngineHostBuildError> {
+    session_with_options(None, FRAMES_PER_SOURCE.saturating_mul(4))
 }
 
 /// Creates the deterministic canonical-engine fixture with multistem recording.
 pub fn session_with_recording(
     output_root: impl Into<PathBuf>,
 ) -> Result<Session, SessionEngineHostBuildError> {
-    session_with_optional_recording(Some(output_root.into()))
+    session_with_options(Some(output_root.into()), FRAMES_PER_SOURCE)
 }
 
 /// Creates the deterministic canonical-engine fixture with a bounded Session
@@ -208,7 +218,7 @@ pub fn session_with_trace(
     path: impl Into<PathBuf>,
     capacity_records: usize,
 ) -> Result<Session, SessionEngineHostBuildError> {
-    let mut session = session_with_optional_recording(None)?;
+    let mut session = session_with_options(None, FRAMES_PER_SOURCE)?;
     session.session_trace = Some(crate::SessionTraceConfiguration {
         path: path.into(),
         capacity_records,
@@ -223,7 +233,7 @@ pub fn session_with_recording_and_trace(
     trace_path: impl Into<PathBuf>,
     capacity_records: usize,
 ) -> Result<Session, SessionEngineHostBuildError> {
-    let mut session = session_with_optional_recording(Some(output_root.into()))?;
+    let mut session = session_with_options(Some(output_root.into()), FRAMES_PER_SOURCE)?;
     session.session_trace = Some(crate::SessionTraceConfiguration {
         path: trace_path.into(),
         capacity_records,
@@ -231,8 +241,9 @@ pub fn session_with_recording_and_trace(
     Ok(session)
 }
 
-fn session_with_optional_recording(
+fn session_with_options(
     output_root: Option<PathBuf>,
+    frames_per_source: u64,
 ) -> Result<Session, SessionEngineHostBuildError> {
     let mut options = NativeSessionEngineHostOptions::default();
     if output_root.is_some() {
@@ -250,6 +261,7 @@ fn session_with_optional_recording(
     )?;
     let capture_backend: Arc<dyn CallbackCaptureBackend> = Arc::new(DeterministicCaptureBackend {
         timestamp_origin_ns: Arc::new(OnceLock::new()),
+        frames_per_source,
     });
     builder
         .set_application_backend(Arc::clone(&capture_backend))
@@ -263,13 +275,55 @@ pub fn observed_connector(
     session: &Session,
     per_frame_delay: Duration,
 ) -> Result<EndpointHandle, ObservedEndpointError> {
-    let operator_id = OperatorId::new(OBSERVED_CONNECTOR_OPERATOR_ID);
-    let endpoint = session.connector(operator_id.clone(), EndpointConfiguration::new())?;
-    session.register_connector_driver(
-        operator_id,
+    let input = crate::PortSpec::new(
+        "audio",
+        crate::PortDirection::Input,
+        crate::SignalSpec::audio(),
+        crate::MediaCaps::Audio(crate::AudioCaps {
+            sample_rate_hz: None,
+            frame_samples: None,
+            channel_layout: crate::ChannelLayout::Any,
+            format: crate::SampleFormat::F32Interleaved,
+        }),
+        crate::Multiplicity::Many,
+        true,
+    )
+    .map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;
+    let node = crate::NodeDescriptor::new(
+        crate::NodeTypeId::from("io.pocketstation.conformance.connector.node.v1"),
+        "PocketStation conformance connector",
+        vec![input],
+        Vec::new(),
+        crate::ExecutionPartition::AsyncWorker,
+        crate::SafetyContract::AllocationAllowed,
+        true,
+    )
+    .map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;
+    let configuration = crate::connector::ConnectorConfigurationSchema::new(1, Vec::new())
+        .map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;
+    let delivery =
+        crate::connector::ConnectorDeliveryPolicy::new(crate::EdgeContract::realtime_audio(), 64)
+            .map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;
+    let readiness = crate::connector::ConnectorReadinessPolicy::new(2_000, 10, 1, 1)
+        .map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;
+    let manifest = crate::connector::ConnectorManifest::new(
+        1,
+        OperatorId::new(OBSERVED_CONNECTOR_OPERATOR_ID),
+        env!("CARGO_PKG_VERSION"),
+        node,
+        configuration,
+        delivery,
+        crate::connector::ConnectorRetryPolicy::disabled(),
+        readiness,
+    )
+    .map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;
+    let connector = crate::connector::Connector::new(
+        manifest,
         Arc::new(ObservedEndpointFactory { per_frame_delay }),
-    )?;
-    Ok(endpoint)
+    )
+    .map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;
+    let registered = session.register_connector(connector)?;
+    Ok(registered.declare(session, crate::connector::ConnectorConfiguration::new())?)
 }
 
 /// Declares and registers a deterministic native browser boundary used only
@@ -285,10 +339,16 @@ pub fn observed_browser(
 
 #[derive(Debug, thiserror::Error)]
 pub enum ObservedEndpointError {
+    #[error("invalid conformance connector contract: {0}")]
+    Contract(String),
     #[error(transparent)]
     Declaration(#[from] SessionError),
     #[error(transparent)]
     Registration(#[from] SessionEndpointError),
+    #[error(transparent)]
+    ConnectorRegistration(#[from] crate::connector::ConnectorRegistrationError),
+    #[error(transparent)]
+    ConnectorDeclaration(#[from] crate::connector::ConnectorDeclarationError),
 }
 
 struct ObservedEndpointFactory {

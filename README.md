@@ -198,7 +198,12 @@ context is destroyed. SDKs do not own a second loader policy or Session
 runtime.
 
 See the [extension guide](docs/guides/extensions.md) and
-[signal model](docs/concepts/signals-and-streams.md).
+[signal model](docs/concepts/signals-and-streams.md). Connector packages also
+have a dedicated [authoring contract and guide](docs/guides/connectors.md):
+typed manifests and configuration, redacted secrets, finite delivery/retry and
+readiness policies, classified errors, observations, and deterministic
+conformance all lower into the existing endpoint lifecycle. Provider protocols
+and dependencies remain outside Core.
 
 ## Platform and evidence boundaries
 

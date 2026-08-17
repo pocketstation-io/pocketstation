@@ -3109,3 +3109,30 @@
   capture or realtime PCM path. The plugin is a conformance fixture only; this
   step does not claim remote, physical-device, language-SDK parity, or release
   readiness.
+
+## W21 provider-neutral connector authoring contract — 2026-08-17
+
+- Status: `SAFE-TO-MERGE` for candidate
+  `pks-20260817-w21-connector-authoring-contract-1`; every mandatory executor
+  predicate is bound to the task acceptance manifest.
+- `pocketstation::connector` now provides an inspectable manifest, typed and
+  finite configuration, redacted secrets, bounded delivery/retry/readiness
+  policies, explicit readiness transitions, stable classified errors,
+  observations, Session-scoped registration, and conformance fixtures.
+- The new registration path lowers into the existing `NodeDefinition` and
+  `EndpointDriverFactory` authorities. It adds no registry, compiler, route
+  table, scheduler, worker lifecycle, provider type, or execution engine.
+- Ten connector-contract tests pass through the public Session path, including
+  configuration rejection, secret redaction, duplicate identity, preparation
+  rollback, start failure, saturation accounting, cancellation, join failure,
+  and worker-panic containment. The existing public Session fan-out test also
+  passes after migrating its observed connector to the new contract.
+- Full acceptance passes: 444 library tests plus every workspace target and
+  benchmark target, strict all-target/all-feature Clippy, rustdoc warnings as
+  errors, release quickstart, architecture constraints, `CODE_PROTOCOL`, Core
+  freeze policy, and both executor validators.
+- Concrete protocols remain outside Core. Rust packages implement the factory;
+  managed SDKs consume packaged native connectors or supported bounded
+  extension/sidecar boundaries. The current native extension ABI remains
+  typed-signal-only, so this step does not claim arbitrary pure-Python or
+  pure-JavaScript PCM connector authoring.

@@ -30,9 +30,15 @@ impl From<&str> for NodeTypeId {
     }
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Clone, Default)]
 pub struct NodeConfig {
-    values: HashMap<String, String>,
+    values: HashMap<String, NodeConfigValue>,
+}
+
+#[derive(Clone)]
+struct NodeConfigValue {
+    value: String,
+    sensitive: bool,
 }
 
 impl NodeConfig {
@@ -41,12 +47,37 @@ impl NodeConfig {
     }
 
     pub fn with(mut self, key: &str, value: &str) -> Self {
-        self.values.insert(key.to_owned(), value.to_owned());
+        self.values.insert(
+            key.to_owned(),
+            NodeConfigValue {
+                value: value.to_owned(),
+                sensitive: false,
+            },
+        );
+        self
+    }
+
+    /// Adds a setup-time value whose normal debug representation is redacted.
+    ///
+    /// The value remains available to the owning non-realtime factory through
+    /// [`Self::get`]. Callers must not copy it into errors, logs, or metrics.
+    pub fn with_sensitive(mut self, key: &str, value: &str) -> Self {
+        self.values.insert(
+            key.to_owned(),
+            NodeConfigValue {
+                value: value.to_owned(),
+                sensitive: true,
+            },
+        );
         self
     }
 
     pub fn get(&self, key: &str) -> Option<&str> {
-        self.values.get(key).map(String::as_str)
+        self.values.get(key).map(|entry| entry.value.as_str())
+    }
+
+    pub fn is_sensitive(&self, key: &str) -> bool {
+        self.values.get(key).is_some_and(|entry| entry.sensitive)
     }
 
     pub fn get_f32(&self, key: &str) -> Option<f32> {
@@ -60,7 +91,32 @@ impl NodeConfig {
     pub fn iter(&self) -> impl Iterator<Item = (&str, &str)> {
         self.values
             .iter()
-            .map(|(key, value)| (key.as_str(), value.as_str()))
+            .map(|(key, entry)| (key.as_str(), entry.value.as_str()))
+    }
+}
+
+impl fmt::Debug for NodeConfig {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        struct DebugValue<'a>(&'a NodeConfigValue);
+
+        impl fmt::Debug for DebugValue<'_> {
+            fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+                if self.0.sensitive {
+                    formatter.write_str("<redacted>")
+                } else {
+                    self.0.value.fmt(formatter)
+                }
+            }
+        }
+
+        formatter
+            .debug_map()
+            .entries(
+                self.values
+                    .iter()
+                    .map(|(key, value)| (key, DebugValue(value))),
+            )
+            .finish()
     }
 }
 

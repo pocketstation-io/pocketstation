@@ -776,7 +776,11 @@ fn operator_lineage_origin(
 pub(crate) fn endpoint_node_config(endpoint: &EndpointSpec) -> NodeConfig {
     let mut config = NodeConfig::new();
     for (key, value) in endpoint.configuration().iter() {
-        config = config.with(key, value);
+        config = if endpoint.configuration().is_sensitive(key) {
+            config.with_sensitive(key, value)
+        } else {
+            config.with(key, value)
+        };
     }
     config
 }

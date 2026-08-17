@@ -412,14 +412,21 @@ impl Session {
         operator_id: OperatorId,
         configuration: EndpointConfiguration,
     ) -> Result<EndpointHandle, SessionError> {
+        let descriptor =
+            EndpointDescriptor::new(NodeTypeId::from(CONNECTOR_NODE_TYPE_ID), operator_id)
+                .with_configuration(configuration);
+        self.connector_endpoint(descriptor)
+    }
+
+    pub(crate) fn connector_endpoint(
+        &self,
+        descriptor: EndpointDescriptor,
+    ) -> Result<EndpointHandle, SessionError> {
+        descriptor.validate()?;
         let mut draft = self.shared.draft()?;
         draft.ensure_open(self.id())?;
         let endpoint_id = draft.allocate_endpoint_id()?;
         let connector_id = draft.allocate_connector_id()?;
-        let descriptor =
-            EndpointDescriptor::new(NodeTypeId::from(CONNECTOR_NODE_TYPE_ID), operator_id)
-                .with_configuration(configuration);
-        descriptor.validate()?;
         draft.endpoints.push(EndpointDraft {
             endpoint_id,
             connector_id: Some(connector_id),

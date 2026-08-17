@@ -9,9 +9,15 @@ pub const CONNECTOR_NODE_TYPE_ID: &str = "endpoint.connector.external";
 pub const BROWSER_NODE_TYPE_ID: &str = "endpoint.browser.remote";
 pub const BROWSER_OPERATOR_ID: &str = "io.pocketstation.browser.webrtc.v1";
 
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[derive(Clone, Default, PartialEq, Eq)]
 pub struct EndpointConfiguration {
-    values: BTreeMap<String, String>,
+    values: BTreeMap<String, EndpointConfigurationValue>,
+}
+
+#[derive(Clone, PartialEq, Eq)]
+struct EndpointConfigurationValue {
+    value: String,
+    sensitive: bool,
 }
 
 impl EndpointConfiguration {
@@ -20,18 +26,40 @@ impl EndpointConfiguration {
     }
 
     pub fn with(mut self, key: impl Into<String>, value: impl Into<String>) -> Self {
-        self.values.insert(key.into(), value.into());
+        self.values.insert(
+            key.into(),
+            EndpointConfigurationValue {
+                value: value.into(),
+                sensitive: false,
+            },
+        );
+        self
+    }
+
+    /// Adds a setup-time value whose normal debug representation is redacted.
+    pub fn with_sensitive(mut self, key: impl Into<String>, value: impl Into<String>) -> Self {
+        self.values.insert(
+            key.into(),
+            EndpointConfigurationValue {
+                value: value.into(),
+                sensitive: true,
+            },
+        );
         self
     }
 
     pub fn get(&self, key: &str) -> Option<&str> {
-        self.values.get(key).map(String::as_str)
+        self.values.get(key).map(|entry| entry.value.as_str())
+    }
+
+    pub fn is_sensitive(&self, key: &str) -> bool {
+        self.values.get(key).is_some_and(|entry| entry.sensitive)
     }
 
     pub fn iter(&self) -> impl Iterator<Item = (&str, &str)> {
         self.values
             .iter()
-            .map(|(key, value)| (key.as_str(), value.as_str()))
+            .map(|(key, entry)| (key.as_str(), entry.value.as_str()))
     }
 
     pub(crate) fn validate(&self) -> Result<(), SessionError> {
@@ -41,6 +69,31 @@ impl EndpointConfiguration {
             });
         }
         Ok(())
+    }
+}
+
+impl std::fmt::Debug for EndpointConfiguration {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        struct DebugValue<'a>(&'a EndpointConfigurationValue);
+
+        impl std::fmt::Debug for DebugValue<'_> {
+            fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                if self.0.sensitive {
+                    formatter.write_str("<redacted>")
+                } else {
+                    self.0.value.fmt(formatter)
+                }
+            }
+        }
+
+        formatter
+            .debug_map()
+            .entries(
+                self.values
+                    .iter()
+                    .map(|(key, value)| (key, DebugValue(value))),
+            )
+            .finish()
     }
 }
 

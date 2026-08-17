@@ -22,7 +22,7 @@ Use only the project status labels defined by the workspace `AGENTS.md`.
 
 | Component | Status | File | Purpose |
 |---|---|---|---|
-| Public Session conformance capture | `MOCKED`, `LOOPBACK-ONLY` | `src/conformance.rs` | Feature-gated deterministic capture for external-consumer lifecycle, lineage, bounded-route, cancellation, recording, and replay tests. Disabled by default. |
+| Public Session conformance capture | `MOCKED`, `LOOPBACK-ONLY` | `src/conformance.rs`, `src/connector/conformance.rs` | Feature-gated deterministic capture for external-consumer lifecycle, connector rollback/start-gate/saturation/finalization faults, lineage, bounded-route, cancellation, recording, and replay tests. Disabled by default. |
 | Native ABI conformance capture | `MOCKED`, `LOOPBACK-ONLY` | `src/abi/session/conformance_fixture.rs` | Feature-gated deterministic capture for C/C++ ABI lifecycle, lease, bounds, lineage, and panic-containment tests. Disabled by default. |
 
 None of these paths may be presented as physical-device evidence. W10 retains

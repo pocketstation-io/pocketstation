@@ -3,6 +3,7 @@
 mod abi;
 mod capture;
 pub mod codec;
+pub mod connector;
 mod endpoint;
 mod frame;
 /// Stable signal, port, capability, partition, and extension contracts.
