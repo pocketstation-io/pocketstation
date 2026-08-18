@@ -3,19 +3,23 @@
 //! Registration contracts live here; extension implementation and provider
 //! policy remain outside the core Session lifecycle.
 
-pub(crate) mod audio_reentry;
-#[cfg(test)]
-mod external_source_tests;
+pub(crate) mod builtins;
 mod native_library;
+mod pcm_source;
 mod polled_audio;
 mod recording;
 pub(crate) mod source;
-#[cfg(test)]
-mod source_lifecycle_tests;
-#[cfg(test)]
-mod source_registration_tests;
-pub(crate) mod structural_nodes;
-
+pub use builtins::SessionGraphRegistrationError;
+#[cfg(any(test, feature = "internal-testing"))]
+pub use builtins::{
+    register_session_graph_nodes, APPLICATION_SOURCE_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID,
+};
+pub(crate) use pcm_source::PcmSourceFactory;
+pub use pcm_source::{
+    PcmBuffer, PcmBufferAcquireError, PcmBufferError, PcmSource, PcmSourceConfig,
+    PcmSourceConfigError, PcmSourceError, PcmSourceObservations, PcmSourceWriter, PcmWriteError,
+    PcmWriteErrorKind, PCM_SOURCE_TYPE_ID,
+};
 pub use recording::{
     session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations,
     SessionRecordingOutcome, SessionRecordingReceipt, SessionRecordingState,
@@ -35,8 +39,10 @@ pub use source::{
 };
 #[cfg(any(test, feature = "internal-testing"))]
 pub use source::{SourceOutputReceiver, SourceRuntimeError};
-#[cfg(any(test, feature = "internal-testing"))]
-pub use structural_nodes::register_session_structural_nodes;
-pub use structural_nodes::SessionStructuralNodeRegistrationError;
-#[cfg(any(test, feature = "internal-testing"))]
-pub use structural_nodes::{APPLICATION_SOURCE_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID};
+
+#[cfg(test)]
+mod tests {
+    mod composition;
+    mod registry;
+    mod runtime;
+}

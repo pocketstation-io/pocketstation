@@ -22,6 +22,7 @@ use crate::recording::{
 
 const SESSION_RECORDER_IDLE_WAIT_MS: u64 = 1;
 pub const MULTISTEM_GROUP_CONFIGURATION_KEY: &str = "recording_group_id";
+pub const MULTISTEM_NAME_CONFIGURATION_KEY: &str = "stem_name";
 
 #[derive(Clone)]
 pub struct MultistemRecordingReceipt {
@@ -172,7 +173,7 @@ impl EndpointDriverFactory for SessionMultistemEndpointCoordinator {
             let label = StemLabel::new(
                 context
                     .node_configuration()
-                    .get("stem_name")
+                    .get(MULTISTEM_NAME_CONFIGURATION_KEY)
                     .ok_or_else(|| prepare_failure("recording endpoint is missing stem_name"))?,
             )
             .map_err(|error| prepare_failure(error.to_string()))?;

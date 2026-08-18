@@ -74,8 +74,7 @@ impl SignalEdgeObservationHandle {
 pub struct SignalEdge;
 
 impl SignalEdge {
-    #[cfg(any(test, feature = "internal-testing"))]
-    pub fn bounded<Item>(
+    pub(crate) fn bounded<Item>(
         capacity_signals: usize,
     ) -> (SignalEdgeSender<Item>, SignalEdgeReceiver<Item>) {
         Self::bounded_with_payload_limit(capacity_signals, 0)
@@ -155,6 +154,15 @@ impl<Item> SignalEdgeSender<Item> {
     pub fn is_full(&self) -> bool {
         self.producer.is_full()
     }
+
+    pub(crate) fn is_abandoned(&self) -> bool {
+        self.producer.is_abandoned()
+    }
+
+    #[cfg(test)]
+    pub fn dropped_count(&self) -> u64 {
+        self.state.dropped_total.load(Ordering::Relaxed)
+    }
 }
 
 impl SignalEdgeSender<SignalEnvelope> {
@@ -189,11 +197,6 @@ impl SignalEdgeSender<SignalEnvelope> {
                 Err(frame)
             }
         }
-    }
-
-    #[cfg(any(test, feature = "internal-testing"))]
-    pub fn dropped_count(&self) -> u64 {
-        self.state.dropped_total.load(Ordering::Relaxed)
     }
 }
 

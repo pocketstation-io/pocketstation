@@ -6,10 +6,9 @@ mod io;
 mod observations;
 mod operator;
 
+pub(crate) use edge::{SignalEdge, SignalEdgeReceiver, SignalEdgeSender};
 #[cfg(any(test, feature = "internal-testing"))]
-pub use edge::{
-    SignalEdge, SignalEdgeReceiver, SignalEdgeSendError, SignalEdgeSender, TypedEdgePublishReport,
-};
+pub use edge::{SignalEdgeSendError, TypedEdgePublishReport};
 pub use edge::{
     TypedEdgeBranchSpec, TypedEdgeBuildError, TypedEdgeFanout, TypedEdgeObservationHandle,
     TypedEdgeObservations, TypedEdgePublishError, TypedEdgeReceiver,

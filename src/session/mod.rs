@@ -44,9 +44,11 @@ pub use error_code::{
 pub use error_code::{
     session_stop_failure_codes, SessionRuntimeErrorCode, SessionStopCode, SessionStopFailureCode,
 };
+pub use extensions::SessionGraphRegistrationError;
 #[cfg(any(test, feature = "internal-testing"))]
-pub use extensions::register_session_structural_nodes;
-pub use extensions::SessionStructuralNodeRegistrationError;
+pub use extensions::{
+    register_session_graph_nodes, APPLICATION_SOURCE_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID,
+};
 pub use extensions::{
     session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations,
     SessionRecordingState, SessionRecordingStemOutcome,
@@ -63,8 +65,6 @@ pub use extensions::{
     SourceManifest, SourceManifestError, SourceOutputReceiver, SourcePrepareContext,
     SourceRegistrationError, SourceRuntimeError,
 };
-#[cfg(any(test, feature = "internal-testing"))]
-pub use extensions::{APPLICATION_SOURCE_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID};
 #[cfg(any(test, feature = "internal-testing"))]
 pub use extensions::{
     DEFAULT_MULTISTEM_RECORDING_GROUP_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID,

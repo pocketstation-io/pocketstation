@@ -329,7 +329,7 @@ mod tests {
     };
 
     #[test]
-    fn given_generated_audio_when_bridged_then_owned_frame_enters_bounded_plan_source() {
+    fn given_operator_audio_when_bridged_then_owned_frame_enters_bounded_plan_source() {
         let cancellation = PlanRunnerCancellation::new();
         let (sender, _input) =
             plan_source_channel(crate::graph::NodeId(1), 2, cancellation).expect("source channel");

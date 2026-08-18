@@ -2,7 +2,8 @@ mod configuration;
 mod error;
 mod manifest;
 mod observations;
-mod service_status;
+mod readiness;
+mod status;
 mod worker;
 
 use std::sync::Arc;
@@ -31,10 +32,12 @@ pub use observations::{
     ConnectorObservationError, ConnectorObservationHandle, ConnectorObservations,
     ConnectorRuntimeObservations,
 };
-pub use service_status::{
-    ConnectorDeliveryReadiness, ConnectorHealth, ConnectorReadinessPolicy,
-    ConnectorReadinessPolicyError, ConnectorRecovery, ConnectorServiceStatus,
-    MAX_CONNECTOR_READINESS_THRESHOLD, MAX_CONNECTOR_READINESS_TIMEOUT,
+pub use readiness::{
+    ConnectorReadinessPolicy, ConnectorReadinessPolicyError, MAX_CONNECTOR_READINESS_THRESHOLD,
+    MAX_CONNECTOR_READINESS_TIMEOUT,
+};
+pub use status::{
+    ConnectorDeliveryReadiness, ConnectorHealth, ConnectorRecovery, ConnectorServiceStatus,
 };
 pub use worker::{
     ConnectorContext, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory,

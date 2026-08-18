@@ -8,6 +8,7 @@ use crate::session::SessionError;
 pub const CONNECTOR_NODE_TYPE_ID: &str = "endpoint.connector.external";
 pub const BROWSER_NODE_TYPE_ID: &str = "endpoint.browser.remote";
 pub const BROWSER_OPERATOR_ID: &str = "io.pocketstation.browser.webrtc.v1";
+pub(crate) const BROWSER_RECEIVER_URI_CONFIGURATION_KEY: &str = "receiver_uri";
 
 #[derive(Clone, Default, PartialEq, Eq)]
 pub struct EndpointConfiguration {

@@ -10,7 +10,7 @@ use crate::{
     RunningEndpointDriver,
 };
 
-use super::context::{ConnectorStopToken, ReadinessProbeState};
+use super::coordination::{ConnectorStopToken, ReadinessProbeState};
 use super::driver::{prepare_connector_driver, ConnectorDriverFactory};
 use super::supervisor::{
     internal_connector_error, supervise_startup_readiness, wait_for_start_gate,

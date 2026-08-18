@@ -8,19 +8,18 @@ use crate::graph::{
 use crate::runtime::{SidecarHost, SidecarHostError, SidecarProcessSpec};
 
 use crate::session::compile::SessionGraphLowerer;
+use crate::session::extensions::builtins::{
+    audio_endpoint_boundary_definition, register_session_graph_nodes_with_sample_spec,
+};
 use crate::session::extensions::source::{
     source_node_definition, SourceFactory, SourceRegistrationError, SourceRegistry,
 };
 #[cfg(any(test, feature = "internal-testing"))]
 use crate::session::extensions::source::{SourceManifest, SourceTypeId};
-use crate::session::extensions::structural_nodes::{
-    audio_endpoint_boundary_definition, register_session_structural_nodes_with_sample_spec,
-};
 use crate::session::{
     prepare_session_runtime, CaptureBackendSet, CompiledSession, OperatorId, RunningSession,
-    Session, SessionCompileError, SessionCompiler, SessionError, SessionPrepareError,
-    SessionStartFailure, SessionStartOptions, SessionStructuralNodeRegistrationError,
-    SessionTraceRecorderHandle,
+    Session, SessionCompileError, SessionCompiler, SessionError, SessionGraphRegistrationError,
+    SessionPrepareError, SessionStartFailure, SessionStartOptions, SessionTraceRecorderHandle,
 };
 
 /// Setup-time builder for one canonical Session composition environment.
@@ -47,7 +46,7 @@ impl SessionEngineBuilder {
         start_options: SessionStartOptions,
     ) -> Result<Self, SessionEngineBuildError> {
         let mut node_registry = NodeRegistry::new();
-        let graph_lowerers = register_session_structural_nodes_with_sample_spec(
+        let graph_lowerers = register_session_graph_nodes_with_sample_spec(
             &mut node_registry,
             prepare_context.sample_spec,
         )?;
@@ -295,7 +294,7 @@ impl SessionEngine {
 #[derive(Debug, thiserror::Error)]
 pub enum SessionEngineBuildError {
     #[error(transparent)]
-    StructuralNodeRegistration(#[from] SessionStructuralNodeRegistrationError),
+    StructuralNodeRegistration(#[from] SessionGraphRegistrationError),
     #[error("Session engine configuration is invalid: {reason}")]
     InvalidConfiguration { reason: &'static str },
     #[error("sidecar process ID {sidecar_id} is already registered")]

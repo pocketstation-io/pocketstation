@@ -17,10 +17,9 @@ use crate::graph::{
 
 use super::*;
 use crate::session::{
-    register_session_structural_nodes, ApplicationSelector, EndpointConfiguration,
-    EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, Source,
-    BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID,
-    RECORDER_OPERATOR_ID,
+    register_session_graph_nodes, ApplicationSelector, EndpointConfiguration, EndpointDescriptor,
+    Operator, OperatorConfiguration, OperatorId, Session, Source, BROWSER_NODE_TYPE_ID,
+    BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID,
 };
 
 const TEST_CONNECTOR_OPERATOR_ID: &str = "example.connector.streaming-stt.v1";
@@ -241,8 +240,7 @@ fn endpoint_registry(connector_node_type_id: Option<&'static str>) -> EndpointDr
 
 fn registries() -> (NodeRegistry, EndpointDriverRegistry) {
     let mut node_registry = NodeRegistry::new();
-    register_session_structural_nodes(&mut node_registry)
-        .expect("Session structural registrations");
+    register_session_graph_nodes(&mut node_registry).expect("Session structural registrations");
     for node_type_id in [
         CONNECTOR_NODE_TYPE_ID,
         BROWSER_NODE_TYPE_ID,
@@ -250,7 +248,7 @@ fn registries() -> (NodeRegistry, EndpointDriverRegistry) {
     ] {
         node_registry
             .register_definition(
-                crate::session::extensions::structural_nodes::audio_endpoint_boundary_definition(
+                crate::session::extensions::builtins::audio_endpoint_boundary_definition(
                     NodeTypeId::from(node_type_id),
                     SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved),
                 ),

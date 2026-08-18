@@ -5,8 +5,6 @@
 
 mod draft;
 mod endpoint;
-#[cfg(test)]
-mod operator_connection_tests;
 mod selector;
 mod spec;
 mod typed_stream;
@@ -30,3 +28,8 @@ pub use spec::{
 #[allow(deprecated)]
 pub use spec::{OperatorSpec, SessionSpecVersion, SESSION_SPEC_VERSION};
 pub use typed_stream::{Stream, StreamSignal, TypedOperator, TypedStreamError};
+
+#[cfg(test)]
+mod tests {
+    mod operator_connections;
+}

@@ -446,10 +446,15 @@ fn prepare_external_sources(
 }
 
 fn external_audio_stem_id(spec: &SessionSpec, output: &crate::session::SourceOutputSpec) -> StemId {
-    let built_in_max = spec
+    let allocated_max = spec
         .stems()
         .iter()
         .map(|stem| stem.id().0)
+        .chain(
+            spec.generated_audio_ingresses()
+                .iter()
+                .map(|ingress| ingress.stem_id().0),
+        )
         .max()
         .unwrap_or(0);
     let output_index = spec
@@ -457,7 +462,7 @@ fn external_audio_stem_id(spec: &SessionSpec, output: &crate::session::SourceOut
         .iter()
         .position(|candidate| candidate == output)
         .unwrap_or(0) as u64;
-    StemId(built_in_max.saturating_add(output_index).saturating_add(1))
+    StemId(allocated_max.saturating_add(output_index).saturating_add(1))
 }
 
 fn prepare_sources(

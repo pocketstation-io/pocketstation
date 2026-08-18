@@ -5,6 +5,7 @@ use std::sync::{Arc, Mutex, MutexGuard};
 use crate::frame::{ConnectorId, EndpointId, RouteId, SessionId, SourceId, StemId, StreamId};
 use crate::graph::NodeTypeId;
 
+use super::endpoint::BROWSER_RECEIVER_URI_CONFIGURATION_KEY;
 use crate::session::declaration::spec::{
     connection_spec, endpoint_spec, generated_audio_ingress_spec, operator_spec,
     source_instance_spec, source_output_spec, stem_spec, SessionSpecDeclarations,
@@ -444,7 +445,9 @@ impl Session {
             NodeTypeId::from(BROWSER_NODE_TYPE_ID),
             OperatorId::new(BROWSER_OPERATOR_ID),
         )
-        .with_configuration(EndpointConfiguration::new().with("receiver_uri", receiver_uri));
+        .with_configuration(
+            EndpointConfiguration::new().with(BROWSER_RECEIVER_URI_CONFIGURATION_KEY, receiver_uri),
+        );
         descriptor.validate()?;
         self.add_endpoint(descriptor, None)
     }
@@ -960,6 +963,13 @@ impl SourceOutputHandle {
     ) -> Result<RouteId, SessionError> {
         let endpoint_input_port = endpoint_input_port.into();
         self.stream.send_to(endpoint, endpoint_input_port)
+    }
+
+    pub(crate) fn declare_endpoint_and_send(
+        &self,
+        descriptor: EndpointDescriptor,
+    ) -> Result<EndpointHandle, SessionError> {
+        self.stream.declare_endpoint_and_send(descriptor)
     }
 
     pub fn through(&self, operator: Operator) -> Result<DerivedStreamHandle, SessionError> {

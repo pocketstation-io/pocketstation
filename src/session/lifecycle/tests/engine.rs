@@ -317,7 +317,7 @@ fn product_session() -> Session {
 }
 
 #[test]
-fn given_product_plan_when_prepared_then_stem_media_is_preserved() {
+fn given_session_plan_when_prepared_then_stem_media_is_preserved() {
     let control = Arc::new(TestEndpointControl::default());
     let mut builder =
         SessionEngineBuilder::new(prepare_context(), 8, SessionStartOptions::default())

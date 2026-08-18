@@ -2,8 +2,6 @@
 
 mod endpoint_transaction;
 mod engine;
-#[cfg(test)]
-mod engine_tests;
 mod events;
 mod host;
 mod metric_bindings;
@@ -11,8 +9,6 @@ mod observations;
 mod operator_observations;
 mod rollback;
 mod running;
-#[cfg(test)]
-mod running_tests;
 mod start_contract;
 mod trace;
 
@@ -53,3 +49,9 @@ pub use trace::{
 };
 #[cfg(any(test, feature = "internal-testing"))]
 pub use trace::{SessionTraceRecord, SessionTraceRecordKind, SessionTraceTerminal};
+
+#[cfg(test)]
+mod tests {
+    mod engine;
+    mod running;
+}

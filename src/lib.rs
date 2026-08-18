@@ -106,9 +106,12 @@ pub use crate::session::declaration::{
 };
 pub use crate::session::error::SessionError;
 pub use crate::session::extensions::{
-    SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission,
-    SourceFactory, SourceManifest, SourceManifestError, SourceOutputIdentity, SourcePrepareContext,
-    SourceRegistrationError, SourceRuntimeObservations, SourceSessionContext, SourceTypeId,
+    PcmBuffer, PcmBufferAcquireError, PcmBufferError, PcmSource, PcmSourceConfig,
+    PcmSourceConfigError, PcmSourceError, PcmSourceObservations, PcmSourceWriter, PcmWriteError,
+    PcmWriteErrorKind, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError,
+    SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourceOutputIdentity,
+    SourcePrepareContext, SourceRegistrationError, SourceRuntimeObservations, SourceSessionContext,
+    SourceTypeId, PCM_SOURCE_TYPE_ID,
 };
 pub use crate::session::lifecycle::{
     SessionAudioReentryMetrics, SessionControlFailure, SessionDerivedRouteMetrics, SessionEvent,
@@ -235,6 +238,7 @@ pub struct Session {
     endpoint_extensions: Mutex<Vec<EndpointExtensionRegistration>>,
     operator_registrations: Mutex<Vec<Arc<dyn AsyncOperatorFactory>>>,
     source_registrations: Mutex<Vec<Arc<dyn SourceFactory>>>,
+    pcm_source_factory: Mutex<Option<Arc<crate::session::extensions::PcmSourceFactory>>>,
     sidecar_registrations: Mutex<Vec<SidecarProcessSpec>>,
     capture_backends: Option<CaptureBackendConfiguration>,
     session_trace: Option<SessionTraceConfiguration>,
@@ -339,6 +343,7 @@ impl SessionBuilder {
             endpoint_extensions: Mutex::new(Vec::new()),
             operator_registrations: Mutex::new(Vec::new()),
             source_registrations: Mutex::new(Vec::new()),
+            pcm_source_factory: Mutex::new(None),
             sidecar_registrations: Mutex::new(Vec::new()),
             capture_backends: self.capture_backends,
             session_trace: self.session_trace,
@@ -358,6 +363,7 @@ impl Session {
             endpoint_extensions: Mutex::new(Vec::new()),
             operator_registrations: Mutex::new(Vec::new()),
             source_registrations: Mutex::new(Vec::new()),
+            pcm_source_factory: Mutex::new(None),
             sidecar_registrations: Mutex::new(Vec::new()),
             capture_backends: None,
             session_trace: None,
@@ -386,6 +392,50 @@ impl Session {
         configuration: SourceConfiguration,
     ) -> Result<SourceInstanceHandle, SessionError> {
         self.declaration.source(source_type_id, configuration)
+    }
+
+    /// Declares a bounded source for PCM already owned by the embedding
+    /// application.
+    ///
+    /// The returned writer uses preallocated buffers and the canonical
+    /// external Source lifecycle. Session owns source, stream, and stem
+    /// identity while the writer provides source-clock sequence, timing, and
+    /// discontinuity metadata. No OS loopback capture or second runtime is
+    /// involved.
+    pub fn pcm_source(&self, configuration: PcmSourceConfig) -> Result<PcmSource, PcmSourceError> {
+        if configuration.sample_spec() != self.sample_spec {
+            return Err(PcmSourceError::IncompatibleContract);
+        }
+        let mut factory_slot = self
+            .pcm_source_factory
+            .lock()
+            .map_err(|_| PcmSourceError::RegistrationStateUnavailable)?;
+        let factory = match factory_slot.as_ref() {
+            Some(factory) => Arc::clone(factory),
+            None => {
+                let factory = crate::session::extensions::PcmSourceFactory::new(configuration)?;
+                self.source_registrations
+                    .lock()
+                    .map_err(|_| PcmSourceError::RegistrationStateUnavailable)?
+                    .push(Arc::clone(&factory) as Arc<dyn SourceFactory>);
+                *factory_slot = Some(Arc::clone(&factory));
+                factory
+            }
+        };
+        let reservation = factory.reserve(configuration)?;
+        let source = self.declaration.source(
+            SourceTypeId::new(PCM_SOURCE_TYPE_ID)?,
+            SourceConfiguration::default(),
+        )?;
+        let writer = factory.bind(source.source_id(), reservation);
+        let output = match source.output("audio") {
+            Ok(output) => output,
+            Err(error) => {
+                factory.cancel(source.source_id());
+                return Err(error.into());
+            }
+        };
+        Ok(PcmSource::new(source, output, writer))
     }
 
     /// Declares exactly one operator instance. Connect streams to named inputs
@@ -569,6 +619,7 @@ impl Session {
             endpoint_extensions,
             operator_registrations,
             source_registrations,
+            pcm_source_factory: _pcm_source_factory,
             sidecar_registrations,
             capture_backends,
             session_trace,
@@ -704,6 +755,7 @@ impl Session {
             endpoint_extensions: Mutex::new(Vec::new()),
             operator_registrations: Mutex::new(Vec::new()),
             source_registrations: Mutex::new(Vec::new()),
+            pcm_source_factory: Mutex::new(None),
             sidecar_registrations: Mutex::new(Vec::new()),
             capture_backends: None,
             session_trace: None,

@@ -300,7 +300,7 @@ fn compile(engine: &SessionEngine, session: Session) -> crate::session::Compiled
 }
 
 #[test]
-fn given_external_custom_output_when_compiled_then_session_identity_and_typed_plan_are_preserved() {
+fn given_custom_source_output_when_compiled_then_session_identity_and_typed_plan_are_preserved() {
     let engine = builder(true).build().unwrap();
     let session = Session::new();
     let source = session.source(source_type_id(), configuration()).unwrap();

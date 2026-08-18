@@ -90,7 +90,7 @@ fn builder() -> SessionEngineBuilder {
 }
 
 #[test]
-fn given_valid_factory_when_registered_then_built_engine_retains_manifest() {
+fn given_source_factory_when_registered_then_built_engine_retains_manifest() {
     let mut builder = builder();
     builder.register_source_factory(factory(7)).unwrap();
 

@@ -216,7 +216,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn given_drain_when_abort_is_requested_then_shutdown_intent_upgrades_monotonically() {
+    fn given_drain_then_abort_when_requested_then_shutdown_intent_upgrades_monotonically() {
         let stop = ConnectorStopToken::new();
         assert_eq!(stop.mode(), None);
         assert!(stop.request(EndpointShutdownMode::Drain));

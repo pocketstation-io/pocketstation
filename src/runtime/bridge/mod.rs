@@ -1,6 +1,6 @@
 //! Explicit bounded crossings between execution partitions.
 
-mod generated_audio;
+mod audio;
 
-pub(crate) use generated_audio::GeneratedAudioBridgeObservations;
-pub use generated_audio::{GeneratedAudioBridge, GeneratedAudioBridgeSpec};
+pub(crate) use audio::GeneratedAudioBridgeObservations;
+pub use audio::{GeneratedAudioBridge, GeneratedAudioBridgeSpec};

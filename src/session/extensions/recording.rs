@@ -10,11 +10,11 @@ use crate::endpoint::{EndpointDriverFactory, EndpointGroupId};
 use crate::graph::NodeTypeId;
 use crate::recording::{
     MultistemRecordingReceipt, RecordingOutcome, SessionMultistemEndpointCoordinator,
-    MULTISTEM_GROUP_CONFIGURATION_KEY,
+    MULTISTEM_GROUP_CONFIGURATION_KEY, MULTISTEM_NAME_CONFIGURATION_KEY,
 };
 use crate::session::{
     EndpointConfiguration, EndpointDescriptor, EndpointExtensionRegistrationError, EndpointHandle,
-    OperatorId, Session, SessionEngineBuilder, SessionError, StemHandle,
+    OperatorId, Session, SessionEngineBuilder, SessionError, SourceOutputHandle, StemHandle,
 };
 
 pub const RECORDER_NODE_TYPE_ID: &str = "endpoint.recording.multistem";
@@ -65,7 +65,26 @@ impl StemHandle {
         .with_input_edge(multistem_recording_edge_contract())
         .with_configuration(
             EndpointConfiguration::new()
-                .with("stem_name", stem_name)
+                .with(MULTISTEM_NAME_CONFIGURATION_KEY, stem_name)
+                .with(
+                    MULTISTEM_GROUP_CONFIGURATION_KEY,
+                    DEFAULT_MULTISTEM_RECORDING_GROUP_ID,
+                ),
+        );
+        self.declare_endpoint_and_send(descriptor)
+    }
+}
+
+impl SourceOutputHandle {
+    pub fn record(&self, stem_name: impl Into<String>) -> Result<EndpointHandle, SessionError> {
+        let descriptor = EndpointDescriptor::new(
+            NodeTypeId::from(RECORDER_NODE_TYPE_ID),
+            OperatorId::new(RECORDER_OPERATOR_ID),
+        )
+        .with_input_edge(multistem_recording_edge_contract())
+        .with_configuration(
+            EndpointConfiguration::new()
+                .with(MULTISTEM_NAME_CONFIGURATION_KEY, stem_name)
                 .with(
                     MULTISTEM_GROUP_CONFIGURATION_KEY,
                     DEFAULT_MULTISTEM_RECORDING_GROUP_ID,

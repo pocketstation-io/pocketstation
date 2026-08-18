@@ -1,5 +1,34 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W21 caller-owned PCM source — 2026-08-18
+
+- Status: `SAFE-TO-TEST`; no version, tag, push, publication, registry, or
+  release mutation is authorized by this task.
+- `Session::pcm_source` admits caller-owned F32 PCM through preallocated
+  buffers and one bounded nonblocking edge into the existing external Source
+  lifecycle. It performs no OS self-capture and creates no second runtime.
+- The public writer returns explicit full, closed, cancelled, wrong-writer,
+  empty, channel-misaligned, wrong-frame-length, and capacity failures while
+  preserving rejected-buffer ownership. Sequence, source timing, and declared
+  discontinuities become ordinary Session lineage.
+- `io.pocketstation.source.pcm.v1` is one stable source contract. Private
+  writer ownership does not enter `SourceConfiguration`; each declaration is
+  bound to Session-assigned source, stream, and stem identities. One Session
+  requires one concrete sample/frame contract while each source may choose its
+  own bounded capacity.
+- The real-path test proves two independent PCM source declarations, bounded
+  saturation, polling, Operator processing and audio reentry, Connector
+  delivery, two-stem recording, cancellation, exact buffer recovery, and that
+  OS capture is never opened.
+- Standalone declaration, lifecycle, and extension suites now live under
+  scoped `tests/` directories. Built-in lowering remains extension-owned;
+  the generic compiler contains no product-node switch.
+- Acceptance passes: 445 Core unit tests and every all-feature target, strict
+  Clippy, warnings-as-errors rustdoc, release quickstart, architecture and
+  built-in-lowering boundaries, and the complete `CODE_PROTOCOL` gate.
+- No provider, scaffold, mock, loopback product claim, physical-device claim,
+  remote claim, or performance claim is introduced.
+
 ## W21 Core Connector maturity 2 — 2026-08-18
 
 - Status: `SAFE-TO-TEST`; no version, tag, push, publication, registry, or

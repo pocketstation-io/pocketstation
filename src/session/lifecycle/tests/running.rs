@@ -1114,7 +1114,7 @@ fn wait_for_operator_process(control: &AsyncOperatorControl) {
 }
 
 #[test]
-fn given_typed_operator_routes_when_stopped_then_partial_final_and_metrics_are_truthful() {
+fn given_typed_operator_routes_when_stopped_then_final_state_and_metrics_are_truthful() {
     let operator = Arc::new(AsyncOperatorControl::default());
     let derived_endpoints = Arc::new(DerivedEndpointControl::default());
     let raw_endpoints = Arc::new(EndpointControl::default());

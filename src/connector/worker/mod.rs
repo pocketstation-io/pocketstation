@@ -1,4 +1,4 @@
-mod context;
+mod coordination;
 mod driver;
 mod endpoint_adapter;
 mod supervisor;
@@ -7,7 +7,7 @@ use crate::{EndpointPortInput, EndpointPreparationGroup};
 
 use super::ConnectorError;
 
-pub use context::ConnectorContext;
+pub use coordination::ConnectorContext;
 pub use driver::{
     ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorInputDescriptor,
     ConnectorItem,

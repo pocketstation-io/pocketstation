@@ -4,7 +4,7 @@ use std::time::{Duration, Instant};
 use crate::endpoint::EndpointDriverObservationHandle;
 use crate::{EndpointShutdownMode, EndpointStartGate};
 
-use super::context::ConnectorStopToken;
+use super::coordination::ConnectorStopToken;
 use crate::connector::{
     ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorStage, ConnectorObservationHandle,
     ConnectorReadinessPolicy, ConnectorRecovery,

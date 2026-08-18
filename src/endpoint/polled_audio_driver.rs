@@ -9,7 +9,7 @@ use crate::endpoint::{
     EndpointPortInput, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver,
     RunningEndpointDriver,
 };
-use crate::frame::{ConnectorId, EndpointId, FrameLineage, LineagedAudioFrame, RouteId};
+use crate::frame::{ConnectorId, EndpointId, FrameLineage, LineagedAudioFrame, RouteId, StreamId};
 use crate::runtime::{PlanEdgeFrame, PlanEdgeObservationHandle};
 use rtrb::{Consumer, Producer, PushError, RingBuffer};
 
@@ -222,6 +222,10 @@ impl<'lease> PolledAudioFrame<'lease> {
 
     pub fn route_id(self) -> RouteId {
         self.delivered.route_id
+    }
+
+    pub fn stream_id(self) -> StreamId {
+        self.delivered.frame.frame().stream_id()
     }
 
     pub fn connector_id(self) -> ConnectorId {

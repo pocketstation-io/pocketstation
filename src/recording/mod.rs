@@ -13,7 +13,7 @@ pub use config::{
 };
 pub use endpoint::{
     MultistemRecordingReceipt, SessionMultistemEndpointCoordinator,
-    MULTISTEM_GROUP_CONFIGURATION_KEY,
+    MULTISTEM_GROUP_CONFIGURATION_KEY, MULTISTEM_NAME_CONFIGURATION_KEY,
 };
 pub use error_code::{recording_outcome_error_code, RecordingErrorCode};
 #[cfg(any(test, feature = "internal-testing"))]

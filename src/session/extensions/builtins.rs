@@ -14,41 +14,39 @@ use crate::graph::{
 };
 
 use crate::session::compile::{
-    CompiledNodeBinding, CompiledSessionBindings, SessionCompileError, SessionGraphLowerer,
-    SessionSourceLoweringContext,
+    select_operator_port, CompiledNodeBinding, CompiledSessionBindings, LoweredOperator,
+    SessionCompileError, SessionGraphLowerer, SessionSourceLoweringContext,
 };
-use crate::session::extensions::audio_reentry::{
-    audio_reentry_lowerer, GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID,
-    GENERATED_AUDIO_INGRESS_NODE_TYPE_ID,
-};
-use crate::session::{SessionSpec, Source, StemId};
+use crate::session::{EndpointSpec, OperatorInstanceId, SessionSpec, Source, StemId};
 
 const AUDIO_PORT: &str = "audio";
 pub const APPLICATION_SOURCE_NODE_TYPE_ID: &str = "source.application";
 pub const MICROPHONE_SOURCE_NODE_TYPE_ID: &str = "source.microphone";
 const EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID: &str = "source.external-audio-ingress";
+const GENERATED_AUDIO_INGRESS_NODE_TYPE_ID: &str = "source.generated-audio-ingress";
+const GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID: &str = "bridge.generated-audio";
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
-pub enum SessionStructuralNodeRegistrationError {
+pub enum SessionGraphRegistrationError {
     #[error("Session structural node type '{node_type_id}' is already registered")]
     DuplicateNodeType { node_type_id: String },
 }
 
 #[cfg(any(test, feature = "internal-testing"))]
-pub fn register_session_structural_nodes(
+pub fn register_session_graph_nodes(
     registry: &mut NodeRegistry,
-) -> Result<(), SessionStructuralNodeRegistrationError> {
-    register_session_structural_nodes_with_sample_spec(
+) -> Result<(), SessionGraphRegistrationError> {
+    register_session_graph_nodes_with_sample_spec(
         registry,
         SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved),
     )
     .map(|_| ())
 }
 
-pub(crate) fn register_session_structural_nodes_with_sample_spec(
+pub(crate) fn register_session_graph_nodes_with_sample_spec(
     registry: &mut NodeRegistry,
     sample_spec: SampleSpec,
-) -> Result<Vec<Arc<dyn SessionGraphLowerer>>, SessionStructuralNodeRegistrationError> {
+) -> Result<Vec<Arc<dyn SessionGraphLowerer>>, SessionGraphRegistrationError> {
     let factories: Vec<Arc<dyn NodeFactory>> = vec![
         Arc::new(AudioIngressFactory::new(
             APPLICATION_SOURCE_NODE_TYPE_ID,
@@ -88,7 +86,7 @@ pub(crate) fn register_session_structural_nodes_with_sample_spec(
         )
     {
         if registry.contains(&node_type_id) {
-            return Err(SessionStructuralNodeRegistrationError::DuplicateNodeType {
+            return Err(SessionGraphRegistrationError::DuplicateNodeType {
                 node_type_id: node_type_id.as_str().to_owned(),
             });
         }
@@ -96,21 +94,24 @@ pub(crate) fn register_session_structural_nodes_with_sample_spec(
 
     for factory in factories {
         let node_type_id = factory.descriptor().type_id.as_str().to_owned();
-        registry.register(factory).map_err(|_| {
-            SessionStructuralNodeRegistrationError::DuplicateNodeType { node_type_id }
-        })?;
+        registry
+            .register(factory)
+            .map_err(|_| SessionGraphRegistrationError::DuplicateNodeType { node_type_id })?;
     }
     for definition in definitions {
         let node_type_id = definition.descriptor().type_id.as_str().to_owned();
-        registry.register_definition(definition).map_err(|_| {
-            SessionStructuralNodeRegistrationError::DuplicateNodeType { node_type_id }
-        })?;
+        registry
+            .register_definition(definition)
+            .map_err(|_| SessionGraphRegistrationError::DuplicateNodeType { node_type_id })?;
     }
     Ok(default_session_graph_lowerers())
 }
 
 pub(crate) fn default_session_graph_lowerers() -> Vec<Arc<dyn SessionGraphLowerer>> {
-    vec![Arc::new(BuiltinSourceLowerer), audio_reentry_lowerer()]
+    vec![
+        Arc::new(BuiltinSourceLowerer),
+        Arc::new(OperatorAudioLowerer),
+    ]
 }
 
 struct BuiltinSourceLowerer;
@@ -211,6 +212,147 @@ impl SessionGraphLowerer for BuiltinSourceLowerer {
         _route_id: crate::session::RouteId,
     ) -> Result<Option<NodeConfig>, SessionCompileError> {
         Ok(None)
+    }
+}
+
+struct OperatorAudioLowerer;
+
+impl SessionGraphLowerer for OperatorAudioLowerer {
+    fn lower_source_nodes(
+        &self,
+        spec: &SessionSpec,
+        context: &mut SessionSourceLoweringContext<'_>,
+    ) -> Result<(), SessionCompileError> {
+        for ingress in spec.generated_audio_ingresses() {
+            let node = context.pipeline.add_node(
+                NodeTypeId::from(GENERATED_AUDIO_INGRESS_NODE_TYPE_ID),
+                NodeConfig::new(),
+            );
+            context.bindings.insert_node(
+                node.id(),
+                CompiledNodeBinding::GeneratedAudioIngress {
+                    stem_id: ingress.stem_id(),
+                },
+            );
+            context.source_nodes.insert(ingress.stem_id(), node);
+        }
+        Ok(())
+    }
+
+    fn lower_operator_edges(
+        &self,
+        spec: &SessionSpec,
+        pipeline: &mut Pipeline,
+        operator_nodes: &HashMap<OperatorInstanceId, LoweredOperator>,
+        bindings: &mut CompiledSessionBindings,
+    ) -> Result<(), SessionCompileError> {
+        for ingress in spec.generated_audio_ingresses() {
+            let operator = operator_nodes.get(&ingress.operator_instance_id()).ok_or(
+                crate::session::SessionError::UnknownOperatorInstance {
+                    operator_instance_id: ingress.operator_instance_id(),
+                },
+            )?;
+            let output = select_operator_port(
+                &operator.manifest,
+                PortDirection::Output,
+                ingress.output_port(),
+            )?;
+            let concrete_pcm = output.signal.class.is_audio()
+                && matches!(
+                    output.media,
+                    MediaCaps::Audio(audio)
+                        if audio.sample_rate_hz.is_some()
+                            && audio.frame_samples.is_some()
+                            && !matches!(audio.channel_layout, ChannelLayout::Any)
+                );
+            if !concrete_pcm {
+                return Err(SessionCompileError::InvalidAudioBridgeOutput {
+                    operator_instance_id: ingress.operator_instance_id(),
+                    output_port: output.name.clone(),
+                });
+            }
+            let ordinary_consumers = spec
+                .connections()
+                .iter()
+                .filter(|connection| {
+                    let crate::session::StreamOrigin::OperatorOutput {
+                        operator_instance_id,
+                        output_port,
+                    } = connection.origin()
+                    else {
+                        return false;
+                    };
+                    if *operator_instance_id != ingress.operator_instance_id() {
+                        return false;
+                    }
+                    select_operator_port(
+                        &operator.manifest,
+                        PortDirection::Output,
+                        output_port.as_deref(),
+                    )
+                    .is_ok_and(|candidate| candidate.name == output.name)
+                })
+                .count();
+            let reentry_consumers = spec
+                .generated_audio_ingresses()
+                .iter()
+                .filter(|candidate| {
+                    if candidate.operator_instance_id() != ingress.operator_instance_id() {
+                        return false;
+                    }
+                    select_operator_port(
+                        &operator.manifest,
+                        PortDirection::Output,
+                        candidate.output_port(),
+                    )
+                    .is_ok_and(|candidate_port| candidate_port.name == output.name)
+                })
+                .count();
+            if ordinary_consumers != 0 || reentry_consumers != 1 {
+                return Err(SessionCompileError::AudioBridgeOutputNotExclusive {
+                    operator_instance_id: ingress.operator_instance_id(),
+                    output_port: output.name.clone(),
+                });
+            }
+            let bridge = pipeline.add_node(
+                NodeTypeId::from(GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID),
+                NodeConfig::new(),
+            );
+            bindings.insert_node(
+                bridge.id(),
+                CompiledNodeBinding::GeneratedAudioBridge {
+                    stem_id: ingress.stem_id(),
+                    operator_instance_id: ingress.operator_instance_id(),
+                },
+            );
+            pipeline.connect_with(
+                operator.node.out(&output.name),
+                bridge.in_(AUDIO_PORT),
+                operator.manifest.output_edge,
+            );
+        }
+        Ok(())
+    }
+
+    fn endpoint_config(
+        &self,
+        spec: &SessionSpec,
+        stem_id: StemId,
+        endpoint: &EndpointSpec,
+        _route_id: crate::session::RouteId,
+    ) -> Result<Option<NodeConfig>, SessionCompileError> {
+        if !spec
+            .generated_audio_ingresses()
+            .iter()
+            .any(|ingress| ingress.stem_id() == stem_id)
+        {
+            return Ok(None);
+        }
+        let mut config = NodeConfig::new();
+        for (key, value) in endpoint.configuration().iter() {
+            config = config.with(key, value);
+        }
+        Ok(Some(config))
     }
 }
 
@@ -405,9 +547,8 @@ mod tests {
     fn given_empty_registry_when_components_registered_then_descriptors_and_lowerers_exist() {
         let mut registry = NodeRegistry::new();
 
-        let lowerers =
-            register_session_structural_nodes_with_sample_spec(&mut registry, sample_spec())
-                .expect("registration");
+        let lowerers = register_session_graph_nodes_with_sample_spec(&mut registry, sample_spec())
+            .expect("registration");
 
         let expected_node_type_ids = [
             APPLICATION_SOURCE_NODE_TYPE_ID,
@@ -436,11 +577,11 @@ mod tests {
             .unwrap();
         let initial_len = registry.len();
 
-        let result = register_session_structural_nodes(&mut registry);
+        let result = register_session_graph_nodes(&mut registry);
 
         assert!(matches!(
             result,
-            Err(SessionStructuralNodeRegistrationError::DuplicateNodeType { .. })
+            Err(SessionGraphRegistrationError::DuplicateNodeType { .. })
         ));
         assert_eq!(registry.len(), initial_len);
         assert!(!registry.contains(&NodeTypeId::from(MICROPHONE_SOURCE_NODE_TYPE_ID)));
@@ -477,7 +618,7 @@ mod tests {
     #[test]
     fn given_audio_endpoint_extension_when_requested_then_definition_is_not_boot_registered() {
         let mut registry = NodeRegistry::new();
-        register_session_structural_nodes(&mut registry).expect("registration");
+        register_session_graph_nodes(&mut registry).expect("registration");
         let node_type_id = NodeTypeId::from("endpoint.test");
 
         assert!(registry.definition(&node_type_id).is_none());

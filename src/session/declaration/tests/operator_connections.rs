@@ -19,7 +19,7 @@ fn endpoint(session: &Session, suffix: &str) -> crate::session::EndpointHandle {
 }
 
 #[test]
-fn given_one_declared_instance_when_named_ports_connected_then_one_instance_owns_all_connections() {
+fn given_declared_operator_when_named_ports_connected_then_one_instance_owns_all_connections() {
     let session = Session::new();
     let application = session
         .capture(Source::application(ApplicationSelector::name(

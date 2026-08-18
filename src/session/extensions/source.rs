@@ -17,6 +17,12 @@ use crate::runtime::{
 pub struct SourceTypeId(String);
 
 impl SourceTypeId {
+    /// Creates a stable source implementation identity.
+    ///
+    /// Published source packages should use a reverse-domain identifier with
+    /// an explicit contract revision, for example
+    /// `io.example.source.device.v1`. Session instance identity belongs in
+    /// `SourceInstanceId` and `SourceId`, never in this value.
     pub fn new(value: impl Into<String>) -> Result<Self, SourceManifestError> {
         let value = value.into();
         if value.trim().is_empty() {
@@ -36,6 +42,10 @@ pub struct SourceConfiguration {
 }
 
 impl SourceConfiguration {
+    /// Adds declared source configuration.
+    ///
+    /// This map is for provider/user configuration only. Runtime handles,
+    /// reservations, and Session instance identities must remain internal.
     pub fn insert(&mut self, key: impl Into<String>, value: impl Into<String>) {
         self.values.insert(key.into(), value.into());
     }

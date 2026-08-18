@@ -8,8 +8,6 @@ use crate::graph::{
     OutputPortRef, Pipeline,
 };
 
-#[cfg(any(test, feature = "internal-testing"))]
-use crate::session::extensions::structural_nodes::default_session_graph_lowerers;
 use crate::session::{
     ConnectionSpec, ConnectionTarget, EndpointSpec, OperatorInstanceId, SessionError, SessionSpec,
     SourceInstanceId, SourceRegistry, StreamOrigin,
@@ -18,6 +16,8 @@ use crate::session::{
 mod bindings;
 mod compiled;
 mod error;
+#[cfg(any(test, feature = "internal-testing"))]
+use crate::session::extensions::builtins::default_session_graph_lowerers;
 pub(crate) use bindings::{CompiledNodeBinding, CompiledSessionBindings};
 pub use compiled::CompiledSession;
 pub use error::SessionCompileError;

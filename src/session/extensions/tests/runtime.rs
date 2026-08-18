@@ -644,7 +644,7 @@ fn endpoint(session: &Session, consume: bool) -> crate::session::EndpointHandle 
 }
 
 #[test]
-fn given_typed_only_session_when_one_branch_saturates_then_other_branch_and_shutdown_remain_real() {
+fn given_typed_source_when_one_branch_saturates_then_other_branch_and_shutdown_remain_real() {
     let source_control = Arc::new(SourceControl::default());
     let fast_endpoint = Arc::new(EndpointControl::default());
     let slow_endpoint = Arc::new(EndpointControl::default());
