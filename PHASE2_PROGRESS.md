@@ -1,5 +1,23 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## Core 1.1 connector-maturity release candidate — 2026-08-17
+
+- Status: `SAFE-TO-TEST`; publication remains pending exact archive and
+  isolated-consumer verification.
+- The public 1.0.0 release and historical 1.0.x tags are immutable. The
+  connector-maturity candidate is therefore versioned 1.1.0; no existing tag
+  or registry version will be deleted, moved, or reused.
+- `cargo-semver-checks` compared the candidate with registry 1.0.0 and passed
+  all 223 applicable checks with no breaking API change. The minor version
+  truthfully identifies the additive managed-authoring surface.
+- The shared `pocketstation-relay` package passes 27 tests, strict Clippy,
+  warning-free rustdoc, and isolated `cargo package` verification. The current
+  pks workspace passes its full test suite against the candidate. Relay Go
+  race gates pass for command, internal, integration, stress, and bounded
+  AudioBus-subscription soak packages.
+- No new endurance, remote, physical-device, cross-platform, or superiority
+  claim is introduced.
+
 ## W21 Connector managed-authoring maturity correction — 2026-08-17
 
 - Status: `SAFE-TO-TEST`; complete Core freeze qualification and legal release

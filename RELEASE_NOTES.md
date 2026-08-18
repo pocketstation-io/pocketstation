@@ -42,6 +42,13 @@ new Core category whenever the 1.x contracts can express it.
   backpressure, loss, discontinuity, and lifecycle behavior.
 - Open Operator, Endpoint, Connector, external-source, and generated-audio
   extension contracts rather than closed provider categories.
+- A managed Connector authoring path where Core owns bounded receiver polling,
+  accounting, drain/abort, panic containment, and joined finalization while
+  providers implement typed preparation and delivery only. The lower-level
+  Endpoint-backed worker path remains available for specialized transports.
+- Typed Connector configuration, redacted and destruction-cleared secrets,
+  per-route edge authority, orthogonal provider service status, and structured
+  failure codes/retryability preserved in terminal Session outcomes.
 - Named composition, generated-audio reentry, aligned multistem recording,
   runtime observations, and explicit stop and fault outcomes.
 - A versioned C ABI with executable callbacks and bounded PKSS process
