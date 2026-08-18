@@ -3265,3 +3265,16 @@
   semantics. An external-style connector test names and returns a shared group.
 - This correction adds no provider dependency, protocol, worker, queue,
   registry, or execution path. Relay implementation remains outside Core.
+
+## W21 portable connector semantics consumer — 2026-08-17
+
+- Core independently consumes the canonical protocol connector vectors and
+  verifies manifest identity, typed configuration, secret-default rejection,
+  package composition, port identity, finite Endpoint admission/deadline
+  policy, and orthogonal provider status.
+- The corpus limits are checked against Core's public connector limits so the
+  portable contract cannot silently drift from the Rust authority.
+- The focused all-feature test and strict Clippy gate pass. This is a `MOCKED`
+  conformance corpus, not product-path or provider evidence.
+- No Core runtime, package version, provider dependency, tag, or release state
+  changed.
