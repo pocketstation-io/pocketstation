@@ -1,10 +1,7 @@
 mod configuration;
-#[cfg(feature = "conformance-fixtures")]
-pub mod conformance;
 mod error;
 mod manifest;
 mod observations;
-mod package;
 mod service_status;
 mod worker;
 
@@ -33,11 +30,6 @@ pub(crate) use observations::ConnectorObservationStore;
 pub use observations::{
     ConnectorObservationError, ConnectorObservationHandle, ConnectorObservations,
     ConnectorRuntimeObservations,
-};
-pub use package::{
-    ConnectorComponentId, ConnectorComponentKind, ConnectorComponentManifest, ConnectorPackage,
-    ConnectorPackageError, ConnectorPackageId, ConnectorPackageInstallError,
-    ConnectorPackageManifest, RegisteredConnectorPackage, CONNECTOR_PACKAGE_API_REVISION,
 };
 pub use service_status::{
     ConnectorDeliveryReadiness, ConnectorHealth, ConnectorReadinessPolicy,
@@ -137,26 +129,6 @@ impl RegisteredConnector {
     }
 
     pub fn declare(
-        &self,
-        session: &Session,
-        configuration: ConnectorConfiguration,
-    ) -> Result<EndpointHandle, ConnectorDeclarationError> {
-        if session.id() != self.session_id {
-            return Err(ConnectorDeclarationError::WrongSession {
-                registered: self.session_id,
-                requested: session.id(),
-            });
-        }
-        self.declare_with_input_edge(session, configuration, self.manifest.input_edge())
-    }
-
-    /// Declares one connector endpoint with the exact route contract selected
-    /// by the Session author.
-    ///
-    /// This avoids treating the manifest's compatibility default as authority
-    /// for every route. Graph compilation remains authoritative for validating
-    /// the selected edge against the connector's declared input ports.
-    pub fn declare_with_input_edge(
         &self,
         session: &Session,
         configuration: ConnectorConfiguration,

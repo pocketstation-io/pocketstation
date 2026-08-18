@@ -38,9 +38,13 @@ use pocketstation::Session;
 # }
 # fn main() -> Result<(), Box<dyn std::error::Error>> {
 let session = Session::new();
-let package = Connector::with_driver(manifest(), Arc::new(RelayFactory))?;
-let relay = session.register_connector(package)?;
-let endpoint = relay.declare(&session, ConnectorConfiguration::new())?;
+let connector = Connector::with_driver(manifest(), Arc::new(RelayFactory))?;
+let relay = session.register_connector(connector)?;
+let endpoint = relay.declare(
+    &session,
+    ConnectorConfiguration::new(),
+    pocketstation::EdgeContract::realtime_audio(),
+)?;
 # let _ = endpoint;
 # Ok(())
 # }
@@ -48,20 +52,6 @@ let endpoint = relay.declare(&session, ConnectorConfiguration::new())?;
 
 The complete compiling example is
 [`examples/connector_authoring.rs`](../../examples/connector_authoring.rs).
-
-## Package composition
-
-Use `ConnectorPackage` when one provider integration installs several existing
-Core extension kinds, such as a Source, an Operator, and an outbound Connector.
-The package is inspectable before installation and commits its registrations to
-one Session only after every source, operator, endpoint, and node identity has
-passed preflight. It does not create another registry or lifecycle: installed
-components continue to execute through the canonical Source, Operator, and
-Endpoint authorities.
-
-Package-level configuration is intentionally absent. Each component's existing
-manifest remains the executable configuration authority; Core does not publish
-a second schema that it cannot resolve into those components.
 
 ## What Core supplies
 
@@ -89,9 +79,12 @@ escape hatch when a protocol requires a specialized off-realtime worker.
 - package and manifest revisions;
 - named inputs with the existing `SignalSpec` and `MediaCaps`;
 - typed configuration fields, defaults, constraints, and deprecations;
-- the existing `EdgeContract` for bounded route behavior;
 - a finite startup-readiness deadline and probe thresholds; and
 - open capability and resource-requirement identifiers.
+
+`EdgeContract` is supplied when the connector endpoint is declared. Capacity,
+loss, backpressure, copy, and latency policy belong to that exact Graph route,
+not to a provider manifest.
 
 Connector API revision 1 is an Endpoint integration: it requires at least one
 input and rejects outputs. Generated audio re-enters through the existing audio
@@ -165,9 +158,10 @@ dynamic PCM Endpoint authoring. Do not claim that third-party Python or
 JavaScript code can author an audio connector until a versioned managed/native
 audio boundary and cross-language conformance suite exist.
 
-Enable `conformance-fixtures` and execute the exported deterministic Session
-fixtures against the package's real `Connector` registration. A checklist or
-self-reported result is not conformance. Core component conformance is not
-provider proof: a supported package must also test its real authentication,
-network setup, readiness, reconnect, multi-bus delivery, and receiver-visible
-outcome in its owning repository.
+Enable `conformance-fixtures` and execute the deterministic Session fixtures in
+`pocketstation::conformance` against the package's real `Connector`
+registration. Connector does not publish a second conformance namespace. A
+checklist or self-reported result is not conformance. Core component
+conformance is not provider proof: a supported package must also test its real
+authentication, network setup, readiness, reconnect, multi-bus delivery, and
+receiver-visible outcome in its owning repository.

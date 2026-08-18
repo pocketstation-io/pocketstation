@@ -46,7 +46,7 @@ Connector owns only:
 
 - typed finite provider configuration and redacted secrets;
 - a focused manifest built from the existing `NodeDescriptor`, `PortSpec`,
-  `SignalSpec`, `MediaCaps`, and `EdgeContract`;
+  `SignalSpec`, and `MediaCaps`;
 - stable connector error codes, provider stage, and retryability
   classification;
 - orthogonal provider-service facts: delivery readiness, health, and recovery;
@@ -56,7 +56,8 @@ Connector owns only:
   supervision, and joined finalization through the Endpoint SPI;
 - a lower-level `ConnectorFactory` escape hatch for integrations that must own
   a specialized off-realtime worker; and
-- feature-gated executable Session fixtures and deterministic Core tests.
+- deterministic Core tests executed through the canonical feature-gated
+  `pocketstation::conformance` Session fixtures.
 
 Connector explicitly does not own:
 
@@ -69,13 +70,6 @@ Connector explicitly does not own:
 - a declarative retry policy that Core does not execute; or
 - provider protocols, codecs, credentials, network clients, or reconnection
   decisions.
-
-`ConnectorPackage` composes existing Source, Operator, and Connector
-registrations under one inspectable package identity. Installation preflights
-all existing Session registration authorities before committing any component.
-It owns no registry, graph, queue, or lifecycle of its own. Component manifests
-remain authoritative for configuration; there is no unused package-level
-configuration schema.
 
 `ConnectorServiceStatus` is not a process lifecycle. Its three axes answer
 separate operational questions:

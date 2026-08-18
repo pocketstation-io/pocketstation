@@ -314,7 +314,6 @@ pub fn observed_connector(
         env!("CARGO_PKG_VERSION"),
         node,
         configuration,
-        crate::EdgeContract::realtime_audio(),
         readiness,
     )
     .map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;
@@ -324,7 +323,11 @@ pub fn observed_connector(
     )
     .map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;
     let registered = session.register_connector(connector)?;
-    Ok(registered.declare(session, crate::connector::ConnectorConfiguration::new())?)
+    Ok(registered.declare(
+        session,
+        crate::connector::ConnectorConfiguration::new(),
+        crate::EdgeContract::realtime_audio(),
+    )?)
 }
 
 /// Declares and registers a deterministic native browser boundary used only

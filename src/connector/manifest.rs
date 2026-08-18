@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use crate::graph::{EdgeContract, ExecutionPartition, NodeDescriptor, OperatorId};
+use crate::graph::{ExecutionPartition, NodeDescriptor, OperatorId};
 
 use super::{ConnectorConfigurationSchema, ConnectorReadinessPolicy};
 
@@ -79,7 +79,6 @@ pub struct ConnectorManifest {
     package_version: String,
     node: NodeDescriptor,
     configuration: ConnectorConfigurationSchema,
-    input_edge: EdgeContract,
     readiness: ConnectorReadinessPolicy,
     capabilities: Vec<ConnectorCapability>,
     requirements: Vec<ConnectorRequirement>,
@@ -93,7 +92,6 @@ impl ConnectorManifest {
         package_version: impl Into<String>,
         node: NodeDescriptor,
         configuration: ConnectorConfigurationSchema,
-        input_edge: EdgeContract,
         readiness: ConnectorReadinessPolicy,
     ) -> Result<Self, ConnectorManifestError> {
         let manifest = Self {
@@ -103,7 +101,6 @@ impl ConnectorManifest {
             package_version: package_version.into(),
             node,
             configuration,
-            input_edge,
             readiness,
             capabilities: Vec::new(),
             requirements: Vec::new(),
@@ -148,10 +145,6 @@ impl ConnectorManifest {
         &self.configuration
     }
 
-    pub const fn input_edge(&self) -> EdgeContract {
-        self.input_edge
-    }
-
     pub const fn readiness(&self) -> ConnectorReadinessPolicy {
         self.readiness
     }
@@ -193,14 +186,6 @@ impl ConnectorManifest {
             ExecutionPartition::AudioCallback | ExecutionPartition::RealtimeCpu
         ) {
             return Err(ConnectorManifestError::RealtimeExecutionForbidden);
-        }
-        if self
-            .node
-            .inputs()
-            .iter()
-            .any(|port| !self.input_edge.media().is_compatible_with(&port.media()))
-        {
-            return Err(ConnectorManifestError::DeliveryMediaMismatch);
         }
         validate_unique_entries(
             self.capabilities.iter().map(ConnectorCapability::id),
@@ -258,8 +243,6 @@ pub enum ConnectorManifestError {
     OutputPortNotSupported,
     #[error("connector execution cannot run on a realtime partition")]
     RealtimeExecutionForbidden,
-    #[error("connector delivery media is incompatible with a declared input port")]
-    DeliveryMediaMismatch,
     #[error("connector manifest entry requires a non-empty id and documentation")]
     InvalidManifestEntry,
     #[error("connector manifest entry exceeds the byte limit")]

@@ -115,6 +115,12 @@ fn given_connector_authoring_layer_when_scanned_then_it_does_not_duplicate_core_
         "items_received_total",
         "items_delivered_total",
         "items_dropped_total",
+        "pub struct ConnectorPackage",
+        "pub mod conformance",
+        "pub const fn input_edge",
+        "DeliveryMediaMismatch",
+        "source_registrations.lock",
+        "operator_registrations.lock",
         "endpoint_extensions.lock",
         "endpoint_registrations.lock",
     ] {

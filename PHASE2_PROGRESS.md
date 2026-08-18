@@ -7,21 +7,22 @@
 - The provider authoring surface is now `Connector::with_driver`,
   `ConnectorDriverFactory`, and `ConnectorDriver`. The abandoned managed-name
   API was removed completely rather than retained as deprecated aliases.
-- `ConnectorPackage` composes existing Source, Operator, and outbound
-  Connector registrations without adding another runtime or registry. Package
-  installation preflights every source, operator, endpoint, and node identity
-  before committing any Session registration; a conflict leaves the Session
-  unchanged.
-- An unused package-level configuration schema was rejected. Each component's
-  existing executable manifest remains its configuration authority.
+- The unused `ConnectorPackage` composition framework was removed after a
+  workspace-wide consumer audit found no pks, Relay, SDK, Lab, or Bench user.
+  Sources, Operators, and Connectors retain their existing distinct Session
+  registration authorities; Core does not expose a fixture-only package API.
 - The self-attested conformance checklist was removed. Feature-gated
   conformance now exposes executable deterministic Session fixtures, while
   provider packages remain responsible for real protocol and receiver proof.
-- Focused acceptance passes: 13 Connector contract tests, three package
-  composition/atomicity tests, and the external grouping test. The complete
-  all-target/all-feature workspace suite, strict Clippy, warnings-as-errors
+- Focused acceptance passes: 13 Connector contract tests and the external
+  grouping test. The complete all-target/all-feature workspace suite, strict
+  Clippy, warnings-as-errors
   rustdoc, release quickstart build, architecture constraints, `CODE_PROTOCOL`,
   and Core freeze-policy checks pass.
+- The shared `pocketstation-relay` package and the pks, Python-native, and Bench
+  consumers compile against the corrected explicit-edge declaration API. Those
+  consumer checks establish source compatibility only; they do not add a Relay,
+  remote, or performance claim.
 - This task adds no provider implementation, competing Graph/Endpoint/Session
   authority, scaffold, mock, loopback path, remote claim, or performance claim.
 
@@ -56,9 +57,9 @@
   not regress to an author-facing string map. Sensitive Connector,
   EndpointConfiguration, and NodeConfig strings are overwritten on destruction
   and remain redacted in debug output.
-- `RegisteredConnector::declare_with_input_edge` makes the exact Session route
-  contract explicit; the manifest edge remains a 1.x compatibility default,
-  not universal authority for every route.
+- `RegisteredConnector::declare` requires the exact Session `EdgeContract`.
+  Connector manifests no longer own a default route capacity, loss,
+  backpressure, copy, or latency policy.
 - Connector error code and retryability now survive as structured
   `EndpointFailure` details in final Session outcomes.
 - The compiling authoring example no longer contains a manual receiver polling
@@ -81,10 +82,10 @@
   extensions own registration. Connector adds typed provider configuration,
   redacted secrets, a focused manifest, classified failures, orthogonal
   provider-service status, an Endpoint-backed worker adapter, and conformance.
-- Stale documentation that assigned every language to one shared
-  `pocketstation-relay` Rust package is corrected. Relay owns portable wire
-  semantics; `pks`, Python, JavaScript, and the benchmark each own the
-  executable integration appropriate to their boundary.
+- The ownership conclusion recorded by this historical candidate was
+  superseded by the later shared-connector-authority correction. The accepted
+  model keeps one provider package, `pocketstation-relay`, outside Core and
+  projects it through pks and language SDKs without duplicating media engines.
 - This task adds no provider implementation, protocol, queue, runtime engine,
   scaffold, mock, loopback path, remote claim, or performance claim.
 - Acceptance passes: 11 focused connector contract tests, the external

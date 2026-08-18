@@ -124,7 +124,6 @@ fn manifest_with_readiness(readiness: ConnectorReadinessPolicy) -> ConnectorMani
         "1.0.0",
         node,
         configuration_schema(),
-        EdgeContract::realtime_audio(),
         readiness,
     )
     .expect("connector manifest")
@@ -218,13 +217,15 @@ fn given_registered_connector_when_declared_then_identity_is_session_scoped() {
     );
 
     let endpoint = registered
-        .declare(&session, configuration())
+        .declare(&session, configuration(), EdgeContract::realtime_audio())
         .expect("connector declaration");
     assert_eq!(endpoint.session_id(), session.id());
     assert!(endpoint.connector_id().is_some());
 
     let other = pocketstation::Session::new();
-    assert!(registered.declare(&other, configuration()).is_err());
+    assert!(registered
+        .declare(&other, configuration(), EdgeContract::realtime_audio())
+        .is_err());
 }
 
 #[test]
@@ -451,7 +452,11 @@ fn routed_fault_session(
     let session = pocketstation::conformance::session().expect("conformance Session");
     let registered = register_fault_connector(&session, Arc::clone(&control));
     let endpoint = registered
-        .declare(&session, fault_configuration(mode))
+        .declare(
+            &session,
+            fault_configuration(mode),
+            EdgeContract::realtime_audio(),
+        )
         .expect("fault endpoint");
     let application = session
         .capture(pocketstation::Source::application(
@@ -574,7 +579,7 @@ fn given_connector_driver_when_two_stems_run_then_core_owns_typed_delivery_and_d
         .expect("connector driver registration");
     let edge = EdgeContract::realtime_audio().with_jitter_budget_ms(Some(9));
     let endpoint = registered
-        .declare_with_input_edge(&session, configuration(), edge)
+        .declare(&session, configuration(), edge)
         .expect("connector endpoint");
     let application = session
         .capture(pocketstation::Source::application(
@@ -618,10 +623,18 @@ fn given_prior_preparation_when_connector_prepare_fails_then_prior_work_rolls_ba
     let session = pocketstation::conformance::session().expect("conformance Session");
     let connector = register_fault_connector(&session, Arc::clone(&control));
     let first = connector
-        .declare(&session, fault_configuration("normal"))
+        .declare(
+            &session,
+            fault_configuration("normal"),
+            EdgeContract::realtime_audio(),
+        )
         .expect("normal endpoint");
     let second = connector
-        .declare(&session, fault_configuration("prepare_fail"))
+        .declare(
+            &session,
+            fault_configuration("prepare_fail"),
+            EdgeContract::realtime_audio(),
+        )
         .expect("failing endpoint");
     let application = session
         .capture(pocketstation::Source::application(
@@ -730,7 +743,11 @@ fn given_connector_never_ready_when_startup_deadline_expires_then_failure_is_ter
         manifest_with_readiness(readiness),
     );
     let endpoint = registered
-        .declare(&session, fault_configuration("never_ready"))
+        .declare(
+            &session,
+            fault_configuration("never_ready"),
+            EdgeContract::realtime_audio(),
+        )
         .expect("not-ready endpoint");
     let application = session
         .capture(pocketstation::Source::application(
@@ -805,7 +822,11 @@ fn given_saturated_connector_route_when_observed_then_drops_are_visible_in_sessi
         .expect("saturation conformance Session");
     let connector = register_fault_connector(&session, control);
     let endpoint = connector
-        .declare(&session, fault_configuration("saturate"))
+        .declare(
+            &session,
+            fault_configuration("saturate"),
+            EdgeContract::realtime_audio(),
+        )
         .expect("saturating endpoint");
     let application = session
         .capture(pocketstation::Source::application(

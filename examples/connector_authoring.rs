@@ -127,7 +127,6 @@ fn connector_manifest() -> Result<ConnectorManifest, Box<dyn Error>> {
         env!("CARGO_PKG_VERSION"),
         node,
         configuration,
-        EdgeContract::realtime_audio(),
         ConnectorReadinessPolicy::new(Duration::from_secs(10), Duration::from_millis(250), 1, 3)?,
     )?)
 }
@@ -148,6 +147,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 "api_token",
                 ConnectorConfigurationValue::Secret(ConnectorSecret::new("replace-me")?),
             ),
+        EdgeContract::realtime_audio(),
     )?;
 
     let application = session.capture(Source::application(ApplicationSelector::name(
