@@ -8,6 +8,7 @@
 pub mod builtins;
 pub(crate) mod compile;
 pub(crate) mod dsl;
+pub(crate) mod identifier;
 pub(crate) mod ir;
 #[cfg(test)]
 mod named_ports;

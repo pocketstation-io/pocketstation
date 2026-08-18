@@ -214,12 +214,18 @@ fn run_bridge(
                 .fetch_add(1, Ordering::Relaxed);
             break;
         }
-        let Some(shared) = receiver.recv() else {
-            if receiver.is_abandoned() {
-                break;
+        let shared = match receiver.recv() {
+            Some(shared) => shared,
+            None if receiver.is_abandoned() => {
+                let Some(shared) = receiver.recv() else {
+                    break;
+                };
+                shared
             }
-            thread::park_timeout(LOST_WAKEUP_FALLBACK_INTERVAL);
-            continue;
+            None => {
+                thread::park_timeout(LOST_WAKEUP_FALLBACK_INTERVAL);
+                continue;
+            }
         };
         observations.received_total.fetch_add(1, Ordering::Relaxed);
         let Ok(envelope) = Arc::try_unwrap(shared) else {
@@ -473,12 +479,19 @@ mod tests {
 
         bridge.finish_and_join();
         let observations = observations.snapshot();
-        assert_eq!(observations.received_total, 2);
+        assert_eq!(
+            observations.received_total, 2,
+            "unexpected bridge observations: {observations:?}"
+        );
         assert_eq!(observations.normalized_total, 1);
         assert_eq!(observations.enqueued_total, 1);
         assert_eq!(observations.pool_exhausted_total, 1);
         assert_eq!(observations.ingress_rejected_total, 0);
-        assert!((1..=2).contains(&observations.input_edge.peak_depth_signals));
+        assert!(
+            (1..=2).contains(&observations.input_edge.peak_depth_signals),
+            "unexpected peak input depth: {}",
+            observations.input_edge.peak_depth_signals
+        );
         assert_eq!(observations.maximum_buffered_audio_bytes, 3 * 960 * 4);
         assert!(observations.joined);
     }

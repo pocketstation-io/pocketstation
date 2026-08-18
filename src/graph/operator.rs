@@ -24,6 +24,14 @@ impl OperatorId {
         &self.0
     }
 
+    /// Reports whether this value is a portable implementation contract ID.
+    ///
+    /// Portable IDs use reverse-domain ownership and an explicit final
+    /// revision segment, for example `io.example.operator.transcribe.v1`.
+    pub fn is_portable(&self) -> bool {
+        crate::graph::identifier::is_portable_contract_id(self.as_str())
+    }
+
     pub const fn syntax_version() -> u16 {
         OPERATOR_ID_SYNTAX_VERSION
     }

@@ -22,9 +22,9 @@ use crate::session::{EndpointSpec, OperatorInstanceId, SessionSpec, Source, Stem
 const AUDIO_PORT: &str = "audio";
 pub const APPLICATION_SOURCE_NODE_TYPE_ID: &str = "source.application";
 pub const MICROPHONE_SOURCE_NODE_TYPE_ID: &str = "source.microphone";
-const EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID: &str = "source.external-audio-ingress";
-const GENERATED_AUDIO_INGRESS_NODE_TYPE_ID: &str = "source.generated-audio-ingress";
-const GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID: &str = "bridge.generated-audio";
+pub(crate) const EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID: &str = "source.external_audio_ingress";
+pub(crate) const GENERATED_AUDIO_INGRESS_NODE_TYPE_ID: &str = "source.generated_audio_ingress";
+pub(crate) const GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID: &str = "bridge.generated_audio";
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
 pub enum SessionGraphRegistrationError {

@@ -29,6 +29,12 @@ impl SignalId {
     pub fn as_str(&self) -> &str {
         &self.0
     }
+
+    /// Reports whether this custom signal ID is portable across packages,
+    /// languages, and processes.
+    pub fn is_portable(&self) -> bool {
+        crate::graph::identifier::is_portable_contract_id(self.as_str())
+    }
 }
 
 impl From<&str> for SignalId {

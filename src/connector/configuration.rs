@@ -636,3 +636,37 @@ impl ConnectorConfigurationError {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn given_provider_owned_field_name_when_resolved_then_core_preserves_it_opaquely() {
+        let schema = ConnectorConfigurationSchema::new(
+            1,
+            vec![ConnectorConfigurationField::new(
+                "bootstrap.servers",
+                ConnectorConfigurationValueKind::Text,
+                ConnectorConfigurationRequirement::Required,
+                "Provider-native bootstrap address",
+            )],
+        )
+        .expect("provider-owned schema");
+        let configuration = ConnectorConfiguration::new().with(
+            "bootstrap.servers",
+            ConnectorConfigurationValue::Text("relay.example:443".to_owned()),
+        );
+
+        let resolved = schema
+            .resolve(&configuration)
+            .expect("resolved configuration");
+
+        assert_eq!(
+            resolved.get("bootstrap.servers"),
+            Some(&ConnectorConfigurationValue::Text(
+                "relay.example:443".to_owned()
+            ))
+        );
+    }
+}

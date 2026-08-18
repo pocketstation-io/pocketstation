@@ -13,5 +13,7 @@ mod signal;
 
 pub use audio::*;
 pub use bridge::*;
+#[cfg(test)]
+pub(crate) use lifecycle::CONTROL_SIGNAL_ID;
 pub use lifecycle::*;
 pub use signal::*;

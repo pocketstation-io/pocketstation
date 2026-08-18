@@ -127,15 +127,15 @@ impl<Item> SignalEdgeSendError<Item> {
 
 impl<Item> SignalEdgeSender<Item> {
     pub fn try_send(&mut self, item: Item) -> Result<(), SignalEdgeSendError<Item>> {
+        let depth = self
+            .state
+            .depth_signals
+            .fetch_add(1, Ordering::Relaxed)
+            .saturating_add(1);
         match self.producer.push(item) {
             Ok(()) => {
                 self.state.enqueued_total.fetch_add(1, Ordering::Relaxed);
                 self.state.delivered_total.fetch_add(1, Ordering::Relaxed);
-                let depth = self
-                    .state
-                    .depth_signals
-                    .fetch_add(1, Ordering::Relaxed)
-                    .saturating_add(1);
                 self.state
                     .peak_depth_signals
                     .fetch_max(depth, Ordering::Relaxed);
@@ -145,6 +145,7 @@ impl<Item> SignalEdgeSender<Item> {
                 Ok(())
             }
             Err(rtrb::PushError::Full(item)) => {
+                self.state.depth_signals.fetch_sub(1, Ordering::Relaxed);
                 self.state.dropped_total.fetch_add(1, Ordering::Relaxed);
                 Err(SignalEdgeSendError { rejected: item })
             }

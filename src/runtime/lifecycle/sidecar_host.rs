@@ -14,7 +14,7 @@ const LENGTH_PREFIX_BYTES: usize = 4;
 const CONTROL_CAPACITY_MESSAGES: usize = 4;
 const WRITER_POLL_INTERVAL: Duration = Duration::from_millis(1);
 const PROCESS_POLL_INTERVAL: Duration = Duration::from_millis(2);
-const CONTROL_SIGNAL_ID: &str = "pks.sidecar.control.v1";
+pub(crate) const CONTROL_SIGNAL_ID: &str = "pks.sidecar.control.v1";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]

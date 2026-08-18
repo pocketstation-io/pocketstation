@@ -13,8 +13,10 @@ use crate::graph::registry::{NodeFactory, NodeRegistry};
 use crate::graph::runtime_node::RuntimeNode;
 use crate::graph::signal::SignalSpec;
 
-const GAIN_DB_KEY: &str = "gain_db";
-const MONO_MIX_TYPE_ID: &str = "transform.mono_mix";
+pub(crate) const GAIN_CONFIGURATION_KEY: &str = "gain_db";
+pub(crate) const PASSTHROUGH_NODE_TYPE_ID: &str = "passthrough";
+pub(crate) const GAIN_NODE_TYPE_ID: &str = "gain";
+pub(crate) const MONO_MIX_NODE_TYPE_ID: &str = "transform.mono_mix";
 const MONO_CHANNEL_COUNT: u8 = 1;
 const STEREO_CHANNEL_COUNT: u8 = 2;
 const MONO_MIX_SCALE: f32 = 0.5;
@@ -67,7 +69,7 @@ pub struct PassthroughFactory;
 impl NodeFactory for PassthroughFactory {
     fn descriptor(&self) -> NodeDescriptor {
         NodeDescriptor {
-            type_id: NodeTypeId::from("passthrough"),
+            type_id: NodeTypeId::from(PASSTHROUGH_NODE_TYPE_ID),
             display_name: "Passthrough",
             inputs: vec![any_port("in", PortDirection::Input)],
             outputs: vec![any_port("out", PortDirection::Output)],
@@ -107,7 +109,7 @@ pub struct GainFactory;
 impl NodeFactory for GainFactory {
     fn descriptor(&self) -> NodeDescriptor {
         NodeDescriptor {
-            type_id: NodeTypeId::from("gain"),
+            type_id: NodeTypeId::from(GAIN_NODE_TYPE_ID),
             display_name: "Gain",
             inputs: vec![audio_port("in", PortDirection::Input)],
             outputs: vec![audio_port("out", PortDirection::Output)],
@@ -118,13 +120,13 @@ impl NodeFactory for GainFactory {
     }
 
     fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {
-        match config.get(GAIN_DB_KEY) {
-            None => Err(ConfigError::Missing(GAIN_DB_KEY.to_owned())),
+        match config.get(GAIN_CONFIGURATION_KEY) {
+            None => Err(ConfigError::Missing(GAIN_CONFIGURATION_KEY.to_owned())),
             Some(raw) => raw
                 .parse::<f32>()
                 .map(|_| ())
                 .map_err(|err| ConfigError::Invalid {
-                    key: GAIN_DB_KEY.to_owned(),
+                    key: GAIN_CONFIGURATION_KEY.to_owned(),
                     reason: err.to_string(),
                 }),
         }
@@ -137,8 +139,8 @@ impl NodeFactory for GainFactory {
     ) -> Result<Box<dyn RuntimeNode>, NodeError> {
         self.validate_config(config)?;
         let gain_db = config
-            .get_f32(GAIN_DB_KEY)
-            .ok_or_else(|| ConfigError::Missing(GAIN_DB_KEY.to_owned()))?;
+            .get_f32(GAIN_CONFIGURATION_KEY)
+            .ok_or_else(|| ConfigError::Missing(GAIN_CONFIGURATION_KEY.to_owned()))?;
         let gain_ratio = 10f32.powf(gain_db / 20.0);
         Ok(Box::new(GainNode { gain_ratio }))
     }
@@ -166,7 +168,7 @@ pub struct MonoMixFactory;
 impl NodeFactory for MonoMixFactory {
     fn descriptor(&self) -> NodeDescriptor {
         NodeDescriptor {
-            type_id: NodeTypeId::from(MONO_MIX_TYPE_ID),
+            type_id: NodeTypeId::from(MONO_MIX_NODE_TYPE_ID),
             display_name: "Mono Mix",
             inputs: vec![audio_port("in", PortDirection::Input)],
             outputs: vec![mono_audio_port("out", PortDirection::Output)],
@@ -256,7 +258,7 @@ mod tests {
     #[test]
     fn given_gain_config_with_non_numeric_gain_db_when_validate_then_invalid_error() {
         let factory = GainFactory;
-        let config = NodeConfig::new().with(GAIN_DB_KEY, "loud");
+        let config = NodeConfig::new().with(GAIN_CONFIGURATION_KEY, "loud");
         let result = factory.validate_config(&config);
         assert!(matches!(result, Err(ConfigError::Invalid { .. })));
     }
@@ -264,14 +266,14 @@ mod tests {
     #[test]
     fn given_gain_config_with_valid_gain_db_when_validate_then_ok() {
         let factory = GainFactory;
-        let config = NodeConfig::new().with(GAIN_DB_KEY, "6.0");
+        let config = NodeConfig::new().with(GAIN_CONFIGURATION_KEY, "6.0");
         assert!(factory.validate_config(&config).is_ok());
     }
 
     #[test]
     fn given_unity_gain_node_when_process_then_samples_unchanged() {
         let factory = GainFactory;
-        let config = NodeConfig::new().with(GAIN_DB_KEY, "0.0");
+        let config = NodeConfig::new().with(GAIN_CONFIGURATION_KEY, "0.0");
         let mut node = factory.instantiate(&prepare_cx(), &config).unwrap();
         let processed = node
             .process(frame_with_samples(&[0.5, -0.25, 1.0]))
@@ -286,7 +288,7 @@ mod tests {
     #[test]
     fn given_six_db_gain_node_when_process_then_samples_scaled_by_linear_gain() {
         let factory = GainFactory;
-        let config = NodeConfig::new().with(GAIN_DB_KEY, "6.0");
+        let config = NodeConfig::new().with(GAIN_CONFIGURATION_KEY, "6.0");
         let mut node = factory.instantiate(&prepare_cx(), &config).unwrap();
         let input = [0.5, -0.25, 1.0];
         let expected_linear = 10f32.powf(6.0 / 20.0);

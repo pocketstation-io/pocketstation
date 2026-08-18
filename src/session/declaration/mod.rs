@@ -13,6 +13,8 @@ pub use draft::{
     DerivedStreamHandle, EndpointHandle, Operator, OperatorInputHandle, OperatorInstanceHandle,
     Session, SourceInstanceHandle, SourceOutputHandle, StemHandle,
 };
+#[cfg(test)]
+pub(crate) use endpoint::BROWSER_RECEIVER_URI_CONFIGURATION_KEY;
 pub use endpoint::{
     EndpointConfiguration, EndpointDescriptor, OperatorId, BROWSER_NODE_TYPE_ID,
     BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID,

@@ -16,6 +16,15 @@ impl NodeTypeId {
     pub fn as_str(&self) -> &str {
         &self.0
     }
+
+    /// Reports whether this value follows the portable node-type syntax.
+    ///
+    /// Version 1 keeps construction infallible for source compatibility.
+    /// Node labels are lowercase and dot-separated; internal structural names
+    /// use underscores while externally owned contract labels may use hyphens.
+    pub fn is_well_formed(&self) -> bool {
+        crate::graph::identifier::is_node_type_id(self.as_str())
+    }
 }
 
 impl fmt::Display for NodeTypeId {
@@ -390,5 +399,12 @@ mod tests {
     fn given_non_numeric_config_when_get_u32_then_returns_none() {
         let config = NodeConfig::new().with("attack_ms", "fast");
         assert_eq!(config.get_u32("attack_ms"), None);
+    }
+
+    #[test]
+    fn given_provider_owned_configuration_key_when_stored_then_it_remains_opaque() {
+        let config = NodeConfig::new().with("provider.api-key", "opaque");
+
+        assert_eq!(config.get("provider.api-key"), Some("opaque"));
     }
 }

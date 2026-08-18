@@ -16,14 +16,22 @@
   bound to Session-assigned source, stream, and stem identities. One Session
   requires one concrete sample/frame contract while each source may choose its
   own bounded capacity.
+- First-party contract IDs, structural node IDs, protocol IDs, and
+  configuration keys now have separate audited syntax. Shipped wire values
+  remain unchanged, while provider-owned identifiers and configuration keys
+  remain open and opaque to Core.
 - The real-path test proves two independent PCM source declarations, bounded
   saturation, polling, Operator processing and audio reentry, Connector
   delivery, two-stem recording, cancellation, exact buffer recovery, and that
   OS capture is never opened.
+- Accepted frames now drain when their writer or generated-audio producer
+  closes. SPSC depth accounting cannot underflow when a consumer wins the
+  publish race; `Closed` and `Cancelled` remain distinct terminal outcomes.
 - Standalone declaration, lifecycle, and extension suites now live under
   scoped `tests/` directories. Built-in lowering remains extension-owned;
   the generic compiler contains no product-node switch.
-- Acceptance passes: 445 Core unit tests and every all-feature target, strict
+- Acceptance passes: 455 Core unit tests and every all-feature target, three
+  caller-owned PCM integration tests, strict
   Clippy, warnings-as-errors rustdoc, release quickstart, architecture and
   built-in-lowering boundaries, and the complete `CODE_PROTOCOL` gate.
 - No provider, scaffold, mock, loopback product claim, physical-device claim,

@@ -703,6 +703,9 @@ impl SourceDriver for PcmSourceDriver {
                 return self.emission(queued).map(Some);
             }
             if receiver.is_abandoned() {
+                if let Some(queued) = receiver.recv() {
+                    return self.emission(queued).map(Some);
+                }
                 return Ok(None);
             }
             std::thread::park_timeout(DRIVER_IDLE_WAIT);

@@ -16,8 +16,8 @@ use crate::graph::{
     SignalSpec,
 };
 
-const SOURCE_TYPE_ID: &str = "source.system_output";
-const SINK_TYPE_ID: &str = "sink.bridge";
+pub(crate) const SYSTEM_OUTPUT_NODE_TYPE_ID: &str = "source.system_output";
+pub(crate) const BRIDGE_ENDPOINT_NODE_TYPE_ID: &str = "endpoint.bridge";
 const MIXER_FRAME_SAMPLES_PER_CHANNEL: usize = 960;
 const MIXER_MAX_FRAME_SAMPLES: usize = MIXER_FRAME_SAMPLES_PER_CHANNEL * 2;
 const MIXER_ACCUMULATOR_CAPACITY: usize = MIXER_MAX_FRAME_SAMPLES * 4;
@@ -86,7 +86,7 @@ impl SystemOutputSourceFactory {
 impl NodeFactory for SystemOutputSourceFactory {
     fn descriptor(&self) -> NodeDescriptor {
         NodeDescriptor {
-            type_id: NodeTypeId::from(SOURCE_TYPE_ID),
+            type_id: NodeTypeId::from(SYSTEM_OUTPUT_NODE_TYPE_ID),
             display_name: "Bounded capture ingress",
             inputs: Vec::new(),
             outputs: vec![audio_port("audio", PortDirection::Output)],
@@ -190,7 +190,7 @@ impl BridgeSinkFactory {
 impl NodeFactory for BridgeSinkFactory {
     fn descriptor(&self) -> NodeDescriptor {
         NodeDescriptor {
-            type_id: NodeTypeId::from(SINK_TYPE_ID),
+            type_id: NodeTypeId::from(BRIDGE_ENDPOINT_NODE_TYPE_ID),
             display_name: "Bounded audio bridge",
             inputs: vec![audio_port("in", PortDirection::Input)],
             outputs: Vec::new(),

@@ -115,6 +115,59 @@ fn given_bounded_pcm_source_when_writes_are_invalid_or_saturated_then_ownership_
     ));
 }
 
+#[test]
+fn given_running_pcm_source_when_writer_closes_then_accepted_frames_are_drained() {
+    let session = Session::builder().sample_spec(sample_spec()).build();
+    let pcm = session.pcm_source(pcm_config(4)).expect("PCM source");
+    let source_id = pcm.source().source_id();
+    let stream_id = pcm.output().stream_id();
+    let polled_audio = session.polled_audio().expect("polled audio endpoint");
+    pcm.output()
+        .send(polled_audio)
+        .expect("PCM source polling route");
+    let (_, _, mut writer) = pcm.into_parts();
+    let mut running = session.start().expect("running PCM source Session");
+    let samples = vec![0.25_f32; FRAME_SAMPLES];
+
+    for _ in 0..4 {
+        let mut buffer = acquire_before(&writer, Duration::from_secs(2));
+        buffer
+            .try_copy_from_slice(&samples)
+            .expect("PCM frame copy");
+        send_before(&mut writer, buffer, Duration::from_secs(2));
+    }
+    writer.close();
+
+    let deadline = Instant::now() + Duration::from_secs(5);
+    let mut sequences = Vec::new();
+    while sequences.len() < 4 && Instant::now() < deadline {
+        if let Ok(batch) = running.try_poll_audio() {
+            for index in 0..batch.len() {
+                let frame = batch.frame(index).expect("bounded batch frame");
+                assert_eq!(frame.stream_id(), stream_id);
+                assert_eq!(frame.lineage().source_id(), source_id);
+                sequences.push(frame.lineage().sequence_number());
+            }
+        }
+        thread::sleep(Duration::from_millis(1));
+    }
+
+    assert_eq!(sequences, vec![0, 1, 2, 3]);
+    assert!(running.stop().is_success());
+    let observations = writer.observations();
+    assert!(observations.closed);
+    assert!(!observations.cancelled);
+    assert_eq!(observations.accepted_total, 4);
+    assert_eq!(observations.available_buffers, observations.buffer_slots);
+    assert_eq!(
+        writer
+            .try_write(&samples)
+            .expect_err("closed PCM source")
+            .kind(),
+        PcmWriteErrorKind::Closed
+    );
+}
+
 #[derive(Default)]
 struct OperatorControl {
     processed_total: AtomicU64,
@@ -314,7 +367,6 @@ fn given_pcm_source_when_session_runs_then_lineage_fanout_reentry_and_recording_
         }
         send_before(&mut writer, buffer, Duration::from_secs(2));
     }
-
     let deadline = Instant::now() + Duration::from_secs(5);
     let mut source_lineages = Vec::new();
     let mut generated_lineages = Vec::new();

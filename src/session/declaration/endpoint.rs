@@ -181,4 +181,19 @@ mod tests {
         assert_eq!(operator_id.as_str(), "connector.example");
         assert_eq!(OperatorId::syntax_version(), 1);
     }
+
+    #[test]
+    fn given_provider_owned_endpoint_key_when_validated_then_core_keeps_it_open() {
+        let descriptor = EndpointDescriptor::new(
+            NodeTypeId::from(CONNECTOR_NODE_TYPE_ID),
+            OperatorId::new("dev.pocketstation.test.endpoint.v1"),
+        )
+        .with_configuration(EndpointConfiguration::new().with("provider.api-key", "opaque"));
+
+        assert!(descriptor.validate().is_ok());
+        assert_eq!(
+            descriptor.configuration().get("provider.api-key"),
+            Some("opaque")
+        );
+    }
 }

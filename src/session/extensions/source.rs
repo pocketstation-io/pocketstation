@@ -34,6 +34,15 @@ impl SourceTypeId {
     pub fn as_str(&self) -> &str {
         &self.0
     }
+
+    /// Reports whether this value follows the portable source-contract syntax.
+    ///
+    /// Portable IDs use reverse-domain ownership and an explicit final
+    /// revision segment. Construction remains open for 1.x compatibility;
+    /// first-party and distributable source packages should return `true`.
+    pub fn is_portable(&self) -> bool {
+        crate::graph::identifier::is_portable_contract_id(self.as_str())
+    }
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -763,5 +772,13 @@ mod tests {
             manifest(vec![output("out"), output("out")]).validate(),
             Err(SourceManifestError::DuplicateOutputName)
         );
+    }
+
+    #[test]
+    fn given_provider_owned_source_key_when_stored_then_core_keeps_it_open() {
+        let mut configuration = SourceConfiguration::default();
+        configuration.insert("provider.api-key", "opaque");
+
+        assert_eq!(configuration.get("provider.api-key"), Some("opaque"));
     }
 }
