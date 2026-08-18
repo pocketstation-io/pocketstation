@@ -11,7 +11,7 @@ use crate::{
 };
 
 use super::context::{ConnectorStopToken, ReadinessProbeState};
-use super::managed::{prepare_managed_worker, ManagedConnectorFactory};
+use super::driver::{prepare_connector_driver, ConnectorDriverFactory};
 use super::supervisor::{
     internal_connector_error, supervise_startup_readiness, wait_for_start_gate,
     ConnectorWorkerState,
@@ -34,25 +34,25 @@ pub(crate) fn connector_endpoint_factory(
     })
 }
 
-pub(crate) fn managed_connector_endpoint_factory(
-    factory: Arc<dyn ManagedConnectorFactory>,
+pub(crate) fn connector_driver_endpoint_factory(
+    factory: Arc<dyn ConnectorDriverFactory>,
     observations: ConnectorObservationStore,
     manifest: Arc<ConnectorManifest>,
 ) -> Arc<dyn EndpointDriverFactory> {
-    Arc::new(ManagedConnectorEndpointAdapter {
+    Arc::new(ConnectorDriverEndpointAdapter {
         factory,
         observations,
         manifest,
     })
 }
 
-struct ManagedConnectorEndpointAdapter {
-    factory: Arc<dyn ManagedConnectorFactory>,
+struct ConnectorDriverEndpointAdapter {
+    factory: Arc<dyn ConnectorDriverFactory>,
     observations: ConnectorObservationStore,
     manifest: Arc<ConnectorManifest>,
 }
 
-impl EndpointDriverFactory for ManagedConnectorEndpointAdapter {
+impl EndpointDriverFactory for ConnectorDriverEndpointAdapter {
     fn preparation_group(
         &self,
         route_id: crate::RouteId,
@@ -89,7 +89,7 @@ impl EndpointDriverFactory for ManagedConnectorEndpointAdapter {
             })
             .collect::<Result<Vec<_>, _>>()
             .map_err(configuration_endpoint_failure)?;
-        match prepare_managed_worker(self.factory.as_ref(), inputs, configurations) {
+        match prepare_connector_driver(self.factory.as_ref(), inputs, configurations) {
             Ok(worker) => Ok(Box::new(PreparedConnectorWorker {
                 worker: Some(worker),
                 state: ConnectorWorkerState::new(connector_observations, endpoint_observations),

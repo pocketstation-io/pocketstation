@@ -9,9 +9,9 @@ use crate::{
 use super::{ConnectorContext, ConnectorRunOutcome, ConnectorWorker};
 use crate::connector::{ConnectorError, ResolvedConnectorConfiguration};
 
-const MANAGED_IDLE_WAIT: Duration = Duration::from_millis(1);
+const DRIVER_IDLE_WAIT: Duration = Duration::from_millis(1);
 
-/// Immutable Session and graph metadata for one managed connector input.
+/// Immutable Session and graph metadata for one connector input.
 #[derive(Debug, Clone)]
 pub struct ConnectorInputDescriptor {
     endpoint_id: EndpointId,
@@ -53,7 +53,7 @@ impl ConnectorInputDescriptor {
     }
 }
 
-/// One bounded item delivered by Core to a managed connector.
+/// One bounded item delivered by Core to a connector driver.
 pub enum ConnectorItem<'a> {
     Audio {
         input: &'a ConnectorInputDescriptor,
@@ -80,11 +80,11 @@ pub enum ConnectorDeliveryOutcome {
     Dropped,
 }
 
-/// Provider-specific behavior executed on Core's managed connector worker.
+/// Provider-specific behavior executed on Core's bounded connector worker.
 ///
 /// Calls occur outside realtime partitions. Implementations must keep every
 /// provider operation finite and return structured errors rather than panic.
-pub trait ManagedConnector: Send + 'static {
+pub trait ConnectorDriver: Send + 'static {
     fn start(&mut self, context: &ConnectorContext) -> Result<(), ConnectorError> {
         let _ = context.set_ready();
         Ok(())
@@ -115,7 +115,7 @@ pub trait ManagedConnector: Send + 'static {
 }
 
 /// Prepares provider state while Core retains receiver and lifecycle authority.
-pub trait ManagedConnectorFactory: Send + Sync {
+pub trait ConnectorDriverFactory: Send + Sync {
     fn preparation_group(
         &self,
         route_id: RouteId,
@@ -127,11 +127,11 @@ pub trait ManagedConnectorFactory: Send + Sync {
     fn prepare(
         &self,
         inputs: &[ConnectorInputDescriptor],
-    ) -> Result<Box<dyn ManagedConnector>, ConnectorError>;
+    ) -> Result<Box<dyn ConnectorDriver>, ConnectorError>;
 }
 
-pub(super) fn prepare_managed_worker(
-    factory: &dyn ManagedConnectorFactory,
+pub(super) fn prepare_connector_driver(
+    factory: &dyn ConnectorDriverFactory,
     inputs: Vec<EndpointPortInput>,
     configurations: Vec<ResolvedConnectorConfiguration>,
 ) -> Result<Box<dyn ConnectorWorker>, ConnectorError> {
@@ -143,7 +143,7 @@ pub(super) fn prepare_managed_worker(
         ));
     }
 
-    let mut managed_inputs = Vec::with_capacity(inputs.len());
+    let mut driver_inputs = Vec::with_capacity(inputs.len());
     for (input, configuration) in inputs.into_iter().zip(configurations) {
         let descriptor = ConnectorInputDescriptor {
             endpoint_id: input.context().endpoint_id(),
@@ -155,44 +155,44 @@ pub(super) fn prepare_managed_worker(
             configuration,
         };
         let (receiver, _) = input.into_parts();
-        managed_inputs.push(ManagedInput {
+        driver_inputs.push(DriverInput {
             descriptor,
             receiver,
             last_discontinuity_epoch: None,
         });
     }
-    let descriptors = managed_inputs
+    let descriptors = driver_inputs
         .iter()
         .map(|input| input.descriptor.clone())
         .collect::<Vec<_>>();
-    let handler = factory.prepare(&descriptors)?;
-    Ok(Box::new(ManagedConnectorWorker {
-        handler: Some(handler),
-        inputs: managed_inputs,
+    let driver = factory.prepare(&descriptors)?;
+    Ok(Box::new(PollingConnectorWorker {
+        driver: Some(driver),
+        inputs: driver_inputs,
     }))
 }
 
-struct ManagedInput {
+struct DriverInput {
     descriptor: ConnectorInputDescriptor,
     receiver: EndpointReceiver,
     last_discontinuity_epoch: Option<u64>,
 }
 
-struct ManagedConnectorWorker {
-    handler: Option<Box<dyn ManagedConnector>>,
-    inputs: Vec<ManagedInput>,
+struct PollingConnectorWorker {
+    driver: Option<Box<dyn ConnectorDriver>>,
+    inputs: Vec<DriverInput>,
 }
 
-impl ConnectorWorker for ManagedConnectorWorker {
+impl ConnectorWorker for PollingConnectorWorker {
     fn run(mut self: Box<Self>, context: ConnectorContext) -> ConnectorRunOutcome {
-        let Some(mut handler) = self.handler.take() else {
+        let Some(mut driver) = self.driver.take() else {
             return ConnectorRunOutcome::failure(super::supervisor::internal_connector_error(
-                "core.managed_handler_missing",
+                "core.connector_driver_missing",
                 crate::connector::ConnectorErrorStage::Startup,
-                "managed connector handler ownership is unavailable",
+                "connector driver ownership is unavailable",
             ));
         };
-        if let Err(error) = handler.start(&context) {
+        if let Err(error) = driver.start(&context) {
             return ConnectorRunOutcome::failure(error);
         }
 
@@ -233,7 +233,7 @@ impl ConnectorWorker for ManagedConnectorWorker {
                 };
                 progressed = true;
                 context.record_frame_received(1);
-                match handler.deliver(item, &context) {
+                match driver.deliver(item, &context) {
                     Ok(ConnectorDeliveryOutcome::Delivered) => {
                         context.record_frame_delivered(1);
                     }
@@ -250,25 +250,25 @@ impl ConnectorWorker for ManagedConnectorWorker {
             if context.shutdown_mode() == Some(EndpointShutdownMode::Drain) {
                 break;
             }
-            if let Err(error) = handler.idle(&context) {
+            if let Err(error) = driver.idle(&context) {
                 return ConnectorRunOutcome::failure(error);
             }
-            let _ = context.wait_for_stop(MANAGED_IDLE_WAIT);
+            let _ = context.wait_for_stop(DRIVER_IDLE_WAIT);
         }
 
         let mode = context
             .shutdown_mode()
             .unwrap_or(EndpointShutdownMode::Abort);
-        match handler.shutdown(mode, &context) {
+        match driver.shutdown(mode, &context) {
             Ok(()) => ConnectorRunOutcome::success(),
             Err(error) => ConnectorRunOutcome::failure(error),
         }
     }
 
     fn cancel_preparation(mut self: Box<Self>) -> Result<(), ConnectorError> {
-        self.handler
+        self.driver
             .take()
-            .map_or(Ok(()), ManagedConnector::cancel_preparation)
+            .map_or(Ok(()), ConnectorDriver::cancel_preparation)
     }
 }
 

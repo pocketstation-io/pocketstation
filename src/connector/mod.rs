@@ -4,6 +4,7 @@ pub mod conformance;
 mod error;
 mod manifest;
 mod observations;
+mod package;
 mod service_status;
 mod worker;
 
@@ -33,14 +34,20 @@ pub use observations::{
     ConnectorObservationError, ConnectorObservationHandle, ConnectorObservations,
     ConnectorRuntimeObservations,
 };
+pub use package::{
+    ConnectorComponentId, ConnectorComponentKind, ConnectorComponentManifest, ConnectorPackage,
+    ConnectorPackageError, ConnectorPackageId, ConnectorPackageInstallError,
+    ConnectorPackageManifest, RegisteredConnectorPackage, CONNECTOR_PACKAGE_API_REVISION,
+};
 pub use service_status::{
     ConnectorDeliveryReadiness, ConnectorHealth, ConnectorReadinessPolicy,
     ConnectorReadinessPolicyError, ConnectorRecovery, ConnectorServiceStatus,
     MAX_CONNECTOR_READINESS_THRESHOLD, MAX_CONNECTOR_READINESS_TIMEOUT,
 };
 pub use worker::{
-    ConnectorContext, ConnectorDeliveryOutcome, ConnectorFactory, ConnectorInputDescriptor,
-    ConnectorItem, ConnectorRunOutcome, ConnectorWorker, ManagedConnector, ManagedConnectorFactory,
+    ConnectorContext, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory,
+    ConnectorFactory, ConnectorInputDescriptor, ConnectorItem, ConnectorRunOutcome,
+    ConnectorWorker,
 };
 
 pub struct Connector {
@@ -67,17 +74,17 @@ impl Connector {
 
     /// Builds a connector whose bounded receiver loop is owned by Core.
     ///
-    /// Managed connector authors implement item delivery and provider-specific
+    /// Connector authors implement item delivery and provider-specific
     /// state only. Endpoint remains authoritative for preparation, start-gate,
     /// shutdown, join, rollback, and finalization semantics.
-    pub fn managed(
+    pub fn with_driver(
         manifest: ConnectorManifest,
-        factory: Arc<dyn ManagedConnectorFactory>,
+        factory: Arc<dyn ConnectorDriverFactory>,
     ) -> Result<Self, ConnectorManifestError> {
         manifest.validate()?;
         let manifest = Arc::new(manifest);
         let observations = ConnectorObservationStore::new();
-        let endpoint_factory = worker::managed_connector_endpoint_factory(
+        let endpoint_factory = worker::connector_driver_endpoint_factory(
             factory,
             observations.clone(),
             Arc::clone(&manifest),

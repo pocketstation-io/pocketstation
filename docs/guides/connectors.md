@@ -6,8 +6,8 @@ customer boundary without adding that provider to Core.
 
 ## Authoring surface
 
-Implement `ManagedConnectorFactory` to validate and acquire provider
-resources, then return one `ManagedConnector`. Core owns bounded input polling,
+Implement `ConnectorDriverFactory` to validate and acquire provider
+resources, then return one `ConnectorDriver`. Core owns bounded input polling,
 delivery accounting, drain/abort, and the canonical Endpoint transaction:
 
 ```rust,no_run
@@ -15,19 +15,19 @@ use std::sync::Arc;
 use pocketstation::connector::{
     Connector, ConnectorConfiguration, ConnectorDeliveryOutcome,
     ConnectorError, ConnectorInputDescriptor, ConnectorItem,
-    ManagedConnector, ManagedConnectorFactory,
+    ConnectorDriver, ConnectorDriverFactory,
 };
 use pocketstation::Session;
 
 # fn manifest() -> pocketstation::connector::ConnectorManifest { todo!() }
 # struct RelayFactory;
-# impl ManagedConnectorFactory for RelayFactory {
+# impl ConnectorDriverFactory for RelayFactory {
 #   fn prepare(&self, _: &[ConnectorInputDescriptor])
-#     -> Result<Box<dyn ManagedConnector>, ConnectorError>
+#     -> Result<Box<dyn ConnectorDriver>, ConnectorError>
 #   { todo!() }
 # }
 # struct Relay;
-# impl ManagedConnector for Relay {
+# impl ConnectorDriver for Relay {
 #   fn deliver(
 #     &mut self,
 #     _: ConnectorItem<'_>,
@@ -38,7 +38,7 @@ use pocketstation::Session;
 # }
 # fn main() -> Result<(), Box<dyn std::error::Error>> {
 let session = Session::new();
-let package = Connector::managed(manifest(), Arc::new(RelayFactory))?;
+let package = Connector::with_driver(manifest(), Arc::new(RelayFactory))?;
 let relay = session.register_connector(package)?;
 let endpoint = relay.declare(&session, ConnectorConfiguration::new())?;
 # let _ = endpoint;
@@ -48,6 +48,20 @@ let endpoint = relay.declare(&session, ConnectorConfiguration::new())?;
 
 The complete compiling example is
 [`examples/connector_authoring.rs`](../../examples/connector_authoring.rs).
+
+## Package composition
+
+Use `ConnectorPackage` when one provider integration installs several existing
+Core extension kinds, such as a Source, an Operator, and an outbound Connector.
+The package is inspectable before installation and commits its registrations to
+one Session only after every source, operator, endpoint, and node identity has
+passed preflight. It does not create another registry or lifecycle: installed
+components continue to execute through the canonical Source, Operator, and
+Endpoint authorities.
+
+Package-level configuration is intentionally absent. Each component's existing
+manifest remains the executable configuration authority; Core does not publish
+a second schema that it cannot resolve into those components.
 
 ## What Core supplies
 
@@ -62,7 +76,7 @@ private adapter supplies:
 - joined shutdown; and
 - canonical `EndpointDriverObservations` for delivery accounting.
 
-The managed adapter consumes the bounded `EndpointPortInput` receivers. The
+The driver adapter consumes the bounded `EndpointPortInput` receivers. The
 provider handles typed `ConnectorItem` values and returns an explicit delivered
 or dropped result. `ConnectorFactory` and `ConnectorWorker` remain the advanced
 escape hatch when a protocol requires a specialized off-realtime worker.
@@ -118,13 +132,13 @@ for queue capacity, backpressure, and route drops.
 
 ## Grouping and shutdown
 
-Override `ManagedConnectorFactory::preparation_group` when several declared routes
+Override `ConnectorDriverFactory::preparation_group` when several declared routes
 must share one provider connection. Returning one shared
 `EndpointPreparationGroup` lets application and microphone buses use one
 worker and one joined provider lifecycle while retaining independent route and
 lineage identities.
 
-The managed connector must:
+The connector driver must:
 
 1. acquire resources in `prepare` without consuming media;
 2. report ready only after the provider can accept delivery;
@@ -145,14 +159,15 @@ owns a second Relay media engine. Protocol owns portable wire semantics and
 conformance vectors.
 
 A Python or JavaScript process may use its supported native projection or a
-bounded sidecar/extension boundary, but it never runs managed code on the
+bounded sidecar/extension boundary, but it never runs foreign-language code on the
 realtime PCM path. The current native extension ABI does not provide arbitrary
 dynamic PCM Endpoint authoring. Do not claim that third-party Python or
 JavaScript code can author an audio connector until a versioned managed/native
 audio boundary and cross-language conformance suite exist.
 
-Enable `conformance-fixtures` and implement every
-`REQUIRED_CONNECTOR_CONFORMANCE_CASES` case. Core component conformance is not
+Enable `conformance-fixtures` and execute the exported deterministic Session
+fixtures against the package's real `Connector` registration. A checklist or
+self-reported result is not conformance. Core component conformance is not
 provider proof: a supported package must also test its real authentication,
 network setup, readiness, reconnect, multi-bus delivery, and receiver-visible
 outcome in its owning repository.

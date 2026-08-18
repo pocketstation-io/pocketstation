@@ -1,5 +1,30 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W21 Core Connector maturity 2 — 2026-08-18
+
+- Status: `SAFE-TO-TEST`; no version, tag, push, publication, registry, or
+  release mutation is authorized by this task.
+- The provider authoring surface is now `Connector::with_driver`,
+  `ConnectorDriverFactory`, and `ConnectorDriver`. The abandoned managed-name
+  API was removed completely rather than retained as deprecated aliases.
+- `ConnectorPackage` composes existing Source, Operator, and outbound
+  Connector registrations without adding another runtime or registry. Package
+  installation preflights every source, operator, endpoint, and node identity
+  before committing any Session registration; a conflict leaves the Session
+  unchanged.
+- An unused package-level configuration schema was rejected. Each component's
+  existing executable manifest remains its configuration authority.
+- The self-attested conformance checklist was removed. Feature-gated
+  conformance now exposes executable deterministic Session fixtures, while
+  provider packages remain responsible for real protocol and receiver proof.
+- Focused acceptance passes: 13 Connector contract tests, three package
+  composition/atomicity tests, and the external grouping test. The complete
+  all-target/all-feature workspace suite, strict Clippy, warnings-as-errors
+  rustdoc, release quickstart build, architecture constraints, `CODE_PROTOCOL`,
+  and Core freeze-policy checks pass.
+- This task adds no provider implementation, competing Graph/Endpoint/Session
+  authority, scaffold, mock, loopback path, remote claim, or performance claim.
+
 ## Core 1.1 connector-maturity release candidate — 2026-08-17
 
 - Status: `SAFE-TO-TEST`; publication remains pending exact archive and
@@ -9,7 +34,7 @@
   or registry version will be deleted, moved, or reused.
 - `cargo-semver-checks` compared the candidate with registry 1.0.0 and passed
   all 223 applicable checks with no breaking API change. The minor version
-  truthfully identifies the additive managed-authoring surface.
+  truthfully identifies the additive connector-authoring surface.
 - The shared `pocketstation-relay` package passes 27 tests, strict Clippy,
   warning-free rustdoc, and isolated `cargo package` verification. The current
   pks workspace passes its full test suite against the candidate. Relay Go
@@ -18,16 +43,16 @@
 - No new endurance, remote, physical-device, cross-platform, or superiority
   claim is introduced.
 
-## W21 Connector managed-authoring maturity correction — 2026-08-17
+## W21 Connector driver-authoring maturity correction — 2026-08-17
 
 - Status: `SAFE-TO-TEST`; complete Core freeze qualification and legal release
   remain pending.
-- `Connector::managed` now provides the preferred provider-authoring path.
+- `Connector::with_driver` provides the preferred provider-authoring path.
   Core owns bounded receiver polling, fair grouped delivery, delivery/drop and
   discontinuity accounting, drain/abort, startup supervision, panic
   containment, and joined Endpoint finalization. Provider code handles typed
   items and provider state instead of reconstructing an Endpoint worker loop.
-- Managed factories receive `ResolvedConnectorConfiguration`; secret values do
+- Driver factories receive `ResolvedConnectorConfiguration`; secret values do
   not regress to an author-facing string map. Sensitive Connector,
   EndpointConfiguration, and NodeConfig strings are overwritten on destruction
   and remain redacted in debug output.
@@ -38,7 +63,7 @@
   `EndpointFailure` details in final Session outcomes.
 - The compiling authoring example no longer contains a manual receiver polling
   loop. The focused connector suite now passes 12 tests, including a real
-  deterministic two-stem managed delivery and graceful-drain case.
+  deterministic two-stem driver delivery and graceful-drain case.
 - AUDIO-036 and the connector guide now enforce one authoritative shared
   `pocketstation-relay` package outside Core, with pks/Python/JavaScript as
   consumers or projections rather than duplicated Relay engines.

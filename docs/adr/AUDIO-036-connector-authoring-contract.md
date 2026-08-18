@@ -33,7 +33,7 @@ Core already owned.
 does not define another execution engine:
 
 ```text
-ConnectorManifest + ManagedConnectorFactory + ManagedConnector
+ConnectorManifest + ConnectorDriverFactory + ConnectorDriver
                               ↓
                     private Endpoint adapter
                               ↓
@@ -51,12 +51,12 @@ Connector owns only:
   classification;
 - orthogonal provider-service facts: delivery readiness, health, and recovery;
 - connector-specific retry, reconnect, failure, and last-error observations;
-- a managed worker adapter that owns bounded receiver polling, fair delivery,
+- a connector driver adapter that owns bounded receiver polling, fair delivery,
   drain versus abort, accounting, panic containment, startup-readiness
   supervision, and joined finalization through the Endpoint SPI;
 - a lower-level `ConnectorFactory` escape hatch for integrations that must own
   a specialized off-realtime worker; and
-- a feature-gated connector conformance protocol and deterministic Core tests.
+- feature-gated executable Session fixtures and deterministic Core tests.
 
 Connector explicitly does not own:
 
@@ -69,6 +69,13 @@ Connector explicitly does not own:
 - a declarative retry policy that Core does not execute; or
 - provider protocols, codecs, credentials, network clients, or reconnection
   decisions.
+
+`ConnectorPackage` composes existing Source, Operator, and Connector
+registrations under one inspectable package identity. Installation preflights
+all existing Session registration authorities before committing any component.
+It owns no registry, graph, queue, or lifecycle of its own. Component manifests
+remain authoritative for configuration; there is no unused package-level
+configuration schema.
 
 `ConnectorServiceStatus` is not a process lifecycle. Its three axes answer
 separate operational questions:
@@ -115,9 +122,9 @@ implementation. They do not duplicate signaling, ICE/DTLS, packetization, or
 media delivery engines. Cross-language protocol conformance remains mandatory
 for any future independent implementation.
 
-Rust implementations normally use `ManagedConnectorFactory` and
-`ManagedConnector`; advanced integrations may use `ConnectorFactory` and
-`ConnectorWorker`. Managed callbacks never run on capture callbacks or
+Rust implementations normally use `ConnectorDriverFactory` and
+`ConnectorDriver`; advanced integrations may use `ConnectorFactory` and
+`ConnectorWorker`. Connector driver callbacks never run on capture callbacks or
 realtime partitions. The current
 native extension ABI remains typed-signal-only; this decision does not claim
 arbitrary dynamic raw-PCM connector authoring from Python or JavaScript.
@@ -131,7 +138,7 @@ canonical deterministic Session. They cover configuration rejection, secret
 redaction and sensitive-value destruction, duplicate identity, preparation
 rollback and cancellation, grouped
 application-plus-microphone ownership, service-status separation, startup
-readiness, Core-owned managed delivery, per-route edge authority, saturation
+readiness, Core-owned driver delivery, per-route edge authority, saturation
 accounting, structured terminal errors, stop and joined shutdown, terminal
 worker failure, panic containment, and distinct drain/abort delivery. Source-boundary
 tests reject downward Endpoint dependencies and reintroduction of duplicated

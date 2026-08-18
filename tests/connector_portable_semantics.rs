@@ -167,7 +167,7 @@ fn validate_case(case: &Value, limits: &Value) -> Result<(), &'static str> {
 }
 
 #[test]
-fn canonical_connector_vectors_match_core_contract_semantics() {
+fn given_canonical_connector_vectors_when_compared_then_core_contract_semantics_match() {
     let corpus: Value = serde_json::from_str(VECTORS).expect("canonical connector vectors");
     assert_eq!(corpus["schema_revision"], 1);
     assert_eq!(

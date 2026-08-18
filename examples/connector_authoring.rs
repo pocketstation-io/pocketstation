@@ -6,9 +6,9 @@ use pocketstation::connector::{
     Connector, ConnectorConfiguration, ConnectorConfigurationConstraint,
     ConnectorConfigurationField, ConnectorConfigurationRequirement, ConnectorConfigurationSchema,
     ConnectorConfigurationValue, ConnectorConfigurationValueKind, ConnectorDeliveryOutcome,
-    ConnectorError, ConnectorErrorCode, ConnectorErrorStage, ConnectorInputDescriptor,
-    ConnectorItem, ConnectorManifest, ConnectorReadinessPolicy, ConnectorRetryability,
-    ConnectorSecret, ManagedConnector, ManagedConnectorFactory,
+    ConnectorDriver, ConnectorDriverFactory, ConnectorError, ConnectorErrorCode,
+    ConnectorErrorStage, ConnectorInputDescriptor, ConnectorItem, ConnectorManifest,
+    ConnectorReadinessPolicy, ConnectorRetryability, ConnectorSecret,
 };
 use pocketstation::{
     ApplicationSelector, AudioCaps, ChannelLayout, EdgeContract, ExecutionPartition, MediaCaps,
@@ -18,11 +18,11 @@ use pocketstation::{
 
 struct ExampleConnectorFactory;
 
-impl ManagedConnectorFactory for ExampleConnectorFactory {
+impl ConnectorDriverFactory for ExampleConnectorFactory {
     fn prepare(
         &self,
         inputs: &[ConnectorInputDescriptor],
-    ) -> Result<Box<dyn ManagedConnector>, ConnectorError> {
+    ) -> Result<Box<dyn ConnectorDriver>, ConnectorError> {
         let configuration = inputs
             .first()
             .map(ConnectorInputDescriptor::configuration)
@@ -41,7 +41,7 @@ impl ManagedConnectorFactory for ExampleConnectorFactory {
 
 struct ExampleConnector;
 
-impl ManagedConnector for ExampleConnector {
+impl ConnectorDriver for ExampleConnector {
     fn deliver(
         &mut self,
         item: ConnectorItem<'_>,
@@ -134,7 +134,8 @@ fn connector_manifest() -> Result<ConnectorManifest, Box<dyn Error>> {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let session = Session::new();
-    let connector = Connector::managed(connector_manifest()?, Arc::new(ExampleConnectorFactory))?;
+    let connector =
+        Connector::with_driver(connector_manifest()?, Arc::new(ExampleConnectorFactory))?;
     let registered = session.register_connector(connector)?;
     let endpoint = registered.declare(
         &session,

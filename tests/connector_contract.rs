@@ -16,14 +16,29 @@ use pocketstation::connector::{
 };
 #[cfg(feature = "conformance-fixtures")]
 use pocketstation::connector::{
-    ConnectorDeliveryOutcome, ConnectorInputDescriptor, ConnectorItem, ManagedConnector,
-    ManagedConnectorFactory,
+    ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorInputDescriptor,
+    ConnectorItem,
 };
 use pocketstation::{
     AudioCaps, ChannelLayout, EdgeContract, EndpointPortInput, EndpointPreparationGroup,
     ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, OperatorId,
     PortDirection, PortSpec, SafetyContract, SampleFormat, SignalSpec,
 };
+
+#[test]
+fn given_connector_public_surface_when_inspected_then_managed_aliases_are_absent() {
+    let source = include_str!("../src/connector/mod.rs");
+    for removed in [
+        concat!("Managed", "Connector"),
+        concat!("Managed", "ConnectorFactory"),
+        concat!("pub fn ", "managed("),
+    ] {
+        assert!(
+            !source.contains(removed),
+            "removed connector API returned: {removed}"
+        );
+    }
+}
 
 fn configuration_schema() -> ConnectorConfigurationSchema {
     ConnectorConfigurationSchema::new(
@@ -453,7 +468,7 @@ fn routed_fault_session(
 
 #[cfg(feature = "conformance-fixtures")]
 #[derive(Default)]
-struct ManagedControl {
+struct DriverControl {
     prepared_inputs_total: AtomicU64,
     delivered_items_total: AtomicU64,
     typed_secret_observed: AtomicBool,
@@ -462,12 +477,12 @@ struct ManagedControl {
 }
 
 #[cfg(feature = "conformance-fixtures")]
-struct ManagedFactory {
-    control: Arc<ManagedControl>,
+struct DriverFactory {
+    control: Arc<DriverControl>,
 }
 
 #[cfg(feature = "conformance-fixtures")]
-impl ManagedConnectorFactory for ManagedFactory {
+impl ConnectorDriverFactory for DriverFactory {
     fn preparation_group(
         &self,
         _route_id: pocketstation::RouteId,
@@ -482,14 +497,14 @@ impl ManagedConnectorFactory for ManagedFactory {
                 .store(true, Ordering::Release);
         }
         Ok(EndpointPreparationGroup::Shared(
-            pocketstation::EndpointGroupId::new("managed-connector-contract-test"),
+            pocketstation::EndpointGroupId::new("connector-driver-contract-test"),
         ))
     }
 
     fn prepare(
         &self,
         inputs: &[ConnectorInputDescriptor],
-    ) -> Result<Box<dyn ManagedConnector>, ConnectorError> {
+    ) -> Result<Box<dyn ConnectorDriver>, ConnectorError> {
         self.control
             .prepared_inputs_total
             .store(inputs.len() as u64, Ordering::Release);
@@ -499,19 +514,19 @@ impl ManagedConnectorFactory for ManagedFactory {
                 .all(|input| input.edge_contract().jitter_budget_ms() == Some(9)),
             Ordering::Release,
         );
-        Ok(Box::new(ManagedHandler {
+        Ok(Box::new(TestDriver {
             control: Arc::clone(&self.control),
         }))
     }
 }
 
 #[cfg(feature = "conformance-fixtures")]
-struct ManagedHandler {
-    control: Arc<ManagedControl>,
+struct TestDriver {
+    control: Arc<DriverControl>,
 }
 
 #[cfg(feature = "conformance-fixtures")]
-impl ManagedConnector for ManagedHandler {
+impl ConnectorDriver for TestDriver {
     fn deliver(
         &mut self,
         item: ConnectorItem<'_>,
@@ -543,24 +558,24 @@ impl ManagedConnector for ManagedHandler {
 
 #[cfg(feature = "conformance-fixtures")]
 #[test]
-fn given_managed_connector_when_two_stems_run_then_core_owns_typed_delivery_and_drain() {
-    let control = Arc::new(ManagedControl::default());
+fn given_connector_driver_when_two_stems_run_then_core_owns_typed_delivery_and_drain() {
+    let control = Arc::new(DriverControl::default());
     let session = pocketstation::conformance::session().expect("conformance Session");
     let registered = session
         .register_connector(
-            Connector::managed(
+            Connector::with_driver(
                 manifest(),
-                Arc::new(ManagedFactory {
+                Arc::new(DriverFactory {
                     control: Arc::clone(&control),
                 }),
             )
-            .expect("managed connector"),
+            .expect("connector driver"),
         )
-        .expect("managed connector registration");
+        .expect("connector driver registration");
     let edge = EdgeContract::realtime_audio().with_jitter_budget_ms(Some(9));
     let endpoint = registered
         .declare_with_input_edge(&session, configuration(), edge)
-        .expect("managed endpoint");
+        .expect("connector endpoint");
     let application = session
         .capture(pocketstation::Source::application(
             pocketstation::ApplicationSelector::name("PocketStation Fixture"),
@@ -575,7 +590,7 @@ fn given_managed_connector_when_two_stems_run_then_core_owns_typed_delivery_and_
     let mut running = session.start().expect("running Session");
     let deadline = Instant::now() + Duration::from_secs(2);
     while control.delivered_items_total.load(Ordering::Acquire) < 2 {
-        assert!(Instant::now() < deadline, "managed connector must deliver");
+        assert!(Instant::now() < deadline, "connector driver must deliver");
         std::thread::sleep(Duration::from_millis(2));
     }
     assert!(running.stop().is_success());
@@ -585,10 +600,10 @@ fn given_managed_connector_when_two_stems_run_then_core_owns_typed_delivery_and_
     assert_eq!(control.shutdown_mode.load(Ordering::Acquire), 1);
     let observation = registered
         .observations()
-        .expect("managed observations")
+        .expect("connector observations")
         .into_iter()
         .next()
-        .expect("managed runtime observation");
+        .expect("connector runtime observation");
     assert!(observation.endpoint.frames_received_total >= 2);
     assert_eq!(
         observation.endpoint.frames_received_total,
