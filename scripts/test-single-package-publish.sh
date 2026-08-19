@@ -41,6 +41,7 @@ while IFS= read -r package_file; do
       docs/concepts/signals-and-streams.md | \
       docs/development/compatibility-and-freeze.md | \
       docs/getting-started/rust-quickstart.md | \
+      docs/guides/connectors.md | \
       docs/guides/extensions.md) ;;
     docs/*)
       echo "internal documentation leaked into package: ${package_file}" >&2
@@ -59,6 +60,7 @@ for required_path in \
   docs/concepts/signals-and-streams.md \
   docs/development/compatibility-and-freeze.md \
   docs/getting-started/rust-quickstart.md \
+  docs/guides/connectors.md \
   docs/guides/extensions.md \
   include/pocketstation.h \
   src/lib.rs; do

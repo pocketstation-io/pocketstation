@@ -12,7 +12,7 @@ use pocketstation::{
 };
 use tempfile::TempDir;
 
-const SOURCE_ID: &str = "dev.pocketstation.fixture.source.v1";
+const SOURCE_ID: &str = "dev.pocketstation.source.fixture.v1";
 const OPERATOR_ID: &str = "dev.pocketstation.fixture.operator.v1";
 const ENDPOINT_ID: &str = "dev.pocketstation.fixture.endpoint.v1";
 
@@ -66,8 +66,8 @@ fn marker_text(path: &Path) -> String {
 
 #[test]
 fn given_relative_library_path_when_loaded_then_ambient_search_is_rejected() {
-    let error = Session::new()
-        .load_native_extension_library("fixture-extension")
+    // SAFETY: the invalid relative path is rejected before any native code is loaded.
+    let error = unsafe { Session::new().load_native_extension_library("fixture-extension") }
         .expect_err("relative library path must be rejected");
 
     assert_eq!(
@@ -79,8 +79,8 @@ fn given_relative_library_path_when_loaded_then_ambient_search_is_rejected() {
 #[test]
 fn given_library_without_entrypoint_when_loaded_then_typed_error_is_returned() {
     let plugin = compile_plugin("pks_missing_entrypoint", Some("no_entrypoint"));
-    let error = Session::new()
-        .load_native_extension_library(&plugin.path)
+    // SAFETY: the test compiled this local fixture and controls all of its code.
+    let error = unsafe { Session::new().load_native_extension_library(&plugin.path) }
         .expect_err("missing extension entrypoint must fail");
 
     assert_eq!(
@@ -94,8 +94,8 @@ fn given_library_without_entrypoint_when_loaded_then_typed_error_is_returned() {
 fn given_unsupported_library_abi_when_loaded_then_registration_never_mutates_session() {
     let plugin = compile_plugin("pks_unsupported_abi", Some("unsupported_abi"));
     let session = Session::new();
-    let error = session
-        .load_native_extension_library(&plugin.path)
+    // SAFETY: the test compiled this local fixture and controls all of its code.
+    let error = unsafe { session.load_native_extension_library(&plugin.path) }
         .expect_err("unsupported ABI must fail before acquisition");
 
     assert_eq!(
@@ -108,8 +108,9 @@ fn given_unsupported_library_abi_when_loaded_then_registration_never_mutates_ses
 #[test]
 fn given_acquired_malformed_registration_when_loaded_then_context_is_destroyed_once() {
     let plugin = compile_plugin("pks_invalid_registration", Some("invalid_registration"));
-    let error = Session::new()
-        .load_native_extension_library(&plugin.path)
+    // SAFETY: the test compiled this local fixture and deliberately controls
+    // the malformed descriptor while keeping all referenced memory valid.
+    let error = unsafe { Session::new().load_native_extension_library(&plugin.path) }
         .expect_err("malformed acquired registration must fail");
 
     assert_eq!(
@@ -125,8 +126,9 @@ fn given_acquired_malformed_registration_when_loaded_then_context_is_destroyed_o
 fn given_valid_native_library_when_loaded_then_canonical_session_executes_complete_pipeline() {
     let plugin = compile_plugin("pks_valid_extension", None);
     let session = Session::new();
-    let receipt = session
-        .load_native_extension_library(&plugin.path)
+    // SAFETY: the test compiled this ABI-conformant local fixture and controls
+    // its code, descriptors, callbacks, contexts, and lifetimes.
+    let receipt = unsafe { session.load_native_extension_library(&plugin.path) }
         .expect("load native extension library");
 
     assert!(receipt.canonical_path().is_absolute());
@@ -191,12 +193,13 @@ fn given_valid_native_library_when_loaded_then_canonical_session_executes_comple
 fn given_duplicate_library_import_when_loaded_then_second_import_is_transactional() {
     let plugin = compile_plugin("pks_duplicate_import", None);
     let session = Session::new();
-    session
-        .load_native_extension_library(&plugin.path)
-        .expect("first import");
+    // SAFETY: the test compiled this ABI-conformant local fixture and controls
+    // its code, descriptors, callbacks, contexts, and lifetimes.
+    unsafe { session.load_native_extension_library(&plugin.path) }.expect("first import");
 
-    let error = session
-        .load_native_extension_library(&plugin.path)
+    // SAFETY: this is the same controlled local fixture; the second import is
+    // expected to fail during duplicate registration validation.
+    let error = unsafe { session.load_native_extension_library(&plugin.path) }
         .expect_err("second import must fail atomically");
     assert_eq!(
         error.code(),

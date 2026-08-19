@@ -14,7 +14,7 @@ Choose the boundary that matches the work:
 | New destination | endpoint driver/factory | Consume a bounded route and expose lifecycle/failure observations |
 | Rust type safety | `Stream<T>` / `TypedOperator<I, O>` | Declaration-only; runtime identity remains `SignalSpec` |
 | Native C extension | `pocketstation.h` Extension ABI | Versioned callback tables with explicit context ownership and bounded worker execution |
-| Packaged native library | `pks_extension_library_v1` + `Session::load_native_extension_library` | Absolute-path import, transactional registration, and code retained through callback destruction |
+| Trusted native dynamic library | `pks_extension_library_v1` + unsafe `Session::load_native_extension_library` | Absolute-path import, transactional registration, and code retained through callback destruction; authentication remains external |
 | Managed process | `PKSS` sidecar protocol | Bounded framed IPC outside audio callbacks |
 
 An extension must not require `internal-testing` or edits to central. It must
@@ -40,7 +40,7 @@ published package in a clean repository. Its `LOOPBACK-ONLY` classification is
 specific and intentional: it proves packaging and execution, not a remote or
 physical-device deployment.
 
-## Packaged native libraries
+## Trusted native dynamic libraries
 
 Extension ABI 1.2 adds a transport for the executable callback tables already
 accepted by Core. A trusted library exports one `pks_extension_library_v1`
@@ -53,9 +53,11 @@ use pocketstation::Session;
 
 # fn main() -> Result<(), Box<dyn std::error::Error>> {
 let session = Session::new();
-let loaded = session.load_native_extension_library(
-    "/opt/pocketstation/extensions/example.so",
-)?;
+// SAFETY: deployment policy authenticated this exact library and its publisher;
+// the library obeys the PocketStation Extension ABI and callback lifetimes.
+let loaded = unsafe {
+    session.load_native_extension_library("/opt/pocketstation/extensions/example.so")?
+};
 for registration in loaded.registrations() {
     println!("{} {:?}", registration.id(), registration.kind());
 }
@@ -63,11 +65,17 @@ for registration in loaded.registrations() {
 # }
 ```
 
-The path must be absolute and is canonicalized before loading. PocketStation
-does not use an ambient DLL or shared-library search path. Every library and
-registration record is ABI-checked, every descriptor and port is copied, and
-duplicate identifiers are rejected before the `Session` registries change.
-Failure is all-or-none.
+This API accepts a raw `.dylib`, `.so`, or `.dll`; it does not authenticate a
+package, verify a publisher or signature, or sandbox native code. The caller's
+deployment or package layer owns that trust decision. The path must be absolute
+and is canonicalized before loading. PocketStation does not use an ambient DLL
+or shared-library search path. Every library and registration record is
+ABI-checked, every descriptor and port is copied, and duplicate identifiers are
+rejected before the `Session` registries change. Failure is all-or-none.
+
+Extension ABI v1 registrations execute only on supported non-realtime
+partitions. They do not provide arbitrary realtime PCM callbacks or a universal
+audio Connector loader.
 
 An OK acquisition transfers the returned `registration_context` to
 PocketStation. `destroy_instance` and `destroy_registration` remain

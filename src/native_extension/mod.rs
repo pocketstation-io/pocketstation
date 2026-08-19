@@ -18,7 +18,7 @@ pub use crate::abi::session::{PksSessionStatus, PksSessionStatusCode, PksSession
 
 pub(crate) use library::load_native_extension_library;
 
-/// Exact exported symbol required from a packaged native Extension ABI v1
+/// Exact exported symbol required from a native Extension ABI v1 dynamic
 /// library. The suffix follows the ABI major; compatible minor revisions use
 /// the same entrypoint.
 pub const EXTENSION_LIBRARY_ENTRYPOINT_V1: &str = "pks_extension_library_v1";

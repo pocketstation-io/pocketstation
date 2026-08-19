@@ -23,15 +23,15 @@ use crate::session::{
     SourcePrepareContext, SourceSessionContext, SourceTypeId,
 };
 
-const SOURCE_TYPE: &str = "org.example.lifecycle-source.v1";
+const SOURCE_TYPE: &str = "org.example.source.lifecycle.v1";
 const SIGNAL_ID: &str = "org.example.lifecycle-signal.v1";
 const SCHEMA_ID: &str = "urn:example:lifecycle-signal:v1";
 const ENDPOINT_NODE: &str = "org.example.lifecycle-endpoint.v1";
 const ENDPOINT_OPERATOR: &str = "org.example.lifecycle-endpoint-driver.v1";
-const AUDIO_SOURCE_TYPE: &str = "org.example.lifecycle-audio-source.v1";
+const AUDIO_SOURCE_TYPE: &str = "org.example.source.lifecycle-audio.v1";
 const AUDIO_ENDPOINT_NODE: &str = "org.example.lifecycle-audio-endpoint.v1";
 const AUDIO_ENDPOINT_OPERATOR: &str = "org.example.lifecycle-audio-endpoint-driver.v1";
-const FAILING_SOURCE_TYPE: &str = "org.example.lifecycle-failing-source.v1";
+const FAILING_SOURCE_TYPE: &str = "org.example.source.lifecycle-failing.v1";
 
 #[derive(Default)]
 struct SourceControl {
@@ -564,7 +564,7 @@ fn source_factory(control: Arc<SourceControl>) -> Arc<dyn SourceFactory> {
         manifest: SourceManifest {
             source_type_id: SourceTypeId::new(SOURCE_TYPE).unwrap(),
             revision: 1,
-            generation: 1,
+            implementation_generation: 1,
             outputs: vec![PortSpec {
                 name: "signal".to_owned(),
                 direction: PortDirection::Output,
@@ -586,7 +586,7 @@ fn failing_source_factory(control: Arc<SourceControl>) -> Arc<dyn SourceFactory>
         manifest: SourceManifest {
             source_type_id: SourceTypeId::new(FAILING_SOURCE_TYPE).unwrap(),
             revision: 1,
-            generation: 1,
+            implementation_generation: 1,
             outputs: vec![PortSpec {
                 name: "signal".to_owned(),
                 direction: PortDirection::Output,
@@ -608,7 +608,7 @@ fn audio_source_factory(control: Arc<SourceControl>) -> Arc<dyn SourceFactory> {
         manifest: SourceManifest {
             source_type_id: SourceTypeId::new(AUDIO_SOURCE_TYPE).unwrap(),
             revision: 1,
-            generation: 1,
+            implementation_generation: 1,
             outputs: vec![PortSpec {
                 name: "audio".to_owned(),
                 direction: PortDirection::Output,

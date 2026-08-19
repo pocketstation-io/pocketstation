@@ -25,6 +25,21 @@ Compatibility rules:
   language and process boundaries.
 - Existing compiled C consumers remain part of acceptance.
 
+## Approved 1.1.x Rust API reset
+
+On 2026-08-19 the project owner explicitly chose to keep the corrected Rust
+surface on `1.1.x` without restoring the removed `ManagedConnector`
+compatibility API. The accepted reset also includes the connector manifest and
+declaration corrections and the explicit unsafe trust boundary on
+`Session::load_native_extension_library`.
+
+This is an intentional SemVer incompatibility. Compatibility tooling must
+report `INTENTIONAL_BREAK_ACCEPTED`, bind the result to the immutable
+`pocketstation-v1.1.0` baseline, verify the exact approved break set, and fail
+on any additional break. It must never describe this reset as SemVer-compatible.
+The exact clean commit accepted by the Core freeze becomes the API baseline for
+all later `1.1.x` changes.
+
 Core 1.0 is an architecture freeze, not a claim that every platform is equally
 qualified. Extension completeness can be `DONE` while desktop support remains
 honestly classified per W13 evidence, including a narrower macOS-first support

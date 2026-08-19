@@ -23,10 +23,28 @@ impl SourceTypeId {
     /// an explicit contract revision, for example
     /// `io.example.source.device.v1`. Session instance identity belongs in
     /// `SourceInstanceId` and `SourceId`, never in this value.
-    pub fn new(value: impl Into<String>) -> Result<Self, SourceManifestError> {
+    pub fn new(value: impl Into<String>) -> Result<Self, SourceTypeIdError> {
         let value = value.into();
-        if value.trim().is_empty() {
-            return Err(SourceManifestError::EmptySourceTypeId);
+        if value.is_empty() {
+            return Err(SourceTypeIdError::Empty);
+        }
+        if value.trim() != value {
+            return Err(SourceTypeIdError::SurroundingWhitespace);
+        }
+        if value.len() > crate::graph::identifier::MAX_IDENTIFIER_BYTES {
+            return Err(SourceTypeIdError::TooLong {
+                actual_bytes: value.len(),
+                maximum_bytes: crate::graph::identifier::MAX_IDENTIFIER_BYTES,
+            });
+        }
+        if !value.is_ascii() {
+            return Err(SourceTypeIdError::NonAscii);
+        }
+        if !crate::graph::identifier::is_portable_contract_id(&value) {
+            return Err(SourceTypeIdError::InvalidContractSyntax);
+        }
+        if !has_source_category(&value) {
+            return Err(SourceTypeIdError::MissingSourceCategory);
         }
         Ok(Self(value))
     }
@@ -34,15 +52,35 @@ impl SourceTypeId {
     pub fn as_str(&self) -> &str {
         &self.0
     }
+}
 
-    /// Reports whether this value follows the portable source-contract syntax.
-    ///
-    /// Portable IDs use reverse-domain ownership and an explicit final
-    /// revision segment. Construction remains open for 1.x compatibility;
-    /// first-party and distributable source packages should return `true`.
-    pub fn is_portable(&self) -> bool {
-        crate::graph::identifier::is_portable_contract_id(self.as_str())
-    }
+fn has_source_category(value: &str) -> bool {
+    let Some((contract, _revision)) = value.rsplit_once('.') else {
+        return false;
+    };
+    let Some((owner, source_name)) = contract.rsplit_once(".source.") else {
+        return false;
+    };
+    owner.split('.').count() >= 2 && !source_name.is_empty()
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+pub enum SourceTypeIdError {
+    #[error("source type identifier cannot be empty")]
+    Empty,
+    #[error("source type identifier cannot contain surrounding whitespace")]
+    SurroundingWhitespace,
+    #[error("source type identifier is {actual_bytes} bytes; maximum is {maximum_bytes}")]
+    TooLong {
+        actual_bytes: usize,
+        maximum_bytes: usize,
+    },
+    #[error("source type identifier must contain only ASCII contract characters")]
+    NonAscii,
+    #[error("source type identifier must use bounded reverse-domain syntax ending in vN")]
+    InvalidContractSyntax,
+    #[error("source type identifier must contain a source category and concrete source name")]
+    MissingSourceCategory,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -74,7 +112,7 @@ impl SourceConfiguration {
 pub struct SourceManifest {
     pub(crate) source_type_id: SourceTypeId,
     pub(crate) revision: u32,
-    pub(crate) generation: u32,
+    pub(crate) implementation_generation: u32,
     pub(crate) outputs: Vec<PortSpec>,
     pub(crate) execution: ExecutionPartition,
     pub(crate) safety: SafetyContract,
@@ -84,7 +122,7 @@ impl SourceManifest {
     pub fn new(
         source_type_id: SourceTypeId,
         revision: u32,
-        generation: u32,
+        implementation_generation: u32,
         outputs: Vec<PortSpec>,
         execution: ExecutionPartition,
         safety: SafetyContract,
@@ -92,7 +130,7 @@ impl SourceManifest {
         let manifest = Self {
             source_type_id,
             revision,
-            generation,
+            implementation_generation,
             outputs,
             execution,
             safety,
@@ -105,12 +143,28 @@ impl SourceManifest {
         &self.source_type_id
     }
 
+    /// Additive descriptor revision within the compatibility major encoded by
+    /// the [`SourceTypeId`] suffix. A breaking source contract uses a new
+    /// identifier ending in the next `vN`; it does not reuse this field.
     pub const fn revision(&self) -> u32 {
         self.revision
     }
 
+    /// Monotonic implementation generation for this manifest revision.
+    ///
+    /// This is registration metadata. It is unrelated to the runtime
+    /// `source_generation` carried by frame lineage when a concrete source
+    /// disappears and reappears.
+    pub const fn implementation_generation(&self) -> u32 {
+        self.implementation_generation
+    }
+
+    /// Returns the implementation generation.
+    ///
+    /// Runtime source-attachment generations remain part of frame lineage and
+    /// are not represented by this manifest field.
     pub const fn generation(&self) -> u32 {
-        self.generation
+        self.implementation_generation
     }
 
     pub fn outputs(&self) -> &[PortSpec] {
@@ -126,7 +180,7 @@ impl SourceManifest {
     }
 
     pub fn validate(&self) -> Result<(), SourceManifestError> {
-        if self.revision == 0 || self.generation == 0 {
+        if self.revision == 0 || self.implementation_generation == 0 {
             return Err(SourceManifestError::ZeroVersion);
         }
         if !self.safety.is_valid_for(self.execution) {
@@ -623,7 +677,7 @@ fn run_source_driver(
 pub enum SourceManifestError {
     #[error("source type identifier cannot be empty")]
     EmptySourceTypeId,
-    #[error("source revision and generation must be non-zero")]
+    #[error("source manifest revision and implementation generation must be non-zero")]
     ZeroVersion,
     #[error("source manifest requires at least one output")]
     NoOutputs,
@@ -754,11 +808,64 @@ mod tests {
         SourceManifest {
             source_type_id: SourceTypeId::new("dev.pocketstation.source.test.v1").unwrap(),
             revision: 1,
-            generation: 1,
+            implementation_generation: 1,
             outputs,
             execution: ExecutionPartition::BlockingWorker,
             safety: SafetyContract::AllocationAllowed,
         }
+    }
+
+    #[test]
+    fn given_portable_source_identity_when_constructed_then_contract_is_preserved() {
+        let identity = SourceTypeId::new("io.pocketstation.source.pcm.v1").unwrap();
+
+        assert_eq!(identity.as_str(), "io.pocketstation.source.pcm.v1");
+    }
+
+    #[test]
+    fn given_nonportable_source_identities_when_constructed_then_each_fails_typed() {
+        assert_eq!(SourceTypeId::new(""), Err(SourceTypeIdError::Empty));
+        assert_eq!(
+            SourceTypeId::new(" io.example.source.device.v1"),
+            Err(SourceTypeIdError::SurroundingWhitespace)
+        );
+        assert_eq!(
+            SourceTypeId::new("io.example.sourcé.device.v1"),
+            Err(SourceTypeIdError::NonAscii)
+        );
+        assert_eq!(
+            SourceTypeId::new("io.example.source.device.v0"),
+            Err(SourceTypeIdError::InvalidContractSyntax)
+        );
+        assert_eq!(
+            SourceTypeId::new("io.example.source..device.v1"),
+            Err(SourceTypeIdError::InvalidContractSyntax)
+        );
+        assert_eq!(
+            SourceTypeId::new("io.example.source.device\nv1"),
+            Err(SourceTypeIdError::InvalidContractSyntax)
+        );
+        assert_eq!(
+            SourceTypeId::new("io.example.operator.device.v1"),
+            Err(SourceTypeIdError::MissingSourceCategory)
+        );
+        assert_eq!(
+            SourceTypeId::new("io.example.source.v1"),
+            Err(SourceTypeIdError::MissingSourceCategory)
+        );
+    }
+
+    #[test]
+    fn given_oversized_source_identity_when_constructed_then_bound_is_reported() {
+        let value = format!("io.example.source.{}.v1", "a".repeat(240));
+
+        assert_eq!(
+            SourceTypeId::new(value.clone()),
+            Err(SourceTypeIdError::TooLong {
+                actual_bytes: value.len(),
+                maximum_bytes: crate::graph::identifier::MAX_IDENTIFIER_BYTES,
+            })
+        );
     }
 
     #[test]

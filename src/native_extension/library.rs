@@ -23,7 +23,14 @@ pub(crate) struct LoadedNativeExtensionLibrary {
     pub(crate) registrations: Vec<ExecutableExtensionRegistration>,
 }
 
-pub(crate) fn load_native_extension_library(
+/// Loads executable native code selected by the public Session trust boundary.
+///
+/// # Safety
+///
+/// The caller must guarantee that the library is trusted and that any exported
+/// Extension ABI records, pointers, callbacks, and contexts satisfy their
+/// documented validity and lifetime requirements.
+pub(crate) unsafe fn load_native_extension_library(
     path: &Path,
 ) -> Result<LoadedNativeExtensionLibrary, NativeExtensionLibraryError> {
     if !path.is_absolute() {

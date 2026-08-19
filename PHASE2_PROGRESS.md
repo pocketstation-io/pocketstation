@@ -3376,3 +3376,29 @@
   changes unrelated to this task.
 - No package version, tag, push, publication, provider implementation, remote
   metadata protocol, SDK API, scaffold, mock, or new product claim changed.
+
+## W21 Core audio input and native trust correction — 2026-08-19
+
+- Application-owned PCM now enters the canonical Source lifecycle through the
+  intent-first `AudioInput` façade or the explicit `PcmSource` ownership path.
+  Both use one preallocated bounded implementation with typed full, closed,
+  invalid-buffer, discontinuity, cancellation, and recovery observations.
+- `SourceTypeId` now enforces bounded ASCII reverse-domain source-contract
+  syntax ending in a non-zero `vN`. Manifest revision, implementation
+  generation, and runtime source-attachment generation are distinct.
+- Native extension loading is an explicit unsafe raw-library trust boundary.
+  Core authenticates neither publisher nor signature and admits only the
+  supported non-realtime Extension ABI registrations.
+- The owner explicitly accepted the cleaned connector/native Rust API reset on
+  `1.1.x` without restoring `ManagedConnector` compatibility aliases. The API
+  gate binds the exact approved break set to `pocketstation-v1.1.0`, reports
+  `INTENTIONAL_BREAK_ACCEPTED`, and fails on any additional incompatibility.
+- Pre-commit qualification passes: 464 Core unit tests plus all targets and
+  benches, AudioInput fan-out/reentry/multistem recording, native dynamic
+  extension execution, C/C++ ABI, hot-path allocation checks, strict Clippy,
+  rustdoc, architecture, CODE_PROTOCOL, quickstart, package verification, and
+  the Python native/extension projection checks. No scaffold, mock, provider,
+  second runtime, version, tag, push, or publication was introduced.
+- Exact-candidate packaging excludes the internal connector ADR while retaining
+  the public connector and extension guides; the single-package allowlist
+  enforces that boundary.

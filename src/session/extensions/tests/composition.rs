@@ -20,7 +20,7 @@ use crate::session::{
     SourceFactory, SourceManifest, SourcePrepareContext, SourceRegistrationError, SourceTypeId,
 };
 
-const SOURCE_TYPE_ID: &str = "org.example.source-a.v1";
+const SOURCE_TYPE_ID: &str = "org.example.source.source-a.v1";
 const TYPED_ENDPOINT_NODE_TYPE_ID: &str = "org.example.endpoint.typed.v1";
 const TYPED_ENDPOINT_OPERATOR_ID: &str = "org.example.endpoint.typed-driver.v1";
 const AUDIO_ENDPOINT_NODE_TYPE_ID: &str = "org.example.endpoint.audio.v1";
@@ -169,7 +169,7 @@ fn source_factory() -> Arc<dyn SourceFactory> {
         manifest: SourceManifest {
             source_type_id: source_type_id(),
             revision: 3,
-            generation: 2,
+            implementation_generation: 2,
             outputs: vec![
                 typed_port("signal", PortDirection::Output),
                 audio_port("audio", PortDirection::Output),
@@ -458,14 +458,23 @@ fn given_builtin_microphone_when_compiled_after_extension_then_existing_stem_pat
 }
 
 #[test]
-fn given_source_type_conflicting_with_builtin_node_when_registered_then_conflict_is_typed() {
+fn given_source_type_conflicting_with_registered_node_when_registered_then_conflict_is_typed() {
     let mut builder = builder(false);
+    let source_type_id = "dev.pocketstation.source.conflicting-node.v1";
+    let (definition, factory) =
+        endpoint_descriptor(source_type_id, audio_port("audio", PortDirection::Input));
+    builder
+        .register_endpoint(
+            OperatorId::new("dev.pocketstation.endpoint.conflicting-node.v1"),
+            definition,
+            factory,
+        )
+        .unwrap();
     let conflict = Arc::new(CompileOnlySourceFactory {
         manifest: SourceManifest {
-            source_type_id: SourceTypeId::new(crate::session::MICROPHONE_SOURCE_NODE_TYPE_ID)
-                .unwrap(),
+            source_type_id: SourceTypeId::new(source_type_id).unwrap(),
             revision: 1,
-            generation: 1,
+            implementation_generation: 1,
             outputs: vec![audio_port("audio", PortDirection::Output)],
             execution: ExecutionPartition::BlockingWorker,
             safety: SafetyContract::AllocationAllowed,

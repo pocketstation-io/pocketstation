@@ -56,7 +56,7 @@ impl SourceFactory for RegistrationOnlyFactory {
 }
 
 fn source_type_id() -> SourceTypeId {
-    SourceTypeId::new("dev.pocketstation.fixture.external-source.v1").unwrap()
+    SourceTypeId::new("dev.pocketstation.source.external-source.v1").unwrap()
 }
 
 fn factory(revision: u32) -> Arc<dyn SourceFactory> {
@@ -64,7 +64,7 @@ fn factory(revision: u32) -> Arc<dyn SourceFactory> {
         manifest: SourceManifest {
             source_type_id: source_type_id(),
             revision,
-            generation: 1,
+            implementation_generation: 1,
             outputs: vec![PortSpec {
                 name: "samples".to_owned(),
                 direction: PortDirection::Output,

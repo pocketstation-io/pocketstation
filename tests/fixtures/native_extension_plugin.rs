@@ -163,7 +163,7 @@ const fn utf8(bytes: &'static [u8]) -> Utf8 {
     }
 }
 
-const SOURCE_ID: &[u8] = b"dev.pocketstation.fixture.source.v1";
+const SOURCE_ID: &[u8] = b"dev.pocketstation.source.fixture.v1";
 const OPERATOR_ID: &[u8] = b"dev.pocketstation.fixture.operator.v1";
 const ENDPOINT_ID: &[u8] = b"dev.pocketstation.fixture.endpoint.v1";
 const SIGNAL_ID: &[u8] = b"dev.pocketstation.fixture.signal.v1";

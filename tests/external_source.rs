@@ -24,7 +24,7 @@ mod session {
             let session = Session::new();
             let source: SourceInstanceHandle = session
                 .source(
-                    SourceTypeId::new("org.example.source-a.v1").unwrap(),
+                    SourceTypeId::new("org.example.source.source-a.v1").unwrap(),
                     SourceConfiguration::default(),
                 )
                 .unwrap();

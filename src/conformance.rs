@@ -553,7 +553,7 @@ impl Drop for RunningObservedEndpoint {
 pub const EXTENSION_SIGNAL_ID: &str = "org.pocketstation.conformance.signal.v1";
 pub const EXTENSION_SCHEMA_ID: &str = "urn:pocketstation:conformance:signal:v1";
 pub const EXTENSION_ROLE_ID: &str = "org.pocketstation.conformance.terminal.v1";
-pub const EXTENSION_SOURCE_TYPE_ID: &str = "org.pocketstation.conformance.source.v1";
+pub const EXTENSION_SOURCE_TYPE_ID: &str = "org.pocketstation.conformance.source.fixture.v1";
 pub const EXTENSION_OPERATOR_ID: &str = "org.pocketstation.conformance.operator.v1";
 pub const EXTENSION_OPERATOR_NODE_ID: &str = "org.pocketstation.conformance.operator-node.v1";
 pub const EXTENSION_ENDPOINT_ID: &str = "org.pocketstation.conformance.endpoint.v1";

@@ -5,13 +5,14 @@ use std::time::{Duration, Instant};
 
 use pocketstation::{
     AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps,
-    CallbackCaptureBackend, CaptureError, CaptureMode, ChannelLayout, ConfigError, CopyPolicy,
-    EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeError, Operator,
-    OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy,
-    OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy,
-    PcmBufferAcquireError, PcmBufferError, PcmSourceConfig, PcmWriteErrorKind, PortDirection,
-    PortSpec, PreparedCaptureBackend, SafetyContract, SampleFormat, SampleSpec, Session,
-    SessionRecordingState, SignalDerivation, SignalEnvelope, SignalPayload, SignalSpec,
+    AudioInputBufferAcquireError, AudioInputBufferError, AudioInputConfig,
+    AudioInputWriteErrorKind, CallbackCaptureBackend, CaptureError, CaptureMode, ChannelLayout,
+    ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity,
+    NodeDescriptor, NodeError, Operator, OperatorCancellationPolicy, OperatorConfiguration,
+    OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy,
+    OperatorPermissionPolicy, PortDirection, PortSpec, PreparedCaptureBackend, SafetyContract,
+    SampleFormat, SampleSpec, Session, SessionRecordingState, SignalDerivation, SignalEnvelope,
+    SignalPayload, SignalSpec,
 };
 
 const FRAME_SAMPLES: usize = 960;
@@ -30,29 +31,67 @@ fn sample_spec() -> SampleSpec {
     SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved)
 }
 
-fn pcm_config(capacity_frames: usize) -> PcmSourceConfig {
-    PcmSourceConfig::new(sample_spec(), capacity_frames, FRAME_SAMPLES)
-        .expect("valid PCM source configuration")
+fn audio_input_config(capacity_frames: usize) -> AudioInputConfig {
+    AudioInputConfig::new(sample_spec(), capacity_frames, FRAME_SAMPLES)
+        .expect("valid audio input configuration")
 }
 
 #[test]
-fn given_bounded_pcm_source_when_writes_are_invalid_or_saturated_then_ownership_is_explicit() {
+fn given_application_owned_audio_when_written_through_facade_then_session_delivers_its_lineage() {
+    let session = Session::builder().sample_spec(sample_spec()).build();
+    let mut input = session
+        .audio_input(audio_input_config(2))
+        .expect("application audio input");
+    let source_id = input.source().source_id();
+    let stream_id = input.output().stream_id();
+    let polled_audio = session.polled_audio().expect("polled audio endpoint");
+    input
+        .output()
+        .send(polled_audio)
+        .expect("audio input polling route");
+
+    let mut running = session.start().expect("running audio input Session");
+    input
+        .try_write(&vec![0.25_f32; FRAME_SAMPLES])
+        .expect("nonblocking façade write");
+
+    let deadline = Instant::now() + Duration::from_secs(3);
+    let (delivered_source_id, delivered_stream_id) = loop {
+        if let Ok(batch) = running.try_poll_audio() {
+            if let Some(frame) = batch.frame(0) {
+                break (frame.lineage().source_id(), frame.stream_id());
+            }
+        }
+        assert!(Instant::now() < deadline, "façade frame was not delivered");
+        std::thread::yield_now();
+    };
+    assert_eq!(delivered_source_id, source_id);
+    assert_eq!(delivered_stream_id, stream_id);
+
+    input.close();
+    assert!(running.stop().is_success());
+}
+
+#[test]
+fn given_bounded_audio_input_when_writes_are_invalid_or_saturated_then_ownership_is_explicit() {
     let session = Session::new();
-    let first = session.pcm_source(pcm_config(1)).expect("first PCM source");
+    let first = session
+        .pcm_source(audio_input_config(1))
+        .expect("first PCM source");
     let second = session
-        .pcm_source(pcm_config(1))
+        .pcm_source(audio_input_config(1))
         .expect("second PCM source");
     assert_ne!(first.source().source_id(), second.source().source_id());
     assert_ne!(first.output().stream_id(), second.output().stream_id());
     let different_frame_size = session
         .pcm_source(
-            PcmSourceConfig::new(sample_spec(), 2, FRAME_SAMPLES / 2)
+            AudioInputConfig::new(sample_spec(), 2, FRAME_SAMPLES / 2)
                 .expect("valid second per-instance frame contract"),
         )
         .expect_err("one compiled Session requires one concrete PCM frame contract");
     assert!(matches!(
         different_frame_size,
-        pocketstation::PcmSourceError::IncompatibleContract
+        pocketstation::AudioInputError::IncompatibleContract
     ));
     let (_, _, mut writer) = first.into_parts();
     let (_, _, second_writer) = second.into_parts();
@@ -60,14 +99,14 @@ fn given_bounded_pcm_source_when_writes_are_invalid_or_saturated_then_ownership_
 
     writer.try_write(&samples).expect("first bounded write");
     let full = writer.try_write(&samples).expect_err("queue must saturate");
-    assert_eq!(full.kind(), PcmWriteErrorKind::Full);
+    assert_eq!(full.kind(), AudioInputWriteErrorKind::Full);
     drop(full.into_rejected());
 
     let empty = writer.try_acquire().expect("rejection reserve buffer");
     let empty = writer.try_send(empty).expect_err("empty buffer must fail");
     assert_eq!(
         empty.kind(),
-        PcmWriteErrorKind::InvalidBuffer(PcmBufferError::Empty)
+        AudioInputWriteErrorKind::InvalidBuffer(AudioInputBufferError::Empty)
     );
     drop(empty.into_rejected());
 
@@ -80,7 +119,7 @@ fn given_bounded_pcm_source_when_writes_are_invalid_or_saturated_then_ownership_
         .expect_err("fixed PCM frame size must be enforced");
     assert_eq!(
         short.kind(),
-        PcmWriteErrorKind::InvalidBuffer(PcmBufferError::WrongFrameLength {
+        AudioInputWriteErrorKind::InvalidBuffer(AudioInputBufferError::WrongFrameLength {
             expected_samples: FRAME_SAMPLES,
             actual_samples: FRAME_SAMPLES - 1,
         })
@@ -93,10 +132,10 @@ fn given_bounded_pcm_source_when_writes_are_invalid_or_saturated_then_ownership_
         .expect("foreign frame copy");
     let foreign = writer
         .try_send(foreign)
-        .expect_err("buffers cannot cross PCM sources");
+        .expect_err("buffers cannot cross audio inputs");
     assert_eq!(
         foreign.kind(),
-        PcmWriteErrorKind::InvalidBuffer(PcmBufferError::WrongSource)
+        AudioInputWriteErrorKind::InvalidBuffer(AudioInputBufferError::WrongSource)
     );
     drop(foreign.into_rejected());
 
@@ -111,22 +150,24 @@ fn given_bounded_pcm_source_when_writes_are_invalid_or_saturated_then_ownership_
     writer.close();
     assert!(matches!(
         writer.try_acquire(),
-        Err(PcmBufferAcquireError::Closed)
+        Err(AudioInputBufferAcquireError::Closed)
     ));
 }
 
 #[test]
-fn given_running_pcm_source_when_writer_closes_then_accepted_frames_are_drained() {
+fn given_running_audio_input_when_writer_closes_then_accepted_frames_are_drained() {
     let session = Session::builder().sample_spec(sample_spec()).build();
-    let pcm = session.pcm_source(pcm_config(4)).expect("PCM source");
+    let pcm = session
+        .pcm_source(audio_input_config(4))
+        .expect("PCM source");
     let source_id = pcm.source().source_id();
     let stream_id = pcm.output().stream_id();
     let polled_audio = session.polled_audio().expect("polled audio endpoint");
     pcm.output()
         .send(polled_audio)
-        .expect("PCM source polling route");
+        .expect("audio input polling route");
     let (_, _, mut writer) = pcm.into_parts();
-    let mut running = session.start().expect("running PCM source Session");
+    let mut running = session.start().expect("running audio input Session");
     let samples = vec![0.25_f32; FRAME_SAMPLES];
 
     for _ in 0..4 {
@@ -162,9 +203,9 @@ fn given_running_pcm_source_when_writer_closes_then_accepted_frames_are_drained(
     assert_eq!(
         writer
             .try_write(&samples)
-            .expect_err("closed PCM source")
+            .expect_err("closed audio input")
             .kind(),
-        PcmWriteErrorKind::Closed
+        AudioInputWriteErrorKind::Closed
     );
 }
 
@@ -188,7 +229,7 @@ impl PassThroughFactory {
         });
         let node = NodeDescriptor::new(
             pocketstation::NodeTypeId::from(OPERATOR_NODE_ID),
-            "PCM source pass-through",
+            "audio input pass-through",
             vec![PortSpec::new(
                 "input",
                 PortDirection::Input,
@@ -275,13 +316,13 @@ impl AsyncNode for PassThroughNode {
         input: SignalEnvelope,
     ) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>> {
         Box::pin(async move {
-            let lineage = input
-                .lineage()
-                .ok_or_else(|| NodeError::Process("PCM source input omitted lineage".to_owned()))?;
+            let lineage = input.lineage().ok_or_else(|| {
+                NodeError::Process("audio input input omitted lineage".to_owned())
+            })?;
             let timing = input.timing();
             let SignalPayload::Audio(frame) = input.into_payload() else {
                 return Err(NodeError::Process(
-                    "PCM source input was not audio".to_owned(),
+                    "audio input input was not audio".to_owned(),
                 ));
             };
             self.control.processed_total.fetch_add(1, Ordering::Relaxed);
@@ -304,7 +345,7 @@ impl AsyncNode for PassThroughNode {
 }
 
 #[test]
-fn given_pcm_source_when_session_runs_then_lineage_fanout_reentry_and_recording_are_real() {
+fn given_audio_input_when_session_runs_then_lineage_fanout_reentry_and_recording_are_real() {
     let recording_root = tempfile::tempdir().expect("temporary recording root");
     let unexpected_capture: Arc<dyn CallbackCaptureBackend> = Arc::new(UnexpectedOsCapture);
     let session = Session::builder()
@@ -317,13 +358,15 @@ fn given_pcm_source_when_session_runs_then_lineage_fanout_reentry_and_recording_
         .register_operator(Arc::new(PassThroughFactory::new(Arc::clone(&control))))
         .expect("operator registration");
 
-    let pcm = session.pcm_source(pcm_config(8)).expect("PCM source");
+    let pcm = session
+        .pcm_source(audio_input_config(8))
+        .expect("PCM source");
     let source_id = pcm.source().source_id();
     let stream_id = pcm.output().stream_id();
     let polled_audio = session.polled_audio().expect("polled audio endpoint");
     pcm.output()
         .send(polled_audio)
-        .expect("PCM source polling route");
+        .expect("audio input polling route");
     pcm.output()
         .record("application-owned")
         .expect("source recording");
@@ -351,11 +394,11 @@ fn given_pcm_source_when_session_runs_then_lineage_fanout_reentry_and_recording_
             .expect("observed connector");
         pcm.output()
             .send(connector)
-            .expect("PCM source connector route")
+            .expect("audio input connector route")
     };
 
     let (_, _, mut writer) = pcm.into_parts();
-    let mut running = session.start().expect("running PCM source Session");
+    let mut running = session.start().expect("running audio input Session");
     let samples = vec![0.5_f32; FRAME_SAMPLES];
     for sequence in 0..4 {
         let mut buffer = acquire_before(&writer, Duration::from_secs(2));
@@ -440,7 +483,7 @@ fn given_pcm_source_when_session_runs_then_lineage_fanout_reentry_and_recording_
     assert_eq!(source_metrics[0].runtime.emitted_total, 4);
 
     let stop = running.stop();
-    assert!(stop.is_success(), "PCM source Session must stop cleanly");
+    assert!(stop.is_success(), "audio input Session must stop cleanly");
     let recording = running
         .recording_outcome()
         .expect("multistem recording outcome");
@@ -457,7 +500,7 @@ fn given_pcm_source_when_session_runs_then_lineage_fanout_reentry_and_recording_
             .try_write(&samples)
             .expect_err("stopped Session")
             .kind(),
-        PcmWriteErrorKind::Cancelled
+        AudioInputWriteErrorKind::Cancelled
     );
 
     assert_ne!(source_id.get(), 0);
@@ -466,14 +509,14 @@ fn given_pcm_source_when_session_runs_then_lineage_fanout_reentry_and_recording_
 }
 
 fn acquire_before(
-    writer: &pocketstation::PcmSourceWriter,
+    writer: &pocketstation::AudioInputWriter,
     timeout: Duration,
-) -> pocketstation::PcmBuffer {
+) -> pocketstation::AudioInputBuffer {
     let deadline = Instant::now() + timeout;
     loop {
         match writer.try_acquire() {
             Ok(buffer) => return buffer,
-            Err(PcmBufferAcquireError::Full) if Instant::now() < deadline => {
+            Err(AudioInputBufferAcquireError::Full) if Instant::now() < deadline => {
                 thread::sleep(Duration::from_millis(1));
             }
             result => panic!("PCM buffer was not acquired before deadline: {result:?}"),
@@ -482,15 +525,17 @@ fn acquire_before(
 }
 
 fn send_before(
-    writer: &mut pocketstation::PcmSourceWriter,
-    mut buffer: pocketstation::PcmBuffer,
+    writer: &mut pocketstation::AudioInputWriter,
+    mut buffer: pocketstation::AudioInputBuffer,
     timeout: Duration,
 ) {
     let deadline = Instant::now() + timeout;
     loop {
         match writer.try_send(buffer) {
             Ok(()) => return,
-            Err(error) if error.kind() == PcmWriteErrorKind::Full && Instant::now() < deadline => {
+            Err(error)
+                if error.kind() == AudioInputWriteErrorKind::Full && Instant::now() < deadline =>
+            {
                 buffer = error
                     .into_rejected()
                     .expect("full write returns its buffer");

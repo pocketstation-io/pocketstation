@@ -3,22 +3,23 @@
 //! Registration contracts live here; extension implementation and provider
 //! policy remain outside the core Session lifecycle.
 
+mod audio_input;
 pub(crate) mod builtins;
 mod native_library;
-mod pcm_source;
 mod polled_audio;
 mod recording;
 pub(crate) mod source;
+pub(crate) use audio_input::AudioInputFactory;
+pub use audio_input::{
+    AudioInput, AudioInputBuffer, AudioInputBufferAcquireError, AudioInputBufferError,
+    AudioInputConfig, AudioInputConfigError, AudioInputError, AudioInputObservations,
+    AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, PcmSource,
+    PCM_SOURCE_TYPE_ID,
+};
 pub use builtins::SessionGraphRegistrationError;
 #[cfg(any(test, feature = "internal-testing"))]
 pub use builtins::{
     register_session_graph_nodes, APPLICATION_SOURCE_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID,
-};
-pub(crate) use pcm_source::PcmSourceFactory;
-pub use pcm_source::{
-    PcmBuffer, PcmBufferAcquireError, PcmBufferError, PcmSource, PcmSourceConfig,
-    PcmSourceConfigError, PcmSourceError, PcmSourceObservations, PcmSourceWriter, PcmWriteError,
-    PcmWriteErrorKind, PCM_SOURCE_TYPE_ID,
 };
 pub use recording::{
     session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations,
@@ -35,7 +36,7 @@ pub use source::{
     SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError,
     SourceOutputBranchSpec, SourceOutputIdentity, SourcePrepareContext, SourceRegistrationError,
     SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceRuntimeObservations,
-    SourceSessionContext, SourceTypeId,
+    SourceSessionContext, SourceTypeId, SourceTypeIdError,
 };
 #[cfg(any(test, feature = "internal-testing"))]
 pub use source::{SourceOutputReceiver, SourceRuntimeError};
