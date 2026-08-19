@@ -151,6 +151,15 @@ impl ConnectorError {
         stage: ConnectorErrorStage,
         message: impl Into<String>,
     ) -> Self {
+        Self::internal_with_retryability(code, stage, ConnectorRetryability::Never, message)
+    }
+
+    pub(crate) fn internal_with_retryability(
+        code: &'static str,
+        stage: ConnectorErrorStage,
+        retryability: ConnectorRetryability,
+        message: impl Into<String>,
+    ) -> Self {
         let mut message = message.into();
         if message.len() > MAX_CONNECTOR_ERROR_MESSAGE_BYTES {
             let mut boundary = MAX_CONNECTOR_ERROR_MESSAGE_BYTES;
@@ -165,7 +174,7 @@ impl ConnectorError {
         Self {
             code: ConnectorErrorCode(Arc::from(code)),
             stage,
-            retryability: ConnectorRetryability::Never,
+            retryability,
             message,
         }
     }

@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::frame::{FrameLineage, SampleSpec, SourceId};
+use crate::frame::{FrameLineage, SampleFormat, SampleSpec, SourceId, StreamId};
 use crate::graph::{EdgeContract, MediaCaps, PrepareContext, SignalEnvelope, SignalSpec};
 use crate::runtime::{
     PlanEdgeFrame, PlanEdgeObservationHandle, PlanEdgeReceiver, TypedEdgeReceiver,
@@ -28,6 +28,10 @@ impl EndpointAudioFrame {
         self.frame.source_id()
     }
 
+    pub fn stream_id(&self) -> StreamId {
+        self.frame.stream_id()
+    }
+
     pub fn sequence_number(&self) -> u64 {
         self.frame.sequence_number()
     }
@@ -42,6 +46,10 @@ impl EndpointAudioFrame {
 
     pub fn channels(&self) -> u8 {
         self.frame.channels()
+    }
+
+    pub fn sample_format(&self) -> SampleFormat {
+        self.frame.sample_format()
     }
 
     pub fn samples(&self) -> &[f32] {

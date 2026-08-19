@@ -3,7 +3,9 @@ mod error;
 mod manifest;
 mod observations;
 mod readiness;
+mod sidecar;
 mod status;
+mod transport;
 mod worker;
 
 use std::sync::Arc;
@@ -36,8 +38,19 @@ pub use readiness::{
     ConnectorReadinessPolicy, ConnectorReadinessPolicyError, MAX_CONNECTOR_READINESS_THRESHOLD,
     MAX_CONNECTOR_READINESS_TIMEOUT,
 };
+pub use sidecar::{
+    sidecar_connector_factory, SidecarConnectorDriverFactory, CONNECTOR_AUDIO_RECORD_SCHEMA,
+    CONNECTOR_AUDIO_RECORD_SIGNAL_ID,
+};
 pub use status::{
     ConnectorDeliveryReadiness, ConnectorHealth, ConnectorRecovery, ConnectorServiceStatus,
+};
+pub use transport::{
+    ConnectorAudioMetadata, ConnectorAudioRecord, ConnectorAudioRecordError,
+    ConnectorConfigurationRecord, ConnectorConfigurationRecordError, CONNECTOR_AUDIO_RECORD_MAJOR,
+    CONNECTOR_AUDIO_RECORD_MINOR, CONNECTOR_CONFIGURATION_RECORD_MAJOR,
+    CONNECTOR_CONFIGURATION_RECORD_MINOR, MAX_CONNECTOR_AUDIO_RECORD_PORT_BYTES,
+    MAX_CONNECTOR_AUDIO_RECORD_SAMPLES,
 };
 pub use worker::{
     ConnectorContext, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory,
@@ -89,6 +102,18 @@ impl Connector {
             endpoint_factory,
             observations,
         })
+    }
+
+    /// Builds an outbound Connector backed by one bounded sidecar process.
+    ///
+    /// Resolved typed configuration is encoded during transactional prepare;
+    /// PCM and typed signals are then delivered through the existing Core
+    /// Connector worker. Provider code never runs on a realtime partition.
+    pub fn sidecar(
+        manifest: ConnectorManifest,
+        process: crate::SidecarProcessSpec,
+    ) -> Result<Self, ConnectorManifestError> {
+        Self::with_driver(manifest, sidecar_connector_factory(process))
     }
 
     pub fn manifest(&self) -> &ConnectorManifest {

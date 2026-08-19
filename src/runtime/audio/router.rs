@@ -32,6 +32,13 @@ pub enum PlanEdgeFrame {
 }
 
 impl PlanEdgeFrame {
+    pub fn stream_id(&self) -> crate::frame::StreamId {
+        match self {
+            Self::Exclusive(frame) => frame.frame().stream_id,
+            Self::Shared(frame) => frame.frame().stream_id,
+        }
+    }
+
     pub fn source_id(&self) -> crate::frame::SourceId {
         match self {
             Self::Exclusive(frame) => frame.frame().source_id,
@@ -64,6 +71,13 @@ impl PlanEdgeFrame {
         match self {
             Self::Exclusive(frame) => frame.frame().channels,
             Self::Shared(frame) => frame.frame().channels,
+        }
+    }
+
+    pub fn sample_format(&self) -> crate::frame::SampleFormat {
+        match self {
+            Self::Exclusive(frame) => frame.frame().format,
+            Self::Shared(frame) => frame.frame().format,
         }
     }
 

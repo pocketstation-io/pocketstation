@@ -15,6 +15,7 @@ const DRIVER_IDLE_WAIT: Duration = Duration::from_millis(1);
 #[derive(Debug, Clone)]
 pub struct ConnectorInputDescriptor {
     endpoint_id: EndpointId,
+    connector_id: Option<crate::ConnectorId>,
     route_id: RouteId,
     port_name: String,
     signal: SignalSpec,
@@ -26,6 +27,10 @@ pub struct ConnectorInputDescriptor {
 impl ConnectorInputDescriptor {
     pub const fn endpoint_id(&self) -> EndpointId {
         self.endpoint_id
+    }
+
+    pub const fn connector_id(&self) -> Option<crate::ConnectorId> {
+        self.connector_id
     }
 
     pub const fn route_id(&self) -> RouteId {
@@ -147,6 +152,7 @@ pub(super) fn prepare_connector_driver(
     for (input, configuration) in inputs.into_iter().zip(configurations) {
         let descriptor = ConnectorInputDescriptor {
             endpoint_id: input.context().endpoint_id(),
+            connector_id: input.context().connector_id(),
             route_id: input.context().route_context().route_id(),
             port_name: input.port_name().to_owned(),
             signal: input.signal_spec().clone(),

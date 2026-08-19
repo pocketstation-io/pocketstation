@@ -16,8 +16,8 @@ use pocketstation::connector::{
 };
 #[cfg(feature = "conformance-fixtures")]
 use pocketstation::connector::{
-    ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorInputDescriptor,
-    ConnectorItem,
+    ConnectorAudioRecord, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory,
+    ConnectorInputDescriptor, ConnectorItem,
 };
 use pocketstation::{
     AudioCaps, ChannelLayout, EdgeContract, EndpointPortInput, EndpointPreparationGroup,
@@ -478,6 +478,7 @@ struct DriverControl {
     delivered_items_total: AtomicU64,
     typed_secret_observed: AtomicBool,
     route_edge_observed: AtomicBool,
+    portable_audio_record_observed: AtomicBool,
     shutdown_mode: AtomicU8,
 }
 
@@ -538,7 +539,24 @@ impl ConnectorDriver for TestDriver {
         _context: &pocketstation::connector::ConnectorContext,
     ) -> Result<ConnectorDeliveryOutcome, ConnectorError> {
         assert_eq!(item.input().port_name(), "audio");
-        assert!(matches!(item, ConnectorItem::Audio { .. }));
+        let ConnectorItem::Audio { input, frame } = &item else {
+            panic!("audio connector input must use the bounded audio lane");
+        };
+        let encoded = ConnectorAudioRecord::from_item(&item)
+            .expect("portable connector audio record")
+            .encode()
+            .expect("encoded connector audio record");
+        let decoded = ConnectorAudioRecord::decode(&encoded).expect("decoded audio record");
+        assert_eq!(decoded.port_name(), input.port_name());
+        assert_eq!(decoded.metadata().endpoint_id, input.endpoint_id());
+        assert_eq!(decoded.metadata().connector_id, input.connector_id());
+        assert_eq!(decoded.metadata().route_id, input.route_id());
+        assert_eq!(decoded.metadata().stream_id, frame.stream_id());
+        assert_eq!(decoded.metadata().lineage, frame.lineage());
+        assert_eq!(decoded.samples(), frame.samples());
+        self.control
+            .portable_audio_record_observed
+            .store(true, Ordering::Release);
         self.control
             .delivered_items_total
             .fetch_add(1, Ordering::Relaxed);
@@ -602,6 +620,9 @@ fn given_connector_driver_when_two_stems_run_then_core_owns_typed_delivery_and_d
     assert_eq!(control.prepared_inputs_total.load(Ordering::Acquire), 2);
     assert!(control.typed_secret_observed.load(Ordering::Acquire));
     assert!(control.route_edge_observed.load(Ordering::Acquire));
+    assert!(control
+        .portable_audio_record_observed
+        .load(Ordering::Acquire));
     assert_eq!(control.shutdown_mode.load(Ordering::Acquire), 1);
     let observation = registered
         .observations()

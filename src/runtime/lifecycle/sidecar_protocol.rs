@@ -192,7 +192,7 @@ impl SidecarMessage {
         Ok(message)
     }
 
-    fn validate(&self, limits: SidecarProtocolLimits) -> Result<(), SidecarProtocolError> {
+    pub fn validate(&self, limits: SidecarProtocolLimits) -> Result<(), SidecarProtocolError> {
         if self.signal_id.is_empty() {
             return Err(SidecarProtocolError::EmptySignalId);
         }

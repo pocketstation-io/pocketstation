@@ -3355,3 +3355,24 @@
   conformance corpus, not product-path or provider evidence.
 - No Core runtime, package version, provider dependency, tag, or release state
   changed.
+
+## W21 bounded connector transport boundary — 2026-08-19
+
+- Status: `SAFE-TO-MERGE`. Core now exposes a finite, versioned PCM connector
+  record carrying endpoint, connector, route, Session, source, stream, stem,
+  clock, sequence, timestamp, duration, discontinuity, permission, media, and
+  port identity. The existing Connector worker creates it only off realtime.
+- `Connector::sidecar` adapts that record and canonical typed configuration to
+  the existing bounded PKSS process host. Endpoint remains lifecycle authority;
+  Source remains inbound authority; Connector remains outbound-only. No queue,
+  retry engine, provider protocol, or second runtime was added.
+- The real two-stem Session conformance test encodes and decodes every delivered
+  frame and verifies exact route and lineage identity. Configuration tests cover
+  every value kind, secret redaction, bounds, unknown kinds, and trailing data.
+- All 461 library tests and all targets/features pass, as do strict Clippy,
+  rustdoc, release quickstart, architecture checks, CODE_PROTOCOL, C/PKSS ABI,
+  package assembly, and the exact `HEAD` semver comparison. The historical
+  registry-baseline semver command still reports pre-existing public enum
+  changes unrelated to this task.
+- No package version, tag, push, publication, provider implementation, remote
+  metadata protocol, SDK API, scaffold, mock, or new product claim changed.
