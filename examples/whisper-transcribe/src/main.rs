@@ -1,9 +1,9 @@
 use std::path::PathBuf;
 
 use pocketstation::{
-    AsyncNode, AsyncOperatorPrepareContext, AudioCaps,
-    BinaryFormat, ChannelLayout, EdgeContract, ExecutionPartition, MediaCaps, PortDirection,
-    PortPrepareContext, SampleFormat, SignalEnvelope, SignalPayload, SignalSpec, TextFormat,
+    AsyncNode, AsyncOperatorPrepareContext, AudioCaps, BinaryFormat, ChannelLayout, EdgeContract,
+    ExecutionPartition, MediaCaps, PortDirection, PortPrepareContext, SampleFormat, SignalEnvelope,
+    SignalPayload, SignalSpec, TextFormat,
 };
 use whisper_transcribe_example::WhisperConnector;
 

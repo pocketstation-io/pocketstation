@@ -1,5 +1,19 @@
 # Phase 2 Progress - PocketStation Runtime
 
+## W21 pks consumer boundary and Whisper example lock — 2026-08-19
+
+- Status: `SAFE-TO-TEST`; no version, tag, push, publication, or release
+  mutation is authorized.
+- The permanent pks boundary now rejects the retired process-shaped
+  transcription connector, requires the shared Relay package and registered
+  `WhisperOperatorFactory`, and rejects any pks-owned connector implementation.
+- Refreshed the example-owned Whisper package lock against the current Core
+  candidate and applied the current formatter. Real `whisper-cli` inference
+  with the checked model and an existing 16 kHz microphone fixture completed.
+- The pks all-target/all-feature test and strict Clippy suites plus the
+  single-engine boundary pass. No Core API, runtime, provider ownership,
+  scaffold, mock, or product claim changed.
+
 ## W21 caller-owned PCM source — 2026-08-18
 
 - Status: `SAFE-TO-TEST`; no version, tag, push, publication, registry, or

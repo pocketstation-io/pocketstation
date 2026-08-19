@@ -4,7 +4,7 @@ set -euo pipefail
 engine_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 pks_root="$engine_root/../pks"
 
-if [[ ! -d "$pks_root/src" || ! -d "$pks_root/connectors" ]]; then
+if [[ ! -d "$pks_root/src" ]]; then
   echo "pks single-engine ownership boundary: NOT OBSERVABLE (sibling pks checkout absent)"
   echo "standalone Core checks continue; workspace qualification must run this gate with pks present"
   exit 0
@@ -12,7 +12,6 @@ fi
 
 pks_root="$(cd "$pks_root" && pwd)"
 pks_source="$pks_root/src"
-connector_source="$pks_root/connectors"
 
 forbidden_engine_symbols='pocketstation::internal|RealtimePlanExecutor|RuntimePlanner|NodeRegistry|AudioBufferPool|CallbackCaptureBackend|PreparedCaptureBackend|PlanEdge(Sender|Receiver|Frame)|\brtrb\b'
 if rg -n "$forbidden_engine_symbols" "$pks_source"; then
@@ -20,8 +19,13 @@ if rg -n "$forbidden_engine_symbols" "$pks_source"; then
   exit 1
 fi
 
-if rg -n 'pocketstation::internal|internal-testing' "$connector_source" "$pks_root/Cargo.toml"; then
-  echo "pks or an external connector bypasses the public PocketStation contract" >&2
+if rg -n 'pocketstation::internal|internal-testing' "$pks_root/Cargo.toml"; then
+  echo "pks bypasses the public PocketStation contract" >&2
+  exit 1
+fi
+
+if [[ -d "$pks_root/connectors" ]] && find "$pks_root/connectors" -type f | rg -q .; then
+  echo "pks owns a connector implementation instead of consuming an external package" >&2
   exit 1
 fi
 
@@ -41,11 +45,6 @@ for required_cli_authority in cli.rs context.rs error.rs output.rs shutdown.rs; 
     exit 1
   }
 done
-
-if rg -n '\b(print|println)!' "$connector_source"; then
-  echo "external connector writes command output to stdout" >&2
-  exit 1
-fi
 
 if rg -n 'STATE_INDICATOR|MeterState|render_level_bar' "$pks_source"; then
   echo "pks fabricates a source measurement outside an active Session" >&2
@@ -73,7 +72,13 @@ rg -q 'Session::builder' "$session_command"
 rg -q '\.capture\(' "$session_command"
 rg -q '\.start\(' "$session_command"
 rg -q '\.stop\(' "$session_command"
-rg -q 'pocketstation-example-process-connector' "$pks_root/Cargo.toml"
-rg -q 'pocketstation-relay-connector' "$pks_root/Cargo.toml"
+if rg -q 'pocketstation-example-process-connector' "$pks_root/Cargo.toml"; then
+  echo "pks still depends on the retired process-shaped transcription connector" >&2
+  exit 1
+fi
+rg -q '^whisper-transcribe-example\s*=' "$pks_root/Cargo.toml"
+rg -q 'WhisperOperatorFactory' "$session_command"
+rg -q 'TranscriptEndpoint' "$session_command"
+rg -q '^pocketstation-relay\s*=' "$pks_root/Cargo.toml"
 
 echo "pks single-engine ownership boundary: PASS"

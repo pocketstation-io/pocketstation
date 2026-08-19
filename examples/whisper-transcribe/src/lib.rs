@@ -622,8 +622,7 @@ impl WhisperConnector {
             return Err(NodeError::Process(reason));
         }
 
-        self.pending_samples
-            .extend_from_slice(frame.samples());
+        self.pending_samples.extend_from_slice(frame.samples());
         if self.pending_samples.len() < window_samples {
             return Ok(None);
         }
@@ -905,12 +904,12 @@ impl AsyncNode for WhisperConnector {
 
 #[cfg(all(test, unix))]
 mod tests {
-    use std::os::unix::fs::PermissionsExt;
     use pocketstation::{
-        AudioBufferPool, AudioFrame, BinaryFormat, ClockDomainId, PortPrepareContext,
-        FrameLineage, SampleFormat, SampleSpec, SessionId, SignalLineage, SignalSpec, SignalTiming,
-        SourceId, StemId, StreamId,
+        AudioBufferPool, AudioFrame, BinaryFormat, ClockDomainId, FrameLineage, PortPrepareContext,
+        SampleFormat, SampleSpec, SessionId, SignalLineage, SignalSpec, SignalTiming, SourceId,
+        StemId, StreamId,
     };
+    use std::os::unix::fs::PermissionsExt;
 
     use super::*;
 
@@ -1036,13 +1035,8 @@ mod tests {
                 1,
             )
             .expect("valid test lineage"),
-            SignalTiming::try_new(
-                Some(timestamp_ns),
-                timestamp_ns,
-                Some(timestamp_ns),
-                None,
-            )
-            .expect("valid test timing"),
+            SignalTiming::try_new(Some(timestamp_ns), timestamp_ns, Some(timestamp_ns), None)
+                .expect("valid test timing"),
         )
     }
 
@@ -1336,7 +1330,10 @@ mod tests {
 
         assert_eq!(derived.upstream_timing().source_timestamp_ns(), Some(0));
         assert_eq!(derived.upstream_timing().duration_ns(), Some(20_000_000));
-        assert_eq!(derived.upstream_timing().timestamp_end_ns(), Some(20_000_000));
+        assert_eq!(
+            derived.upstream_timing().timestamp_end_ns(),
+            Some(20_000_000)
+        );
         assert_eq!(derived.operator_id().as_str(), WHISPER_OPERATOR_ID);
     }
 
@@ -1356,8 +1353,7 @@ mod tests {
 
         assert_eq!(partials.len(), 2);
         assert!(partials.iter().all(|output| {
-            output.signal_spec().role().map(|role| role.as_str())
-                == Some("transcript.partial")
+            output.signal_spec().role().map(|role| role.as_str()) == Some("transcript.partial")
         }));
 
         let finals = connector.flush().await.unwrap();
@@ -1370,7 +1366,10 @@ mod tests {
         let derived = final_output.derivation().unwrap();
         assert_eq!(derived.upstream_lineage().sequence_number(), 0);
         assert_eq!(derived.upstream_timing().duration_ns(), Some(40_000_000));
-        assert_eq!(derived.upstream_timing().timestamp_end_ns(), Some(40_000_000));
+        assert_eq!(
+            derived.upstream_timing().timestamp_end_ns(),
+            Some(40_000_000)
+        );
         assert!(matches!(
             final_output.payload(),
             SignalPayload::Text(text)
@@ -1437,5 +1436,4 @@ mod tests {
             matches!(error, NodeError::Process(message) if message.contains("lineage authority"))
         );
     }
-
 }
