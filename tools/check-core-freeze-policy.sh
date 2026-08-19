@@ -5,11 +5,10 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/.." && pwd)"
 cd "${repo_root}"
 
-policy="docs/development/compatibility-and-freeze.md"
-adr="docs/adr/AUDIO-034-core-1-0-extension-freeze.md"
+policy="RELEASE_NOTES.md"
 template=".github/PULL_REQUEST_TEMPLATE.md"
 
-for required in "${policy}" "${adr}" "${template}"; do
+for required in "${policy}" "${template}"; do
   if [[ ! -f "${required}" ]]; then
     echo "FAIL: Core freeze authority is missing: ${required}" >&2
     exit 1
@@ -20,17 +19,19 @@ required_policy_terms=(
   "2026-08-13"
   "2028-08-13"
   "external source"
-  "operator"
-  "endpoint/connector"
+  "Operator"
+  "Endpoint"
+  "Connector"
   "transport"
-  "SDK projection"
-  "sidecar"
+  "process sidecars"
   "correctness"
   "security"
-  "OS/toolchain"
-  "measured performance"
-  "API/ABI"
-  "execution primitive"
+  "OS or toolchain"
+  "measured regressions"
+  "Rust API changes follow SemVer"
+  "versioned, size-prefixed records"
+  "PKSS frames carry explicit protocol"
+  "extension-first Core freeze"
 )
 
 for term in "${required_policy_terms[@]}"; do
@@ -40,8 +41,8 @@ for term in "${required_policy_terms[@]}"; do
   fi
 done
 
-if ! rg -Fq "**Status:** Accepted; 24-month extension-first freeze active" "${adr}"; then
-  echo "FAIL: Core freeze ADR is not active" >&2
+if ! rg -Fq "extension-first Core freeze is active from 2026-08-13 through 2028-08-13" "${policy}"; then
+  echo "FAIL: public Core freeze policy is not active" >&2
   exit 1
 fi
 

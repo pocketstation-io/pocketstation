@@ -31,9 +31,9 @@ redefining the accepted Core contract. Rust API changes follow SemVer. The C
 ABI uses versioned, size-prefixed records. PKSS frames carry explicit protocol
 versions and stable `SignalSpec` identities.
 
-The extension-first Core freeze is active through 2028-08-13. A new provider,
-model, customer workflow, or exporter belongs in an extension rather than a
-new Core category whenever the 1.x contracts can express it.
+The extension-first Core freeze is active from 2026-08-13 through 2028-08-13.
+A new provider, model, customer workflow, or exporter belongs in an extension
+rather than a new Core category whenever the 1.x contracts can express it.
 
 ## What ships in 1.x
 
@@ -42,7 +42,7 @@ new Core category whenever the 1.x contracts can express it.
   backpressure, loss, discontinuity, and lifecycle behavior.
 - Open Operator, Endpoint, Connector, external-source, and generated-audio
   extension contracts rather than closed provider categories.
-- A managed Connector authoring path where Core owns bounded receiver polling,
+- A Connector driver authoring path where Core owns bounded receiver polling,
   accounting, drain/abort, panic containment, and joined finalization while
   providers implement typed preparation and delivery only. The lower-level
   Endpoint-backed worker path remains available for specialized transports.

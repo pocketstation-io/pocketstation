@@ -251,7 +251,7 @@ Windows builds use the MSVC Rust toolchain and Windows SDK.
 - [Architecture](docs/architecture/overview.md)
 - [Rust quickstart](docs/getting-started/rust-quickstart.md)
 - [Extension authoring](docs/guides/extensions.md)
-- [Compatibility policy](docs/development/compatibility-and-freeze.md)
+- [Compatibility](docs/compatibility/README.md)
 - [API reference](https://docs.rs/pocketstation/latest/pocketstation/)
 
 ## Development

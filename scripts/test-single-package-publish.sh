@@ -31,15 +31,14 @@ for forbidden_prefix in .github/ AGENTS.md PHASE scripts/; do
   done <<<"${package_files}"
 done
 
-# The archive may carry only the curated developer-facing documentation. ADRs,
-# execution evidence, compatibility fixtures, and repository standards remain
-# private to the source repository.
+# The archive may carry only curated user-facing documentation. Internal
+# engineering records remain private and untracked.
 while IFS= read -r package_file; do
   case "${package_file}" in
     docs/README.md | \
       docs/architecture/overview.md | \
       docs/concepts/signals-and-streams.md | \
-      docs/development/compatibility-and-freeze.md | \
+      docs/compatibility/README.md | \
       docs/getting-started/rust-quickstart.md | \
       docs/guides/connectors.md | \
       docs/guides/extensions.md) ;;
@@ -58,7 +57,7 @@ for required_path in \
   docs/README.md \
   docs/architecture/overview.md \
   docs/concepts/signals-and-streams.md \
-  docs/development/compatibility-and-freeze.md \
+  docs/compatibility/README.md \
   docs/getting-started/rust-quickstart.md \
   docs/guides/connectors.md \
   docs/guides/extensions.md \

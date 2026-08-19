@@ -16,13 +16,13 @@ contract without creating a second media runtime inside each integration.
 - [Current architecture](architecture/overview.md)
 - [Signals and typed streams](concepts/signals-and-streams.md)
 - [External extensions](guides/extensions.md)
-- [Compatibility and Core lifecycle](development/compatibility-and-freeze.md)
+- [Compatibility](compatibility/README.md)
 
 ## Contract hierarchy
 
-The public API and current guides describe shipping behavior. ADRs explain why
-boundaries exist. Files explicitly marked historical or retained as reports do
-not define the current API.
+The public API, release notes, compatibility reference, and current guides
+describe shipping behavior. Internal engineering records are maintained
+outside the public repository and do not define the public API.
 
 Product claims are evidence-scoped. Passing component or loopback tests does
 not establish physical-device, cross-network, or cross-platform parity.

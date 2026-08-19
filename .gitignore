@@ -19,3 +19,18 @@ coverage/
 .claude/
 *.profraw
 *.profdata
+
+# Private internal engineering material. Keep local copies, never track them.
+/AGENTS.md
+/PHASE*_PROGRESS.md
+/PHASE*_QUEUE.md
+/docs/GRAPH_RESCUE_EXECUTION_PLAN.md
+/docs/REPO_CONTRACT.md
+/docs/adr/
+/docs/development/
+/docs/reports/
+/docs/standards/
+/docs/architecture/CRATE_OWNERSHIP.md
+/docs/architecture/PocketStation-v2.3.md
+/docs/architecture/pocketstation-v3.0.md
+/docs/architecture/public-api-1.0-allowlist.md
