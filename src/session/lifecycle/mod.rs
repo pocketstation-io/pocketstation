@@ -47,7 +47,6 @@ pub use trace::{
     SessionTraceRecorderHandle, SessionTraceRecorderOutcome, SessionTraceRecorderStartError,
     SessionTraceValidation, SessionTraceValidationError,
 };
-#[cfg(any(test, feature = "internal-testing"))]
 pub use trace::{SessionTraceRecord, SessionTraceRecordKind, SessionTraceTerminal};
 
 #[cfg(test)]

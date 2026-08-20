@@ -138,6 +138,60 @@ fn given_held_batch_when_polled_then_samples_stay_stable_and_lease_exhaustion_is
 }
 
 #[test]
+fn given_empty_receipt_when_wait_deadline_expires_then_no_batch_is_fabricated() {
+    let config = PolledAudioEndpointConfig::default();
+    let (factory, receipt) = PolledAudioEndpointFactory::new(config).expect("valid config");
+
+    let started = Instant::now();
+    assert!(receipt
+        .wait_poll(Duration::from_millis(5))
+        .expect("bounded wait")
+        .is_none());
+    assert!(started.elapsed() >= Duration::from_millis(4));
+    drop(factory);
+}
+
+#[test]
+fn given_waiting_receipt_when_frame_arrives_then_existing_batch_is_returned() {
+    let config = PolledAudioEndpointConfig {
+        queue_capacity_frames: 2,
+        max_batch_frames: 1,
+        max_outstanding_leases: 1,
+    };
+    let shared = Arc::new(ReceiptShared::new(config));
+    let receipt = PolledAudioReceipt {
+        shared: Arc::clone(&shared),
+    };
+    let (mut producer, consumer) = RingBuffer::new(config.queue_capacity_frames);
+    let consumer_slot = shared
+        .register_consumer(consumer, config.queue_capacity_frames)
+        .expect("consumer registration");
+    let producer_shared = Arc::clone(&shared);
+    let producer_thread = thread::spawn(move || {
+        thread::sleep(Duration::from_millis(5));
+        let pool = AudioBufferPool::new(1, 4);
+        let worker = WorkerObservations::default();
+        publish_delivered_frame(
+            &mut producer,
+            delivered(lineaged_frame(&pool, 7, 0.5)),
+            &producer_shared,
+            &worker,
+        );
+    });
+
+    let batch = receipt
+        .wait_poll(Duration::from_secs(1))
+        .expect("bounded wait")
+        .expect("published batch");
+    assert_eq!(batch.frame(0).expect("frame").lineage().sequence_num, 7);
+    drop(batch);
+    producer_thread.join().expect("producer thread");
+    shared
+        .remove_consumer(consumer_slot, config.queue_capacity_frames)
+        .expect("consumer removal");
+}
+
+#[test]
 fn given_concurrent_publish_and_poll_when_observed_then_depth_stays_bounded_and_returns_to_zero() {
     let config = PolledAudioEndpointConfig {
         queue_capacity_frames: 8,

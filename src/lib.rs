@@ -115,15 +115,16 @@ pub use crate::session::extensions::{
     SourceTypeIdError, PCM_SOURCE_TYPE_ID,
 };
 pub use crate::session::lifecycle::{
-    SessionAudioReentryMetrics, SessionControlFailure, SessionDerivedRouteMetrics, SessionEvent,
-    SessionEventKind, SessionEventQueueObservations, SessionEventReceive,
-    SessionExternalSourceMetrics, SessionLifecycleState, SessionMetricsSnapshot,
-    SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteDropObservations,
-    SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit,
-    SessionRouteMetrics, SessionRouteObservationInterval, SessionSidecarMetrics,
-    SessionSourceMetrics, SessionStartCancellation, SessionStopOutcome, SessionTerminalState,
-    SessionTrace, SessionTraceRecorder, SessionTraceRecorderFinishError,
-    SessionTraceRecorderOutcome, SessionTraceRecorderStartError, SessionTraceValidation,
+    SessionAudioReentryMetrics, SessionComponentId, SessionControlFailure,
+    SessionDerivedRouteMetrics, SessionEvent, SessionEventKind, SessionEventQueueObservations,
+    SessionEventReceive, SessionExternalSourceMetrics, SessionLifecycleState,
+    SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics,
+    SessionRouteDropObservations, SessionRouteLatencyBoundary, SessionRouteLatencyObservations,
+    SessionRouteLatencyUnit, SessionRouteMetrics, SessionRouteObservationInterval,
+    SessionSidecarMetrics, SessionSourceMetrics, SessionStartCancellation, SessionStopOutcome,
+    SessionTerminalState, SessionTrace, SessionTraceRecord, SessionTraceRecordKind,
+    SessionTraceRecorder, SessionTraceRecorderFinishError, SessionTraceRecorderOutcome,
+    SessionTraceRecorderStartError, SessionTraceTerminal, SessionTraceValidation,
     SessionTraceValidationError,
 };
 pub use crate::session::{
@@ -801,6 +802,17 @@ impl RunningSession {
 
     pub fn try_poll_audio(&self) -> Result<PolledAudioBatchLease, PolledAudioPollError> {
         self.receipt.try_poll()
+    }
+
+    pub fn wait_audio(
+        &self,
+        timeout: std::time::Duration,
+    ) -> Result<Option<PolledAudioBatchLease>, PolledAudioPollError> {
+        self.receipt.wait_poll(timeout)
+    }
+
+    pub const fn state(&self) -> SessionLifecycleState {
+        self.running.state()
     }
 
     pub fn audio_observations(&self) -> PolledAudioObservations {

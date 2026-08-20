@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Condvar, Mutex};
 use std::thread::{self, JoinHandle};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use crate::endpoint::{
     EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory,
@@ -167,6 +167,51 @@ impl PolledAudioReceipt {
     pub fn observations(&self) -> PolledAudioObservations {
         self.shared.observations()
     }
+
+    /// Waits for a batch until the finite deadline expires.
+    ///
+    /// The wait owns no additional audio queue. Producers wake this receipt
+    /// after publishing into the existing bounded endpoint rings.
+    pub fn wait_poll(
+        &self,
+        timeout: Duration,
+    ) -> Result<Option<PolledAudioBatchLease>, PolledAudioPollError> {
+        let deadline = Instant::now().checked_add(timeout);
+        loop {
+            let generation = self.shared.wake_generation.load(Ordering::Acquire);
+            match self.try_poll() {
+                Ok(batch) => return Ok(Some(batch)),
+                Err(PolledAudioPollError::Empty) => {}
+                Err(error) => return Err(error),
+            }
+            let Some(deadline) = deadline else {
+                return Ok(None);
+            };
+            let now = Instant::now();
+            if now >= deadline {
+                return Ok(None);
+            }
+            let state = self
+                .shared
+                .state
+                .lock()
+                .map_err(|_| PolledAudioPollError::StatePoisoned)?;
+            if self.shared.wake_generation.load(Ordering::Acquire) != generation
+                || self.shared.queue_depth_frames.load(Ordering::Acquire) > 0
+            {
+                drop(state);
+                continue;
+            }
+            let (_state, wait) = self
+                .shared
+                .available
+                .wait_timeout(state, deadline.saturating_duration_since(now))
+                .map_err(|_| PolledAudioPollError::StatePoisoned)?;
+            if wait.timed_out() {
+                return Ok(None);
+            }
+        }
+    }
 }
 
 pub struct PolledAudioBatchLease {
@@ -261,6 +306,8 @@ struct ReceiptState {
 
 struct ReceiptShared {
     state: Mutex<ReceiptState>,
+    available: Condvar,
+    wake_generation: AtomicU64,
     max_batch_frames: usize,
     registered_endpoints: AtomicU64,
     queue_capacity_frames: AtomicU64,
@@ -290,6 +337,8 @@ impl ReceiptShared {
                 recycled_batches,
                 next_consumer: 0,
             }),
+            available: Condvar::new(),
+            wake_generation: AtomicU64::new(0),
             max_batch_frames: config.max_batch_frames,
             registered_endpoints: AtomicU64::new(0),
             queue_capacity_frames: AtomicU64::new(0),
@@ -359,6 +408,8 @@ impl ReceiptShared {
         self.registered_endpoints.fetch_sub(1, Ordering::Relaxed);
         self.queue_capacity_frames
             .fetch_sub(capacity_frames as u64, Ordering::Relaxed);
+        self.wake_generation.fetch_add(1, Ordering::Release);
+        self.available.notify_all();
         Ok(())
     }
 
@@ -385,6 +436,8 @@ impl ReceiptShared {
         self.frames_delivered_total.fetch_add(1, Ordering::Relaxed);
         let depth = self.queue_depth_frames.load(Ordering::Relaxed);
         self.queue_peak_frames.fetch_max(depth, Ordering::Relaxed);
+        self.wake_generation.fetch_add(1, Ordering::Release);
+        self.available.notify_one();
     }
 
     fn release_queue_reservation(&self) {

@@ -1328,12 +1328,14 @@ fn given_two_sources_when_started_then_gate_lineage_and_repeated_stop_are_truthf
     let events = running
         .take_event_receiver()
         .expect("running Session must expose its sole event receiver");
+    assert_eq!(running.state(), SessionLifecycleState::Running);
     std::thread::sleep(Duration::from_millis(30));
     let first = running.stop();
     let second = running.stop();
 
     assert_eq!(first, second);
     assert!(first.is_success());
+    assert_eq!(running.state(), SessionLifecycleState::Stopped);
     assert_eq!(
         endpoints.pre_gate_deliveries_total.load(Ordering::Relaxed),
         0
@@ -1494,6 +1496,7 @@ fn given_one_source_failure_when_runtime_continues_then_healthy_source_frame_is_
     let outcome = running.stop();
 
     assert!(!outcome.is_success());
+    assert_eq!(running.state(), SessionLifecycleState::Failed);
     assert_eq!(endpoints.deliveries_total.load(Ordering::Relaxed), 3);
     let mut source_failures_total = 0;
     while let SessionEventReceive::Event(event) = events.try_recv() {

@@ -172,6 +172,7 @@ enum OperatorTermination {
 
 pub struct RunningSession {
     session_id: SessionId,
+    state: SessionLifecycleState,
     stop_requested: Arc<AtomicBool>,
     runtime_worker: Option<JoinHandle<Option<RuntimeWorkerOutcome>>>,
     async_runtime_host: Option<AsyncRuntimeHost>,
@@ -196,6 +197,11 @@ pub struct RunningSession {
 impl RunningSession {
     pub const fn session_id(&self) -> SessionId {
         self.session_id
+    }
+
+    /// Returns the authoritative current lifecycle state owned by this Session.
+    pub const fn state(&self) -> SessionLifecycleState {
+        self.state
     }
 
     pub fn take_event_receiver(&mut self) -> Option<SessionEventReceiver> {
@@ -426,6 +432,7 @@ impl RunningSession {
     }
 
     fn stop_once(&mut self, operator_termination: OperatorTermination) -> SessionStopOutcome {
+        self.state = SessionLifecycleState::Stopping;
         let _ = self
             .event_sender
             .publish_lifecycle(self.session_id, SessionLifecycleState::Stopping);
@@ -566,6 +573,11 @@ impl RunningSession {
             },
             outcome,
         );
+        self.state = if outcome.is_success() {
+            SessionLifecycleState::Stopped
+        } else {
+            SessionLifecycleState::Failed
+        };
         outcome
     }
 
@@ -1181,6 +1193,7 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
     let _ = event_sender.publish_lifecycle(session_id, SessionLifecycleState::Running);
     Ok(RunningSession {
         session_id,
+        state: SessionLifecycleState::Running,
         stop_requested,
         runtime_worker: Some(runtime_worker),
         async_runtime_host,
@@ -1828,6 +1841,7 @@ fn prepare_and_open_captures(
         let binding = match stem.source() {
             Source::Application(_) => backends.application,
             Source::Microphone(_) => backends.microphone,
+            Source::SystemMix => backends.application,
         };
         let request = CapturePrepareRequest {
             mode: capture_mode(stem.source()),
@@ -1946,6 +1960,7 @@ fn capture_mode(source: &Source) -> CaptureMode {
         Source::Microphone(DeviceSelector::Id(device_id)) => {
             CaptureMode::InputDevice(InputDeviceSelector::StableId(device_id.as_str().to_owned()))
         }
+        Source::SystemMix => CaptureMode::SystemMix,
     }
 }
 
@@ -2607,5 +2622,10 @@ mod selector_tests {
                 stable_id,
             }
         );
+    }
+
+    #[test]
+    fn given_system_mix_source_when_capture_mode_built_then_loopback_is_requested() {
+        assert_eq!(capture_mode(&Source::system_mix()), CaptureMode::SystemMix);
     }
 }
