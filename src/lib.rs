@@ -127,6 +127,7 @@ pub use crate::session::lifecycle::{
     SessionTraceRecorderStartError, SessionTraceTerminal, SessionTraceValidation,
     SessionTraceValidationError,
 };
+pub use crate::session::SessionCompileDiagnostic;
 pub use crate::session::{
     session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations,
     SessionRecordingOutcome, SessionRecordingState, SessionRecordingStemOutcome,
@@ -952,6 +953,7 @@ pub use crate::session::{
 pub struct SessionStartError {
     code: SessionStartErrorCode,
     message: String,
+    compile_diagnostic: Option<Box<SessionCompileDiagnostic>>,
 }
 
 impl SessionStartError {
@@ -959,6 +961,7 @@ impl SessionStartError {
         Self {
             code,
             message: message.into(),
+            compile_diagnostic: None,
         }
     }
 
@@ -972,6 +975,15 @@ impl SessionStartError {
 
     pub fn message(&self) -> &str {
         &self.message
+    }
+
+    /// Returns structured compiler facts when startup failed while compiling
+    /// the declared Session.
+    ///
+    /// Consumers must branch on the stable diagnostic code and fields rather
+    /// than parsing [`Self::message`].
+    pub fn compile_diagnostic(&self) -> Option<&SessionCompileDiagnostic> {
+        self.compile_diagnostic.as_deref()
     }
 
     pub fn kind(&self) -> SessionStartErrorKind {
@@ -1020,6 +1032,10 @@ impl From<SessionEngineHostBuildError> for SessionStartError {
 
 impl From<SessionEngineStartError> for SessionStartError {
     fn from(error: SessionEngineStartError) -> Self {
+        let compile_diagnostic = match &error {
+            SessionEngineStartError::Compile(error) => Some(Box::new(error.diagnostic())),
+            _ => None,
+        };
         let code = match &error {
             SessionEngineStartError::Freeze(SessionError::InvalidSelector { .. }) => {
                 SessionStartErrorCode::InvalidSelector
@@ -1030,7 +1046,9 @@ impl From<SessionEngineStartError> for SessionStartError {
             SessionEngineStartError::Start(failure) => session_start_failure_code(failure.error()),
             SessionEngineStartError::Sidecar(_) => SessionStartErrorCode::RuntimeStartFailed,
         };
-        Self::new(code, format!("canonical Session start failed: {error}"))
+        let mut start_error = Self::new(code, format!("canonical Session start failed: {error}"));
+        start_error.compile_diagnostic = compile_diagnostic;
+        start_error
     }
 }
 

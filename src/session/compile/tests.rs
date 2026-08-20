@@ -867,3 +867,42 @@ fn given_system_mix_when_lowered_then_it_is_a_built_in_audio_source() {
         .compile(spec)
         .expect("system-mix graph compiles through the built-in source path");
 }
+
+#[test]
+fn given_unknown_operator_port_when_diagnosed_then_location_is_structured() {
+    let error = SessionCompileError::UnknownOperatorPort {
+        operator_id: TEST_NAMED_OPERATOR_ID.to_owned(),
+        direction: "input",
+        port_name: "caller_audio".to_owned(),
+    };
+
+    let diagnostic = error.diagnostic();
+
+    assert_eq!(diagnostic.code(), "compile.unknown_operator_port");
+    assert_eq!(diagnostic.operator_id(), Some(TEST_NAMED_OPERATOR_ID));
+    assert_eq!(diagnostic.direction(), Some("input"));
+    assert_eq!(diagnostic.port_name(), Some("caller_audio"));
+    assert_eq!(diagnostic.node_index(), None);
+    assert_eq!(diagnostic.edge_index(), None);
+}
+
+#[test]
+fn given_graph_mismatch_when_start_fails_then_diagnostic_is_retained() {
+    let engine_error = crate::session::SessionEngineStartError::Compile(
+        SessionCompileError::GraphCompile(CompileError::MediaMismatch {
+            edge: 7,
+            from: "audio/f32/stereo".to_owned(),
+            to: "audio/f32/mono".to_owned(),
+        }),
+    );
+
+    let error = crate::SessionStartError::from(engine_error);
+    let diagnostic = error
+        .compile_diagnostic()
+        .expect("compile error has structured diagnostic");
+
+    assert_eq!(diagnostic.code(), "compile.graph.media_mismatch");
+    assert_eq!(diagnostic.edge_index(), Some(7));
+    assert_eq!(diagnostic.actual(), Some("audio/f32/stereo"));
+    assert_eq!(diagnostic.expected(), Some("audio/f32/mono"));
+}

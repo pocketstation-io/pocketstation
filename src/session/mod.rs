@@ -11,7 +11,9 @@ pub use crate::endpoint::{
     PolledAudioEndpointConfigError, PolledAudioFrame, PolledAudioObservations,
     PolledAudioPollError, PolledAudioReceipt,
 };
-pub use compile::{CompiledSession, SessionCompileError, SessionCompiler};
+pub use compile::{
+    CompiledSession, SessionCompileDiagnostic, SessionCompileError, SessionCompiler,
+};
 pub use declaration::{ApplicationSelector, DeviceSelector, Source};
 pub use declaration::{
     ConnectionSpec, ConnectionTarget, EndpointSpec, OperatorInstanceId, SessionSpec,
