@@ -4,6 +4,7 @@
 
 mod clock_correction;
 mod clock_drift;
+mod domain;
 mod timeline_mapping;
 
 use std::sync::OnceLock;
@@ -13,6 +14,9 @@ use crate::frame::ClockDomainId;
 
 pub use clock_correction::ClockCorrectionController;
 pub use clock_drift::{ClockDriftEstimator, ClockDriftSnapshot};
+pub use domain::{
+    describe_clock_domain, ClockDomainDescriptor, ClockDomainKind, ClockDomainOrigin,
+};
 pub use timeline_mapping::TimelineMapping;
 
 /// Clock-domain identity for timestamps produced by PocketStation's shared

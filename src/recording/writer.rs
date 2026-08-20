@@ -14,7 +14,7 @@ use crate::runtime::{EdgeObservations, PlanEdgeFrame, PlanEdgeReceiver};
 use hound::{SampleFormat as WavSampleFormat, WavSpec, WavWriter};
 use serde::Serialize;
 
-const MANIFEST_SCHEMA_VERSION: u32 = 1;
+const RECORDING_MANIFEST_SCHEMA_VERSION: u32 = 1;
 const WORKER_IDLE_WAIT_MS: u64 = 1;
 const MAX_MANIFEST_GAPS: usize = 1_024;
 const MAX_SILENCE_GAP_NS: u64 = 3_600_000_000_000; // one hour
@@ -109,7 +109,11 @@ pub enum DiscontinuityKind {
 
 #[derive(Debug, Clone)]
 pub struct RecordingOutcome {
+    pub session_id: SessionId,
+    pub group_id: crate::endpoint::EndpointGroupId,
     pub session_dir: PathBuf,
+    pub manifest_path: PathBuf,
+    pub manifest_schema_version: u32,
     pub state: RecordingState,
     pub completed_stems: usize,
     pub failed_stems: usize,
@@ -137,6 +141,7 @@ pub struct RecordingObservations {
 
 pub struct MultistemRecording {
     session_id: SessionId,
+    group_id: crate::endpoint::EndpointGroupId,
     session_dir: PathBuf,
     configs: Vec<RecorderStemConfig>,
     workers: Vec<RecorderWorker>,
@@ -147,6 +152,7 @@ impl MultistemRecording {
     pub(crate) fn start_observed(
         output_root: impl AsRef<Path>,
         session_id: SessionId,
+        group_id: crate::endpoint::EndpointGroupId,
         stems: Vec<(RecorderStemConfig, PlanEdgeReceiver, PlanEdgeFrame)>,
     ) -> Result<Self, RecorderError> {
         let stems = stems
@@ -157,12 +163,13 @@ impl MultistemRecording {
                 initial_frame: Some(initial_frame),
             })
             .collect();
-        Self::start_with_inputs(output_root, session_id, stems)
+        Self::start_with_inputs(output_root, session_id, group_id, stems)
     }
 
     fn start_with_inputs(
         output_root: impl AsRef<Path>,
         session_id: SessionId,
+        group_id: crate::endpoint::EndpointGroupId,
         stems: Vec<RecorderStemInput>,
     ) -> Result<Self, RecorderError> {
         let session_dir = output_root
@@ -213,7 +220,7 @@ impl MultistemRecording {
         write_permission_events(&session_dir, &configs)?;
         write_manifest(
             &session_dir,
-            &ManifestDocument::initial(session_id, &configs),
+            &ManifestDocument::initial(session_id, &group_id, &configs),
         )?;
 
         let mut workers = Vec::with_capacity(stems.len());
@@ -235,6 +242,7 @@ impl MultistemRecording {
 
         Ok(Self {
             session_id,
+            group_id,
             session_dir,
             configs,
             workers,
@@ -301,6 +309,7 @@ impl MultistemRecording {
         write_destination_metrics(&self.session_dir, &outcomes)?;
         let manifest = ManifestDocument::finished(
             self.session_id,
+            &self.group_id,
             &self.configs,
             &outcomes,
             cancellation_error,
@@ -336,7 +345,11 @@ impl MultistemRecording {
             .collect();
         self.finished = true;
         Ok(RecordingOutcome {
+            session_id: self.session_id,
+            group_id: self.group_id.clone(),
             session_dir: self.session_dir.clone(),
+            manifest_path: self.session_dir.join("manifest.json"),
+            manifest_schema_version: RECORDING_MANIFEST_SCHEMA_VERSION,
             state,
             completed_stems,
             failed_stems,
@@ -1069,16 +1082,22 @@ fn write_destination_metrics(
 struct ManifestDocument {
     schema_version: u32,
     session_id: u64,
+    recording_group_id: String,
     state: RecordingState,
     stems: Vec<ManifestStem>,
     errors: Vec<String>,
 }
 
 impl ManifestDocument {
-    fn initial(session_id: SessionId, configs: &[RecorderStemConfig]) -> Self {
+    fn initial(
+        session_id: SessionId,
+        group_id: &crate::endpoint::EndpointGroupId,
+        configs: &[RecorderStemConfig],
+    ) -> Self {
         Self {
-            schema_version: MANIFEST_SCHEMA_VERSION,
+            schema_version: RECORDING_MANIFEST_SCHEMA_VERSION,
             session_id: session_id.0,
+            recording_group_id: group_id.as_str().to_owned(),
             state: RecordingState::Recording,
             stems: configs
                 .iter()
@@ -1090,6 +1109,7 @@ impl ManifestDocument {
 
     fn finished(
         session_id: SessionId,
+        group_id: &crate::endpoint::EndpointGroupId,
         configs: &[RecorderStemConfig],
         outcomes: &[StemWorkerOutcome],
         cancellation_error: Option<String>,
@@ -1111,8 +1131,9 @@ impl ManifestDocument {
             })
             .collect();
         Self {
-            schema_version: MANIFEST_SCHEMA_VERSION,
+            schema_version: RECORDING_MANIFEST_SCHEMA_VERSION,
             session_id: session_id.0,
+            recording_group_id: group_id.as_str().to_owned(),
             state: if errors.is_empty() {
                 RecordingState::Complete
             } else {

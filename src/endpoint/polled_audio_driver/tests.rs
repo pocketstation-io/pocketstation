@@ -45,6 +45,10 @@ fn delivered(frame: LineagedAudioFrame) -> DeliveredAudioFrame {
         endpoint_id: ENDPOINT_ID,
         connector_id: CONNECTOR_ID,
         route_id: ROUTE_ID,
+        route_enqueued_at_ns: 10,
+        route_received_at_ns: 20,
+        endpoint_enqueued_at_ns: 30,
+        polled_at_ns: 0,
         frame,
     }
 }
@@ -60,7 +64,11 @@ fn given_shared_branch_when_published_then_it_is_rejected_and_counted() {
         .freeze()
         .expect("shared lineaged frame");
     assert!(prepare_delivered_frame(
-        PlanEdgeFrame::Shared(lineaged_shared),
+        crate::endpoint::EndpointAudioFrame::from_route_delivery(
+            PlanEdgeFrame::Shared(lineaged_shared),
+            10,
+            20,
+        ),
         ENDPOINT_ID,
         CONNECTOR_ID,
         ROUTE_ID,
@@ -114,6 +122,10 @@ fn given_held_batch_when_polled_then_samples_stay_stable_and_lease_exhaustion_is
     let lease = receipt.try_poll().expect("first lease");
     let frame = lease.frame(0).expect("leased frame");
     let samples_pointer = frame.samples().as_ptr();
+    assert_eq!(frame.route_enqueued_at_ns(), 10);
+    assert_eq!(frame.route_received_at_ns(), 20);
+    assert_eq!(frame.endpoint_enqueued_at_ns(), 30);
+    assert!(frame.polled_at_ns() >= frame.endpoint_enqueued_at_ns());
     assert_eq!(frame.samples(), &[0.25, 0.25, 0.25, 0.25]);
     assert_eq!(frame.samples().as_ptr(), samples_pointer);
     assert!(matches!(

@@ -118,6 +118,26 @@ struct QueuedPlanEdgeFrame {
     enqueued_at_ns: u64,
 }
 
+pub(crate) struct PlanEdgeReceipt {
+    frame: PlanEdgeFrame,
+    enqueued_at_ns: u64,
+    received_at_ns: u64,
+}
+
+impl PlanEdgeReceipt {
+    pub(crate) fn into_frame(self) -> PlanEdgeFrame {
+        self.frame
+    }
+
+    pub(crate) const fn enqueued_at_ns(&self) -> u64 {
+        self.enqueued_at_ns
+    }
+
+    pub(crate) const fn received_at_ns(&self) -> u64 {
+        self.received_at_ns
+    }
+}
+
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct EdgeObservations {
     pub queue_capacity_frames: u64,
@@ -532,6 +552,7 @@ impl PlanEdgeReceiver {
     pub(crate) fn recv_at(&mut self, delivered_at_ns: u64) -> Option<PlanEdgeFrame> {
         let queued = self.consumer.pop().ok()?;
         self.observe_received(queued, delivered_at_ns)
+            .map(PlanEdgeReceipt::into_frame)
     }
 
     /// Pops one queued frame before sampling the canonical process clock.
@@ -543,14 +564,18 @@ impl PlanEdgeReceiver {
     /// remains only for deterministic schedulers and runtime tests that already
     /// own a valid timestamp.
     pub fn try_recv(&mut self) -> Option<PlanEdgeFrame> {
-        self.recv_with_clock(crate::timing::monotonic_timestamp_ns)
+        self.try_recv_receipt().map(PlanEdgeReceipt::into_frame)
+    }
+
+    pub(crate) fn try_recv_receipt(&mut self) -> Option<PlanEdgeReceipt> {
+        self.recv_receipt_with_clock(crate::timing::monotonic_timestamp_ns)
     }
 
     pub fn is_abandoned(&self) -> bool {
         self.consumer.is_abandoned()
     }
 
-    fn recv_with_clock(&mut self, clock: impl FnOnce() -> u64) -> Option<PlanEdgeFrame> {
+    fn recv_receipt_with_clock(&mut self, clock: impl FnOnce() -> u64) -> Option<PlanEdgeReceipt> {
         let queued = self.consumer.pop().ok()?;
         let delivered_at_ns = clock();
         self.observe_received(queued, delivered_at_ns)
@@ -560,10 +585,14 @@ impl PlanEdgeReceiver {
         &mut self,
         queued: QueuedPlanEdgeFrame,
         delivered_at_ns: u64,
-    ) -> Option<PlanEdgeFrame> {
+    ) -> Option<PlanEdgeReceipt> {
         self.observe_continuity(&queued.frame);
         self.telemetry.observe_delivery(&queued, delivered_at_ns);
-        Some(queued.frame)
+        Some(PlanEdgeReceipt {
+            frame: queued.frame,
+            enqueued_at_ns: queued.enqueued_at_ns,
+            received_at_ns: delivered_at_ns,
+        })
     }
 
     fn observe_continuity(&mut self, frame: &PlanEdgeFrame) {
@@ -1231,10 +1260,12 @@ mod tests {
         let pool = AudioBufferPool::new(1, 2);
         router.dispatch_from(source.id(), "out", frame(&pool, 7, 1), 100);
 
-        let received = receivers[0].recv_with_clock(|| 150).unwrap();
+        let receipt = receivers[0].recv_receipt_with_clock(|| 150).unwrap();
         let observations = receivers[0].observations();
 
-        assert_eq!(received.sequence_number(), 1);
+        assert_eq!(receipt.enqueued_at_ns(), 100);
+        assert_eq!(receipt.received_at_ns(), 150);
+        assert_eq!(receipt.into_frame().sequence_number(), 1);
         assert_eq!(observations.enqueue_to_receive_samples_total, 1);
         assert_eq!(observations.enqueue_to_receive_invalid_order_total, 0);
         assert_eq!(observations.enqueue_to_receive_max_ns, 50);

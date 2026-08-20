@@ -135,9 +135,10 @@ impl PolledAudioReceipt {
                 continue;
             };
             while frames.len() < self.shared.max_batch_frames {
-                let Ok(frame) = consumer.pop() else {
+                let Ok(mut frame) = consumer.pop() else {
                     break;
                 };
+                frame.polled_at_ns = crate::timing::monotonic_timestamp_ns();
                 frames.push(frame);
                 self.shared.observe_dequeued(1);
             }
@@ -269,6 +270,22 @@ impl<'lease> PolledAudioFrame<'lease> {
         self.delivered.route_id
     }
 
+    pub fn route_enqueued_at_ns(self) -> u64 {
+        self.delivered.route_enqueued_at_ns
+    }
+
+    pub fn route_received_at_ns(self) -> u64 {
+        self.delivered.route_received_at_ns
+    }
+
+    pub fn endpoint_enqueued_at_ns(self) -> u64 {
+        self.delivered.endpoint_enqueued_at_ns
+    }
+
+    pub fn polled_at_ns(self) -> u64 {
+        self.delivered.polled_at_ns
+    }
+
     pub fn stream_id(self) -> StreamId {
         self.delivered.frame.frame().stream_id()
     }
@@ -295,6 +312,10 @@ struct DeliveredAudioFrame {
     endpoint_id: EndpointId,
     connector_id: ConnectorId,
     route_id: RouteId,
+    route_enqueued_at_ns: u64,
+    route_received_at_ns: u64,
+    endpoint_enqueued_at_ns: u64,
+    polled_at_ns: u64,
     frame: LineagedAudioFrame,
 }
 
@@ -705,7 +726,7 @@ fn run_worker(
                 .fetch_add(1, Ordering::Relaxed);
             shared.frames_received_total.fetch_add(1, Ordering::Relaxed);
             let Some(delivered) = prepare_delivered_frame(
-                frame.into_inner(),
+                frame,
                 endpoint_id,
                 connector_id,
                 route_id,
@@ -757,14 +778,16 @@ fn publish_delivered_frame(
 }
 
 fn prepare_delivered_frame(
-    frame: PlanEdgeFrame,
+    frame: crate::endpoint::EndpointAudioFrame,
     endpoint_id: EndpointId,
     connector_id: ConnectorId,
     route_id: RouteId,
     shared: &ReceiptShared,
     observations: &WorkerObservations,
 ) -> Option<DeliveredAudioFrame> {
-    let PlanEdgeFrame::Exclusive(frame) = frame else {
+    let route_enqueued_at_ns = frame.route_enqueued_at_ns();
+    let route_received_at_ns = frame.route_received_at_ns();
+    let PlanEdgeFrame::Exclusive(frame) = frame.into_inner() else {
         observations
             .invalid_ownership_drops_total
             .fetch_add(1, Ordering::Relaxed);
@@ -777,6 +800,10 @@ fn prepare_delivered_frame(
         endpoint_id,
         connector_id,
         route_id,
+        route_enqueued_at_ns,
+        route_received_at_ns,
+        endpoint_enqueued_at_ns: crate::timing::monotonic_timestamp_ns(),
+        polled_at_ns: 0,
         frame,
     })
 }

@@ -216,7 +216,10 @@ impl EndpointDriverFactory for SessionMultistemEndpointCoordinator {
         })?;
         Ok(Box::new(PreparedSessionMultistemEndpoint {
             output_root: self.output_root.clone(),
-            session_id,
+            identity: RecordingSessionIdentity {
+                session_id,
+                group_id: self.group_id.clone(),
+            },
             timeline_origin,
             stems: prepared_stems,
             receipt_state: Arc::clone(&self.receipt_state),
@@ -234,9 +237,15 @@ struct SessionPreparedStem {
     receiver: EndpointAudioReceiver,
 }
 
+#[derive(Clone)]
+struct RecordingSessionIdentity {
+    session_id: SessionId,
+    group_id: EndpointGroupId,
+}
+
 struct PreparedSessionMultistemEndpoint {
     output_root: PathBuf,
-    session_id: SessionId,
+    identity: RecordingSessionIdentity,
     timeline_origin: SessionTimelineOrigin,
     stems: Vec<SessionPreparedStem>,
     receipt_state: Arc<MultistemRecordingReceiptState>,
@@ -249,9 +258,9 @@ impl PreparedEndpointDriver for PreparedSessionMultistemEndpoint {
     ) -> Result<Box<dyn RunningEndpointDriver>, EndpointFailure> {
         for path in [
             self.output_root
-                .join(format!("session-{}", self.session_id.0)),
+                .join(format!("session-{}", self.identity.session_id.0)),
             self.output_root
-                .join(format!(".session-{}.pending", self.session_id.0)),
+                .join(format!(".session-{}.pending", self.identity.session_id.0)),
         ] {
             if path.exists() {
                 return Err(EndpointFailure::new(
@@ -262,7 +271,7 @@ impl PreparedEndpointDriver for PreparedSessionMultistemEndpoint {
         }
         let worker = SessionRecorderWorker::spawn(
             self.output_root,
-            self.session_id,
+            self.identity,
             self.timeline_origin,
             self.stems,
             start_gate,
@@ -363,7 +372,7 @@ struct SessionRecorderWorker {
 impl SessionRecorderWorker {
     fn spawn(
         output_root: PathBuf,
-        session_id: SessionId,
+        identity: RecordingSessionIdentity,
         timeline_origin: SessionTimelineOrigin,
         stems: Vec<SessionPreparedStem>,
         start_gate: Arc<EndpointStartGate>,
@@ -373,11 +382,14 @@ impl SessionRecorderWorker {
         let telemetry = Arc::new(SessionRecorderTelemetry::default());
         let worker_telemetry = Arc::clone(&telemetry);
         let join_handle = thread::Builder::new()
-            .name(format!("pocketstation-session-recorder-{}", session_id.0))
+            .name(format!(
+                "pocketstation-session-recorder-{}",
+                identity.session_id.0
+            ))
             .spawn(move || {
                 run_session_recorder(
                     &output_root,
-                    session_id,
+                    identity,
                     timeline_origin,
                     stems,
                     &start_gate,
@@ -491,13 +503,14 @@ enum SessionRecorderWorkerOutcome {
 
 fn run_session_recorder(
     output_root: &Path,
-    session_id: SessionId,
+    identity: RecordingSessionIdentity,
     timeline_origin: SessionTimelineOrigin,
     mut stems: Vec<SessionPreparedStem>,
     start_gate: &EndpointStartGate,
     stop_requested: &AtomicBool,
     telemetry: &SessionRecorderTelemetry,
 ) -> SessionRecorderWorkerOutcome {
+    let session_id = identity.session_id;
     while !start_gate.is_open() {
         if stop_requested.load(Ordering::Acquire) {
             return SessionRecorderWorkerOutcome::CancelledBeforeStart;
@@ -582,17 +595,21 @@ fn run_session_recorder(
         };
         recorder_stems.push((config, stem.receiver.into_inner(), first_frame));
     }
-    let recording =
-        match MultistemRecording::start_observed(output_root, session_id, recorder_stems) {
-            Ok(recording) => recording,
-            Err(error) => {
-                telemetry.record_initialization_failure(received_frames);
-                return SessionRecorderWorkerOutcome::Failed {
-                    message: error.to_string(),
-                    observations: telemetry.snapshot(),
-                };
-            }
-        };
+    let recording = match MultistemRecording::start_observed(
+        output_root,
+        session_id,
+        identity.group_id,
+        recorder_stems,
+    ) {
+        Ok(recording) => recording,
+        Err(error) => {
+            telemetry.record_initialization_failure(received_frames);
+            return SessionRecorderWorkerOutcome::Failed {
+                message: error.to_string(),
+                observations: telemetry.snapshot(),
+            };
+        }
+    };
 
     while !stop_requested.load(Ordering::Acquire) {
         telemetry.update(endpoint_observations(recording.observations()));
