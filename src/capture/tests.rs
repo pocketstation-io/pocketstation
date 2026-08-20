@@ -2,6 +2,15 @@ use super::*;
 use crate::frame::Platform;
 use std::num::NonZeroU32;
 
+#[test]
+fn given_anchored_sample_timeline_when_advanced_then_callback_jitter_is_excluded() {
+    let mut timeline = CaptureSampleTimeline::anchored(NonZeroU32::new(48_000).unwrap(), 100);
+
+    assert_eq!(timeline.advance(480), 100);
+    assert_eq!(timeline.advance(480), 10_000_100);
+    assert_eq!(timeline.advance(960), 20_000_100);
+}
+
 fn runtime_backend_failure(status_code: i32) -> SourceRuntimeEvent {
     SourceRuntimeEvent::BackendFailure {
         stable_id: StableSourceId::new(
