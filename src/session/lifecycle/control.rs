@@ -1,4 +1,4 @@
-//! Public contract for starting and stopping a prepared Session.
+//! Public controls and outcomes for starting and stopping a prepared Session.
 //!
 //! These types describe lifecycle input and failure. They deliberately contain
 //! no runtime orchestration or capture callback behavior.
@@ -81,15 +81,23 @@ pub(super) fn validate_source_topology(
         .iter()
         .filter(|stem| matches!(stem.source(), Source::Microphone(_)))
         .count();
-    let built_in_topology_valid = (application_sources == 0 && microphone_sources == 0)
-        || (application_sources == 1 && microphone_sources == 1);
-    if built_in_topology_valid
-        && (!prepared.spec.source_instances().is_empty() || application_sources == 1)
-    {
+    if source_topology_has_input(
+        application_sources,
+        microphone_sources,
+        prepared.spec.source_instances().len(),
+    ) {
         Ok(())
     } else {
         Err(SessionStartError::UnsupportedSourceTopology)
     }
+}
+
+const fn source_topology_has_input(
+    application_sources: usize,
+    microphone_sources: usize,
+    registered_sources: usize,
+) -> bool {
+    application_sources > 0 || microphone_sources > 0 || registered_sources > 0
 }
 
 /// Thread-safe cancellation request for a Session that has not reached
@@ -113,7 +121,7 @@ impl SessionStartCancellation {
 pub enum SessionStartError {
     #[error("invalid Session start options: {reason}")]
     InvalidOptions { reason: &'static str },
-    #[error("Session requires exactly one application and one microphone source")]
+    #[error("Session requires at least one built-in or registered source")]
     UnsupportedSourceTopology,
     #[error("external source preparation failed: {message}")]
     ExternalSourcePrepare {
@@ -192,6 +200,27 @@ pub enum SessionStartError {
     },
     #[error("Session start was cancelled")]
     Cancelled { rollback_failures_total: u64 },
+}
+
+#[cfg(test)]
+mod tests {
+    use super::source_topology_has_input;
+
+    #[test]
+    fn given_supported_source_compositions_when_validated_then_each_is_accepted() {
+        assert!(source_topology_has_input(1, 0, 0));
+        assert!(source_topology_has_input(0, 1, 0));
+        assert!(source_topology_has_input(2, 0, 0));
+        assert!(source_topology_has_input(0, 2, 0));
+        assert!(source_topology_has_input(2, 3, 0));
+        assert!(source_topology_has_input(0, 0, 1));
+        assert!(source_topology_has_input(2, 1, 3));
+    }
+
+    #[test]
+    fn given_session_without_source_when_validated_then_topology_is_rejected() {
+        assert!(!source_topology_has_input(0, 0, 0));
+    }
 }
 
 impl SessionStartError {

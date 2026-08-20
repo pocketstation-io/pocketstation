@@ -23,22 +23,22 @@ use crate::runtime::{
     SidecarHostSnapshot, SidecarMessage,
 };
 
-use crate::session::lifecycle::endpoint_transaction::{
+use crate::session::lifecycle::control::{
+    validate_source_topology, validate_start_options, CaptureBackendSet, SessionStartCancellation,
+    SessionStartError, SessionStartFailure, SessionStartOptions, SessionStopOutcome,
+};
+use crate::session::lifecycle::endpoint_setup::{
     prepare_endpoint_batches, prepare_endpoints, rollback_prepared_endpoints,
     PendingEndpointPortInput, PreparedEndpointBinding,
 };
 use crate::session::lifecycle::events::{session_event_channel, SessionEventSender};
-use crate::session::lifecycle::metric_bindings::{
-    DerivedRouteObservationBinding, FinalEndpointObservation, FinalOperatorObservation,
-    IndexedSessionMetrics, RouteObservationBinding, SourceObservationBinding,
-};
-use crate::session::lifecycle::operator_observations::{
+use crate::session::lifecycle::operator_inputs::{
     OperatorInputObservation, OperatorInputObservationBinding,
 };
 use crate::session::lifecycle::rollback::StartupRollback;
-use crate::session::lifecycle::start_contract::{
-    validate_source_topology, validate_start_options, CaptureBackendSet, SessionStartCancellation,
-    SessionStartError, SessionStartFailure, SessionStartOptions, SessionStopOutcome,
+use crate::session::lifecycle::telemetry::{
+    DerivedRouteObservationBinding, FinalEndpointObservation, FinalOperatorObservation,
+    IndexedSessionMetrics, RouteObservationBinding, SourceObservationBinding,
 };
 use crate::session::prepare::{
     PreparedExternalSourceMapping, PreparedExternalSourceTarget, PreparedOperatorInputMapping,

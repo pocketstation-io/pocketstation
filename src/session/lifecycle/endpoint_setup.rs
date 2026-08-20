@@ -1,4 +1,4 @@
-//! Origin-independent endpoint preparation and grouping transaction.
+//! Origin-independent endpoint preparation, grouping, and rollback.
 
 use crate::endpoint::{
     EndpointDriverRegistry, EndpointPortInput, EndpointPrepareContext, EndpointRouteContext,
@@ -12,8 +12,8 @@ use crate::session::{
     SessionSpec, SessionStartError,
 };
 
-use super::metric_bindings::DerivedRouteObservationBinding;
 use super::rollback::StartupRollback;
+use super::telemetry::DerivedRouteObservationBinding;
 
 pub(super) struct PreparedEndpointBinding {
     pub(super) identities: Vec<(RouteId, EndpointId)>,

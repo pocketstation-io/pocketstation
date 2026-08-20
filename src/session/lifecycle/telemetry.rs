@@ -1,4 +1,4 @@
-//! Runtime observation handles and their finalized Session-level snapshots.
+//! Runtime observation bindings and finalized Session-level snapshots.
 
 use crate::capture::CaptureObservationReceipt;
 use crate::endpoint::EndpointDriverObservations;

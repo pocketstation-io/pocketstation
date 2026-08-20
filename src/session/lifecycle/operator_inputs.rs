@@ -1,4 +1,4 @@
-//! Internal projection of operator input-edge observations into Session metrics.
+//! Operator input-edge aggregation and per-port Session metrics.
 
 use super::observations::SessionOperatorInputMetrics;
 use crate::runtime::{EdgeObservations, PlanEdgeObservationHandle, TypedEdgeObservationHandle};
