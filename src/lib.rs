@@ -33,17 +33,17 @@ pub use crate::session::error_code::{
 
 pub use crate::capture::{
     application_capture_available, discover_sources, resolve_query, ActiveCaptureBackend,
-    CallbackCaptureBackend, CaptureAuthorizationSnapshot, CaptureCapabilityState, CaptureDelivery,
-    CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CaptureOpenOutcome,
-    CapturePermissionLifecycle, CapturePermissionTransition, CaptureRuntimeFailure,
-    CaptureRuntimeFailureClass, CaptureScope, CaptureSessionGrant, CaptureSource,
-    CapturedFrameDelivery, CapturedFrameObservationHandle, CapturedFrameSender,
-    CapturedFrameStreamStats, InputDeviceSelector, LocalSourceProvider, PermissionEpoch,
-    PermissionObservation, PreparedCaptureBackend, ProcessTreeScope, SelectorPersistenceScope,
-    SourceGeneration, SourceIdentityStrength, SourceKind, SourceLifecycleEventKind, SourceProvider,
-    SourceQuery, SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventDelivery,
-    SourceRuntimeEventObservationHandle, SourceRuntimeEventObservations, SourceRuntimeEventSender,
-    SourceState, StableSourceId,
+    ApplicationPolicyObservation, CallbackCaptureBackend, CaptureAuthorizationSnapshot,
+    CaptureCapabilityState, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle,
+    CaptureObservations, CaptureOpenOutcome, CapturePermissionLifecycle,
+    CapturePermissionTransition, CaptureRuntimeFailure, CaptureRuntimeFailureClass, CaptureScope,
+    CaptureSessionGrant, CaptureSource, CapturedFrameDelivery, CapturedFrameObservationHandle,
+    CapturedFrameSender, CapturedFrameStreamStats, InputDeviceSelector, LocalSourceProvider,
+    PermissionEpoch, PermissionObservation, PreparedCaptureBackend, ProcessTreeScope,
+    SelectorPersistenceScope, SourceGeneration, SourceIdentityStrength, SourceKind,
+    SourceLifecycleEventKind, SourceProvider, SourceQuery, SourceRecoveryRequirement,
+    SourceRuntimeEvent, SourceRuntimeEventDelivery, SourceRuntimeEventObservationHandle,
+    SourceRuntimeEventObservations, SourceRuntimeEventSender, SourceState, StableSourceId,
 };
 
 /// Reads the current microphone authorization state without prompting.

@@ -65,7 +65,7 @@ pub(crate) fn register_session_graph_nodes_with_sample_spec(
             SYSTEM_MIX_SOURCE_NODE_TYPE_ID,
             "System Mix Capture Ingress",
             sample_spec,
-            channel_layout_for(sample_spec),
+            ChannelLayout::Stereo,
         )),
         Arc::new(AudioIngressFactory::new(
             EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID,
