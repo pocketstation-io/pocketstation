@@ -558,7 +558,6 @@ impl SessionSpec {
         }
 
         let mut route_ids = HashSet::with_capacity(self.connections.len());
-        let mut connected_inputs = HashSet::with_capacity(self.connections.len());
         for connection in &self.connections {
             if !route_ids.insert(connection.route_id) {
                 return Err(SessionError::InvalidRoute {
@@ -655,15 +654,6 @@ impl SessionSpec {
                         return Err(SessionError::InvalidOperator {
                             reason: "operator input port cannot be empty".to_owned(),
                         });
-                    }
-                    if let Some(input_port) = input_port {
-                        if !connected_inputs.insert((*operator_instance_id, input_port.clone())) {
-                            return Err(SessionError::InvalidOperator {
-                                reason: format!(
-                                    "operator instance {operator_instance_id:?} input port '{input_port}' is connected more than once"
-                                ),
-                            });
-                        }
                     }
                 }
             }

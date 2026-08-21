@@ -227,23 +227,11 @@ impl SessionDraft {
                 reason: "operator input port cannot be empty".to_owned(),
             });
         }
-        if let Some(input_port) = &input_port {
-            if self.connections.iter().any(|connection| {
-                matches!(
-                    &connection.target,
-                    ConnectionTarget::OperatorInput {
-                        operator_instance_id: target_instance_id,
-                        input_port: Some(target_port),
-                    } if *target_instance_id == operator_instance_id && target_port == input_port
-                )
-            }) {
-                return Err(SessionError::InvalidOperator {
-                    reason: format!(
-                        "operator instance {operator_instance_id:?} input port '{input_port}' is already connected"
-                    ),
-                });
-            }
-        }
+        // The declaration layer intentionally does not reject repeated named
+        // inputs. Multiplicity belongs to the registered Operator manifest,
+        // which is authoritative only during compilation. The compiler
+        // rejects fan-in for `Multiplicity::One` and accepts it for
+        // `Multiplicity::Many`.
         let route_id = self.allocate_route_id()?;
         self.connections.push(ConnectionDraft {
             route_id,

@@ -110,7 +110,7 @@ fn given_through_sugar_when_frozen_then_canonical_instance_and_connection_record
 }
 
 #[test]
-fn given_duplicate_named_input_when_connected_then_declaration_fails_immediately() {
+fn given_repeated_named_input_when_declared_then_compiler_retains_multiplicity_authority() {
     let session = Session::new();
     let application = session
         .capture(Source::application(ApplicationSelector::name(
@@ -127,9 +127,30 @@ fn given_duplicate_named_input_when_connected_then_declaration_fails_immediately
         .connect(declared.input("audio").expect("input"))
         .expect("first connection");
 
-    let result = microphone.connect(declared.input("audio").expect("same input"));
+    microphone
+        .connect(declared.input("audio").expect("same input"))
+        .expect("second declaration");
+    declared
+        .output("transcript")
+        .expect("operator output")
+        .send(endpoint(&session, "fan-in"))
+        .expect("operator destination");
 
-    assert!(matches!(result, Err(SessionError::InvalidOperator { .. })));
+    let spec = session.freeze().expect("uncompiled specification");
+    let connections = spec
+        .connections()
+        .iter()
+        .filter(|connection| {
+            matches!(
+                connection.target(),
+                ConnectionTarget::OperatorInput {
+                    operator_instance_id,
+                    input_port: Some(input_port),
+                } if *operator_instance_id == declared.instance_id() && input_port == "audio"
+            )
+        })
+        .count();
+    assert_eq!(connections, 2);
 }
 
 #[test]
