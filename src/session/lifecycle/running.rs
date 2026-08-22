@@ -1841,7 +1841,6 @@ fn prepare_and_open_captures(
         let binding = match stem.source() {
             Source::Application(_) => backends.application,
             Source::Microphone(_) => backends.microphone,
-            Source::SystemMix => backends.application,
         };
         let request = CapturePrepareRequest {
             mode: capture_mode(stem.source()),
@@ -1960,7 +1959,6 @@ fn capture_mode(source: &Source) -> CaptureMode {
         Source::Microphone(DeviceSelector::Id(device_id)) => {
             CaptureMode::InputDevice(InputDeviceSelector::StableId(device_id.as_str().to_owned()))
         }
-        Source::SystemMix => CaptureMode::SystemMix,
     }
 }
 
@@ -2622,10 +2620,5 @@ mod selector_tests {
                 stable_id,
             }
         );
-    }
-
-    #[test]
-    fn given_system_mix_source_when_capture_mode_built_then_loopback_is_requested() {
-        assert_eq!(capture_mode(&Source::system_mix()), CaptureMode::SystemMix);
     }
 }

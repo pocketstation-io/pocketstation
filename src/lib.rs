@@ -131,6 +131,8 @@ pub use crate::session::SessionCompileDiagnostic;
 pub use crate::session::{
     session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations,
     SessionRecordingOutcome, SessionRecordingState, SessionRecordingStemOutcome,
+    DEFAULT_MULTISTEM_RECORDING_GROUP_ID, SESSION_RECORDING_MANIFEST_FILE_NAME,
+    SESSION_RECORDING_MANIFEST_SCHEMA_VERSION,
 };
 
 pub use crate::frame::{

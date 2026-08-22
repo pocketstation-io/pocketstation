@@ -140,13 +140,7 @@ fn given_two_clock_mapped_stems_when_finished_then_two_aligned_playable_wavs_are
     .unwrap();
     let outcome = recording.finish().unwrap();
 
-    assert_eq!(outcome.session_id, SessionId(42));
-    assert_eq!(outcome.group_id.as_str(), "recording.test.v1");
-    assert_eq!(
-        outcome.manifest_path,
-        outcome.session_dir.join("manifest.json")
-    );
-    assert_eq!(outcome.manifest_schema_version, 1);
+    assert!(outcome.session_dir.join("manifest.json").is_file());
     assert_eq!(outcome.state, RecordingState::Complete);
     assert_eq!(outcome.completed_stems, 2);
     for label in ["application", "microphone"] {

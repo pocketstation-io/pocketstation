@@ -22,6 +22,10 @@ pub const RECORDER_OPERATOR_ID: &str = "io.pocketstation.recording.wav-stems.v1"
 #[cfg(any(test, feature = "internal-testing"))]
 pub const RECORDING_GROUP_CONFIGURATION_KEY: &str = MULTISTEM_GROUP_CONFIGURATION_KEY;
 pub const DEFAULT_MULTISTEM_RECORDING_GROUP_ID: &str = "session.multistem.default.v1";
+pub const SESSION_RECORDING_MANIFEST_FILE_NAME: &str =
+    crate::recording::RECORDING_MANIFEST_FILE_NAME;
+pub const SESSION_RECORDING_MANIFEST_SCHEMA_VERSION: u32 =
+    crate::recording::RECORDING_MANIFEST_SCHEMA_VERSION;
 
 #[derive(Clone)]
 pub struct SessionRecordingReceipt {

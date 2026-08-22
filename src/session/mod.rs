@@ -53,7 +53,8 @@ pub use extensions::{
 };
 pub use extensions::{
     session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations,
-    SessionRecordingState, SessionRecordingStemOutcome,
+    SessionRecordingState, SessionRecordingStemOutcome, DEFAULT_MULTISTEM_RECORDING_GROUP_ID,
+    SESSION_RECORDING_MANIFEST_FILE_NAME, SESSION_RECORDING_MANIFEST_SCHEMA_VERSION,
 };
 pub use extensions::{
     PreparedSourceRuntime, SourceConfiguration, SourceOutputBranchSpec, SourceOutputIdentity,
@@ -69,8 +70,7 @@ pub use extensions::{
 };
 #[cfg(any(test, feature = "internal-testing"))]
 pub use extensions::{
-    DEFAULT_MULTISTEM_RECORDING_GROUP_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID,
-    RECORDING_GROUP_CONFIGURATION_KEY,
+    RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, RECORDING_GROUP_CONFIGURATION_KEY,
 };
 pub use lifecycle::SessionTraceRecorderHandle;
 #[cfg(any(test, feature = "internal-testing"))]

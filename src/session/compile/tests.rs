@@ -849,26 +849,6 @@ fn given_exact_process_instance_when_lowered_then_typed_declaration_remains_auth
 }
 
 #[test]
-fn given_system_mix_when_lowered_then_it_is_a_built_in_audio_source() {
-    let session = Session::new();
-    let system_mix = session
-        .capture(Source::system_mix())
-        .expect("system-mix declaration");
-    let browser = session
-        .browser("wss://receiver.example.test")
-        .expect("browser declaration");
-    system_mix.send(browser).expect("browser route");
-
-    let spec = session.freeze().expect("system-mix spec");
-    assert!(matches!(spec.stems()[0].source(), Source::SystemMix));
-
-    let (node_registry, endpoint_registry) = registries();
-    SessionCompiler::new(&node_registry, &endpoint_registry)
-        .compile(spec)
-        .expect("system-mix graph compiles through the built-in source path");
-}
-
-#[test]
 fn given_unknown_operator_port_when_diagnosed_then_location_is_structured() {
     let error = SessionCompileError::UnknownOperatorPort {
         operator_id: TEST_NAMED_OPERATOR_ID.to_owned(),

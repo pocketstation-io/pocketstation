@@ -160,11 +160,7 @@ mod tests {
     #[test]
     fn given_terminal_failure_when_projected_then_code_is_typed() {
         let incomplete = RecordingOutcome {
-            session_id: crate::frame::SessionId(1),
-            group_id: crate::endpoint::EndpointGroupId::new("recording.test.v1"),
             session_dir: std::path::PathBuf::from("session-1"),
-            manifest_path: std::path::PathBuf::from("session-1/manifest.json"),
-            manifest_schema_version: 1,
             state: RecordingState::Incomplete,
             completed_stems: 0,
             failed_stems: 1,

@@ -14,7 +14,8 @@ use crate::runtime::{EdgeObservations, PlanEdgeFrame, PlanEdgeReceiver};
 use hound::{SampleFormat as WavSampleFormat, WavSpec, WavWriter};
 use serde::Serialize;
 
-const RECORDING_MANIFEST_SCHEMA_VERSION: u32 = 1;
+pub(crate) const RECORDING_MANIFEST_FILE_NAME: &str = "manifest.json";
+pub(crate) const RECORDING_MANIFEST_SCHEMA_VERSION: u32 = 1;
 const WORKER_IDLE_WAIT_MS: u64 = 1;
 const MAX_MANIFEST_GAPS: usize = 1_024;
 const MAX_SILENCE_GAP_NS: u64 = 3_600_000_000_000; // one hour
@@ -109,11 +110,7 @@ pub enum DiscontinuityKind {
 
 #[derive(Debug, Clone)]
 pub struct RecordingOutcome {
-    pub session_id: SessionId,
-    pub group_id: crate::endpoint::EndpointGroupId,
     pub session_dir: PathBuf,
-    pub manifest_path: PathBuf,
-    pub manifest_schema_version: u32,
     pub state: RecordingState,
     pub completed_stems: usize,
     pub failed_stems: usize,
@@ -345,11 +342,7 @@ impl MultistemRecording {
             .collect();
         self.finished = true;
         Ok(RecordingOutcome {
-            session_id: self.session_id,
-            group_id: self.group_id.clone(),
             session_dir: self.session_dir.clone(),
-            manifest_path: self.session_dir.join("manifest.json"),
-            manifest_schema_version: RECORDING_MANIFEST_SCHEMA_VERSION,
             state,
             completed_stems,
             failed_stems,
@@ -1249,7 +1242,7 @@ fn write_summary(session_dir: &Path, manifest: &ManifestDocument) -> Result<(), 
 }
 
 fn write_manifest(session_dir: &Path, manifest: &ManifestDocument) -> Result<(), RecorderError> {
-    write_json_atomic(&session_dir.join("manifest.json"), manifest)
+    write_json_atomic(&session_dir.join(RECORDING_MANIFEST_FILE_NAME), manifest)
 }
 
 fn write_json_atomic(path: &Path, value: &impl Serialize) -> Result<(), RecorderError> {

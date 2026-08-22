@@ -22,7 +22,6 @@ use crate::session::{EndpointSpec, OperatorInstanceId, SessionSpec, Source, Stem
 const AUDIO_PORT: &str = "audio";
 pub const APPLICATION_SOURCE_NODE_TYPE_ID: &str = "source.application";
 pub const MICROPHONE_SOURCE_NODE_TYPE_ID: &str = "source.microphone";
-const SYSTEM_MIX_SOURCE_NODE_TYPE_ID: &str = "source.system_mix";
 pub(crate) const EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID: &str = "source.external_audio_ingress";
 pub(crate) const GENERATED_AUDIO_INGRESS_NODE_TYPE_ID: &str = "source.generated_audio_ingress";
 pub(crate) const GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID: &str = "bridge.generated_audio";
@@ -60,12 +59,6 @@ pub(crate) fn register_session_graph_nodes_with_sample_spec(
             "Microphone Capture Ingress",
             sample_spec,
             ChannelLayout::Mono,
-        )),
-        Arc::new(AudioIngressFactory::new(
-            SYSTEM_MIX_SOURCE_NODE_TYPE_ID,
-            "System Mix Capture Ingress",
-            sample_spec,
-            ChannelLayout::Stereo,
         )),
         Arc::new(AudioIngressFactory::new(
             EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID,
@@ -133,7 +126,6 @@ impl SessionGraphLowerer for BuiltinSourceLowerer {
             let node_type_id = match stem.source() {
                 Source::Application(_) => NodeTypeId::from(APPLICATION_SOURCE_NODE_TYPE_ID),
                 Source::Microphone(_) => NodeTypeId::from(MICROPHONE_SOURCE_NODE_TYPE_ID),
-                Source::SystemMix => NodeTypeId::from(SYSTEM_MIX_SOURCE_NODE_TYPE_ID),
             };
             let source_node = context.pipeline.add_node(node_type_id, NodeConfig::new());
             context.bindings.insert_node(
@@ -561,7 +553,6 @@ mod tests {
         let expected_node_type_ids = [
             APPLICATION_SOURCE_NODE_TYPE_ID,
             MICROPHONE_SOURCE_NODE_TYPE_ID,
-            SYSTEM_MIX_SOURCE_NODE_TYPE_ID,
             EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID,
             GENERATED_AUDIO_INGRESS_NODE_TYPE_ID,
             GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID,

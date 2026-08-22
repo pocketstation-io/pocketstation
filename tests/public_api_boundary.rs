@@ -10,7 +10,7 @@ use pocketstation::{
     PolledAudioBatchLease, PolledAudioPollError, PreparedCaptureBackend, PreparedEndpointDriver,
     RunningEndpointDriver, RunningSession, Session, SessionComponentId, SessionLifecycleState,
     SessionTraceRecord, SessionTraceRecordKind, SessionTraceTerminal, SharedAudioBufferHandle,
-    SharedAudioFrame, SignalEnvelope, Source, SourceDriver, SourceFactory, Stream,
+    SharedAudioFrame, SignalEnvelope, SourceDriver, SourceFactory, Stream,
 };
 
 fn accepts_public_contract<T: ?Sized>() {}
@@ -45,30 +45,11 @@ fn given_supported_contracts_when_named_from_crate_root_then_they_compile() {
     accepts_public_contract::<SessionTraceRecordKind>();
     accepts_public_contract::<SessionTraceTerminal>();
 
-    let _ = Source::system_mix();
     let _: fn(&RunningSession) -> SessionLifecycleState = RunningSession::state;
     let _: fn(
         &RunningSession,
         std::time::Duration,
     ) -> Result<Option<PolledAudioBatchLease>, PolledAudioPollError> = RunningSession::wait_audio;
-}
-
-#[cfg(feature = "conformance-fixtures")]
-#[test]
-fn given_system_mix_when_started_then_audio_reaches_the_canonical_receipt() {
-    let session = pocketstation::conformance::session().expect("conformance Session");
-    let system_mix = session
-        .capture(Source::system_mix())
-        .expect("declare system mix");
-    let receipt = session.polled_audio().expect("declare polled audio");
-    system_mix.send(receipt).expect("route system mix");
-
-    let mut running = session.start().expect("start system mix Session");
-    let batch = running
-        .wait_audio(std::time::Duration::from_secs(2))
-        .expect("wait for system mix audio");
-    assert!(batch.is_some());
-    assert!(running.stop().is_success());
 }
 
 #[test]

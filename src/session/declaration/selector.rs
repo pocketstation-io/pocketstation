@@ -134,7 +134,6 @@ impl DeviceSelector {
 pub enum Source {
     Application(ApplicationSelector),
     Microphone(DeviceSelector),
-    SystemMix,
 }
 
 impl Source {
@@ -150,17 +149,10 @@ impl Source {
         Self::Microphone(DeviceSelector::default())
     }
 
-    /// Captures the platform system output mix when the active native backend
-    /// supports loopback capture.
-    pub const fn system_mix() -> Self {
-        Self::SystemMix
-    }
-
     pub(crate) fn validate(&self) -> Result<(), SessionError> {
         match self {
             Self::Application(selector) => selector.validate(),
             Self::Microphone(selector) => selector.validate(),
-            Self::SystemMix => Ok(()),
         }
     }
 }
