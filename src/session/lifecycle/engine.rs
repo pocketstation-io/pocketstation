@@ -22,7 +22,7 @@ use crate::session::{
     SessionPrepareError, SessionStartFailure, SessionStartOptions, SessionTraceRecorderHandle,
 };
 
-/// Setup-time builder for one canonical Session composition environment.
+/// Registers the components and runtime configuration for one Session.
 ///
 /// The builder owns only registration and runtime configuration. Concrete
 /// capture and endpoint implementations enter through their existing contracts
@@ -119,7 +119,7 @@ impl SessionEngineBuilder {
         Ok(self)
     }
 
-    /// Retains one externally implemented sidecar under the canonical Session
+    /// Retains one externally implemented sidecar under the Session
     /// lifecycle. IDs are unique within the engine so observations and
     /// shutdown failures remain attributable without process-global state.
     pub fn register_sidecar_process(

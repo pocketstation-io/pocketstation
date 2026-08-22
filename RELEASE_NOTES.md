@@ -5,8 +5,8 @@ audio `Session`.
 
 ## Scope of the 1.x line
 
-The core workflow captures one desktop application and one microphone once,
-keeps them as independent stems, and fans them out concurrently to Operators,
+The core workflow keeps one desktop application and one microphone as
+independent stems while a Session routes them concurrently to Operators,
 application callbacks, remote delivery, and aligned multistem recording.
 
 The stable execution contract preserves source, stream, stem, sequence,
@@ -31,9 +31,14 @@ redefining the accepted Core contract. Rust API changes follow SemVer. The C
 ABI uses versioned, size-prefixed records. PKSS frames carry explicit protocol
 versions and stable `SignalSpec` identities.
 
+During the 1.x line, a new provider, model, customer workflow, or exporter
+belongs in an extension rather than a new Core category whenever the public
+contracts can express it.
+
 The extension-first Core freeze is active from 2026-08-13 through 2028-08-13.
-A new provider, model, customer workflow, or exporter belongs in an extension
-rather than a new Core category whenever the 1.x contracts can express it.
+During that period, additions use the existing open boundaries unless a
+reviewed compatibility change shows that those contracts cannot express the
+task.
 
 ## What ships in 1.x
 
@@ -56,11 +61,10 @@ rather than a new Core category whenever the 1.x contracts can express it.
 - Non-prompting microphone permission observation where the operating system
   exposes an authoritative query. `NotObservable` remains unknown; selected
   source prepare/open is authoritative on every platform.
-- A self-contained Core release gate, exact-version publication recovery, a
-  compiling public quickstart, extension guidance, platform prerequisites,
-  and explicit evidence boundaries.
+- A compiling public quickstart, extension guidance, platform prerequisites,
+  compatibility checks, and scoped evidence.
 
 Realtime callbacks remain allocation-free, lock-free, blocking-free,
-async-free, log-free, and panic-free by contract and accepted gates. Evidence
-classifications remain exact; 1.x does not claim universal platform parity or
-overall performance superiority.
+async-free, log-free, and panic-free by contract and repository checks. Each
+evidence artifact names its environment; 1.x does not claim universal platform
+parity or overall performance superiority.

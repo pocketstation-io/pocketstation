@@ -22,9 +22,9 @@ use crate::session::{
     SessionMetricsSnapshot, SessionRecordingReceipt, SessionStartCancellation, SessionStartOptions,
 };
 
-/// Safe host-owned Session environment for foreign-language adapters.
+/// Owns the native Session resources projected to language adapters.
 ///
-/// The host owns the real capture backends, the canonical Session engine, and
+/// The host owns the capture backends, the Session engine, and
 /// any bounded polled-audio receipts registered for foreign retention. Future
 /// portability layers can project this owner without inventing a second
 /// lifecycle or media-runtime authority.
@@ -43,7 +43,7 @@ impl SessionEngineHost {
         build_native_host(options, None)
     }
 
-    /// Builds the native Session host with one canonical multistem recorder.
+    /// Builds a native Session host with one multistem recorder.
     #[cfg(any(test, feature = "internal-testing"))]
     pub fn native_with_multistem_recording(
         options: NativeSessionEngineHostOptions,
@@ -179,9 +179,9 @@ impl Default for NativeSessionEngineHostOptions {
     }
 }
 
-/// Setup-time owner for the canonical Session host.
+/// Builds a Session host from caller-owned or native capture backends.
 ///
-/// This builder deliberately mirrors the engine's real registration seams while
+/// This builder exposes the engine registration boundaries while
 /// also requiring the two concrete capture backends needed by the current
 /// product slice. The portable C surface can depend on this owner without
 /// synthesizing a parallel runtime.
@@ -279,7 +279,7 @@ impl SessionEngineHostBuilder {
     }
 
     /// Registers one externally owned endpoint implementation with the
-    /// canonical Session engine.
+    /// Session engine.
     pub fn register_audio_endpoint_driver(
         &mut self,
         operator_id: OperatorId,

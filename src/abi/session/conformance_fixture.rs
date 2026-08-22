@@ -131,7 +131,7 @@ fn conformance_host(
 }
 
 #[unsafe(no_mangle)]
-/// Creates a deterministic canonical engine for the non-production C harness.
+/// Creates a deterministic Session engine for the C conformance harness.
 ///
 /// # Safety
 ///

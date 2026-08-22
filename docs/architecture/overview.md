@@ -1,8 +1,9 @@
-# Current architecture
+# How a Session owns and routes audio
 
-PocketStation is a developer-facing execution model for source-aware live
-media, shipped as one Cargo package and one native library. The public center
-is `Session`; internal module boundaries retain single semantic ownership.
+Use this concept page to decide which PocketStation boundary should own new
+work. PocketStation ships as one Cargo package and one native library. The
+public lifecycle begins at `Session`; internal modules keep one owner for each
+execution concern.
 
 ```text
 authorized application / microphone / external source
@@ -37,7 +38,7 @@ or generic type crosses the C ABI or sidecar protocol.
 Core owns execution primitives. Providers, customer protocols, export formats,
 application policy, and business logic are external extensions.
 
-## Why the boundary matters
+## Choose the owning boundary
 
 Application capture, media graphs, bounded queues, and native extension
 mechanisms are established systems primitives. PocketStation's useful boundary
@@ -56,6 +57,7 @@ capture + source lineage + Session compilation
         + Rust, C, and sidecar projections
 ```
 
-This is the architectural claim. Novelty, universal platform parity, and
-overall superiority are separate evidence questions and are not inferred from
-the existence of the implementation.
+Use the [Connector guide](../guides/connectors.md) for an outbound provider, or
+the [extension guide](../guides/extensions.md) for another Source, Operator,
+Endpoint, native library, or managed process. Platform and network behavior
+remain limited to the environments named by their evidence.

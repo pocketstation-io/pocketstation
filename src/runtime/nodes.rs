@@ -1,6 +1,6 @@
 //! First-party CLI realtime nodes retained behind `internal-testing`.
 //!
-//! These are concrete bounded nodes executed by the canonical realtime plan;
+//! These concrete bounded nodes execute on the realtime plan;
 //! they are not a second runtime and are not part of the stable SDK surface.
 
 use std::sync::atomic::{AtomicU64, Ordering};

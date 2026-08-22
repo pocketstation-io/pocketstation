@@ -6,8 +6,8 @@ every listed public type layout, the append-only executable-extension callback
 table prefix, exported symbols, and an exact PKSS 1.0 wire vector.
 
 `tools/check-api-compatibility.sh` runs pinned `cargo-semver-checks` against the
-hash-pinned packaged predecessor from accepted final-candidate
-requalification. It checks the normal/default Rust API only; the
+hash-pinned packaged predecessor selected for the compatibility check. It
+checks the normal/default Rust API only; the
 `internal-testing` feature is intentionally not a product compatibility
 contract.
 

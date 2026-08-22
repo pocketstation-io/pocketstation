@@ -8,7 +8,7 @@ customer boundary without adding that provider to Core.
 
 Implement `ConnectorDriverFactory` to validate and acquire provider
 resources, then return one `ConnectorDriver`. Core owns bounded input polling,
-delivery accounting, drain/abort, and the canonical Endpoint transaction:
+delivery accounting, drain/abort, and the Endpoint transaction:
 
 ```rust,no_run
 use std::sync::Arc;
@@ -64,7 +64,7 @@ private adapter supplies:
 - panic containment and terminal error classification;
 - preparation cancellation;
 - joined shutdown; and
-- canonical `EndpointDriverObservations` for delivery accounting.
+- `EndpointDriverObservations` for delivery accounting.
 
 The driver adapter consumes the bounded `EndpointPortInput` receivers. The
 provider handles typed `ConnectorItem` values and returns an explicit delivered
@@ -120,7 +120,7 @@ their actual retry/backoff protocol and must keep it finite. Core does not
 pretend to enforce an unused generic retry policy.
 
 `RegisteredConnector::observations` returns provider observations beside the
-canonical Endpoint observations. Session route metrics remain authoritative
+Endpoint observations. Session route metrics remain authoritative
 for queue capacity, backpressure, and route drops.
 
 ## Grouping and shutdown
@@ -159,9 +159,9 @@ JavaScript code can author an audio connector until a versioned managed/native
 audio boundary and cross-language conformance suite exist.
 
 Enable `conformance-fixtures` and execute the deterministic Session fixtures in
-`pocketstation::conformance` against the package's real `Connector`
+`pocketstation::conformance` against the package's `Connector`
 registration. Connector does not publish a second conformance namespace. A
 checklist or self-reported result is not conformance. Core component
-conformance is not provider proof: a supported package must also test its real
-authentication, network setup, readiness, reconnect, multi-bus delivery, and
+conformance is not provider proof: a supported package must also test
+authentication, network setup, readiness, reconnect, multi-bus delivery, and a
 receiver-visible outcome in its owning repository.

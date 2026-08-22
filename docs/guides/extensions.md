@@ -35,10 +35,9 @@ sidecar protocol transports those identities and bounded payloads across a
 process boundary. Rust `TypeId` and generic parameters never cross either
 boundary.
 
-The installed-consumer conformance artifact proves these contracts from a
-published package in a clean repository. Its `LOOPBACK-ONLY` classification is
-specific and intentional: it proves packaging and execution, not a remote or
-physical-device deployment.
+The installed-consumer conformance artifact verifies these contracts from a
+published package in a clean repository. Its `LOOPBACK-ONLY` classification
+covers packaging and execution, not a remote or physical-device deployment.
 
 ## Trusted native dynamic libraries
 

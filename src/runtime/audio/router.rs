@@ -555,11 +555,11 @@ impl PlanEdgeReceiver {
             .map(PlanEdgeReceipt::into_frame)
     }
 
-    /// Pops one queued frame before sampling the canonical process clock.
+    /// Pops one queued frame before sampling the monotonic process clock.
     ///
     /// Callers that sample time before attempting the pop can race a producer:
     /// an empty queue may receive a new frame between the timestamp read and the
-    /// pop, manufacturing a receive-before-enqueue observation. Production
+    /// pop, manufacturing a receive-before-enqueue observation. Runtime
     /// destination workers must use this method. The internal `recv_at` method
     /// remains only for deterministic schedulers and runtime tests that already
     /// own a valid timestamp.

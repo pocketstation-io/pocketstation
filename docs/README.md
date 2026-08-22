@@ -1,28 +1,36 @@
 # PocketStation developer documentation
 
-PocketStation captures a desktop application and microphone once, preserves
-them as independent source-aware stems, and fans them out through one bounded
-`Session` to application code, external Operators, remote delivery, and
-multistem recording.
+Use these pages to build, understand, and operate a source-aware PocketStation
+`Session`. Start with a runnable task, then move to concepts and reference as
+your integration requires them.
 
-The central contract preserves provenance, timing, discontinuities,
-backpressure, lifecycle, and failure observations across realtime audio, typed
-signals, Rust, C, and process sidecars. Use these guides to build on that
-contract without creating a second media runtime inside each integration.
+## Get started
 
-## Start here
+- [Capture an application and microphone in Rust](getting-started/rust-quickstart.md)
 
-- [Rust quickstart](getting-started/rust-quickstart.md)
-- [Current architecture](architecture/overview.md)
-- [Signals and typed streams](concepts/signals-and-streams.md)
-- [External extensions](guides/extensions.md)
-- [Compatibility](compatibility/README.md)
+## Develop
 
-## Contract hierarchy
+- [Build a Connector](guides/connectors.md)
+- [Add a Source, Operator, Endpoint, or process extension](guides/extensions.md)
 
-The public API, release notes, compatibility reference, and current guides
-describe shipping behavior. Internal engineering records are maintained
-outside the public repository and do not define the public API.
+## Understand the system
 
-Product claims are evidence-scoped. Passing component or loopback tests does
-not establish physical-device, cross-network, or cross-platform parity.
+- [Session architecture and ownership](architecture/overview.md)
+- [Signals, streams, lineage, and runtime identity](concepts/signals-and-streams.md)
+
+## Operate and upgrade
+
+- [Compatibility and version boundaries](compatibility/README.md)
+- [Release notes](../RELEASE_NOTES.md)
+
+## Reference
+
+- [Rust API on docs.rs](https://docs.rs/pocketstation/latest/pocketstation/)
+- [C header](../include/pocketstation.h)
+
+The public API, current guides, compatibility page, and release notes describe
+the shipped contract. Architecture snapshots, progress files, and engineering
+records are maintainer material and do not override the current API.
+
+Evidence is scoped to the environment named by each artifact. Component tests
+do not establish physical-device, cross-network, or cross-platform behavior.

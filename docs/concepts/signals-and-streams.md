@@ -1,6 +1,7 @@
-# Signals and streams
+# How signals and streams preserve runtime identity
 
-PocketStation deliberately separates SDK ergonomics from runtime identity.
+Use a typed `Stream<T>` to catch composition errors in Rust. Use `SignalSpec`
+and `SignalEnvelope` when you need runtime or cross-language identity.
 
 `Stream<T>` is a Rust declaration wrapper. An external package implements
 `StreamSignal` for its own marker type and returns a validated `SignalSpec`.
@@ -8,7 +9,9 @@ PocketStation deliberately separates SDK ergonomics from runtime identity.
 operator manifest's selected named ports. Invalid composition fails before the
 Session starts.
 
-At runtime, the engine uses stable contracts:
+## Runtime contracts
+
+At runtime, the engine uses:
 
 - `SignalSpec`: class, stable custom identifier, semantic role, and schema;
 - `SignalEnvelope`: payload plus source-independent lineage and timing;
@@ -24,3 +27,9 @@ they do not receive Rust's `T`.
 
 `AudioFrame` remains the optimized realtime representation. It is not replaced
 by a universal generic envelope.
+
+## Continue developing
+
+- [Build a Connector](../guides/connectors.md)
+- [Add a Source, Operator, or Endpoint](../guides/extensions.md)
+- [Read the Session architecture](../architecture/overview.md)

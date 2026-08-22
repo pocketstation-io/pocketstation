@@ -1,13 +1,11 @@
 # PocketStation
 
-**Capture once. Keep every source. Build the live media pipeline your
-application needs.**
+Build source-aware desktop audio workflows in Rust.
 
-PocketStation gives Rust developers one `Session` for capturing a desktop
-application and microphone as independent, source-aware live stems. The same
-capture can flow concurrently to AI Operators, application callbacks, a remote
-receiver, and aligned multistem recording without moving application or model
-work onto the audio callback.
+PocketStation provides one `Session` for a desktop application, a microphone,
+and application-owned PCM. Each source remains independently identifiable while
+the Session routes it to Operators, outbound Endpoints, application code, and
+multistem recording.
 
 [![crates.io](https://img.shields.io/crates/v/pocketstation.svg)](https://crates.io/crates/pocketstation)
 [![docs.rs](https://img.shields.io/docsrs/pocketstation)](https://docs.rs/pocketstation/latest/pocketstation/)
@@ -15,31 +13,63 @@ work onto the audio callback.
 
 ```text
 desktop application ─┐
-                     ├─ capture once ─ source-aware Session ─┬─ AI / model connector
-microphone ──────────┘                                       ├─ browser / remote receiver
-                                                             └─ aligned multistem recording
+microphone ──────────┼─ source-aware Session ─┬─ Operator
+application PCM ─────┘                        ├─ Endpoint or Connector
+                                             ├─ application polling
+                                             └─ multistem recording
 ```
 
-Build workflows such as:
+## Get started
 
-- live translation or captioning that keeps application speech and microphone
-  speech distinguishable;
-- meeting agents and copilots that send the same live stems to inference,
-  monitoring, transport, and recording;
-- support, accessibility, and QA tools that isolate a slow or failed
-  destination instead of stalling every branch;
-- speech-to-speech systems that return generated PCM through an explicit
-  bounded Bridge;
-- native and managed integrations that participate in the same Session
-  lifecycle rather than building another media runtime.
+You need Rust 1.95 or newer. Native capture is enabled by default.
 
-## Contract
+```toml
+[dependencies]
+pocketstation = "1.1.1"
+```
 
-PocketStation does not reduce live media to an anonymous `AudioFrame`. Its
-execution contract keeps the information needed to reason about a running
-system:
+Clone this repository and build the product quickstart:
 
-| Contract | What remains explicit |
+```bash
+cargo build --release --example product_quickstart --locked
+```
+
+The example declares one application and the default microphone, observes both
+stems, and finalizes a two-stem recording. Running it also requires the named
+application, operating-system capture permission, and an available microphone:
+
+```bash
+cargo run --release --example product_quickstart --locked
+```
+
+It stops after observing both stems or returns a typed setup/runtime failure.
+Completed recordings are written under `pocketstation-recordings/`. See the
+[Rust quickstart](docs/getting-started/rust-quickstart.md) for native
+prerequisites, expected results, and cleanup.
+
+For contracts-only tooling or documentation builds, disable native capture:
+
+```toml
+pocketstation = { version = "1.1.1", default-features = false }
+```
+
+## Choose a task
+
+| Task | Start with |
+|---|---|
+| Capture a desktop application or microphone | [`Session::capture`](https://docs.rs/pocketstation/latest/pocketstation/struct.Session.html#method.capture) |
+| Ingest PCM your application already owns | `Session::audio_input` and `PcmSource` |
+| Process media or typed signals | `Operator` and named ports |
+| Publish to an external system | [`Connector` guide](docs/guides/connectors.md) |
+| Add a source, computation, or destination | [`Extension` guide](docs/guides/extensions.md) |
+| Inspect lineage and delivery behavior | [`Signals and streams`](docs/concepts/signals-and-streams.md) |
+
+## Understand the Session contract
+
+PocketStation keeps the following information explicit as work moves between
+realtime audio and off-realtime integrations:
+
+| Contract | Available information |
 |---|---|
 | Provenance | source, stream, and stem identity |
 | Time | sequence, timestamp, clock, and derivation |
@@ -47,214 +77,98 @@ system:
 | Delivery | route capacity, backpressure, copy, and loss policy |
 | Operations | queue depth, saturation, drops, failures, cancellation, and final outcome |
 
-Those semantics remain coherent as work crosses realtime audio, typed signals,
-Rust, the versioned C ABI, and bounded process sidecars. Each integration uses
-the same compiler, lifecycle, observations, and failure model.
-
-## Install
-
-```toml
-[dependencies]
-pocketstation = "1.0.0"
-```
-
-PocketStation requires Rust 1.95 or newer. Native capture is enabled by
-default. A contracts-only build for documentation or tooling can disable it:
-
-```toml
-pocketstation = { version = "1.0.0", default-features = false }
-```
-
-## Quick start
-
-This Session captures one named desktop application and the default microphone,
-keeps them as separate stems, exposes bounded audio polling, and records both
-stems.
-
-```rust,no_run
-use pocketstation::{ApplicationSelector, Session, SessionRecordingState, Source};
-use std::error::Error;
-use std::time::{Duration, Instant};
-
-fn main() -> Result<(), Box<dyn Error>> {
-    let session = Session::builder()
-        .recording_root("recordings")
-        .build();
-
-    let application = session.capture(Source::application(
-        ApplicationSelector::name("PocketStation Demo"),
-    ))?;
-    let microphone = session.capture(Source::microphone_default())?;
-
-    application.send(session.polled_audio()?)?;
-    microphone.send(session.polled_audio()?)?;
-    application.record("application")?;
-    microphone.record("microphone")?;
-
-    let mut running = session.start()?;
-    let deadline = Instant::now() + Duration::from_secs(10);
-    while Instant::now() < deadline {
-        if let Ok(batch) = running.try_poll_audio() {
-            for index in 0..batch.len() {
-                let frame = batch.frame(index).expect("valid bounded batch index");
-                println!(
-                    "stem={} source={} sequence={}",
-                    frame.lineage().stem_id().get(),
-                    frame.lineage().source_id().get(),
-                    frame.lineage().sequence_number()
-                );
-            }
-        }
-        std::thread::sleep(Duration::from_millis(1));
-    }
-
-    let stop = running.stop();
-    assert!(stop.is_success());
-    let recording = running.recording_outcome().expect("recording outcome");
-    assert_eq!(recording.state, SessionRecordingState::Complete);
-    Ok(())
-}
-```
-
-The complete compiling example is
-[`examples/product_quickstart.rs`](examples/product_quickstart.rs).
-
-## One Session, two execution lanes
-
 ```text
-OS capture · typed source · generated audio
-                     │
-                     ▼
-        source identity + immutable lineage
-                     │
-                     ▼
-                   Session
-                     │
-             compiled RuntimePlan
-           ┌─────────┴──────────┐
-           ▼                    ▼
-  realtime audio lane     typed signal lane
-  pooled AudioFrame       SignalEnvelope
-           └─────────┬──────────┘
-                     ▼
-          independent bounded routes
-       Operator · Endpoint · recording
-                     │
-                     ▼
-              Rust · C · sidecar
+authorized Source
+      │
+      ▼
+source identity + immutable lineage
+      │
+      ▼
+    Session ── compiled RuntimePlan
+      │
+      ├─ realtime audio lane: pooled AudioFrame
+      └─ typed signal lane: SignalEnvelope
+                │
+                ▼
+      independent bounded routes
+      Operator · Endpoint · recording
 ```
 
-The audio lane is specialized for fixed-capacity, predictable work. The typed
-lane carries text, events, control data, metrics, binary data, and
-schema-identified custom signals. The explicit Bridge between them allows
-async work to produce audio without making a managed runtime or model provider
-part of the capture callback.
+The audio lane uses fixed-capacity pools and bounded realtime crossings. The
+typed lane carries text, events, control data, metrics, binary data, and custom
+signals identified by schema. Generated audio returns to the normal audio plan
+through the bounded reentry Bridge.
 
-`SignalSpec`, lineage, timing, named ports, and edge policy are the stable
-cross-language contract. Operators can be composed without each connector
-inventing its own source identity, buffering, cancellation, or failure
-semantics.
+`Stream<T>` provides Rust declaration-time checking. Runtime and cross-language
+identity comes from `SignalSpec`, lineage, named ports, and edge policy; Rust
+generic types do not cross the C ABI or sidecar protocol.
 
-Rust `Stream<T>` provides compile-time composition. `T` is developer-facing
-metadata; it is not the runtime storage format and never crosses the C ABI or
-sidecar protocol.
+## Extend the engine
 
-## Realtime engineering guarantees
+Provider and customer protocols remain outside the `pocketstation` package.
+Choose the public boundary that owns the work:
 
-Audio callbacks and realtime partitions are designed and gated to remain:
+| Capability | Public contract |
+|---|---|
+| Audio or typed source | `SourceFactory` / `SourceDriver` |
+| Processing stage | `AsyncOperatorFactory` with named ports |
+| Destination | `EndpointDriverFactory` |
+| Provider destination | `ConnectorDriverFactory` / `ConnectorDriver` |
+| Native C integration | versioned callbacks in `pocketstation.h` |
+| Trusted compiled extension | `pks_extension_library_v1` |
+| Managed process | bounded PKSS sidecar lifecycle |
+
+These boundaries use the same Session compiler, lifecycle, observations,
+cancellation, and shutdown. Python, JavaScript, and provider packages must not
+create a second Session or media runtime.
+
+## Operate within explicit bounds
+
+Audio callbacks and realtime partitions are designed and checked to remain:
 
 ```text
 allocation-free · lock-free · blocking-free · async-free · log-free · panic-free
 ```
 
-Audio buffers come from fixed-capacity pools. Realtime crossings use bounded
-SPSC queues. Every route declares capacity, backpressure, loss, clock, copy,
-and observation policy. Saturation is counted or returned as a typed failure;
-it is never hidden behind an unbounded queue.
+Every route declares finite capacity and delivery policy. Saturation is counted
+or returned as a typed outcome; the engine does not replace it with an
+unbounded queue.
 
-## Extend PocketStation
+Applications own operating-system consent UI and source selection. PocketStation
+reports permission, source-loss, discontinuity, saturation, lifecycle, and
+recording outcomes through typed contracts.
 
-PocketStation keeps product and provider behavior outside the engine:
-
-| Build | Public contract |
-|---|---|
-| Audio or typed source | `SourceFactory` / `SourceDriver` |
-| Processing stage | `AsyncOperatorFactory` with named ports |
-| Destination or connector | `EndpointDriverFactory` |
-| Strongly typed Rust pipeline | `Stream<T>` / `TypedOperator<I, O>` |
-| Native C integration | versioned callbacks in `pocketstation.h` |
-| Packaged compiled extension | `pks_extension_library_v1` loaded into the same `Session` |
-| Python, JavaScript, or another managed process | bounded PKSS sidecar lifecycle for out-of-process work |
-
-Operators can be chained, can expose multiple named inputs and outputs, and can
-return generated PCM through the bounded audio-reentry Bridge. Extensions use
-the same Session compiler, runtime, observations, cancellation, and shutdown;
-they do not implement another engine.
-
-Language SDKs bind these same Session authorities. A trusted compiled package
-is loaded only from a canonical absolute path, all registrations are imported
-transactionally, and Core retains its executable library until every callback
-context is destroyed. SDKs do not own a second loader policy or Session
-runtime.
-
-See the [extension guide](docs/guides/extensions.md) and
-[signal model](docs/concepts/signals-and-streams.md). Connector packages also
-have a dedicated [authoring contract and guide](docs/guides/connectors.md):
-typed manifests and configuration, redacted secrets, finite delivery/retry and
-readiness policies, classified errors, observations, and deterministic
-conformance all lower into the existing endpoint lifecycle. Provider protocols
-and dependencies remain outside Core.
-
-## Platform and evidence boundaries
-
-| Platform | Native implementation | Current evidence boundary |
+| Platform | Native source support | Current qualification boundary |
 |---|---|---|
-| macOS | application capture and microphone | physical final-candidate proof |
-| Windows | WASAPI system, application, and microphone capture | automated VM qualification; physical matrix remains separate |
-| Linux | PipeWire application/system capture and ALSA microphone capture | automated VM qualification; physical matrix remains separate |
+| macOS | application and microphone | physical-device evidence exists for the recorded host |
+| Windows | system, application, and microphone | automated VM evidence; physical coverage is separate |
+| Linux | PipeWire application/system and ALSA microphone | automated VM evidence; physical coverage is separate |
 
-Applications own operating-system permission prompts and source selection UX.
-PocketStation reports typed permission, source-loss, discontinuity, saturation,
-and lifecycle outcomes.
+These boundaries do not imply platform parity, WAN behavior, or a universal
+performance result. Use the evidence attached to the specific release and
+environment for those claims.
 
-These classifications are deliberately narrow. Physical macOS proof does not
-silently become a physical Windows or Linux claim, and local cross-language or
-transport evidence does not become a universal performance claim.
+## Native prerequisites
 
-### Permission semantics
-
-`microphone_permission_observation()` is a non-prompting preflight query. macOS
-uses its process authorization state. Windows 10 version 1903 and newer uses
-the current process' `Microphone` AppCapability status and can report allowed,
-denied, restricted, or prompt-required without displaying UI. Linux returns
-`PermissionObservation::NotObservable` because PipeWire portals, session
-policy, direct ALSA access, device ACLs, and containers do not share one
-authoritative process-wide query. `NotObservable` means neither granted nor
-denied. On every platform, Session preparation and source opening still return
-the authoritative typed success or failure for the selected source.
-
-## Native dependencies
-
-macOS requires the Xcode command-line tools. Linux development packages depend
-on the distribution; on Debian/Ubuntu install:
+macOS requires the Xcode command-line tools. Windows requires the MSVC Rust
+toolchain and Windows SDK. On Debian or Ubuntu, install:
 
 ```bash
 sudo apt install build-essential cmake pkg-config \
   libasound2-dev libpipewire-0.3-dev
 ```
 
-Windows builds use the MSVC Rust toolchain and Windows SDK.
-
 ## Documentation
 
-- [Developer documentation](docs/README.md)
-- [Architecture](docs/architecture/overview.md)
-- [Rust quickstart](docs/getting-started/rust-quickstart.md)
-- [Extension authoring](docs/guides/extensions.md)
-- [Compatibility](docs/compatibility/README.md)
-- [API reference](https://docs.rs/pocketstation/latest/pocketstation/)
+- [Start with the Rust quickstart](docs/getting-started/rust-quickstart.md)
+- [Develop against the current architecture](docs/architecture/overview.md)
+- [Understand signals and typed streams](docs/concepts/signals-and-streams.md)
+- [Build a Connector](docs/guides/connectors.md)
+- [Extend PocketStation](docs/guides/extensions.md)
+- [Check compatibility](docs/compatibility/README.md)
+- [Read the API reference](https://docs.rs/pocketstation/latest/pocketstation/)
 
-## Development
+## Verify a change
 
 ```bash
 cargo fmt --all -- --check
@@ -264,9 +178,9 @@ cargo build --release --example product_quickstart --locked
 bash scripts/check_protocol.sh
 ```
 
-Local component tests establish code correctness, not physical-device,
-cross-network, or universal performance claims. Those claims remain tied to
-versioned evidence artifacts and their stated scope.
+These commands verify the package and compiling quickstart. Physical-device,
+cross-network, and platform claims require their separately scoped Lab
+artifacts.
 
 ## License
 

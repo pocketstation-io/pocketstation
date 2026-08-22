@@ -296,7 +296,7 @@ impl SessionBuilder {
         self
     }
 
-    /// Declares the exact canonical PCM format produced by the configured
+    /// Declares the PCM format produced by the configured
     /// capture backends and consumed by compiled Session routes.
     #[must_use]
     pub fn sample_spec(mut self, sample_spec: SampleSpec) -> Self {
@@ -304,7 +304,7 @@ impl SessionBuilder {
         self
     }
 
-    /// Uses caller-owned capture backends while retaining the canonical
+    /// Uses caller-owned capture backends while retaining the Session
     /// Session compiler, runtime, endpoint lifecycle, and recording ownership.
     #[must_use]
     pub fn capture_backends(
@@ -388,7 +388,7 @@ impl Session {
     /// Declares one instance of an open external source type.
     ///
     /// The selected output names are validated against the registered source
-    /// manifest when this Session is compiled by the canonical engine.
+    /// manifest when this Session is compiled.
     pub fn source(
         &self,
         source_type_id: SourceTypeId,
@@ -459,7 +459,7 @@ impl Session {
         self.declaration.operator(operator)
     }
 
-    /// Retains an external source factory for this Session's canonical engine.
+    /// Retains an external Source factory for this Session.
     pub fn register_source(
         &self,
         factory: Arc<dyn SourceFactory>,
@@ -739,7 +739,7 @@ impl Session {
             let _ = running.stop();
             return Err(SessionStartError::new(
                 SessionStartErrorCode::MissingEventReceiver,
-                "canonical running Session did not retain its event receiver",
+                "running Session did not retain its event receiver",
             ));
         };
         Ok(RunningSession {
@@ -1046,7 +1046,7 @@ impl From<SessionEngineStartError> for SessionStartError {
             SessionEngineStartError::Start(failure) => session_start_failure_code(failure.error()),
             SessionEngineStartError::Sidecar(_) => SessionStartErrorCode::RuntimeStartFailed,
         };
-        let mut start_error = Self::new(code, format!("canonical Session start failed: {error}"));
+        let mut start_error = Self::new(code, format!("Session start failed: {error}"));
         start_error.compile_diagnostic = compile_diagnostic;
         start_error
     }
