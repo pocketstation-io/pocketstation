@@ -1,0 +1,133 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "dacb13d69d355b912a0642f614c009c7542d93f73aa849218ba85829669f9076",
+  "defaults": [],
+  "defines": [],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "dacb13d69d355b912a0642f614c009c7542d93f73aa849218ba85829669f9076",
+      "lines": [
+        1,
+        27
+      ],
+      "path": "scripts/sync-c-header.sh",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0062-5f56950f",
+  "file_kind": "automation",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "b61f8dc6f9e0e636803ed1ef021fc29bd45b5ab1",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "No external input is declared in this file."
+  ],
+  "invariants": [],
+  "language": "Shell",
+  "line_count": 27,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "No emitted value or public declaration is recorded for this file."
+  ],
+  "package": "repository",
+  "path": "scripts/sync-c-header.sh",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines a repository-owned build, validation, test, or release operation."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/installation.md",
+    "docs/concepts/release-evidence.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/concepts/cargo-features.md",
+    "RELEASE_NOTES.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/how-to/choose-features.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/reference/features.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/best-practices/evidence-boundaries.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [],
+  "responsibilities": [
+    "Defines a repository-owned build, validation, test, or release operation."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

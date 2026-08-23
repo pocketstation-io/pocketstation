@@ -84,6 +84,7 @@ pub struct CaptureDeliveryStartGateController {
 }
 
 impl CaptureDeliveryStartGateController {
+    #[doc = "Opens the resource represented by `CaptureDeliveryStartGateController`."]
     pub fn open(&self) -> bool {
         !self.gate.open.swap(true, Ordering::AcqRel)
     }
@@ -171,16 +172,19 @@ pub struct CapturedFrameStream {
 }
 
 impl CapturedFrameStream {
+    #[doc = "Attempts to next through `CapturedFrameStream`."]
     pub fn try_next(&mut self) -> Option<AudioFrame> {
         self.consumer.pop().ok()
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the capacity frames held by `CapturedFrameStream`."]
     pub fn capacity_frames(&self) -> usize {
         self.consumer.buffer().capacity()
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns whether closed applies to `CapturedFrameStream`."]
     pub fn is_closed(&self) -> bool {
         let abandoned = self.consumer.is_abandoned();
         if abandoned {
@@ -190,10 +194,12 @@ impl CapturedFrameStream {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the current statistics for `CapturedFrameStream`."]
     pub fn stats(&self) -> CapturedFrameStreamStats {
         self.counters.snapshot()
     }
 
+    #[doc = "Returns a handle for reading observations from `CapturedFrameStream`."]
     pub fn observation_handle(&self) -> CapturedFrameObservationHandle {
         CapturedFrameObservationHandle {
             counters: Arc::clone(&self.counters),
@@ -202,6 +208,7 @@ impl CapturedFrameStream {
 }
 
 #[cfg(any(test, feature = "internal-testing"))]
+#[doc = "Wraps the supplied capture receiver as a stream of captured frames."]
 pub fn captured_frame_stream(
     capacity_frames: usize,
 ) -> Result<(CapturedFrameSender, CapturedFrameStream), CaptureError> {

@@ -67,6 +67,7 @@ pub enum EndpointPrepareError {
 }
 
 #[derive(Default)]
+#[doc = "Indexes registered endpoint driver implementations by their stable identities."]
 pub struct EndpointDriverRegistry {
     registrations: HashMap<OperatorId, RegisteredEndpointDriver>,
 }

@@ -22,3 +22,4 @@ pub use writer::{
     MultistemRecording, RecorderError, RecordingObservations, RecordingOutcome, RecordingState,
     RecordingStemOutcome,
 };
+pub(crate) use writer::{RECORDING_MANIFEST_FILE_NAME, RECORDING_MANIFEST_SCHEMA_VERSION};

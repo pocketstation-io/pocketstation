@@ -57,18 +57,18 @@ The scope of **Opus codec state** ends at the native contracts and executable co
 
 Executable evidence selected for **Opus codec state** is limited to each test's recorded setup and assertions:
 
-- `given_encoded_opus_packet_when_decoded_then_contains_960_samples` — given encoded opus packet when decoded then contains 960 samples (`src/codec/decoder.rs:184`; `test-e9a038c59aa6148e49f9`).
-- `given_20ms_opus_frame_when_sampled_at_48khz_then_contains_960_samples` — given 20ms opus frame when sampled at 48khz then contains 960 samples (`src/codec/encoder.rs:329`; `test-c4d783dc09c5ae8fcc9c`).
-- `given_30s_sine_pcm_when_opus_round_trip_then_golden_file_invariants_pass` — given 30s sine pcm when opus round trip then golden file invariants pass (`src/codec/encoder.rs:672`; `test-d58d461257beb4e70632`).
-- `given_sine_wave_when_opus_round_trip_runs_then_approximate_magnitude_is_preserved` — given sine wave when opus round trip runs then approximate magnitude is preserved (`src/codec/encoder.rs:393`; `test-a80dbf6b40aa2cc2df6c`).
-- `given_20ms_decoder_when_60ms_concealment_is_requested_then_typed_bound_error_is_returned` — given 20ms decoder when 60ms concealment is requested then typed bound error is returned (`src/codec/decoder.rs:246`; `test-f2b28e6d34edfbf95af0`).
-- `given_mono_decoder_when_concealing_10ms_then_480_samples_are_appended` — given mono decoder when concealing 10ms then 480 samples are appended (`src/codec/decoder.rs:203`; `test-7f059c025029ab48d42b`).
-- `given_presized_output_when_concealing_repeatedly_then_capacity_stays_fixed` — given presized output when concealing repeatedly then capacity stays fixed (`src/codec/decoder.rs:229`; `test-3a6668288d371a23c543`).
-- `given_stereo_decoder_when_concealing_20ms_then_1920_samples_are_appended` — given stereo decoder when concealing 20ms then 1920 samples are appended (`src/codec/decoder.rs:216`; `test-a33c833b56c360107d03`).
-- `given_60ms_stereo_configuration_when_exact_frame_arrives_then_fixed_scratch_accepts_it` — given 60ms stereo configuration when exact frame arrives then fixed scratch accepts it (`src/codec/encoder.rs:571`; `test-27e8b931577e02ce30ec`).
-- `given_960_sample_frame_when_encoded_then_packet_is_not_empty` — given 960 sample frame when encoded then packet is not empty (`src/codec/encoder.rs:334`; `test-6bdc61a7c604b08c13a4`).
-- `given_configured_20ms_encoder_when_10ms_frame_arrives_then_exact_duration_is_enforced` — given configured 20ms encoder when 10ms frame arrives then exact duration is enforced (`src/codec/encoder.rs:553`; `test-bf950e1644072a871d53`).
-- `given_optimised_encode_when_same_input_then_packet_bytes_identical` — given optimised encode when same input then packet bytes identical (`src/codec/encoder.rs:487`; `test-b46acca2f325d3bbcfb1`).
+- `given_encoded_opus_packet_when_decoded_then_contains_960_samples` — given encoded opus packet when decoded then contains 960 samples (`src/codec/decoder.rs:184`; `test-18e769bfba9f736148f1`).
+- `given_20ms_opus_frame_when_sampled_at_48khz_then_contains_960_samples` — given 20ms opus frame when sampled at 48khz then contains 960 samples (`src/codec/encoder.rs:329`; `test-c6b1615ef4535f8bea99`).
+- `given_30s_sine_pcm_when_opus_round_trip_then_golden_file_invariants_pass` — given 30s sine pcm when opus round trip then golden file invariants pass (`src/codec/encoder.rs:672`; `test-77bb4d2c9b220a4d7130`).
+- `given_sine_wave_when_opus_round_trip_runs_then_approximate_magnitude_is_preserved` — given sine wave when opus round trip runs then approximate magnitude is preserved (`src/codec/encoder.rs:393`; `test-8c9746a0022eeccced89`).
+- `given_20ms_decoder_when_60ms_concealment_is_requested_then_typed_bound_error_is_returned` — given 20ms decoder when 60ms concealment is requested then typed bound error is returned (`src/codec/decoder.rs:246`; `test-f9eb27f8c697619303a9`).
+- `given_mono_decoder_when_concealing_10ms_then_480_samples_are_appended` — given mono decoder when concealing 10ms then 480 samples are appended (`src/codec/decoder.rs:203`; `test-f3d9f0899054eb532922`).
+- `given_presized_output_when_concealing_repeatedly_then_capacity_stays_fixed` — given presized output when concealing repeatedly then capacity stays fixed (`src/codec/decoder.rs:229`; `test-0a190981712f34057776`).
+- `given_stereo_decoder_when_concealing_20ms_then_1920_samples_are_appended` — given stereo decoder when concealing 20ms then 1920 samples are appended (`src/codec/decoder.rs:216`; `test-fa484e4be3d65e78f9fc`).
+- `given_60ms_stereo_configuration_when_exact_frame_arrives_then_fixed_scratch_accepts_it` — given 60ms stereo configuration when exact frame arrives then fixed scratch accepts it (`src/codec/encoder.rs:571`; `test-0c8f77a1048c94269c79`).
+- `given_960_sample_frame_when_encoded_then_packet_is_not_empty` — given 960 sample frame when encoded then packet is not empty (`src/codec/encoder.rs:334`; `test-751e9c684179c8d414af`).
+- `given_configured_20ms_encoder_when_10ms_frame_arrives_then_exact_duration_is_enforced` — given configured 20ms encoder when 10ms frame arrives then exact duration is enforced (`src/codec/encoder.rs:553`; `test-5183ec8e78897fa604e5`).
+- `given_optimised_encode_when_same_input_then_packet_bytes_identical` — given optimised encode when same input then packet bytes identical (`src/codec/encoder.rs:487`; `test-afeb7f4f7006561b144e`).
 
 ## Related documentation
 
@@ -83,7 +83,7 @@ Executable evidence selected for **Opus codec state** is limited to each test's 
 
 ## Evidence boundary
 
-The claims on **Opus codec state** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Opus codec state** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `src/codec/encoder.rs:1-860` (`DIRECT`)
 - `src/codec/decoder.rs:1-267` (`DIRECT`)

@@ -17,24 +17,37 @@ use crate::session::{
     OperatorId, Session, SessionEngineBuilder, SessionError, SourceOutputHandle, StemHandle,
 };
 
+#[doc = "Defines the public recorder node type identifier value."]
 pub const RECORDER_NODE_TYPE_ID: &str = "endpoint.recording.multistem";
+#[doc = "Defines the public recorder operator identifier value."]
 pub const RECORDER_OPERATOR_ID: &str = "io.pocketstation.recording.wav-stems.v1";
 #[cfg(any(test, feature = "internal-testing"))]
+#[doc = "Defines the public recording group configuration key value."]
 pub const RECORDING_GROUP_CONFIGURATION_KEY: &str = MULTISTEM_GROUP_CONFIGURATION_KEY;
+#[doc = "Defines the public default multistem recording group identifier value."]
 pub const DEFAULT_MULTISTEM_RECORDING_GROUP_ID: &str = "session.multistem.default.v1";
+#[doc = "Defines the public session recording manifest file name value."]
+pub const SESSION_RECORDING_MANIFEST_FILE_NAME: &str =
+    crate::recording::RECORDING_MANIFEST_FILE_NAME;
+#[doc = "Defines the public session recording manifest schema version value."]
+pub const SESSION_RECORDING_MANIFEST_SCHEMA_VERSION: u32 =
+    crate::recording::RECORDING_MANIFEST_SCHEMA_VERSION;
 
 #[derive(Clone)]
+#[doc = "Retains the identity and observation access returned for session recording."]
 pub struct SessionRecordingReceipt {
     inner: MultistemRecordingReceipt,
 }
 
 impl SessionRecordingReceipt {
+    #[doc = "Returns the outcome held by `SessionRecordingReceipt`."]
     pub fn outcome(&self) -> Option<&RecordingOutcome> {
         self.inner.result()
     }
 }
 
 impl SessionEngineBuilder {
+    #[doc = "Registers multistem recording for `SessionEngineBuilder`."]
     pub fn register_multistem_recording(
         &mut self,
         output_root: impl Into<PathBuf>,
@@ -97,6 +110,7 @@ impl SourceOutputHandle {
 }
 
 impl Session {
+    #[doc = "Returns whether `Session` declares multistem recording."]
     pub fn declares_multistem_recording(&self) -> Result<bool, SessionError> {
         self.declares_endpoint_operator(&OperatorId::new(RECORDER_OPERATOR_ID))
     }

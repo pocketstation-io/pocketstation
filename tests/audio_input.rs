@@ -1,5 +1,5 @@
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::{Duration, Instant};
 
@@ -212,6 +212,7 @@ fn given_running_audio_input_when_writer_closes_then_accepted_frames_are_drained
 #[derive(Default)]
 struct OperatorControl {
     processed_total: AtomicU64,
+    source_ids: Mutex<Vec<u64>>,
 }
 
 struct PassThroughFactory {
@@ -235,7 +236,7 @@ impl PassThroughFactory {
                 PortDirection::Input,
                 SignalSpec::audio(),
                 media,
-                Multiplicity::One,
+                Multiplicity::Many,
                 true,
             )
             .expect("input port")],
@@ -319,6 +320,11 @@ impl AsyncNode for PassThroughNode {
             let lineage = input.lineage().ok_or_else(|| {
                 NodeError::Process("audio input input omitted lineage".to_owned())
             })?;
+            self.control
+                .source_ids
+                .lock()
+                .map_err(|_| NodeError::Process("source identity lock poisoned".to_owned()))?
+                .push(lineage.source_id().get());
             let timing = input.timing();
             let SignalPayload::Audio(frame) = input.into_payload() else {
                 return Err(NodeError::Process(
@@ -342,6 +348,82 @@ impl AsyncNode for PassThroughNode {
             Ok(vec![output])
         })
     }
+}
+
+#[test]
+fn given_two_audio_inputs_on_one_many_port_when_run_then_each_source_lineage_is_preserved() {
+    let session = Session::builder().sample_spec(sample_spec()).build();
+    let control = Arc::new(OperatorControl::default());
+    session
+        .register_operator(Arc::new(PassThroughFactory::new(Arc::clone(&control))))
+        .expect("operator registration");
+
+    let first = session
+        .pcm_source(audio_input_config(2))
+        .expect("first PCM source");
+    let second = session
+        .pcm_source(audio_input_config(2))
+        .expect("second PCM source");
+    let mut expected_source_ids = [
+        first.source().source_id().get(),
+        second.source().source_id().get(),
+    ];
+    let declared = session
+        .operator(Operator::new(
+            OperatorId::new(OPERATOR_ID),
+            OperatorConfiguration::new(),
+        ))
+        .expect("one shared operator instance");
+    first
+        .output()
+        .connect(declared.input("input").expect("many input"))
+        .expect("first operator route");
+    second
+        .output()
+        .connect(declared.input("input").expect("same many input"))
+        .expect("second operator route");
+    let generated = declared
+        .output("output")
+        .expect("operator output")
+        .reenter_audio()
+        .expect("generated audio ingress");
+    let polled_audio = session.polled_audio().expect("polled audio endpoint");
+    generated
+        .send(polled_audio)
+        .expect("generated audio polling route");
+
+    let (_, _, mut first_writer) = first.into_parts();
+    let (_, _, mut second_writer) = second.into_parts();
+    let mut running = session.start().expect("running multi-input Session");
+    first_writer
+        .try_write(&vec![0.25_f32; FRAME_SAMPLES])
+        .expect("first bounded write");
+    second_writer
+        .try_write(&vec![-0.25_f32; FRAME_SAMPLES])
+        .expect("second bounded write");
+
+    let deadline = Instant::now() + Duration::from_secs(5);
+    let mut delivered_total = 0;
+    while delivered_total < 2 && Instant::now() < deadline {
+        if let Ok(batch) = running.try_poll_audio() {
+            delivered_total += batch.len();
+        }
+        thread::sleep(Duration::from_millis(1));
+    }
+    assert_eq!(delivered_total, 2);
+    let mut processed_source_ids = control
+        .source_ids
+        .lock()
+        .expect("source identity observations")
+        .clone();
+    processed_source_ids.sort_unstable();
+    expected_source_ids.sort_unstable();
+    assert_eq!(processed_source_ids, expected_source_ids);
+    assert_eq!(control.processed_total.load(Ordering::Acquire), 2);
+
+    first_writer.close();
+    second_writer.close();
+    assert!(running.stop().is_success());
 }
 
 #[test]

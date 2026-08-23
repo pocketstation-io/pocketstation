@@ -1,0 +1,149 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "data",
+    "main",
+    "pks_encode_opus",
+    "pks_opus_encoder_create",
+    "pks_opus_encoder_destroy",
+    "pks_opus_max_packet_bytes",
+    "size"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "bec831c08d5e63fd2c4093a4f03520dca10733c5cfa4bb57aa9dfd86667b9298",
+  "defaults": [],
+  "defines": [],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "bec831c08d5e63fd2c4093a4f03520dca10733c5cfa4bb57aa9dfd86667b9298",
+      "lines": [
+        1,
+        32
+      ],
+      "path": "tests/abi_codec_cpp_conformance.cpp",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0251-b72f3b34",
+  "file_kind": "test",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "ac6e2c3911fe566138d08b3cfb90d0ca8f0edbc0",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "No external input is declared in this file."
+  ],
+  "invariants": [],
+  "language": "C++",
+  "line_count": 32,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not define production behavior beyond the test setup and asserted outcome."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "No emitted value or public declaration is recorded for this file."
+  ],
+  "package": "repository",
+  "path": "tests/abi_codec_cpp_conformance.cpp",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "TESTED",
+    "text": "Provides executable evidence for abi codec cpp conformance under the conditions declared in this test file."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/native-extensions.md",
+    "docs/concepts/c-abi-ownership.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/architecture/overview.md",
+    "docs/internals/abi-conformance.md",
+    "docs/glossary.md",
+    "docs/guides/extensions.md",
+    "docs/how-to/use-c-session-api.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/native-extensions.md",
+    "docs/reference/c-abi.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/extensions-and-abi.md",
+    "docs/troubleshooting/native-extension-load.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/native-extension-trust.md",
+    "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [],
+  "responsibilities": [
+    "Provides executable evidence for abi codec cpp conformance under the conditions declared in this test file."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-544e66e8f85e1ad9e055"
+  ],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

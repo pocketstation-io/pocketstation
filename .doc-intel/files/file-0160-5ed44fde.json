@@ -1,0 +1,362 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
+  "calls": [
+    "InvalidEnvelope",
+    "derive",
+    "error",
+    "is_some_and",
+    "lineage",
+    "map_err",
+    "observe",
+    "ok_or",
+    "saturating_add",
+    "timestamp_regressed",
+    "timing",
+    "validate",
+    "zip"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 44,
+      "text": "return Err(SignalContinuityError::PolicyRegressed);"
+    },
+    {
+      "line": 107,
+      "text": "PolicyRegressed,"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
+  "constructs": [],
+  "content_hash": "5acd16be645606cc5414f16bffe9af84fcb7b62027f1a623b2618904593541e0",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "SignalContinuityObservation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 13,
+      "name": "SignalContinuityTracker",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 18,
+      "name": "observe",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 75,
+      "name": "timestamp_regressed",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 89,
+      "name": "SignalContinuityError",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "SignalContinuityObservation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 13,
+      "name": "SignalContinuityTracker",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 18,
+      "name": "observe",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 89,
+      "name": "SignalContinuityError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 35,
+      "text": "return Err(SignalContinuityError::IdentityChanged);"
+    },
+    {
+      "line": 38,
+      "text": "return Err(SignalContinuityError::DiscontinuityRegressed);"
+    },
+    {
+      "line": 41,
+      "text": "return Err(SignalContinuityError::GenerationRegressed);"
+    },
+    {
+      "line": 44,
+      "text": "return Err(SignalContinuityError::PolicyRegressed);"
+    },
+    {
+      "line": 50,
+      "text": "return Err(SignalContinuityError::SequenceGapWithoutDiscontinuity);"
+    },
+    {
+      "line": 54,
+      "text": "return Err(SignalContinuityError::RecoveryWithoutDiscontinuity);"
+    },
+    {
+      "line": 57,
+      "text": "return Err(SignalContinuityError::TimestampRegression);"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 89,
+      "name": "SignalContinuityError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 24,
+      "text": ".map_err(SignalContinuityError::InvalidEnvelope)?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 24,
+      "text": ".map_err(SignalContinuityError::InvalidEnvelope)?;"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 24,
+      "text": ".map_err(SignalContinuityError::InvalidEnvelope)?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "5acd16be645606cc5414f16bffe9af84fcb7b62027f1a623b2618904593541e0",
+      "lines": [
+        1,
+        109
+      ],
+      "path": "src/graph/signal/continuity.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0160-5ed44fde",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "b7d3441997fff338bf705ca9db8cd78956a27836",
+  "implemented_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
+  "implements": [
+    "SignalContinuityTracker"
+  ],
+  "imported_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
+  "imports": [
+    "crate::graph::signal::{SignalEnvelope, SignalEnvelopeError, SignalLineage, SignalTiming}"
+  ],
+  "inputs": [
+    "PolicyRegressed,",
+    "crate::graph::signal::{SignalEnvelope, SignalEnvelopeError, SignalLineage, SignalTiming}",
+    "return Err(SignalContinuityError::PolicyRegressed);"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 109,
+  "locks": [],
+  "module": "pocketstation::graph::signal::continuity",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-1342756152871060c44a"
+  ],
+  "outputs": [
+    "enum:SignalContinuityError",
+    "fn:observe",
+    "return Err(SignalContinuityError::DiscontinuityRegressed);",
+    "return Err(SignalContinuityError::GenerationRegressed);",
+    "return Err(SignalContinuityError::IdentityChanged);",
+    "return Err(SignalContinuityError::PolicyRegressed);",
+    "return Err(SignalContinuityError::RecoveryWithoutDiscontinuity);",
+    "return Err(SignalContinuityError::SequenceGapWithoutDiscontinuity);",
+    "return Err(SignalContinuityError::TimestampRegression);",
+    "struct:SignalContinuityObservation",
+    "struct:SignalContinuityTracker"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/signal/continuity.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 75,
+      "name": "timestamp_regressed",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "SignalContinuityObservation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 13,
+      "name": "SignalContinuityTracker",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 18,
+      "name": "observe",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 89,
+      "name": "SignalContinuityError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::signal::continuity responsibilities, including Reports sequence or timestamp continuity observed for one signal stream.; Stores the discontinuity observed used by `SignalContinuityObservation`.; Stores the source recovered used by `SignalContinuityObservation`.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/signal/envelope.rs",
+    "REFERENCES:src/graph/signal/lineage.rs",
+    "REFERENCES:src/graph/signal/timing.rs"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "pocketstation::graph::signal::continuity::SignalContinuityObservation: Reports sequence or timestamp continuity observed for one signal stream.",
+    "SignalContinuityObservation::discontinuity_observed: Stores the discontinuity observed used by `SignalContinuityObservation`.",
+    "SignalContinuityObservation::source_recovered: Stores the source recovered used by `SignalContinuityObservation`.",
+    "SignalContinuityObservation::policy_changed: Stores the policy changed used by `SignalContinuityObservation`.",
+    "pocketstation::graph::signal::continuity::SignalContinuityTracker: Tracks sequence and timing progress so discontinuities remain observable.",
+    "observe: Returns the current observation exposed by `SignalContinuityTracker`.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError: Classifies failures reported as signal continuity error.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::InvalidEnvelope: Reported when the owning operation encounters invalid envelope.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::MissingLineage: Reported when the owning operation encounters missing lineage.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::IdentityChanged: Reported when the owning operation encounters identity changed.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::SequenceGapWithoutDiscontinuity: Reported when the owning operation encounters sequence gap without discontinuity.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::TimestampRegression: Reported when the owning operation encounters timestamp regression.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::DiscontinuityRegressed: Reported when the owning operation encounters discontinuity regressed.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::GenerationRegressed: Reported when the owning operation encounters generation regressed.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::RecoveryWithoutDiscontinuity: Reported when the owning operation encounters recovery without discontinuity.",
+    "pocketstation::graph::signal::continuity::SignalContinuityError::PolicyRegressed: Reported when the owning operation encounters policy regressed."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

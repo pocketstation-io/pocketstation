@@ -6,7 +6,7 @@
       "canonical_name": "Session",
       "code_spelling": "Session",
       "definition": "A declaration-time owner for sources, routes, operators, endpoints, and recording intent.",
-      "first_defining_symbol": "sym-39b8c096d8fdc70c1b1b",
+      "first_defining_symbol": "sym-d24bef3f6a3ec69c07c9",
       "forbidden_aliases": [
         "session runtime",
         "context"
@@ -24,7 +24,7 @@
       "canonical_name": "source",
       "code_spelling": "Source",
       "definition": "A declaration that identifies where a Session obtains a signal.",
-      "first_defining_symbol": "sym-4ab3d8a5880738f1694f",
+      "first_defining_symbol": "sym-6cdad11f0f57d9b7536c",
       "forbidden_aliases": [
         "input thing"
       ],
@@ -39,7 +39,7 @@
       "canonical_name": "stem",
       "code_spelling": "StemId",
       "definition": "A source-aware branch identity retained through routing and recording.",
-      "first_defining_symbol": "sym-383b7bf043152137963b",
+      "first_defining_symbol": "sym-82a2b9584ea1d7a2dae6",
       "forbidden_aliases": [
         "channel"
       ],
@@ -54,7 +54,7 @@
       "canonical_name": "stream",
       "code_spelling": "Stream",
       "definition": "A declaration-time typed connection origin used to compose Session routes.",
-      "first_defining_symbol": "sym-3a87dfd94517526532e2",
+      "first_defining_symbol": "sym-d2674745b36921365a4c",
       "forbidden_aliases": [
         "track"
       ],
@@ -71,7 +71,7 @@
       "canonical_name": "lineage",
       "code_spelling": "FrameLineage",
       "definition": "Immutable identity and sequence metadata carried with a frame or signal.",
-      "first_defining_symbol": "sym-c34282f9a743c50c5b56",
+      "first_defining_symbol": "sym-4f5d7dda4dde3e3ceaf9",
       "forbidden_aliases": [],
       "human_spelling": "lineage",
       "related_concepts": [
@@ -85,7 +85,7 @@
       "canonical_name": "clock domain",
       "code_spelling": "ClockDomainId",
       "definition": "An identity that states which clock produced a timestamp.",
-      "first_defining_symbol": "sym-cf299e85b856722d5c82",
+      "first_defining_symbol": "sym-644caca167920c58fe6a",
       "forbidden_aliases": [],
       "human_spelling": "clock domain",
       "related_concepts": [
@@ -98,7 +98,7 @@
       "canonical_name": "Session timeline",
       "code_spelling": "SessionTimelineOrigin",
       "definition": "The common monotonic time origin used to correlate Session work.",
-      "first_defining_symbol": "sym-9a2d09d1aa729ae9ad87",
+      "first_defining_symbol": "sym-cbde7491554cf1458df0",
       "forbidden_aliases": [
         "wall clock"
       ],
@@ -114,7 +114,7 @@
       "canonical_name": "route",
       "code_spelling": "RouteId",
       "definition": "A compiled delivery path from an output to an independent consumer.",
-      "first_defining_symbol": "sym-081d3a4abc3e6c70e88d",
+      "first_defining_symbol": "sym-e70f709a3e484b9d5d5c",
       "forbidden_aliases": [],
       "human_spelling": "route",
       "related_concepts": [
@@ -127,7 +127,7 @@
       "canonical_name": "backpressure",
       "code_spelling": "BackpressurePolicy",
       "definition": "The declared response when a bounded route cannot accept work immediately.",
-      "first_defining_symbol": "sym-483b55a8b79b880f182d",
+      "first_defining_symbol": "sym-bb29d2e9bc5ef5790a5b",
       "forbidden_aliases": [],
       "human_spelling": "backpressure",
       "related_concepts": [
@@ -142,7 +142,7 @@
       "canonical_name": "loss policy",
       "code_spelling": "LossPolicy",
       "definition": "The declared rule for data loss at a constrained edge.",
-      "first_defining_symbol": "sym-eb1f585bd7270ee1a32c",
+      "first_defining_symbol": "sym-0940509ee3453cf34ddf",
       "forbidden_aliases": [],
       "human_spelling": "loss policy",
       "related_concepts": [
@@ -154,7 +154,7 @@
       "canonical_name": "copy policy",
       "code_spelling": "CopyPolicy",
       "definition": "The declared ownership or copying rule for an edge crossing.",
-      "first_defining_symbol": "sym-eab5bcb627544f2e4f84",
+      "first_defining_symbol": "sym-b708b27c76144c20fa7b",
       "forbidden_aliases": [],
       "human_spelling": "copy policy",
       "related_concepts": [
@@ -168,7 +168,7 @@
       "canonical_name": "operator",
       "code_spelling": "AsyncOperatorFactory",
       "definition": "An extension that transforms or produces typed signals on the asynchronous lane.",
-      "first_defining_symbol": "sym-79b260f9a429d6aa12da",
+      "first_defining_symbol": "sym-ce77d1d902e3ee004e28",
       "forbidden_aliases": [
         "filter"
       ],
@@ -185,7 +185,7 @@
       "canonical_name": "endpoint",
       "code_spelling": "EndpointDriverFactory",
       "definition": "A destination driver prepared and finalized through the Session lifecycle.",
-      "first_defining_symbol": "sym-24a418620ed384787b21",
+      "first_defining_symbol": "sym-c47143b8b73e85dd114d",
       "forbidden_aliases": [],
       "human_spelling": "endpoint",
       "related_concepts": [
@@ -198,7 +198,7 @@
       "canonical_name": "connector",
       "code_spelling": "ConnectorManifest",
       "definition": "A typed endpoint integration contract with configuration, delivery, readiness, and failure policy.",
-      "first_defining_symbol": "sym-aa1b8eb30f0c6c52304d",
+      "first_defining_symbol": "sym-80cc7810d7774b6e700f",
       "forbidden_aliases": [
         "provider plugin"
       ],
@@ -213,7 +213,7 @@
       "canonical_name": "native extension",
       "code_spelling": "NativeExtensionLibrary",
       "definition": "A compiled dynamic library that contributes versioned source, operator, or endpoint registrations.",
-      "first_defining_symbol": "sym-daadf87bca13446b6fe2",
+      "first_defining_symbol": "sym-53933707dc1f0cf8a775",
       "forbidden_aliases": [
         "plugin"
       ],
@@ -227,7 +227,7 @@
       "canonical_name": "sidecar",
       "code_spelling": "SidecarProcessSpec",
       "definition": "A managed child process participating through a bounded lifecycle protocol.",
-      "first_defining_symbol": "sym-ae5681d427e2460827a8",
+      "first_defining_symbol": "sym-c40de69ecfa5672542ee",
       "forbidden_aliases": [
         "service"
       ],
@@ -241,7 +241,7 @@
       "canonical_name": "signal",
       "code_spelling": "SignalEnvelope",
       "definition": "A typed asynchronous payload with specification, timing, and lineage.",
-      "first_defining_symbol": "sym-37459f723646a1086699",
+      "first_defining_symbol": "sym-5c2e10e43766bb76550b",
       "forbidden_aliases": [
         "message"
       ],
@@ -258,7 +258,7 @@
       "canonical_name": "audio frame",
       "code_spelling": "AudioFrame",
       "definition": "A pooled PCM buffer paired with sample specification and frame lineage.",
-      "first_defining_symbol": "sym-fc1f92d68a20921380f3",
+      "first_defining_symbol": "sym-8577d9382df72191707a",
       "forbidden_aliases": [],
       "human_spelling": "audio frame",
       "related_concepts": [
@@ -271,7 +271,7 @@
       "canonical_name": "buffer pool",
       "code_spelling": "AudioBufferPool",
       "definition": "A fixed-capacity owner that supplies reusable audio storage.",
-      "first_defining_symbol": "sym-3537e580cc2bbebe2007",
+      "first_defining_symbol": "sym-73a3a95b920434157c7b",
       "forbidden_aliases": [],
       "human_spelling": "buffer pool",
       "related_concepts": [
@@ -285,7 +285,7 @@
       "canonical_name": "audio reentry",
       "code_spelling": "SessionAudioReentryMetrics",
       "definition": "The bounded crossing that returns asynchronously generated PCM to the audio lane.",
-      "first_defining_symbol": "sym-149559a32ccbfb47a5f6",
+      "first_defining_symbol": "sym-ed887803c3e301f2839e",
       "forbidden_aliases": [],
       "human_spelling": "audio reentry",
       "related_concepts": [
@@ -299,7 +299,7 @@
       "canonical_name": "Session declaration",
       "code_spelling": "SessionSpec",
       "definition": "The immutable specification produced before compilation and runtime preparation.",
-      "first_defining_symbol": "sym-1ecb310b7568e8d03e4b",
+      "first_defining_symbol": "sym-22e41e3837b6aefcacef",
       "forbidden_aliases": [],
       "human_spelling": "Session declaration",
       "related_concepts": [
@@ -312,7 +312,7 @@
       "canonical_name": "compiled Session",
       "code_spelling": "CompiledSession",
       "definition": "A validated and resolved Session plan ready for resource preparation.",
-      "first_defining_symbol": "sym-6b4a95539434bb61f8b8",
+      "first_defining_symbol": "sym-13bafc535d0d0461f379",
       "forbidden_aliases": [],
       "human_spelling": "compiled Session",
       "related_concepts": [
@@ -325,7 +325,7 @@
       "canonical_name": "prepared Session",
       "code_spelling": "PreparedSession",
       "definition": "A Session whose source and endpoint resources have been prepared but not started.",
-      "first_defining_symbol": "sym-fec7fd168a3b483edf7f",
+      "first_defining_symbol": "sym-f8122b0813353de23883",
       "forbidden_aliases": [],
       "human_spelling": "prepared Session",
       "related_concepts": [
@@ -338,7 +338,7 @@
       "canonical_name": "running Session",
       "code_spelling": "RunningSession",
       "definition": "The runtime owner used to observe and stop active Session execution.",
-      "first_defining_symbol": "sym-6cca65de0b51d3ab858e",
+      "first_defining_symbol": "sym-b71bf70731725bc71aa4",
       "forbidden_aliases": [],
       "human_spelling": "running Session",
       "related_concepts": [
@@ -351,7 +351,7 @@
       "canonical_name": "terminal outcome",
       "code_spelling": "SessionTerminalOutcome",
       "definition": "The structured result of Session stop and component finalization.",
-      "first_defining_symbol": "sym-b3bccc2e4f52a51dd776",
+      "first_defining_symbol": "sym-d0c5fa494c12c763d159",
       "forbidden_aliases": [
         "exit status"
       ],
@@ -367,7 +367,7 @@
       "canonical_name": "observation",
       "code_spelling": "SessionMetricsSnapshot",
       "definition": "A metrics, event, or trace value exposed without redefining runtime behavior.",
-      "first_defining_symbol": "sym-2e5cb39db451a3f2ce64",
+      "first_defining_symbol": "sym-5c921b64b075186748b6",
       "forbidden_aliases": [
         "telemetry guarantee"
       ],
@@ -381,7 +381,7 @@
       "canonical_name": "Session trace",
       "code_spelling": "SessionTrace",
       "definition": "A persisted sequence of lifecycle trace records with validation support.",
-      "first_defining_symbol": "sym-71bbef638fc1229ce3b7",
+      "first_defining_symbol": "sym-84ece645a6c49a4ca8af",
       "forbidden_aliases": [
         "log file"
       ],
@@ -395,7 +395,7 @@
       "canonical_name": "source generation",
       "code_spelling": "SourceGeneration",
       "definition": "A monotonic identity revision used when an observed source changes incarnation.",
-      "first_defining_symbol": "sym-fdac50d90e108fc47f99",
+      "first_defining_symbol": "sym-583e7e4b72bbe6e2124f",
       "forbidden_aliases": [],
       "human_spelling": "source generation",
       "related_concepts": [
@@ -408,7 +408,7 @@
       "canonical_name": "permission epoch",
       "code_spelling": "PermissionEpoch",
       "definition": "A revision associated with authorization state observation.",
-      "first_defining_symbol": "sym-714e41ee82c6f1511e60",
+      "first_defining_symbol": "sym-74330e7cd8c298c34020",
       "forbidden_aliases": [],
       "human_spelling": "permission epoch",
       "related_concepts": [
@@ -420,7 +420,7 @@
       "canonical_name": "readiness",
       "code_spelling": "ConnectorReadinessPolicy",
       "definition": "The connector policy governing readiness observations before delivery.",
-      "first_defining_symbol": "sym-a1991da6be24e32179b5",
+      "first_defining_symbol": "sym-2b8230059d41f75e876f",
       "forbidden_aliases": [
         "health"
       ],
@@ -434,7 +434,7 @@
       "canonical_name": "retryability",
       "code_spelling": "ConnectorRetryability",
       "definition": "The connector failure classification that tells application policy whether the same operation may be attempted again, must wait for reconfiguration, or must not be retried.",
-      "first_defining_symbol": "sym-da47eb6e0afc1e331bdc",
+      "first_defining_symbol": "sym-47fa722e871287abe9c1",
       "forbidden_aliases": [
         "retry budget",
         "infinite retry"
@@ -449,7 +449,7 @@
       "canonical_name": "C ABI",
       "code_spelling": "PksSessionStatus",
       "definition": "The versioned C representation of Session and extension operations.",
-      "first_defining_symbol": "sym-fc0b6bbde02125f27278",
+      "first_defining_symbol": "sym-0ed9edb0f5260fbc6220",
       "forbidden_aliases": [
         "Rust API"
       ],
@@ -463,7 +463,7 @@
       "canonical_name": "conformance",
       "code_spelling": "conformance",
       "definition": "Executable evidence that a boundary matches a versioned contract under stated conditions.",
-      "first_defining_symbol": "sym-3e1ef87e2e37dd6b659f",
+      "first_defining_symbol": "sym-23e283d6070b62ee135c",
       "forbidden_aliases": [
         "qualification"
       ],

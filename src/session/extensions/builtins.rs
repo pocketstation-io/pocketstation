@@ -20,7 +20,9 @@ use crate::session::compile::{
 use crate::session::{EndpointSpec, OperatorInstanceId, SessionSpec, Source, StemId};
 
 const AUDIO_PORT: &str = "audio";
+#[doc = "Defines the public application source node type identifier value."]
 pub const APPLICATION_SOURCE_NODE_TYPE_ID: &str = "source.application";
+#[doc = "Defines the public microphone source node type identifier value."]
 pub const MICROPHONE_SOURCE_NODE_TYPE_ID: &str = "source.microphone";
 pub(crate) const EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID: &str = "source.external_audio_ingress";
 pub(crate) const GENERATED_AUDIO_INGRESS_NODE_TYPE_ID: &str = "source.generated_audio_ingress";
@@ -38,6 +40,7 @@ pub enum SessionGraphRegistrationError {
 }
 
 #[cfg(any(test, feature = "internal-testing"))]
+#[doc = "Registers session graph nodes for `builtins`."]
 pub fn register_session_graph_nodes(
     registry: &mut NodeRegistry,
 ) -> Result<(), SessionGraphRegistrationError> {

@@ -23,22 +23,22 @@ use crate::runtime::{
     SidecarHostSnapshot, SidecarMessage,
 };
 
-use crate::session::lifecycle::endpoint_transaction::{
+use crate::session::lifecycle::control::{
+    validate_source_topology, validate_start_options, CaptureBackendSet, SessionStartCancellation,
+    SessionStartError, SessionStartFailure, SessionStartOptions, SessionStopOutcome,
+};
+use crate::session::lifecycle::endpoint_setup::{
     prepare_endpoint_batches, prepare_endpoints, rollback_prepared_endpoints,
     PendingEndpointPortInput, PreparedEndpointBinding,
 };
 use crate::session::lifecycle::events::{session_event_channel, SessionEventSender};
-use crate::session::lifecycle::metric_bindings::{
-    DerivedRouteObservationBinding, FinalEndpointObservation, FinalOperatorObservation,
-    IndexedSessionMetrics, RouteObservationBinding, SourceObservationBinding,
-};
-use crate::session::lifecycle::operator_observations::{
+use crate::session::lifecycle::operator_inputs::{
     OperatorInputObservation, OperatorInputObservationBinding,
 };
 use crate::session::lifecycle::rollback::StartupRollback;
-use crate::session::lifecycle::start_contract::{
-    validate_source_topology, validate_start_options, CaptureBackendSet, SessionStartCancellation,
-    SessionStartError, SessionStartFailure, SessionStartOptions, SessionStopOutcome,
+use crate::session::lifecycle::telemetry::{
+    DerivedRouteObservationBinding, FinalEndpointObservation, FinalOperatorObservation,
+    IndexedSessionMetrics, RouteObservationBinding, SourceObservationBinding,
 };
 use crate::session::prepare::{
     PreparedExternalSourceMapping, PreparedExternalSourceTarget, PreparedOperatorInputMapping,
@@ -170,8 +170,10 @@ enum OperatorTermination {
     Cancel,
 }
 
+#[doc = "Owns a started Session together with event, polling, recording, trace, and stop resources."]
 pub struct RunningSession {
     session_id: SessionId,
+    state: SessionLifecycleState,
     stop_requested: Arc<AtomicBool>,
     runtime_worker: Option<JoinHandle<Option<RuntimeWorkerOutcome>>>,
     async_runtime_host: Option<AsyncRuntimeHost>,
@@ -194,26 +196,37 @@ pub struct RunningSession {
 }
 
 impl RunningSession {
+    #[doc = "Returns the session identifier held by `RunningSession`."]
     pub const fn session_id(&self) -> SessionId {
         self.session_id
     }
 
+    /// Returns the authoritative current lifecycle state owned by this Session.
+    pub const fn state(&self) -> SessionLifecycleState {
+        self.state
+    }
+
+    #[doc = "Takes event receiver for `RunningSession`."]
     pub fn take_event_receiver(&mut self) -> Option<SessionEventReceiver> {
         self.event_receiver.take()
     }
 
+    #[doc = "Returns the operator metrics held by `RunningSession`."]
     pub fn operator_metrics(&self) -> Box<[SessionOperatorMetrics]> {
         self.indexed_metrics_full().3
     }
 
+    #[doc = "Returns the external source metrics held by `RunningSession`."]
     pub fn external_source_metrics(&self) -> Box<[SessionExternalSourceMetrics]> {
         self.indexed_metrics_full().1
     }
 
+    #[doc = "Returns the derived route metrics held by `RunningSession`."]
     pub fn derived_route_metrics(&self) -> Box<[SessionDerivedRouteMetrics]> {
         self.indexed_metrics_full().4
     }
 
+    #[doc = "Returns the audio reentry metrics held by `RunningSession`."]
     pub fn audio_reentry_metrics(&self) -> Box<[SessionAudioReentryMetrics]> {
         if !self.operators.is_empty() {
             return self
@@ -236,6 +249,7 @@ impl RunningSession {
             .into_boxed_slice()
     }
 
+    #[doc = "Returns the sidecar metrics held by `RunningSession`."]
     pub fn sidecar_metrics(&self) -> Box<[SessionSidecarMetrics]> {
         if !self.sidecars.is_empty() {
             return self
@@ -251,6 +265,7 @@ impl RunningSession {
         self.final_sidecar_observations.clone().into_boxed_slice()
     }
 
+    #[doc = "Attempts to send sidecar signal through `RunningSession`."]
     pub fn try_send_sidecar_signal(
         &self,
         sidecar_id: u64,
@@ -263,6 +278,7 @@ impl RunningSession {
             .try_send_signal(message)
     }
 
+    #[doc = "Attempts to receive sidecar signal through `RunningSession`."]
     pub fn try_receive_sidecar_signal(
         &self,
         sidecar_id: u64,
@@ -274,6 +290,7 @@ impl RunningSession {
             .try_receive_signal()
     }
 
+    #[doc = "Receives sidecar signal for `RunningSession`."]
     pub fn receive_sidecar_signal(
         &self,
         sidecar_id: u64,
@@ -403,6 +420,7 @@ impl RunningSession {
         (sources, external_sources, routes, operators, derived_routes)
     }
 
+    #[doc = "Stops `RunningSession` and returns its terminal result."]
     pub fn stop(&mut self) -> SessionStopOutcome {
         match self.stop_outcome {
             Some(outcome) => outcome,
@@ -414,6 +432,7 @@ impl RunningSession {
         }
     }
 
+    #[doc = "Requests cancellation of `RunningSession`."]
     pub fn cancel(&mut self) -> SessionStopOutcome {
         match self.stop_outcome {
             Some(outcome) => outcome,
@@ -426,6 +445,7 @@ impl RunningSession {
     }
 
     fn stop_once(&mut self, operator_termination: OperatorTermination) -> SessionStopOutcome {
+        self.state = SessionLifecycleState::Stopping;
         let _ = self
             .event_sender
             .publish_lifecycle(self.session_id, SessionLifecycleState::Stopping);
@@ -566,6 +586,11 @@ impl RunningSession {
             },
             outcome,
         );
+        self.state = if outcome.is_success() {
+            SessionLifecycleState::Stopped
+        } else {
+            SessionLifecycleState::Failed
+        };
         outcome
     }
 
@@ -604,6 +629,7 @@ impl RunningSession {
 }
 
 impl Drop for RunningSession {
+    #[doc = "Releases resources owned by `RunningSession`."]
     fn drop(&mut self) {
         if self.stop_outcome.is_none() {
             let _ = self.stop_once(OperatorTermination::Finish);
@@ -612,6 +638,7 @@ impl Drop for RunningSession {
 }
 
 #[cfg(any(test, feature = "internal-testing"))]
+#[doc = "Starts prepared session for `running`."]
 pub fn start_prepared_session(
     prepared: PreparedSession,
     capture_backends: CaptureBackendSet<'_>,
@@ -628,6 +655,7 @@ pub fn start_prepared_session(
 }
 
 #[cfg(any(test, feature = "internal-testing"))]
+#[doc = "Starts prepared session cancellable for `running`."]
 pub fn start_prepared_session_cancellable(
     prepared: PreparedSession,
     capture_backends: CaptureBackendSet<'_>,
@@ -1181,6 +1209,7 @@ pub(crate) fn start_prepared_session_cancellable_with_trace(
     let _ = event_sender.publish_lifecycle(session_id, SessionLifecycleState::Running);
     Ok(RunningSession {
         session_id,
+        state: SessionLifecycleState::Running,
         stop_requested,
         runtime_worker: Some(runtime_worker),
         async_runtime_host,

@@ -1,0 +1,1583 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/transport.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
+  "calls": [
+    "BTreeSet::new",
+    "Boolean",
+    "ByteCount",
+    "ConnectorConfiguration::new",
+    "ConnectorConfigurationConstraint::OneOf",
+    "ConnectorConfigurationError::new",
+    "ConnectorConfigurationField::new",
+    "ConnectorConfigurationRequirement::Default",
+    "ConnectorConfigurationSchema::new",
+    "ConnectorConfigurationValue::ByteCount",
+    "ConnectorConfigurationValue::DurationMilliseconds",
+    "ConnectorConfigurationValue::Secret",
+    "ConnectorConfigurationValue::SignedInteger",
+    "ConnectorConfigurationValue::Text",
+    "ConnectorConfigurationValue::UnsignedInteger",
+    "ConnectorSecret",
+    "ConnectorSecret::new",
+    "Default",
+    "DurationMilliseconds",
+    "EndpointConfiguration::new",
+    "OneOf",
+    "ResolvedConnectorConfiguration",
+    "Secret",
+    "Self",
+    "Self::Boolean",
+    "Self::ByteCount",
+    "Self::DurationMilliseconds",
+    "Self::Secret",
+    "Self::SignedInteger",
+    "Self::Text",
+    "Self::UnsignedInteger",
+    "Self::default",
+    "SignedInteger",
+    "Text",
+    "UnsignedInteger",
+    "Vec::new",
+    "all",
+    "any",
+    "as_deref",
+    "as_ref",
+    "as_str",
+    "cfg",
+    "clone",
+    "code",
+    "constraints",
+    "contains",
+    "crate::secret::clear_string",
+    "deprecated",
+    "deprecation",
+    "derive",
+    "documentation",
+    "drop",
+    "encoded",
+    "error",
+    "expect",
+    "expose_secret",
+    "field",
+    "fields",
+    "find",
+    "fmt",
+    "get",
+    "given_provider_owned_field_name_when_resolved_then_core_preserves_it_opaquely",
+    "insert",
+    "into",
+    "into_endpoint_configuration",
+    "is_empty",
+    "is_none",
+    "is_sensitive",
+    "is_some_and",
+    "iter",
+    "kind",
+    "len",
+    "map",
+    "map_err",
+    "message",
+    "name",
+    "new",
+    "ok_or_else",
+    "parse",
+    "parse_encoded_value",
+    "pub",
+    "push",
+    "requirement",
+    "resolve",
+    "resolve_node_config",
+    "revision",
+    "text_bytes",
+    "to_owned",
+    "to_string",
+    "trim",
+    "validate_constraints",
+    "validate_schema",
+    "validate_value",
+    "value_kind",
+    "with",
+    "with_constraint",
+    "with_sensitive",
+    "write_str"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 640,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/transport.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
+  "constructs": [
+    "BTreeSet::new",
+    "ConnectorConfiguration::new",
+    "ConnectorConfigurationError::new",
+    "ConnectorConfigurationField::new",
+    "ConnectorConfigurationSchema::new",
+    "ConnectorSecret::new",
+    "EndpointConfiguration::new",
+    "Vec::new",
+    "new"
+  ],
+  "content_hash": "121b1593727a207b2c2a24b31c1329e66085b89a93d3291176b3ada5f7a07ce0",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 6,
+      "name": "MAX_CONNECTOR_CONFIGURATION_FIELDS",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 8,
+      "name": "MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 11,
+      "name": "ConnectorSecret",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "expose_secret",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 55,
+      "name": "ConnectorConfigurationValueKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 66,
+      "name": "ConnectorConfigurationValue",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "encoded",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 100,
+      "name": "text_bytes",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 111,
+      "name": "ConnectorConfiguration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 121,
+      "name": "with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 125,
+      "name": "insert",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "iter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 145,
+      "name": "is_empty",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 152,
+      "name": "ConnectorConfigurationRequirement",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 159,
+      "name": "ConnectorConfigurationConstraint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 168,
+      "name": "ConnectorConfigurationField",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 178,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 195,
+      "name": "with_constraint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 201,
+      "name": "deprecated",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 205,
+      "name": "name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 209,
+      "name": "value_kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 213,
+      "name": "requirement",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "documentation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 221,
+      "name": "constraints",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 225,
+      "name": "deprecation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 232,
+      "name": "ConnectorConfigurationSchema",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 238,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 246,
+      "name": "revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 250,
+      "name": "fields",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "field",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 258,
+      "name": "resolve",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 301,
+      "name": "resolve_node_config",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 328,
+      "name": "validate_schema",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 391,
+      "name": "ResolvedConnectorConfiguration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 394,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 397,
+      "name": "iter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 401,
+      "name": "into_endpoint_configuration",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 415,
+      "name": "parse_encoded_value",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 454,
+      "name": "validate_constraints",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 503,
+      "name": "validate_value",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 568,
+      "name": "ConnectorConfigurationErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 585,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 608,
+      "name": "ConnectorConfigurationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 615,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 618,
+      "name": "field",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 622,
+      "name": "message",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 626,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 641,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 645,
+      "name": "given_provider_owned_field_name_when_resolved_then_core_preserves_it_opaquely",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 49,
+      "text": "fn drop(&mut self) {"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 403,
+      "text": "let mut endpoint = EndpointConfiguration::new();"
+    },
+    {
+      "line": 405,
+      "text": "endpoint = match value {"
+    },
+    {
+      "line": 407,
+      "text": "endpoint.with_sensitive(key, secret.expose_secret())"
+    },
+    {
+      "line": 409,
+      "text": "value => endpoint.with(key, value.encoded()),"
+    },
+    {
+      "line": 412,
+      "text": "endpoint"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 6,
+      "name": "MAX_CONNECTOR_CONFIGURATION_FIELDS",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 8,
+      "name": "MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 11,
+      "name": "ConnectorSecret",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "expose_secret",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 55,
+      "name": "ConnectorConfigurationValueKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 66,
+      "name": "ConnectorConfigurationValue",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 111,
+      "name": "ConnectorConfiguration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 121,
+      "name": "with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 125,
+      "name": "insert",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "iter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 145,
+      "name": "is_empty",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 152,
+      "name": "ConnectorConfigurationRequirement",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 159,
+      "name": "ConnectorConfigurationConstraint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 168,
+      "name": "ConnectorConfigurationField",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 178,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 195,
+      "name": "with_constraint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 201,
+      "name": "deprecated",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 205,
+      "name": "name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 209,
+      "name": "value_kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 213,
+      "name": "requirement",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "documentation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 221,
+      "name": "constraints",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 225,
+      "name": "deprecation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 232,
+      "name": "ConnectorConfigurationSchema",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 238,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 246,
+      "name": "revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 250,
+      "name": "fields",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "field",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 258,
+      "name": "resolve",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 301,
+      "name": "resolve_node_config",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 391,
+      "name": "ResolvedConnectorConfiguration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 394,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 397,
+      "name": "iter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 401,
+      "name": "into_endpoint_configuration",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 568,
+      "name": "ConnectorConfigurationErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 585,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 608,
+      "name": "ConnectorConfigurationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 615,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 618,
+      "name": "field",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 622,
+      "name": "message",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 17,
+      "text": "return Err(ConnectorConfigurationError::new("
+    },
+    {
+      "line": 24,
+      "text": "return Err(ConnectorConfigurationError::new("
+    },
+    {
+      "line": 264,
+      "text": "return Err(ConnectorConfigurationError::new("
+    },
+    {
+      "line": 272,
+      "text": "return Err(ConnectorConfigurationError::new("
+    },
+    {
+      "line": 286,
+      "text": "return Err(ConnectorConfigurationError::new("
+    },
+    {
+      "line": 331,
+      "text": "return Err(ConnectorConfigurationError::new("
+    },
+    {
+      "line": 338,
+      "text": "return Err(ConnectorConfigurationError::new("
+    },
+    {
+      "line": 347,
+      "text": "return Err(ConnectorConfigurationError::new("
+    },
+    {
+      "line": 361,
+      "text": "return Err(ConnectorConfigurationError::new("
+    },
+    {
+      "line": 368,
+      "text": "return Err(ConnectorConfigurationError::new("
+    },
+    {
+      "line": 376,
+      "text": "return Err(ConnectorConfigurationError::new("
+    },
+    {
+      "line": 449,
+      "text": "Err(ConnectorConfigurationErrorCode::SecretClassificationMismatch)"
+    },
+    {
+      "line": 451,
+      "text": "_ => Err(ConnectorConfigurationErrorCode::UnexpectedSensitiveValue),"
+    },
+    {
+      "line": 494,
+      "text": "return Err(ConnectorConfigurationError::new("
+    },
+    {
+      "line": 509,
+      "text": "return Err(ConnectorConfigurationError::new("
+    },
+    {
+      "line": 516,
+      "text": "return Err(ConnectorConfigurationError::new("
+    },
+    {
+      "line": 557,
+      "text": "return Err(ConnectorConfigurationError::new("
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 568,
+      "name": "ConnectorConfigurationErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 608,
+      "name": "ConnectorConfigurationError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 317,
+      "text": ".map_err(|code| {"
+    },
+    {
+      "line": 428,
+      "text": ".map_err(|_| ConnectorConfigurationErrorCode::InvalidValue),"
+    },
+    {
+      "line": 432,
+      "text": ".map_err(|_| ConnectorConfigurationErrorCode::InvalidValue),"
+    },
+    {
+      "line": 436,
+      "text": ".map_err(|_| ConnectorConfigurationErrorCode::InvalidValue),"
+    },
+    {
+      "line": 440,
+      "text": ".map_err(|_| ConnectorConfigurationErrorCode::InvalidValue),"
+    },
+    {
+      "line": 444,
+      "text": ".map_err(|_| ConnectorConfigurationErrorCode::InvalidValue),"
+    },
+    {
+      "line": 447,
+      "text": ".map_err(|error| error.code()),"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 317,
+      "text": ".map_err(|code| {"
+    },
+    {
+      "line": 428,
+      "text": ".map_err(|_| ConnectorConfigurationErrorCode::InvalidValue),"
+    },
+    {
+      "line": 432,
+      "text": ".map_err(|_| ConnectorConfigurationErrorCode::InvalidValue),"
+    },
+    {
+      "line": 436,
+      "text": ".map_err(|_| ConnectorConfigurationErrorCode::InvalidValue),"
+    },
+    {
+      "line": 440,
+      "text": ".map_err(|_| ConnectorConfigurationErrorCode::InvalidValue),"
+    },
+    {
+      "line": 444,
+      "text": ".map_err(|_| ConnectorConfigurationErrorCode::InvalidValue),"
+    },
+    {
+      "line": 447,
+      "text": ".map_err(|error| error.code()),"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "121b1593727a207b2c2a24b31c1329e66085b89a93d3291176b3ada5f7a07ce0",
+      "lines": [
+        1,
+        673
+      ],
+      "path": "src/connector/configuration.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "linked",
+  "examples_using": [
+    "example-937ee5ed9d4dfb93965f"
+  ],
+  "extended_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/transport.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0113-e08e9fad",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "8e43e97cd49120b2dde6507b448252b5b82e9373",
+  "implemented_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/transport.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
+  "implements": [
+    "ConnectorSecret",
+    "fmt::Debug for ConnectorSecret",
+    "Drop for ConnectorSecret",
+    "ConnectorConfigurationValue",
+    "ConnectorConfiguration",
+    "ConnectorConfigurationField",
+    "ConnectorConfigurationSchema",
+    "ResolvedConnectorConfiguration",
+    "ConnectorConfigurationErrorCode",
+    "ConnectorConfigurationError"
+  ],
+  "imported_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/transport.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
+  "imports": [
+    "crate::graph::NodeConfig",
+    "crate::session::EndpointConfiguration",
+    "std::collections::{BTreeMap, BTreeSet}",
+    "std::fmt",
+    "super::*"
+  ],
+  "inputs": [
+    "#[cfg(test)]",
+    "crate::graph::NodeConfig",
+    "crate::session::EndpointConfiguration",
+    "std::collections::{BTreeMap, BTreeSet}",
+    "std::fmt",
+    "super::*"
+  ],
+  "invariants": [
+    {
+      "line": 20,
+      "text": "\"secret value cannot be empty\","
+    },
+    {
+      "line": 35,
+      "text": "/// The returned value must not be copied into logs, errors, metrics, or"
+    },
+    {
+      "line": 334,
+      "text": "\"connector configuration schema revision must be non-zero\","
+    },
+    {
+      "line": 379,
+      "text": "\"secret connector configuration fields cannot have defaults\","
+    }
+  ],
+  "language": "Rust",
+  "line_count": 673,
+  "locks": [],
+  "module": "pocketstation::connector::configuration",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-9ad32f6f419476aecc67"
+  ],
+  "outputs": [
+    "const:MAX_CONNECTOR_CONFIGURATION_FIELDS",
+    "const:MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES",
+    "enum:ConnectorConfigurationConstraint",
+    "enum:ConnectorConfigurationRequirement",
+    "enum:ConnectorConfigurationValue",
+    "enum:ConnectorConfigurationValueKind",
+    "fn:constraints",
+    "fn:deprecated",
+    "fn:deprecation",
+    "fn:documentation",
+    "fn:expose_secret",
+    "fn:get",
+    "fn:insert",
+    "fn:is_empty",
+    "fn:iter",
+    "fn:kind",
+    "fn:len",
+    "fn:name",
+    "fn:new",
+    "fn:requirement",
+    "fn:value_kind",
+    "fn:with",
+    "fn:with_constraint",
+    "return Err(ConnectorConfigurationError::new(",
+    "struct:ConnectorConfiguration",
+    "struct:ConnectorConfigurationField",
+    "struct:ConnectorConfigurationSchema",
+    "struct:ConnectorSecret"
+  ],
+  "package": "pocketstation",
+  "path": "src/connector/configuration.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "encoded",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 100,
+      "name": "text_bytes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 328,
+      "name": "validate_schema",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 415,
+      "name": "parse_encoded_value",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 454,
+      "name": "validate_constraints",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 503,
+      "name": "validate_value",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 626,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 641,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 645,
+      "name": "given_provider_owned_field_name_when_resolved_then_core_preserves_it_opaquely",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 6,
+      "name": "MAX_CONNECTOR_CONFIGURATION_FIELDS",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 8,
+      "name": "MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 11,
+      "name": "ConnectorSecret",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "expose_secret",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 55,
+      "name": "ConnectorConfigurationValueKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 66,
+      "name": "ConnectorConfigurationValue",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 111,
+      "name": "ConnectorConfiguration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 121,
+      "name": "with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 125,
+      "name": "insert",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "iter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 145,
+      "name": "is_empty",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 152,
+      "name": "ConnectorConfigurationRequirement",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 159,
+      "name": "ConnectorConfigurationConstraint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 168,
+      "name": "ConnectorConfigurationField",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 178,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 195,
+      "name": "with_constraint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 201,
+      "name": "deprecated",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 205,
+      "name": "name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 209,
+      "name": "value_kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 213,
+      "name": "requirement",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "documentation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 221,
+      "name": "constraints",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 225,
+      "name": "deprecation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 232,
+      "name": "ConnectorConfigurationSchema",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 238,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 246,
+      "name": "revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 250,
+      "name": "fields",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "field",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 258,
+      "name": "resolve",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 301,
+      "name": "resolve_node_config",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 391,
+      "name": "ResolvedConnectorConfiguration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 394,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 397,
+      "name": "iter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 401,
+      "name": "into_endpoint_configuration",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 568,
+      "name": "ConnectorConfigurationErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 585,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 608,
+      "name": "ConnectorConfigurationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 615,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 618,
+      "name": "field",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 622,
+      "name": "message",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::connector::configuration responsibilities, including Sets the maximum supported connector configuration fields.; Sets the maximum supported connector configuration text bytes.; Owns a connector secret with redacted diagnostics and byte clearing on explicit reset or drop.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/connectors.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/configure-connector-secrets.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/connectors.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/connectors.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/terminal-outcomes.md",
+    "docs/best-practices/connector-retries.md",
+    "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/session/declaration/endpoint.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 48,
+      "text": "impl Drop for ConnectorSecret {"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::connector::configuration::MAX_CONNECTOR_CONFIGURATION_FIELDS: Sets the maximum supported connector configuration fields.",
+    "pocketstation::connector::configuration::MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES: Sets the maximum supported connector configuration text bytes.",
+    "pocketstation::connector::configuration::ConnectorSecret: Owns a connector secret with redacted diagnostics and byte clearing on explicit reset or drop.",
+    "new: Creates a new `ConnectorSecret`.",
+    "expose_secret: Exposes the secret to the owning connector during setup or worker use.",
+    "fmt: Formats `ConnectorSecret` with the requested formatter.",
+    "drop: Releases resources owned by `ConnectorSecret`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValueKind: Selects the connector configuration value kind used by PocketStation.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValueKind::Text: Selects text behavior for `ConnectorConfigurationValueKind`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValueKind::Boolean: Selects boolean behavior for `ConnectorConfigurationValueKind`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValueKind::SignedInteger: Selects signed integer behavior for `ConnectorConfigurationValueKind`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValueKind::UnsignedInteger: Selects unsigned integer behavior for `ConnectorConfigurationValueKind`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValueKind::DurationMilliseconds: Selects duration milliseconds behavior for `ConnectorConfigurationValueKind`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValueKind::ByteCount: Selects byte count behavior for `ConnectorConfigurationValueKind`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValueKind::Secret: Selects secret behavior for `ConnectorConfigurationValueKind`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValue: Enumerates the supported connector configuration value cases.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValue::Text: Represents the text alternative defined by `ConnectorConfigurationValue`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValue::Boolean: Represents the boolean alternative defined by `ConnectorConfigurationValue`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValue::SignedInteger: Represents the signed integer alternative defined by `ConnectorConfigurationValue`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValue::UnsignedInteger: Represents the unsigned integer alternative defined by `ConnectorConfigurationValue`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValue::DurationMilliseconds: Represents the duration milliseconds alternative defined by `ConnectorConfigurationValue`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValue::ByteCount: Represents the byte count alternative defined by `ConnectorConfigurationValue`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValue::Secret: Represents the secret alternative defined by `ConnectorConfigurationValue`.",
+    "kind: Returns the kind represented by `ConnectorConfigurationValue`.",
+    "pocketstation::connector::configuration::ConnectorConfiguration: Configures connector behavior at its owning API boundary.",
+    "new: Creates a new `ConnectorConfiguration`.",
+    "with: Returns `ConnectorConfiguration` with the supplied entry applied.",
+    "insert: Inserts a typed configuration value into `ConnectorConfiguration`.",
+    "get: Returns the value held by `ConnectorConfiguration`.",
+    "iter: Iterates over the values held by `ConnectorConfiguration`.",
+    "len: Returns the number of values held by `ConnectorConfiguration`.",
+    "is_empty: Returns whether `ConnectorConfiguration` contains no values.",
+    "pocketstation::connector::configuration::ConnectorConfigurationRequirement: Selects the connector configuration requirement used by PocketStation.",
+    "pocketstation::connector::configuration::ConnectorConfigurationRequirement::Required: Selects required behavior for `ConnectorConfigurationRequirement`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationRequirement::Optional: Selects optional behavior for `ConnectorConfigurationRequirement`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationRequirement::Default: Selects default behavior for `ConnectorConfigurationRequirement`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationConstraint: Enumerates the supported connector configuration constraint cases.",
+    "pocketstation::connector::configuration::ConnectorConfigurationConstraint::NonEmpty: Represents the non empty alternative defined by `ConnectorConfigurationConstraint`.",
+    "ConnectorConfigurationConstraint::TextLengthBytes::minimum: Sets the inclusive minimum accepted by `TextLengthBytes`.",
+    "ConnectorConfigurationConstraint::TextLengthBytes::maximum: Sets the inclusive maximum accepted by `TextLengthBytes`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationConstraint::TextLengthBytes: Represents the text length bytes alternative defined by `ConnectorConfigurationConstraint`.",
+    "ConnectorConfigurationConstraint::SignedRange::minimum: Sets the inclusive minimum accepted by `SignedRange`.",
+    "ConnectorConfigurationConstraint::SignedRange::maximum: Sets the inclusive maximum accepted by `SignedRange`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationConstraint::SignedRange: Represents the signed range alternative defined by `ConnectorConfigurationConstraint`.",
+    "ConnectorConfigurationConstraint::UnsignedRange::minimum: Sets the inclusive minimum accepted by `UnsignedRange`.",
+    "ConnectorConfigurationConstraint::UnsignedRange::maximum: Sets the inclusive maximum accepted by `UnsignedRange`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationConstraint::UnsignedRange: Represents the unsigned range alternative defined by `ConnectorConfigurationConstraint`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationConstraint::OneOf: Represents the one of alternative defined by `ConnectorConfigurationConstraint`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationField: Declares one typed connector configuration field and its validation constraints.",
+    "new: Creates a new `ConnectorConfigurationField`.",
+    "with_constraint: Sets the constraint on `ConnectorConfigurationField` and returns the updated value.",
+    "deprecated: Returns the deprecated held by `ConnectorConfigurationField`.",
+    "name: Returns the name associated with `ConnectorConfigurationField`.",
+    "value_kind: Returns the value kind held by `ConnectorConfigurationField`.",
+    "requirement: Returns the requirement held by `ConnectorConfigurationField`.",
+    "documentation: Returns the documentation held by `ConnectorConfigurationField`.",
+    "constraints: Returns the constraints held by `ConnectorConfigurationField`.",
+    "deprecation: Returns the deprecation held by `ConnectorConfigurationField`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationSchema: Validates connector configuration values against the manifest-declared field set.",
+    "new: Creates a new `ConnectorConfigurationSchema`.",
+    "revision: Returns the revision held by `ConnectorConfigurationSchema`.",
+    "fields: Returns the fields held by `ConnectorConfigurationSchema`.",
+    "field: Returns the field held by `ConnectorConfigurationSchema`.",
+    "resolve: Resolves `ConnectorConfigurationSchema` into its validated representation.",
+    "pocketstation::connector::configuration::ResolvedConnectorConfiguration: Configures resolved connector behavior at its owning API boundary.",
+    "get: Returns the value held by `ResolvedConnectorConfiguration`.",
+    "iter: Iterates over the values held by `ResolvedConnectorConfiguration`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode: Enumerates the supported connector configuration error code cases.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::InvalidSchema: Reported when the owning operation encounters invalid schema.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::DuplicateField: Reported when the owning operation encounters duplicate field.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::TooManyFields: Reported when the owning operation encounters too many fields.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::UnknownField: Reported when the owning operation encounters unknown field.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::MissingRequiredField: Reported when the owning operation encounters missing required field.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::WrongType: Reported when the owning operation encounters wrong type.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::InvalidValue: Reported when the owning operation encounters invalid value.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::ConstraintViolation: Reported when the owning operation encounters constraint violation.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::ValueTooLarge: Reported when the owning operation encounters value too large.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::EmptySecret: Reported when the owning operation encounters empty secret.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::SecretDefaultForbidden: Reported when the owning operation encounters secret default forbidden.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::SecretClassificationMismatch: Reported when the owning operation encounters secret classification mismatch.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::UnexpectedSensitiveValue: Reported when the owning operation encounters unexpected sensitive value.",
+    "as_str: Returns the stable string representation of `ConnectorConfigurationErrorCode`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationError: Reports a connector configuration error.",
+    "code: Returns the stable error or status code represented by `ConnectorConfigurationError`.",
+    "field: Returns the field held by `ConnectorConfigurationError`.",
+    "message: Returns the diagnostic message reported by `ConnectorConfigurationError`."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-c7a1a4edccbfbf6d9c04"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

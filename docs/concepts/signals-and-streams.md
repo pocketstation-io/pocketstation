@@ -57,18 +57,18 @@ The scope of **Signals and streams** ends at the native contracts and executable
 
 Executable evidence selected for **Signals and streams** is limited to each test's recorded setup and assertions:
 
-- `given_contiguous_signals_when_replayed_then_continuity_is_deterministic` — given contiguous signals when replayed then continuity is deterministic (`src/graph/signal/envelope.rs:390`; `test-d0dc80cc2da279b6a618`).
-- `given_audio_frame_lineage_when_enveloped_then_generic_lineage_is_projected` — given audio frame lineage when enveloped then generic lineage is projected (`src/graph/signal/envelope.rs:332`; `test-e2f8e7a7f18caa97e503`).
-- `given_echo_async_node_when_process_after_prepare_then_envelope_is_returned` — given echo async node when process after prepare then envelope is returned (`src/graph/signal/envelope.rs:233`; `test-9d67f3359220613efda8`).
-- `given_echo_async_node_when_process_before_prepare_then_error_is_returned` — given echo async node when process before prepare then error is returned (`src/graph/signal/envelope.rs:251`; `test-bfea57e87a139988d3b9`).
-- `given_fundamental_payloads_when_enveloped_then_specs_are_symmetric` — given fundamental payloads when enveloped then specs are symmetric (`src/graph/signal/envelope.rs:261`; `test-80aa65affe9c51f00bde`).
-- `given_gap_without_discontinuity_when_replayed_then_rejected` — given gap without discontinuity when replayed then rejected (`src/graph/signal/envelope.rs:420`; `test-92478dc6bd675ec61686`).
-- `given_generic_lineage_when_enveloped_then_no_frame_lineage_is_required` — given generic lineage when enveloped then no frame lineage is required (`src/graph/signal/envelope.rs:305`; `test-cd345e8d13b510a9eaa5`).
-- `given_payload_and_incompatible_spec_when_validated_then_rejected` — given payload and incompatible spec when validated then rejected (`src/graph/signal/envelope.rs:294`; `test-33e18236d232fb399a6a`).
-- `given_recovery_without_discontinuity_when_replayed_then_rejected` — given recovery without discontinuity when replayed then rejected (`src/graph/signal/envelope.rs:431`; `test-d84f14d43b88331c2181`).
-- `given_text_storage_when_checked_against_text_spec_then_representation_is_supported` — given text storage when checked against text spec then representation is supported (`src/graph/signal/envelope.rs:227`; `test-675fc593bb481d67a026`).
-- `given_supported_non_audio_signals_when_checked_then_media_is_symmetric` — given supported non audio signals when checked then media is symmetric (`src/graph/ports.rs:559`; `test-d97a306ad6dc3558e082`).
-- `given_external_consumer_when_declared_then_provider_and_typed_endpoint_use_public_api` — given external consumer when declared then provider and typed endpoint use public api (`examples/operator-consumer/src/lib.rs:120`; `test-ace9b7d11da2036ce899`).
+- `given_contiguous_signals_when_replayed_then_continuity_is_deterministic` — given contiguous signals when replayed then continuity is deterministic (`src/graph/signal/envelope.rs:390`; `test-6eb8b47d694e3c8e2ed5`).
+- `given_audio_frame_lineage_when_enveloped_then_generic_lineage_is_projected` — given audio frame lineage when enveloped then generic lineage is projected (`src/graph/signal/envelope.rs:332`; `test-3c0b0177361aa791222a`).
+- `given_echo_async_node_when_process_after_prepare_then_envelope_is_returned` — given echo async node when process after prepare then envelope is returned (`src/graph/signal/envelope.rs:233`; `test-e8f76f0070ca38093fa3`).
+- `given_echo_async_node_when_process_before_prepare_then_error_is_returned` — given echo async node when process before prepare then error is returned (`src/graph/signal/envelope.rs:251`; `test-60c6c7ddba591b2f3fbf`).
+- `given_fundamental_payloads_when_enveloped_then_specs_are_symmetric` — given fundamental payloads when enveloped then specs are symmetric (`src/graph/signal/envelope.rs:261`; `test-e9cf0ccf7086e77434e1`).
+- `given_gap_without_discontinuity_when_replayed_then_rejected` — given gap without discontinuity when replayed then rejected (`src/graph/signal/envelope.rs:420`; `test-d12d138a4ed387470d9c`).
+- `given_generic_lineage_when_enveloped_then_no_frame_lineage_is_required` — given generic lineage when enveloped then no frame lineage is required (`src/graph/signal/envelope.rs:305`; `test-4386f4e386ad62fd8ff7`).
+- `given_payload_and_incompatible_spec_when_validated_then_rejected` — given payload and incompatible spec when validated then rejected (`src/graph/signal/envelope.rs:294`; `test-2b2699fe5f04684d85ed`).
+- `given_recovery_without_discontinuity_when_replayed_then_rejected` — given recovery without discontinuity when replayed then rejected (`src/graph/signal/envelope.rs:431`; `test-8407238de80c53078adc`).
+- `given_text_storage_when_checked_against_text_spec_then_representation_is_supported` — given text storage when checked against text spec then representation is supported (`src/graph/signal/envelope.rs:227`; `test-8cc85a6bba76b829a95f`).
+- `given_supported_non_audio_signals_when_checked_then_media_is_symmetric` — given supported non audio signals when checked then media is symmetric (`src/graph/ports.rs:559`; `test-6cc31685bdbf93a097b4`).
+- `given_external_consumer_when_declared_then_provider_and_typed_endpoint_use_public_api` — given external consumer when declared then provider and typed endpoint use public api (`examples/operator-consumer/src/lib.rs:120`; `test-f98e0a98874ff7dfbdf8`).
 
 ## Related documentation
 
@@ -83,7 +83,7 @@ Executable evidence selected for **Signals and streams** is limited to each test
 
 ## Evidence boundary
 
-The claims on **Signals and streams** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Signals and streams** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `src/graph/signal/envelope.rs:1-444` (`DIRECT`)
 - `src/session/declaration/typed_stream.rs:1-215` (`DIRECT`)

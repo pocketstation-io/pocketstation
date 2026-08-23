@@ -6,17 +6,17 @@ PocketStation is a Rust library for declaring and running source-aware desktop a
 
 ## Install
 
-PocketStation 1.1.1 requires Rust 1.95 or newer. Native capture is the default Cargo feature.
+PocketStation 1.1.2 requires Rust 1.95 or newer. Native capture is the default Cargo feature.
 
 ```toml
 [dependencies]
-pocketstation = "1.1.1"
+pocketstation = "1.1.2"
 ```
 
 Use the contracts-only form when you need public declarations without a native capture backend:
 
 ```toml
-pocketstation = { version = "1.1.1", default-features = false }
+pocketstation = { version = "1.1.2", default-features = false }
 ```
 
 ## Run the first Session
@@ -147,10 +147,10 @@ The scope of **PocketStation** ends at the native contracts and executable condi
 
 ## Evidence boundary
 
-The claims on **PocketStation** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **PocketStation** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `Cargo.toml:1-180` (`DIRECT`)
-- `src/lib.rs:1-1129` (`DIRECT`)
+- `src/lib.rs:1-1161` (`DIRECT`)
 - `examples/product_quickstart.rs:1-61` (`DIRECT`)
 
 For **PocketStation**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

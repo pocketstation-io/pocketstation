@@ -1,6 +1,6 @@
 //! First-party CLI realtime nodes retained behind `internal-testing`.
 //!
-//! These are concrete bounded nodes executed by the canonical realtime plan;
+//! These concrete bounded nodes execute on the realtime plan;
 //! they are not a second runtime and are not part of the stable SDK surface.
 
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -40,11 +40,13 @@ fn audio_port(name: &str, direction: PortDirection) -> PortSpec {
     }
 }
 
+#[doc = "Registers runtime nodes for `nodes`."]
 pub fn register_runtime_nodes(registry: &mut NodeRegistry) -> Result<(), NodeRegistrationError> {
     register_builtins(registry)
 }
 
 #[derive(Default)]
+#[doc = "Reports the counters and terminal facts collected for system output."]
 pub struct SystemOutputTelemetry {
     frames_captured: AtomicU64,
     frames_emitted: AtomicU64,
@@ -52,23 +54,28 @@ pub struct SystemOutputTelemetry {
 }
 
 impl SystemOutputTelemetry {
+    #[doc = "Returns the frames captured held by `SystemOutputTelemetry`."]
     pub fn frames_captured(&self) -> u64 {
         self.frames_captured.load(Ordering::Relaxed)
     }
+    #[doc = "Returns the frames emitted held by `SystemOutputTelemetry`."]
     pub fn frames_emitted(&self) -> u64 {
         self.frames_emitted.load(Ordering::Relaxed)
     }
+    #[doc = "Returns the underrun count held by `SystemOutputTelemetry`."]
     pub fn underrun_count(&self) -> u64 {
         self.underrun_count.load(Ordering::Relaxed)
     }
 }
 
+#[doc = "Constructs system output source implementations from validated declarations."]
 pub struct SystemOutputSourceFactory {
     consumer: Mutex<Option<Consumer<AudioFrame>>>,
     telemetry: Arc<SystemOutputTelemetry>,
 }
 
 impl SystemOutputSourceFactory {
+    #[doc = "Creates a new `SystemOutputSourceFactory`."]
     pub fn new(capacity_frames: usize) -> (Self, Producer<AudioFrame>, Arc<SystemOutputTelemetry>) {
         let (producer, consumer) = RingBuffer::new(capacity_frames);
         let telemetry = Arc::new(SystemOutputTelemetry::default());
@@ -84,6 +91,7 @@ impl SystemOutputSourceFactory {
 }
 
 impl NodeFactory for SystemOutputSourceFactory {
+    #[doc = "Returns the descriptor held by `SystemOutputSourceFactory`."]
     fn descriptor(&self) -> NodeDescriptor {
         NodeDescriptor {
             type_id: NodeTypeId::from(SYSTEM_OUTPUT_NODE_TYPE_ID),
@@ -96,10 +104,12 @@ impl NodeFactory for SystemOutputSourceFactory {
         }
     }
 
+    #[doc = "Validates config for `SystemOutputSourceFactory`."]
     fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
         Ok(())
     }
 
+    #[doc = "Instantiates the runtime node described by `SystemOutputSourceFactory`."]
     fn instantiate(
         &self,
         _context: &PrepareContext,
@@ -153,26 +163,31 @@ impl RuntimeNode for SystemOutputSourceNode {
 }
 
 #[derive(Default)]
+#[doc = "Reports the counters and terminal facts collected for bridge sink."]
 pub struct BridgeSinkTelemetry {
     frames_pushed: AtomicU64,
     overrun_count: AtomicU64,
 }
 
 impl BridgeSinkTelemetry {
+    #[doc = "Returns the frames pushed held by `BridgeSinkTelemetry`."]
     pub fn frames_pushed(&self) -> u64 {
         self.frames_pushed.load(Ordering::Relaxed)
     }
+    #[doc = "Returns the overrun count held by `BridgeSinkTelemetry`."]
     pub fn overrun_count(&self) -> u64 {
         self.overrun_count.load(Ordering::Relaxed)
     }
 }
 
+#[doc = "Constructs bridge sink implementations from validated declarations."]
 pub struct BridgeSinkFactory {
     producer: Mutex<Option<Producer<AudioFrame>>>,
     telemetry: Arc<BridgeSinkTelemetry>,
 }
 
 impl BridgeSinkFactory {
+    #[doc = "Creates a new `BridgeSinkFactory`."]
     pub fn new(capacity_frames: usize) -> (Self, Consumer<AudioFrame>, Arc<BridgeSinkTelemetry>) {
         let (producer, consumer) = RingBuffer::new(capacity_frames);
         let telemetry = Arc::new(BridgeSinkTelemetry::default());
@@ -188,6 +203,7 @@ impl BridgeSinkFactory {
 }
 
 impl NodeFactory for BridgeSinkFactory {
+    #[doc = "Returns the descriptor held by `BridgeSinkFactory`."]
     fn descriptor(&self) -> NodeDescriptor {
         NodeDescriptor {
             type_id: NodeTypeId::from(BRIDGE_ENDPOINT_NODE_TYPE_ID),
@@ -200,10 +216,12 @@ impl NodeFactory for BridgeSinkFactory {
         }
     }
 
+    #[doc = "Validates config for `BridgeSinkFactory`."]
     fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
         Ok(())
     }
 
+    #[doc = "Instantiates the runtime node described by `BridgeSinkFactory`."]
     fn instantiate(
         &self,
         _context: &PrepareContext,
@@ -243,6 +261,7 @@ impl RuntimeNode for BridgeSinkNode {
 }
 
 #[derive(Default)]
+#[doc = "Reports the counters and terminal facts collected for mixer."]
 pub struct MixerTelemetry {
     frames_mixed: AtomicU64,
     lane_underruns: AtomicU64,
@@ -251,20 +270,25 @@ pub struct MixerTelemetry {
 }
 
 impl MixerTelemetry {
+    #[doc = "Returns the frames mixed held by `MixerTelemetry`."]
     pub fn frames_mixed(&self) -> u64 {
         self.frames_mixed.load(Ordering::Relaxed)
     }
+    #[doc = "Returns the lane underruns held by `MixerTelemetry`."]
     pub fn lane_underruns(&self) -> u64 {
         self.lane_underruns.load(Ordering::Relaxed)
     }
+    #[doc = "Returns the clipped samples held by `MixerTelemetry`."]
     pub fn clipped_samples(&self) -> u64 {
         self.clipped_samples.load(Ordering::Relaxed)
     }
+    #[doc = "Returns the output pool exhaustions held by `MixerTelemetry`."]
     pub fn output_pool_exhaustions(&self) -> u64 {
         self.output_pool_exhaustions.load(Ordering::Relaxed)
     }
 }
 
+#[doc = "Executes the graph-node behavior defined for mixer source."]
 pub struct MixerSourceNode {
     consumers: Vec<Consumer<AudioFrame>>,
     accumulators: Vec<Vec<f32>>,
@@ -277,6 +301,7 @@ pub struct MixerSourceNode {
 }
 
 impl MixerSourceNode {
+    #[doc = "Creates `MixerSourceNode` with the supplied output channels."]
     pub fn new_with_output_channels(
         lane_count: usize,
         capacity_frames: usize,
@@ -429,6 +454,7 @@ impl MixerSourceNode {
 }
 
 impl RuntimeNode for MixerSourceNode {
+    #[doc = "Prepares resources required by `MixerSourceNode`."]
     fn prepare(&mut self, _context: &PrepareContext) -> Result<(), NodeError> {
         self.sequence_number = 0;
         for accumulator in &mut self.accumulators {
@@ -438,6 +464,7 @@ impl RuntimeNode for MixerSourceNode {
         Ok(())
     }
 
+    #[doc = "Processes an input value through `MixerSourceNode`."]
     fn process(&mut self, clock: AudioFrame) -> Result<Option<AudioFrame>, NodeError> {
         Ok(self.mix_tick(clock.stream_id(), clock.source_id(), clock.timestamp_ns()))
     }

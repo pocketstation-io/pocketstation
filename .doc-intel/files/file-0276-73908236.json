@@ -1,0 +1,468 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Duration::from_millis",
+    "Duration::from_secs",
+    "Instant::now",
+    "Session::builder",
+    "Source::application",
+    "Source::microphone_default",
+    "all",
+    "as_ref",
+    "build",
+    "capture",
+    "cfg",
+    "collect",
+    "contains",
+    "copied",
+    "expect",
+    "filter",
+    "filter_map",
+    "fn",
+    "frame",
+    "get",
+    "given_public_facade_when_external_destinations_run_then_all_branches_receive_media",
+    "given_public_facade_when_session_declared_then_canonical_types_are_used",
+    "given_public_facade_when_session_trace_enabled_then_trace_replays_complete_lifecycle",
+    "given_stopped_public_session_when_new_session_starts_then_capture_restarts_cleanly",
+    "id",
+    "insert",
+    "is_complete",
+    "is_some_and",
+    "is_success",
+    "iter",
+    "join",
+    "len",
+    "lineage",
+    "metrics_snapshot",
+    "path",
+    "pocketstation::ApplicationSelector::name",
+    "pocketstation::SessionTrace::read",
+    "pocketstation::conformance::observed_browser",
+    "pocketstation::conformance::observed_connector",
+    "pocketstation::conformance::session",
+    "pocketstation::conformance::session_with_recording",
+    "pocketstation::conformance::session_with_trace",
+    "polled_audio",
+    "record",
+    "recording_outcome",
+    "recording_root",
+    "require_source",
+    "route",
+    "route_count",
+    "send",
+    "session_trace_outcome",
+    "start",
+    "std::collections::BTreeSet::new",
+    "stem_id",
+    "stop",
+    "tempfile::tempdir",
+    "thread::sleep",
+    "try_poll_audio",
+    "validate",
+    "wait_for_both_stems",
+    "wait_for_external_routes"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 1,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 3,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 6,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 22,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 71,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 124,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 147,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 169,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Session::builder",
+    "std::collections::BTreeSet::new"
+  ],
+  "content_hash": "c7c7fb8572d447716d386f43445de70b0acf2b8d37a13e984c1506d25f12d03c",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 11,
+      "name": "given_public_facade_when_session_declared_then_canonical_types_are_used",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "given_public_facade_when_external_destinations_run_then_all_branches_receive_media",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "given_public_facade_when_session_trace_enabled_then_trace_replays_complete_lifecycle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 126,
+      "name": "given_stopped_public_session_when_new_session_starts_then_capture_restarts_cleanly",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 148,
+      "name": "wait_for_both_stems",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 170,
+      "name": "wait_for_external_routes",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 61,
+      "text": "assert!(stop.is_success(), \"all endpoint branches must finalize\");"
+    },
+    {
+      "line": 88,
+      "text": ".send(session.polled_audio().expect(\"application audio endpoint\"))"
+    },
+    {
+      "line": 91,
+      "text": ".send(session.polled_audio().expect(\"microphone audio endpoint\"))"
+    },
+    {
+      "line": 137,
+      "text": "let audio = session.polled_audio().expect(\"polled audio endpoint\");"
+    },
+    {
+      "line": 182,
+      "text": ".endpoint"
+    },
+    {
+      "line": 183,
+      "text": ".is_some_and(|endpoint| endpoint.frames_received_total > 0)"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "c7c7fb8572d447716d386f43445de70b0acf2b8d37a13e984c1506d25f12d03c",
+      "lines": [
+        1,
+        195
+      ],
+      "path": "tests/session_facade.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "conformance-fixtures"
+  ],
+  "feature_gate": [
+    "conformance-fixtures"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0276-73908236",
+  "file_kind": "test",
+  "filesystem_io": [],
+  "finalization": [
+    {
+      "line": 61,
+      "text": "assert!(stop.is_success(), \"all endpoint branches must finalize\");"
+    }
+  ],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "268b268db0115f685e7cdf0beb11fb9eb090c352",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "pocketstation::SessionRecordingState",
+    "pocketstation::{Session, Source}",
+    "std::thread",
+    "std::time::{Duration, Instant}"
+  ],
+  "inputs": [
+    "#[cfg(feature = \"conformance-fixtures\")]",
+    "pocketstation::SessionRecordingState",
+    "pocketstation::{Session, Source}",
+    "std::thread",
+    "std::time::{Duration, Instant}"
+  ],
+  "invariants": [
+    {
+      "line": 61,
+      "text": "assert!(stop.is_success(), \"all endpoint branches must finalize\");"
+    },
+    {
+      "line": 97,
+      "text": "assert!(stop.is_success(), \"Session must stop cleanly\");"
+    },
+    {
+      "line": 103,
+      "text": "assert!(outcome.is_complete(), \"Session trace must be lossless\");"
+    },
+    {
+      "line": 143,
+      "text": "assert!(running.stop().is_success(), \"Session must stop cleanly\");"
+    },
+    {
+      "line": 161,
+      "text": "assert!("
+    },
+    {
+      "line": 163,
+      "text": "\"application and microphone media must arrive before the deadline\""
+    },
+    {
+      "line": 188,
+      "text": "assert!("
+    },
+    {
+      "line": 190,
+      "text": "\"all connector and browser routes must deliver before the deadline\""
+    }
+  ],
+  "language": "Rust",
+  "line_count": 195,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not define production behavior beyond the test setup and asserted outcome."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "No emitted value or public declaration is recorded for this file."
+  ],
+  "package": "pocketstation",
+  "path": "tests/session_facade.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 11,
+      "name": "given_public_facade_when_session_declared_then_canonical_types_are_used",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "given_public_facade_when_external_destinations_run_then_all_branches_receive_media",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "given_public_facade_when_session_trace_enabled_then_trace_replays_complete_lifecycle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 126,
+      "name": "given_stopped_public_session_when_new_session_starts_then_capture_restarts_cleanly",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 148,
+      "name": "wait_for_both_stems",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 170,
+      "name": "wait_for_external_routes",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given public facade when external destinations run then all branches receive media, given stopped public session when new session starts then capture restarts cleanly, given public facade when session declared then canonical types are used under the conditions declared in this test file."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [],
+  "responsibilities": [
+    "given_public_facade_when_session_declared_then_canonical_types_are_used (fn)",
+    "given_public_facade_when_external_destinations_run_then_all_branches_receive_media (fn)",
+    "given_public_facade_when_session_trace_enabled_then_trace_replays_complete_lifecycle (fn)",
+    "given_stopped_public_session_when_new_session_starts_then_capture_restarts_cleanly (fn)",
+    "wait_for_both_stems (fn)",
+    "wait_for_external_routes (fn)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 60,
+      "text": "let stop = running.stop();"
+    },
+    {
+      "line": 61,
+      "text": "assert!(stop.is_success(), \"all endpoint branches must finalize\");"
+    },
+    {
+      "line": 96,
+      "text": "let stop = running.stop();"
+    },
+    {
+      "line": 97,
+      "text": "assert!(stop.is_success(), \"Session must stop cleanly\");"
+    },
+    {
+      "line": 143,
+      "text": "assert!(running.stop().is_success(), \"Session must stop cleanly\");"
+    }
+  ],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 49,
+      "text": "let mut running = session.start().expect(\"running Session\");"
+    },
+    {
+      "line": 94,
+      "text": "let mut running = session.start().expect(\"running Session\");"
+    },
+    {
+      "line": 141,
+      "text": "let mut running = session.start().expect(\"running Session\");"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-1de39e5016795b432d16",
+    "test-7d6c18ed486400271167",
+    "test-d6368a5336840b3615d8",
+    "test-f5d1e9009c62e6cb57d5"
+  ],
+  "threads": [
+    {
+      "line": 2,
+      "text": "use std::thread;"
+    },
+    {
+      "line": 165,
+      "text": "thread::sleep(Duration::from_millis(2));"
+    },
+    {
+      "line": 192,
+      "text": "thread::sleep(Duration::from_millis(2));"
+    }
+  ],
+  "visibility": "private_or_not_applicable"
+}

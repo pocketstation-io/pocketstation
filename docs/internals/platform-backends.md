@@ -22,7 +22,7 @@ The scope of **Platform backend boundary** ends at the native contracts and exec
 | `pocketstation::capture::capture_owner::ActiveCaptureBackend` | trait | Native capture resources owned for exactly one active capture. | `src/capture/capture_owner.rs:100` |
 | `pocketstation::capture::capture_owner::CallbackCaptureBackend` | trait | Platform-neutral prepare/open boundary for callback-oriented capture. | `src/capture/capture_owner.rs:83` |
 | `pocketstation::capture::capture_owner::PreparedCaptureBackend` | trait | Backend state that has passed validation but has not started delivery. | `src/capture/capture_owner.rs:88` |
-| `pocketstation::capture::platform::macos::input::MacosInputSource` | struct | Owns production of macos input values and its lifecycle state. | `src/capture/platform/macos/input.rs:68` |
+| `pocketstation::capture::platform::macos::input::MacosInputSource` | struct | Owns production of macos input values and its lifecycle state. | `src/capture/platform/macos/input.rs:65` |
 | `pocketstation::capture::platform::macos::loopback::SystemLoopbackSource` | struct | Manages a macOS loopback capture session. | `src/capture/platform/macos/loopback.rs:53` |
 | `ActiveCaptureBackend::observation_handle` | function | Returns a handle for reading observations from `ActiveCaptureBackend`. | `src/capture/capture_owner.rs:107` |
 | `ActiveCaptureBackend::observations` | function | Returns the observations exposed by `ActiveCaptureBackend`. | `src/capture/capture_owner.rs:109` |
@@ -30,7 +30,7 @@ The scope of **Platform backend boundary** ends at the native contracts and exec
 | `ActiveCaptureBackend::stop_and_join` | function | Stops `ActiveCaptureBackend`, joins its worker, and returns the terminal result. | `src/capture/capture_owner.rs:111` |
 | `CallbackCaptureBackend::prepare` | function | Prepares resources required by `CallbackCaptureBackend`. | `src/capture/capture_owner.rs:84` |
 | `PreparedCaptureBackend::open` | function | Opens the resource represented by `PreparedCaptureBackend`. | `src/capture/capture_owner.rs:89` |
-| `pocketstation::capture::platform::macos::input::discover_input_sources_native` | function | Discovers microphone input sources through the native macOS backend. | `src/capture/platform/macos/input.rs:256` |
+| `pocketstation::capture::platform::macos::input::discover_input_sources_native` | function | Discovers microphone input sources through the native macOS backend. | `src/capture/platform/macos/input.rs:263` |
 | `CaptureOwnerObservations::backend` | struct_field | Stores the backend used by `CaptureOwnerObservations`. | `src/capture/capture_owner.rs:161` |
 | `query` | module | Control-plane source discovery queries used by the first-party CLI. | `src/capture/query.rs:1` |
 | `pocketstation::capture::query::SourceProvider` | trait | Implement this trait to provide source behavior to PocketStation; its methods define the preparation and runtime contract. | `src/capture/query.rs:48` |
@@ -46,6 +46,7 @@ The scope of **Platform backend boundary** ends at the native contracts and exec
 ## Observed implementation patterns
 
 - `typed_error` — `src/capture/platform/macos/session_backend.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `buffer_pool` — `tests/capture_callback_source_contract.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `bounded_queue` — `src/capture/platform/windows/windows.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `clock_correlation` — `src/capture/capture_owner.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/capture/frame_stream.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
@@ -61,37 +62,36 @@ The scope of **Platform backend boundary** ends at the native contracts and exec
 - `bounded_queue` — `src/capture/platform/macos/loopback.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `bounded_queue` — `src/capture/platform/linux/pipewire.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/capture/platform/linux/pipewire.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `clock_correlation` — `native/macos/asp/Plugin.cpp` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/capture/platform/windows/windows.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/capture/platform/windows/open_lifecycle.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/capture/frame_stream.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/capture/capture_owner.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/capture/platform/linux/session_backend.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `tests/external_source.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `clock_correlation` — `src/capture/mod.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `benches/captured_frame_stream.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/capture/platform/macos/mod.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `tests/audio_input.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/capture/platform/macos/loopback.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/capture/platform/windows/session_backend.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `typed_error` — `src/capture/platform/windows/authorization.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `typed_error` — `src/capture/platform/macos/macos_tap.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `buffer_pool` — `src/capture/platform/windows/windows.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `typed_error` — `src/capture/platform/linux/pipewire.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 
 ## Behavioral evidence
 
 Executable evidence selected for **Platform backend boundary** is limited to each test's recorded setup and assertions:
 
-- `given_active_capture_when_owner_is_dropped_then_backend_is_reclaimed` — given active capture when owner is dropped then backend is reclaimed (`src/capture/capture_owner.rs:567`; `test-c55d7a75628c1be024f1`).
-- `given_active_capture_when_stopped_then_backend_is_joined` — given active capture when stopped then backend is joined (`src/capture/capture_owner.rs:540`; `test-4f65c4d2e20b5226cd4f`).
-- `given_backend_frame_when_source_differs_from_open_identity_then_lineage_fails_closed` — given backend frame when source differs from open identity then lineage fails closed (`src/capture/capture_owner.rs:511`; `test-a8dbef4f3b61c752ce0e`).
-- `given_zero_frame_capacity_when_preparing_then_backend_is_not_prepared` — given zero frame capacity when preparing then backend is not prepared (`src/capture/capture_owner.rs:590`; `test-f42d54d3bd1632c2ccfa`).
-- `given_process_mode_when_node_not_found_then_backend_init_error_not_system_mix` — given process mode when node not found then backend init error not system mix (`src/capture/platform/linux/pipewire.rs:2131`; `test-d95b10aa2227cf4f9ffb`).
-- `given_native_host_time_when_normalized_then_process_clock_boundary_is_comparable` — given native host time when normalized then process clock boundary is comparable (`src/capture/platform/macos/macos_tap.rs:721`; `test-e4f9e412f0b3f6d23f1b`).
-- `given_macos_backend_when_type_checked_then_callback_contract_is_implemented` — given macos backend when type checked then callback contract is implemented (`src/capture/platform/macos/session_backend.rs:65`; `test-e20b48b4ecfc231f473f`).
-- `given_generic_hresult_when_classified_then_exact_failure_remains_backend_failure` — given generic hresult when classified then exact failure remains backend failure (`src/capture/platform/windows/runtime_lifecycle.rs:44`; `test-b4ce76d406f5e96ede7a`).
-- `given_authoritative_permission_when_snapshotted_then_platform_state_is_preserved` — given authoritative permission when snapshotted then platform state is preserved (`src/capture/tests.rs:428`; `test-61d68aba989969d649b0`).
-- `given_backend_failure_publisher_when_owner_ends_then_event_and_closure_are_observable` — given backend failure publisher when owner ends then event and closure are observable (`src/capture/tests.rs:105`; `test-16dd12044eae17ce2455`).
-- `given_capture_events_when_observed_then_snapshot_preserves_each_boundary` — given capture events when observed then snapshot preserves each boundary (`src/capture/tests.rs:138`; `test-f57c1920d9fffce76e67`).
-- `given_runtime_event_when_sent_then_exact_identity_and_platform_status_are_retained` — given runtime event when sent then exact identity and platform status are retained (`src/capture/tests.rs:18`; `test-11b326c09cc37ec133a0`).
+- `given_active_capture_when_owner_is_dropped_then_backend_is_reclaimed` — given active capture when owner is dropped then backend is reclaimed (`src/capture/capture_owner.rs:567`; `test-fa34e5723160d56f560f`).
+- `given_active_capture_when_stopped_then_backend_is_joined` — given active capture when stopped then backend is joined (`src/capture/capture_owner.rs:540`; `test-dd4aaaf6b93ddb500769`).
+- `given_backend_frame_when_source_differs_from_open_identity_then_lineage_fails_closed` — given backend frame when source differs from open identity then lineage fails closed (`src/capture/capture_owner.rs:511`; `test-805d755d4acd2257ba9b`).
+- `given_zero_frame_capacity_when_preparing_then_backend_is_not_prepared` — given zero frame capacity when preparing then backend is not prepared (`src/capture/capture_owner.rs:590`; `test-0afbec4242ea2fad4582`).
+- `given_process_mode_when_node_not_found_then_backend_init_error_not_system_mix` — given process mode when node not found then backend init error not system mix (`src/capture/platform/linux/pipewire.rs:2131`; `test-b704602af68d2c7a0b53`).
+- `given_native_host_time_when_normalized_then_process_clock_boundary_is_comparable` — given native host time when normalized then process clock boundary is comparable (`src/capture/platform/macos/macos_tap.rs:721`; `test-0426336f8a6e2c5cc82f`).
+- `given_macos_backend_when_type_checked_then_callback_contract_is_implemented` — given macos backend when type checked then callback contract is implemented (`src/capture/platform/macos/session_backend.rs:65`; `test-deb69184cf289583eed0`).
+- `given_generic_hresult_when_classified_then_exact_failure_remains_backend_failure` — given generic hresult when classified then exact failure remains backend failure (`src/capture/platform/windows/runtime_lifecycle.rs:44`; `test-10921e0fdc49f47b04b5`).
+- `given_authoritative_permission_when_snapshotted_then_platform_state_is_preserved` — given authoritative permission when snapshotted then platform state is preserved (`src/capture/tests.rs:437`; `test-faaf69147963e5e88acc`).
+- `given_backend_failure_publisher_when_owner_ends_then_event_and_closure_are_observable` — given backend failure publisher when owner ends then event and closure are observable (`src/capture/tests.rs:114`; `test-a12e485cf3da74e463dd`).
+- `given_capture_events_when_observed_then_snapshot_preserves_each_boundary` — given capture events when observed then snapshot preserves each boundary (`src/capture/tests.rs:147`; `test-1c6d0316ef2c3a9ff8c9`).
+- `given_runtime_event_when_sent_then_exact_identity_and_platform_status_are_retained` — given runtime event when sent then exact identity and platform status are retained (`src/capture/tests.rs:27`; `test-fb6a99eab03a46e120cd`).
 
 ## Stability boundary
 
@@ -110,7 +110,7 @@ Executable evidence selected for **Platform backend boundary** is limited to eac
 
 ## Evidence boundary
 
-The claims on **Platform backend boundary** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Platform backend boundary** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `src/capture/platform/mod.rs:1-7` (`DIRECT`)
 

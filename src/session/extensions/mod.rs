@@ -24,12 +24,12 @@ pub use builtins::{
 pub use recording::{
     session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations,
     SessionRecordingOutcome, SessionRecordingReceipt, SessionRecordingState,
-    SessionRecordingStemOutcome,
+    SessionRecordingStemOutcome, DEFAULT_MULTISTEM_RECORDING_GROUP_ID,
+    SESSION_RECORDING_MANIFEST_FILE_NAME, SESSION_RECORDING_MANIFEST_SCHEMA_VERSION,
 };
 #[cfg(any(test, feature = "internal-testing"))]
 pub use recording::{
-    DEFAULT_MULTISTEM_RECORDING_GROUP_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID,
-    RECORDING_GROUP_CONFIGURATION_KEY,
+    RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, RECORDING_GROUP_CONFIGURATION_KEY,
 };
 pub use source::{
     PreparedSourceRuntime, SourceCancellation, SourceConfiguration, SourceDriver,

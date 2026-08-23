@@ -1,0 +1,739 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs"
+  ],
+  "calls": [
+    "Arc::new",
+    "Box::new",
+    "ConnectorAudioRecord::from_item",
+    "ConnectorConfigurationRecord::from_resolved",
+    "ConnectorError::internal_with_retryability",
+    "EndpointGroupId::new",
+    "EndpointPreparationGroup::Shared",
+    "SidecarConnectorDriverFactory::new",
+    "SidecarHost::spawn",
+    "SidecarHostError::InvalidConfiguration",
+    "SidecarHostError::InvalidDataKind",
+    "SidecarHostError::MissingPipe",
+    "SidecarHostError::Protocol",
+    "SidecarHostError::Spawn",
+    "SidecarHostError::UnknownSidecar",
+    "SidecarProcessSpec::new",
+    "SignalPayload::Audio",
+    "SignalPayload::Bytes",
+    "SignalPayload::Text",
+    "any",
+    "as_bytes",
+    "as_ref",
+    "as_str",
+    "cancel_and_reap",
+    "cancel_preparation",
+    "cfg",
+    "clone",
+    "close_and_reap",
+    "code",
+    "configuration",
+    "connector_error",
+    "deliver",
+    "derive",
+    "encode",
+    "get",
+    "given_empty_input_group_when_sidecar_prepares_then_structured_error_is_returned",
+    "given_sidecar_host_errors_when_classified_then_retryability_is_preserved",
+    "input",
+    "is_empty",
+    "iter",
+    "lineage",
+    "map",
+    "map_err",
+    "map_or",
+    "message_from_item",
+    "new",
+    "ok_or_else",
+    "payload",
+    "port_name",
+    "preparation_group",
+    "prepare",
+    "process",
+    "retryability",
+    "role",
+    "schema",
+    "sequence_number",
+    "shutdown",
+    "sidecar_connector_factory",
+    "sidecar_error",
+    "signal_spec",
+    "stage",
+    "stream_id",
+    "take",
+    "timestamp_ns",
+    "to_owned",
+    "to_string",
+    "to_vec",
+    "try_send_signal",
+    "unwrap_or",
+    "validate",
+    "wire_id"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 268,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "Box::new",
+    "EndpointGroupId::new",
+    "SidecarConnectorDriverFactory::new",
+    "SidecarProcessSpec::new",
+    "new"
+  ],
+  "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 14,
+      "name": "CONNECTOR_AUDIO_RECORD_SIGNAL_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "CONNECTOR_AUDIO_RECORD_SCHEMA",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 24,
+      "name": "SidecarConnectorDriverFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "process",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 48,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 94,
+      "name": "SidecarConnectorDriver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 101,
+      "name": "deliver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "shutdown",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 154,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 168,
+      "name": "message_from_item",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 235,
+      "name": "sidecar_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "connector_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 263,
+      "name": "sidecar_connector_factory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 269,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 273,
+      "name": "given_empty_input_group_when_sidecar_prepares_then_structured_error_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 289,
+      "name": "given_sidecar_host_errors_when_classified_then_retryability_is_preserved",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 20,
+      "text": "/// Endpoint and the Core connector worker retain lifecycle and receiver"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 14,
+      "name": "CONNECTOR_AUDIO_RECORD_SIGNAL_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "CONNECTOR_AUDIO_RECORD_SCHEMA",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 24,
+      "name": "SidecarConnectorDriverFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "process",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 263,
+      "name": "sidecar_connector_factory",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 54,
+      "text": "return Err(connector_error("
+    },
+    {
+      "line": 66,
+      "text": "return Err(connector_error("
+    },
+    {
+      "line": 125,
+      "text": "Err(SidecarHostError::DataQueueFull) => Ok(ConnectorDeliveryOutcome::Dropped),"
+    },
+    {
+      "line": 126,
+      "text": "Err(error) => Err(sidecar_error("
+    },
+    {
+      "line": 205,
+      "text": "return Err(connector_error("
+    },
+    {
+      "line": 280,
+      "text": "Err(error) => error,"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 76,
+      "text": ".map_err(|error| {"
+    },
+    {
+      "line": 85,
+      "text": "let host = SidecarHost::spawn(process).map_err(|error| {"
+    },
+    {
+      "line": 107,
+      "text": "message.validate(self.protocol_limits).map_err(|error| {"
+    },
+    {
+      "line": 146,
+      "text": "result.map(|_| ()).map_err(|error| {"
+    },
+    {
+      "line": 159,
+      "text": "host.cancel_and_reap().map(|_| ()).map_err(|error| {"
+    },
+    {
+      "line": 169,
+      "text": "fn message_from_item(item: &ConnectorItem<'_>) -> Result<SidecarMessage, ConnectorError> {"
+    },
+    {
+      "line": 172,
+      "text": "let record = ConnectorAudioRecord::from_item(item).map_err(|error| {"
+    },
+    {
+      "line": 180,
+      "text": "let payload = record.encode().map_err(|error| {"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 76,
+      "text": ".map_err(|error| {"
+    },
+    {
+      "line": 85,
+      "text": "let host = SidecarHost::spawn(process).map_err(|error| {"
+    },
+    {
+      "line": 107,
+      "text": "message.validate(self.protocol_limits).map_err(|error| {"
+    },
+    {
+      "line": 146,
+      "text": "result.map(|_| ()).map_err(|error| {"
+    },
+    {
+      "line": 159,
+      "text": "host.cancel_and_reap().map(|_| ()).map_err(|error| {"
+    },
+    {
+      "line": 172,
+      "text": "let record = ConnectorAudioRecord::from_item(item).map_err(|error| {"
+    },
+    {
+      "line": 180,
+      "text": "let payload = record.encode().map_err(|error| {"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "6f771f301b39a47c3be61a3e44fc532248ce8291250681210f73a6486cc67b45",
+      "lines": [
+        1,
+        315
+      ],
+      "path": "src/connector/sidecar.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0119-f0b0e89f",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "017a04df9dd6bab3dfe911889e11c8fa6290fa0c",
+  "implemented_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs"
+  ],
+  "implements": [
+    "SidecarConnectorDriverFactory",
+    "ConnectorDriverFactory for SidecarConnectorDriverFactory",
+    "ConnectorDriver for SidecarConnectorDriver"
+  ],
+  "imported_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs"
+  ],
+  "imports": [
+    "crate::runtime::SidecarHost",
+    "crate::{ EndpointGroupId, EndpointPreparationGroup, EndpointShutdownMode, RouteId, SidecarHostError, SidecarMessage, SidecarMessageKind, SidecarProcessSpec, SidecarProtocolLimits, SignalPayload, }",
+    "std::sync::Arc",
+    "super::*",
+    "super::{ ConnectorAudioRecord, ConnectorConfigurationRecord, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorError, ConnectorErrorStage, ConnectorInputDescriptor, ConnectorItem, ConnectorRetryability, ResolvedConnectorConfiguration, }"
+  ],
+  "inputs": [
+    "#[cfg(test)]",
+    "crate::runtime::SidecarHost",
+    "crate::{ EndpointGroupId, EndpointPreparationGroup, EndpointShutdownMode, RouteId, SidecarHostError, SidecarMessage, SidecarMessageKind, SidecarProcessSpec, SidecarProtocolLimits, SignalPayload, }",
+    "std::sync::Arc",
+    "super::*",
+    "super::{ ConnectorAudioRecord, ConnectorConfigurationRecord, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorError, ConnectorErrorStage, ConnectorInputDescriptor, ConnectorItem, ConnectorRetryability, ResolvedConnectorConfiguration, }"
+  ],
+  "invariants": [
+    {
+      "line": 70,
+      "text": "\"grouped sidecar connector inputs must share one resolved configuration\","
+    },
+    {
+      "line": 209,
+      "text": "\"PCM connector input must use the bounded audio lane\","
+    },
+    {
+      "line": 279,
+      "text": "Ok(_) => panic!(\"empty input group must fail\"),"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 315,
+  "locks": [],
+  "module": "pocketstation::connector::sidecar",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-3d974f8a195e8a91eecd",
+    "pattern-aa4acf0858d935d02808"
+  ],
+  "outputs": [
+    "Err(SidecarHostError::DataQueueFull) => Ok(ConnectorDeliveryOutcome::Dropped),",
+    "Err(error) => Err(sidecar_error(",
+    "Err(error) => error,",
+    "const:CONNECTOR_AUDIO_RECORD_SCHEMA",
+    "const:CONNECTOR_AUDIO_RECORD_SIGNAL_ID",
+    "fn:new",
+    "fn:process",
+    "fn:sidecar_connector_factory",
+    "return Err(connector_error(",
+    "struct:SidecarConnectorDriverFactory"
+  ],
+  "package": "pocketstation",
+  "path": "src/connector/sidecar.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 48,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 94,
+      "name": "SidecarConnectorDriver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 101,
+      "name": "deliver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "shutdown",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 154,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 168,
+      "name": "message_from_item",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 235,
+      "name": "sidecar_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "connector_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 269,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 273,
+      "name": "given_empty_input_group_when_sidecar_prepares_then_structured_error_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 289,
+      "name": "given_sidecar_host_errors_when_classified_then_retryability_is_preserved",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 85,
+      "text": "let host = SidecarHost::spawn(process).map_err(|error| {"
+    }
+  ],
+  "protocol_messages": [
+    {
+      "line": 243,
+      "text": "| SidecarHostError::Protocol(_)"
+    }
+  ],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 14,
+      "name": "CONNECTOR_AUDIO_RECORD_SIGNAL_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "CONNECTOR_AUDIO_RECORD_SCHEMA",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 24,
+      "name": "SidecarConnectorDriverFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "process",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 263,
+      "name": "sidecar_connector_factory",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::connector::sidecar responsibilities, including Defines the public connector audio record signal identifier value.; Defines the public connector audio record schema value.; Adapts a bounded PocketStation sidecar process to the Connector driver SPI.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/connectors.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/configure-connector-secrets.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/connectors.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/connectors.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/terminal-outcomes.md",
+    "docs/best-practices/connector-retries.md",
+    "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/connector/configuration.rs",
+    "REFERENCES:src/connector/error.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/endpoint/identity.rs",
+    "REFERENCES:src/endpoint/runtime.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/runtime/lifecycle/sidecar_host.rs",
+    "REFERENCES:src/runtime/lifecycle/sidecar_protocol.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 1,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 52,
+      "text": ") -> Result<Box<dyn ConnectorDriver>, ConnectorError> {"
+    },
+    {
+      "line": 88,
+      "text": "Ok(Box::new(SidecarConnectorDriver {"
+    },
+    {
+      "line": 155,
+      "text": "fn cancel_preparation(mut self: Box<Self>) -> Result<(), ConnectorError> {"
+    },
+    {
+      "line": 264,
+      "text": "pub fn sidecar_connector_factory(process: SidecarProcessSpec) -> Arc<dyn ConnectorDriverFactory> {"
+    },
+    {
+      "line": 265,
+      "text": "Arc::new(SidecarConnectorDriverFactory::new(process))"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::connector::sidecar::CONNECTOR_AUDIO_RECORD_SIGNAL_ID: Defines the public connector audio record signal identifier value.",
+    "pocketstation::connector::sidecar::CONNECTOR_AUDIO_RECORD_SCHEMA: Defines the public connector audio record schema value.",
+    "pocketstation::connector::sidecar::SidecarConnectorDriverFactory: Adapts a bounded PocketStation sidecar process to the Connector driver SPI.",
+    "new: Creates a new `SidecarConnectorDriverFactory`.",
+    "process: Processes an input value through `SidecarConnectorDriverFactory`.",
+    "preparation_group: Returns the preparation group associated with `SidecarConnectorDriverFactory`.",
+    "prepare: Prepares resources required by `SidecarConnectorDriverFactory`.",
+    "pocketstation::connector::sidecar::sidecar_connector_factory: Creates a connector driver factory backed by the supplied sidecar process."
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 75,
+      "text": ".encode()"
+    },
+    {
+      "line": 180,
+      "text": "let payload = record.encode().map_err(|error| {"
+    }
+  ],
+  "shutdown_behavior": [
+    {
+      "line": 134,
+      "text": "fn shutdown("
+    },
+    {
+      "line": 148,
+      "text": "\"core.sidecar.shutdown\","
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 85,
+      "text": "let host = SidecarHost::spawn(process).map_err(|error| {"
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 49,
+      "text": "fn prepare("
+    },
+    {
+      "line": 86,
+      "text": "sidecar_error(\"core.sidecar.prepare\", ConnectorErrorStage::Prepare, error)"
+    },
+    {
+      "line": 278,
+      "text": "let error = match factory.prepare(&[]) {"
+    },
+    {
+      "line": 291,
+      "text": "\"core.sidecar.prepare\","
+    },
+    {
+      "line": 298,
+      "text": "\"core.sidecar.prepare\","
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-15d28406ed0aae973558",
+    "test-72a5c76707ff849957fa",
+    "test-a819c552a02a127c977d"
+  ],
+  "threads": [
+    {
+      "line": 85,
+      "text": "let host = SidecarHost::spawn(process).map_err(|error| {"
+    }
+  ],
+  "visibility": "mixed"
+}

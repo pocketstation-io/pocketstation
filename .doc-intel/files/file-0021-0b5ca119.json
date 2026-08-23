@@ -10,17 +10,22 @@
   "configuration_read": [],
   "constructed_by": [],
   "constructs": [],
-  "content_hash": "2fde4fa2886f4924ce350c3de4c65bce70b217e2f609f7e17365fd8dd352911b",
+  "content_hash": "88ad3fee3b3e24f2df8fe6cc10390d2324757ebad72ef4f9d0b9793e86c468c7",
   "defaults": [],
   "defines": [],
   "device_io": [
     {
-      "line": 28,
-      "text": "not establish physical-device, cross-network, or cross-platform parity."
+      "line": 36,
+      "text": "do not establish physical-device, cross-network, or cross-platform behavior."
     }
   ],
   "drop_cleanup": [],
-  "endpoints": [],
+  "endpoints": [
+    {
+      "line": 14,
+      "text": "- [Add a Source, Operator, Endpoint, or process extension](guides/extensions.md)"
+    }
+  ],
   "entry_points": [],
   "environment_variables": [],
   "errors_created": [],
@@ -31,10 +36,10 @@
   "evidence": [
     {
       "classification": "DIRECT",
-      "content_hash": "2fde4fa2886f4924ce350c3de4c65bce70b217e2f609f7e17365fd8dd352911b",
+      "content_hash": "88ad3fee3b3e24f2df8fe6cc10390d2324757ebad72ef4f9d0b9793e86c468c7",
       "lines": [
         1,
-        29
+        37
       ],
       "path": "docs/README.md",
       "symbol": null
@@ -55,7 +60,7 @@
   "finalization": [],
   "generated": false,
   "generated_from": "not_applicable",
-  "git_object": "17d049e98e696df14d8c3284c1560fc1be001aaa",
+  "git_object": "8f52624630b5a0d93edfae11cda7b69768f12029",
   "implemented_by": [],
   "implements": [],
   "imported_by": [],
@@ -65,10 +70,15 @@
   ],
   "invariants": [],
   "language": "Markdown",
-  "line_count": 29,
+  "line_count": 37,
   "locks": [],
   "module": "not_applicable",
-  "network_io": [],
+  "network_io": [
+    {
+      "line": 28,
+      "text": "- [Rust API on docs.rs](https://docs.rs/pocketstation/latest/pocketstation/)"
+    }
+  ],
   "non_responsibilities": [
     "Does not override compiler-visible API contracts or executable test evidence."
   ],
@@ -120,10 +130,14 @@
   "side_effects": [
     {
       "line": 28,
-      "text": "not establish physical-device, cross-network, or cross-platform parity."
+      "text": "- [Rust API on docs.rs](https://docs.rs/pocketstation/latest/pocketstation/)"
+    },
+    {
+      "line": 36,
+      "text": "do not establish physical-device, cross-network, or cross-platform behavior."
     }
   ],
-  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],

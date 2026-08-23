@@ -1,0 +1,639 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 20,
+      "text": "#[error(\"async operator {operator_id} is not registered\")]"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/session/compile/mod.rs",
+    "IMPORTS:src/session/compile/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
+  "calls": [
+    "CompileError::UnknownNode",
+    "CompileError::UnknownNodeType",
+    "GraphCompile",
+    "InvalidSpec",
+    "RuntimePlan",
+    "Self::GraphCompile",
+    "Self::InvalidSpec",
+    "Self::RuntimePlan",
+    "Self::default",
+    "SessionCompileDiagnostic::new",
+    "actual",
+    "as_deref",
+    "as_str",
+    "clone",
+    "code",
+    "crate::session_declaration_error_code",
+    "derive",
+    "diagnostic",
+    "direction",
+    "edge_index",
+    "error",
+    "expected",
+    "index",
+    "new",
+    "node_index",
+    "node_type_id",
+    "operator_id",
+    "operator_instance_id",
+    "port_name",
+    "send",
+    "source_type_id",
+    "to_lowercase",
+    "to_owned",
+    "to_string",
+    "value"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [
+    "CONTAINS:src/session/compile/mod.rs",
+    "IMPORTS:src/session/compile/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
+  "constructs": [
+    "SessionCompileDiagnostic::new",
+    "new"
+  ],
+  "content_hash": "39bd56f14047af2845708e09913475383712ee2cf98eae3cbac12f3424727b8d",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "enum",
+      "line": 7,
+      "name": "SessionCompileError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 98,
+      "name": "SessionCompileDiagnostic",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "node_index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "edge_index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 124,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 128,
+      "name": "operator_instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 132,
+      "name": "node_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 136,
+      "name": "source_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "port_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "direction",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 148,
+      "name": "expected",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 152,
+      "name": "actual",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 156,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 166,
+      "name": "diagnostic",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 22,
+      "text": "#[error(\"derived endpoint node type {node_type_id} is not registered\")]"
+    },
+    {
+      "line": 25,
+      "text": "\"derived endpoint node type {node_type_id} has {input_ports_total} inputs; send(destination) requires exactly one\""
+    },
+    {
+      "line": 82,
+      "text": "#[error(\"endpoint node type {node_type_id} has no input port named '{port_name}'\")]"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 7,
+      "name": "SessionCompileError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 98,
+      "name": "SessionCompileDiagnostic",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "node_index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "edge_index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 124,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 128,
+      "name": "operator_instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 132,
+      "name": "node_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 136,
+      "name": "source_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "port_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "direction",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 148,
+      "name": "expected",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 152,
+      "name": "actual",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 166,
+      "name": "diagnostic",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 7,
+      "name": "SessionCompileError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "39bd56f14047af2845708e09913475383712ee2cf98eae3cbac12f3424727b8d",
+      "lines": [
+        1,
+        381
+      ],
+      "path": "src/session/compile/error.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/session/compile/mod.rs",
+    "IMPORTS:src/session/compile/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0202-e3f7ae97",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "1d1884c1f0e91177c5e2d98523e4f29cde6b7059",
+  "implemented_by": [
+    "CONTAINS:src/session/compile/mod.rs",
+    "IMPORTS:src/session/compile/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
+  "implements": [
+    "SessionCompileDiagnostic",
+    "SessionCompileError"
+  ],
+  "imported_by": [
+    "CONTAINS:src/session/compile/mod.rs",
+    "IMPORTS:src/session/compile/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
+  "imports": [
+    "crate::graph::compile::CompileError",
+    "crate::graph::plan::PlanError",
+    "crate::session::{OperatorInstanceId, SessionError, SourceTypeId}"
+  ],
+  "inputs": [
+    "crate::graph::compile::CompileError",
+    "crate::graph::plan::PlanError",
+    "crate::session::{OperatorInstanceId, SessionError, SourceTypeId}"
+  ],
+  "invariants": [
+    {
+      "line": 48,
+      "text": "\"operator instance {operator_instance_id:?} output '{output_port}' cannot enter the audio bridge because it is not concrete PCM\""
+    },
+    {
+      "line": 55,
+      "text": "\"operator instance {operator_instance_id:?} output '{output_port}' must have exactly one generated-audio consumer\""
+    }
+  ],
+  "language": "Rust",
+  "line_count": 381,
+  "locks": [],
+  "module": "pocketstation::session::compile::error",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "enum:SessionCompileError",
+    "fn:actual",
+    "fn:code",
+    "fn:diagnostic",
+    "fn:direction",
+    "fn:edge_index",
+    "fn:expected",
+    "fn:node_index",
+    "fn:node_type_id",
+    "fn:operator_id",
+    "fn:operator_instance_id",
+    "fn:port_name",
+    "fn:source_type_id",
+    "struct:SessionCompileDiagnostic"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/compile/error.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 156,
+      "name": "new",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 7,
+      "name": "SessionCompileError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 98,
+      "name": "SessionCompileDiagnostic",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "node_index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "edge_index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 124,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 128,
+      "name": "operator_instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 132,
+      "name": "node_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 136,
+      "name": "source_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "port_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "direction",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 148,
+      "name": "expected",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 152,
+      "name": "actual",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 166,
+      "name": "diagnostic",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::compile::error responsibilities, including Classifies failures reported as session compile error.; Reported when the owning operation encounters invalid spec.; Identifies the operator identifier recorded by `UnknownOperator`.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/graph/plan.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/error.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "pocketstation::session::compile::error::SessionCompileError: Classifies failures reported as session compile error.",
+    "pocketstation::session::compile::error::SessionCompileError::InvalidSpec: Reported when the owning operation encounters invalid spec.",
+    "SessionCompileError::UnknownOperator::operator_id: Identifies the operator identifier recorded by `UnknownOperator`.",
+    "pocketstation::session::compile::error::SessionCompileError::UnknownOperator: Reported when the owning operation encounters unknown operator.",
+    "pocketstation::session::compile::error::SessionCompileError::OperatorNodeTypeMismatch: Reported when the owning operation encounters operator node type mismatch.",
+    "SessionCompileError::OperatorNodeTypeMismatch::operator_id: Identifies the operator identifier recorded by `OperatorNodeTypeMismatch`.",
+    "SessionCompileError::OperatorNodeTypeMismatch::registered_node_type_id: Identifies the registered node type identifier recorded by `OperatorNodeTypeMismatch`.",
+    "SessionCompileError::OperatorNodeTypeMismatch::declared_node_type_id: Identifies the declared node type identifier recorded by `OperatorNodeTypeMismatch`.",
+    "SessionCompileError::UnknownAsyncOperator::operator_id: Identifies the operator identifier recorded by `UnknownAsyncOperator`.",
+    "pocketstation::session::compile::error::SessionCompileError::UnknownAsyncOperator: Reported when the owning operation encounters unknown async operator.",
+    "SessionCompileError::UnknownEndpointNodeType::node_type_id: Identifies the node type identifier recorded by `UnknownEndpointNodeType`.",
+    "pocketstation::session::compile::error::SessionCompileError::UnknownEndpointNodeType: Reported when the owning operation encounters unknown endpoint node type.",
+    "pocketstation::session::compile::error::SessionCompileError::AmbiguousEndpointInput: Reported when the owning operation encounters ambiguous endpoint input.",
+    "SessionCompileError::AmbiguousEndpointInput::node_type_id: Identifies the node type identifier recorded by `AmbiguousEndpointInput`.",
+    "SessionCompileError::AmbiguousEndpointInput::input_ports_total: Counts the total number of input ports observed by `AmbiguousEndpointInput`.",
+    "pocketstation::session::compile::error::SessionCompileError::AmbiguousOperatorPort: Reported when the owning operation encounters ambiguous operator port.",
+    "SessionCompileError::AmbiguousOperatorPort::operator_id: Identifies the operator identifier recorded by `AmbiguousOperatorPort`.",
+    "SessionCompileError::AmbiguousOperatorPort::direction: Stores the direction used by `AmbiguousOperatorPort`.",
+    "pocketstation::session::compile::error::SessionCompileError::UnknownOperatorPort: Reported when the owning operation encounters unknown operator port.",
+    "SessionCompileError::UnknownOperatorPort::operator_id: Identifies the operator identifier recorded by `UnknownOperatorPort`.",
+    "SessionCompileError::UnknownOperatorPort::direction: Stores the direction used by `UnknownOperatorPort`.",
+    "SessionCompileError::UnknownOperatorPort::port_name: Stores the port name used by `UnknownOperatorPort`.",
+    "pocketstation::session::compile::error::SessionCompileError::MissingRequiredOperatorInput: Reported when the owning operation encounters missing required operator input.",
+    "SessionCompileError::MissingRequiredOperatorInput::operator_instance_id: Identifies the operator instance identifier recorded by `MissingRequiredOperatorInput`.",
+    "SessionCompileError::MissingRequiredOperatorInput::port_name: Stores the port name used by `MissingRequiredOperatorInput`.",
+    "pocketstation::session::compile::error::SessionCompileError::InvalidAudioBridgeOutput: Reported when the owning operation encounters invalid audio bridge output.",
+    "SessionCompileError::InvalidAudioBridgeOutput::operator_instance_id: Identifies the operator instance identifier recorded by `InvalidAudioBridgeOutput`.",
+    "SessionCompileError::InvalidAudioBridgeOutput::output_port: Stores the output port used by `InvalidAudioBridgeOutput`.",
+    "pocketstation::session::compile::error::SessionCompileError::AudioBridgeOutputNotExclusive: Reported when the owning operation encounters audio bridge output not exclusive.",
+    "SessionCompileError::AudioBridgeOutputNotExclusive::operator_instance_id: Identifies the operator instance identifier recorded by `AudioBridgeOutputNotExclusive`.",
+    "SessionCompileError::AudioBridgeOutputNotExclusive::output_port: Stores the output port used by `AudioBridgeOutputNotExclusive`.",
+    "pocketstation::session::compile::error::SessionCompileError::DuplicateOperatorInputConnection: Reported when the owning operation encounters duplicate operator input connection.",
+    "SessionCompileError::DuplicateOperatorInputConnection::operator_instance_id: Identifies the operator instance identifier recorded by `DuplicateOperatorInputConnection`.",
+    "SessionCompileError::DuplicateOperatorInputConnection::port_name: Stores the port name used by `DuplicateOperatorInputConnection`.",
+    "SessionCompileError::UnknownSourceNodeType::node_type_id: Identifies the node type identifier recorded by `UnknownSourceNodeType`.",
+    "pocketstation::session::compile::error::SessionCompileError::UnknownSourceNodeType: Reported when the owning operation encounters unknown source node type.",
+    "SessionCompileError::UnknownExternalSource::source_type_id: Identifies the source type identifier recorded by `UnknownExternalSource`.",
+    "pocketstation::session::compile::error::SessionCompileError::UnknownExternalSource: Reported when the owning operation encounters unknown external source.",
+    "pocketstation::session::compile::error::SessionCompileError::UnknownExternalSourceOutput: Reported when the owning operation encounters unknown external source output.",
+    "SessionCompileError::UnknownExternalSourceOutput::source_type_id: Identifies the source type identifier recorded by `UnknownExternalSourceOutput`.",
+    "SessionCompileError::UnknownExternalSourceOutput::output_port: Stores the output port used by `UnknownExternalSourceOutput`.",
+    "pocketstation::session::compile::error::SessionCompileError::InvalidExternalSourceConfiguration: Reported when the owning operation encounters invalid external source configuration.",
+    "SessionCompileError::InvalidExternalSourceConfiguration::source_type_id: Identifies the source type identifier recorded by `InvalidExternalSourceConfiguration`.",
+    "SessionCompileError::InvalidExternalSourceConfiguration::reason: Carries the reason reported by `InvalidExternalSourceConfiguration`.",
+    "pocketstation::session::compile::error::SessionCompileError::UnknownEndpointInputPort: Reported when the owning operation encounters unknown endpoint input port.",
+    "SessionCompileError::UnknownEndpointInputPort::node_type_id: Identifies the node type identifier recorded by `UnknownEndpointInputPort`.",
+    "SessionCompileError::UnknownEndpointInputPort::port_name: Stores the port name used by `UnknownEndpointInputPort`.",
+    "pocketstation::session::compile::error::SessionCompileError::GraphCompile: Reported when the owning operation encounters graph compile.",
+    "pocketstation::session::compile::error::SessionCompileError::RuntimePlan: Reported when the owning operation encounters runtime plan.",
+    "pocketstation::session::compile::error::SessionCompileDiagnostic: Stable, language-neutral location facts for one Session compilation error.",
+    "code: Returns the stable error or status code represented by `SessionCompileDiagnostic`.",
+    "node_index: Returns the node index held by `SessionCompileDiagnostic`.",
+    "edge_index: Returns the edge index held by `SessionCompileDiagnostic`.",
+    "operator_id: Returns the operator identifier held by `SessionCompileDiagnostic`.",
+    "operator_instance_id: Returns the operator instance identifier held by `SessionCompileDiagnostic`.",
+    "node_type_id: Returns the node type identifier held by `SessionCompileDiagnostic`.",
+    "source_type_id: Returns the source type identifier held by `SessionCompileDiagnostic`.",
+    "port_name: Returns the port name held by `SessionCompileDiagnostic`.",
+    "direction: Returns the direction associated with `SessionCompileDiagnostic`.",
+    "expected: Returns the expected value when a compilation diagnostic compares two values.",
+    "actual: Returns the observed value when a compilation diagnostic compares two values.",
+    "diagnostic: Converts a Session compiler failure into stable language-neutral location and comparison fields."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 20,
+      "text": "#[error(\"async operator {operator_id} is not registered\")]"
+    }
+  ],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-034115ea73d4bf1838e4",
+    "test-604c0e001a7dcb5f87ae",
+    "test-76c3eb4c4fd13e959a1c"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

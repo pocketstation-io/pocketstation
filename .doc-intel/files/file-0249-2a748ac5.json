@@ -1,0 +1,350 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
+  "calls": [
+    "ClockDomainId",
+    "OnceLock::new",
+    "as_nanos",
+    "cfg",
+    "elapsed",
+    "get_or_init",
+    "given_shared_monotonic_clock_when_sampled_then_value_never_moves_backwards",
+    "monotonic_timestamp_ns",
+    "saturating_add",
+    "u64::try_from",
+    "unwrap_or"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 40,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
+  "constructs": [
+    "OnceLock::new",
+    "u64::try_from"
+  ],
+  "content_hash": "7c91650d5e3a0e772b99eacec91bb86209c3c371d3f1d944e8417f5abd1786e9",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "clock_correction",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "clock_drift",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "domain",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "timeline_mapping",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "PROCESS_MONOTONIC_CLOCK_DOMAIN_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "monotonic_timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "static",
+      "line": 33,
+      "name": "ORIGIN",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 41,
+      "name": "monotonic_clock_tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "given_shared_monotonic_clock_when_sampled_then_value_never_moves_backwards",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "PROCESS_MONOTONIC_CLOCK_DOMAIN_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "monotonic_timestamp_ns",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "7c91650d5e3a0e772b99eacec91bb86209c3c371d3f1d944e8417f5abd1786e9",
+      "lines": [
+        1,
+        53
+      ],
+      "path": "src/timing/mod.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0249-2a748ac5",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "b02fc52eb07395ea5bad67d591b167e777f78859",
+  "implemented_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
+  "implements": [],
+  "imported_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
+  "imports": [
+    "clock_correction::ClockCorrectionController",
+    "clock_drift::{ClockDriftEstimator, ClockDriftSnapshot}",
+    "crate::frame::ClockDomainId",
+    "domain::{ describe_clock_domain, ClockDomainDescriptor, ClockDomainKind, ClockDomainOrigin, }",
+    "module:clock_correction",
+    "module:clock_drift",
+    "module:domain",
+    "module:timeline_mapping",
+    "std::sync::OnceLock",
+    "std::time::Instant",
+    "super::monotonic_timestamp_ns",
+    "timeline_mapping::TimelineMapping"
+  ],
+  "inputs": [
+    "#[cfg(test)]",
+    "clock_correction::ClockCorrectionController",
+    "clock_drift::{ClockDriftEstimator, ClockDriftSnapshot}",
+    "crate::frame::ClockDomainId",
+    "domain::{ describe_clock_domain, ClockDomainDescriptor, ClockDomainKind, ClockDomainOrigin, }",
+    "module:clock_correction",
+    "module:clock_drift",
+    "module:domain",
+    "module:timeline_mapping",
+    "std::sync::OnceLock",
+    "std::time::Instant",
+    "super::monotonic_timestamp_ns",
+    "timeline_mapping::TimelineMapping"
+  ],
+  "invariants": [
+    {
+      "line": 30,
+      "text": "/// across PocketStation crates. The value is never derived from a wall clock,"
+    },
+    {
+      "line": 31,
+      "text": "/// never moves backwards, and is always non-zero."
+    },
+    {
+      "line": 49,
+      "text": "assert!(first > 0);"
+    },
+    {
+      "line": 50,
+      "text": "assert!(second >= first);"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 53,
+  "locks": [],
+  "module": "pocketstation::timing",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-c2880aa18fd8bab36b2b"
+  ],
+  "outputs": [
+    "const:PROCESS_MONOTONIC_CLOCK_DOMAIN_ID",
+    "fn:monotonic_timestamp_ns"
+  ],
+  "package": "pocketstation",
+  "path": "src/timing/mod.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "clock_correction",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "clock_drift",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "domain",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "timeline_mapping",
+      "visibility": "private"
+    },
+    {
+      "kind": "static",
+      "line": 33,
+      "name": "ORIGIN",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 41,
+      "name": "monotonic_clock_tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "given_shared_monotonic_clock_when_sampled_then_value_never_moves_backwards",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "PROCESS_MONOTONIC_CLOCK_DOMAIN_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "monotonic_timestamp_ns",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::timing responsibilities, including Timing primitives owned by the PocketStation runtime.; Clock-domain identity for timestamps produced by PocketStation's shared; Process-wide monotonic timestamp domain shared by capture, routing, and."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [
+    "clock_correction::ClockCorrectionController",
+    "clock_drift::{ClockDriftEstimator, ClockDriftSnapshot}",
+    "timeline_mapping::TimelineMapping"
+  ],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/timing-and-clocks.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/map-source-time.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/timing.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/troubleshooting/timing.md"
+  ],
+  "relationship_outputs": [
+    "CONTAINS:src/timing/clock_correction.rs",
+    "CONTAINS:src/timing/clock_drift.rs",
+    "CONTAINS:src/timing/domain.rs",
+    "CONTAINS:src/timing/timeline_mapping.rs",
+    "IMPORTS:src/timing/clock_correction.rs",
+    "IMPORTS:src/timing/clock_drift.rs",
+    "IMPORTS:src/timing/domain.rs",
+    "IMPORTS:src/timing/timeline_mapping.rs",
+    "REFERENCES:src/frame/identity.rs"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "pocketstation::timing: Timing primitives owned by the PocketStation runtime.",
+    "pocketstation::timing::PROCESS_MONOTONIC_CLOCK_DOMAIN_ID: Clock-domain identity for timestamps produced by PocketStation's shared",
+    "pocketstation::timing::monotonic_timestamp_ns: Process-wide monotonic timestamp domain shared by capture, routing, and"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-792231fca7a439a8ac5d"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

@@ -1,0 +1,201 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "calls": [],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "constructs": [],
+  "content_hash": "8a9b9241e1719a7be1d57dce2acc1540fbd5a9a268eb0a4f717e21db3eddcd1c",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "plan",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "resolve",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "8a9b9241e1719a7be1d57dce2acc1540fbd5a9a268eb0a4f717e21db3eddcd1c",
+      "lines": [
+        1,
+        8
+      ],
+      "path": "src/graph/compile/mod.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0145-2ffef915",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "9cc863fb2953a3190afbf9832c3430b750f0275c",
+  "implemented_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "implements": [],
+  "imported_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "imports": [
+    "module:plan",
+    "module:resolve",
+    "plan::RuntimePlanner",
+    "resolve::{CompileError, Compiler}"
+  ],
+  "inputs": [
+    "module:plan",
+    "module:resolve",
+    "plan::RuntimePlanner",
+    "resolve::{CompileError, Compiler}"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 8,
+  "locks": [],
+  "module": "pocketstation::graph::compile",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "No emitted value or public declaration is recorded for this file."
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/compile/mod.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "plan",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "resolve",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::compile responsibilities, including compile."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [
+    "plan::RuntimePlanner",
+    "resolve::{CompileError, Compiler}"
+  ],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "relationship_outputs": [
+    "CONTAINS:src/graph/compile/plan.rs",
+    "CONTAINS:src/graph/compile/resolve.rs",
+    "IMPORTS:src/graph/compile/plan.rs",
+    "IMPORTS:src/graph/compile/resolve.rs"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "plan (mod)",
+    "resolve (mod)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

@@ -24,7 +24,7 @@
   ],
   "constructed_by": [],
   "constructs": [],
-  "content_hash": "450f9dab99e2f4c363d1a82d9a5a2ef5cfe55699a89e417fb1e46fe2ec232068",
+  "content_hash": "2ed460648a7e822008746b0b6a15e2002a6ead331e2c3d4b382ee13dd6bb2aa0",
   "defaults": [],
   "defines": [],
   "device_io": [
@@ -45,7 +45,7 @@
   "evidence": [
     {
       "classification": "DIRECT",
-      "content_hash": "450f9dab99e2f4c363d1a82d9a5a2ef5cfe55699a89e417fb1e46fe2ec232068",
+      "content_hash": "2ed460648a7e822008746b0b6a15e2002a6ead331e2c3d4b382ee13dd6bb2aa0",
       "lines": [
         1,
         47
@@ -83,7 +83,7 @@
   "finalization": [],
   "generated": false,
   "generated_from": "not_applicable",
-  "git_object": "aaf41ff116045cc0c436fa0d524f12b91976f7fb",
+  "git_object": "8c3e09bbe5d0e0ccd3beee9b628d294cc746db12",
   "implemented_by": [],
   "implements": [],
   "imported_by": [],
@@ -192,7 +192,7 @@
       "text": "| `SharedRing.h` | Shared ABI and lock-free bounded publication contract |"
     }
   ],
-  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [

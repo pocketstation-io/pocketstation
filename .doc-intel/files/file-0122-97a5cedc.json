@@ -1,0 +1,990 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
+  "calls": [
+    "Arc::new",
+    "AtomicU8::new",
+    "Condvar::new",
+    "ConnectorStopToken::new",
+    "Mutex::new",
+    "cfg",
+    "clone",
+    "connector",
+    "derive",
+    "endpoint",
+    "endpoint_observations",
+    "failure_threshold",
+    "fetch_update",
+    "given_drain_then_abort_when_requested_then_shutdown_intent_upgrades_monotonically",
+    "into_inner",
+    "is_abort_requested",
+    "is_ok",
+    "is_requested",
+    "is_stop_requested",
+    "load",
+    "lock",
+    "mode",
+    "new",
+    "notify_all",
+    "pub",
+    "record_delivered",
+    "record_discontinuity",
+    "record_dropped",
+    "record_failure",
+    "record_frame_delivered",
+    "record_frame_dropped",
+    "record_frame_received",
+    "record_received",
+    "record_retry",
+    "report_readiness_failure",
+    "report_readiness_success",
+    "request",
+    "saturating_add",
+    "set_connected",
+    "set_degraded",
+    "set_delivery_readiness",
+    "set_health",
+    "set_healthy",
+    "set_not_ready",
+    "set_ready",
+    "set_reconnecting",
+    "set_recovery",
+    "shutdown_mode",
+    "snapshot",
+    "success_threshold",
+    "then_some",
+    "unwrap_or_else",
+    "wait_for_stop",
+    "wait_timeout",
+    "wait_timeout_while"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 214,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "AtomicU8::new",
+    "Condvar::new",
+    "ConnectorStopToken::new",
+    "Mutex::new",
+    "new"
+  ],
+  "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 14,
+      "name": "ConnectorContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "ReadinessProbeState",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 28,
+      "name": "is_stop_requested",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "shutdown_mode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "is_abort_requested",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "wait_for_stop",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "set_ready",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "set_not_ready",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "set_degraded",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "set_healthy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "set_reconnecting",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "set_connected",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 79,
+      "name": "report_readiness_success",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "report_readiness_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "record_frame_received",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "record_frame_delivered",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 121,
+      "name": "record_frame_dropped",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 125,
+      "name": "record_discontinuity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 129,
+      "name": "record_retry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "record_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 138,
+      "name": "endpoint_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 145,
+      "name": "ConnectorStopToken",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 148,
+      "name": "ConnectorStopState",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 156,
+      "name": "new",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 165,
+      "name": "request",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 183,
+      "name": "is_requested",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 187,
+      "name": "mode",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 195,
+      "name": "wait_timeout",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "mod",
+      "line": 215,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 219,
+      "name": "given_drain_then_abort_when_requested_then_shutdown_intent_upgrades_monotonically",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 115,
+      "text": "self.state.endpoint().record_received(amount);"
+    },
+    {
+      "line": 119,
+      "text": "self.state.endpoint().record_delivered(amount);"
+    },
+    {
+      "line": 123,
+      "text": "self.state.endpoint().record_dropped(amount);"
+    },
+    {
+      "line": 127,
+      "text": "self.state.endpoint().record_discontinuity(amount);"
+    },
+    {
+      "line": 135,
+      "text": "self.state.endpoint().record_failure(1);"
+    },
+    {
+      "line": 140,
+      "text": "self.state.endpoint().snapshot()"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 14,
+      "name": "ConnectorContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "ReadinessProbeState",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 28,
+      "name": "is_stop_requested",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "shutdown_mode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "is_abort_requested",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "wait_for_stop",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "set_ready",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "set_not_ready",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "set_degraded",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "set_healthy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "set_reconnecting",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "set_connected",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 79,
+      "name": "report_readiness_success",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "report_readiness_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "record_frame_received",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "record_frame_delivered",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 121,
+      "name": "record_frame_dropped",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 125,
+      "name": "record_discontinuity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 129,
+      "name": "record_retry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "record_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 138,
+      "name": "endpoint_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 145,
+      "name": "ConnectorStopToken",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 156,
+      "name": "new",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 165,
+      "name": "request",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 183,
+      "name": "is_requested",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 187,
+      "name": "mode",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 195,
+      "name": "wait_timeout",
+      "visibility": "pub(super)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "8f24f55c61dbbdbbca54cc657617137e145c2387095c0dfd2844a80d70c19c9b",
+      "lines": [
+        1,
+        231
+      ],
+      "path": "src/connector/worker/coordination.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0122-97a5cedc",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "6c294659f59d83b9991ee1d07c947ce8e964cbe7",
+  "implemented_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
+  "implements": [
+    "ConnectorContext",
+    "ConnectorStopToken"
+  ],
+  "imported_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
+  "imports": [
+    "crate::connector::{ ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorCode, ConnectorHealth, ConnectorObservationError, ConnectorReadinessPolicy, ConnectorRecovery, }",
+    "crate::{EndpointDriverObservations, EndpointShutdownMode}",
+    "std::sync::atomic::{AtomicU8, Ordering}",
+    "std::sync::{Arc, Condvar, Mutex}",
+    "std::time::Duration",
+    "super::*",
+    "super::supervisor::ConnectorWorkerState"
+  ],
+  "inputs": [
+    "#[cfg(test)]",
+    "crate::connector::{ ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorCode, ConnectorHealth, ConnectorObservationError, ConnectorReadinessPolicy, ConnectorRecovery, }",
+    "crate::{EndpointDriverObservations, EndpointShutdownMode}",
+    "std::sync::atomic::{AtomicU8, Ordering}",
+    "std::sync::{Arc, Condvar, Mutex}",
+    "std::time::Duration",
+    "super::*",
+    "super::supervisor::ConnectorWorkerState"
+  ],
+  "invariants": [
+    {
+      "line": 222,
+      "text": "assert!(stop.request(EndpointShutdownMode::Drain));"
+    },
+    {
+      "line": 224,
+      "text": "assert!(!stop.request(EndpointShutdownMode::Drain));"
+    },
+    {
+      "line": 225,
+      "text": "assert!(stop.request(EndpointShutdownMode::Abort));"
+    },
+    {
+      "line": 227,
+      "text": "assert!(!stop.request(EndpointShutdownMode::Drain));"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 231,
+  "locks": [
+    {
+      "line": 2,
+      "text": "use std::sync::{Arc, Condvar, Mutex};"
+    },
+    {
+      "line": 18,
+      "text": "pub(super) readiness_probes: Arc<Mutex<ReadinessProbeState>>,"
+    },
+    {
+      "line": 151,
+      "text": "wait_lock: Mutex<()>,"
+    },
+    {
+      "line": 160,
+      "text": "wait_lock: Mutex::new(()),"
+    }
+  ],
+  "module": "pocketstation::connector::worker::coordination",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-37360a0c06d47c6f4697"
+  ],
+  "outputs": [
+    "fn:endpoint_observations",
+    "fn:is_abort_requested",
+    "fn:is_requested",
+    "fn:is_stop_requested",
+    "fn:mode",
+    "fn:new",
+    "fn:record_discontinuity",
+    "fn:record_failure",
+    "fn:record_frame_delivered",
+    "fn:record_frame_dropped",
+    "fn:record_frame_received",
+    "fn:record_retry",
+    "fn:report_readiness_failure",
+    "fn:report_readiness_success",
+    "fn:request",
+    "fn:set_connected",
+    "fn:set_degraded",
+    "fn:set_healthy",
+    "fn:set_not_ready",
+    "fn:set_ready",
+    "fn:set_reconnecting",
+    "fn:shutdown_mode",
+    "fn:wait_for_stop",
+    "fn:wait_timeout",
+    "struct:ConnectorContext",
+    "struct:ConnectorStopToken",
+    "struct:ReadinessProbeState"
+  ],
+  "package": "pocketstation",
+  "path": "src/connector/worker/coordination.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "struct",
+      "line": 148,
+      "name": "ConnectorStopState",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 215,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 219,
+      "name": "given_drain_then_abort_when_requested_then_shutdown_intent_upgrades_monotonically",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 14,
+      "name": "ConnectorContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "ReadinessProbeState",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 28,
+      "name": "is_stop_requested",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "shutdown_mode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "is_abort_requested",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "wait_for_stop",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "set_ready",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "set_not_ready",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "set_degraded",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "set_healthy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "set_reconnecting",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "set_connected",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 79,
+      "name": "report_readiness_success",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "report_readiness_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "record_frame_received",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "record_frame_delivered",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 121,
+      "name": "record_frame_dropped",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 125,
+      "name": "record_discontinuity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 129,
+      "name": "record_retry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "record_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 138,
+      "name": "endpoint_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 145,
+      "name": "ConnectorStopToken",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 156,
+      "name": "new",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 165,
+      "name": "request",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 183,
+      "name": "is_requested",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 187,
+      "name": "mode",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 195,
+      "name": "wait_timeout",
+      "visibility": "pub(super)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::connector::worker::coordination responsibilities, including Carries the inputs and runtime context required to connector.; Returns whether stop requested applies to `ConnectorContext`.; Returns the shutdown mode held by `ConnectorContext`.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/connectors.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/configure-connector-secrets.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/connectors.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/connectors.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/terminal-outcomes.md",
+    "docs/best-practices/connector-retries.md",
+    "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/connector/error.rs",
+    "REFERENCES:src/connector/observations.rs",
+    "REFERENCES:src/connector/readiness.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs",
+    "REFERENCES:src/endpoint/runtime.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 2,
+      "text": "use std::sync::{Arc, Condvar, Mutex};"
+    },
+    {
+      "line": 18,
+      "text": "pub(super) readiness_probes: Arc<Mutex<ReadinessProbeState>>,"
+    },
+    {
+      "line": 146,
+      "text": "inner: Arc<ConnectorStopState>,"
+    },
+    {
+      "line": 158,
+      "text": "inner: Arc::new(ConnectorStopState {"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::connector::worker::coordination::ConnectorContext: Carries the inputs and runtime context required to connector.",
+    "is_stop_requested: Returns whether stop requested applies to `ConnectorContext`.",
+    "shutdown_mode: Returns the shutdown mode held by `ConnectorContext`.",
+    "is_abort_requested: Returns whether abort requested applies to `ConnectorContext`.",
+    "wait_for_stop: Waits until a stop request is visible to `ConnectorContext`.",
+    "set_ready: Sets the ready used by `ConnectorContext`.",
+    "set_not_ready: Sets the not ready used by `ConnectorContext`.",
+    "set_degraded: Sets the degraded used by `ConnectorContext`.",
+    "set_healthy: Sets the healthy used by `ConnectorContext`.",
+    "set_reconnecting: Sets the reconnecting used by `ConnectorContext`.",
+    "set_connected: Sets the connected used by `ConnectorContext`.",
+    "report_readiness_success: Records a successful readiness probe for `ConnectorContext`.",
+    "report_readiness_failure: Returns the report readiness failure held by `ConnectorContext`.",
+    "record_frame_received: Records frame received for `ConnectorContext`.",
+    "record_frame_delivered: Records frame delivered for `ConnectorContext`.",
+    "record_frame_dropped: Records frame dropped for `ConnectorContext`.",
+    "record_discontinuity: Records discontinuity for `ConnectorContext`.",
+    "record_retry: Records retry for `ConnectorContext`.",
+    "record_failure: Records failure for `ConnectorContext`.",
+    "endpoint_observations: Returns the endpoint observations held by `ConnectorContext`."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 15,
+      "text": "pub(super) stop: ConnectorStopToken,"
+    },
+    {
+      "line": 29,
+      "text": "self.stop.is_requested()"
+    },
+    {
+      "line": 33,
+      "text": "self.stop.mode()"
+    },
+    {
+      "line": 41,
+      "text": "self.stop.wait_timeout(timeout)"
+    },
+    {
+      "line": 220,
+      "text": "let stop = ConnectorStopToken::new();"
+    },
+    {
+      "line": 221,
+      "text": "assert_eq!(stop.mode(), None);"
+    },
+    {
+      "line": 222,
+      "text": "assert!(stop.request(EndpointShutdownMode::Drain));"
+    },
+    {
+      "line": 223,
+      "text": "assert_eq!(stop.mode(), Some(EndpointShutdownMode::Drain));"
+    },
+    {
+      "line": 224,
+      "text": "assert!(!stop.request(EndpointShutdownMode::Drain));"
+    },
+    {
+      "line": 225,
+      "text": "assert!(stop.request(EndpointShutdownMode::Abort));"
+    },
+    {
+      "line": 226,
+      "text": "assert_eq!(stop.mode(), Some(EndpointShutdownMode::Abort));"
+    },
+    {
+      "line": 227,
+      "text": "assert!(!stop.request(EndpointShutdownMode::Drain));"
+    },
+    {
+      "line": 228,
+      "text": "assert_eq!(stop.mode(), Some(EndpointShutdownMode::Abort));"
+    }
+  ],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-01257fc4936a2d7e629a",
+    "test-b2828ba033d77339dbdd",
+    "test-cda95d750cab470ffff3"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

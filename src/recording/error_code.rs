@@ -76,6 +76,7 @@ impl RecordingErrorCode {
 
 impl RecorderError {
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the stable error or status code represented by `RecorderError`."]
     pub const fn code(&self) -> RecordingErrorCode {
         match self {
             Self::OutputExists(_) => RecordingErrorCode::OutputExists,

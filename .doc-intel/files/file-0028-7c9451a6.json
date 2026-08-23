@@ -31,7 +31,7 @@
     "ConnectorConfiguration::new",
     "Session::new"
   ],
-  "content_hash": "3931e84db4d9dc2ad00f72172f49041b9ef2be8f31194e61724778c542b8c734",
+  "content_hash": "9b159d261a448b46ea911d7d688b09b714c1e3cfb020fbccbad42aa7de5fa78f",
   "defaults": [],
   "defines": [],
   "device_io": [],
@@ -43,7 +43,7 @@
     },
     {
       "line": 11,
-      "text": "delivery accounting, drain/abort, and the canonical Endpoint transaction:"
+      "text": "delivery accounting, drain/abort, and the Endpoint transaction:"
     },
     {
       "line": 43,
@@ -67,7 +67,7 @@
     },
     {
       "line": 123,
-      "text": "canonical Endpoint observations. Session route metrics remain authoritative"
+      "text": "Endpoint observations. Session route metrics remain authoritative"
     },
     {
       "line": 157,
@@ -84,7 +84,7 @@
   "evidence": [
     {
       "classification": "DIRECT",
-      "content_hash": "3931e84db4d9dc2ad00f72172f49041b9ef2be8f31194e61724778c542b8c734",
+      "content_hash": "9b159d261a448b46ea911d7d688b09b714c1e3cfb020fbccbad42aa7de5fa78f",
       "lines": [
         1,
         168
@@ -113,7 +113,7 @@
   "finalization": [
     {
       "line": 11,
-      "text": "delivery accounting, drain/abort, and the canonical Endpoint transaction:"
+      "text": "delivery accounting, drain/abort, and the Endpoint transaction:"
     },
     {
       "line": 62,
@@ -130,7 +130,7 @@
   ],
   "generated": false,
   "generated_from": "not_applicable",
-  "git_object": "04194444de5b4febb00480fb383a4001a4762017",
+  "git_object": "24448cc956c45e9ade996e9cf7a68f335c6229e2",
   "implemented_by": [],
   "implements": [],
   "imported_by": [],
@@ -169,7 +169,7 @@
     },
     {
       "line": 165,
-      "text": "conformance is not provider proof: a supported package must also test its real"
+      "text": "conformance is not provider proof: a supported package must also test"
     }
   ],
   "language": "Markdown",
@@ -285,7 +285,7 @@
       "text": "realtime PCM path. The current native extension ABI does not provide arbitrary"
     }
   ],
-  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
   "startup_behavior": [
     {
       "line": 25,

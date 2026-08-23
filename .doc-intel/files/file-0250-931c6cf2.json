@@ -1,0 +1,293 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/recording/config.rs"
+  ],
+  "calls": [
+    "TimelineMapping::new",
+    "cfg",
+    "checked_add",
+    "checked_sub",
+    "derive",
+    "given_earlier_source_timestamp_when_normalized_then_session_delta_is_preserved",
+    "given_later_source_timestamp_when_normalized_then_session_delta_is_preserved",
+    "given_unrepresentable_timestamp_when_normalized_then_none_is_returned",
+    "new",
+    "normalize_timestamp_ns"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 26,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/recording/config.rs"
+  ],
+  "constructs": [
+    "TimelineMapping::new",
+    "new"
+  ],
+  "content_hash": "04aee575b5af75e64d490fbdec883d754271351c4fc364ed2cc12daf816b2f2a",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 2,
+      "name": "TimelineMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 8,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "normalize_timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 27,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "given_later_source_timestamp_when_normalized_then_session_delta_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 38,
+      "name": "given_earlier_source_timestamp_when_normalized_then_session_delta_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "given_unrepresentable_timestamp_when_normalized_then_none_is_returned",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 2,
+      "name": "TimelineMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 8,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "normalize_timestamp_ns",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "04aee575b5af75e64d490fbdec883d754271351c4fc364ed2cc12daf816b2f2a",
+      "lines": [
+        1,
+        51
+      ],
+      "path": "src/timing/timeline_mapping.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/recording/config.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0250-931c6cf2",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "ee74d9b23c0ac19459b247b09431ad920c089245",
+  "implemented_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/recording/config.rs"
+  ],
+  "implements": [
+    "TimelineMapping"
+  ],
+  "imported_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/recording/config.rs"
+  ],
+  "imports": [
+    "super::*"
+  ],
+  "inputs": [
+    "#[cfg(test)]",
+    "super::*"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 51,
+  "locks": [],
+  "module": "pocketstation::timing::timeline_mapping",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "fn:new",
+    "fn:normalize_timestamp_ns",
+    "struct:TimelineMapping"
+  ],
+  "package": "pocketstation",
+  "path": "src/timing/timeline_mapping.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 27,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "given_later_source_timestamp_when_normalized_then_session_delta_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 38,
+      "name": "given_earlier_source_timestamp_when_normalized_then_session_delta_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "given_unrepresentable_timestamp_when_normalized_then_none_is_returned",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 2,
+      "name": "TimelineMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 8,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "normalize_timestamp_ns",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::timing::timeline mapping responsibilities, including Correlates the prepared identities and runtime resources for timeline.; Stores the source origin value for `TimelineMapping`, in nanoseconds.; Stores the session origin value for `TimelineMapping`, in nanoseconds.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/timing-and-clocks.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/map-source-time.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/timing.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/troubleshooting/timing.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [],
+  "responsibilities": [
+    "pocketstation::timing::timeline_mapping::TimelineMapping: Correlates the prepared identities and runtime resources for timeline.",
+    "TimelineMapping::source_origin_ns: Stores the source origin value for `TimelineMapping`, in nanoseconds.",
+    "TimelineMapping::session_origin_ns: Stores the session origin value for `TimelineMapping`, in nanoseconds.",
+    "new: Creates a new `TimelineMapping`.",
+    "normalize_timestamp_ns: Returns the normalize timestamp nanoseconds held by `TimelineMapping`."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-07659b10df7191d01261",
+    "test-8e4d29c9c42209f5f7a1",
+    "test-fb2b6038745ee53f69bc"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

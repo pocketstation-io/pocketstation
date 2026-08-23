@@ -33,7 +33,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Install Rust 1.95
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.95.0
+          components: clippy, rustfmt
 
       - name: Require a version-matched release and guarded main recovery
         env:
@@ -72,7 +76,7 @@ jobs:
             fi
             unexpected_paths="$(
               git diff --name-only "${tag_commit}..${GITHUB_SHA}" |
-                grep -Ev '^(\.github/workflows/publish\.yml|PHASE2_PROGRESS\.md|scripts/publish\.sh|scripts/test-publish-recovery\.sh)$' ||
+              grep -Ev '^(\.github/workflows/publish\.yml|PHASE2_PROGRESS\.md|scripts/publish\.sh|scripts/test-publish-recovery\.sh|scripts/fixtures/connector-v1-vectors\.json)$' ||
                 true
             )"
             if [[ -n "${unexpected_paths}" ]]; then
@@ -95,6 +99,12 @@ jobs:
             ripgrep
 
       - uses: Swatinem/rust-cache@v2
+
+      - name: Materialize the connector conformance corpus
+        run: |
+          mkdir -p ../protocol/conformance/connector/v1
+          cp scripts/fixtures/connector-v1-vectors.json \
+            ../protocol/conformance/connector/v1/vectors.json
 
       - name: Rust formatting
         run: cargo fmt --all -- --check

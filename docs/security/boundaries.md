@@ -40,7 +40,7 @@ Use header-defined handle and callback ownership. Keep libraries alive while cal
 
 ## Evidence boundary
 
-The claims on **Security boundaries** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Security boundaries** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `src/secret.rs:1-13` (`DIRECT`)
 - `src/native_extension/library.rs:1-272` (`DIRECT`)

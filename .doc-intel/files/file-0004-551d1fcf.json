@@ -18,24 +18,24 @@
   "channels": [],
   "configuration_read": [
     {
-      "line": 103,
+      "line": 113,
       "text": "run: cargo test --workspace --all-features --locked"
     },
     {
-      "line": 106,
+      "line": 116,
       "text": "run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings"
     },
     {
-      "line": 109,
+      "line": 119,
       "text": "run: cargo doc --locked --no-deps -p pocketstation --no-default-features --target x86_64-unknown-linux-gnu"
     }
   ],
   "constructed_by": [],
   "constructs": [],
-  "content_hash": "aff4325bbe16eda2cdad7fe10fa641118a2c9c6050c5c4dc1d8c0661cf9142be",
+  "content_hash": "35f342756c888cfc47191ad85ad91cad0f92f853c71e366995ff1a28eaf09c36",
   "defaults": [
     {
-      "line": 109,
+      "line": 119,
       "text": "run: cargo doc --locked --no-deps -p pocketstation --no-default-features --target x86_64-unknown-linux-gnu"
     }
   ],
@@ -53,10 +53,10 @@
   "evidence": [
     {
       "classification": "DIRECT",
-      "content_hash": "aff4325bbe16eda2cdad7fe10fa641118a2c9c6050c5c4dc1d8c0661cf9142be",
+      "content_hash": "35f342756c888cfc47191ad85ad91cad0f92f853c71e366995ff1a28eaf09c36",
       "lines": [
         1,
-        161
+        171
       ],
       "path": ".github/workflows/publish.yml",
       "symbol": null
@@ -77,7 +77,7 @@
   "finalization": [],
   "generated": false,
   "generated_from": "not_applicable",
-  "git_object": "926e135a746fa7b9d56763a154abf7bfd4d3435f",
+  "git_object": "5e69a65aa271ef2e6f6d5b3f8869656be0065857",
   "implemented_by": [],
   "implements": [],
   "imported_by": [],
@@ -89,16 +89,16 @@
   ],
   "invariants": [
     {
-      "line": 50,
+      "line": 54,
       "text": "echo \"release tag ${RELEASE_TAG} must equal ${expected_tag}\" >&2"
     },
     {
-      "line": 66,
+      "line": 70,
       "text": "echo \"publication recovery must run from main\" >&2"
     }
   ],
   "language": "YAML",
-  "line_count": 161,
+  "line_count": 171,
   "locks": [],
   "module": "not_applicable",
   "network_io": [],
@@ -156,7 +156,7 @@
   "serialization": [],
   "shutdown_behavior": [],
   "side_effects": [],
-  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],

@@ -17,66 +17,66 @@ For **Running ownership**, PocketStation keeps the declaration, compilation, pre
 
 | Operation | Trigger | Source state | Destination state | Evidence record |
 |---|---|---|---|---|
-| `cancel_and_reap` | `cancel_and_reap` | preparing_or_running | cancellation_requested_or_cancelled | `life-033b98da937709d4b2b0` |
-| `join` | `join` | stopping_or_completed | terminal | `life-05d0b22aacaf35a3ff7f` |
-| `close` | `close` | owned_or_running | closed_or_released | `life-072d37f373f0c2a2db44` |
-| `pocketstation::session::lifecycle::running::start_prepared_session` | `start_prepared_session` | declared_or_compiled | prepared_or_prepare_failed | `life-0d33bc06c15c8f36db67` |
-| `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Cancel` | `Cancel` | preparing_or_running | cancellation_requested_or_cancelled | `life-10551e3b62fb7f772613` |
-| `start` | `start` | prepared | running_or_start_failed | `life-1695d590bdb58923755e` |
-| `prepare_session` | `prepare_session` | declared_or_compiled | prepared_or_prepare_failed | `life-17262c72ad57bde7091d` |
-| `drop` | `drop` | owned_or_running | closed_or_released | `life-1c7816652dd061fb1141` |
-| `close_and_reap` | `close_and_reap` | owned_or_running | closed_or_released | `life-2a340a7ae69b2c18f4f3` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarState::Running` | `Running` | prepared | running_or_terminal | `life-2d4ebaa478c36896b51d` |
-| `pocketstation::session::lifecycle::engine::SessionEngineStartError::Prepare` | `Prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-3171793f782cee3c5b77` |
-| `start_failure` | `start_failure` | prepared | running_or_start_failed | `life-325781a0a47d85d28f37` |
-| `prepare` | `prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-3691d2e1f8efde5ac0a0` |
-| `cancel` | `cancel` | preparing_or_running | cancellation_requested_or_cancelled | `life-37895c4b927a1e2c20bd` |
-| `cancel_and_join` | `cancel_and_join` | preparing_or_running | cancellation_requested_or_cancelled | `life-3acf2ecfada4977ce7df` |
-| `drop_observations` | `drop_observations` | owned_or_running | closed_or_released | `life-3c1a60a96f386b0c2233` |
-| `drop_rate_pct` | `drop_rate_pct` | owned_or_running | closed_or_released | `life-449ed8a22cf03f904d39` |
-| `drop` | `drop` | owned_or_running | closed_or_released | `life-44a40cbf57416c570e19` |
-| `drop` | `drop` | owned_or_running | closed_or_released | `life-44d8a960be8c4f4eba48` |
-| `pocketstation::session::prepare::prepare_session_runtime` | `prepare_session_runtime` | declared_or_compiled | prepared_or_prepare_failed | `life-4788465795aa5b459d72` |
-| `drop` | `drop` | owned_or_running | closed_or_released | `life-55d2a5f2ad91927f2c84` |
-| `shutdown` | `shutdown` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-57c87f8d848ba4083d83` |
-| `pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError::Start` | `Start` | prepared | running_or_start_failed | `life-58786e40f7899fab0a36` |
-| `prepare_and_spawn_from_plan_edge` | `prepare_and_spawn_from_plan_edge` | declared_or_compiled | prepared_or_prepare_failed | `life-5aa27838dcaa21b67918` |
-| `start_compiled` | `start_compiled` | prepared | running_or_start_failed | `life-68e51aae7a58503e68ec` |
-| `pocketstation::session::lifecycle::events::SessionLifecycleState::Stopped` | `Stopped` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-69a6aff4df2be3f84131` |
-| `pocketstation::session::lifecycle::events::SessionTerminalState::Stopped` | `Stopped` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-6a218d0b344e24bcf2b3` |
-| `start` | `start` | prepared | running_or_start_failed | `life-6dfd4a8b6248d8918571` |
-| `SourceDriver::close` | `close` | owned_or_running | closed_or_released | `life-78c6b2ef32d95e6ad82c` |
-| `start_compiled_cancellable` | `start_compiled_cancellable` | prepared | running_or_start_failed | `life-7b1469dcc46309d2d629` |
-| `cancel_and_join` | `cancel_and_join` | preparing_or_running | cancellation_requested_or_cancelled | `life-7e3c74efe4ca679fb089` |
-| `drop` | `drop` | owned_or_running | closed_or_released | `life-7f4be68921e6d8b9cb92` |
-| `prepare` | `prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-8290bb198180554201c6` |
-| `cancel` | `cancel` | preparing_or_running | cancellation_requested_or_cancelled | `life-84814636a2bc2fd27250` |
-| `drop` | `drop` | owned_or_running | closed_or_released | `life-872f31ae0091d843e07d` |
-| `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Close` | `Close` | owned_or_running | closed_or_released | `life-94fdf744a545aa18f84d` |
-| `close` | `close` | owned_or_running | closed_or_released | `life-990eedf83476e0e861be` |
-| `start_compiled_cancellable` | `start_compiled_cancellable` | prepared | running_or_start_failed | `life-997609314cf808402756` |
-| `start` | `start` | prepared | running_or_start_failed | `life-9e8c247c9bcac897aa32` |
-| `pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Cancel` | `Cancel` | preparing_or_running | cancellation_requested_or_cancelled | `life-afba705f6d4e82a18998` |
-| `pocketstation::runtime::audio::runner::PlanSourceSendError::Cancelled` | `Cancelled` | preparing_or_running | cancellation_requested_or_cancelled | `life-b2a66fd10eb50f205b98` |
-| `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError::Cancelled` | `Cancelled` | preparing_or_running | cancellation_requested_or_cancelled | `life-b7aa4ebc1860ffa7ee22` |
-| `start_compiled` | `start_compiled` | prepared | running_or_start_failed | `life-bb6b635326c31b017c27` |
-| `pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind::Cancelled` | `Cancelled` | preparing_or_running | cancellation_requested_or_cancelled | `life-bce2897a917246800a2c` |
-| `pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Prepare` | `Prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-bfb028fd80ee0267a457` |
-| `pocketstation::session::lifecycle::events::SessionLifecycleState::Running` | `Running` | prepared | running_or_terminal | `life-c25444e4f9cd62e3ad01` |
-| `pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Join` | `Join` | stopping_or_completed | terminal | `life-c28e3e6c28087dff573a` |
-| `pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Close` | `Close` | owned_or_running | closed_or_released | `life-c5eee2ecf1a79f8d55cf` |
-| `pocketstation::session::lifecycle::running::start_prepared_session_cancellable` | `start_prepared_session_cancellable` | declared_or_compiled | prepared_or_prepare_failed | `life-cad3bede2bc1d9dfdadd` |
-| `start` | `start` | prepared | running_or_start_failed | `life-ce1437749f3c39aea285` |
-| `prepare_context` | `prepare_context` | declared_or_compiled | prepared_or_prepare_failed | `life-d11d5649023858ebf3d2` |
-| `stop` | `stop` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-d6ffb4e55b1f64a3a73d` |
-| `pocketstation::session::error_code::SessionStopCode::Stopped` | `Stopped` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-e0bd45ab7651528422f4` |
-| `drop` | `drop` | owned_or_running | closed_or_released | `life-e48ae7dd511c2ee65dec` |
-| `pocketstation::session::lifecycle::start_contract::SessionStartError::Cancelled` | `Cancelled` | prepared | running_or_start_failed | `life-e85546ef287c5d8b1a10` |
-| `SourceDriver::prepare` | `prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-e9b55238f265a7f63da2` |
-| `pocketstation::session::lifecycle::engine::SessionEngineStartError::Start` | `Start` | prepared | running_or_start_failed | `life-f81b9d7345fea4f92fd6` |
-| `pocketstation::session::lifecycle::observations::EndpointObservationStage::Finalized` | `Finalized` | stopping_or_completed | terminal | `life-f98c28a0a56c89e4ba80` |
-| `drop` | `drop` | owned_or_running | closed_or_released | `life-fc32baa1cb75a0aa584e` |
-| `drop_rate_pct` | `drop_rate_pct` | owned_or_running | closed_or_released | `life-fe3ec5c72e581c7d44d5` |
+| `pocketstation::session::lifecycle::observations::EndpointObservationStage::Finalized` | `Finalized` | stopping_or_completed | terminal | `life-079ba79743246d62b02e` |
+| `pocketstation::session::lifecycle::events::SessionLifecycleState::Stopped` | `Stopped` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-0c83bede0af1826f5b6a` |
+| `drop` | `drop` | owned_or_running | closed_or_released | `life-0eb9c8d45523705c071c` |
+| `pocketstation::session::lifecycle::control::SessionStartError::Cancelled` | `Cancelled` | prepared | running_or_start_failed | `life-14367931dacc2ea6803e` |
+| `drop_rate_pct` | `drop_rate_pct` | owned_or_running | closed_or_released | `life-1a59542c3bc90997a7e9` |
+| `cancel_and_join` | `cancel_and_join` | preparing_or_running | cancellation_requested_or_cancelled | `life-1b6e541aba4cc6f4cdfb` |
+| `pocketstation::session::prepare::prepare_session_runtime` | `prepare_session_runtime` | declared_or_compiled | prepared_or_prepare_failed | `life-1ff9bd824b35e4bd86a6` |
+| `close_and_reap` | `close_and_reap` | owned_or_running | closed_or_released | `life-227c49c48f136eb6305f` |
+| `SourceDriver::close` | `close` | owned_or_running | closed_or_released | `life-24ac3bb4851827ee31fe` |
+| `start_compiled_cancellable` | `start_compiled_cancellable` | prepared | running_or_start_failed | `life-26d46ffab4e997084bfb` |
+| `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError::Cancelled` | `Cancelled` | preparing_or_running | cancellation_requested_or_cancelled | `life-277b4455fde06fca7361` |
+| `start` | `start` | prepared | running_or_start_failed | `life-27d61a4d665450e563d4` |
+| `pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError::Start` | `Start` | prepared | running_or_start_failed | `life-28b94670f06967d2fccc` |
+| `pocketstation::session::lifecycle::running::start_prepared_session` | `start_prepared_session` | declared_or_compiled | prepared_or_prepare_failed | `life-2ad92f34c9423181c5be` |
+| `close` | `close` | owned_or_running | closed_or_released | `life-31fcaf8e4ff4dc364909` |
+| `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Cancel` | `Cancel` | preparing_or_running | cancellation_requested_or_cancelled | `life-361d2b8d8a09134c7799` |
+| `drop` | `drop` | owned_or_running | closed_or_released | `life-45188ad8c6a8dde207aa` |
+| `prepare` | `prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-456533bd456a4ee124a1` |
+| `drop` | `drop` | owned_or_running | closed_or_released | `life-4b2edb4fb23deb5bd0b4` |
+| `start_failure` | `start_failure` | prepared | running_or_start_failed | `life-4c39dbc19bad333c2912` |
+| `drop` | `drop` | owned_or_running | closed_or_released | `life-53a5c0c438b0534a2964` |
+| `drop_rate_pct` | `drop_rate_pct` | owned_or_running | closed_or_released | `life-572fd1fca97f08fe449b` |
+| `cancel` | `cancel` | preparing_or_running | cancellation_requested_or_cancelled | `life-5a4d79d60befb5c0de67` |
+| `pocketstation::session::lifecycle::engine::SessionEngineStartError::Prepare` | `Prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-5cdc4329bb39da70e765` |
+| `drop` | `drop` | owned_or_running | closed_or_released | `life-5fb7a5014d6ffc5d4352` |
+| `prepare_and_spawn_from_plan_edge` | `prepare_and_spawn_from_plan_edge` | declared_or_compiled | prepared_or_prepare_failed | `life-62a217a84804d5de5e4c` |
+| `pocketstation::session::lifecycle::events::SessionLifecycleState::Running` | `Running` | prepared | running_or_terminal | `life-68c28ff7b438b8f11879` |
+| `SourceDriver::prepare` | `prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-6a6429930d687e6fac25` |
+| `start_compiled` | `start_compiled` | prepared | running_or_start_failed | `life-6e9224a91062bb5ec713` |
+| `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Close` | `Close` | owned_or_running | closed_or_released | `life-720bc3672572da603047` |
+| `pocketstation::runtime::audio::runner::PlanSourceSendError::Cancelled` | `Cancelled` | preparing_or_running | cancellation_requested_or_cancelled | `life-78031521ad3200204b7a` |
+| `start_compiled_cancellable` | `start_compiled_cancellable` | prepared | running_or_start_failed | `life-7e2e74712c52616d3c2c` |
+| `pocketstation::session::error_code::SessionStopCode::Stopped` | `Stopped` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-80e6f0ced6a8a0e4d47b` |
+| `drop_observations` | `drop_observations` | owned_or_running | closed_or_released | `life-87afb6dffef4ad5765d6` |
+| `prepare_session` | `prepare_session` | declared_or_compiled | prepared_or_prepare_failed | `life-8871b96155ed0020e00c` |
+| `start_compiled` | `start_compiled` | prepared | running_or_start_failed | `life-8b50910aa645c7069ac3` |
+| `stop` | `stop` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-8bb2a23671da67e30c1b` |
+| `pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Join` | `Join` | stopping_or_completed | terminal | `life-93b4a56b42d1f44497bf` |
+| `pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Cancel` | `Cancel` | preparing_or_running | cancellation_requested_or_cancelled | `life-9472a597b8db5b6c3d01` |
+| `start` | `start` | prepared | running_or_start_failed | `life-96cd11312a6f1461a2ca` |
+| `cancel` | `cancel` | preparing_or_running | cancellation_requested_or_cancelled | `life-977aafa66864957cfcb4` |
+| `shutdown` | `shutdown` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-9be9144874aff9e686bd` |
+| `pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Prepare` | `Prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-a08adc009d9bab5b3fcf` |
+| `drop` | `drop` | owned_or_running | closed_or_released | `life-a66c19cea3372c7a33d8` |
+| `pocketstation::session::lifecycle::running::start_prepared_session_cancellable` | `start_prepared_session_cancellable` | declared_or_compiled | prepared_or_prepare_failed | `life-a8706f56832ee13271c9` |
+| `cancel_and_join` | `cancel_and_join` | preparing_or_running | cancellation_requested_or_cancelled | `life-ab1d9f74cf7c8203e8b4` |
+| `pocketstation::session::lifecycle::events::SessionTerminalState::Stopped` | `Stopped` | state_declared_by_owning_type | state_returned_by_owning_operation | `life-b5ed04fa91e839c293be` |
+| `join` | `join` | stopping_or_completed | terminal | `life-b5f9ab974b55c8f4b6c2` |
+| `pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind::Cancelled` | `Cancelled` | preparing_or_running | cancellation_requested_or_cancelled | `life-b65b53dd882678e7685b` |
+| `start` | `start` | prepared | running_or_start_failed | `life-b76642f17aa575a0757e` |
+| `close` | `close` | owned_or_running | closed_or_released | `life-b9b46198766a5efb68d8` |
+| `drop` | `drop` | owned_or_running | closed_or_released | `life-b9c3e073905015b85207` |
+| `pocketstation::session::lifecycle::engine::SessionEngineStartError::Start` | `Start` | prepared | running_or_start_failed | `life-cb5a740e84f51401ac95` |
+| `cancel_and_reap` | `cancel_and_reap` | preparing_or_running | cancellation_requested_or_cancelled | `life-e16c2f3cc3e18a861647` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarState::Running` | `Running` | prepared | running_or_terminal | `life-e3721811066c7fdb3dd7` |
+| `start` | `start` | prepared | running_or_start_failed | `life-e4d2a447d0f97df30948` |
+| `pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Close` | `Close` | owned_or_running | closed_or_released | `life-ea7544a0b40b7b99d4c0` |
+| `prepare` | `prepare` | declared_or_compiled | prepared_or_prepare_failed | `life-f2d6afa474fb10373eb8` |
+| `drop` | `drop` | owned_or_running | closed_or_released | `life-f39c0d7ab0cd31705e26` |
+| `prepare_context` | `prepare_context` | declared_or_compiled | prepared_or_prepare_failed | `life-f4c3e7122fc0dc984668` |
 
 ## Failure handling
 
@@ -86,18 +86,18 @@ Within **Running ownership**, a transition whose guard, idempotence, or recovery
 
 Executable evidence selected for **Running ownership** is limited to each test's recorded setup and assertions:
 
-- `given_process_instance_selector_when_capture_mode_built_then_exact_identity_is_preserved` — given process instance selector when capture mode built then exact identity is preserved (`src/session/lifecycle/running.rs:2589`; `test-dac823b98be9f727652f`).
-- `given_one_branch_when_signal_published_then_receiver_has_exclusive_ownership` — given one branch when signal published then receiver has exclusive ownership (`src/runtime/signal/edge.rs:626`; `test-9674b8f8edebf8590582`).
-- `given_connected_gain_plan_when_executed_then_only_connected_nodes_run_and_worker_receives_output` — given connected gain plan when executed then only connected nodes run and worker receives output (`src/runtime/audio/executor.rs:331`; `test-cd64bb966db1f193ea6f`).
-- `given_lineaged_frame_when_realtime_operator_executes_then_output_keeps_capture_epochs` — given lineaged frame when realtime operator executes then output keeps capture epochs (`src/runtime/audio/executor.rs:411`; `test-14905efc2e19f82a8cb2`).
-- `given_realtime_fan_out_when_executed_then_each_mutating_branch_gets_independent_copy` — given realtime fan out when executed then each mutating branch gets independent copy (`src/runtime/audio/executor.rs:369`; `test-c0c81ff42570a02c1eb9`).
-- `given_compiled_text_edge_when_router_builds_then_only_audio_edge_gets_audio_receiver` — given compiled text edge when router builds then only audio edge gets audio receiver (`src/runtime/audio/router.rs:983`; `test-c5f24b62056cfa546c3a`).
-- `given_enqueued_and_dropped_frames_when_observed_then_drop_rate_uses_all_attempts` — given enqueued and dropped frames when observed then drop rate uses all attempts (`src/runtime/audio/router.rs:1241`; `test-9a0bb689d2371b66a92f`).
-- `given_failed_branch_when_receiver_drops_then_unrelated_branch_continues` — given failed branch when receiver drops then unrelated branch continues (`src/runtime/audio/router.rs:1518`; `test-b5854f13d50d15dfdbe3`).
-- `given_foreign_clock_timestamp_when_delivered_then_source_latency_is_not_fabricated` — given foreign clock timestamp when delivered then source latency is not fabricated (`src/runtime/audio/router.rs:1182`; `test-133d3a4b4c11520b3884`).
-- `given_lineage_discontinuity_epoch_change_when_received_then_declared_discontinuity_is_counted` — given lineage discontinuity epoch change when received then declared discontinuity is counted (`src/runtime/audio/router.rs:1117`; `test-fceb86228ea42976addb`).
-- `given_lineaged_source_fan_out_when_branch_frames_are_copied_then_exact_lineage_is_preserved` — given lineaged source fan out when branch frames are copied then exact lineage is preserved (`src/runtime/audio/router.rs:1076`; `test-d798548d6c8b059ba1a8`).
-- `given_observation_handle_when_consumer_detects_gap_then_live_discontinuity_is_visible` — given observation handle when consumer detects gap then live discontinuity is visible (`src/runtime/audio/router.rs:1410`; `test-225f3db0b8f734fb6907`).
+- `given_process_instance_selector_when_capture_mode_built_then_exact_identity_is_preserved` — given process instance selector when capture mode built then exact identity is preserved (`src/session/lifecycle/running.rs:2602`; `test-284127121760cbb5874f`).
+- `given_one_branch_when_signal_published_then_receiver_has_exclusive_ownership` — given one branch when signal published then receiver has exclusive ownership (`src/runtime/signal/edge.rs:626`; `test-ff5044918a12088e3cc1`).
+- `given_connected_gain_plan_when_executed_then_only_connected_nodes_run_and_worker_receives_output` — given connected gain plan when executed then only connected nodes run and worker receives output (`src/runtime/audio/executor.rs:331`; `test-3f9281677e5af26dc9ad`).
+- `given_lineaged_frame_when_realtime_operator_executes_then_output_keeps_capture_epochs` — given lineaged frame when realtime operator executes then output keeps capture epochs (`src/runtime/audio/executor.rs:411`; `test-aee462488aef78361374`).
+- `given_realtime_fan_out_when_executed_then_each_mutating_branch_gets_independent_copy` — given realtime fan out when executed then each mutating branch gets independent copy (`src/runtime/audio/executor.rs:369`; `test-8b303620bdafeb3aa260`).
+- `given_compiled_text_edge_when_router_builds_then_only_audio_edge_gets_audio_receiver` — given compiled text edge when router builds then only audio edge gets audio receiver (`src/runtime/audio/router.rs:1012`; `test-687c08c4ebc7699d891b`).
+- `given_enqueued_and_dropped_frames_when_observed_then_drop_rate_uses_all_attempts` — given enqueued and dropped frames when observed then drop rate uses all attempts (`src/runtime/audio/router.rs:1272`; `test-81f2a37c65fc1321fb4b`).
+- `given_failed_branch_when_receiver_drops_then_unrelated_branch_continues` — given failed branch when receiver drops then unrelated branch continues (`src/runtime/audio/router.rs:1549`; `test-e79727ff2a1d9faecc74`).
+- `given_foreign_clock_timestamp_when_delivered_then_source_latency_is_not_fabricated` — given foreign clock timestamp when delivered then source latency is not fabricated (`src/runtime/audio/router.rs:1211`; `test-2dfdf77222ba4754d494`).
+- `given_lineage_discontinuity_epoch_change_when_received_then_declared_discontinuity_is_counted` — given lineage discontinuity epoch change when received then declared discontinuity is counted (`src/runtime/audio/router.rs:1146`; `test-6161d7a8c36359a8e55e`).
+- `given_lineaged_source_fan_out_when_branch_frames_are_copied_then_exact_lineage_is_preserved` — given lineaged source fan out when branch frames are copied then exact lineage is preserved (`src/runtime/audio/router.rs:1105`; `test-8407a37a5b957f010ddf`).
+- `given_observation_handle_when_consumer_detects_gap_then_live_discontinuity_is_visible` — given observation handle when consumer detects gap then live discontinuity is visible (`src/runtime/audio/router.rs:1441`; `test-b11b6230db89e523d9d4`).
 
 ## Related documentation
 
@@ -112,8 +112,8 @@ Executable evidence selected for **Running ownership** is limited to each test's
 
 ## Evidence boundary
 
-The claims on **Running ownership** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Running ownership** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/lifecycle/running.rs:1-2612` (`DIRECT`)
+- `src/session/lifecycle/running.rs:1-2625` (`DIRECT`)
 
 For **Running ownership**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

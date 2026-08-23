@@ -1,0 +1,560 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
+  "calls": [
+    "allow",
+    "any",
+    "cfg",
+    "pub"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 22,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 26,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 33,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 35,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 38,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 41,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 50,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 56,
+      "text": "SessionRecordingState, SessionRecordingStemOutcome, DEFAULT_MULTISTEM_RECORDING_GROUP_ID,"
+    },
+    {
+      "line": 65,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 71,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 76,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 101,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 106,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 112,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 114,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 116,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 120,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 122,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 128,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 130,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 134,
+      "text": "ClockDomain, Codec, ConfigError, CopyPolicy, DeliverySemantics, EdgeContract,"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
+  "constructs": [],
+  "content_hash": "a9134c77c9893a0c0356bdd6121449b5e10b29cb36b277547099c72545ebf29d",
+  "defaults": [
+    {
+      "line": 56,
+      "text": "SessionRecordingState, SessionRecordingStemOutcome, DEFAULT_MULTISTEM_RECORDING_GROUP_ID,"
+    }
+  ],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 1,
+      "name": "compile",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "declaration",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 3,
+      "name": "error",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "error_code",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "extensions",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "lifecycle",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "prepare",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 9,
+      "text": "pub use crate::endpoint::{"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "declaration",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 3,
+      "name": "error",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "error_code",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "extensions",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "lifecycle",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "a9134c77c9893a0c0356bdd6121449b5e10b29cb36b277547099c72545ebf29d",
+      "lines": [
+        1,
+        145
+      ],
+      "path": "src/session/mod.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0240-af36d5fa",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "b8ebae24cc8e0fabe9af6d9293021044061c64ec",
+  "implemented_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
+  "implements": [],
+  "imported_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
+  "imports": [
+    "compile::{ CompiledSession, SessionCompileDiagnostic, SessionCompileError, SessionCompiler, }",
+    "crate::endpoint::{ PolledAudioBatchLease, PolledAudioEndpoint, PolledAudioEndpointConfig, PolledAudioEndpointConfigError, PolledAudioFrame, PolledAudioObservations, PolledAudioPollError, PolledAudioReceipt, }",
+    "crate::frame::ConnectorId",
+    "crate::frame::{ AudioBufferPool, AudioFrame, AudioFrameBuildError, ClockDomainId, FrameLineage, FrameLineageBuildError, SourceId, StreamId, }",
+    "crate::frame::{EndpointId, RouteId, SampleFormat, SampleSpec, SessionId, StemId}",
+    "crate::graph::NodeRegistrationError",
+    "crate::graph::{ AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError, AudioCaps, BackpressurePolicy, BinaryFormat, ChannelLayout, ClockDomain, Codec, ConfigError, CopyPolicy, DeliverySemantics, EdgeContract, EdgeObservabilityLevel, EventFormat, ExecutionPartition, LossPolicy, MediaCaps, MediaKind, Multiplicity, NodeDefinition, NodeDescriptor, NodeError, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortPrepareContext, PortSpec, PrepareContext, SafetyContract, SchemaRef, SemanticRole, SignalClass, SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker, SignalDerivation, SignalDerivationError, SignalEnvelope, SignalEnvelopeError, SignalId, SignalLineage, SignalPayload, SignalSpec, SignalSpecError, SignalTiming, TextFormat, }",
+    "crate::graph::{NodeConfig as OperatorConfiguration, NodeTypeId}",
+    "declaration::{ ConnectionSpec, ConnectionTarget, EndpointSpec, OperatorInstanceId, SessionSpec, SourceInstanceId, SourceOutputSpec, StreamOrigin, }",
+    "declaration::{ DerivedStreamHandle, OperatorInputHandle, OperatorInstanceHandle, SourceInstanceHandle, }",
+    "declaration::{ EndpointConfiguration, EndpointDescriptor, OperatorId, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, }",
+    "declaration::{ApplicationSelector, DeviceSelector, Source}",
+    "declaration::{DeviceId, ProcessId}",
+    "declaration::{EndpointHandle, Operator, Session, SourceOutputHandle, StemHandle}",
+    "declaration::{OperatorInstanceSpec, StemSpec}",
+    "declaration::{OperatorSpec, SessionSpecVersion, SESSION_SPEC_VERSION}",
+    "declaration::{Stream, StreamSignal, TypedOperator, TypedStreamError}",
+    "error::SessionError",
+    "error_code::{ polled_audio_poll_error_code, session_declaration_error_code, session_start_failure_code, PolledAudioPollErrorCode, SessionDeclarationErrorCode, SessionStartErrorCode, }",
+    "error_code::{ session_stop_failure_codes, SessionRuntimeErrorCode, SessionStopCode, SessionStopFailureCode, }",
+    "extensions::SessionGraphRegistrationError",
+    "extensions::{ PreparedSourceRuntime, SourceConfiguration, SourceOutputBranchSpec, SourceOutputIdentity, SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceRuntimeObservations, SourceSessionContext, SourceTypeId, }",
+    "extensions::{ RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, RECORDING_GROUP_CONFIGURATION_KEY, }",
+    "extensions::{ SourceCancellation, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourceOutputReceiver, SourcePrepareContext, SourceRegistrationError, SourceRuntimeError, }",
+    "extensions::{ register_session_graph_nodes, APPLICATION_SOURCE_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, }",
+    "extensions::{ session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations, SessionRecordingState, SessionRecordingStemOutcome, DEFAULT_MULTISTEM_RECORDING_GROUP_ID, SESSION_RECORDING_MANIFEST_FILE_NAME, SESSION_RECORDING_MANIFEST_SCHEMA_VERSION, }",
+    "extensions::{SessionRecordingOutcome, SessionRecordingReceipt}",
+    "lifecycle::SessionTraceRecorderHandle",
+    "lifecycle::{ CaptureBackendSet, RunningSession, SessionStartCancellation, SessionStartError, SessionStartFailure, SessionStartOptions, SessionStopOutcome, }",
+    "lifecycle::{ EndpointExtensionRegistrationError, SessionEngine, SessionEngineBuildError, SessionEngineBuilder, SessionEngineStartError, }",
+    "lifecycle::{ EndpointObservationStage, SessionAudioReentryMetrics, SessionDerivedRouteMetrics, SessionExternalSourceMetrics, SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteMetrics, SessionSidecarMetrics, SessionSourceMetrics, }",
+    "lifecycle::{ NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuildError, SessionEngineHostBuilder, }",
+    "lifecycle::{ SessionComponentId, SessionControlFailure, SessionEndpointFailure, SessionEvent, SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionFinalizationFailure, SessionFinalizationStage, SessionLifecycleState, SessionRollbackFailure, SessionRollbackStage, SessionSourceFailure, SessionTerminalOutcome, SessionTerminalState, }",
+    "lifecycle::{ SessionEventQueueObservations, SessionRouteDropObservations, SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit, SessionRouteObservationInterval, }",
+    "lifecycle::{ SessionTrace, SessionTraceRecorder, SessionTraceRecorderFinishError, SessionTraceRecorderOutcome, SessionTraceRecorderStartError, SessionTraceValidation, SessionTraceValidationError, }",
+    "lifecycle::{SessionTraceRecord, SessionTraceRecordKind, SessionTraceTerminal}",
+    "lifecycle::{start_prepared_session, start_prepared_session_cancellable}",
+    "module:compile",
+    "module:declaration",
+    "module:error",
+    "module:error_code",
+    "module:extensions",
+    "module:lifecycle",
+    "module:prepare",
+    "prepare::PreparedSourceMapping",
+    "prepare::PreparedWorkerMapping",
+    "prepare::{prepare_session_runtime, PreparedSession, SessionPrepareError}"
+  ],
+  "inputs": [
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "SessionRecordingState, SessionRecordingStemOutcome, DEFAULT_MULTISTEM_RECORDING_GROUP_ID,",
+    "compile::{ CompiledSession, SessionCompileDiagnostic, SessionCompileError, SessionCompiler, }",
+    "crate::endpoint::{ PolledAudioBatchLease, PolledAudioEndpoint, PolledAudioEndpointConfig, PolledAudioEndpointConfigError, PolledAudioFrame, PolledAudioObservations, PolledAudioPollError, PolledAudioReceipt, }",
+    "crate::frame::ConnectorId",
+    "crate::frame::{ AudioBufferPool, AudioFrame, AudioFrameBuildError, ClockDomainId, FrameLineage, FrameLineageBuildError, SourceId, StreamId, }",
+    "crate::frame::{EndpointId, RouteId, SampleFormat, SampleSpec, SessionId, StemId}",
+    "crate::graph::NodeRegistrationError",
+    "crate::graph::{ AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError, AudioCaps, BackpressurePolicy, BinaryFormat, ChannelLayout, ClockDomain, Codec, ConfigError, CopyPolicy, DeliverySemantics, EdgeContract, EdgeObservabilityLevel, EventFormat, ExecutionPartition, LossPolicy, MediaCaps, MediaKind, Multiplicity, NodeDefinition, NodeDescriptor, NodeError, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortPrepareContext, PortSpec, PrepareContext, SafetyContract, SchemaRef, SemanticRole, SignalClass, SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker, SignalDerivation, SignalDerivationError, SignalEnvelope, SignalEnvelopeError, SignalId, SignalLineage, SignalPayload, SignalSpec, SignalSpecError, SignalTiming, TextFormat, }",
+    "crate::graph::{NodeConfig as OperatorConfiguration, NodeTypeId}",
+    "declaration::{ ConnectionSpec, ConnectionTarget, EndpointSpec, OperatorInstanceId, SessionSpec, SourceInstanceId, SourceOutputSpec, StreamOrigin, }",
+    "declaration::{ DerivedStreamHandle, OperatorInputHandle, OperatorInstanceHandle, SourceInstanceHandle, }",
+    "declaration::{ EndpointConfiguration, EndpointDescriptor, OperatorId, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, }",
+    "declaration::{ApplicationSelector, DeviceSelector, Source}",
+    "declaration::{DeviceId, ProcessId}",
+    "declaration::{EndpointHandle, Operator, Session, SourceOutputHandle, StemHandle}",
+    "declaration::{OperatorInstanceSpec, StemSpec}",
+    "declaration::{OperatorSpec, SessionSpecVersion, SESSION_SPEC_VERSION}",
+    "declaration::{Stream, StreamSignal, TypedOperator, TypedStreamError}",
+    "error::SessionError",
+    "error_code::{ polled_audio_poll_error_code, session_declaration_error_code, session_start_failure_code, PolledAudioPollErrorCode, SessionDeclarationErrorCode, SessionStartErrorCode, }",
+    "error_code::{ session_stop_failure_codes, SessionRuntimeErrorCode, SessionStopCode, SessionStopFailureCode, }",
+    "extensions::SessionGraphRegistrationError",
+    "extensions::{ PreparedSourceRuntime, SourceConfiguration, SourceOutputBranchSpec, SourceOutputIdentity, SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceRuntimeObservations, SourceSessionContext, SourceTypeId, }",
+    "extensions::{ RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, RECORDING_GROUP_CONFIGURATION_KEY, }",
+    "extensions::{ SourceCancellation, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourceOutputReceiver, SourcePrepareContext, SourceRegistrationError, SourceRuntimeError, }",
+    "extensions::{ register_session_graph_nodes, APPLICATION_SOURCE_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, }",
+    "extensions::{ session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations, SessionRecordingState, SessionRecordingStemOutcome, DEFAULT_MULTISTEM_RECORDING_GROUP_ID, SESSION_RECORDING_MANIFEST_FILE_NAME, SESSION_RECORDING_MANIFEST_SCHEMA_VERSION, }",
+    "extensions::{SessionRecordingOutcome, SessionRecordingReceipt}",
+    "lifecycle::SessionTraceRecorderHandle",
+    "lifecycle::{ CaptureBackendSet, RunningSession, SessionStartCancellation, SessionStartError, SessionStartFailure, SessionStartOptions, SessionStopOutcome, }",
+    "lifecycle::{ EndpointExtensionRegistrationError, SessionEngine, SessionEngineBuildError, SessionEngineBuilder, SessionEngineStartError, }",
+    "lifecycle::{ EndpointObservationStage, SessionAudioReentryMetrics, SessionDerivedRouteMetrics, SessionExternalSourceMetrics, SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteMetrics, SessionSidecarMetrics, SessionSourceMetrics, }",
+    "lifecycle::{ NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuildError, SessionEngineHostBuilder, }",
+    "lifecycle::{ SessionComponentId, SessionControlFailure, SessionEndpointFailure, SessionEvent, SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionFinalizationFailure, SessionFinalizationStage, SessionLifecycleState, SessionRollbackFailure, SessionRollbackStage, SessionSourceFailure, SessionTerminalOutcome, SessionTerminalState, }",
+    "lifecycle::{ SessionEventQueueObservations, SessionRouteDropObservations, SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit, SessionRouteObservationInterval, }",
+    "lifecycle::{ SessionTrace, SessionTraceRecorder, SessionTraceRecorderFinishError, SessionTraceRecorderOutcome, SessionTraceRecorderStartError, SessionTraceValidation, SessionTraceValidationError, }",
+    "lifecycle::{SessionTraceRecord, SessionTraceRecordKind, SessionTraceTerminal}",
+    "lifecycle::{start_prepared_session, start_prepared_session_cancellable}",
+    "module:compile",
+    "module:declaration",
+    "module:error",
+    "module:error_code",
+    "module:extensions",
+    "module:lifecycle",
+    "module:prepare",
+    "prepare::PreparedSourceMapping",
+    "prepare::PreparedWorkerMapping",
+    "prepare::{prepare_session_runtime, PreparedSession, SessionPrepareError}"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 145,
+  "locks": [],
+  "module": "pocketstation::session",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-74de2f97f45ca110ff2c"
+  ],
+  "outputs": [
+    "mod:declaration",
+    "mod:error",
+    "mod:error_code",
+    "mod:extensions",
+    "mod:lifecycle"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/mod.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 1,
+      "name": "compile",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "prepare",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "declaration",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 3,
+      "name": "error",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "error_code",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "extensions",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "lifecycle",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session responsibilities, including session."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [
+    "crate::frame::ConnectorId",
+    "crate::frame::{EndpointId, RouteId, SampleFormat, SampleSpec, SessionId, StemId}",
+    "crate::graph::NodeRegistrationError",
+    "crate::graph::{NodeConfig as OperatorConfiguration, NodeTypeId}",
+    "declaration::{ApplicationSelector, DeviceSelector, Source}",
+    "declaration::{DeviceId, ProcessId}",
+    "declaration::{EndpointHandle, Operator, Session, SourceOutputHandle, StemHandle}",
+    "declaration::{OperatorInstanceSpec, StemSpec}",
+    "declaration::{OperatorSpec, SessionSpecVersion, SESSION_SPEC_VERSION}",
+    "declaration::{Stream, StreamSignal, TypedOperator, TypedStreamError}",
+    "error::SessionError",
+    "extensions::SessionGraphRegistrationError",
+    "extensions::{SessionRecordingOutcome, SessionRecordingReceipt}",
+    "lifecycle::SessionTraceRecorderHandle",
+    "lifecycle::{SessionTraceRecord, SessionTraceRecordKind, SessionTraceTerminal}",
+    "lifecycle::{start_prepared_session, start_prepared_session_cancellable}",
+    "prepare::PreparedSourceMapping",
+    "prepare::PreparedWorkerMapping",
+    "prepare::{prepare_session_runtime, PreparedSession, SessionPrepareError}"
+  ],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [
+    "CONTAINS:src/session/compile/mod.rs",
+    "CONTAINS:src/session/declaration/mod.rs",
+    "CONTAINS:src/session/error.rs",
+    "CONTAINS:src/session/error_code.rs",
+    "CONTAINS:src/session/extensions/mod.rs",
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "CONTAINS:src/session/prepare/mod.rs",
+    "IMPORTS:src/session/compile/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/error.rs",
+    "IMPORTS:src/session/error_code.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/prepare/mod.rs"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "compile (mod)",
+    "declaration (mod)",
+    "error (mod)",
+    "error_code (mod)",
+    "extensions (mod)",
+    "lifecycle (mod)",
+    "prepare (mod)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 7,
+      "text": "mod prepare;"
+    },
+    {
+      "line": 115,
+      "text": "pub use prepare::PreparedSourceMapping;"
+    },
+    {
+      "line": 117,
+      "text": "pub use prepare::PreparedWorkerMapping;"
+    },
+    {
+      "line": 118,
+      "text": "pub use prepare::{prepare_session_runtime, PreparedSession, SessionPrepareError};"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

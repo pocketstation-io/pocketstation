@@ -1,0 +1,2018 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/mod.rs"
+  ],
+  "calls": [
+    "ApplicationSelector::name",
+    "Arc::clone",
+    "Arc::new",
+    "AtomicU32::new",
+    "AtomicU64::new",
+    "Compiled",
+    "Draft",
+    "EndpointConfiguration::new",
+    "EndpointDescriptor::new",
+    "EngineRuntime::new",
+    "FnOnce",
+    "HandleTable::new",
+    "Mutex::new",
+    "NativeSessionEngineHostOptions::default",
+    "OnceLock::new",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "Self::Compiled",
+    "Self::Draft",
+    "Self::with_options",
+    "Session::new",
+    "SessionEngineHost::native",
+    "SessionEngineHostBuilder::native",
+    "SessionEventKind::Endpoint",
+    "SessionEventKind::Finalization",
+    "SessionEventKind::Lifecycle",
+    "SessionEventKind::Rollback",
+    "SessionEventKind::Source",
+    "SessionEventKind::Terminal",
+    "SessionEventReceive::Event",
+    "SessionObject::Compiled",
+    "SessionObject::Draft",
+    "SessionRuntime::new",
+    "SessionRuntime::with_host",
+    "SessionStartCancellation::default",
+    "Source::application",
+    "Source::microphone_default",
+    "SourceConfiguration::default",
+    "SourceTypeId::new",
+    "Vec::new",
+    "active_count",
+    "allocate_engine",
+    "allocate_engine_with_host",
+    "allocate_runtime",
+    "any",
+    "as_ptr",
+    "as_ref",
+    "as_str",
+    "audio_frame",
+    "build",
+    "capture",
+    "cfg",
+    "channels",
+    "clone",
+    "cloned",
+    "compare_exchange",
+    "compile",
+    "compile_session",
+    "connect",
+    "connector_id",
+    "crate::graph::NodeTypeId::from",
+    "create_app_mic_session",
+    "create_executable_extension_session",
+    "create_session",
+    "destroy_session",
+    "endpoint",
+    "endpoint_failures",
+    "endpoint_id",
+    "engine",
+    "engine_builder",
+    "engine_is_live",
+    "error",
+    "event_record",
+    "events",
+    "fetch_add",
+    "finalization_failures",
+    "find_map",
+    "for_each_mut",
+    "frame",
+    "get",
+    "get_mut",
+    "id",
+    "input",
+    "insert",
+    "into_start_failure",
+    "is_err",
+    "is_none",
+    "is_ok",
+    "is_requested",
+    "is_some",
+    "is_success",
+    "iter",
+    "kind",
+    "len",
+    "let",
+    "lifecycle_state",
+    "lifecycle_state_from_event",
+    "lineage",
+    "load",
+    "lock",
+    "map",
+    "map_err",
+    "map_poll_error",
+    "max",
+    "metrics",
+    "metrics_snapshot",
+    "new",
+    "ok_or",
+    "operation",
+    "operator",
+    "output",
+    "poll_audio",
+    "poll_event",
+    "polled_audio",
+    "polled_audio_receipt",
+    "push",
+    "register_async_operator",
+    "register_endpoint",
+    "register_executable_extension",
+    "register_source_factory",
+    "release_audio",
+    "release_engine",
+    "remove",
+    "request",
+    "request_stop",
+    "rollback_failures",
+    "route_id",
+    "sample_rate_hz",
+    "samples",
+    "send",
+    "send_to",
+    "session_events",
+    "session_id",
+    "session_state",
+    "set",
+    "set_state",
+    "shutdown",
+    "source",
+    "source_failures",
+    "start_compiled_cancellable",
+    "start_failure",
+    "start_session",
+    "state",
+    "std::mem::replace",
+    "std::sync::atomic::AtomicBool::new",
+    "stem_id",
+    "stop",
+    "stop_session",
+    "store",
+    "take_event_receiver",
+    "try_poll",
+    "try_recv",
+    "u32::from",
+    "u32::try_from",
+    "u64::from",
+    "validate_session",
+    "with_configuration",
+    "with_engine_mut",
+    "with_host",
+    "with_options"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 25,
+      "text": "const DEFAULT_ENGINE_CAPACITY_COUNT: usize = 16;"
+    },
+    {
+      "line": 26,
+      "text": "const DEFAULT_SESSION_CAPACITY_COUNT: usize = 1;"
+    },
+    {
+      "line": 120,
+      "text": "DEFAULT_SESSION_CAPACITY_COUNT,"
+    },
+    {
+      "line": 134,
+      "text": "#[cfg(any(test, feature = \"conformance-fixtures\"))]"
+    },
+    {
+      "line": 142,
+      "text": "DEFAULT_SESSION_CAPACITY_COUNT,"
+    },
+    {
+      "line": 668,
+      "text": "DEFAULT_ENGINE_CAPACITY_COUNT,"
+    },
+    {
+      "line": 683,
+      "text": "#[cfg(any(test, feature = \"conformance-fixtures\"))]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/mod.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "AtomicU32::new",
+    "AtomicU64::new",
+    "EndpointConfiguration::new",
+    "EndpointDescriptor::new",
+    "EngineRuntime::new",
+    "HandleTable::new",
+    "Mutex::new",
+    "OnceLock::new",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "Session::new",
+    "SessionRuntime::new",
+    "SourceTypeId::new",
+    "Vec::new",
+    "crate::graph::NodeTypeId::from",
+    "engine_builder",
+    "new",
+    "std::sync::atomic::AtomicBool::new",
+    "u32::from",
+    "u32::try_from",
+    "u64::from"
+  ],
+  "content_hash": "bae4933964b57128c7529ef48c991c27d238fff0846329734b31983bf4784ba8",
+  "defaults": [
+    {
+      "line": 25,
+      "text": "const DEFAULT_ENGINE_CAPACITY_COUNT: usize = 16;"
+    },
+    {
+      "line": 26,
+      "text": "const DEFAULT_SESSION_CAPACITY_COUNT: usize = 1;"
+    },
+    {
+      "line": 120,
+      "text": "DEFAULT_SESSION_CAPACITY_COUNT,"
+    },
+    {
+      "line": 142,
+      "text": "DEFAULT_SESSION_CAPACITY_COUNT,"
+    },
+    {
+      "line": 668,
+      "text": "DEFAULT_ENGINE_CAPACITY_COUNT,"
+    }
+  ],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "DEFAULT_ENGINE_CAPACITY_COUNT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 26,
+      "name": "DEFAULT_SESSION_CAPACITY_COUNT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "ENGINE_HANDLE_SCOPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "static",
+      "line": 28,
+      "name": "NEXT_ENGINE_SCOPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 30,
+      "name": "SessionObject",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "lifecycle_state",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 66,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "events",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 96,
+      "name": "SessionRuntime",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 108,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "with_options",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 135,
+      "name": "with_host",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "create_app_mic_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 190,
+      "name": "register_executable_extension",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 208,
+      "name": "create_executable_extension_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 316,
+      "name": "compile_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "start_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 377,
+      "name": "stop_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 381,
+      "name": "session_state",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 390,
+      "name": "session_events",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 397,
+      "name": "poll_event",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 408,
+      "name": "metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 438,
+      "name": "poll_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 458,
+      "name": "audio_frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 496,
+      "name": "release_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 501,
+      "name": "destroy_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 509,
+      "name": "shutdown",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 526,
+      "name": "map_poll_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 534,
+      "name": "event_record",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 591,
+      "name": "EngineRuntime",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 602,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 613,
+      "name": "state",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 637,
+      "name": "set_state",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 641,
+      "name": "validate_session",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 659,
+      "name": "RuntimeState",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 665,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 674,
+      "name": "allocate_engine",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 684,
+      "name": "allocate_engine_with_host",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 691,
+      "name": "allocate_runtime",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 698,
+      "name": "release_engine",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 713,
+      "name": "engine_is_live",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 717,
+      "name": "engine",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 725,
+      "name": "with_engine_mut",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 738,
+      "name": "with_engine",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 751,
+      "name": "create_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 771,
+      "name": "register_executable_extension",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 781,
+      "name": "create_executable_extension_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 801,
+      "name": "compile_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 821,
+      "name": "start_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 885,
+      "name": "stop_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 927,
+      "name": "session_state",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 937,
+      "name": "destroy_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 956,
+      "name": "lifecycle_state_from_event",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 244,
+      "text": "ExecutableExtensionRegistration::Endpoint {"
+    },
+    {
+      "line": 297,
+      "text": "let endpoint = session"
+    },
+    {
+      "line": 298,
+      "text": ".endpoint("
+    },
+    {
+      "line": 309,
+      "text": ".send_to(endpoint, Some(pipeline.endpoint_input_port))"
+    },
+    {
+      "line": 559,
+      "text": "SessionEventKind::Endpoint(failure) => {"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 96,
+      "name": "SessionRuntime",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "create_app_mic_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 190,
+      "name": "register_executable_extension",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 208,
+      "name": "create_executable_extension_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 316,
+      "name": "compile_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "start_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 377,
+      "name": "stop_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 381,
+      "name": "session_state",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 390,
+      "name": "session_events",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 397,
+      "name": "poll_event",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 408,
+      "name": "metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 438,
+      "name": "poll_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 458,
+      "name": "audio_frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 496,
+      "name": "release_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 501,
+      "name": "destroy_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 659,
+      "name": "RuntimeState",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 665,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 674,
+      "name": "allocate_engine",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 684,
+      "name": "allocate_engine_with_host",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 698,
+      "name": "release_engine",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 713,
+      "name": "engine_is_live",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 725,
+      "name": "with_engine_mut",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 738,
+      "name": "with_engine",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 751,
+      "name": "create_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 771,
+      "name": "register_executable_extension",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 781,
+      "name": "create_executable_extension_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 801,
+      "name": "compile_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 821,
+      "name": "start_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 885,
+      "name": "stop_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 927,
+      "name": "session_state",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 937,
+      "name": "destroy_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 956,
+      "name": "lifecycle_state_from_event",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 79,
+      "text": "Err(AbiError::BackendFailure)"
+    },
+    {
+      "line": 82,
+      "text": "Self::Failed { .. } => Err(AbiError::BackendFailure),"
+    },
+    {
+      "line": 84,
+      "text": "Err(AbiError::InvalidLifecycleState)"
+    },
+    {
+      "line": 161,
+      "text": "return Err(AbiError::NoCapacity);"
+    },
+    {
+      "line": 196,
+      "text": "return Err(AbiError::InvalidLifecycleState);"
+    },
+    {
+      "line": 203,
+      "text": "return Err(AbiError::InvalidArgument);"
+    },
+    {
+      "line": 214,
+      "text": "return Err(AbiError::NoCapacity);"
+    },
+    {
+      "line": 322,
+      "text": "return Err(AbiError::InvalidLifecycleState);"
+    },
+    {
+      "line": 330,
+      "text": "Err(_) => {"
+    },
+    {
+      "line": 332,
+      "text": "Err(AbiError::BackendFailure)"
+    },
+    {
+      "line": 346,
+      "text": "return Err(AbiError::InvalidLifecycleState);"
+    },
+    {
+      "line": 359,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 369,
+      "text": "Err(if cancelled {"
+    },
+    {
+      "line": 400,
+      "text": "return Err(AbiError::InvalidLifecycleState);"
+    },
+    {
+      "line": 404,
+      "text": "SessionEventReceive::Empty => Err(AbiError::WouldBlock),"
+    },
+    {
+      "line": 405,
+      "text": "SessionEventReceive::Closed => Err(AbiError::Cancelled),"
+    },
+    {
+      "line": 434,
+      "text": "Err(AbiError::InvalidLifecycleState)"
+    },
+    {
+      "line": 444,
+      "text": "return Err(AbiError::InvalidLifecycleState);"
+    },
+    {
+      "line": 520,
+      "text": "Err(AbiError::BackendFailure)"
+    },
+    {
+      "line": 644,
+      "text": "return Err(AbiError::InvalidHandle);"
+    },
+    {
+      "line": 647,
+      "text": "return Err(AbiError::ForeignHandle);"
+    },
+    {
+      "line": 651,
+      "text": "return Err(AbiError::StaleHandle);"
+    },
+    {
+      "line": 654,
+      "text": "return Err(AbiError::StaleHandle);"
+    },
+    {
+      "line": 839,
+      "text": "return Err(AbiError::InvalidLifecycleState);"
+    },
+    {
+      "line": 870,
+      "text": "Err(AbiError::Cancelled)"
+    },
+    {
+      "line": 875,
+      "text": "Err(AbiError::Cancelled) => {"
+    },
+    {
+      "line": 877,
+      "text": "Err(AbiError::Cancelled)"
+    },
+    {
+      "line": 879,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 881,
+      "text": "Err(error)"
+    },
+    {
+      "line": 906,
+      "text": "return Err(AbiError::InvalidLifecycleState);"
+    },
+    {
+      "line": 917,
+      "text": "Ok(_) => Err(AbiError::InvalidLifecycleState),"
+    },
+    {
+      "line": 918,
+      "text": "Err(error) => Err(error),"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [
+    {
+      "line": 165,
+      "text": "SessionEngineHost::native(self.options).map_err(|_| AbiError::BackendFailure)?,"
+    },
+    {
+      "line": 173,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 176,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 179,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 182,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 185,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 256,
+      "text": "SessionEngineHostBuilder::native(self.options).map_err(|_| AbiError::BackendFailure)?;"
+    },
+    {
+      "line": 260,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 263,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 270,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 271,
+      "text": "self.host = Some(host_builder.build().map_err(|_| AbiError::BackendFailure)?);"
+    },
+    {
+      "line": 277,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?,"
+    },
+    {
+      "line": 280,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 283,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 289,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 294,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?,"
+    },
+    {
+      "line": 296,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 305,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 308,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?"
+    },
+    {
+      "line": 310,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 453,
+      "text": ".map_err(map_poll_error)?;"
+    },
+    {
+      "line": 454,
+      "text": "let frame_count = u32::try_from(lease.len()).map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 492,
+      "text": "sample_count: u32::try_from(samples.len()).map_err(|_| AbiError::InvalidArgument)?,"
+    },
+    {
+      "line": 695,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 703,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 709,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 721,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 735,
+      "text": ".map_err(|_| AbiError::BackendFailure)?;"
+    },
+    {
+      "line": 748,
+      "text": ".map_err(|_| AbiError::BackendFailure)?;"
+    },
+    {
+      "line": 761,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 766,
+      "text": ".map_err(|_| AbiError::NoCapacity)?;"
+    },
+    {
+      "line": 791,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 796,
+      "text": ".map_err(|_| AbiError::NoCapacity)?;"
+    },
+    {
+      "line": 812,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 844,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 863,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 912,
+      "text": ".map_err(|_| AbiError::BackendFailure)?;"
+    },
+    {
+      "line": 948,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 165,
+      "text": "SessionEngineHost::native(self.options).map_err(|_| AbiError::BackendFailure)?,"
+    },
+    {
+      "line": 173,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 176,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 179,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 182,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 185,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 256,
+      "text": "SessionEngineHostBuilder::native(self.options).map_err(|_| AbiError::BackendFailure)?;"
+    },
+    {
+      "line": 260,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 263,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 270,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 271,
+      "text": "self.host = Some(host_builder.build().map_err(|_| AbiError::BackendFailure)?);"
+    },
+    {
+      "line": 277,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?,"
+    },
+    {
+      "line": 280,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 283,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 289,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 294,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?,"
+    },
+    {
+      "line": 296,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 305,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 308,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?"
+    },
+    {
+      "line": 310,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 453,
+      "text": ".map_err(map_poll_error)?;"
+    },
+    {
+      "line": 454,
+      "text": "let frame_count = u32::try_from(lease.len()).map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 492,
+      "text": "sample_count: u32::try_from(samples.len()).map_err(|_| AbiError::InvalidArgument)?,"
+    },
+    {
+      "line": 695,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 703,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 709,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 721,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 735,
+      "text": ".map_err(|_| AbiError::BackendFailure)?;"
+    },
+    {
+      "line": 748,
+      "text": ".map_err(|_| AbiError::BackendFailure)?;"
+    },
+    {
+      "line": 761,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 766,
+      "text": ".map_err(|_| AbiError::NoCapacity)?;"
+    },
+    {
+      "line": 791,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 796,
+      "text": ".map_err(|_| AbiError::NoCapacity)?;"
+    },
+    {
+      "line": 812,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 844,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 863,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 912,
+      "text": ".map_err(|_| AbiError::BackendFailure)?;"
+    },
+    {
+      "line": 948,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 165,
+      "text": "SessionEngineHost::native(self.options).map_err(|_| AbiError::BackendFailure)?,"
+    },
+    {
+      "line": 173,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 176,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 179,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 182,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 185,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 256,
+      "text": "SessionEngineHostBuilder::native(self.options).map_err(|_| AbiError::BackendFailure)?;"
+    },
+    {
+      "line": 260,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 263,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 270,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 271,
+      "text": "self.host = Some(host_builder.build().map_err(|_| AbiError::BackendFailure)?);"
+    },
+    {
+      "line": 277,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?,"
+    },
+    {
+      "line": 280,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 283,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 289,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 294,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?,"
+    },
+    {
+      "line": 296,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 305,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 308,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?"
+    },
+    {
+      "line": 310,
+      "text": ".map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 453,
+      "text": ".map_err(map_poll_error)?;"
+    },
+    {
+      "line": 454,
+      "text": "let frame_count = u32::try_from(lease.len()).map_err(|_| AbiError::InvalidArgument)?;"
+    },
+    {
+      "line": 492,
+      "text": "sample_count: u32::try_from(samples.len()).map_err(|_| AbiError::InvalidArgument)?,"
+    },
+    {
+      "line": 695,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 703,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 709,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 721,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 735,
+      "text": ".map_err(|_| AbiError::BackendFailure)?;"
+    },
+    {
+      "line": 748,
+      "text": ".map_err(|_| AbiError::BackendFailure)?;"
+    },
+    {
+      "line": 761,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 766,
+      "text": ".map_err(|_| AbiError::NoCapacity)?;"
+    },
+    {
+      "line": 791,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 796,
+      "text": ".map_err(|_| AbiError::NoCapacity)?;"
+    },
+    {
+      "line": 812,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 844,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 863,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    },
+    {
+      "line": 912,
+      "text": ".map_err(|_| AbiError::BackendFailure)?;"
+    },
+    {
+      "line": 948,
+      "text": ".map_err(|_| AbiError::BackendFailure)?"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "bae4933964b57128c7529ef48c991c27d238fff0846329734b31983bf4784ba8",
+      "lines": [
+        1,
+        966
+      ],
+      "path": "src/abi/session/runtime.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [
+    "conformance-fixtures"
+  ],
+  "feature_gate": [
+    "conformance-fixtures"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0075-49dd4bb6",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "c37ec0a40c63181c3c67a758fa83254635158334",
+  "implemented_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/mod.rs"
+  ],
+  "implements": [
+    "SessionObject",
+    "SessionRuntime",
+    "EngineRuntime",
+    "RuntimeState"
+  ],
+  "imported_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/mod.rs"
+  ],
+  "imports": [
+    "crate::abi::executable_extension::{ ExecutableExtensionPipeline, ExecutableExtensionRegistration, }",
+    "crate::abi::session::abi::{ PksSessionAudioFrame, PksSessionEvent, PksSessionEventKind, PksSessionHandle, PksSessionHandleKind, PksSessionLifecycleState, PksSessionSampleFormat, PKS_SESSION_ABI_MAJOR, PKS_SESSION_ABI_MINOR, }",
+    "crate::abi::session::error::AbiError",
+    "crate::abi::session::handle::HandleTable",
+    "crate::session::{ ApplicationSelector, CompiledSession, EndpointConfiguration, EndpointDescriptor, NativeSessionEngineHostOptions, Operator, OperatorConfiguration, OperatorId, PolledAudioBatchLease, PolledAudioPollError, RunningSession, Session, SessionEngineHost, SessionEngineHostBuilder, SessionEvent, SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionLifecycleState, SessionMetricsSnapshot, SessionStartCancellation, SessionStartError, Source, SourceConfiguration, SourceTypeId, }",
+    "std::sync::atomic::{AtomicU32, AtomicU64, Ordering}",
+    "std::sync::{Arc, Mutex, OnceLock}"
+  ],
+  "inputs": [
+    "#[cfg(any(test, feature = \"conformance-fixtures\"))]",
+    "DEFAULT_ENGINE_CAPACITY_COUNT,",
+    "DEFAULT_SESSION_CAPACITY_COUNT,",
+    "const DEFAULT_ENGINE_CAPACITY_COUNT: usize = 16;",
+    "const DEFAULT_SESSION_CAPACITY_COUNT: usize = 1;",
+    "crate::abi::executable_extension::{ ExecutableExtensionPipeline, ExecutableExtensionRegistration, }",
+    "crate::abi::session::abi::{ PksSessionAudioFrame, PksSessionEvent, PksSessionEventKind, PksSessionHandle, PksSessionHandleKind, PksSessionLifecycleState, PksSessionSampleFormat, PKS_SESSION_ABI_MAJOR, PKS_SESSION_ABI_MINOR, }",
+    "crate::abi::session::error::AbiError",
+    "crate::abi::session::handle::HandleTable",
+    "crate::session::{ ApplicationSelector, CompiledSession, EndpointConfiguration, EndpointDescriptor, NativeSessionEngineHostOptions, Operator, OperatorConfiguration, OperatorId, PolledAudioBatchLease, PolledAudioPollError, RunningSession, Session, SessionEngineHost, SessionEngineHostBuilder, SessionEvent, SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionLifecycleState, SessionMetricsSnapshot, SessionStartCancellation, SessionStartError, Source, SourceConfiguration, SourceTypeId, }",
+    "std::sync::atomic::{AtomicU32, AtomicU64, Ordering}",
+    "std::sync::{Arc, Mutex, OnceLock}"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 966,
+  "locks": [
+    {
+      "line": 2,
+      "text": "use std::sync::{Arc, Mutex, OnceLock};"
+    },
+    {
+      "line": 593,
+      "text": "runtime: Mutex<SessionRuntime>,"
+    },
+    {
+      "line": 605,
+      "text": "runtime: Mutex::new(runtime),"
+    },
+    {
+      "line": 661,
+      "text": "engines: Mutex<HandleTable<Arc<EngineRuntime>>>,"
+    },
+    {
+      "line": 667,
+      "text": "engines: Mutex::new(HandleTable::new("
+    }
+  ],
+  "module": "pocketstation::abi::session::runtime",
+  "network_io": [
+    {
+      "line": 291,
+      "text": ".connect("
+    }
+  ],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-e533a842654dad617452"
+  ],
+  "outputs": [
+    "Err(AbiError::BackendFailure)",
+    "Err(AbiError::InvalidLifecycleState)",
+    "Err(_) => {",
+    "Self::Failed { .. } => Err(AbiError::BackendFailure),",
+    "fn:allocate_engine",
+    "fn:allocate_engine_with_host",
+    "fn:audio_frame",
+    "fn:compile_session",
+    "fn:create_app_mic_session",
+    "fn:create_executable_extension_session",
+    "fn:create_session",
+    "fn:destroy_session",
+    "fn:engine_is_live",
+    "fn:metrics",
+    "fn:new",
+    "fn:poll_audio",
+    "fn:poll_event",
+    "fn:register_executable_extension",
+    "fn:release_audio",
+    "fn:release_engine",
+    "fn:session_events",
+    "fn:session_state",
+    "fn:start_session",
+    "fn:stop_session",
+    "fn:with_engine",
+    "fn:with_engine_mut",
+    "return Err(AbiError::InvalidArgument);",
+    "return Err(AbiError::InvalidLifecycleState);",
+    "return Err(AbiError::NoCapacity);",
+    "struct:RuntimeState",
+    "struct:SessionRuntime"
+  ],
+  "package": "pocketstation",
+  "path": "src/abi/session/runtime.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "DEFAULT_ENGINE_CAPACITY_COUNT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 26,
+      "name": "DEFAULT_SESSION_CAPACITY_COUNT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "ENGINE_HANDLE_SCOPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "static",
+      "line": 28,
+      "name": "NEXT_ENGINE_SCOPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 30,
+      "name": "SessionObject",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "lifecycle_state",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 66,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "events",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 108,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "with_options",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 135,
+      "name": "with_host",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 509,
+      "name": "shutdown",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 526,
+      "name": "map_poll_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 534,
+      "name": "event_record",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 591,
+      "name": "EngineRuntime",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 602,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 613,
+      "name": "state",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 637,
+      "name": "set_state",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 641,
+      "name": "validate_session",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 691,
+      "name": "allocate_runtime",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 717,
+      "name": "engine",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [
+    {
+      "line": 403,
+      "text": "SessionEventReceive::Event(event) => Ok(event_record(event)),"
+    }
+  ],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 96,
+      "name": "SessionRuntime",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "create_app_mic_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 190,
+      "name": "register_executable_extension",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 208,
+      "name": "create_executable_extension_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 316,
+      "name": "compile_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "start_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 377,
+      "name": "stop_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 381,
+      "name": "session_state",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 390,
+      "name": "session_events",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 397,
+      "name": "poll_event",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 408,
+      "name": "metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 438,
+      "name": "poll_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 458,
+      "name": "audio_frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 496,
+      "name": "release_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 501,
+      "name": "destroy_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 659,
+      "name": "RuntimeState",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 665,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 674,
+      "name": "allocate_engine",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 684,
+      "name": "allocate_engine_with_host",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 698,
+      "name": "release_engine",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 713,
+      "name": "engine_is_live",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 725,
+      "name": "with_engine_mut",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 738,
+      "name": "with_engine",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 751,
+      "name": "create_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 771,
+      "name": "register_executable_extension",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 781,
+      "name": "create_executable_extension_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 801,
+      "name": "compile_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 821,
+      "name": "start_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 885,
+      "name": "stop_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 927,
+      "name": "session_state",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 937,
+      "name": "destroy_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 956,
+      "name": "lifecycle_state_from_event",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::abi::session::runtime responsibilities, including runtime; default engine capacity count; default session capacity count."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/native-extensions.md",
+    "docs/concepts/c-abi-ownership.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/architecture/overview.md",
+    "docs/internals/abi-conformance.md",
+    "docs/glossary.md",
+    "docs/guides/extensions.md",
+    "docs/how-to/use-c-session-api.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/native-extensions.md",
+    "docs/reference/c-abi.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/extensions-and-abi.md",
+    "docs/troubleshooting/native-extension-load.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/native-extension-trust.md",
+    "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/abi/session/abi.rs",
+    "REFERENCES:src/abi/session/error.rs",
+    "REFERENCES:src/abi/session/handle.rs",
+    "REFERENCES:src/endpoint/polled_audio_driver.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/lifecycle/control.rs",
+    "REFERENCES:src/session/lifecycle/events.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 2,
+      "text": "use std::sync::{Arc, Mutex, OnceLock};"
+    },
+    {
+      "line": 223,
+      "text": "Some(Arc::clone(factory))"
+    },
+    {
+      "line": 235,
+      "text": "Some(Arc::clone(factory))"
+    },
+    {
+      "line": 249,
+      "text": "Some((Arc::clone(definition), Arc::clone(factory)))"
+    },
+    {
+      "line": 661,
+      "text": "engines: Mutex<HandleTable<Arc<EngineRuntime>>>,"
+    },
+    {
+      "line": 696,
+      "text": ".insert(Arc::new(EngineRuntime::new(runtime)))"
+    },
+    {
+      "line": 718,
+      "text": "fn engine(&self, handle: PksSessionHandle) -> Result<Arc<EngineRuntime>, AbiError> {"
+    }
+  ],
+  "responsibilities": [
+    "DEFAULT_ENGINE_CAPACITY_COUNT (const)",
+    "DEFAULT_SESSION_CAPACITY_COUNT (const)",
+    "ENGINE_HANDLE_SCOPE_ID (const)",
+    "NEXT_ENGINE_SCOPE_ID (static)",
+    "SessionObject (enum)",
+    "lifecycle_state (fn)",
+    "request_stop (fn)",
+    "events (fn)",
+    "SessionRuntime (struct)",
+    "new (fn)",
+    "with_options (fn)",
+    "with_host (fn)",
+    "create_app_mic_session (fn)",
+    "register_executable_extension (fn)",
+    "create_executable_extension_session (fn)",
+    "compile_session (fn)",
+    "start_session (fn)",
+    "stop_session (fn)",
+    "session_state (fn)",
+    "session_events (fn)",
+    "poll_event (fn)",
+    "metrics (fn)",
+    "poll_audio (fn)",
+    "audio_frame (fn)",
+    "release_audio (fn)",
+    "destroy_session (fn)",
+    "shutdown (fn)",
+    "map_poll_error (fn)",
+    "event_record (fn)",
+    "EngineRuntime (struct)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 74,
+      "text": "let outcome = session.stop();"
+    },
+    {
+      "line": 510,
+      "text": "fn shutdown(&mut self) -> Result<(), AbiError> {"
+    },
+    {
+      "line": 710,
+      "text": ".shutdown();"
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 291,
+      "text": ".connect("
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-7300dec9e191c3915ad1",
+    "test-a50461aed49326fc4476",
+    "test-fdcedd1be79649611e4c"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

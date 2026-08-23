@@ -1,0 +1,199 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "EndpointId",
+    "EndpointPrepareContext::new",
+    "EndpointRouteContext::from_source",
+    "EndpointRouteContext::from_stem",
+    "NodeConfig::new",
+    "RouteId",
+    "SessionId",
+    "SessionTimelineOrigin::from_monotonic_timestamp_ns",
+    "StemId",
+    "audio_stem_id",
+    "crate::frame::SourceId",
+    "crate::frame::StreamId",
+    "given_endpoint_context_when_constructed_then_route_and_timeline_are_required",
+    "given_source_route_when_constructed_then_source_origin_is_not_a_synthetic_stem",
+    "monotonic_timestamp_ns",
+    "route_context",
+    "route_id",
+    "session_timeline_origin"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "EndpointPrepareContext::new",
+    "NodeConfig::new"
+  ],
+  "content_hash": "02917d26e9cb3e12e245ff6eec03009617ab5ceca3e7607586c3e798b2bce7a4",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 7,
+      "name": "given_endpoint_context_when_constructed_then_route_and_timeline_are_required",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "given_source_route_when_constructed_then_source_origin_is_not_a_synthetic_stem",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "02917d26e9cb3e12e245ff6eec03009617ab5ceca3e7607586c3e798b2bce7a4",
+      "lines": [
+        1,
+        43
+      ],
+      "path": "src/endpoint/runtime/tests.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0136-45249044",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "09b4d69de38c37165d54e8bc20cbd47e4bdcd029",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::{EndpointId, RouteId, SessionId, StemId}",
+    "crate::graph::NodeConfig",
+    "super::{EndpointPrepareContext, EndpointRouteContext, SessionTimelineOrigin}"
+  ],
+  "inputs": [
+    "crate::frame::{EndpointId, RouteId, SessionId, StemId}",
+    "crate::graph::NodeConfig",
+    "super::{EndpointPrepareContext, EndpointRouteContext, SessionTimelineOrigin}"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 43,
+  "locks": [],
+  "module": "pocketstation::endpoint::runtime::tests",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "No emitted value or public declaration is recorded for this file."
+  ],
+  "package": "pocketstation",
+  "path": "src/endpoint/runtime/tests.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 7,
+      "name": "given_endpoint_context_when_constructed_then_route_and_timeline_are_required",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "given_source_route_when_constructed_then_source_origin_is_not_a_synthetic_stem",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::endpoint::runtime::tests responsibilities, including the src/endpoint/runtime/tests boundary."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/stop-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/endpoints.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/endpoints.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [],
+  "responsibilities": [
+    "given_endpoint_context_when_constructed_then_route_and_timeline_are_required (fn)",
+    "given_source_route_when_constructed_then_source_origin_is_not_a_synthetic_stem (fn)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-bddd5bba8334c5ea36d2",
+    "test-fe33c3a3e33431f70a5e"
+  ],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

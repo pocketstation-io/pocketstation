@@ -1,0 +1,355 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs"
+  ],
+  "calls": [
+    "Self::DuplicateStemLabel",
+    "Self::InvalidStemLabel",
+    "Self::Io",
+    "Self::Json",
+    "Self::OutputExists",
+    "Self::PermissionDenied",
+    "Self::TimestampOutOfRange",
+    "Self::TooManyGaps",
+    "Self::UnalignedSamples",
+    "Self::Wav",
+    "Self::WorkerPanicked",
+    "Vec::new",
+    "any",
+    "as_str",
+    "cfg",
+    "code",
+    "derive",
+    "given_recording_codes_when_serialized_then_values_are_exact_and_unique",
+    "given_terminal_failure_when_projected_then_code_is_typed",
+    "insert",
+    "recording_outcome_error_code",
+    "std::collections::HashSet::new",
+    "std::path::PathBuf::from"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 58,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 92,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs"
+  ],
+  "constructs": [
+    "Vec::new",
+    "std::collections::HashSet::new",
+    "std::path::PathBuf::from"
+  ],
+  "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "enum",
+      "line": 9,
+      "name": "RecordingErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "recording_outcome_error_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 93,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "given_recording_codes_when_serialized_then_values_are_exact_and_unique",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 161,
+      "name": "given_terminal_failure_when_projected_then_code_is_typed",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 9,
+      "name": "RecordingErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "recording_outcome_error_code",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 9,
+      "name": "RecordingErrorCode",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ac8510c38cec63ccc539fcc9a7e972bacf4f51ed1a93cdeb70a44cc5509d4a0",
+      "lines": [
+        1,
+        175
+      ],
+      "path": "src/recording/error_code.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0177-8e82c2c3",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "c3bb2036e447fc97a66f03771ef71c53f70dd91c",
+  "implemented_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs"
+  ],
+  "implements": [
+    "RecordingErrorCode",
+    "RecorderError"
+  ],
+  "imported_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs"
+  ],
+  "imports": [
+    "crate::recording::{RecorderError, RecordingOutcome, RecordingState}",
+    "crate::recording::{RecordingOutcome, RecordingState}",
+    "super::{recording_outcome_error_code, RecordingErrorCode}"
+  ],
+  "inputs": [
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(test)]",
+    "crate::recording::{RecorderError, RecordingOutcome, RecordingState}",
+    "crate::recording::{RecordingOutcome, RecordingState}",
+    "super::{recording_outcome_error_code, RecordingErrorCode}"
+  ],
+  "invariants": [
+    {
+      "line": 156,
+      "text": "assert!(unique.insert(value));"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 175,
+  "locks": [],
+  "module": "pocketstation::recording::error_code",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "enum:RecordingErrorCode",
+    "fn:as_str",
+    "fn:code",
+    "fn:recording_outcome_error_code"
+  ],
+  "package": "pocketstation",
+  "path": "src/recording/error_code.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 93,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "given_recording_codes_when_serialized_then_values_are_exact_and_unique",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 161,
+      "name": "given_terminal_failure_when_projected_then_code_is_typed",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 9,
+      "name": "RecordingErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "recording_outcome_error_code",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::recording::error code responsibilities, including Stable language-neutral code for a recording failure.; Reported when the owning operation encounters output exists.; Reported when the owning operation encounters invalid stem label.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/stop-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/recording.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/recording.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/recording/writer.rs"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "pocketstation::recording::error_code::RecordingErrorCode: Stable language-neutral code for a recording failure.",
+    "pocketstation::recording::error_code::RecordingErrorCode::OutputExists: Reported when the owning operation encounters output exists.",
+    "pocketstation::recording::error_code::RecordingErrorCode::InvalidStemLabel: Reported when the owning operation encounters invalid stem label.",
+    "pocketstation::recording::error_code::RecordingErrorCode::DuplicateStemLabel: Reported when the owning operation encounters duplicate stem label.",
+    "pocketstation::recording::error_code::RecordingErrorCode::SessionMismatch: Reported when the owning operation encounters session mismatch.",
+    "pocketstation::recording::error_code::RecordingErrorCode::PermissionDenied: Reports that the required permission was denied.",
+    "pocketstation::recording::error_code::RecordingErrorCode::InvalidSampleSpec: Reported when the owning operation encounters invalid sample spec.",
+    "pocketstation::recording::error_code::RecordingErrorCode::SourceMismatch: Reported when the owning operation encounters source mismatch.",
+    "pocketstation::recording::error_code::RecordingErrorCode::LineageMismatch: Reported when the owning operation encounters lineage mismatch.",
+    "pocketstation::recording::error_code::RecordingErrorCode::FrameSpecMismatch: Reported when the owning operation encounters frame spec mismatch.",
+    "pocketstation::recording::error_code::RecordingErrorCode::UnalignedSamples: Reported when the owning operation encounters unaligned samples.",
+    "pocketstation::recording::error_code::RecordingErrorCode::TimestampOutOfRange: Reported when the owning operation encounters timestamp out of range.",
+    "pocketstation::recording::error_code::RecordingErrorCode::GapTooLarge: Reported when the owning operation encounters gap too large.",
+    "pocketstation::recording::error_code::RecordingErrorCode::TooManyGaps: Reported when the owning operation encounters too many gaps.",
+    "pocketstation::recording::error_code::RecordingErrorCode::WorkerPanicked: Reported when the owning operation encounters worker panicked.",
+    "pocketstation::recording::error_code::RecordingErrorCode::IoFailed: Reported when the owning operation encounters I/O failed.",
+    "pocketstation::recording::error_code::RecordingErrorCode::WavFailed: Reported when the owning operation encounters wav failed.",
+    "pocketstation::recording::error_code::RecordingErrorCode::JsonFailed: Reported when the owning operation encounters json failed.",
+    "pocketstation::recording::error_code::RecordingErrorCode::NotFinalized: Reported when the owning operation encounters not finalized.",
+    "pocketstation::recording::error_code::RecordingErrorCode::Incomplete: Reported when the owning operation encounters incomplete.",
+    "as_str: Returns the stable string representation of `RecordingErrorCode`.",
+    "code: Returns the stable error or status code represented by `RecorderError`.",
+    "pocketstation::recording::error_code::recording_outcome_error_code: Returns the recording outcome error code held by `error_code`."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-41c72d3a0caba393eac7",
+    "test-921c1c5c1fdb60c7bf78"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

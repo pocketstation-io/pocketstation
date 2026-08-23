@@ -8,6 +8,7 @@ use crate::session::{
     SourceConfiguration, SourceTypeId,
 };
 
+#[doc = "Defines the public session spec version value."]
 pub const SESSION_SPEC_VERSION: SessionSpecVersion = SessionSpecVersion::new(1, 5);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -50,22 +51,26 @@ pub struct SessionSpecVersion {
 }
 
 impl SessionSpecVersion {
+    #[doc = "Creates a new `SessionSpecVersion`."]
     pub const fn new(major: u16, minor: u16) -> Self {
         Self { major, minor }
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the major held by `SessionSpecVersion`."]
     pub const fn major(self) -> u16 {
         self.major
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the minor held by `SessionSpecVersion`."]
     pub const fn minor(self) -> u16 {
         self.minor
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Configures stem behavior at its owning API boundary."]
 pub struct StemSpec {
     stem_id: StemId,
     source: Source,
@@ -164,16 +169,19 @@ impl SourceOutputSpec {
 }
 
 impl StemSpec {
+    #[doc = "Returns the id held by `StemSpec`."]
     pub const fn id(&self) -> StemId {
         self.stem_id
     }
 
+    #[doc = "Returns the source held by `StemSpec`."]
     pub fn source(&self) -> &Source {
         &self.source
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Configures endpoint behavior at its owning API boundary."]
 pub struct EndpointSpec {
     endpoint_id: EndpointId,
     connector_id: Option<crate::frame::ConnectorId>,
@@ -184,26 +192,32 @@ pub struct EndpointSpec {
 }
 
 impl EndpointSpec {
+    #[doc = "Returns the id held by `EndpointSpec`."]
     pub const fn id(&self) -> EndpointId {
         self.endpoint_id
     }
 
+    #[doc = "Returns the connector identifier held by `EndpointSpec`."]
     pub const fn connector_id(&self) -> Option<crate::frame::ConnectorId> {
         self.connector_id
     }
 
+    #[doc = "Returns the node type identifier held by `EndpointSpec`."]
     pub fn node_type_id(&self) -> &NodeTypeId {
         &self.node_type_id
     }
 
+    #[doc = "Returns the operator identifier held by `EndpointSpec`."]
     pub fn operator_id(&self) -> &OperatorId {
         &self.operator_id
     }
 
+    #[doc = "Returns the configuration held by `EndpointSpec`."]
     pub fn configuration(&self) -> &EndpointConfiguration {
         &self.configuration
     }
 
+    #[doc = "Returns the input edge held by `EndpointSpec`."]
     pub const fn input_edge(&self) -> Option<crate::graph::EdgeContract> {
         self.input_edge
     }
@@ -309,9 +323,11 @@ impl ConnectionSpec {
 
 #[deprecated(note = "use OperatorInstanceSpec")]
 #[cfg(any(test, feature = "internal-testing"))]
+#[doc = "Names the operator spec type used by the public API."]
 pub type OperatorSpec = OperatorInstanceSpec;
 
 #[derive(Debug, Clone)]
+#[doc = "Configures session behavior at its owning API boundary."]
 pub struct SessionSpec {
     version: SessionSpecVersion,
     session_id: SessionId,
@@ -350,42 +366,52 @@ impl SessionSpec {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the version held by `SessionSpec`."]
     pub const fn version(&self) -> SessionSpecVersion {
         self.version
     }
 
+    #[doc = "Returns the session identifier held by `SessionSpec`."]
     pub const fn session_id(&self) -> SessionId {
         self.session_id
     }
 
+    #[doc = "Returns the stems held by `SessionSpec`."]
     pub fn stems(&self) -> &[StemSpec] {
         &self.stems
     }
 
+    #[doc = "Returns the source instances held by `SessionSpec`."]
     pub fn source_instances(&self) -> &[SourceInstanceSpec] {
         &self.source_instances
     }
 
+    #[doc = "Returns the source outputs held by `SessionSpec`."]
     pub fn source_outputs(&self) -> &[SourceOutputSpec] {
         &self.source_outputs
     }
 
+    #[doc = "Returns the generated audio ingresses held by `SessionSpec`."]
     pub fn generated_audio_ingresses(&self) -> &[GeneratedAudioIngressSpec] {
         &self.generated_audio_ingresses
     }
 
+    #[doc = "Returns the endpoints held by `SessionSpec`."]
     pub fn endpoints(&self) -> &[EndpointSpec] {
         &self.endpoints
     }
 
+    #[doc = "Returns the operators held by `SessionSpec`."]
     pub fn operators(&self) -> &[OperatorInstanceSpec] {
         &self.operators
     }
 
+    #[doc = "Returns the connections held by `SessionSpec`."]
     pub fn connections(&self) -> &[ConnectionSpec] {
         &self.connections
     }
 
+    #[doc = "Validates `SessionSpec` against its declared contract."]
     pub fn validate(&self) -> Result<(), SessionError> {
         if self.version.major != SESSION_SPEC_VERSION.major
             || self.version.minor > SESSION_SPEC_VERSION.minor
@@ -596,7 +622,6 @@ impl SessionSpec {
         }
 
         let mut route_ids = HashSet::with_capacity(self.connections.len());
-        let mut connected_inputs = HashSet::with_capacity(self.connections.len());
         for connection in &self.connections {
             if !route_ids.insert(connection.route_id) {
                 return Err(SessionError::InvalidRoute {
@@ -693,15 +718,6 @@ impl SessionSpec {
                         return Err(SessionError::InvalidOperator {
                             reason: "operator input port cannot be empty".to_owned(),
                         });
-                    }
-                    if let Some(input_port) = input_port {
-                        if !connected_inputs.insert((*operator_instance_id, input_port.clone())) {
-                            return Err(SessionError::InvalidOperator {
-                                reason: format!(
-                                    "operator instance {operator_instance_id:?} input port '{input_port}' is connected more than once"
-                                ),
-                            });
-                        }
                     }
                 }
             }

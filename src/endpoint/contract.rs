@@ -17,9 +17,23 @@ use crate::endpoint::{
 /// endpoint implementation.
 pub struct EndpointAudioFrame {
     frame: PlanEdgeFrame,
+    route_enqueued_at_ns: u64,
+    route_received_at_ns: u64,
 }
 
 impl EndpointAudioFrame {
+    pub(crate) const fn from_route_delivery(
+        frame: PlanEdgeFrame,
+        route_enqueued_at_ns: u64,
+        route_received_at_ns: u64,
+    ) -> Self {
+        Self {
+            frame,
+            route_enqueued_at_ns,
+            route_received_at_ns,
+        }
+    }
+
     pub(crate) fn into_inner(self) -> PlanEdgeFrame {
         self.frame
     }
@@ -68,6 +82,16 @@ impl EndpointAudioFrame {
     pub fn lineage(&self) -> FrameLineage {
         self.frame.lineage()
     }
+
+    /// Monotonic instant when the runtime accepted this frame into the route.
+    pub const fn route_enqueued_at_ns(&self) -> u64 {
+        self.route_enqueued_at_ns
+    }
+
+    /// Monotonic instant when this endpoint received the frame from the route.
+    pub const fn route_received_at_ns(&self) -> u64 {
+        self.route_received_at_ns
+    }
 }
 
 /// Exclusive consumer for one bounded realtime-audio endpoint edge.
@@ -88,15 +112,22 @@ impl EndpointAudioReceiver {
     }
 
     #[cfg(feature = "internal-testing")]
+    #[doc = "Converts `EndpointAudioReceiver` into plan edge receiver."]
     pub fn into_plan_edge_receiver(self) -> PlanEdgeReceiver {
         self.receiver
     }
 
     #[doc = "Attempts to receive the next value from `EndpointAudioReceiver` without waiting."]
     pub fn try_recv(&mut self) -> Option<EndpointAudioFrame> {
-        self.receiver
-            .try_recv()
-            .map(|frame| EndpointAudioFrame { frame })
+        self.receiver.try_recv_receipt().map(|receipt| {
+            let route_enqueued_at_ns = receipt.enqueued_at_ns();
+            let route_received_at_ns = receipt.received_at_ns();
+            EndpointAudioFrame::from_route_delivery(
+                receipt.into_frame(),
+                route_enqueued_at_ns,
+                route_received_at_ns,
+            )
+        })
     }
 
     #[doc = "Returns whether abandoned applies to `EndpointAudioReceiver`."]
@@ -127,6 +158,7 @@ impl EndpointAudioReceiver {
     }
 
     #[cfg(feature = "internal-testing")]
+    #[doc = "Plans edge observation handle for `EndpointAudioReceiver`."]
     pub fn plan_edge_observation_handle(&self) -> PlanEdgeObservationHandle {
         self.receiver.observation_handle()
     }

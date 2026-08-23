@@ -1,0 +1,1061 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::new",
+    "Box::new",
+    "ConfigError::Missing",
+    "DeviceSelector::default",
+    "EdgeContract::bounded_async",
+    "EndpointDescriptor::new",
+    "EndpointFailure::new",
+    "MediaCaps::Audio",
+    "MediaCaps::Binary",
+    "NodeError::Prepare",
+    "NodeTypeId::from",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "PrepareContext::new",
+    "SampleSpec::new",
+    "SemanticRole::new",
+    "Session::new",
+    "SessionEngineBuilder::new",
+    "SessionStartOptions::default",
+    "SignalSpec::audio",
+    "SignalSpec::custom",
+    "SignalSpec::text",
+    "Source::microphone",
+    "SourceConfiguration::default",
+    "SourceRegistrationError::NodeTypeConflict",
+    "SourceTypeId::new",
+    "Vec::new",
+    "audio_port",
+    "build",
+    "builder",
+    "capture",
+    "clone",
+    "close",
+    "compile",
+    "configuration",
+    "crate::session::SessionEngineStartError::Compile",
+    "create",
+    "descriptor",
+    "endpoint",
+    "endpoint_descriptor",
+    "err",
+    "external_source_declarations",
+    "get",
+    "given_builtin_microphone_when_compiled_after_extension_then_existing_stem_path_is_unchanged",
+    "given_custom_source_output_when_compiled_then_session_identity_and_typed_plan_are_preserved",
+    "given_external_output_through_operator_when_compiled_then_normal_typed_edges_are_used",
+    "given_external_pcm_output_when_compiled_then_bounded_audio_edge_is_planned",
+    "given_source_type_conflicting_with_registered_node_when_registered_then_conflict_is_typed",
+    "given_unknown_manifest_output_when_compiled_then_typed_error_is_returned",
+    "given_unregistered_external_source_when_compiled_then_registry_error_is_typed",
+    "insert",
+    "is_empty",
+    "len",
+    "let",
+    "manifest",
+    "next",
+    "node_count",
+    "operator_factory",
+    "output",
+    "planned_audio_edge_count",
+    "planned_source_output_count",
+    "planned_typed_edge_count",
+    "prepare",
+    "register_async_operator",
+    "register_endpoint",
+    "register_source_factory",
+    "send",
+    "source",
+    "source_declarations",
+    "source_factory",
+    "source_id",
+    "source_outputs",
+    "source_type_id",
+    "spec",
+    "stream_id",
+    "text_port",
+    "through",
+    "to_owned",
+    "typed_port",
+    "unwrap",
+    "validate_config",
+    "with_role",
+    "with_schema"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 10,
+      "text": "BinaryFormat, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition,"
+    },
+    {
+      "line": 61,
+      "text": "fn validate_config(&self, configuration: &SourceConfiguration) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 64,
+      "text": "_ => Err(ConfigError::Missing(\"mode=accepted\".to_owned())),"
+    },
+    {
+      "line": 85,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 113,
+      "text": "fn validate_config(&self, _configuration: &NodeConfig) -> Result<(), ConfigError> {"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "Box::new",
+    "EndpointDescriptor::new",
+    "EndpointFailure::new",
+    "NodeTypeId::from",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "PrepareContext::new",
+    "SampleSpec::new",
+    "SemanticRole::new",
+    "Session::new",
+    "SessionEngineBuilder::new",
+    "SourceTypeId::new",
+    "Vec::new",
+    "builder"
+  ],
+  "content_hash": "98865bf78fd2dd03c8bed0abe469397938a8864b46f9894ec1ce8fb4e5dfd95b",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 22,
+      "name": "SOURCE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "TYPED_ENDPOINT_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "TYPED_ENDPOINT_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 26,
+      "name": "AUDIO_ENDPOINT_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "AUDIO_ENDPOINT_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 28,
+      "name": "TEXT_ENDPOINT_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 29,
+      "name": "TEXT_ENDPOINT_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 30,
+      "name": "OPERATOR_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 31,
+      "name": "OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 32,
+      "name": "CompileOnlySourceFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 36,
+      "name": "CompileOnlySourceDriver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "next",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 75,
+      "name": "CompileOnlyEndpointDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 84,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 89,
+      "name": "CompileOnlyEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 93,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 103,
+      "name": "CompileOnlyOperatorFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 109,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 123,
+      "name": "source_type_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 127,
+      "name": "audio_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "typed_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "text_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 166,
+      "name": "source_factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 182,
+      "name": "endpoint_descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 202,
+      "name": "operator_factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 243,
+      "name": "builder",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 278,
+      "name": "configuration",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 284,
+      "name": "endpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 297,
+      "name": "compile",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 303,
+      "name": "given_custom_source_output_when_compiled_then_session_identity_and_typed_plan_are_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "given_external_pcm_output_when_compiled_then_bounded_audio_edge_is_planned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 358,
+      "name": "given_external_output_through_operator_when_compiled_then_normal_typed_edges_are_used",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 388,
+      "name": "given_unknown_manifest_output_when_compiled_then_typed_error_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 414,
+      "name": "given_unregistered_external_source_when_compiled_then_registry_error_is_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 440,
+      "name": "given_builtin_microphone_when_compiled_after_extension_then_existing_stem_path_is_unchanged",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 461,
+      "name": "given_source_type_conflicting_with_registered_node_when_registered_then_conflict_is_typed",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 3,
+      "text": "use crate::endpoint::{"
+    },
+    {
+      "line": 24,
+      "text": "const TYPED_ENDPOINT_NODE_TYPE_ID: &str = \"org.example.endpoint.typed.v1\";"
+    },
+    {
+      "line": 25,
+      "text": "const TYPED_ENDPOINT_OPERATOR_ID: &str = \"org.example.endpoint.typed-driver.v1\";"
+    },
+    {
+      "line": 26,
+      "text": "const AUDIO_ENDPOINT_NODE_TYPE_ID: &str = \"org.example.endpoint.audio.v1\";"
+    },
+    {
+      "line": 27,
+      "text": "const AUDIO_ENDPOINT_OPERATOR_ID: &str = \"org.example.endpoint.audio-driver.v1\";"
+    },
+    {
+      "line": 28,
+      "text": "const TEXT_ENDPOINT_NODE_TYPE_ID: &str = \"org.example.endpoint.text.v1\";"
+    },
+    {
+      "line": 29,
+      "text": "const TEXT_ENDPOINT_OPERATOR_ID: &str = \"org.example.endpoint.text-driver.v1\";"
+    },
+    {
+      "line": 99,
+      "text": "\"compile-only endpoint must not prepare\","
+    },
+    {
+      "line": 191,
+      "text": "display_name: \"compile-only endpoint\","
+    },
+    {
+      "line": 285,
+      "text": "fn endpoint("
+    },
+    {
+      "line": 291,
+      "text": ".endpoint(EndpointDescriptor::new("
+    },
+    {
+      "line": 311,
+      "text": ".send(endpoint("
+    },
+    {
+      "line": 343,
+      "text": ".send(endpoint("
+    },
+    {
+      "line": 373,
+      "text": ".send(endpoint("
+    },
+    {
+      "line": 396,
+      "text": ".send(endpoint("
+    },
+    {
+      "line": 422,
+      "text": ".send(endpoint("
+    },
+    {
+      "line": 446,
+      "text": ".send(endpoint("
+    },
+    {
+      "line": 468,
+      "text": "OperatorId::new(\"dev.pocketstation.endpoint.conflicting-node.v1\"),"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 64,
+      "text": "_ => Err(ConfigError::Missing(\"mode=accepted\".to_owned())),"
+    },
+    {
+      "line": 97,
+      "text": "Err(EndpointFailure::new("
+    },
+    {
+      "line": 118,
+      "text": "Err(NodeError::Prepare("
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "98865bf78fd2dd03c8bed0abe469397938a8864b46f9894ec1ce8fb4e5dfd95b",
+      "lines": [
+        1,
+        491
+      ],
+      "path": "src/session/extensions/tests/composition.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0223-85bac95a",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "809b1934bc8c9509dd96cd8d1030dff24f13d5d6",
+  "implemented_by": [],
+  "implements": [
+    "SourceDriver for CompileOnlySourceDriver",
+    "SourceFactory for CompileOnlySourceFactory",
+    "NodeDefinition for CompileOnlyEndpointDefinition",
+    "EndpointDriverFactory for CompileOnlyEndpointFactory",
+    "AsyncOperatorFactory for CompileOnlyOperatorFactory"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::endpoint::{ EndpointDriverFactory, EndpointFailure, EndpointFailureStage, EndpointPortInput, PreparedEndpointDriver, }",
+    "crate::frame::{SampleFormat, SampleSpec}",
+    "crate::graph::{ AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, BackpressurePolicy, BinaryFormat, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeError, NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PrepareContext, SafetyContract, SemanticRole, SignalSpec, TextFormat, }",
+    "crate::session::{ DeviceSelector, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, SessionCompileError, SessionEngine, SessionEngineBuilder, SessionStartOptions, Source, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourcePrepareContext, SourceRegistrationError, SourceTypeId, }",
+    "std::sync::Arc"
+  ],
+  "inputs": [
+    "BinaryFormat, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition,",
+    "_ => Err(ConfigError::Missing(\"mode=accepted\".to_owned())),",
+    "crate::endpoint::{ EndpointDriverFactory, EndpointFailure, EndpointFailureStage, EndpointPortInput, PreparedEndpointDriver, }",
+    "crate::frame::{SampleFormat, SampleSpec}",
+    "crate::graph::{ AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, BackpressurePolicy, BinaryFormat, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeError, NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PrepareContext, SafetyContract, SemanticRole, SignalSpec, TextFormat, }",
+    "crate::session::{ DeviceSelector, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, SessionCompileError, SessionEngine, SessionEngineBuilder, SessionStartOptions, Source, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourcePrepareContext, SourceRegistrationError, SourceTypeId, }",
+    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
+    "fn validate_config(&self, _configuration: &NodeConfig) -> Result<(), ConfigError> {",
+    "fn validate_config(&self, configuration: &SourceConfiguration) -> Result<(), ConfigError> {",
+    "std::sync::Arc"
+  ],
+  "invariants": [
+    {
+      "line": 99,
+      "text": "\"compile-only endpoint must not prepare\","
+    },
+    {
+      "line": 119,
+      "text": "\"compile-only operator must not create\".to_owned(),"
+    },
+    {
+      "line": 320,
+      "text": "assert!(compiled.source_declarations().is_empty());"
+    },
+    {
+      "line": 405,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 431,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 456,
+      "text": "assert!(compiled.external_source_declarations().is_empty());"
+    },
+    {
+      "line": 486,
+      "text": "assert!(matches!("
+    }
+  ],
+  "language": "Rust",
+  "line_count": 491,
+  "locks": [],
+  "module": "pocketstation::session::extensions::tests::composition",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-c928f7f83606dfe42c56"
+  ],
+  "outputs": [
+    "Err(EndpointFailure::new(",
+    "Err(NodeError::Prepare(",
+    "_ => Err(ConfigError::Missing(\"mode=accepted\".to_owned())),"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/extensions/tests/composition.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 22,
+      "name": "SOURCE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "TYPED_ENDPOINT_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "TYPED_ENDPOINT_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 26,
+      "name": "AUDIO_ENDPOINT_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "AUDIO_ENDPOINT_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 28,
+      "name": "TEXT_ENDPOINT_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 29,
+      "name": "TEXT_ENDPOINT_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 30,
+      "name": "OPERATOR_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 31,
+      "name": "OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 32,
+      "name": "CompileOnlySourceFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 36,
+      "name": "CompileOnlySourceDriver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "next",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 75,
+      "name": "CompileOnlyEndpointDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 84,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 89,
+      "name": "CompileOnlyEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 93,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 103,
+      "name": "CompileOnlyOperatorFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 109,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 123,
+      "name": "source_type_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 127,
+      "name": "audio_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "typed_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "text_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 166,
+      "name": "source_factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 182,
+      "name": "endpoint_descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 202,
+      "name": "operator_factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 243,
+      "name": "builder",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 278,
+      "name": "configuration",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 284,
+      "name": "endpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 297,
+      "name": "compile",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 303,
+      "name": "given_custom_source_output_when_compiled_then_session_identity_and_typed_plan_are_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "given_external_pcm_output_when_compiled_then_bounded_audio_edge_is_planned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 358,
+      "name": "given_external_output_through_operator_when_compiled_then_normal_typed_edges_are_used",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 388,
+      "name": "given_unknown_manifest_output_when_compiled_then_typed_error_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 414,
+      "name": "given_unregistered_external_source_when_compiled_then_registry_error_is_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 440,
+      "name": "given_builtin_microphone_when_compiled_after_extension_then_existing_stem_path_is_unchanged",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 461,
+      "name": "given_source_type_conflicting_with_registered_node_when_registered_then_conflict_is_typed",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::extensions::tests::composition responsibilities, including the src/session/extensions/tests/composition boundary."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [
+    {
+      "line": 1,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 71,
+      "text": ") -> Result<Box<dyn SourceDriver>, SourceDriverError> {"
+    },
+    {
+      "line": 72,
+      "text": "Ok(Box::new(CompileOnlySourceDriver))"
+    },
+    {
+      "line": 96,
+      "text": ") -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 117,
+      "text": "fn create(&self, _configuration: &NodeConfig) -> Result<Box<dyn AsyncNode>, NodeError> {"
+    },
+    {
+      "line": 167,
+      "text": "fn source_factory() -> Arc<dyn SourceFactory> {"
+    },
+    {
+      "line": 168,
+      "text": "Arc::new(CompileOnlySourceFactory {"
+    },
+    {
+      "line": 186,
+      "text": ") -> (Arc<dyn NodeDefinition>, Arc<dyn EndpointDriverFactory>) {"
+    },
+    {
+      "line": 188,
+      "text": "Arc::new(CompileOnlyEndpointDefinition {"
+    },
+    {
+      "line": 199,
+      "text": "Arc::new(CompileOnlyEndpointFactory),"
+    },
+    {
+      "line": 203,
+      "text": "fn operator_factory() -> Arc<dyn AsyncOperatorFactory> {"
+    },
+    {
+      "line": 210,
+      "text": "Arc::new(CompileOnlyOperatorFactory {"
+    },
+    {
+      "line": 473,
+      "text": "let conflict = Arc::new(CompileOnlySourceFactory {"
+    }
+  ],
+  "responsibilities": [
+    "SOURCE_TYPE_ID (const)",
+    "TYPED_ENDPOINT_NODE_TYPE_ID (const)",
+    "TYPED_ENDPOINT_OPERATOR_ID (const)",
+    "AUDIO_ENDPOINT_NODE_TYPE_ID (const)",
+    "AUDIO_ENDPOINT_OPERATOR_ID (const)",
+    "TEXT_ENDPOINT_NODE_TYPE_ID (const)",
+    "TEXT_ENDPOINT_OPERATOR_ID (const)",
+    "OPERATOR_NODE_TYPE_ID (const)",
+    "OPERATOR_ID (const)",
+    "CompileOnlySourceFactory (struct)",
+    "CompileOnlySourceDriver (struct)",
+    "prepare (fn)",
+    "next (fn)",
+    "close (fn)",
+    "manifest (fn)",
+    "validate_config (fn)",
+    "create (fn)",
+    "CompileOnlyEndpointDefinition (struct)",
+    "descriptor (fn)",
+    "validate_config (fn)",
+    "CompileOnlyEndpointFactory (struct)",
+    "prepare (fn)",
+    "CompileOnlyOperatorFactory (struct)",
+    "manifest (fn)",
+    "validate_config (fn)",
+    "create (fn)",
+    "source_type_id (fn)",
+    "audio_port (fn)",
+    "typed_port (fn)",
+    "text_port (fn)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 40,
+      "text": "fn prepare(&mut self, _context: &SourcePrepareContext) -> Result<(), SourceDriverError> {"
+    },
+    {
+      "line": 93,
+      "text": "fn prepare("
+    },
+    {
+      "line": 99,
+      "text": "\"compile-only endpoint must not prepare\","
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-06d3dfdcb87245a4e72c",
+    "test-16199d206f3d5dfd3054",
+    "test-72f08a54e97cf69789ac",
+    "test-9ce9365567c289cfee1f",
+    "test-b40764b43eebb0bca0ad",
+    "test-bcc1f480b1bf9ae0efa7",
+    "test-bff09e350c584b9f042e"
+  ],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

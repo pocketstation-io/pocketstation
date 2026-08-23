@@ -1,0 +1,375 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "calls": [
+    "Arc::new",
+    "Compiler::new",
+    "MediaCaps::Audio",
+    "MediaCaps::Binary",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Pipeline::new",
+    "RuntimePlanner::new",
+    "SignalSpec::audio",
+    "SignalSpec::custom",
+    "Vec::new",
+    "add_node",
+    "all",
+    "audio_port",
+    "clone",
+    "compile",
+    "connect",
+    "descriptor",
+    "edge_buffer",
+    "given_audio_and_typed_root_outputs_when_planned_then_each_branch_has_bounded_authority",
+    "in_",
+    "into_spec",
+    "is_some_and",
+    "iter",
+    "len",
+    "out",
+    "plan",
+    "register_definition",
+    "to_owned",
+    "typed_edge",
+    "typed_port",
+    "unwrap",
+    "validate_config",
+    "with_schema"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 6,
+      "text": "AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps,"
+    },
+    {
+      "line": 20,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    }
+  ],
+  "constructed_by": [
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "Compiler::new",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Pipeline::new",
+    "RuntimePlanner::new",
+    "Vec::new"
+  ],
+  "content_hash": "953d3fb4a96f7b33a042e19152f28959ba77594a6639f3a583b6e5d780582b98",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 10,
+      "name": "Definition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 16,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 19,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "audio_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "typed_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "given_audio_and_typed_root_outputs_when_planned_then_each_branch_has_bounded_authority",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 75,
+      "text": "type_id: NodeTypeId::from(\"org.example.audio-endpoint.v1\"),"
+    },
+    {
+      "line": 76,
+      "text": "display_name: \"test audio endpoint\","
+    },
+    {
+      "line": 88,
+      "text": "type_id: NodeTypeId::from(\"org.example.typed-endpoint.v1\"),"
+    },
+    {
+      "line": 89,
+      "text": "display_name: \"test typed endpoint\","
+    },
+    {
+      "line": 101,
+      "text": "let audio = pipeline.add_node(\"org.example.audio-endpoint.v1\", NodeConfig::new());"
+    },
+    {
+      "line": 102,
+      "text": "let typed = pipeline.add_node(\"org.example.typed-endpoint.v1\", NodeConfig::new());"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "953d3fb4a96f7b33a042e19152f28959ba77594a6639f3a583b6e5d780582b98",
+      "lines": [
+        1,
+        123
+      ],
+      "path": "src/graph/source.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0169-064ebcd3",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "c7db20571c7f14b2c16010209b0afefc3e3d4d89",
+  "implemented_by": [
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "implements": [
+    "NodeDefinition for Definition"
+  ],
+  "imported_by": [
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "imports": [
+    "crate::frame::SampleFormat",
+    "crate::graph::compile::{Compiler, RuntimePlanner}",
+    "crate::graph::{ AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeRegistry, NodeTypeId, Pipeline, PortDirection, PortSpec, SafetyContract, SignalSpec, }",
+    "std::sync::Arc"
+  ],
+  "inputs": [
+    "AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps,",
+    "crate::frame::SampleFormat",
+    "crate::graph::compile::{Compiler, RuntimePlanner}",
+    "crate::graph::{ AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeRegistry, NodeTypeId, Pipeline, PortDirection, PortSpec, SafetyContract, SignalSpec, }",
+    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
+    "std::sync::Arc"
+  ],
+  "invariants": [
+    {
+      "line": 111,
+      "text": "assert!(plan"
+    },
+    {
+      "line": 115,
+      "text": "assert!(plan"
+    },
+    {
+      "line": 119,
+      "text": "assert!(plan"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 123,
+  "locks": [],
+  "module": "pocketstation::graph::source",
+  "network_io": [
+    {
+      "line": 103,
+      "text": "let audio_edge = pipeline.connect(source.out(\"audio\"), audio.in_(\"audio\"));"
+    },
+    {
+      "line": 104,
+      "text": "let typed_edge = pipeline.connect(source.out(\"signal\"), typed.in_(\"signal\"));"
+    }
+  ],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-bca69e3fddd32d04a49b"
+  ],
+  "outputs": [
+    "No emitted value or public declaration is recorded for this file."
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/source.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "struct",
+      "line": 10,
+      "name": "Definition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 16,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 19,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "audio_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "typed_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "given_audio_and_typed_root_outputs_when_planned_then_each_branch_has_bounded_authority",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::source responsibilities, including the src/graph/source boundary."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [
+    {
+      "line": 1,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 57,
+      "text": ".register_definition(Arc::new(Definition {"
+    },
+    {
+      "line": 73,
+      "text": ".register_definition(Arc::new(Definition {"
+    },
+    {
+      "line": 86,
+      "text": ".register_definition(Arc::new(Definition {"
+    }
+  ],
+  "responsibilities": [
+    "Definition (struct)",
+    "descriptor (fn)",
+    "validate_config (fn)",
+    "audio_port (fn)",
+    "typed_port (fn)",
+    "given_audio_and_typed_root_outputs_when_planned_then_each_branch_has_bounded_authority (fn)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 103,
+      "text": "let audio_edge = pipeline.connect(source.out(\"audio\"), audio.in_(\"audio\"));"
+    },
+    {
+      "line": 104,
+      "text": "let typed_edge = pipeline.connect(source.out(\"signal\"), typed.in_(\"signal\"));"
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-ef1f1bb70542725d2b2a"
+  ],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

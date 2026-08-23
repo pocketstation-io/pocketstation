@@ -1,0 +1,372 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 18,
+      "text": "/// and retains the executable library until all callback contexts are"
+    },
+    {
+      "line": 26,
+      "text": "/// function pointers, descriptors, borrowed arrays, and callback contexts"
+    }
+  ],
+  "called_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs"
+  ],
+  "calls": [
+    "BTreeSet::new",
+    "NativeExtensionLibraryError::duplicate_registration",
+    "NativeExtensionLibraryError::registration_state_unavailable",
+    "OperatorId::new",
+    "as_ref",
+    "as_str",
+    "contains",
+    "crate::native_extension::load_native_extension_library",
+    "extend",
+    "id",
+    "iter",
+    "load_native_extension_library",
+    "lock",
+    "manifest",
+    "map",
+    "map_err",
+    "operator_id",
+    "push",
+    "source_type_id",
+    "to_owned"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs"
+  ],
+  "constructs": [
+    "BTreeSet::new",
+    "OperatorId::new"
+  ],
+  "content_hash": "fd579f761c4bc72a7d46b55bd1dcd5496c556e2705e242548df160190e5383e1",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "load_native_extension_library",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 10,
+      "text": "/// imports its supported non-realtime source, operator, and endpoint"
+    },
+    {
+      "line": 47,
+      "text": "NativeExtensionLibraryError::registration_state_unavailable(\"endpoint extension\")"
+    },
+    {
+      "line": 50,
+      "text": "NativeExtensionLibraryError::registration_state_unavailable(\"endpoint driver\")"
+    },
+    {
+      "line": 91,
+      "text": "ExecutableExtensionRegistration::Endpoint {"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "load_native_extension_library",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 76,
+      "text": "return Err(NativeExtensionLibraryError::duplicate_registration("
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [
+    {
+      "line": 41,
+      "text": ".map_err(|_| NativeExtensionLibraryError::registration_state_unavailable(\"source\"))?;"
+    },
+    {
+      "line": 45,
+      "text": ".map_err(|_| NativeExtensionLibraryError::registration_state_unavailable(\"operator\"))?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 41,
+      "text": ".map_err(|_| NativeExtensionLibraryError::registration_state_unavailable(\"source\"))?;"
+    },
+    {
+      "line": 45,
+      "text": ".map_err(|_| NativeExtensionLibraryError::registration_state_unavailable(\"operator\"))?;"
+    },
+    {
+      "line": 46,
+      "text": "let mut endpoint_extensions = self.endpoint_extensions.lock().map_err(|_| {"
+    },
+    {
+      "line": 49,
+      "text": "let endpoint_registrations = self.endpoint_registrations.lock().map_err(|_| {"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 41,
+      "text": ".map_err(|_| NativeExtensionLibraryError::registration_state_unavailable(\"source\"))?;"
+    },
+    {
+      "line": 45,
+      "text": ".map_err(|_| NativeExtensionLibraryError::registration_state_unavailable(\"operator\"))?;"
+    },
+    {
+      "line": 46,
+      "text": "let mut endpoint_extensions = self.endpoint_extensions.lock().map_err(|_| {"
+    },
+    {
+      "line": 49,
+      "text": "let endpoint_registrations = self.endpoint_registrations.lock().map_err(|_| {"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "fd579f761c4bc72a7d46b55bd1dcd5496c556e2705e242548df160190e5383e1",
+      "lines": [
+        1,
+        105
+      ],
+      "path": "src/session/extensions/native_library.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 19,
+      "text": "/// destroyed. Extension ABI v1 does not admit realtime PCM callbacks or"
+    },
+    {
+      "line": 25,
+      "text": "/// implements the declared PocketStation Extension ABI. Its exported"
+    },
+    {
+      "line": 33,
+      "text": "// SAFETY: the public method transfers the native-code trust and ABI"
+    },
+    {
+      "line": 37,
+      "text": "unsafe { crate::native_extension::load_native_extension_library(path.as_ref())? };"
+    }
+  ],
+  "file_id": "file-0219-295a882b",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "139e1bb02c7bf2e3dabe4580051b58614b6db804",
+  "implemented_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs"
+  ],
+  "implements": [
+    "Session"
+  ],
+  "imported_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs"
+  ],
+  "imports": [
+    "crate::abi::executable_extension::ExecutableExtensionRegistration",
+    "crate::native_extension::{NativeExtensionLibrary, NativeExtensionLibraryError}",
+    "crate::{EndpointExtensionRegistration, OperatorId, Session}",
+    "std::collections::BTreeSet",
+    "std::path::Path"
+  ],
+  "inputs": [
+    "crate::abi::executable_extension::ExecutableExtensionRegistration",
+    "crate::native_extension::{NativeExtensionLibrary, NativeExtensionLibraryError}",
+    "crate::{EndpointExtensionRegistration, OperatorId, Session}",
+    "std::collections::BTreeSet",
+    "std::path::Path"
+  ],
+  "invariants": [
+    {
+      "line": 15,
+      "text": "/// The library must export `pks_extension_library_v1`. PocketStation"
+    },
+    {
+      "line": 16,
+      "text": "/// canonicalizes the path, never uses ambient library search, validates the"
+    },
+    {
+      "line": 24,
+      "text": "/// The caller must trust the selected native code and guarantee that it"
+    },
+    {
+      "line": 27,
+      "text": "/// must obey the documented validity and lifetime contracts. Structural"
+    },
+    {
+      "line": 28,
+      "text": "/// validation cannot prove native-code memory safety or authenticity."
+    }
+  ],
+  "language": "Rust",
+  "line_count": 105,
+  "locks": [],
+  "module": "pocketstation::session::extensions::native_library",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-cdb2a10629f02f80ae12"
+  ],
+  "outputs": [
+    "fn:load_native_extension_library",
+    "return Err(NativeExtensionLibraryError::duplicate_registration("
+  ],
+  "package": "pocketstation",
+  "path": "src/session/extensions/native_library.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "load_native_extension_library",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::extensions::native library responsibilities, including Loads one trusted native dynamic library from an exact absolute path and."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/native_extension/mod.rs"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "load_native_extension_library: Loads one trusted native dynamic library from an exact absolute path and"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 19,
+      "text": "/// destroyed. Extension ABI v1 does not admit realtime PCM callbacks or"
+    },
+    {
+      "line": 25,
+      "text": "/// implements the declared PocketStation Extension ABI. Its exported"
+    },
+    {
+      "line": 33,
+      "text": "// SAFETY: the public method transfers the native-code trust and ABI"
+    },
+    {
+      "line": 37,
+      "text": "unsafe { crate::native_extension::load_native_extension_library(path.as_ref())? };"
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

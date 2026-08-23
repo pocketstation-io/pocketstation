@@ -1,0 +1,937 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/session/extensions/audio_input/mod.rs",
+    "IMPORTS:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs"
+  ],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AtomicU64::new",
+    "AudioBufferPool::new",
+    "AudioFrame::try_new",
+    "AudioInputState::default",
+    "BTreeMap::new",
+    "Box::new",
+    "Configuration",
+    "Duration::from_millis",
+    "Manifest",
+    "MediaCaps::Audio",
+    "Mutex::new",
+    "Session",
+    "SignalEdge::bounded",
+    "SignalEnvelope::from_audio",
+    "SignalSpec::audio",
+    "SourceDriverError::Failed",
+    "SourceManifest::new",
+    "SourceTypeId",
+    "SourceTypeId::new",
+    "as_mut",
+    "as_ref",
+    "bind",
+    "cancel",
+    "checked_add",
+    "clone",
+    "close",
+    "create",
+    "debug_struct",
+    "derive",
+    "emission",
+    "error",
+    "fetch_update",
+    "field",
+    "finish",
+    "fmt",
+    "get",
+    "insert",
+    "interleaved_samples_per_frame",
+    "into",
+    "into_inner",
+    "into_parts",
+    "is_abandoned",
+    "is_cancelled",
+    "is_none",
+    "is_some",
+    "iter",
+    "let",
+    "lock",
+    "manifest",
+    "map",
+    "map_err",
+    "monotonic_timestamp_ns",
+    "new",
+    "next",
+    "ok_or_else",
+    "output",
+    "prepare",
+    "pub",
+    "recv",
+    "register_current_thread",
+    "remove",
+    "reserve",
+    "source",
+    "std::thread::park_timeout",
+    "store",
+    "to_owned",
+    "to_string",
+    "unwrap_or_else",
+    "validate_config",
+    "with_lineage",
+    "writer",
+    "writer_mut"
+  ],
+  "cancellation_behavior": [
+    {
+      "line": 248,
+      "text": "pub(crate) fn cancel(&self, source_id: crate::SourceId) {"
+    }
+  ],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 9,
+      "text": "AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity,"
+    },
+    {
+      "line": 87,
+      "text": "Configuration(#[from] AudioInputConfigError),"
+    },
+    {
+      "line": 135,
+      "text": "fn validate_config(&self, configuration: &SourceConfiguration) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 137,
+      "text": "Err(ConfigError::Invalid {"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/session/extensions/audio_input/mod.rs",
+    "IMPORTS:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "AtomicU64::new",
+    "AudioBufferPool::new",
+    "AudioFrame::try_new",
+    "BTreeMap::new",
+    "Box::new",
+    "Mutex::new",
+    "SourceManifest::new",
+    "SourceTypeId::new",
+    "new"
+  ],
+  "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "OUTPUT_PORT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "DRIVER_IDLE_WAIT",
+      "visibility": "private"
+    },
+    {
+      "kind": "static",
+      "line": 28,
+      "name": "NEXT_AUDIO_INPUT_WRITER_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 33,
+      "name": "PcmSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "output",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "writer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 63,
+      "name": "writer_mut",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "into_parts",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 85,
+      "name": "AudioInputError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 103,
+      "name": "PendingAudioInput",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 108,
+      "name": "AudioInputReservation",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 113,
+      "name": "AudioInputFactory",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 120,
+      "name": "AudioInputDriver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 134,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 145,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 164,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 197,
+      "name": "reserve",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 233,
+      "name": "bind",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 247,
+      "name": "cancel",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 257,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "next",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 316,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 326,
+      "name": "emission",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 33,
+      "name": "PcmSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "output",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "writer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 63,
+      "name": "writer_mut",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "into_parts",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 85,
+      "name": "AudioInputError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 108,
+      "name": "AudioInputReservation",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 113,
+      "name": "AudioInputFactory",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 164,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 197,
+      "name": "reserve",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 233,
+      "name": "bind",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 247,
+      "name": "cancel",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 137,
+      "text": "Err(ConfigError::Invalid {"
+    },
+    {
+      "line": 168,
+      "text": "_ => return Err(AudioInputConfigError::UnsupportedChannelCount.into()),"
+    },
+    {
+      "line": 205,
+      "text": "return Err(AudioInputError::IncompatibleContract);"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 85,
+      "name": "AudioInputError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 151,
+      "text": ".map_err(|error| SourceDriverError::Failed(error.to_string()))?;"
+    },
+    {
+      "line": 211,
+      "text": ".map_err(|_| AudioInputError::InstanceIdentityExhausted)?;"
+    },
+    {
+      "line": 341,
+      "text": ".map_err(|error| SourceDriverError::Failed(error.to_string()))?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 151,
+      "text": ".map_err(|error| SourceDriverError::Failed(error.to_string()))?;"
+    },
+    {
+      "line": 211,
+      "text": ".map_err(|_| AudioInputError::InstanceIdentityExhausted)?;"
+    },
+    {
+      "line": 341,
+      "text": ".map_err(|error| SourceDriverError::Failed(error.to_string()))?;"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 151,
+      "text": ".map_err(|error| SourceDriverError::Failed(error.to_string()))?;"
+    },
+    {
+      "line": 211,
+      "text": ".map_err(|_| AudioInputError::InstanceIdentityExhausted)?;"
+    },
+    {
+      "line": 341,
+      "text": ".map_err(|error| SourceDriverError::Failed(error.to_string()))?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "688eee87c5b0219fb7edd44379bc784f2a365dce501fcbe3c98da6d93f639aed",
+      "lines": [
+        1,
+        367
+      ],
+      "path": "src/session/extensions/audio_input/source.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/session/extensions/audio_input/mod.rs",
+    "IMPORTS:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0216-a67b380b",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "11b5f2dd545ed924b7d3d5406183b4d67e9ce953",
+  "implemented_by": [
+    "CONTAINS:src/session/extensions/audio_input/mod.rs",
+    "IMPORTS:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs"
+  ],
+  "implements": [
+    "PcmSource",
+    "fmt::Debug for PcmSource",
+    "SourceFactory for AudioInputFactory",
+    "AudioInputFactory",
+    "SourceDriver for AudioInputDriver",
+    "AudioInputDriver"
+  ],
+  "imported_by": [
+    "CONTAINS:src/session/extensions/audio_input/mod.rs",
+    "IMPORTS:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs"
+  ],
+  "imports": [
+    "crate::frame::{AudioBufferPool, AudioFrame}",
+    "crate::graph::{ AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalEnvelope, SignalLineage, SignalSpec, SignalTiming, }",
+    "crate::runtime::{SignalEdge, SignalEdgeReceiver}",
+    "crate::session::declaration::{SourceInstanceHandle, SourceOutputHandle}",
+    "crate::timing::{monotonic_timestamp_ns, PROCESS_MONOTONIC_CLOCK_DOMAIN_ID}",
+    "crate::{SampleSpec, SessionError}",
+    "std::collections::BTreeMap",
+    "std::fmt",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "std::sync::{Arc, Mutex}",
+    "std::time::Duration",
+    "super::buffer::{AudioInputState, AudioInputWriter, QueuedAudioInputFrame}",
+    "super::super::source::{ SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourcePrepareContext, SourceSessionContext, SourceTypeId, SourceTypeIdError, }",
+    "super::{AudioInputConfig, AudioInputConfigError, PCM_SOURCE_TYPE_ID}"
+  ],
+  "inputs": [
+    "AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity,",
+    "Configuration(#[from] AudioInputConfigError),",
+    "Err(ConfigError::Invalid {",
+    "crate::frame::{AudioBufferPool, AudioFrame}",
+    "crate::graph::{ AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalEnvelope, SignalLineage, SignalSpec, SignalTiming, }",
+    "crate::runtime::{SignalEdge, SignalEdgeReceiver}",
+    "crate::session::declaration::{SourceInstanceHandle, SourceOutputHandle}",
+    "crate::timing::{monotonic_timestamp_ns, PROCESS_MONOTONIC_CLOCK_DOMAIN_ID}",
+    "crate::{SampleSpec, SessionError}",
+    "fn validate_config(&self, configuration: &SourceConfiguration) -> Result<(), ConfigError> {",
+    "std::collections::BTreeMap",
+    "std::fmt",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "std::sync::{Arc, Mutex}",
+    "std::time::Duration",
+    "super::buffer::{AudioInputState, AudioInputWriter, QueuedAudioInputFrame}",
+    "super::super::source::{ SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourcePrepareContext, SourceSessionContext, SourceTypeId, SourceTypeIdError, }",
+    "super::{AudioInputConfig, AudioInputConfigError, PCM_SOURCE_TYPE_ID}"
+  ],
+  "invariants": [
+    {
+      "line": 97,
+      "text": "\"all audio inputs in one Session must use the same concrete sample and frame contract\""
+    }
+  ],
+  "language": "Rust",
+  "line_count": 367,
+  "locks": [
+    {
+      "line": 4,
+      "text": "use std::sync::{Arc, Mutex};"
+    },
+    {
+      "line": 118,
+      "text": "pending: Arc<Mutex<BTreeMap<u64, PendingAudioInput>>>,"
+    },
+    {
+      "line": 122,
+      "text": "pending: Arc<Mutex<BTreeMap<u64, PendingAudioInput>>>,"
+    },
+    {
+      "line": 194,
+      "text": "pending: Arc::new(Mutex::new(BTreeMap::new())),"
+    }
+  ],
+  "module": "pocketstation::session::extensions::audio_input::source",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-02730342ffe5edf1a1a0",
+    "pattern-4be4a43048ae5e5317e6",
+    "pattern-8933ee8675c6a1d5b74f",
+    "pattern-cacf21a0bf3a8603fa63"
+  ],
+  "outputs": [
+    "Err(ConfigError::Invalid {",
+    "_ => return Err(AudioInputConfigError::UnsupportedChannelCount.into()),",
+    "enum:AudioInputError",
+    "fn:bind",
+    "fn:cancel",
+    "fn:into_parts",
+    "fn:new",
+    "fn:output",
+    "fn:reserve",
+    "fn:source",
+    "fn:writer",
+    "fn:writer_mut",
+    "return Err(AudioInputError::IncompatibleContract);",
+    "struct:AudioInputFactory",
+    "struct:AudioInputReservation",
+    "struct:PcmSource"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/extensions/audio_input/source.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "OUTPUT_PORT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "DRIVER_IDLE_WAIT",
+      "visibility": "private"
+    },
+    {
+      "kind": "static",
+      "line": 28,
+      "name": "NEXT_AUDIO_INPUT_WRITER_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 103,
+      "name": "PendingAudioInput",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 120,
+      "name": "AudioInputDriver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 134,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 145,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 257,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "next",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 316,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 326,
+      "name": "emission",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 33,
+      "name": "PcmSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "output",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "writer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 63,
+      "name": "writer_mut",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "into_parts",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 85,
+      "name": "AudioInputError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 108,
+      "name": "AudioInputReservation",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 113,
+      "name": "AudioInputFactory",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 164,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 197,
+      "name": "reserve",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 233,
+      "name": "bind",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 247,
+      "name": "cancel",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::extensions::audio input::source responsibilities, including Low-level PCM source ownership for integrations that separately retain the; Returns the source held by `PcmSource`.; Returns the output held by `PcmSource`.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/runtime/signal/edge.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/error.rs",
+    "REFERENCES:src/session/extensions/audio_input/buffer.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 4,
+      "text": "use std::sync::{Arc, Mutex};"
+    },
+    {
+      "line": 106,
+      "text": "state: Arc<AudioInputState>,"
+    },
+    {
+      "line": 118,
+      "text": "pending: Arc<Mutex<BTreeMap<u64, PendingAudioInput>>>,"
+    },
+    {
+      "line": 122,
+      "text": "pending: Arc<Mutex<BTreeMap<u64, PendingAudioInput>>>,"
+    },
+    {
+      "line": 124,
+      "text": "state: Option<Arc<AudioInputState>>,"
+    },
+    {
+      "line": 149,
+      "text": ") -> Result<Box<dyn SourceDriver>, SourceDriverError> {"
+    },
+    {
+      "line": 152,
+      "text": "Ok(Box::new(AudioInputDriver {"
+    },
+    {
+      "line": 153,
+      "text": "pending: Arc::clone(&self.pending),"
+    },
+    {
+      "line": 164,
+      "text": "pub(crate) fn new(config: AudioInputConfig) -> Result<Arc<Self>, AudioInputError> {"
+    },
+    {
+      "line": 190,
+      "text": "Ok(Arc::new(Self {"
+    },
+    {
+      "line": 194,
+      "text": "pending: Arc::new(Mutex::new(BTreeMap::new())),"
+    },
+    {
+      "line": 217,
+      "text": "let state = Arc::new(AudioInputState::default());"
+    },
+    {
+      "line": 223,
+      "text": "state: Arc::clone(&state),"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::session::extensions::audio_input::source::PcmSource: Low-level PCM source ownership for integrations that separately retain the",
+    "source: Returns the source held by `PcmSource`.",
+    "output: Returns the output held by `PcmSource`.",
+    "writer: Returns the writer held by `PcmSource`.",
+    "writer_mut: Returns the writer mut held by `PcmSource`.",
+    "into_parts: Consumes `PcmSource` and returns its component values.",
+    "fmt: Formats `PcmSource` with the requested formatter.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError: Classifies failures reported as audio input error.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::Configuration: Reported when the owning operation encounters configuration.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::SourceTypeId: Reported when the owning operation encounters source type identifier.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::Manifest: Reported when the owning operation encounters manifest.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::Session: Reported when the owning operation encounters session.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::RegistrationStateUnavailable: Reported when the owning operation encounters registration state unavailable.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::IncompatibleContract: Reported when the owning operation encounters incompatible contract.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::InstanceIdentityExhausted: Reported when the owning operation encounters instance identity exhausted."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 257,
+      "text": "fn prepare(&mut self, context: &SourcePrepareContext) -> Result<(), SourceDriverError> {"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 313,
+      "text": "std::thread::park_timeout(DRIVER_IDLE_WAIT);"
+    }
+  ],
+  "visibility": "mixed"
+}

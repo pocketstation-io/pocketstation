@@ -11,19 +11,19 @@ The scope of **Test connector conformance** ends at the native contracts and exe
 
 ## Prerequisites
 
-The exact versioned connector vector at the sibling path required by the portable-semantics test.
+The repository-owned connector vector corpus and permission to materialize its versioned sibling path.
 
 ## Procedure
 
-1. Obtain the versioned connector vector file required by portable semantics.
-2. Place it at the sibling path expected by the test workflow.
+1. Create ../protocol/conformance/connector/v1 from the repository root.
+2. Copy scripts/fixtures/connector-v1-vectors.json to ../protocol/conformance/connector/v1/vectors.json.
 3. Run connector contract and grouping tests.
-4. Run portable semantics with the external vector present.
-5. Keep local conformance and provider qualification as separate evidence.
+4. Run portable semantics with the materialized canonical vector.
+5. Keep portable conformance and provider qualification as separate evidence.
 
 ## Important consequence
 
-An absent external vector is a prerequisite failure, never passing connector evidence.
+A missing or drifted materialized copy is a prerequisite failure, never passing connector evidence.
 
 ## Verify the outcome
 
@@ -31,31 +31,31 @@ Local contract tests and portable vector assertions pass, with fixture revision 
 
 Executable evidence selected for **Test connector conformance** is limited to each test's recorded setup and assertions:
 
-- `given_canonical_connector_vectors_when_compared_then_core_contract_semantics_match` — given canonical connector vectors when compared then core contract semantics match (`tests/connector_portable_semantics.rs:167`; `test-5ccbb97716e582e0a790`).
-- `given_connector_driver_when_two_stems_run_then_core_owns_typed_delivery_and_drain` — given connector driver when two stems run then core owns typed delivery and drain (`tests/connector_contract.rs:580`; `test-c7deea8505c28b2f4d0d`).
-- `given_connector_error_when_inspected_then_code_is_stable_and_machine_readable` — given connector error when inspected then code is stable and machine readable (`tests/connector_contract.rs:243`; `test-ae5c25d0ba6141b1a13a`).
-- `given_connector_never_ready_when_startup_deadline_expires_then_failure_is_terminal` — given connector never ready when startup deadline expires then failure is terminal (`tests/connector_contract.rs:751`; `test-c926ac54e34e42c44877`).
-- `given_connector_public_surface_when_inspected_then_managed_aliases_are_absent` — given connector public surface when inspected then managed aliases are absent (`tests/connector_contract.rs:26`; `test-e1ff05b0ec4b54a78b0b`).
-- `given_duplicate_connector_identity_when_registered_then_registration_is_rejected` — given duplicate connector identity when registered then registration is rejected (`tests/connector_contract.rs:229`; `test-5576ad13d627ff481e0b`).
-- `given_grouped_connector_when_session_is_cancelled_then_abort_intent_reaches_worker` — given grouped connector when session is cancelled then abort intent reaches worker (`tests/connector_contract.rs:709`; `test-834e8847ff5d70b04b11`).
-- `given_grouped_connector_when_session_stops_then_one_worker_is_joined_and_observed` — given grouped connector when session stops then one worker is joined and observed (`tests/connector_contract.rs:677`; `test-92f5704ec6ee88e59fd8`).
-- `given_prior_preparation_when_connector_prepare_fails_then_prior_work_rolls_back` — given prior preparation when connector prepare fails then prior work rolls back (`tests/connector_contract.rs:638`; `test-6e2b2556c5e641fda848`).
-- `given_registered_connector_when_declared_then_identity_is_session_scoped` — given registered connector when declared then identity is session scoped (`tests/connector_contract.rs:203`; `test-da2fb847d5c7f22349e8`).
-- `given_saturated_connector_route_when_observed_then_drops_are_visible_in_session_metrics` — given saturated connector route when observed then drops are visible in session metrics (`tests/connector_contract.rs:836`; `test-2fa646ca802635256f43`).
-- `given_connector_authoring_layer_when_scanned_then_it_does_not_duplicate_core_runtime_policy` — given connector authoring layer when scanned then it does not duplicate core runtime policy (`tests/public_api_boundary.rs:98`; `test-bcf303db85cca8b13bc2`).
+- `given_canonical_connector_vectors_when_compared_then_core_contract_semantics_match` — given canonical connector vectors when compared then core contract semantics match (`tests/connector_portable_semantics.rs:167`; `test-2df56b27d49e3e92a1f8`).
+- `given_connector_driver_when_two_stems_run_then_core_owns_typed_delivery_and_drain` — given connector driver when two stems run then core owns typed delivery and drain (`tests/connector_contract.rs:580`; `test-0226f46b368cc7dec827`).
+- `given_connector_error_when_inspected_then_code_is_stable_and_machine_readable` — given connector error when inspected then code is stable and machine readable (`tests/connector_contract.rs:243`; `test-15d28406ed0aae973558`).
+- `given_connector_never_ready_when_startup_deadline_expires_then_failure_is_terminal` — given connector never ready when startup deadline expires then failure is terminal (`tests/connector_contract.rs:751`; `test-6b9e356534c04d2e2c3a`).
+- `given_connector_public_surface_when_inspected_then_managed_aliases_are_absent` — given connector public surface when inspected then managed aliases are absent (`tests/connector_contract.rs:26`; `test-81c56797a2883f88930a`).
+- `given_duplicate_connector_identity_when_registered_then_registration_is_rejected` — given duplicate connector identity when registered then registration is rejected (`tests/connector_contract.rs:229`; `test-7eabe669b99c6e379ec6`).
+- `given_grouped_connector_when_session_is_cancelled_then_abort_intent_reaches_worker` — given grouped connector when session is cancelled then abort intent reaches worker (`tests/connector_contract.rs:709`; `test-30eb64a515907397f19f`).
+- `given_grouped_connector_when_session_stops_then_one_worker_is_joined_and_observed` — given grouped connector when session stops then one worker is joined and observed (`tests/connector_contract.rs:677`; `test-2a1b6ff7d4015d418fc1`).
+- `given_prior_preparation_when_connector_prepare_fails_then_prior_work_rolls_back` — given prior preparation when connector prepare fails then prior work rolls back (`tests/connector_contract.rs:638`; `test-125f099fa90218b83809`).
+- `given_registered_connector_when_declared_then_identity_is_session_scoped` — given registered connector when declared then identity is session scoped (`tests/connector_contract.rs:203`; `test-b500d2adf0e2ce5b5229`).
+- `given_saturated_connector_route_when_observed_then_drops_are_visible_in_session_metrics` — given saturated connector route when observed then drops are visible in session metrics (`tests/connector_contract.rs:836`; `test-440e0d0f038bd27e531f`).
+- `given_connector_authoring_layer_when_scanned_then_it_does_not_duplicate_core_runtime_policy` — given connector authoring layer when scanned then it does not duplicate core runtime policy (`tests/public_api_boundary.rs:110`; `test-7012bfbc5fb5bdda9c3d`).
 
 ## Failure signals
 
-- `pocketstation::connector::ConnectorDeclarationError` — `error-f52aaa0ab3a57f824f0f`
-- `pocketstation::connector::ConnectorDeclarationError` / `Configuration` — `error-79dde5b66dc8ba41f246`
-- `pocketstation::connector::ConnectorDeclarationError` / `Session` — `error-036c74e429b61ebdf7cd`
-- `pocketstation::connector::ConnectorDeclarationError` / `WrongSession` — `error-29964fc5e23bb4431977`
-- `pocketstation::connector::ConnectorObservationLookupError` — `error-e6fe04d84e66539434f3`
-- `pocketstation::connector::ConnectorObservationLookupError` / `WrongSession` — `error-ee73c462c5fc59286e13`
-- `pocketstation::connector::ConnectorRegistrationError` — `error-673fdb2e6e5753423e37`
-- `pocketstation::connector::ConnectorRegistrationError` / `InvalidManifest` — `error-29c46c16c1ddf5628f60`
-- `pocketstation::connector::ConnectorRegistrationError` / `Session` — `error-5183d1e7630f1e611820`
-- `pocketstation::connector::configuration::ConnectorConfigurationError` — `error-67d99d7e897c27488847`
+- `pocketstation::connector::ConnectorDeclarationError` — `error-ef429da19499a30febec`
+- `pocketstation::connector::ConnectorDeclarationError` / `Configuration` — `error-f85c1437daae474702be`
+- `pocketstation::connector::ConnectorDeclarationError` / `Session` — `error-3d1f996891195230a51b`
+- `pocketstation::connector::ConnectorDeclarationError` / `WrongSession` — `error-4fedfe91825f69358fac`
+- `pocketstation::connector::ConnectorObservationLookupError` — `error-a53691df2301981b8217`
+- `pocketstation::connector::ConnectorObservationLookupError` / `WrongSession` — `error-e60ba01d1498b3b6afcc`
+- `pocketstation::connector::ConnectorRegistrationError` — `error-9d4e9574523d027696fc`
+- `pocketstation::connector::ConnectorRegistrationError` / `InvalidManifest` — `error-2007e97b628ca3cf2622`
+- `pocketstation::connector::ConnectorRegistrationError` / `Session` — `error-15e79a7790bf8f8fd860`
+- `pocketstation::connector::configuration::ConnectorConfigurationError` — `error-7586a644dfbc54e958bb`
 
 ## API reference
 
@@ -86,7 +86,7 @@ Executable evidence selected for **Test connector conformance** is limited to ea
 
 ## Evidence boundary
 
-The claims on **Test connector conformance** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Test connector conformance** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `tests/connector_portable_semantics.rs:1-210` (`DIRECT`)
 

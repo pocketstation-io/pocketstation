@@ -8,10 +8,10 @@ use crate::endpoint::EndpointDriverFactory;
 
 pub const POLLED_AUDIO_OPERATOR_ID: &str = "io.pocketstation.endpoint.polled-audio.v1";
 
-/// Safe composition owner for application-polled audio.
+/// Declares application-polled audio and retains its bounded receipt.
 ///
 /// This type keeps the concrete bounded endpoint registration authority and
-/// safe receipt together so every language adapter consumes the canonical
+/// receipt together so every language adapter consumes the same
 /// compiled Session path.
 pub struct PolledAudioEndpoint {
     factory: Arc<PolledAudioEndpointFactory>,

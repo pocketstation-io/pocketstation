@@ -397,7 +397,7 @@
   ],
   "example_coverage_status": "linked",
   "examples_using": [
-    "example-98550080a5e290de64d1"
+    "example-18b477f83f6b2be3082b"
   ],
   "extended_by": [
     "IMPORTS:examples/whisper-transcribe/src/lib.rs"
@@ -738,7 +738,7 @@
       "text": "match tokio::fs::read(path).await {"
     }
   ],
-  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [

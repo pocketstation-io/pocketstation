@@ -1,0 +1,1771 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPORTS:src/runtime/lifecycle/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AtomicBool::new",
+    "Command::new",
+    "Control",
+    "Duration::from_millis",
+    "Duration::from_secs",
+    "Failure",
+    "Instant::now",
+    "InvalidConfiguration",
+    "InvalidDataKind",
+    "Io",
+    "Kill",
+    "MissingPipe",
+    "Protocol",
+    "ReaderEvent::Control",
+    "ReaderEvent::Failure",
+    "SidecarCounters::default",
+    "SidecarDeadlines::default",
+    "SidecarHostError::InvalidConfiguration",
+    "SidecarHostError::InvalidDataKind",
+    "SidecarHostError::Io",
+    "SidecarHostError::Kill",
+    "SidecarHostError::MissingPipe",
+    "SidecarHostError::Protocol",
+    "SidecarHostError::Spawn",
+    "SidecarHostError::ThreadSpawn",
+    "SidecarHostError::Timeout",
+    "SidecarHostError::Wait",
+    "SidecarMessage::decode",
+    "SidecarProtocolLimits::default",
+    "SidecarState::from_u8",
+    "Spawn",
+    "Stdio::null",
+    "Stdio::piped",
+    "ThreadSpawn",
+    "Timeout",
+    "TrySendError::Disconnected",
+    "TrySendError::Full",
+    "UnknownSidecar",
+    "Vec::new",
+    "Wait",
+    "and_then",
+    "args",
+    "as_mut",
+    "as_os_str",
+    "as_ref",
+    "cancel_and_reap",
+    "clone",
+    "close_and_reap",
+    "control_message",
+    "default",
+    "derive",
+    "drop",
+    "elapsed",
+    "encode",
+    "error",
+    "expect_control",
+    "fetch_add",
+    "fetch_or",
+    "flatten",
+    "flush",
+    "force_reap",
+    "from_u8",
+    "handshake",
+    "id",
+    "into",
+    "is_empty",
+    "is_err",
+    "is_none",
+    "is_ok",
+    "is_zero",
+    "join",
+    "kill",
+    "kill_if_running",
+    "kind",
+    "len",
+    "let",
+    "load",
+    "map_err",
+    "mark_failed",
+    "max_frame_bytes",
+    "mpsc::sync_channel",
+    "name",
+    "new",
+    "observations",
+    "ok",
+    "ok_or",
+    "pub",
+    "read_exact",
+    "read_exact_or_eof",
+    "read_message",
+    "reap_failed_spawn",
+    "receive_signal",
+    "recv_timeout",
+    "repr",
+    "send_control",
+    "set_state",
+    "shutdown",
+    "snapshot",
+    "spawn",
+    "spawn_reader",
+    "spawn_writer",
+    "state",
+    "stderr",
+    "stdin",
+    "stdout",
+    "stop_io_threads",
+    "store",
+    "take",
+    "thread::Builder::new",
+    "thread::sleep",
+    "to_le_bytes",
+    "to_owned",
+    "to_string",
+    "try_receive_signal",
+    "try_recv",
+    "try_send",
+    "try_send_signal",
+    "try_wait",
+    "u32::from_le_bytes",
+    "u32::try_from",
+    "validate_spec",
+    "visited",
+    "wait",
+    "wait_and_reap",
+    "write_all",
+    "write_message"
+  ],
+  "cancellation_behavior": [],
+  "channels": [
+    {
+      "line": 6,
+      "text": "use std::sync::mpsc::{self, Receiver, SyncSender, TryRecvError, TrySendError};"
+    },
+    {
+      "line": 162,
+      "text": "incoming_data_rx: Receiver<SidecarMessage>,"
+    },
+    {
+      "line": 163,
+      "text": "reader_event_rx: Receiver<ReaderEvent>,"
+    },
+    {
+      "line": 530,
+      "text": "data_rx: Receiver<SidecarMessage>,"
+    },
+    {
+      "line": 531,
+      "text": "control_rx: Receiver<SidecarMessage>,"
+    },
+    {
+      "line": 705,
+      "text": "#[error(\"sidecar channel is closed\")]"
+    }
+  ],
+  "configuration_read": [
+    {
+      "line": 25,
+      "text": "Configure = 3,"
+    },
+    {
+      "line": 41,
+      "text": "3 => Self::Configure,"
+    },
+    {
+      "line": 338,
+      "text": "SidecarMessageKind::Configure,"
+    },
+    {
+      "line": 341,
+      "text": "self.set_state(SidecarState::Configure);"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPORTS:src/runtime/lifecycle/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "AtomicBool::new",
+    "Command::new",
+    "Vec::new",
+    "new",
+    "thread::Builder::new",
+    "u32::try_from"
+  ],
+  "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 12,
+      "name": "LENGTH_PREFIX_BYTES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 14,
+      "name": "CONTROL_CAPACITY_MESSAGES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "WRITER_POLL_INTERVAL",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "PROCESS_POLL_INTERVAL",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "CONTROL_SIGNAL_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 21,
+      "name": "SidecarState",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "from_u8",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 54,
+      "name": "SidecarDeadlines",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 71,
+      "name": "SidecarProcessSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 96,
+      "name": "SidecarCounters",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 109,
+      "name": "SidecarHostObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 114,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 133,
+      "name": "SidecarHostSnapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 146,
+      "name": "visited",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 150,
+      "name": "ReaderEvent",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 156,
+      "name": "SidecarHost",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 174,
+      "name": "spawn",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 252,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 256,
+      "name": "state",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 260,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "try_send_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 298,
+      "name": "try_receive_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 306,
+      "name": "receive_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 321,
+      "name": "cancel_and_reap",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 325,
+      "name": "close_and_reap",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 329,
+      "name": "handshake",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 347,
+      "name": "shutdown",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 372,
+      "name": "send_control",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 383,
+      "name": "expect_control",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 407,
+      "name": "wait_and_reap",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 452,
+      "name": "set_state",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 463,
+      "name": "mark_failed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 473,
+      "name": "kill_if_running",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 486,
+      "name": "force_reap",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 506,
+      "name": "stop_io_threads",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 521,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 527,
+      "name": "spawn_writer",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 553,
+      "name": "spawn_reader",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 605,
+      "name": "reap_failed_spawn",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 610,
+      "name": "write_message",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 624,
+      "name": "read_message",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 639,
+      "name": "read_exact_or_eof",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 649,
+      "name": "control_message",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 663,
+      "name": "validate_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 686,
+      "name": "SidecarHostError",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 221,
+      "text": "drop(data_tx);"
+    },
+    {
+      "line": 222,
+      "text": "drop(control_tx);"
+    },
+    {
+      "line": 521,
+      "text": "fn drop(&mut self) {"
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "CONTROL_SIGNAL_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 21,
+      "name": "SidecarState",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 54,
+      "name": "SidecarDeadlines",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 71,
+      "name": "SidecarProcessSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 109,
+      "name": "SidecarHostObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 114,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 133,
+      "name": "SidecarHostSnapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 146,
+      "name": "visited",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 156,
+      "name": "SidecarHost",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 174,
+      "name": "spawn",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 252,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 256,
+      "name": "state",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 260,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "try_send_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 298,
+      "name": "try_receive_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 306,
+      "name": "receive_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 321,
+      "name": "cancel_and_reap",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 325,
+      "name": "close_and_reap",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 686,
+      "name": "SidecarHostError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 185,
+      "text": "return Err(SidecarHostError::MissingPipe(\"stdin\"));"
+    },
+    {
+      "line": 189,
+      "text": "return Err(SidecarHostError::MissingPipe(\"stdout\"));"
+    },
+    {
+      "line": 219,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 225,
+      "text": "return Err(error);"
+    },
+    {
+      "line": 245,
+      "text": "if let Err(error) = handshake {"
+    },
+    {
+      "line": 248,
+      "text": "return Err(error);"
+    },
+    {
+      "line": 267,
+      "text": "return Err(SidecarHostError::InvalidState {"
+    },
+    {
+      "line": 273,
+      "text": "return Err(SidecarHostError::InvalidDataKind(message.kind));"
+    },
+    {
+      "line": 288,
+      "text": "Err(TrySendError::Full(_)) => {"
+    },
+    {
+      "line": 293,
+      "text": "Err(SidecarHostError::DataQueueFull)"
+    },
+    {
+      "line": 295,
+      "text": "Err(TrySendError::Disconnected(_)) => Err(SidecarHostError::Closed),"
+    },
+    {
+      "line": 302,
+      "text": "Err(TryRecvError::Empty) => Ok(None),"
+    },
+    {
+      "line": 303,
+      "text": "Err(TryRecvError::Disconnected) => Err(SidecarHostError::Closed),"
+    },
+    {
+      "line": 354,
+      "text": "return Err(SidecarHostError::AlreadyReaped);"
+    },
+    {
+      "line": 391,
+      "text": "Ok(ReaderEvent::Control(message)) => Err(SidecarHostError::UnexpectedMessage {"
+    },
+    {
+      "line": 395,
+      "text": "Ok(ReaderEvent::Failure(error)) => Err(error),"
+    },
+    {
+      "line": 396,
+      "text": "Ok(ReaderEvent::Eof) => Err(SidecarHostError::UnexpectedEof),"
+    },
+    {
+      "line": 397,
+      "text": "Err(mpsc::RecvTimeoutError::Timeout) => {"
+    },
+    {
+      "line": 402,
+      "text": "Err(SidecarHostError::Timeout(expected))"
+    },
+    {
+      "line": 404,
+      "text": "Err(mpsc::RecvTimeoutError::Disconnected) => Err(SidecarHostError::Closed),"
+    },
+    {
+      "line": 541,
+      "text": "Err(TryRecvError::Disconnected) => break,"
+    },
+    {
+      "line": 542,
+      "text": "Err(TryRecvError::Empty) => match data_rx.try_recv() {"
+    },
+    {
+      "line": 544,
+      "text": "Err(TryRecvError::Disconnected) => break,"
+    },
+    {
+      "line": 545,
+      "text": "Err(TryRecvError::Empty) => thread::sleep(WRITER_POLL_INTERVAL),"
+    },
+    {
+      "line": 572,
+      "text": "Err(TrySendError::Full(_)) => {"
+    },
+    {
+      "line": 575,
+      "text": "Err(TrySendError::Disconnected(_)) => break,"
+    },
+    {
+      "line": 589,
+      "text": "Err(SidecarHostError::UnexpectedEof) => {"
+    },
+    {
+      "line": 593,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 633,
+      "text": "return Err(SidecarHostError::FrameTooLarge);"
+    },
+    {
+      "line": 666,
+      "text": "return Err(SidecarHostError::InvalidConfiguration(\"program is empty\"));"
+    },
+    {
+      "line": 669,
+      "text": "return Err(SidecarHostError::InvalidConfiguration("
+    },
+    {
+      "line": 677,
+      "text": "return Err(SidecarHostError::InvalidConfiguration("
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 686,
+      "name": "SidecarHostError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 182,
+      "text": ".map_err(|error| SidecarHostError::Spawn(error.to_string()))?;"
+    },
+    {
+      "line": 414,
+      "text": ".map_err(|error| SidecarHostError::Wait(error.to_string()))?"
+    },
+    {
+      "line": 432,
+      "text": ".map_err(|error| SidecarHostError::Kill(error.to_string()))?;"
+    },
+    {
+      "line": 439,
+      "text": ".map_err(|error| SidecarHostError::Wait(error.to_string()))?;"
+    },
+    {
+      "line": 617,
+      "text": "let frame_bytes = u32::try_from(frame.len()).map_err(|_| SidecarHostError::FrameTooLarge)?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 182,
+      "text": ".map_err(|error| SidecarHostError::Spawn(error.to_string()))?;"
+    },
+    {
+      "line": 310,
+      "text": ".map_err(|error| match error {"
+    },
+    {
+      "line": 378,
+      "text": ".map_err(|error| match error {"
+    },
+    {
+      "line": 414,
+      "text": ".map_err(|error| SidecarHostError::Wait(error.to_string()))?"
+    },
+    {
+      "line": 432,
+      "text": ".map_err(|error| SidecarHostError::Kill(error.to_string()))?;"
+    },
+    {
+      "line": 439,
+      "text": ".map_err(|error| SidecarHostError::Wait(error.to_string()))?;"
+    },
+    {
+      "line": 551,
+      "text": ".map_err(|error| SidecarHostError::ThreadSpawn(error.to_string()))"
+    },
+    {
+      "line": 603,
+      "text": ".map_err(|error| SidecarHostError::ThreadSpawn(error.to_string()))"
+    },
+    {
+      "line": 617,
+      "text": "let frame_bytes = u32::try_from(frame.len()).map_err(|_| SidecarHostError::FrameTooLarge)?;"
+    },
+    {
+      "line": 622,
+      "text": ".map_err(|error| SidecarHostError::Io(error.to_string()))"
+    },
+    {
+      "line": 637,
+      "text": "SidecarMessage::decode(&frame, limits).map_err(SidecarHostError::from)"
+    },
+    {
+      "line": 641,
+      "text": "reader.read_exact(bytes).map_err(|error| {"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 182,
+      "text": ".map_err(|error| SidecarHostError::Spawn(error.to_string()))?;"
+    },
+    {
+      "line": 310,
+      "text": ".map_err(|error| match error {"
+    },
+    {
+      "line": 378,
+      "text": ".map_err(|error| match error {"
+    },
+    {
+      "line": 414,
+      "text": ".map_err(|error| SidecarHostError::Wait(error.to_string()))?"
+    },
+    {
+      "line": 432,
+      "text": ".map_err(|error| SidecarHostError::Kill(error.to_string()))?;"
+    },
+    {
+      "line": 439,
+      "text": ".map_err(|error| SidecarHostError::Wait(error.to_string()))?;"
+    },
+    {
+      "line": 551,
+      "text": ".map_err(|error| SidecarHostError::ThreadSpawn(error.to_string()))"
+    },
+    {
+      "line": 603,
+      "text": ".map_err(|error| SidecarHostError::ThreadSpawn(error.to_string()))"
+    },
+    {
+      "line": 617,
+      "text": "let frame_bytes = u32::try_from(frame.len()).map_err(|_| SidecarHostError::FrameTooLarge)?;"
+    },
+    {
+      "line": 622,
+      "text": ".map_err(|error| SidecarHostError::Io(error.to_string()))"
+    },
+    {
+      "line": 637,
+      "text": "SidecarMessage::decode(&frame, limits).map_err(SidecarHostError::from)"
+    },
+    {
+      "line": 641,
+      "text": "reader.read_exact(bytes).map_err(|error| {"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "03ededf525a9735a40c934f7f2bf16a6ef464af2b9578151a1e04e9fc57ed0de",
+      "lines": [
+        1,
+        734
+      ],
+      "path": "src/runtime/lifecycle/sidecar_host.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPORTS:src/runtime/lifecycle/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 1,
+      "text": "use std::ffi::OsString;"
+    }
+  ],
+  "file_id": "file-0189-9da6c6df",
+  "file_kind": "source",
+  "filesystem_io": [
+    {
+      "line": 619,
+      "text": ".write_all(&frame_bytes.to_le_bytes())"
+    },
+    {
+      "line": 620,
+      "text": ".and_then(|()| writer.write_all(&frame))"
+    }
+  ],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "8ecfc2a8e5199c9e1a9a52507acf263c9793c2b4",
+  "implemented_by": [
+    "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPORTS:src/runtime/lifecycle/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
+  "implements": [
+    "SidecarState",
+    "Default for SidecarDeadlines",
+    "SidecarProcessSpec",
+    "SidecarHostObservations",
+    "SidecarHostSnapshot",
+    "SidecarHost",
+    "Drop for SidecarHost"
+  ],
+  "imported_by": [
+    "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPORTS:src/runtime/lifecycle/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
+  "imports": [
+    "std::ffi::OsString",
+    "std::io::{Read, Write}",
+    "std::path::PathBuf",
+    "std::process::{Child, ChildStdin, ChildStdout, Command, ExitStatus, Stdio}",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, AtomicU8, Ordering}",
+    "std::sync::mpsc::{self, Receiver, SyncSender, TryRecvError, TrySendError}",
+    "std::thread::{self, JoinHandle}",
+    "std::time::{Duration, Instant}",
+    "super::{SidecarMessage, SidecarMessageKind, SidecarProtocolError, SidecarProtocolLimits}"
+  ],
+  "inputs": [
+    "3 => Self::Configure,",
+    "Configure = 3,",
+    "SidecarMessageKind::Configure,",
+    "self.set_state(SidecarState::Configure);",
+    "std::ffi::OsString",
+    "std::io::{Read, Write}",
+    "std::path::PathBuf",
+    "std::process::{Child, ChildStdin, ChildStdout, Command, ExitStatus, Stdio}",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, AtomicU8, Ordering}",
+    "std::sync::mpsc::{self, Receiver, SyncSender, TryRecvError, TrySendError}",
+    "std::thread::{self, JoinHandle}",
+    "std::time::{Duration, Instant}",
+    "super::{SidecarMessage, SidecarMessageKind, SidecarProtocolError, SidecarProtocolLimits}"
+  ],
+  "invariants": [
+    {
+      "line": 670,
+      "text": "\"data capacity must be greater than zero messages\","
+    },
+    {
+      "line": 678,
+      "text": "\"deadlines must be greater than zero\","
+    }
+  ],
+  "language": "Rust",
+  "line_count": 734,
+  "locks": [],
+  "module": "pocketstation::runtime::lifecycle::sidecar_host",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-8ee222320eebc514677c",
+    "pattern-f465baa7d79f09df2c2c"
+  ],
+  "outputs": [
+    "Err(SidecarHostError::DataQueueFull)",
+    "Err(TrySendError::Full(_)) => {",
+    "Err(error) => {",
+    "const:CONTROL_SIGNAL_ID",
+    "enum:SidecarHostError",
+    "enum:SidecarState",
+    "fn:cancel_and_reap",
+    "fn:close_and_reap",
+    "fn:id",
+    "fn:new",
+    "fn:observations",
+    "fn:receive_signal",
+    "fn:snapshot",
+    "fn:spawn",
+    "fn:state",
+    "fn:try_receive_signal",
+    "fn:try_send_signal",
+    "fn:visited",
+    "if let Err(error) = handshake {",
+    "return Err(SidecarHostError::InvalidDataKind(message.kind));",
+    "return Err(SidecarHostError::InvalidState {",
+    "return Err(SidecarHostError::MissingPipe(\"stdin\"));",
+    "return Err(SidecarHostError::MissingPipe(\"stdout\"));",
+    "return Err(error);",
+    "struct:SidecarDeadlines",
+    "struct:SidecarHost",
+    "struct:SidecarHostObservations",
+    "struct:SidecarHostSnapshot",
+    "struct:SidecarProcessSpec"
+  ],
+  "package": "pocketstation",
+  "path": "src/runtime/lifecycle/sidecar_host.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 12,
+      "name": "LENGTH_PREFIX_BYTES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 14,
+      "name": "CONTROL_CAPACITY_MESSAGES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "WRITER_POLL_INTERVAL",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "PROCESS_POLL_INTERVAL",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "from_u8",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 96,
+      "name": "SidecarCounters",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 150,
+      "name": "ReaderEvent",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 329,
+      "name": "handshake",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 347,
+      "name": "shutdown",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 372,
+      "name": "send_control",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 383,
+      "name": "expect_control",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 407,
+      "name": "wait_and_reap",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 452,
+      "name": "set_state",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 463,
+      "name": "mark_failed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 473,
+      "name": "kill_if_running",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 486,
+      "name": "force_reap",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 506,
+      "name": "stop_io_threads",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 521,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 527,
+      "name": "spawn_writer",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 553,
+      "name": "spawn_reader",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 605,
+      "name": "reap_failed_spawn",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 610,
+      "name": "write_message",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 624,
+      "name": "read_message",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 639,
+      "name": "read_exact_or_eof",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 649,
+      "name": "control_message",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 663,
+      "name": "validate_spec",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 4,
+      "text": "use std::process::{Child, ChildStdin, ChildStdout, Command, ExitStatus, Stdio};"
+    },
+    {
+      "line": 159,
+      "text": "child: Option<Child>,"
+    },
+    {
+      "line": 174,
+      "text": "pub fn spawn(spec: SidecarProcessSpec) -> Result<Self, SidecarHostError> {"
+    },
+    {
+      "line": 176,
+      "text": "let mut child = Command::new(&spec.program)"
+    },
+    {
+      "line": 181,
+      "text": ".spawn()"
+    },
+    {
+      "line": 529,
+      "text": "mut stdin: ChildStdin,"
+    },
+    {
+      "line": 537,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 555,
+      "text": "mut stdout: ChildStdout,"
+    },
+    {
+      "line": 564,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 606,
+      "text": "fn reap_failed_spawn(child: &mut Child) {"
+    }
+  ],
+  "protocol_messages": [
+    {
+      "line": 4,
+      "text": "use std::process::{Child, ChildStdin, ChildStdout, Command, ExitStatus, Stdio};"
+    },
+    {
+      "line": 176,
+      "text": "let mut child = Command::new(&spec.program)"
+    },
+    {
+      "line": 466,
+      "text": "if matches!(error, SidecarHostError::Protocol(_)) {"
+    },
+    {
+      "line": 698,
+      "text": "Protocol(#[from] SidecarProtocolError),"
+    }
+  ],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "CONTROL_SIGNAL_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 21,
+      "name": "SidecarState",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 54,
+      "name": "SidecarDeadlines",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 71,
+      "name": "SidecarProcessSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 109,
+      "name": "SidecarHostObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 114,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 133,
+      "name": "SidecarHostSnapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 146,
+      "name": "visited",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 156,
+      "name": "SidecarHost",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 174,
+      "name": "spawn",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 252,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 256,
+      "name": "state",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 260,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "try_send_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 298,
+      "name": "try_receive_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 306,
+      "name": "receive_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 321,
+      "name": "cancel_and_reap",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 325,
+      "name": "close_and_reap",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 686,
+      "name": "SidecarHostError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::runtime::lifecycle::sidecar host responsibilities, including Selects the sidecar state used by PocketStation.; Identifies the spawned state or stage represented by `SidecarState`.; Identifies the hello state or stage represented by `SidecarState`.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/errors/runtime-and-sidecars.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/route-sizing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/runtime/lifecycle/sidecar_protocol.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 7,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 110,
+      "text": "counters: Arc<SidecarCounters>,"
+    },
+    {
+      "line": 164,
+      "text": "stop_threads: Arc<AtomicBool>,"
+    },
+    {
+      "line": 195,
+      "text": "let stop_threads = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 196,
+      "text": "let counters = Arc::new(SidecarCounters::default());"
+    },
+    {
+      "line": 207,
+      "text": "Arc::clone(&stop_threads),"
+    },
+    {
+      "line": 214,
+      "text": "Arc::clone(&stop_threads),"
+    },
+    {
+      "line": 216,
+      "text": "Arc::clone(&counters),"
+    },
+    {
+      "line": 520,
+      "text": "impl Drop for SidecarHost {"
+    },
+    {
+      "line": 532,
+      "text": "stop: Arc<AtomicBool>,"
+    },
+    {
+      "line": 558,
+      "text": "stop: Arc<AtomicBool>,"
+    },
+    {
+      "line": 560,
+      "text": "counters: Arc<SidecarCounters>,"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarState: Selects the sidecar state used by PocketStation.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarState::Spawned: Identifies the spawned state or stage represented by `SidecarState`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarState::Hello: Identifies the hello state or stage represented by `SidecarState`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarState::Manifest: Identifies the manifest state or stage represented by `SidecarState`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarState::Configure: Identifies the configure state or stage represented by `SidecarState`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarState::Ready: Identifies the ready state or stage represented by `SidecarState`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarState::Running: Identifies the running state or stage represented by `SidecarState`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarState::Cancelling: Identifies the cancelling state or stage represented by `SidecarState`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarState::Closing: Identifies the closing state or stage represented by `SidecarState`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarState::Closed: Reports that the underlying channel or resource is closed.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarState::Reaped: Identifies the reaped state or stage represented by `SidecarState`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarState::Failed: Identifies the failed state or stage represented by `SidecarState`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarDeadlines: Sets finite startup, I/O, shutdown, and reap deadlines for a sidecar process.",
+    "SidecarDeadlines::ready: Indicates whether ready applies to `SidecarDeadlines`.",
+    "SidecarDeadlines::processing: Stores the processing used by `SidecarDeadlines`.",
+    "SidecarDeadlines::shutdown: Stores the shutdown used by `SidecarDeadlines`.",
+    "default: Returns the default `SidecarDeadlines` value.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarProcessSpec: Configures sidecar process behavior at its owning API boundary.",
+    "SidecarProcessSpec::id: Identifies the id recorded by `SidecarProcessSpec`.",
+    "SidecarProcessSpec::program: Stores the program used by `SidecarProcessSpec`.",
+    "SidecarProcessSpec::arguments: Stores the arguments used by `SidecarProcessSpec`.",
+    "SidecarProcessSpec::configuration: Stores the configuration used by `SidecarProcessSpec`.",
+    "SidecarProcessSpec::data_capacity_messages: Sets the data capacity messages available to `SidecarProcessSpec`.",
+    "SidecarProcessSpec::protocol_limits: Stores the protocol limits used by `SidecarProcessSpec`.",
+    "SidecarProcessSpec::deadlines: Stores the deadlines used by `SidecarProcessSpec`.",
+    "new: Creates a new `SidecarProcessSpec`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostObservations: Reports the sidecar host observations collected at an observation boundary.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostSnapshot: Reports the sidecar host snapshot collected at an observation boundary.",
+    "SidecarHostSnapshot::state: Stores the state used by `SidecarHostSnapshot`.",
+    "SidecarHostSnapshot::state_transitions: Stores the state transitions used by `SidecarHostSnapshot`.",
+    "SidecarHostSnapshot::data_enqueued_total: Counts the total number of data enqueued observed by `SidecarHostSnapshot`.",
+    "SidecarHostSnapshot::data_received_total: Counts the total number of data received observed by `SidecarHostSnapshot`.",
+    "SidecarHostSnapshot::data_dropped_total: Counts the total number of data dropped observed by `SidecarHostSnapshot`.",
+    "SidecarHostSnapshot::protocol_failures_total: Counts the total number of protocol failures observed by `SidecarHostSnapshot`.",
+    "SidecarHostSnapshot::timeouts_total: Counts the total number of timeouts observed by `SidecarHostSnapshot`.",
+    "SidecarHostSnapshot::forced_kills_total: Counts the total number of forced kills observed by `SidecarHostSnapshot`.",
+    "SidecarHostSnapshot::reaps_total: Counts the total number of reaps observed by `SidecarHostSnapshot`.",
+    "visited: Returns the visited held by `SidecarHostSnapshot`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHost: Owns the resources and lifecycle for sidecar.",
+    "spawn: Spawns its owned operation for `SidecarHost`.",
+    "id: Returns the id held by `SidecarHost`.",
+    "state: Returns the state associated with `SidecarHost`.",
+    "observations: Returns the observations exposed by `SidecarHost`.",
+    "try_send_signal: Attempts to send signal through `SidecarHost`.",
+    "try_receive_signal: Attempts to receive signal through `SidecarHost`.",
+    "receive_signal: Receives signal for `SidecarHost`.",
+    "cancel_and_reap: Cancels and reap for `SidecarHost`.",
+    "close_and_reap: Closes `SidecarHost` and reaps its child process.",
+    "drop: Releases resources owned by `SidecarHost`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError: Classifies failures reported as sidecar host error.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::InvalidConfiguration: Reported when the owning operation encounters invalid configuration.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Spawn: Reported when the owning operation encounters spawn.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::ThreadSpawn: Reported when the owning operation encounters thread spawn.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::MissingPipe: Reported when the owning operation encounters missing pipe.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Io: Reported when the owning operation encounters I/O.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Protocol: Reported when the owning operation encounters protocol.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::FrameTooLarge: Reported when the owning operation encounters frame too large.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::DataQueueFull: Reported when the owning operation encounters data queue full.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::ControlQueueFull: Reported when the owning operation encounters control queue full.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Closed: Reports that the underlying channel or resource is closed.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::UnexpectedEof: Reported when the owning operation encounters unexpected eof.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::UnexpectedMessage: Reported when the owning operation encounters unexpected message.",
+    "SidecarHostError::UnexpectedMessage::expected: Records the value expected by `UnexpectedMessage`.",
+    "SidecarHostError::UnexpectedMessage::actual: Records the value observed by `UnexpectedMessage`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Timeout: Reported when the owning operation encounters timeout.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::ProcessingTimeout: Reported when the owning operation encounters processing timeout.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::InvalidState: Reported when the owning operation encounters invalid state.",
+    "SidecarHostError::InvalidState::expected: Records the value expected by `InvalidState`.",
+    "SidecarHostError::InvalidState::actual: Records the value observed by `InvalidState`.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::InvalidDataKind: Reported when the owning operation encounters invalid data kind.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Wait: Reported when the owning operation encounters wait.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Kill: Reported when the owning operation encounters kill.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::AlreadyReaped: Reported when the owning operation encounters already reaped.",
+    "pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::UnknownSidecar: Reported when the owning operation encounters unknown sidecar."
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 616,
+      "text": "let frame = message.encode(limits)?;"
+    },
+    {
+      "line": 637,
+      "text": "SidecarMessage::decode(&frame, limits).map_err(SidecarHostError::from)"
+    }
+  ],
+  "shutdown_behavior": [
+    {
+      "line": 57,
+      "text": "pub shutdown: Duration,"
+    },
+    {
+      "line": 65,
+      "text": "shutdown: Duration::from_secs(2),"
+    },
+    {
+      "line": 323,
+      "text": "self.shutdown(SidecarMessageKind::Cancel, SidecarState::Cancelling)"
+    },
+    {
+      "line": 327,
+      "text": "self.shutdown(SidecarMessageKind::Close, SidecarState::Closing)"
+    },
+    {
+      "line": 348,
+      "text": "fn shutdown("
+    },
+    {
+      "line": 360,
+      "text": "self.expect_control(SidecarMessageKind::Closed, self.deadlines.shutdown)"
+    },
+    {
+      "line": 367,
+      "text": "let status = self.wait_and_reap(self.deadlines.shutdown)?;"
+    },
+    {
+      "line": 532,
+      "text": "stop: Arc<AtomicBool>,"
+    },
+    {
+      "line": 538,
+      "text": "while !stop.load(Ordering::Acquire) {"
+    },
+    {
+      "line": 558,
+      "text": "stop: Arc<AtomicBool>,"
+    },
+    {
+      "line": 565,
+      "text": "while !stop.load(Ordering::Acquire) {"
+    },
+    {
+      "line": 675,
+      "text": "|| spec.deadlines.shutdown.is_zero()"
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 619,
+      "text": ".write_all(&frame_bytes.to_le_bytes())"
+    },
+    {
+      "line": 620,
+      "text": ".and_then(|()| writer.write_all(&frame))"
+    },
+    {
+      "line": 4,
+      "text": "use std::process::{Child, ChildStdin, ChildStdout, Command, ExitStatus, Stdio};"
+    },
+    {
+      "line": 159,
+      "text": "child: Option<Child>,"
+    },
+    {
+      "line": 174,
+      "text": "pub fn spawn(spec: SidecarProcessSpec) -> Result<Self, SidecarHostError> {"
+    },
+    {
+      "line": 176,
+      "text": "let mut child = Command::new(&spec.program)"
+    },
+    {
+      "line": 181,
+      "text": ".spawn()"
+    },
+    {
+      "line": 529,
+      "text": "mut stdin: ChildStdin,"
+    },
+    {
+      "line": 537,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 555,
+      "text": "mut stdout: ChildStdout,"
+    },
+    {
+      "line": 564,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 606,
+      "text": "fn reap_failed_spawn(child: &mut Child) {"
+    },
+    {
+      "line": 1,
+      "text": "use std::ffi::OsString;"
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 8,
+      "text": "use std::thread::{self, JoinHandle};"
+    },
+    {
+      "line": 174,
+      "text": "pub fn spawn(spec: SidecarProcessSpec) -> Result<Self, SidecarHostError> {"
+    },
+    {
+      "line": 181,
+      "text": ".spawn()"
+    },
+    {
+      "line": 449,
+      "text": "thread::sleep(PROCESS_POLL_INTERVAL);"
+    },
+    {
+      "line": 535,
+      "text": "thread::Builder::new()"
+    },
+    {
+      "line": 537,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 545,
+      "text": "Err(TryRecvError::Empty) => thread::sleep(WRITER_POLL_INTERVAL),"
+    },
+    {
+      "line": 562,
+      "text": "thread::Builder::new()"
+    },
+    {
+      "line": 564,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 689,
+      "text": "#[error(\"sidecar spawn failed: {0}\")]"
+    },
+    {
+      "line": 691,
+      "text": "#[error(\"sidecar I/O thread spawn failed: {0}\")]"
+    }
+  ],
+  "visibility": "mixed"
+}

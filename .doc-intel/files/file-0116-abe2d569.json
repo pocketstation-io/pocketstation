@@ -1,0 +1,935 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs",
+    "REFERENCES:src/conformance.rs"
+  ],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "Configuration",
+    "ConnectorObservationStore::new",
+    "EndpointDescriptor::new",
+    "InvalidManifest",
+    "Self::with_driver",
+    "Session",
+    "as_str",
+    "clone",
+    "code",
+    "configuration",
+    "connector_endpoint",
+    "declare",
+    "derive",
+    "descriptor",
+    "error",
+    "field",
+    "id",
+    "into_endpoint_configuration",
+    "manifest",
+    "map",
+    "map_err",
+    "new",
+    "node",
+    "observation",
+    "observations",
+    "operator_id",
+    "pub",
+    "readiness",
+    "register_connector",
+    "register_endpoint",
+    "resolve",
+    "resolve_node_config",
+    "session_id",
+    "sidecar",
+    "sidecar_connector_factory",
+    "snapshots",
+    "to_owned",
+    "type_id",
+    "unwrap_or",
+    "validate",
+    "validate_config",
+    "with_configuration",
+    "with_driver",
+    "with_input_edge",
+    "worker::connector_driver_endpoint_factory",
+    "worker::connector_endpoint_factory"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 13,
+      "text": "use crate::graph::{ConfigError, NodeConfig, NodeDefinition};"
+    },
+    {
+      "line": 191,
+      "text": "fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 196,
+      "text": ".map_err(|error| ConfigError::Invalid {"
+    },
+    {
+      "line": 240,
+      "text": "Configuration(#[from] ConnectorConfigurationError),"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs",
+    "REFERENCES:src/conformance.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "ConnectorObservationStore::new",
+    "EndpointDescriptor::new",
+    "new"
+  ],
+  "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 1,
+      "name": "configuration",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "error",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 3,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "readiness",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "sidecar",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "status",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "transport",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 60,
+      "name": "Connector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "with_driver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "sidecar",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 118,
+      "name": "manifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 125,
+      "name": "RegisteredConnector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 132,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 135,
+      "name": "manifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 139,
+      "name": "observation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 152,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "declare",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 181,
+      "name": "ConnectorDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 187,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 190,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 204,
+      "name": "register_connector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 225,
+      "name": "ConnectorRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 233,
+      "name": "ConnectorDeclarationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 246,
+      "name": "ConnectorObservationLookupError",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 86,
+      "text": "/// state only. Endpoint remains authoritative for preparation, start-gate,"
+    },
+    {
+      "line": 142,
+      "text": "endpoint: EndpointHandle,"
+    },
+    {
+      "line": 144,
+      "text": "if endpoint.session_id() != self.session_id {"
+    },
+    {
+      "line": 147,
+      "text": "requested: endpoint.session_id(),"
+    },
+    {
+      "line": 150,
+      "text": "Ok(self.observations.observation(endpoint.id()))"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 60,
+      "name": "Connector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "with_driver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "sidecar",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 118,
+      "name": "manifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 125,
+      "name": "RegisteredConnector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 132,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 135,
+      "name": "manifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 139,
+      "name": "observation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 152,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "declare",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 204,
+      "name": "register_connector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 225,
+      "name": "ConnectorRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 233,
+      "name": "ConnectorDeclarationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 246,
+      "name": "ConnectorObservationLookupError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 145,
+      "text": "return Err(ConnectorObservationLookupError::WrongSession {"
+    },
+    {
+      "line": 166,
+      "text": "return Err(ConnectorDeclarationError::WrongSession {"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 225,
+      "name": "ConnectorRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 233,
+      "name": "ConnectorDeclarationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 246,
+      "name": "ConnectorObservationLookupError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 196,
+      "text": ".map_err(|error| ConfigError::Invalid {"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 196,
+      "text": ".map_err(|error| ConfigError::Invalid {"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "98eb89f789377da99af6de3132b4a27c4b7f9831922d0f2530cab9ac4b0dd1e9",
+      "lines": [
+        1,
+        253
+      ],
+      "path": "src/connector/mod.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "linked",
+  "examples_using": [
+    "example-937ee5ed9d4dfb93965f"
+  ],
+  "extended_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs",
+    "REFERENCES:src/conformance.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0116-abe2d569",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [
+    {
+      "line": 87,
+      "text": "/// shutdown, join, rollback, and finalization semantics."
+    }
+  ],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "4dc80571200e94c2ffa615e34c91e0b8f2b0d664",
+  "implemented_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs",
+    "REFERENCES:src/conformance.rs"
+  ],
+  "implements": [
+    "Connector",
+    "RegisteredConnector",
+    "NodeDefinition for ConnectorDefinition",
+    "Session"
+  ],
+  "imported_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs",
+    "REFERENCES:src/conformance.rs"
+  ],
+  "imports": [
+    "configuration::{ ConnectorConfiguration, ConnectorConfigurationConstraint, ConnectorConfigurationError, ConnectorConfigurationErrorCode, ConnectorConfigurationField, ConnectorConfigurationRequirement, ConnectorConfigurationSchema, ConnectorConfigurationValue, ConnectorConfigurationValueKind, ConnectorSecret, ResolvedConnectorConfiguration, MAX_CONNECTOR_CONFIGURATION_FIELDS, MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES, }",
+    "crate::graph::{ConfigError, NodeConfig, NodeDefinition}",
+    "crate::{EndpointDescriptor, EndpointDriverFactory, EndpointHandle, Session, SessionError}",
+    "error::{ ConnectorError, ConnectorErrorBuildError, ConnectorErrorCode, ConnectorErrorCodeError, ConnectorErrorStage, ConnectorRetryability, MAX_CONNECTOR_ERROR_CODE_BYTES, MAX_CONNECTOR_ERROR_MESSAGE_BYTES, }",
+    "manifest::{ ConnectorCapability, ConnectorManifest, ConnectorManifestError, ConnectorRequirement, CONNECTOR_API_REVISION, MAX_CONNECTOR_MANIFEST_ENTRIES, MAX_CONNECTOR_MANIFEST_TEXT_BYTES, }",
+    "module:configuration",
+    "module:error",
+    "module:manifest",
+    "module:observations",
+    "module:readiness",
+    "module:sidecar",
+    "module:status",
+    "module:transport",
+    "module:worker",
+    "observations::ConnectorObservationStore",
+    "observations::{ ConnectorObservationError, ConnectorObservationHandle, ConnectorObservations, ConnectorRuntimeObservations, }",
+    "readiness::{ ConnectorReadinessPolicy, ConnectorReadinessPolicyError, MAX_CONNECTOR_READINESS_THRESHOLD, MAX_CONNECTOR_READINESS_TIMEOUT, }",
+    "sidecar::{ sidecar_connector_factory, SidecarConnectorDriverFactory, CONNECTOR_AUDIO_RECORD_SCHEMA, CONNECTOR_AUDIO_RECORD_SIGNAL_ID, }",
+    "status::{ ConnectorDeliveryReadiness, ConnectorHealth, ConnectorRecovery, ConnectorServiceStatus, }",
+    "std::sync::Arc",
+    "transport::{ ConnectorAudioMetadata, ConnectorAudioRecord, ConnectorAudioRecordError, ConnectorConfigurationRecord, ConnectorConfigurationRecordError, CONNECTOR_AUDIO_RECORD_MAJOR, CONNECTOR_AUDIO_RECORD_MINOR, CONNECTOR_CONFIGURATION_RECORD_MAJOR, CONNECTOR_CONFIGURATION_RECORD_MINOR, MAX_CONNECTOR_AUDIO_RECORD_PORT_BYTES, MAX_CONNECTOR_AUDIO_RECORD_SAMPLES, }",
+    "worker::{ ConnectorContext, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorFactory, ConnectorInputDescriptor, ConnectorItem, ConnectorRunOutcome, ConnectorWorker, }"
+  ],
+  "inputs": [
+    ".map_err(|error| ConfigError::Invalid {",
+    "Configuration(#[from] ConnectorConfigurationError),",
+    "configuration::{ ConnectorConfiguration, ConnectorConfigurationConstraint, ConnectorConfigurationError, ConnectorConfigurationErrorCode, ConnectorConfigurationField, ConnectorConfigurationRequirement, ConnectorConfigurationSchema, ConnectorConfigurationValue, ConnectorConfigurationValueKind, ConnectorSecret, ResolvedConnectorConfiguration, MAX_CONNECTOR_CONFIGURATION_FIELDS, MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES, }",
+    "crate::graph::{ConfigError, NodeConfig, NodeDefinition}",
+    "crate::{EndpointDescriptor, EndpointDriverFactory, EndpointHandle, Session, SessionError}",
+    "error::{ ConnectorError, ConnectorErrorBuildError, ConnectorErrorCode, ConnectorErrorCodeError, ConnectorErrorStage, ConnectorRetryability, MAX_CONNECTOR_ERROR_CODE_BYTES, MAX_CONNECTOR_ERROR_MESSAGE_BYTES, }",
+    "fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {",
+    "manifest::{ ConnectorCapability, ConnectorManifest, ConnectorManifestError, ConnectorRequirement, CONNECTOR_API_REVISION, MAX_CONNECTOR_MANIFEST_ENTRIES, MAX_CONNECTOR_MANIFEST_TEXT_BYTES, }",
+    "module:configuration",
+    "module:error",
+    "module:manifest",
+    "module:observations",
+    "module:readiness",
+    "module:sidecar",
+    "module:status",
+    "module:transport",
+    "module:worker",
+    "observations::ConnectorObservationStore",
+    "observations::{ ConnectorObservationError, ConnectorObservationHandle, ConnectorObservations, ConnectorRuntimeObservations, }",
+    "readiness::{ ConnectorReadinessPolicy, ConnectorReadinessPolicyError, MAX_CONNECTOR_READINESS_THRESHOLD, MAX_CONNECTOR_READINESS_TIMEOUT, }",
+    "sidecar::{ sidecar_connector_factory, SidecarConnectorDriverFactory, CONNECTOR_AUDIO_RECORD_SCHEMA, CONNECTOR_AUDIO_RECORD_SIGNAL_ID, }",
+    "status::{ ConnectorDeliveryReadiness, ConnectorHealth, ConnectorRecovery, ConnectorServiceStatus, }",
+    "std::sync::Arc",
+    "transport::{ ConnectorAudioMetadata, ConnectorAudioRecord, ConnectorAudioRecordError, ConnectorConfigurationRecord, ConnectorConfigurationRecordError, CONNECTOR_AUDIO_RECORD_MAJOR, CONNECTOR_AUDIO_RECORD_MINOR, CONNECTOR_CONFIGURATION_RECORD_MAJOR, CONNECTOR_CONFIGURATION_RECORD_MINOR, MAX_CONNECTOR_AUDIO_RECORD_PORT_BYTES, MAX_CONNECTOR_AUDIO_RECORD_SAMPLES, }",
+    "use crate::graph::{ConfigError, NodeConfig, NodeDefinition};",
+    "worker::{ ConnectorContext, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorFactory, ConnectorInputDescriptor, ConnectorItem, ConnectorRunOutcome, ConnectorWorker, }"
+  ],
+  "invariants": [
+    {
+      "line": 111,
+      "text": "/// Connector worker. Provider code never runs on a realtime partition."
+    }
+  ],
+  "language": "Rust",
+  "line_count": 253,
+  "locks": [],
+  "module": "pocketstation::connector",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-31b76706228fd84bfc03",
+    "pattern-92384c9a4e85cd5fa74e"
+  ],
+  "outputs": [
+    "enum:ConnectorDeclarationError",
+    "enum:ConnectorObservationLookupError",
+    "enum:ConnectorRegistrationError",
+    "fn:declare",
+    "fn:manifest",
+    "fn:new",
+    "fn:observation",
+    "fn:observations",
+    "fn:register_connector",
+    "fn:session_id",
+    "fn:sidecar",
+    "fn:with_driver",
+    "return Err(ConnectorDeclarationError::WrongSession {",
+    "return Err(ConnectorObservationLookupError::WrongSession {",
+    "struct:Connector",
+    "struct:RegisteredConnector"
+  ],
+  "package": "pocketstation",
+  "path": "src/connector/mod.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 1,
+      "name": "configuration",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "error",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 3,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "readiness",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "sidecar",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "status",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "transport",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 181,
+      "name": "ConnectorDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 187,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 190,
+      "name": "validate_config",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 60,
+      "name": "Connector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "with_driver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "sidecar",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 118,
+      "name": "manifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 125,
+      "name": "RegisteredConnector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 132,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 135,
+      "name": "manifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 139,
+      "name": "observation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 152,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "declare",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 204,
+      "name": "register_connector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 225,
+      "name": "ConnectorRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 233,
+      "name": "ConnectorDeclarationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 246,
+      "name": "ConnectorObservationLookupError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::connector responsibilities, including Types and operations for connector.; Declares a connector endpoint and the manifest-backed configuration used to instantiate it.; Creates a new `Connector`.."
+  },
+  "queues": [],
+  "recovery_behavior": [
+    {
+      "line": 87,
+      "text": "/// shutdown, join, rollback, and finalization semantics."
+    }
+  ],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/connectors.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/configure-connector-secrets.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/connectors.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/connectors.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/terminal-outcomes.md",
+    "docs/best-practices/connector-retries.md",
+    "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [
+    "CONTAINS:src/connector/configuration.rs",
+    "CONTAINS:src/connector/error.rs",
+    "CONTAINS:src/connector/manifest.rs",
+    "CONTAINS:src/connector/observations.rs",
+    "CONTAINS:src/connector/readiness.rs",
+    "CONTAINS:src/connector/sidecar.rs",
+    "CONTAINS:src/connector/status.rs",
+    "CONTAINS:src/connector/transport.rs",
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/configuration.rs",
+    "IMPORTS:src/connector/error.rs",
+    "IMPORTS:src/connector/manifest.rs",
+    "IMPORTS:src/connector/observations.rs",
+    "IMPORTS:src/connector/readiness.rs",
+    "IMPORTS:src/connector/sidecar.rs",
+    "IMPORTS:src/connector/status.rs",
+    "IMPORTS:src/connector/transport.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/configuration.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/observations.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/lifecycle/sidecar_host.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/error.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 11,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 62,
+      "text": "manifest: Arc<ConnectorManifest>,"
+    },
+    {
+      "line": 63,
+      "text": "endpoint_factory: Arc<dyn EndpointDriverFactory>,"
+    },
+    {
+      "line": 70,
+      "text": "factory: Arc<dyn ConnectorFactory>,"
+    },
+    {
+      "line": 77,
+      "text": "manifest: Arc::new(manifest),"
+    },
+    {
+      "line": 90,
+      "text": "factory: Arc<dyn ConnectorDriverFactory>,"
+    },
+    {
+      "line": 93,
+      "text": "let manifest = Arc::new(manifest);"
+    },
+    {
+      "line": 98,
+      "text": "Arc::clone(&manifest),"
+    },
+    {
+      "line": 127,
+      "text": "manifest: Arc<ConnectorManifest>,"
+    },
+    {
+      "line": 183,
+      "text": "manifest: Arc<ConnectorManifest>,"
+    },
+    {
+      "line": 211,
+      "text": "Arc::new(ConnectorDefinition {"
+    },
+    {
+      "line": 212,
+      "text": "manifest: Arc::clone(&connector.manifest),"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::connector: Types and operations for connector.",
+    "pocketstation::connector::Connector: Declares a connector endpoint and the manifest-backed configuration used to instantiate it.",
+    "new: Creates a new `Connector`.",
+    "with_driver: Builds a connector whose bounded receiver loop is owned by Core.",
+    "sidecar: Builds an outbound Connector backed by one bounded sidecar process.",
+    "manifest: Returns the manifest held by `Connector`.",
+    "pocketstation::connector::RegisteredConnector: Retains a connector declaration after its factory has been registered with the node registry.",
+    "session_id: Returns the session identifier held by `RegisteredConnector`.",
+    "manifest: Returns the manifest held by `RegisteredConnector`.",
+    "observation: Returns the current observation exposed by `RegisteredConnector`.",
+    "observations: Returns the observations exposed by `RegisteredConnector`.",
+    "declare: Adds the declaration represented by `RegisteredConnector` to its Session.",
+    "register_connector: Registers connector for `Session`.",
+    "pocketstation::connector::ConnectorRegistrationError: Classifies failures reported as connector registration error.",
+    "pocketstation::connector::ConnectorRegistrationError::InvalidManifest: Reported when the owning operation encounters invalid manifest.",
+    "pocketstation::connector::ConnectorRegistrationError::Session: Reported when the owning operation encounters session.",
+    "pocketstation::connector::ConnectorDeclarationError: Classifies failures reported as connector declaration error.",
+    "pocketstation::connector::ConnectorDeclarationError::WrongSession: Reported when the owning operation encounters wrong session.",
+    "pocketstation::connector::ConnectorDeclarationError::WrongSession::registered: Stores the registered used by `WrongSession`.",
+    "pocketstation::connector::ConnectorDeclarationError::WrongSession::requested: Stores the requested used by `WrongSession`.",
+    "pocketstation::connector::ConnectorDeclarationError::Configuration: Reported when the owning operation encounters configuration.",
+    "pocketstation::connector::ConnectorDeclarationError::Session: Reported when the owning operation encounters session.",
+    "pocketstation::connector::ConnectorObservationLookupError: Classifies failures reported as connector observation lookup error.",
+    "pocketstation::connector::ConnectorObservationLookupError::WrongSession: Reported when the owning operation encounters wrong session.",
+    "pocketstation::connector::ConnectorObservationLookupError::WrongSession::registered: Stores the registered used by `WrongSession`.",
+    "pocketstation::connector::ConnectorObservationLookupError::WrongSession::requested: Stores the requested used by `WrongSession`."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 87,
+      "text": "/// shutdown, join, rollback, and finalization semantics."
+    }
+  ],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 86,
+      "text": "/// state only. Endpoint remains authoritative for preparation, start-gate,"
+    },
+    {
+      "line": 109,
+      "text": "/// Resolved typed configuration is encoded during transactional prepare;"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0226f46b368cc7dec827",
+    "test-029c349577acbdf09568",
+    "test-125f099fa90218b83809",
+    "test-322eaf409d4b487149ee",
+    "test-440e0d0f038bd27e531f",
+    "test-6b9e356534c04d2e2c3a",
+    "test-7eabe669b99c6e379ec6",
+    "test-8e782c1b860b7995186d",
+    "test-b500d2adf0e2ce5b5229",
+    "test-b7bd22defab20a579dd6",
+    "test-e94ff12d057c08b24916"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

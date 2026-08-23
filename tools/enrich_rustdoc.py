@@ -29,6 +29,10 @@ SOURCE_DOC_IMPROVEMENTS = {
     "OpusConfig::application": "Selects the Opus application mode used when the encoder is created.",
     "pocketstation::graph::signal::spec::SignalClass::Event": "Carries discrete event payloads described by an `EventFormat`.",
     "pocketstation::graph::signal::spec::SignalClass::Binary": "Carries an opaque binary payload described by a `BinaryFormat`.",
+    "anchored": "Creates a sample timeline whose first buffer starts at the supplied nonzero monotonic timestamp.",
+    "expected": "Returns the expected value when a compilation diagnostic compares two values.",
+    "actual": "Returns the observed value when a compilation diagnostic compares two values.",
+    "diagnostic": "Converts a Session compiler failure into stable language-neutral location and comparison fields.",
 }
 
 STRUCT_DOCS = {
@@ -620,6 +624,14 @@ def main() -> None:
         help="Replace or insert generated docs at frozen compiler spans in the current worktree",
     )
     parser.add_argument(
+        "--sync-current-json",
+        type=Path,
+        help=(
+            "Insert docs for frozen-public items that remain undocumented in a fresh "
+            "private rustdoc JSON build of the current worktree"
+        ),
+    )
+    parser.add_argument(
         "--refresh-current-generated",
         action="store_true",
         help="Replace previously generated source attributes with the current semantic descriptions",
@@ -686,6 +698,87 @@ def main() -> None:
             raise SystemExit(f"span mismatch for {record['symbol_id']}")
         line, column = span["begin"]
         by_file[record["source_file"]].append(((line << 32) | column, record, item_doc(record, by_id)))
+
+    if args.sync_current_json:
+        current_private = json.loads(args.sync_current_json.read_text())
+        if not current_private.get("includes_private"):
+            raise SystemExit("current rustdoc JSON must include private items")
+        if current_private.get("format_version") != private.get("format_version"):
+            raise SystemExit("current and frozen rustdoc JSON format versions differ")
+        current_index = current_private.get("index", {})
+        current_by_file: dict[str, list[tuple[int, dict[str, Any], str]]] = defaultdict(list)
+        already_documented = 0
+        for record in missing:
+            current_item = current_index.get(str(record["compiler_id"]))
+            if not current_item:
+                raise SystemExit(f"current rustdoc item absent for {record['symbol_id']}")
+            if current_item.get("name") != record["name"]:
+                raise SystemExit(f"current rustdoc name drift for {record['symbol_id']}")
+            if next(iter(current_item.get("inner", {})), "unknown") != record["kind"]:
+                raise SystemExit(f"current rustdoc kind drift for {record['symbol_id']}")
+            if (current_item.get("docs") or "").strip():
+                already_documented += 1
+                continue
+            span = current_item.get("span")
+            if not span or span.get("filename") != record["source_file"]:
+                raise SystemExit(f"current rustdoc span drift for {record['symbol_id']}")
+            line, column = span["begin"]
+            current_by_file[record["source_file"]].append(
+                ((line << 32) | column, record, item_doc(record, by_id))
+            )
+
+        inserted = 0
+        for path, entries in sorted(current_by_file.items()):
+            source_path = ROOT / path
+            text = source_path.read_text()
+            lines = text.splitlines(keepends=True)
+            starts: list[int] = []
+            cursor = 0
+            for line in lines:
+                starts.append(cursor)
+                cursor += len(line)
+            seen_offsets: set[int] = set()
+            for _sort_key, record, doc in sorted(entries, key=lambda value: value[0], reverse=True):
+                span = current_index[str(record["compiler_id"])]["span"]
+                line, column = span["begin"]
+                offset = starts[line - 1] + column - 1
+                if offset in seen_offsets:
+                    raise SystemExit(
+                        f"duplicate current documentation span at {path}:{line}:{column}"
+                    )
+                seen_offsets.add(offset)
+                excerpt = text[offset : offset + 500]
+                if record["name"] not in excerpt:
+                    raise SystemExit(
+                        f"current source guard failed for {record['symbol_id']} at {path}:{line}:{column}"
+                    )
+                attribute = f"#[doc = {json.dumps(doc, ensure_ascii=False)}] "
+                text = text[:offset] + attribute + text[offset:]
+                inserted += 1
+            source_path.write_text(text)
+
+        checkpoint = {
+            "snapshot": json.loads((DB / "state.json").read_text())["snapshot"],
+            "public_records_missing_in_snapshot": len(missing),
+            "already_documented_in_current_source": already_documented,
+            "public_records_enriched": inserted,
+            "files_edited": len(current_by_file),
+            "current_rustdoc_json_sha256": sha256(args.sync_current_json.read_bytes()),
+            "symbol_ids": sorted(
+                record["symbol_id"]
+                for entries in current_by_file.values()
+                for _sort_key, record, _doc in entries
+            ),
+        }
+        (DB / "checkpoints").mkdir(parents=True, exist_ok=True)
+        (DB / "checkpoints" / "rustdoc-enrichment.json").write_text(
+            json.dumps(checkpoint, indent=2, sort_keys=True) + "\n"
+        )
+        print(
+            f"current_docs_inserted={inserted} "
+            f"already_documented={already_documented} files={len(current_by_file)}"
+        )
+        return
 
     if args.sync_current_generated:
         inserted = 0

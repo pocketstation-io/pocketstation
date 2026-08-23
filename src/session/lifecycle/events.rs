@@ -141,10 +141,12 @@ impl SessionSourceFailure {
         Self { stem_id, event }
     }
 
+    #[doc = "Returns the stem identifier held by `SessionSourceFailure`."]
     pub const fn stem_id(&self) -> StemId {
         self.stem_id
     }
 
+    #[doc = "Returns the event held by `SessionSourceFailure`."]
     pub const fn event(&self) -> &SourceRuntimeEvent {
         &self.event
     }
@@ -173,18 +175,22 @@ impl SessionEndpointFailure {
         }
     }
 
+    #[doc = "Returns the route identifier held by `SessionEndpointFailure`."]
     pub const fn route_id(&self) -> RouteId {
         self.route_id
     }
 
+    #[doc = "Returns the endpoint identifier held by `SessionEndpointFailure`."]
     pub const fn endpoint_id(&self) -> EndpointId {
         self.endpoint_id
     }
 
+    #[doc = "Returns the stage held by `SessionEndpointFailure`."]
     pub const fn stage(&self) -> EndpointFailureStage {
         self.stage
     }
 
+    #[doc = "Returns the failure held by `SessionEndpointFailure`."]
     pub const fn failure(&self) -> &EndpointFailure {
         &self.failure
     }
@@ -202,10 +208,12 @@ impl SessionRollbackFailure {
         Self { stage, failure }
     }
 
+    #[doc = "Returns the stage held by `SessionRollbackFailure`."]
     pub const fn stage(&self) -> SessionRollbackStage {
         self.stage
     }
 
+    #[doc = "Returns the failure held by `SessionRollbackFailure`."]
     pub const fn failure(&self) -> &SessionControlFailure {
         &self.failure
     }
@@ -226,10 +234,12 @@ impl SessionFinalizationFailure {
         Self { stage, failure }
     }
 
+    #[doc = "Returns the stage held by `SessionFinalizationFailure`."]
     pub const fn stage(&self) -> SessionFinalizationStage {
         self.stage
     }
 
+    #[doc = "Returns the failure held by `SessionFinalizationFailure`."]
     pub const fn failure(&self) -> &SessionControlFailure {
         &self.failure
     }
@@ -296,26 +306,32 @@ impl SessionTerminalOutcome {
         }
     }
 
+    #[doc = "Returns the session identifier held by `SessionTerminalOutcome`."]
     pub const fn session_id(&self) -> SessionId {
         self.session_id
     }
 
+    #[doc = "Returns the state held by `SessionTerminalOutcome`."]
     pub const fn state(&self) -> SessionTerminalState {
         self.state
     }
 
+    #[doc = "Returns the source failures held by `SessionTerminalOutcome`."]
     pub fn source_failures(&self) -> &[SessionSourceFailure] {
         &self.source_failures
     }
 
+    #[doc = "Returns the endpoint failures held by `SessionTerminalOutcome`."]
     pub fn endpoint_failures(&self) -> &[SessionEndpointFailure] {
         &self.endpoint_failures
     }
 
+    #[doc = "Returns the rollback failures held by `SessionTerminalOutcome`."]
     pub fn rollback_failures(&self) -> &[SessionRollbackFailure] {
         &self.rollback_failures
     }
 
+    #[doc = "Returns the finalization failures held by `SessionTerminalOutcome`."]
     pub fn finalization_failures(&self) -> &[SessionFinalizationFailure] {
         &self.finalization_failures
     }
@@ -546,6 +562,7 @@ pub struct SessionEventReceiver {
 }
 
 impl SessionEventReceiver {
+    #[doc = "Attempts to receive the next value from `SessionEventReceiver` without waiting."]
     pub fn try_recv(&self) -> SessionEventReceive {
         match self.receiver.try_recv() {
             Ok(queued) => {
@@ -557,6 +574,7 @@ impl SessionEventReceiver {
         }
     }
 
+    #[doc = "Returns the observations exposed by `SessionEventReceiver`."]
     pub fn observations(&self) -> SessionEventQueueObservations {
         self.counters.snapshot()
     }

@@ -881,6 +881,7 @@ fn map_worker_receivers(
                 .ok_or(SessionPrepareError::OperatorDeclarationMismatch {
                     node_id: target.id(),
                 })?;
+            let source_binding = required_node_binding(bindings, edge.spec.from.node)?;
             let connection = spec
                 .connections()
                 .iter()
@@ -892,7 +893,7 @@ fn map_worker_receivers(
                     else {
                         return false;
                     };
-                    *operator_instance_id == *instance_id
+                    let target_matches = *operator_instance_id == *instance_id
                         && input_port.as_deref().map_or_else(
                             || {
                                 let mut ports = factory.manifest().input_ports();
@@ -902,7 +903,47 @@ fn map_worker_receivers(
                                     && ports.next().is_none()
                             },
                             |port| port == edge.spec.to.port,
+                        );
+                    let origin_matches = match (source_binding, connection.origin()) {
+                        (
+                            CompiledNodeBinding::StemSource { stem_id },
+                            StreamOrigin::Stem(candidate),
                         )
+                        | (
+                            CompiledNodeBinding::GeneratedAudioIngress { stem_id },
+                            StreamOrigin::Stem(candidate),
+                        ) => stem_id == candidate,
+                        (
+                            CompiledNodeBinding::ExternalAudioIngress {
+                                source_instance_id,
+                                output_port,
+                            },
+                            StreamOrigin::SourceOutput {
+                                source_instance_id: candidate_instance,
+                                output_port: candidate_port,
+                                ..
+                            },
+                        ) => {
+                            source_instance_id == candidate_instance
+                                && output_port == candidate_port
+                        }
+                        (
+                            CompiledNodeBinding::Operator {
+                                operator_instance_id,
+                            },
+                            StreamOrigin::OperatorOutput {
+                                operator_instance_id: candidate_instance,
+                                output_port,
+                            },
+                        ) => {
+                            operator_instance_id == candidate_instance
+                                && output_port
+                                    .as_deref()
+                                    .is_none_or(|port| port == edge.spec.from.port)
+                        }
+                        _ => false,
+                    };
+                    target_matches && origin_matches
                 })
                 .ok_or(SessionPrepareError::OperatorDeclarationMismatch {
                     node_id: target.id(),

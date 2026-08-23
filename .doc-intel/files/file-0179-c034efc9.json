@@ -1,0 +1,1892 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/recording/config.rs",
+    "REFERENCES:src/recording/endpoint.rs",
+    "REFERENCES:src/recording/error_code.rs",
+    "REFERENCES:src/session/extensions/recording.rs"
+  ],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AtomicBool::new",
+    "BufReader::new",
+    "BufWriter::new",
+    "DestinationMetrics::from_observations",
+    "DuplicateStemLabel",
+    "Duration::from_millis",
+    "EdgeObservations::default",
+    "File::create",
+    "File::open",
+    "InvalidStemLabel",
+    "Io",
+    "Json",
+    "ManifestDocument::finished",
+    "ManifestDocument::initial",
+    "ManifestStem::failed",
+    "ManifestStem::from_report",
+    "ManifestStem::new",
+    "OutputExists",
+    "PermissionDenied",
+    "RecorderError::DuplicateStemLabel",
+    "RecorderError::OutputExists",
+    "RecorderError::PermissionDenied",
+    "RecorderError::TimestampOutOfRange",
+    "RecorderError::TooManyGaps",
+    "RecorderError::UnalignedSamples",
+    "RecorderError::WorkerPanicked",
+    "RecorderWorker::spawn",
+    "RecorderWorkerTelemetry::default",
+    "RecordingObservations::default",
+    "Self::new",
+    "Self::start_with_inputs",
+    "StemWriteState::new",
+    "TimestampOutOfRange",
+    "TooManyGaps",
+    "UnalignedSamples",
+    "Vec::new",
+    "Vec::with_capacity",
+    "Wav",
+    "WavWriter::create",
+    "WorkerPanicked",
+    "allow",
+    "any",
+    "as_ref",
+    "as_str",
+    "cancel",
+    "cfg",
+    "channels",
+    "checked_add",
+    "checked_div",
+    "checked_sub",
+    "checksum_fnv1a64",
+    "clone",
+    "clone_from",
+    "collect",
+    "count",
+    "derive",
+    "drain",
+    "drop",
+    "drop_rate_pct",
+    "duration_ns",
+    "error",
+    "exists",
+    "failed",
+    "fetch_add",
+    "filter",
+    "finalize",
+    "finish",
+    "finished",
+    "flush",
+    "fold",
+    "frames_attempted_total",
+    "from_observations",
+    "from_report",
+    "fs::create_dir",
+    "fs::create_dir_all",
+    "fs::metadata",
+    "fs::remove_dir_all",
+    "fs::remove_file",
+    "fs::rename",
+    "get_or_insert",
+    "get_ref",
+    "initial",
+    "into",
+    "into_iter",
+    "is_empty",
+    "is_err",
+    "is_multiple_of",
+    "is_none_or",
+    "is_some",
+    "iter",
+    "join",
+    "len",
+    "lineage",
+    "load",
+    "map",
+    "map_or",
+    "map_or_else",
+    "mark_worker_failure",
+    "merge_discontinuity_events",
+    "min",
+    "name",
+    "new",
+    "normalize_timestamp_ns",
+    "observations",
+    "observe_and_write_frame",
+    "ok_or_else",
+    "pub",
+    "push",
+    "read",
+    "record_gap",
+    "request_stop",
+    "run",
+    "run_stem_worker",
+    "sample_rate_hz",
+    "samples",
+    "samples_for_duration_ns",
+    "saturating_add",
+    "saturating_mul",
+    "saturating_sub",
+    "sequence_number",
+    "serde",
+    "serde_json::to_writer",
+    "serde_json::to_writer_pretty",
+    "session_dir",
+    "snapshot",
+    "source_id",
+    "spawn",
+    "start_observed",
+    "start_with_inputs",
+    "std::io::copy",
+    "stem_event_path",
+    "store",
+    "sync_all",
+    "take",
+    "thread",
+    "thread::Builder::new",
+    "thread::park_timeout",
+    "timestamp_ns",
+    "to_owned",
+    "to_string",
+    "try_recv",
+    "u128::from",
+    "u16::from",
+    "u64::from",
+    "unpark",
+    "unwrap_or",
+    "unwrap_or_else",
+    "usize::from",
+    "validate_frame_lineage",
+    "validate_lineage_field",
+    "with_extension",
+    "wrapping_mul",
+    "write_all",
+    "write_destination_metrics",
+    "write_frame",
+    "write_json_atomic",
+    "write_manifest",
+    "write_permission_events",
+    "write_sample",
+    "write_summary",
+    "zip"
+  ],
+  "cancellation_behavior": [
+    {
+      "line": 288,
+      "text": "pub fn cancel(mut self, reason: impl Into<String>) -> Result<RecordingOutcome, RecorderError> {"
+    }
+  ],
+  "channels": [
+    {
+      "line": 66,
+      "text": "#[error(\"stem '{0}' has a frame whose samples are not channel-aligned\")]"
+    }
+  ],
+  "configuration_read": [
+    {
+      "line": 250,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 287,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 1260,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/recording/config.rs",
+    "REFERENCES:src/recording/endpoint.rs",
+    "REFERENCES:src/recording/error_code.rs",
+    "REFERENCES:src/session/extensions/recording.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "AtomicBool::new",
+    "BufReader::new",
+    "BufWriter::new",
+    "ManifestStem::new",
+    "Self::new",
+    "StemWriteState::new",
+    "Vec::new",
+    "clone_from",
+    "new",
+    "thread::Builder::new",
+    "u128::from",
+    "u16::from",
+    "u64::from",
+    "usize::from"
+  ],
+  "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "RECORDING_MANIFEST_FILE_NAME",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "RECORDING_MANIFEST_SCHEMA_VERSION",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "WORKER_IDLE_WAIT_MS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "MAX_MANIFEST_GAPS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "MAX_SILENCE_GAP_NS",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 24,
+      "name": "RecorderError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 86,
+      "name": "RecordingState",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 93,
+      "name": "DiscontinuityRecord",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 105,
+      "name": "DiscontinuityKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 112,
+      "name": "RecordingOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 121,
+      "name": "RecordingStemOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 131,
+      "name": "RecordingObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 138,
+      "name": "MultistemRecording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 149,
+      "name": "start_observed",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 165,
+      "name": "start_with_inputs",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 251,
+      "name": "session_dir",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "request_stop",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 282,
+      "name": "finish",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 288,
+      "name": "cancel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 291,
+      "name": "finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 353,
+      "name": "RecorderStemInput",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 361,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 373,
+      "name": "RecorderWorker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 382,
+      "name": "spawn",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 412,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 417,
+      "name": "join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 431,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 438,
+      "name": "RecorderWorkerTelemetry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 447,
+      "name": "snapshot",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 457,
+      "name": "StemWorkerOutcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 466,
+      "name": "StemWorkerReport",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 476,
+      "name": "StemWorkerRuntime",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 485,
+      "name": "run_stem_worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 519,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 582,
+      "name": "observe_and_write_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 615,
+      "name": "StemWriteState",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 627,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 642,
+      "name": "write_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 773,
+      "name": "record_gap",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 801,
+      "name": "validate_frame_lineage",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 844,
+      "name": "validate_lineage_field",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 861,
+      "name": "duration_ns",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 869,
+      "name": "samples_for_duration_ns",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 879,
+      "name": "checksum_fnv1a64",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 898,
+      "name": "PermissionEvent",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 906,
+      "name": "write_permission_events",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 931,
+      "name": "stem_event_path",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 937,
+      "name": "merge_discontinuity_events",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 961,
+      "name": "DestinationMetrics",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1003,
+      "name": "from_observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1055,
+      "name": "write_destination_metrics",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1075,
+      "name": "ManifestDocument",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1085,
+      "name": "initial",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1102,
+      "name": "finished",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1142,
+      "name": "ManifestStem",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1170,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1198,
+      "name": "from_report",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1211,
+      "name": "failed",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1220,
+      "name": "RecordingSummary",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1226,
+      "name": "write_summary",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1243,
+      "name": "write_manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1247,
+      "name": "write_json_atomic",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 1261,
+      "name": "tests",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 361,
+      "text": "fn drop(&mut self) {"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 141,
+      "text": "group_id: crate::endpoint::EndpointGroupId,"
+    },
+    {
+      "line": 152,
+      "text": "group_id: crate::endpoint::EndpointGroupId,"
+    },
+    {
+      "line": 169,
+      "text": "group_id: crate::endpoint::EndpointGroupId,"
+    },
+    {
+      "line": 1087,
+      "text": "group_id: &crate::endpoint::EndpointGroupId,"
+    },
+    {
+      "line": 1105,
+      "text": "group_id: &crate::endpoint::EndpointGroupId,"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "RECORDING_MANIFEST_FILE_NAME",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "RECORDING_MANIFEST_SCHEMA_VERSION",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 24,
+      "name": "RecorderError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 86,
+      "name": "RecordingState",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 93,
+      "name": "DiscontinuityRecord",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 105,
+      "name": "DiscontinuityKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 112,
+      "name": "RecordingOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 121,
+      "name": "RecordingStemOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 131,
+      "name": "RecordingObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 138,
+      "name": "MultistemRecording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 149,
+      "name": "start_observed",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 251,
+      "name": "session_dir",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "request_stop",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 282,
+      "name": "finish",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 288,
+      "name": "cancel",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 176,
+      "text": "return Err(RecorderError::OutputExists(session_dir));"
+    },
+    {
+      "line": 182,
+      "text": "return Err(RecorderError::SessionMismatch {"
+    },
+    {
+      "line": 189,
+      "text": "return Err(RecorderError::PermissionDenied("
+    },
+    {
+      "line": 194,
+      "text": "return Err(RecorderError::InvalidSampleSpec {"
+    },
+    {
+      "line": 204,
+      "text": "return Err(RecorderError::DuplicateStemLabel("
+    },
+    {
+      "line": 227,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 235,
+      "text": "return Err(error);"
+    },
+    {
+      "line": 509,
+      "text": "Err(error) => StemWorkerOutcome {"
+    },
+    {
+      "line": 652,
+      "text": "return Err(RecorderError::SourceMismatch {"
+    },
+    {
+      "line": 659,
+      "text": "return Err(RecorderError::FrameSpecMismatch {"
+    },
+    {
+      "line": 669,
+      "text": "return Err(RecorderError::UnalignedSamples("
+    },
+    {
+      "line": 726,
+      "text": "return Err(RecorderError::GapTooLarge {"
+    },
+    {
+      "line": 784,
+      "text": "return Err(RecorderError::TooManyGaps(config.label.as_str().to_owned()));"
+    },
+    {
+      "line": 854,
+      "text": "Err(RecorderError::LineageMismatch {"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 24,
+      "name": "RecorderError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 77,
+      "text": "Io(#[from] std::io::Error),"
+    },
+    {
+      "line": 79,
+      "text": "Wav(#[from] hound::Error),"
+    },
+    {
+      "line": 81,
+      "text": "Json(#[from] serde_json::Error),"
+    }
+  ],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "1fa1b390085d8a99b11f3b43c16bbf779dcaf1741c80d82e2c0a898d2028ceec",
+      "lines": [
+        1,
+        1262
+      ],
+      "path": "src/recording/writer.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/recording/config.rs",
+    "REFERENCES:src/recording/endpoint.rs",
+    "REFERENCES:src/recording/error_code.rs",
+    "REFERENCES:src/session/extensions/recording.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0179-c034efc9",
+  "file_kind": "source",
+  "filesystem_io": [
+    {
+      "line": 1,
+      "text": "use std::fs::{self, File};"
+    },
+    {
+      "line": 211,
+      "text": "fs::create_dir_all(output_root.as_ref())?;"
+    },
+    {
+      "line": 212,
+      "text": "fs::create_dir(&session_dir)?;"
+    },
+    {
+      "line": 213,
+      "text": "fs::create_dir(session_dir.join(\"stems\"))?;"
+    },
+    {
+      "line": 214,
+      "text": "fs::create_dir(session_dir.join(\"events\"))?;"
+    },
+    {
+      "line": 215,
+      "text": "fs::create_dir(session_dir.join(\"metrics\"))?;"
+    },
+    {
+      "line": 234,
+      "text": "fs::remove_dir_all(&session_dir)?;"
+    },
+    {
+      "line": 534,
+      "text": "let mut event_writer = BufWriter::new(File::create(event_path)?);"
+    },
+    {
+      "line": 568,
+      "text": "let wav_bytes = fs::metadata(&wav_path)?.len();"
+    },
+    {
+      "line": 587,
+      "text": "writer: &mut WavWriter<BufWriter<File>>,"
+    },
+    {
+      "line": 588,
+      "text": "event_writer: &mut BufWriter<File>,"
+    },
+    {
+      "line": 647,
+      "text": "writer: &mut WavWriter<BufWriter<File>>,"
+    },
+    {
+      "line": 648,
+      "text": "event_writer: &mut BufWriter<File>,"
+    },
+    {
+      "line": 781,
+      "text": "event_writer: &mut BufWriter<File>,"
+    },
+    {
+      "line": 796,
+      "text": "event_writer.write_all(b\"\\n\")?;"
+    },
+    {
+      "line": 881,
+      "text": "let mut reader = BufReader::new(File::open(path)?);"
+    },
+    {
+      "line": 911,
+      "text": "let mut writer = BufWriter::new(File::create("
+    },
+    {
+      "line": 926,
+      "text": "writer.write_all(b\"\\n\")?;"
+    },
+    {
+      "line": 942,
+      "text": "let mut output = BufWriter::new(File::create("
+    },
+    {
+      "line": 951,
+      "text": "let mut input = BufReader::new(File::open(&path)?);"
+    },
+    {
+      "line": 954,
+      "text": "fs::remove_file(path)?;"
+    },
+    {
+      "line": 1060,
+      "text": "let mut writer = BufWriter::new(File::create("
+    },
+    {
+      "line": 1068,
+      "text": "writer.write_all(b\"\\n\")?;"
+    },
+    {
+      "line": 1250,
+      "text": "let file = File::create(&temporary_path)?;"
+    },
+    {
+      "line": 1253,
+      "text": "writer.write_all(b\"\\n\")?;"
+    },
+    {
+      "line": 1256,
+      "text": "fs::rename(temporary_path, path)?;"
+    }
+  ],
+  "finalization": [
+    {
+      "line": 284,
+      "text": "self.finalize(None)"
+    },
+    {
+      "line": 289,
+      "text": "self.finalize(Some(reason.into()))"
+    },
+    {
+      "line": 292,
+      "text": "fn finalize("
+    },
+    {
+      "line": 301,
+      "text": "for worker in self.workers.drain(..) {"
+    },
+    {
+      "line": 368,
+      "text": "for worker in self.workers.drain(..) {"
+    },
+    {
+      "line": 567,
+      "text": "writer.finalize()?;"
+    }
+  ],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "2fc31ec76da1b33a73fe66f6173fc5d805f6d9dd",
+  "implemented_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/recording/config.rs",
+    "REFERENCES:src/recording/endpoint.rs",
+    "REFERENCES:src/recording/error_code.rs",
+    "REFERENCES:src/session/extensions/recording.rs"
+  ],
+  "implements": [
+    "MultistemRecording",
+    "Drop for MultistemRecording",
+    "RecorderWorker",
+    "RecorderWorkerTelemetry",
+    "StemWorkerRuntime",
+    "StemWriteState",
+    "DestinationMetrics",
+    "ManifestDocument",
+    "ManifestStem"
+  ],
+  "imported_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/recording/config.rs",
+    "REFERENCES:src/recording/endpoint.rs",
+    "REFERENCES:src/recording/error_code.rs",
+    "REFERENCES:src/session/extensions/recording.rs"
+  ],
+  "imports": [
+    "crate::frame::SessionId",
+    "crate::runtime::{EdgeObservations, PlanEdgeFrame, PlanEdgeReceiver}",
+    "hound::{SampleFormat as WavSampleFormat, WavSpec, WavWriter}",
+    "module:tests",
+    "serde::Serialize",
+    "std::fs::{self, File}",
+    "std::io::{BufReader, BufWriter, Read, Write}",
+    "std::path::{Path, PathBuf}",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "std::thread::{self, JoinHandle}",
+    "std::time::Duration",
+    "super::config::{ PermissionDecision, PermissionScope, RecorderLineageField, RecorderStemConfig, StemLabel, }"
+  ],
+  "inputs": [
+    "#[cfg(test)]",
+    "crate::frame::SessionId",
+    "crate::runtime::{EdgeObservations, PlanEdgeFrame, PlanEdgeReceiver}",
+    "hound::{SampleFormat as WavSampleFormat, WavSpec, WavWriter}",
+    "module:tests",
+    "serde::Serialize",
+    "std::fs::{self, File}",
+    "std::io::{BufReader, BufWriter, Read, Write}",
+    "std::path::{Path, PathBuf}",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "std::thread::{self, JoinHandle}",
+    "std::time::Duration",
+    "super::config::{ PermissionDecision, PermissionScope, RecorderLineageField, RecorderStemConfig, StemLabel, }"
+  ],
+  "invariants": [
+    {
+      "line": 68,
+      "text": "#[error(\"stem '{0}' timestamp cannot be normalized\")]"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 1262,
+  "locks": [],
+  "module": "pocketstation::recording::writer",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-302861fed4a6e4c5b34c"
+  ],
+  "outputs": [
+    "Err(error) => StemWorkerOutcome {",
+    "Err(error) => {",
+    "const:RECORDING_MANIFEST_FILE_NAME",
+    "const:RECORDING_MANIFEST_SCHEMA_VERSION",
+    "enum:DiscontinuityKind",
+    "enum:RecorderError",
+    "enum:RecordingState",
+    "fn:cancel",
+    "fn:finish",
+    "fn:observations",
+    "fn:request_stop",
+    "fn:session_dir",
+    "fn:start_observed",
+    "return Err(RecorderError::DuplicateStemLabel(",
+    "return Err(RecorderError::FrameSpecMismatch {",
+    "return Err(RecorderError::InvalidSampleSpec {",
+    "return Err(RecorderError::OutputExists(session_dir));",
+    "return Err(RecorderError::PermissionDenied(",
+    "return Err(RecorderError::SessionMismatch {",
+    "return Err(RecorderError::SourceMismatch {",
+    "return Err(error);",
+    "struct:DiscontinuityRecord",
+    "struct:MultistemRecording",
+    "struct:RecordingObservations",
+    "struct:RecordingOutcome",
+    "struct:RecordingStemOutcome"
+  ],
+  "package": "pocketstation",
+  "path": "src/recording/writer.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "WORKER_IDLE_WAIT_MS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "MAX_MANIFEST_GAPS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "MAX_SILENCE_GAP_NS",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 165,
+      "name": "start_with_inputs",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 291,
+      "name": "finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 353,
+      "name": "RecorderStemInput",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 361,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 373,
+      "name": "RecorderWorker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 382,
+      "name": "spawn",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 412,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 417,
+      "name": "join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 431,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 438,
+      "name": "RecorderWorkerTelemetry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 447,
+      "name": "snapshot",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 457,
+      "name": "StemWorkerOutcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 466,
+      "name": "StemWorkerReport",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 476,
+      "name": "StemWorkerRuntime",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 485,
+      "name": "run_stem_worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 519,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 582,
+      "name": "observe_and_write_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 615,
+      "name": "StemWriteState",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 627,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 642,
+      "name": "write_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 773,
+      "name": "record_gap",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 801,
+      "name": "validate_frame_lineage",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 844,
+      "name": "validate_lineage_field",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 861,
+      "name": "duration_ns",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 869,
+      "name": "samples_for_duration_ns",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 879,
+      "name": "checksum_fnv1a64",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 898,
+      "name": "PermissionEvent",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 906,
+      "name": "write_permission_events",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 931,
+      "name": "stem_event_path",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 937,
+      "name": "merge_discontinuity_events",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 961,
+      "name": "DestinationMetrics",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1003,
+      "name": "from_observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1055,
+      "name": "write_destination_metrics",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1075,
+      "name": "ManifestDocument",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1085,
+      "name": "initial",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1102,
+      "name": "finished",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1142,
+      "name": "ManifestStem",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1170,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1198,
+      "name": "from_report",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1211,
+      "name": "failed",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1220,
+      "name": "RecordingSummary",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1226,
+      "name": "write_summary",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1243,
+      "name": "write_manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1247,
+      "name": "write_json_atomic",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 1261,
+      "name": "tests",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 225,
+      "text": "match RecorderWorker::spawn(session_dir.clone(), stem) {"
+    },
+    {
+      "line": 382,
+      "text": "fn spawn(session_dir: PathBuf, stem: RecorderStemInput) -> Result<Self, RecorderError> {"
+    },
+    {
+      "line": 395,
+      "text": ".spawn(move || {"
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "RECORDING_MANIFEST_FILE_NAME",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "RECORDING_MANIFEST_SCHEMA_VERSION",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 24,
+      "name": "RecorderError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 86,
+      "name": "RecordingState",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 93,
+      "name": "DiscontinuityRecord",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 105,
+      "name": "DiscontinuityKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 112,
+      "name": "RecordingOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 121,
+      "name": "RecordingStemOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 131,
+      "name": "RecordingObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 138,
+      "name": "MultistemRecording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 149,
+      "name": "start_observed",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 251,
+      "name": "session_dir",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "request_stop",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 282,
+      "name": "finish",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 288,
+      "name": "cancel",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::recording::writer responsibilities, including Classifies failures reported as recorder error.; Reported when the owning operation encounters output exists.; Reported when the owning operation encounters invalid stem label.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/stop-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/recording.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/recording.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/endpoint/identity.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/recording/config.rs",
+    "REFERENCES:src/runtime/audio/router.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 5,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 360,
+      "text": "impl Drop for MultistemRecording {"
+    },
+    {
+      "line": 376,
+      "text": "stop_requested: Arc<AtomicBool>,"
+    },
+    {
+      "line": 378,
+      "text": "telemetry: Arc<RecorderWorkerTelemetry>,"
+    },
+    {
+      "line": 389,
+      "text": "let stop_requested = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 390,
+      "text": "let worker_stop = Arc::clone(&stop_requested);"
+    },
+    {
+      "line": 391,
+      "text": "let telemetry = Arc::new(RecorderWorkerTelemetry::default());"
+    },
+    {
+      "line": 392,
+      "text": "let worker_telemetry = Arc::clone(&telemetry);"
+    },
+    {
+      "line": 481,
+      "text": "stop_requested: Arc<AtomicBool>,"
+    },
+    {
+      "line": 482,
+      "text": "telemetry: Arc<RecorderWorkerTelemetry>,"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::recording::writer::RecorderError: Classifies failures reported as recorder error.",
+    "pocketstation::recording::writer::RecorderError::OutputExists: Reported when the owning operation encounters output exists.",
+    "pocketstation::recording::writer::RecorderError::InvalidStemLabel: Reported when the owning operation encounters invalid stem label.",
+    "pocketstation::recording::writer::RecorderError::DuplicateStemLabel: Reported when the owning operation encounters duplicate stem label.",
+    "pocketstation::recording::writer::RecorderError::SessionMismatch: Reported when the owning operation encounters session mismatch.",
+    "RecorderError::SessionMismatch::label: Stores the label used by `SessionMismatch`.",
+    "RecorderError::SessionMismatch::actual: Records the value observed by `SessionMismatch`.",
+    "RecorderError::SessionMismatch::expected: Records the value expected by `SessionMismatch`.",
+    "pocketstation::recording::writer::RecorderError::PermissionDenied: Reports that the required permission was denied.",
+    "pocketstation::recording::writer::RecorderError::InvalidSampleSpec: Reported when the owning operation encounters invalid sample spec.",
+    "RecorderError::InvalidSampleSpec::label: Stores the label used by `InvalidSampleSpec`.",
+    "RecorderError::InvalidSampleSpec::sample_rate_hz: Stores the sample rate value for `InvalidSampleSpec`, in hertz.",
+    "RecorderError::InvalidSampleSpec::channels: Stores the channels used by `InvalidSampleSpec`.",
+    "pocketstation::recording::writer::RecorderError::SourceMismatch: Reported when the owning operation encounters source mismatch.",
+    "RecorderError::SourceMismatch::label: Stores the label used by `SourceMismatch`.",
+    "RecorderError::SourceMismatch::actual: Records the value observed by `SourceMismatch`.",
+    "RecorderError::SourceMismatch::expected: Records the value expected by `SourceMismatch`.",
+    "pocketstation::recording::writer::RecorderError::LineageMismatch: Reported when the owning operation encounters lineage mismatch.",
+    "RecorderError::LineageMismatch::label: Stores the label used by `LineageMismatch`.",
+    "RecorderError::LineageMismatch::field: Stores the field used by `LineageMismatch`.",
+    "RecorderError::LineageMismatch::actual: Records the value observed by `LineageMismatch`.",
+    "RecorderError::LineageMismatch::expected: Records the value expected by `LineageMismatch`.",
+    "pocketstation::recording::writer::RecorderError::FrameSpecMismatch: Reported when the owning operation encounters frame spec mismatch.",
+    "RecorderError::FrameSpecMismatch::label: Stores the label used by `FrameSpecMismatch`.",
+    "RecorderError::FrameSpecMismatch::actual_rate_hz: Stores the actual rate value for `FrameSpecMismatch`, in hertz.",
+    "RecorderError::FrameSpecMismatch::actual_channels: Stores the actual channels used by `FrameSpecMismatch`.",
+    "RecorderError::FrameSpecMismatch::expected_rate_hz: Stores the expected rate value for `FrameSpecMismatch`, in hertz.",
+    "RecorderError::FrameSpecMismatch::expected_channels: Stores the expected channels used by `FrameSpecMismatch`.",
+    "pocketstation::recording::writer::RecorderError::UnalignedSamples: Reported when the owning operation encounters unaligned samples.",
+    "pocketstation::recording::writer::RecorderError::TimestampOutOfRange: Reported when the owning operation encounters timestamp out of range.",
+    "RecorderError::GapTooLarge::label: Stores the label used by `GapTooLarge`.",
+    "RecorderError::GapTooLarge::duration_ns: Stores the duration value for `GapTooLarge`, in nanoseconds.",
+    "pocketstation::recording::writer::RecorderError::GapTooLarge: Reported when the owning operation encounters gap too large.",
+    "pocketstation::recording::writer::RecorderError::TooManyGaps: Reported when the owning operation encounters too many gaps.",
+    "pocketstation::recording::writer::RecorderError::WorkerPanicked: Reported when the owning operation encounters worker panicked.",
+    "pocketstation::recording::writer::RecorderError::Io: Reported when the owning operation encounters I/O.",
+    "pocketstation::recording::writer::RecorderError::Wav: Reported when the owning operation encounters wav.",
+    "pocketstation::recording::writer::RecorderError::Json: Reported when the owning operation encounters json.",
+    "pocketstation::recording::writer::RecordingState: Selects the recording state used by PocketStation.",
+    "pocketstation::recording::writer::RecordingState::Recording: Identifies the recording state or stage represented by `RecordingState`.",
+    "pocketstation::recording::writer::RecordingState::Complete: Identifies the complete state or stage represented by `RecordingState`.",
+    "pocketstation::recording::writer::RecordingState::Incomplete: Identifies the incomplete state or stage represented by `RecordingState`.",
+    "pocketstation::recording::writer::DiscontinuityRecord: Records one immutable discontinuity observation.",
+    "DiscontinuityRecord::stem_id: Identifies the stem identifier recorded by `DiscontinuityRecord`.",
+    "DiscontinuityRecord::label: Stores the label used by `DiscontinuityRecord`.",
+    "DiscontinuityRecord::kind: Stores the kind used by `DiscontinuityRecord`.",
+    "DiscontinuityRecord::timestamp_start_ns: Stores the timestamp start value for `DiscontinuityRecord`, in nanoseconds.",
+    "DiscontinuityRecord::timestamp_end_ns: Stores the timestamp end value for `DiscontinuityRecord`, in nanoseconds.",
+    "DiscontinuityRecord::sequence_start: Stores the sequence start used by `DiscontinuityRecord`.",
+    "DiscontinuityRecord::sequence_end: Stores the sequence end used by `DiscontinuityRecord`.",
+    "pocketstation::recording::writer::DiscontinuityKind: Selects the discontinuity kind used by PocketStation.",
+    "pocketstation::recording::writer::DiscontinuityKind::TimestampGap: Selects timestamp gap behavior for `DiscontinuityKind`.",
+    "pocketstation::recording::writer::DiscontinuityKind::SequenceGap: Selects sequence gap behavior for `DiscontinuityKind`.",
+    "pocketstation::recording::writer::DiscontinuityKind::OverlapRejected: Selects overlap rejected behavior for `DiscontinuityKind`.",
+    "pocketstation::recording::writer::RecordingOutcome: Reports the structured recording outcome.",
+    "RecordingOutcome::session_dir: Stores the session dir used by `RecordingOutcome`.",
+    "RecordingOutcome::state: Stores the state used by `RecordingOutcome`.",
+    "RecordingOutcome::completed_stems: Stores the completed stems used by `RecordingOutcome`.",
+    "RecordingOutcome::failed_stems: Stores the failed stems used by `RecordingOutcome`.",
+    "RecordingOutcome::stems: Stores the stems used by `RecordingOutcome`.",
+    "pocketstation::recording::writer::RecordingStemOutcome: Reports the structured recording stem outcome.",
+    "RecordingStemOutcome::label: Stores the label used by `RecordingStemOutcome`.",
+    "RecordingStemOutcome::written_frames: Stores the written frames used by `RecordingStemOutcome`.",
+    "RecordingStemOutcome::stale_frames: Stores the stale frames used by `RecordingStemOutcome`.",
+    "RecordingStemOutcome::gap_ranges: Stores the gap ranges used by `RecordingStemOutcome`.",
+    "RecordingStemOutcome::error: Stores the error used by `RecordingStemOutcome`.",
+    "RecordingStemOutcome::edge_observations: Stores the edge observations used by `RecordingStemOutcome`.",
+    "pocketstation::recording::writer::RecordingObservations: Reports the recording observations collected at an observation boundary.",
+    "RecordingObservations::frames_received_total: Counts the total number of frames received observed by `RecordingObservations`.",
+    "RecordingObservations::frames_written_total: Counts the total number of frames written observed by `RecordingObservations`.",
+    "RecordingObservations::frames_rejected_total: Counts the total number of frames rejected observed by `RecordingObservations`.",
+    "RecordingObservations::discontinuities_total: Counts the total number of discontinuities observed by `RecordingObservations`.",
+    "RecordingObservations::failures_total: Counts the total number of failures observed by `RecordingObservations`.",
+    "pocketstation::recording::writer::MultistemRecording: Owns the per-stem recording workers and coordinates their terminal finalization outcome.",
+    "observations: Returns the observations exposed by `MultistemRecording`.",
+    "request_stop: Requests a graceful stop from `MultistemRecording`.",
+    "finish: Finishes work owned by `MultistemRecording`.",
+    "drop: Releases resources owned by `MultistemRecording`."
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 15,
+      "text": "use serde::Serialize;"
+    },
+    {
+      "line": 84,
+      "text": "#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]"
+    },
+    {
+      "line": 85,
+      "text": "#[serde(rename_all = \"snake_case\")]"
+    },
+    {
+      "line": 92,
+      "text": "#[derive(Debug, Clone, Serialize)]"
+    },
+    {
+      "line": 103,
+      "text": "#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]"
+    },
+    {
+      "line": 104,
+      "text": "#[serde(rename_all = \"snake_case\")]"
+    },
+    {
+      "line": 897,
+      "text": "#[derive(Serialize)]"
+    },
+    {
+      "line": 960,
+      "text": "#[derive(Serialize)]"
+    },
+    {
+      "line": 1074,
+      "text": "#[derive(Serialize)]"
+    },
+    {
+      "line": 1141,
+      "text": "#[derive(Serialize)]"
+    },
+    {
+      "line": 1219,
+      "text": "#[derive(Serialize)]"
+    },
+    {
+      "line": 1248,
+      "text": "fn write_json_atomic(path: &Path, value: &impl Serialize) -> Result<(), RecorderError> {"
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 1,
+      "text": "use std::fs::{self, File};"
+    },
+    {
+      "line": 211,
+      "text": "fs::create_dir_all(output_root.as_ref())?;"
+    },
+    {
+      "line": 212,
+      "text": "fs::create_dir(&session_dir)?;"
+    },
+    {
+      "line": 213,
+      "text": "fs::create_dir(session_dir.join(\"stems\"))?;"
+    },
+    {
+      "line": 214,
+      "text": "fs::create_dir(session_dir.join(\"events\"))?;"
+    },
+    {
+      "line": 215,
+      "text": "fs::create_dir(session_dir.join(\"metrics\"))?;"
+    },
+    {
+      "line": 234,
+      "text": "fs::remove_dir_all(&session_dir)?;"
+    },
+    {
+      "line": 534,
+      "text": "let mut event_writer = BufWriter::new(File::create(event_path)?);"
+    },
+    {
+      "line": 568,
+      "text": "let wav_bytes = fs::metadata(&wav_path)?.len();"
+    },
+    {
+      "line": 587,
+      "text": "writer: &mut WavWriter<BufWriter<File>>,"
+    },
+    {
+      "line": 588,
+      "text": "event_writer: &mut BufWriter<File>,"
+    },
+    {
+      "line": 647,
+      "text": "writer: &mut WavWriter<BufWriter<File>>,"
+    },
+    {
+      "line": 648,
+      "text": "event_writer: &mut BufWriter<File>,"
+    },
+    {
+      "line": 781,
+      "text": "event_writer: &mut BufWriter<File>,"
+    },
+    {
+      "line": 796,
+      "text": "event_writer.write_all(b\"\\n\")?;"
+    },
+    {
+      "line": 881,
+      "text": "let mut reader = BufReader::new(File::open(path)?);"
+    },
+    {
+      "line": 911,
+      "text": "let mut writer = BufWriter::new(File::create("
+    },
+    {
+      "line": 926,
+      "text": "writer.write_all(b\"\\n\")?;"
+    },
+    {
+      "line": 942,
+      "text": "let mut output = BufWriter::new(File::create("
+    },
+    {
+      "line": 951,
+      "text": "let mut input = BufReader::new(File::open(&path)?);"
+    },
+    {
+      "line": 954,
+      "text": "fs::remove_file(path)?;"
+    },
+    {
+      "line": 1060,
+      "text": "let mut writer = BufWriter::new(File::create("
+    },
+    {
+      "line": 1068,
+      "text": "writer.write_all(b\"\\n\")?;"
+    },
+    {
+      "line": 1250,
+      "text": "let file = File::create(&temporary_path)?;"
+    },
+    {
+      "line": 1253,
+      "text": "writer.write_all(b\"\\n\")?;"
+    },
+    {
+      "line": 1256,
+      "text": "fs::rename(temporary_path, path)?;"
+    },
+    {
+      "line": 225,
+      "text": "match RecorderWorker::spawn(session_dir.clone(), stem) {"
+    },
+    {
+      "line": 382,
+      "text": "fn spawn(session_dir: PathBuf, stem: RecorderStemInput) -> Result<Self, RecorderError> {"
+    },
+    {
+      "line": 395,
+      "text": ".spawn(move || {"
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 630,
+      "text": "// Session start may precede physical capture permission/startup by"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-13b59c3a2ed9350468eb",
+    "test-668e2a246f514118dc91",
+    "test-77bb4d2c9b220a4d7130",
+    "test-7f4ab2688e1c16ab56c2",
+    "test-991391bffbd7771b8674",
+    "test-c0bc88b64402027ef6d4"
+  ],
+  "threads": [
+    {
+      "line": 6,
+      "text": "use std::thread::{self, JoinHandle};"
+    },
+    {
+      "line": 225,
+      "text": "match RecorderWorker::spawn(session_dir.clone(), stem) {"
+    },
+    {
+      "line": 382,
+      "text": "fn spawn(session_dir: PathBuf, stem: RecorderStemInput) -> Result<Self, RecorderError> {"
+    },
+    {
+      "line": 393,
+      "text": "let join_handle = thread::Builder::new()"
+    },
+    {
+      "line": 395,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 415,
+      "text": "self.join_handle.thread().unpark();"
+    },
+    {
+      "line": 563,
+      "text": "thread::park_timeout(Duration::from_millis(WORKER_IDLE_WAIT_MS));"
+    }
+  ],
+  "visibility": "mixed"
+}

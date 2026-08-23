@@ -31,27 +31,27 @@ The encoder produces a packet and the matching decoder returns the expected fram
 
 Executable evidence selected for **Encode and decode Opus** is limited to each test's recorded setup and assertions:
 
-- `given_sine_frame_when_codec_roundtrip_runs_then_sample_count_is_preserved` — given sine frame when codec roundtrip runs then sample count is preserved (`tests/codec_opus_roundtrip.rs:4`; `test-f2c6d3780d291652810b`).
-- `given_encoded_opus_packet_when_decoded_then_contains_960_samples` — given encoded opus packet when decoded then contains 960 samples (`src/codec/decoder.rs:184`; `test-e9a038c59aa6148e49f9`).
-- `given_20ms_decoder_when_60ms_concealment_is_requested_then_typed_bound_error_is_returned` — given 20ms decoder when 60ms concealment is requested then typed bound error is returned (`src/codec/decoder.rs:246`; `test-f2b28e6d34edfbf95af0`).
-- `given_mono_decoder_when_concealing_10ms_then_480_samples_are_appended` — given mono decoder when concealing 10ms then 480 samples are appended (`src/codec/decoder.rs:203`; `test-7f059c025029ab48d42b`).
-- `given_stereo_decoder_when_concealing_20ms_then_1920_samples_are_appended` — given stereo decoder when concealing 20ms then 1920 samples are appended (`src/codec/decoder.rs:216`; `test-a33c833b56c360107d03`).
-- `given_20ms_opus_frame_when_sampled_at_48khz_then_contains_960_samples` — given 20ms opus frame when sampled at 48khz then contains 960 samples (`src/codec/encoder.rs:329`; `test-c4d783dc09c5ae8fcc9c`).
-- `given_30s_sine_pcm_when_opus_round_trip_then_golden_file_invariants_pass` — given 30s sine pcm when opus round trip then golden file invariants pass (`src/codec/encoder.rs:672`; `test-d58d461257beb4e70632`).
-- `given_960_sample_frame_when_encoded_then_packet_is_not_empty` — given 960 sample frame when encoded then packet is not empty (`src/codec/encoder.rs:334`; `test-6bdc61a7c604b08c13a4`).
-- `given_configured_20ms_encoder_when_10ms_frame_arrives_then_exact_duration_is_enforced` — given configured 20ms encoder when 10ms frame arrives then exact duration is enforced (`src/codec/encoder.rs:553`; `test-bf950e1644072a871d53`).
-- `given_optimised_encode_when_same_input_then_packet_bytes_identical` — given optimised encode when same input then packet bytes identical (`src/codec/encoder.rs:487`; `test-b46acca2f325d3bbcfb1`).
-- `given_oversized_frame_when_encoded_then_error_is_typed_and_output_is_cleared` — given oversized frame when encoded then error is typed and output is cleared (`src/codec/encoder.rs:349`; `test-91992c707d12d6b613a9`).
-- `given_partial_stereo_frame_when_encoded_then_error_is_typed` — given partial stereo frame when encoded then error is typed (`src/codec/encoder.rs:368`; `test-807b1db710dc9ad5f27a`).
+- `given_sine_frame_when_codec_roundtrip_runs_then_sample_count_is_preserved` — given sine frame when codec roundtrip runs then sample count is preserved (`tests/codec_opus_roundtrip.rs:4`; `test-8b8900f4ef016b6914cc`).
+- `given_encoded_opus_packet_when_decoded_then_contains_960_samples` — given encoded opus packet when decoded then contains 960 samples (`src/codec/decoder.rs:184`; `test-18e769bfba9f736148f1`).
+- `given_20ms_decoder_when_60ms_concealment_is_requested_then_typed_bound_error_is_returned` — given 20ms decoder when 60ms concealment is requested then typed bound error is returned (`src/codec/decoder.rs:246`; `test-f9eb27f8c697619303a9`).
+- `given_mono_decoder_when_concealing_10ms_then_480_samples_are_appended` — given mono decoder when concealing 10ms then 480 samples are appended (`src/codec/decoder.rs:203`; `test-f3d9f0899054eb532922`).
+- `given_stereo_decoder_when_concealing_20ms_then_1920_samples_are_appended` — given stereo decoder when concealing 20ms then 1920 samples are appended (`src/codec/decoder.rs:216`; `test-fa484e4be3d65e78f9fc`).
+- `given_20ms_opus_frame_when_sampled_at_48khz_then_contains_960_samples` — given 20ms opus frame when sampled at 48khz then contains 960 samples (`src/codec/encoder.rs:329`; `test-c6b1615ef4535f8bea99`).
+- `given_30s_sine_pcm_when_opus_round_trip_then_golden_file_invariants_pass` — given 30s sine pcm when opus round trip then golden file invariants pass (`src/codec/encoder.rs:672`; `test-77bb4d2c9b220a4d7130`).
+- `given_960_sample_frame_when_encoded_then_packet_is_not_empty` — given 960 sample frame when encoded then packet is not empty (`src/codec/encoder.rs:334`; `test-751e9c684179c8d414af`).
+- `given_configured_20ms_encoder_when_10ms_frame_arrives_then_exact_duration_is_enforced` — given configured 20ms encoder when 10ms frame arrives then exact duration is enforced (`src/codec/encoder.rs:553`; `test-5183ec8e78897fa604e5`).
+- `given_optimised_encode_when_same_input_then_packet_bytes_identical` — given optimised encode when same input then packet bytes identical (`src/codec/encoder.rs:487`; `test-afeb7f4f7006561b144e`).
+- `given_oversized_frame_when_encoded_then_error_is_typed_and_output_is_cleared` — given oversized frame when encoded then error is typed and output is cleared (`src/codec/encoder.rs:349`; `test-655f8034c539e1dc9c27`).
+- `given_partial_stereo_frame_when_encoded_then_error_is_typed` — given partial stereo frame when encoded then error is typed (`src/codec/encoder.rs:368`; `test-9e747f83ae1e676c3e7e`).
 
 ## Failure signals
 
-- `pocketstation::codec::decoder::OpusDecodeError` — `error-9b6a20dfec56d0f963ec`
-- `pocketstation::codec::decoder::OpusDecodeError` / `FrameDurationExceedsConfiguredMaximum` — `error-4055838a830f20f7900a`
-- `pocketstation::codec::decoder::OpusDecodeError` / `Opus` — `error-7b6f20bfd81327986061`
-- `pocketstation::codec::encoder::OpusEncodeError` — `error-ae09263b8f4f85f0d5e8`
-- `pocketstation::codec::encoder::OpusEncodeError` / `InvalidFrameSampleCount` — `error-edbece7c0fc9e4199d02`
-- `pocketstation::codec::encoder::OpusEncodeError` / `Opus` — `error-3beedf48b3ab09500606`
+- `pocketstation::codec::decoder::OpusDecodeError` — `error-3d9be3e3f583928d23f4`
+- `pocketstation::codec::decoder::OpusDecodeError` / `FrameDurationExceedsConfiguredMaximum` — `error-84f459285f24936c9e00`
+- `pocketstation::codec::decoder::OpusDecodeError` / `Opus` — `error-e714868780d8cd7a5a64`
+- `pocketstation::codec::encoder::OpusEncodeError` — `error-eda36a61ae1109dce21c`
+- `pocketstation::codec::encoder::OpusEncodeError` / `InvalidFrameSampleCount` — `error-bef40f89fba6bbf83b1c`
+- `pocketstation::codec::encoder::OpusEncodeError` / `Opus` — `error-0100bb86433fb5001cce`
 
 ## API reference
 
@@ -82,7 +82,7 @@ Executable evidence selected for **Encode and decode Opus** is limited to each t
 
 ## Evidence boundary
 
-The claims on **Encode and decode Opus** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Encode and decode Opus** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `tests/codec_opus_roundtrip.rs:1-33` (`DIRECT`)
 

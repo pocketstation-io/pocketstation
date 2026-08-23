@@ -48,50 +48,50 @@ The scope of **Asynchronous signal lane** ends at the native contracts and execu
 - `typed_error` — `src/runtime/audio/runner.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/runtime/nodes.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `benches/runtime_plan.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/graph/signal/continuity.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `clock_correlation` — `src/runtime/signal/edge.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `clock_correlation` — `src/runtime/signal/operator.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/graph/signal/timing.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/graph/signal/envelope.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/graph/named_ports.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/graph/signal/preparation.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/runtime/audio/executor.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `examples/operator-consumer/src/lib.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/runtime/lifecycle/async_host.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/graph/runtime_node.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/runtime/audio/runner.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/graph/node.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/graph/signal/operator.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `clock_correlation` — `src/runtime/audio/router.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/graph/builtins.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/runtime/nodes.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/graph/signal/spec.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `sidecar_isolation` — `src/runtime/lifecycle/sidecar_protocol.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `sidecar_isolation` — `src/runtime/lifecycle/sidecar_host.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `clock_correlation` — `src/graph/signal/lineage.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/runtime/bridge/audio.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/runtime/signal/io.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/graph/ports.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/runtime/signal/operator.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `clock_correlation` — `src/runtime/bridge/audio.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/runtime/lifecycle/sidecar_protocol.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `clock_correlation` — `src/graph/signal/envelope.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `buffer_pool` — `src/runtime/signal/operator.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `buffer_pool` — `src/runtime/audio/router.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `bounded_queue` — `src/runtime/signal/edge.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `typed_error` — `src/graph/source.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `typed_error` — `src/runtime/audio/executor.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `typed_error` — `src/graph/compile/plan.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `clock_correlation` — `tests/runtime_plan_router_alloc.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `typed_error` — `src/graph/registry.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `buffer_pool` — `tests/runtime_plan_router_alloc.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 
 ## Behavioral evidence
 
 Executable evidence selected for **Asynchronous signal lane** is limited to each test's recorded setup and assertions:
 
-- `given_full_owned_signal_edge_when_audio_sent_then_frame_returns_without_allocation` — given full owned signal edge when audio sent then frame returns without allocation (`src/runtime/signal/edge.rs:460`; `test-bf7094bd0d63b90cc8fe`).
-- `given_one_branch_when_signal_published_then_receiver_has_exclusive_ownership` — given one branch when signal published then receiver has exclusive ownership (`src/runtime/signal/edge.rs:626`; `test-9674b8f8edebf8590582`).
-- `given_registered_signal_consumer_when_item_enqueued_then_parked_thread_is_woken` — given registered signal consumer when item enqueued then parked thread is woken (`src/runtime/signal/edge.rs:469`; `test-2c211fee5a326cacf730`).
-- `given_every_nonaudio_signal_class_when_worker_prepares_then_exact_signal_context_is_received` — given every nonaudio signal class when worker prepares then exact signal context is received (`src/runtime/signal/operator.rs:1752`; `test-8298f7b73ae7319aa84e`).
-- `given_capacity_above_global_bound_when_fanout_built_then_setup_fails` — given capacity above global bound when fanout built then setup fails (`src/runtime/signal/edge.rs:575`; `test-f0893eafe636572bd65e`).
-- `given_independent_shared_branches_when_one_saturates_then_other_continues` — given independent shared branches when one saturates then other continues (`src/runtime/signal/edge.rs:493`; `test-2141f78e081b32717401`).
-- `given_missing_or_zero_payload_limit_when_fanout_built_then_setup_fails` — given missing or zero payload limit when fanout built then setup fails (`src/runtime/signal/edge.rs:591`; `test-6c3a749ca1eaac051f1f`).
-- `given_payload_above_branch_limit_when_published_then_all_branches_reject_before_fanout` — given payload above branch limit when published then all branches reject before fanout (`src/runtime/signal/edge.rs:536`; `test-5f2124d7ed0e92c73799`).
-- `given_payload_limit_above_global_bound_when_fanout_built_then_setup_fails` — given payload limit above global bound when fanout built then setup fails (`src/runtime/signal/edge.rs:609`; `test-dd6a20d29e9e95a48939`).
-- `given_audio_output_without_audio_port_when_processed_then_worker_rejects_it` — given audio output without audio port when processed then worker rejects it (`src/runtime/signal/operator.rs:2466`; `test-f0e8c28b4853dfd07393`).
-- `given_cancellation_when_operator_has_pending_state_then_no_final_is_fabricated` — given cancellation when operator has pending state then no final is fabricated (`src/runtime/signal/operator.rs:2308`; `test-8f495e7bcc9df9f06f5a`).
-- `given_compiled_lineaged_edge_when_worker_runs_then_exact_session_stem_is_preserved` — given compiled lineaged edge when worker runs then exact session stem is preserved (`src/runtime/signal/operator.rs:2208`; `test-6615dcd3b3105010af0b`).
+- `given_full_owned_signal_edge_when_audio_sent_then_frame_returns_without_allocation` — given full owned signal edge when audio sent then frame returns without allocation (`src/runtime/signal/edge.rs:460`; `test-3e7e1369cb8a03a6d22a`).
+- `given_one_branch_when_signal_published_then_receiver_has_exclusive_ownership` — given one branch when signal published then receiver has exclusive ownership (`src/runtime/signal/edge.rs:626`; `test-ff5044918a12088e3cc1`).
+- `given_registered_signal_consumer_when_item_enqueued_then_parked_thread_is_woken` — given registered signal consumer when item enqueued then parked thread is woken (`src/runtime/signal/edge.rs:469`; `test-2904c9464f0c7db65ee2`).
+- `given_every_nonaudio_signal_class_when_worker_prepares_then_exact_signal_context_is_received` — given every nonaudio signal class when worker prepares then exact signal context is received (`src/runtime/signal/operator.rs:1752`; `test-0769819bf6f85fc4186c`).
+- `given_capacity_above_global_bound_when_fanout_built_then_setup_fails` — given capacity above global bound when fanout built then setup fails (`src/runtime/signal/edge.rs:575`; `test-c8da19b53530dc618e8e`).
+- `given_independent_shared_branches_when_one_saturates_then_other_continues` — given independent shared branches when one saturates then other continues (`src/runtime/signal/edge.rs:493`; `test-1b404c215b1ead1443e9`).
+- `given_missing_or_zero_payload_limit_when_fanout_built_then_setup_fails` — given missing or zero payload limit when fanout built then setup fails (`src/runtime/signal/edge.rs:591`; `test-d9d74fd1b5a23d91b838`).
+- `given_payload_above_branch_limit_when_published_then_all_branches_reject_before_fanout` — given payload above branch limit when published then all branches reject before fanout (`src/runtime/signal/edge.rs:536`; `test-26e5374e5c20a32afac4`).
+- `given_payload_limit_above_global_bound_when_fanout_built_then_setup_fails` — given payload limit above global bound when fanout built then setup fails (`src/runtime/signal/edge.rs:609`; `test-6401065553d368b9596c`).
+- `given_audio_output_without_audio_port_when_processed_then_worker_rejects_it` — given audio output without audio port when processed then worker rejects it (`src/runtime/signal/operator.rs:2466`; `test-e0f5021f2a3131ebe15b`).
+- `given_cancellation_when_operator_has_pending_state_then_no_final_is_fabricated` — given cancellation when operator has pending state then no final is fabricated (`src/runtime/signal/operator.rs:2308`; `test-245c72f8c086e47e1ada`).
+- `given_compiled_lineaged_edge_when_worker_runs_then_exact_session_stem_is_preserved` — given compiled lineaged edge when worker runs then exact session stem is preserved (`src/runtime/signal/operator.rs:2208`; `test-9e1c8ad04d302a8bf88b`).
 
 ## Stability boundary
 
@@ -110,7 +110,7 @@ Executable evidence selected for **Asynchronous signal lane** is limited to each
 
 ## Evidence boundary
 
-The claims on **Asynchronous signal lane** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Asynchronous signal lane** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `src/runtime/signal/edge.rs:1-651` (`DIRECT`)
 - `src/runtime/signal/operator.rs:1-2573` (`DIRECT`)

@@ -1,0 +1,268 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_setup.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
+  "calls": [
+    "append",
+    "derive",
+    "failures_total",
+    "len",
+    "pub"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_setup.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
+  "constructs": [],
+  "content_hash": "68aff73d8c1620e8f7c94412fd3f006548b3591a6051c3a5bb4e5f2f815f10e1",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "StartupRollback",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 11,
+      "name": "failures_total",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "append",
+      "visibility": "pub(super)"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "StartupRollback",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 11,
+      "name": "failures_total",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "append",
+      "visibility": "pub(super)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "68aff73d8c1620e8f7c94412fd3f006548b3591a6051c3a5bb4e5f2f815f10e1",
+      "lines": [
+        1,
+        19
+      ],
+      "path": "src/session/lifecycle/rollback.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_setup.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0234-178d0051",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "44888c6b0e56b868fb7b5a8dbcc267b9ffc5ac64",
+  "implemented_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_setup.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
+  "implements": [
+    "StartupRollback"
+  ],
+  "imported_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_setup.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
+  "imports": [
+    "crate::session::SessionRollbackFailure"
+  ],
+  "inputs": [
+    "crate::session::SessionRollbackFailure"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 19,
+  "locks": [],
+  "module": "pocketstation::session::lifecycle::rollback",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "fn:append",
+    "fn:failures_total",
+    "struct:StartupRollback"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/lifecycle/rollback.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "StartupRollback",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 11,
+      "name": "failures_total",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "append",
+      "visibility": "pub(super)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::lifecycle::rollback responsibilities, including rollback; default; startup rollback."
+  },
+  "queues": [],
+  "recovery_behavior": [
+    {
+      "line": 1,
+      "text": "//! Reverse-order startup rollback accounting."
+    }
+  ],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/session/lifecycle/events.rs"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "StartupRollback (struct)",
+    "failures_total (fn)",
+    "append (fn)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

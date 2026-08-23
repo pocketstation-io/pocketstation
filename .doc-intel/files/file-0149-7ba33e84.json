@@ -1,0 +1,646 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "calls": [
+    "SignalSpec::any",
+    "SignalSpec::audio",
+    "SignalSpec::binary",
+    "SignalSpec::control",
+    "SignalSpec::encoded_audio",
+    "SignalSpec::event",
+    "SignalSpec::metrics",
+    "SignalSpec::text",
+    "all",
+    "as_bytes",
+    "bytes",
+    "cfg",
+    "count",
+    "given_first_party_configuration_keys_when_audited_then_each_is_bounded_snake_case",
+    "given_first_party_contract_ids_when_audited_then_each_is_portable_and_versioned",
+    "given_first_party_structural_ids_when_audited_then_each_uses_snake_segments",
+    "given_internal_runtime_node_ids_when_audited_then_they_use_endpoint_vocabulary",
+    "given_shipped_signal_wire_ids_when_audited_then_protocol_namespace_stays_versioned",
+    "given_wrong_category_syntax_when_validated_then_it_is_rejected",
+    "is_ascii",
+    "is_ascii_alphanumeric",
+    "is_ascii_digit",
+    "is_ascii_lowercase",
+    "is_bounded_ascii",
+    "is_empty",
+    "is_first_party_configuration_key",
+    "is_first_party_structural_node_id",
+    "is_kebab_segment",
+    "is_node_segment",
+    "is_node_type_id",
+    "is_portable_contract_id",
+    "is_protocol_id",
+    "is_revision_segment",
+    "is_segment",
+    "is_snake_segment",
+    "len",
+    "pub",
+    "rsplit_once",
+    "split",
+    "starts_with",
+    "strip_prefix",
+    "wire_id"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 8,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 23,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 32,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 45,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 58,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 114,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 226,
+      "text": "#[cfg(feature = \"internal-testing\")]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "constructs": [],
+  "content_hash": "dd6873b1fc08844e81bf6b33711f703fc74bc4aa09f97dd293176ad13a4e2490",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 6,
+      "name": "MAX_IDENTIFIER_BYTES",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 9,
+      "name": "MAX_CONFIGURATION_KEY_BYTES",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 10,
+      "name": "is_portable_contract_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "is_first_party_structural_node_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 27,
+      "name": "is_node_type_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "is_protocol_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "is_first_party_configuration_key",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "is_bounded_ascii",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "is_kebab_segment",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "is_snake_segment",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "is_node_segment",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "is_segment",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 104,
+      "name": "is_revision_segment",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 115,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "given_first_party_contract_ids_when_audited_then_each_is_portable_and_versioned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 149,
+      "name": "given_first_party_structural_ids_when_audited_then_each_uses_snake_segments",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 171,
+      "name": "given_first_party_configuration_keys_when_audited_then_each_is_bounded_snake_case",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 183,
+      "name": "given_shipped_signal_wire_ids_when_audited_then_protocol_namespace_stays_versioned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 213,
+      "name": "given_wrong_category_syntax_when_validated_then_it_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 228,
+      "name": "given_internal_runtime_node_ids_when_audited_then_they_use_endpoint_vocabulary",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 117,
+      "text": "use crate::endpoint::POLLED_AUDIO_OPERATOR_ID;"
+    },
+    {
+      "line": 235,
+      "text": "assert!(crate::runtime::nodes::BRIDGE_ENDPOINT_NODE_TYPE_ID.starts_with(\"endpoint.\"));"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 6,
+      "name": "MAX_IDENTIFIER_BYTES",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 9,
+      "name": "MAX_CONFIGURATION_KEY_BYTES",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 10,
+      "name": "is_portable_contract_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "is_first_party_structural_node_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 27,
+      "name": "is_node_type_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "is_protocol_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "is_first_party_configuration_key",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "dd6873b1fc08844e81bf6b33711f703fc74bc4aa09f97dd293176ad13a4e2490",
+      "lines": [
+        1,
+        238
+      ],
+      "path": "src/graph/identifier.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0149-7ba33e84",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "761ef280317192913607b4fe69bc894a8ae08c73",
+  "implemented_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "implements": [],
+  "imported_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "imports": [
+    "crate::endpoint::POLLED_AUDIO_OPERATOR_ID",
+    "crate::graph::builtins::{ GAIN_CONFIGURATION_KEY, GAIN_NODE_TYPE_ID, MONO_MIX_NODE_TYPE_ID, PASSTHROUGH_NODE_TYPE_ID, }",
+    "crate::recording::{MULTISTEM_GROUP_CONFIGURATION_KEY, MULTISTEM_NAME_CONFIGURATION_KEY}",
+    "crate::session::declaration::{ BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, BROWSER_RECEIVER_URI_CONFIGURATION_KEY, CONNECTOR_NODE_TYPE_ID, }",
+    "crate::session::extensions::builtins::{ APPLICATION_SOURCE_NODE_TYPE_ID, EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID, GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID, GENERATED_AUDIO_INGRESS_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, }",
+    "crate::session::extensions::{ PCM_SOURCE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }",
+    "crate::{BinaryFormat, Codec, EventFormat, SignalSpec, TextFormat}",
+    "super::*"
+  ],
+  "inputs": [
+    "#[cfg(feature = \"internal-testing\")]",
+    "#[cfg(test)]",
+    "crate::endpoint::POLLED_AUDIO_OPERATOR_ID",
+    "crate::graph::builtins::{ GAIN_CONFIGURATION_KEY, GAIN_NODE_TYPE_ID, MONO_MIX_NODE_TYPE_ID, PASSTHROUGH_NODE_TYPE_ID, }",
+    "crate::recording::{MULTISTEM_GROUP_CONFIGURATION_KEY, MULTISTEM_NAME_CONFIGURATION_KEY}",
+    "crate::session::declaration::{ BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, BROWSER_RECEIVER_URI_CONFIGURATION_KEY, CONNECTOR_NODE_TYPE_ID, }",
+    "crate::session::extensions::builtins::{ APPLICATION_SOURCE_NODE_TYPE_ID, EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID, GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID, GENERATED_AUDIO_INGRESS_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, }",
+    "crate::session::extensions::{ PCM_SOURCE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }",
+    "crate::{BinaryFormat, Codec, EventFormat, SignalSpec, TextFormat}",
+    "super::*"
+  ],
+  "invariants": [
+    {
+      "line": 144,
+      "text": "assert!(is_portable_contract_id(identifier), \"{identifier}\");"
+    },
+    {
+      "line": 163,
+      "text": "assert!("
+    },
+    {
+      "line": 178,
+      "text": "assert!(is_first_party_configuration_key(key), \"{key}\");"
+    },
+    {
+      "line": 208,
+      "text": "assert!(is_protocol_id(identifier), \"{identifier}\");"
+    },
+    {
+      "line": 214,
+      "text": "assert!(!is_portable_contract_id(\"source.pcm\"));"
+    },
+    {
+      "line": 215,
+      "text": "assert!(!is_portable_contract_id(\"io.pocketstation.source.pcm.v0\"));"
+    },
+    {
+      "line": 216,
+      "text": "assert!(!is_first_party_structural_node_id(\"source.generated-audio\"));"
+    },
+    {
+      "line": 217,
+      "text": "assert!(!is_first_party_structural_node_id(\"Source.generated_audio\"));"
+    },
+    {
+      "line": 218,
+      "text": "assert!(is_node_type_id(\"io.example.source.generated-audio.v1\"));"
+    },
+    {
+      "line": 219,
+      "text": "assert!(is_node_type_id(\"source.generated_audio\"));"
+    },
+    {
+      "line": 220,
+      "text": "assert!(!is_node_type_id(\"source.generated audio\"));"
+    },
+    {
+      "line": 221,
+      "text": "assert!(!is_first_party_configuration_key(\"writer-token\"));"
+    },
+    {
+      "line": 222,
+      "text": "assert!(!is_first_party_configuration_key(\"__reservation\"));"
+    },
+    {
+      "line": 223,
+      "text": "assert!(!is_protocol_id(\"pks.signal.control\"));"
+    },
+    {
+      "line": 229,
+      "text": "assert!(is_first_party_structural_node_id("
+    },
+    {
+      "line": 232,
+      "text": "assert!(is_first_party_structural_node_id("
+    },
+    {
+      "line": 235,
+      "text": "assert!(crate::runtime::nodes::BRIDGE_ENDPOINT_NODE_TYPE_ID.starts_with(\"endpoint.\"));"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 238,
+  "locks": [],
+  "module": "pocketstation::graph::identifier",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "const:MAX_CONFIGURATION_KEY_BYTES",
+    "const:MAX_IDENTIFIER_BYTES",
+    "fn:is_first_party_configuration_key",
+    "fn:is_first_party_structural_node_id",
+    "fn:is_node_type_id",
+    "fn:is_portable_contract_id",
+    "fn:is_protocol_id"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/identifier.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "is_bounded_ascii",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "is_kebab_segment",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "is_snake_segment",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "is_node_segment",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "is_segment",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 104,
+      "name": "is_revision_segment",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 115,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "given_first_party_contract_ids_when_audited_then_each_is_portable_and_versioned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 149,
+      "name": "given_first_party_structural_ids_when_audited_then_each_uses_snake_segments",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 171,
+      "name": "given_first_party_configuration_keys_when_audited_then_each_is_bounded_snake_case",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 183,
+      "name": "given_shipped_signal_wire_ids_when_audited_then_protocol_namespace_stays_versioned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 213,
+      "name": "given_wrong_category_syntax_when_validated_then_it_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 228,
+      "name": "given_internal_runtime_node_ids_when_audited_then_they_use_endpoint_vocabulary",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 6,
+      "name": "MAX_IDENTIFIER_BYTES",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 9,
+      "name": "MAX_CONFIGURATION_KEY_BYTES",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 10,
+      "name": "is_portable_contract_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "is_first_party_structural_node_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 27,
+      "name": "is_node_type_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "is_protocol_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "is_first_party_configuration_key",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::identifier responsibilities, including identifier; max identifier bytes; is portable contract id."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [],
+  "responsibilities": [
+    "MAX_IDENTIFIER_BYTES (const)",
+    "MAX_CONFIGURATION_KEY_BYTES (const)",
+    "is_portable_contract_id (fn)",
+    "is_first_party_structural_node_id (fn)",
+    "is_node_type_id (fn)",
+    "is_protocol_id (fn)",
+    "is_first_party_configuration_key (fn)",
+    "is_bounded_ascii (fn)",
+    "is_kebab_segment (fn)",
+    "is_snake_segment (fn)",
+    "is_node_segment (fn)",
+    "is_segment (fn)",
+    "is_revision_segment (fn)",
+    "tests (mod)",
+    "given_first_party_contract_ids_when_audited_then_each_is_portable_and_versioned (fn)",
+    "given_first_party_structural_ids_when_audited_then_each_uses_snake_segments (fn)",
+    "given_first_party_configuration_keys_when_audited_then_each_is_bounded_snake_case (fn)",
+    "given_shipped_signal_wire_ids_when_audited_then_protocol_namespace_stays_versioned (fn)",
+    "given_wrong_category_syntax_when_validated_then_it_is_rejected (fn)",
+    "given_internal_runtime_node_ids_when_audited_then_they_use_endpoint_vocabulary (fn)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-52e05f0be207bd381caa",
+    "test-57c27f254a4f0d1bae3f",
+    "test-b38e3392783a645fee8b",
+    "test-b498f929dd0caaa847e8",
+    "test-ee66c9727ba4c92a8b59",
+    "test-f6ac34a231a1f45a4302"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

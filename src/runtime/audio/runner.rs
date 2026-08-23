@@ -13,8 +13,11 @@ use rtrb::{Consumer, Producer, RingBuffer};
 use crate::runtime::audio::{ExecError, PlanExecutionSummary, RealtimePlanExecutor};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Selects the plan runner drain policy used by PocketStation."]
 pub enum PlanRunnerDrainPolicy {
+    #[doc = "Selects drain queued behavior for `PlanRunnerDrainPolicy`."]
     DrainQueued,
+    #[doc = "Selects discard queued behavior for `PlanRunnerDrainPolicy`."]
     DiscardQueued,
 }
 
@@ -101,43 +104,56 @@ pub struct PlanRunnerCancellation {
 }
 
 impl PlanRunnerCancellation {
+    #[doc = "Creates a new `PlanRunnerCancellation`."]
     pub fn new() -> Self {
         Self {
             requested: Arc::new(AtomicBool::new(false)),
         }
     }
 
+    #[doc = "Requests the state transition represented by `PlanRunnerCancellation`."]
     pub fn request(&self) -> bool {
         !self.requested.swap(true, Ordering::AcqRel)
     }
 
+    #[doc = "Returns whether requested applies to `PlanRunnerCancellation`."]
     pub fn is_requested(&self) -> bool {
         self.requested.load(Ordering::Acquire)
     }
 }
 
 impl Default for PlanRunnerCancellation {
+    #[doc = "Returns the default `PlanRunnerCancellation` value."]
     fn default() -> Self {
         Self::new()
     }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Classifies failures reported as plan source send error."]
 pub enum PlanSourceSendError {
+    #[doc = "Indicates that the operation was cancelled."]
     Cancelled,
+    #[doc = "Reports that bounded capacity is full."]
     Full,
 }
 
 #[derive(Debug)]
 #[must_use]
+#[doc = "Classifies the observable plan source send outcome."]
 pub enum PlanSourceSendOutcome {
+    #[doc = "Identifies the enqueued state or stage represented by `PlanSourceSendOutcome`."]
     Enqueued,
+    #[doc = "Identifies the rejected state or stage represented by `PlanSourceSendOutcome`."]
     Rejected {
+        #[doc = "Stores the error used by `Rejected`."]
         error: PlanSourceSendError,
+        #[doc = "Stores the frame used by `Rejected`."]
         frame: LineagedAudioFrame,
     },
 }
 
+#[doc = "Sends plan source values across its declared ownership boundary."]
 pub struct PlanSourceSender {
     producer: Producer<LineagedAudioFrame>,
     cancellation: PlanRunnerCancellation,
@@ -145,17 +161,20 @@ pub struct PlanSourceSender {
 }
 
 #[derive(Clone)]
+#[doc = "Owns bounded access to plan source observation."]
 pub struct PlanSourceObservationHandle {
     telemetry: Arc<PlanSourceInputTelemetry>,
 }
 
 impl PlanSourceObservationHandle {
+    #[doc = "Returns the observations exposed by `PlanSourceObservationHandle`."]
     pub fn observations(&self) -> PlanSourceInputObservations {
         self.telemetry.snapshot()
     }
 }
 
 impl PlanSourceSender {
+    #[doc = "Attempts to send a value through `PlanSourceSender` without waiting for capacity."]
     pub fn try_send(&mut self, frame: LineagedAudioFrame) -> PlanSourceSendOutcome {
         if self.cancellation.is_requested() {
             self.telemetry
@@ -184,10 +203,12 @@ impl PlanSourceSender {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the observations exposed by `PlanSourceSender`."]
     pub fn observations(&self) -> PlanSourceInputObservations {
         self.telemetry.snapshot()
     }
 
+    #[doc = "Returns a handle for reading observations from `PlanSourceSender`."]
     pub fn observation_handle(&self) -> PlanSourceObservationHandle {
         PlanSourceObservationHandle {
             telemetry: Arc::clone(&self.telemetry),
@@ -195,6 +216,7 @@ impl PlanSourceSender {
     }
 }
 
+#[doc = "Carries typed input for plan source."]
 pub struct PlanSourceInput {
     source_node_id: NodeId,
     consumer: Consumer<LineagedAudioFrame>,
@@ -203,10 +225,12 @@ pub struct PlanSourceInput {
 
 impl PlanSourceInput {
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the source node identifier held by `PlanSourceInput`."]
     pub fn source_node_id(&self) -> NodeId {
         self.source_node_id
     }
 
+    #[doc = "Returns the observations exposed by `PlanSourceInput`."]
     pub fn observations(&self) -> PlanSourceInputObservations {
         self.telemetry.snapshot()
     }
@@ -220,6 +244,7 @@ impl PlanSourceInput {
     }
 
     #[cfg(feature = "internal-testing")]
+    #[doc = "Attempts to recv for testing through `PlanSourceInput`."]
     pub fn try_recv_for_testing(&mut self) -> Option<LineagedAudioFrame> {
         self.try_recv()
     }
@@ -236,6 +261,7 @@ impl PlanSourceInput {
     }
 }
 
+#[doc = "Plans source channel for `runner`."]
 pub fn plan_source_channel(
     source_node_id: NodeId,
     queue_capacity_frames: usize,
@@ -289,8 +315,11 @@ pub enum PlanRunnerError {
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[doc = "Reports the counters and terminal facts collected for plan runner step."]
 pub struct PlanRunnerStepSummary {
+    #[doc = "Counts the total number of source frames processed observed by `PlanRunnerStepSummary`."]
     pub source_frames_processed_total: u64,
+    #[doc = "Stores the execution used by `PlanRunnerStepSummary`."]
     pub execution: PlanExecutionSummary,
 }
 
@@ -317,13 +346,19 @@ impl PlanRunnerStepSummary {
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[doc = "Reports the counters and terminal facts collected for plan runner finish."]
 pub struct PlanRunnerFinishSummary {
+    #[doc = "Counts the total number of source frames processed observed by `PlanRunnerFinishSummary`."]
     pub source_frames_processed_total: u64,
+    #[doc = "Counts the total number of source frames discarded observed by `PlanRunnerFinishSummary`."]
     pub source_frames_discarded_total: u64,
+    #[doc = "Stores the drain budget exhausted used by `PlanRunnerFinishSummary`."]
     pub drain_budget_exhausted: bool,
+    #[doc = "Stores the execution used by `PlanRunnerFinishSummary`."]
     pub execution: PlanExecutionSummary,
 }
 
+#[doc = "Executes realtime plan according to its compiled plan and cancellation contract."]
 pub struct RealtimePlanRunner {
     executor: RealtimePlanExecutor,
     sources: Vec<PlanSourceInput>,
@@ -333,6 +368,7 @@ pub struct RealtimePlanRunner {
 }
 
 impl RealtimePlanRunner {
+    #[doc = "Creates a new `RealtimePlanRunner`."]
     pub fn new(
         executor: RealtimePlanExecutor,
         sources: Vec<PlanSourceInput>,
@@ -357,6 +393,7 @@ impl RealtimePlanRunner {
         })
     }
 
+    #[doc = "Processes the ready inputs for `RealtimePlanRunner`."]
     pub fn process_ready(
         &mut self,
         work_budget_frames: usize,
@@ -368,6 +405,7 @@ impl RealtimePlanRunner {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the source observations held by `RealtimePlanRunner`."]
     pub fn source_observations(
         &self,
         source_node_id: NodeId,
@@ -378,6 +416,7 @@ impl RealtimePlanRunner {
             .map(PlanSourceInput::observations)
     }
 
+    #[doc = "Finishes work owned by `RealtimePlanRunner`."]
     pub fn finish(
         &mut self,
         drain_policy: PlanRunnerDrainPolicy,

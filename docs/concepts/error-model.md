@@ -60,18 +60,18 @@ The scope of **Error and status model** ends at the native contracts and executa
 
 Executable evidence selected for **Error and status model** is limited to each test's recorded setup and assertions:
 
-- `given_facade_errors_when_mapped_then_codes_use_canonical_session_vocabulary` — given facade errors when mapped then codes use canonical session vocabulary (`src/error_code.rs:37`; `test-f698d35649fa52eabf28`).
-- `given_declaration_errors_when_mapped_then_every_variant_has_a_stable_code` — given declaration errors when mapped then every variant has a stable code (`src/session/error_code.rs:382`; `test-329bc302c00850a37487`).
-- `given_polled_audio_failures_when_mapped_then_every_status_is_preserved` — given polled audio failures when mapped then every status is preserved (`src/session/error_code.rs:524`; `test-36b002bb02a82e639fa5`).
-- `given_reexported_codes_when_serialized_then_canonical_values_are_unchanged` — given reexported codes when serialized then canonical values are unchanged (`src/error_code.rs:66`; `test-0168dcd4d2cda0ea4fab`).
-- `given_stable_code_vocabulary_when_serialized_then_values_are_unique_and_namespaced` — given stable code vocabulary when serialized then values are unique and namespaced (`src/session/error_code.rs:319`; `test-9dbe226d688b419c44dd`).
-- `given_start_and_capture_failures_when_mapped_then_specific_classes_are_preserved` — given start and capture failures when mapped then specific classes are preserved (`src/session/error_code.rs:470`; `test-e5e2a976b704c1bcb17d`).
-- `given_invalid_frame_size_when_encode_then_error_is_typed_without_writing` — given invalid frame size when encode then error is typed without writing (`src/abi/codec.rs:307`; `test-1e4368d9ab7990c79bd7`).
-- `given_zero_capacity_when_stream_is_created_then_error_is_returned` — given zero capacity when stream is created then error is returned (`src/capture/frame_stream.rs:226`; `test-ca400782cee3b7be9d5b`).
-- `given_process_mode_when_node_not_found_then_backend_init_error_not_system_mix` — given process mode when node not found then backend init error not system mix (`src/capture/platform/linux/pipewire.rs:2131`; `test-d95b10aa2227cf4f9ffb`).
-- `given_missing_asp_when_required_then_sdk_returns_actionable_typed_error` — given missing asp when required then sdk returns actionable typed error (`src/capture/platform/macos/loopback.rs:322`; `test-c5e3e40b26c76972b601`).
-- `given_core_audio_permission_status_when_mapped_then_denial_remains_typed` — given core audio permission status when mapped then denial remains typed (`src/capture/platform/macos/macos_tap.rs:699`; `test-afb8b00e7e6a55f6d16d`).
-- `given_other_core_audio_status_when_mapped_then_raw_status_is_preserved` — given other core audio status when mapped then raw status is preserved (`src/capture/platform/macos/macos_tap.rs:737`; `test-02f8243c416d85f0ef0c`).
+- `given_facade_errors_when_mapped_then_codes_use_canonical_session_vocabulary` — given facade errors when mapped then codes use canonical session vocabulary (`src/error_code.rs:37`; `test-60e72d7e1495c7f8096c`).
+- `given_declaration_errors_when_mapped_then_every_variant_has_a_stable_code` — given declaration errors when mapped then every variant has a stable code (`src/session/error_code.rs:382`; `test-c468c6af7a26a5f668f1`).
+- `given_polled_audio_failures_when_mapped_then_every_status_is_preserved` — given polled audio failures when mapped then every status is preserved (`src/session/error_code.rs:524`; `test-d8f211a56e8b18b3cbd6`).
+- `given_reexported_codes_when_serialized_then_canonical_values_are_unchanged` — given reexported codes when serialized then canonical values are unchanged (`src/error_code.rs:66`; `test-8e92cda933bff5e8964e`).
+- `given_stable_code_vocabulary_when_serialized_then_values_are_unique_and_namespaced` — given stable code vocabulary when serialized then values are unique and namespaced (`src/session/error_code.rs:319`; `test-57984b4127a5db486155`).
+- `given_start_and_capture_failures_when_mapped_then_specific_classes_are_preserved` — given start and capture failures when mapped then specific classes are preserved (`src/session/error_code.rs:470`; `test-0a618ca8e650912f01ce`).
+- `given_invalid_frame_size_when_encode_then_error_is_typed_without_writing` — given invalid frame size when encode then error is typed without writing (`src/abi/codec.rs:307`; `test-002ce44230f2b0ac6d7c`).
+- `given_zero_capacity_when_stream_is_created_then_error_is_returned` — given zero capacity when stream is created then error is returned (`src/capture/frame_stream.rs:226`; `test-43b3af5a7d4a81817a36`).
+- `given_process_mode_when_node_not_found_then_backend_init_error_not_system_mix` — given process mode when node not found then backend init error not system mix (`src/capture/platform/linux/pipewire.rs:2131`; `test-b704602af68d2c7a0b53`).
+- `given_missing_asp_when_required_then_sdk_returns_actionable_typed_error` — given missing asp when required then sdk returns actionable typed error (`src/capture/platform/macos/loopback.rs:322`; `test-3fb706dedfab0ea00a78`).
+- `given_core_audio_permission_status_when_mapped_then_denial_remains_typed` — given core audio permission status when mapped then denial remains typed (`src/capture/platform/macos/macos_tap.rs:699`; `test-052dbf5299c7bb5e6456`).
+- `given_other_core_audio_status_when_mapped_then_raw_status_is_preserved` — given other core audio status when mapped then raw status is preserved (`src/capture/platform/macos/macos_tap.rs:737`; `test-08a6379bc20593cb04fd`).
 
 ## Related documentation
 
@@ -86,7 +86,7 @@ Executable evidence selected for **Error and status model** is limited to each t
 
 ## Evidence boundary
 
-The claims on **Error and status model** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Error and status model** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `src/error_code.rs:1-81` (`DIRECT`)
 - `src/session/error_code.rs:1-544` (`DIRECT`)

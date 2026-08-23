@@ -252,7 +252,7 @@
   ],
   "example_coverage_status": "linked",
   "examples_using": [
-    "example-1b4a3fb7b1a5a748e4c1"
+    "example-6d2567a68ad98d330f8b"
   ],
   "extended_by": [],
   "extends": [],
@@ -525,7 +525,7 @@
   "serialization": [],
   "shutdown_behavior": [],
   "side_effects": [],
-  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
   "startup_behavior": [
     {
       "line": 59,
@@ -540,7 +540,7 @@
   "tasks": [],
   "test_coverage_status": "linked",
   "tests_covering": [
-    "test-ace9b7d11da2036ce899"
+    "test-f98e0a98874ff7dfbdf8"
   ],
   "threads": [],
   "visibility": "private_or_not_applicable"

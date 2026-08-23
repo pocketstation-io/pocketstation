@@ -7,6 +7,7 @@ import argparse
 import json
 import re
 import subprocess
+import tomllib
 from collections import defaultdict
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -18,6 +19,9 @@ ROOT = Path(__file__).resolve().parents[1]
 DB = ROOT / ".doc-intel"
 BT = chr(96)
 FENCE = BT * 3
+PACKAGE_METADATA = tomllib.loads((ROOT / "Cargo.toml").read_text())["package"]
+PACKAGE_VERSION = PACKAGE_METADATA["version"]
+RUST_VERSION = PACKAGE_METADATA["rust-version"].removesuffix(".0")
 
 
 def read_json(path: Path) -> Any:
@@ -300,15 +304,15 @@ def join_sections(*sections: str) -> str:
 def overview_body(page: dict[str, Any]) -> str:
     if page["path"] == "README.md":
         example = (ROOT / "examples/product_quickstart.rs").read_text().rstrip()
-        install = f"{FENCE}toml\n[dependencies]\npocketstation = \"1.1.1\"\n{FENCE}"
-        contracts = f"{FENCE}toml\npocketstation = {{ version = \"1.1.1\", default-features = false }}\n{FENCE}"
+        install = f"{FENCE}toml\n[dependencies]\npocketstation = \"{PACKAGE_VERSION}\"\n{FENCE}"
+        contracts = f"{FENCE}toml\npocketstation = {{ version = \"{PACKAGE_VERSION}\", default-features = false }}\n{FENCE}"
         # The crate root includes README.md as rustdoc. Keep the hardware-
         # dependent quickstart compiled as a doctest without executing capture.
         sample = f"{FENCE}rust,no_run\n{example}\n{FENCE}"
         commands = f"{FENCE}bash\ncargo test --examples --all-features\ncargo run --example product_quickstart\n{FENCE}"
         return join_sections(
             "PocketStation is a Rust library for declaring and running source-aware desktop audio Sessions. A Session can keep application and microphone sources separate, route them through bounded paths, expose polled audio, and finalize multistem recording. Extensions, connectors, the C ABI, and sidecars participate through the same declaration and lifecycle model.",
-            "## Install\n\nPocketStation 1.1.1 requires Rust 1.95 or newer. Native capture is the default Cargo feature.\n\n" + install + "\n\nUse the contracts-only form when you need public declarations without a native capture backend:\n\n" + contracts,
+            f"## Install\n\nPocketStation {PACKAGE_VERSION} requires Rust {RUST_VERSION} or newer. Native capture is the default Cargo feature.\n\n" + install + "\n\nUse the contracts-only form when you need public declarations without a native capture backend:\n\n" + contracts,
             "## Run the first Session\n\nThe repository keeps its quickstart as a compiled Cargo example. It declares application and microphone capture, gives each source an independent polled-audio route and recording stem, observes two stems, and inspects both Session and recording outcomes.\n\n" + sample + "\n\nCompile before running, then run only on a host where the named application, microphone, permissions, and native dependencies are available:\n\n" + commands,
             "## Verify the outcome\n\nSuccess means the example observes at least two frames from each of two distinct stems, receives a successful Session stop outcome, and receives a recording outcome with two completed stems and no failed stems. Source, permission, route, stop, or recording failures are returned instead of being counted as success.",
             scope_section(page),
@@ -352,7 +356,7 @@ def getting_started_body(page: dict[str, Any]) -> str:
     if "install" in title:
         body = f"""## Prerequisites
 
-- Rust 1.95 or newer, as declared by package metadata.
+- Rust {RUST_VERSION} or newer, as declared by package metadata.
 - Cargo for dependency and feature resolution.
 - Native platform development dependencies when the default native-capture feature is enabled.
 
@@ -360,13 +364,13 @@ def getting_started_body(page: dict[str, Any]) -> str:
 
 {FENCE}toml
 [dependencies]
-pocketstation = "1.1.1"
+pocketstation = "{PACKAGE_VERSION}"
 {FENCE}
 
 For a contracts-only build:
 
 {FENCE}toml
-pocketstation = {{ version = "1.1.1", default-features = false }}
+pocketstation = {{ version = "{PACKAGE_VERSION}", default-features = false }}
 {FENCE}
 
 Run {code("cargo check")} to verify dependency resolution. Feature selection is compile-time configuration."""
@@ -382,13 +386,13 @@ Choose a host with an application named {code("PocketStation Demo")}, an availab
 
 ## Supported environment
 
-The crate requires Rust 1.95 or newer. The program requires a target whose native-capture backend implements the selected sources; repository compilation is not physical-device qualification.
+The crate requires Rust {RUST_VERSION} or newer. The program requires a target whose native-capture backend implements the selected sources; repository compilation is not physical-device qualification.
 
 ## Install
 
 {FENCE}toml
 [dependencies]
-pocketstation = "1.1.1"
+pocketstation = "{PACKAGE_VERSION}"
 {FENCE}
 
 ## Program
@@ -499,22 +503,22 @@ PROCEDURES = {
     "GUIDE-003": ["Declare application and microphone sources in one Session.", "Give each source an independent endpoint or route.", "Retain stem and source identity from frame lineage.", "Start once and consume both bounded routes.", "Stop once and inspect Session plus recording outcomes."],
     "GUIDE-004": ["Discover candidates through the source provider.", "Build a process or application query with the required scope.", "Resolve the query and retain stable source identity.", "Observe generation changes instead of assuming process identity is permanent.", "Handle empty or ambiguous resolution as a typed result."],
     "GUIDE-005": ["Call microphone_permission_observation before opening a source when preflight information helps the UI.", "Interpret NotObservable as neither allowed nor denied.", "Request permission only through the host application's platform UI.", "Prepare or start the selected source.", "Use the open result as the authoritative decision."],
-    "GUIDE-006": ["Declare a separate polled_audio endpoint for each independent route.", "Send the source or stream to that endpoint.", "Call try_poll_audio from non-realtime application code.", "Iterate only indices below the returned batch length.", "Release the lease promptly and inspect polling observations."],
+    "GUIDE-006": ["Declare a separate polled_audio endpoint for each independent route.", "Send the source or stream to that endpoint.", "Call try_poll_audio for an immediate check or wait_poll with a finite timeout from non-realtime application code.", "Iterate only indices below the returned batch length and retain the route, endpoint, and poll observation timestamps needed for diagnosis.", "Release the lease promptly and inspect polling observations."],
     "GUIDE-007": ["Declare the source once.", "Create each consumer endpoint independently.", "Connect the same source output to each endpoint.", "Set explicit edge policy where the default is unsuitable.", "Observe each route separately so saturation remains attributable."],
     "GUIDE-008": ["Identify producer and consumer partitions.", "Choose finite capacity.", "Select backpressure, loss, copy, delivery, and observation policies.", "Compile and handle rejected contracts.", "Measure queue depth, saturation, and drops before changing capacity."],
     "GUIDE-009": ["Set the recording root on SessionBuilder.", "Call record with a label for each stem.", "Start and run the Session.", "Stop to trigger endpoint finalization.", "Inspect overall and per-stem recording outcomes."],
-    "GUIDE-010": ["Retain RunningSession until stop returns.", "Preserve SessionStopOutcome.", "Read recording_outcome after stop.", "Check overall state plus completed and failed stem counts.", "Use error codes and per-stem results to diagnose partial finalization."],
+    "GUIDE-010": ["Retain RunningSession until stop returns.", "Preserve SessionStopOutcome.", "Read recording_outcome after stop and locate the schema-versioned recording manifest using the exported file-name constant.", "Check overall state plus completed and failed stem counts.", "Use error codes and per-stem results to diagnose partial finalization."],
     "GUIDE-011": ["Define named ports in AsyncOperatorManifest.", "Implement factory preparation.", "Return an async node that observes cancellation and declared policies.", "Register before Session compilation.", "Connect named ports and run the separate consumer example."],
-    "GUIDE-012": ["Retain typed output and input declaration handles.", "Connect handles with compatible signal specifications.", "Use exact port names from the manifest.", "Compile and handle unknown, duplicate, or incompatible port errors.", "Confirm the compiled binding targets the intended instance."],
+    "GUIDE-012": ["Retain typed output and input declaration handles.", "Connect handles with compatible signal specifications.", "Use exact port names from the manifest and preserve each source-aware binding when several stems feed one operator.", "Compile and inspect SessionCompileDiagnostic for the stage, stable code, and affected component identities.", "Confirm every compiled binding targets the intended instance."],
     "GUIDE-013": ["Declare generated-audio output.", "Prepare the bounded audio-reentry bridge.", "Produce PCM matching the target sample specification.", "Write from the asynchronous lane.", "Observe accepted, saturated, closed, or cancelled outcomes."],
     "GUIDE-014": ["Implement EndpointDriverFactory preparation.", "Return a prepared driver with its start gate.", "Consume matching audio or signal inputs.", "Honor cancellation and shutdown mode.", "Return finalization observations and staged failures."],
     "GUIDE-015": ["Build ConnectorManifest with node and configuration schemas.", "Validate values and keep secrets in ConnectorSecret.", "Implement finite delivery outcomes.", "Register, declare, and connect the endpoint.", "Run conformance before provider qualification."],
     "GUIDE-016": ["Declare every connector configuration field.", "Use Secret value kind for secret material.", "Construct ConnectorSecret instead of ordinary text values.", "Read validated values during preparation.", "Keep diagnostics on redacted representations."],
-    "GUIDE-017": ["Obtain the versioned connector vector file required by portable semantics.", "Place it at the sibling path expected by the test workflow.", "Run connector contract and grouping tests.", "Run portable semantics with the external vector present.", "Keep local conformance and provider qualification as separate evidence."],
+    "GUIDE-017": ["Create ../protocol/conformance/connector/v1 from the repository root.", "Copy scripts/fixtures/connector-v1-vectors.json to ../protocol/conformance/connector/v1/vectors.json.", "Run connector contract and grouping tests.", "Run portable semantics with the materialized canonical vector.", "Keep portable conformance and provider qualification as separate evidence."],
     "GUIDE-018": ["Build a dynamic library exporting pks_extension_library_v1.", "Use a canonical absolute path to a trusted regular file.", "Return a compatible descriptor and callbacks.", "Load through Session and retain the receipt.", "Handle registration rollback and executable-code lifetime."],
     "GUIDE-019": ["Include pocketstation.h and use its ABI version.", "Create handles through exported functions.", "Check every PksSessionStatus.", "Stop before releasing runtime ownership.", "Release each handle with its matching ABI function."],
     "GUIDE-020": ["Declare SidecarProcessSpec with bounded limits and deadlines.", "Start the child through SidecarHost.", "Exchange only declared message kinds.", "Apply cancellation, drain, or abort through lifecycle state.", "Inspect host snapshot and terminal error before restart."],
-    "GUIDE-021": ["Acquire observation handles before the period you need to inspect.", "Snapshot metrics by stable component IDs.", "Record a trace for durable lifecycle evidence.", "Stop and include the terminal outcome.", "Validate trace structure before diagnosis."],
+    "GUIDE-021": ["Acquire observation handles before the period you need to inspect.", "Snapshot metrics by typed SessionComponentId values and preserve the observation boundary for each counter or timestamp.", "Record versioned SessionTraceRecord values for durable lifecycle and component-failure evidence.", "Stop and include SessionTraceTerminal plus the independent recording outcome.", "Validate trace structure before diagnosis."],
     "GUIDE-022": ["Retain RunningSession as runtime owner.", "Request stop once application work ends.", "Read component failures in SessionStopOutcome.", "Read recording and trace finalization separately.", "Preserve diagnostics before releasing ownership."],
     "GUIDE-023": ["Create AudioInputConfig matching the producer.", "Acquire a bounded AudioInputBuffer.", "Write only within declared capacity and format.", "Submit through AudioInputWriter and route the source.", "Handle acquire, write, cancellation, and runtime errors separately."],
     "GUIDE-024": ["Choose an evidenced Opus profile and SampleSpec.", "Construct a stateful encoder.", "Encode only accepted frame formats.", "Construct the matching decoder and decode packets.", "Use the round-trip test as executable compatibility evidence."],
@@ -523,7 +527,7 @@ PROCEDURES = {
     "GUIDE-027": ["Use defaults for native capture applications.", "Disable defaults for contract-only consumers.", "Enable conformance-fixtures only for fixture APIs.", "Reserve internal-testing for repository checks.", "Rebuild after feature changes."],
     "GUIDE-028": ["Build a supported system-capture query.", "Resolve or prepare it through the source provider.", "Attach a bounded consumer.", "Start and observe the typed open result.", "Keep implementation and qualification claims separate."],
     "GUIDE-029": ["Retain source clock-domain identity and timestamp.", "Update TimelineMapping with observed source and Session time.", "Map into the Session domain.", "Observe drift and discontinuity without rewriting lineage.", "Apply correction only through evidenced controller bounds."],
-    "GUIDE-030": ["Compile the immutable Session declaration.", "Prepare resources and retain identity mappings.", "Handle source and endpoint preparation errors.", "Start with the intended cancellation option.", "Preserve rollback failures alongside a primary start failure."],
+    "GUIDE-030": ["Compile the immutable Session declaration and retain SessionCompileDiagnostic if validation fails.", "Prepare resources and retain identity mappings.", "Handle source and endpoint preparation errors.", "Start with the intended cancellation option.", "Preserve rollback failures alongside a primary start failure."],
 }
 
 
@@ -760,7 +764,7 @@ def release_body(page: dict[str, Any]) -> str:
     original = subprocess.check_output(["git", "show", f"{SNAPSHOT}:RELEASE_NOTES.md"], cwd=ROOT, text=True)
     original = re.sub(r"^#\s+Release notes\s*", "", original, count=1).strip()
     return join_sections(
-        "PocketStation's package version at the analyzed snapshot is 1.1.1. Release automation and package metadata remain the publication authority; this page preserves the repository's declared release record.",
+        f"PocketStation's package version at the analyzed snapshot is {PACKAGE_VERSION}. Release automation and package metadata remain the publication authority; this page preserves the repository's declared release record.",
         scope_section(page),
         "## Snapshot release record\n\n" + original,
         "## Evidence scope\n\nRelease notes are declared evidence. They do not replace executable checks, physical qualification artifacts, or the compatibility baseline.",

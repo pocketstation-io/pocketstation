@@ -1,0 +1,1237 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 163,
+      "text": "\"compile-only async factory must not create\".to_owned(),"
+    },
+    {
+      "line": 269,
+      "text": ".expect(\"async operator registration\");"
+    },
+    {
+      "line": 731,
+      "text": ".expect(\"async operator registration\");"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "IMPORTS:src/session/compile/mod.rs"
+  ],
+  "calls": [
+    "ApplicationSelector::name",
+    "ApplicationSelector::process_instance",
+    "Arc::clone",
+    "Arc::new",
+    "CompileOnlyAsyncFactory::named_composition",
+    "CompileOnlyAsyncFactory::new",
+    "CompileOnlyAsyncFactory::text_transform",
+    "EdgeContract::bounded_async",
+    "EdgeContract::realtime_audio",
+    "EndpointConfiguration::new",
+    "EndpointDescriptor::new",
+    "EndpointDriverRegistry::new",
+    "EndpointFailure::new",
+    "MediaCaps::Audio",
+    "NodeError::Prepare",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "SampleSpec::new",
+    "Self::new",
+    "SemanticRole::new",
+    "Session::new",
+    "SessionCompileError::GraphCompile",
+    "SessionCompiler::new",
+    "SignalSpec::audio",
+    "SignalSpec::text",
+    "Source::Application",
+    "Source::application",
+    "Source::microphone_default",
+    "Vec::new",
+    "actual",
+    "all",
+    "any",
+    "as_str",
+    "audio",
+    "browser",
+    "capture",
+    "code",
+    "compile",
+    "compile_diagnostic",
+    "connect",
+    "connector",
+    "count",
+    "crate::SessionStartError::from",
+    "crate::capture::StableSourceId::new",
+    "crate::graph::PrepareContext::new",
+    "crate::session::ProcessId::new",
+    "crate::session::SessionEngineStartError::Compile",
+    "crate::session::extensions::builtins::audio_endpoint_boundary_definition",
+    "crate::session::prepare_session_runtime",
+    "create",
+    "derived_registries",
+    "derived_spec",
+    "descriptor",
+    "diagnostic",
+    "direction",
+    "edge_buffer",
+    "edge_count",
+    "edge_index",
+    "endpoint",
+    "endpoint_declarations",
+    "endpoint_id",
+    "endpoint_registry",
+    "expect",
+    "expected",
+    "filter",
+    "find",
+    "flatten",
+    "freeze",
+    "get",
+    "given_compiled_derived_route_when_runtime_prepared_then_compiled_topology_is_preserved",
+    "given_derived_stream_chain_when_compiled_then_operator_output_feeds_next_named_input",
+    "given_exact_process_instance_when_lowered_then_typed_declaration_remains_authoritative",
+    "given_extension_key_matching_old_metadata_when_compiled_then_value_remains_opaque",
+    "given_graph_mismatch_when_start_fails_then_diagnostic_is_retained",
+    "given_one_named_operator_instance_when_compiled_then_all_named_connections_share_one_node",
+    "given_operator_node_mismatch_when_compiled_then_typed_error_is_returned",
+    "given_product_spec_when_compiled_then_six_independent_edges_are_planned",
+    "given_registered_operator_when_compiled_then_manifest_types_and_edge_policies_are_authority",
+    "given_required_named_input_missing_when_compiled_then_failure_precedes_graph_runtime",
+    "given_text_operator_sent_to_audio_endpoint_when_compiled_then_signal_mismatch_is_typed",
+    "given_two_derived_destinations_when_prepared_then_independent_branch_plans_are_preserved",
+    "given_unknown_operator_port_when_diagnosed_then_location_is_structured",
+    "given_unregistered_async_operator_when_compiled_then_typed_error_is_returned",
+    "given_unregistered_operator_when_compiled_then_typed_error_is_returned",
+    "id",
+    "input",
+    "instance_id",
+    "into_iter",
+    "is_empty",
+    "is_some_and",
+    "iter",
+    "len",
+    "let",
+    "manifest",
+    "map",
+    "named_composition",
+    "new",
+    "node",
+    "node_count",
+    "node_index",
+    "operator",
+    "operator_id",
+    "operator_mappings",
+    "operators",
+    "output",
+    "planned_edge_count",
+    "port_name",
+    "prepare",
+    "product_spec",
+    "record",
+    "register",
+    "register_async",
+    "register_definition",
+    "register_session_graph_nodes",
+    "registries",
+    "route_id",
+    "send",
+    "signal_routes",
+    "source",
+    "source_declarations",
+    "stems",
+    "text",
+    "text_transform",
+    "through",
+    "through_ports",
+    "to_owned",
+    "two_destination_derived_spec",
+    "validate_config",
+    "with",
+    "with_role",
+    "worker_mappings"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 11,
+      "text": "ChannelLayout, ConfigError, CopyPolicy, EdgeObservabilityLevel, ExecutionPartition, LossPolicy,"
+    },
+    {
+      "line": 157,
+      "text": "fn validate_config(&self, _configuration: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 190,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    }
+  ],
+  "constructed_by": [
+    "IMPORTS:src/session/compile/mod.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "CompileOnlyAsyncFactory::new",
+    "EndpointConfiguration::new",
+    "EndpointDescriptor::new",
+    "EndpointDriverRegistry::new",
+    "EndpointFailure::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "SampleSpec::new",
+    "Self::new",
+    "SemanticRole::new",
+    "Session::new",
+    "SessionCompiler::new",
+    "Vec::new",
+    "crate::SessionStartError::from",
+    "crate::capture::StableSourceId::new",
+    "crate::graph::PrepareContext::new",
+    "crate::session::ProcessId::new",
+    "new"
+  ],
+  "content_hash": "d81640e3ea2201d365a47bf2bfde5f6e6b0a21fb7318aaccef615afd9914d307",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "TEST_CONNECTOR_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 26,
+      "name": "TEST_ASYNC_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "TEST_ASYNC_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 28,
+      "name": "TEST_TRANSFORM_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 29,
+      "name": "TEST_TRANSFORM_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 30,
+      "name": "TEST_NAMED_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 31,
+      "name": "TEST_NAMED_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 32,
+      "name": "TEST_TEXT_ENDPOINT_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 33,
+      "name": "TEST_TEXT_ENDPOINT_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 34,
+      "name": "TEST_NONTERMINAL_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 35,
+      "name": "TEST_TERMINAL_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 36,
+      "name": "CompileOnlyEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 38,
+      "name": "CompileOnlyAsyncFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 104,
+      "name": "text_transform",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "named_composition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 153,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 156,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 160,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 167,
+      "name": "CompileOnlyTextEndpointDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 171,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 189,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 196,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "endpoint_registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 240,
+      "name": "registries",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "derived_registries",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 288,
+      "name": "derived_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 311,
+      "name": "given_one_named_operator_instance_when_compiled_then_all_named_connections_share_one_node",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 387,
+      "name": "given_required_named_input_missing_when_compiled_then_failure_precedes_graph_runtime",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 431,
+      "name": "two_destination_derived_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 459,
+      "name": "product_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 500,
+      "name": "given_product_spec_when_compiled_then_six_independent_edges_are_planned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 546,
+      "name": "given_registered_operator_when_compiled_then_manifest_types_and_edge_policies_are_authority",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 590,
+      "name": "given_derived_stream_chain_when_compiled_then_operator_output_feeds_next_named_input",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 642,
+      "name": "given_unregistered_async_operator_when_compiled_then_typed_error_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 662,
+      "name": "given_compiled_derived_route_when_runtime_prepared_then_compiled_topology_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 688,
+      "name": "given_two_derived_destinations_when_prepared_then_independent_branch_plans_are_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 712,
+      "name": "given_text_operator_sent_to_audio_endpoint_when_compiled_then_signal_mismatch_is_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 744,
+      "name": "given_unregistered_operator_when_compiled_then_typed_error_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 758,
+      "name": "given_operator_node_mismatch_when_compiled_then_typed_error_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 772,
+      "name": "given_extension_key_matching_old_metadata_when_compiled_then_value_remains_opaque",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 806,
+      "name": "given_exact_process_instance_when_lowered_then_typed_declaration_remains_authoritative",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 852,
+      "name": "given_unknown_operator_port_when_diagnosed_then_location_is_structured",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 870,
+      "name": "given_graph_mismatch_when_start_fails_then_diagnostic_is_retained",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [
+    {
+      "line": 810,
+      "text": "\"wasapi:pid:42:creation-100ns:133801234567890000\","
+    },
+    {
+      "line": 829,
+      "text": "== \"wasapi:pid:42:creation-100ns:133801234567890000\""
+    }
+  ],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 3,
+      "text": "use crate::endpoint::{"
+    },
+    {
+      "line": 32,
+      "text": "const TEST_TEXT_ENDPOINT_OPERATOR_ID: &str = \"example.endpoint.text.v1\";"
+    },
+    {
+      "line": 33,
+      "text": "const TEST_TEXT_ENDPOINT_NODE_TYPE_ID: &str = \"endpoint.text.test\";"
+    },
+    {
+      "line": 202,
+      "text": "\"compile-only endpoint factory must not prepare\","
+    },
+    {
+      "line": 236,
+      "text": ".expect(\"endpoint registration\");"
+    },
+    {
+      "line": 256,
+      "text": ".expect(\"audio endpoint definition\");"
+    },
+    {
+      "line": 278,
+      "text": ".expect(\"text endpoint node registration\");"
+    },
+    {
+      "line": 285,
+      "text": ".expect(\"text endpoint driver registration\");"
+    },
+    {
+      "line": 295,
+      "text": ".endpoint(EndpointDescriptor::new("
+    },
+    {
+      "line": 334,
+      "text": ".endpoint(EndpointDescriptor::new("
+    },
+    {
+      "line": 407,
+      "text": ".endpoint(EndpointDescriptor::new("
+    },
+    {
+      "line": 438,
+      "text": ".endpoint(EndpointDescriptor::new("
+    },
+    {
+      "line": 444,
+      "text": ".endpoint(EndpointDescriptor::new("
+    },
+    {
+      "line": 596,
+      "text": ".endpoint(EndpointDescriptor::new("
+    },
+    {
+      "line": 651,
+      "text": ".expect(\"text endpoint registration\");"
+    },
+    {
+      "line": 789,
+      "text": ".expect(\"opaque endpoint configuration\");"
+    },
+    {
+      "line": 797,
+      "text": "Some(CompiledNodeBinding::Endpoint { .. })"
+    },
+    {
+      "line": 800,
+      "text": ".expect(\"compiled endpoint node\");"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 162,
+      "text": "Err(NodeError::Prepare("
+    },
+    {
+      "line": 200,
+      "text": "Err(EndpointFailure::new("
+    },
+    {
+      "line": 427,
+      "text": "Err(SessionCompileError::MissingRequiredOperatorInput { port_name, .. })"
+    },
+    {
+      "line": 657,
+      "text": "Err(SessionCompileError::UnknownAsyncOperator { .. })"
+    },
+    {
+      "line": 737,
+      "text": "Err(SessionCompileError::GraphCompile("
+    },
+    {
+      "line": 753,
+      "text": "Err(SessionCompileError::UnknownOperator { .. })"
+    },
+    {
+      "line": 767,
+      "text": "Err(SessionCompileError::OperatorNodeTypeMismatch { .. })"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "d81640e3ea2201d365a47bf2bfde5f6e6b0a21fb7318aaccef615afd9914d307",
+      "lines": [
+        1,
+        889
+      ],
+      "path": "src/session/compile/tests.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "IMPORTS:src/session/compile/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0204-5a800f07",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "db522331d2d7c02bac4344eb0a34b514ffb06f1b",
+  "implemented_by": [
+    "IMPORTS:src/session/compile/mod.rs"
+  ],
+  "implements": [
+    "CompileOnlyAsyncFactory",
+    "AsyncOperatorFactory for CompileOnlyAsyncFactory",
+    "NodeDefinition for CompileOnlyTextEndpointDefinition",
+    "EndpointDriverFactory for CompileOnlyEndpointFactory"
+  ],
+  "imported_by": [
+    "IMPORTS:src/session/compile/mod.rs"
+  ],
+  "imports": [
+    "crate::endpoint::{ EndpointDriverFactory, EndpointDriverRegistry, EndpointFailure, EndpointFailureStage, EndpointPortInput, PreparedEndpointDriver, }",
+    "crate::frame::{SampleFormat, SampleSpec}",
+    "crate::graph::compile::CompileError",
+    "crate::graph::{ AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, BackpressurePolicy, ChannelLayout, ConfigError, CopyPolicy, EdgeObservabilityLevel, ExecutionPartition, LossPolicy, MediaCaps, Multiplicity, NodeDefinition, NodeDescriptor, NodeError, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, SafetyContract, SemanticRole, SignalSpec, TextFormat, }",
+    "crate::session::{ register_session_graph_nodes, ApplicationSelector, EndpointConfiguration, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, Source, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }",
+    "std::sync::Arc",
+    "super::*"
+  ],
+  "inputs": [
+    "ChannelLayout, ConfigError, CopyPolicy, EdgeObservabilityLevel, ExecutionPartition, LossPolicy,",
+    "crate::endpoint::{ EndpointDriverFactory, EndpointDriverRegistry, EndpointFailure, EndpointFailureStage, EndpointPortInput, PreparedEndpointDriver, }",
+    "crate::frame::{SampleFormat, SampleSpec}",
+    "crate::graph::compile::CompileError",
+    "crate::graph::{ AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, BackpressurePolicy, ChannelLayout, ConfigError, CopyPolicy, EdgeObservabilityLevel, ExecutionPartition, LossPolicy, MediaCaps, Multiplicity, NodeDefinition, NodeDescriptor, NodeError, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, SafetyContract, SemanticRole, SignalSpec, TextFormat, }",
+    "crate::session::{ register_session_graph_nodes, ApplicationSelector, EndpointConfiguration, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, Source, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }",
+    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
+    "fn validate_config(&self, _configuration: &NodeConfig) -> Result<(), ConfigError> {",
+    "std::sync::Arc",
+    "super::*"
+  ],
+  "invariants": [
+    {
+      "line": 163,
+      "text": "\"compile-only async factory must not create\".to_owned(),"
+    },
+    {
+      "line": 202,
+      "text": "\"compile-only endpoint factory must not prepare\","
+    },
+    {
+      "line": 425,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 581,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 628,
+      "text": "assert!(compiled.graph_ir.edges.iter().any(|edge| {"
+    },
+    {
+      "line": 655,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 675,
+      "text": "assert!(prepared.worker_mappings().is_empty());"
+    },
+    {
+      "line": 705,
+      "text": "assert!(routes.iter().all(|route| {"
+    },
+    {
+      "line": 735,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 751,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 765,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 824,
+      "text": "assert!(matches!("
+    }
+  ],
+  "language": "Rust",
+  "line_count": 889,
+  "locks": [],
+  "module": "pocketstation::session::compile::tests",
+  "network_io": [
+    {
+      "line": 328,
+      "text": ".connect(declared.input(\"application\").expect(\"application input\"))"
+    },
+    {
+      "line": 331,
+      "text": ".connect(declared.input(\"microphone\").expect(\"microphone input\"))"
+    },
+    {
+      "line": 404,
+      "text": ".connect(declared.input(\"application\").expect(\"application input\"))"
+    }
+  ],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-0f5d415b7192b8e10569"
+  ],
+  "outputs": [
+    "Err(EndpointFailure::new(",
+    "Err(NodeError::Prepare(",
+    "Err(SessionCompileError::GraphCompile(",
+    "Err(SessionCompileError::MissingRequiredOperatorInput { port_name, .. })",
+    "Err(SessionCompileError::OperatorNodeTypeMismatch { .. })",
+    "Err(SessionCompileError::UnknownAsyncOperator { .. })",
+    "Err(SessionCompileError::UnknownOperator { .. })"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/compile/tests.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "TEST_CONNECTOR_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 26,
+      "name": "TEST_ASYNC_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "TEST_ASYNC_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 28,
+      "name": "TEST_TRANSFORM_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 29,
+      "name": "TEST_TRANSFORM_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 30,
+      "name": "TEST_NAMED_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 31,
+      "name": "TEST_NAMED_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 32,
+      "name": "TEST_TEXT_ENDPOINT_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 33,
+      "name": "TEST_TEXT_ENDPOINT_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 34,
+      "name": "TEST_NONTERMINAL_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 35,
+      "name": "TEST_TERMINAL_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 36,
+      "name": "CompileOnlyEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 38,
+      "name": "CompileOnlyAsyncFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 104,
+      "name": "text_transform",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "named_composition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 153,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 156,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 160,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 167,
+      "name": "CompileOnlyTextEndpointDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 171,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 189,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 196,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "endpoint_registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 240,
+      "name": "registries",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "derived_registries",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 288,
+      "name": "derived_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 311,
+      "name": "given_one_named_operator_instance_when_compiled_then_all_named_connections_share_one_node",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 387,
+      "name": "given_required_named_input_missing_when_compiled_then_failure_precedes_graph_runtime",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 431,
+      "name": "two_destination_derived_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 459,
+      "name": "product_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 500,
+      "name": "given_product_spec_when_compiled_then_six_independent_edges_are_planned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 546,
+      "name": "given_registered_operator_when_compiled_then_manifest_types_and_edge_policies_are_authority",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 590,
+      "name": "given_derived_stream_chain_when_compiled_then_operator_output_feeds_next_named_input",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 642,
+      "name": "given_unregistered_async_operator_when_compiled_then_typed_error_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 662,
+      "name": "given_compiled_derived_route_when_runtime_prepared_then_compiled_topology_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 688,
+      "name": "given_two_derived_destinations_when_prepared_then_independent_branch_plans_are_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 712,
+      "name": "given_text_operator_sent_to_audio_endpoint_when_compiled_then_signal_mismatch_is_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 744,
+      "name": "given_unregistered_operator_when_compiled_then_typed_error_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 758,
+      "name": "given_operator_node_mismatch_when_compiled_then_typed_error_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 772,
+      "name": "given_extension_key_matching_old_metadata_when_compiled_then_value_remains_opaque",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 806,
+      "name": "given_exact_process_instance_when_lowered_then_typed_declaration_remains_authoritative",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 852,
+      "name": "given_unknown_operator_port_when_diagnosed_then_location_is_structured",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 870,
+      "name": "given_graph_mismatch_when_start_fails_then_diagnostic_is_retained",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::compile::tests responsibilities, including the src/session/compile/tests boundary."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [
+    {
+      "line": 1,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 161,
+      "text": "fn create(&self, _configuration: &NodeConfig) -> Result<Box<dyn AsyncNode>, NodeError> {"
+    },
+    {
+      "line": 199,
+      "text": ") -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 209,
+      "text": "let factory: Arc<dyn EndpointDriverFactory> = Arc::new(CompileOnlyEndpointFactory);"
+    },
+    {
+      "line": 215,
+      "text": "Arc::clone(&factory),"
+    },
+    {
+      "line": 221,
+      "text": "Arc::clone(&factory),"
+    },
+    {
+      "line": 226,
+      "text": "Arc::clone(&factory),"
+    },
+    {
+      "line": 268,
+      "text": ".register_async(Arc::new(CompileOnlyAsyncFactory::new()))"
+    },
+    {
+      "line": 271,
+      "text": ".register_async(Arc::new(CompileOnlyAsyncFactory::text_transform()))"
+    },
+    {
+      "line": 274,
+      "text": ".register_async(Arc::new(CompileOnlyAsyncFactory::named_composition()))"
+    },
+    {
+      "line": 277,
+      "text": ".register_definition(Arc::new(CompileOnlyTextEndpointDefinition))"
+    },
+    {
+      "line": 283,
+      "text": "Arc::new(CompileOnlyEndpointFactory),"
+    },
+    {
+      "line": 649,
+      "text": "Arc::new(CompileOnlyEndpointFactory),"
+    },
+    {
+      "line": 730,
+      "text": ".register_async(Arc::new(CompileOnlyAsyncFactory::new()))"
+    }
+  ],
+  "responsibilities": [
+    "TEST_CONNECTOR_OPERATOR_ID (const)",
+    "TEST_ASYNC_OPERATOR_ID (const)",
+    "TEST_ASYNC_NODE_TYPE_ID (const)",
+    "TEST_TRANSFORM_OPERATOR_ID (const)",
+    "TEST_TRANSFORM_NODE_TYPE_ID (const)",
+    "TEST_NAMED_OPERATOR_ID (const)",
+    "TEST_NAMED_NODE_TYPE_ID (const)",
+    "TEST_TEXT_ENDPOINT_OPERATOR_ID (const)",
+    "TEST_TEXT_ENDPOINT_NODE_TYPE_ID (const)",
+    "TEST_NONTERMINAL_ROLE (const)",
+    "TEST_TERMINAL_ROLE (const)",
+    "CompileOnlyEndpointFactory (struct)",
+    "CompileOnlyAsyncFactory (struct)",
+    "new (fn)",
+    "text_transform (fn)",
+    "named_composition (fn)",
+    "manifest (fn)",
+    "validate_config (fn)",
+    "create (fn)",
+    "CompileOnlyTextEndpointDefinition (struct)",
+    "descriptor (fn)",
+    "validate_config (fn)",
+    "prepare (fn)",
+    "endpoint_registry (fn)",
+    "registries (fn)",
+    "derived_registries (fn)",
+    "derived_spec (fn)",
+    "given_one_named_operator_instance_when_compiled_then_all_named_connections_share_one_node (fn)",
+    "given_required_named_input_missing_when_compiled_then_failure_precedes_graph_runtime (fn)",
+    "two_destination_derived_spec (fn)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 328,
+      "text": ".connect(declared.input(\"application\").expect(\"application input\"))"
+    },
+    {
+      "line": 331,
+      "text": ".connect(declared.input(\"microphone\").expect(\"microphone input\"))"
+    },
+    {
+      "line": 404,
+      "text": ".connect(declared.input(\"application\").expect(\"application input\"))"
+    },
+    {
+      "line": 810,
+      "text": "\"wasapi:pid:42:creation-100ns:133801234567890000\","
+    },
+    {
+      "line": 829,
+      "text": "== \"wasapi:pid:42:creation-100ns:133801234567890000\""
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 196,
+      "text": "fn prepare("
+    },
+    {
+      "line": 202,
+      "text": "\"compile-only endpoint factory must not prepare\","
+    }
+  ],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 163,
+      "text": "\"compile-only async factory must not create\".to_owned(),"
+    },
+    {
+      "line": 269,
+      "text": ".expect(\"async operator registration\");"
+    },
+    {
+      "line": 731,
+      "text": ".expect(\"async operator registration\");"
+    }
+  ],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-034115ea73d4bf1838e4",
+    "test-04616ce7442a986e3b43",
+    "test-081f9254eabd3bfeaad1",
+    "test-1d573ffc27e7c57617ac",
+    "test-21f8c08b6457bb762def",
+    "test-489a538a2d11b3039561",
+    "test-51e35ec5357e337b93e0",
+    "test-604c0e001a7dcb5f87ae",
+    "test-76c3eb4c4fd13e959a1c",
+    "test-7776c09ced8664c65d49",
+    "test-8a30a347c6b7a008fb97",
+    "test-b08c2cf433f7a97a1e94",
+    "test-b731381bbb6154df587d",
+    "test-b95401b59114d60ff207",
+    "test-e868470f819453421dd7"
+  ],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

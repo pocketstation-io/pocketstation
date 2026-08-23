@@ -8,6 +8,7 @@ use std::fmt;
 use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
 use std::sync::Arc;
 
+#[doc = "Defines the public pool max slots value."]
 pub const POOL_MAX_SLOTS: usize = 64;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]

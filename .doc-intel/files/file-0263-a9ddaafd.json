@@ -1,0 +1,1489 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "Box::new",
+    "Connector::new",
+    "Connector::with_driver",
+    "ConnectorAudioRecord::decode",
+    "ConnectorAudioRecord::from_item",
+    "ConnectorConfiguration::new",
+    "ConnectorConfigurationConstraint::OneOf",
+    "ConnectorConfigurationField::new",
+    "ConnectorConfigurationRequirement::Default",
+    "ConnectorConfigurationSchema::new",
+    "ConnectorConfigurationValue::Secret",
+    "ConnectorConfigurationValue::Text",
+    "ConnectorError::new",
+    "ConnectorErrorCode::new",
+    "ConnectorManifest::new",
+    "ConnectorReadinessPolicy::new",
+    "ConnectorRunOutcome::failure",
+    "ConnectorRunOutcome::success",
+    "ConnectorSecret::new",
+    "DriverControl::default",
+    "Duration::from_millis",
+    "Duration::from_secs",
+    "EdgeContract::realtime_audio",
+    "EndpointPreparationGroup::Route",
+    "EndpointPreparationGroup::Shared",
+    "FaultControl::default",
+    "Instant::now",
+    "MediaCaps::Audio",
+    "NodeDescriptor::new",
+    "NodeTypeId::from",
+    "OperatorId::new",
+    "PortSpec::new",
+    "SignalSpec::audio",
+    "Vec::new",
+    "accepts_delivery",
+    "all",
+    "and_then",
+    "any",
+    "as_ref",
+    "as_str",
+    "cancel",
+    "cancel_preparation",
+    "capture",
+    "cfg",
+    "clone",
+    "code",
+    "collect",
+    "configuration",
+    "configuration_schema",
+    "connector_error",
+    "connector_id",
+    "contains",
+    "context",
+    "declare",
+    "deliver",
+    "delivery_readiness",
+    "derive",
+    "edge_contract",
+    "encode",
+    "endpoint_id",
+    "expect",
+    "expect_err",
+    "failure",
+    "fault_configuration",
+    "fetch_add",
+    "filter_map",
+    "first",
+    "get",
+    "given_connector_driver_when_two_stems_run_then_core_owns_typed_delivery_and_drain",
+    "given_connector_error_when_inspected_then_code_is_stable_and_machine_readable",
+    "given_connector_never_ready_when_startup_deadline_expires_then_failure_is_terminal",
+    "given_connector_public_surface_when_inspected_then_managed_aliases_are_absent",
+    "given_duplicate_connector_identity_when_registered_then_registration_is_rejected",
+    "given_grouped_connector_when_session_is_cancelled_then_abort_intent_reaches_worker",
+    "given_grouped_connector_when_session_stops_then_one_worker_is_joined_and_observed",
+    "given_orthogonal_provider_status_when_reconnecting_then_endpoint_metrics_remain_canonical",
+    "given_prior_preparation_when_connector_prepare_fails_then_prior_work_rolls_back",
+    "given_registered_connector_when_declared_then_identity_is_session_scoped",
+    "given_saturated_connector_route_when_observed_then_drops_are_visible_in_session_metrics",
+    "given_typed_schema_when_configuration_resolves_then_defaults_apply_and_secrets_redact",
+    "given_worker_failure_or_panic_when_session_stops_then_endpoint_finalization_is_terminal",
+    "health",
+    "id",
+    "input",
+    "into_endpoint_failure",
+    "into_iter",
+    "into_parts",
+    "is_err",
+    "is_some",
+    "is_some_and",
+    "is_stop_requested",
+    "is_success",
+    "iter",
+    "jitter_budget_ms",
+    "kind",
+    "len",
+    "let",
+    "lineage",
+    "load",
+    "managed",
+    "manifest",
+    "manifest_with_readiness",
+    "map",
+    "metadata",
+    "metrics_snapshot",
+    "next",
+    "node_configuration",
+    "observation",
+    "observations",
+    "operator_id",
+    "pocketstation::ApplicationSelector::name",
+    "pocketstation::EndpointConfiguration::new",
+    "pocketstation::EndpointGroupId::new",
+    "pocketstation::EndpointReceiver::Signal",
+    "pocketstation::OperatorConfiguration::new",
+    "pocketstation::Session::new",
+    "pocketstation::SessionEventKind::Endpoint",
+    "pocketstation::SessionEventReceive::Event",
+    "pocketstation::Source::application",
+    "pocketstation::Source::microphone_default",
+    "pocketstation::conformance::session",
+    "pocketstation::conformance::session_for_saturation",
+    "port_name",
+    "preparation_group",
+    "prepare",
+    "record_frame_delivered",
+    "record_frame_received",
+    "recovery",
+    "register_connector",
+    "register_fault_connector",
+    "register_fault_connector_with_manifest",
+    "repeat",
+    "report_readiness_success",
+    "resolve",
+    "retryability",
+    "route",
+    "route_count",
+    "route_id",
+    "routed_fault_session",
+    "run",
+    "samples",
+    "send",
+    "session_id",
+    "set_degraded",
+    "set_reconnecting",
+    "shutdown",
+    "shutdown_mode",
+    "snapshot",
+    "stage",
+    "start",
+    "std::thread::sleep",
+    "stop",
+    "store",
+    "stream_id",
+    "to_owned",
+    "try_recv",
+    "try_recv_event",
+    "unwrap_or",
+    "wait_for_stop",
+    "with",
+    "with_constraint",
+    "with_jitter_budget_ms",
+    "with_sensitive"
+  ],
+  "cancellation_behavior": [
+    {
+      "line": 716,
+      "text": "assert!(running.cancel().is_success());"
+    }
+  ],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 1,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 5,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 17,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 285,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 295,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 300,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 344,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 351,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 421,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 429,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 442,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 474,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 485,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 490,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 529,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 534,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 582,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 640,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 679,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 711,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 721,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 753,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 805,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 838,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "Box::new",
+    "Connector::new",
+    "ConnectorConfiguration::new",
+    "ConnectorConfigurationField::new",
+    "ConnectorConfigurationSchema::new",
+    "ConnectorError::new",
+    "ConnectorErrorCode::new",
+    "ConnectorManifest::new",
+    "ConnectorReadinessPolicy::new",
+    "ConnectorSecret::new",
+    "NodeDescriptor::new",
+    "NodeTypeId::from",
+    "OperatorId::new",
+    "PortSpec::new",
+    "Vec::new",
+    "pocketstation::EndpointConfiguration::new",
+    "pocketstation::EndpointGroupId::new",
+    "pocketstation::OperatorConfiguration::new",
+    "pocketstation::Session::new"
+  ],
+  "content_hash": "09d3cabb0b918e144877f8a6e42539428dfa29e970f696b6b71d267ad1fcf145",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "given_connector_public_surface_when_inspected_then_managed_aliases_are_absent",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "configuration_schema",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 87,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 94,
+      "name": "manifest_with_readiness",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "configuration",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "fault_configuration",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "connector_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 154,
+      "name": "RejectingFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 171,
+      "name": "given_typed_schema_when_configuration_resolves_then_defaults_apply_and_secrets_redact",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "given_registered_connector_when_declared_then_identity_is_session_scoped",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 232,
+      "name": "given_duplicate_connector_identity_when_registered_then_registration_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 246,
+      "name": "given_connector_error_when_inspected_then_code_is_stable_and_machine_readable",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 287,
+      "name": "FaultControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 296,
+      "name": "FaultFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 302,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 316,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 345,
+      "name": "FaultWorker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 353,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 412,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 422,
+      "name": "register_fault_connector",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 430,
+      "name": "register_fault_connector_with_manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 443,
+      "name": "routed_fault_session",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 476,
+      "name": "DriverControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 486,
+      "name": "DriverFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 492,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 509,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 530,
+      "name": "TestDriver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 536,
+      "name": "deliver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 565,
+      "name": "shutdown",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 584,
+      "name": "given_connector_driver_when_two_stems_run_then_core_owns_typed_delivery_and_drain",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 642,
+      "name": "given_prior_preparation_when_connector_prepare_fails_then_prior_work_rolls_back",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 681,
+      "name": "given_grouped_connector_when_session_stops_then_one_worker_is_joined_and_observed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 713,
+      "name": "given_grouped_connector_when_session_is_cancelled_then_abort_intent_reaches_worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 723,
+      "name": "given_orthogonal_provider_status_when_reconnecting_then_endpoint_metrics_remain_canonical",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 755,
+      "name": "given_connector_never_ready_when_startup_deadline_expires_then_failure_is_terminal",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 807,
+      "name": "given_worker_failure_or_panic_when_session_stops_then_endpoint_finalization_is_terminal",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 840,
+      "name": "given_saturated_connector_route_when_observed_then_drops_are_visible_in_session_metrics",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 197,
+      "text": "let endpoint ="
+    },
+    {
+      "line": 201,
+      "text": "assert!(!format!(\"{endpoint:?}\").contains(\"test-secret-value\"));"
+    },
+    {
+      "line": 219,
+      "text": "let endpoint = registered"
+    },
+    {
+      "line": 222,
+      "text": "assert_eq!(endpoint.session_id(), session.id());"
+    },
+    {
+      "line": 223,
+      "text": "assert!(endpoint.connector_id().is_some());"
+    },
+    {
+      "line": 454,
+      "text": "let endpoint = registered"
+    },
+    {
+      "line": 460,
+      "text": ".expect(\"fault endpoint\");"
+    },
+    {
+      "line": 469,
+      "text": "application.send(endpoint).expect(\"application route\");"
+    },
+    {
+      "line": 470,
+      "text": "microphone.send(endpoint).expect(\"microphone route\");"
+    },
+    {
+      "line": 471,
+      "text": "(session, registered, endpoint, control)"
+    },
+    {
+      "line": 599,
+      "text": "let endpoint = registered"
+    },
+    {
+      "line": 601,
+      "text": ".expect(\"connector endpoint\");"
+    },
+    {
+      "line": 610,
+      "text": "application.send(endpoint).expect(\"application route\");"
+    },
+    {
+      "line": 611,
+      "text": "microphone.send(endpoint).expect(\"microphone route\");"
+    },
+    {
+      "line": 633,
+      "text": "assert!(observation.endpoint.frames_received_total >= 2);"
+    },
+    {
+      "line": 635,
+      "text": "observation.endpoint.frames_received_total,"
+    },
+    {
+      "line": 636,
+      "text": "observation.endpoint.frames_delivered_total"
+    },
+    {
+      "line": 652,
+      "text": ".expect(\"normal endpoint\");"
+    },
+    {
+      "line": 659,
+      "text": ".expect(\"failing endpoint\");"
+    },
+    {
+      "line": 682,
+      "text": "let (session, registered, endpoint, control) = routed_fault_session(\"normal\");"
+    },
+    {
+      "line": 689,
+      "text": ".is_some_and(|snapshot| snapshot.endpoint.frames_delivered_total > 0)"
+    },
+    {
+      "line": 697,
+      "text": ".observation(endpoint)"
+    },
+    {
+      "line": 724,
+      "text": "let (session, registered, endpoint, _control) = routed_fault_session(\"degraded\");"
+    },
+    {
+      "line": 729,
+      "text": ".observation(endpoint)"
+    },
+    {
+      "line": 766,
+      "text": "let endpoint = registered"
+    },
+    {
+      "line": 772,
+      "text": ".expect(\"not-ready endpoint\");"
+    },
+    {
+      "line": 781,
+      "text": "application.send(endpoint).expect(\"application route\");"
+    },
+    {
+      "line": 782,
+      "text": "microphone.send(endpoint).expect(\"microphone route\");"
+    },
+    {
+      "line": 787,
+      "text": ".observation(endpoint)"
+    },
+    {
+      "line": 809,
+      "text": "let (session, registered, endpoint, _control) = routed_fault_session(mode);"
+    },
+    {
+      "line": 816,
+      "text": "if let pocketstation::SessionEventKind::Endpoint(failure) = event.kind() {"
+    },
+    {
+      "line": 820,
+      "text": "let failure = structured_failure.expect(\"terminal endpoint failure event\");"
+    },
+    {
+      "line": 828,
+      "text": ".observation(endpoint)"
+    },
+    {
+      "line": 845,
+      "text": "let endpoint = connector"
+    },
+    {
+      "line": 851,
+      "text": ".expect(\"saturating endpoint\");"
+    },
+    {
+      "line": 860,
+      "text": "let application_route = application.send(endpoint).expect(\"route\");"
+    },
+    {
+      "line": 861,
+      "text": "microphone.send(endpoint).expect(\"microphone route\");"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 162,
+      "text": "Err(connector_error("
+    },
+    {
+      "line": 330,
+      "text": "return Err(connector_error("
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [
+    {
+      "line": 201,
+      "text": "assert!(!format!(\"{endpoint:?}\").contains(\"test-secret-value\"));"
+    },
+    {
+      "line": 202,
+      "text": "assert!(!format!(\"{node:?}\").contains(\"test-secret-value\"));"
+    }
+  ],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "09d3cabb0b918e144877f8a6e42539428dfa29e970f696b6b71d267ad1fcf145",
+      "lines": [
+        1,
+        879
+      ],
+      "path": "tests/connector_contract.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "conformance-fixtures"
+  ],
+  "feature_gate": [
+    "conformance-fixtures"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0263-a9ddaafd",
+  "file_kind": "test",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "effa8abf221cc29acc5b754df9ccecc02aa0b3a3",
+  "implemented_by": [],
+  "implements": [
+    "ConnectorFactory for RejectingFactory",
+    "ConnectorFactory for FaultFactory",
+    "ConnectorWorker for FaultWorker",
+    "ConnectorDriverFactory for DriverFactory",
+    "ConnectorDriver for TestDriver"
+  ],
+  "imported_by": [],
+  "imports": [
+    "pocketstation::connector::{ Connector, ConnectorConfiguration, ConnectorConfigurationConstraint, ConnectorConfigurationErrorCode, ConnectorConfigurationField, ConnectorConfigurationRequirement, ConnectorConfigurationSchema, ConnectorConfigurationValue, ConnectorConfigurationValueKind, ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorCode, ConnectorErrorStage, ConnectorFactory, ConnectorHealth, ConnectorManifest, ConnectorReadinessPolicy, ConnectorRecovery, ConnectorRetryability, ConnectorRunOutcome, ConnectorSecret, ConnectorWorker, MAX_CONNECTOR_ERROR_MESSAGE_BYTES, }",
+    "pocketstation::connector::{ ConnectorAudioRecord, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorInputDescriptor, ConnectorItem, }",
+    "pocketstation::{ AudioCaps, ChannelLayout, EdgeContract, EndpointPortInput, EndpointPreparationGroup, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, OperatorId, PortDirection, PortSpec, SafetyContract, SampleFormat, SignalSpec, }",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, AtomicU8, Ordering}",
+    "std::time::Duration",
+    "std::time::Instant"
+  ],
+  "inputs": [
+    "#[cfg(feature = \"conformance-fixtures\")]",
+    "pocketstation::connector::{ Connector, ConnectorConfiguration, ConnectorConfigurationConstraint, ConnectorConfigurationErrorCode, ConnectorConfigurationField, ConnectorConfigurationRequirement, ConnectorConfigurationSchema, ConnectorConfigurationValue, ConnectorConfigurationValueKind, ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorCode, ConnectorErrorStage, ConnectorFactory, ConnectorHealth, ConnectorManifest, ConnectorReadinessPolicy, ConnectorRecovery, ConnectorRetryability, ConnectorRunOutcome, ConnectorSecret, ConnectorWorker, MAX_CONNECTOR_ERROR_MESSAGE_BYTES, }",
+    "pocketstation::connector::{ ConnectorAudioRecord, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorInputDescriptor, ConnectorItem, }",
+    "pocketstation::{ AudioCaps, ChannelLayout, EdgeContract, EndpointPortInput, EndpointPreparationGroup, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, OperatorId, PortDirection, PortSpec, SafetyContract, SampleFormat, SignalSpec, }",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, AtomicU8, Ordering}",
+    "std::time::Duration",
+    "std::time::Instant"
+  ],
+  "invariants": [
+    {
+      "line": 36,
+      "text": "assert!("
+    },
+    {
+      "line": 174,
+      "text": "assert!(!debug.contains(\"test-secret-value\"));"
+    },
+    {
+      "line": 175,
+      "text": "assert!(debug.contains(\"<redacted>\"));"
+    },
+    {
+      "line": 201,
+      "text": "assert!(!format!(\"{endpoint:?}\").contains(\"test-secret-value\"));"
+    },
+    {
+      "line": 202,
+      "text": "assert!(!format!(\"{node:?}\").contains(\"test-secret-value\"));"
+    },
+    {
+      "line": 223,
+      "text": "assert!(endpoint.connector_id().is_some());"
+    },
+    {
+      "line": 226,
+      "text": "assert!(registered"
+    },
+    {
+      "line": 242,
+      "text": "assert!(duplicate.is_err());"
+    },
+    {
+      "line": 250,
+      "text": "assert!(ConnectorErrorCode::new(\"Relay Signaling Failure\").is_err());"
+    },
+    {
+      "line": 251,
+      "text": "assert!(ConnectorError::new("
+    },
+    {
+      "line": 543,
+      "text": "panic!(\"audio connector input must use the bounded audio lane\");"
+    },
+    {
+      "line": 616,
+      "text": "assert!(Instant::now() < deadline, \"connector driver must deliver\");"
+    },
+    {
+      "line": 619,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 621,
+      "text": "assert!(control.typed_secret_observed.load(Ordering::Acquire));"
+    },
+    {
+      "line": 622,
+      "text": "assert!(control.route_edge_observed.load(Ordering::Acquire));"
+    },
+    {
+      "line": 623,
+      "text": "assert!(control"
+    },
+    {
+      "line": 633,
+      "text": "assert!(observation.endpoint.frames_received_total >= 2);"
+    },
+    {
+      "line": 671,
+      "text": "assert!(session.start().is_err());"
+    },
+    {
+      "line": 693,
+      "text": "assert!(Instant::now() < deadline, \"connector must deliver\");"
+    },
+    {
+      "line": 696,
+      "text": "assert!(registered"
+    },
+    {
+      "line": 704,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 716,
+      "text": "assert!(running.cancel().is_success());"
+    },
+    {
+      "line": 743,
+      "text": "assert!(!observation.service_status.accepts_delivery());"
+    },
+    {
+      "line": 747,
+      "text": "assert!(Instant::now() < deadline, \"connector must report recovery\");"
+    },
+    {
+      "line": 750,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 785,
+      "text": "assert!(!running.stop().is_success());"
+    },
+    {
+      "line": 812,
+      "text": "assert!(!running.stop().is_success(), \"{mode} must be terminal\");"
+    },
+    {
+      "line": 834,
+      "text": "assert!(observation.last_error.is_some());"
+    },
+    {
+      "line": 874,
+      "text": "assert!(Instant::now() < deadline, \"route must visibly saturate\");"
+    },
+    {
+      "line": 877,
+      "text": "assert!(running.stop().is_success());"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 879,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not define production behavior beyond the test setup and asserted outcome."
+  ],
+  "observed_patterns": [
+    "pattern-4795dd3768d5a3e46d6b"
+  ],
+  "outputs": [
+    "Err(connector_error(",
+    "return Err(connector_error("
+  ],
+  "package": "pocketstation",
+  "path": "tests/connector_contract.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "given_connector_public_surface_when_inspected_then_managed_aliases_are_absent",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "configuration_schema",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 87,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 94,
+      "name": "manifest_with_readiness",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "configuration",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "fault_configuration",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "connector_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 154,
+      "name": "RejectingFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 171,
+      "name": "given_typed_schema_when_configuration_resolves_then_defaults_apply_and_secrets_redact",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "given_registered_connector_when_declared_then_identity_is_session_scoped",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 232,
+      "name": "given_duplicate_connector_identity_when_registered_then_registration_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 246,
+      "name": "given_connector_error_when_inspected_then_code_is_stable_and_machine_readable",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 287,
+      "name": "FaultControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 296,
+      "name": "FaultFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 302,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 316,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 345,
+      "name": "FaultWorker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 353,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 412,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 422,
+      "name": "register_fault_connector",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 430,
+      "name": "register_fault_connector_with_manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 443,
+      "name": "routed_fault_session",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 476,
+      "name": "DriverControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 486,
+      "name": "DriverFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 492,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 509,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 530,
+      "name": "TestDriver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 536,
+      "name": "deliver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 565,
+      "name": "shutdown",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 584,
+      "name": "given_connector_driver_when_two_stems_run_then_core_owns_typed_delivery_and_drain",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 642,
+      "name": "given_prior_preparation_when_connector_prepare_fails_then_prior_work_rolls_back",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 681,
+      "name": "given_grouped_connector_when_session_stops_then_one_worker_is_joined_and_observed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 713,
+      "name": "given_grouped_connector_when_session_is_cancelled_then_abort_intent_reaches_worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 723,
+      "name": "given_orthogonal_provider_status_when_reconnecting_then_endpoint_metrics_remain_canonical",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 755,
+      "name": "given_connector_never_ready_when_startup_deadline_expires_then_failure_is_terminal",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 807,
+      "name": "given_worker_failure_or_panic_when_session_stops_then_endpoint_finalization_is_terminal",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 840,
+      "name": "given_saturated_connector_route_when_observed_then_drops_are_visible_in_session_metrics",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [
+    {
+      "line": 815,
+      "text": "while let pocketstation::SessionEventReceive::Event(event) = running.try_recv_event() {"
+    }
+  ],
+  "public_surface": [],
+  "purpose": {
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given connector driver when two stems run then core owns typed delivery and drain, given orthogonal provider status when reconnecting then endpoint metrics remain canonical, given prior preparation when connector prepare fails then prior work rolls back under the conditions declared in this test file."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/connectors.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/configure-connector-secrets.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/connectors.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/connectors.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/terminal-outcomes.md",
+    "docs/best-practices/connector-retries.md",
+    "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [
+    {
+      "line": 3,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 161,
+      "text": ") -> Result<Box<dyn ConnectorWorker>, ConnectorError> {"
+    },
+    {
+      "line": 210,
+      "text": "Connector::new(manifest(), Arc::new(RejectingFactory)).expect(\"connector\"),"
+    },
+    {
+      "line": 236,
+      "text": "Connector::new(manifest(), Arc::new(RejectingFactory)).expect(\"connector\"),"
+    },
+    {
+      "line": 240,
+      "text": "Connector::new(manifest(), Arc::new(RejectingFactory)).expect(\"connector\"),"
+    },
+    {
+      "line": 297,
+      "text": "control: Arc<FaultControl>,"
+    },
+    {
+      "line": 320,
+      "text": ") -> Result<Box<dyn ConnectorWorker>, ConnectorError> {"
+    },
+    {
+      "line": 336,
+      "text": "Ok(Box::new(FaultWorker {"
+    },
+    {
+      "line": 337,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 346,
+      "text": "control: Arc<FaultControl>,"
+    },
+    {
+      "line": 354,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 413,
+      "text": "fn cancel_preparation(self: Box<Self>) -> Result<(), ConnectorError> {"
+    },
+    {
+      "line": 424,
+      "text": "control: Arc<FaultControl>,"
+    },
+    {
+      "line": 432,
+      "text": "control: Arc<FaultControl>,"
+    },
+    {
+      "line": 437,
+      "text": "Connector::new(manifest, Arc::new(FaultFactory { control })).expect(\"fault connector\"),"
+    },
+    {
+      "line": 449,
+      "text": "Arc<FaultControl>,"
+    },
+    {
+      "line": 451,
+      "text": "let control = Arc::new(FaultControl::default());"
+    },
+    {
+      "line": 453,
+      "text": "let registered = register_fault_connector(&session, Arc::clone(&control));"
+    },
+    {
+      "line": 487,
+      "text": "control: Arc<DriverControl>,"
+    },
+    {
+      "line": 513,
+      "text": ") -> Result<Box<dyn ConnectorDriver>, ConnectorError> {"
+    },
+    {
+      "line": 523,
+      "text": "Ok(Box::new(TestDriver {"
+    },
+    {
+      "line": 524,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 531,
+      "text": "control: Arc<DriverControl>,"
+    },
+    {
+      "line": 585,
+      "text": "let control = Arc::new(DriverControl::default());"
+    },
+    {
+      "line": 591,
+      "text": "Arc::new(DriverFactory {"
+    },
+    {
+      "line": 592,
+      "text": "control: Arc::clone(&control),"
+    },
+    {
+      "line": 643,
+      "text": "let control = Arc::new(FaultControl::default());"
+    },
+    {
+      "line": 645,
+      "text": "let connector = register_fault_connector(&session, Arc::clone(&control));"
+    },
+    {
+      "line": 756,
+      "text": "let control = Arc::new(FaultControl::default());"
+    },
+    {
+      "line": 841,
+      "text": "let control = Arc::new(FaultControl::default());"
+    }
+  ],
+  "responsibilities": [
+    "given_connector_public_surface_when_inspected_then_managed_aliases_are_absent (fn)",
+    "configuration_schema (fn)",
+    "manifest (fn)",
+    "manifest_with_readiness (fn)",
+    "configuration (fn)",
+    "fault_configuration (fn)",
+    "connector_error (fn)",
+    "RejectingFactory (struct)",
+    "prepare (fn)",
+    "given_typed_schema_when_configuration_resolves_then_defaults_apply_and_secrets_redact (fn)",
+    "given_registered_connector_when_declared_then_identity_is_session_scoped (fn)",
+    "given_duplicate_connector_identity_when_registered_then_registration_is_rejected (fn)",
+    "given_connector_error_when_inspected_then_code_is_stable_and_machine_readable (fn)",
+    "FaultControl (struct)",
+    "FaultFactory (struct)",
+    "preparation_group (fn)",
+    "prepare (fn)",
+    "FaultWorker (struct)",
+    "run (fn)",
+    "cancel_preparation (fn)",
+    "register_fault_connector (fn)",
+    "register_fault_connector_with_manifest (fn)",
+    "routed_fault_session (fn)",
+    "DriverControl (struct)",
+    "DriverFactory (struct)",
+    "preparation_group (fn)",
+    "prepare (fn)",
+    "TestDriver (struct)",
+    "deliver (fn)",
+    "shutdown (fn)"
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 547,
+      "text": ".encode()"
+    },
+    {
+      "line": 549,
+      "text": "let decoded = ConnectorAudioRecord::decode(&encoded).expect(\"decoded audio record\");"
+    }
+  ],
+  "shutdown_behavior": [
+    {
+      "line": 277,
+      "text": "\"shutdown failed\","
+    },
+    {
+      "line": 566,
+      "text": "fn shutdown("
+    },
+    {
+      "line": 619,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 704,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 750,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 785,
+      "text": "assert!(!running.stop().is_success());"
+    },
+    {
+      "line": 812,
+      "text": "assert!(!running.stop().is_success(), \"{mode} must be terminal\");"
+    },
+    {
+      "line": 877,
+      "text": "assert!(running.stop().is_success());"
+    }
+  ],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 158,
+      "text": "fn prepare("
+    },
+    {
+      "line": 317,
+      "text": "fn prepare("
+    },
+    {
+      "line": 510,
+      "text": "fn prepare("
+    },
+    {
+      "line": 613,
+      "text": "let mut running = session.start().expect(\"running Session\");"
+    },
+    {
+      "line": 671,
+      "text": "assert!(session.start().is_err());"
+    },
+    {
+      "line": 683,
+      "text": "let mut running = session.start().expect(\"running Session\");"
+    },
+    {
+      "line": 715,
+      "text": "let mut running = session.start().expect(\"running Session\");"
+    },
+    {
+      "line": 725,
+      "text": "let mut running = session.start().expect(\"running Session\");"
+    },
+    {
+      "line": 783,
+      "text": "let mut running = session.start().expect(\"running Session\");"
+    },
+    {
+      "line": 810,
+      "text": "let mut running = session.start().expect(\"running Session\");"
+    },
+    {
+      "line": 862,
+      "text": "let mut running = session.start().expect(\"running Session\");"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0226f46b368cc7dec827",
+    "test-0ebb1434ad7b7a743a83",
+    "test-125f099fa90218b83809",
+    "test-15d28406ed0aae973558",
+    "test-2a1b6ff7d4015d418fc1",
+    "test-30eb64a515907397f19f",
+    "test-440e0d0f038bd27e531f",
+    "test-6b9e356534c04d2e2c3a",
+    "test-7eabe669b99c6e379ec6",
+    "test-81c56797a2883f88930a",
+    "test-8ebafe380e15caf3c545",
+    "test-b500d2adf0e2ce5b5229",
+    "test-fad64112037847056015"
+  ],
+  "threads": [
+    {
+      "line": 617,
+      "text": "std::thread::sleep(Duration::from_millis(2));"
+    },
+    {
+      "line": 694,
+      "text": "std::thread::sleep(Duration::from_millis(2));"
+    },
+    {
+      "line": 748,
+      "text": "std::thread::sleep(Duration::from_millis(2));"
+    },
+    {
+      "line": 784,
+      "text": "std::thread::sleep(Duration::from_millis(80));"
+    },
+    {
+      "line": 811,
+      "text": "std::thread::sleep(Duration::from_millis(20));"
+    },
+    {
+      "line": 875,
+      "text": "std::thread::sleep(Duration::from_millis(5));"
+    }
+  ],
+  "visibility": "private_or_not_applicable"
+}

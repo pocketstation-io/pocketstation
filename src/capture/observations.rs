@@ -60,24 +60,28 @@ pub struct CaptureObservationCounters {
 
 #[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
 impl CaptureObservationCounters {
+    #[doc = "Records an observation for callback buffer for `CaptureObservationCounters`."]
     pub fn observe_callback_buffer(&self) {
         self.values
             .callback_buffers_total
             .fetch_add(1, Ordering::Relaxed);
     }
 
+    #[doc = "Records an observation for enqueued frame for `CaptureObservationCounters`."]
     pub fn observe_enqueued_frame(&self) {
         self.values
             .frames_enqueued_total
             .fetch_add(1, Ordering::Relaxed);
     }
 
+    #[doc = "Records an observation for pool exhaustion for `CaptureObservationCounters`."]
     pub fn observe_pool_exhaustion(&self) {
         self.values
             .pool_exhausted_total
             .fetch_add(1, Ordering::Relaxed);
     }
 
+    #[doc = "Records an observation for dispatch queue full for `CaptureObservationCounters`."]
     pub fn observe_dispatch_queue_full(&self) {
         self.observe_dispatch_queue_full_frames(1);
     }
@@ -97,30 +101,35 @@ impl CaptureObservationCounters {
             .fetch_add(1, Ordering::Relaxed);
     }
 
+    #[doc = "Records an observation for oversized buffer for `CaptureObservationCounters`."]
     pub fn observe_oversized_buffer(&self) {
         self.values
             .oversized_buffer_total
             .fetch_add(1, Ordering::Relaxed);
     }
 
+    #[doc = "Records an observation for stream error for `CaptureObservationCounters`."]
     pub fn observe_stream_error(&self) {
         self.values
             .stream_errors_total
             .fetch_add(1, Ordering::Relaxed);
     }
 
+    #[doc = "Records an observation for timestamp epoch clamp for `CaptureObservationCounters`."]
     pub fn observe_timestamp_epoch_clamp(&self) {
         self.values
             .timestamp_epoch_clamps_total
             .fetch_add(1, Ordering::Relaxed);
     }
 
+    #[doc = "Returns a handle for reading observations from `CaptureObservationCounters`."]
     pub fn observation_handle(&self) -> CaptureObservationHandle {
         CaptureObservationHandle {
             values: Arc::clone(&self.values),
         }
     }
 
+    #[doc = "Returns a point-in-time snapshot of `CaptureObservationCounters`."]
     pub fn snapshot(&self) -> CaptureObservations {
         snapshot_values(&self.values)
     }

@@ -18,7 +18,7 @@ The crate requires Rust 1.95 or newer. The program requires a target whose nativ
 
 ```toml
 [dependencies]
-pocketstation = "1.1.1"
+pocketstation = "1.1.2"
 ```
 
 ## Program
@@ -140,25 +140,25 @@ The scope of **Rust quickstart** ends at the native contracts and executable con
 | `pocketstation::capture::capture_owner::CapturePrepareRequest` | struct | Setup-time request for one bounded callback-oriented capture owner. | `src/capture/capture_owner.rs:61` |
 | `pocketstation::capture::capture_owner::CaptureStopOutcome` | struct | Final observations returned only after backend stop and join complete. | `src/capture/capture_owner.rs:185` |
 | `pocketstation::capture::capture_owner::PreparedCapture` | struct | Prepared capture plus its preallocated delivery endpoints. | `src/capture/capture_owner.rs:119` |
-| `pocketstation::capture::platform::macos::input::MacosInputSource` | struct | Owns production of macos input values and its lifecycle state. | `src/capture/platform/macos/input.rs:68` |
+| `pocketstation::capture::platform::macos::input::MacosInputSource` | struct | Owns production of macos input values and its lifecycle state. | `src/capture/platform/macos/input.rs:65` |
 | `pocketstation::capture::platform::macos::session_backend::DesktopCaptureBackend` | struct | macOS adapter from the platform-neutral Session capture contract to the existing CoreAudio/input RAII owner. | `src/capture/platform/macos/session_backend.rs:11` |
 
 ## Executable evidence
 
 Executable evidence selected for **Rust quickstart** is limited to each test's recorded setup and assertions:
 
-- `given_active_capture_when_owner_is_dropped_then_backend_is_reclaimed` — given active capture when owner is dropped then backend is reclaimed (`src/capture/capture_owner.rs:567`; `test-c55d7a75628c1be024f1`).
-- `given_active_capture_when_stopped_then_backend_is_joined` — given active capture when stopped then backend is joined (`src/capture/capture_owner.rs:540`; `test-4f65c4d2e20b5226cd4f`).
-- `given_backend_frame_when_source_differs_from_open_identity_then_lineage_fails_closed` — given backend frame when source differs from open identity then lineage fails closed (`src/capture/capture_owner.rs:511`; `test-a8dbef4f3b61c752ce0e`).
-- `given_panicking_capture_worker_when_joined_then_typed_failure_is_returned` — given panicking capture worker when joined then typed failure is returned (`src/capture/capture_owner.rs:610`; `test-889c6cfb54cc924fc2b4`).
-- `given_prepared_capture_when_opened_then_bounded_delivery_is_owned` — given prepared capture when opened then bounded delivery is owned (`src/capture/capture_owner.rs:463`; `test-8de0974346f9110044c2`).
-- `given_zero_frame_capacity_when_preparing_then_backend_is_not_prepared` — given zero frame capacity when preparing then backend is not prepared (`src/capture/capture_owner.rs:590`; `test-f42d54d3bd1632c2ccfa`).
-- `given_available_capacity_when_frame_is_sent_then_stream_preserves_frame` — given available capacity when frame is sent then stream preserves frame (`src/capture/frame_stream.rs:234`; `test-82e1dcd18071b5ef2f92`).
-- `given_closed_start_gate_when_frame_is_sent_then_frame_is_discarded_and_counted` — given closed start gate when frame is sent then frame is discarded and counted (`src/capture/frame_stream.rs:256`; `test-fd2a36cb4c8a774eb98b`).
-- `given_full_stream_when_frame_is_sent_then_newest_is_dropped_and_counted` — given full stream when frame is sent then newest is dropped and counted (`src/capture/frame_stream.rs:277`; `test-bce087e83b434cd19363`).
-- `given_sender_callback_when_frame_arrives_then_stream_receives_it` — given sender callback when frame arrives then stream receives it (`src/capture/frame_stream.rs:298`; `test-136e5806a4cea77a2f5a`).
-- `given_sender_dropped_when_stream_checked_then_closed_is_true` — given sender dropped when stream checked then closed is true (`src/capture/frame_stream.rs:309`; `test-ce769066abec4e393f00`).
-- `given_zero_capacity_when_stream_is_created_then_error_is_returned` — given zero capacity when stream is created then error is returned (`src/capture/frame_stream.rs:226`; `test-ca400782cee3b7be9d5b`).
+- `given_active_capture_when_owner_is_dropped_then_backend_is_reclaimed` — given active capture when owner is dropped then backend is reclaimed (`src/capture/capture_owner.rs:567`; `test-fa34e5723160d56f560f`).
+- `given_active_capture_when_stopped_then_backend_is_joined` — given active capture when stopped then backend is joined (`src/capture/capture_owner.rs:540`; `test-dd4aaaf6b93ddb500769`).
+- `given_backend_frame_when_source_differs_from_open_identity_then_lineage_fails_closed` — given backend frame when source differs from open identity then lineage fails closed (`src/capture/capture_owner.rs:511`; `test-805d755d4acd2257ba9b`).
+- `given_panicking_capture_worker_when_joined_then_typed_failure_is_returned` — given panicking capture worker when joined then typed failure is returned (`src/capture/capture_owner.rs:610`; `test-2d873f94835a177ce436`).
+- `given_prepared_capture_when_opened_then_bounded_delivery_is_owned` — given prepared capture when opened then bounded delivery is owned (`src/capture/capture_owner.rs:463`; `test-a3a0d044f02b7f664bb9`).
+- `given_zero_frame_capacity_when_preparing_then_backend_is_not_prepared` — given zero frame capacity when preparing then backend is not prepared (`src/capture/capture_owner.rs:590`; `test-0afbec4242ea2fad4582`).
+- `given_available_capacity_when_frame_is_sent_then_stream_preserves_frame` — given available capacity when frame is sent then stream preserves frame (`src/capture/frame_stream.rs:234`; `test-8f4bb6c6c11e1d2947a7`).
+- `given_closed_start_gate_when_frame_is_sent_then_frame_is_discarded_and_counted` — given closed start gate when frame is sent then frame is discarded and counted (`src/capture/frame_stream.rs:256`; `test-a59f34c85fd9d74e587e`).
+- `given_full_stream_when_frame_is_sent_then_newest_is_dropped_and_counted` — given full stream when frame is sent then newest is dropped and counted (`src/capture/frame_stream.rs:277`; `test-bb4e6d290a21c545166a`).
+- `given_sender_callback_when_frame_arrives_then_stream_receives_it` — given sender callback when frame arrives then stream receives it (`src/capture/frame_stream.rs:298`; `test-698bc05f28228eb21d82`).
+- `given_sender_dropped_when_stream_checked_then_closed_is_true` — given sender dropped when stream checked then closed is true (`src/capture/frame_stream.rs:309`; `test-013ff137ff3d32508a18`).
+- `given_zero_capacity_when_stream_is_created_then_error_is_returned` — given zero capacity when stream is created then error is returned (`src/capture/frame_stream.rs:226`; `test-43b3af5a7d4a81817a36`).
 
 ## Related documentation
 
@@ -173,7 +173,7 @@ Executable evidence selected for **Rust quickstart** is limited to each test's r
 
 ## Evidence boundary
 
-The claims on **Rust quickstart** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Rust quickstart** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `examples/product_quickstart.rs:1-61` (`DIRECT`)
 

@@ -5,8 +5,11 @@ use crate::graph::{EdgeContract, NodeTypeId};
 
 use crate::session::SessionError;
 
+#[doc = "Defines the public connector node type identifier value."]
 pub const CONNECTOR_NODE_TYPE_ID: &str = "endpoint.connector.external";
+#[doc = "Defines the public browser node type identifier value."]
 pub const BROWSER_NODE_TYPE_ID: &str = "endpoint.browser.remote";
+#[doc = "Defines the public browser operator identifier value."]
 pub const BROWSER_OPERATOR_ID: &str = "io.pocketstation.browser.webrtc.v1";
 pub(crate) const BROWSER_RECEIVER_URI_CONFIGURATION_KEY: &str = "receiver_uri";
 

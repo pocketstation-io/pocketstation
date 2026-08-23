@@ -18,30 +18,30 @@ Compare the configured profile with the input frame's `SampleSpec`, samples per 
 
 ## Diagnostic signals
 
-- `pocketstation::codec::decoder::OpusDecodeError` (`error-9b6a20dfec56d0f963ec`)
-- `pocketstation::codec::decoder::OpusDecodeError` / `FrameDurationExceedsConfiguredMaximum` (`error-4055838a830f20f7900a`)
-- `pocketstation::codec::decoder::OpusDecodeError` / `Opus` (`error-7b6f20bfd81327986061`)
-- `pocketstation::codec::encoder::OpusEncodeError` (`error-ae09263b8f4f85f0d5e8`)
-- `pocketstation::codec::encoder::OpusEncodeError` / `InvalidFrameSampleCount` (`error-edbece7c0fc9e4199d02`)
-- `pocketstation::codec::encoder::OpusEncodeError` / `Opus` (`error-3beedf48b3ab09500606`)
+- `pocketstation::codec::decoder::OpusDecodeError` (`error-3d9be3e3f583928d23f4`)
+- `pocketstation::codec::decoder::OpusDecodeError` / `FrameDurationExceedsConfiguredMaximum` (`error-84f459285f24936c9e00`)
+- `pocketstation::codec::decoder::OpusDecodeError` / `Opus` (`error-e714868780d8cd7a5a64`)
+- `pocketstation::codec::encoder::OpusEncodeError` (`error-eda36a61ae1109dce21c`)
+- `pocketstation::codec::encoder::OpusEncodeError` / `InvalidFrameSampleCount` (`error-bef40f89fba6bbf83b1c`)
+- `pocketstation::codec::encoder::OpusEncodeError` / `Opus` (`error-0100bb86433fb5001cce`)
 
 ## Executable evidence
 
-- `given_encoded_opus_packet_when_decoded_then_contains_960_samples` exercises given encoded opus packet when decoded then contains 960 samples under its recorded setup (`test-e9a038c59aa6148e49f9`).
-- `given_20ms_opus_frame_when_sampled_at_48khz_then_contains_960_samples` exercises given 20ms opus frame when sampled at 48khz then contains 960 samples under its recorded setup (`test-c4d783dc09c5ae8fcc9c`).
-- `given_30s_sine_pcm_when_opus_round_trip_then_golden_file_invariants_pass` exercises given 30s sine pcm when opus round trip then golden file invariants pass under its recorded setup (`test-d58d461257beb4e70632`).
-- `given_sine_wave_when_opus_round_trip_runs_then_approximate_magnitude_is_preserved` exercises given sine wave when opus round trip runs then approximate magnitude is preserved under its recorded setup (`test-a80dbf6b40aa2cc2df6c`).
-- `given_20ms_decoder_when_60ms_concealment_is_requested_then_typed_bound_error_is_returned` exercises given 20ms decoder when 60ms concealment is requested then typed bound error is returned under its recorded setup (`test-f2b28e6d34edfbf95af0`).
-- `given_mono_decoder_when_concealing_10ms_then_480_samples_are_appended` exercises given mono decoder when concealing 10ms then 480 samples are appended under its recorded setup (`test-7f059c025029ab48d42b`).
-- `given_presized_output_when_concealing_repeatedly_then_capacity_stays_fixed` exercises given presized output when concealing repeatedly then capacity stays fixed under its recorded setup (`test-3a6668288d371a23c543`).
-- `given_stereo_decoder_when_concealing_20ms_then_1920_samples_are_appended` exercises given stereo decoder when concealing 20ms then 1920 samples are appended under its recorded setup (`test-a33c833b56c360107d03`).
-- `given_60ms_stereo_configuration_when_exact_frame_arrives_then_fixed_scratch_accepts_it` exercises given 60ms stereo configuration when exact frame arrives then fixed scratch accepts it under its recorded setup (`test-27e8b931577e02ce30ec`).
-- `given_960_sample_frame_when_encoded_then_packet_is_not_empty` exercises given 960 sample frame when encoded then packet is not empty under its recorded setup (`test-6bdc61a7c604b08c13a4`).
-- `given_configured_20ms_encoder_when_10ms_frame_arrives_then_exact_duration_is_enforced` exercises given configured 20ms encoder when 10ms frame arrives then exact duration is enforced under its recorded setup (`test-bf950e1644072a871d53`).
-- `given_optimised_encode_when_same_input_then_packet_bytes_identical` exercises given optimised encode when same input then packet bytes identical under its recorded setup (`test-b46acca2f325d3bbcfb1`).
-- `given_optimised_pipeline_when_round_trip_then_snr_above_minus_1db` exercises given optimised pipeline when round trip then snr above minus 1db under its recorded setup (`test-792afd9b5fceaa2832c6`).
-- `given_oversized_frame_when_encoded_then_error_is_typed_and_output_is_cleared` exercises given oversized frame when encoded then error is typed and output is cleared under its recorded setup (`test-91992c707d12d6b613a9`).
-- `given_partial_stereo_frame_when_encoded_then_error_is_typed` exercises given partial stereo frame when encoded then error is typed under its recorded setup (`test-807b1db710dc9ad5f27a`).
+- `given_encoded_opus_packet_when_decoded_then_contains_960_samples` exercises given encoded opus packet when decoded then contains 960 samples under its recorded setup (`test-18e769bfba9f736148f1`).
+- `given_20ms_opus_frame_when_sampled_at_48khz_then_contains_960_samples` exercises given 20ms opus frame when sampled at 48khz then contains 960 samples under its recorded setup (`test-c6b1615ef4535f8bea99`).
+- `given_30s_sine_pcm_when_opus_round_trip_then_golden_file_invariants_pass` exercises given 30s sine pcm when opus round trip then golden file invariants pass under its recorded setup (`test-77bb4d2c9b220a4d7130`).
+- `given_sine_wave_when_opus_round_trip_runs_then_approximate_magnitude_is_preserved` exercises given sine wave when opus round trip runs then approximate magnitude is preserved under its recorded setup (`test-8c9746a0022eeccced89`).
+- `given_20ms_decoder_when_60ms_concealment_is_requested_then_typed_bound_error_is_returned` exercises given 20ms decoder when 60ms concealment is requested then typed bound error is returned under its recorded setup (`test-f9eb27f8c697619303a9`).
+- `given_mono_decoder_when_concealing_10ms_then_480_samples_are_appended` exercises given mono decoder when concealing 10ms then 480 samples are appended under its recorded setup (`test-f3d9f0899054eb532922`).
+- `given_presized_output_when_concealing_repeatedly_then_capacity_stays_fixed` exercises given presized output when concealing repeatedly then capacity stays fixed under its recorded setup (`test-0a190981712f34057776`).
+- `given_stereo_decoder_when_concealing_20ms_then_1920_samples_are_appended` exercises given stereo decoder when concealing 20ms then 1920 samples are appended under its recorded setup (`test-fa484e4be3d65e78f9fc`).
+- `given_60ms_stereo_configuration_when_exact_frame_arrives_then_fixed_scratch_accepts_it` exercises given 60ms stereo configuration when exact frame arrives then fixed scratch accepts it under its recorded setup (`test-0c8f77a1048c94269c79`).
+- `given_960_sample_frame_when_encoded_then_packet_is_not_empty` exercises given 960 sample frame when encoded then packet is not empty under its recorded setup (`test-751e9c684179c8d414af`).
+- `given_configured_20ms_encoder_when_10ms_frame_arrives_then_exact_duration_is_enforced` exercises given configured 20ms encoder when 10ms frame arrives then exact duration is enforced under its recorded setup (`test-5183ec8e78897fa604e5`).
+- `given_optimised_encode_when_same_input_then_packet_bytes_identical` exercises given optimised encode when same input then packet bytes identical under its recorded setup (`test-afeb7f4f7006561b144e`).
+- `given_optimised_pipeline_when_round_trip_then_snr_above_minus_1db` exercises given optimised pipeline when round trip then snr above minus 1db under its recorded setup (`test-ce093aae4da89b29c34b`).
+- `given_oversized_frame_when_encoded_then_error_is_typed_and_output_is_cleared` exercises given oversized frame when encoded then error is typed and output is cleared under its recorded setup (`test-655f8034c539e1dc9c27`).
+- `given_partial_stereo_frame_when_encoded_then_error_is_typed` exercises given partial stereo frame when encoded then error is typed under its recorded setup (`test-9e747f83ae1e676c3e7e`).
 
 ## Corrective action
 
@@ -69,7 +69,7 @@ Do not assume the same state can be replayed after a codec failure. The failing 
 
 ## Evidence boundary
 
-The claims on **Opus conversion fails** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Opus conversion fails** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `src/codec/encoder.rs:1-860` (`DIRECT`)
 - `src/codec/decoder.rs:1-267` (`DIRECT`)

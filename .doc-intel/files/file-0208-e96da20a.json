@@ -1,0 +1,921 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
+  "calls": [
+    "Application",
+    "ApplicationSelector::process_instance",
+    "BundleId",
+    "DeviceId",
+    "DeviceSelector::default",
+    "Id",
+    "Microphone",
+    "Name",
+    "ProcessId",
+    "ProcessId::new",
+    "Self",
+    "Self::Application",
+    "Self::BundleId",
+    "Self::Id",
+    "Self::Microphone",
+    "Self::Name",
+    "Self::ProcessId",
+    "Self::StableId",
+    "StableId",
+    "StableSourceId::new",
+    "application",
+    "as_str",
+    "bundle_id",
+    "cfg",
+    "default",
+    "derive",
+    "get",
+    "given_empty_stable_key_when_process_instance_validated_then_selector_is_rejected",
+    "given_non_application_identity_when_process_instance_validated_then_selector_is_rejected",
+    "given_zero_pid_when_process_instance_validated_then_selector_is_rejected",
+    "id",
+    "into",
+    "is_empty",
+    "microphone",
+    "microphone_default",
+    "name",
+    "new",
+    "process_id",
+    "process_instance",
+    "pub",
+    "stable_id",
+    "to_owned",
+    "trim",
+    "validate"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 160,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
+  "constructs": [
+    "ProcessId::new",
+    "StableSourceId::new",
+    "new"
+  ],
+  "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "ProcessId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 9,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 19,
+      "name": "DeviceId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 32,
+      "name": "ApplicationSelector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "bundle_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "process_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "process_instance",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "stable_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 66,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 107,
+      "name": "DeviceSelector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "default",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 134,
+      "name": "Source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "application",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "microphone",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 147,
+      "name": "microphone_default",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 151,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 161,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 169,
+      "name": "given_zero_pid_when_process_instance_validated_then_selector_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 186,
+      "name": "given_non_application_identity_when_process_instance_validated_then_selector_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 203,
+      "name": "given_empty_stable_key_when_process_instance_validated_then_selector_is_rejected",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [
+    {
+      "line": 125,
+      "text": "reason: \"microphone device id cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 175,
+      "text": "\"wasapi:pid:0:creation-100ns:133801234567890000\","
+    },
+    {
+      "line": 192,
+      "text": "\"wasapi:pid:42:creation-100ns:133801234567890000\","
+    }
+  ],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "ProcessId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 9,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 19,
+      "name": "DeviceId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 32,
+      "name": "ApplicationSelector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "bundle_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "process_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "process_instance",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "stable_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 66,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 107,
+      "name": "DeviceSelector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "default",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 134,
+      "name": "Source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "application",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "microphone",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 147,
+      "name": "microphone_default",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 151,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 70,
+      "text": "Err(SessionError::InvalidSelector {"
+    },
+    {
+      "line": 75,
+      "text": "Err(SessionError::InvalidSelector {"
+    },
+    {
+      "line": 80,
+      "text": "Err(SessionError::InvalidSelector {"
+    },
+    {
+      "line": 87,
+      "text": "Err(SessionError::InvalidSelector {"
+    },
+    {
+      "line": 94,
+      "text": "Err(SessionError::InvalidSelector {"
+    },
+    {
+      "line": 98,
+      "text": "Self::Name(name) if name.trim().is_empty() => Err(SessionError::InvalidSelector {"
+    },
+    {
+      "line": 124,
+      "text": "Err(SessionError::InvalidSelector {"
+    },
+    {
+      "line": 181,
+      "text": "Err(SessionError::InvalidSelector { .. })"
+    },
+    {
+      "line": 198,
+      "text": "Err(SessionError::InvalidSelector { .. })"
+    },
+    {
+      "line": 211,
+      "text": "Err(SessionError::InvalidSelector { .. })"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        1,
+        215
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "linked",
+  "examples_using": [
+    "example-64188d831f3c13af50ff",
+    "example-6d2567a68ad98d330f8b",
+    "example-937ee5ed9d4dfb93965f"
+  ],
+  "extended_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0208-e96da20a",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "4d3c831bbf529460e9d01588c55427fa64ae7f52",
+  "implemented_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
+  "implements": [
+    "ProcessId",
+    "DeviceId",
+    "ApplicationSelector",
+    "DeviceSelector",
+    "Source"
+  ],
+  "imported_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
+  "imports": [
+    "crate::capture::{SourceKind, StableSourceId}",
+    "crate::frame::Platform",
+    "crate::session::SessionError",
+    "super::{ApplicationSelector, ProcessId}"
+  ],
+  "inputs": [
+    "#[cfg(test)]",
+    "crate::capture::{SourceKind, StableSourceId}",
+    "crate::frame::Platform",
+    "crate::session::SessionError",
+    "super::{ApplicationSelector, ProcessId}"
+  ],
+  "invariants": [
+    {
+      "line": 71,
+      "text": "reason: \"application bundle id cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 76,
+      "text": "reason: \"application process id must be non-zero\".to_owned(),"
+    },
+    {
+      "line": 81,
+      "text": "reason: \"application process instance id must be non-zero\".to_owned(),"
+    },
+    {
+      "line": 88,
+      "text": "reason: \"application stable id must identify an application\".to_owned(),"
+    },
+    {
+      "line": 95,
+      "text": "reason: \"application stable id cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 99,
+      "text": "reason: \"application name cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 125,
+      "text": "reason: \"microphone device id cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 179,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 196,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 209,
+      "text": "assert!(matches!("
+    }
+  ],
+  "language": "Rust",
+  "line_count": 215,
+  "locks": [],
+  "module": "pocketstation::session::declaration::selector",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-f2b7195a0b2376eb7f7a"
+  ],
+  "outputs": [
+    "Err(SessionError::InvalidSelector {",
+    "Err(SessionError::InvalidSelector { .. })",
+    "Self::Name(name) if name.trim().is_empty() => Err(SessionError::InvalidSelector {",
+    "enum:ApplicationSelector",
+    "enum:DeviceSelector",
+    "enum:Source",
+    "fn:application",
+    "fn:as_str",
+    "fn:bundle_id",
+    "fn:default",
+    "fn:get",
+    "fn:id",
+    "fn:microphone",
+    "fn:microphone_default",
+    "fn:name",
+    "fn:new",
+    "fn:process_id",
+    "fn:process_instance",
+    "fn:stable_id",
+    "fn:validate",
+    "struct:DeviceId",
+    "struct:ProcessId"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/declaration/selector.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 161,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 169,
+      "name": "given_zero_pid_when_process_instance_validated_then_selector_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 186,
+      "name": "given_non_application_identity_when_process_instance_validated_then_selector_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 203,
+      "name": "given_empty_stable_key_when_process_instance_validated_then_selector_is_rejected",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "ProcessId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 9,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 19,
+      "name": "DeviceId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 32,
+      "name": "ApplicationSelector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "bundle_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "process_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "process_instance",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "stable_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 66,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 107,
+      "name": "DeviceSelector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "default",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 134,
+      "name": "Source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "application",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "microphone",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 147,
+      "name": "microphone_default",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 151,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::declaration::selector responsibilities, including Uniquely identifies process within its PocketStation ownership scope.; Creates a new `ProcessId`.; Returns the value held by `ProcessId`.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/capture/identity.rs",
+    "REFERENCES:src/session/error.rs"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "pocketstation::session::declaration::selector::ProcessId: Uniquely identifies process within its PocketStation ownership scope.",
+    "new: Creates a new `ProcessId`.",
+    "get: Returns the value held by `ProcessId`.",
+    "pocketstation::session::declaration::selector::DeviceId: Uniquely identifies device within its PocketStation ownership scope.",
+    "new: Creates a new `DeviceId`.",
+    "as_str: Returns the stable string representation of `DeviceId`.",
+    "pocketstation::session::declaration::selector::ApplicationSelector: Enumerates the supported application selector cases.",
+    "pocketstation::session::declaration::selector::ApplicationSelector::BundleId: Selects bundle identifier behavior for `ApplicationSelector`.",
+    "pocketstation::session::declaration::selector::ApplicationSelector::ProcessId: Selects process identifier behavior for `ApplicationSelector`.",
+    "pocketstation::session::declaration::selector::ApplicationSelector::ProcessInstance: Selects process instance behavior for `ApplicationSelector`.",
+    "ApplicationSelector::ProcessInstance::process_id: Identifies the process identifier recorded by `ProcessInstance`.",
+    "ApplicationSelector::ProcessInstance::stable_id: Identifies the stable identifier recorded by `ProcessInstance`.",
+    "pocketstation::session::declaration::selector::ApplicationSelector::StableId: Selects stable identifier behavior for `ApplicationSelector`.",
+    "pocketstation::session::declaration::selector::ApplicationSelector::Name: Selects name behavior for `ApplicationSelector`.",
+    "bundle_id: Returns the bundle identifier held by `ApplicationSelector`.",
+    "process_id: Returns the process identifier held by `ApplicationSelector`.",
+    "process_instance: Creates `ApplicationSelector` for one exact process instance.",
+    "stable_id: Returns the stable identifier held by `ApplicationSelector`.",
+    "name: Returns the name associated with `ApplicationSelector`.",
+    "pocketstation::session::declaration::selector::DeviceSelector: Enumerates the supported device selector cases.",
+    "pocketstation::session::declaration::selector::DeviceSelector::Default: Selects default behavior for `DeviceSelector`.",
+    "pocketstation::session::declaration::selector::DeviceSelector::Id: Selects id behavior for `DeviceSelector`.",
+    "default: Returns the default `DeviceSelector` value.",
+    "id: Returns the id held by `DeviceSelector`.",
+    "pocketstation::session::declaration::selector::Source: Enumerates the supported source cases.",
+    "pocketstation::session::declaration::selector::Source::Application: Represents the application alternative defined by `Source`.",
+    "pocketstation::session::declaration::selector::Source::Microphone: Represents the microphone alternative defined by `Source`.",
+    "application: Returns the application held by `Source`.",
+    "microphone: Creates `Source` for the selected microphone device.",
+    "microphone_default: Creates `Source` for the host default microphone."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 125,
+      "text": "reason: \"microphone device id cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 175,
+      "text": "\"wasapi:pid:0:creation-100ns:133801234567890000\","
+    },
+    {
+      "line": 192,
+      "text": "\"wasapi:pid:42:creation-100ns:133801234567890000\","
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0098e9bf5859cd4840f9",
+    "test-0226f46b368cc7dec827",
+    "test-04616ce7442a986e3b43",
+    "test-081f9254eabd3bfeaad1",
+    "test-0920f0be863672d2298e",
+    "test-125f099fa90218b83809",
+    "test-143dd58ce522cc34e2ef",
+    "test-17c702ffaf38dad01e0a",
+    "test-1de39e5016795b432d16",
+    "test-2076461784bfa8508fc9",
+    "test-284127121760cbb5874f",
+    "test-334cf92fbce87a10db8a",
+    "test-36be40e2a85849a63983",
+    "test-440e0d0f038bd27e531f",
+    "test-6243ccc1339da4e5bacb",
+    "test-699acb553a82f87d1f40",
+    "test-6b9e356534c04d2e2c3a",
+    "test-76c3eb4c4fd13e959a1c",
+    "test-7d6c18ed486400271167",
+    "test-82f8ec2b9c0fa3a0eb0b",
+    "test-8a30a347c6b7a008fb97",
+    "test-8e301580cdd23a244478",
+    "test-96ca51460e76efc108ae",
+    "test-b269c7b61711642b5e6e",
+    "test-b731381bbb6154df587d",
+    "test-c3e77a402eefae2294d5",
+    "test-d6368a5336840b3615d8",
+    "test-d74d1c0449808ea58c4f",
+    "test-de5b0287b18425cccf03",
+    "test-e776b9a7887232e16fbc",
+    "test-e84db4efcd6a7145550a",
+    "test-e868470f819453421dd7",
+    "test-f15944dc9e22c31672eb",
+    "test-f5d1e9009c62e6cb57d5",
+    "test-f98e0a98874ff7dfbdf8",
+    "test-f9ee710abe61af2dce08"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

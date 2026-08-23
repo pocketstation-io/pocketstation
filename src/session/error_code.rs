@@ -71,9 +71,9 @@ impl SessionDeclarationErrorCode {
 
 /// Stable language-neutral code for Session startup.
 ///
-/// This enum also reserves codes used by a language façade around the
-/// canonical engine. The code vocabulary remains owned by the Session module; an
-/// adapter owns only the mapping from its wrapper error.
+/// This enum also reserves codes used by a language façade around the Session
+/// engine. The Session module owns the code vocabulary; an adapter owns only
+/// the mapping from its wrapper error.
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SessionStartErrorCode {
@@ -323,6 +323,7 @@ pub const fn polled_audio_poll_error_code(error: PolledAudioPollError) -> Polled
     }
 }
 
+#[doc = "Returns every stable failure code carried by a Session stop result."]
 pub fn session_stop_failure_codes(outcome: &SessionStopOutcome) -> Box<[SessionStopFailureCode]> {
     let mut failures = Vec::with_capacity(7);
     if outcome.runtime_worker_panicked() {

@@ -2,7 +2,7 @@
 
 <!-- claims: CLM-DOC-057-CAP-001,CLM-DOC-057-CAP-002,CLM-DOC-057-SOURCE-001 -->
 
-PocketStation's package version at the analyzed snapshot is 1.1.1. Release automation and package metadata remain the publication authority; this page preserves the repository's declared release record.
+PocketStation's package version at the analyzed snapshot is 1.1.2. Release automation and package metadata remain the publication authority; this page preserves the repository's declared release record.
 
 ## Scope
 
@@ -18,10 +18,30 @@ The scope of **Release and version information** ends at the native contracts an
 PocketStation 1.x is the compatible release line for one source-aware desktop
 audio `Session`.
 
+## 1.1.2
+
+PocketStation 1.1.2 completes the Core contracts required by the Python SDK
+without changing the established 1.1 API:
+
+- application-owned PCM uses the existing bounded Source lifecycle;
+- Session lifecycle, compiler diagnostics, faults, timing, discontinuities,
+  delivery, and recording observations have typed SDK projections;
+- Python-authored Operators can return generated PCM through the existing
+  bounded audio reentry path;
+- recording metadata uses stable additive constants without changing the
+  externally constructible `RecordingOutcome` structure; and
+- source-aware Operator input bindings remain intact when multiple stems use
+  the same Operator.
+
+The stable Session declaration continues to provide application and microphone
+Sources. System-output discovery remains available, but this patch does not add
+a new exhaustive `Source` enum variant. `cargo-semver-checks` passes all 223
+applicable checks against 1.1.1.
+
 ## Scope of the 1.x line
 
-The core workflow captures one desktop application and one microphone once,
-keeps them as independent stems, and fans them out concurrently to Operators,
+The core workflow keeps one desktop application and one microphone as
+independent stems while a Session routes them concurrently to Operators,
 application callbacks, remote delivery, and aligned multistem recording.
 
 The stable execution contract preserves source, stream, stem, sequence,
@@ -46,9 +66,14 @@ redefining the accepted Core contract. Rust API changes follow SemVer. The C
 ABI uses versioned, size-prefixed records. PKSS frames carry explicit protocol
 versions and stable `SignalSpec` identities.
 
+During the 1.x line, a new provider, model, customer workflow, or exporter
+belongs in an extension rather than a new Core category whenever the public
+contracts can express it.
+
 The extension-first Core freeze is active from 2026-08-13 through 2028-08-13.
-A new provider, model, customer workflow, or exporter belongs in an extension
-rather than a new Core category whenever the 1.x contracts can express it.
+During that period, additions use the existing open boundaries unless a
+reviewed compatibility change shows that those contracts cannot express the
+task.
 
 ## What ships in 1.x
 
@@ -71,14 +96,13 @@ rather than a new Core category whenever the 1.x contracts can express it.
 - Non-prompting microphone permission observation where the operating system
   exposes an authoritative query. `NotObservable` remains unknown; selected
   source prepare/open is authoritative on every platform.
-- A self-contained Core release gate, exact-version publication recovery, a
-  compiling public quickstart, extension guidance, platform prerequisites,
-  and explicit evidence boundaries.
+- A compiling public quickstart, extension guidance, platform prerequisites,
+  compatibility checks, and scoped evidence.
 
 Realtime callbacks remain allocation-free, lock-free, blocking-free,
-async-free, log-free, and panic-free by contract and accepted gates. Evidence
-classifications remain exact; 1.x does not claim universal platform parity or
-overall performance superiority.
+async-free, log-free, and panic-free by contract and repository checks. Each
+evidence artifact names its environment; 1.x does not claim universal platform
+parity or overall performance superiority.
 
 ## Evidence scope
 
@@ -97,9 +121,9 @@ Release notes are declared evidence. They do not replace executable checks, phys
 
 ## Evidence boundary
 
-The claims on **Release and version information** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Release and version information** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `Cargo.toml:1-180` (`DIRECT`)
-- `.github/workflows/publish.yml:1-161` (`DIRECT`)
+- `.github/workflows/publish.yml:1-171` (`DIRECT`)
 
 For **Release and version information**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

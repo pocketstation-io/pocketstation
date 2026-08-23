@@ -1,0 +1,1330 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 508,
+      "text": "\"model.async\","
+    },
+    {
+      "line": 568,
+      "text": "let model = graph.add_node(\"model.async\", NodeConfig::new());"
+    },
+    {
+      "line": 598,
+      "text": "let model = graph.add_node(\"model.async\", NodeConfig::new());"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/graph/compile/mod.rs",
+    "IMPORTS:src/graph/compile/mod.rs"
+  ],
+  "calls": [
+    "Arc::new",
+    "Box::new",
+    "Compiler::new",
+    "EdgeContract::realtime_audio",
+    "EdgeMetricId",
+    "MediaCaps::Audio",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Pipeline::new",
+    "RuntimePlanner::new",
+    "Self::bytes_per_frame",
+    "Self::capacity_frames",
+    "Self::edge_carries_audio",
+    "Self::edge_uses_realtime_audio_lane",
+    "Self::new",
+    "Vec::new",
+    "Vec::with_capacity",
+    "add_node",
+    "and_then",
+    "any",
+    "as_ref",
+    "audio_media",
+    "branch_copy_pool_bytes",
+    "bytes_per_frame",
+    "capacity_frames",
+    "cfg",
+    "channel_count",
+    "clone",
+    "collect",
+    "compile",
+    "connect",
+    "connect_with",
+    "contains",
+    "copied",
+    "count",
+    "crate::graph::SignalSpec::audio",
+    "default",
+    "descriptor",
+    "div_ceil",
+    "edge_buffer",
+    "edge_carries_audio",
+    "edge_count",
+    "edge_uses_realtime_audio_lane",
+    "filter",
+    "find",
+    "given_compiled_graph_when_instrumented_then_metric_ids_are_stable_and_distinct",
+    "given_copy_to_branch_pool_edge_when_planned_then_copy_pool_memory_is_reserved",
+    "given_explicit_jitter_budget_when_planned_then_bounded_capacity_is_derived_from_frame_time",
+    "given_fixed_graph_when_planned_then_runtime_plan_matches_golden_snapshot",
+    "given_linear_realtime_chain_when_planned_then_single_partition_and_topo_order",
+    "given_linear_realtime_graph_when_planned_then_single_partition_in_topo_order",
+    "given_many_input_port_with_multiple_sources_when_planned_then_one_fan_in_group",
+    "given_move_exclusive_edge_in_fan_out_when_planned_then_ownership_is_rejected",
+    "given_output_feeding_two_edges_when_planned_then_one_fan_out_group_with_two_targets",
+    "given_realtime_and_model_remote_nodes_when_planned_then_two_partitions_ordered_by_rank",
+    "given_realtime_consumers_when_planned_then_every_edge_buffered_and_pool_positive",
+    "given_realtime_to_external_edge_when_planned_then_branch_pool_isolated_from_capture_pool",
+    "given_single_input_port_with_multiple_sources_when_planned_then_fan_in_on_single_port_error",
+    "grouping",
+    "id",
+    "in_",
+    "index",
+    "insertion",
+    "instantiate",
+    "instrument_edges",
+    "into_iter",
+    "into_spec",
+    "is_audio",
+    "is_empty",
+    "is_some",
+    "is_some_and",
+    "iter",
+    "iter_mut",
+    "len",
+    "let",
+    "lower_fan_in_mix",
+    "lower_fan_out",
+    "map",
+    "map_or",
+    "map_or_else",
+    "max",
+    "metric_id",
+    "min",
+    "new",
+    "node",
+    "ok_or",
+    "out",
+    "partition",
+    "partition_execution_domains",
+    "plan",
+    "plan_memory",
+    "plan_source_outputs",
+    "plan_typed_edges",
+    "port",
+    "push",
+    "rank",
+    "register",
+    "requires_realtime_safety",
+    "saturating_mul",
+    "sort_by_key",
+    "test_descriptor",
+    "test_registry",
+    "to_owned",
+    "to_vec",
+    "topo_order",
+    "total_bytes",
+    "u64::from",
+    "u64::try_from",
+    "unused_node",
+    "unwrap",
+    "unwrap_err",
+    "unwrap_or",
+    "usize::try_from",
+    "validate_config",
+    "validate_fan_out_ownership",
+    "windows"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 354,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 365,
+      "text": "use crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeTypeId, PrepareContext};"
+    },
+    {
+      "line": 426,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 448,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 470,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 492,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 514,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/graph/compile/mod.rs",
+    "IMPORTS:src/graph/compile/mod.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "Box::new",
+    "Compiler::new",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Pipeline::new",
+    "RuntimePlanner::new",
+    "Self::new",
+    "Vec::new",
+    "new",
+    "u64::from",
+    "u64::try_from",
+    "usize::try_from"
+  ],
+  "content_hash": "b34b34d9898e985db873fe92eafd55f9b837efbda7b789e9086e7a90ef5b522e",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 11,
+      "name": "RuntimePlanner",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "plan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "plan_source_outputs",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "lower_fan_out",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 101,
+      "name": "lower_fan_in_mix",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 134,
+      "name": "partition_execution_domains",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 164,
+      "name": "plan_memory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 213,
+      "name": "plan_typed_edges",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "edge_carries_audio",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 267,
+      "name": "edge_uses_realtime_audio_lane",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 274,
+      "name": "capacity_frames",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 308,
+      "name": "validate_fan_out_ownership",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 329,
+      "name": "instrument_edges",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "bytes_per_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 349,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 355,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 370,
+      "name": "audio_media",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 379,
+      "name": "port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 390,
+      "name": "test_descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 411,
+      "name": "unused_node",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 415,
+      "name": "SourceFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 418,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 426,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 429,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 437,
+      "name": "TransformFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 440,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 448,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 451,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 459,
+      "name": "SinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 462,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 470,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 473,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 481,
+      "name": "MixerFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 484,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 492,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 495,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 503,
+      "name": "AsyncModelFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 506,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 514,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 517,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 525,
+      "name": "test_registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 535,
+      "name": "compile",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 543,
+      "name": "given_linear_realtime_graph_when_planned_then_single_partition_in_topo_order",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 564,
+      "name": "given_realtime_and_model_remote_nodes_when_planned_then_two_partitions_ordered_by_rank",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 594,
+      "name": "given_realtime_to_external_edge_when_planned_then_branch_pool_isolated_from_capture_pool",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 613,
+      "name": "given_output_feeding_two_edges_when_planned_then_one_fan_out_group_with_two_targets",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 643,
+      "name": "given_move_exclusive_edge_in_fan_out_when_planned_then_ownership_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 667,
+      "name": "given_many_input_port_with_multiple_sources_when_planned_then_one_fan_in_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 686,
+      "name": "given_single_input_port_with_multiple_sources_when_planned_then_fan_in_on_single_port_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 709,
+      "name": "given_realtime_consumers_when_planned_then_every_edge_buffered_and_pool_positive",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 737,
+      "name": "given_copy_to_branch_pool_edge_when_planned_then_copy_pool_memory_is_reserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 758,
+      "name": "given_explicit_jitter_budget_when_planned_then_bounded_capacity_is_derived_from_frame_time",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 788,
+      "name": "given_compiled_graph_when_instrumented_then_metric_ids_are_stable_and_distinct",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 806,
+      "name": "given_fixed_graph_when_planned_then_runtime_plan_matches_golden_snapshot",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 836,
+      "name": "given_linear_realtime_chain_when_planned_then_single_partition_and_topo_order",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 11,
+      "name": "RuntimePlanner",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "plan",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 125,
+      "text": "return Err(PlanError::FanInOnSinglePort {"
+    },
+    {
+      "line": 321,
+      "text": "return Err(PlanError::MoveExclusiveFanOut {"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "b34b34d9898e985db873fe92eafd55f9b837efbda7b789e9086e7a90ef5b522e",
+      "lines": [
+        1,
+        860
+      ],
+      "path": "src/graph/compile/plan.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/graph/compile/mod.rs",
+    "IMPORTS:src/graph/compile/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0146-b7545702",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "240b2d9c0cff823384f14a8f7fcf59937edab645",
+  "implemented_by": [
+    "CONTAINS:src/graph/compile/mod.rs",
+    "IMPORTS:src/graph/compile/mod.rs"
+  ],
+  "implements": [
+    "RuntimePlanner",
+    "Default for RuntimePlanner",
+    "NodeFactory for SourceFactory",
+    "NodeFactory for TransformFactory",
+    "NodeFactory for SinkFactory",
+    "NodeFactory for MixerFactory",
+    "NodeFactory for AsyncModelFactory"
+  ],
+  "imported_by": [
+    "CONTAINS:src/graph/compile/mod.rs",
+    "IMPORTS:src/graph/compile/mod.rs"
+  ],
+  "imports": [
+    "crate::frame::SampleFormat",
+    "crate::graph::builtins::PassthroughNode",
+    "crate::graph::compile::Compiler",
+    "crate::graph::dsl::Pipeline",
+    "crate::graph::ir::GraphIr",
+    "crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeTypeId, PrepareContext}",
+    "crate::graph::partition::ExecutionPartition",
+    "crate::graph::partition::{ExecutionPartition, SafetyContract}",
+    "crate::graph::plan::*",
+    "crate::graph::ports::{AudioCaps, ChannelLayout, EdgeContract, PortDirection, PortSpec}",
+    "crate::graph::ports::{CopyPolicy, EdgeContract, MediaCaps, Multiplicity}",
+    "crate::graph::registry::{NodeFactory, NodeRegistry}",
+    "crate::graph::runtime_node::RuntimeNode",
+    "crate::graph::spec::{EdgeId, InputPortRef, NodeId, OutputPortRef}",
+    "proptest::prelude::*",
+    "std::sync::Arc",
+    "super::*"
+  ],
+  "inputs": [
+    "#[cfg(test)]",
+    "crate::frame::SampleFormat",
+    "crate::graph::builtins::PassthroughNode",
+    "crate::graph::compile::Compiler",
+    "crate::graph::dsl::Pipeline",
+    "crate::graph::ir::GraphIr",
+    "crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeTypeId, PrepareContext}",
+    "crate::graph::partition::ExecutionPartition",
+    "crate::graph::partition::{ExecutionPartition, SafetyContract}",
+    "crate::graph::plan::*",
+    "crate::graph::ports::{AudioCaps, ChannelLayout, EdgeContract, PortDirection, PortSpec}",
+    "crate::graph::ports::{CopyPolicy, EdgeContract, MediaCaps, Multiplicity}",
+    "crate::graph::registry::{NodeFactory, NodeRegistry}",
+    "crate::graph::runtime_node::RuntimeNode",
+    "crate::graph::spec::{EdgeId, InputPortRef, NodeId, OutputPortRef}",
+    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
+    "proptest::prelude::*",
+    "std::sync::Arc",
+    "super::*",
+    "use crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeTypeId, PrepareContext};"
+  ],
+  "invariants": [
+    {
+      "line": 580,
+      "text": "assert!(plan.partitions[0].execution.rank() < plan.partitions[1].execution.rank());"
+    },
+    {
+      "line": 732,
+      "text": "assert!(plan.memory_plan.realtime_pool_bytes > 0);"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 860,
+  "locks": [],
+  "module": "pocketstation::graph::compile::plan",
+  "network_io": [
+    {
+      "line": 549,
+      "text": "graph.connect(source.out(\"audio\"), transform.in_(\"audio\"));"
+    },
+    {
+      "line": 550,
+      "text": "graph.connect(transform.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 569,
+      "text": "graph.connect(source.out(\"audio\"), model.in_(\"audio\"));"
+    },
+    {
+      "line": 599,
+      "text": "let edge_id = graph.connect(source.out(\"audio\"), model.in_(\"audio\"));"
+    },
+    {
+      "line": 619,
+      "text": "graph.connect(source.out(\"audio\"), left.in_(\"audio\"));"
+    },
+    {
+      "line": 620,
+      "text": "graph.connect(source.out(\"audio\"), right.in_(\"audio\"));"
+    },
+    {
+      "line": 652,
+      "text": "graph.connect(source.out(\"audio\"), right.in_(\"audio\"));"
+    },
+    {
+      "line": 673,
+      "text": "graph.connect(first.out(\"audio\"), mixer.in_(\"audio\"));"
+    },
+    {
+      "line": 674,
+      "text": "graph.connect(second.out(\"audio\"), mixer.in_(\"audio\"));"
+    },
+    {
+      "line": 693,
+      "text": "graph.connect(first.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 694,
+      "text": "graph.connect(second.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 715,
+      "text": "let first = graph.connect(source.out(\"audio\"), transform.in_(\"audio\"));"
+    },
+    {
+      "line": 716,
+      "text": "let second = graph.connect(transform.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 794,
+      "text": "let first = graph.connect(source.out(\"audio\"), transform.in_(\"audio\"));"
+    },
+    {
+      "line": 795,
+      "text": "let second = graph.connect(transform.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 812,
+      "text": "graph.connect(source.out(\"audio\"), transform.in_(\"audio\"));"
+    },
+    {
+      "line": 813,
+      "text": "graph.connect(transform.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 846,
+      "text": "graph.connect(pair[0].out(\"audio\"), pair[1].in_(\"audio\"));"
+    }
+  ],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-c51f6c9502969abb9937"
+  ],
+  "outputs": [
+    "fn:new",
+    "fn:plan",
+    "return Err(PlanError::FanInOnSinglePort {",
+    "return Err(PlanError::MoveExclusiveFanOut {",
+    "struct:RuntimePlanner"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/compile/plan.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "plan_source_outputs",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "lower_fan_out",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 101,
+      "name": "lower_fan_in_mix",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 134,
+      "name": "partition_execution_domains",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 164,
+      "name": "plan_memory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 213,
+      "name": "plan_typed_edges",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "edge_carries_audio",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 267,
+      "name": "edge_uses_realtime_audio_lane",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 274,
+      "name": "capacity_frames",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 308,
+      "name": "validate_fan_out_ownership",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 329,
+      "name": "instrument_edges",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "bytes_per_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 349,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 355,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 370,
+      "name": "audio_media",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 379,
+      "name": "port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 390,
+      "name": "test_descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 411,
+      "name": "unused_node",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 415,
+      "name": "SourceFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 418,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 426,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 429,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 437,
+      "name": "TransformFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 440,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 448,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 451,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 459,
+      "name": "SinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 462,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 470,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 473,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 481,
+      "name": "MixerFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 484,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 492,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 495,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 503,
+      "name": "AsyncModelFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 506,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 514,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 517,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 525,
+      "name": "test_registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 535,
+      "name": "compile",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 543,
+      "name": "given_linear_realtime_graph_when_planned_then_single_partition_in_topo_order",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 564,
+      "name": "given_realtime_and_model_remote_nodes_when_planned_then_two_partitions_ordered_by_rank",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 594,
+      "name": "given_realtime_to_external_edge_when_planned_then_branch_pool_isolated_from_capture_pool",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 613,
+      "name": "given_output_feeding_two_edges_when_planned_then_one_fan_out_group_with_two_targets",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 643,
+      "name": "given_move_exclusive_edge_in_fan_out_when_planned_then_ownership_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 667,
+      "name": "given_many_input_port_with_multiple_sources_when_planned_then_one_fan_in_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 686,
+      "name": "given_single_input_port_with_multiple_sources_when_planned_then_fan_in_on_single_port_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 709,
+      "name": "given_realtime_consumers_when_planned_then_every_edge_buffered_and_pool_positive",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 737,
+      "name": "given_copy_to_branch_pool_edge_when_planned_then_copy_pool_memory_is_reserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 758,
+      "name": "given_explicit_jitter_budget_when_planned_then_bounded_capacity_is_derived_from_frame_time",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 788,
+      "name": "given_compiled_graph_when_instrumented_then_metric_ids_are_stable_and_distinct",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 806,
+      "name": "given_fixed_graph_when_planned_then_runtime_plan_matches_golden_snapshot",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 836,
+      "name": "given_linear_realtime_chain_when_planned_then_single_partition_and_topo_order",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 11,
+      "name": "RuntimePlanner",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "plan",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::compile::plan responsibilities, including Validates the graph and produces the bounded runtime execution and memory plan.; Creates a new `RuntimePlanner`.; Lower a verified IR into an execution-ready plan.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/ir.rs",
+    "REFERENCES:src/graph/plan.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/graph/spec.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 357,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 412,
+      "text": "fn unused_node() -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 413,
+      "text": "Ok(Box::new(PassthroughNode))"
+    },
+    {
+      "line": 433,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 455,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 477,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 499,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 521,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 528,
+      "text": "registry.register(Arc::new(SourceFactory)).unwrap();"
+    },
+    {
+      "line": 529,
+      "text": "registry.register(Arc::new(TransformFactory)).unwrap();"
+    },
+    {
+      "line": 530,
+      "text": "registry.register(Arc::new(SinkFactory)).unwrap();"
+    },
+    {
+      "line": 531,
+      "text": "registry.register(Arc::new(MixerFactory)).unwrap();"
+    },
+    {
+      "line": 532,
+      "text": "registry.register(Arc::new(AsyncModelFactory)).unwrap();"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::graph::compile::plan::RuntimePlanner: Validates the graph and produces the bounded runtime execution and memory plan.",
+    "new: Creates a new `RuntimePlanner`.",
+    "plan: Lower a verified IR into an execution-ready plan.",
+    "default: Returns the default `RuntimePlanner` value."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 549,
+      "text": "graph.connect(source.out(\"audio\"), transform.in_(\"audio\"));"
+    },
+    {
+      "line": 550,
+      "text": "graph.connect(transform.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 569,
+      "text": "graph.connect(source.out(\"audio\"), model.in_(\"audio\"));"
+    },
+    {
+      "line": 599,
+      "text": "let edge_id = graph.connect(source.out(\"audio\"), model.in_(\"audio\"));"
+    },
+    {
+      "line": 619,
+      "text": "graph.connect(source.out(\"audio\"), left.in_(\"audio\"));"
+    },
+    {
+      "line": 620,
+      "text": "graph.connect(source.out(\"audio\"), right.in_(\"audio\"));"
+    },
+    {
+      "line": 652,
+      "text": "graph.connect(source.out(\"audio\"), right.in_(\"audio\"));"
+    },
+    {
+      "line": 673,
+      "text": "graph.connect(first.out(\"audio\"), mixer.in_(\"audio\"));"
+    },
+    {
+      "line": 674,
+      "text": "graph.connect(second.out(\"audio\"), mixer.in_(\"audio\"));"
+    },
+    {
+      "line": 693,
+      "text": "graph.connect(first.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 694,
+      "text": "graph.connect(second.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 715,
+      "text": "let first = graph.connect(source.out(\"audio\"), transform.in_(\"audio\"));"
+    },
+    {
+      "line": 716,
+      "text": "let second = graph.connect(transform.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 794,
+      "text": "let first = graph.connect(source.out(\"audio\"), transform.in_(\"audio\"));"
+    },
+    {
+      "line": 795,
+      "text": "let second = graph.connect(transform.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 812,
+      "text": "graph.connect(source.out(\"audio\"), transform.in_(\"audio\"));"
+    },
+    {
+      "line": 813,
+      "text": "graph.connect(transform.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 846,
+      "text": "graph.connect(pair[0].out(\"audio\"), pair[1].in_(\"audio\"));"
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 508,
+      "text": "\"model.async\","
+    },
+    {
+      "line": 568,
+      "text": "let model = graph.add_node(\"model.async\", NodeConfig::new());"
+    },
+    {
+      "line": 598,
+      "text": "let model = graph.add_node(\"model.async\", NodeConfig::new());"
+    }
+  ],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-1b94392ac4d9cdf72c6b",
+    "test-4097b94881add1fae02a",
+    "test-64cc2617d3ff74792a37",
+    "test-7522f862102177e851a9",
+    "test-86df8a3df685a4932d24",
+    "test-872ab5535858c7cfd4ad",
+    "test-a531f3dc46929f9a6f17",
+    "test-aef519dc61d29ebde9b6",
+    "test-c33ec56d911e1d70bf9f",
+    "test-c692b4bfa6301561ee9f",
+    "test-dcef49d1856e68958b28",
+    "test-e8811bdb59c4f11a3a67",
+    "test-f418ca08c5a2a4010c14"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

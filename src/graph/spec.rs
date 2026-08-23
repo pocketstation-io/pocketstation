@@ -84,14 +84,17 @@ pub struct GraphSpec {
 
 impl GraphSpec {
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the node count held by `GraphSpec`."]
     pub fn node_count(&self) -> usize {
         self.nodes.len()
     }
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the edge count held by `GraphSpec`."]
     pub fn edge_count(&self) -> usize {
         self.edges.len()
     }
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the node held by `GraphSpec`."]
     pub fn node(&self, id: NodeId) -> Option<&NodeSpec> {
         self.nodes.iter().find(|n| n.id == id)
     }

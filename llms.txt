@@ -1,5 +1,5 @@
 # PocketStation documentation
-> Evidence snapshot: 3b7b970f6598239e5d435b60c8d132a955a1886c
+> Evidence snapshot: 136e74888962558aa846d3143a19136a70936f45
 > Canonical human and reference documentation for the PocketStation Rust SDK.
 
 - [Platform support and evidence](docs/platform/compatibility.md): Capture application audio, Capture microphone audio, Capture system audio, Observe permission and source lifecycle

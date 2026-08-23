@@ -1,0 +1,744 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 31,
+      "text": "/// Pool depth: 8 frames absorb callback jitter without unbounded growth."
+    },
+    {
+      "line": 57,
+      "text": "pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>"
+    },
+    {
+      "line": 61,
+      "text": "Self::capture_mode_with_runtime_event_sender(mode, callback, None)"
+    },
+    {
+      "line": 66,
+      "text": "mut callback: F,"
+    },
+    {
+      "line": 76,
+      "text": "callback,"
+    },
+    {
+      "line": 216,
+      "text": "callback(frame);"
+    }
+  ],
+  "called_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/mod.rs"
+  ],
+  "calls": [
+    "AspReader::open",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "CaptureObservationCounters::default",
+    "CaptureSampleTimeline::new",
+    "Duration::from_millis",
+    "FnMut",
+    "Impl::Tap",
+    "LoopbackError::BackendInit",
+    "LoopbackError::ModeUnsupported",
+    "Self",
+    "Self::capture_mode_with_runtime_event_sender",
+    "StreamId",
+    "SystemLoopbackSource",
+    "Tap",
+    "acquire",
+    "advance_from_source_position",
+    "as_mut_slice",
+    "as_ref",
+    "callback",
+    "cfg",
+    "channels",
+    "clone",
+    "copy_from_slice",
+    "crate::capture::StableSourceId::new",
+    "crate::capture::join_capture_worker",
+    "crate::capture::platform::macos::macos_asp::asp_is_installed",
+    "crate::capture::platform::macos::macos_tap::TapLoopbackSource::capture_mode_with_runtime_event_sender",
+    "crate::capture::platform::macos::macos_tap::tap_available",
+    "crate::capture::publish_backend_failure",
+    "drop",
+    "drop_count",
+    "free",
+    "given_active_asp_when_required_then_sdk_accepts_external_provisioning",
+    "given_missing_asp_when_required_then_sdk_returns_actionable_typed_error",
+    "into",
+    "is_err",
+    "is_ok",
+    "len",
+    "let",
+    "map",
+    "map_err",
+    "name",
+    "observation_handle",
+    "observations",
+    "observe_callback_buffer",
+    "observe_dispatch_queue_full_frames",
+    "observe_enqueued_frame",
+    "observe_oversized_buffer",
+    "observe_pool_exhaustion",
+    "observe_stream_error",
+    "ok_or_else",
+    "path",
+    "pub",
+    "read_frames",
+    "require_asp_driver_active",
+    "sample_rate",
+    "saturating_add",
+    "saturating_sub",
+    "snapshot",
+    "source_id",
+    "spawn",
+    "std::num::NonZeroU32::new",
+    "std::panic::AssertUnwindSafe",
+    "std::panic::catch_unwind",
+    "std::panic::resume_unwind",
+    "std::thread::Builder::new",
+    "std::thread::sleep",
+    "stop_and_join",
+    "stop_reader",
+    "take",
+    "tap",
+    "timeline_reject_callback_count",
+    "to_owned",
+    "try_recv",
+    "try_send",
+    "try_set_len",
+    "u64::from"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 56,
+      "text": "#[cfg(feature = \"internal-testing\")]"
+    },
+    {
+      "line": 315,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/mod.rs"
+  ],
+  "constructs": [
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "CaptureSampleTimeline::new",
+    "crate::capture::StableSourceId::new",
+    "std::num::NonZeroU32::new",
+    "std::thread::Builder::new",
+    "u64::from"
+  ],
+  "content_hash": "660110b4ee1146f6631c2e0b22b9a13207d47e184ff309f208b2d361091d4df9",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "ASP_BACKEND_NAME",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "ASP_SETUP_ACTION",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 32,
+      "name": "POOL_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 33,
+      "name": "Impl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 53,
+      "name": "SystemLoopbackSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "capture_mode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 63,
+      "name": "capture_mode_with_runtime_event_sender",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 247,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 266,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 273,
+      "name": "stop_and_join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 277,
+      "name": "stop_reader",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 299,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 303,
+      "name": "require_asp_driver_active",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 316,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 320,
+      "name": "given_active_asp_when_required_then_sdk_accepts_external_provisioning",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 325,
+      "name": "given_missing_asp_when_required_then_sdk_returns_actionable_typed_error",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [
+    {
+      "line": 47,
+      "text": "/// On macOS 14.4+ (public support), uses the CoreAudio process tap (no HAL plugin required)."
+    }
+  ],
+  "drop_cleanup": [
+    {
+      "line": 50,
+      "text": "/// Drop this value to stop capture."
+    },
+    {
+      "line": 297,
+      "text": "/// Drop contract \u2014 control thread only: signal and join the owned reader."
+    },
+    {
+      "line": 299,
+      "text": "fn drop(&mut self) {"
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 53,
+      "name": "SystemLoopbackSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "capture_mode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 63,
+      "name": "capture_mode_with_runtime_event_sender",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 247,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 266,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 273,
+      "name": "stop_and_join",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 85,
+      "text": "other => return Err(LoopbackError::ModeUnsupported(other)),"
+    },
+    {
+      "line": 166,
+      "text": "Err(_) => {"
+    },
+    {
+      "line": 219,
+      "text": "if let Err(payload) = worker {"
+    },
+    {
+      "line": 308,
+      "text": "Err(LoopbackError::BackendSetupRequired {"
+    },
+    {
+      "line": 328,
+      "text": "Err(LoopbackError::BackendSetupRequired {"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [
+    {
+      "line": 239,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"thread spawn: {e}\")))?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 239,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"thread spawn: {e}\")))?;"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 239,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"thread spawn: {e}\")))?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "660110b4ee1146f6631c2e0b22b9a13207d47e184ff309f208b2d361091d4df9",
+      "lines": [
+        1,
+        335
+      ],
+      "path": "src/capture/platform/macos/loopback.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [
+    {
+      "line": 28,
+      "text": "verify its shared-memory ABI is active, then retry; macOS 14.4+ can use the built-in \\"
+    }
+  ],
+  "file_id": "file-0089-fb903751",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "cf941c043c766ded6bc111a351256776c476dd8a",
+  "implemented_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/mod.rs"
+  ],
+  "implements": [
+    "SystemLoopbackSource",
+    "Drop for SystemLoopbackSource"
+  ],
+  "imported_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/mod.rs"
+  ],
+  "imports": [
+    "crate::capture::platform::macos::macos_asp::AspReader",
+    "crate::capture::{ CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations, CaptureSampleTimeline, }",
+    "crate::frame::{AudioBufferPool, AudioFrame, StreamId}",
+    "std::time::Duration",
+    "super::*"
+  ],
+  "inputs": [
+    "#[cfg(feature = \"internal-testing\")]",
+    "#[cfg(test)]",
+    "crate::capture::platform::macos::macos_asp::AspReader",
+    "crate::capture::{ CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations, CaptureSampleTimeline, }",
+    "crate::frame::{AudioBufferPool, AudioFrame, StreamId}",
+    "std::time::Duration",
+    "super::*"
+  ],
+  "invariants": [
+    {
+      "line": 8,
+      "text": "//! POSIX SHM ring. The SDK never installs privileged components or restarts"
+    },
+    {
+      "line": 36,
+      "text": "// The inner value is never read \u2014 only dropped."
+    }
+  ],
+  "language": "Rust",
+  "line_count": 335,
+  "locks": [],
+  "module": "pocketstation::capture::platform::macos::loopback",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-55b152cec6c363114987",
+    "pattern-9246bc2d36eb240ac523",
+    "pattern-f05736b45ad77eaf0de6"
+  ],
+  "outputs": [
+    "Err(LoopbackError::BackendSetupRequired {",
+    "Err(_) => {",
+    "fn:capture_mode",
+    "fn:capture_mode_with_runtime_event_sender",
+    "fn:observation_handle",
+    "fn:observations",
+    "fn:source_id",
+    "fn:stop_and_join",
+    "if let Err(payload) = worker {",
+    "other => return Err(LoopbackError::ModeUnsupported(other)),",
+    "struct:SystemLoopbackSource"
+  ],
+  "package": "pocketstation",
+  "path": "src/capture/platform/macos/loopback.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract."
+  ],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "ASP_BACKEND_NAME",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "ASP_SETUP_ACTION",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 32,
+      "name": "POOL_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 33,
+      "name": "Impl",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 277,
+      "name": "stop_reader",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 299,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 303,
+      "name": "require_asp_driver_active",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 316,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 320,
+      "name": "given_active_asp_when_required_then_sdk_accepts_external_provisioning",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 325,
+      "name": "given_missing_asp_when_required_then_sdk_returns_actionable_typed_error",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 120,
+      "text": ".spawn(move || {"
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 53,
+      "name": "SystemLoopbackSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "capture_mode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 63,
+      "name": "capture_mode_with_runtime_event_sender",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 247,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 266,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 273,
+      "name": "stop_and_join",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::capture::platform::macos::loopback responsibilities, including Manages a macOS loopback capture session.; Returns the capture mode held by `SystemLoopbackSource`.; Returns the observations exposed by `SystemLoopbackSource`.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/source-selection.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/select-process-source.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/run-transcription.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/troubleshooting/timing.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/capture/authorization.rs",
+    "REFERENCES:src/capture/events.rs",
+    "REFERENCES:src/capture/observations.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/capture/selection.rs",
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/frame/identity.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 35,
+      "text": "// TapLoopbackSource is held for RAII; it stops capture on Drop."
+    },
+    {
+      "line": 50,
+      "text": "/// Drop this value to stop capture."
+    },
+    {
+      "line": 51,
+      "text": "// The inner Impl is read-only from Rust; it is kept alive for Drop/RAII and"
+    },
+    {
+      "line": 297,
+      "text": "/// Drop contract \u2014 control thread only: signal and join the owned reader."
+    },
+    {
+      "line": 298,
+      "text": "impl Drop for SystemLoopbackSource {"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::capture::platform::macos::loopback::SystemLoopbackSource: Manages a macOS loopback capture session.",
+    "capture_mode: Returns the capture mode held by `SystemLoopbackSource`.",
+    "observations: Returns the observations exposed by `SystemLoopbackSource`.",
+    "source_id: Returns the source identifier held by `SystemLoopbackSource`.",
+    "observation_handle: Returns a handle for reading observations from `SystemLoopbackSource`.",
+    "stop_and_join: Stops `SystemLoopbackSource`, joins its worker, and returns the terminal result.",
+    "drop: Releases resources owned by `SystemLoopbackSource`."
+  ],
+  "retry_behavior": [
+    {
+      "line": 28,
+      "text": "verify its shared-memory ABI is active, then retry; macOS 14.4+ can use the built-in \\"
+    }
+  ],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 50,
+      "text": "/// Drop this value to stop capture."
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 47,
+      "text": "/// On macOS 14.4+ (public support), uses the CoreAudio process tap (no HAL plugin required)."
+    },
+    {
+      "line": 120,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 28,
+      "text": "verify its shared-memory ABI is active, then retry; macOS 14.4+ can use the built-in \\"
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0f83918e778e3285908b",
+    "test-3fb706dedfab0ea00a78"
+  ],
+  "threads": [
+    {
+      "line": 39,
+      "text": "reader_thread: Option<std::thread::JoinHandle<()>>,"
+    },
+    {
+      "line": 118,
+      "text": "let thread = std::thread::Builder::new()"
+    },
+    {
+      "line": 120,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 157,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 239,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"thread spawn: {e}\")))?;"
+    },
+    {
+      "line": 242,
+      "text": "reader_thread: Some(thread),"
+    },
+    {
+      "line": 297,
+      "text": "/// Drop contract \u2014 control thread only: signal and join the owned reader."
+    }
+  ],
+  "visibility": "mixed"
+}

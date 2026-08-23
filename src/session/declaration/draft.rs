@@ -227,23 +227,11 @@ impl SessionDraft {
                 reason: "operator input port cannot be empty".to_owned(),
             });
         }
-        if let Some(input_port) = &input_port {
-            if self.connections.iter().any(|connection| {
-                matches!(
-                    &connection.target,
-                    ConnectionTarget::OperatorInput {
-                        operator_instance_id: target_instance_id,
-                        input_port: Some(target_port),
-                    } if *target_instance_id == operator_instance_id && target_port == input_port
-                )
-            }) {
-                return Err(SessionError::InvalidOperator {
-                    reason: format!(
-                        "operator instance {operator_instance_id:?} input port '{input_port}' is already connected"
-                    ),
-                });
-            }
-        }
+        // The declaration layer intentionally does not reject repeated named
+        // inputs. Multiplicity belongs to the registered Operator manifest,
+        // which is authoritative only during compilation. The compiler
+        // rejects fan-in for `Multiplicity::One` and accepts it for
+        // `Multiplicity::Many`.
         let route_id = self.allocate_route_id()?;
         self.connections.push(ConnectionDraft {
             route_id,
@@ -329,11 +317,13 @@ impl SessionShared {
     }
 }
 
+#[doc = "Owns a mutable Session declaration and the host configuration used to compile, prepare, and start it."]
 pub struct Session {
     shared: Arc<SessionShared>,
 }
 
 impl Session {
+    #[doc = "Creates a new `Session`."]
     pub fn new() -> Self {
         let session_id = SessionId(NEXT_SESSION_ID.fetch_add(1, Ordering::Relaxed));
         Self {
@@ -344,10 +334,12 @@ impl Session {
         }
     }
 
+    #[doc = "Returns the id held by `Session`."]
     pub fn id(&self) -> SessionId {
         self.shared.session_id
     }
 
+    #[doc = "Declares a capture source on `Session` and returns its Session-scoped handle."]
     pub fn capture(&self, source: Source) -> Result<StemHandle, SessionError> {
         let mut draft = self.shared.draft()?;
         draft.ensure_open(self.id())?;
@@ -407,6 +399,7 @@ impl Session {
         })
     }
 
+    #[doc = "Declares an endpoint on `Session` and returns its Session-scoped handle."]
     pub fn endpoint(&self, descriptor: EndpointDescriptor) -> Result<EndpointHandle, SessionError> {
         descriptor.validate()?;
         self.add_endpoint(descriptor, None)
@@ -445,6 +438,7 @@ impl Session {
         })
     }
 
+    #[doc = "Returns the browser held by `Session`."]
     pub fn browser(&self, receiver_uri: impl Into<String>) -> Result<EndpointHandle, SessionError> {
         let descriptor = EndpointDescriptor::new(
             NodeTypeId::from(BROWSER_NODE_TYPE_ID),
@@ -468,6 +462,7 @@ impl Session {
             .any(|endpoint| endpoint.descriptor.operator_id() == operator_id))
     }
 
+    #[doc = "Freezes mutable storage owned by `Session` into its shared immutable form."]
     pub fn freeze(self) -> Result<SessionSpec, SessionError> {
         let mut draft = self.shared.draft()?;
         draft.ensure_open(self.id())?;
@@ -579,12 +574,14 @@ impl Session {
 }
 
 impl Default for Session {
+    #[doc = "Returns the default `Session` value."]
     fn default() -> Self {
         Self::new()
     }
 }
 
 impl fmt::Debug for Session {
+    #[doc = "Formats `Session` with the requested formatter."]
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_struct("Session")

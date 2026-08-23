@@ -33,17 +33,17 @@ pub use crate::session::error_code::{
 
 pub use crate::capture::{
     application_capture_available, discover_sources, resolve_query, ActiveCaptureBackend,
-    CallbackCaptureBackend, CaptureAuthorizationSnapshot, CaptureCapabilityState, CaptureDelivery,
-    CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CaptureOpenOutcome,
-    CapturePermissionLifecycle, CapturePermissionTransition, CaptureRuntimeFailure,
-    CaptureRuntimeFailureClass, CaptureScope, CaptureSessionGrant, CaptureSource,
-    CapturedFrameDelivery, CapturedFrameObservationHandle, CapturedFrameSender,
-    CapturedFrameStreamStats, InputDeviceSelector, LocalSourceProvider, PermissionEpoch,
-    PermissionObservation, PreparedCaptureBackend, ProcessTreeScope, SelectorPersistenceScope,
-    SourceGeneration, SourceIdentityStrength, SourceKind, SourceLifecycleEventKind, SourceProvider,
-    SourceQuery, SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventDelivery,
-    SourceRuntimeEventObservationHandle, SourceRuntimeEventObservations, SourceRuntimeEventSender,
-    SourceState, StableSourceId,
+    ApplicationPolicyObservation, CallbackCaptureBackend, CaptureAuthorizationSnapshot,
+    CaptureCapabilityState, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle,
+    CaptureObservations, CaptureOpenOutcome, CapturePermissionLifecycle,
+    CapturePermissionTransition, CaptureRuntimeFailure, CaptureRuntimeFailureClass, CaptureScope,
+    CaptureSessionGrant, CaptureSource, CapturedFrameDelivery, CapturedFrameObservationHandle,
+    CapturedFrameSender, CapturedFrameStreamStats, InputDeviceSelector, LocalSourceProvider,
+    PermissionEpoch, PermissionObservation, PreparedCaptureBackend, ProcessTreeScope,
+    SelectorPersistenceScope, SourceGeneration, SourceIdentityStrength, SourceKind,
+    SourceLifecycleEventKind, SourceProvider, SourceQuery, SourceRecoveryRequirement,
+    SourceRuntimeEvent, SourceRuntimeEventDelivery, SourceRuntimeEventObservationHandle,
+    SourceRuntimeEventObservations, SourceRuntimeEventSender, SourceState, StableSourceId,
 };
 
 /// Reads the current microphone authorization state without prompting.
@@ -115,20 +115,24 @@ pub use crate::session::extensions::{
     SourceTypeIdError, PCM_SOURCE_TYPE_ID,
 };
 pub use crate::session::lifecycle::{
-    SessionAudioReentryMetrics, SessionControlFailure, SessionDerivedRouteMetrics, SessionEvent,
-    SessionEventKind, SessionEventQueueObservations, SessionEventReceive,
-    SessionExternalSourceMetrics, SessionLifecycleState, SessionMetricsSnapshot,
-    SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteDropObservations,
-    SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit,
-    SessionRouteMetrics, SessionRouteObservationInterval, SessionSidecarMetrics,
-    SessionSourceMetrics, SessionStartCancellation, SessionStopOutcome, SessionTerminalState,
-    SessionTrace, SessionTraceRecorder, SessionTraceRecorderFinishError,
-    SessionTraceRecorderOutcome, SessionTraceRecorderStartError, SessionTraceValidation,
+    SessionAudioReentryMetrics, SessionComponentId, SessionControlFailure,
+    SessionDerivedRouteMetrics, SessionEvent, SessionEventKind, SessionEventQueueObservations,
+    SessionEventReceive, SessionExternalSourceMetrics, SessionLifecycleState,
+    SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics,
+    SessionRouteDropObservations, SessionRouteLatencyBoundary, SessionRouteLatencyObservations,
+    SessionRouteLatencyUnit, SessionRouteMetrics, SessionRouteObservationInterval,
+    SessionSidecarMetrics, SessionSourceMetrics, SessionStartCancellation, SessionStopOutcome,
+    SessionTerminalState, SessionTrace, SessionTraceRecord, SessionTraceRecordKind,
+    SessionTraceRecorder, SessionTraceRecorderFinishError, SessionTraceRecorderOutcome,
+    SessionTraceRecorderStartError, SessionTraceTerminal, SessionTraceValidation,
     SessionTraceValidationError,
 };
+pub use crate::session::SessionCompileDiagnostic;
 pub use crate::session::{
     session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations,
     SessionRecordingOutcome, SessionRecordingState, SessionRecordingStemOutcome,
+    DEFAULT_MULTISTEM_RECORDING_GROUP_ID, SESSION_RECORDING_MANIFEST_FILE_NAME,
+    SESSION_RECORDING_MANIFEST_SCHEMA_VERSION,
 };
 
 pub use crate::frame::{
@@ -296,7 +300,7 @@ impl SessionBuilder {
         self
     }
 
-    /// Declares the exact canonical PCM format produced by the configured
+    /// Declares the PCM format produced by the configured
     /// capture backends and consumed by compiled Session routes.
     #[must_use]
     pub fn sample_spec(mut self, sample_spec: SampleSpec) -> Self {
@@ -304,7 +308,7 @@ impl SessionBuilder {
         self
     }
 
-    /// Uses caller-owned capture backends while retaining the canonical
+    /// Uses caller-owned capture backends while retaining the Session
     /// Session compiler, runtime, endpoint lifecycle, and recording ownership.
     #[must_use]
     pub fn capture_backends(
@@ -392,7 +396,7 @@ impl Session {
     /// Declares one instance of an open external source type.
     ///
     /// The selected output names are validated against the registered source
-    /// manifest when this Session is compiled by the canonical engine.
+    /// manifest when this Session is compiled.
     pub fn source(
         &self,
         source_type_id: SourceTypeId,
@@ -463,7 +467,7 @@ impl Session {
         self.declaration.operator(operator)
     }
 
-    /// Retains an external source factory for this Session's canonical engine.
+    /// Retains an external Source factory for this Session.
     pub fn register_source(
         &self,
         factory: Arc<dyn SourceFactory>,
@@ -748,7 +752,7 @@ impl Session {
             let _ = running.stop();
             return Err(SessionStartError::new(
                 SessionStartErrorCode::MissingEventReceiver,
-                "canonical running Session did not retain its event receiver",
+                "running Session did not retain its event receiver",
             ));
         };
         Ok(RunningSession {
@@ -816,6 +820,19 @@ impl RunningSession {
     #[doc = "Attempts to poll audio through `RunningSession`."]
     pub fn try_poll_audio(&self) -> Result<PolledAudioBatchLease, PolledAudioPollError> {
         self.receipt.try_poll()
+    }
+
+    #[doc = "Waits for audio for `RunningSession`."]
+    pub fn wait_audio(
+        &self,
+        timeout: std::time::Duration,
+    ) -> Result<Option<PolledAudioBatchLease>, PolledAudioPollError> {
+        self.receipt.wait_poll(timeout)
+    }
+
+    #[doc = "Returns the state held by `RunningSession`."]
+    pub const fn state(&self) -> SessionLifecycleState {
+        self.running.state()
     }
 
     #[doc = "Returns the audio observations held by `RunningSession`."]
@@ -966,6 +983,7 @@ pub use crate::session::{
 pub struct SessionStartError {
     code: SessionStartErrorCode,
     message: String,
+    compile_diagnostic: Option<Box<SessionCompileDiagnostic>>,
 }
 
 impl SessionStartError {
@@ -973,6 +991,7 @@ impl SessionStartError {
         Self {
             code,
             message: message.into(),
+            compile_diagnostic: None,
         }
     }
 
@@ -988,6 +1007,15 @@ impl SessionStartError {
     #[doc = "Returns the diagnostic message reported by `SessionStartError`."]
     pub fn message(&self) -> &str {
         &self.message
+    }
+
+    /// Returns structured compiler facts when startup failed while compiling
+    /// the declared Session.
+    ///
+    /// Consumers must branch on the stable diagnostic code and fields rather
+    /// than parsing [`Self::message`].
+    pub fn compile_diagnostic(&self) -> Option<&SessionCompileDiagnostic> {
+        self.compile_diagnostic.as_deref()
     }
 
     #[doc = "Returns the kind represented by `SessionStartError`."]
@@ -1024,6 +1052,7 @@ impl From<SessionTraceRecorderStartError> for SessionStartError {
 }
 
 impl From<SessionEngineHostBuildError> for SessionStartError {
+    #[doc = "Converts the supplied value into `SessionStartError`."]
     fn from(error: SessionEngineHostBuildError) -> Self {
         let code = if matches!(
             error,
@@ -1038,7 +1067,12 @@ impl From<SessionEngineHostBuildError> for SessionStartError {
 }
 
 impl From<SessionEngineStartError> for SessionStartError {
+    #[doc = "Converts the supplied value into `SessionStartError`."]
     fn from(error: SessionEngineStartError) -> Self {
+        let compile_diagnostic = match &error {
+            SessionEngineStartError::Compile(error) => Some(Box::new(error.diagnostic())),
+            _ => None,
+        };
         let code = match &error {
             SessionEngineStartError::Freeze(SessionError::InvalidSelector { .. }) => {
                 SessionStartErrorCode::InvalidSelector
@@ -1049,7 +1083,9 @@ impl From<SessionEngineStartError> for SessionStartError {
             SessionEngineStartError::Start(failure) => session_start_failure_code(failure.error()),
             SessionEngineStartError::Sidecar(_) => SessionStartErrorCode::RuntimeStartFailed,
         };
-        Self::new(code, format!("canonical Session start failed: {error}"))
+        let mut start_error = Self::new(code, format!("Session start failed: {error}"));
+        start_error.compile_diagnostic = compile_diagnostic;
+        start_error
     }
 }
 

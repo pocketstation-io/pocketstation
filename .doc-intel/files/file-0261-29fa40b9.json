@@ -1,0 +1,190 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "AudioBufferPool::new",
+    "AudioFrame::try_new",
+    "OpusDecoder::new",
+    "OpusEncoder::new",
+    "SampleSpec::new",
+    "SourceId::new",
+    "StreamId::new",
+    "Vec::with_capacity",
+    "acquire",
+    "as_mut_slice",
+    "decode_into",
+    "encode_into",
+    "enumerate",
+    "expect",
+    "given_sine_frame_when_codec_roundtrip_runs_then_sample_count_is_preserved",
+    "iter_mut",
+    "len",
+    "samples",
+    "sin",
+    "unwrap"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "AudioBufferPool::new",
+    "AudioFrame::try_new",
+    "OpusDecoder::new",
+    "OpusEncoder::new",
+    "SampleSpec::new",
+    "SourceId::new",
+    "StreamId::new"
+  ],
+  "content_hash": "13a7b294ee2a36b1a1e84e24d3d1acd3da58c1533a98646f511a0cad2c3300d5",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 7,
+      "name": "given_sine_frame_when_codec_roundtrip_runs_then_sample_count_is_preserved",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "13a7b294ee2a36b1a1e84e24d3d1acd3da58c1533a98646f511a0cad2c3300d5",
+      "lines": [
+        1,
+        33
+      ],
+      "path": "tests/codec_opus_roundtrip.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0261-29fa40b9",
+  "file_kind": "test",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "0fbdbae887ca426dcbe1d43587874b3530031c26",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "pocketstation::codec::{OpusDecoder, OpusEncoder, OPUS_MAX_PACKET_BYTES}",
+    "pocketstation::internal::frame::{ AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId, POOL_SLOT_SAMPLES, }"
+  ],
+  "inputs": [
+    "pocketstation::codec::{OpusDecoder, OpusEncoder, OPUS_MAX_PACKET_BYTES}",
+    "pocketstation::internal::frame::{ AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId, POOL_SLOT_SAMPLES, }"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 33,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not define production behavior beyond the test setup and asserted outcome."
+  ],
+  "observed_patterns": [
+    "pattern-fca1858abc40b4d3324a"
+  ],
+  "outputs": [
+    "No emitted value or public declaration is recorded for this file."
+  ],
+  "package": "pocketstation",
+  "path": "tests/codec_opus_roundtrip.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 7,
+      "name": "given_sine_frame_when_codec_roundtrip_runs_then_sample_count_is_preserved",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given sine frame when codec roundtrip runs then sample count is preserved under the conditions declared in this test file."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/opus-codec.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/opus-roundtrip.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/codec.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/frames-and-codec.md",
+    "docs/troubleshooting/opus.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [],
+  "responsibilities": [
+    "given_sine_frame_when_codec_roundtrip_runs_then_sample_count_is_preserved (fn)"
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 27,
+      "text": ".expect(\"encode failed\");"
+    },
+    {
+      "line": 30,
+      "text": ".expect(\"decode failed\");"
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-8b8900f4ef016b6914cc"
+  ],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

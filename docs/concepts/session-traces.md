@@ -12,14 +12,17 @@ Runtime logs may be unstructured or incomplete. A trace preserves a machine-read
 
 ## Relationships
 
-- The running Session records lifecycle events into the trace owner.
+- The running Session records versioned `SessionTraceRecord` values for lifecycle changes and component failures.
+- Each record carries a sequence index, monotonic observation time, Session ID, and typed record kind.
+- `SessionTraceTerminal` preserves terminal state plus source, endpoint, rollback, and finalization failure counts.
 - Stop finalizes the trace separately from recording output.
 - Trace validation returns the failing record and structural reason.
 
 ## Invariants and guarantees
 
-- Record order and identity must satisfy the trace format.
+- Record order, Session identity, component identity, and terminal counts must satisfy the trace format.
 - A terminal trace includes the required terminal record.
+- Dropped recorder entries remain observable in the recorder outcome.
 - Validation does not rewrite malformed evidence to make it pass.
 
 ## When you encounter it
@@ -57,18 +60,18 @@ The scope of **Session traces** ends at the native contracts and executable cond
 
 Executable evidence selected for **Session traces** is limited to each test's recorded setup and assertions:
 
-- `given_complete_trace_when_validated_then_lifecycle_and_terminal_match` — given complete trace when validated then lifecycle and terminal match (`src/session/lifecycle/trace.rs:988`; `test-9dd947375f94d2a4f21f`).
-- `given_corrupted_record_when_read_then_checksum_is_rejected` — given corrupted record when read then checksum is rejected (`src/session/lifecycle/trace.rs:1012`; `test-9c9f0e0f6d8934622867`).
-- `given_dropped_records_when_validated_then_trace_is_incomplete` — given dropped records when validated then trace is incomplete (`src/session/lifecycle/trace.rs:1115`; `test-7647b415f36fc0ddd5a0`).
-- `given_existing_output_when_started_then_recorder_fails_closed` — given existing output when started then recorder fails closed (`src/session/lifecycle/trace.rs:1090`; `test-3b4ddbb231cb8f0182e8`).
-- `given_invalid_lifecycle_when_validated_then_validation_fails_closed` — given invalid lifecycle when validated then validation fails closed (`src/session/lifecycle/trace.rs:1057`; `test-ad4fc9ea8d172cd4b678`).
-- `given_record_after_terminal_when_validated_then_trace_is_rejected` — given record after terminal when validated then trace is rejected (`src/session/lifecycle/trace.rs:1160`; `test-13dde755fb2a02648705`).
-- `given_sequence_gap_when_validated_then_trace_is_rejected` — given sequence gap when validated then trace is rejected (`src/session/lifecycle/trace.rs:1136`; `test-5863853c4bbea9e5db76`).
-- `given_timestamp_regression_when_validated_then_trace_is_rejected` — given timestamp regression when validated then trace is rejected (`src/session/lifecycle/trace.rs:1148`; `test-3d881d801a5b93012bc6`).
-- `given_truncated_trace_when_read_then_truncation_is_rejected` — given truncated trace when read then truncation is rejected (`src/session/lifecycle/trace.rs:1027`; `test-f5a25488cf2eb39c2921`).
-- `given_unknown_version_when_read_then_version_is_rejected` — given unknown version when read then version is rejected (`src/session/lifecycle/trace.rs:1042`; `test-8ba8bc1dda2af18cb6c5`).
-- `given_zero_capacity_when_started_then_recorder_fails_closed` — given zero capacity when started then recorder fails closed (`src/session/lifecycle/trace.rs:1103`; `test-fcc195708afeec03a930`).
-- `given_cloned_stem_when_session_frozen_then_mutation_is_rejected` — given cloned stem when session frozen then mutation is rejected (`src/session/declaration/draft.rs:1263`; `test-1682e00b3166c4846a92`).
+- `given_complete_trace_when_validated_then_lifecycle_and_terminal_match` — given complete trace when validated then lifecycle and terminal match (`src/session/lifecycle/trace.rs:988`; `test-20c537693a458a99f6f9`).
+- `given_corrupted_record_when_read_then_checksum_is_rejected` — given corrupted record when read then checksum is rejected (`src/session/lifecycle/trace.rs:1012`; `test-b8839cf2e639dd3e301a`).
+- `given_dropped_records_when_validated_then_trace_is_incomplete` — given dropped records when validated then trace is incomplete (`src/session/lifecycle/trace.rs:1115`; `test-5ee80a5b5a1b2ce74da0`).
+- `given_existing_output_when_started_then_recorder_fails_closed` — given existing output when started then recorder fails closed (`src/session/lifecycle/trace.rs:1090`; `test-dbf6e802afe21cf4b197`).
+- `given_invalid_lifecycle_when_validated_then_validation_fails_closed` — given invalid lifecycle when validated then validation fails closed (`src/session/lifecycle/trace.rs:1057`; `test-10224fcae99d563f600b`).
+- `given_record_after_terminal_when_validated_then_trace_is_rejected` — given record after terminal when validated then trace is rejected (`src/session/lifecycle/trace.rs:1160`; `test-3d007d4a819d105d9058`).
+- `given_sequence_gap_when_validated_then_trace_is_rejected` — given sequence gap when validated then trace is rejected (`src/session/lifecycle/trace.rs:1136`; `test-71add6b39193d7909de3`).
+- `given_timestamp_regression_when_validated_then_trace_is_rejected` — given timestamp regression when validated then trace is rejected (`src/session/lifecycle/trace.rs:1148`; `test-22e90ca672945b18e17f`).
+- `given_truncated_trace_when_read_then_truncation_is_rejected` — given truncated trace when read then truncation is rejected (`src/session/lifecycle/trace.rs:1027`; `test-293abf2537b795f160f7`).
+- `given_unknown_version_when_read_then_version_is_rejected` — given unknown version when read then version is rejected (`src/session/lifecycle/trace.rs:1042`; `test-7d5245f8ecc878c074a6`).
+- `given_zero_capacity_when_started_then_recorder_fails_closed` — given zero capacity when started then recorder fails closed (`src/session/lifecycle/trace.rs:1103`; `test-0ad7a1a182e71b0727e9`).
+- `given_cloned_stem_when_session_frozen_then_mutation_is_rejected` — given cloned stem when session frozen then mutation is rejected (`src/session/declaration/draft.rs:1251`; `test-2cf3d98ffa38e0f5ee68`).
 
 ## Related documentation
 
@@ -82,7 +85,7 @@ Executable evidence selected for **Session traces** is limited to each test's re
 
 ## Evidence boundary
 
-The claims on **Session traces** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Session traces** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `src/session/lifecycle/trace.rs:1-1179` (`DIRECT`)
 

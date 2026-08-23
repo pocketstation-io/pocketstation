@@ -1,0 +1,411 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
+  "calls": [
+    "any",
+    "cfg",
+    "pub"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 20,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 27,
+      "text": "SessionRecordingStemOutcome, DEFAULT_MULTISTEM_RECORDING_GROUP_ID,"
+    },
+    {
+      "line": 30,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 41,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 44,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
+  "constructs": [],
+  "content_hash": "2536959aaae73ee6105b9a0167438f18d535f8149f756ffb31490691ccc0eb07",
+  "defaults": [
+    {
+      "line": 27,
+      "text": "SessionRecordingStemOutcome, DEFAULT_MULTISTEM_RECORDING_GROUP_ID,"
+    }
+  ],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "audio_input",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "builtins",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "native_library",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "polled_audio",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 10,
+      "name": "recording",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 11,
+      "name": "source",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 45,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 46,
+      "name": "composition",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 47,
+      "name": "registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 48,
+      "name": "runtime",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "builtins",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 11,
+      "name": "source",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "2536959aaae73ee6105b9a0167438f18d535f8149f756ffb31490691ccc0eb07",
+      "lines": [
+        1,
+        50
+      ],
+      "path": "src/session/extensions/mod.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0218-cece2399",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "4d43d377ff66d2aa650d17adcd7ce060e2274ff8",
+  "implemented_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
+  "implements": [],
+  "imported_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
+  "imports": [
+    "audio_input::AudioInputFactory",
+    "audio_input::{ AudioInput, AudioInputBuffer, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputConfig, AudioInputConfigError, AudioInputError, AudioInputObservations, AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, PcmSource, PCM_SOURCE_TYPE_ID, }",
+    "builtins::SessionGraphRegistrationError",
+    "builtins::{ register_session_graph_nodes, APPLICATION_SOURCE_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, }",
+    "module:audio_input",
+    "module:builtins",
+    "module:composition",
+    "module:native_library",
+    "module:polled_audio",
+    "module:recording",
+    "module:registry",
+    "module:runtime",
+    "module:source",
+    "recording::{ RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, RECORDING_GROUP_CONFIGURATION_KEY, }",
+    "recording::{ session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations, SessionRecordingOutcome, SessionRecordingReceipt, SessionRecordingState, SessionRecordingStemOutcome, DEFAULT_MULTISTEM_RECORDING_GROUP_ID, SESSION_RECORDING_MANIFEST_FILE_NAME, SESSION_RECORDING_MANIFEST_SCHEMA_VERSION, }",
+    "source::{ PreparedSourceRuntime, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourceOutputBranchSpec, SourceOutputIdentity, SourcePrepareContext, SourceRegistrationError, SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceRuntimeObservations, SourceSessionContext, SourceTypeId, SourceTypeIdError, }",
+    "source::{SourceOutputReceiver, SourceRuntimeError}"
+  ],
+  "inputs": [
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(test)]",
+    "SessionRecordingStemOutcome, DEFAULT_MULTISTEM_RECORDING_GROUP_ID,",
+    "audio_input::AudioInputFactory",
+    "audio_input::{ AudioInput, AudioInputBuffer, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputConfig, AudioInputConfigError, AudioInputError, AudioInputObservations, AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, PcmSource, PCM_SOURCE_TYPE_ID, }",
+    "builtins::SessionGraphRegistrationError",
+    "builtins::{ register_session_graph_nodes, APPLICATION_SOURCE_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, }",
+    "module:audio_input",
+    "module:builtins",
+    "module:composition",
+    "module:native_library",
+    "module:polled_audio",
+    "module:recording",
+    "module:registry",
+    "module:runtime",
+    "module:source",
+    "recording::{ RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, RECORDING_GROUP_CONFIGURATION_KEY, }",
+    "recording::{ session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations, SessionRecordingOutcome, SessionRecordingReceipt, SessionRecordingState, SessionRecordingStemOutcome, DEFAULT_MULTISTEM_RECORDING_GROUP_ID, SESSION_RECORDING_MANIFEST_FILE_NAME, SESSION_RECORDING_MANIFEST_SCHEMA_VERSION, }",
+    "source::{ PreparedSourceRuntime, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourceOutputBranchSpec, SourceOutputIdentity, SourcePrepareContext, SourceRegistrationError, SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceRuntimeObservations, SourceSessionContext, SourceTypeId, SourceTypeIdError, }",
+    "source::{SourceOutputReceiver, SourceRuntimeError}"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 50,
+  "locks": [],
+  "module": "pocketstation::session::extensions",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "mod:builtins",
+    "mod:source"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/extensions/mod.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "audio_input",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "native_library",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "polled_audio",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 10,
+      "name": "recording",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 45,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 46,
+      "name": "composition",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 47,
+      "name": "registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 48,
+      "name": "runtime",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "builtins",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 11,
+      "name": "source",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::extensions responsibilities, including extensions."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [
+    "builtins::SessionGraphRegistrationError",
+    "source::{SourceOutputReceiver, SourceRuntimeError}"
+  ],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [
+    "CONTAINS:src/session/extensions/audio_input/mod.rs",
+    "CONTAINS:src/session/extensions/builtins.rs",
+    "CONTAINS:src/session/extensions/native_library.rs",
+    "CONTAINS:src/session/extensions/polled_audio.rs",
+    "CONTAINS:src/session/extensions/recording.rs",
+    "CONTAINS:src/session/extensions/source.rs",
+    "IMPORTS:src/session/extensions/audio_input/mod.rs",
+    "IMPORTS:src/session/extensions/builtins.rs",
+    "IMPORTS:src/session/extensions/native_library.rs",
+    "IMPORTS:src/session/extensions/polled_audio.rs",
+    "IMPORTS:src/session/extensions/recording.rs",
+    "IMPORTS:src/session/extensions/source.rs"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "audio_input (mod)",
+    "builtins (mod)",
+    "native_library (mod)",
+    "polled_audio (mod)",
+    "recording (mod)",
+    "source (mod)",
+    "tests (mod)",
+    "composition (mod)",
+    "registry (mod)",
+    "runtime (mod)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

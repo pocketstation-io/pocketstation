@@ -14,12 +14,14 @@ Compilation separates structural mistakes from resource-opening failures. Develo
 
 - `SessionSpec` is the compiler input.
 - Graph contracts provide port, media, partition, and edge requirements.
+- `SessionCompileDiagnostic` projects the compile stage, stable error code, affected component IDs, and explanatory fields without reducing the failure to display text.
 - `CompiledSession` is passed to preparation, which owns external resource work.
 
 ## Invariants and guarantees
 
 - Unknown, duplicate, foreign, or incompatible declarations fail before runtime execution.
 - A required named input must be bound.
+- Multiple stems connected to one operator retain separate source-aware input bindings.
 - Compilation does not prove that a native source or endpoint can start.
 
 ## When you encounter it
@@ -57,18 +59,18 @@ The scope of **Runtime preparation** ends at the native contracts and executable
 
 Executable evidence selected for **Runtime preparation** is limited to each test's recorded setup and assertions:
 
-- `given_sync_caller_when_future_executes_then_result_returns_from_owned_runtime` — given sync caller when future executes then result returns from owned runtime (`src/runtime/lifecycle/async_host.rs:120`; `test-d5a7aaac26a126b55f7d`).
-- `given_tokio_caller_when_sync_lifecycle_executes_then_no_nested_runtime_panics` — given tokio caller when sync lifecycle executes then no nested runtime panics (`src/runtime/lifecycle/async_host.rs:129`; `test-905856446bbeb46b221d`).
-- `given_prepare_context_capacity_disagrees_with_runtime_edge_when_spawned_then_prepare_fails_closed` — given prepare context capacity disagrees with runtime edge when spawned then prepare fails closed (`src/runtime/signal/operator.rs:1808`; `test-ef78893c6bb92b613da0`).
-- `given_compiled_derived_route_when_runtime_prepared_then_compiled_topology_is_preserved` — given compiled derived route when runtime prepared then compiled topology is preserved (`src/session/compile/tests.rs:659`; `test-f38493cc0593f603aece`).
-- `given_required_named_input_missing_when_compiled_then_failure_precedes_graph_runtime` — given required named input missing when compiled then failure precedes graph runtime (`src/session/compile/tests.rs:384`; `test-99e881c59d26f6126f74`).
-- `given_deterministic_capture_when_polled_then_real_runtime_branch_copy_and_lineage_are_exposed` — given deterministic capture when polled then real runtime branch copy and lineage are exposed (`src/session/lifecycle/tests/engine.rs:440`; `test-162e3f6748e6f4f9bf07`).
-- `given_one_source_failure_when_runtime_continues_then_healthy_source_frame_is_delivered` — given one source failure when runtime continues then healthy source frame is delivered (`src/session/lifecycle/tests/running.rs:1468`; `test-35a321e64379e644e1b7`).
-- `given_connected_gain_plan_when_executed_then_only_connected_nodes_run_and_worker_receives_output` — given connected gain plan when executed then only connected nodes run and worker receives output (`src/runtime/audio/executor.rs:331`; `test-cd64bb966db1f193ea6f`).
-- `given_lineaged_frame_when_realtime_operator_executes_then_output_keeps_capture_epochs` — given lineaged frame when realtime operator executes then output keeps capture epochs (`src/runtime/audio/executor.rs:411`; `test-14905efc2e19f82a8cb2`).
-- `given_realtime_fan_out_when_executed_then_each_mutating_branch_gets_independent_copy` — given realtime fan out when executed then each mutating branch gets independent copy (`src/runtime/audio/executor.rs:369`; `test-c0c81ff42570a02c1eb9`).
-- `given_compiled_text_edge_when_router_builds_then_only_audio_edge_gets_audio_receiver` — given compiled text edge when router builds then only audio edge gets audio receiver (`src/runtime/audio/router.rs:983`; `test-c5f24b62056cfa546c3a`).
-- `given_enqueued_and_dropped_frames_when_observed_then_drop_rate_uses_all_attempts` — given enqueued and dropped frames when observed then drop rate uses all attempts (`src/runtime/audio/router.rs:1241`; `test-9a0bb689d2371b66a92f`).
+- `given_sync_caller_when_future_executes_then_result_returns_from_owned_runtime` — given sync caller when future executes then result returns from owned runtime (`src/runtime/lifecycle/async_host.rs:120`; `test-59f57b9ccdba8c9ca59d`).
+- `given_tokio_caller_when_sync_lifecycle_executes_then_no_nested_runtime_panics` — given tokio caller when sync lifecycle executes then no nested runtime panics (`src/runtime/lifecycle/async_host.rs:129`; `test-11ac2e93d34a2efd0e98`).
+- `given_prepare_context_capacity_disagrees_with_runtime_edge_when_spawned_then_prepare_fails_closed` — given prepare context capacity disagrees with runtime edge when spawned then prepare fails closed (`src/runtime/signal/operator.rs:1808`; `test-94655e5366915899c2bd`).
+- `given_compiled_derived_route_when_runtime_prepared_then_compiled_topology_is_preserved` — given compiled derived route when runtime prepared then compiled topology is preserved (`src/session/compile/tests.rs:659`; `test-21f8c08b6457bb762def`).
+- `given_required_named_input_missing_when_compiled_then_failure_precedes_graph_runtime` — given required named input missing when compiled then failure precedes graph runtime (`src/session/compile/tests.rs:384`; `test-e868470f819453421dd7`).
+- `given_deterministic_capture_when_polled_then_real_runtime_branch_copy_and_lineage_are_exposed` — given deterministic capture when polled then real runtime branch copy and lineage are exposed (`src/session/lifecycle/tests/engine.rs:440`; `test-b1797fb7f4f0913afd38`).
+- `given_one_source_failure_when_runtime_continues_then_healthy_source_frame_is_delivered` — given one source failure when runtime continues then healthy source frame is delivered (`src/session/lifecycle/tests/running.rs:1470`; `test-b5fe30e5dbde18fe390e`).
+- `given_connected_gain_plan_when_executed_then_only_connected_nodes_run_and_worker_receives_output` — given connected gain plan when executed then only connected nodes run and worker receives output (`src/runtime/audio/executor.rs:331`; `test-3f9281677e5af26dc9ad`).
+- `given_lineaged_frame_when_realtime_operator_executes_then_output_keeps_capture_epochs` — given lineaged frame when realtime operator executes then output keeps capture epochs (`src/runtime/audio/executor.rs:411`; `test-aee462488aef78361374`).
+- `given_realtime_fan_out_when_executed_then_each_mutating_branch_gets_independent_copy` — given realtime fan out when executed then each mutating branch gets independent copy (`src/runtime/audio/executor.rs:369`; `test-8b303620bdafeb3aa260`).
+- `given_compiled_text_edge_when_router_builds_then_only_audio_edge_gets_audio_receiver` — given compiled text edge when router builds then only audio edge gets audio receiver (`src/runtime/audio/router.rs:1012`; `test-687c08c4ebc7699d891b`).
+- `given_enqueued_and_dropped_frames_when_observed_then_drop_rate_uses_all_attempts` — given enqueued and dropped frames when observed then drop rate uses all attempts (`src/runtime/audio/router.rs:1272`; `test-81f2a37c65fc1321fb4b`).
 
 ## Related documentation
 
@@ -83,8 +85,8 @@ Executable evidence selected for **Runtime preparation** is limited to each test
 
 ## Evidence boundary
 
-The claims on **Runtime preparation** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Runtime preparation** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/prepare/mod.rs:1-1290` (`DIRECT`)
+- `src/session/prepare/mod.rs:1-1331` (`DIRECT`)
 
 For **Runtime preparation**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

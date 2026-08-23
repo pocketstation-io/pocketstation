@@ -4,15 +4,13 @@
   "atomics": [],
   "callbacks": [],
   "called_by": [],
-  "calls": [
-    "stop"
-  ],
+  "calls": [],
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
   "constructed_by": [],
   "constructs": [],
-  "content_hash": "86583224fb09ee55732f7a1937153e9cde284f9fff195fcc3510d0fa5ad1a446",
+  "content_hash": "cf0cd68bccbd365212f5e4d51cf3f8db3e536b5a8be80499eb679ead10f06ec1",
   "defaults": [],
   "defines": [],
   "device_io": [],
@@ -28,10 +26,10 @@
   "evidence": [
     {
       "classification": "DIRECT",
-      "content_hash": "86583224fb09ee55732f7a1937153e9cde284f9fff195fcc3510d0fa5ad1a446",
+      "content_hash": "cf0cd68bccbd365212f5e4d51cf3f8db3e536b5a8be80499eb679ead10f06ec1",
       "lines": [
         1,
-        47
+        68
       ],
       "path": "docs/getting-started/rust-quickstart.md",
       "symbol": null
@@ -49,15 +47,10 @@
   "file_id": "file-0027-409233ca",
   "file_kind": "documentation",
   "filesystem_io": [],
-  "finalization": [
-    {
-      "line": 24,
-      "text": "- a complete recording outcome is available only after `stop()` finalizes the"
-    }
-  ],
+  "finalization": [],
   "generated": false,
   "generated_from": "not_applicable",
-  "git_object": "2c2e50101b61a34a195545628ac2990f10148b60",
+  "git_object": "e5f4fdf7a216eca05e36c0062b03dc72d2c3b892",
   "implemented_by": [],
   "implements": [],
   "imported_by": [],
@@ -65,14 +58,9 @@
   "inputs": [
     "No external input is declared in this file."
   ],
-  "invariants": [
-    {
-      "line": 18,
-      "text": "- `PermissionObservation::NotObservable` is an unknown preflight state, never"
-    }
-  ],
+  "invariants": [],
   "language": "Markdown",
-  "line_count": 47,
+  "line_count": 68,
   "locks": [],
   "module": "not_applicable",
   "network_io": [],
@@ -97,7 +85,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "DECLARED",
-    "text": "Documents Rust quickstart for repository contributors or PocketStation developers."
+    "text": "Documents Capture an application and microphone in Rust for repository contributors or PocketStation developers."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -119,24 +107,14 @@
   "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "Documents Rust quickstart for repository contributors or PocketStation developers."
+    "Documents Capture an application and microphone in Rust for repository contributors or PocketStation developers."
   ],
   "retry_behavior": [],
   "serialization": [],
-  "shutdown_behavior": [
-    {
-      "line": 24,
-      "text": "- a complete recording outcome is available only after `stop()` finalizes the"
-    }
-  ],
+  "shutdown_behavior": [],
   "side_effects": [],
-  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
-  "startup_behavior": [
-    {
-      "line": 19,
-      "text": "an implicit grant; prepare/open returns the authoritative result for the"
-    }
-  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
   "test_coverage_status": "no_direct_test_link_extracted",

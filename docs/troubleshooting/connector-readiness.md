@@ -19,36 +19,36 @@ Read connector stage, error code, retryability, readiness snapshot, probe counts
 
 ## Diagnostic signals
 
-- `pocketstation::connector::readiness::ConnectorReadinessPolicyError` (`error-626bee576556acb470d9`)
-- `pocketstation::connector::readiness::ConnectorReadinessPolicyError` / `InvalidDeadline` (`error-6355361a7150f503c29b`)
-- `pocketstation::connector::readiness::ConnectorReadinessPolicyError` / `InvalidThreshold` (`error-a4a7c7b9c48716e5720d`)
-- `pocketstation::connector::ConnectorDeclarationError` (`error-f52aaa0ab3a57f824f0f`)
-- `pocketstation::connector::ConnectorDeclarationError` / `Configuration` (`error-79dde5b66dc8ba41f246`)
-- `pocketstation::connector::ConnectorDeclarationError` / `Session` (`error-036c74e429b61ebdf7cd`)
-- `pocketstation::connector::ConnectorDeclarationError` / `WrongSession` (`error-29964fc5e23bb4431977`)
-- `pocketstation::connector::ConnectorObservationLookupError` (`error-e6fe04d84e66539434f3`)
-- `pocketstation::connector::ConnectorObservationLookupError` / `WrongSession` (`error-ee73c462c5fc59286e13`)
-- `pocketstation::connector::ConnectorRegistrationError` (`error-673fdb2e6e5753423e37`)
-- `pocketstation::connector::ConnectorRegistrationError` / `InvalidManifest` (`error-29c46c16c1ddf5628f60`)
-- `pocketstation::connector::ConnectorRegistrationError` / `Session` (`error-5183d1e7630f1e611820`)
+- `pocketstation::connector::readiness::ConnectorReadinessPolicyError` (`error-0753f57f39eeda193fd7`)
+- `pocketstation::connector::readiness::ConnectorReadinessPolicyError` / `InvalidDeadline` (`error-8a53aa5c4aaf14173550`)
+- `pocketstation::connector::readiness::ConnectorReadinessPolicyError` / `InvalidThreshold` (`error-fc4f340f9b56ed8dc516`)
+- `pocketstation::connector::ConnectorDeclarationError` (`error-ef429da19499a30febec`)
+- `pocketstation::connector::ConnectorDeclarationError` / `Configuration` (`error-f85c1437daae474702be`)
+- `pocketstation::connector::ConnectorDeclarationError` / `Session` (`error-3d1f996891195230a51b`)
+- `pocketstation::connector::ConnectorDeclarationError` / `WrongSession` (`error-4fedfe91825f69358fac`)
+- `pocketstation::connector::ConnectorObservationLookupError` (`error-a53691df2301981b8217`)
+- `pocketstation::connector::ConnectorObservationLookupError` / `WrongSession` (`error-e60ba01d1498b3b6afcc`)
+- `pocketstation::connector::ConnectorRegistrationError` (`error-9d4e9574523d027696fc`)
+- `pocketstation::connector::ConnectorRegistrationError` / `InvalidManifest` (`error-2007e97b628ca3cf2622`)
+- `pocketstation::connector::ConnectorRegistrationError` / `Session` (`error-15e79a7790bf8f8fd860`)
 
 ## Executable evidence
 
-- `given_connector_never_ready_when_startup_deadline_expires_then_failure_is_terminal` exercises given connector never ready when startup deadline expires then failure is terminal under its recorded setup (`test-c926ac54e34e42c44877`).
-- `given_already_open_start_gate_when_endpoint_start_requested_then_start_fails_recoverably` exercises given already open start gate when endpoint start requested then start fails recoverably under its recorded setup (`test-e8c1d06b58a459a61c14`).
-- `given_connector_driver_when_two_stems_run_then_core_owns_typed_delivery_and_drain` exercises given connector driver when two stems run then core owns typed delivery and drain under its recorded setup (`test-c7deea8505c28b2f4d0d`).
-- `given_connector_error_when_inspected_then_code_is_stable_and_machine_readable` exercises given connector error when inspected then code is stable and machine readable under its recorded setup (`test-ae5c25d0ba6141b1a13a`).
-- `given_connector_public_surface_when_inspected_then_managed_aliases_are_absent` exercises given connector public surface when inspected then managed aliases are absent under its recorded setup (`test-e1ff05b0ec4b54a78b0b`).
-- `given_duplicate_connector_identity_when_registered_then_registration_is_rejected` exercises given duplicate connector identity when registered then registration is rejected under its recorded setup (`test-5576ad13d627ff481e0b`).
-- `given_grouped_connector_when_session_is_cancelled_then_abort_intent_reaches_worker` exercises given grouped connector when session is cancelled then abort intent reaches worker under its recorded setup (`test-834e8847ff5d70b04b11`).
-- `given_grouped_connector_when_session_stops_then_one_worker_is_joined_and_observed` exercises given grouped connector when session stops then one worker is joined and observed under its recorded setup (`test-92f5704ec6ee88e59fd8`).
-- `given_prior_preparation_when_connector_prepare_fails_then_prior_work_rolls_back` exercises given prior preparation when connector prepare fails then prior work rolls back under its recorded setup (`test-6e2b2556c5e641fda848`).
-- `given_registered_connector_when_declared_then_identity_is_session_scoped` exercises given registered connector when declared then identity is session scoped under its recorded setup (`test-da2fb847d5c7f22349e8`).
-- `given_saturated_connector_route_when_observed_then_drops_are_visible_in_session_metrics` exercises given saturated connector route when observed then drops are visible in session metrics under its recorded setup (`test-2fa646ca802635256f43`).
-- `given_canonical_connector_vectors_when_compared_then_core_contract_semantics_match` exercises given canonical connector vectors when compared then core contract semantics match under its recorded setup (`test-5ccbb97716e582e0a790`).
-- `given_provider_owned_field_name_when_resolved_then_core_preserves_it_opaquely` exercises given provider owned field name when resolved then core preserves it opaquely under its recorded setup (`test-d9078fd01d0271720b30`).
-- `given_empty_input_group_when_sidecar_prepares_then_structured_error_is_returned` exercises given empty input group when sidecar prepares then structured error is returned under its recorded setup (`test-49bd18fb96d67fdba9bf`).
-- `given_sidecar_host_errors_when_classified_then_retryability_is_preserved` exercises given sidecar host errors when classified then retryability is preserved under its recorded setup (`test-98ad8a10ce6f978fe856`).
+- `given_connector_never_ready_when_startup_deadline_expires_then_failure_is_terminal` exercises given connector never ready when startup deadline expires then failure is terminal under its recorded setup (`test-6b9e356534c04d2e2c3a`).
+- `given_already_open_start_gate_when_endpoint_start_requested_then_start_fails_recoverably` exercises given already open start gate when endpoint start requested then start fails recoverably under its recorded setup (`test-70431fbc7f2633c86453`).
+- `given_connector_driver_when_two_stems_run_then_core_owns_typed_delivery_and_drain` exercises given connector driver when two stems run then core owns typed delivery and drain under its recorded setup (`test-0226f46b368cc7dec827`).
+- `given_connector_error_when_inspected_then_code_is_stable_and_machine_readable` exercises given connector error when inspected then code is stable and machine readable under its recorded setup (`test-15d28406ed0aae973558`).
+- `given_connector_public_surface_when_inspected_then_managed_aliases_are_absent` exercises given connector public surface when inspected then managed aliases are absent under its recorded setup (`test-81c56797a2883f88930a`).
+- `given_duplicate_connector_identity_when_registered_then_registration_is_rejected` exercises given duplicate connector identity when registered then registration is rejected under its recorded setup (`test-7eabe669b99c6e379ec6`).
+- `given_grouped_connector_when_session_is_cancelled_then_abort_intent_reaches_worker` exercises given grouped connector when session is cancelled then abort intent reaches worker under its recorded setup (`test-30eb64a515907397f19f`).
+- `given_grouped_connector_when_session_stops_then_one_worker_is_joined_and_observed` exercises given grouped connector when session stops then one worker is joined and observed under its recorded setup (`test-2a1b6ff7d4015d418fc1`).
+- `given_prior_preparation_when_connector_prepare_fails_then_prior_work_rolls_back` exercises given prior preparation when connector prepare fails then prior work rolls back under its recorded setup (`test-125f099fa90218b83809`).
+- `given_registered_connector_when_declared_then_identity_is_session_scoped` exercises given registered connector when declared then identity is session scoped under its recorded setup (`test-b500d2adf0e2ce5b5229`).
+- `given_saturated_connector_route_when_observed_then_drops_are_visible_in_session_metrics` exercises given saturated connector route when observed then drops are visible in session metrics under its recorded setup (`test-440e0d0f038bd27e531f`).
+- `given_canonical_connector_vectors_when_compared_then_core_contract_semantics_match` exercises given canonical connector vectors when compared then core contract semantics match under its recorded setup (`test-2df56b27d49e3e92a1f8`).
+- `given_provider_owned_field_name_when_resolved_then_core_preserves_it_opaquely` exercises given provider owned field name when resolved then core preserves it opaquely under its recorded setup (`test-c7a1a4edccbfbf6d9c04`).
+- `given_empty_input_group_when_sidecar_prepares_then_structured_error_is_returned` exercises given empty input group when sidecar prepares then structured error is returned under its recorded setup (`test-a819c552a02a127c977d`).
+- `given_sidecar_host_errors_when_classified_then_retryability_is_preserved` exercises given sidecar host errors when classified then retryability is preserved under its recorded setup (`test-72a5c76707ff849957fa`).
 
 ## Corrective action
 
@@ -76,7 +76,7 @@ Retry is allowed only by the typed retryability and application policy. No deliv
 
 ## Evidence boundary
 
-The claims on **A connector is not ready** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **A connector is not ready** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `src/connector/readiness.rs:1-67` (`DIRECT`)
 - `src/connector/status.rs:1-79` (`DIRECT`)

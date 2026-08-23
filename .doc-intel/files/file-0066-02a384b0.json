@@ -1,0 +1,1078 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 9,
+      "text": "//! AUDIO-001: platform callback writes f32 PCM \u2192 Rust Opus encode \u2192 Swift WebRTC send."
+    }
+  ],
+  "called_by": [
+    "CONTAINS:src/abi/mod.rs",
+    "IMPORTS:src/abi/mod.rs"
+  ],
+  "calls": [
+    "AssertUnwindSafe",
+    "Box::from_raw",
+    "Box::into_raw",
+    "Box::new",
+    "FnOnce",
+    "OpusConfig::default",
+    "OpusEncodeError::Opus",
+    "OpusEncoder::from_config",
+    "Vec::with_capacity",
+    "all",
+    "as_c_int",
+    "as_mut_ptr",
+    "as_ptr",
+    "auto",
+    "catch_unwind",
+    "cfg",
+    "clear",
+    "codec_int_call",
+    "codec_pointer_call",
+    "codec_void_call",
+    "collect",
+    "derive",
+    "drop",
+    "encode_into",
+    "given_bitrate_change_when_encode_then_still_produces_valid_packet",
+    "given_encoder_when_destroy_null_then_no_crash",
+    "given_invalid_channel_count_when_create_then_returns_null",
+    "given_invalid_frame_size_when_encode_then_error_is_typed_without_writing",
+    "given_null_encoder_when_encode_then_returns_minus_one",
+    "given_null_encoder_when_set_bitrate_then_returns_minus_one",
+    "given_panicking_abi_bodies_when_guarded_then_panics_are_contained",
+    "given_rejected_capacity_when_retried_then_encoder_state_is_unchanged",
+    "given_sine_440hz_when_round_trip_then_decoded_has_energy",
+    "given_small_output_buffer_when_encode_then_packet_is_not_truncated",
+    "given_stereo_channels_when_create_then_succeeds",
+    "given_valid_encoder_when_set_bitrate_then_returns_zero",
+    "given_valid_pcm_when_encode_then_returns_positive_byte_count",
+    "given_wrong_sample_rate_when_create_then_returns_null",
+    "ios",
+    "is_null",
+    "iter",
+    "kHz",
+    "kbps",
+    "len",
+    "map",
+    "messages",
+    "null",
+    "pks_encode_opus",
+    "pks_opus_encoder_create",
+    "pks_opus_encoder_destroy",
+    "pks_opus_encoder_set_bitrate",
+    "pks_opus_max_packet_bytes",
+    "repr",
+    "samples",
+    "set_bitrate_kbps",
+    "sin",
+    "sine_960",
+    "std::ptr::copy_nonoverlapping",
+    "std::ptr::null_mut",
+    "std::slice::from_raw_parts",
+    "unwrap_or",
+    "unwrap_or_else",
+    "validate_frame_sample_count"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 218,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/abi/mod.rs",
+    "IMPORTS:src/abi/mod.rs"
+  ],
+  "constructs": [
+    "Box::new"
+  ],
+  "content_hash": "ba15d6c382d78b5cc8b8e235647b8317b090f0d4f423a4a53c11c8c9074e8599",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "enum",
+      "line": 19,
+      "name": "PksCodecErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 28,
+      "name": "as_c_int",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "codec_int_call",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "codec_pointer_call",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "codec_void_call",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 48,
+      "name": "PksOpusEncoder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "pks_opus_max_packet_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "pks_opus_encoder_create",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 110,
+      "name": "pks_opus_encoder_destroy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "pks_opus_encoder_set_bitrate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 170,
+      "name": "pks_encode_opus",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 219,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 222,
+      "name": "sine_960",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 230,
+      "name": "given_wrong_sample_rate_when_create_then_returns_null",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 240,
+      "name": "given_invalid_channel_count_when_create_then_returns_null",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 250,
+      "name": "given_stereo_channels_when_create_then_succeeds",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 261,
+      "name": "given_valid_pcm_when_encode_then_returns_positive_byte_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "given_null_encoder_when_encode_then_returns_minus_one",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 294,
+      "name": "given_small_output_buffer_when_encode_then_packet_is_not_truncated",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 310,
+      "name": "given_invalid_frame_size_when_encode_then_error_is_typed_without_writing",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 326,
+      "name": "given_rejected_capacity_when_retried_then_encoder_state_is_unchanged",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 376,
+      "name": "given_panicking_abi_bodies_when_guarded_then_panics_are_contained",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 387,
+      "name": "given_encoder_when_destroy_null_then_no_crash",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 393,
+      "name": "given_valid_encoder_when_set_bitrate_then_returns_zero",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 411,
+      "name": "given_null_encoder_when_set_bitrate_then_returns_minus_one",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 419,
+      "name": "given_bitrate_change_when_encode_then_still_produces_valid_packet",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 438,
+      "name": "given_sine_440hz_when_round_trip_then_decoded_has_energy",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 115,
+      "text": "unsafe { drop(Box::from_raw(enc)) };"
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 19,
+      "name": "PksCodecErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 48,
+      "name": "PksOpusEncoder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "pks_opus_max_packet_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "pks_opus_encoder_create",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 110,
+      "name": "pks_opus_encoder_destroy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "pks_opus_encoder_set_bitrate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 170,
+      "name": "pks_encode_opus",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 99,
+      "text": "Err(_) => std::ptr::null_mut(),"
+    },
+    {
+      "line": 144,
+      "text": "Err(_) => PksCodecErrorCode::Encode.as_c_int(),"
+    },
+    {
+      "line": 186,
+      "text": "Err(OpusEncodeError::InvalidFrameSampleCount { .. }) => {"
+    },
+    {
+      "line": 189,
+      "text": "Err(OpusEncodeError::Opus(_)) => {"
+    },
+    {
+      "line": 210,
+      "text": "Err(OpusEncodeError::InvalidFrameSampleCount { .. }) => {"
+    },
+    {
+      "line": 213,
+      "text": "Err(OpusEncodeError::Opus(_)) => PksCodecErrorCode::Encode.as_c_int(),"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 19,
+      "name": "PksCodecErrorCode",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "ba15d6c382d78b5cc8b8e235647b8317b090f0d4f423a4a53c11c8c9074e8599",
+      "lines": [
+        1,
+        457
+      ],
+      "path": "src/abi/codec.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/abi/mod.rs",
+    "IMPORTS:src/abi/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 3,
+      "text": "//! This is not the Session engine ABI."
+    },
+    {
+      "line": 55,
+      "text": "pub extern \"C\" fn pks_opus_max_packet_bytes() -> usize {"
+    },
+    {
+      "line": 71,
+      "text": "pub unsafe extern \"C\" fn pks_opus_encoder_create("
+    },
+    {
+      "line": 110,
+      "text": "pub unsafe extern \"C\" fn pks_opus_encoder_destroy(enc: *mut PksOpusEncoder) {"
+    },
+    {
+      "line": 115,
+      "text": "unsafe { drop(Box::from_raw(enc)) };"
+    },
+    {
+      "line": 126,
+      "text": "/// if a Rust panic was contained at the ABI boundary."
+    },
+    {
+      "line": 131,
+      "text": "pub unsafe extern \"C\" fn pks_opus_encoder_set_bitrate("
+    },
+    {
+      "line": 141,
+      "text": "let encoder = unsafe { &mut *enc };"
+    },
+    {
+      "line": 163,
+      "text": "///           -5 if a Rust panic was contained at the ABI boundary."
+    },
+    {
+      "line": 170,
+      "text": "pub unsafe extern \"C\" fn pks_encode_opus("
+    },
+    {
+      "line": 183,
+      "text": "let encoder = unsafe { &mut *enc };"
+    },
+    {
+      "line": 198,
+      "text": "let samples = unsafe { std::slice::from_raw_parts(pcm, sample_count) };"
+    },
+    {
+      "line": 205,
+      "text": "unsafe {"
+    },
+    {
+      "line": 233,
+      "text": "unsafe {"
+    },
+    {
+      "line": 243,
+      "text": "unsafe {"
+    },
+    {
+      "line": 253,
+      "text": "unsafe {"
+    },
+    {
+      "line": 264,
+      "text": "unsafe {"
+    },
+    {
+      "line": 279,
+      "text": "unsafe {"
+    },
+    {
+      "line": 297,
+      "text": "unsafe {"
+    },
+    {
+      "line": 313,
+      "text": "unsafe {"
+    },
+    {
+      "line": 329,
+      "text": "unsafe {"
+    },
+    {
+      "line": 389,
+      "text": "unsafe { pks_opus_encoder_destroy(std::ptr::null_mut()) }"
+    },
+    {
+      "line": 396,
+      "text": "unsafe {"
+    },
+    {
+      "line": 413,
+      "text": "unsafe {"
+    },
+    {
+      "line": 422,
+      "text": "unsafe {"
+    },
+    {
+      "line": 441,
+      "text": "unsafe {"
+    }
+  ],
+  "file_id": "file-0066-02a384b0",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "84729fbbfdcf06511d8d969fe9878f01e70a77fc",
+  "implemented_by": [
+    "CONTAINS:src/abi/mod.rs",
+    "IMPORTS:src/abi/mod.rs"
+  ],
+  "implements": [
+    "PksCodecErrorCode"
+  ],
+  "imported_by": [
+    "CONTAINS:src/abi/mod.rs",
+    "IMPORTS:src/abi/mod.rs"
+  ],
+  "imports": [
+    "crate::codec::{OpusChannels, OpusConfig, OpusEncodeError, OpusEncoder}",
+    "std::f32::consts::PI",
+    "std::os::raw::{c_int, c_uchar, c_uint}",
+    "std::panic::{catch_unwind, AssertUnwindSafe}",
+    "super::*"
+  ],
+  "inputs": [
+    "#[cfg(test)]",
+    "crate::codec::{OpusChannels, OpusConfig, OpusEncodeError, OpusEncoder}",
+    "std::f32::consts::PI",
+    "std::os::raw::{c_int, c_uchar, c_uint}",
+    "std::panic::{catch_unwind, AssertUnwindSafe}",
+    "super::*"
+  ],
+  "invariants": [
+    {
+      "line": 47,
+      "text": "/// A caller must not share this pointer across threads."
+    },
+    {
+      "line": 61,
+      "text": "/// sample_rate: must be 48000 (Opus operates internally at 48 kHz; any other"
+    },
+    {
+      "line": 69,
+      "text": "/// The returned pointer must be destroyed with `pks_opus_encoder_destroy`."
+    },
+    {
+      "line": 108,
+      "text": "/// `enc` must be a pointer returned by `pks_opus_encoder_create` or null."
+    },
+    {
+      "line": 129,
+      "text": "/// `enc` must be a valid pointer from `pks_opus_encoder_create` or null."
+    },
+    {
+      "line": 166,
+      "text": "/// - `enc` must be a valid pointer from `pks_opus_encoder_create` or null."
+    },
+    {
+      "line": 167,
+      "text": "/// - `pcm` must point to at least `sample_count` valid f32 values."
+    },
+    {
+      "line": 168,
+      "text": "/// - `out_buf` must point to at least `out_cap` bytes of writable memory."
+    },
+    {
+      "line": 203,
+      "text": "// `n` cannot exceed that maximum, and the caller contract"
+    },
+    {
+      "line": 235,
+      "text": "assert!(enc.is_null(), \"must reject non-48000 sample rate\");"
+    },
+    {
+      "line": 245,
+      "text": "assert!(enc.is_null(), \"must reject channels != 1 or 2\");"
+    },
+    {
+      "line": 255,
+      "text": "assert!(!enc.is_null(), \"stereo encoder must succeed\");"
+    },
+    {
+      "line": 266,
+      "text": "assert!(!enc.is_null(), \"encoder creation failed\");"
+    },
+    {
+      "line": 270,
+      "text": "assert!(n > 0, \"expected positive byte count, got {n}\");"
+    },
+    {
+      "line": 299,
+      "text": "assert!(!enc.is_null());"
+    },
+    {
+      "line": 304,
+      "text": "assert_eq!(out, [0xA5], \"insufficient capacity must not copy a prefix\");"
+    },
+    {
+      "line": 315,
+      "text": "assert!(!enc.is_null());"
+    },
+    {
+      "line": 320,
+      "text": "assert!(out.iter().all(|byte| *byte == 0xA5));"
+    },
+    {
+      "line": 332,
+      "text": "assert!(!retried_encoder.is_null());"
+    },
+    {
+      "line": 333,
+      "text": "assert!(!reference_encoder.is_null());"
+    },
+    {
+      "line": 364,
+      "text": "assert!(retried_len > 0);"
+    },
+    {
+      "line": 382,
+      "text": "assert!(pointer.is_null());"
+    },
+    {
+      "line": 398,
+      "text": "assert!(!enc.is_null());"
+    },
+    {
+      "line": 404,
+      "text": "\"0 kbps = VBR auto must succeed\""
+    },
+    {
+      "line": 424,
+      "text": "assert!(!enc.is_null());"
+    },
+    {
+      "line": 429,
+      "text": "assert!("
+    },
+    {
+      "line": 431,
+      "text": "\"encode after bitrate change must produce valid packet\""
+    },
+    {
+      "line": 443,
+      "text": "assert!(!enc.is_null());"
+    },
+    {
+      "line": 447,
+      "text": "assert!(n > 0);"
+    },
+    {
+      "line": 448,
+      "text": "assert!("
+    },
+    {
+      "line": 452,
+      "text": "assert!(n >= 2, \"encoded frame suspiciously small: {n}\");"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 457,
+  "locks": [],
+  "module": "pocketstation::abi::codec",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "Err(OpusEncodeError::InvalidFrameSampleCount { .. }) => {",
+    "Err(OpusEncodeError::Opus(_)) => PksCodecErrorCode::Encode.as_c_int(),",
+    "Err(OpusEncodeError::Opus(_)) => {",
+    "Err(_) => PksCodecErrorCode::Encode.as_c_int(),",
+    "Err(_) => std::ptr::null_mut(),",
+    "enum:PksCodecErrorCode",
+    "fn:pks_encode_opus",
+    "fn:pks_opus_encoder_create",
+    "fn:pks_opus_encoder_destroy",
+    "fn:pks_opus_encoder_set_bitrate",
+    "fn:pks_opus_max_packet_bytes",
+    "struct:PksOpusEncoder"
+  ],
+  "package": "pocketstation",
+  "path": "src/abi/codec.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 28,
+      "name": "as_c_int",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "codec_int_call",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "codec_pointer_call",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "codec_void_call",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 219,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 222,
+      "name": "sine_960",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 230,
+      "name": "given_wrong_sample_rate_when_create_then_returns_null",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 240,
+      "name": "given_invalid_channel_count_when_create_then_returns_null",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 250,
+      "name": "given_stereo_channels_when_create_then_succeeds",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 261,
+      "name": "given_valid_pcm_when_encode_then_returns_positive_byte_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "given_null_encoder_when_encode_then_returns_minus_one",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 294,
+      "name": "given_small_output_buffer_when_encode_then_packet_is_not_truncated",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 310,
+      "name": "given_invalid_frame_size_when_encode_then_error_is_typed_without_writing",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 326,
+      "name": "given_rejected_capacity_when_retried_then_encoder_state_is_unchanged",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 376,
+      "name": "given_panicking_abi_bodies_when_guarded_then_panics_are_contained",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 387,
+      "name": "given_encoder_when_destroy_null_then_no_crash",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 393,
+      "name": "given_valid_encoder_when_set_bitrate_then_returns_zero",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 411,
+      "name": "given_null_encoder_when_set_bitrate_then_returns_minus_one",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 419,
+      "name": "given_bitrate_change_when_encode_then_still_produces_valid_packet",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 438,
+      "name": "given_sine_440hz_when_round_trip_then_decoded_has_energy",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 19,
+      "name": "PksCodecErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 48,
+      "name": "PksOpusEncoder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "pks_opus_max_packet_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "pks_opus_encoder_create",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 110,
+      "name": "pks_opus_encoder_destroy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "pks_opus_encoder_set_bitrate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 170,
+      "name": "pks_encode_opus",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::abi::codec responsibilities, including codec; clone; fmt."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/native-extensions.md",
+    "docs/concepts/c-abi-ownership.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/architecture/overview.md",
+    "docs/internals/abi-conformance.md",
+    "docs/glossary.md",
+    "docs/guides/extensions.md",
+    "docs/how-to/use-c-session-api.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/native-extensions.md",
+    "docs/reference/c-abi.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/extensions-and-abi.md",
+    "docs/troubleshooting/native-extension-load.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/native-extension-trust.md",
+    "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/codec/encoder.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 95,
+      "text": "Ok(enc) => Box::into_raw(Box::new(PksOpusEncoder {"
+    },
+    {
+      "line": 115,
+      "text": "unsafe { drop(Box::from_raw(enc)) };"
+    }
+  ],
+  "responsibilities": [
+    "PksCodecErrorCode (enum)",
+    "as_c_int (fn)",
+    "codec_int_call (fn)",
+    "codec_pointer_call (fn)",
+    "codec_void_call (fn)",
+    "PksOpusEncoder (struct)",
+    "pks_opus_max_packet_bytes (fn)",
+    "pks_opus_encoder_create (fn)",
+    "pks_opus_encoder_destroy (fn)",
+    "pks_opus_encoder_set_bitrate (fn)",
+    "pks_encode_opus (fn)",
+    "tests (mod)",
+    "sine_960 (fn)",
+    "given_wrong_sample_rate_when_create_then_returns_null (fn)",
+    "given_invalid_channel_count_when_create_then_returns_null (fn)",
+    "given_stereo_channels_when_create_then_succeeds (fn)",
+    "given_valid_pcm_when_encode_then_returns_positive_byte_count (fn)",
+    "given_null_encoder_when_encode_then_returns_minus_one (fn)",
+    "given_small_output_buffer_when_encode_then_packet_is_not_truncated (fn)",
+    "given_invalid_frame_size_when_encode_then_error_is_typed_without_writing (fn)",
+    "given_rejected_capacity_when_retried_then_encoder_state_is_unchanged (fn)",
+    "given_panicking_abi_bodies_when_guarded_then_panics_are_contained (fn)",
+    "given_encoder_when_destroy_null_then_no_crash (fn)",
+    "given_valid_encoder_when_set_bitrate_then_returns_zero (fn)",
+    "given_null_encoder_when_set_bitrate_then_returns_minus_one (fn)",
+    "given_bitrate_change_when_encode_then_still_produces_valid_packet (fn)",
+    "given_sine_440hz_when_round_trip_then_decoded_has_energy (fn)"
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 9,
+      "text": "//! AUDIO-001: platform callback writes f32 PCM \u2192 Rust Opus encode \u2192 Swift WebRTC send."
+    },
+    {
+      "line": 431,
+      "text": "\"encode after bitrate change must produce valid packet\""
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 3,
+      "text": "//! This is not the Session engine ABI."
+    },
+    {
+      "line": 55,
+      "text": "pub extern \"C\" fn pks_opus_max_packet_bytes() -> usize {"
+    },
+    {
+      "line": 71,
+      "text": "pub unsafe extern \"C\" fn pks_opus_encoder_create("
+    },
+    {
+      "line": 110,
+      "text": "pub unsafe extern \"C\" fn pks_opus_encoder_destroy(enc: *mut PksOpusEncoder) {"
+    },
+    {
+      "line": 115,
+      "text": "unsafe { drop(Box::from_raw(enc)) };"
+    },
+    {
+      "line": 126,
+      "text": "/// if a Rust panic was contained at the ABI boundary."
+    },
+    {
+      "line": 131,
+      "text": "pub unsafe extern \"C\" fn pks_opus_encoder_set_bitrate("
+    },
+    {
+      "line": 141,
+      "text": "let encoder = unsafe { &mut *enc };"
+    },
+    {
+      "line": 163,
+      "text": "///           -5 if a Rust panic was contained at the ABI boundary."
+    },
+    {
+      "line": 170,
+      "text": "pub unsafe extern \"C\" fn pks_encode_opus("
+    },
+    {
+      "line": 183,
+      "text": "let encoder = unsafe { &mut *enc };"
+    },
+    {
+      "line": 198,
+      "text": "let samples = unsafe { std::slice::from_raw_parts(pcm, sample_count) };"
+    },
+    {
+      "line": 205,
+      "text": "unsafe {"
+    },
+    {
+      "line": 233,
+      "text": "unsafe {"
+    },
+    {
+      "line": 243,
+      "text": "unsafe {"
+    },
+    {
+      "line": 253,
+      "text": "unsafe {"
+    },
+    {
+      "line": 264,
+      "text": "unsafe {"
+    },
+    {
+      "line": 279,
+      "text": "unsafe {"
+    },
+    {
+      "line": 297,
+      "text": "unsafe {"
+    },
+    {
+      "line": 313,
+      "text": "unsafe {"
+    },
+    {
+      "line": 329,
+      "text": "unsafe {"
+    },
+    {
+      "line": 389,
+      "text": "unsafe { pks_opus_encoder_destroy(std::ptr::null_mut()) }"
+    },
+    {
+      "line": 396,
+      "text": "unsafe {"
+    },
+    {
+      "line": 413,
+      "text": "unsafe {"
+    },
+    {
+      "line": 422,
+      "text": "unsafe {"
+    },
+    {
+      "line": 441,
+      "text": "unsafe {"
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-002ce44230f2b0ac6d7c",
+    "test-070a3c0153acb64680ab",
+    "test-073998688232a109f6e7",
+    "test-0a18698a5dc971fb5bd9",
+    "test-2f90a0a4149901522180",
+    "test-526209707182f47b9696",
+    "test-657d1e2cbdcbd70cf5fa",
+    "test-6dc72e33e3f258aaad24",
+    "test-8ba7b5b19e9d7dfbc464",
+    "test-9fb4684ff29b5ab716fd",
+    "test-a807dc7f3aad831eda7a",
+    "test-b9320e29d736fba73b31",
+    "test-f10bfad1b583316ad6fb",
+    "test-f2e13a28f1aa591f3c67"
+  ],
+  "threads": [
+    {
+      "line": 46,
+      "text": "/// Opaque Opus encoder handle. Created once per session; not thread-safe."
+    },
+    {
+      "line": 140,
+      "text": "// exclusively by this thread for the duration of the call."
+    },
+    {
+      "line": 182,
+      "text": "// exclusively by this thread for the duration of the call."
+    },
+    {
+      "line": 251,
+      "text": "// SAFETY: The returned pointer is checked, used on this thread, and"
+    },
+    {
+      "line": 394,
+      "text": "// SAFETY: The returned pointer is checked, used on this thread, and"
+    }
+  ],
+  "visibility": "mixed"
+}

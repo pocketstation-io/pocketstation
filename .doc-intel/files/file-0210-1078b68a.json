@@ -1,0 +1,394 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "ApplicationSelector::name",
+    "EndpointDescriptor::new",
+    "NodeTypeId::from",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "Session::new",
+    "Source::application",
+    "Source::microphone_default",
+    "StreamOrigin::Stem",
+    "as_str",
+    "capture",
+    "connect",
+    "connections",
+    "count",
+    "endpoint",
+    "expect",
+    "filter",
+    "find",
+    "freeze",
+    "given_declared_operator_when_named_ports_connected_then_one_instance_owns_all_connections",
+    "given_foreign_input_handle_when_connected_then_declaration_fails_before_freeze",
+    "given_repeated_named_input_when_declared_then_compiler_retains_multiplicity_authority",
+    "given_through_sugar_when_frozen_then_canonical_instance_and_connection_records_are_used",
+    "input",
+    "instance_id",
+    "iter",
+    "len",
+    "map",
+    "operator",
+    "operators",
+    "origin",
+    "output",
+    "send",
+    "target",
+    "through"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "EndpointDescriptor::new",
+    "NodeTypeId::from",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "Session::new"
+  ],
+  "content_hash": "5e66ab00b03407135b0532c41c10b7bdfc0a86440e5b70106973f84dddc553e0",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 6,
+      "name": "operator",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 10,
+      "name": "endpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "given_declared_operator_when_named_ports_connected_then_one_instance_owns_all_connections",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 84,
+      "name": "given_through_sugar_when_frozen_then_canonical_instance_and_connection_records_are_used",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "given_repeated_named_input_when_declared_then_compiler_retains_multiplicity_authority",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 157,
+      "name": "given_foreign_input_handle_when_connected_then_declaration_fails_before_freeze",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 11,
+      "text": "fn endpoint(session: &Session, suffix: &str) -> crate::session::EndpointHandle {"
+    },
+    {
+      "line": 12,
+      "text": "let node_type_id = format!(\"endpoint.named.{suffix}\");"
+    },
+    {
+      "line": 14,
+      "text": ".endpoint(EndpointDescriptor::new("
+    },
+    {
+      "line": 16,
+      "text": "OperatorId::new(format!(\"example.endpoint.named.{suffix}.v1\")),"
+    },
+    {
+      "line": 18,
+      "text": ".expect(\"endpoint declaration\")"
+    },
+    {
+      "line": 45,
+      "text": ".send(endpoint(&session, \"primary\"))"
+    },
+    {
+      "line": 50,
+      "text": ".send(endpoint(&session, \"diagnostics\"))"
+    },
+    {
+      "line": 93,
+      "text": ".send(endpoint(&session, \"sugar\"))"
+    },
+    {
+      "line": 136,
+      "text": ".send(endpoint(&session, \"fan-in\"))"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 171,
+      "text": "assert!(matches!(result, Err(SessionError::InvalidOperator { .. })));"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "5e66ab00b03407135b0532c41c10b7bdfc0a86440e5b70106973f84dddc553e0",
+      "lines": [
+        1,
+        173
+      ],
+      "path": "src/session/declaration/tests/operator_connections.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0210-1078b68a",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "695c8d02bb9d7e630494668c51c73c59a7a844e7",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "crate::graph::NodeTypeId",
+    "crate::session::{ ApplicationSelector, ConnectionTarget, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, SessionError, Source, StreamOrigin, }"
+  ],
+  "inputs": [
+    "crate::graph::NodeTypeId",
+    "crate::session::{ ApplicationSelector, ConnectionTarget, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, SessionError, Source, StreamOrigin, }"
+  ],
+  "invariants": [
+    {
+      "line": 80,
+      "text": "assert!(matches!(operator_inputs[0].origin(), StreamOrigin::Stem(_)));"
+    },
+    {
+      "line": 103,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 171,
+      "text": "assert!(matches!(result, Err(SessionError::InvalidOperator { .. })));"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 173,
+  "locks": [],
+  "module": "pocketstation::session::declaration::tests::operator_connections",
+  "network_io": [
+    {
+      "line": 37,
+      "text": ".connect(declared.input(\"application\").expect(\"application input\"))"
+    },
+    {
+      "line": 40,
+      "text": ".connect(declared.input(\"microphone\").expect(\"microphone input\"))"
+    },
+    {
+      "line": 127,
+      "text": ".connect(declared.input(\"audio\").expect(\"input\"))"
+    },
+    {
+      "line": 131,
+      "text": ".connect(declared.input(\"audio\").expect(\"same input\"))"
+    },
+    {
+      "line": 169,
+      "text": "let result = microphone.connect(foreign);"
+    }
+  ],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "assert!(matches!(result, Err(SessionError::InvalidOperator { .. })));"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/declaration/tests/operator_connections.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 6,
+      "name": "operator",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 10,
+      "name": "endpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "given_declared_operator_when_named_ports_connected_then_one_instance_owns_all_connections",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 84,
+      "name": "given_through_sugar_when_frozen_then_canonical_instance_and_connection_records_are_used",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "given_repeated_named_input_when_declared_then_compiler_retains_multiplicity_authority",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 157,
+      "name": "given_foreign_input_handle_when_connected_then_declaration_fails_before_freeze",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::declaration::tests::operator connections responsibilities, including the src/session/declaration/tests/operator connections boundary."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [],
+  "responsibilities": [
+    "operator (fn)",
+    "endpoint (fn)",
+    "given_declared_operator_when_named_ports_connected_then_one_instance_owns_all_connections (fn)",
+    "given_through_sugar_when_frozen_then_canonical_instance_and_connection_records_are_used (fn)",
+    "given_repeated_named_input_when_declared_then_compiler_retains_multiplicity_authority (fn)",
+    "given_foreign_input_handle_when_connected_then_declaration_fails_before_freeze (fn)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 37,
+      "text": ".connect(declared.input(\"application\").expect(\"application input\"))"
+    },
+    {
+      "line": 40,
+      "text": ".connect(declared.input(\"microphone\").expect(\"microphone input\"))"
+    },
+    {
+      "line": 127,
+      "text": ".connect(declared.input(\"audio\").expect(\"input\"))"
+    },
+    {
+      "line": 131,
+      "text": ".connect(declared.input(\"audio\").expect(\"same input\"))"
+    },
+    {
+      "line": 169,
+      "text": "let result = microphone.connect(foreign);"
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0098e9bf5859cd4840f9",
+    "test-0920f0be863672d2298e",
+    "test-d74d1c0449808ea58c4f",
+    "test-f9ee710abe61af2dce08"
+  ],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

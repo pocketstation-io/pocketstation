@@ -197,9 +197,9 @@ Use this index to move from a first Session to the exact contract, task, failure
 
 ## Evidence boundary
 
-The claims on **PocketStation documentation** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **PocketStation documentation** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `Cargo.toml:1-180` (`DIRECT`)
-- `src/lib.rs:1-1129` (`DIRECT`)
+- `src/lib.rs:1-1161` (`DIRECT`)
 
 For **PocketStation documentation**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

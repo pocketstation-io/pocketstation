@@ -2,8 +2,8 @@
   "analysis_stage": "doc_ready",
   "async_boundaries": [
     {
-      "line": 64,
-      "text": "async-free, log-free, and panic-free by contract and accepted gates. Evidence"
+      "line": 88,
+      "text": "async-free, log-free, and panic-free by contract and repository checks. Each"
     }
   ],
   "atomics": [],
@@ -15,22 +15,22 @@
   "configuration_read": [],
   "constructed_by": [],
   "constructs": [],
-  "content_hash": "937116ba09996a1d83502d416379343580447d61aa785e8043d61660d2d6bef8",
+  "content_hash": "4bb05c002fa38cc0c4062fe3611956b06e3bc56544d70afdeb0a99c1f9fe00a0",
   "defaults": [],
   "defines": [],
   "device_io": [],
   "drop_cleanup": [],
   "endpoints": [
     {
-      "line": 20,
+      "line": 40,
       "text": "- external source, Operator, Endpoint, Connector, and generated-audio"
     },
     {
-      "line": 43,
+      "line": 68,
       "text": "- Open Operator, Endpoint, Connector, external-source, and generated-audio"
     },
     {
-      "line": 48,
+      "line": 73,
       "text": "Endpoint-backed worker path remains available for specialized transports."
     }
   ],
@@ -44,10 +44,10 @@
   "evidence": [
     {
       "classification": "DIRECT",
-      "content_hash": "937116ba09996a1d83502d416379343580447d61aa785e8043d61660d2d6bef8",
+      "content_hash": "4bb05c002fa38cc0c4062fe3611956b06e3bc56544d70afdeb0a99c1f9fe00a0",
       "lines": [
         1,
-        67
+        91
       ],
       "path": "RELEASE_NOTES.md",
       "symbol": null
@@ -63,15 +63,15 @@
   ],
   "ffi_io": [
     {
-      "line": 18,
+      "line": 38,
       "text": "- Rust and the versioned C ABI;"
     },
     {
-      "line": 31,
+      "line": 51,
       "text": "ABI uses versioned, size-prefixed records. PKSS frames carry explicit protocol"
     },
     {
-      "line": 54,
+      "line": 79,
       "text": "- A versioned C ABI with executable callbacks and bounded PKSS process"
     }
   ],
@@ -80,13 +80,13 @@
   "filesystem_io": [],
   "finalization": [
     {
-      "line": 46,
+      "line": 71,
       "text": "accounting, drain/abort, panic containment, and joined finalization while"
     }
   ],
   "generated": false,
   "generated_from": "not_applicable",
-  "git_object": "ab69b62a44ef08cf344977fbdae6a8f22f6599d0",
+  "git_object": "b85197020160cf2ee2ff98b409a20a5edbd558fa",
   "implemented_by": [],
   "implements": [],
   "imported_by": [],
@@ -94,9 +94,14 @@
   "inputs": [
     "No external input is declared in this file."
   ],
-  "invariants": [],
+  "invariants": [
+    {
+      "line": 60,
+      "text": "reviewed compatibility change shows that those contracts cannot express the"
+    }
+  ],
   "language": "Markdown",
-  "line_count": 67,
+  "line_count": 91,
   "locks": [],
   "module": "not_applicable",
   "network_io": [],
@@ -150,36 +155,36 @@
   "serialization": [],
   "shutdown_behavior": [
     {
-      "line": 53,
+      "line": 78,
       "text": "runtime observations, and explicit stop and fault outcomes."
     }
   ],
   "side_effects": [
     {
-      "line": 18,
+      "line": 38,
       "text": "- Rust and the versioned C ABI;"
     },
     {
-      "line": 31,
+      "line": 51,
       "text": "ABI uses versioned, size-prefixed records. PKSS frames carry explicit protocol"
     },
     {
-      "line": 54,
+      "line": 79,
       "text": "- A versioned C ABI with executable callbacks and bounded PKSS process"
     }
   ],
-  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
   "startup_behavior": [
     {
-      "line": 58,
+      "line": 83,
       "text": "source prepare/open is authoritative on every platform."
     }
   ],
   "state_machine": [],
   "tasks": [
     {
-      "line": 64,
-      "text": "async-free, log-free, and panic-free by contract and accepted gates. Evidence"
+      "line": 88,
+      "text": "async-free, log-free, and panic-free by contract and repository checks. Each"
     }
   ],
   "test_coverage_status": "no_direct_test_link_extracted",

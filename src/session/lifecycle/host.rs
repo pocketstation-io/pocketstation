@@ -22,9 +22,9 @@ use crate::session::{
     SessionMetricsSnapshot, SessionRecordingReceipt, SessionStartCancellation, SessionStartOptions,
 };
 
-/// Safe host-owned Session environment for foreign-language adapters.
+/// Owns the native Session resources projected to language adapters.
 ///
-/// The host owns the real capture backends, the canonical Session engine, and
+/// The host owns the capture backends, the Session engine, and
 /// any bounded polled-audio receipts registered for foreign retention. Future
 /// portability layers can project this owner without inventing a second
 /// lifecycle or media-runtime authority.
@@ -37,13 +37,14 @@ pub struct SessionEngineHost {
 }
 
 impl SessionEngineHost {
+    #[doc = "Returns the native held by `SessionEngineHost`."]
     pub fn native(
         options: NativeSessionEngineHostOptions,
     ) -> Result<Self, SessionEngineHostBuildError> {
         build_native_host(options, None)
     }
 
-    /// Builds the native Session host with one canonical multistem recorder.
+    /// Builds a native Session host with one multistem recorder.
     #[cfg(any(test, feature = "internal-testing"))]
     pub fn native_with_multistem_recording(
         options: NativeSessionEngineHostOptions,
@@ -52,11 +53,13 @@ impl SessionEngineHost {
         build_native_host(options, Some(output_root.into()))
     }
 
+    #[doc = "Compiles its owned operation for `SessionEngineHost`."]
     pub fn compile(&self, session: Session) -> Result<CompiledSession, SessionEngineStartError> {
         self.engine.compile(session)
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Starts the lifecycle represented by `SessionEngineHost`."]
     pub fn start(&self, session: Session) -> Result<RunningSession, SessionEngineStartError> {
         self.engine.start(
             session,
@@ -68,6 +71,7 @@ impl SessionEngineHost {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Starts compiled for `SessionEngineHost`."]
     pub fn start_compiled(
         &self,
         compiled: CompiledSession,
@@ -81,6 +85,7 @@ impl SessionEngineHost {
         )
     }
 
+    #[doc = "Starts compiled cancellable for `SessionEngineHost`."]
     pub fn start_compiled_cancellable(
         &self,
         compiled: CompiledSession,
@@ -96,24 +101,29 @@ impl SessionEngineHost {
         )
     }
 
+    #[doc = "Returns the polled audio receipt held by `SessionEngineHost`."]
     pub fn polled_audio_receipt(&self, index: usize) -> Option<PolledAudioReceipt> {
         self.polled_audio_receipts.get(index).cloned()
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the polled audio receipts total held by `SessionEngineHost`."]
     pub fn polled_audio_receipts_total(&self) -> usize {
         self.polled_audio_receipts.len()
     }
 
+    #[doc = "Returns the recording receipt held by `SessionEngineHost`."]
     pub fn recording_receipt(&self, index: usize) -> Option<SessionRecordingReceipt> {
         self.recording_receipts.get(index).cloned()
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the recording receipts total held by `SessionEngineHost`."]
     pub fn recording_receipts_total(&self) -> usize {
         self.recording_receipts.len()
     }
 
+    #[doc = "Returns the metrics snapshot held by `SessionEngineHost`."]
     pub fn metrics_snapshot(
         &self,
         events: &SessionEventReceiver,
@@ -155,20 +165,27 @@ impl SessionEngineHost {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the engine held by `SessionEngineHost`."]
     pub fn engine(&self) -> &SessionEngine {
         &self.engine
     }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Configures native session engine host behavior at its owning API boundary."]
 pub struct NativeSessionEngineHostOptions {
+    #[doc = "Stores the sample spec used by `NativeSessionEngineHostOptions`."]
     pub sample_spec: SampleSpec,
+    #[doc = "Sets the source queue capacity frames available to `NativeSessionEngineHostOptions`."]
     pub source_queue_capacity_frames: usize,
+    #[doc = "Stores the start options used by `NativeSessionEngineHostOptions`."]
     pub start_options: SessionStartOptions,
+    #[doc = "Stores the polled audio endpoint used by `NativeSessionEngineHostOptions`."]
     pub polled_audio_endpoint: PolledAudioEndpointConfig,
 }
 
 impl Default for NativeSessionEngineHostOptions {
+    #[doc = "Returns the default `NativeSessionEngineHostOptions` value."]
     fn default() -> Self {
         Self {
             sample_spec: SampleSpec::new(48_000, 1, SampleFormat::F32Interleaved),
@@ -179,9 +196,9 @@ impl Default for NativeSessionEngineHostOptions {
     }
 }
 
-/// Setup-time owner for the canonical Session host.
+/// Builds a Session host from caller-owned or native capture backends.
 ///
-/// This builder deliberately mirrors the engine's real registration seams while
+/// This builder exposes the engine registration boundaries while
 /// also requiring the two concrete capture backends needed by the current
 /// product slice. The portable C surface can depend on this owner without
 /// synthesizing a parallel runtime.
@@ -240,6 +257,7 @@ impl SessionEngineHostBuilder {
         Err(SessionEngineHostBuildError::UnsupportedPlatform)
     }
 
+    #[doc = "Creates a new `SessionEngineHostBuilder`."]
     pub fn new(
         prepare_context: crate::graph::PrepareContext,
         source_queue_capacity_frames: usize,
@@ -258,6 +276,7 @@ impl SessionEngineHostBuilder {
         })
     }
 
+    #[doc = "Sets the application backend used by `SessionEngineHostBuilder`."]
     pub fn set_application_backend(
         &mut self,
         backend: Arc<dyn CallbackCaptureBackend>,
@@ -266,6 +285,7 @@ impl SessionEngineHostBuilder {
         self
     }
 
+    #[doc = "Sets the microphone backend used by `SessionEngineHostBuilder`."]
     pub fn set_microphone_backend(
         &mut self,
         backend: Arc<dyn CallbackCaptureBackend>,
@@ -280,7 +300,7 @@ impl SessionEngineHostBuilder {
     }
 
     /// Registers one externally owned endpoint implementation with the
-    /// canonical Session engine.
+    /// Session engine.
     pub fn register_audio_endpoint_driver(
         &mut self,
         operator_id: OperatorId,
@@ -292,6 +312,7 @@ impl SessionEngineHostBuilder {
         Ok(self)
     }
 
+    #[doc = "Registers endpoint for `SessionEngineHostBuilder`."]
     pub fn register_endpoint(
         &mut self,
         operator_id: OperatorId,
@@ -303,6 +324,7 @@ impl SessionEngineHostBuilder {
         Ok(self)
     }
 
+    #[doc = "Registers async operator for `SessionEngineHostBuilder`."]
     pub fn register_async_operator(
         &mut self,
         factory: Arc<dyn AsyncOperatorFactory>,
@@ -311,6 +333,7 @@ impl SessionEngineHostBuilder {
         Ok(self)
     }
 
+    #[doc = "Registers sidecar process for `SessionEngineHostBuilder`."]
     pub fn register_sidecar_process(
         &mut self,
         spec: SidecarProcessSpec,
@@ -319,6 +342,7 @@ impl SessionEngineHostBuilder {
         Ok(self)
     }
 
+    #[doc = "Registers polled audio endpoint for `SessionEngineHostBuilder`."]
     pub fn register_polled_audio_endpoint(
         &mut self,
         config: PolledAudioEndpointConfig,
@@ -331,6 +355,7 @@ impl SessionEngineHostBuilder {
         Ok(receipt)
     }
 
+    #[doc = "Registers multistem recording for `SessionEngineHostBuilder`."]
     pub fn register_multistem_recording(
         &mut self,
         output_root: impl Into<std::path::PathBuf>,
@@ -342,6 +367,7 @@ impl SessionEngineHostBuilder {
         Ok(receipt)
     }
 
+    #[doc = "Builds its owned operation for `SessionEngineHostBuilder`."]
     pub fn build(self) -> Result<SessionEngineHost, SessionEngineHostBuildError> {
         let application_backend = self
             .application_backend

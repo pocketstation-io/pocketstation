@@ -1,0 +1,555 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
+  "calls": [
+    "Arc::new",
+    "ConnectorError::internal",
+    "Duration::from_millis",
+    "Instant::now",
+    "Mutex::new",
+    "accepts_delivery",
+    "clone",
+    "code",
+    "connector",
+    "derive",
+    "endpoint",
+    "internal_connector_error",
+    "into_inner",
+    "is_none",
+    "is_open",
+    "is_requested",
+    "is_some",
+    "lock",
+    "mark_stopping",
+    "min",
+    "new",
+    "probe_interval",
+    "pub",
+    "record_failure",
+    "record_terminal",
+    "request",
+    "saturating_duration_since",
+    "set_delivery_readiness",
+    "set_health",
+    "set_recovery",
+    "snapshot",
+    "startup_timeout",
+    "supervise_startup_readiness",
+    "terminal_error",
+    "to_string",
+    "unwrap_or_else",
+    "wait_for_start_gate",
+    "wait_timeout"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "Mutex::new",
+    "new"
+  ],
+  "content_hash": "eb0f20341a8ef7ef141eb53d8da100faf231af959c98c4bf316086caf3c64f1e",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 12,
+      "name": "START_GATE_POLL_INTERVAL",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 16,
+      "name": "ConnectorWorkerState",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 23,
+      "name": "new",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "connector",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "endpoint",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "record_terminal",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "terminal_error",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "mark_stopping",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 84,
+      "name": "wait_for_start_gate",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "supervise_startup_readiness",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 142,
+      "name": "internal_connector_error",
+      "visibility": "pub(super)"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 4,
+      "text": "use crate::endpoint::EndpointDriverObservationHandle;"
+    },
+    {
+      "line": 18,
+      "text": "endpoint: EndpointDriverObservationHandle,"
+    },
+    {
+      "line": 25,
+      "text": "endpoint: EndpointDriverObservationHandle,"
+    },
+    {
+      "line": 29,
+      "text": "endpoint,"
+    },
+    {
+      "line": 38,
+      "text": "pub(super) fn endpoint(&self) -> &EndpointDriverObservationHandle {"
+    },
+    {
+      "line": 39,
+      "text": "&self.endpoint"
+    },
+    {
+      "line": 56,
+      "text": "self.endpoint.record_failure(1);"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 12,
+      "name": "START_GATE_POLL_INTERVAL",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 16,
+      "name": "ConnectorWorkerState",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 23,
+      "name": "new",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "connector",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "endpoint",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "record_terminal",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "terminal_error",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "mark_stopping",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 84,
+      "name": "wait_for_start_gate",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "supervise_startup_readiness",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 142,
+      "name": "internal_connector_error",
+      "visibility": "pub(super)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 114,
+      "text": "Err(error) => {"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "eb0f20341a8ef7ef141eb53d8da100faf231af959c98c4bf316086caf3c64f1e",
+      "lines": [
+        1,
+        150
+      ],
+      "path": "src/connector/worker/supervisor.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0126-86f8f2f2",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "a04fc6ba58397387734979ae3f4abccd2a370897",
+  "implemented_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
+  "implements": [
+    "ConnectorWorkerState"
+  ],
+  "imported_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
+  "imports": [
+    "crate::connector::{ ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorStage, ConnectorObservationHandle, ConnectorReadinessPolicy, ConnectorRecovery, }",
+    "crate::endpoint::EndpointDriverObservationHandle",
+    "crate::{EndpointShutdownMode, EndpointStartGate}",
+    "std::sync::{Arc, Mutex}",
+    "std::time::{Duration, Instant}",
+    "super::coordination::ConnectorStopToken"
+  ],
+  "inputs": [
+    "crate::connector::{ ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorStage, ConnectorObservationHandle, ConnectorReadinessPolicy, ConnectorRecovery, }",
+    "crate::endpoint::EndpointDriverObservationHandle",
+    "crate::{EndpointShutdownMode, EndpointStartGate}",
+    "std::sync::{Arc, Mutex}",
+    "std::time::{Duration, Instant}",
+    "super::coordination::ConnectorStopToken"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 150,
+  "locks": [
+    {
+      "line": 1,
+      "text": "use std::sync::{Arc, Mutex};"
+    },
+    {
+      "line": 19,
+      "text": "terminal_error: Arc<Mutex<Option<ConnectorError>>>,"
+    },
+    {
+      "line": 30,
+      "text": "terminal_error: Arc::new(Mutex::new(None)),"
+    }
+  ],
+  "module": "pocketstation::connector::worker::supervisor",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "Err(error) => {",
+    "const:START_GATE_POLL_INTERVAL",
+    "fn:connector",
+    "fn:endpoint",
+    "fn:internal_connector_error",
+    "fn:mark_stopping",
+    "fn:new",
+    "fn:record_terminal",
+    "fn:supervise_startup_readiness",
+    "fn:terminal_error",
+    "fn:wait_for_start_gate",
+    "struct:ConnectorWorkerState"
+  ],
+  "package": "pocketstation",
+  "path": "src/connector/worker/supervisor.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 12,
+      "name": "START_GATE_POLL_INTERVAL",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 16,
+      "name": "ConnectorWorkerState",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 23,
+      "name": "new",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "connector",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "endpoint",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "record_terminal",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "terminal_error",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "mark_stopping",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 84,
+      "name": "wait_for_start_gate",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "supervise_startup_readiness",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 142,
+      "name": "internal_connector_error",
+      "visibility": "pub(super)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::connector::worker::supervisor responsibilities, including supervisor; start gate poll interval; clone."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/connectors.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/configure-connector-secrets.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/connectors.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/connectors.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/terminal-outcomes.md",
+    "docs/best-practices/connector-retries.md",
+    "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/connector/error.rs",
+    "REFERENCES:src/connector/observations.rs",
+    "REFERENCES:src/connector/readiness.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/endpoint/runtime.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 1,
+      "text": "use std::sync::{Arc, Mutex};"
+    },
+    {
+      "line": 19,
+      "text": "terminal_error: Arc<Mutex<Option<ConnectorError>>>,"
+    },
+    {
+      "line": 30,
+      "text": "terminal_error: Arc::new(Mutex::new(None)),"
+    }
+  ],
+  "responsibilities": [
+    "START_GATE_POLL_INTERVAL (const)",
+    "ConnectorWorkerState (struct)",
+    "new (fn)",
+    "connector (fn)",
+    "endpoint (fn)",
+    "record_terminal (fn)",
+    "terminal_error (fn)",
+    "mark_stopping (fn)",
+    "wait_for_start_gate (fn)",
+    "supervise_startup_readiness (fn)",
+    "internal_connector_error (fn)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 86,
+      "text": "stop: &ConnectorStopToken,"
+    },
+    {
+      "line": 90,
+      "text": "if stop.wait_timeout(START_GATE_POLL_INTERVAL) {"
+    },
+    {
+      "line": 98,
+      "text": "stop: &ConnectorStopToken,"
+    },
+    {
+      "line": 103,
+      "text": "if !wait_for_start_gate(stop, start_gate) {"
+    },
+    {
+      "line": 108,
+      "text": "if stop.is_requested() {"
+    },
+    {
+      "line": 120,
+      "text": "stop.request(EndpointShutdownMode::Abort);"
+    },
+    {
+      "line": 131,
+      "text": "stop.request(EndpointShutdownMode::Abort);"
+    },
+    {
+      "line": 137,
+      "text": "if stop.wait_timeout(wait) {"
+    }
+  ],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 103,
+      "text": "if !wait_for_start_gate(stop, start_gate) {"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

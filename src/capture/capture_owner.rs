@@ -28,6 +28,7 @@ pub struct CaptureLineageSeed {
 }
 
 impl CaptureLineageSeed {
+    #[doc = "Creates a new `CaptureLineageSeed`."]
     pub const fn new(session_id: SessionId, stem_id: StemId) -> Self {
         Self {
             session_id,
@@ -35,10 +36,12 @@ impl CaptureLineageSeed {
         }
     }
 
+    #[doc = "Returns the session identifier held by `CaptureLineageSeed`."]
     pub const fn session_id(self) -> SessionId {
         self.session_id
     }
 
+    #[doc = "Returns the stem identifier held by `CaptureLineageSeed`."]
     pub const fn stem_id(self) -> StemId {
         self.stem_id
     }
@@ -47,21 +50,32 @@ impl CaptureLineageSeed {
 /// Authoritative lineage state established only after native capture opens.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct CaptureOpenMetadata {
+    #[doc = "Identifies the session identifier recorded by `CaptureOpenMetadata`."]
     pub session_id: SessionId,
+    #[doc = "Identifies the source identifier recorded by `CaptureOpenMetadata`."]
     pub source_id: SourceId,
+    #[doc = "Identifies the stem identifier recorded by `CaptureOpenMetadata`."]
     pub stem_id: StemId,
+    #[doc = "Identifies the clock identifier recorded by `CaptureOpenMetadata`."]
     pub clock_id: ClockDomainId,
+    #[doc = "Stores the source generation used by `CaptureOpenMetadata`."]
     pub source_generation: SourceGeneration,
+    #[doc = "Stores the discontinuity epoch used by `CaptureOpenMetadata`."]
     pub discontinuity_epoch: u64,
+    #[doc = "Stores the permission epoch used by `CaptureOpenMetadata`."]
     pub permission_epoch: PermissionEpoch,
 }
 
 /// Setup-time request for one bounded callback-oriented capture owner.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CapturePrepareRequest {
+    #[doc = "Stores the mode used by `CapturePrepareRequest`."]
     pub mode: CaptureMode,
+    #[doc = "Stores the lineage seed used by `CapturePrepareRequest`."]
     pub lineage_seed: CaptureLineageSeed,
+    #[doc = "Sets the frame capacity frames available to `CapturePrepareRequest`."]
     pub frame_capacity_frames: usize,
+    #[doc = "Sets the runtime event capacity events available to `CapturePrepareRequest`."]
     pub runtime_event_capacity_events: usize,
 }
 
@@ -132,6 +146,7 @@ pub struct PreparedCapture {
 }
 
 impl PreparedCapture {
+    #[doc = "Opens the resource represented by `PreparedCapture`."]
     pub fn open(self) -> Result<CaptureOwner, CaptureError> {
         let frame_observations = self.frame_stream.observation_handle();
         let runtime_event_observations = self.runtime_event_receiver.observation_handle();
@@ -174,6 +189,7 @@ pub struct CaptureOwnerObservations {
 }
 
 #[derive(Clone, Debug)]
+#[doc = "Retains the identity and observation access returned for capture observation."]
 pub struct CaptureObservationReceipt {
     backend: CaptureObservationHandle,
     frame_stream: CapturedFrameObservationHandle,
@@ -181,6 +197,7 @@ pub struct CaptureObservationReceipt {
 }
 
 impl CaptureObservationReceipt {
+    #[doc = "Returns the observations exposed by `CaptureObservationReceipt`."]
     pub fn observations(&self) -> CaptureOwnerObservations {
         CaptureOwnerObservations {
             backend: self.backend.observations(),
@@ -193,6 +210,7 @@ impl CaptureObservationReceipt {
 /// Final observations returned only after backend stop and join complete.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct CaptureStopOutcome {
+    #[doc = "Carries the observations collected for `CaptureStopOutcome`."]
     pub observations: CaptureOwnerObservations,
 }
 
@@ -212,6 +230,7 @@ pub struct CaptureOwner {
 }
 
 impl CaptureOwner {
+    #[doc = "Attempts to recv runtime event through `CaptureOwner`."]
     pub fn try_recv_runtime_event(&self) -> SourceRuntimeEventReceive {
         let received = self.runtime_event_receiver.try_recv();
         if let SourceRuntimeEventReceive::Event(event) = &received {
@@ -220,6 +239,7 @@ impl CaptureOwner {
         received
     }
 
+    #[doc = "Attempts to next lineaged frame through `CaptureOwner`."]
     pub fn try_next_lineaged_frame(
         &mut self,
     ) -> Result<Option<LineagedAudioFrame>, FrameLineageError> {
@@ -249,6 +269,7 @@ impl CaptureOwner {
         LineagedAudioFrame::new(frame, lineage).map(Some)
     }
 
+    #[doc = "Returns the open metadata held by `CaptureOwner`."]
     pub fn open_metadata(&self) -> CaptureOpenMetadata {
         CaptureOpenMetadata {
             source_generation: SourceGeneration(self.source_generation.load(Ordering::Acquire)),
@@ -258,19 +279,23 @@ impl CaptureOwner {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the frame stream closed held by `CaptureOwner`."]
     pub fn frame_stream_closed(&self) -> bool {
         self.frame_stream.is_closed()
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the observations exposed by `CaptureOwner`."]
     pub fn observations(&self) -> CaptureOwnerObservations {
         self.observation_receipt.observations()
     }
 
+    #[doc = "Returns the observation receipt held by `CaptureOwner`."]
     pub fn observation_receipt(&self) -> CaptureObservationReceipt {
         self.observation_receipt.clone()
     }
 
+    #[doc = "Stops `CaptureOwner`, joins its worker, and returns the terminal result."]
     pub fn stop_and_join(self) -> Result<CaptureStopOutcome, CaptureError> {
         let Self {
             active_backend,

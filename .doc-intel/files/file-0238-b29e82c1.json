@@ -1,0 +1,3930 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 811,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 838,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 848,
+      "text": "std::future::pending::<()>().await;"
+    },
+    {
+      "line": 860,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 876,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 883,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1092,
+      "text": ".expect(\"test async operator registration\");"
+    },
+    {
+      "line": 1112,
+      "text": "\"capture input must reach the async Operator before the deadline\""
+    },
+    {
+      "line": 1704,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1718,
+      "text": "Box::pin(async move { Ok(vec![self.emit(input, self.output_role)?]) })"
+    },
+    {
+      "line": 1726,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1744,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 2044,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 2058,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 2090,
+      "text": "Box::pin(async move {"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "ApplicationSelector::name",
+    "Arc::clone",
+    "Arc::new",
+    "AsyncOperatorControl::default",
+    "AsyncOperatorManifest::new",
+    "AtomicBool::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Box::new",
+    "Box::pin",
+    "CaptureControl::default",
+    "CaptureError::BackendInit",
+    "CaptureObservationCounters::default",
+    "ComposedControl::default",
+    "ComposedFactory::multi",
+    "ComposedFactory::transform",
+    "DerivedEndpointControl::default",
+    "Duration::from_millis",
+    "Duration::from_secs",
+    "EdgeContract::bounded_async",
+    "EdgeContract::realtime_audio",
+    "EndpointConfiguration::new",
+    "EndpointControl::default",
+    "EndpointDescriptor::new",
+    "EndpointDriverObservations::default",
+    "EndpointDriverRegistry::new",
+    "EndpointFailure::new",
+    "EndpointGroupId::new",
+    "EndpointPreparationGroup::Route",
+    "EndpointPreparationGroup::Shared",
+    "EndpointReceiver::Signal",
+    "Instant::now",
+    "MediaCaps::Audio",
+    "NodeDescriptor::new",
+    "NodeError::Prepare",
+    "NodeError::Process",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "OperatorOutputRolePolicy::default",
+    "PcmOperatorControl::default",
+    "PcmOperatorFactory::new",
+    "PortSpec::new",
+    "PrepareContext::new",
+    "RunningTestAsyncFactory::new",
+    "SampleSpec::new",
+    "Self::new",
+    "Self::output",
+    "SemanticRole::new",
+    "Session::new",
+    "SessionCompiler::new",
+    "SessionEngineBuilder::new",
+    "SessionEngineStartError::Compile",
+    "SessionEngineStartError::Start",
+    "SessionEventKind::Lifecycle",
+    "SessionEventKind::Rollback",
+    "SessionEventKind::Source",
+    "SessionEventKind::Terminal",
+    "SessionEventReceive::Event",
+    "SessionStartOptions::default",
+    "SignalDerivation::new",
+    "SignalEnvelope::untracked",
+    "SignalPayload::Audio",
+    "SignalPayload::Text",
+    "SignalSpec::audio",
+    "SignalSpec::text",
+    "Source::application",
+    "Source::microphone_default",
+    "SourceId",
+    "StableSourceId::new",
+    "StreamId",
+    "Vec::new",
+    "Vec::with_capacity",
+    "acquire",
+    "all",
+    "and_then",
+    "any",
+    "as_ref",
+    "assert_failed_start_events",
+    "assert_no_live_owners",
+    "audio_frames_enqueued_total",
+    "audio_port",
+    "audio_reentry_metrics",
+    "audio_stem_id",
+    "browser",
+    "build",
+    "cancel",
+    "cancel_preparation",
+    "cancellation_total",
+    "capture",
+    "capture_backend",
+    "capture_backend_set",
+    "checked_shl",
+    "clone",
+    "collect",
+    "compile",
+    "connect",
+    "connector",
+    "context",
+    "count_ones",
+    "create",
+    "declare_reentry",
+    "derive",
+    "derived_runtime_engine",
+    "derived_runtime_session",
+    "descriptor",
+    "drop",
+    "edge_contract",
+    "elapsed",
+    "emit",
+    "endpoint",
+    "endpoint_id",
+    "endpoint_registry",
+    "engine",
+    "error",
+    "expect",
+    "extend",
+    "fetch_add",
+    "fetch_or",
+    "fetch_sub",
+    "filter_map",
+    "find",
+    "first",
+    "frame_capacity_samples",
+    "freeze",
+    "get",
+    "given_blocked_operator_when_cancelled_then_session_cancellation_is_bounded_and_observed",
+    "given_capture_backlog_when_session_starts_then_no_destination_edge_overflows",
+    "given_endpoint_prepare_failure_when_started_then_every_prior_owner_rolls_back",
+    "given_endpoint_start_failure_when_started_then_all_acquisitions_roll_back",
+    "given_one_source_failure_when_runtime_continues_then_healthy_source_frame_is_delivered",
+    "given_operator_prepare_failure_when_started_then_all_prior_owners_roll_back",
+    "given_pcm_output_with_two_consumers_when_compiled_then_reentry_fails_closed",
+    "given_public_session_pcm_output_when_reentered_then_audio_lane_and_lifecycle_are_observed",
+    "given_public_session_when_composed_then_three_stages_and_named_ports_run_under_one_owner",
+    "given_second_capture_open_failure_when_started_then_captures_and_endpoints_roll_back",
+    "given_two_sources_when_started_then_gate_lineage_and_repeated_stop_are_truthful",
+    "given_typed_operator_routes_when_stopped_then_final_state_and_metrics_are_truthful",
+    "indexed_metrics",
+    "indexed_metrics_full",
+    "ingress_rejected_total",
+    "input",
+    "input_attempted_total",
+    "input_delivered_total",
+    "input_dropped_total",
+    "input_enqueued_total",
+    "input_port",
+    "input_queue_capacity_frames",
+    "input_queue_depth_frames",
+    "input_queue_peak_frames",
+    "inputs",
+    "instantiate",
+    "into_inner",
+    "into_iter",
+    "into_parts",
+    "invalid_total",
+    "is_audio",
+    "is_empty",
+    "is_none_or",
+    "is_open",
+    "is_some",
+    "is_success",
+    "iter",
+    "join",
+    "join_and_finalize",
+    "joined",
+    "kind",
+    "last",
+    "len",
+    "let",
+    "lineage",
+    "load",
+    "lock",
+    "manifest",
+    "map",
+    "map_err",
+    "map_or",
+    "map_or_else",
+    "max",
+    "maximum_buffered_audio_bytes",
+    "media",
+    "monotonic_timestamp_ns",
+    "multi",
+    "new",
+    "next",
+    "node_registry",
+    "observation_handle",
+    "observations",
+    "observe_endpoint_frame",
+    "ok_or_else",
+    "open",
+    "operator",
+    "output",
+    "outputs",
+    "pool_exhausted_total",
+    "pool_slots",
+    "preparation_group",
+    "prepare",
+    "prepare_session_runtime",
+    "prepared_session",
+    "process",
+    "product_spec",
+    "push",
+    "queue_capacity_signals",
+    "queue_depth_signals",
+    "queue_peak_signals",
+    "record",
+    "recv",
+    "reenter_audio",
+    "register",
+    "register_async_operator",
+    "register_audio_endpoint_driver",
+    "register_endpoint",
+    "request_stop",
+    "rollback_failures",
+    "route_context",
+    "route_id",
+    "saturating_add",
+    "saturating_mul",
+    "send",
+    "session_id",
+    "session_timeline_origin",
+    "shared_audio_rejected_total",
+    "signal_spec",
+    "signals_dropped_total",
+    "signals_enqueued_total",
+    "signals_received_total",
+    "snapshot",
+    "source_id",
+    "start",
+    "start_prepared_session",
+    "state",
+    "std::mem::take",
+    "std::thread::sleep",
+    "std::thread::spawn",
+    "stop",
+    "stop_and_join",
+    "store",
+    "take",
+    "take_event_receiver",
+    "test_nonterminal_spec",
+    "test_terminal_spec",
+    "text_port",
+    "through",
+    "to_owned",
+    "to_string",
+    "transform",
+    "try_recv",
+    "try_send",
+    "try_set_len",
+    "u64::from",
+    "unwrap",
+    "unwrap_or",
+    "validate_config",
+    "wait_for_operator_process",
+    "with",
+    "with_copy_policy",
+    "with_lineage",
+    "with_media",
+    "with_role"
+  ],
+  "cancellation_behavior": [
+    {
+      "line": 875,
+      "text": "fn cancel<'a>(&'a mut self) -> AsyncNodeFuture<'a, Result<(), NodeError>> {"
+    },
+    {
+      "line": 1200,
+      "text": "let outcome = running.cancel();"
+    }
+  ],
+  "channels": [
+    {
+      "line": 2350,
+      "text": ".expect(\"post-channel startup failure must retain its event receiver\");"
+    }
+  ],
+  "configuration_read": [
+    {
+      "line": 25,
+      "text": "ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps,"
+    },
+    {
+      "line": 81,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 761,
+      "text": "fn validate_config(&self, _configuration: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 912,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 1648,
+      "text": "fn validate_config(&self, _configuration: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 2024,
+      "text": "fn validate_config(&self, _configuration: &NodeConfig) -> Result<(), ConfigError> {"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AsyncOperatorManifest::new",
+    "AtomicBool::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Box::new",
+    "EndpointConfiguration::new",
+    "EndpointDescriptor::new",
+    "EndpointDriverRegistry::new",
+    "EndpointFailure::new",
+    "EndpointGroupId::new",
+    "NodeDescriptor::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "PcmOperatorFactory::new",
+    "PortSpec::new",
+    "PrepareContext::new",
+    "RunningTestAsyncFactory::new",
+    "SampleSpec::new",
+    "Self::new",
+    "SemanticRole::new",
+    "Session::new",
+    "SessionCompiler::new",
+    "SessionEngineBuilder::new",
+    "SignalDerivation::new",
+    "StableSourceId::new",
+    "Vec::new",
+    "new",
+    "u64::from"
+  ],
+  "content_hash": "441818d9c4ebb165827515f6bf1d5f97f6dde56b43b6af0a37e15ffe229a0f82",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 43,
+      "name": "TEST_CONNECTOR_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 45,
+      "name": "TEST_ASYNC_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 46,
+      "name": "TEST_ASYNC_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 47,
+      "name": "TEST_TEXT_ENDPOINT_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 48,
+      "name": "TEST_TEXT_ENDPOINT_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 49,
+      "name": "TEST_NONTERMINAL_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 50,
+      "name": "TEST_TERMINAL_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "test_nonterminal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "test_terminal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 59,
+      "name": "TestNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 63,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 66,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 71,
+      "name": "TestNodeFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 84,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 93,
+      "name": "audio_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 111,
+      "name": "TestNodeRole",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 115,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "node_registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 170,
+      "name": "product_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 202,
+      "name": "context",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 208,
+      "name": "CaptureControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 220,
+      "name": "TestCaptureBackend",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 225,
+      "name": "TestPreparedCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 230,
+      "name": "TestActiveCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 241,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 259,
+      "name": "open",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 357,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 365,
+      "name": "source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 368,
+      "name": "observation_handle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 372,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 376,
+      "name": "stop_and_join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 401,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 413,
+      "name": "PreparedRouteContextObservation",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 422,
+      "name": "EndpointControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 437,
+      "name": "TestEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 441,
+      "name": "TestPreparedEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 447,
+      "name": "TestRunningEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 455,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 466,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 532,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 587,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 601,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 611,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 618,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 623,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 654,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 667,
+      "name": "observe_endpoint_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 676,
+      "name": "AsyncOperatorControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 684,
+      "name": "RunningTestAsyncFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 691,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 757,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 760,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 764,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 772,
+      "name": "RunningTestAsyncNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 779,
+      "name": "output",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 807,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 833,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 858,
+      "name": "flush",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 874,
+      "name": "cancel",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 881,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 889,
+      "name": "TextEndpointDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 893,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 911,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 918,
+      "name": "DerivedEndpointControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 924,
+      "name": "DerivedTextEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 928,
+      "name": "PreparedDerivedTextEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 933,
+      "name": "RunningDerivedTextEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 940,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 972,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 981,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 991,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1003,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1007,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1028,
+      "name": "derived_runtime_session",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1070,
+      "name": "derived_runtime_engine",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1104,
+      "name": "wait_for_operator_process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1117,
+      "name": "given_typed_operator_routes_when_stopped_then_final_state_and_metrics_are_truthful",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1181,
+      "name": "given_blocked_operator_when_cancelled_then_session_cancellation_is_bounded_and_observed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1221,
+      "name": "given_operator_prepare_failure_when_started_then_all_prior_owners_roll_back",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1250,
+      "name": "endpoint_registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1270,
+      "name": "prepared_session",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1280,
+      "name": "capture_backend",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1287,
+      "name": "capture_backend_set",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1297,
+      "name": "assert_no_live_owners",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1312,
+      "name": "given_two_sources_when_started_then_gate_lineage_and_repeated_stop_are_truthful",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1412,
+      "name": "given_capture_backlog_when_session_starts_then_no_destination_edge_overflows",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1473,
+      "name": "given_one_source_failure_when_runtime_continues_then_healthy_source_frame_is_delivered",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 1510,
+      "name": "composed_runtime",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1513,
+      "name": "STAGE_TWO_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1515,
+      "name": "STAGE_TWO_NODE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1516,
+      "name": "STAGE_THREE_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1517,
+      "name": "STAGE_THREE_NODE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1518,
+      "name": "MULTI_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1519,
+      "name": "MULTI_NODE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1520,
+      "name": "TEXT_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1521,
+      "name": "LEFT_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1522,
+      "name": "RIGHT_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1525,
+      "name": "ComposedControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1531,
+      "name": "ComposedFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1540,
+      "name": "transform",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1554,
+      "name": "multi",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1571,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1627,
+      "name": "text_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1644,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1647,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1651,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1660,
+      "name": "ComposedNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1668,
+      "name": "emit",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1700,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1713,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1720,
+      "name": "process_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1742,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1750,
+      "name": "endpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1761,
+      "name": "given_public_session_when_composed_then_three_stages_and_named_ports_run_under_one_owner",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 1940,
+      "name": "generated_audio_reentry",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1943,
+      "name": "OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1945,
+      "name": "NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1948,
+      "name": "PcmOperatorControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1952,
+      "name": "PcmOperatorFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1959,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2020,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2023,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2027,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 2034,
+      "name": "PcmOperatorNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2040,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2053,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2088,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2096,
+      "name": "engine",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2117,
+      "name": "declare_reentry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2128,
+      "name": "connector",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2139,
+      "name": "given_public_session_pcm_output_when_reentered_then_audio_lane_and_lifecycle_are_observed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2219,
+      "name": "given_pcm_output_with_two_consumers_when_compiled_then_reentry_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2254,
+      "name": "given_endpoint_prepare_failure_when_started_then_every_prior_owner_rolls_back",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2279,
+      "name": "given_second_capture_open_failure_when_started_then_captures_and_endpoints_roll_back",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2312,
+      "name": "given_endpoint_start_failure_when_started_then_all_acquisitions_roll_back",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2343,
+      "name": "assert_failed_start_events",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 357,
+      "text": "fn drop(&mut self) {"
+    },
+    {
+      "line": 401,
+      "text": "fn drop(&mut self) {"
+    },
+    {
+      "line": 601,
+      "text": "fn drop(&mut self) {"
+    },
+    {
+      "line": 654,
+      "text": "fn drop(&mut self) {"
+    },
+    {
+      "line": 1382,
+      "text": "drop(prepared_route_contexts);"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 12,
+      "text": "use crate::endpoint::{EndpointAudioReceiver, EndpointSignalReceiver};"
+    },
+    {
+      "line": 13,
+      "text": "use crate::endpoint::{"
+    },
+    {
+      "line": 47,
+      "text": "const TEST_TEXT_ENDPOINT_OPERATOR_ID: &str = \"example.endpoint.running-text.v1\";"
+    },
+    {
+      "line": 48,
+      "text": "const TEST_TEXT_ENDPOINT_NODE_TYPE_ID: &str = \"endpoint.running-text.test\";"
+    },
+    {
+      "line": 113,
+      "text": "Endpoint,"
+    },
+    {
+      "line": 164,
+      "text": "descriptor: descriptor(node_type_id, TestNodeRole::Endpoint),"
+    },
+    {
+      "line": 479,
+      "text": "\"test endpoint prepare failure\","
+    },
+    {
+      "line": 490,
+      "text": "\"Session audio endpoint input omitted its stem origin\","
+    },
+    {
+      "line": 509,
+      "text": "\"test endpoint context observations are unavailable\","
+    },
+    {
+      "line": 544,
+      "text": "\"test endpoint start failure\","
+    },
+    {
+      "line": 634,
+      "text": "\"test endpoint worker panicked\","
+    },
+    {
+      "line": 641,
+      "text": "\"test endpoint finalization failure\","
+    },
+    {
+      "line": 896,
+      "text": "display_name: \"Running Session text endpoint\","
+    },
+    {
+      "line": 954,
+      "text": "\"test text endpoint received audio\","
+    },
+    {
+      "line": 1046,
+      "text": ".endpoint(EndpointDescriptor::new("
+    },
+    {
+      "line": 1050,
+      "text": ".expect(\"first text endpoint declaration\");"
+    },
+    {
+      "line": 1052,
+      "text": ".endpoint(EndpointDescriptor::new("
+    },
+    {
+      "line": 1056,
+      "text": ".expect(\"second text endpoint declaration\");"
+    },
+    {
+      "line": 1101,
+      "text": ".expect(\"test text endpoint driver registration\");"
+    },
+    {
+      "line": 1174,
+      "text": "&& route.endpoint.is_some()"
+    },
+    {
+      "line": 1266,
+      "text": ".expect(\"test endpoint driver registration must succeed\");"
+    },
+    {
+      "line": 1751,
+      "text": "fn endpoint(session: &Session) -> crate::session::EndpointHandle {"
+    },
+    {
+      "line": 1753,
+      "text": ".endpoint(EndpointDescriptor::new("
+    },
+    {
+      "line": 1757,
+      "text": ".expect(\"text endpoint declaration\")"
+    },
+    {
+      "line": 1811,
+      "text": ".expect(\"text endpoint driver\");"
+    },
+    {
+      "line": 1869,
+      "text": "third.send(endpoint(&session)).expect(\"third stage route\");"
+    },
+    {
+      "line": 1873,
+      "text": ".send(endpoint(&session))"
+    },
+    {
+      "line": 1874,
+      "text": ".expect(\"left endpoint route\");"
+    },
+    {
+      "line": 1878,
+      "text": ".send(endpoint(&session))"
+    },
+    {
+      "line": 1879,
+      "text": ".expect(\"right endpoint route\");"
+    },
+    {
+      "line": 2099,
+      "text": "endpoint: &Arc<EndpointControl>,"
+    },
+    {
+      "line": 2108,
+      "text": "control: Arc::clone(endpoint),"
+    },
+    {
+      "line": 2111,
+      "text": ".expect(\"audio endpoint registration\");"
+    },
+    {
+      "line": 2141,
+      "text": "let endpoint = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 2142,
+      "text": "let engine = engine(&operator, &endpoint);"
+    },
+    {
+      "line": 2155,
+      "text": ".expect(\"generated audio endpoint route\");"
+    },
+    {
+      "line": 2173,
+      "text": "|| endpoint.deliveries_total.load(Ordering::Acquire) == 0)"
+    },
+    {
+      "line": 2179,
+      "text": "assert!(endpoint.deliveries_total.load(Ordering::Acquire) > 0);"
+    },
+    {
+      "line": 2215,
+      "text": "assert_no_live_owners(&application, &microphone, &endpoint);"
+    },
+    {
+      "line": 2221,
+      "text": "let endpoint = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 2222,
+      "text": "let engine = engine(&operator, &endpoint);"
+    },
+    {
+      "line": 2232,
+      "text": ".expect(\"generated audio endpoint route\");"
+    },
+    {
+      "line": 2249,
+      "text": "assert_no_live_owners(&application, &microphone, &endpoint);"
+    },
+    {
+      "line": 2331,
+      "text": "Ok(_) => panic!(\"endpoint start must fail\"),"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 246,
+      "text": "return Err(CaptureError::BackendInit(\"test prepare failure\".to_owned()));"
+    },
+    {
+      "line": 267,
+      "text": "return Err(CaptureError::BackendInit(\"test open failure\".to_owned()));"
+    },
+    {
+      "line": 390,
+      "text": "Err(CaptureError::BackendStatus {"
+    },
+    {
+      "line": 477,
+      "text": "return Err(EndpointFailure::new("
+    },
+    {
+      "line": 542,
+      "text": "return Err(EndpointFailure::new("
+    },
+    {
+      "line": 639,
+      "text": "Err(EndpointFailure::new("
+    },
+    {
+      "line": 826,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 952,
+      "text": "return Err(EndpointFailure::new("
+    },
+    {
+      "line": 1237,
+      "text": "Err(error) => error,"
+    },
+    {
+      "line": 1706,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 2046,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 2065,
+      "text": "return Err(NodeError::Process(\"PCM input was not audio\".to_owned()));"
+    },
+    {
+      "line": 2245,
+      "text": "Err(SessionEngineStartError::Compile("
+    },
+    {
+      "line": 2273,
+      "text": "Err(SessionStartError::EndpointPrepare { .. })"
+    },
+    {
+      "line": 2299,
+      "text": "Err(failure) => failure,"
+    },
+    {
+      "line": 2332,
+      "text": "Err(failure) => failure,"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [
+    {
+      "line": 502,
+      "text": ".collect::<Result<Vec<_>, EndpointFailure>>()?;"
+    },
+    {
+      "line": 800,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 1693,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 2083,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 385,
+      "text": ".map_err(|_| CaptureError::CaptureWorkerPanicked {"
+    },
+    {
+      "line": 506,
+      "text": ".map_err(|_| {"
+    },
+    {
+      "line": 631,
+      "text": "result.map_err(|_| {"
+    },
+    {
+      "line": 800,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 1693,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 2083,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 2272,
+      "text": "result.as_ref().map_err(|failure| failure.error()),"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 385,
+      "text": ".map_err(|_| CaptureError::CaptureWorkerPanicked {"
+    },
+    {
+      "line": 506,
+      "text": ".map_err(|_| {"
+    },
+    {
+      "line": 631,
+      "text": "result.map_err(|_| {"
+    },
+    {
+      "line": 800,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 1693,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 2083,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 2272,
+      "text": "result.as_ref().map_err(|failure| failure.error()),"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "441818d9c4ebb165827515f6bf1d5f97f6dde56b43b6af0a37e15ffe229a0f82",
+      "lines": [
+        1,
+        2371
+      ],
+      "path": "src/session/lifecycle/tests/running.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0238-b29e82c1",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [
+    {
+      "line": 2187,
+      "text": "let final_metrics = running.audio_reentry_metrics();"
+    }
+  ],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "71c8d74730d06eeb7267a0df4dd5f8dd3f036f57",
+  "implemented_by": [],
+  "implements": [
+    "RuntimeNode for TestNode",
+    "NodeFactory for TestNodeFactory",
+    "CallbackCaptureBackend for TestCaptureBackend",
+    "PreparedCaptureBackend for TestPreparedCapture",
+    "Drop for TestPreparedCapture",
+    "ActiveCaptureBackend for TestActiveCapture",
+    "Drop for TestActiveCapture",
+    "EndpointDriverFactory for TestEndpointFactory",
+    "PreparedEndpointDriver for TestPreparedEndpoint",
+    "Drop for TestPreparedEndpoint",
+    "RunningEndpointDriver for TestRunningEndpoint",
+    "Drop for TestRunningEndpoint",
+    "RunningTestAsyncFactory",
+    "AsyncOperatorFactory for RunningTestAsyncFactory",
+    "RunningTestAsyncNode",
+    "AsyncNode for RunningTestAsyncNode",
+    "NodeDefinition for TextEndpointDefinition",
+    "EndpointDriverFactory for DerivedTextEndpointFactory",
+    "PreparedEndpointDriver for PreparedDerivedTextEndpoint",
+    "RunningEndpointDriver for RunningDerivedTextEndpoint",
+    "ComposedFactory",
+    "AsyncOperatorFactory for ComposedFactory",
+    "ComposedNode",
+    "AsyncNode for ComposedNode",
+    "PcmOperatorFactory",
+    "AsyncOperatorFactory for PcmOperatorFactory",
+    "AsyncNode for PcmOperatorNode"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations, CaptureRuntimeFailure, CaptureRuntimeFailureClass, CapturedFrameDelivery, PreparedCaptureBackend, SourceGeneration, SourceKind, SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventSender, StableSourceId, }",
+    "crate::endpoint::{ EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointDriverRegistry, EndpointFailure, EndpointFailureStage, EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }",
+    "crate::endpoint::{EndpointAudioReceiver, EndpointSignalReceiver}",
+    "crate::frame::{ AudioBufferPool, AudioFrame, EndpointId, Platform, RouteId, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
+    "crate::graph::{ AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeError, NodeFactory, NodeRegistry, NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PrepareContext, RuntimeNode, SafetyContract, SemanticRole, SignalDerivation, SignalEnvelope, SignalLineage, SignalPayload, SignalSpec, SignalTiming, TextFormat, }",
+    "crate::runtime::PlanEdgeFrame",
+    "crate::session::{ prepare_session_runtime, start_prepared_session, ApplicationSelector, CaptureBackendSet, EndpointConfiguration, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, SessionCompiler, SessionEngineBuilder, SessionEngineStartError, SessionEventKind, SessionEventReceive, SessionLifecycleState, SessionStartError, SessionStartOptions, SessionTerminalState, Source, APPLICATION_SOURCE_NODE_TYPE_ID, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }",
+    "std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering}",
+    "std::sync::{Arc, Mutex}",
+    "std::time::{Duration, Instant}",
+    "super::*"
+  ],
+  "inputs": [
+    "ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps,",
+    "crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations, CaptureRuntimeFailure, CaptureRuntimeFailureClass, CapturedFrameDelivery, PreparedCaptureBackend, SourceGeneration, SourceKind, SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventSender, StableSourceId, }",
+    "crate::endpoint::{ EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointDriverRegistry, EndpointFailure, EndpointFailureStage, EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }",
+    "crate::endpoint::{EndpointAudioReceiver, EndpointSignalReceiver}",
+    "crate::frame::{ AudioBufferPool, AudioFrame, EndpointId, Platform, RouteId, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
+    "crate::graph::{ AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeError, NodeFactory, NodeRegistry, NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PrepareContext, RuntimeNode, SafetyContract, SemanticRole, SignalDerivation, SignalEnvelope, SignalLineage, SignalPayload, SignalSpec, SignalTiming, TextFormat, }",
+    "crate::runtime::PlanEdgeFrame",
+    "crate::session::{ prepare_session_runtime, start_prepared_session, ApplicationSelector, CaptureBackendSet, EndpointConfiguration, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, SessionCompiler, SessionEngineBuilder, SessionEngineStartError, SessionEventKind, SessionEventReceive, SessionLifecycleState, SessionStartError, SessionStartOptions, SessionTerminalState, Source, APPLICATION_SOURCE_NODE_TYPE_ID, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }",
+    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
+    "fn validate_config(&self, _configuration: &NodeConfig) -> Result<(), ConfigError> {",
+    "std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering}",
+    "std::sync::{Arc, Mutex}",
+    "std::time::{Duration, Instant}",
+    "super::*"
+  ],
+  "invariants": [
+    {
+      "line": 177,
+      "text": ".expect(\"application declaration must succeed\");"
+    },
+    {
+      "line": 180,
+      "text": ".expect(\"microphone declaration must succeed\");"
+    },
+    {
+      "line": 186,
+      "text": ".expect(\"connector declaration must succeed\");"
+    },
+    {
+      "line": 189,
+      "text": ".expect(\"browser declaration must succeed\");"
+    },
+    {
+      "line": 191,
+      "text": "stem.send(connector).expect(\"connector route must succeed\");"
+    },
+    {
+      "line": 192,
+      "text": "stem.send(browser).expect(\"browser route must succeed\");"
+    },
+    {
+      "line": 196,
+      "text": ".expect(\"application recording route must succeed\");"
+    },
+    {
+      "line": 199,
+      "text": ".expect(\"microphone recording route must succeed\");"
+    },
+    {
+      "line": 200,
+      "text": "session.freeze().expect(\"product spec must freeze\")"
+    },
+    {
+      "line": 282,
+      "text": ".expect(\"test capture pool must provide one slot per startup frame\");"
+    },
+    {
+      "line": 1110,
+      "text": "assert!("
+    },
+    {
+      "line": 1112,
+      "text": "\"capture input must reach the async Operator before the deadline\""
+    },
+    {
+      "line": 1138,
+      "text": "assert!(outcome.is_success());"
+    },
+    {
+      "line": 1157,
+      "text": "assert!(operators[0].input_attempted_total() > 0);"
+    },
+    {
+      "line": 1166,
+      "text": "assert!(operators[0].input_queue_capacity_frames() > 0);"
+    },
+    {
+      "line": 1167,
+      "text": "assert!(operators[0].input_queue_peak_frames() > 0);"
+    },
+    {
+      "line": 1171,
+      "text": "assert!(derived_routes.iter().all(|route| {"
+    },
+    {
+      "line": 1205,
+      "text": "assert!(outcome.is_success());"
+    },
+    {
+      "line": 1206,
+      "text": "assert!("
+    },
+    {
+      "line": 1236,
+      "text": "Ok(_) => panic!(\"Operator preparation must fail\"),"
+    },
+    {
+      "line": 1240,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 1266,
+      "text": ".expect(\"test endpoint driver registration must succeed\");"
+    },
+    {
+      "line": 1277,
+      "text": ".expect(\"product Session must compile\");"
+    },
+    {
+      "line": 1278,
+      "text": "prepare_session_runtime(compiled, nodes, &context(), 8).expect(\"product runtime must prepare\")"
+    },
+    {
+      "line": 1327,
+      "text": ".expect(\"transactional Session startup must succeed\");"
+    },
+    {
+      "line": 1330,
+      "text": ".expect(\"running Session must expose its sole event receiver\");"
+    },
+    {
+      "line": 1337,
+      "text": "assert!(first.is_success());"
+    },
+    {
+      "line": 1355,
+      "text": ".expect(\"prepared route context observations must remain available\");"
+    },
+    {
+      "line": 1358,
+      "text": "assert!(session_timeline_origin_ns > 0);"
+    },
+    {
+      "line": 1359,
+      "text": "assert!(prepared_route_contexts.iter().all(|context| {"
+    },
+    {
+      "line": 1379,
+      "text": "assert!(prepared_route_contexts"
+    },
+    {
+      "line": 1388,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 1392,
+      "text": "assert!(event_kinds.iter().any(|event| matches!("
+    },
+    {
+      "line": 1396,
+      "text": "assert!(event_kinds.iter().any(|event| matches!("
+    },
+    {
+      "line": 1400,
+      "text": "assert!(event_kinds.iter().any(|event| matches!("
+    },
+    {
+      "line": 1404,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 1434,
+      "text": ".expect(\"transactional Session startup must succeed\");"
+    },
+    {
+      "line": 1444,
+      "text": "\"both post-start source frames must reach all three destinations\""
+    },
+    {
+      "line": 1449,
+      "text": "assert!(outcome.is_success());"
+    },
+    {
+      "line": 1451,
+      "text": "assert!(sources.iter().all(|source| {"
+    },
+    {
+      "line": 1463,
+      "text": "assert!("
+    },
+    {
+      "line": 1467,
+      "text": "\"capture frames accumulated before Running must not overflow destination edges\""
+    },
+    {
+      "line": 1491,
+      "text": ".expect(\"transactional Session startup must succeed\");"
+    },
+    {
+      "line": 1494,
+      "text": ".expect(\"running Session must expose its event receiver\");"
+    },
+    {
+      "line": 1498,
+      "text": "assert!(!outcome.is_success());"
+    },
+    {
+      "line": 1900,
+      "text": "assert!(stage_two.process_total.load(Ordering::Acquire) > 0);"
+    },
+    {
+      "line": 1901,
+      "text": "assert!(stage_three.process_total.load(Ordering::Acquire) > 0);"
+    },
+    {
+      "line": 1902,
+      "text": "assert!(multi.left_total.load(Ordering::Acquire) > 0);"
+    },
+    {
+      "line": 1903,
+      "text": "assert!(multi.right_total.load(Ordering::Acquire) > 0);"
+    },
+    {
+      "line": 1907,
+      "text": "assert!(outcome.is_success());"
+    },
+    {
+      "line": 1914,
+      "text": "assert!("
+    },
+    {
+      "line": 1922,
+      "text": "assert!("
+    },
+    {
+      "line": 1931,
+      "text": "assert!(operators"
+    },
+    {
+      "line": 2178,
+      "text": "assert!(operator.processed_total.load(Ordering::Acquire) > 0);"
+    },
+    {
+      "line": 2179,
+      "text": "assert!(endpoint.deliveries_total.load(Ordering::Acquire) > 0);"
+    },
+    {
+      "line": 2182,
+      "text": "assert!(live[0].audio_frames_enqueued_total() > 0);"
+    },
+    {
+      "line": 2188,
+      "text": "assert!(outcome.is_success());"
+    },
+    {
+      "line": 2191,
+      "text": "assert!(metrics.joined());"
+    },
+    {
+      "line": 2194,
+      "text": "assert!(metrics.queue_peak_signals() <= metrics.queue_capacity_signals());"
+    },
+    {
+      "line": 2243,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 2271,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 2298,
+      "text": "Ok(_) => panic!(\"second capture open must fail\"),"
+    },
+    {
+      "line": 2301,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 2331,
+      "text": "Ok(_) => panic!(\"endpoint start must fail\"),"
+    },
+    {
+      "line": 2334,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 2338,
+      "text": "assert!(!failure.rollback_failures().is_empty());"
+    },
+    {
+      "line": 2350,
+      "text": ".expect(\"post-channel startup failure must retain its event receiver\");"
+    },
+    {
+      "line": 2363,
+      "text": "assert!(failed);"
+    },
+    {
+      "line": 2364,
+      "text": "let terminal = terminal.expect(\"failed startup must publish a terminal outcome\");"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 2371,
+  "locks": [
+    {
+      "line": 2,
+      "text": "use std::sync::{Arc, Mutex};"
+    },
+    {
+      "line": 435,
+      "text": "prepared_route_contexts: Mutex<Vec<PreparedRouteContextObservation>>,"
+    }
+  ],
+  "module": "pocketstation::session::lifecycle::tests::running",
+  "network_io": [
+    {
+      "line": 1864,
+      "text": ".connect(named.input(\"left\").expect(\"left input\"))"
+    },
+    {
+      "line": 1867,
+      "text": ".connect(named.input(\"right\").expect(\"right input\"))"
+    }
+  ],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-6036f2463098cd777986",
+    "pattern-727f2312ab1d60c50cbe",
+    "pattern-b4f9bab1332680639faf"
+  ],
+  "outputs": [
+    "Err(CaptureError::BackendStatus {",
+    "Err(EndpointFailure::new(",
+    "Err(error) => error,",
+    "return Err(CaptureError::BackendInit(\"test open failure\".to_owned()));",
+    "return Err(CaptureError::BackendInit(\"test prepare failure\".to_owned()));",
+    "return Err(EndpointFailure::new(",
+    "return Err(NodeError::Prepare("
+  ],
+  "package": "pocketstation",
+  "path": "src/session/lifecycle/tests/running.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 43,
+      "name": "TEST_CONNECTOR_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 45,
+      "name": "TEST_ASYNC_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 46,
+      "name": "TEST_ASYNC_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 47,
+      "name": "TEST_TEXT_ENDPOINT_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 48,
+      "name": "TEST_TEXT_ENDPOINT_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 49,
+      "name": "TEST_NONTERMINAL_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 50,
+      "name": "TEST_TERMINAL_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "test_nonterminal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "test_terminal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 59,
+      "name": "TestNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 63,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 66,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 71,
+      "name": "TestNodeFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 84,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 93,
+      "name": "audio_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 111,
+      "name": "TestNodeRole",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 115,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "node_registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 170,
+      "name": "product_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 202,
+      "name": "context",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 208,
+      "name": "CaptureControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 220,
+      "name": "TestCaptureBackend",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 225,
+      "name": "TestPreparedCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 230,
+      "name": "TestActiveCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 241,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 259,
+      "name": "open",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 357,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 365,
+      "name": "source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 368,
+      "name": "observation_handle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 372,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 376,
+      "name": "stop_and_join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 401,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 413,
+      "name": "PreparedRouteContextObservation",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 422,
+      "name": "EndpointControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 437,
+      "name": "TestEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 441,
+      "name": "TestPreparedEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 447,
+      "name": "TestRunningEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 455,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 466,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 532,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 587,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 601,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 611,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 618,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 623,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 654,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 667,
+      "name": "observe_endpoint_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 676,
+      "name": "AsyncOperatorControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 684,
+      "name": "RunningTestAsyncFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 691,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 757,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 760,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 764,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 772,
+      "name": "RunningTestAsyncNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 779,
+      "name": "output",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 807,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 833,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 858,
+      "name": "flush",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 874,
+      "name": "cancel",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 881,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 889,
+      "name": "TextEndpointDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 893,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 911,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 918,
+      "name": "DerivedEndpointControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 924,
+      "name": "DerivedTextEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 928,
+      "name": "PreparedDerivedTextEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 933,
+      "name": "RunningDerivedTextEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 940,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 972,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 981,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 991,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1003,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1007,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1028,
+      "name": "derived_runtime_session",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1070,
+      "name": "derived_runtime_engine",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1104,
+      "name": "wait_for_operator_process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1117,
+      "name": "given_typed_operator_routes_when_stopped_then_final_state_and_metrics_are_truthful",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1181,
+      "name": "given_blocked_operator_when_cancelled_then_session_cancellation_is_bounded_and_observed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1221,
+      "name": "given_operator_prepare_failure_when_started_then_all_prior_owners_roll_back",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1250,
+      "name": "endpoint_registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1270,
+      "name": "prepared_session",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1280,
+      "name": "capture_backend",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1287,
+      "name": "capture_backend_set",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1297,
+      "name": "assert_no_live_owners",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1312,
+      "name": "given_two_sources_when_started_then_gate_lineage_and_repeated_stop_are_truthful",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1412,
+      "name": "given_capture_backlog_when_session_starts_then_no_destination_edge_overflows",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1473,
+      "name": "given_one_source_failure_when_runtime_continues_then_healthy_source_frame_is_delivered",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 1510,
+      "name": "composed_runtime",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1513,
+      "name": "STAGE_TWO_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1515,
+      "name": "STAGE_TWO_NODE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1516,
+      "name": "STAGE_THREE_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1517,
+      "name": "STAGE_THREE_NODE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1518,
+      "name": "MULTI_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1519,
+      "name": "MULTI_NODE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1520,
+      "name": "TEXT_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1521,
+      "name": "LEFT_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1522,
+      "name": "RIGHT_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1525,
+      "name": "ComposedControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1531,
+      "name": "ComposedFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1540,
+      "name": "transform",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1554,
+      "name": "multi",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1571,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1627,
+      "name": "text_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1644,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1647,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1651,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1660,
+      "name": "ComposedNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1668,
+      "name": "emit",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1700,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1713,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1720,
+      "name": "process_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1742,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1750,
+      "name": "endpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1761,
+      "name": "given_public_session_when_composed_then_three_stages_and_named_ports_run_under_one_owner",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 1940,
+      "name": "generated_audio_reentry",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1943,
+      "name": "OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1945,
+      "name": "NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1948,
+      "name": "PcmOperatorControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1952,
+      "name": "PcmOperatorFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1959,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2020,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2023,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2027,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 2034,
+      "name": "PcmOperatorNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2040,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2053,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2088,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2096,
+      "name": "engine",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2117,
+      "name": "declare_reentry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2128,
+      "name": "connector",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2139,
+      "name": "given_public_session_pcm_output_when_reentered_then_audio_lane_and_lifecycle_are_observed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2219,
+      "name": "given_pcm_output_with_two_consumers_when_compiled_then_reentry_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2254,
+      "name": "given_endpoint_prepare_failure_when_started_then_every_prior_owner_rolls_back",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2279,
+      "name": "given_second_capture_open_failure_when_started_then_captures_and_endpoints_roll_back",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2312,
+      "name": "given_endpoint_start_failure_when_started_then_all_acquisitions_roll_back",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2343,
+      "name": "assert_failed_start_events",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 314,
+      "text": "let worker = std::thread::spawn(move || {"
+    },
+    {
+      "line": 556,
+      "text": "let worker = std::thread::spawn(move || {"
+    }
+  ],
+  "protocol_messages": [
+    {
+      "line": 1385,
+      "text": "while let SessionEventReceive::Event(event) = events.try_recv() {"
+    },
+    {
+      "line": 1502,
+      "text": "while let SessionEventReceive::Event(event) = events.try_recv() {"
+    },
+    {
+      "line": 2354,
+      "text": "while let SessionEventReceive::Event(event) = events.try_recv() {"
+    }
+  ],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::lifecycle::tests::running responsibilities, including the src/session/lifecycle/tests/running boundary."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [
+    {
+      "line": 2,
+      "text": "use std::sync::{Arc, Mutex};"
+    },
+    {
+      "line": 89,
+      "text": ") -> Result<Box<dyn RuntimeNode>, NodeError> {"
+    },
+    {
+      "line": 90,
+      "text": "Ok(Box::new(TestNode))"
+    },
+    {
+      "line": 152,
+      "text": ".register(Arc::new(TestNodeFactory {"
+    },
+    {
+      "line": 163,
+      "text": ".register(Arc::new(TestNodeFactory {"
+    },
+    {
+      "line": 222,
+      "text": "control: Arc<CaptureControl>,"
+    },
+    {
+      "line": 227,
+      "text": "control: Arc<CaptureControl>,"
+    },
+    {
+      "line": 232,
+      "text": "control: Arc<CaptureControl>,"
+    },
+    {
+      "line": 235,
+      "text": "stop_requested: Arc<AtomicBool>,"
+    },
+    {
+      "line": 241,
+      "text": "fn prepare(&self, _mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 251,
+      "text": "Ok(Box::new(TestPreparedCapture {"
+    },
+    {
+      "line": 252,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 260,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 262,
+      "text": ") -> Result<Box<dyn ActiveCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 311,
+      "text": "let stop_requested = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 312,
+      "text": "let worker_stop_requested = Arc::clone(&stop_requested);"
+    },
+    {
+      "line": 345,
+      "text": "Ok(Box::new(TestActiveCapture {"
+    },
+    {
+      "line": 346,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 356,
+      "text": "impl Drop for TestPreparedCapture {"
+    },
+    {
+      "line": 377,
+      "text": "fn stop_and_join(mut self: Box<Self>) -> Result<CaptureObservations, CaptureError> {"
+    },
+    {
+      "line": 400,
+      "text": "impl Drop for TestActiveCapture {"
+    },
+    {
+      "line": 439,
+      "text": "control: Arc<EndpointControl>,"
+    },
+    {
+      "line": 443,
+      "text": "control: Arc<EndpointControl>,"
+    },
+    {
+      "line": 449,
+      "text": "control: Arc<EndpointControl>,"
+    },
+    {
+      "line": 470,
+      "text": ") -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 516,
+      "text": "Ok(Box::new(TestPreparedEndpoint {"
+    },
+    {
+      "line": 517,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 533,
+      "text": "mut self: Box<Self>,"
+    },
+    {
+      "line": 534,
+      "text": "start_gate: Arc<EndpointStartGate>,"
+    },
+    {
+      "line": 535,
+      "text": ") -> Result<Box<dyn RunningEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 555,
+      "text": "let control = Arc::clone(&self.control);"
+    },
+    {
+      "line": 581,
+      "text": "Ok(Box::new(TestRunningEndpoint {"
+    },
+    {
+      "line": 582,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 588,
+      "text": "fn cancel_preparation(mut self: Box<Self>) -> EndpointCancellationOutcome {"
+    },
+    {
+      "line": 600,
+      "text": "impl Drop for TestPreparedEndpoint {"
+    },
+    {
+      "line": 624,
+      "text": "fn join_and_finalize(mut self: Box<Self>) -> EndpointDriverFinalization {"
+    },
+    {
+      "line": 653,
+      "text": "impl Drop for TestRunningEndpoint {"
+    },
+    {
+      "line": 686,
+      "text": "control: Arc<AsyncOperatorControl>,"
+    },
+    {
+      "line": 691,
+      "text": "fn new(control: Arc<AsyncOperatorControl>, sample_rate_hz: u32) -> Self {"
+    },
+    {
+      "line": 765,
+      "text": "fn create(&self, _configuration: &NodeConfig) -> Result<Box<dyn AsyncNode>, NodeError> {"
+    },
+    {
+      "line": 766,
+      "text": "Ok(Box::new(RunningTestAsyncNode {"
+    },
+    {
+      "line": 767,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 774,
+      "text": "control: Arc<AsyncOperatorControl>,"
+    },
+    {
+      "line": 811,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 838,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 860,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 876,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 883,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 926,
+      "text": "control: Arc<DerivedEndpointControl>,"
+    },
+    {
+      "line": 930,
+      "text": "control: Arc<DerivedEndpointControl>,"
+    },
+    {
+      "line": 935,
+      "text": "control: Arc<DerivedEndpointControl>,"
+    },
+    {
+      "line": 943,
+      "text": ") -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 964,
+      "text": "Ok(Box::new(PreparedDerivedTextEndpoint {"
+    },
+    {
+      "line": 965,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 973,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 974,
+      "text": "_start_gate: Arc<EndpointStartGate>,"
+    },
+    {
+      "line": 975,
+      "text": ") -> Result<Box<dyn RunningEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 976,
+      "text": "Ok(Box::new(RunningDerivedTextEndpoint {"
+    },
+    {
+      "line": 982,
+      "text": "fn cancel_preparation(self: Box<Self>) -> EndpointCancellationOutcome {"
+    },
+    {
+      "line": 1008,
+      "text": "fn join_and_finalize(mut self: Box<Self>) -> EndpointDriverFinalization {"
+    },
+    {
+      "line": 1072,
+      "text": "operator_control: &Arc<AsyncOperatorControl>,"
+    },
+    {
+      "line": 1073,
+      "text": "endpoint_control: &Arc<DerivedEndpointControl>,"
+    },
+    {
+      "line": 1074,
+      "text": "raw_endpoint_control: &Arc<EndpointControl>,"
+    },
+    {
+      "line": 1082,
+      "text": "Arc::new(TestEndpointFactory {"
+    },
+    {
+      "line": 1083,
+      "text": "control: Arc::clone(raw_endpoint_control),"
+    },
+    {
+      "line": 1088,
+      "text": ".register_async_operator(Arc::new(RunningTestAsyncFactory::new("
+    },
+    {
+      "line": 1089,
+      "text": "Arc::clone(operator_control),"
+    },
+    {
+      "line": 1096,
+      "text": "Arc::new(TextEndpointDefinition),"
+    },
+    {
+      "line": 1097,
+      "text": "Arc::new(DerivedTextEndpointFactory {"
+    },
+    {
+      "line": 1098,
+      "text": "control: Arc::clone(endpoint_control),"
+    },
+    {
+      "line": 1118,
+      "text": "let operator = Arc::new(AsyncOperatorControl::default());"
+    },
+    {
+      "line": 1119,
+      "text": "let derived_endpoints = Arc::new(DerivedEndpointControl::default());"
+    },
+    {
+      "line": 1120,
+      "text": "let raw_endpoints = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 1121,
+      "text": "let application = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 1122,
+      "text": "let microphone = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 1182,
+      "text": "let operator = Arc::new(AsyncOperatorControl::default());"
+    },
+    {
+      "line": 1184,
+      "text": "let derived_endpoints = Arc::new(DerivedEndpointControl::default());"
+    },
+    {
+      "line": 1185,
+      "text": "let raw_endpoints = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 1186,
+      "text": "let application = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 1187,
+      "text": "let microphone = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 1222,
+      "text": "let operator = Arc::new(AsyncOperatorControl::default());"
+    },
+    {
+      "line": 1224,
+      "text": "let derived_endpoints = Arc::new(DerivedEndpointControl::default());"
+    },
+    {
+      "line": 1225,
+      "text": "let raw_endpoints = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 1226,
+      "text": "let application = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 1227,
+      "text": "let microphone = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 1251,
+      "text": "fn endpoint_registry(control: &Arc<EndpointControl>) -> EndpointDriverRegistry {"
+    },
+    {
+      "line": 1262,
+      "text": "Arc::new(TestEndpointFactory {"
+    },
+    {
+      "line": 1263,
+      "text": "control: Arc::clone(control),"
+    },
+    {
+      "line": 1281,
+      "text": "fn capture_backend(control: &Arc<CaptureControl>, source_id: u64) -> TestCaptureBackend {"
+    },
+    {
+      "line": 1283,
+      "text": "control: Arc::clone(control),"
+    },
+    {
+      "line": 1314,
+      "text": "let application = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 1315,
+      "text": "let microphone = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 1316,
+      "text": "let endpoints = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 1414,
+      "text": "let application = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 1418,
+      "text": "let microphone = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 1420,
+      "text": "let endpoints = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 1475,
+      "text": "let application = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 1479,
+      "text": "let microphone = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 1480,
+      "text": "let endpoints = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 1535,
+      "text": "control: Arc<ComposedControl>,"
+    },
+    {
+      "line": 1543,
+      "text": "control: Arc<ComposedControl>,"
+    },
+    {
+      "line": 1555,
+      "text": "fn multi(control: Arc<ComposedControl>) -> Self {"
+    },
+    {
+      "line": 1578,
+      "text": "control: Arc<ComposedControl>,"
+    },
+    {
+      "line": 1652,
+      "text": "fn create(&self, _configuration: &NodeConfig) -> Result<Box<dyn AsyncNode>, NodeError> {"
+    },
+    {
+      "line": 1653,
+      "text": "Ok(Box::new(ComposedNode {"
+    },
+    {
+      "line": 1656,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 1664,
+      "text": "control: Arc<ComposedControl>,"
+    },
+    {
+      "line": 1704,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1718,
+      "text": "Box::pin(async move { Ok(vec![self.emit(input, self.output_role)?]) })"
+    },
+    {
+      "line": 1726,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1744,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1762,
+      "text": "let stage_one = Arc::new(AsyncOperatorControl::default());"
+    },
+    {
+      "line": 1763,
+      "text": "let stage_two = Arc::new(ComposedControl::default());"
+    },
+    {
+      "line": 1764,
+      "text": "let stage_three = Arc::new(ComposedControl::default());"
+    },
+    {
+      "line": 1765,
+      "text": "let multi = Arc::new(ComposedControl::default());"
+    },
+    {
+      "line": 1766,
+      "text": "let derived_endpoints = Arc::new(DerivedEndpointControl::default());"
+    },
+    {
+      "line": 1767,
+      "text": "let raw_endpoints = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 1775,
+      "text": "Arc::new(TestEndpointFactory {"
+    },
+    {
+      "line": 1776,
+      "text": "control: Arc::clone(&raw_endpoints),"
+    },
+    {
+      "line": 1781,
+      "text": ".register_async_operator(Arc::new(RunningTestAsyncFactory::new("
+    },
+    {
+      "line": 1782,
+      "text": "Arc::clone(&stage_one),"
+    },
+    {
+      "line": 1787,
+      "text": ".register_async_operator(Arc::new(ComposedFactory::transform("
+    },
+    {
+      "line": 1790,
+      "text": "Arc::clone(&stage_two),"
+    },
+    {
+      "line": 1794,
+      "text": ".register_async_operator(Arc::new(ComposedFactory::transform("
+    },
+    {
+      "line": 1797,
+      "text": "Arc::clone(&stage_three),"
+    },
+    {
+      "line": 1801,
+      "text": ".register_async_operator(Arc::new(ComposedFactory::multi(Arc::clone(&multi))))"
+    },
+    {
+      "line": 1806,
+      "text": "Arc::new(TextEndpointDefinition),"
+    },
+    {
+      "line": 1807,
+      "text": "Arc::new(DerivedTextEndpointFactory {"
+    },
+    {
+      "line": 1808,
+      "text": "control: Arc::clone(&derived_endpoints),"
+    },
+    {
+      "line": 1881,
+      "text": "let application = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 1882,
+      "text": "let microphone_control = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 1955,
+      "text": "control: Arc<PcmOperatorControl>,"
+    },
+    {
+      "line": 1959,
+      "text": "fn new(control: Arc<PcmOperatorControl>) -> Self {"
+    },
+    {
+      "line": 2028,
+      "text": "fn create(&self, _configuration: &NodeConfig) -> Result<Box<dyn AsyncNode>, NodeError> {"
+    },
+    {
+      "line": 2029,
+      "text": "Ok(Box::new(PcmOperatorNode {"
+    },
+    {
+      "line": 2030,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 2036,
+      "text": "control: Arc<PcmOperatorControl>,"
+    },
+    {
+      "line": 2044,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 2058,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 2090,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 2098,
+      "text": "operator: &Arc<PcmOperatorControl>,"
+    },
+    {
+      "line": 2099,
+      "text": "endpoint: &Arc<EndpointControl>,"
+    },
+    {
+      "line": 2107,
+      "text": "Arc::new(TestEndpointFactory {"
+    },
+    {
+      "line": 2108,
+      "text": "control: Arc::clone(endpoint),"
+    },
+    {
+      "line": 2113,
+      "text": ".register_async_operator(Arc::new(PcmOperatorFactory::new(Arc::clone(operator))))"
+    },
+    {
+      "line": 2140,
+      "text": "let operator = Arc::new(PcmOperatorControl::default());"
+    },
+    {
+      "line": 2141,
+      "text": "let endpoint = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 2157,
+      "text": "let application = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 2158,
+      "text": "let microphone = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 2220,
+      "text": "let operator = Arc::new(PcmOperatorControl::default());"
+    },
+    {
+      "line": 2221,
+      "text": "let endpoint = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 2234,
+      "text": "let application = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 2235,
+      "text": "let microphone = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 2256,
+      "text": "let application = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 2257,
+      "text": "let microphone = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 2258,
+      "text": "let endpoints = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 2281,
+      "text": "let application = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 2282,
+      "text": "let microphone = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 2285,
+      "text": "let endpoints = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 2314,
+      "text": "let application = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 2315,
+      "text": "let microphone = Arc::new(CaptureControl::default());"
+    },
+    {
+      "line": 2316,
+      "text": "let endpoints = Arc::new(EndpointControl::default());"
+    }
+  ],
+  "responsibilities": [
+    "TEST_CONNECTOR_OPERATOR_ID (const)",
+    "TEST_ASYNC_OPERATOR_ID (const)",
+    "TEST_ASYNC_NODE_TYPE_ID (const)",
+    "TEST_TEXT_ENDPOINT_OPERATOR_ID (const)",
+    "TEST_TEXT_ENDPOINT_NODE_TYPE_ID (const)",
+    "TEST_NONTERMINAL_ROLE (const)",
+    "TEST_TERMINAL_ROLE (const)",
+    "test_nonterminal_spec (fn)",
+    "test_terminal_spec (fn)",
+    "TestNode (struct)",
+    "prepare (fn)",
+    "process (fn)",
+    "TestNodeFactory (struct)",
+    "descriptor (fn)",
+    "validate_config (fn)",
+    "instantiate (fn)",
+    "audio_port (fn)",
+    "TestNodeRole (enum)",
+    "descriptor (fn)",
+    "node_registry (fn)",
+    "product_spec (fn)",
+    "context (fn)",
+    "CaptureControl (struct)",
+    "TestCaptureBackend (struct)",
+    "TestPreparedCapture (struct)",
+    "TestActiveCapture (struct)",
+    "prepare (fn)",
+    "open (fn)",
+    "drop (fn)",
+    "source_id (fn)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 391,
+      "text": "operation: \"test capture stop\","
+    },
+    {
+      "line": 1134,
+      "text": "let outcome = running.stop();"
+    },
+    {
+      "line": 1333,
+      "text": "let first = running.stop();"
+    },
+    {
+      "line": 1334,
+      "text": "let second = running.stop();"
+    },
+    {
+      "line": 1447,
+      "text": "let outcome = running.stop();"
+    },
+    {
+      "line": 1496,
+      "text": "let outcome = running.stop();"
+    },
+    {
+      "line": 1905,
+      "text": "let outcome = running.stop();"
+    },
+    {
+      "line": 2186,
+      "text": "let outcome = running.stop();"
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 1864,
+      "text": ".connect(named.input(\"left\").expect(\"left input\"))"
+    },
+    {
+      "line": 1867,
+      "text": ".connect(named.input(\"right\").expect(\"right input\"))"
+    },
+    {
+      "line": 314,
+      "text": "let worker = std::thread::spawn(move || {"
+    },
+    {
+      "line": 556,
+      "text": "let worker = std::thread::spawn(move || {"
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 63,
+      "text": "fn prepare(&mut self, _context: &PrepareContext) -> Result<(), NodeError> {"
+    },
+    {
+      "line": 241,
+      "text": "fn prepare(&self, _mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 246,
+      "text": "return Err(CaptureError::BackendInit(\"test prepare failure\".to_owned()));"
+    },
+    {
+      "line": 467,
+      "text": "fn prepare("
+    },
+    {
+      "line": 479,
+      "text": "\"test endpoint prepare failure\","
+    },
+    {
+      "line": 532,
+      "text": "fn start("
+    },
+    {
+      "line": 544,
+      "text": "\"test endpoint start failure\","
+    },
+    {
+      "line": 807,
+      "text": "fn prepare<'a>("
+    },
+    {
+      "line": 827,
+      "text": "\"test operator prepare failure\".to_owned(),"
+    },
+    {
+      "line": 940,
+      "text": "fn prepare("
+    },
+    {
+      "line": 972,
+      "text": "fn start("
+    },
+    {
+      "line": 1128,
+      "text": ".start("
+    },
+    {
+      "line": 1132,
+      "text": ".expect(\"typed derived Session start\");"
+    },
+    {
+      "line": 1193,
+      "text": ".start("
+    },
+    {
+      "line": 1197,
+      "text": ".expect(\"blocked Operator Session start\");"
+    },
+    {
+      "line": 1232,
+      "text": "let error = match engine.start("
+    },
+    {
+      "line": 1278,
+      "text": "prepare_session_runtime(compiled, nodes, &context(), 8).expect(\"product runtime must prepare\")"
+    },
+    {
+      "line": 1321,
+      "text": "let mut running = start_prepared_session("
+    },
+    {
+      "line": 1382,
+      "text": "drop(prepared_route_contexts);"
+    },
+    {
+      "line": 1428,
+      "text": "let mut running = start_prepared_session("
+    },
+    {
+      "line": 1444,
+      "text": "\"both post-start source frames must reach all three destinations\""
+    },
+    {
+      "line": 1485,
+      "text": "let mut running = start_prepared_session("
+    },
+    {
+      "line": 1700,
+      "text": "fn prepare<'a>("
+    },
+    {
+      "line": 1886,
+      "text": ".start("
+    },
+    {
+      "line": 1890,
+      "text": ".expect(\"public composed Session start\");"
+    },
+    {
+      "line": 2040,
+      "text": "fn prepare<'a>("
+    },
+    {
+      "line": 2162,
+      "text": ".start("
+    },
+    {
+      "line": 2166,
+      "text": ".expect(\"generated-audio Session start\");"
+    },
+    {
+      "line": 2238,
+      "text": "let result = engine.start("
+    },
+    {
+      "line": 2331,
+      "text": "Ok(_) => panic!(\"endpoint start must fail\"),"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 811,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 838,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 848,
+      "text": "std::future::pending::<()>().await;"
+    },
+    {
+      "line": 860,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 876,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 883,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1092,
+      "text": ".expect(\"test async operator registration\");"
+    },
+    {
+      "line": 1112,
+      "text": "\"capture input must reach the async Operator before the deadline\""
+    },
+    {
+      "line": 1704,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1718,
+      "text": "Box::pin(async move { Ok(vec![self.emit(input, self.output_role)?]) })"
+    },
+    {
+      "line": 1726,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1744,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 2044,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 2058,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 2090,
+      "text": "Box::pin(async move {"
+    }
+  ],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-175f3b0edc08fa4b02f4",
+    "test-227e08bced503585a75c",
+    "test-6d6c3692eac547e8fa36",
+    "test-74fc5d0f0a325399dd1d",
+    "test-88d498541ed4c5ea973a",
+    "test-89251e3206216dbcb480",
+    "test-a0e61ef0aeeadaa96b67",
+    "test-b269c7b61711642b5e6e",
+    "test-b5fe30e5dbde18fe390e",
+    "test-c924643ab2f4f9cf21d1",
+    "test-d165f1ebf1a23234fb14",
+    "test-ea5b06c730a73a1dc9ca"
+  ],
+  "threads": [
+    {
+      "line": 236,
+      "text": "worker: Option<std::thread::JoinHandle<()>>,"
+    },
+    {
+      "line": 314,
+      "text": "let worker = std::thread::spawn(move || {"
+    },
+    {
+      "line": 319,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 337,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 450,
+      "text": "worker: Option<std::thread::JoinHandle<()>>,"
+    },
+    {
+      "line": 556,
+      "text": "let worker = std::thread::spawn(move || {"
+    },
+    {
+      "line": 558,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 560,
+      "text": "std::thread::sleep(Duration::from_millis("
+    },
+    {
+      "line": 577,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 629,
+      "text": ".map(std::thread::JoinHandle::join)"
+    },
+    {
+      "line": 1108,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 1332,
+      "text": "std::thread::sleep(Duration::from_millis(30));"
+    },
+    {
+      "line": 1439,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 1495,
+      "text": "std::thread::sleep(Duration::from_millis(30));"
+    },
+    {
+      "line": 1898,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 2176,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    }
+  ],
+  "visibility": "private_or_not_applicable"
+}

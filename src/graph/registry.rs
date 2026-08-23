@@ -47,6 +47,7 @@ pub enum NodeDefinitionRef<'registry> {
 }
 
 impl NodeDefinitionRef<'_> {
+    #[doc = "Returns the descriptor held by `NodeDefinitionRef`."]
     pub fn descriptor(&self) -> NodeDescriptor {
         match self {
             Self::Runtime(factory) => factory.descriptor(),
@@ -55,6 +56,7 @@ impl NodeDefinitionRef<'_> {
         }
     }
 
+    #[doc = "Validates config for `NodeDefinitionRef`."]
     pub fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {
         match self {
             Self::Runtime(factory) => factory.validate_config(config),
@@ -187,6 +189,7 @@ impl NodeRegistry {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the async node type identifier held by `NodeRegistry`."]
     pub fn async_node_type_id(&self, operator_id: &OperatorId) -> Option<&NodeTypeId> {
         self.async_operator_types.get(operator_id)
     }
@@ -197,16 +200,19 @@ impl NodeRegistry {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the number of values held by `NodeRegistry`."]
     pub fn len(&self) -> usize {
         self.entries.len()
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns whether `NodeRegistry` contains no values."]
     pub fn is_empty(&self) -> bool {
         self.entries.is_empty()
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the type identifiers held by `NodeRegistry`."]
     pub fn type_ids(&self) -> impl Iterator<Item = &NodeTypeId> {
         self.entries.keys()
     }

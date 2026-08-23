@@ -1676,7 +1676,7 @@
   ],
   "example_coverage_status": "linked",
   "examples_using": [
-    "example-3af8a91e442cd41f9135"
+    "example-015ad57d56d019a5d285"
   ],
   "extended_by": [],
   "extends": [],
@@ -2584,7 +2584,7 @@
       "text": "active.set_pid(self.active_child.as_ref().and_then(Child::id));"
     }
   ],
-  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
   "startup_behavior": [
     {
       "line": 415,
@@ -3100,19 +3100,19 @@
   ],
   "test_coverage_status": "linked",
   "tests_covering": [
-    "test-19a765a0dbacdd29aee0",
-    "test-21347646a3ff78175454",
-    "test-3ed49534bf02ce80cbcb",
-    "test-461c6ec95bfefc8bb314",
-    "test-87f552f09cb152e83b10",
-    "test-96cab447b1d1ad9b61d9",
-    "test-b79c368693e08eaa7d95",
-    "test-b8a974fb8cab9b036630",
-    "test-d05ebeb952bf0753b799",
-    "test-d2c23e54192a869ee546",
-    "test-e2540be9a42100cc68c1",
-    "test-e3fecbbc626c7ca91545",
-    "test-ecb60c6da5bff96b4580"
+    "test-004f9f3662355f6c02cc",
+    "test-1601ba20883aee1ac630",
+    "test-2a5f4a8f1e04f5b220c4",
+    "test-2ed5fdd4ba19977c8dc9",
+    "test-384d43cad3cb43576f09",
+    "test-3d1cc0ecef9a89cf23ff",
+    "test-46ae6f451f003a166202",
+    "test-5978528a8ea570fad70d",
+    "test-7a78788b7f5737646740",
+    "test-841a6b80171cfb0f55e8",
+    "test-899bb5750fda98d0832b",
+    "test-aa794f0809b00c2d3394",
+    "test-bd5ed751c752083c7711"
   ],
   "threads": [
     {

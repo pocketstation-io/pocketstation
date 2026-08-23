@@ -1,0 +1,687 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs"
+  ],
+  "calls": [
+    "AspReader",
+    "Self",
+    "active",
+    "as_mut_ptr",
+    "asp_is_installed",
+    "channels",
+    "derive",
+    "drop",
+    "drop_count",
+    "is_null",
+    "len",
+    "open",
+    "pks_asp_channels",
+    "pks_asp_close_reader",
+    "pks_asp_drop_count",
+    "pks_asp_is_installed",
+    "pks_asp_open_reader",
+    "pks_asp_read_frames",
+    "pks_asp_sample_rate",
+    "pks_asp_timeline_reject_callback_count",
+    "read_frames",
+    "sample_rate",
+    "timeline_reject_callback_count",
+    "valid"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs"
+  ],
+  "constructs": [],
+  "content_hash": "1887bb14ff3e2aca760538229558101290d20d60169b2a3cea00dc4936fd8705",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 7,
+      "name": "pks_asp_is_installed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 8,
+      "name": "pks_asp_open_reader",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 9,
+      "name": "pks_asp_sample_rate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 10,
+      "name": "pks_asp_channels",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "pks_asp_drop_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 13,
+      "name": "pks_asp_timeline_reject_callback_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "pks_asp_read_frames",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 20,
+      "name": "pks_asp_close_reader",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "asp_is_installed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 30,
+      "name": "AspReader",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 33,
+      "name": "AspReadBatch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "open",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "sample_rate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "drop_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "timeline_reject_callback_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "read_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 101,
+      "name": "drop",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 101,
+      "text": "fn drop(&mut self) {"
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "asp_is_installed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 30,
+      "name": "AspReader",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 33,
+      "name": "AspReadBatch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "open",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "sample_rate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "drop_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "timeline_reject_callback_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "read_frames",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "1887bb14ff3e2aca760538229558101290d20d60169b2a3cea00dc4936fd8705",
+      "lines": [
+        1,
+        106
+      ],
+      "path": "src/capture/platform/macos/macos_asp.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 3,
+      "text": "use std::ffi::c_float;"
+    },
+    {
+      "line": 4,
+      "text": "use std::ffi::c_uint;"
+    },
+    {
+      "line": 6,
+      "text": "extern \"C\" {"
+    },
+    {
+      "line": 7,
+      "text": "fn pks_asp_is_installed() -> std::ffi::c_int;"
+    },
+    {
+      "line": 8,
+      "text": "fn pks_asp_open_reader() -> *mut std::ffi::c_void;"
+    },
+    {
+      "line": 9,
+      "text": "fn pks_asp_sample_rate(r: *mut std::ffi::c_void) -> c_uint;"
+    },
+    {
+      "line": 10,
+      "text": "fn pks_asp_channels(r: *mut std::ffi::c_void) -> c_uint;"
+    },
+    {
+      "line": 12,
+      "text": "fn pks_asp_drop_count(r: *mut std::ffi::c_void) -> u64;"
+    },
+    {
+      "line": 13,
+      "text": "fn pks_asp_timeline_reject_callback_count(r: *mut std::ffi::c_void) -> u64;"
+    },
+    {
+      "line": 15,
+      "text": "r: *mut std::ffi::c_void,"
+    },
+    {
+      "line": 20,
+      "text": "fn pks_asp_close_reader(r: *mut std::ffi::c_void);"
+    },
+    {
+      "line": 26,
+      "text": "unsafe { pks_asp_is_installed() != 0 }"
+    },
+    {
+      "line": 30,
+      "text": "pub struct AspReader(*mut std::ffi::c_void);"
+    },
+    {
+      "line": 46,
+      "text": "let ptr = unsafe { pks_asp_open_reader() };"
+    },
+    {
+      "line": 56,
+      "text": "unsafe { pks_asp_sample_rate(self.0) }"
+    },
+    {
+      "line": 61,
+      "text": "unsafe { pks_asp_channels(self.0) }"
+    },
+    {
+      "line": 67,
+      "text": "unsafe { pks_asp_drop_count(self.0) }"
+    },
+    {
+      "line": 73,
+      "text": "unsafe { pks_asp_timeline_reject_callback_count(self.0) }"
+    },
+    {
+      "line": 85,
+      "text": "let frame_count = unsafe {"
+    },
+    {
+      "line": 103,
+      "text": "unsafe { pks_asp_close_reader(self.0) }"
+    }
+  ],
+  "file_id": "file-0090-715568d7",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "0aedd32a346f3f4b7923d1ec7e3a477375474854",
+  "implemented_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs"
+  ],
+  "implements": [
+    "AspReader",
+    "Drop for AspReader"
+  ],
+  "imported_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs"
+  ],
+  "imports": [
+    "std::ffi::c_float",
+    "std::ffi::c_uint"
+  ],
+  "inputs": [
+    "std::ffi::c_float",
+    "std::ffi::c_uint"
+  ],
+  "invariants": [
+    {
+      "line": 80,
+      "text": "/// `buf.len()` must be >= `frame_count * channels()`."
+    }
+  ],
+  "language": "Rust",
+  "line_count": 106,
+  "locks": [],
+  "module": "pocketstation::capture::platform::macos::macos_asp",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "fn:asp_is_installed",
+    "fn:channels",
+    "fn:drop_count",
+    "fn:open",
+    "fn:read_frames",
+    "fn:sample_rate",
+    "fn:timeline_reject_callback_count",
+    "struct:AspReadBatch",
+    "struct:AspReader"
+  ],
+  "package": "pocketstation",
+  "path": "src/capture/platform/macos/macos_asp.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 7,
+      "name": "pks_asp_is_installed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 8,
+      "name": "pks_asp_open_reader",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 9,
+      "name": "pks_asp_sample_rate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 10,
+      "name": "pks_asp_channels",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "pks_asp_drop_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 13,
+      "name": "pks_asp_timeline_reject_callback_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "pks_asp_read_frames",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 20,
+      "name": "pks_asp_close_reader",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 101,
+      "name": "drop",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "asp_is_installed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 30,
+      "name": "AspReader",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 33,
+      "name": "AspReadBatch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "open",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "sample_rate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "drop_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "timeline_reject_callback_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "read_frames",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::capture::platform::macos::macos asp responsibilities, including macos asp; pks asp is installed; pks asp open reader."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/source-selection.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/select-process-source.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/run-transcription.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/troubleshooting/timing.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [
+    {
+      "line": 100,
+      "text": "impl Drop for AspReader {"
+    },
+    {
+      "line": 102,
+      "text": "// SAFETY: self.0 is the only owner; close_reader frees it."
+    }
+  ],
+  "responsibilities": [
+    "pks_asp_is_installed (fn)",
+    "pks_asp_open_reader (fn)",
+    "pks_asp_sample_rate (fn)",
+    "pks_asp_channels (fn)",
+    "pks_asp_drop_count (fn)",
+    "pks_asp_timeline_reject_callback_count (fn)",
+    "pks_asp_read_frames (fn)",
+    "pks_asp_close_reader (fn)",
+    "asp_is_installed (fn)",
+    "AspReader (struct)",
+    "AspReadBatch (struct)",
+    "open (fn)",
+    "sample_rate (fn)",
+    "channels (fn)",
+    "drop_count (fn)",
+    "timeline_reject_callback_count (fn)",
+    "read_frames (fn)",
+    "drop (fn)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 3,
+      "text": "use std::ffi::c_float;"
+    },
+    {
+      "line": 4,
+      "text": "use std::ffi::c_uint;"
+    },
+    {
+      "line": 6,
+      "text": "extern \"C\" {"
+    },
+    {
+      "line": 7,
+      "text": "fn pks_asp_is_installed() -> std::ffi::c_int;"
+    },
+    {
+      "line": 8,
+      "text": "fn pks_asp_open_reader() -> *mut std::ffi::c_void;"
+    },
+    {
+      "line": 9,
+      "text": "fn pks_asp_sample_rate(r: *mut std::ffi::c_void) -> c_uint;"
+    },
+    {
+      "line": 10,
+      "text": "fn pks_asp_channels(r: *mut std::ffi::c_void) -> c_uint;"
+    },
+    {
+      "line": 12,
+      "text": "fn pks_asp_drop_count(r: *mut std::ffi::c_void) -> u64;"
+    },
+    {
+      "line": 13,
+      "text": "fn pks_asp_timeline_reject_callback_count(r: *mut std::ffi::c_void) -> u64;"
+    },
+    {
+      "line": 15,
+      "text": "r: *mut std::ffi::c_void,"
+    },
+    {
+      "line": 20,
+      "text": "fn pks_asp_close_reader(r: *mut std::ffi::c_void);"
+    },
+    {
+      "line": 26,
+      "text": "unsafe { pks_asp_is_installed() != 0 }"
+    },
+    {
+      "line": 30,
+      "text": "pub struct AspReader(*mut std::ffi::c_void);"
+    },
+    {
+      "line": 46,
+      "text": "let ptr = unsafe { pks_asp_open_reader() };"
+    },
+    {
+      "line": 56,
+      "text": "unsafe { pks_asp_sample_rate(self.0) }"
+    },
+    {
+      "line": 61,
+      "text": "unsafe { pks_asp_channels(self.0) }"
+    },
+    {
+      "line": 67,
+      "text": "unsafe { pks_asp_drop_count(self.0) }"
+    },
+    {
+      "line": 73,
+      "text": "unsafe { pks_asp_timeline_reject_callback_count(self.0) }"
+    },
+    {
+      "line": 85,
+      "text": "let frame_count = unsafe {"
+    },
+    {
+      "line": 103,
+      "text": "unsafe { pks_asp_close_reader(self.0) }"
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

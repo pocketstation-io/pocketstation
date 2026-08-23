@@ -1,0 +1,1663 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 219,
+      "text": "6 => \"creating the CoreAudio device callback\","
+    },
+    {
+      "line": 318,
+      "text": "// - The IO callback writes to the ring from CoreAudio's RT thread; synchronisation"
+    },
+    {
+      "line": 439,
+      "text": "mut callback: F,"
+    },
+    {
+      "line": 605,
+      "text": "callback(frame);"
+    }
+  ],
+  "called_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs"
+  ],
+  "calls": [
+    "API",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "CaptureMode::Application",
+    "CaptureMode::InputDevice",
+    "CaptureMode::Process",
+    "CaptureObservationCounters::default",
+    "Duration::from_millis",
+    "FnMut",
+    "LoopbackError::BackendInit",
+    "LoopbackError::ModeUnsupported",
+    "NonNull::new",
+    "ProcessTap",
+    "ProcessTap::current_host_time_ns",
+    "ProcessTap::for_pids",
+    "ProcessTap::global",
+    "Self::create",
+    "StableSourceId::new",
+    "StreamId",
+    "String::from_utf8_lossy",
+    "TimelineMapping::new",
+    "Vec::with_capacity",
+    "acquire",
+    "as_deref",
+    "as_mut_ptr",
+    "as_mut_slice",
+    "as_ptr",
+    "as_ref",
+    "as_str",
+    "audited_application",
+    "callback",
+    "capture_exact_application_open_audit",
+    "cfg",
+    "channel_count",
+    "checked_add",
+    "checked_div",
+    "checked_mul",
+    "checked_sub",
+    "clone",
+    "collect",
+    "copy_from_slice",
+    "crate::capture::join_capture_worker",
+    "crate::capture::publish_backend_failure",
+    "create",
+    "cstr_to_opt",
+    "cstr_to_string",
+    "current_host_time_ns",
+    "derive",
+    "discover_sources_native",
+    "discover_sources_native_with_audit",
+    "drop",
+    "drop_count",
+    "exact_application_open_audit",
+    "filter",
+    "filter_map",
+    "find",
+    "flatten",
+    "for_pids",
+    "given_core_audio_permission_status_when_mapped_then_denial_remains_typed",
+    "given_exact_application_target_when_framed_then_stable_identity_is_preserved",
+    "given_missing_creation_time_when_audited_then_exact_open_fails_closed",
+    "given_native_host_time_when_normalized_then_process_clock_boundary_is_comparable",
+    "given_other_core_audio_status_when_mapped_then_raw_status_is_preserved",
+    "given_reader_position_before_native_anchor_when_mapped_then_sample_delta_is_preserved",
+    "given_reused_pid_with_different_application_when_verified_then_target_is_rejected",
+    "given_same_pid_and_application_when_verified_then_target_is_retained",
+    "given_same_pid_and_application_with_new_creation_when_audited_then_reuse_is_detected",
+    "global",
+    "i128::from",
+    "i32::from_be_bytes",
+    "initialize_monotonic_timestamp_domain",
+    "into",
+    "into_iter",
+    "into_owned",
+    "is_empty",
+    "is_err",
+    "is_ok",
+    "is_some",
+    "iter",
+    "len",
+    "let",
+    "map",
+    "map_err",
+    "map_or",
+    "max",
+    "monotonic_timestamp_ns",
+    "name",
+    "normalize_timestamp_ns",
+    "observation_handle",
+    "observations",
+    "observe_callback_buffer",
+    "observe_dispatch_queue_full_frames",
+    "observe_enqueued_frame",
+    "observe_oversized_buffer",
+    "observe_pool_exhaustion",
+    "observe_stream_error",
+    "ok",
+    "ok_or_else",
+    "pks_create_process_tap",
+    "pks_destroy_process_tap",
+    "pks_discover_sources",
+    "pks_process_tap_available",
+    "pks_tap_channels",
+    "pks_tap_current_host_time_ns",
+    "pks_tap_drop_count",
+    "pks_tap_level",
+    "pks_tap_read_frames_timed",
+    "pks_tap_sample_rate",
+    "pks_tap_start",
+    "position",
+    "process_timestamp_ns",
+    "pub",
+    "read_frames",
+    "repr",
+    "sample_rate_hz",
+    "saturating_add",
+    "saturating_sub",
+    "set_len",
+    "snapshot",
+    "source_host_timestamp_ns",
+    "source_id",
+    "spawn",
+    "stable_source_id",
+    "start",
+    "std::env::var_os",
+    "std::panic::AssertUnwindSafe",
+    "std::panic::catch_unwind",
+    "std::panic::resume_unwind",
+    "std::ptr::null",
+    "std::ptr::write_bytes",
+    "std::thread::Builder::new",
+    "std::thread::sleep",
+    "stop_and_join",
+    "stop_reader",
+    "take",
+    "tap",
+    "tap_available",
+    "tap_error",
+    "tap_operation",
+    "then",
+    "then_some",
+    "to_owned",
+    "truncate",
+    "try_recv",
+    "try_send",
+    "try_set_len",
+    "u64::try_from",
+    "unwrap",
+    "unwrap_or",
+    "unwrap_or_else",
+    "verify_exact_application_open_audit"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 480,
+      "text": "if std::env::var_os(\"PKS_TAP_DIAG\").is_some() {"
+    },
+    {
+      "line": 667,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs"
+  ],
+  "constructs": [
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "NonNull::new",
+    "StableSourceId::new",
+    "TimelineMapping::new",
+    "i128::from",
+    "std::thread::Builder::new",
+    "u64::try_from"
+  ],
+  "content_hash": "a27174008a9c15cccc2e2cca82bf317a6849e7df89c556c4648aff61ca119455",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 20,
+      "name": "RawSourceInfo",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 33,
+      "name": "AuditedCaptureSource",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "pks_process_tap_available",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "pks_discover_sources",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "pks_create_process_tap",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "pks_tap_start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 48,
+      "name": "pks_destroy_process_tap",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "pks_tap_read_frames_timed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "pks_tap_current_host_time_ns",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "pks_tap_drop_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "pks_tap_sample_rate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "pks_tap_channels",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "pks_tap_level",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "tap_available",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 87,
+      "name": "discover_sources_native",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 93,
+      "name": "discover_sources_native_with_audit",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 95,
+      "name": "MAX",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 166,
+      "name": "cstr_to_string",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 174,
+      "name": "cstr_to_opt",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 178,
+      "name": "ProcessTap",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 182,
+      "name": "ProcessTapReadBatch",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 188,
+      "name": "source_host_timestamp_ns",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 201,
+      "name": "process_timestamp_ns",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 209,
+      "name": "CORE_AUDIO_PERMISSION_DENIED_STATUS",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 211,
+      "name": "tap_operation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 225,
+      "name": "tap_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 237,
+      "name": "stable_source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 262,
+      "name": "ExactApplicationOpenAudit",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 267,
+      "name": "exact_application_open_audit",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 287,
+      "name": "capture_exact_application_open_audit",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 297,
+      "name": "verify_exact_application_open_audit",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 324,
+      "name": "global",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 327,
+      "name": "for_pids",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 331,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 344,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 356,
+      "name": "sample_rate_hz",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 361,
+      "name": "channel_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 366,
+      "name": "read_frames",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 400,
+      "name": "current_host_time_ns",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 405,
+      "name": "drop_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 415,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 426,
+      "name": "POOL_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 429,
+      "name": "TapLoopbackSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 437,
+      "name": "capture_mode_with_runtime_event_sender",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 633,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 637,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 641,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 645,
+      "name": "stop_and_join",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 651,
+      "name": "stop_reader",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 662,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 668,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 679,
+      "name": "audited_application",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 702,
+      "name": "given_core_audio_permission_status_when_mapped_then_denial_remains_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 712,
+      "name": "given_reader_position_before_native_anchor_when_mapped_then_sample_delta_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 724,
+      "name": "given_native_host_time_when_normalized_then_process_clock_boundary_is_comparable",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 740,
+      "name": "given_other_core_audio_status_when_mapped_then_raw_status_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 751,
+      "name": "given_exact_application_target_when_framed_then_stable_identity_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 767,
+      "name": "given_reused_pid_with_different_application_when_verified_then_target_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 778,
+      "name": "given_same_pid_and_application_when_verified_then_target_is_retained",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 794,
+      "name": "given_same_pid_and_application_with_new_creation_when_audited_then_reuse_is_detected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 811,
+      "name": "given_missing_creation_time_when_audited_then_exact_open_fails_closed",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [
+    {
+      "line": 1,
+      "text": "//! CoreAudio process tap backend \u2014 macOS 14.4+ (public support claim)."
+    },
+    {
+      "line": 64,
+      "text": "/// Returns `true` when the CoreAudio process tap API is available."
+    },
+    {
+      "line": 215,
+      "text": "2 => \"creating the CoreAudio process tap\","
+    },
+    {
+      "line": 216,
+      "text": "3 => \"reading the CoreAudio process tap identifier\","
+    },
+    {
+      "line": 217,
+      "text": "4 => \"creating the CoreAudio aggregate device\","
+    },
+    {
+      "line": 218,
+      "text": "5 => \"allocating the CoreAudio process tap handle\","
+    },
+    {
+      "line": 219,
+      "text": "6 => \"creating the CoreAudio device callback\","
+    },
+    {
+      "line": 220,
+      "text": "7 => \"starting the CoreAudio aggregate device\","
+    },
+    {
+      "line": 221,
+      "text": "8 => \"checking CoreAudio process tap platform support\","
+    },
+    {
+      "line": 222,
+      "text": "_ => \"opening the CoreAudio process tap\","
+    },
+    {
+      "line": 318,
+      "text": "// - The IO callback writes to the ring from CoreAudio's RT thread; synchronisation"
+    },
+    {
+      "line": 428,
+      "text": "/// Captures system audio via CoreAudio process tap (macOS 14.2+)."
+    },
+    {
+      "line": 447,
+      "text": "\"CoreAudio process tap requires macOS 14.4 or later\".into(),"
+    },
+    {
+      "line": 518,
+      "text": "\"CoreAudio host-time mapping is unavailable\".to_owned(),"
+    },
+    {
+      "line": 706,
+      "text": "operation: \"creating the CoreAudio process tap\""
+    },
+    {
+      "line": 744,
+      "text": "operation: \"starting the CoreAudio aggregate device\","
+    }
+  ],
+  "drop_cleanup": [
+    {
+      "line": 415,
+      "text": "fn drop(&mut self) {"
+    },
+    {
+      "line": 660,
+      "text": "/// Drop contract \u2014 control thread only: signal and join the owned reader."
+    },
+    {
+      "line": 662,
+      "text": "fn drop(&mut self) {"
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "tap_available",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 87,
+      "name": "discover_sources_native",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 429,
+      "name": "TapLoopbackSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 437,
+      "name": "capture_mode_with_runtime_event_sender",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 633,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 637,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 641,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 645,
+      "name": "stop_and_join",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [
+    "PKS_TAP_DIAG"
+  ],
+  "errors_created": [
+    {
+      "line": 257,
+      "text": "CaptureMode::InputDevice(_) => Err(LoopbackError::ModeUnsupported(mode.clone())),"
+    },
+    {
+      "line": 309,
+      "text": "Err(LoopbackError::SourceUnavailable {"
+    },
+    {
+      "line": 353,
+      "text": "Err(tap_error(status_code, stage_code))"
+    },
+    {
+      "line": 446,
+      "text": "return Err(LoopbackError::BackendInit("
+    },
+    {
+      "line": 471,
+      "text": "return Err(LoopbackError::ModeUnsupported(mode.clone()));"
+    },
+    {
+      "line": 489,
+      "text": "return Err(LoopbackError::BackendInit(format!("
+    },
+    {
+      "line": 496,
+      "text": "return Err(LoopbackError::ModeUnsupported(mode));"
+    },
+    {
+      "line": 507,
+      "text": "return Err(LoopbackError::BackendInit("
+    },
+    {
+      "line": 517,
+      "text": "return Err(LoopbackError::BackendInit("
+    },
+    {
+      "line": 608,
+      "text": "if let Err(payload) = worker {"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [
+    {
+      "line": 624,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"thread spawn: {e}\")))?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 624,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"thread spawn: {e}\")))?;"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 624,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"thread spawn: {e}\")))?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "a27174008a9c15cccc2e2cca82bf317a6849e7df89c556c4648aff61ca119455",
+      "lines": [
+        1,
+        819
+      ],
+      "path": "src/capture/platform/macos/macos_tap.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 38,
+      "text": "extern \"C\" {"
+    },
+    {
+      "line": 46,
+      "text": ") -> *mut std::ffi::c_void;"
+    },
+    {
+      "line": 47,
+      "text": "fn pks_tap_start(tap: *mut std::ffi::c_void, out_status: *mut i32, out_stage: *mut u8) -> i32;"
+    },
+    {
+      "line": 48,
+      "text": "fn pks_destroy_process_tap(tap: *mut std::ffi::c_void);"
+    },
+    {
+      "line": 50,
+      "text": "tap: *mut std::ffi::c_void,"
+    },
+    {
+      "line": 58,
+      "text": "fn pks_tap_drop_count(tap: *const std::ffi::c_void) -> u64;"
+    },
+    {
+      "line": 59,
+      "text": "fn pks_tap_sample_rate(tap: *const std::ffi::c_void) -> u32;"
+    },
+    {
+      "line": 60,
+      "text": "fn pks_tap_channels(tap: *const std::ffi::c_void) -> u32;"
+    },
+    {
+      "line": 61,
+      "text": "fn pks_tap_level(tap: *const std::ffi::c_void) -> f32;"
+    },
+    {
+      "line": 79,
+      "text": "unsafe {"
+    },
+    {
+      "line": 99,
+      "text": "let raw: Vec<RawSourceInfo> = unsafe {"
+    },
+    {
+      "line": 179,
+      "text": "struct ProcessTap(NonNull<std::ffi::c_void>);"
+    },
+    {
+      "line": 337,
+      "text": "let handle = unsafe {"
+    },
+    {
+      "line": 350,
+      "text": "if unsafe { pks_tap_start(self.0.as_ptr(), &mut status_code, &mut stage_code) } == 0 {"
+    },
+    {
+      "line": 359,
+      "text": "unsafe { pks_tap_sample_rate(self.0.as_ptr()) }"
+    },
+    {
+      "line": 364,
+      "text": "unsafe { pks_tap_channels(self.0.as_ptr()) }"
+    },
+    {
+      "line": 383,
+      "text": "let read_frame_count = unsafe {"
+    },
+    {
+      "line": 403,
+      "text": "unsafe { pks_tap_current_host_time_ns() }"
+    },
+    {
+      "line": 408,
+      "text": "unsafe { pks_tap_drop_count(self.0.as_ptr()) }"
+    },
+    {
+      "line": 417,
+      "text": "unsafe {"
+    }
+  ],
+  "file_id": "file-0091-18872881",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "8b75f6d0615d1adf34f99203cf8cce9248c8fbd3",
+  "implemented_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs"
+  ],
+  "implements": [
+    "ProcessTap",
+    "Drop for ProcessTap",
+    "TapLoopbackSource",
+    "Drop for TapLoopbackSource"
+  ],
+  "imported_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs"
+  ],
+  "imports": [
+    "crate::capture::{ CaptureError, CaptureMode, CaptureSource, SourceKind, SourceState, StableSourceId, }",
+    "crate::capture::{ initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations, CaptureSource, SourceKind, SourceState, StableSourceId, }",
+    "crate::frame::Platform",
+    "crate::frame::{AudioBufferPool, AudioFrame, Platform, StreamId}",
+    "crate::timing::TimelineMapping",
+    "std::ptr::NonNull",
+    "std::time::Duration",
+    "super::{ exact_application_open_audit, process_timestamp_ns, source_host_timestamp_ns, stable_source_id, tap_error, AuditedCaptureSource, ExactApplicationOpenAudit, ProcessTapReadBatch, CORE_AUDIO_PERMISSION_DENIED_STATUS, }"
+  ],
+  "inputs": [
+    "#[cfg(test)]",
+    "PKS_TAP_DIAG",
+    "crate::capture::{ CaptureError, CaptureMode, CaptureSource, SourceKind, SourceState, StableSourceId, }",
+    "crate::capture::{ initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations, CaptureSource, SourceKind, SourceState, StableSourceId, }",
+    "crate::frame::Platform",
+    "crate::frame::{AudioBufferPool, AudioFrame, Platform, StreamId}",
+    "crate::timing::TimelineMapping",
+    "if std::env::var_os(\"PKS_TAP_DIAG\").is_some() {",
+    "std::ptr::NonNull",
+    "std::time::Duration",
+    "super::{ exact_application_open_audit, process_timestamp_ns, source_host_timestamp_ns, stable_source_id, tap_error, AuditedCaptureSource, ExactApplicationOpenAudit, ProcessTapReadBatch, CORE_AUDIO_PERMISSION_DENIED_STATUS, }"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 819,
+  "locks": [],
+  "module": "pocketstation::capture::platform::macos::macos_tap",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-91faf4734a58e42cc572",
+    "pattern-f45af1cbfa2e2a2a1fd1",
+    "pattern-fff5b06059adba487cce"
+  ],
+  "outputs": [
+    "CaptureMode::InputDevice(_) => Err(LoopbackError::ModeUnsupported(mode.clone())),",
+    "Err(LoopbackError::SourceUnavailable {",
+    "Err(tap_error(status_code, stage_code))",
+    "fn:capture_mode_with_runtime_event_sender",
+    "fn:discover_sources_native",
+    "fn:observation_handle",
+    "fn:observations",
+    "fn:source_id",
+    "fn:stop_and_join",
+    "fn:tap_available",
+    "if let Err(payload) = worker {",
+    "return Err(LoopbackError::BackendInit(",
+    "return Err(LoopbackError::BackendInit(format!(",
+    "return Err(LoopbackError::ModeUnsupported(mode));",
+    "return Err(LoopbackError::ModeUnsupported(mode.clone()));",
+    "struct:TapLoopbackSource"
+  ],
+  "package": "pocketstation",
+  "path": "src/capture/platform/macos/macos_tap.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract."
+  ],
+  "private_surface": [
+    {
+      "kind": "struct",
+      "line": 20,
+      "name": "RawSourceInfo",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 33,
+      "name": "AuditedCaptureSource",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "pks_process_tap_available",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "pks_discover_sources",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "pks_create_process_tap",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "pks_tap_start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 48,
+      "name": "pks_destroy_process_tap",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "pks_tap_read_frames_timed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "pks_tap_current_host_time_ns",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "pks_tap_drop_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "pks_tap_sample_rate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "pks_tap_channels",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "pks_tap_level",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 93,
+      "name": "discover_sources_native_with_audit",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 95,
+      "name": "MAX",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 166,
+      "name": "cstr_to_string",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 174,
+      "name": "cstr_to_opt",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 178,
+      "name": "ProcessTap",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 182,
+      "name": "ProcessTapReadBatch",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 188,
+      "name": "source_host_timestamp_ns",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 201,
+      "name": "process_timestamp_ns",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 209,
+      "name": "CORE_AUDIO_PERMISSION_DENIED_STATUS",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 211,
+      "name": "tap_operation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 225,
+      "name": "tap_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 237,
+      "name": "stable_source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 262,
+      "name": "ExactApplicationOpenAudit",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 267,
+      "name": "exact_application_open_audit",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 287,
+      "name": "capture_exact_application_open_audit",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 297,
+      "name": "verify_exact_application_open_audit",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 324,
+      "name": "global",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 327,
+      "name": "for_pids",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 331,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 344,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 356,
+      "name": "sample_rate_hz",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 361,
+      "name": "channel_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 366,
+      "name": "read_frames",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 400,
+      "name": "current_host_time_ns",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 405,
+      "name": "drop_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 415,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 426,
+      "name": "POOL_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 651,
+      "name": "stop_reader",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 662,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 668,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 679,
+      "name": "audited_application",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 702,
+      "name": "given_core_audio_permission_status_when_mapped_then_denial_remains_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 712,
+      "name": "given_reader_position_before_native_anchor_when_mapped_then_sample_delta_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 724,
+      "name": "given_native_host_time_when_normalized_then_process_clock_boundary_is_comparable",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 740,
+      "name": "given_other_core_audio_status_when_mapped_then_raw_status_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 751,
+      "name": "given_exact_application_target_when_framed_then_stable_identity_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 767,
+      "name": "given_reused_pid_with_different_application_when_verified_then_target_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 778,
+      "name": "given_same_pid_and_application_when_verified_then_target_is_retained",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 794,
+      "name": "given_same_pid_and_application_with_new_creation_when_audited_then_reuse_is_detected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 811,
+      "name": "given_missing_creation_time_when_audited_then_exact_open_fails_closed",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 537,
+      "text": ".spawn(move || {"
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "tap_available",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 87,
+      "name": "discover_sources_native",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 429,
+      "name": "TapLoopbackSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 437,
+      "name": "capture_mode_with_runtime_event_sender",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 633,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 637,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 641,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 645,
+      "name": "stop_and_join",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::capture::platform::macos::macos tap responsibilities, including Returns `true` when the CoreAudio process tap API is available.; Enumerate all running processes that have audio output.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/source-selection.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/select-process-source.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/run-transcription.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/troubleshooting/timing.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/capture/authorization.rs",
+    "REFERENCES:src/capture/events.rs",
+    "REFERENCES:src/capture/identity.rs",
+    "REFERENCES:src/capture/observations.rs",
+    "REFERENCES:src/capture/selection.rs",
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/timing/timeline_mapping.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 412,
+      "text": "/// Drop contract \u2014 this is a control-thread-only owner:"
+    },
+    {
+      "line": 414,
+      "text": "impl Drop for ProcessTap {"
+    },
+    {
+      "line": 660,
+      "text": "/// Drop contract \u2014 control thread only: signal and join the owned reader."
+    },
+    {
+      "line": 661,
+      "text": "impl Drop for TapLoopbackSource {"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::capture::platform::macos::macos_tap::tap_available: Returns `true` when the CoreAudio process tap API is available.",
+    "pocketstation::capture::platform::macos::macos_tap::discover_sources_native: Enumerate all running processes that have audio output."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 1,
+      "text": "//! CoreAudio process tap backend \u2014 macOS 14.4+ (public support claim)."
+    },
+    {
+      "line": 64,
+      "text": "/// Returns `true` when the CoreAudio process tap API is available."
+    },
+    {
+      "line": 215,
+      "text": "2 => \"creating the CoreAudio process tap\","
+    },
+    {
+      "line": 216,
+      "text": "3 => \"reading the CoreAudio process tap identifier\","
+    },
+    {
+      "line": 217,
+      "text": "4 => \"creating the CoreAudio aggregate device\","
+    },
+    {
+      "line": 218,
+      "text": "5 => \"allocating the CoreAudio process tap handle\","
+    },
+    {
+      "line": 219,
+      "text": "6 => \"creating the CoreAudio device callback\","
+    },
+    {
+      "line": 220,
+      "text": "7 => \"starting the CoreAudio aggregate device\","
+    },
+    {
+      "line": 221,
+      "text": "8 => \"checking CoreAudio process tap platform support\","
+    },
+    {
+      "line": 222,
+      "text": "_ => \"opening the CoreAudio process tap\","
+    },
+    {
+      "line": 318,
+      "text": "// - The IO callback writes to the ring from CoreAudio's RT thread; synchronisation"
+    },
+    {
+      "line": 428,
+      "text": "/// Captures system audio via CoreAudio process tap (macOS 14.2+)."
+    },
+    {
+      "line": 447,
+      "text": "\"CoreAudio process tap requires macOS 14.4 or later\".into(),"
+    },
+    {
+      "line": 518,
+      "text": "\"CoreAudio host-time mapping is unavailable\".to_owned(),"
+    },
+    {
+      "line": 706,
+      "text": "operation: \"creating the CoreAudio process tap\""
+    },
+    {
+      "line": 744,
+      "text": "operation: \"starting the CoreAudio aggregate device\","
+    },
+    {
+      "line": 537,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 38,
+      "text": "extern \"C\" {"
+    },
+    {
+      "line": 46,
+      "text": ") -> *mut std::ffi::c_void;"
+    },
+    {
+      "line": 47,
+      "text": "fn pks_tap_start(tap: *mut std::ffi::c_void, out_status: *mut i32, out_stage: *mut u8) -> i32;"
+    },
+    {
+      "line": 48,
+      "text": "fn pks_destroy_process_tap(tap: *mut std::ffi::c_void);"
+    },
+    {
+      "line": 50,
+      "text": "tap: *mut std::ffi::c_void,"
+    },
+    {
+      "line": 58,
+      "text": "fn pks_tap_drop_count(tap: *const std::ffi::c_void) -> u64;"
+    },
+    {
+      "line": 59,
+      "text": "fn pks_tap_sample_rate(tap: *const std::ffi::c_void) -> u32;"
+    },
+    {
+      "line": 60,
+      "text": "fn pks_tap_channels(tap: *const std::ffi::c_void) -> u32;"
+    },
+    {
+      "line": 61,
+      "text": "fn pks_tap_level(tap: *const std::ffi::c_void) -> f32;"
+    },
+    {
+      "line": 79,
+      "text": "unsafe {"
+    },
+    {
+      "line": 99,
+      "text": "let raw: Vec<RawSourceInfo> = unsafe {"
+    },
+    {
+      "line": 179,
+      "text": "struct ProcessTap(NonNull<std::ffi::c_void>);"
+    },
+    {
+      "line": 337,
+      "text": "let handle = unsafe {"
+    },
+    {
+      "line": 350,
+      "text": "if unsafe { pks_tap_start(self.0.as_ptr(), &mut status_code, &mut stage_code) } == 0 {"
+    },
+    {
+      "line": 359,
+      "text": "unsafe { pks_tap_sample_rate(self.0.as_ptr()) }"
+    },
+    {
+      "line": 364,
+      "text": "unsafe { pks_tap_channels(self.0.as_ptr()) }"
+    },
+    {
+      "line": 383,
+      "text": "let read_frame_count = unsafe {"
+    },
+    {
+      "line": 403,
+      "text": "unsafe { pks_tap_current_host_time_ns() }"
+    },
+    {
+      "line": 408,
+      "text": "unsafe { pks_tap_drop_count(self.0.as_ptr()) }"
+    },
+    {
+      "line": 417,
+      "text": "unsafe {"
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 345,
+      "text": "fn start(&mut self) -> Result<(), LoopbackError> {"
+    },
+    {
+      "line": 500,
+      "text": "tap.start()?;"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0426336f8a6e2c5cc82f",
+    "test-052dbf5299c7bb5e6456",
+    "test-08a6379bc20593cb04fd",
+    "test-2a85422b1f2de56f1698",
+    "test-610274c97d459763d74c",
+    "test-63b3622cf532c6aaaa47",
+    "test-741e0f83602c03a90e18",
+    "test-8cc7d235a6f23ac3854b",
+    "test-cd697175b87f09605ed4"
+  ],
+  "threads": [
+    {
+      "line": 317,
+      "text": "// - pks_tap_read_frames is called only from the single thread that owns ProcessTap."
+    },
+    {
+      "line": 318,
+      "text": "// - The IO callback writes to the ring from CoreAudio's RT thread; synchronisation"
+    },
+    {
+      "line": 320,
+      "text": "// - AudioDeviceStart/Stop are safe to call from any thread."
+    },
+    {
+      "line": 412,
+      "text": "/// Drop contract \u2014 this is a control-thread-only owner:"
+    },
+    {
+      "line": 430,
+      "text": "reader_thread: Option<std::thread::JoinHandle<()>>,"
+    },
+    {
+      "line": 535,
+      "text": "let thread = std::thread::Builder::new()"
+    },
+    {
+      "line": 537,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 554,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 624,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"thread spawn: {e}\")))?;"
+    },
+    {
+      "line": 627,
+      "text": "reader_thread: Some(thread),"
+    },
+    {
+      "line": 654,
+      "text": "self.reader_thread.take().map_or(Ok(()), |thread| {"
+    },
+    {
+      "line": 655,
+      "text": "crate::capture::join_capture_worker(thread, \"macOS tap reader\")"
+    },
+    {
+      "line": 660,
+      "text": "/// Drop contract \u2014 control thread only: signal and join the owned reader."
+    }
+  ],
+  "visibility": "mixed"
+}

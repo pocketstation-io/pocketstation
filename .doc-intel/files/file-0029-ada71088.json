@@ -2,7 +2,7 @@
   "analysis_stage": "doc_ready",
   "async_boundaries": [
     {
-      "line": 86,
+      "line": 85,
       "text": "blocking, async, and external partitions\u2014never on capture callbacks or the"
     }
   ],
@@ -21,31 +21,31 @@
       "text": "It never executes a managed-language or provider callback on the capture path."
     },
     {
-      "line": 45,
+      "line": 44,
       "text": "Extension ABI 1.2 adds a transport for the executable callback tables already"
     },
     {
-      "line": 48,
+      "line": 47,
       "text": "callback; each acquisition returns one source, operator, or endpoint"
     },
     {
-      "line": 49,
+      "line": 48,
       "text": "descriptor, borrowed port records, and its callback table."
     },
     {
-      "line": 57,
+      "line": 56,
       "text": "// the library obeys the PocketStation Extension ABI and callback lifetimes."
     },
     {
-      "line": 83,
+      "line": 82,
       "text": "every acquired callback adapter, so executable code cannot unload before those"
     },
     {
-      "line": 86,
+      "line": 85,
       "text": "blocking, async, and external partitions\u2014never on capture callbacks or the"
     },
     {
-      "line": 90,
+      "line": 89,
       "text": "method. They must not implement their own loader search rules, callback"
     }
   ],
@@ -65,13 +65,13 @@
   "constructs": [
     "Session::new"
   ],
-  "content_hash": "8c42703fcbb75b37dbc91d9083dc058c9e99ba719ec11e9a3b6eb7bcb6b830ac",
+  "content_hash": "e4ae53a089d83f36bd92e995f6042d3e5929203af98f7ef6c10f4e7fc1254809",
   "defaults": [],
   "defines": [],
   "device_io": [
     {
-      "line": 41,
-      "text": "physical-device deployment."
+      "line": 40,
+      "text": "covers packaging and execution, not a remote or physical-device deployment."
     }
   ],
   "drop_cleanup": [],
@@ -81,7 +81,7 @@
       "text": "| New destination | endpoint driver/factory | Consume a bounded route and expose lifecycle/failure observations |"
     },
     {
-      "line": 48,
+      "line": 47,
       "text": "callback; each acquisition returns one source, operator, or endpoint"
     }
   ],
@@ -95,10 +95,10 @@
   "evidence": [
     {
       "classification": "DIRECT",
-      "content_hash": "8c42703fcbb75b37dbc91d9083dc058c9e99ba719ec11e9a3b6eb7bcb6b830ac",
+      "content_hash": "e4ae53a089d83f36bd92e995f6042d3e5929203af98f7ef6c10f4e7fc1254809",
       "lines": [
         1,
-        93
+        92
       ],
       "path": "docs/guides/extensions.md",
       "symbol": null
@@ -118,23 +118,23 @@
       "text": "| Native C extension | `pocketstation.h` Extension ABI | Versioned callback tables with explicit context ownership and bounded worker execution |"
     },
     {
-      "line": 45,
+      "line": 44,
       "text": "Extension ABI 1.2 adds a transport for the executable callback tables already"
     },
     {
-      "line": 57,
+      "line": 56,
       "text": "// the library obeys the PocketStation Extension ABI and callback lifetimes."
     },
     {
-      "line": 58,
+      "line": 57,
       "text": "let loaded = unsafe {"
     },
     {
-      "line": 73,
+      "line": 72,
       "text": "ABI-checked, every descriptor and port is copied, and duplicate identifiers are"
     },
     {
-      "line": 76,
+      "line": 75,
       "text": "Extension ABI v1 registrations execute only on supported non-realtime"
     }
   ],
@@ -144,7 +144,7 @@
   "finalization": [],
   "generated": false,
   "generated_from": "not_applicable",
-  "git_object": "84f0e44bbaa191050c41f2cca5b84929e2e95d0c",
+  "git_object": "9ef610e4494644bb29faf5fc95d747d247805f8a",
   "implemented_by": [],
   "implements": [],
   "imported_by": [],
@@ -166,24 +166,24 @@
       "text": "process boundary. Rust `TypeId` and generic parameters never cross either"
     },
     {
-      "line": 70,
+      "line": 69,
       "text": "deployment or package layer owns that trust decision. The path must be absolute"
     },
     {
-      "line": 83,
+      "line": 82,
       "text": "every acquired callback adapter, so executable code cannot unload before those"
     },
     {
-      "line": 86,
+      "line": 85,
       "text": "blocking, async, and external partitions\u2014never on capture callbacks or the"
     },
     {
-      "line": 90,
+      "line": 89,
       "text": "method. They must not implement their own loader search rules, callback"
     }
   ],
   "language": "Markdown",
-  "line_count": 93,
+  "line_count": 92,
   "locks": [],
   "module": "not_applicable",
   "network_io": [],
@@ -231,11 +231,11 @@
   "relationship_outputs": [],
   "resource_ownership": [
     {
-      "line": 54,
+      "line": 53,
       "text": "# fn main() -> Result<(), Box<dyn std::error::Error>> {"
     },
     {
-      "line": 91,
+      "line": 90,
       "text": "lifetime owner, extension registry, or execution engine. Platform wheels or"
     }
   ],
@@ -247,40 +247,40 @@
   "shutdown_behavior": [],
   "side_effects": [
     {
-      "line": 41,
-      "text": "physical-device deployment."
+      "line": 40,
+      "text": "covers packaging and execution, not a remote or physical-device deployment."
     },
     {
       "line": 16,
       "text": "| Native C extension | `pocketstation.h` Extension ABI | Versioned callback tables with explicit context ownership and bounded worker execution |"
     },
     {
-      "line": 45,
+      "line": 44,
       "text": "Extension ABI 1.2 adds a transport for the executable callback tables already"
     },
     {
-      "line": 57,
+      "line": 56,
       "text": "// the library obeys the PocketStation Extension ABI and callback lifetimes."
     },
     {
-      "line": 58,
+      "line": 57,
       "text": "let loaded = unsafe {"
     },
     {
-      "line": 73,
+      "line": 72,
       "text": "ABI-checked, every descriptor and port is copied, and duplicate identifiers are"
     },
     {
-      "line": 76,
+      "line": 75,
       "text": "Extension ABI v1 registrations execute only on supported non-realtime"
     }
   ],
-  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [
     {
-      "line": 86,
+      "line": 85,
       "text": "blocking, async, and external partitions\u2014never on capture callbacks or the"
     }
   ],

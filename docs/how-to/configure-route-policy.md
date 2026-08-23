@@ -31,31 +31,31 @@ The declaration compiles, route depth stays within capacity, and saturation or d
 
 Executable evidence selected for **Choose route capacity and loss policy** is limited to each test's recorded setup and assertions:
 
-- `given_any_and_audio_when_negotiated_then_yields_audio` — given any and audio when negotiated then yields audio (`src/graph/ports.rs:496`; `test-b904fea87e8dcf2b473a`).
-- `given_any_audio_caps_when_compat_checked_then_reflexive_and_symmetric` — given any audio caps when compat checked then reflexive and symmetric (`src/graph/ports.rs:607`; `test-c1f0182c0924086f9d64`).
-- `given_any_layout_when_compat_checked_both_directions_then_matches` — given any layout when compat checked both directions then matches (`src/graph/ports.rs:448`; `test-53058cf141f24f476947`).
-- `given_any_media_when_compat_checked_both_directions_then_matches` — given any media when compat checked both directions then matches (`src/graph/ports.rs:489`; `test-52064d0ac0dc51bea641`).
-- `given_audio_and_text_when_media_compat_checked_then_incompatible` — given audio and text when media compat checked then incompatible (`src/graph/ports.rs:483`; `test-49b93cf78810847cc5ff`).
-- `given_audio_pair_when_media_compat_checked_then_compatible` — given audio pair when media compat checked then compatible (`src/graph/ports.rs:476`; `test-363da2d0a58f6635dc58`).
-- `given_bounded_async_when_built_then_contains_no_payload_or_clock_origin_assumption` — given bounded async when built then contains no payload or clock origin assumption (`src/graph/ports.rs:537`; `test-764d8a62597c3f9220c7`).
-- `given_custom_signal_without_schema_when_checked_then_binary_media_rejects_it` — given custom signal without schema when checked then binary media rejects it (`src/graph/ports.rs:575`; `test-2d3675af8d6c3a4d6a26`).
-- `given_incompatible_media_when_negotiated_then_none` — given incompatible media when negotiated then none (`src/graph/ports.rs:502`; `test-9e99ae329b9711ba02b0`).
-- `given_mismatched_rate_when_audio_compat_checked_then_incompatible` — given mismatched rate when audio compat checked then incompatible (`src/graph/ports.rs:467`; `test-8e8af7e321a63058b3c1`).
-- `given_mono_and_stereo_when_channel_count_then_returns_one_and_two` — given mono and stereo when channel count then returns one and two (`src/graph/ports.rs:441`; `test-8304caec6a9e3b31e801`).
-- `given_observability_levels_when_ranked_then_ordered_ascending` — given observability levels when ranked then ordered ascending (`src/graph/ports.rs:553`; `test-91b82bbdd4b3f972899f`).
+- `given_any_and_audio_when_negotiated_then_yields_audio` — given any and audio when negotiated then yields audio (`src/graph/ports.rs:496`; `test-035239ef3f7bf3e07aee`).
+- `given_any_audio_caps_when_compat_checked_then_reflexive_and_symmetric` — given any audio caps when compat checked then reflexive and symmetric (`src/graph/ports.rs:607`; `test-be77c480bd937a3d1134`).
+- `given_any_layout_when_compat_checked_both_directions_then_matches` — given any layout when compat checked both directions then matches (`src/graph/ports.rs:448`; `test-3e9ca2fda2b1ad9e94d2`).
+- `given_any_media_when_compat_checked_both_directions_then_matches` — given any media when compat checked both directions then matches (`src/graph/ports.rs:489`; `test-674d39cf369db9cd6d16`).
+- `given_audio_and_text_when_media_compat_checked_then_incompatible` — given audio and text when media compat checked then incompatible (`src/graph/ports.rs:483`; `test-f42a6f2027b03f953271`).
+- `given_audio_pair_when_media_compat_checked_then_compatible` — given audio pair when media compat checked then compatible (`src/graph/ports.rs:476`; `test-dd2628ac81bfed959962`).
+- `given_bounded_async_when_built_then_contains_no_payload_or_clock_origin_assumption` — given bounded async when built then contains no payload or clock origin assumption (`src/graph/ports.rs:537`; `test-70979a6c71524b8b976a`).
+- `given_custom_signal_without_schema_when_checked_then_binary_media_rejects_it` — given custom signal without schema when checked then binary media rejects it (`src/graph/ports.rs:575`; `test-8d059799ed05140b80f9`).
+- `given_incompatible_media_when_negotiated_then_none` — given incompatible media when negotiated then none (`src/graph/ports.rs:502`; `test-df1a24364177edbebed8`).
+- `given_mismatched_rate_when_audio_compat_checked_then_incompatible` — given mismatched rate when audio compat checked then incompatible (`src/graph/ports.rs:467`; `test-b5394b00114d16f52931`).
+- `given_mono_and_stereo_when_channel_count_then_returns_one_and_two` — given mono and stereo when channel count then returns one and two (`src/graph/ports.rs:441`; `test-c9594b0d6a2254fbfa3a`).
+- `given_observability_levels_when_ranked_then_ordered_ascending` — given observability levels when ranked then ordered ascending (`src/graph/ports.rs:553`; `test-84e3fdae582e09bfa40f`).
 
 ## Failure signals
 
-- `pocketstation::graph::ports::PortSpecError` — `error-5601bc96e0f09d517ffa`
-- `pocketstation::graph::ports::PortSpecError` / `EmptyName` — `error-de68a6f4314abffa41f2`
-- `pocketstation::graph::ports::PortSpecError` / `InvalidSignal` — `error-144a7c7033b72fb3ebe8`
-- `pocketstation::graph::ports::PortSpecError` / `SignalMediaMismatch` — `error-41dfb8544f872cc47db6`
-- `pocketstation::runtime::audio::router::PlanRouterError` / `ZeroCapacity` — `error-7255bf1a56077c9e285a`
-- `pocketstation::graph::signal::continuity::SignalContinuityError` / `PolicyRegressed` — `error-f2258ab42f5ae5dce1b8`
-- `pocketstation::graph::signal::operator::AsyncOperatorManifestError` / `UnsupportedInputCopyPolicy` — `error-6d81801c1dd5a761b3e3`
-- `pocketstation::graph::signal::operator::AsyncOperatorManifestError` / `ZeroQueueCapacity` — `error-ef879570e842b0c2eb11`
-- `pocketstation::graph::signal::operator::OperatorFailurePolicy` — `error-44fb15ca3442b2f85ae6`
-- `pocketstation::graph::signal::operator::OperatorFailurePolicy` / `Continue` — `error-6ed8b75a0a575926d427`
+- `pocketstation::graph::ports::PortSpecError` — `error-632ca0eab915b16bffbe`
+- `pocketstation::graph::ports::PortSpecError` / `EmptyName` — `error-365361ddef8f066cfbd9`
+- `pocketstation::graph::ports::PortSpecError` / `InvalidSignal` — `error-8baac8353ed3d47bf0b5`
+- `pocketstation::graph::ports::PortSpecError` / `SignalMediaMismatch` — `error-a3257596a6ac9f317574`
+- `pocketstation::runtime::audio::router::PlanRouterError` / `ZeroCapacity` — `error-feb909d9c49412065cd0`
+- `pocketstation::graph::signal::continuity::SignalContinuityError` / `PolicyRegressed` — `error-0e053b1368878eb5e9d9`
+- `pocketstation::graph::signal::operator::AsyncOperatorManifestError` / `UnsupportedInputCopyPolicy` — `error-bba63b4f9fcb4d6621dd`
+- `pocketstation::graph::signal::operator::AsyncOperatorManifestError` / `ZeroQueueCapacity` — `error-c93e8f86e103a327fe88`
+- `pocketstation::graph::signal::operator::OperatorFailurePolicy` — `error-c6398c876271fec11e51`
+- `pocketstation::graph::signal::operator::OperatorFailurePolicy` / `Continue` — `error-379853cb81e9b63a2f72`
 
 ## API reference
 
@@ -70,8 +70,8 @@ Executable evidence selected for **Choose route capacity and loss policy** is li
 | `pocketstation::graph::ports::LossPolicy::MustDeliverOrFail` | variant | Selects must deliver or fail behavior for `LossPolicy`. | `src/graph/ports.rs:289` |
 | `pocketstation::runtime::audio::router::PlanRouterError::ZeroCapacity` | variant | Reported when the owning operation encounters zero capacity. | `src/runtime/audio/router.rs:21` |
 | `PlanRouterError::ZeroCapacity::edge_id` | struct_field | Identifies the edge identifier recorded by `ZeroCapacity`. | `src/runtime/audio/router.rs:21` |
-| `pocketstation::runtime::audio::router::DispatchSummary` | struct | Reports the counters and terminal facts collected for dispatch. | `src/runtime/audio/router.rs:667` |
-| `pocketstation::runtime::audio::router::EdgeObservations` | struct | Reports the edge observations collected at an observation boundary. | `src/runtime/audio/router.rs:122` |
+| `pocketstation::runtime::audio::router::DispatchSummary` | struct | Reports the counters and terminal facts collected for dispatch. | `src/runtime/audio/router.rs:696` |
+| `pocketstation::runtime::audio::router::EdgeObservations` | struct | Reports the edge observations collected at an observation boundary. | `src/runtime/audio/router.rs:142` |
 
 ## Related documentation
 
@@ -86,7 +86,7 @@ Executable evidence selected for **Choose route capacity and loss policy** is li
 
 ## Evidence boundary
 
-The claims on **Choose route capacity and loss policy** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Choose route capacity and loss policy** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `src/graph/ports.rs:1-618` (`DIRECT`)
 

@@ -1,0 +1,2491 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 436,
+      "text": "/// branch and endpoint transactionally before the first source callback runs."
+    }
+  ],
+  "called_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/prepare/error.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AtomicBool::new",
+    "BTreeMap::new",
+    "BTreeSet::new",
+    "Continuity",
+    "Driver",
+    "DuplicateSourceType",
+    "EdgeBuild",
+    "Failed",
+    "InvalidConfiguration",
+    "InvalidManifest",
+    "MediaCaps::Binary",
+    "NodeTypeConflict",
+    "NodeTypeId::from",
+    "PreparedSourceRuntime::prepare",
+    "Publish",
+    "Self",
+    "SignalSpec::custom",
+    "SourceConfiguration::default",
+    "SourceRegistrationError::DuplicateSourceType",
+    "SourceRuntimeError::UnknownOutput",
+    "SourceRuntimeError::UnregisteredSource",
+    "SourceRuntimeError::UnroutedOutput",
+    "SourceRuntimeObservationState::default",
+    "SourceTypeId",
+    "SourceTypeId::new",
+    "Spawn",
+    "TypedEdgeFanout::new",
+    "UnknownOutput",
+    "UnregisteredSource",
+    "UnroutedOutput",
+    "Vec::new",
+    "and",
+    "any",
+    "as_mut",
+    "as_ref",
+    "as_str",
+    "cancel",
+    "cfg",
+    "clone",
+    "cloned",
+    "close",
+    "collect",
+    "contains_key",
+    "count",
+    "crate::graph::identifier::is_portable_contract_id",
+    "create",
+    "derive",
+    "descriptor",
+    "drop",
+    "entry",
+    "error",
+    "execution",
+    "extend",
+    "fetch_add",
+    "filter",
+    "find",
+    "fmt",
+    "generation",
+    "get",
+    "get_mut",
+    "given_duplicate_output_names_when_manifest_validated_then_rejected",
+    "given_nonportable_source_identities_when_constructed_then_each_fails_typed",
+    "given_oversized_source_identity_when_constructed_then_bound_is_reported",
+    "given_portable_source_identity_when_constructed_then_contract_is_preserved",
+    "given_provider_owned_source_key_when_stored_then_core_keeps_it_open",
+    "given_schema_backed_output_when_manifest_validated_then_contract_is_open",
+    "has_source_category",
+    "implementation_generation",
+    "insert",
+    "into",
+    "into_iter",
+    "is_ascii",
+    "is_cancelled",
+    "is_empty",
+    "is_err",
+    "is_valid_for",
+    "iter",
+    "join",
+    "len",
+    "let",
+    "load",
+    "manifest",
+    "map",
+    "map_err",
+    "name",
+    "new",
+    "next",
+    "observations",
+    "observe",
+    "ok_or",
+    "ok_or_else",
+    "or_default",
+    "output",
+    "output_port",
+    "outputs",
+    "prepare",
+    "prepare_session",
+    "pub",
+    "publish",
+    "register",
+    "repeat",
+    "revision",
+    "rsplit_once",
+    "run_source_driver",
+    "safety",
+    "snapshot",
+    "source_node_definition",
+    "source_type_id",
+    "spawn",
+    "split",
+    "start",
+    "std::thread::Builder::new",
+    "store",
+    "supports_signal",
+    "take",
+    "to_owned",
+    "trim",
+    "unwrap",
+    "validate",
+    "validate_config",
+    "with_schema",
+    "write_str"
+  ],
+  "cancellation_behavior": [
+    {
+      "line": 575,
+      "text": "pub fn cancel(&self) {"
+    },
+    {
+      "line": 595,
+      "text": "self.cancel();"
+    }
+  ],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 8,
+      "text": "ConfigError, ExecutionPartition, NodeConfig, NodeDefinition, NodeDescriptor, NodeTypeId,"
+    },
+    {
+      "line": 278,
+      "text": "fn validate_config(&self, configuration: &SourceConfiguration) -> Result<(), ConfigError>;"
+    },
+    {
+      "line": 327,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 338,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 564,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 732,
+      "text": "fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 758,
+      "text": "InvalidConfiguration(ConfigError),"
+    },
+    {
+      "line": 791,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/prepare/error.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "AtomicBool::new",
+    "BTreeMap::new",
+    "BTreeSet::new",
+    "NodeTypeId::from",
+    "SourceTypeId::new",
+    "TypedEdgeFanout::new",
+    "Vec::new",
+    "new",
+    "std::thread::Builder::new"
+  ],
+  "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 17,
+      "name": "SourceTypeId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 26,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "has_source_category",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 68,
+      "name": "SourceTypeIdError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 87,
+      "name": "SourceConfiguration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "insert",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "iter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 112,
+      "name": "SourceManifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 122,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "source_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 149,
+      "name": "revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "implementation_generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 166,
+      "name": "generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 169,
+      "name": "outputs",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 173,
+      "name": "execution",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 177,
+      "name": "safety",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 181,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 216,
+      "name": "output_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 223,
+      "name": "SourcePrepareContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 229,
+      "name": "SourceOutputIdentity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 235,
+      "name": "SourceSessionContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 242,
+      "name": "output",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 250,
+      "name": "SourceCancellation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 255,
+      "name": "is_cancelled",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 261,
+      "name": "SourceEmission",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 266,
+      "name": "SourceDriver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 268,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 269,
+      "name": "next",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 273,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "trait",
+      "line": 275,
+      "name": "SourceFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 277,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 278,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 279,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 286,
+      "name": "SourceRegistry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 291,
+      "name": "manifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 296,
+      "name": "register",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 312,
+      "name": "validate_config",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 328,
+      "name": "spawn",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 339,
+      "name": "prepare",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 352,
+      "name": "prepare_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 370,
+      "name": "SourceOutputBranchSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 374,
+      "name": "SourceOutputReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 381,
+      "name": "SourceRuntimeObservationState",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 394,
+      "name": "SourceRuntimeObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 407,
+      "name": "SourceRuntimeObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 412,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 426,
+      "name": "SourceRuntime",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 437,
+      "name": "PreparedSourceRuntime",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 445,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 504,
+      "name": "start",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 556,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 565,
+      "name": "spawn",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 574,
+      "name": "cancel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 578,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 582,
+      "name": "join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 594,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 601,
+      "name": "run_source_driver",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 677,
+      "name": "SourceManifestError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 701,
+      "name": "SourceRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 709,
+      "name": "source_node_definition",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 713,
+      "name": "SourceNodeDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 719,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 731,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 742,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 748,
+      "name": "SourceDriverError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 754,
+      "name": "SourceRuntimeError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 792,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 795,
+      "name": "output",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 806,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 819,
+      "name": "given_portable_source_identity_when_constructed_then_contract_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 826,
+      "name": "given_nonportable_source_identities_when_constructed_then_each_fails_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 859,
+      "name": "given_oversized_source_identity_when_constructed_then_bound_is_reported",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 872,
+      "name": "given_schema_backed_output_when_manifest_validated_then_contract_is_open",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 877,
+      "name": "given_duplicate_output_names_when_manifest_validated_then_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 885,
+      "name": "given_provider_owned_source_key_when_stored_then_core_keeps_it_open",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [
+    {
+      "line": 24,
+      "text": "/// `io.example.source.device.v1`. Session instance identity belongs in"
+    },
+    {
+      "line": 829,
+      "text": "SourceTypeId::new(\" io.example.source.device.v1\"),"
+    },
+    {
+      "line": 833,
+      "text": "SourceTypeId::new(\"io.example.sourc\u00e9.device.v1\"),"
+    },
+    {
+      "line": 837,
+      "text": "SourceTypeId::new(\"io.example.source.device.v0\"),"
+    },
+    {
+      "line": 841,
+      "text": "SourceTypeId::new(\"io.example.source..device.v1\"),"
+    },
+    {
+      "line": 845,
+      "text": "SourceTypeId::new(\"io.example.source.device\\nv1\"),"
+    },
+    {
+      "line": 849,
+      "text": "SourceTypeId::new(\"io.example.operator.device.v1\"),"
+    }
+  ],
+  "drop_cleanup": [
+    {
+      "line": 556,
+      "text": "fn drop(&mut self) {"
+    },
+    {
+      "line": 594,
+      "text": "fn drop(&mut self) {"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 436,
+      "text": "/// branch and endpoint transactionally before the first source callback runs."
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 17,
+      "name": "SourceTypeId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 26,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 68,
+      "name": "SourceTypeIdError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 87,
+      "name": "SourceConfiguration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "insert",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "iter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 112,
+      "name": "SourceManifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 122,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "source_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 149,
+      "name": "revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "implementation_generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 166,
+      "name": "generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 169,
+      "name": "outputs",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 173,
+      "name": "execution",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 177,
+      "name": "safety",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 181,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 216,
+      "name": "output_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 223,
+      "name": "SourcePrepareContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 229,
+      "name": "SourceOutputIdentity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 235,
+      "name": "SourceSessionContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 242,
+      "name": "output",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 250,
+      "name": "SourceCancellation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 255,
+      "name": "is_cancelled",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 261,
+      "name": "SourceEmission",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 266,
+      "name": "SourceDriver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 275,
+      "name": "SourceFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 286,
+      "name": "SourceRegistry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 291,
+      "name": "manifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 296,
+      "name": "register",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 312,
+      "name": "validate_config",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 328,
+      "name": "spawn",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 339,
+      "name": "prepare",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 352,
+      "name": "prepare_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 370,
+      "name": "SourceOutputBranchSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 374,
+      "name": "SourceOutputReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 394,
+      "name": "SourceRuntimeObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 407,
+      "name": "SourceRuntimeObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 412,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 426,
+      "name": "SourceRuntime",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 437,
+      "name": "PreparedSourceRuntime",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 504,
+      "name": "start",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 565,
+      "name": "spawn",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 574,
+      "name": "cancel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 578,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 582,
+      "name": "join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 677,
+      "name": "SourceManifestError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 701,
+      "name": "SourceRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 709,
+      "name": "source_node_definition",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 748,
+      "name": "SourceDriverError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 754,
+      "name": "SourceRuntimeError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 29,
+      "text": "return Err(SourceTypeIdError::Empty);"
+    },
+    {
+      "line": 32,
+      "text": "return Err(SourceTypeIdError::SurroundingWhitespace);"
+    },
+    {
+      "line": 35,
+      "text": "return Err(SourceTypeIdError::TooLong {"
+    },
+    {
+      "line": 41,
+      "text": "return Err(SourceTypeIdError::NonAscii);"
+    },
+    {
+      "line": 44,
+      "text": "return Err(SourceTypeIdError::InvalidContractSyntax);"
+    },
+    {
+      "line": 47,
+      "text": "return Err(SourceTypeIdError::MissingSourceCategory);"
+    },
+    {
+      "line": 184,
+      "text": "return Err(SourceManifestError::ZeroVersion);"
+    },
+    {
+      "line": 187,
+      "text": "return Err(SourceManifestError::InvalidSafetyContract);"
+    },
+    {
+      "line": 190,
+      "text": "return Err(SourceManifestError::UnsupportedExecutionPartition);"
+    },
+    {
+      "line": 193,
+      "text": "return Err(SourceManifestError::NoOutputs);"
+    },
+    {
+      "line": 198,
+      "text": "return Err(SourceManifestError::NonOutputPort);"
+    },
+    {
+      "line": 201,
+      "text": "return Err(SourceManifestError::EmptyOutputName);"
+    },
+    {
+      "line": 204,
+      "text": "return Err(SourceManifestError::DuplicateOutputName);"
+    },
+    {
+      "line": 211,
+      "text": "return Err(SourceManifestError::SignalMediaMismatch);"
+    },
+    {
+      "line": 307,
+      "text": "return Err(SourceRegistrationError::DuplicateSourceType(source_type_id));"
+    },
+    {
+      "line": 486,
+      "text": "return Err(SourceRuntimeError::NoRoutedOutputs);"
+    },
+    {
+      "line": 625,
+      "text": "return Err(SourceRuntimeError::OutputContractMismatch);"
+    },
+    {
+      "line": 639,
+      "text": "return Err(SourceRuntimeError::OutputIdentityMismatch);"
+    },
+    {
+      "line": 827,
+      "text": "assert_eq!(SourceTypeId::new(\"\"), Err(SourceTypeIdError::Empty));"
+    },
+    {
+      "line": 830,
+      "text": "Err(SourceTypeIdError::SurroundingWhitespace)"
+    },
+    {
+      "line": 834,
+      "text": "Err(SourceTypeIdError::NonAscii)"
+    },
+    {
+      "line": 838,
+      "text": "Err(SourceTypeIdError::InvalidContractSyntax)"
+    },
+    {
+      "line": 842,
+      "text": "Err(SourceTypeIdError::InvalidContractSyntax)"
+    },
+    {
+      "line": 846,
+      "text": "Err(SourceTypeIdError::InvalidContractSyntax)"
+    },
+    {
+      "line": 850,
+      "text": "Err(SourceTypeIdError::MissingSourceCategory)"
+    },
+    {
+      "line": 854,
+      "text": "Err(SourceTypeIdError::MissingSourceCategory)"
+    },
+    {
+      "line": 864,
+      "text": "Err(SourceTypeIdError::TooLong {"
+    },
+    {
+      "line": 880,
+      "text": "Err(SourceManifestError::DuplicateOutputName)"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 68,
+      "name": "SourceTypeIdError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 677,
+      "name": "SourceManifestError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 701,
+      "name": "SourceRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 748,
+      "name": "SourceDriverError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 754,
+      "name": "SourceRuntimeError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 209,
+      "text": ".map_err(|_| SourceManifestError::InvalidSignal)?;"
+    },
+    {
+      "line": 304,
+      "text": ".map_err(SourceRegistrationError::InvalidManifest)?;"
+    },
+    {
+      "line": 454,
+      "text": ".map_err(SourceRuntimeError::InvalidManifest)?;"
+    },
+    {
+      "line": 457,
+      "text": ".map_err(SourceRuntimeError::InvalidConfiguration)?;"
+    },
+    {
+      "line": 460,
+      "text": ".map_err(SourceRuntimeError::Driver)?;"
+    },
+    {
+      "line": 474,
+      "text": "TypedEdgeFanout::new(&specifications).map_err(SourceRuntimeError::EdgeBuild)?;"
+    },
+    {
+      "line": 493,
+      "text": ".map_err(SourceRuntimeError::Driver)?;"
+    },
+    {
+      "line": 546,
+      "text": ".map_err(SourceRuntimeError::Spawn)?;"
+    },
+    {
+      "line": 588,
+      "text": ".map_err(|_| SourceRuntimeError::WorkerPanicked)??;"
+    },
+    {
+      "line": 614,
+      "text": ".map_err(SourceRuntimeError::Driver)?"
+    },
+    {
+      "line": 646,
+      "text": ".map_err(SourceRuntimeError::Continuity)?;"
+    },
+    {
+      "line": 665,
+      "text": ".map_err(SourceRuntimeError::Publish)?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 209,
+      "text": ".map_err(|_| SourceManifestError::InvalidSignal)?;"
+    },
+    {
+      "line": 304,
+      "text": ".map_err(SourceRegistrationError::InvalidManifest)?;"
+    },
+    {
+      "line": 324,
+      "text": ".map_err(SourceRuntimeError::InvalidConfiguration)"
+    },
+    {
+      "line": 454,
+      "text": ".map_err(SourceRuntimeError::InvalidManifest)?;"
+    },
+    {
+      "line": 457,
+      "text": ".map_err(SourceRuntimeError::InvalidConfiguration)?;"
+    },
+    {
+      "line": 460,
+      "text": ".map_err(SourceRuntimeError::Driver)?;"
+    },
+    {
+      "line": 474,
+      "text": "TypedEdgeFanout::new(&specifications).map_err(SourceRuntimeError::EdgeBuild)?;"
+    },
+    {
+      "line": 493,
+      "text": ".map_err(SourceRuntimeError::Driver)?;"
+    },
+    {
+      "line": 542,
+      "text": "let close_result = driver.close().map_err(SourceRuntimeError::Driver);"
+    },
+    {
+      "line": 546,
+      "text": ".map_err(SourceRuntimeError::Spawn)?;"
+    },
+    {
+      "line": 588,
+      "text": ".map_err(|_| SourceRuntimeError::WorkerPanicked)??;"
+    },
+    {
+      "line": 614,
+      "text": ".map_err(SourceRuntimeError::Driver)?"
+    },
+    {
+      "line": 646,
+      "text": ".map_err(SourceRuntimeError::Continuity)?;"
+    },
+    {
+      "line": 665,
+      "text": ".map_err(SourceRuntimeError::Publish)?;"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 209,
+      "text": ".map_err(|_| SourceManifestError::InvalidSignal)?;"
+    },
+    {
+      "line": 304,
+      "text": ".map_err(SourceRegistrationError::InvalidManifest)?;"
+    },
+    {
+      "line": 324,
+      "text": ".map_err(SourceRuntimeError::InvalidConfiguration)"
+    },
+    {
+      "line": 454,
+      "text": ".map_err(SourceRuntimeError::InvalidManifest)?;"
+    },
+    {
+      "line": 457,
+      "text": ".map_err(SourceRuntimeError::InvalidConfiguration)?;"
+    },
+    {
+      "line": 460,
+      "text": ".map_err(SourceRuntimeError::Driver)?;"
+    },
+    {
+      "line": 474,
+      "text": "TypedEdgeFanout::new(&specifications).map_err(SourceRuntimeError::EdgeBuild)?;"
+    },
+    {
+      "line": 493,
+      "text": ".map_err(SourceRuntimeError::Driver)?;"
+    },
+    {
+      "line": 542,
+      "text": "let close_result = driver.close().map_err(SourceRuntimeError::Driver);"
+    },
+    {
+      "line": 546,
+      "text": ".map_err(SourceRuntimeError::Spawn)?;"
+    },
+    {
+      "line": 588,
+      "text": ".map_err(|_| SourceRuntimeError::WorkerPanicked)??;"
+    },
+    {
+      "line": 614,
+      "text": ".map_err(SourceRuntimeError::Driver)?"
+    },
+    {
+      "line": 646,
+      "text": ".map_err(SourceRuntimeError::Continuity)?;"
+    },
+    {
+      "line": 665,
+      "text": ".map_err(SourceRuntimeError::Publish)?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "3b433daf86fd582a3d6c364a61b6e16c1d91222d58caae61bc1ec98ac2c3cac5",
+      "lines": [
+        1,
+        892
+      ],
+      "path": "src/session/extensions/source.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/prepare/error.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0222-1e1571e1",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "8a6be044690c3c019bbb101b38df999472a6f9ef",
+  "implemented_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/prepare/error.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
+  "implements": [
+    "SourceTypeId",
+    "SourceConfiguration",
+    "SourceManifest",
+    "SourceSessionContext",
+    "SourceCancellation",
+    "SourceRegistry",
+    "SourceRuntimeObservationHandle",
+    "PreparedSourceRuntime",
+    "Drop for PreparedSourceRuntime",
+    "SourceRuntime",
+    "Drop for SourceRuntime",
+    "NodeDefinition for SourceNodeDefinition",
+    "std::fmt::Display for SourceTypeId"
+  ],
+  "imported_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/prepare/error.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
+  "imports": [
+    "crate::frame::{SessionId, SourceId, StreamId}",
+    "crate::graph::{ ConfigError, ExecutionPartition, NodeConfig, NodeDefinition, NodeDescriptor, NodeTypeId, PortDirection, PortSpec, SafetyContract, SignalContinuityTracker, SignalEnvelope, }",
+    "crate::graph::{BinaryFormat, MediaCaps, Multiplicity, SignalSpec}",
+    "crate::runtime::{ TypedEdgeBranchSpec, TypedEdgeBuildError, TypedEdgeFanout, TypedEdgePublishError, TypedEdgeReceiver, }",
+    "std::collections::{BTreeMap, BTreeSet}",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "std::thread::JoinHandle",
+    "super::*"
+  ],
+  "inputs": [
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(test)]",
+    "ConfigError, ExecutionPartition, NodeConfig, NodeDefinition, NodeDescriptor, NodeTypeId,",
+    "InvalidConfiguration(ConfigError),",
+    "crate::frame::{SessionId, SourceId, StreamId}",
+    "crate::graph::{ ConfigError, ExecutionPartition, NodeConfig, NodeDefinition, NodeDescriptor, NodeTypeId, PortDirection, PortSpec, SafetyContract, SignalContinuityTracker, SignalEnvelope, }",
+    "crate::graph::{BinaryFormat, MediaCaps, Multiplicity, SignalSpec}",
+    "crate::runtime::{ TypedEdgeBranchSpec, TypedEdgeBuildError, TypedEdgeFanout, TypedEdgePublishError, TypedEdgeReceiver, }",
+    "fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {",
+    "fn validate_config(&self, configuration: &SourceConfiguration) -> Result<(), ConfigError>;",
+    "std::collections::{BTreeMap, BTreeSet}",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "std::thread::JoinHandle",
+    "super::*"
+  ],
+  "invariants": [
+    {
+      "line": 25,
+      "text": "/// `SourceInstanceId` and `SourceId`, never in this value."
+    },
+    {
+      "line": 69,
+      "text": "#[error(\"source type identifier cannot be empty\")]"
+    },
+    {
+      "line": 71,
+      "text": "#[error(\"source type identifier cannot contain surrounding whitespace\")]"
+    },
+    {
+      "line": 78,
+      "text": "#[error(\"source type identifier must contain only ASCII contract characters\")]"
+    },
+    {
+      "line": 80,
+      "text": "#[error(\"source type identifier must use bounded reverse-domain syntax ending in vN\")]"
+    },
+    {
+      "line": 82,
+      "text": "#[error(\"source type identifier must contain a source category and concrete source name\")]"
+    },
+    {
+      "line": 95,
+      "text": "/// reservations, and Session instance identities must remain internal."
+    },
+    {
+      "line": 678,
+      "text": "#[error(\"source type identifier cannot be empty\")]"
+    },
+    {
+      "line": 680,
+      "text": "#[error(\"source manifest revision and implementation generation must be non-zero\")]"
+    },
+    {
+      "line": 686,
+      "text": "#[error(\"source output name cannot be empty\")]"
+    },
+    {
+      "line": 688,
+      "text": "#[error(\"source output names must be unique\")]"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 892,
+  "locks": [],
+  "module": "pocketstation::session::extensions::source",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-bd1fcbab45e9bdb65e16"
+  ],
+  "outputs": [
+    "enum:SourceTypeIdError",
+    "fn:as_str",
+    "fn:execution",
+    "fn:generation",
+    "fn:get",
+    "fn:implementation_generation",
+    "fn:insert",
+    "fn:is_cancelled",
+    "fn:iter",
+    "fn:manifest",
+    "fn:new",
+    "fn:output",
+    "fn:output_port",
+    "fn:outputs",
+    "fn:revision",
+    "fn:safety",
+    "fn:source_type_id",
+    "fn:validate",
+    "return Err(SourceManifestError::InvalidSafetyContract);",
+    "return Err(SourceManifestError::NoOutputs);",
+    "return Err(SourceManifestError::UnsupportedExecutionPartition);",
+    "return Err(SourceManifestError::ZeroVersion);",
+    "return Err(SourceTypeIdError::Empty);",
+    "return Err(SourceTypeIdError::InvalidContractSyntax);",
+    "return Err(SourceTypeIdError::MissingSourceCategory);",
+    "return Err(SourceTypeIdError::NonAscii);",
+    "return Err(SourceTypeIdError::SurroundingWhitespace);",
+    "return Err(SourceTypeIdError::TooLong {",
+    "struct:SourceCancellation",
+    "struct:SourceConfiguration",
+    "struct:SourceEmission",
+    "struct:SourceManifest",
+    "struct:SourceOutputIdentity",
+    "struct:SourcePrepareContext",
+    "struct:SourceRegistry",
+    "struct:SourceSessionContext",
+    "struct:SourceTypeId",
+    "trait:SourceDriver",
+    "trait:SourceFactory"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/extensions/source.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "has_source_category",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 268,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 269,
+      "name": "next",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 273,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 277,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 278,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 279,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 381,
+      "name": "SourceRuntimeObservationState",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 445,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 556,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 594,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 601,
+      "name": "run_source_driver",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 713,
+      "name": "SourceNodeDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 719,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 731,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 742,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 792,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 795,
+      "name": "output",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 806,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 819,
+      "name": "given_portable_source_identity_when_constructed_then_contract_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 826,
+      "name": "given_nonportable_source_identities_when_constructed_then_each_fails_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 859,
+      "name": "given_oversized_source_identity_when_constructed_then_bound_is_reported",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 872,
+      "name": "given_schema_backed_output_when_manifest_validated_then_contract_is_open",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 877,
+      "name": "given_duplicate_output_names_when_manifest_validated_then_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 885,
+      "name": "given_provider_owned_source_key_when_stored_then_core_keeps_it_open",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 328,
+      "text": "pub fn spawn("
+    },
+    {
+      "line": 524,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 565,
+      "text": "pub fn spawn("
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 17,
+      "name": "SourceTypeId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 26,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 68,
+      "name": "SourceTypeIdError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 87,
+      "name": "SourceConfiguration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "insert",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "iter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 112,
+      "name": "SourceManifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 122,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "source_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 149,
+      "name": "revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "implementation_generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 166,
+      "name": "generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 169,
+      "name": "outputs",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 173,
+      "name": "execution",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 177,
+      "name": "safety",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 181,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 216,
+      "name": "output_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 223,
+      "name": "SourcePrepareContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 229,
+      "name": "SourceOutputIdentity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 235,
+      "name": "SourceSessionContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 242,
+      "name": "output",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 250,
+      "name": "SourceCancellation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 255,
+      "name": "is_cancelled",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 261,
+      "name": "SourceEmission",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 266,
+      "name": "SourceDriver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 275,
+      "name": "SourceFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 286,
+      "name": "SourceRegistry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 291,
+      "name": "manifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 296,
+      "name": "register",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 312,
+      "name": "validate_config",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 328,
+      "name": "spawn",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 339,
+      "name": "prepare",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 352,
+      "name": "prepare_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 370,
+      "name": "SourceOutputBranchSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 374,
+      "name": "SourceOutputReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 394,
+      "name": "SourceRuntimeObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 407,
+      "name": "SourceRuntimeObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 412,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 426,
+      "name": "SourceRuntime",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 437,
+      "name": "PreparedSourceRuntime",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 504,
+      "name": "start",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 565,
+      "name": "spawn",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 574,
+      "name": "cancel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 578,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 582,
+      "name": "join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 677,
+      "name": "SourceManifestError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 701,
+      "name": "SourceRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 709,
+      "name": "source_node_definition",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 748,
+      "name": "SourceDriverError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 754,
+      "name": "SourceRuntimeError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::extensions::source responsibilities, including Uniquely identifies source type within its PocketStation ownership scope.; Creates a stable source implementation identity.; Returns the stable string representation of `SourceTypeId`.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/partition.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/envelope.rs",
+    "REFERENCES:src/runtime/signal/edge.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 3,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 61,
+      "text": "let Some((owner, source_name)) = contract.rsplit_once(\".source.\") else {"
+    },
+    {
+      "line": 64,
+      "text": "owner.split('.').count() >= 2 && !source_name.is_empty()"
+    },
+    {
+      "line": 251,
+      "text": "cancelled: Arc<AtomicBool>,"
+    },
+    {
+      "line": 282,
+      "text": ") -> Result<Box<dyn SourceDriver>, SourceDriverError>;"
+    },
+    {
+      "line": 287,
+      "text": "factories: BTreeMap<SourceTypeId, Arc<dyn SourceFactory>>,"
+    },
+    {
+      "line": 299,
+      "text": "factory: Arc<dyn SourceFactory>,"
+    },
+    {
+      "line": 408,
+      "text": "state: Arc<SourceRuntimeObservationState>,"
+    },
+    {
+      "line": 438,
+      "text": "driver: Option<Box<dyn SourceDriver>>,"
+    },
+    {
+      "line": 446,
+      "text": "factory: Arc<dyn SourceFactory>,"
+    },
+    {
+      "line": 517,
+      "text": "cancelled: Arc::new(AtomicBool::new(false)),"
+    },
+    {
+      "line": 520,
+      "text": "let state = Arc::new(SourceRuntimeObservationState::default());"
+    },
+    {
+      "line": 521,
+      "text": "let task_state = Arc::clone(&state);"
+    },
+    {
+      "line": 555,
+      "text": "impl Drop for PreparedSourceRuntime {"
+    },
+    {
+      "line": 566,
+      "text": "factory: Arc<dyn SourceFactory>,"
+    },
+    {
+      "line": 593,
+      "text": "impl Drop for SourceRuntime {"
+    },
+    {
+      "line": 710,
+      "text": "pub(crate) fn source_node_definition(factory: Arc<dyn SourceFactory>) -> Arc<dyn NodeDefinition> {"
+    },
+    {
+      "line": 711,
+      "text": "Arc::new(SourceNodeDefinition { factory })"
+    },
+    {
+      "line": 715,
+      "text": "factory: Arc<dyn SourceFactory>,"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::session::extensions::source::SourceTypeId: Uniquely identifies source type within its PocketStation ownership scope.",
+    "new: Creates a stable source implementation identity.",
+    "as_str: Returns the stable string representation of `SourceTypeId`.",
+    "pocketstation::session::extensions::source::SourceTypeIdError: Classifies failures reported as source type id error.",
+    "pocketstation::session::extensions::source::SourceTypeIdError::Empty: Represents an empty value or collection.",
+    "pocketstation::session::extensions::source::SourceTypeIdError::SurroundingWhitespace: Reported when the owning operation encounters surrounding whitespace.",
+    "pocketstation::session::extensions::source::SourceTypeIdError::TooLong: Reported when the owning operation encounters too long.",
+    "SourceTypeIdError::TooLong::actual_bytes: Stores the actual size for `TooLong`, in bytes.",
+    "SourceTypeIdError::TooLong::maximum_bytes: Stores the maximum size for `TooLong`, in bytes.",
+    "pocketstation::session::extensions::source::SourceTypeIdError::NonAscii: Reported when the owning operation encounters non ascii.",
+    "pocketstation::session::extensions::source::SourceTypeIdError::InvalidContractSyntax: Reported when the owning operation encounters invalid contract syntax.",
+    "pocketstation::session::extensions::source::SourceTypeIdError::MissingSourceCategory: Reported when the owning operation encounters missing source category.",
+    "pocketstation::session::extensions::source::SourceConfiguration: Configures source behavior at its owning API boundary.",
+    "insert: Adds declared source configuration.",
+    "get: Returns the value held by `SourceConfiguration`.",
+    "iter: Iterates over the values held by `SourceConfiguration`.",
+    "pocketstation::session::extensions::source::SourceManifest: Describes the source manifest contract.",
+    "new: Creates a new `SourceManifest`.",
+    "source_type_id: Returns the source type identifier held by `SourceManifest`.",
+    "revision: Additive descriptor revision within the compatibility major encoded by",
+    "implementation_generation: Monotonic implementation generation for this manifest revision.",
+    "generation: Returns the implementation generation.",
+    "outputs: Returns the outputs associated with `SourceManifest`.",
+    "execution: Returns the execution held by `SourceManifest`.",
+    "safety: Returns the safety held by `SourceManifest`.",
+    "validate: Validates `SourceManifest` against its declared contract.",
+    "output_port: Returns the output port held by `SourceManifest`.",
+    "pocketstation::session::extensions::source::SourcePrepareContext: Carries the inputs and runtime context required to source prepare.",
+    "SourcePrepareContext::manifest: Stores the manifest used by `SourcePrepareContext`.",
+    "SourcePrepareContext::session: Stores the session used by `SourcePrepareContext`.",
+    "pocketstation::session::extensions::source::SourceOutputIdentity: Identifies one declared source output by source type, output port, and stream identity.",
+    "SourceOutputIdentity::output_port: Stores the output port used by `SourceOutputIdentity`.",
+    "SourceOutputIdentity::stream_id: Identifies the stream identifier recorded by `SourceOutputIdentity`.",
+    "pocketstation::session::extensions::source::SourceSessionContext: Carries the inputs and runtime context required to source session.",
+    "SourceSessionContext::session_id: Identifies the session identifier recorded by `SourceSessionContext`.",
+    "SourceSessionContext::source_id: Identifies the source identifier recorded by `SourceSessionContext`.",
+    "SourceSessionContext::outputs: Stores the outputs used by `SourceSessionContext`.",
+    "output: Returns the output held by `SourceSessionContext`.",
+    "pocketstation::session::extensions::source::SourceCancellation: Exposes the cancellation state observed by a running external source driver.",
+    "is_cancelled: Returns whether cancelled applies to `SourceCancellation`.",
+    "pocketstation::session::extensions::source::SourceEmission: Carries one external-source emission with its output-port identity and signal envelope.",
+    "SourceEmission::output_port: Stores the output port used by `SourceEmission`.",
+    "SourceEmission::envelope: Stores the envelope used by `SourceEmission`.",
+    "SourceEmission::terminal: Indicates whether terminal applies to `SourceEmission`.",
+    "pocketstation::session::extensions::source::SourceDriver: Implement this trait to provide source behavior to PocketStation; its methods define the preparation and runtime contract.",
+    "SourceDriver::prepare: Prepares resources required by `SourceDriver`.",
+    "SourceDriver::next: Produces the next source emission from `SourceDriver`.",
+    "SourceDriver::close: Closes `SourceDriver` to further work.",
+    "pocketstation::session::extensions::source::SourceFactory: Implement this trait to provide source behavior to PocketStation; its methods define the preparation and runtime contract.",
+    "SourceFactory::manifest: Returns the manifest held by `SourceFactory`.",
+    "SourceFactory::validate_config: Validates config for `SourceFactory`.",
+    "SourceFactory::create: Creates the runtime implementation described by `SourceFactory`.",
+    "pocketstation::session::extensions::source::SourceRegistry: Indexes registered source implementations by their stable identities.",
+    "manifest: Returns the manifest held by `SourceRegistry`.",
+    "register: Registers a node definition with `SourceRegistry` while preserving unique identities.",
+    "validate_config: Validates config for `SourceRegistry`.",
+    "spawn: Spawns its owned operation for `SourceRegistry`.",
+    "prepare: Prepares resources required by `SourceRegistry`.",
+    "prepare_session: Prepares session for `SourceRegistry`.",
+    "pocketstation::session::extensions::source::SourceOutputBranchSpec: Configures source output branch behavior at its owning API boundary.",
+    "SourceOutputBranchSpec::output_port: Stores the output port used by `SourceOutputBranchSpec`.",
+    "SourceOutputBranchSpec::branch: Stores the branch used by `SourceOutputBranchSpec`.",
+    "pocketstation::session::extensions::source::SourceOutputReceiver: Receives source output values across its declared ownership boundary.",
+    "SourceOutputReceiver::output_port: Stores the output port used by `SourceOutputReceiver`.",
+    "SourceOutputReceiver::receiver: Stores the receiver used by `SourceOutputReceiver`.",
+    "pocketstation::session::extensions::source::SourceRuntimeObservations: Reports the source runtime observations collected at an observation boundary.",
+    "SourceRuntimeObservations::emitted_total: Counts the total number of emitted observed by `SourceRuntimeObservations`.",
+    "SourceRuntimeObservations::dropped_total: Counts the total number of dropped observed by `SourceRuntimeObservations`.",
+    "SourceRuntimeObservations::failure_total: Counts the total number of failure observed by `SourceRuntimeObservations`.",
+    "SourceRuntimeObservations::cancellation_total: Counts the total number of cancellation observed by `SourceRuntimeObservations`.",
+    "SourceRuntimeObservations::discontinuity_total: Counts the total number of discontinuity observed by `SourceRuntimeObservations`.",
+    "SourceRuntimeObservations::recovery_total: Counts the total number of recovery observed by `SourceRuntimeObservations`.",
+    "SourceRuntimeObservations::policy_change_total: Counts the total number of policy change observed by `SourceRuntimeObservations`.",
+    "SourceRuntimeObservations::ready: Indicates whether ready applies to `SourceRuntimeObservations`.",
+    "SourceRuntimeObservations::joined: Stores the joined used by `SourceRuntimeObservations`.",
+    "pocketstation::session::extensions::source::SourceRuntimeObservationHandle: Owns bounded access to source runtime observation.",
+    "snapshot: Returns a point-in-time snapshot of `SourceRuntimeObservationHandle`.",
+    "pocketstation::session::extensions::source::SourceRuntime: Owns an external source driver's cancellation handle, observations, and terminal worker join.",
+    "pocketstation::session::extensions::source::PreparedSourceRuntime: Fully validated source resources which have not started producing signals.",
+    "start: Starts the lifecycle represented by `PreparedSourceRuntime`.",
+    "drop: Releases resources owned by `PreparedSourceRuntime`.",
+    "spawn: Spawns its owned operation for `SourceRuntime`.",
+    "cancel: Requests cancellation of `SourceRuntime`.",
+    "observations: Returns the observations exposed by `SourceRuntime`.",
+    "join: Joins its owned operation for `SourceRuntime`.",
+    "drop: Releases resources owned by `SourceRuntime`.",
+    "pocketstation::session::extensions::source::SourceManifestError: Classifies failures reported as source manifest error.",
+    "pocketstation::session::extensions::source::SourceManifestError::EmptySourceTypeId: Reported when the owning operation encounters empty source type identifier.",
+    "pocketstation::session::extensions::source::SourceManifestError::ZeroVersion: Reported when the owning operation encounters zero version.",
+    "pocketstation::session::extensions::source::SourceManifestError::NoOutputs: Reported when the owning operation encounters no outputs.",
+    "pocketstation::session::extensions::source::SourceManifestError::NonOutputPort: Reported when the owning operation encounters non output port.",
+    "pocketstation::session::extensions::source::SourceManifestError::EmptyOutputName: Reported when the owning operation encounters empty output name.",
+    "pocketstation::session::extensions::source::SourceManifestError::DuplicateOutputName: Reported when the owning operation encounters duplicate output name.",
+    "pocketstation::session::extensions::source::SourceManifestError::InvalidSignal: Reported when the owning operation encounters invalid signal.",
+    "pocketstation::session::extensions::source::SourceManifestError::SignalMediaMismatch: Reported when the owning operation encounters signal media mismatch.",
+    "pocketstation::session::extensions::source::SourceManifestError::InvalidSafetyContract: Reported when the owning operation encounters invalid safety contract.",
+    "pocketstation::session::extensions::source::SourceManifestError::UnsupportedExecutionPartition: Reported when the owning operation encounters unsupported execution partition.",
+    "pocketstation::session::extensions::source::SourceRegistrationError: Classifies failures reported as source registration error.",
+    "pocketstation::session::extensions::source::SourceRegistrationError::InvalidManifest: Reported when the owning operation encounters invalid manifest.",
+    "pocketstation::session::extensions::source::SourceRegistrationError::DuplicateSourceType: Reported when the owning operation encounters duplicate source type.",
+    "pocketstation::session::extensions::source::SourceRegistrationError::NodeTypeConflict: Reported when the owning operation encounters node type conflict.",
+    "fmt: Formats `SourceTypeId` with the requested formatter.",
+    "pocketstation::session::extensions::source::SourceDriverError: Classifies failures reported as source driver error.",
+    "pocketstation::session::extensions::source::SourceDriverError::Failed: Reported when the owning operation encounters failed.",
+    "pocketstation::session::extensions::source::SourceRuntimeError: Classifies failures reported as source runtime error.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::InvalidManifest: Reported when the owning operation encounters invalid manifest.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::InvalidConfiguration: Reported when the owning operation encounters invalid configuration.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::Driver: Reported when the owning operation encounters driver.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::EdgeBuild: Reported when the owning operation encounters edge build.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::NoRoutedOutputs: Reported when the owning operation encounters no routed outputs.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::UnknownOutput: Reported when the owning operation encounters unknown output.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::UnroutedOutput: Reported when the owning operation encounters unrouted output.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::OutputContractMismatch: Reported when the owning operation encounters output contract mismatch.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::MissingSessionLineage: Reported when the owning operation encounters missing session lineage.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::OutputIdentityMismatch: Reported when the owning operation encounters output identity mismatch.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::Continuity: Reported when the owning operation encounters continuity.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::Publish: Reported when the owning operation encounters publish.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::Spawn: Reported when the owning operation encounters spawn.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::WorkerPanicked: Reported when the owning operation encounters worker panicked.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::AlreadyJoined: Reported when the owning operation encounters already joined.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::PreparedStateConsumed: Reported when the owning operation encounters prepared state consumed.",
+    "pocketstation::session::extensions::source::SourceRuntimeError::UnregisteredSource: Reported when the owning operation encounters unregistered source."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 24,
+      "text": "/// `io.example.source.device.v1`. Session instance identity belongs in"
+    },
+    {
+      "line": 829,
+      "text": "SourceTypeId::new(\" io.example.source.device.v1\"),"
+    },
+    {
+      "line": 833,
+      "text": "SourceTypeId::new(\"io.example.sourc\u00e9.device.v1\"),"
+    },
+    {
+      "line": 837,
+      "text": "SourceTypeId::new(\"io.example.source.device.v0\"),"
+    },
+    {
+      "line": 841,
+      "text": "SourceTypeId::new(\"io.example.source..device.v1\"),"
+    },
+    {
+      "line": 845,
+      "text": "SourceTypeId::new(\"io.example.source.device\\nv1\"),"
+    },
+    {
+      "line": 849,
+      "text": "SourceTypeId::new(\"io.example.operator.device.v1\"),"
+    },
+    {
+      "line": 328,
+      "text": "pub fn spawn("
+    },
+    {
+      "line": 524,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 565,
+      "text": "pub fn spawn("
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 268,
+      "text": "fn prepare(&mut self, context: &SourcePrepareContext) -> Result<(), SourceDriverError>;"
+    },
+    {
+      "line": 334,
+      "text": "let (prepared, receivers) = self.prepare(source_type_id, configuration, branch_specs)?;"
+    },
+    {
+      "line": 335,
+      "text": "Ok((prepared.start()?, receivers))"
+    },
+    {
+      "line": 339,
+      "text": "pub fn prepare("
+    },
+    {
+      "line": 350,
+      "text": "PreparedSourceRuntime::prepare(factory, configuration, branch_specs, None)"
+    },
+    {
+      "line": 365,
+      "text": "PreparedSourceRuntime::prepare(factory, configuration, branch_specs, Some(session))"
+    },
+    {
+      "line": 435,
+      "text": "/// Keeping this state distinct is what lets Session prepare every bounded"
+    },
+    {
+      "line": 445,
+      "text": "fn prepare("
+    },
+    {
+      "line": 489,
+      "text": ".prepare(&SourcePrepareContext {"
+    },
+    {
+      "line": 505,
+      "text": "pub fn start(mut self) -> Result<SourceRuntime, SourceRuntimeError> {"
+    },
+    {
+      "line": 571,
+      "text": "PreparedSourceRuntime::prepare(factory, configuration, branch_specs, None)?;"
+    },
+    {
+      "line": 572,
+      "text": "Ok((prepared.start()?, receivers))"
+    },
+    {
+      "line": 773,
+      "text": "#[error(\"source output identity does not match the Session prepare context\")]"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-36fb73e35e77f9bec37a",
+    "test-413ea768d5317935d57b",
+    "test-7535a3690b539f877415",
+    "test-9ce9365567c289cfee1f",
+    "test-a659d1b777485f0813f8",
+    "test-c40d1aa1394caf3f3d86",
+    "test-dbe45e195b7c5ad4e2f5",
+    "test-e909fbc8cb6cbead7697"
+  ],
+  "threads": [
+    {
+      "line": 4,
+      "text": "use std::thread::JoinHandle;"
+    },
+    {
+      "line": 328,
+      "text": "pub fn spawn("
+    },
+    {
+      "line": 522,
+      "text": "let join = std::thread::Builder::new()"
+    },
+    {
+      "line": 524,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 565,
+      "text": "pub fn spawn("
+    },
+    {
+      "line": 779,
+      "text": "#[error(\"source worker could not spawn: {0}\")]"
+    }
+  ],
+  "visibility": "mixed"
+}

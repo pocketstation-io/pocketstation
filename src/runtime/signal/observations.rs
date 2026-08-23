@@ -59,11 +59,13 @@ pub struct AsyncOperatorObservations {
 }
 
 #[derive(Clone)]
+#[doc = "Owns bounded access to async operator observation."]
 pub struct AsyncOperatorObservationHandle {
     pub(super) state: Arc<AsyncOperatorObservationState>,
 }
 
 impl AsyncOperatorObservationHandle {
+    #[doc = "Returns a point-in-time snapshot of `AsyncOperatorObservationHandle`."]
     pub fn snapshot(&self) -> AsyncOperatorObservations {
         AsyncOperatorObservations {
             input_attempted_total: self.state.input_attempted_total.load(Ordering::Relaxed),
@@ -84,6 +86,7 @@ impl AsyncOperatorObservationHandle {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Waits for ready for `AsyncOperatorObservationHandle`."]
     pub async fn wait_ready(&self) -> bool {
         loop {
             let notified = self.state.ready_notify.notified();
@@ -98,6 +101,7 @@ impl AsyncOperatorObservationHandle {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Waits for terminal for `AsyncOperatorObservationHandle`."]
     pub async fn wait_terminal(&self) {
         loop {
             let notified = self.state.terminal_notify.notified();

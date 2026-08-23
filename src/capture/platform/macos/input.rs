@@ -1,5 +1,6 @@
 //! Physical input-device capture through CoreAudio via CPAL.
 
+use std::num::NonZeroU32;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
@@ -7,8 +8,8 @@ use std::time::Duration;
 use crate::capture::{
     initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureError,
     CaptureObservationCounters, CaptureObservationHandle, CaptureObservations,
-    CaptureRuntimeFailure, CaptureRuntimeFailureClass, CaptureSource, InputDeviceSelector,
-    PermissionObservation, SourceGeneration, SourceKind, SourceRuntimeEvent,
+    CaptureRuntimeFailure, CaptureRuntimeFailureClass, CaptureSampleTimeline, CaptureSource,
+    InputDeviceSelector, PermissionObservation, SourceGeneration, SourceKind, SourceRuntimeEvent,
     SourceRuntimeEventSender, SourceState, StableSourceId,
 };
 use crate::frame::{AudioBufferPool, AudioFrame, Platform, StreamId};
@@ -49,10 +50,6 @@ fn input_capture_timestamp(
         .saturating_duration_since(timestamp.capture)
         .as_nanos()
         .min(u128::from(u64::MAX)) as u64;
-    // The shared monotonic clock is process-relative. During the first
-    // callbacks, Core Audio's capture-to-callback delay can predate that
-    // process epoch. Timestamp 1 is the earliest representable instant in the
-    // shared domain; zero is reserved for "timestamp unavailable".
     match callback_observed_at_ns.checked_sub(capture_before_callback_ns) {
         Some(timestamp_ns) if timestamp_ns != 0 => InputCaptureTimestamp {
             timestamp_ns,
@@ -92,6 +89,9 @@ impl MacosInputSource {
         let stable_device_id = device_id.to_string();
         let supported_config = select_f32_input_config(&device)?;
         let sample_rate_hz = supported_config.sample_rate();
+        let sample_rate = NonZeroU32::new(sample_rate_hz).ok_or_else(|| {
+            CaptureError::BackendInit("input device sample rate is zero".to_owned())
+        })?;
         let channels = u8::try_from(supported_config.channels())
             .ok()
             .filter(|channels| *channels > 0)
@@ -129,14 +129,21 @@ impl MacosInputSource {
         let callback_pool = Arc::clone(&pool);
         let callback_counters = counters.clone();
         let mut sequence_number = 0u64;
+        let mut sample_timeline = None;
         let data_callback = move |data: &[f32], callback_info: &cpal::InputCallbackInfo| {
-            let timestamp = input_capture_timestamp(monotonic_timestamp_ns(), callback_info);
-            if timestamp.epoch_clamped {
-                callback_counters.observe_timestamp_epoch_clamp();
-            }
             let frame_sequence_number = sequence_number;
             sequence_number = sequence_number.saturating_add(1);
             callback_counters.observe_callback_buffer();
+            let samples_per_channel = data.len() / usize::from(channels);
+            let timeline = sample_timeline.get_or_insert_with(|| {
+                let timestamp = input_capture_timestamp(monotonic_timestamp_ns(), callback_info);
+                if timestamp.epoch_clamped {
+                    callback_counters.observe_timestamp_epoch_clamp();
+                }
+                CaptureSampleTimeline::anchored(sample_rate, timestamp.timestamp_ns)
+            });
+            let timestamp_ns =
+                timeline.advance(u64::try_from(samples_per_channel).unwrap_or(u64::MAX));
             if data.len() > callback_pool.slot_size() {
                 callback_counters.observe_oversized_buffer();
                 return;
@@ -153,7 +160,7 @@ impl MacosInputSource {
                 StreamId(source_id.0),
                 source_id,
                 frame_sequence_number,
-                timestamp.timestamp_ns,
+                timestamp_ns,
                 channels,
                 handle,
             );

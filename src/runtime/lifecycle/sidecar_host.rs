@@ -132,6 +132,7 @@ struct SidecarCounters {
 }
 
 #[derive(Clone)]
+#[doc = "Reports the sidecar host observations collected at an observation boundary."]
 pub struct SidecarHostObservations {
     counters: Arc<SidecarCounters>,
 }
@@ -191,6 +192,7 @@ enum ReaderEvent {
     Eof,
 }
 
+#[doc = "Owns the resources and lifecycle for sidecar."]
 pub struct SidecarHost {
     id: u64,
     child: Option<Child>,
@@ -208,6 +210,7 @@ pub struct SidecarHost {
 }
 
 impl SidecarHost {
+    #[doc = "Spawns its owned operation for `SidecarHost`."]
     pub fn spawn(spec: SidecarProcessSpec) -> Result<Self, SidecarHostError> {
         validate_spec(&spec)?;
         let mut child = Command::new(&spec.program)
@@ -287,18 +290,22 @@ impl SidecarHost {
         Ok(host)
     }
 
+    #[doc = "Returns the id held by `SidecarHost`."]
     pub const fn id(&self) -> u64 {
         self.id
     }
 
+    #[doc = "Returns the state held by `SidecarHost`."]
     pub fn state(&self) -> SidecarState {
         self.observations.snapshot().state
     }
 
+    #[doc = "Returns the observations exposed by `SidecarHost`."]
     pub fn observations(&self) -> SidecarHostObservations {
         self.observations.clone()
     }
 
+    #[doc = "Attempts to send signal through `SidecarHost`."]
     pub fn try_send_signal(&self, message: SidecarMessage) -> Result<(), SidecarHostError> {
         if self.state() != SidecarState::Running {
             return Err(SidecarHostError::InvalidState {
@@ -333,6 +340,7 @@ impl SidecarHost {
         }
     }
 
+    #[doc = "Attempts to receive signal through `SidecarHost`."]
     pub fn try_receive_signal(&self) -> Result<Option<SidecarMessage>, SidecarHostError> {
         match self.incoming_data_rx.try_recv() {
             Ok(message) => Ok(Some(message)),
@@ -341,6 +349,7 @@ impl SidecarHost {
         }
     }
 
+    #[doc = "Receives signal for `SidecarHost`."]
     pub fn receive_signal(&self) -> Result<SidecarMessage, SidecarHostError> {
         self.incoming_data_rx
             .recv_timeout(self.deadlines.processing)
@@ -356,10 +365,12 @@ impl SidecarHost {
             })
     }
 
+    #[doc = "Cancels and reap for `SidecarHost`."]
     pub fn cancel_and_reap(&mut self) -> Result<ExitStatus, SidecarHostError> {
         self.shutdown(SidecarMessageKind::Cancel, SidecarState::Cancelling)
     }
 
+    #[doc = "Closes `SidecarHost` and reaps its child process."]
     pub fn close_and_reap(&mut self) -> Result<ExitStatus, SidecarHostError> {
         self.shutdown(SidecarMessageKind::Close, SidecarState::Closing)
     }
@@ -555,6 +566,7 @@ impl SidecarHost {
 }
 
 impl Drop for SidecarHost {
+    #[doc = "Releases resources owned by `SidecarHost`."]
     fn drop(&mut self) {
         if !self.reaped {
             self.force_reap();

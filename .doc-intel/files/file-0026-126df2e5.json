@@ -10,12 +10,17 @@
   "configuration_read": [],
   "constructed_by": [],
   "constructs": [],
-  "content_hash": "5b8bd9f6318d8826c6df7e0fe097abe1d894bfd046f52abcb02513f1857c0cc6",
+  "content_hash": "6adae08979fb2a9f4192463d79da3fcee8a78c7c772bfc7d0e1648f684e0555d",
   "defaults": [],
   "defines": [],
   "device_io": [],
   "drop_cleanup": [],
-  "endpoints": [],
+  "endpoints": [
+    {
+      "line": 34,
+      "text": "- [Add a Source, Operator, or Endpoint](../guides/extensions.md)"
+    }
+  ],
   "entry_points": [],
   "environment_variables": [],
   "errors_created": [],
@@ -26,10 +31,10 @@
   "evidence": [
     {
       "classification": "DIRECT",
-      "content_hash": "5b8bd9f6318d8826c6df7e0fe097abe1d894bfd046f52abcb02513f1857c0cc6",
+      "content_hash": "6adae08979fb2a9f4192463d79da3fcee8a78c7c772bfc7d0e1648f684e0555d",
       "lines": [
         1,
-        27
+        36
       ],
       "path": "docs/concepts/signals-and-streams.md",
       "symbol": null
@@ -50,7 +55,7 @@
   "finalization": [],
   "generated": false,
   "generated_from": "not_applicable",
-  "git_object": "79c2fdaabb4dfa1b1e4a524539a4f81fceb24eb5",
+  "git_object": "d076ad94b8c7eaabae665a8a124bad7b1118d4a4",
   "implemented_by": [],
   "implements": [],
   "imported_by": [],
@@ -60,7 +65,7 @@
   ],
   "invariants": [],
   "language": "Markdown",
-  "line_count": 27,
+  "line_count": 36,
   "locks": [],
   "module": "not_applicable",
   "network_io": [],
@@ -85,7 +90,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "DECLARED",
-    "text": "Documents Signals and streams for repository contributors or PocketStation developers."
+    "text": "Documents How signals and streams preserve runtime identity for repository contributors or PocketStation developers."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -107,13 +112,13 @@
   "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "Documents Signals and streams for repository contributors or PocketStation developers."
+    "Documents How signals and streams preserve runtime identity for repository contributors or PocketStation developers."
   ],
   "retry_behavior": [],
   "serialization": [],
   "shutdown_behavior": [],
   "side_effects": [],
-  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],

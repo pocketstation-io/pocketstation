@@ -1,0 +1,228 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
+  "calls": [],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
+  "constructs": [],
+  "content_hash": "d7a73128d0ad33e43cb09bb21ae88c25737a81a7e41b4f9d22c7cb35fd5833da",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "constants",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "decoder",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "encoder",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "profile",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "d7a73128d0ad33e43cb09bb21ae88c25737a81a7e41b4f9d22c7cb35fd5833da",
+      "lines": [
+        1,
+        20
+      ],
+      "path": "src/codec/mod.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0110-8dfd8515",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "031c55ad0ef656cd6445bde00ff21c33d175869e",
+  "implemented_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
+  "implements": [],
+  "imported_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
+  "imports": [
+    "constants::{ OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, OPUS_SAMPLE_RATE_HZ, VOICE_AGENT_FRAME_SAMPLES, }",
+    "decoder::{OpusDecodeError, OpusDecoder}",
+    "encoder::{ OpusApplication, OpusChannels, OpusConfig, OpusEncodeError, OpusEncoder, OpusFrameDuration, OpusSampleRate, }",
+    "module:constants",
+    "module:decoder",
+    "module:encoder",
+    "module:profile",
+    "profile::StreamProfile"
+  ],
+  "inputs": [
+    "constants::{ OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, OPUS_SAMPLE_RATE_HZ, VOICE_AGENT_FRAME_SAMPLES, }",
+    "decoder::{OpusDecodeError, OpusDecoder}",
+    "encoder::{ OpusApplication, OpusChannels, OpusConfig, OpusEncodeError, OpusEncoder, OpusFrameDuration, OpusSampleRate, }",
+    "module:constants",
+    "module:decoder",
+    "module:encoder",
+    "module:profile",
+    "profile::StreamProfile"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 20,
+  "locks": [],
+  "module": "pocketstation::codec",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "No emitted value or public declaration is recorded for this file."
+  ],
+  "package": "pocketstation",
+  "path": "src/codec/mod.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "constants",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "decoder",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "encoder",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "profile",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::codec responsibilities, including Real Opus encode, decode, and packet-loss concealment primitives.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [
+    "decoder::{OpusDecodeError, OpusDecoder}",
+    "profile::StreamProfile"
+  ],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/opus-codec.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/opus-roundtrip.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/codec.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/frames-and-codec.md",
+    "docs/troubleshooting/opus.md"
+  ],
+  "relationship_outputs": [
+    "CONTAINS:src/codec/constants.rs",
+    "CONTAINS:src/codec/decoder.rs",
+    "CONTAINS:src/codec/encoder.rs",
+    "CONTAINS:src/codec/profile.rs",
+    "IMPORTS:src/codec/constants.rs",
+    "IMPORTS:src/codec/decoder.rs",
+    "IMPORTS:src/codec/encoder.rs",
+    "IMPORTS:src/codec/profile.rs"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "pocketstation::codec: Real Opus encode, decode, and packet-loss concealment primitives."
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 1,
+      "text": "//! Real Opus encode, decode, and packet-loss concealment primitives."
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

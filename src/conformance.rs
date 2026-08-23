@@ -1,4 +1,4 @@
-//! Deterministic canonical-engine fixture for external conformance harnesses.
+//! Deterministic Session fixture for external conformance harnesses.
 //!
 //! This feature is `LOOPBACK-ONLY`, disabled by default, and is not product
 //! capture evidence.
@@ -33,7 +33,7 @@ const RECORDING_EDGE_CAPACITY_FRAMES: usize = crate::graph::plan::EDGE_RING_CAPA
 const SLOW_BRANCH_QUEUE_CAPACITY_FRAMES: usize = RECORDING_EDGE_CAPACITY_FRAMES / 2;
 /// Frames emitted per source by the finite deterministic fixture.
 ///
-/// This equals the canonical runtime edge capacity, so the recording branch
+/// This equals the runtime edge capacity, so the recording branch
 /// remains lossless even if its worker is not scheduled until capture ends.
 /// The independently configured half-capacity polled branch still saturates.
 pub const FRAMES_PER_SOURCE: u64 = RECORDING_EDGE_CAPACITY_FRAMES as u64;
@@ -202,20 +202,19 @@ pub fn session() -> Result<Session, SessionEngineHostBuildError> {
 }
 
 /// Creates a finite fixture that produces enough frames to overflow a
-/// deliberately unconsumed canonical route.
+/// deliberately unconsumed route.
 pub fn session_for_saturation() -> Result<Session, SessionEngineHostBuildError> {
     session_with_options(None, FRAMES_PER_SOURCE.saturating_mul(4))
 }
 
-/// Creates the deterministic canonical-engine fixture with multistem recording.
+/// Creates the deterministic Session fixture with multistem recording.
 pub fn session_with_recording(
     output_root: impl Into<PathBuf>,
 ) -> Result<Session, SessionEngineHostBuildError> {
     session_with_options(Some(output_root.into()), FRAMES_PER_SOURCE)
 }
 
-/// Creates the deterministic canonical-engine fixture with a bounded Session
-/// Session diagnostic trace recorder.
+/// Creates the deterministic Session fixture with a bounded diagnostic trace.
 pub fn session_with_trace(
     path: impl Into<PathBuf>,
     capacity_records: usize,
@@ -228,7 +227,7 @@ pub fn session_with_trace(
     Ok(session)
 }
 
-/// Creates the deterministic canonical-engine fixture with both aligned
+/// Creates the deterministic Session fixture with both aligned
 /// multistem recording and a bounded Session diagnostic trace.
 pub fn session_with_recording_and_trace(
     output_root: impl Into<PathBuf>,
@@ -590,7 +589,7 @@ pub const EXTENSION_OUTPUT_PAYLOAD: &[u8] = b"seed!";
 /// Language-neutral outcome returned by the W20 fixture.
 ///
 /// This is test evidence, not a second runtime API. All counters come from the
-/// canonical `Session` and its registered Source/Operator/Endpoint owners.
+/// `Session` and its registered Source, Operator, and Endpoint owners.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ExtensionConformanceReport {
     #[doc = "Identifies the signal identifier recorded by `ExtensionConformanceReport`."]
@@ -1054,7 +1053,7 @@ impl Drop for RunningExtensionEndpoint {
 }
 
 /// Executes the neutral typed Source -> `Stream<T>` -> Operator -> Endpoint
-/// vector through the canonical public Session.
+/// vector through the public Session.
 pub fn run_extension_vector(failure_requested: bool) -> Result<ExtensionConformanceReport, String> {
     let source_control = Arc::new(ExtensionSourceControl::default());
     let operator_control = Arc::new(ExtensionOperatorControl::default());

@@ -1,0 +1,1061 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 210,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 220,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 222,
+      "text": "return Err(NodeError::Process(\"async node not prepared\".to_owned()));"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/edge.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
+  "calls": [
+    "AsyncOperatorEdgePrepareContext::new",
+    "AsyncOperatorPrepareContext::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Box::pin",
+    "ClockDomainId",
+    "Context::from_waker",
+    "EdgeContract::bounded_async",
+    "NodeError::Process",
+    "Poll::Ready",
+    "SessionId",
+    "SignalContinuityTracker::default",
+    "SignalEnvelope::from_audio",
+    "SignalEnvelope::untracked",
+    "SignalId::new",
+    "SignalLineage::from_frame",
+    "SignalPayload::Audio",
+    "SignalPayload::Bytes",
+    "SignalPayload::Text",
+    "SignalSpec::audio",
+    "SignalSpec::binary",
+    "SignalSpec::control",
+    "SignalSpec::custom",
+    "SignalSpec::encoded_audio",
+    "SignalSpec::event",
+    "SignalSpec::metrics",
+    "SignalSpec::text",
+    "SignalTiming::from_frame",
+    "SignalTiming::observed",
+    "SourceId",
+    "StemId",
+    "StreamId",
+    "String::new",
+    "Vec::new",
+    "Waker::noop",
+    "acquire",
+    "as_mut",
+    "as_ref",
+    "block_on_ready",
+    "cfg",
+    "derivation",
+    "derive",
+    "error",
+    "from_audio",
+    "generic_envelope",
+    "given_audio_frame_lineage_when_enveloped_then_generic_lineage_is_projected",
+    "given_contiguous_signals_when_replayed_then_continuity_is_deterministic",
+    "given_echo_async_node_when_process_after_prepare_then_envelope_is_returned",
+    "given_echo_async_node_when_process_before_prepare_then_error_is_returned",
+    "given_fundamental_payloads_when_enveloped_then_specs_are_symmetric",
+    "given_gap_without_discontinuity_when_replayed_then_rejected",
+    "given_generic_lineage_when_enveloped_then_no_frame_lineage_is_required",
+    "given_payload_and_incompatible_spec_when_validated_then_rejected",
+    "given_recovery_without_discontinuity_when_replayed_then_rejected",
+    "given_text_storage_when_checked_against_text_spec_then_representation_is_supported",
+    "into_payload",
+    "is_ok",
+    "iter",
+    "let",
+    "lineage",
+    "map",
+    "map_err",
+    "map_or_else",
+    "map_payload",
+    "observe",
+    "or",
+    "payload",
+    "payload_size_bytes",
+    "poll",
+    "pop",
+    "prepare",
+    "prepare_cx",
+    "process",
+    "pub",
+    "sequence_number",
+    "signal_spec",
+    "size_bytes",
+    "source_id",
+    "supports",
+    "timestamp_end_ns",
+    "timestamp_ns",
+    "timing",
+    "to_owned",
+    "untracked",
+    "unwrap",
+    "unwrap_err",
+    "unwrap_or",
+    "validate",
+    "with_derivation",
+    "with_lineage"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 148,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/edge.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
+  "constructs": [
+    "AsyncOperatorEdgePrepareContext::new",
+    "AsyncOperatorPrepareContext::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "SignalId::new",
+    "String::new",
+    "Vec::new"
+  ],
+  "content_hash": "c60557750365d0bc231295572ef65cbf0888700d1f84e94db3198cebc48051e9",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "SignalEnvelope",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "untracked",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 26,
+      "name": "from_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "map_payload",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "with_lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "with_derivation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "payload",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "payload_size_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "signal_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "timing",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "derivation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "into_payload",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 89,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 109,
+      "name": "timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 137,
+      "name": "SignalEnvelopeError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 149,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "prepare_cx",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 189,
+      "name": "block_on_ready",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 200,
+      "name": "EchoAsyncNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 215,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 230,
+      "name": "given_text_storage_when_checked_against_text_spec_then_representation_is_supported",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 236,
+      "name": "given_echo_async_node_when_process_after_prepare_then_envelope_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "given_echo_async_node_when_process_before_prepare_then_error_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "given_fundamental_payloads_when_enveloped_then_specs_are_symmetric",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 297,
+      "name": "given_payload_and_incompatible_spec_when_validated_then_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 308,
+      "name": "given_generic_lineage_when_enveloped_then_no_frame_lineage_is_required",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 335,
+      "name": "given_audio_frame_lineage_when_enveloped_then_generic_lineage_is_projected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 359,
+      "name": "generic_envelope",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 393,
+      "name": "given_contiguous_signals_when_replayed_then_continuity_is_deterministic",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 423,
+      "name": "given_gap_without_discontinuity_when_replayed_then_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 434,
+      "name": "given_recovery_without_discontinuity_when_replayed_then_rejected",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "SignalEnvelope",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "untracked",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 26,
+      "name": "from_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "map_payload",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "with_lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "with_derivation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "payload",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "payload_size_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "signal_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "timing",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "derivation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "into_payload",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 89,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 109,
+      "name": "timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 137,
+      "name": "SignalEnvelopeError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 122,
+      "text": "return Err(SignalEnvelopeError::PayloadSpecMismatch);"
+    },
+    {
+      "line": 126,
+      "text": "return Err(SignalEnvelopeError::SequenceMismatch);"
+    },
+    {
+      "line": 129,
+      "text": "return Err(SignalEnvelopeError::SourceMismatch);"
+    },
+    {
+      "line": 222,
+      "text": "return Err(NodeError::Process(\"async node not prepared\".to_owned()));"
+    },
+    {
+      "line": 303,
+      "text": "Err(SignalEnvelopeError::PayloadSpecMismatch)"
+    },
+    {
+      "line": 429,
+      "text": "Err(SignalContinuityError::SequenceGapWithoutDiscontinuity)"
+    },
+    {
+      "line": 440,
+      "text": "Err(SignalContinuityError::RecoveryWithoutDiscontinuity)"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 137,
+      "name": "SignalEnvelopeError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 120,
+      "text": ".map_err(|_| SignalEnvelopeError::InvalidSignalSpec)?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 120,
+      "text": ".map_err(|_| SignalEnvelopeError::InvalidSignalSpec)?;"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 120,
+      "text": ".map_err(|_| SignalEnvelopeError::InvalidSignalSpec)?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "c60557750365d0bc231295572ef65cbf0888700d1f84e94db3198cebc48051e9",
+      "lines": [
+        1,
+        444
+      ],
+      "path": "src/graph/signal/envelope.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "linked",
+  "examples_using": [
+    "example-015ad57d56d019a5d285",
+    "example-7fa365a72e313c091085"
+  ],
+  "extended_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/edge.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0161-44ccccb8",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "db19c9c3994962345232dfe60086e44b454eb700",
+  "implemented_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/edge.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
+  "implements": [
+    "SignalEnvelope",
+    "AsyncNode for EchoAsyncNode"
+  ],
+  "imported_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/edge.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
+  "imports": [
+    "crate::frame::{AudioBufferPool, ClockDomainId, SessionId, StemId, StreamId}",
+    "crate::frame::{AudioFrame, FrameLineage, SourceId}",
+    "crate::graph::signal::payload::SignalPayload",
+    "crate::graph::signal::{SignalDerivation, SignalLineage, SignalSpec, SignalTiming}",
+    "crate::graph::{ AsyncNode, AsyncNodeFuture, AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext, BinaryFormat, Codec, EdgeContract, EventFormat, ExecutionPartition, MediaCaps, NodeError, PortDirection, SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker, SignalId, TextFormat, }",
+    "std::task::{Context, Poll, Waker}",
+    "super::*"
+  ],
+  "inputs": [
+    "#[cfg(test)]",
+    "crate::frame::{AudioBufferPool, ClockDomainId, SessionId, StemId, StreamId}",
+    "crate::frame::{AudioFrame, FrameLineage, SourceId}",
+    "crate::graph::signal::payload::SignalPayload",
+    "crate::graph::signal::{SignalDerivation, SignalLineage, SignalSpec, SignalTiming}",
+    "crate::graph::{ AsyncNode, AsyncNodeFuture, AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext, BinaryFormat, Codec, EdgeContract, EventFormat, ExecutionPartition, MediaCaps, NodeError, PortDirection, SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker, SignalId, TextFormat, }",
+    "std::task::{Context, Poll, Waker}",
+    "super::*"
+  ],
+  "invariants": [
+    {
+      "line": 16,
+      "text": "/// Session. Session sources must attach lineage before routing it."
+    },
+    {
+      "line": 232,
+      "text": "assert!(signal.supports(&SignalSpec::text(crate::graph::signal::TextFormat::Utf8)));"
+    },
+    {
+      "line": 250,
+      "text": "assert!(matches!(output.payload, SignalPayload::Bytes(_)));"
+    },
+    {
+      "line": 260,
+      "text": "assert!(matches!(error, NodeError::Process(_)));"
+    },
+    {
+      "line": 290,
+      "text": "assert!(SignalEnvelope::untracked(payload, spec, 2)"
+    },
+    {
+      "line": 329,
+      "text": "assert!(envelope.validate().is_ok());"
+    },
+    {
+      "line": 352,
+      "text": "assert!(envelope.validate().is_ok());"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 444,
+  "locks": [],
+  "module": "pocketstation::graph::signal::envelope",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-2c19d9af46f0136c5084",
+    "pattern-a166906b05a45a18f8ee",
+    "pattern-fb8c55c9486ad699e31c"
+  ],
+  "outputs": [
+    "Err(SignalContinuityError::RecoveryWithoutDiscontinuity)",
+    "Err(SignalContinuityError::SequenceGapWithoutDiscontinuity)",
+    "Err(SignalEnvelopeError::PayloadSpecMismatch)",
+    "enum:SignalEnvelopeError",
+    "fn:derivation",
+    "fn:from_audio",
+    "fn:into_payload",
+    "fn:lineage",
+    "fn:map_payload",
+    "fn:payload",
+    "fn:payload_size_bytes",
+    "fn:sequence_number",
+    "fn:signal_spec",
+    "fn:source_id",
+    "fn:timestamp_ns",
+    "fn:timing",
+    "fn:untracked",
+    "fn:validate",
+    "fn:with_derivation",
+    "fn:with_lineage",
+    "return Err(NodeError::Process(\"async node not prepared\".to_owned()));",
+    "return Err(SignalEnvelopeError::PayloadSpecMismatch);",
+    "return Err(SignalEnvelopeError::SequenceMismatch);",
+    "return Err(SignalEnvelopeError::SourceMismatch);",
+    "struct:SignalEnvelope"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/signal/envelope.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 149,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "prepare_cx",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 189,
+      "name": "block_on_ready",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 200,
+      "name": "EchoAsyncNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 215,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 230,
+      "name": "given_text_storage_when_checked_against_text_spec_then_representation_is_supported",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 236,
+      "name": "given_echo_async_node_when_process_after_prepare_then_envelope_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "given_echo_async_node_when_process_before_prepare_then_error_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "given_fundamental_payloads_when_enveloped_then_specs_are_symmetric",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 297,
+      "name": "given_payload_and_incompatible_spec_when_validated_then_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 308,
+      "name": "given_generic_lineage_when_enveloped_then_no_frame_lineage_is_required",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 335,
+      "name": "given_audio_frame_lineage_when_enveloped_then_generic_lineage_is_projected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 359,
+      "name": "generic_envelope",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 393,
+      "name": "given_contiguous_signals_when_replayed_then_continuity_is_deterministic",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 423,
+      "name": "given_gap_without_discontinuity_when_replayed_then_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 434,
+      "name": "given_recovery_without_discontinuity_when_replayed_then_rejected",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "SignalEnvelope",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "untracked",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 26,
+      "name": "from_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "map_payload",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "with_lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "with_derivation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "payload",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "payload_size_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "signal_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "timing",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "derivation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "into_payload",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 89,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 109,
+      "name": "timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 137,
+      "name": "SignalEnvelopeError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::signal::envelope responsibilities, including Carries a typed signal payload together with timing, lineage, continuity, and terminal metadata.; Creates an envelope for data that has not yet entered a source-aware; Creates `SignalEnvelope` from audio.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/frame/lineage.rs",
+    "REFERENCES:src/graph/signal/lineage.rs",
+    "REFERENCES:src/graph/signal/payload.rs",
+    "REFERENCES:src/graph/signal/spec.rs",
+    "REFERENCES:src/graph/signal/timing.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 210,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 220,
+      "text": "Box::pin(async move {"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::graph::signal::envelope::SignalEnvelope: Carries a typed signal payload together with timing, lineage, continuity, and terminal metadata.",
+    "untracked: Creates an envelope for data that has not yet entered a source-aware",
+    "from_audio: Creates `SignalEnvelope` from audio.",
+    "map_payload: Transforms the payload held by `SignalEnvelope` while preserving envelope metadata.",
+    "with_lineage: Sets the lineage on `SignalEnvelope` and returns the updated value.",
+    "with_derivation: Sets the derivation on `SignalEnvelope` and returns the updated value.",
+    "payload: Returns the payload associated with `SignalEnvelope`.",
+    "payload_size_bytes: Returns the payload size bytes held by `SignalEnvelope`.",
+    "signal_spec: Returns the signal spec held by `SignalEnvelope`.",
+    "timing: Returns the timing associated with `SignalEnvelope`.",
+    "lineage: Returns the frame lineage carried by `SignalEnvelope`.",
+    "derivation: Returns the derivation associated with `SignalEnvelope`.",
+    "into_payload: Converts `SignalEnvelope` into payload.",
+    "sequence_number: Returns the sequence number held by `SignalEnvelope`.",
+    "source_id: Returns the source identifier held by `SignalEnvelope`.",
+    "timestamp_ns: Returns the timestamp nanoseconds held by `SignalEnvelope`.",
+    "validate: Validates `SignalEnvelope` against its declared contract.",
+    "pocketstation::graph::signal::envelope::SignalEnvelopeError: Classifies failures reported as signal envelope error.",
+    "pocketstation::graph::signal::envelope::SignalEnvelopeError::InvalidSignalSpec: Reported when the owning operation encounters invalid signal spec.",
+    "pocketstation::graph::signal::envelope::SignalEnvelopeError::PayloadSpecMismatch: Reported when the owning operation encounters payload spec mismatch.",
+    "pocketstation::graph::signal::envelope::SignalEnvelopeError::SequenceMismatch: Reported when the owning operation encounters sequence mismatch.",
+    "pocketstation::graph::signal::envelope::SignalEnvelopeError::SourceMismatch: Reported when the owning operation encounters source mismatch."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 206,
+      "text": "fn prepare<'a>("
+    },
+    {
+      "line": 238,
+      "text": "block_on_ready(node.prepare(&prepare_cx())).unwrap();"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 210,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 220,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 222,
+      "text": "return Err(NodeError::Process(\"async node not prepared\".to_owned()));"
+    }
+  ],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-1dfdf14fa335d99dccdc",
+    "test-2b2699fe5f04684d85ed",
+    "test-3c0b0177361aa791222a",
+    "test-4386f4e386ad62fd8ff7",
+    "test-60c6c7ddba591b2f3fbf",
+    "test-6eb8b47d694e3c8e2ed5",
+    "test-7300dec9e191c3915ad1",
+    "test-8407238de80c53078adc",
+    "test-8cc85a6bba76b829a95f",
+    "test-a50461aed49326fc4476",
+    "test-d12d138a4ed387470d9c",
+    "test-e8f76f0070ca38093fa3",
+    "test-e9cf0ccf7086e77434e1",
+    "test-fdcedd1be79649611e4c"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

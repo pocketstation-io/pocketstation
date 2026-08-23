@@ -1,0 +1,410 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
+  "calls": [
+    "Duration::from_secs",
+    "derive",
+    "error",
+    "failure_threshold",
+    "is_zero",
+    "new",
+    "probe_interval",
+    "startup_timeout",
+    "success_threshold"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
+  "constructs": [
+    "new"
+  ],
+  "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 2,
+      "name": "MAX_CONNECTOR_READINESS_THRESHOLD",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 4,
+      "name": "MAX_CONNECTOR_READINESS_TIMEOUT",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 7,
+      "name": "ConnectorReadinessPolicy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "startup_timeout",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "probe_interval",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "success_threshold",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "failure_threshold",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 61,
+      "name": "ConnectorReadinessPolicyError",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 2,
+      "name": "MAX_CONNECTOR_READINESS_THRESHOLD",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 4,
+      "name": "MAX_CONNECTOR_READINESS_TIMEOUT",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 7,
+      "name": "ConnectorReadinessPolicy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "startup_timeout",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "probe_interval",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "success_threshold",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "failure_threshold",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 61,
+      "name": "ConnectorReadinessPolicyError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 26,
+      "text": "return Err(ConnectorReadinessPolicyError::InvalidDeadline);"
+    },
+    {
+      "line": 33,
+      "text": "return Err(ConnectorReadinessPolicyError::InvalidThreshold);"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 61,
+      "name": "ConnectorReadinessPolicyError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "b598c9f0784ed3d2bc2a8be58ef14cfd531f3956211ef4f69fda7ffd5006d124",
+      "lines": [
+        1,
+        67
+      ],
+      "path": "src/connector/readiness.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0118-3bf591ca",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "6da6c79e94f38e8be67560154f2dccc6d41ae620",
+  "implemented_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
+  "implements": [
+    "ConnectorReadinessPolicy"
+  ],
+  "imported_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
+  "imports": [
+    "std::time::Duration"
+  ],
+  "inputs": [
+    "std::time::Duration"
+  ],
+  "invariants": [
+    {
+      "line": 62,
+      "text": "#[error(\"connector readiness timeout and probe interval must be finite and non-zero\")]"
+    },
+    {
+      "line": 64,
+      "text": "#[error(\"connector readiness thresholds must be finite and non-zero\")]"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 67,
+  "locks": [],
+  "module": "pocketstation::connector::readiness",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-27751c9a9086fb67f577"
+  ],
+  "outputs": [
+    "const:MAX_CONNECTOR_READINESS_THRESHOLD",
+    "const:MAX_CONNECTOR_READINESS_TIMEOUT",
+    "enum:ConnectorReadinessPolicyError",
+    "fn:failure_threshold",
+    "fn:new",
+    "fn:probe_interval",
+    "fn:startup_timeout",
+    "fn:success_threshold",
+    "return Err(ConnectorReadinessPolicyError::InvalidDeadline);",
+    "return Err(ConnectorReadinessPolicyError::InvalidThreshold);",
+    "struct:ConnectorReadinessPolicy"
+  ],
+  "package": "pocketstation",
+  "path": "src/connector/readiness.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 2,
+      "name": "MAX_CONNECTOR_READINESS_THRESHOLD",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 4,
+      "name": "MAX_CONNECTOR_READINESS_TIMEOUT",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 7,
+      "name": "ConnectorReadinessPolicy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "startup_timeout",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "probe_interval",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "success_threshold",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "failure_threshold",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 61,
+      "name": "ConnectorReadinessPolicyError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::connector::readiness responsibilities, including Sets the maximum supported connector readiness threshold.; Sets the maximum supported connector readiness timeout.; Configures connector readiness behavior at its owning API boundary.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/connectors.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/configure-connector-secrets.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/connectors.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/connectors.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/terminal-outcomes.md",
+    "docs/best-practices/connector-retries.md",
+    "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [],
+  "responsibilities": [
+    "pocketstation::connector::readiness::MAX_CONNECTOR_READINESS_THRESHOLD: Sets the maximum supported connector readiness threshold.",
+    "pocketstation::connector::readiness::MAX_CONNECTOR_READINESS_TIMEOUT: Sets the maximum supported connector readiness timeout.",
+    "pocketstation::connector::readiness::ConnectorReadinessPolicy: Configures connector readiness behavior at its owning API boundary.",
+    "new: Creates a new `ConnectorReadinessPolicy`.",
+    "startup_timeout: Returns the startup timeout held by `ConnectorReadinessPolicy`.",
+    "probe_interval: Returns the probe interval held by `ConnectorReadinessPolicy`.",
+    "success_threshold: Returns the success threshold held by `ConnectorReadinessPolicy`.",
+    "failure_threshold: Returns the failure threshold held by `ConnectorReadinessPolicy`.",
+    "pocketstation::connector::readiness::ConnectorReadinessPolicyError: Classifies failures reported as connector readiness policy error.",
+    "pocketstation::connector::readiness::ConnectorReadinessPolicyError::InvalidDeadline: Selects invalid deadline behavior for `ConnectorReadinessPolicyError`.",
+    "pocketstation::connector::readiness::ConnectorReadinessPolicyError::InvalidThreshold: Selects invalid threshold behavior for `ConnectorReadinessPolicyError`."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

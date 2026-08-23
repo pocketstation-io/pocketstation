@@ -1,0 +1,2973 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 9,
+      "text": "//! Audio data flows from the PipeWire RT process callback through a lock-free"
+    },
+    {
+      "line": 11,
+      "text": "//! which invokes the user callback without holding any PipeWire lock."
+    },
+    {
+      "line": 13,
+      "text": "//! ## Hot-path rule (RT callback \u2014 strictly enforced)"
+    },
+    {
+      "line": 15,
+      "text": "//! The PipeWire process callback does only lock-free work:"
+    },
+    {
+      "line": 51,
+      "text": "/// Maximum interleaved sample count accepted from one PipeWire callback."
+    },
+    {
+      "line": 57,
+      "text": "/// Pool depth: 8 frames absorb callback jitter without unbounded growth."
+    },
+    {
+      "line": 60,
+      "text": "/// SPSC ring depth between the PW RT process callback and the dispatch thread."
+    },
+    {
+      "line": 457,
+      "text": "pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>"
+    },
+    {
+      "line": 461,
+      "text": "Self::capture_mode_with_runtime_event_sender(mode, callback, None)"
+    },
+    {
+      "line": 466,
+      "text": "callback: F,"
+    },
+    {
+      "line": 474,
+      "text": "callback,"
+    },
+    {
+      "line": 499,
+      "text": "pub fn capture<F>(callback: F) -> Result<Self, LoopbackError>"
+    },
+    {
+      "line": 503,
+      "text": "Self::capture_mode(CaptureMode::SystemMix, callback)"
+    },
+    {
+      "line": 507,
+      "text": "pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>"
+    },
+    {
+      "line": 511,
+      "text": "Self::capture_mode_with_runtime_event_sender(mode, callback, None)"
+    },
+    {
+      "line": 516,
+      "text": "callback: F,"
+    },
+    {
+      "line": 538,
+      "text": "callback,"
+    },
+    {
+      "line": 560,
+      "text": "callback,"
+    },
+    {
+      "line": 577,
+      "text": "callback,"
+    },
+    {
+      "line": 604,
+      "text": "callback,"
+    },
+    {
+      "line": 614,
+      "text": "run_pipewire(mode, callback, runtime_event_sender)"
+    },
+    {
+      "line": 616,
+      "text": "run_alsa(callback, runtime_event_sender)"
+    },
+    {
+      "line": 641,
+      "text": "callback,"
+    },
+    {
+      "line": 699,
+      "text": "/// never execute from a capture callback or realtime partition."
+    },
+    {
+      "line": 726,
+      "text": "mut callback: F,"
+    },
+    {
+      "line": 985,
+      "text": "// Dispatch thread: polls the SPSC ring and calls the user callback."
+    },
+    {
+      "line": 992,
+      "text": "callback(frame);"
+    },
+    {
+      "line": 1255,
+      "text": "mut callback: F,"
+    },
+    {
+      "line": 1514,
+      "text": "callback(frame);"
+    },
+    {
+      "line": 1560,
+      "text": "mut callback: F,"
+    },
+    {
+      "line": 1750,
+      "text": "callback(frame);"
+    },
+    {
+      "line": 1758,
+      "text": "// ALSA path calls callback inline; use a dummy dispatch thread for uniform struct layout."
+    }
+  ],
+  "called_by": [
+    "IMPORTS:src/capture/platform/linux/mod.rs"
+  ],
+  "calls": [
+    "Application",
+    "Arc::new",
+    "AtomicU64::new",
+    "AudioBufferPool::acquire",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "CaptureError::BackendInit",
+    "CaptureError::ModeUnsupported",
+    "CaptureMode::Application",
+    "CaptureMode::InputDevice",
+    "CaptureMode::Process",
+    "CaptureObservationCounters::default",
+    "CaptureSampleTimeline::new",
+    "Duration::from_millis",
+    "Duration::from_secs",
+    "FnMut",
+    "Format::float",
+    "HwParams::any",
+    "LoopbackError::BackendInit",
+    "LoopbackError::ModeUnsupported",
+    "NonZeroU32::new",
+    "Once::new",
+    "PCM::new",
+    "PipeWire",
+    "PipeWireCaptureState::new",
+    "Pod::from_bytes",
+    "Process",
+    "Rc::new",
+    "RefCell::new",
+    "RingBuffer::new",
+    "Self::capture_mode",
+    "Self::capture_mode_with_runtime_event_sender",
+    "SourceId",
+    "StableSourceId::new",
+    "StreamId",
+    "SystemLoopbackSource::capture_mode",
+    "SystemLoopbackSource::capture_mode_with_runtime_event_sender",
+    "Vec::new",
+    "acquire",
+    "acquire_capture_buffer",
+    "acquire_failures",
+    "add_listener_local",
+    "add_local_listener_with_user_data",
+    "add_timer",
+    "advance",
+    "advance_from_source_position",
+    "advance_sample_timeline",
+    "and",
+    "and_then",
+    "as_deref",
+    "as_millis",
+    "as_mut",
+    "as_mut_slice",
+    "as_raw",
+    "as_ref",
+    "as_str",
+    "available_slots",
+    "borrow",
+    "borrow_mut",
+    "call_once",
+    "callback",
+    "capture_channel_count",
+    "cfg",
+    "channels",
+    "checked_add",
+    "checked_mul",
+    "chunk",
+    "chunks_exact_mut",
+    "clone",
+    "complete",
+    "connect",
+    "connect_rc",
+    "contains",
+    "copy_from_slice",
+    "copy_pipewire_f32_samples",
+    "crate::capture::InputDeviceSelector::StableId",
+    "crate::capture::join_capture_worker",
+    "data",
+    "datas_mut",
+    "dequeue_buffer",
+    "derive",
+    "device",
+    "disconnect",
+    "discover_sources_linux",
+    "discovered_application",
+    "done",
+    "downgrade",
+    "drop",
+    "dropped",
+    "enqueue_capture_frame",
+    "entry",
+    "enumerate_pipewire_nodes",
+    "eq_ignore_ascii_case",
+    "exists",
+    "expect",
+    "expect_err",
+    "extend",
+    "fetch_add",
+    "filter",
+    "find",
+    "format",
+    "frame_from_pool",
+    "get",
+    "get_channels",
+    "get_format",
+    "get_rate",
+    "get_registry",
+    "given_application_mode_when_pipewire_unavailable_then_mode_unsupported_not_system_mix",
+    "given_capture_mode_when_channels_selected_then_microphone_is_mono_and_output_is_stereo",
+    "given_exact_application_selector_when_identity_is_transient_then_selection_fails_closed",
+    "given_exact_application_selector_when_multiple_nodes_match_then_selection_is_ambiguous",
+    "given_exact_application_selector_when_one_live_node_matches_then_current_target_is_selected",
+    "given_exact_stable_application_when_pipewire_unavailable_then_mode_is_not_weakened",
+    "given_exhausted_capture_pool_when_acquiring_then_failure_is_observed_once",
+    "given_full_dispatch_ring_when_producer_pushes_then_failure_is_observed_once",
+    "given_missing_exact_source_when_classified_then_stable_key_is_preserved",
+    "given_negotiated_format_when_channel_count_changes_then_capture_fails_closed",
+    "given_negotiated_format_when_one_buffer_is_dropped_then_sample_timeline_keeps_its_duration",
+    "given_pipewire_application_metadata_when_identity_is_derived_then_persistent_fields_win",
+    "given_pipewire_properties_when_native_format_is_reported_then_unknown_is_not_fabricated",
+    "given_process_mode_when_node_not_found_then_backend_init_error_not_system_mix",
+    "given_process_mode_when_pipewire_unavailable_then_mode_unsupported_not_system_mix",
+    "given_process_scoped_exact_selector_when_identity_is_transient_then_matching_pid_is_allowed",
+    "global",
+    "hw_params",
+    "hw_params_current",
+    "initialize_pipewire_once",
+    "into",
+    "into_inner",
+    "into_iter",
+    "io_f32",
+    "is_abandoned",
+    "is_empty",
+    "is_err",
+    "is_none",
+    "is_none_or",
+    "is_ok",
+    "is_some",
+    "is_some_and",
+    "iter",
+    "join",
+    "kHz",
+    "len",
+    "let",
+    "libc::getuid",
+    "loop_",
+    "map",
+    "map_err",
+    "map_or",
+    "min",
+    "name",
+    "new",
+    "next",
+    "observation_handle",
+    "observations",
+    "observe_callback_buffer",
+    "observe_dispatch_queue_full",
+    "observe_enqueued_frame",
+    "observe_invalid_buffer",
+    "observe_oversized_buffer",
+    "observe_pool_exhaustion",
+    "observe_stream_error",
+    "offset",
+    "ok",
+    "ok_or",
+    "ok_or_else",
+    "or_else",
+    "param_changed",
+    "parse",
+    "parse_pipewire_channel_count",
+    "parse_pipewire_negotiated_format",
+    "parse_pipewire_sample_rate",
+    "pipewire_application_identity",
+    "pipewire_available",
+    "pipewire_f32_plane",
+    "pipewire_f32_sample_count",
+    "pipewire_node_target",
+    "pipewire_source_sample_position",
+    "pop",
+    "process",
+    "pub",
+    "push",
+    "pw::context::ContextRc::new",
+    "pw::main_loop::MainLoopRc::new",
+    "pw::spa::pod::Value::Object",
+    "pw::spa::pod::serialize::PodSerializer::serialize",
+    "pw::stream::StreamRc::new",
+    "pw::stream::StreamState::Error",
+    "quit",
+    "rate",
+    "readi",
+    "recv",
+    "recv_timeout",
+    "register",
+    "rtrb::Producer::push",
+    "rule",
+    "run",
+    "run_alsa",
+    "run_pipewire",
+    "run_pipewire_targeted",
+    "select_unique_exact_application",
+    "send",
+    "set_access",
+    "set_channels",
+    "set_format",
+    "set_negotiated_format",
+    "set_rate",
+    "signal_pipewire_open_if_ready",
+    "size",
+    "slot",
+    "snapshot",
+    "source_id",
+    "source_unavailable",
+    "spa::param::audio::AudioInfoRaw::new",
+    "spawn",
+    "split_at_mut",
+    "split_once",
+    "start",
+    "stat",
+    "state_changed",
+    "std::env::var",
+    "std::io::Cursor::new",
+    "std::path::Path::new",
+    "stop_and_join",
+    "stop_workers",
+    "sync",
+    "system_mix_source_id",
+    "take",
+    "then_some",
+    "thread",
+    "thread::Builder::new",
+    "thread::sleep",
+    "ticks",
+    "time",
+    "to_ascii_lowercase",
+    "to_owned",
+    "try_recv",
+    "try_send",
+    "try_set_len",
+    "u32::from",
+    "u8::try_from",
+    "unwrap_or",
+    "unwrap_or_default",
+    "unwrap_or_else",
+    "update_timer",
+    "upgrade",
+    "zip"
+  ],
+  "cancellation_behavior": [],
+  "channels": [
+    {
+      "line": 159,
+      "text": "return Err(\"PipeWire negotiated an unexpected channel count\");"
+    },
+    {
+      "line": 223,
+      "text": ".ok_or(\"PipeWire negotiated an invalid channel count\")?;"
+    },
+    {
+      "line": 335,
+      "text": "/// interleaved SPA data buffer or one data plane per channel. Both layouts are"
+    },
+    {
+      "line": 1081,
+      "text": "let (tx, rx) = smpsc::channel::<Vec<PipeWireDiscoveredNode>>();"
+    },
+    {
+      "line": 1597,
+      "text": "let _ = open_tx.send(Err(format!(\"ALSA channel configuration: {error}\")));"
+    },
+    {
+      "line": 1627,
+      "text": "open_tx.send(Err(format!(\"ALSA negotiated channel count: {error}\")));"
+    },
+    {
+      "line": 2077,
+      "text": "Err(\"PipeWire negotiated an unexpected channel count\")"
+    }
+  ],
+  "configuration_read": [
+    {
+      "line": 717,
+      "text": "let runtime_dir = std::env::var(\"XDG_RUNTIME_DIR\")"
+    },
+    {
+      "line": 1802,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "IMPORTS:src/capture/platform/linux/mod.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "AtomicU64::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "CaptureSampleTimeline::new",
+    "NonZeroU32::new",
+    "Once::new",
+    "PCM::new",
+    "PipeWireCaptureState::new",
+    "Rc::new",
+    "RefCell::new",
+    "RingBuffer::new",
+    "StableSourceId::new",
+    "Vec::new",
+    "new",
+    "pw::context::ContextRc::new",
+    "pw::main_loop::MainLoopRc::new",
+    "pw::stream::StreamRc::new",
+    "spa::param::audio::AudioInfoRaw::new",
+    "std::io::Cursor::new",
+    "std::path::Path::new",
+    "thread::Builder::new",
+    "u32::from",
+    "u8::try_from"
+  ],
+  "content_hash": "4ddb80252702b032685b48492729bc9de623859b3115c96e6638cb80f86f672d",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 45,
+      "name": "CAPTURE_CHANNEL_COUNT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 46,
+      "name": "MICROPHONE_CHANNEL_COUNT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 49,
+      "name": "CAPTURE_FRAME_SAMPLES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 55,
+      "name": "PIPEWIRE_CALLBACK_MAX_SAMPLES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 58,
+      "name": "CAPTURE_POOL_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 61,
+      "name": "DISPATCH_QUEUE_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 64,
+      "name": "PW_NODE_LATENCY",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 67,
+      "name": "PW_STOP_POLL_MS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 71,
+      "name": "PW_OPEN_TIMEOUT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 75,
+      "name": "PW_TARGET_OBJECT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 79,
+      "name": "PW_NODE_DONT_FALLBACK",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 83,
+      "name": "PW_STATE_RESTORE_PROPS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 84,
+      "name": "PW_STATE_RESTORE_TARGET",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 87,
+      "name": "PW_NODE_DONT_MOVE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 88,
+      "name": "PW_NODE_DONT_RECONNECT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 92,
+      "name": "ALSA_LOOPBACK_DEVICE",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 95,
+      "name": "PipeWireDiscoveredNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 104,
+      "name": "ApplicationIdentityScope",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 110,
+      "name": "PipeWireTimelineMode",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 117,
+      "name": "NegotiatedPipeWireFormat",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 123,
+      "name": "PipeWireCaptureState",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 134,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 145,
+      "name": "set_negotiated_format",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 165,
+      "name": "advance_sample_timeline",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 200,
+      "name": "pipewire_source_sample_position",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 209,
+      "name": "parse_pipewire_negotiated_format",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 229,
+      "name": "signal_pipewire_open_if_ready",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 243,
+      "name": "parse_pipewire_sample_rate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 259,
+      "name": "parse_pipewire_channel_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 266,
+      "name": "pipewire_application_identity",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 289,
+      "name": "select_unique_exact_application",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 319,
+      "name": "pipewire_f32_plane",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 337,
+      "name": "copy_pipewire_f32_samples",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 376,
+      "name": "pipewire_f32_sample_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 395,
+      "name": "capture_channel_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 406,
+      "name": "acquire_capture_buffer",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 417,
+      "name": "enqueue_capture_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 431,
+      "name": "source_unavailable",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 437,
+      "name": "system_mix_source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 441,
+      "name": "SystemLoopbackSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 452,
+      "name": "DesktopCaptureSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 457,
+      "name": "capture_mode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 463,
+      "name": "capture_mode_with_runtime_event_sender",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 479,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 483,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 487,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 491,
+      "name": "stop_and_join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 499,
+      "name": "capture",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 507,
+      "name": "capture_mode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 513,
+      "name": "capture_mode_with_runtime_event_sender",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 658,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 662,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 666,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 670,
+      "name": "stop_and_join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 676,
+      "name": "stop_workers",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 688,
+      "name": "pipewire_node_target",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 701,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 705,
+      "name": "initialize_pipewire_once",
+      "visibility": "private"
+    },
+    {
+      "kind": "static",
+      "line": 707,
+      "name": "PIPEWIRE_INIT",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 714,
+      "name": "pipewire_available",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 723,
+      "name": "run_pipewire",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1041,
+      "name": "discover_sources_linux",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1074,
+      "name": "enumerate_pipewire_nodes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1250,
+      "name": "run_pipewire_targeted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1558,
+      "name": "run_alsa",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 1803,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1807,
+      "name": "frame_from_pool",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1812,
+      "name": "discovered_application",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1840,
+      "name": "given_capture_mode_when_channels_selected_then_microphone_is_mono_and_output_is_stereo",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1858,
+      "name": "given_exhausted_capture_pool_when_acquiring_then_failure_is_observed_once",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1873,
+      "name": "given_full_dispatch_ring_when_producer_pushes_then_failure_is_observed_once",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1897,
+      "name": "given_missing_exact_source_when_classified_then_stable_key_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1910,
+      "name": "given_pipewire_application_metadata_when_identity_is_derived_then_persistent_fields_win",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1935,
+      "name": "given_exact_application_selector_when_one_live_node_matches_then_current_target_is_selected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1965,
+      "name": "given_exact_application_selector_when_identity_is_transient_then_selection_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1983,
+      "name": "given_process_scoped_exact_selector_when_identity_is_transient_then_matching_pid_is_allowed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2001,
+      "name": "given_exact_application_selector_when_multiple_nodes_match_then_selection_is_ambiguous",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2031,
+      "name": "given_pipewire_properties_when_native_format_is_reported_then_unknown_is_not_fabricated",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2046,
+      "name": "given_negotiated_format_when_one_buffer_is_dropped_then_sample_timeline_keeps_its_duration",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2069,
+      "name": "given_negotiated_format_when_channel_count_changes_then_capture_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2085,
+      "name": "given_process_mode_when_pipewire_unavailable_then_mode_unsupported_not_system_mix",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2099,
+      "name": "given_application_mode_when_pipewire_unavailable_then_mode_unsupported_not_system_mix",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2114,
+      "name": "given_exact_stable_application_when_pipewire_unavailable_then_mode_is_not_weakened",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2133,
+      "name": "given_process_mode_when_node_not_found_then_backend_init_error_not_system_mix",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [
+    {
+      "line": 5,
+      "text": "//! A dedicated OS thread named `\"pks-pipewire-capture\"` owns the PipeWire"
+    },
+    {
+      "line": 10,
+      "text": "//! `rtrb::RingBuffer` to a dispatcher thread (`\"pks-pipewire-dispatch\"`),"
+    },
+    {
+      "line": 32,
+      "text": "use pipewire as pw;"
+    },
+    {
+      "line": 78,
+      "text": "/// a default device would silently widen an application or device selection."
+    },
+    {
+      "line": 90,
+      "text": "/// ALSA loopback capture device (snd-aloop module, subdevice 0 of card 1)."
+    },
+    {
+      "line": 650,
+      "text": "\"requested default PipeWire input device is unavailable\".to_owned(),"
+    },
+    {
+      "line": 720,
+      "text": ".join(\"pipewire-0\")"
+    },
+    {
+      "line": 745,
+      "text": ".name(\"pks-pipewire-capture\".into())"
+    },
+    {
+      "line": 811,
+      "text": "class: \"pipewire-stream-error\".to_owned(),"
+    },
+    {
+      "line": 989,
+      "text": ".name(\"pks-pipewire-dispatch\".into())"
+    },
+    {
+      "line": 1273,
+      "text": ".name(\"pks-pipewire-capture-targeted\".into())"
+    },
+    {
+      "line": 1338,
+      "text": "class: \"pipewire-stream-error\".to_owned(),"
+    },
+    {
+      "line": 1511,
+      "text": ".name(\"pks-pipewire-dispatch-targeted\".into())"
+    }
+  ],
+  "drop_cleanup": [
+    {
+      "line": 698,
+      "text": "/// Drop contract \u2014 control thread only: signal once, join both owned workers,"
+    },
+    {
+      "line": 701,
+      "text": "fn drop(&mut self) {"
+    },
+    {
+      "line": 977,
+      "text": "drop(timer);"
+    },
+    {
+      "line": 978,
+      "text": "drop(stream_subscription);"
+    },
+    {
+      "line": 979,
+      "text": "drop(stream);"
+    },
+    {
+      "line": 980,
+      "text": "drop(context);"
+    },
+    {
+      "line": 981,
+      "text": "drop(mainloop);"
+    },
+    {
+      "line": 1502,
+      "text": "drop(timer);"
+    },
+    {
+      "line": 1503,
+      "text": "drop(stream_subscription);"
+    },
+    {
+      "line": 1504,
+      "text": "drop(stream);"
+    },
+    {
+      "line": 1505,
+      "text": "drop(context);"
+    },
+    {
+      "line": 1506,
+      "text": "drop(mainloop);"
+    },
+    {
+      "line": 1754,
+      "text": "let _ = pcm.drop();"
+    },
+    {
+      "line": 1868,
+      "text": "drop(held);"
+    },
+    {
+      "line": 1892,
+      "text": "drop(consumer.pop().expect(\"first frame must remain queued\"));"
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 441,
+      "name": "SystemLoopbackSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 452,
+      "name": "DesktopCaptureSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 457,
+      "name": "capture_mode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 463,
+      "name": "capture_mode_with_runtime_event_sender",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 479,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 483,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 487,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 491,
+      "name": "stop_and_join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 499,
+      "name": "capture",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 507,
+      "name": "capture_mode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 513,
+      "name": "capture_mode_with_runtime_event_sender",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 658,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 662,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 666,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 670,
+      "name": "stop_and_join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1041,
+      "name": "discover_sources_linux",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [
+    "XDG_RUNTIME_DIR"
+  ],
+  "errors_created": [
+    {
+      "line": 153,
+      "text": "return Err(\"PipeWire changed capture format after negotiation\");"
+    },
+    {
+      "line": 159,
+      "text": "return Err(\"PipeWire negotiated an unexpected channel count\");"
+    },
+    {
+      "line": 216,
+      "text": "return Err(\"PipeWire did not negotiate interleaved f32 audio\");"
+    },
+    {
+      "line": 296,
+      "text": "return Err(source_unavailable(&stable_id.stable_key));"
+    },
+    {
+      "line": 306,
+      "text": "return Err(source_unavailable(&stable_id.stable_key));"
+    },
+    {
+      "line": 309,
+      "text": "return Err(LoopbackError::BackendInit(format!("
+    },
+    {
+      "line": 525,
+      "text": "return Err(LoopbackError::ModeUnsupported(mode));"
+    },
+    {
+      "line": 541,
+      "text": "None => Err(LoopbackError::BackendInit(format!("
+    },
+    {
+      "line": 551,
+      "text": "return Err(LoopbackError::ModeUnsupported(mode));"
+    },
+    {
+      "line": 563,
+      "text": "Err(error) => Err(error),"
+    },
+    {
+      "line": 568,
+      "text": "return Err(LoopbackError::ModeUnsupported(mode));"
+    },
+    {
+      "line": 580,
+      "text": "Err(error) => Err(error),"
+    },
+    {
+      "line": 585,
+      "text": "return Err(LoopbackError::ModeUnsupported(mode));"
+    },
+    {
+      "line": 607,
+      "text": "None => Err(LoopbackError::BackendInit(format!("
+    },
+    {
+      "line": 621,
+      "text": "return Err(LoopbackError::ModeUnsupported(mode));"
+    },
+    {
+      "line": 646,
+      "text": "Err(source_unavailable(device_uid))"
+    },
+    {
+      "line": 649,
+      "text": "Err(LoopbackError::BackendInit("
+    },
+    {
+      "line": 750,
+      "text": "Err(e) => {"
+    },
+    {
+      "line": 751,
+      "text": "let _ = open_tx.send(Err(format!(\"PipeWire main loop: {e}\")));"
+    },
+    {
+      "line": 757,
+      "text": "Err(e) => {"
+    },
+    {
+      "line": 758,
+      "text": "let _ = open_tx.send(Err(format!(\"PipeWire context: {e}\")));"
+    },
+    {
+      "line": 764,
+      "text": "Err(e) => {"
+    },
+    {
+      "line": 765,
+      "text": "let _ = open_tx.send(Err(format!(\"PipeWire core connection: {e}\")));"
+    },
+    {
+      "line": 785,
+      "text": "Err(e) => {"
+    },
+    {
+      "line": 786,
+      "text": "let _ = open_tx.send(Err(format!(\"PipeWire stream creation: {e}\")));"
+    },
+    {
+      "line": 831,
+      "text": "state_open_tx.try_send(Err(format!(\"PipeWire stream state: {error}\")));"
+    },
+    {
+      "line": 846,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 849,
+      "text": "let _ = format_open_tx.try_send(Err(error.to_owned()));"
+    },
+    {
+      "line": 920,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 921,
+      "text": "let _ = open_tx.send(Err(format!(\"PipeWire stream subscription: {error}\")));"
+    },
+    {
+      "line": 940,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 941,
+      "text": "let _ = open_tx.send(Err(format!(\"PipeWire format serialization: {error}\")));"
+    },
+    {
+      "line": 946,
+      "text": "let _ = open_tx.send(Err(\"PipeWire rejected the capture format pod\".to_owned()));"
+    },
+    {
+      "line": 954,
+      "text": "if let Err(e) ="
+    },
+    {
+      "line": 957,
+      "text": "let _ = open_tx.send(Err(format!(\"PipeWire stream connection: {e}\")));"
+    },
+    {
+      "line": 1000,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 1003,
+      "text": "return Err(LoopbackError::BackendInit(format!("
+    },
+    {
+      "line": 1011,
+      "text": "Ok(Err(error)) => {"
+    },
+    {
+      "line": 1015,
+      "text": "return Err(LoopbackError::BackendInit(error));"
+    },
+    {
+      "line": 1017,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 1021,
+      "text": "return Err(LoopbackError::BackendInit(format!("
+    },
+    {
+      "line": 1090,
+      "text": "Err(_) => {"
+    },
+    {
+      "line": 1097,
+      "text": "Err(_) => {"
+    },
+    {
+      "line": 1104,
+      "text": "Err(_) => {"
+    },
+    {
+      "line": 1112,
+      "text": "Err(_) => {"
+    },
+    {
+      "line": 1201,
+      "text": "Err(_) => {"
+    },
+    {
+      "line": 1278,
+      "text": "Err(e) => {"
+    },
+    {
+      "line": 1279,
+      "text": "let _ = open_tx.send(Err(format!(\"PipeWire main loop: {e}\")));"
+    },
+    {
+      "line": 1285,
+      "text": "Err(e) => {"
+    },
+    {
+      "line": 1286,
+      "text": "let _ = open_tx.send(Err(format!(\"PipeWire context: {e}\")));"
+    },
+    {
+      "line": 1292,
+      "text": "Err(e) => {"
+    },
+    {
+      "line": 1293,
+      "text": "let _ = open_tx.send(Err(format!(\"PipeWire core connection: {e}\")));"
+    },
+    {
+      "line": 1316,
+      "text": "Err(e) => {"
+    },
+    {
+      "line": 1317,
+      "text": "let _ = open_tx.send(Err(format!(\"PipeWire stream creation: {e}\")));"
+    },
+    {
+      "line": 1358,
+      "text": "state_open_tx.try_send(Err(format!(\"PipeWire stream state: {error}\")));"
+    },
+    {
+      "line": 1373,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 1376,
+      "text": "let _ = format_open_tx.try_send(Err(error.to_owned()));"
+    },
+    {
+      "line": 1447,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 1448,
+      "text": "let _ = open_tx.send(Err(format!(\"PipeWire stream subscription: {error}\")));"
+    },
+    {
+      "line": 1466,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 1467,
+      "text": "let _ = open_tx.send(Err(format!(\"PipeWire format serialization: {error}\")));"
+    },
+    {
+      "line": 1472,
+      "text": "let _ = open_tx.send(Err(\"PipeWire rejected the capture format pod\".to_owned()));"
+    },
+    {
+      "line": 1480,
+      "text": "if let Err(e) ="
+    },
+    {
+      "line": 1483,
+      "text": "let _ = open_tx.send(Err(format!(\"PipeWire stream connection: {e}\")));"
+    },
+    {
+      "line": 1522,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 1525,
+      "text": "return Err(LoopbackError::BackendInit(format!("
+    },
+    {
+      "line": 1533,
+      "text": "Ok(Err(error)) => {"
+    },
+    {
+      "line": 1537,
+      "text": "return Err(LoopbackError::BackendInit(error));"
+    },
+    {
+      "line": 1539,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 1543,
+      "text": "return Err(LoopbackError::BackendInit(format!("
+    },
+    {
+      "line": 1582,
+      "text": "Err(e) => {"
+    },
+    {
+      "line": 1583,
+      "text": "let _ = open_tx.send(Err(format!(\"ALSA loopback open: {e}\")));"
+    },
+    {
+      "line": 1591,
+      "text": "Err(e) => {"
+    },
+    {
+      "line": 1592,
+      "text": "let _ = open_tx.send(Err(format!(\"ALSA hardware parameters: {e}\")));"
+    },
+    {
+      "line": 1596,
+      "text": "if let Err(error) = hwp.set_channels(CAPTURE_CHANNEL_COUNT as u32) {"
+    },
+    {
+      "line": 1597,
+      "text": "let _ = open_tx.send(Err(format!(\"ALSA channel configuration: {error}\")));"
+    },
+    {
+      "line": 1600,
+      "text": "if let Err(error) = hwp.set_rate(SAMPLE_RATE_HZ, alsa::ValueOr::Nearest) {"
+    },
+    {
+      "line": 1601,
+      "text": "let _ = open_tx.send(Err(format!(\"ALSA sample-rate configuration: {error}\")));"
+    },
+    {
+      "line": 1604,
+      "text": "if let Err(error) = hwp.set_format(Format::float()) {"
+    },
+    {
+      "line": 1605,
+      "text": "let _ = open_tx.send(Err(format!(\"ALSA sample-format configuration: {error}\")));"
+    },
+    {
+      "line": 1608,
+      "text": "if let Err(error) = hwp.set_access(Access::RWInterleaved) {"
+    },
+    {
+      "line": 1609,
+      "text": "let _ = open_tx.send(Err(format!(\"ALSA access configuration: {error}\")));"
+    },
+    {
+      "line": 1612,
+      "text": "if let Err(e) = pcm.hw_params(&hwp) {"
+    },
+    {
+      "line": 1613,
+      "text": "let _ = open_tx.send(Err(format!(\"ALSA apply hardware parameters: {e}\")));"
+    },
+    {
+      "line": 1618,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 1619,
+      "text": "let _ = open_tx.send(Err(format!(\"ALSA negotiated parameters: {error}\")));"
+    },
+    {
+      "line": 1625,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 1627,
+      "text": "open_tx.send(Err(format!(\"ALSA negotiated channel count: {error}\")));"
+    },
+    {
+      "line": 1632,
+      "text": "let _ = open_tx.send(Err(format!("
+    },
+    {
+      "line": 1640,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 1642,
+      "text": "open_tx.send(Err(format!(\"ALSA negotiated sample format: {error}\")));"
+    },
+    {
+      "line": 1647,
+      "text": "let _ = open_tx.send(Err(format!("
+    },
+    {
+      "line": 1656,
+      "text": "open_tx.send(Err(\"ALSA negotiated an invalid sample rate\".to_owned()));"
+    },
+    {
+      "line": 1662,
+      "text": "if let Err(e) = pcm.start() {"
+    },
+    {
+      "line": 1663,
+      "text": "let _ = open_tx.send(Err(format!(\"ALSA capture start: {e}\")));"
+    },
+    {
+      "line": 1669,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 1670,
+      "text": "let _ = open_tx.send(Err(format!(\"ALSA f32 capture access: {error}\")));"
+    },
+    {
+      "line": 1706,
+      "text": "Err(_) => {"
+    },
+    {
+      "line": 1765,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 1768,
+      "text": "return Err(LoopbackError::BackendInit(format!("
+    },
+    {
+      "line": 1776,
+      "text": "Ok(Err(error)) => {"
+    },
+    {
+      "line": 1780,
+      "text": "return Err(LoopbackError::BackendInit(error));"
+    },
+    {
+      "line": 1782,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 1786,
+      "text": "return Err(LoopbackError::BackendInit(format!("
+    },
+    {
+      "line": 1977,
+      "text": "Err(CaptureError::SourceUnavailable { stable_key })"
+    },
+    {
+      "line": 2077,
+      "text": "Err(\"PipeWire negotiated an unexpected channel count\")"
+    },
+    {
+      "line": 2091,
+      "text": "Err(CaptureError::ModeUnsupported(_)) => {}"
+    },
+    {
+      "line": 2092,
+      "text": "_ => panic!(\"expected Err(ModeUnsupported)\"),"
+    },
+    {
+      "line": 2108,
+      "text": "Err(CaptureError::ModeUnsupported(_)) => {}"
+    },
+    {
+      "line": 2109,
+      "text": "_ => panic!(\"expected Err(ModeUnsupported)\"),"
+    },
+    {
+      "line": 2125,
+      "text": "Err(CaptureError::ModeUnsupported(_)) => {}"
+    },
+    {
+      "line": 2126,
+      "text": "_ => panic!(\"expected Err(ModeUnsupported)\"),"
+    },
+    {
+      "line": 2140,
+      "text": "Err(CaptureError::ModeUnsupported(_))"
+    },
+    {
+      "line": 2141,
+      "text": "| Err(CaptureError::BackendInit(_))"
+    },
+    {
+      "line": 2142,
+      "text": "| Err(CaptureError::NotSupported) => {}"
+    },
+    {
+      "line": 2143,
+      "text": "Err(CaptureError::InvalidStreamCapacity) => {"
+    },
+    {
+      "line": 2146,
+      "text": "Err(error) => panic!(\"unexpected error for nonexistent PID 0: {error}\"),"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [
+    {
+      "line": 214,
+      "text": ".map_err(|_| \"PipeWire returned an invalid audio format\")?;"
+    },
+    {
+      "line": 983,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"capture thread spawn: {e}\")))?;"
+    },
+    {
+      "line": 1508,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"capture thread spawn: {e}\")))?;"
+    },
+    {
+      "line": 1756,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"alsa thread spawn: {e}\")))?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 214,
+      "text": ".map_err(|_| \"PipeWire returned an invalid audio format\")?;"
+    },
+    {
+      "line": 983,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"capture thread spawn: {e}\")))?;"
+    },
+    {
+      "line": 1508,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"capture thread spawn: {e}\")))?;"
+    },
+    {
+      "line": 1756,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"alsa thread spawn: {e}\")))?;"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 214,
+      "text": ".map_err(|_| \"PipeWire returned an invalid audio format\")?;"
+    },
+    {
+      "line": 983,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"capture thread spawn: {e}\")))?;"
+    },
+    {
+      "line": 1508,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"capture thread spawn: {e}\")))?;"
+    },
+    {
+      "line": 1756,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"alsa thread spawn: {e}\")))?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "4ddb80252702b032685b48492729bc9de623859b3115c96e6638cb80f86f672d",
+      "lines": [
+        1,
+        2151
+      ],
+      "path": "src/capture/platform/linux/pipewire.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "IMPORTS:src/capture/platform/linux/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 327,
+      "text": "let (prefix, samples, suffix) = unsafe { source.align_to::<f32>() };"
+    },
+    {
+      "line": 718,
+      "text": ".unwrap_or_else(|_| format!(\"/run/user/{}\", unsafe { libc::getuid() }));"
+    }
+  ],
+  "file_id": "file-0085-0558c744",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "03f4d64d5a66c228b5e4a8268f4cee2b3f7d8376",
+  "implemented_by": [
+    "IMPORTS:src/capture/platform/linux/mod.rs"
+  ],
+  "implements": [
+    "PipeWireCaptureState",
+    "DesktopCaptureSource",
+    "SystemLoopbackSource",
+    "Drop for SystemLoopbackSource"
+  ],
+  "imported_by": [
+    "IMPORTS:src/capture/platform/linux/mod.rs"
+  ],
+  "imports": [
+    "alsa::Direction",
+    "alsa::pcm::{Access, Format, HwParams, PCM}",
+    "crate::capture::{ CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations, CaptureSampleTimeline, CaptureSource, SourceKind, StableSourceId, }",
+    "crate::capture::{CaptureError, SourceKind, SourceState, StableSourceId}",
+    "crate::capture::{CaptureSource, SourceKind, SourceState, StableSourceId}",
+    "crate::frame::Platform",
+    "crate::frame::{ AudioBufferHandle, AudioBufferPool, AudioFrame, Platform, SourceId, StreamId, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ, }",
+    "pipewire as pw",
+    "pw::properties::properties",
+    "pw::spa",
+    "pw::spa::pod::Pod",
+    "rtrb::{Producer, RingBuffer}",
+    "spa::param::audio::AudioFormat",
+    "std::cell::RefCell",
+    "std::num::NonZeroU32",
+    "std::rc::Rc",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "std::sync::mpsc",
+    "std::sync::mpsc as smpsc",
+    "std::sync::{Arc, Once}",
+    "std::thread",
+    "std::time::Duration",
+    "super::*"
+  ],
+  "inputs": [
+    "#[cfg(test)]",
+    "XDG_RUNTIME_DIR",
+    "alsa::Direction",
+    "alsa::pcm::{Access, Format, HwParams, PCM}",
+    "crate::capture::{ CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations, CaptureSampleTimeline, CaptureSource, SourceKind, StableSourceId, }",
+    "crate::capture::{CaptureError, SourceKind, SourceState, StableSourceId}",
+    "crate::capture::{CaptureSource, SourceKind, SourceState, StableSourceId}",
+    "crate::frame::Platform",
+    "crate::frame::{ AudioBufferHandle, AudioBufferPool, AudioFrame, Platform, SourceId, StreamId, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ, }",
+    "let runtime_dir = std::env::var(\"XDG_RUNTIME_DIR\")",
+    "pipewire as pw",
+    "pw::properties::properties",
+    "pw::spa",
+    "pw::spa::pod::Pod",
+    "rtrb::{Producer, RingBuffer}",
+    "spa::param::audio::AudioFormat",
+    "std::cell::RefCell",
+    "std::num::NonZeroU32",
+    "std::rc::Rc",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "std::sync::mpsc",
+    "std::sync::mpsc as smpsc",
+    "std::sync::{Arc, Once}",
+    "std::thread",
+    "std::time::Duration",
+    "super::*"
+  ],
+  "invariants": [
+    {
+      "line": 53,
+      "text": "/// frames; a 2048-frame stereo quantum contains 4096 samples and must reach the"
+    },
+    {
+      "line": 77,
+      "text": "/// Exact capture must fail if the selected target disappears. Falling back to"
+    },
+    {
+      "line": 81,
+      "text": "/// Internal capture streams must not inherit a previous WirePlumber stream's"
+    },
+    {
+      "line": 699,
+      "text": "/// never execute from a capture callback or realtime partition."
+    },
+    {
+      "line": 715,
+      "text": "// SAFETY: getuid has no pointer arguments or ownership transfer and cannot"
+    },
+    {
+      "line": 1224,
+      "text": "// Safety valve: quit after 300 ms even if done never fires."
+    },
+    {
+      "line": 1809,
+      "text": "let handle = pool.acquire().expect(\"test pool must have a free slot\");"
+    },
+    {
+      "line": 1862,
+      "text": ".expect(\"first acquisition must reserve the only slot\");"
+    },
+    {
+      "line": 1864,
+      "text": "assert!(acquire_capture_buffer(&pool, &counters).is_none());"
+    },
+    {
+      "line": 1878,
+      "text": "assert!(enqueue_capture_frame("
+    },
+    {
+      "line": 1883,
+      "text": "assert!(!enqueue_capture_frame("
+    },
+    {
+      "line": 1892,
+      "text": "drop(consumer.pop().expect(\"first frame must remain queued\"));"
+    },
+    {
+      "line": 1958,
+      "text": ".expect(\"one persistent exact application must resolve\");"
+    },
+    {
+      "line": 1961,
+      "text": "assert!(selected.source.device_uid.is_none());"
+    },
+    {
+      "line": 1975,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 2023,
+      "text": ".expect_err(\"persistent selector must not choose an arbitrary live node\");"
+    },
+    {
+      "line": 2025,
+      "text": "assert!("
+    },
+    {
+      "line": 2054,
+      "text": ".expect(\"test format must negotiate\");"
+    },
+    {
+      "line": 2058,
+      "text": ".expect(\"dropped source buffer must still advance time\");"
+    },
+    {
+      "line": 2061,
+      "text": ".expect(\"next source buffer must retain cadence\");"
+    },
+    {
+      "line": 2079,
+      "text": "assert!(state.advance_sample_timeline(None, 480).is_none());"
+    },
+    {
+      "line": 2082,
+      "text": "/// P4 no-fallback: Process(pid) on a system without PipeWire must return"
+    },
+    {
+      "line": 2096,
+      "text": "/// P4 no-fallback: Application(name) on a system without PipeWire must return"
+    },
+    {
+      "line": 2131,
+      "text": "/// must return a BackendInit error, not fall back to SystemMix."
+    },
+    {
+      "line": 2137,
+      "text": "// PID 0 is the idle process and will never appear as an audio node."
+    }
+  ],
+  "language": "Rust",
+  "line_count": 2151,
+  "locks": [],
+  "module": "pocketstation::capture::platform::linux::pipewire",
+  "network_io": [
+    {
+      "line": 955,
+      "text": "stream.connect(pw::spa::utils::Direction::Input, None, flags, &mut [param])"
+    },
+    {
+      "line": 1481,
+      "text": "stream.connect(pw::spa::utils::Direction::Input, None, flags, &mut [param])"
+    }
+  ],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-995cc5e22e1ecd8d8a0c",
+    "pattern-a94f83bcf3ed50bf8643",
+    "pattern-faf4961ac29cdc3c9ff9"
+  ],
+  "outputs": [
+    "Err(error) => Err(error),",
+    "None => Err(LoopbackError::BackendInit(format!(",
+    "fn:capture",
+    "fn:capture_mode",
+    "fn:capture_mode_with_runtime_event_sender",
+    "fn:discover_sources_linux",
+    "fn:observation_handle",
+    "fn:observations",
+    "fn:source_id",
+    "fn:stop_and_join",
+    "return Err(\"PipeWire changed capture format after negotiation\");",
+    "return Err(\"PipeWire did not negotiate interleaved f32 audio\");",
+    "return Err(\"PipeWire negotiated an unexpected channel count\");",
+    "return Err(LoopbackError::BackendInit(format!(",
+    "return Err(LoopbackError::ModeUnsupported(mode));",
+    "return Err(source_unavailable(&stable_id.stable_key));",
+    "struct:DesktopCaptureSource",
+    "struct:SystemLoopbackSource"
+  ],
+  "package": "pocketstation",
+  "path": "src/capture/platform/linux/pipewire.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract."
+  ],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 45,
+      "name": "CAPTURE_CHANNEL_COUNT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 46,
+      "name": "MICROPHONE_CHANNEL_COUNT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 49,
+      "name": "CAPTURE_FRAME_SAMPLES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 55,
+      "name": "PIPEWIRE_CALLBACK_MAX_SAMPLES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 58,
+      "name": "CAPTURE_POOL_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 61,
+      "name": "DISPATCH_QUEUE_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 64,
+      "name": "PW_NODE_LATENCY",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 67,
+      "name": "PW_STOP_POLL_MS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 71,
+      "name": "PW_OPEN_TIMEOUT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 75,
+      "name": "PW_TARGET_OBJECT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 79,
+      "name": "PW_NODE_DONT_FALLBACK",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 83,
+      "name": "PW_STATE_RESTORE_PROPS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 84,
+      "name": "PW_STATE_RESTORE_TARGET",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 87,
+      "name": "PW_NODE_DONT_MOVE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 88,
+      "name": "PW_NODE_DONT_RECONNECT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 92,
+      "name": "ALSA_LOOPBACK_DEVICE",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 95,
+      "name": "PipeWireDiscoveredNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 104,
+      "name": "ApplicationIdentityScope",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 110,
+      "name": "PipeWireTimelineMode",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 117,
+      "name": "NegotiatedPipeWireFormat",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 123,
+      "name": "PipeWireCaptureState",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 134,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 145,
+      "name": "set_negotiated_format",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 165,
+      "name": "advance_sample_timeline",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 200,
+      "name": "pipewire_source_sample_position",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 209,
+      "name": "parse_pipewire_negotiated_format",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 229,
+      "name": "signal_pipewire_open_if_ready",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 243,
+      "name": "parse_pipewire_sample_rate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 259,
+      "name": "parse_pipewire_channel_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 266,
+      "name": "pipewire_application_identity",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 289,
+      "name": "select_unique_exact_application",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 319,
+      "name": "pipewire_f32_plane",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 337,
+      "name": "copy_pipewire_f32_samples",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 376,
+      "name": "pipewire_f32_sample_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 395,
+      "name": "capture_channel_count",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 406,
+      "name": "acquire_capture_buffer",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 417,
+      "name": "enqueue_capture_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 431,
+      "name": "source_unavailable",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 437,
+      "name": "system_mix_source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 676,
+      "name": "stop_workers",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 688,
+      "name": "pipewire_node_target",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 701,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 705,
+      "name": "initialize_pipewire_once",
+      "visibility": "private"
+    },
+    {
+      "kind": "static",
+      "line": 707,
+      "name": "PIPEWIRE_INIT",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 714,
+      "name": "pipewire_available",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 723,
+      "name": "run_pipewire",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1074,
+      "name": "enumerate_pipewire_nodes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1250,
+      "name": "run_pipewire_targeted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1558,
+      "name": "run_alsa",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 1803,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1807,
+      "name": "frame_from_pool",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1812,
+      "name": "discovered_application",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1840,
+      "name": "given_capture_mode_when_channels_selected_then_microphone_is_mono_and_output_is_stereo",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1858,
+      "name": "given_exhausted_capture_pool_when_acquiring_then_failure_is_observed_once",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1873,
+      "name": "given_full_dispatch_ring_when_producer_pushes_then_failure_is_observed_once",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1897,
+      "name": "given_missing_exact_source_when_classified_then_stable_key_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1910,
+      "name": "given_pipewire_application_metadata_when_identity_is_derived_then_persistent_fields_win",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1935,
+      "name": "given_exact_application_selector_when_one_live_node_matches_then_current_target_is_selected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1965,
+      "name": "given_exact_application_selector_when_identity_is_transient_then_selection_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1983,
+      "name": "given_process_scoped_exact_selector_when_identity_is_transient_then_matching_pid_is_allowed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2001,
+      "name": "given_exact_application_selector_when_multiple_nodes_match_then_selection_is_ambiguous",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2031,
+      "name": "given_pipewire_properties_when_native_format_is_reported_then_unknown_is_not_fabricated",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2046,
+      "name": "given_negotiated_format_when_one_buffer_is_dropped_then_sample_timeline_keeps_its_duration",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2069,
+      "name": "given_negotiated_format_when_channel_count_changes_then_capture_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2085,
+      "name": "given_process_mode_when_pipewire_unavailable_then_mode_unsupported_not_system_mix",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2099,
+      "name": "given_application_mode_when_pipewire_unavailable_then_mode_unsupported_not_system_mix",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2114,
+      "name": "given_exact_stable_application_when_pipewire_unavailable_then_mode_is_not_weakened",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2133,
+      "name": "given_process_mode_when_node_not_found_then_backend_init_error_not_system_mix",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 746,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 990,
+      "text": ".spawn(move || loop {"
+    },
+    {
+      "line": 1085,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 1274,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 1512,
+      "text": ".spawn(move || loop {"
+    },
+    {
+      "line": 1579,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 1762,
+      "text": ".spawn(move || while dummy_rx.recv().is_ok() {})"
+    }
+  ],
+  "protocol_messages": [
+    {
+      "line": 1198,
+      "text": "// Request a round-trip sync so we know when all initial globals have arrived."
+    }
+  ],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 441,
+      "name": "SystemLoopbackSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 452,
+      "name": "DesktopCaptureSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 457,
+      "name": "capture_mode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 463,
+      "name": "capture_mode_with_runtime_event_sender",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 479,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 483,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 487,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 491,
+      "name": "stop_and_join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 499,
+      "name": "capture",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 507,
+      "name": "capture_mode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 513,
+      "name": "capture_mode_with_runtime_event_sender",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 658,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 662,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 666,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 670,
+      "name": "stop_and_join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1041,
+      "name": "discover_sources_linux",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::capture::platform::linux::pipewire responsibilities, including the src/capture/platform/linux/pipewire boundary."
+  },
+  "queues": [],
+  "recovery_behavior": [
+    {
+      "line": 83,
+      "text": "const PW_STATE_RESTORE_PROPS: &str = \"state.restore-props\";"
+    },
+    {
+      "line": 84,
+      "text": "const PW_STATE_RESTORE_TARGET: &str = \"state.restore-target\";"
+    }
+  ],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/source-selection.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/select-process-source.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/run-transcription.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/troubleshooting/timing.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [
+    {
+      "line": 24,
+      "text": "use std::sync::{Arc, Once};"
+    },
+    {
+      "line": 408,
+      "text": "pool: &Arc<AudioBufferPool>,"
+    },
+    {
+      "line": 698,
+      "text": "/// Drop contract \u2014 control thread only: signal once, join both owned workers,"
+    },
+    {
+      "line": 700,
+      "text": "impl Drop for SystemLoopbackSource {"
+    },
+    {
+      "line": 739,
+      "text": "let seq = Arc::new(AtomicU64::new(0));"
+    },
+    {
+      "line": 1078,
+      "text": "use std::rc::Rc;"
+    },
+    {
+      "line": 1118,
+      "text": "let collected: Rc<RefCell<Vec<PipeWireDiscoveredNode>>> ="
+    },
+    {
+      "line": 1119,
+      "text": "Rc::new(RefCell::new(Vec::new()));"
+    },
+    {
+      "line": 1268,
+      "text": "let seq = Arc::new(AtomicU64::new(0));"
+    },
+    {
+      "line": 1573,
+      "text": "let seq = Arc::new(AtomicU64::new(0));"
+    },
+    {
+      "line": 1808,
+      "text": "fn frame_from_pool(pool: &Arc<AudioBufferPool>, sequence: u64) -> AudioFrame {"
+    }
+  ],
+  "responsibilities": [
+    "CAPTURE_CHANNEL_COUNT (const)",
+    "MICROPHONE_CHANNEL_COUNT (const)",
+    "CAPTURE_FRAME_SAMPLES (const)",
+    "PIPEWIRE_CALLBACK_MAX_SAMPLES (const)",
+    "CAPTURE_POOL_CAPACITY_FRAMES (const)",
+    "DISPATCH_QUEUE_CAPACITY_FRAMES (const)",
+    "PW_NODE_LATENCY (const)",
+    "PW_STOP_POLL_MS (const)",
+    "PW_OPEN_TIMEOUT (const)",
+    "PW_TARGET_OBJECT (const)",
+    "PW_NODE_DONT_FALLBACK (const)",
+    "PW_STATE_RESTORE_PROPS (const)",
+    "PW_STATE_RESTORE_TARGET (const)",
+    "PW_NODE_DONT_MOVE (const)",
+    "PW_NODE_DONT_RECONNECT (const)",
+    "ALSA_LOOPBACK_DEVICE (const)",
+    "PipeWireDiscoveredNode (struct)",
+    "ApplicationIdentityScope (enum)",
+    "PipeWireTimelineMode (enum)",
+    "NegotiatedPipeWireFormat (struct)",
+    "PipeWireCaptureState (struct)",
+    "new (fn)",
+    "set_negotiated_format (fn)",
+    "advance_sample_timeline (fn)",
+    "pipewire_source_sample_position (fn)",
+    "parse_pipewire_negotiated_format (fn)",
+    "signal_pipewire_open_if_ready (fn)",
+    "parse_pipewire_sample_rate (fn)",
+    "parse_pipewire_channel_count (fn)",
+    "pipewire_application_identity (fn)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 66,
+      "text": "/// Timer interval for polling the stop signal from within the PipeWire MainLoop."
+    },
+    {
+      "line": 961,
+      "text": "// Attach a timer to poll for stop signal from within the event loop."
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 955,
+      "text": "stream.connect(pw::spa::utils::Direction::Input, None, flags, &mut [param])"
+    },
+    {
+      "line": 1481,
+      "text": "stream.connect(pw::spa::utils::Direction::Input, None, flags, &mut [param])"
+    },
+    {
+      "line": 5,
+      "text": "//! A dedicated OS thread named `\"pks-pipewire-capture\"` owns the PipeWire"
+    },
+    {
+      "line": 10,
+      "text": "//! `rtrb::RingBuffer` to a dispatcher thread (`\"pks-pipewire-dispatch\"`),"
+    },
+    {
+      "line": 32,
+      "text": "use pipewire as pw;"
+    },
+    {
+      "line": 78,
+      "text": "/// a default device would silently widen an application or device selection."
+    },
+    {
+      "line": 90,
+      "text": "/// ALSA loopback capture device (snd-aloop module, subdevice 0 of card 1)."
+    },
+    {
+      "line": 650,
+      "text": "\"requested default PipeWire input device is unavailable\".to_owned(),"
+    },
+    {
+      "line": 720,
+      "text": ".join(\"pipewire-0\")"
+    },
+    {
+      "line": 745,
+      "text": ".name(\"pks-pipewire-capture\".into())"
+    },
+    {
+      "line": 811,
+      "text": "class: \"pipewire-stream-error\".to_owned(),"
+    },
+    {
+      "line": 989,
+      "text": ".name(\"pks-pipewire-dispatch\".into())"
+    },
+    {
+      "line": 1273,
+      "text": ".name(\"pks-pipewire-capture-targeted\".into())"
+    },
+    {
+      "line": 1338,
+      "text": "class: \"pipewire-stream-error\".to_owned(),"
+    },
+    {
+      "line": 1511,
+      "text": ".name(\"pks-pipewire-dispatch-targeted\".into())"
+    },
+    {
+      "line": 746,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 990,
+      "text": ".spawn(move || loop {"
+    },
+    {
+      "line": 1085,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 1274,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 1512,
+      "text": ".spawn(move || loop {"
+    },
+    {
+      "line": 1579,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 1762,
+      "text": ".spawn(move || while dummy_rx.recv().is_ok() {})"
+    },
+    {
+      "line": 327,
+      "text": "let (prefix, samples, suffix) = unsafe { source.align_to::<f32>() };"
+    },
+    {
+      "line": 718,
+      "text": ".unwrap_or_else(|_| format!(\"/run/user/{}\", unsafe { libc::getuid() }));"
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 1662,
+      "text": "if let Err(e) = pcm.start() {"
+    },
+    {
+      "line": 1663,
+      "text": "let _ = open_tx.send(Err(format!(\"ALSA capture start: {e}\")));"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0f6c4f31518ab5e8ffd8",
+    "test-15388b47d24aa21999f6",
+    "test-1e40dd4ec9e96cd35eb7",
+    "test-2843e96f914d98065a94",
+    "test-3002ec0fb883ffa835f6",
+    "test-3935b20953f69bd82dab",
+    "test-51cbb8d765eada41b0c9",
+    "test-575dc7b197243c56d8f1",
+    "test-964084de3faa5b449071",
+    "test-a50fd258815030a95b50",
+    "test-afbc5fb711b5d1e4c0fa",
+    "test-b2f8fc14b44fd1123926",
+    "test-b704602af68d2c7a0b53",
+    "test-d288558b68fc54333e50",
+    "test-df5c7fa69c2c79a8f2a1",
+    "test-fe53d6769213e72fdd3a"
+  ],
+  "threads": [
+    {
+      "line": 5,
+      "text": "//! A dedicated OS thread named `\"pks-pipewire-capture\"` owns the PipeWire"
+    },
+    {
+      "line": 7,
+      "text": "//! so all creation happens inside that thread."
+    },
+    {
+      "line": 10,
+      "text": "//! `rtrb::RingBuffer` to a dispatcher thread (`\"pks-pipewire-dispatch\"`),"
+    },
+    {
+      "line": 25,
+      "text": "use std::thread;"
+    },
+    {
+      "line": 60,
+      "text": "/// SPSC ring depth between the PW RT process callback and the dispatch thread."
+    },
+    {
+      "line": 443,
+      "text": "capture_thread: Option<thread::JoinHandle<()>>,"
+    },
+    {
+      "line": 444,
+      "text": "dispatch_thread: Option<thread::JoinHandle<()>>,"
+    },
+    {
+      "line": 679,
+      "text": "let capture_join = self.capture_thread.take().map_or(Ok(()), |thread| {"
+    },
+    {
+      "line": 680,
+      "text": "crate::capture::join_capture_worker(thread, \"linux capture\")"
+    },
+    {
+      "line": 682,
+      "text": "let dispatch_join = self.dispatch_thread.take().map_or(Ok(()), |thread| {"
+    },
+    {
+      "line": 683,
+      "text": "crate::capture::join_capture_worker(thread, \"linux dispatch\")"
+    },
+    {
+      "line": 698,
+      "text": "/// Drop contract \u2014 control thread only: signal once, join both owned workers,"
+    },
+    {
+      "line": 743,
+      "text": "// Capture thread: owns the PipeWire MainLoop for its lifetime."
+    },
+    {
+      "line": 744,
+      "text": "let capture_thread = thread::Builder::new()"
+    },
+    {
+      "line": 746,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 983,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"capture thread spawn: {e}\")))?;"
+    },
+    {
+      "line": 985,
+      "text": "// Dispatch thread: polls the SPSC ring and calls the user callback."
+    },
+    {
+      "line": 987,
+      "text": "// the producer side is dropped (capture thread exited)."
+    },
+    {
+      "line": 988,
+      "text": "let dispatch_thread = match thread::Builder::new()"
+    },
+    {
+      "line": 990,
+      "text": ".spawn(move || loop {"
+    },
+    {
+      "line": 997,
+      "text": "thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 999,
+      "text": "Ok(thread) => thread,"
+    },
+    {
+      "line": 1004,
+      "text": "\"dispatch thread spawn: {error}\""
+    },
+    {
+      "line": 1071,
+      "text": "/// Spawns a thread, connects to PipeWire, subscribes to registry globals,"
+    },
+    {
+      "line": 1083,
+      "text": "let join = thread::Builder::new()"
+    },
+    {
+      "line": 1085,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 1272,
+      "text": "let capture_thread = thread::Builder::new()"
+    },
+    {
+      "line": 1274,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 1508,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"capture thread spawn: {e}\")))?;"
+    },
+    {
+      "line": 1510,
+      "text": "let dispatch_thread = match thread::Builder::new()"
+    },
+    {
+      "line": 1512,
+      "text": ".spawn(move || loop {"
+    },
+    {
+      "line": 1519,
+      "text": "thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 1521,
+      "text": "Ok(thread) => thread,"
+    },
+    {
+      "line": 1526,
+      "text": "\"dispatch thread spawn: {error}\""
+    },
+    {
+      "line": 1577,
+      "text": "let capture_thread = thread::Builder::new()"
+    },
+    {
+      "line": 1579,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 1703,
+      "text": "thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 1716,
+      "text": "thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 1756,
+      "text": ".map_err(|e| LoopbackError::BackendInit(format!(\"alsa thread spawn: {e}\")))?;"
+    },
+    {
+      "line": 1758,
+      "text": "// ALSA path calls callback inline; use a dummy dispatch thread for uniform struct layout."
+    },
+    {
+      "line": 1760,
+      "text": "let dispatch_thread = match thread::Builder::new()"
+    },
+    {
+      "line": 1762,
+      "text": ".spawn(move || while dummy_rx.recv().is_ok() {})"
+    },
+    {
+      "line": 1764,
+      "text": "Ok(thread) => thread,"
+    },
+    {
+      "line": 1769,
+      "text": "\"alsa dispatch spawn: {error}\""
+    }
+  ],
+  "visibility": "mixed"
+}

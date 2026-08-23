@@ -30,31 +30,31 @@ The writer acquires, fills, and submits a buffer whose frames arrive on the decl
 
 Executable evidence selected for **Inject external PCM** is limited to each test's recorded setup and assertions:
 
-- `given_application_owned_audio_when_written_through_facade_then_session_delivers_its_lineage` — given application owned audio when written through facade then session delivers its lineage (`tests/audio_input.rs:37`; `test-fdcedcc753e41fe3767e`).
-- `given_audio_input_when_session_runs_then_lineage_fanout_reentry_and_recording_are_real` — given audio input when session runs then lineage fanout reentry and recording are real (`tests/audio_input.rs:345`; `test-11fb08eefd3feaca7cfe`).
-- `given_bounded_audio_input_when_writes_are_invalid_or_saturated_then_ownership_is_explicit` — given bounded audio input when writes are invalid or saturated then ownership is explicit (`tests/audio_input.rs:73`; `test-795ca5a283c59dbf6066`).
-- `given_running_audio_input_when_writer_closes_then_accepted_frames_are_drained` — given running audio input when writer closes then accepted frames are drained (`tests/audio_input.rs:155`; `test-93f8a3bbe8b67e6e71ea`).
-- `given_active_asp_when_required_then_sdk_accepts_external_provisioning` — given active asp when required then sdk accepts external provisioning (`src/capture/platform/macos/loopback.rs:317`; `test-094ea52b81e34a03e0e1`).
-- `given_external_output_through_operator_when_compiled_then_normal_typed_edges_are_used` — given external output through operator when compiled then normal typed edges are used (`src/session/extensions/tests/composition.rs:355`; `test-1e9492347c366dc04946`).
-- `given_external_pcm_output_when_compiled_then_bounded_audio_edge_is_planned` — given external pcm output when compiled then bounded audio edge is planned (`src/session/extensions/tests/composition.rs:333`; `test-477958c0b22fe8487982`).
-- `given_unregistered_external_source_when_compiled_then_registry_error_is_typed` — given unregistered external source when compiled then registry error is typed (`src/session/extensions/tests/composition.rs:411`; `test-713c01edd07447a5d6d1`).
-- `given_external_pcm_source_when_session_runs_then_audio_uses_bounded_ingress_with_source_identity` — given external pcm source when session runs then audio uses bounded ingress with source identity (`src/session/extensions/tests/runtime.rs:823`; `test-1d9f4de1e64929bbc714`).
-- `given_one_external_source_failure_when_session_runs_then_unrelated_source_completes` — given one external source failure when session runs then unrelated source completes (`src/session/extensions/tests/runtime.rs:734`; `test-bdedfb8ca6cbd5442810`).
-- `given_public_session_when_external_source_declared_then_handles_are_nameable` — given public session when external source declared then handles are nameable (`tests/external_source.rs:16`; `test-b5c32ca30bd2143fa264`).
-- `given_public_facade_when_external_destinations_run_then_all_branches_receive_media` — given public facade when external destinations run then all branches receive media (`tests/session_facade.rs:20`; `test-2d7cf1284199bcec7268`).
+- `given_application_owned_audio_when_written_through_facade_then_session_delivers_its_lineage` — given application owned audio when written through facade then session delivers its lineage (`tests/audio_input.rs:37`; `test-f1139be85b9372ec989b`).
+- `given_audio_input_when_session_runs_then_lineage_fanout_reentry_and_recording_are_real` — given audio input when session runs then lineage fanout reentry and recording are real (`tests/audio_input.rs:427`; `test-c3a710b6a0936cfd1065`).
+- `given_bounded_audio_input_when_writes_are_invalid_or_saturated_then_ownership_is_explicit` — given bounded audio input when writes are invalid or saturated then ownership is explicit (`tests/audio_input.rs:73`; `test-5a764dda823599c553f3`).
+- `given_running_audio_input_when_writer_closes_then_accepted_frames_are_drained` — given running audio input when writer closes then accepted frames are drained (`tests/audio_input.rs:155`; `test-b2b127f93977bf0ce175`).
+- `given_two_audio_inputs_on_one_many_port_when_run_then_each_source_lineage_is_preserved` — given two audio inputs on one many port when run then each source lineage is preserved (`tests/audio_input.rs:351`; `test-a451e8ad08df8f006452`).
+- `given_active_asp_when_required_then_sdk_accepts_external_provisioning` — given active asp when required then sdk accepts external provisioning (`src/capture/platform/macos/loopback.rs:317`; `test-0f83918e778e3285908b`).
+- `given_external_output_through_operator_when_compiled_then_normal_typed_edges_are_used` — given external output through operator when compiled then normal typed edges are used (`src/session/extensions/tests/composition.rs:355`; `test-16199d206f3d5dfd3054`).
+- `given_external_pcm_output_when_compiled_then_bounded_audio_edge_is_planned` — given external pcm output when compiled then bounded audio edge is planned (`src/session/extensions/tests/composition.rs:333`; `test-72f08a54e97cf69789ac`).
+- `given_unregistered_external_source_when_compiled_then_registry_error_is_typed` — given unregistered external source when compiled then registry error is typed (`src/session/extensions/tests/composition.rs:411`; `test-bff09e350c584b9f042e`).
+- `given_external_pcm_source_when_session_runs_then_audio_uses_bounded_ingress_with_source_identity` — given external pcm source when session runs then audio uses bounded ingress with source identity (`src/session/extensions/tests/runtime.rs:823`; `test-4d0f3e5a95ea9490a090`).
+- `given_one_external_source_failure_when_session_runs_then_unrelated_source_completes` — given one external source failure when session runs then unrelated source completes (`src/session/extensions/tests/runtime.rs:734`; `test-9839e75a34cc80e4b057`).
+- `given_public_session_when_external_source_declared_then_handles_are_nameable` — given public session when external source declared then handles are nameable (`tests/external_source.rs:16`; `test-075cf6099f60862bb276`).
 
 ## Failure signals
 
-- `pocketstation::session::compile::error::SessionCompileError` / `InvalidExternalSourceConfiguration` — `error-f39e1d5ca300f380beb9`
-- `pocketstation::session::compile::error::SessionCompileError` / `UnknownExternalSource` — `error-231bc903bf77aa3f85cc`
-- `pocketstation::session::compile::error::SessionCompileError` / `UnknownExternalSourceOutput` — `error-037aa7c44b2e63b89b5b`
-- `pocketstation::session::error::SessionError` / `NoSourceOutputRoutes` — `error-64505d377325b507747f`
-- `pocketstation::session::error::SessionError` / `NoSourceOutputs` — `error-d932f27c30a809afe3de`
-- `pocketstation::session::error::SessionError` / `NoSources` — `error-9eb3fbac890e3bf91775`
-- `pocketstation::session::error::SessionError` / `UnknownSourceInstance` — `error-5ff90c62bdca8982aa9b`
-- `pocketstation::session::error::SessionError` / `UnknownSourceOutput` — `error-871c9f44851885637584`
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `ExternalAudioBridge` — `error-87902c069db58b4b0049`
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `ExternalSourcePrepare` — `error-bbc9e8298f41cb00dbbf`
+- `pocketstation::session::compile::error::SessionCompileError` / `InvalidExternalSourceConfiguration` — `error-1be7c159405620caebf8`
+- `pocketstation::session::compile::error::SessionCompileError` / `UnknownExternalSource` — `error-12856b03833c2e0bb1ff`
+- `pocketstation::session::compile::error::SessionCompileError` / `UnknownExternalSourceOutput` — `error-8be2bdcc04e8f30e616e`
+- `pocketstation::session::error::SessionError` / `NoSourceOutputRoutes` — `error-b07516f4b9ba40fdb882`
+- `pocketstation::session::error::SessionError` / `NoSourceOutputs` — `error-a8908dd20100e9a5703a`
+- `pocketstation::session::error::SessionError` / `NoSources` — `error-960f2ecbe521a8333f23`
+- `pocketstation::session::error::SessionError` / `UnknownSourceInstance` — `error-4d7d2b2124a9abfda7d8`
+- `pocketstation::session::error::SessionError` / `UnknownSourceOutput` — `error-6d68cf14a05afa9a6ec8`
+- `pocketstation::session::lifecycle::control::SessionStartError` / `ExternalAudioBridge` — `error-3a234ccba235becc2ab7`
+- `pocketstation::session::lifecycle::control::SessionStartError` / `ExternalSourcePrepare` — `error-59e2d48ac5c22ac45b2a`
 
 ## API reference
 
@@ -84,8 +84,8 @@ Executable evidence selected for **Inject external PCM** is limited to each test
 
 ## Evidence boundary
 
-The claims on **Inject external PCM** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Inject external PCM** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `tests/audio_input.rs:1-577` (`DIRECT`)
+- `tests/audio_input.rs:1-659` (`DIRECT`)
 
 For **Inject external PCM**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

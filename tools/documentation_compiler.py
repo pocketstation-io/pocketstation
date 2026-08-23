@@ -410,6 +410,20 @@ def cmd_init(arguments: argparse.Namespace) -> None:
     DB.mkdir(parents=True, exist_ok=True)
     if STATE.exists() and not arguments.force:
         raise CompilerError("state already exists; init is intentionally non-destructive")
+    if arguments.force:
+        dossier_dir = DB / "files"
+        if dossier_dir.exists():
+            for dossier_path in dossier_dir.glob("file-*.json"):
+                if dossier_path.is_file():
+                    dossier_path.unlink()
+        checkpoint_dir = DB / "checkpoints"
+        if checkpoint_dir.exists():
+            for checkpoint_path in checkpoint_dir.iterdir():
+                if checkpoint_path.is_file():
+                    checkpoint_path.unlink()
+        coverage_path = DB / "coverage.json"
+        if coverage_path.exists():
+            coverage_path.unlink()
     snapshot = arguments.snapshot or git("rev-parse", "HEAD")
     if run("git", "cat-file", "-e", f"{snapshot}^{{commit}}", check=False).returncode:
         raise CompilerError(f"snapshot is not a commit: {snapshot}")
@@ -483,6 +497,8 @@ def cmd_init(arguments: argparse.Namespace) -> None:
         "user-journeys.jsonl",
         "page-manifest.jsonl",
         "doc-map.jsonl",
+        "native-docs.jsonl",
+        "patterns.jsonl",
     ]
     for name in empty_ledgers:
         write_jsonl(DB / name, [])
@@ -1396,7 +1412,9 @@ def cmd_extract_surfaces(_arguments: argparse.Namespace) -> None:
         if not file_record.get("dossier"):
             continue
         dossier = read_json(ROOT / file_record["dossier"])
-        content = json.dumps(dossier)
+        content = git_bytes(state["snapshot"], file_record["path"]).decode(
+            "utf-8", errors="replace"
+        )
         observed = []
         for pattern_name, tokens in pattern_terms.items():
             if all(token.lower() in content.lower() for token in tokens):
@@ -1434,13 +1452,26 @@ def cmd_extract_surfaces(_arguments: argparse.Namespace) -> None:
             "status": "explicit", "evidence": [],
         },
     ]
+    files_by_path = {record["path"]: record for record in files}
+    fixture_record = files_by_path.get("scripts/fixtures/connector-v1-vectors.json")
+    publish_record = files_by_path.get(".github/workflows/publish.yml")
+    publish_materializes_fixture = False
+    if publish_record:
+        publish_text = git_bytes(state["snapshot"], publish_record["path"]).decode()
+        publish_materializes_fixture = (
+            "scripts/fixtures/connector-v1-vectors.json" in publish_text
+            and "../protocol/conformance/connector/v1/vectors.json" in publish_text
+        )
     for file_record in files:
         if file_record["path"] == "tests/connector_portable_semantics.rs":
             text = git_bytes(state["snapshot"], file_record["path"]).decode()
-            if "protocol/conformance/connector/v1/vectors.json" in text:
+            if (
+                "protocol/conformance/connector/v1/vectors.json" in text
+                and not (fixture_record and publish_materializes_fixture)
+            ):
                 conflicts.append({
                     "conflict_id": "conflict-external-connector-vectors", "kind": "external_prerequisite",
-                    "summary": "Connector portable-semantics tests reference a sibling protocol conformance vector file outside this repository snapshot.",
+                    "summary": "Connector portable-semantics tests require a sibling vector path without a repository-owned materialization source.",
                     "status": "explicit_unresolved", "sides": ["repository test", "external sibling artifact"],
                     "evidence": [{"path": file_record["path"], "content_hash": file_record["sha256"],
                                   "lines": [1, max(1, text.count("\n") + 1)], "classification": "DIRECT"}],
@@ -1995,6 +2026,8 @@ def cmd_record_rustdoc(arguments: argparse.Namespace) -> None:
     save_state(state)
     print(json.dumps(checkpoint, indent=2))
     print_status(state)
+    if not checkpoint["passed"]:
+        raise SystemExit(1)
 
 
 def cmd_verify_examples(_arguments: argparse.Namespace) -> None:
@@ -2021,6 +2054,8 @@ def cmd_verify_examples(_arguments: argparse.Namespace) -> None:
     save_state(state)
     print(json.dumps(checkpoint, indent=2))
     print_status(state)
+    if not checkpoint["passed"]:
+        raise SystemExit(1)
 
 
 def normalize_link_target(target: str) -> str:
@@ -2049,8 +2084,11 @@ def validate_internal_links(pages: list[dict[str, Any]]) -> list[dict[str, Any]]
 def cmd_validate_docs(_arguments: argparse.Namespace) -> None:
     state = load_state()
     pages = read_jsonl(PAGE_MANIFEST)
-    if not pages or any(page.get("status") != "authored" for page in pages):
-        raise CompilerError("every page must have authored status before documentation validation")
+    acceptable_statuses = {"authored", "validated"}
+    if not pages or any(page.get("status") not in acceptable_statuses for page in pages):
+        raise CompilerError(
+            "every page must have authored or previously validated status before documentation validation"
+        )
     claims = read_jsonl(DB / "claims.jsonl")
     files = read_jsonl(REPOSITORY_MANIFEST)
     file_by_path = {record["path"]: record for record in files}
@@ -2098,6 +2136,8 @@ def cmd_validate_docs(_arguments: argparse.Namespace) -> None:
     save_state(state)
     print(json.dumps(checkpoint, indent=2))
     print_status(state)
+    if not checkpoint["passed"]:
+        raise SystemExit(1)
 
 
 def cmd_run_validation(_arguments: argparse.Namespace) -> None:
@@ -2115,6 +2155,8 @@ def cmd_run_validation(_arguments: argparse.Namespace) -> None:
     save_state(state)
     print(json.dumps(checkpoint, indent=2))
     print_status(state)
+    if not checkpoint["passed"]:
+        raise SystemExit(1)
 
 
 def gate_result(number: int, name: str, failures: Iterable[str]) -> dict[str, Any]:

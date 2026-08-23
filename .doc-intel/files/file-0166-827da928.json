@@ -1,0 +1,405 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 35,
+      "text": "\"async operator cannot prepare in a realtime partition\".to_owned(),"
+    },
+    {
+      "line": 48,
+      "text": "\"async operator prepare requires bounded input and output edges\".to_owned(),"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/operator.rs"
+  ],
+  "calls": [
+    "NodeError::Prepare",
+    "Vec::new",
+    "derive",
+    "direction",
+    "execution_partition",
+    "inputs",
+    "is_empty",
+    "new",
+    "outputs",
+    "push",
+    "requires_realtime_safety",
+    "to_owned"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/operator.rs"
+  ],
+  "constructs": [
+    "Vec::new",
+    "new"
+  ],
+  "content_hash": "2d156f4f84dfd66ad39194c3b730183942d164b866f3f41ae89555544967585f",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "type",
+      "line": 8,
+      "name": "AsyncNodeFuture",
+      "visibility": "pub"
+    },
+    {
+      "kind": "type",
+      "line": 18,
+      "name": "AsyncOperatorEdgePrepareContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "AsyncOperatorPrepareContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "execution_partition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "inputs",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "outputs",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "type",
+      "line": 8,
+      "name": "AsyncNodeFuture",
+      "visibility": "pub"
+    },
+    {
+      "kind": "type",
+      "line": 18,
+      "name": "AsyncOperatorEdgePrepareContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "AsyncOperatorPrepareContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "execution_partition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "inputs",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "outputs",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 34,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 47,
+      "text": "return Err(NodeError::Prepare("
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "2d156f4f84dfd66ad39194c3b730183942d164b866f3f41ae89555544967585f",
+      "lines": [
+        1,
+        70
+      ],
+      "path": "src/graph/signal/preparation.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/operator.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0166-827da928",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "f69447405d308c760cee8ae4024e0dbc74e0d45f",
+  "implemented_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/operator.rs"
+  ],
+  "implements": [
+    "AsyncOperatorPrepareContext"
+  ],
+  "imported_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/operator.rs"
+  ],
+  "imports": [
+    "crate::graph::node::{NodeError, PortPrepareContext}",
+    "crate::graph::{ExecutionPartition, PortDirection}",
+    "std::future::Future",
+    "std::pin::Pin"
+  ],
+  "inputs": [
+    "crate::graph::node::{NodeError, PortPrepareContext}",
+    "crate::graph::{ExecutionPartition, PortDirection}",
+    "std::future::Future",
+    "std::pin::Pin"
+  ],
+  "invariants": [
+    {
+      "line": 15,
+      "text": "/// carry their own media and never receive a fabricated `SampleSpec`."
+    },
+    {
+      "line": 35,
+      "text": "\"async operator cannot prepare in a realtime partition\".to_owned(),"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 70,
+  "locks": [],
+  "module": "pocketstation::graph::signal::preparation",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-3b5770de79ba80fbb674"
+  ],
+  "outputs": [
+    "fn:execution_partition",
+    "fn:inputs",
+    "fn:new",
+    "fn:outputs",
+    "return Err(NodeError::Prepare(",
+    "struct:AsyncOperatorPrepareContext",
+    "type:AsyncNodeFuture",
+    "type:AsyncOperatorEdgePrepareContext"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/signal/preparation.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "type",
+      "line": 8,
+      "name": "AsyncNodeFuture",
+      "visibility": "pub"
+    },
+    {
+      "kind": "type",
+      "line": 18,
+      "name": "AsyncOperatorEdgePrepareContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "AsyncOperatorPrepareContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "execution_partition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "inputs",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "outputs",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::signal::preparation responsibilities, including Names the future returned by async node operations.; Exact bounded graph edge supplied to an asynchronous Operator at prepare time.; Complete graph-owned preparation contract for one asynchronous Operator.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/partition.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 9,
+      "text": "pub type AsyncNodeFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::graph::signal::preparation::AsyncNodeFuture: Names the future returned by async node operations.",
+    "pocketstation::graph::signal::preparation::AsyncOperatorEdgePrepareContext: Exact bounded graph edge supplied to an asynchronous Operator at prepare time.",
+    "pocketstation::graph::signal::preparation::AsyncOperatorPrepareContext: Complete graph-owned preparation contract for one asynchronous Operator.",
+    "new: Creates a new `AsyncOperatorPrepareContext`.",
+    "execution_partition: Returns the execution partition associated with `AsyncOperatorPrepareContext`.",
+    "inputs: Returns the inputs associated with `AsyncOperatorPrepareContext`.",
+    "outputs: Returns the outputs associated with `AsyncOperatorPrepareContext`."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 11,
+      "text": "/// Exact bounded graph edge supplied to an asynchronous Operator at prepare time."
+    },
+    {
+      "line": 35,
+      "text": "\"async operator cannot prepare in a realtime partition\".to_owned(),"
+    },
+    {
+      "line": 48,
+      "text": "\"async operator prepare requires bounded input and output edges\".to_owned(),"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 35,
+      "text": "\"async operator cannot prepare in a realtime partition\".to_owned(),"
+    },
+    {
+      "line": 48,
+      "text": "\"async operator prepare requires bounded input and output edges\".to_owned(),"
+    }
+  ],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

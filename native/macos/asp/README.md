@@ -3,7 +3,7 @@
 ## Ownership
 
 PocketStation uses the public Core Audio process-tap backend on macOS 14.4 and
-later. The AudioServerPlugin files in this directory are the real, optional
+later. The AudioServerPlugin files in this directory provide an optional
 fallback for older systems and for a separately provisioned virtual device.
 
 The crate build compiles:

@@ -330,17 +330,20 @@ pub trait SourceFactory: Send + Sync {
 }
 
 #[derive(Default)]
+#[doc = "Indexes registered source implementations by their stable identities."]
 pub struct SourceRegistry {
     factories: BTreeMap<SourceTypeId, Arc<dyn SourceFactory>>,
 }
 
 impl SourceRegistry {
+    #[doc = "Returns the manifest held by `SourceRegistry`."]
     pub fn manifest(&self, source_type_id: &SourceTypeId) -> Option<&SourceManifest> {
         self.factories
             .get(source_type_id)
             .map(|factory| factory.manifest())
     }
 
+    #[doc = "Registers a node definition with `SourceRegistry` while preserving unique identities."]
     pub fn register(
         &mut self,
         factory: Arc<dyn SourceFactory>,
@@ -357,6 +360,7 @@ impl SourceRegistry {
         Ok(())
     }
 
+    #[doc = "Validates config for `SourceRegistry`."]
     pub fn validate_config(
         &self,
         source_type_id: &SourceTypeId,
@@ -372,6 +376,7 @@ impl SourceRegistry {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Spawns its owned operation for `SourceRegistry`."]
     pub fn spawn(
         &self,
         source_type_id: &SourceTypeId,
@@ -383,6 +388,7 @@ impl SourceRegistry {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Prepares resources required by `SourceRegistry`."]
     pub fn prepare(
         &self,
         source_type_id: &SourceTypeId,
@@ -397,6 +403,7 @@ impl SourceRegistry {
         PreparedSourceRuntime::prepare(factory, configuration, branch_specs, None)
     }
 
+    #[doc = "Prepares session for `SourceRegistry`."]
     pub fn prepare_session(
         &self,
         source_type_id: &SourceTypeId,
@@ -414,13 +421,19 @@ impl SourceRegistry {
 }
 
 #[derive(Debug, Clone)]
+#[doc = "Configures source output branch behavior at its owning API boundary."]
 pub struct SourceOutputBranchSpec {
+    #[doc = "Stores the output port used by `SourceOutputBranchSpec`."]
     pub output_port: String,
+    #[doc = "Stores the branch used by `SourceOutputBranchSpec`."]
     pub branch: TypedEdgeBranchSpec,
 }
 
+#[doc = "Receives source output values across its declared ownership boundary."]
 pub struct SourceOutputReceiver {
+    #[doc = "Stores the output port used by `SourceOutputReceiver`."]
     pub output_port: String,
+    #[doc = "Stores the receiver used by `SourceOutputReceiver`."]
     pub receiver: TypedEdgeReceiver,
 }
 
@@ -461,11 +474,13 @@ pub struct SourceRuntimeObservations {
 }
 
 #[derive(Clone)]
+#[doc = "Owns bounded access to source runtime observation."]
 pub struct SourceRuntimeObservationHandle {
     state: Arc<SourceRuntimeObservationState>,
 }
 
 impl SourceRuntimeObservationHandle {
+    #[doc = "Returns a point-in-time snapshot of `SourceRuntimeObservationHandle`."]
     pub fn snapshot(&self) -> SourceRuntimeObservations {
         SourceRuntimeObservations {
             emitted_total: self.state.emitted_total.load(Ordering::Relaxed),
@@ -560,6 +575,7 @@ impl PreparedSourceRuntime {
         ))
     }
 
+    #[doc = "Starts the lifecycle represented by `PreparedSourceRuntime`."]
     pub fn start(mut self) -> Result<SourceRuntime, SourceRuntimeError> {
         let mut driver = self
             .driver
@@ -611,6 +627,7 @@ impl PreparedSourceRuntime {
 }
 
 impl Drop for PreparedSourceRuntime {
+    #[doc = "Releases resources owned by `PreparedSourceRuntime`."]
     fn drop(&mut self) {
         if let Some(driver) = self.driver.as_mut() {
             let _ = driver.close();
@@ -620,6 +637,7 @@ impl Drop for PreparedSourceRuntime {
 
 impl SourceRuntime {
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Spawns its owned operation for `SourceRuntime`."]
     pub fn spawn(
         factory: Arc<dyn SourceFactory>,
         configuration: &SourceConfiguration,
@@ -630,14 +648,17 @@ impl SourceRuntime {
         Ok((prepared.start()?, receivers))
     }
 
+    #[doc = "Requests cancellation of `SourceRuntime`."]
     pub fn cancel(&self) {
         self.cancellation.cancelled.store(true, Ordering::Release);
     }
 
+    #[doc = "Returns the observations exposed by `SourceRuntime`."]
     pub fn observations(&self) -> SourceRuntimeObservationHandle {
         self.observations.clone()
     }
 
+    #[doc = "Joins its owned operation for `SourceRuntime`."]
     pub fn join(&mut self) -> Result<(), SourceRuntimeError> {
         self.join
             .take()
@@ -649,6 +670,7 @@ impl SourceRuntime {
 }
 
 impl Drop for SourceRuntime {
+    #[doc = "Releases resources owned by `SourceRuntime`."]
     fn drop(&mut self) {
         self.cancel();
         if let Some(join) = self.join.take() {
@@ -827,40 +849,58 @@ pub enum SourceDriverError {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as source runtime error."]
 pub enum SourceRuntimeError {
     #[error("invalid source manifest: {0}")]
+    #[doc = "Reported when the owning operation encounters invalid manifest."]
     InvalidManifest(SourceManifestError),
     #[error("invalid source configuration: {0}")]
+    #[doc = "Reported when the owning operation encounters invalid configuration."]
     InvalidConfiguration(ConfigError),
     #[error("source driver failure: {0}")]
+    #[doc = "Reported when the owning operation encounters driver."]
     Driver(SourceDriverError),
     #[error("typed edge build failed: {0}")]
+    #[doc = "Reported when the owning operation encounters edge build."]
     EdgeBuild(TypedEdgeBuildError),
     #[error("source runtime requires at least one routed output")]
+    #[doc = "Reported when the owning operation encounters no routed outputs."]
     NoRoutedOutputs,
     #[error("source emitted unknown output {0}")]
+    #[doc = "Reported when the owning operation encounters unknown output."]
     UnknownOutput(String),
     #[error("source emitted unrouted output {0}")]
+    #[doc = "Reported when the owning operation encounters unrouted output."]
     UnroutedOutput(String),
     #[error("source output does not match its manifest contract")]
+    #[doc = "Reported when the owning operation encounters output contract mismatch."]
     OutputContractMismatch,
     #[error("Session-owned source output is missing signal lineage")]
+    #[doc = "Reported when the owning operation encounters missing session lineage."]
     MissingSessionLineage,
     #[error("source output identity does not match the Session prepare context")]
+    #[doc = "Reported when the owning operation encounters output identity mismatch."]
     OutputIdentityMismatch,
     #[error("source continuity validation failed: {0}")]
+    #[doc = "Reported when the owning operation encounters continuity."]
     Continuity(crate::graph::SignalContinuityError),
     #[error("typed source publish failed: {0}")]
+    #[doc = "Reported when the owning operation encounters publish."]
     Publish(TypedEdgePublishError),
     #[error("source worker could not spawn: {0}")]
+    #[doc = "Reported when the owning operation encounters spawn."]
     Spawn(std::io::Error),
     #[error("source worker panicked")]
+    #[doc = "Reported when the owning operation encounters worker panicked."]
     WorkerPanicked,
     #[error("source worker has already been joined")]
+    #[doc = "Reported when the owning operation encounters already joined."]
     AlreadyJoined,
     #[error("prepared source state has already been consumed")]
+    #[doc = "Reported when the owning operation encounters prepared state consumed."]
     PreparedStateConsumed,
     #[error("source type {0} is not registered")]
+    #[doc = "Reported when the owning operation encounters unregistered source."]
     UnregisteredSource(SourceTypeId),
 }
 

@@ -58,18 +58,18 @@ The scope of **Asynchronous operators** ends at the native contracts and executa
 
 Executable evidence selected for **Asynchronous operators** is limited to each test's recorded setup and assertions:
 
-- `given_operator_composition_with_three_external_operators_then_derived_output_crosses_each_bounded_edge` — given operator composition with three external operators then derived output crosses each bounded edge (`src/runtime/signal/operator.rs:1859`; `test-9ec51c75cedb5ffaef0f`).
-- `given_external_consumer_when_declared_then_provider_and_typed_endpoint_use_public_api` — given external consumer when declared then provider and typed endpoint use public api (`examples/operator-consumer/src/lib.rs:120`; `test-ace9b7d11da2036ce899`).
-- `given_gain_config_with_non_numeric_gain_db_when_validate_then_invalid_error` — given gain config with non numeric gain db when validate then invalid error (`src/graph/builtins.rs:256`; `test-0e41065f28a838e0deaf`).
-- `given_gain_config_with_valid_gain_db_when_validate_then_ok` — given gain config with valid gain db when validate then ok (`src/graph/builtins.rs:264`; `test-c5d54824499f245c4c6c`).
-- `given_gain_config_without_gain_db_when_validate_then_missing_error` — given gain config without gain db when validate then missing error (`src/graph/builtins.rs:249`; `test-c2584e0bcdbbb154dfa1`).
-- `given_mono_frame_when_mono_mixed_then_frame_is_unchanged` — given mono frame when mono mixed then frame is unchanged (`src/graph/builtins.rs:330`; `test-d76ec44bacdca3f6a506`).
-- `given_passthrough_node_when_process_then_returns_frame_unchanged` — given passthrough node when process then returns frame unchanged (`src/graph/builtins.rs:300`; `test-681eed046f58e8486db9`).
-- `given_six_db_gain_node_when_process_then_samples_scaled_by_linear_gain` — given six db gain node when process then samples scaled by linear gain (`src/graph/builtins.rs:286`; `test-7b9d00604bd1f54f6bfb`).
-- `given_stereo_frame_when_mono_mixed_then_channels_and_samples_are_downmixed` — given stereo frame when mono mixed then channels and samples are downmixed (`src/graph/builtins.rs:313`; `test-f022cf78595274582c24`).
-- `given_unity_gain_node_when_process_then_samples_unchanged` — given unity gain node when process then samples unchanged (`src/graph/builtins.rs:271`; `test-aac58d9d619b8280715f`).
-- `given_compiled_graph_when_instrumented_then_metric_ids_are_stable_and_distinct` — given compiled graph when instrumented then metric ids are stable and distinct (`src/graph/compile/plan.rs:785`; `test-1c092b4376cfedf5e86d`).
-- `given_copy_to_branch_pool_edge_when_planned_then_copy_pool_memory_is_reserved` — given copy to branch pool edge when planned then copy pool memory is reserved (`src/graph/compile/plan.rs:734`; `test-1d8783b870fa351a933b`).
+- `given_operator_composition_with_three_external_operators_then_derived_output_crosses_each_bounded_edge` — given operator composition with three external operators then derived output crosses each bounded edge (`src/runtime/signal/operator.rs:1859`; `test-eab3e581e210e0e82882`).
+- `given_external_consumer_when_declared_then_provider_and_typed_endpoint_use_public_api` — given external consumer when declared then provider and typed endpoint use public api (`examples/operator-consumer/src/lib.rs:120`; `test-f98e0a98874ff7dfbdf8`).
+- `given_gain_config_with_non_numeric_gain_db_when_validate_then_invalid_error` — given gain config with non numeric gain db when validate then invalid error (`src/graph/builtins.rs:256`; `test-029e0dcc2de8d59ff561`).
+- `given_gain_config_with_valid_gain_db_when_validate_then_ok` — given gain config with valid gain db when validate then ok (`src/graph/builtins.rs:264`; `test-13fb010e32e78037a1e6`).
+- `given_gain_config_without_gain_db_when_validate_then_missing_error` — given gain config without gain db when validate then missing error (`src/graph/builtins.rs:249`; `test-8e6d108129a9248596fb`).
+- `given_mono_frame_when_mono_mixed_then_frame_is_unchanged` — given mono frame when mono mixed then frame is unchanged (`src/graph/builtins.rs:330`; `test-c4fded8eeabe88603a20`).
+- `given_passthrough_node_when_process_then_returns_frame_unchanged` — given passthrough node when process then returns frame unchanged (`src/graph/builtins.rs:300`; `test-746c4f775eb51b59004b`).
+- `given_six_db_gain_node_when_process_then_samples_scaled_by_linear_gain` — given six db gain node when process then samples scaled by linear gain (`src/graph/builtins.rs:286`; `test-c5eb65d3dbe60d07022e`).
+- `given_stereo_frame_when_mono_mixed_then_channels_and_samples_are_downmixed` — given stereo frame when mono mixed then channels and samples are downmixed (`src/graph/builtins.rs:313`; `test-6ffe4edd1fbdc435fec2`).
+- `given_unity_gain_node_when_process_then_samples_unchanged` — given unity gain node when process then samples unchanged (`src/graph/builtins.rs:271`; `test-2721547134c7c2fb6bc4`).
+- `given_compiled_graph_when_instrumented_then_metric_ids_are_stable_and_distinct` — given compiled graph when instrumented then metric ids are stable and distinct (`src/graph/compile/plan.rs:785`; `test-aef519dc61d29ebde9b6`).
+- `given_copy_to_branch_pool_edge_when_planned_then_copy_pool_memory_is_reserved` — given copy to branch pool edge when planned then copy pool memory is reserved (`src/graph/compile/plan.rs:734`; `test-1b94392ac4d9cdf72c6b`).
 
 ## Related documentation
 
@@ -84,7 +84,7 @@ Executable evidence selected for **Asynchronous operators** is limited to each t
 
 ## Evidence boundary
 
-The claims on **Asynchronous operators** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Asynchronous operators** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `src/graph/signal/operator.rs:1-380` (`DIRECT`)
 

@@ -25,6 +25,7 @@ pub enum ExecError {
 }
 
 impl ExecError {
+    #[doc = "Creates `ExecError` from node."]
     pub fn from_node(error: crate::graph::node::NodeError) -> Self {
         Self::Node(error.to_string())
     }
@@ -36,10 +37,15 @@ struct RealtimeNodeSlot {
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[doc = "Reports the counters and terminal facts collected for plan execution."]
 pub struct PlanExecutionSummary {
+    #[doc = "Stores the nodes executed used by `PlanExecutionSummary`."]
     pub nodes_executed: u64,
+    #[doc = "Stores the edges attempted used by `PlanExecutionSummary`."]
     pub edges_attempted: u64,
+    #[doc = "Stores the edges enqueued used by `PlanExecutionSummary`."]
     pub edges_enqueued: u64,
+    #[doc = "Stores the edges dropped used by `PlanExecutionSummary`."]
     pub edges_dropped: u64,
 }
 
@@ -53,6 +59,7 @@ impl PlanExecutionSummary {
     }
 }
 
+#[doc = "Executes realtime plan according to its compiled plan and cancellation contract."]
 pub struct RealtimePlanExecutor {
     node_order: Vec<NodeId>,
     nodes: Vec<Option<RealtimeNodeSlot>>,
@@ -61,6 +68,7 @@ pub struct RealtimePlanExecutor {
 }
 
 impl RealtimePlanExecutor {
+    #[doc = "Creates a new `RealtimePlanExecutor`."]
     pub fn new(
         plan: &RuntimePlan,
         ir: &GraphIr,
@@ -148,6 +156,7 @@ impl RealtimePlanExecutor {
         ))
     }
 
+    #[doc = "Executes from for `RealtimePlanExecutor`."]
     pub fn execute_from(
         &mut self,
         source_node_id: NodeId,
@@ -187,6 +196,7 @@ impl RealtimePlanExecutor {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the observations exposed by `RealtimePlanExecutor`."]
     pub fn observations(&self, edge_id: EdgeId) -> Option<EdgeObservations> {
         self.router.observations(edge_id)
     }

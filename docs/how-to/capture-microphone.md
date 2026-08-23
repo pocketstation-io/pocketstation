@@ -31,31 +31,31 @@ Microphone frames arrive with a distinct source and stem identity, and the sourc
 
 Executable evidence selected for **Capture the default microphone** is limited to each test's recorded setup and assertions:
 
-- `given_capture_mode_when_channels_selected_then_microphone_is_mono_and_output_is_stereo` — given capture mode when channels selected then microphone is mono and output is stereo (`src/capture/platform/linux/pipewire.rs:1837`; `test-c28f1242d8a2b60457db`).
-- `given_default_and_exact_microphones_when_contract_inspected_then_lifetimes_differ` — given default and exact microphones when contract inspected then lifetimes differ (`src/capture/tests.rs:240`; `test-4af1790482adc3c295e6`).
-- `given_default_capture_mode_when_compared_then_is_system_mix` — given default capture mode when compared then is system mix (`src/capture/tests.rs:198`; `test-151f813bf569e94c809d`).
-- `given_active_capture_when_owner_is_dropped_then_backend_is_reclaimed` — given active capture when owner is dropped then backend is reclaimed (`src/capture/capture_owner.rs:567`; `test-c55d7a75628c1be024f1`).
-- `given_active_capture_when_stopped_then_backend_is_joined` — given active capture when stopped then backend is joined (`src/capture/capture_owner.rs:540`; `test-4f65c4d2e20b5226cd4f`).
-- `given_panicking_capture_worker_when_joined_then_typed_failure_is_returned` — given panicking capture worker when joined then typed failure is returned (`src/capture/capture_owner.rs:610`; `test-889c6cfb54cc924fc2b4`).
-- `given_prepared_capture_when_opened_then_bounded_delivery_is_owned` — given prepared capture when opened then bounded delivery is owned (`src/capture/capture_owner.rs:463`; `test-8de0974346f9110044c2`).
-- `given_exhausted_capture_pool_when_acquiring_then_failure_is_observed_once` — given exhausted capture pool when acquiring then failure is observed once (`src/capture/platform/linux/pipewire.rs:1855`; `test-bcfd12a436362de05085`).
-- `given_negotiated_format_when_channel_count_changes_then_capture_fails_closed` — given negotiated format when channel count changes then capture fails closed (`src/capture/platform/linux/pipewire.rs:2066`; `test-1993ee9e15230d1f6226`).
-- `given_capture_before_callback_when_mapped_then_process_timestamp_preserves_delay` — given capture before callback when mapped then process timestamp preserves delay (`src/capture/platform/macos/input.rs:351`; `test-8a2ea38f6f2c1b3ffa2f`).
-- `given_capture_before_process_epoch_when_mapped_then_timestamp_is_earliest_representable` — given capture before process epoch when mapped then timestamp is earliest representable (`src/capture/platform/macos/input.rs:364`; `test-9519b3f93a4a0e689bcc`).
-- `given_denied_permission_when_opening_input_then_capture_fails_closed` — given denied permission when opening input then capture fails closed (`src/capture/platform/macos/input.rs:377`; `test-2b664c22fd511e3c2f45`).
+- `given_capture_mode_when_channels_selected_then_microphone_is_mono_and_output_is_stereo` — given capture mode when channels selected then microphone is mono and output is stereo (`src/capture/platform/linux/pipewire.rs:1837`; `test-df5c7fa69c2c79a8f2a1`).
+- `given_default_and_exact_microphones_when_contract_inspected_then_lifetimes_differ` — given default and exact microphones when contract inspected then lifetimes differ (`src/capture/tests.rs:249`; `test-2ac8da4006715acff504`).
+- `given_default_capture_mode_when_compared_then_is_system_mix` — given default capture mode when compared then is system mix (`src/capture/tests.rs:207`; `test-f45d875b7b23fede26a0`).
+- `given_active_capture_when_owner_is_dropped_then_backend_is_reclaimed` — given active capture when owner is dropped then backend is reclaimed (`src/capture/capture_owner.rs:567`; `test-fa34e5723160d56f560f`).
+- `given_active_capture_when_stopped_then_backend_is_joined` — given active capture when stopped then backend is joined (`src/capture/capture_owner.rs:540`; `test-dd4aaaf6b93ddb500769`).
+- `given_panicking_capture_worker_when_joined_then_typed_failure_is_returned` — given panicking capture worker when joined then typed failure is returned (`src/capture/capture_owner.rs:610`; `test-2d873f94835a177ce436`).
+- `given_prepared_capture_when_opened_then_bounded_delivery_is_owned` — given prepared capture when opened then bounded delivery is owned (`src/capture/capture_owner.rs:463`; `test-a3a0d044f02b7f664bb9`).
+- `given_exhausted_capture_pool_when_acquiring_then_failure_is_observed_once` — given exhausted capture pool when acquiring then failure is observed once (`src/capture/platform/linux/pipewire.rs:1855`; `test-3002ec0fb883ffa835f6`).
+- `given_negotiated_format_when_channel_count_changes_then_capture_fails_closed` — given negotiated format when channel count changes then capture fails closed (`src/capture/platform/linux/pipewire.rs:2066`; `test-0f6c4f31518ab5e8ffd8`).
+- `given_capture_before_callback_when_mapped_then_process_timestamp_preserves_delay` — given capture before callback when mapped then process timestamp preserves delay (`src/capture/platform/macos/input.rs:358`; `test-de7d536ac9b0edc1d4da`).
+- `given_capture_before_process_epoch_when_mapped_then_timestamp_is_earliest_representable` — given capture before process epoch when mapped then timestamp is earliest representable (`src/capture/platform/macos/input.rs:371`; `test-dc164b0e06605b749d99`).
+- `given_denied_permission_when_opening_input_then_capture_fails_closed` — given denied permission when opening input then capture fails closed (`src/capture/platform/macos/input.rs:384`; `test-93f56a3510497f49f523`).
 
 ## Failure signals
 
-- `pocketstation::capture::authorization::CaptureError` — `error-7905cc933b9eb45fe4ef`
-- `pocketstation::capture::authorization::CaptureError` / `BackendInit` — `error-ffea5e00d982c5213eba`
-- `pocketstation::capture::authorization::CaptureError` / `BackendSetupRequired` — `error-6e8f9f8ca8efa76ded69`
-- `pocketstation::capture::authorization::CaptureError` / `BackendStatus` — `error-533b29bac30886d8c79c`
-- `pocketstation::capture::authorization::CaptureError` / `CaptureWorkerPanicked` — `error-01c4b3cce2fa1669ee13`
-- `pocketstation::capture::authorization::CaptureError` / `InvalidRuntimeEventCapacity` — `error-c683702117e27ad45f33`
-- `pocketstation::capture::authorization::CaptureError` / `InvalidStreamCapacity` — `error-6167103023ec8fded812`
-- `pocketstation::capture::authorization::CaptureError` / `ModeUnsupported` — `error-786199dd7e94542436f2`
-- `pocketstation::capture::authorization::CaptureError` / `NotSupported` — `error-0f2fd6c6275925740175`
-- `pocketstation::capture::authorization::CaptureError` / `PermissionDenied` — `error-d902cf4c11a93cbcb084`
+- `pocketstation::capture::authorization::CaptureError` — `error-8a6cfaf6313c49f3d002`
+- `pocketstation::capture::authorization::CaptureError` / `BackendInit` — `error-e16ac3af9c00b5a9e1ef`
+- `pocketstation::capture::authorization::CaptureError` / `BackendSetupRequired` — `error-49a3487734f77997ff1d`
+- `pocketstation::capture::authorization::CaptureError` / `BackendStatus` — `error-433a8f64b39d41fe58e4`
+- `pocketstation::capture::authorization::CaptureError` / `CaptureWorkerPanicked` — `error-6a1ddaf64fd582202ee9`
+- `pocketstation::capture::authorization::CaptureError` / `InvalidRuntimeEventCapacity` — `error-c838e8f36c42c18a2a83`
+- `pocketstation::capture::authorization::CaptureError` / `InvalidStreamCapacity` — `error-abbc7e6ad159c238bf74`
+- `pocketstation::capture::authorization::CaptureError` / `ModeUnsupported` — `error-4a58ec0f52d2f2ee5a44`
+- `pocketstation::capture::authorization::CaptureError` / `NotSupported` — `error-fc10abae73bd96954b49`
+- `pocketstation::capture::authorization::CaptureError` / `PermissionDenied` — `error-54d94f02abd4884ade73`
 
 ## API reference
 
@@ -86,7 +86,7 @@ Executable evidence selected for **Capture the default microphone** is limited t
 
 ## Evidence boundary
 
-The claims on **Capture the default microphone** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Capture the default microphone** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `examples/product_quickstart.rs:1-61` (`DIRECT`)
 

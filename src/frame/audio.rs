@@ -1,13 +1,16 @@
 #[doc = "Types and operations for audio."]
+#[doc = "Types and operations for audio."]
 use std::sync::Arc;
 
 use super::pool::{AudioBufferHandle, AudioBufferPool, SharedAudioBufferHandle};
 use crate::frame::{FrameLineage, SourceId, StreamId};
 
+#[doc = "Defines the public sample rate hertz value."]
 pub const SAMPLE_RATE_HZ: u32 = 48_000;
 #[cfg(test)]
 const FRAME_DURATION_MS: u32 = 20;
 #[cfg(any(test, feature = "internal-testing", target_os = "linux"))]
+#[doc = "Defines the public pool slot samples value."]
 pub const POOL_SLOT_SAMPLES: usize = 960; // 20ms × 48kHz
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -287,12 +290,16 @@ impl SharedAudioFrame {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as frame lineage error."]
 pub enum FrameLineageError {
     #[error("frame source id does not match its lineage")]
+    #[doc = "Reported when the owning operation encounters source."]
     Source,
     #[error("frame sequence number does not match its lineage")]
+    #[doc = "Reported when the owning operation encounters sequence number."]
     SequenceNumber,
     #[error("frame timestamp does not match its lineage")]
+    #[doc = "Reported when the owning operation encounters timestamp."]
     Timestamp,
 }
 
@@ -309,23 +316,28 @@ pub struct LineagedAudioFrame {
 }
 
 impl LineagedAudioFrame {
+    #[doc = "Creates a new `LineagedAudioFrame`."]
     pub fn new(frame: AudioFrame, lineage: FrameLineage) -> Result<Self, FrameLineageError> {
         validate_frame_lineage(&frame, lineage)?;
         Ok(Self { frame, lineage })
     }
 
+    #[doc = "Returns the frame held by `LineagedAudioFrame`."]
     pub const fn frame(&self) -> &AudioFrame {
         &self.frame
     }
 
+    #[doc = "Returns the frame lineage carried by `LineagedAudioFrame`."]
     pub const fn lineage(&self) -> FrameLineage {
         self.lineage
     }
 
+    #[doc = "Consumes `LineagedAudioFrame` and returns its component values."]
     pub fn into_parts(self) -> (AudioFrame, FrameLineage) {
         (self.frame, self.lineage)
     }
 
+    #[doc = "Freezes mutable storage owned by `LineagedAudioFrame` into its shared immutable form."]
     pub fn freeze(self) -> Option<SharedLineagedAudioFrame> {
         Some(SharedLineagedAudioFrame {
             frame: self.frame.freeze()?,
@@ -335,20 +347,24 @@ impl LineagedAudioFrame {
 }
 
 #[derive(Debug)]
+#[doc = "Carries one shared lineaged audio payload together with its declared metadata."]
 pub struct SharedLineagedAudioFrame {
     frame: SharedAudioFrame,
     lineage: FrameLineage,
 }
 
 impl SharedLineagedAudioFrame {
+    #[doc = "Returns the frame held by `SharedLineagedAudioFrame`."]
     pub const fn frame(&self) -> &SharedAudioFrame {
         &self.frame
     }
 
+    #[doc = "Returns the frame lineage carried by `SharedLineagedAudioFrame`."]
     pub const fn lineage(&self) -> FrameLineage {
         self.lineage
     }
 
+    #[doc = "Attempts to clone through `SharedLineagedAudioFrame`."]
     pub fn try_clone(&self) -> Option<Self> {
         Some(Self {
             frame: self.frame.try_clone()?,
@@ -356,6 +372,7 @@ impl SharedLineagedAudioFrame {
         })
     }
 
+    #[doc = "Copies the shared frame into storage acquired from the supplied pool for `SharedLineagedAudioFrame`."]
     pub fn copy_to_pool(&self, pool: &Arc<AudioBufferPool>) -> Option<LineagedAudioFrame> {
         Some(LineagedAudioFrame {
             frame: self.frame.copy_to_pool(pool)?,

@@ -56,18 +56,18 @@ The scope of **Audio reentry** ends at the native contracts and executable condi
 
 Executable evidence selected for **Audio reentry** is limited to each test's recorded setup and assertions:
 
-- `given_full_audio_ingress_when_bridge_sends_then_rejection_is_counted_exactly` — given full audio ingress when bridge sends then rejection is counted exactly (`src/runtime/bridge/audio.rs:497`; `test-c49159871ef385421381`).
-- `given_operator_audio_when_bridged_then_owned_frame_enters_bounded_plan_source` — given operator audio when bridged then owned frame enters bounded plan source (`src/runtime/bridge/audio.rs:335`; `test-0ae60369d5962ff55b0f`).
-- `given_retained_audio_ingress_when_pool_is_exhausted_then_loss_is_counted_exactly` — given retained audio ingress when pool is exhausted then loss is counted exactly (`src/runtime/bridge/audio.rs:459`; `test-1664fa1aa12573253d70`).
-- `given_audio_output_into_text_input_when_compiled_then_media_mismatch` — given audio output into text input when compiled then media mismatch (`src/graph/compile/resolve.rs:1079`; `test-ef4bd9407893b33d7b06`).
-- `given_audio_signal_into_text_signal_when_compiled_then_signal_mismatch` — given audio signal into text signal when compiled then signal mismatch (`src/graph/compile/resolve.rs:1094`; `test-5516fcaedfc2241e34cc`).
-- `given_allocation_allowed_contract_when_valid_for_audio_callback_then_false` — given allocation allowed contract when valid for audio callback then false (`src/graph/partition.rs:168`; `test-b01b34cf6e6f3258c91d`).
-- `given_audio_callback_partition_when_requires_realtime_safety_then_true` — given audio callback partition when requires realtime safety then true (`src/graph/partition.rs:128`; `test-d54ff707a3d77d445397`).
-- `given_partitions_when_ranked_then_audio_callback_is_lowest` — given partitions when ranked then audio callback is lowest (`src/graph/partition.rs:141`; `test-2dbca6af06117c1c9bdb`).
-- `given_realtime_safe_contract_when_valid_for_audio_callback_then_true` — given realtime safe contract when valid for audio callback then true (`src/graph/partition.rs:162`; `test-0ed6d5e5aedfb9880e78`).
-- `given_any_and_audio_when_negotiated_then_yields_audio` — given any and audio when negotiated then yields audio (`src/graph/ports.rs:496`; `test-b904fea87e8dcf2b473a`).
-- `given_any_audio_caps_when_compat_checked_then_reflexive_and_symmetric` — given any audio caps when compat checked then reflexive and symmetric (`src/graph/ports.rs:607`; `test-c1f0182c0924086f9d64`).
-- `given_audio_and_text_when_media_compat_checked_then_incompatible` — given audio and text when media compat checked then incompatible (`src/graph/ports.rs:483`; `test-49b93cf78810847cc5ff`).
+- `given_full_audio_ingress_when_bridge_sends_then_rejection_is_counted_exactly` — given full audio ingress when bridge sends then rejection is counted exactly (`src/runtime/bridge/audio.rs:497`; `test-b85e8c1c3aa436f769d2`).
+- `given_operator_audio_when_bridged_then_owned_frame_enters_bounded_plan_source` — given operator audio when bridged then owned frame enters bounded plan source (`src/runtime/bridge/audio.rs:335`; `test-1dfdf14fa335d99dccdc`).
+- `given_retained_audio_ingress_when_pool_is_exhausted_then_loss_is_counted_exactly` — given retained audio ingress when pool is exhausted then loss is counted exactly (`src/runtime/bridge/audio.rs:459`; `test-f2ba70a6cf90ac310e7e`).
+- `given_audio_output_into_text_input_when_compiled_then_media_mismatch` — given audio output into text input when compiled then media mismatch (`src/graph/compile/resolve.rs:1079`; `test-25a30affa1f9b95f7f53`).
+- `given_audio_signal_into_text_signal_when_compiled_then_signal_mismatch` — given audio signal into text signal when compiled then signal mismatch (`src/graph/compile/resolve.rs:1094`; `test-25dddc1e95b562d4b54d`).
+- `given_allocation_allowed_contract_when_valid_for_audio_callback_then_false` — given allocation allowed contract when valid for audio callback then false (`src/graph/partition.rs:168`; `test-f5998630daea9ae651bd`).
+- `given_audio_callback_partition_when_requires_realtime_safety_then_true` — given audio callback partition when requires realtime safety then true (`src/graph/partition.rs:128`; `test-056027ee49ff3bf9cee1`).
+- `given_partitions_when_ranked_then_audio_callback_is_lowest` — given partitions when ranked then audio callback is lowest (`src/graph/partition.rs:141`; `test-50eee42cf13227aa601f`).
+- `given_realtime_safe_contract_when_valid_for_audio_callback_then_true` — given realtime safe contract when valid for audio callback then true (`src/graph/partition.rs:162`; `test-c83fea1299e667c8836c`).
+- `given_any_and_audio_when_negotiated_then_yields_audio` — given any and audio when negotiated then yields audio (`src/graph/ports.rs:496`; `test-035239ef3f7bf3e07aee`).
+- `given_any_audio_caps_when_compat_checked_then_reflexive_and_symmetric` — given any audio caps when compat checked then reflexive and symmetric (`src/graph/ports.rs:607`; `test-be77c480bd937a3d1134`).
+- `given_audio_and_text_when_media_compat_checked_then_incompatible` — given audio and text when media compat checked then incompatible (`src/graph/ports.rs:483`; `test-f42a6f2027b03f953271`).
 
 ## Related documentation
 
@@ -82,7 +82,7 @@ Executable evidence selected for **Audio reentry** is limited to each test's rec
 
 ## Evidence boundary
 
-The claims on **Audio reentry** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Audio reentry** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `src/runtime/bridge/audio.rs:1-529` (`DIRECT`)
 

@@ -1,0 +1,383 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs"
+  ],
+  "calls": [
+    "ClockDomainId::new",
+    "cfg",
+    "derive",
+    "describe_clock_domain",
+    "get",
+    "given_known_and_provider_clocks_when_described_then_authority_is_not_inferred",
+    "id",
+    "kind",
+    "origin",
+    "tick_rate_hz"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 77,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs"
+  ],
+  "constructs": [
+    "ClockDomainId::new"
+  ],
+  "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 2,
+      "name": "NANOSECOND_TICKS_PER_SECOND",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 7,
+      "name": "ClockDomainKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 15,
+      "name": "ClockDomainOrigin",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 23,
+      "name": "ClockDomainDescriptor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 34,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 38,
+      "name": "origin",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "tick_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "describe_clock_domain",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 78,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "given_known_and_provider_clocks_when_described_then_authority_is_not_inferred",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 7,
+      "name": "ClockDomainKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 15,
+      "name": "ClockDomainOrigin",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 23,
+      "name": "ClockDomainDescriptor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 34,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 38,
+      "name": "origin",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "tick_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "describe_clock_domain",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "6399b24b256ef704ddb7e0b914e319f0a2a356f3385cfc38e9d80b6667b733a1",
+      "lines": [
+        1,
+        99
+      ],
+      "path": "src/timing/domain.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0248-d0ccd310",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "2c89d1feddefa5d8c658229f7c2d843add84ba28",
+  "implemented_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs"
+  ],
+  "implements": [
+    "ClockDomainDescriptor"
+  ],
+  "imported_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs"
+  ],
+  "imports": [
+    "crate::frame::ClockDomainId",
+    "super::*"
+  ],
+  "inputs": [
+    "#[cfg(test)]",
+    "crate::frame::ClockDomainId",
+    "super::*"
+  ],
+  "invariants": [
+    {
+      "line": 48,
+      "text": "/// Describes the stable semantics Core can assert for a clock-domain ID."
+    }
+  ],
+  "language": "Rust",
+  "line_count": 99,
+  "locks": [],
+  "module": "pocketstation::timing::domain",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-1c4f8caf42f0daa086f7"
+  ],
+  "outputs": [
+    "enum:ClockDomainKind",
+    "enum:ClockDomainOrigin",
+    "fn:describe_clock_domain",
+    "fn:id",
+    "fn:kind",
+    "fn:origin",
+    "fn:tick_rate_hz",
+    "struct:ClockDomainDescriptor"
+  ],
+  "package": "pocketstation",
+  "path": "src/timing/domain.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 2,
+      "name": "NANOSECOND_TICKS_PER_SECOND",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 78,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "given_known_and_provider_clocks_when_described_then_authority_is_not_inferred",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 7,
+      "name": "ClockDomainKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 15,
+      "name": "ClockDomainOrigin",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 23,
+      "name": "ClockDomainDescriptor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 34,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 38,
+      "name": "origin",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "tick_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "describe_clock_domain",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::timing::domain responsibilities, including The authority that defines timestamps carried by one clock-domain ID.; Selects unspecified behavior for `ClockDomainKind`.; Selects process monotonic behavior for `ClockDomainKind`.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/timing-and-clocks.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/map-source-time.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/timing.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/troubleshooting/timing.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/identity.rs"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "pocketstation::timing::domain::ClockDomainKind: The authority that defines timestamps carried by one clock-domain ID.",
+    "pocketstation::timing::domain::ClockDomainKind::Unspecified: Selects unspecified behavior for `ClockDomainKind`.",
+    "pocketstation::timing::domain::ClockDomainKind::ProcessMonotonic: Selects process monotonic behavior for `ClockDomainKind`.",
+    "pocketstation::timing::domain::ClockDomainKind::ProviderDefined: Selects provider defined behavior for `ClockDomainKind`.",
+    "pocketstation::timing::domain::ClockDomainOrigin: The origin against which timestamps in one clock domain are measured.",
+    "pocketstation::timing::domain::ClockDomainOrigin::Unspecified: Represents the unspecified alternative defined by `ClockDomainOrigin`.",
+    "pocketstation::timing::domain::ClockDomainOrigin::ProcessStart: Represents the process start alternative defined by `ClockDomainOrigin`.",
+    "pocketstation::timing::domain::ClockDomainOrigin::ProviderDefined: Represents the provider defined alternative defined by `ClockDomainOrigin`.",
+    "pocketstation::timing::domain::ClockDomainDescriptor: Finite description of a clock identity carried by frame and signal lineage.",
+    "id: Returns the id held by `ClockDomainDescriptor`.",
+    "kind: Returns the kind represented by `ClockDomainDescriptor`.",
+    "origin: Returns the origin held by `ClockDomainDescriptor`.",
+    "tick_rate_hz: Returns the tick rate hertz held by `ClockDomainDescriptor`.",
+    "pocketstation::timing::domain::describe_clock_domain: Describes the stable semantics Core can assert for a clock-domain ID."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-cd56ec4c57a1c9296423"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

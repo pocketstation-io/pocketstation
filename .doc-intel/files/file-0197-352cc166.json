@@ -1,0 +1,416 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 72,
+      "text": "pub async fn wait_ready(&self) -> bool {"
+    },
+    {
+      "line": 81,
+      "text": "notified.await;"
+    },
+    {
+      "line": 86,
+      "text": "pub async fn wait_terminal(&self) {"
+    },
+    {
+      "line": 92,
+      "text": "notified.await;"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/telemetry.rs"
+  ],
+  "calls": [
+    "any",
+    "cfg",
+    "derive",
+    "load",
+    "notified",
+    "pub",
+    "snapshot",
+    "wait_ready",
+    "wait_terminal"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 71,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 85,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/telemetry.rs"
+  ],
+  "constructs": [],
+  "content_hash": "057853746fb185c8462f34ba3985188f81ff767e15c05315aab71a6b7b425026",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 9,
+      "name": "AsyncOperatorObservationState",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 29,
+      "name": "AsyncOperatorObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 47,
+      "name": "AsyncOperatorObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 72,
+      "name": "wait_ready",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "wait_terminal",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 9,
+      "name": "AsyncOperatorObservationState",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 29,
+      "name": "AsyncOperatorObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 47,
+      "name": "AsyncOperatorObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 72,
+      "name": "wait_ready",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "wait_terminal",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "057853746fb185c8462f34ba3985188f81ff767e15c05315aab71a6b7b425026",
+      "lines": [
+        1,
+        96
+      ],
+      "path": "src/runtime/signal/observations.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/telemetry.rs"
+  ],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0197-352cc166",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "1a8e62442d8c0ffea07d510b78729f7ee20bcf65",
+  "implemented_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/telemetry.rs"
+  ],
+  "implements": [
+    "AsyncOperatorObservationHandle"
+  ],
+  "imported_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/telemetry.rs"
+  ],
+  "imports": [
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "tokio::sync::Notify"
+  ],
+  "inputs": [
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "tokio::sync::Notify"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 96,
+  "locks": [],
+  "module": "pocketstation::runtime::signal::observations",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "fn:snapshot",
+    "fn:wait_ready",
+    "fn:wait_terminal",
+    "struct:AsyncOperatorObservationHandle",
+    "struct:AsyncOperatorObservationState",
+    "struct:AsyncOperatorObservations"
+  ],
+  "package": "pocketstation",
+  "path": "src/runtime/signal/observations.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 9,
+      "name": "AsyncOperatorObservationState",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 29,
+      "name": "AsyncOperatorObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 47,
+      "name": "AsyncOperatorObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 72,
+      "name": "wait_ready",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "wait_terminal",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::runtime::signal::observations responsibilities, including Reports the async operator observations collected at an observation boundary.; Counts the total number of input attempted observed by `AsyncOperatorObservations`.; Counts the total number of input dropped observed by `AsyncOperatorObservations`.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/errors/runtime-and-sidecars.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/route-sizing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [
+    {
+      "line": 4,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 48,
+      "text": "pub(super) state: Arc<AsyncOperatorObservationState>,"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::runtime::signal::observations::AsyncOperatorObservations: Reports the async operator observations collected at an observation boundary.",
+    "AsyncOperatorObservations::input_attempted_total: Counts the total number of input attempted observed by `AsyncOperatorObservations`.",
+    "AsyncOperatorObservations::input_dropped_total: Counts the total number of input dropped observed by `AsyncOperatorObservations`.",
+    "AsyncOperatorObservations::processed_total: Counts the total number of processed observed by `AsyncOperatorObservations`.",
+    "AsyncOperatorObservations::output_emitted_total: Counts the total number of output emitted observed by `AsyncOperatorObservations`.",
+    "AsyncOperatorObservations::output_dropped_total: Counts the total number of output dropped observed by `AsyncOperatorObservations`.",
+    "AsyncOperatorObservations::output_nonterminal_total: Counts the total number of output nonterminal observed by `AsyncOperatorObservations`.",
+    "AsyncOperatorObservations::output_terminal_total: Counts the total number of output terminal observed by `AsyncOperatorObservations`.",
+    "AsyncOperatorObservations::process_failure_total: Counts the total number of process failure observed by `AsyncOperatorObservations`.",
+    "AsyncOperatorObservations::timeout_total: Counts the total number of timeout observed by `AsyncOperatorObservations`.",
+    "AsyncOperatorObservations::cancellation_total: Counts the total number of cancellation observed by `AsyncOperatorObservations`.",
+    "AsyncOperatorObservations::graceful_finish_total: Counts the total number of graceful finish observed by `AsyncOperatorObservations`.",
+    "AsyncOperatorObservations::idle_poll_total: Counts the total number of idle poll observed by `AsyncOperatorObservations`.",
+    "AsyncOperatorObservations::ready: Indicates whether ready applies to `AsyncOperatorObservations`.",
+    "AsyncOperatorObservations::joined: Stores the joined used by `AsyncOperatorObservations`.",
+    "pocketstation::runtime::signal::observations::AsyncOperatorObservationHandle: Owns bounded access to async operator observation.",
+    "snapshot: Returns a point-in-time snapshot of `AsyncOperatorObservationHandle`.",
+    "wait_ready: Waits for ready for `AsyncOperatorObservationHandle`.",
+    "wait_terminal: Waits for terminal for `AsyncOperatorObservationHandle`."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 6,
+      "text": "use tokio::sync::Notify;"
+    },
+    {
+      "line": 72,
+      "text": "pub async fn wait_ready(&self) -> bool {"
+    },
+    {
+      "line": 81,
+      "text": "notified.await;"
+    },
+    {
+      "line": 86,
+      "text": "pub async fn wait_terminal(&self) {"
+    },
+    {
+      "line": 92,
+      "text": "notified.await;"
+    }
+  ],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0769819bf6f85fc4186c",
+    "test-b865f3f1c4ba6e60ac49",
+    "test-d5759eae676d2f1b0131"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

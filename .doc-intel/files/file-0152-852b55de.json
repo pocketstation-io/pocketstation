@@ -1,0 +1,369 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "calls": [
+    "Arc::new",
+    "Compiler::new",
+    "Definition",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Pipeline::new",
+    "SignalSpec::text",
+    "add_node",
+    "clone",
+    "collect",
+    "compile",
+    "connect",
+    "definition",
+    "descriptor",
+    "edge_count",
+    "expect",
+    "given_exact_named_inputs_when_compiled_then_one_multi_port_node_is_preserved",
+    "given_unknown_named_input_when_compiled_then_failure_precedes_runtime",
+    "in_",
+    "into_spec",
+    "iter",
+    "map",
+    "node_count",
+    "out",
+    "port",
+    "register_definition",
+    "registry",
+    "to_owned",
+    "validate_config"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 5,
+      "text": "ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition,"
+    },
+    {
+      "line": 17,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    }
+  ],
+  "constructed_by": [
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "Compiler::new",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Pipeline::new"
+  ],
+  "content_hash": "3755e230f69d24e53410220205b04dab1abac9f7cad329e16cfca1f1da112769",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 9,
+      "name": "Definition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 13,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 16,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 21,
+      "name": "port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "definition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "given_exact_named_inputs_when_compiled_then_one_multi_port_node_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "given_unknown_named_input_when_compiled_then_failure_precedes_runtime",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 99,
+      "text": "assert!(matches!(result, Err(CompileError::UnknownPort { port, .. }) if port == \"missing\"));"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "3755e230f69d24e53410220205b04dab1abac9f7cad329e16cfca1f1da112769",
+      "lines": [
+        1,
+        101
+      ],
+      "path": "src/graph/named_ports.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0152-852b55de",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "bb8b27ba312e5a2859286c87043bcf1f77e8973b",
+  "implemented_by": [
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "implements": [
+    "NodeDefinition for Definition"
+  ],
+  "imported_by": [
+    "IMPORTS:src/graph/mod.rs"
+  ],
+  "imports": [
+    "crate::graph::compile::{CompileError, Compiler}",
+    "crate::graph::{ ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeRegistry, NodeTypeId, Pipeline, PortDirection, PortSpec, SafetyContract, SignalSpec, TextFormat, }",
+    "std::sync::Arc"
+  ],
+  "inputs": [
+    "ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition,",
+    "crate::graph::compile::{CompileError, Compiler}",
+    "crate::graph::{ ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeRegistry, NodeTypeId, Pipeline, PortDirection, PortSpec, SafetyContract, SignalSpec, TextFormat, }",
+    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
+    "std::sync::Arc"
+  ],
+  "invariants": [
+    {
+      "line": 99,
+      "text": "assert!(matches!(result, Err(CompileError::UnknownPort { port, .. }) if port == \"missing\"));"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 101,
+  "locks": [],
+  "module": "pocketstation::graph::named_ports",
+  "network_io": [
+    {
+      "line": 76,
+      "text": "pipeline.connect(context.out(\"context\"), operator.in_(\"context\"));"
+    },
+    {
+      "line": 77,
+      "text": "pipeline.connect(prompt.out(\"prompt\"), operator.in_(\"prompt\"));"
+    },
+    {
+      "line": 95,
+      "text": "pipeline.connect(context.out(\"context\"), operator.in_(\"missing\"));"
+    }
+  ],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-2eceeaaee3e6da04704d"
+  ],
+  "outputs": [
+    "assert!(matches!(result, Err(CompileError::UnknownPort { port, .. }) if port == \"missing\"));"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/named_ports.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "struct",
+      "line": 9,
+      "name": "Definition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 13,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 16,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 21,
+      "name": "port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "definition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "given_exact_named_inputs_when_compiled_then_one_multi_port_node_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "given_unknown_named_input_when_compiled_then_failure_precedes_runtime",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::named ports responsibilities, including the src/graph/named ports boundary."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [
+    {
+      "line": 1,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 33,
+      "text": "fn definition(type_id: &str, inputs: &[&str], outputs: &[&str]) -> Arc<dyn NodeDefinition> {"
+    },
+    {
+      "line": 34,
+      "text": "Arc::new(Definition(NodeDescriptor {"
+    }
+  ],
+  "responsibilities": [
+    "Definition (struct)",
+    "descriptor (fn)",
+    "validate_config (fn)",
+    "port (fn)",
+    "definition (fn)",
+    "registry (fn)",
+    "given_exact_named_inputs_when_compiled_then_one_multi_port_node_is_preserved (fn)",
+    "given_unknown_named_input_when_compiled_then_failure_precedes_runtime (fn)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 76,
+      "text": "pipeline.connect(context.out(\"context\"), operator.in_(\"context\"));"
+    },
+    {
+      "line": 77,
+      "text": "pipeline.connect(prompt.out(\"prompt\"), operator.in_(\"prompt\"));"
+    },
+    {
+      "line": 95,
+      "text": "pipeline.connect(context.out(\"context\"), operator.in_(\"missing\"));"
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-1a4df0780a30d247ebc4",
+    "test-20fc88a0719f6a9da67e"
+  ],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

@@ -1,0 +1,339 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "IMPORTS:src/capture/platform/mod.rs"
+  ],
+  "calls": [
+    "any",
+    "cfg",
+    "pub"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 1,
+      "text": "#[cfg(target_os = \"windows\")]"
+    },
+    {
+      "line": 3,
+      "text": "#[cfg(any(target_os = \"windows\", test))]"
+    },
+    {
+      "line": 5,
+      "text": "#[cfg(any(target_os = \"windows\", test))]"
+    },
+    {
+      "line": 7,
+      "text": "#[cfg(any(target_os = \"windows\", test))]"
+    },
+    {
+      "line": 9,
+      "text": "#[cfg(any(target_os = \"windows\", test))]"
+    },
+    {
+      "line": 12,
+      "text": "#[cfg(target_os = \"windows\")]"
+    },
+    {
+      "line": 14,
+      "text": "#[cfg(target_os = \"windows\")]"
+    },
+    {
+      "line": 17,
+      "text": "#[cfg(target_os = \"windows\")]"
+    },
+    {
+      "line": 19,
+      "text": "#[cfg(target_os = \"windows\")]"
+    },
+    {
+      "line": 21,
+      "text": "#[cfg(target_os = \"windows\")]"
+    }
+  ],
+  "constructed_by": [
+    "IMPORTS:src/capture/platform/mod.rs"
+  ],
+  "constructs": [],
+  "content_hash": "a23907e76748e3f5e38446d2899aba633234f6aeb5612a6aa237f8e0b56c16c3",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "authorization",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "open_lifecycle",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "packet_delivery",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "process_identity",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 10,
+      "name": "runtime_lifecycle",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 13,
+      "name": "session_backend",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 15,
+      "name": "windows",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "a23907e76748e3f5e38446d2899aba633234f6aeb5612a6aa237f8e0b56c16c3",
+      "lines": [
+        1,
+        26
+      ],
+      "path": "src/capture/platform/windows/mod.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "IMPORTS:src/capture/platform/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0096-89033c88",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "475387e4796287ea14bb689caeeab5afed6aaf59",
+  "implemented_by": [
+    "IMPORTS:src/capture/platform/mod.rs"
+  ],
+  "implements": [],
+  "imported_by": [
+    "IMPORTS:src/capture/platform/mod.rs"
+  ],
+  "imports": [
+    "authorization::microphone_permission_observation",
+    "module:authorization",
+    "module:open_lifecycle",
+    "module:packet_delivery",
+    "module:process_identity",
+    "module:runtime_lifecycle",
+    "module:session_backend",
+    "module:windows",
+    "session_backend::DesktopCaptureBackend",
+    "windows::{ discover_sources_windows, DesktopCaptureSource, SystemLoopbackSource, WindowsAudioThreadPriorityGuard, WASAPI_PROCESS_LOOPBACK_PERIOD_100NS, }"
+  ],
+  "inputs": [
+    "#[cfg(any(target_os = \"windows\", test))]",
+    "#[cfg(target_os = \"windows\")]",
+    "authorization::microphone_permission_observation",
+    "module:authorization",
+    "module:open_lifecycle",
+    "module:packet_delivery",
+    "module:process_identity",
+    "module:runtime_lifecycle",
+    "module:session_backend",
+    "module:windows",
+    "session_backend::DesktopCaptureBackend",
+    "windows::{ discover_sources_windows, DesktopCaptureSource, SystemLoopbackSource, WindowsAudioThreadPriorityGuard, WASAPI_PROCESS_LOOPBACK_PERIOD_100NS, }"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 26,
+  "locks": [],
+  "module": "pocketstation::capture::platform::windows",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "No emitted value or public declaration is recorded for this file."
+  ],
+  "package": "pocketstation",
+  "path": "src/capture/platform/windows/mod.rs",
+  "platform_gate": [
+    "windows"
+  ],
+  "potential_pitfalls": [
+    "Only applies under the recorded target gate; implementation is not physical qualification.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "authorization",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "open_lifecycle",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "packet_delivery",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "process_identity",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 10,
+      "name": "runtime_lifecycle",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 13,
+      "name": "session_backend",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 15,
+      "name": "windows",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::capture::platform::windows responsibilities, including the src/capture/platform/windows/mod boundary."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [
+    "session_backend::DesktopCaptureBackend"
+  ],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/source-selection.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/select-process-source.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/run-transcription.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/troubleshooting/timing.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "relationship_outputs": [
+    "IMPORTS:src/capture/platform/windows/authorization.rs",
+    "IMPORTS:src/capture/platform/windows/open_lifecycle.rs",
+    "IMPORTS:src/capture/platform/windows/packet_delivery.rs",
+    "IMPORTS:src/capture/platform/windows/process_identity.rs",
+    "IMPORTS:src/capture/platform/windows/runtime_lifecycle.rs",
+    "IMPORTS:src/capture/platform/windows/session_backend.rs",
+    "IMPORTS:src/capture/platform/windows/windows.rs"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "authorization (mod)",
+    "open_lifecycle (mod)",
+    "packet_delivery (mod)",
+    "process_identity (mod)",
+    "runtime_lifecycle (mod)",
+    "session_backend (mod)",
+    "windows (mod)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

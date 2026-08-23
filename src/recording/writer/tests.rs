@@ -123,6 +123,7 @@ fn given_two_clock_mapped_stems_when_finished_then_two_aligned_playable_wavs_are
     let recording = MultistemRecording::start_observed(
         temp_dir.path(),
         SessionId(42),
+        crate::endpoint::EndpointGroupId::new("recording.test.v1"),
         vec![
             (
                 application,
@@ -139,6 +140,7 @@ fn given_two_clock_mapped_stems_when_finished_then_two_aligned_playable_wavs_are
     .unwrap();
     let outcome = recording.finish().unwrap();
 
+    assert!(outcome.session_dir.join("manifest.json").is_file());
     assert_eq!(outcome.state, RecordingState::Complete);
     assert_eq!(outcome.completed_stems, 2);
     for label in ["application", "microphone"] {
@@ -157,6 +159,9 @@ fn given_two_clock_mapped_stems_when_finished_then_two_aligned_playable_wavs_are
         serde_json::from_reader(File::open(outcome.session_dir.join("manifest.json")).unwrap())
             .unwrap();
     assert_eq!(manifest["state"], "complete");
+    assert_eq!(manifest["schema_version"], 1);
+    assert_eq!(manifest["session_id"], 42);
+    assert_eq!(manifest["recording_group_id"], "recording.test.v1");
     assert_eq!(manifest["stems"][0]["first_timestamp_ns"], 10_000);
     assert_eq!(manifest["stems"][1]["first_timestamp_ns"], 10_000);
     assert!(manifest["stems"][0]["checksum"].as_str().is_some());
@@ -177,6 +182,7 @@ fn given_timestamp_and_sequence_gap_when_finished_then_silence_and_events_preser
     let recording = MultistemRecording::start_observed(
         temp_dir.path(),
         SessionId(7),
+        crate::endpoint::EndpointGroupId::new("recording.test.v1"),
         vec![(
             config.clone(),
             receivers.pop().unwrap(),
@@ -224,6 +230,7 @@ fn given_queued_audio_when_recording_cancelled_then_wav_header_is_playable_and_m
     let recording = MultistemRecording::start_observed(
         temp_dir.path(),
         SessionId(8),
+        crate::endpoint::EndpointGroupId::new("recording.test.v1"),
         vec![(
             config,
             receivers.pop().unwrap(),
@@ -276,6 +283,7 @@ fn given_failed_recorder_branch_when_more_frames_dispatched_then_healthy_branch_
     let recording = MultistemRecording::start_observed(
         temp_dir.path(),
         SessionId(9),
+        crate::endpoint::EndpointGroupId::new("recording.test.v1"),
         vec![(
             expected,
             recorder_receiver,

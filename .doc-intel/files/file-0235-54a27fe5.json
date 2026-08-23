@@ -1,0 +1,2789 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 1579,
+      "text": "let result = host.execute(lifecycle_timeout, async move {"
+    },
+    {
+      "line": 1593,
+      "text": ".await"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
+  "calls": [
+    "ApplicationSelector::BundleId",
+    "ApplicationSelector::Name",
+    "ApplicationSelector::ProcessId",
+    "ApplicationSelector::StableId",
+    "ApplicationSelector::process_instance",
+    "Arc::clone",
+    "Arc::new",
+    "AsyncOperatorWorker::prepare_and_spawn_session_composed",
+    "AsyncRuntimeHost::new",
+    "AtomicBool::new",
+    "CaptureLineageSeed::new",
+    "CaptureMode::Application",
+    "CaptureMode::InputDevice",
+    "CaptureMode::Process",
+    "ClockDomainId",
+    "DeviceSelector::Id",
+    "Duration::from_millis",
+    "EndpointPortInput::signal",
+    "EndpointPrepareContext::new",
+    "EndpointRouteContext::from_source",
+    "EndpointRouteContext::from_stem",
+    "EndpointRouteContext::signal",
+    "GeneratedAudioBridge::spawn",
+    "InputDeviceSelector::StableId",
+    "OperatorInputObservation::Plan",
+    "OperatorInputObservation::Typed",
+    "OperatorInputObservationBinding::aggregate",
+    "OperatorInputObservationBinding::per_port",
+    "PreparedExternalSourceTarget::AudioIngress",
+    "PreparedExternalSourceTarget::OperatorInput",
+    "PreparedExternalSourceTarget::TypedEndpoint",
+    "PreparedOperatorOutputTarget::GeneratedAudio",
+    "PreparedOperatorOutputTarget::SignalEndpoint",
+    "ProcessId::new",
+    "RealtimePlanRunner::new",
+    "SessionAudioReentryMetrics::from_bridge",
+    "SessionControlFailure::new",
+    "SessionFinalizationFailure::new",
+    "SessionOperatorInput::Typed",
+    "SessionRollbackFailure::new",
+    "SessionSourceFailure::new",
+    "SessionStartCancellation::default",
+    "SessionTerminalOutcome::failed_start",
+    "SessionTerminalOutcome::new",
+    "SessionTimelineOrigin::from_monotonic_timestamp_ns",
+    "SidecarHostError::UnknownSidecar",
+    "Source::Application",
+    "Source::Microphone",
+    "Source::application",
+    "SourceRegistry::default",
+    "SourceRuntimeEventReceive::Event",
+    "StableSourceId::new",
+    "StartupRollback::default",
+    "Vec::new",
+    "Vec::with_capacity",
+    "all",
+    "any",
+    "append",
+    "as_deref",
+    "as_mut",
+    "as_ref",
+    "as_str",
+    "attach_sidecars",
+    "audio_reentry_metrics",
+    "cancel",
+    "cancel_and_join",
+    "cancel_and_reap",
+    "capture_delivery_start_gate",
+    "capture_mode",
+    "cfg",
+    "chain",
+    "clamp",
+    "clone",
+    "cloned",
+    "close_and_reap",
+    "collect",
+    "collect_and_prepare_operator_endpoint_inputs",
+    "complete_start_failure",
+    "contains",
+    "copied",
+    "count",
+    "crate::session::SessionEndpointFailure::new",
+    "crate::timing::monotonic_timestamp_ns",
+    "derive",
+    "derived_route_metrics",
+    "drain",
+    "drop",
+    "edge_id",
+    "endpoint_observations",
+    "endpoint_start_gate",
+    "err",
+    "execute",
+    "extend",
+    "external_source_metrics",
+    "failures_total",
+    "filter",
+    "filter_map",
+    "find",
+    "finish",
+    "finish_and_join",
+    "flat_map",
+    "flatten",
+    "get",
+    "given_process_instance_selector_when_capture_mode_built_then_exact_identity_is_preserved",
+    "id",
+    "indexed_metrics",
+    "indexed_metrics_full",
+    "into_boxed_slice",
+    "into_iter",
+    "is_empty",
+    "is_err",
+    "is_none",
+    "is_requested",
+    "is_some",
+    "is_success",
+    "iter",
+    "iter_mut",
+    "join",
+    "join_and_finalize",
+    "len",
+    "let",
+    "load",
+    "manifest",
+    "map",
+    "map_err",
+    "map_or",
+    "map_or_else",
+    "name",
+    "observation_handle",
+    "observation_receipt",
+    "observations",
+    "ok_or",
+    "open",
+    "operator_metrics",
+    "output_ports",
+    "pop",
+    "position",
+    "prepare_and_open_captures",
+    "prepare_batch",
+    "prepare_capture_with_start_gate",
+    "prepare_endpoint_batches",
+    "prepare_endpoints",
+    "prepare_external_source_runtimes",
+    "prepare_operator_runtimes",
+    "prepare_session",
+    "process_ready",
+    "pub",
+    "publish_endpoint",
+    "publish_endpoint_outcome_failures",
+    "publish_finalization",
+    "publish_lifecycle",
+    "publish_rollback",
+    "publish_source",
+    "publish_terminal",
+    "publish_terminal_events",
+    "push",
+    "push_finalization_failure",
+    "receive_sidecar_signal",
+    "receive_signal",
+    "recv",
+    "recv_timeout",
+    "remove",
+    "request_shutdown",
+    "rev",
+    "reverse",
+    "rollback",
+    "rollback_captures",
+    "rollback_operator_runtimes",
+    "rollback_prepared_endpoints",
+    "rollback_running_endpoints",
+    "rollback_running_operators",
+    "rollback_runtime_resources",
+    "rollback_started_runtime",
+    "rollback_worker_outcome",
+    "run_runtime_worker",
+    "saturating_add",
+    "send",
+    "session_event_channel",
+    "session_id",
+    "shutdown",
+    "sidecar_metrics",
+    "snapshot",
+    "sort_by_key",
+    "source",
+    "spawn",
+    "split_off",
+    "start",
+    "start_prepared_session",
+    "start_prepared_session_cancellable",
+    "start_prepared_session_cancellable_with_trace",
+    "state",
+    "std::mem::take",
+    "std::thread::Builder::new",
+    "std::thread::sleep",
+    "stem_id",
+    "stems",
+    "stop",
+    "stop_and_join",
+    "stop_once",
+    "stop_outcome",
+    "store",
+    "success",
+    "take",
+    "take_event_receiver",
+    "terminate_operators",
+    "to_owned",
+    "to_string",
+    "try_next_lineaged_frame",
+    "try_receive_sidecar_signal",
+    "try_receive_signal",
+    "try_recv_runtime_event",
+    "try_send",
+    "try_send_sidecar_signal",
+    "try_send_signal",
+    "u64::from",
+    "unwrap_or",
+    "validate_source_topology",
+    "validate_start_options",
+    "with_connector_id",
+    "zip"
+  ],
+  "cancellation_behavior": [
+    {
+      "line": 423,
+      "text": "pub fn cancel(&mut self) -> SessionStopOutcome {"
+    },
+    {
+      "line": 440,
+      "text": "source.runtime.cancel();"
+    },
+    {
+      "line": 1138,
+      "text": "source.runtime.cancel();"
+    }
+  ],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 626,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 642,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 2596,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "AsyncRuntimeHost::new",
+    "AtomicBool::new",
+    "CaptureLineageSeed::new",
+    "EndpointPrepareContext::new",
+    "ProcessId::new",
+    "RealtimePlanRunner::new",
+    "SessionControlFailure::new",
+    "SessionFinalizationFailure::new",
+    "SessionRollbackFailure::new",
+    "SessionSourceFailure::new",
+    "SessionTerminalOutcome::new",
+    "StableSourceId::new",
+    "Vec::new",
+    "crate::session::SessionEndpointFailure::new",
+    "std::thread::Builder::new",
+    "u64::from"
+  ],
+  "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 58,
+      "name": "RuntimeSource",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 64,
+      "name": "OpenedCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 69,
+      "name": "RuntimeWorkerStart",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 79,
+      "name": "RuntimeWorkerOutcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 88,
+      "name": "RunningEndpointBinding",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 93,
+      "name": "PendingSignalEndpointInput",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 98,
+      "name": "PreparedOperatorRuntime",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 108,
+      "name": "RunningOperatorBinding",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 117,
+      "name": "PendingOperatorTypedInput",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 123,
+      "name": "PreparedExternalRuntimeBinding",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 129,
+      "name": "RunningExternalRuntimeBinding",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 136,
+      "name": "SignalEndpointPreparationResult",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 144,
+      "name": "OperatorFinalizationOutcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 153,
+      "name": "SidecarFinalizationOutcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 159,
+      "name": "SessionFinalizationOutcomes",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 168,
+      "name": "OperatorTermination",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 172,
+      "name": "RunningSession",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 198,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 203,
+      "name": "state",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "take_event_receiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 210,
+      "name": "operator_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 214,
+      "name": "external_source_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 218,
+      "name": "derived_route_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 222,
+      "name": "audio_reentry_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 244,
+      "name": "sidecar_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 259,
+      "name": "try_send_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 271,
+      "name": "try_receive_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 282,
+      "name": "receive_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 293,
+      "name": "attach_sidecars",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 298,
+      "name": "indexed_metrics",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 331,
+      "name": "indexed_metrics_full",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 411,
+      "name": "stop",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 422,
+      "name": "cancel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 433,
+      "name": "stop_once",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 583,
+      "name": "endpoint_observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 619,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 627,
+      "name": "start_prepared_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 643,
+      "name": "start_prepared_session_cancellable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 661,
+      "name": "start_prepared_session_cancellable_with_trace",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "type",
+      "line": 1221,
+      "name": "ExternalSourcePreparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1229,
+      "name": "prepare_external_source_runtimes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1407,
+      "name": "prepare_operator_runtimes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1786,
+      "name": "collect_and_prepare_operator_endpoint_inputs",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1833,
+      "name": "prepare_and_open_captures",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 1879,
+      "name": "CaptureAcquisitionError",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1894,
+      "name": "rollback",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1934,
+      "name": "capture_mode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1964,
+      "name": "run_runtime_worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2062,
+      "name": "rollback_operator_runtimes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2099,
+      "name": "terminate_operators",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2157,
+      "name": "rollback_running_operators",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2191,
+      "name": "rollback_running_endpoints",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2220,
+      "name": "rollback_captures",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2239,
+      "name": "rollback_runtime_resources",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2271,
+      "name": "rollback_worker_outcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2298,
+      "name": "rollback_started_runtime",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2318,
+      "name": "stop_outcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2362,
+      "name": "publish_terminal_events",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2519,
+      "name": "publish_endpoint_outcome_failures",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2556,
+      "name": "push_finalization_failure",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2573,
+      "name": "complete_start_failure",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 2597,
+      "name": "selector_tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2605,
+      "name": "given_process_instance_selector_when_capture_mode_built_then_exact_identity_is_preserved",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [
+    {
+      "line": 2609,
+      "text": "\"wasapi:pid:42:creation-100ns:133801234567890000\","
+    }
+  ],
+  "drop_cleanup": [
+    {
+      "line": 619,
+      "text": "fn drop(&mut self) {"
+    },
+    {
+      "line": 1996,
+      "text": "drop(frame);"
+    },
+    {
+      "line": 2069,
+      "text": "drop(operator.signal_inputs);"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 11,
+      "text": "use crate::endpoint::{"
+    },
+    {
+      "line": 91,
+      "text": "endpoint: RunningEndpoint,"
+    },
+    {
+      "line": 316,
+      "text": "let (endpoint, endpoint_observation_stage, finalization_failures_total) ="
+    },
+    {
+      "line": 322,
+      "text": "endpoint,"
+    },
+    {
+      "line": 396,
+      "text": "let (endpoint, endpoint_observation_stage, finalization_failures_total) ="
+    },
+    {
+      "line": 402,
+      "text": "endpoint,"
+    },
+    {
+      "line": 526,
+      "text": "for endpoint in &mut self.endpoints {"
+    },
+    {
+      "line": 527,
+      "text": "let _ = endpoint.endpoint.request_shutdown(endpoint_shutdown);"
+    },
+    {
+      "line": 532,
+      "text": ".map(|binding| (binding.identities, binding.endpoint.join_and_finalize()))"
+    },
+    {
+      "line": 609,
+      "text": "Some(binding.endpoint.observations()),"
+    },
+    {
+      "line": 772,
+      "text": "while let Some(endpoint) = prepared_endpoints.pop() {"
+    },
+    {
+      "line": 774,
+      "text": "prepared_endpoints.push(endpoint);"
+    },
+    {
+      "line": 787,
+      "text": "match endpoint.endpoint.start(Arc::clone(&start_gate)) {"
+    },
+    {
+      "line": 789,
+      "text": "identities: endpoint.identities,"
+    },
+    {
+      "line": 790,
+      "text": "endpoint: running,"
+    },
+    {
+      "line": 1067,
+      "text": "while let Some(endpoint) = prepared_signal_endpoints.pop() {"
+    },
+    {
+      "line": 1069,
+      "text": "prepared_signal_endpoints.push(endpoint);"
+    },
+    {
+      "line": 1088,
+      "text": "match endpoint.endpoint.start(Arc::clone(&start_gate)) {"
+    },
+    {
+      "line": 1090,
+      "text": "identities: endpoint.identities,"
+    },
+    {
+      "line": 1091,
+      "text": "endpoint: running,"
+    },
+    {
+      "line": 1342,
+      "text": "let endpoint = match endpoint_registry.prepare_batch("
+    },
+    {
+      "line": 1354,
+      "text": "Ok(endpoint) => endpoint,"
+    },
+    {
+      "line": 1373,
+      "text": "endpoint,"
+    },
+    {
+      "line": 2195,
+      "text": "let outcome = binding.endpoint.join_and_finalize();"
+    },
+    {
+      "line": 2207,
+      "text": "SessionComponentId::Endpoint {"
+    },
+    {
+      "line": 2546,
+      "text": "SessionComponentId::Endpoint {"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 172,
+      "name": "RunningSession",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 198,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 203,
+      "name": "state",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "take_event_receiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 210,
+      "name": "operator_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 214,
+      "name": "external_source_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 218,
+      "name": "derived_route_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 222,
+      "name": "audio_reentry_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 244,
+      "name": "sidecar_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 259,
+      "name": "try_send_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 271,
+      "name": "try_receive_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 282,
+      "name": "receive_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 293,
+      "name": "attach_sidecars",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 298,
+      "name": "indexed_metrics",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 331,
+      "name": "indexed_metrics_full",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 411,
+      "name": "stop",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 422,
+      "name": "cancel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 627,
+      "name": "start_prepared_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 643,
+      "name": "start_prepared_session_cancellable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 661,
+      "name": "start_prepared_session_cancellable_with_trace",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 474,
+      "text": "Err(error) => Some(error.to_string()),"
+    },
+    {
+      "line": 690,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 718,
+      "text": "Err((error, rollback_failures)) => {"
+    },
+    {
+      "line": 719,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 748,
+      "text": "Err((error, rollback_failures)) => {"
+    },
+    {
+      "line": 749,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 761,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 777,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 792,
+      "text": "Err(source) => {"
+    },
+    {
+      "line": 796,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 818,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 820,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 832,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 857,
+      "text": "Err(source) => {"
+    },
+    {
+      "line": 861,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 900,
+      "text": "Err(_) => None,"
+    },
+    {
+      "line": 903,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 907,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 926,
+      "text": "if let Err(error) = start_tx.send(start) {"
+    },
+    {
+      "line": 934,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 945,
+      "text": "if let Err(error) ="
+    },
+    {
+      "line": 951,
+      "text": "Ok(None) | Err(_) => StartupRollback {"
+    },
+    {
+      "line": 964,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 981,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 985,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 1006,
+      "text": "Err((mut error, operator_rollback_failures)) => {"
+    },
+    {
+      "line": 1020,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 1040,
+      "text": "Err((error, endpoint_rollback_failures)) => {"
+    },
+    {
+      "line": 1058,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 1078,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 1093,
+      "text": "Err(source) => {"
+    },
+    {
+      "line": 1102,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 1136,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 1150,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 1178,
+      "text": "return Err(complete_start_failure("
+    },
+    {
+      "line": 1274,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 1276,
+      "text": "return Err(("
+    },
+    {
+      "line": 1287,
+      "text": "return Err(("
+    },
+    {
+      "line": 1355,
+      "text": "Err(source) => {"
+    },
+    {
+      "line": 1357,
+      "text": "return Err(("
+    },
+    {
+      "line": 1457,
+      "text": "return Err(("
+    },
+    {
+      "line": 1530,
+      "text": "return Err(("
+    },
+    {
+      "line": 1549,
+      "text": "return Err(("
+    },
+    {
+      "line": 1597,
+      "text": "Ok(Err(error)) => {"
+    },
+    {
+      "line": 1599,
+      "text": "return Err(("
+    },
+    {
+      "line": 1608,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 1610,
+      "text": "return Err(("
+    },
+    {
+      "line": 1633,
+      "text": "return Err(("
+    },
+    {
+      "line": 1659,
+      "text": "return Err(("
+    },
+    {
+      "line": 1696,
+      "text": "return Err(("
+    },
+    {
+      "line": 1737,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 1749,
+      "text": "return Err(("
+    },
+    {
+      "line": 1775,
+      "text": "return Err(("
+    },
+    {
+      "line": 1854,
+      "text": "Err(source) => {"
+    },
+    {
+      "line": 1855,
+      "text": "return Err(CaptureAcquisitionError::Prepare {"
+    },
+    {
+      "line": 1864,
+      "text": "Err(source) => {"
+    },
+    {
+      "line": 1865,
+      "text": "return Err(CaptureAcquisitionError::Open {"
+    },
+    {
+      "line": 2006,
+      "text": "Err(_) => {"
+    },
+    {
+      "line": 2080,
+      "text": "Ok(Err(error)) => Some(error.to_string()),"
+    },
+    {
+      "line": 2081,
+      "text": "Err(error) => Some(error.to_string()),"
+    },
+    {
+      "line": 2125,
+      "text": "Ok(Err(error)) => Some(error.to_string()),"
+    },
+    {
+      "line": 2126,
+      "text": "Err(error) => Some(error.to_string()),"
+    },
+    {
+      "line": 2173,
+      "text": "Ok(Err(error)) => Some(error.to_string()),"
+    },
+    {
+      "line": 2174,
+      "text": "Err(error) => Some(error.to_string()),"
+    },
+    {
+      "line": 2224,
+      "text": "if let Err(error) = capture.owner.stop_and_join() {"
+    },
+    {
+      "line": 2246,
+      "text": "if let Err(error) = source.capture.stop_and_join() {"
+    },
+    {
+      "line": 2259,
+      "text": "if let Err(error) = runner.finish(PlanRunnerDrainPolicy::DiscardQueued, 1) {"
+    },
+    {
+      "line": 2275,
+      "text": "if let Err(error) = result {"
+    },
+    {
+      "line": 2286,
+      "text": "if let Err(error) = outcome.runner {"
+    },
+    {
+      "line": 2306,
+      "text": "Ok(None) | Err(_) => StartupRollback {"
+    },
+    {
+      "line": 2350,
+      "text": "Some(Ok(None)) | Some(Err(_)) | None => SessionStopOutcome {"
+    },
+    {
+      "line": 2379,
+      "text": "if let Err(error) = result {"
+    },
+    {
+      "line": 2391,
+      "text": "if let Err(error) = &worker.runner {"
+    },
+    {
+      "line": 2533,
+      "text": "let Err(error) = result else {"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 1879,
+      "name": "CaptureAcquisitionError",
+      "visibility": "private"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 671,
+      "text": "validate_start_options(options).map_err(SessionStartFailure::input)?;"
+    },
+    {
+      "line": 672,
+      "text": "validate_source_topology(&prepared).map_err(SessionStartFailure::input)?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 671,
+      "text": "validate_start_options(options).map_err(SessionStartFailure::input)?;"
+    },
+    {
+      "line": 672,
+      "text": "validate_source_topology(&prepared).map_err(SessionStartFailure::input)?;"
+    },
+    {
+      "line": 1315,
+      "text": ".map_err(|error| {"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 671,
+      "text": "validate_start_options(options).map_err(SessionStartFailure::input)?;"
+    },
+    {
+      "line": 672,
+      "text": "validate_source_topology(&prepared).map_err(SessionStartFailure::input)?;"
+    },
+    {
+      "line": 1315,
+      "text": ".map_err(|error| {"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "28b15160297abbeaa5082896042841a8ae7b0f5f6ef4047bd92a692b029736b8",
+      "lines": [
+        1,
+        2625
+      ],
+      "path": "src/session/lifecycle/running.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0235-54a27fe5",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [
+    {
+      "line": 447,
+      "text": ".drain(..)"
+    },
+    {
+      "line": 459,
+      "text": "for bridge in self.external_audio_bridges.drain(..) {"
+    },
+    {
+      "line": 464,
+      "text": ".drain(..)"
+    },
+    {
+      "line": 501,
+      "text": "self.operators.drain(..).collect(),"
+    },
+    {
+      "line": 531,
+      "text": ".drain(..)"
+    }
+  ],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "47a422962674e265ebe86d175e995145bc8d0606",
+  "implemented_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
+  "implements": [
+    "RunningSession",
+    "Drop for RunningSession",
+    "CaptureAcquisitionError"
+  ],
+  "imported_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
+  "imports": [
+    "crate::capture::{ capture_delivery_start_gate, prepare_capture_with_start_gate, CaptureDeliveryStartGate, CaptureError, CaptureLineageSeed, CaptureMode, CapturePrepareRequest, CaptureStopOutcome, InputDeviceSelector, SourceRuntimeEventReceive, }",
+    "crate::capture::{CaptureMode, SourceKind, StableSourceId}",
+    "crate::endpoint::{ endpoint_start_gate, EndpointDriverObservations, EndpointDriverRegistry, EndpointFailure, EndpointFinalizationOutcome, EndpointPortInput, EndpointPrepareContext, EndpointRouteContext, RunningEndpoint, SessionTimelineOrigin, }",
+    "crate::frame::Platform",
+    "crate::frame::{ClockDomainId, EndpointId, RouteId, SessionId, StemId}",
+    "crate::runtime::{ AsyncOperatorNamedOutputBranchSpec, AsyncOperatorObservationHandle, AsyncOperatorObservations, AsyncOperatorOutput, AsyncOperatorTypedInput, AsyncOperatorWorker, AsyncRuntimeHost, CompiledOperatorInputContract, GeneratedAudioBridge, GeneratedAudioBridgeSpec, PlanRunnerDrainPolicy, PlanRunnerError, PlanRunnerFinishSummary, PlanSourceSendError, PlanSourceSendOutcome, RealtimePlanRunner, SessionOperatorInput, SidecarHost, SidecarHostError, SidecarHostSnapshot, SidecarMessage, }",
+    "crate::session::lifecycle::control::{ validate_source_topology, validate_start_options, CaptureBackendSet, SessionStartCancellation, SessionStartError, SessionStartFailure, SessionStartOptions, SessionStopOutcome, }",
+    "crate::session::lifecycle::endpoint_setup::{ prepare_endpoint_batches, prepare_endpoints, rollback_prepared_endpoints, PendingEndpointPortInput, PreparedEndpointBinding, }",
+    "crate::session::lifecycle::events::{session_event_channel, SessionEventSender}",
+    "crate::session::lifecycle::operator_inputs::{ OperatorInputObservation, OperatorInputObservationBinding, }",
+    "crate::session::lifecycle::rollback::StartupRollback",
+    "crate::session::lifecycle::telemetry::{ DerivedRouteObservationBinding, FinalEndpointObservation, FinalOperatorObservation, IndexedSessionMetrics, RouteObservationBinding, SourceObservationBinding, }",
+    "crate::session::prepare::{ PreparedExternalSourceMapping, PreparedExternalSourceTarget, PreparedOperatorInputMapping, PreparedOperatorMapping, PreparedOperatorOutputTarget, PreparedSignalRouteMapping, }",
+    "crate::session::{ ApplicationSelector, DeviceSelector, EndpointObservationStage, OperatorInstanceId, PreparedSession, PreparedSourceRuntime, SessionAudioReentryMetrics, SessionComponentId, SessionControlFailure, SessionDerivedRouteMetrics, SessionEventReceiver, SessionExternalSourceMetrics, SessionFinalizationFailure, SessionFinalizationStage, SessionLifecycleState, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRollbackFailure, SessionRollbackStage, SessionRouteMetrics, SessionSidecarMetrics, SessionSourceFailure, SessionSourceMetrics, SessionTerminalOutcome, SessionTraceRecorderHandle, Source, SourceOutputBranchSpec, SourceOutputIdentity, SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceSessionContext, }",
+    "crate::session::{ApplicationSelector, ProcessId, Source}",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, Ordering}",
+    "std::thread::JoinHandle",
+    "std::time::Duration",
+    "super::capture_mode"
+  ],
+  "inputs": [
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(test)]",
+    "crate::capture::{ capture_delivery_start_gate, prepare_capture_with_start_gate, CaptureDeliveryStartGate, CaptureError, CaptureLineageSeed, CaptureMode, CapturePrepareRequest, CaptureStopOutcome, InputDeviceSelector, SourceRuntimeEventReceive, }",
+    "crate::capture::{CaptureMode, SourceKind, StableSourceId}",
+    "crate::endpoint::{ endpoint_start_gate, EndpointDriverObservations, EndpointDriverRegistry, EndpointFailure, EndpointFinalizationOutcome, EndpointPortInput, EndpointPrepareContext, EndpointRouteContext, RunningEndpoint, SessionTimelineOrigin, }",
+    "crate::frame::Platform",
+    "crate::frame::{ClockDomainId, EndpointId, RouteId, SessionId, StemId}",
+    "crate::runtime::{ AsyncOperatorNamedOutputBranchSpec, AsyncOperatorObservationHandle, AsyncOperatorObservations, AsyncOperatorOutput, AsyncOperatorTypedInput, AsyncOperatorWorker, AsyncRuntimeHost, CompiledOperatorInputContract, GeneratedAudioBridge, GeneratedAudioBridgeSpec, PlanRunnerDrainPolicy, PlanRunnerError, PlanRunnerFinishSummary, PlanSourceSendError, PlanSourceSendOutcome, RealtimePlanRunner, SessionOperatorInput, SidecarHost, SidecarHostError, SidecarHostSnapshot, SidecarMessage, }",
+    "crate::session::lifecycle::control::{ validate_source_topology, validate_start_options, CaptureBackendSet, SessionStartCancellation, SessionStartError, SessionStartFailure, SessionStartOptions, SessionStopOutcome, }",
+    "crate::session::lifecycle::endpoint_setup::{ prepare_endpoint_batches, prepare_endpoints, rollback_prepared_endpoints, PendingEndpointPortInput, PreparedEndpointBinding, }",
+    "crate::session::lifecycle::events::{session_event_channel, SessionEventSender}",
+    "crate::session::lifecycle::operator_inputs::{ OperatorInputObservation, OperatorInputObservationBinding, }",
+    "crate::session::lifecycle::rollback::StartupRollback",
+    "crate::session::lifecycle::telemetry::{ DerivedRouteObservationBinding, FinalEndpointObservation, FinalOperatorObservation, IndexedSessionMetrics, RouteObservationBinding, SourceObservationBinding, }",
+    "crate::session::prepare::{ PreparedExternalSourceMapping, PreparedExternalSourceTarget, PreparedOperatorInputMapping, PreparedOperatorMapping, PreparedOperatorOutputTarget, PreparedSignalRouteMapping, }",
+    "crate::session::{ ApplicationSelector, DeviceSelector, EndpointObservationStage, OperatorInstanceId, PreparedSession, PreparedSourceRuntime, SessionAudioReentryMetrics, SessionComponentId, SessionControlFailure, SessionDerivedRouteMetrics, SessionEventReceiver, SessionExternalSourceMetrics, SessionFinalizationFailure, SessionFinalizationStage, SessionLifecycleState, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRollbackFailure, SessionRollbackStage, SessionRouteMetrics, SessionSidecarMetrics, SessionSourceFailure, SessionSourceMetrics, SessionTerminalOutcome, SessionTraceRecorderHandle, Source, SourceOutputBranchSpec, SourceOutputIdentity, SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceSessionContext, }",
+    "crate::session::{ApplicationSelector, ProcessId, Source}",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, Ordering}",
+    "std::thread::JoinHandle",
+    "std::time::Duration",
+    "super::capture_mode"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 2625,
+  "locks": [],
+  "module": "pocketstation::session::lifecycle::running",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-04f8d9b9f861abf03e05",
+    "pattern-099903d47c50357c102e",
+    "pattern-eea7a0d04a047e2090c1"
+  ],
+  "outputs": [
+    "Err((error, rollback_failures)) => {",
+    "Err(error) => Some(error.to_string()),",
+    "Err(source) => {",
+    "fn:attach_sidecars",
+    "fn:audio_reentry_metrics",
+    "fn:cancel",
+    "fn:derived_route_metrics",
+    "fn:external_source_metrics",
+    "fn:indexed_metrics",
+    "fn:indexed_metrics_full",
+    "fn:operator_metrics",
+    "fn:receive_sidecar_signal",
+    "fn:session_id",
+    "fn:sidecar_metrics",
+    "fn:start_prepared_session",
+    "fn:start_prepared_session_cancellable",
+    "fn:start_prepared_session_cancellable_with_trace",
+    "fn:state",
+    "fn:stop",
+    "fn:take_event_receiver",
+    "fn:try_receive_sidecar_signal",
+    "fn:try_send_sidecar_signal",
+    "return Err(complete_start_failure(",
+    "struct:RunningSession"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/lifecycle/running.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "struct",
+      "line": 58,
+      "name": "RuntimeSource",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 64,
+      "name": "OpenedCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 69,
+      "name": "RuntimeWorkerStart",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 79,
+      "name": "RuntimeWorkerOutcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 88,
+      "name": "RunningEndpointBinding",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 93,
+      "name": "PendingSignalEndpointInput",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 98,
+      "name": "PreparedOperatorRuntime",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 108,
+      "name": "RunningOperatorBinding",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 117,
+      "name": "PendingOperatorTypedInput",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 123,
+      "name": "PreparedExternalRuntimeBinding",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 129,
+      "name": "RunningExternalRuntimeBinding",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 136,
+      "name": "SignalEndpointPreparationResult",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 144,
+      "name": "OperatorFinalizationOutcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 153,
+      "name": "SidecarFinalizationOutcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 159,
+      "name": "SessionFinalizationOutcomes",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 168,
+      "name": "OperatorTermination",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 433,
+      "name": "stop_once",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 583,
+      "name": "endpoint_observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 619,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 1221,
+      "name": "ExternalSourcePreparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1229,
+      "name": "prepare_external_source_runtimes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1407,
+      "name": "prepare_operator_runtimes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1786,
+      "name": "collect_and_prepare_operator_endpoint_inputs",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1833,
+      "name": "prepare_and_open_captures",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 1879,
+      "name": "CaptureAcquisitionError",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1894,
+      "name": "rollback",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1934,
+      "name": "capture_mode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1964,
+      "name": "run_runtime_worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2062,
+      "name": "rollback_operator_runtimes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2099,
+      "name": "terminate_operators",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2157,
+      "name": "rollback_running_operators",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2191,
+      "name": "rollback_running_endpoints",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2220,
+      "name": "rollback_captures",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2239,
+      "name": "rollback_runtime_resources",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2271,
+      "name": "rollback_worker_outcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2298,
+      "name": "rollback_started_runtime",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2318,
+      "name": "stop_outcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2362,
+      "name": "publish_terminal_events",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2519,
+      "name": "publish_endpoint_outcome_failures",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2556,
+      "name": "push_finalization_failure",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2573,
+      "name": "complete_start_failure",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 2597,
+      "name": "selector_tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2605,
+      "name": "given_process_instance_selector_when_capture_mode_built_then_exact_identity_is_preserved",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 888,
+      "text": ".spawn(move || match start_rx.recv() {"
+    },
+    {
+      "line": 1301,
+      "text": "let bridge = GeneratedAudioBridge::spawn("
+    },
+    {
+      "line": 1722,
+      "text": "let bridge = match GeneratedAudioBridge::spawn("
+    }
+  ],
+  "protocol_messages": [
+    {
+      "line": 2018,
+      "text": "if let SourceRuntimeEventReceive::Event(event) = active_capture.try_recv_runtime_event()"
+    }
+  ],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 172,
+      "name": "RunningSession",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 198,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 203,
+      "name": "state",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "take_event_receiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 210,
+      "name": "operator_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 214,
+      "name": "external_source_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 218,
+      "name": "derived_route_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 222,
+      "name": "audio_reentry_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 244,
+      "name": "sidecar_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 259,
+      "name": "try_send_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 271,
+      "name": "try_receive_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 282,
+      "name": "receive_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 293,
+      "name": "attach_sidecars",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 298,
+      "name": "indexed_metrics",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 331,
+      "name": "indexed_metrics_full",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 411,
+      "name": "stop",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 422,
+      "name": "cancel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 627,
+      "name": "start_prepared_session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 643,
+      "name": "start_prepared_session_cancellable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 661,
+      "name": "start_prepared_session_cancellable_with_trace",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::lifecycle::running responsibilities, including Owns a started Session together with event, polling, recording, trace, and stop resources.; Returns the session identifier held by `RunningSession`.; Returns the authoritative current lifecycle state owned by this Session.."
+  },
+  "queues": [],
+  "recovery_behavior": [
+    {
+      "line": 38,
+      "text": "use crate::session::lifecycle::rollback::StartupRollback;"
+    },
+    {
+      "line": 760,
+      "text": "let rollback = rollback_prepared_endpoints(prepared_endpoints);"
+    },
+    {
+      "line": 766,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 768,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 775,
+      "text": "let mut rollback = rollback_running_endpoints(running_endpoints);"
+    },
+    {
+      "line": 776,
+      "text": "rollback.append(rollback_prepared_endpoints(prepared_endpoints));"
+    },
+    {
+      "line": 782,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 784,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 793,
+      "text": "let mut rollback = rollback_running_endpoints(running_endpoints);"
+    },
+    {
+      "line": 794,
+      "text": "rollback.append(rollback_prepared_endpoints(prepared_endpoints));"
+    },
+    {
+      "line": 795,
+      "text": "let rollback_failures_total = rollback.failures_total();"
+    },
+    {
+      "line": 804,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 819,
+      "text": "let (error, rollback_failures) = error.rollback(running_endpoints);"
+    },
+    {
+      "line": 830,
+      "text": "let mut rollback = rollback_captures(captures);"
+    },
+    {
+      "line": 831,
+      "text": "rollback.append(rollback_running_endpoints(running_endpoints));"
+    },
+    {
+      "line": 837,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 839,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 858,
+      "text": "let mut rollback = rollback_captures(captures);"
+    },
+    {
+      "line": 859,
+      "text": "rollback.append(rollback_running_endpoints(running_endpoints));"
+    },
+    {
+      "line": 860,
+      "text": "let rollback_failures_total = rollback.failures_total();"
+    },
+    {
+      "line": 869,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 904,
+      "text": "let mut rollback = rollback_runtime_resources(runtime_sources, runner);"
+    },
+    {
+      "line": 905,
+      "text": "rollback.append(rollback_running_endpoints(running_endpoints));"
+    },
+    {
+      "line": 906,
+      "text": "let rollback_failures_total = rollback.failures_total();"
+    },
+    {
+      "line": 915,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 930,
+      "text": "let mut rollback = rollback_runtime_resources(sources, runner);"
+    },
+    {
+      "line": 932,
+      "text": "rollback.append(rollback_running_endpoints(running_endpoints));"
+    },
+    {
+      "line": 933,
+      "text": "let rollback_failures_total = rollback.failures_total();"
+    },
+    {
+      "line": 942,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 949,
+      "text": "let mut rollback = match runtime_worker.join() {"
+    },
+    {
+      "line": 962,
+      "text": "rollback.append(rollback_running_endpoints(running_endpoints));"
+    },
+    {
+      "line": 963,
+      "text": "let rollback_failures_total = rollback.failures_total();"
+    },
+    {
+      "line": 972,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 982,
+      "text": "let mut rollback = rollback_started_runtime(&stop_requested, runtime_worker);"
+    },
+    {
+      "line": 983,
+      "text": "rollback.append(rollback_running_endpoints(running_endpoints));"
+    },
+    {
+      "line": 984,
+      "text": "let rollback_failures_total = rollback.failures_total();"
+    },
+    {
+      "line": 993,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1007,
+      "text": "let mut rollback = StartupRollback {"
+    },
+    {
+      "line": 1010,
+      "text": "rollback.append(rollback_started_runtime(&stop_requested, runtime_worker));"
+    },
+    {
+      "line": 1011,
+      "text": "rollback.append(rollback_running_endpoints(running_endpoints));"
+    },
+    {
+      "line": 1012,
+      "text": "let rollback_failures_total = rollback.failures_total();"
+    },
+    {
+      "line": 1025,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1041,
+      "text": "let mut rollback = StartupRollback {"
+    },
+    {
+      "line": 1045,
+      "text": "rollback.append(rollback_operator_runtimes(host, prepared_operators));"
+    },
+    {
+      "line": 1047,
+      "text": "rollback.append(rollback_started_runtime(&stop_requested, runtime_worker));"
+    },
+    {
+      "line": 1048,
+      "text": "rollback.append(rollback_running_endpoints(running_endpoints));"
+    },
+    {
+      "line": 1053,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1063,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1070,
+      "text": "let mut rollback = rollback_prepared_endpoints(prepared_signal_endpoints);"
+    },
+    {
+      "line": 1072,
+      "text": "rollback.append(rollback_running_endpoints(running_signal_endpoints));"
+    },
+    {
+      "line": 1074,
+      "text": "rollback.append(rollback_operator_runtimes(host, prepared_operators));"
+    },
+    {
+      "line": 1076,
+      "text": "rollback.append(rollback_started_runtime(&stop_requested, runtime_worker));"
+    },
+    {
+      "line": 1077,
+      "text": "rollback.append(rollback_running_endpoints(running_endpoints));"
+    },
+    {
+      "line": 1083,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1085,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1094,
+      "text": "let mut rollback = rollback_prepared_endpoints(prepared_signal_endpoints);"
+    },
+    {
+      "line": 1096,
+      "text": "rollback.append(rollback_running_endpoints(running_signal_endpoints));"
+    },
+    {
+      "line": 1098,
+      "text": "rollback.append(rollback_operator_runtimes(host, prepared_operators));"
+    },
+    {
+      "line": 1100,
+      "text": "rollback.append(rollback_started_runtime(&stop_requested, runtime_worker));"
+    },
+    {
+      "line": 1101,
+      "text": "rollback.append(rollback_running_endpoints(running_endpoints));"
+    },
+    {
+      "line": 1108,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1110,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1144,
+      "text": "let mut rollback = rollback_running_endpoints(running_signal_endpoints);"
+    },
+    {
+      "line": 1146,
+      "text": "rollback.append(rollback_running_operators(host, running_operators));"
+    },
+    {
+      "line": 1148,
+      "text": "rollback.append(rollback_started_runtime(&stop_requested, runtime_worker));"
+    },
+    {
+      "line": 1149,
+      "text": "rollback.append(rollback_running_endpoints(running_endpoints));"
+    },
+    {
+      "line": 1156,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1158,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1172,
+      "text": "let mut rollback = rollback_running_endpoints(running_signal_endpoints);"
+    },
+    {
+      "line": 1174,
+      "text": "rollback.append(rollback_running_operators(host, running_operators));"
+    },
+    {
+      "line": 1176,
+      "text": "rollback.append(rollback_started_runtime(&stop_requested, runtime_worker));"
+    },
+    {
+      "line": 1177,
+      "text": "rollback.append(rollback_running_endpoints(running_endpoints));"
+    },
+    {
+      "line": 1183,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1185,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1275,
+      "text": "let rollback = rollback_prepared_endpoints(std::mem::take(&mut endpoints));"
+    },
+    {
+      "line": 1279,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1281,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1286,
+      "text": "let rollback = rollback_prepared_endpoints(endpoints);"
+    },
+    {
+      "line": 1291,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1293,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1316,
+      "text": "let rollback = rollback_prepared_endpoints(std::mem::take(&mut endpoints));"
+    },
+    {
+      "line": 1320,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1322,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1356,
+      "text": "let rollback = rollback_prepared_endpoints(endpoints);"
+    },
+    {
+      "line": 1360,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1362,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1456,
+      "text": "let rollback = rollback_operator_runtimes(host, prepared);"
+    },
+    {
+      "line": 1462,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1464,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1529,
+      "text": "let rollback = rollback_operator_runtimes(host, prepared);"
+    },
+    {
+      "line": 1536,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1538,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1548,
+      "text": "let rollback = rollback_operator_runtimes(host, prepared);"
+    },
+    {
+      "line": 1555,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1557,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1598,
+      "text": "let rollback = rollback_operator_runtimes(host, prepared);"
+    },
+    {
+      "line": 1603,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1605,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1609,
+      "text": "let rollback = rollback_operator_runtimes(host, prepared);"
+    },
+    {
+      "line": 1614,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1616,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1632,
+      "text": "let rollback = rollback_operator_runtimes(host, incomplete);"
+    },
+    {
+      "line": 1638,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1640,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1658,
+      "text": "let rollback = rollback_operator_runtimes(host, incomplete);"
+    },
+    {
+      "line": 1664,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1666,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1695,
+      "text": "let rollback = rollback_operator_runtimes(host, incomplete);"
+    },
+    {
+      "line": 1702,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1704,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1748,
+      "text": "let rollback = rollback_operator_runtimes(host, incomplete);"
+    },
+    {
+      "line": 1752,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1754,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1774,
+      "text": "let rollback = rollback_operator_runtimes(host, prepared);"
+    },
+    {
+      "line": 1779,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1781,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1894,
+      "text": "fn rollback("
+    },
+    {
+      "line": 1904,
+      "text": "let mut rollback = rollback_captures(prior_captures);"
+    },
+    {
+      "line": 1905,
+      "text": "rollback.append(rollback_running_endpoints(running_endpoints));"
+    },
+    {
+      "line": 1910,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1912,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 1920,
+      "text": "let mut rollback = rollback_captures(prior_captures);"
+    },
+    {
+      "line": 1921,
+      "text": "rollback.append(rollback_running_endpoints(running_endpoints));"
+    },
+    {
+      "line": 1926,
+      "text": "rollback_failures_total: rollback.failures_total(),"
+    },
+    {
+      "line": 1928,
+      "text": "rollback.failures,"
+    },
+    {
+      "line": 2067,
+      "text": "let mut rollback = StartupRollback::default();"
+    },
+    {
+      "line": 2084,
+      "text": "rollback.failures.push(SessionRollbackFailure::new("
+    },
+    {
+      "line": 2097,
+      "text": "rollback"
+    },
+    {
+      "line": 2162,
+      "text": "let mut rollback = StartupRollback::default();"
+    },
+    {
+      "line": 2177,
+      "text": "rollback.failures.push(SessionRollbackFailure::new("
+    },
+    {
+      "line": 2189,
+      "text": "rollback"
+    },
+    {
+      "line": 2193,
+      "text": "let mut rollback = StartupRollback::default();"
+    },
+    {
+      "line": 2204,
+      "text": "rollback.failures.push(SessionRollbackFailure::new("
+    },
+    {
+      "line": 2218,
+      "text": "rollback"
+    },
+    {
+      "line": 2222,
+      "text": "let mut rollback = StartupRollback::default();"
+    },
+    {
+      "line": 2225,
+      "text": "rollback.failures.push(SessionRollbackFailure::new("
+    },
+    {
+      "line": 2237,
+      "text": "rollback"
+    },
+    {
+      "line": 2244,
+      "text": "let mut rollback = StartupRollback::default();"
+    },
+    {
+      "line": 2247,
+      "text": "rollback.failures.push(SessionRollbackFailure::new("
+    },
+    {
+      "line": 2260,
+      "text": "rollback.failures.push(SessionRollbackFailure::new("
+    },
+    {
+      "line": 2269,
+      "text": "rollback"
+    },
+    {
+      "line": 2273,
+      "text": "let mut rollback = StartupRollback::default();"
+    },
+    {
+      "line": 2276,
+      "text": "rollback.failures.push(SessionRollbackFailure::new("
+    },
+    {
+      "line": 2287,
+      "text": "rollback.failures.push(SessionRollbackFailure::new("
+    },
+    {
+      "line": 2296,
+      "text": "rollback"
+    }
+  ],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/capture/authorization.rs",
+    "REFERENCES:src/capture/capture_owner.rs",
+    "REFERENCES:src/capture/frame_stream.rs",
+    "REFERENCES:src/capture/selection.rs",
+    "REFERENCES:src/endpoint/registry.rs",
+    "REFERENCES:src/endpoint/runtime.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/runtime/audio/runner.rs",
+    "REFERENCES:src/runtime/bridge/audio.rs",
+    "REFERENCES:src/runtime/lifecycle/async_host.rs",
+    "REFERENCES:src/runtime/lifecycle/sidecar_host.rs",
+    "REFERENCES:src/runtime/lifecycle/sidecar_protocol.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/observations.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/declaration/selector.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/extensions/source.rs",
+    "REFERENCES:src/session/lifecycle/control.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_setup.rs",
+    "REFERENCES:src/session/lifecycle/events.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/operator_inputs.rs",
+    "REFERENCES:src/session/lifecycle/rollback.rs",
+    "REFERENCES:src/session/lifecycle/telemetry.rs",
+    "REFERENCES:src/session/lifecycle/trace.rs",
+    "REFERENCES:src/session/prepare/mappings.rs",
+    "REFERENCES:src/session/prepare/prepared.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 2,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 67,
+      "text": "owner: crate::capture::CaptureOwner,"
+    },
+    {
+      "line": 148,
+      "text": "input_ports: Box<[SessionOperatorInputMetrics]>,"
+    },
+    {
+      "line": 150,
+      "text": "audio_reentries: Box<[SessionAudioReentryMetrics]>,"
+    },
+    {
+      "line": 176,
+      "text": "stop_requested: Arc<AtomicBool>,"
+    },
+    {
+      "line": 211,
+      "text": "pub fn operator_metrics(&self) -> Box<[SessionOperatorMetrics]> {"
+    },
+    {
+      "line": 215,
+      "text": "pub fn external_source_metrics(&self) -> Box<[SessionExternalSourceMetrics]> {"
+    },
+    {
+      "line": 219,
+      "text": "pub fn derived_route_metrics(&self) -> Box<[SessionDerivedRouteMetrics]> {"
+    },
+    {
+      "line": 223,
+      "text": "pub fn audio_reentry_metrics(&self) -> Box<[SessionAudioReentryMetrics]> {"
+    },
+    {
+      "line": 245,
+      "text": "pub fn sidecar_metrics(&self) -> Box<[SessionSidecarMetrics]> {"
+    },
+    {
+      "line": 301,
+      "text": ") -> (Box<[SessionSourceMetrics]>, Box<[SessionRouteMetrics]>) {"
+    },
+    {
+      "line": 618,
+      "text": "impl Drop for RunningSession {"
+    },
+    {
+      "line": 787,
+      "text": "match endpoint.endpoint.start(Arc::clone(&start_gate)) {"
+    },
+    {
+      "line": 815,
+      "text": "Arc::clone(&capture_start_gate),"
+    },
+    {
+      "line": 850,
+      "text": "capture: capture.owner.observation_receipt(),"
+    },
+    {
+      "line": 878,
+      "text": "capture: capture.owner,"
+    },
+    {
+      "line": 882,
+      "text": "let stop_requested = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 883,
+      "text": "let worker_stop_requested = Arc::clone(&stop_requested);"
+    },
+    {
+      "line": 1088,
+      "text": "match endpoint.endpoint.start(Arc::clone(&start_gate)) {"
+    },
+    {
+      "line": 1577,
+      "text": "let factory_for_spawn = Arc::clone(&factory);"
+    },
+    {
+      "line": 1837,
+      "text": "start_gate: Arc<CaptureDeliveryStartGate>,"
+    },
+    {
+      "line": 1852,
+      "text": "match prepare_capture_with_start_gate(binding, request, Arc::clone(&start_gate)) {"
+    },
+    {
+      "line": 1874,
+      "text": "owner: capture,"
+    },
+    {
+      "line": 1968,
+      "text": "stop_requested: Arc<AtomicBool>,"
+    },
+    {
+      "line": 2224,
+      "text": "if let Err(error) = capture.owner.stop_and_join() {"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::session::lifecycle::running::RunningSession: Owns a started Session together with event, polling, recording, trace, and stop resources.",
+    "session_id: Returns the session identifier held by `RunningSession`.",
+    "state: Returns the authoritative current lifecycle state owned by this Session.",
+    "take_event_receiver: Takes event receiver for `RunningSession`.",
+    "operator_metrics: Returns the operator metrics held by `RunningSession`.",
+    "external_source_metrics: Returns the external source metrics held by `RunningSession`.",
+    "derived_route_metrics: Returns the derived route metrics held by `RunningSession`.",
+    "audio_reentry_metrics: Returns the audio reentry metrics held by `RunningSession`.",
+    "sidecar_metrics: Returns the sidecar metrics held by `RunningSession`.",
+    "try_send_sidecar_signal: Attempts to send sidecar signal through `RunningSession`.",
+    "try_receive_sidecar_signal: Attempts to receive sidecar signal through `RunningSession`.",
+    "receive_sidecar_signal: Receives sidecar signal for `RunningSession`.",
+    "stop: Stops `RunningSession` and returns its terminal result.",
+    "cancel: Requests cancellation of `RunningSession`.",
+    "drop: Releases resources owned by `RunningSession`.",
+    "pocketstation::session::lifecycle::running::start_prepared_session: Starts prepared session for `running`.",
+    "pocketstation::session::lifecycle::running::start_prepared_session_cancellable: Starts prepared session cancellable for `running`."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 412,
+      "text": "pub fn stop(&mut self) -> SessionStopOutcome {"
+    },
+    {
+      "line": 504,
+      "text": "let shutdown_error = host.shutdown().err().map(|error| error.to_string());"
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 2609,
+      "text": "\"wasapi:pid:42:creation-100ns:133801234567890000\","
+    },
+    {
+      "line": 888,
+      "text": ".spawn(move || match start_rx.recv() {"
+    },
+    {
+      "line": 1301,
+      "text": "let bridge = GeneratedAudioBridge::spawn("
+    },
+    {
+      "line": 1722,
+      "text": "let bridge = match GeneratedAudioBridge::spawn("
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 43,
+      "text": "use crate::session::prepare::{"
+    },
+    {
+      "line": 787,
+      "text": "match endpoint.endpoint.start(Arc::clone(&start_gate)) {"
+    },
+    {
+      "line": 889,
+      "text": "Ok(start) => {"
+    },
+    {
+      "line": 892,
+      "text": "start.sources,"
+    },
+    {
+      "line": 893,
+      "text": "start.runner,"
+    },
+    {
+      "line": 895,
+      "text": "start.options,"
+    },
+    {
+      "line": 896,
+      "text": "start.session_id,"
+    },
+    {
+      "line": 897,
+      "text": "start.event_sender,"
+    },
+    {
+      "line": 919,
+      "text": "let start = RuntimeWorkerStart {"
+    },
+    {
+      "line": 926,
+      "text": "if let Err(error) = start_tx.send(start) {"
+    },
+    {
+      "line": 1088,
+      "text": "match endpoint.endpoint.start(Arc::clone(&start_gate)) {"
+    },
+    {
+      "line": 1131,
+      "text": "let runtime = match prepared_source.runtime.start() {"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 1579,
+      "text": "let result = host.execute(lifecycle_timeout, async move {"
+    },
+    {
+      "line": 1593,
+      "text": ".await"
+    }
+  ],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-227e08bced503585a75c",
+    "test-284127121760cbb5874f",
+    "test-4d0f3e5a95ea9490a090",
+    "test-6d6c3692eac547e8fa36",
+    "test-74fc5d0f0a325399dd1d",
+    "test-88d498541ed4c5ea973a",
+    "test-89251e3206216dbcb480",
+    "test-9839e75a34cc80e4b057",
+    "test-a0e61ef0aeeadaa96b67",
+    "test-b269c7b61711642b5e6e",
+    "test-b5fe30e5dbde18fe390e",
+    "test-c924643ab2f4f9cf21d1",
+    "test-fa434d4493e32a828c72"
+  ],
+  "threads": [
+    {
+      "line": 3,
+      "text": "use std::thread::JoinHandle;"
+    },
+    {
+      "line": 886,
+      "text": "let runtime_worker = match std::thread::Builder::new()"
+    },
+    {
+      "line": 888,
+      "text": ".spawn(move || match start_rx.recv() {"
+    },
+    {
+      "line": 1301,
+      "text": "let bridge = GeneratedAudioBridge::spawn("
+    },
+    {
+      "line": 1722,
+      "text": "let bridge = match GeneratedAudioBridge::spawn("
+    },
+    {
+      "line": 2038,
+      "text": "std::thread::sleep(Duration::from_millis(options.runtime_idle_poll_ms));"
+    },
+    {
+      "line": 2320,
+      "text": "worker: &Option<std::thread::Result<Option<RuntimeWorkerOutcome>>>,"
+    },
+    {
+      "line": 2366,
+      "text": "worker: &Option<std::thread::Result<Option<RuntimeWorkerOutcome>>>,"
+    }
+  ],
+  "visibility": "mixed"
+}

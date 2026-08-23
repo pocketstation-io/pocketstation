@@ -18,11 +18,11 @@
         "--all-features"
       ],
       "returncode": 0,
-      "stderr": " Documenting pocketstation v1.1.1 (/Users/raph/Development/pocketstation-io/pocketstation)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.31s\n   Generated /Users/raph/Development/pocketstation-io/pocketstation/target/doc/pocketstation/index.html\n",
+      "stderr": "    Checking tokio v1.52.3\n    Checking thiserror v1.0.69\n    Checking serde v1.0.228\n Documenting pocketstation v1.1.2 (/Users/raph/Development/pocketstation-io/pocketstation)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.88s\n   Generated /Users/raph/Development/pocketstation-io/pocketstation/target/doc/pocketstation/index.html\n",
       "stdout": ""
     }
   ],
-  "created_at": "2026-08-23T17:41:23+00:00",
+  "created_at": "2026-08-23T18:14:18+00:00",
   "name": "documentation-build",
   "passed": true
 }

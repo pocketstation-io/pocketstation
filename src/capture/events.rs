@@ -139,9 +139,13 @@ pub enum SourceRuntimeEventDelivery {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Enumerates the supported source runtime event receive cases."]
 pub enum SourceRuntimeEventReceive {
+    #[doc = "Identifies the event state or stage represented by `SourceRuntimeEventReceive`."]
     Event(SourceRuntimeEvent),
+    #[doc = "Represents an empty value or collection."]
     Empty,
+    #[doc = "Reports that the underlying channel or resource is closed."]
     Closed,
 }
 
@@ -348,12 +352,14 @@ pub fn publish_backend_failure(
 }
 
 #[derive(Debug)]
+#[doc = "Receives source runtime event values across its declared ownership boundary."]
 pub struct SourceRuntimeEventReceiver {
     receiver: std::sync::mpsc::Receiver<QueuedSourceRuntimeEvent>,
     counters: Arc<SourceRuntimeEventCounters>,
 }
 
 impl SourceRuntimeEventReceiver {
+    #[doc = "Attempts to receive the next value from `SourceRuntimeEventReceiver` without waiting."]
     pub fn try_recv(&self) -> SourceRuntimeEventReceive {
         match self.receiver.try_recv() {
             Ok(queued) => {
@@ -367,10 +373,12 @@ impl SourceRuntimeEventReceiver {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the observations exposed by `SourceRuntimeEventReceiver`."]
     pub fn observations(&self) -> SourceRuntimeEventObservations {
         self.observation_handle().observations()
     }
 
+    #[doc = "Returns a handle for reading observations from `SourceRuntimeEventReceiver`."]
     pub fn observation_handle(&self) -> SourceRuntimeEventObservationHandle {
         SourceRuntimeEventObservationHandle {
             counters: Arc::clone(&self.counters),
@@ -378,6 +386,7 @@ impl SourceRuntimeEventReceiver {
     }
 }
 
+#[doc = "Creates the bounded sender and receiver used for source runtime events."]
 pub fn source_runtime_event_channel(
     capacity_events: usize,
 ) -> Result<(SourceRuntimeEventSender, SourceRuntimeEventReceiver), CaptureError> {

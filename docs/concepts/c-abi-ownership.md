@@ -58,18 +58,18 @@ The scope of **C ABI ownership** ends at the native contracts and executable con
 
 Executable evidence selected for **C ABI ownership** is limited to each test's recorded setup and assertions:
 
-- `given_full_table_when_insert_then_capacity_failure_is_returned` — given full table when insert then capacity failure is returned (`src/abi/session/handle.rs:148`; `test-a76e025cf00946b166f4`).
-- `given_other_scope_when_lookup_then_foreign_handle_is_reported` — given other scope when lookup then foreign handle is reported (`src/abi/session/handle.rs:159`; `test-a0dac1b61a0737f50473`).
-- `given_removed_handle_when_lookup_then_stale_is_reported` — given removed handle when lookup then stale is reported (`src/abi/session/handle.rs:135`; `test-ee9437f141714a79bbc7`).
-- `given_bitrate_change_when_encode_then_still_produces_valid_packet` — given bitrate change when encode then still produces valid packet (`src/abi/codec.rs:416`; `test-60e08c6e7ec6bb4b5978`).
-- `given_encoder_when_destroy_null_then_no_crash` — given encoder when destroy null then no crash (`src/abi/codec.rs:384`; `test-c5614104f53b6b245bfd`).
-- `given_invalid_channel_count_when_create_then_returns_null` — given invalid channel count when create then returns null (`src/abi/codec.rs:237`; `test-736ddd354b42f58df4ad`).
-- `given_invalid_frame_size_when_encode_then_error_is_typed_without_writing` — given invalid frame size when encode then error is typed without writing (`src/abi/codec.rs:307`; `test-1e4368d9ab7990c79bd7`).
-- `given_null_encoder_when_encode_then_returns_minus_one` — given null encoder when encode then returns minus one (`src/abi/codec.rs:273`; `test-041037b5b9482d79c8e2`).
-- `given_null_encoder_when_set_bitrate_then_returns_minus_one` — given null encoder when set bitrate then returns minus one (`src/abi/codec.rs:408`; `test-d3686b94180b732c8001`).
-- `given_panicking_abi_bodies_when_guarded_then_panics_are_contained` — given panicking abi bodies when guarded then panics are contained (`src/abi/codec.rs:373`; `test-03d685383aaeadb55cad`).
-- `given_rejected_capacity_when_retried_then_encoder_state_is_unchanged` — given rejected capacity when retried then encoder state is unchanged (`src/abi/codec.rs:323`; `test-d02294e14bc1e7d6bfd2`).
-- `given_sine_440hz_when_round_trip_then_decoded_has_energy` — given sine 440hz when round trip then decoded has energy (`src/abi/codec.rs:435`; `test-3e20a259ad1a0f55a8c8`).
+- `given_full_table_when_insert_then_capacity_failure_is_returned` — given full table when insert then capacity failure is returned (`src/abi/session/handle.rs:148`; `test-1fd15e979f3cff1947b5`).
+- `given_other_scope_when_lookup_then_foreign_handle_is_reported` — given other scope when lookup then foreign handle is reported (`src/abi/session/handle.rs:159`; `test-206ebd1f399506308ec7`).
+- `given_removed_handle_when_lookup_then_stale_is_reported` — given removed handle when lookup then stale is reported (`src/abi/session/handle.rs:135`; `test-3f91a4691a62e3175273`).
+- `given_bitrate_change_when_encode_then_still_produces_valid_packet` — given bitrate change when encode then still produces valid packet (`src/abi/codec.rs:416`; `test-f2e13a28f1aa591f3c67`).
+- `given_encoder_when_destroy_null_then_no_crash` — given encoder when destroy null then no crash (`src/abi/codec.rs:384`; `test-8ba7b5b19e9d7dfbc464`).
+- `given_invalid_channel_count_when_create_then_returns_null` — given invalid channel count when create then returns null (`src/abi/codec.rs:237`; `test-9fb4684ff29b5ab716fd`).
+- `given_invalid_frame_size_when_encode_then_error_is_typed_without_writing` — given invalid frame size when encode then error is typed without writing (`src/abi/codec.rs:307`; `test-002ce44230f2b0ac6d7c`).
+- `given_null_encoder_when_encode_then_returns_minus_one` — given null encoder when encode then returns minus one (`src/abi/codec.rs:273`; `test-657d1e2cbdcbd70cf5fa`).
+- `given_null_encoder_when_set_bitrate_then_returns_minus_one` — given null encoder when set bitrate then returns minus one (`src/abi/codec.rs:408`; `test-f10bfad1b583316ad6fb`).
+- `given_panicking_abi_bodies_when_guarded_then_panics_are_contained` — given panicking abi bodies when guarded then panics are contained (`src/abi/codec.rs:373`; `test-a807dc7f3aad831eda7a`).
+- `given_rejected_capacity_when_retried_then_encoder_state_is_unchanged` — given rejected capacity when retried then encoder state is unchanged (`src/abi/codec.rs:323`; `test-2f90a0a4149901522180`).
+- `given_sine_440hz_when_round_trip_then_decoded_has_energy` — given sine 440hz when round trip then decoded has energy (`src/abi/codec.rs:435`; `test-073998688232a109f6e7`).
 
 ## Related documentation
 
@@ -84,7 +84,7 @@ Executable evidence selected for **C ABI ownership** is limited to each test's r
 
 ## Evidence boundary
 
-The claims on **C ABI ownership** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **C ABI ownership** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `include/pocketstation.h:1-615` (`DIRECT`)
 - `src/abi/session/handle.rs:1-173` (`DIRECT`)

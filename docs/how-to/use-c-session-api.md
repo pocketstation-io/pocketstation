@@ -31,18 +31,18 @@ Every call returns an accepted `PksSessionStatus`, stop completes, and each hand
 
 Executable evidence selected for **Operate a Session through C** is limited to each test's recorded setup and assertions:
 
-- `abi_session_c_success_conformance` — abi session c success conformance (`tests/abi_session_c_success_conformance.c:1`; `test-a2314a88cf28de25b331`).
-- `given_deterministic_session_when_polled_then_audio_lease_is_bounded_and_stable` — given deterministic session when polled then audio lease is bounded and stable (`src/abi/session/mod.rs:1036`; `test-16c3dd3ac223381ec20a`).
-- `given_native_engine_when_created_then_real_session_declaration_compiles` — given native engine when created then real session declaration compiles (`src/abi/session/mod.rs:929`; `test-ec0f9d1e4ec547217e7b`).
-- `abi_session_c_conformance` — abi session c conformance (`tests/abi_session_c_conformance.c:1`; `test-1ab6697ee6c783b1c41b`).
-- `abi_session_c_metrics_canary` — abi session c metrics canary (`tests/abi_session_c_metrics_canary.c:1`; `test-fe902c5e04fb9d6f128e`).
-- `given_fixture_session_when_started_then_two_stems_cross_canonical_engine` — given fixture session when started then two stems cross canonical engine (`tests/conformance_fixture.rs:14`; `test-bec1e3cd7f059a144101`).
-- `given_bitrate_change_when_encode_then_still_produces_valid_packet` — given bitrate change when encode then still produces valid packet (`src/abi/codec.rs:416`; `test-60e08c6e7ec6bb4b5978`).
-- `given_encoder_when_destroy_null_then_no_crash` — given encoder when destroy null then no crash (`src/abi/codec.rs:384`; `test-c5614104f53b6b245bfd`).
-- `given_invalid_channel_count_when_create_then_returns_null` — given invalid channel count when create then returns null (`src/abi/codec.rs:237`; `test-736ddd354b42f58df4ad`).
-- `given_invalid_frame_size_when_encode_then_error_is_typed_without_writing` — given invalid frame size when encode then error is typed without writing (`src/abi/codec.rs:307`; `test-1e4368d9ab7990c79bd7`).
-- `given_null_encoder_when_encode_then_returns_minus_one` — given null encoder when encode then returns minus one (`src/abi/codec.rs:273`; `test-041037b5b9482d79c8e2`).
-- `given_null_encoder_when_set_bitrate_then_returns_minus_one` — given null encoder when set bitrate then returns minus one (`src/abi/codec.rs:408`; `test-d3686b94180b732c8001`).
+- `abi_session_c_success_conformance` — abi session c success conformance (`tests/abi_session_c_success_conformance.c:1`; `test-fbd5f1d6e0ff13895c92`).
+- `given_deterministic_session_when_polled_then_audio_lease_is_bounded_and_stable` — given deterministic session when polled then audio lease is bounded and stable (`src/abi/session/mod.rs:1036`; `test-5172b35e16680497535b`).
+- `given_native_engine_when_created_then_real_session_declaration_compiles` — given native engine when created then real session declaration compiles (`src/abi/session/mod.rs:929`; `test-c204d11ecd759d78439f`).
+- `abi_session_c_conformance` — abi session c conformance (`tests/abi_session_c_conformance.c:1`; `test-9e1beea6279253161031`).
+- `abi_session_c_metrics_canary` — abi session c metrics canary (`tests/abi_session_c_metrics_canary.c:1`; `test-46202761e460d88bfd8e`).
+- `given_fixture_session_when_started_then_two_stems_cross_canonical_engine` — given fixture session when started then two stems cross canonical engine (`tests/conformance_fixture.rs:14`; `test-82f8ec2b9c0fa3a0eb0b`).
+- `given_bitrate_change_when_encode_then_still_produces_valid_packet` — given bitrate change when encode then still produces valid packet (`src/abi/codec.rs:416`; `test-f2e13a28f1aa591f3c67`).
+- `given_encoder_when_destroy_null_then_no_crash` — given encoder when destroy null then no crash (`src/abi/codec.rs:384`; `test-8ba7b5b19e9d7dfbc464`).
+- `given_invalid_channel_count_when_create_then_returns_null` — given invalid channel count when create then returns null (`src/abi/codec.rs:237`; `test-9fb4684ff29b5ab716fd`).
+- `given_invalid_frame_size_when_encode_then_error_is_typed_without_writing` — given invalid frame size when encode then error is typed without writing (`src/abi/codec.rs:307`; `test-002ce44230f2b0ac6d7c`).
+- `given_null_encoder_when_encode_then_returns_minus_one` — given null encoder when encode then returns minus one (`src/abi/codec.rs:273`; `test-657d1e2cbdcbd70cf5fa`).
+- `given_null_encoder_when_set_bitrate_then_returns_minus_one` — given null encoder when set bitrate then returns minus one (`src/abi/codec.rs:408`; `test-f10bfad1b583316ad6fb`).
 
 ## Failure signals
 
@@ -77,7 +77,7 @@ No task-specific public error was resolved for operate a session through c; pres
 
 ## Evidence boundary
 
-The claims on **Operate a Session through C** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Operate a Session through C** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `tests/abi_session_c_success_conformance.c:1-191` (`DIRECT`)
 

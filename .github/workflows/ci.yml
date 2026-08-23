@@ -37,12 +37,14 @@ jobs:
       - name: Rust formatting
         run: cargo fmt --all -- --check
 
+      - name: Materialize the connector conformance corpus
+        run: |
+          mkdir -p ../protocol/conformance/connector/v1
+          cp scripts/fixtures/connector-v1-vectors.json \
+            ../protocol/conformance/connector/v1/vectors.json
+
       - name: Workspace tests
-        # The canonical connector vectors live in the private sibling protocol
-        # repository and are exercised by the local conformance checkpoint.
-        run: >-
-          cargo test --workspace --all-features --locked --
-          --skip given_canonical_connector_vectors_when_compared_then_core_contract_semantics_match
+        run: cargo test --workspace --all-features --locked
 
       - name: Strict workspace Clippy
         run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings

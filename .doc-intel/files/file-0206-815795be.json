@@ -1,0 +1,862 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/connector/configuration.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs"
+  ],
+  "calls": [
+    "DebugValue",
+    "EndpointConfiguration::new",
+    "EndpointDescriptor::new",
+    "NodeTypeId::from",
+    "OperatorId::new",
+    "OperatorId::syntax_version",
+    "Self::default",
+    "as_str",
+    "cfg",
+    "configuration",
+    "crate::graph::OperatorId::new",
+    "crate::secret::clear_string",
+    "debug_map",
+    "derive",
+    "drop",
+    "entries",
+    "find",
+    "finish",
+    "fmt",
+    "get",
+    "given_endpoint_operator_id_when_imported_from_session_then_endpoint_contract_type_is_reexported",
+    "given_provider_owned_endpoint_key_when_validated_then_core_keeps_it_open",
+    "input_edge",
+    "insert",
+    "into",
+    "is_empty",
+    "is_ok",
+    "is_sensitive",
+    "is_some_and",
+    "iter",
+    "map",
+    "new",
+    "node_type_id",
+    "operator_id",
+    "pub",
+    "to_owned",
+    "trim",
+    "validate",
+    "with",
+    "with_configuration",
+    "with_input_edge",
+    "with_sensitive",
+    "write_str"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 172,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/connector/configuration.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs"
+  ],
+  "constructs": [
+    "EndpointConfiguration::new",
+    "EndpointDescriptor::new",
+    "NodeTypeId::from",
+    "OperatorId::new",
+    "crate::graph::OperatorId::new",
+    "new"
+  ],
+  "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 7,
+      "name": "CONNECTOR_NODE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 9,
+      "name": "BROWSER_NODE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 10,
+      "name": "BROWSER_OPERATOR_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 11,
+      "name": "BROWSER_RECEIVER_URI_CONFIGURATION_KEY",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 14,
+      "name": "EndpointConfiguration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 19,
+      "name": "EndpointConfigurationValue",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "with_sensitive",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 63,
+      "name": "is_sensitive",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "iter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 86,
+      "name": "DebugValue",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 89,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 110,
+      "name": "EndpointDescriptor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 118,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 126,
+      "name": "with_configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 136,
+      "name": "with_input_edge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "node_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 148,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 152,
+      "name": "input_edge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 156,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 173,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 177,
+      "name": "given_endpoint_operator_id_when_imported_from_session_then_endpoint_contract_type_is_reexported",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 186,
+      "name": "given_provider_owned_endpoint_key_when_validated_then_core_keeps_it_open",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 25,
+      "text": "fn drop(&mut self) {"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 8,
+      "text": "pub const CONNECTOR_NODE_TYPE_ID: &str = \"endpoint.connector.external\";"
+    },
+    {
+      "line": 9,
+      "text": "pub const BROWSER_NODE_TYPE_ID: &str = \"endpoint.browser.remote\";"
+    },
+    {
+      "line": 132,
+      "text": "/// Declares the bounded delivery policy for routes entering this endpoint."
+    },
+    {
+      "line": 134,
+      "text": "/// Endpoint packages own this policy. The Session compiler validates and"
+    },
+    {
+      "line": 189,
+      "text": "OperatorId::new(\"dev.pocketstation.test.endpoint.v1\"),"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 7,
+      "name": "CONNECTOR_NODE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 9,
+      "name": "BROWSER_NODE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 10,
+      "name": "BROWSER_OPERATOR_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 11,
+      "name": "BROWSER_RECEIVER_URI_CONFIGURATION_KEY",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 14,
+      "name": "EndpointConfiguration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "with_sensitive",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 63,
+      "name": "is_sensitive",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "iter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 110,
+      "name": "EndpointDescriptor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 118,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 126,
+      "name": "with_configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 136,
+      "name": "with_input_edge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "node_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 148,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 152,
+      "name": "input_edge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 156,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 76,
+      "text": "return Err(SessionError::InvalidEndpoint {"
+    },
+    {
+      "line": 159,
+      "text": "return Err(SessionError::InvalidEndpoint {"
+    },
+    {
+      "line": 164,
+      "text": "return Err(SessionError::InvalidEndpoint {"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "673ba9f22a13ee79e2e48ad1e1feb49dc3a72264c3bcb3fd48db106503c5868c",
+      "lines": [
+        1,
+        200
+      ],
+      "path": "src/session/declaration/endpoint.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/connector/configuration.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0206-815795be",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "a4429f87da3c558e72039568448c7216096d9f9a",
+  "implemented_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/connector/configuration.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs"
+  ],
+  "implements": [
+    "Drop for EndpointConfigurationValue",
+    "EndpointConfiguration",
+    "std::fmt::Debug for EndpointConfiguration",
+    "std::fmt::Debug for DebugValue<'_>",
+    "EndpointDescriptor"
+  ],
+  "imported_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/connector/configuration.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs"
+  ],
+  "imports": [
+    "crate::graph::OperatorId",
+    "crate::graph::{EdgeContract, NodeTypeId}",
+    "crate::session::SessionError",
+    "std::collections::BTreeMap",
+    "super::*"
+  ],
+  "inputs": [
+    "#[cfg(test)]",
+    "crate::graph::OperatorId",
+    "crate::graph::{EdgeContract, NodeTypeId}",
+    "crate::session::SessionError",
+    "std::collections::BTreeMap",
+    "super::*"
+  ],
+  "invariants": [
+    {
+      "line": 77,
+      "text": "reason: format!(\"configuration key {key:?} cannot be empty\"),"
+    },
+    {
+      "line": 160,
+      "text": "reason: \"node type id cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 165,
+      "text": "reason: \"operator id cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 193,
+      "text": "assert!(descriptor.validate().is_ok());"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 200,
+  "locks": [],
+  "module": "pocketstation::session::declaration::endpoint",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-77a192cab21743b48c15"
+  ],
+  "outputs": [
+    "const:BROWSER_NODE_TYPE_ID",
+    "const:BROWSER_OPERATOR_ID",
+    "const:BROWSER_RECEIVER_URI_CONFIGURATION_KEY",
+    "const:CONNECTOR_NODE_TYPE_ID",
+    "fn:configuration",
+    "fn:get",
+    "fn:input_edge",
+    "fn:is_sensitive",
+    "fn:iter",
+    "fn:new",
+    "fn:node_type_id",
+    "fn:operator_id",
+    "fn:validate",
+    "fn:with",
+    "fn:with_configuration",
+    "fn:with_input_edge",
+    "fn:with_sensitive",
+    "return Err(SessionError::InvalidEndpoint {",
+    "struct:EndpointConfiguration",
+    "struct:EndpointDescriptor"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/declaration/endpoint.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "struct",
+      "line": 19,
+      "name": "EndpointConfigurationValue",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 86,
+      "name": "DebugValue",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 89,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 173,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 177,
+      "name": "given_endpoint_operator_id_when_imported_from_session_then_endpoint_contract_type_is_reexported",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 186,
+      "name": "given_provider_owned_endpoint_key_when_validated_then_core_keeps_it_open",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 7,
+      "name": "CONNECTOR_NODE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 9,
+      "name": "BROWSER_NODE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 10,
+      "name": "BROWSER_OPERATOR_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 11,
+      "name": "BROWSER_RECEIVER_URI_CONFIGURATION_KEY",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 14,
+      "name": "EndpointConfiguration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "with_sensitive",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 63,
+      "name": "is_sensitive",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "iter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 110,
+      "name": "EndpointDescriptor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 118,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 126,
+      "name": "with_configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 136,
+      "name": "with_input_edge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "node_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 148,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 152,
+      "name": "input_edge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 156,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::declaration::endpoint responsibilities, including Defines the public connector node type identifier value.; Defines the public browser node type identifier value.; Defines the public browser operator identifier value.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [
+    "crate::graph::OperatorId"
+  ],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/operator.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/session/error.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 24,
+      "text": "impl Drop for EndpointConfigurationValue {"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::session::declaration::endpoint::CONNECTOR_NODE_TYPE_ID: Defines the public connector node type identifier value.",
+    "pocketstation::session::declaration::endpoint::BROWSER_NODE_TYPE_ID: Defines the public browser node type identifier value.",
+    "pocketstation::session::declaration::endpoint::BROWSER_OPERATOR_ID: Defines the public browser operator identifier value.",
+    "pocketstation::session::declaration::endpoint::EndpointConfiguration: Configures endpoint behavior at its owning API boundary.",
+    "new: Creates a new `EndpointConfiguration`.",
+    "with: Returns `EndpointConfiguration` with the supplied entry applied.",
+    "with_sensitive: Adds a setup-time value whose normal debug representation is redacted.",
+    "get: Returns the value held by `EndpointConfiguration`.",
+    "is_sensitive: Returns whether sensitive applies to `EndpointConfiguration`.",
+    "iter: Iterates over the values held by `EndpointConfiguration`.",
+    "fmt: Formats `EndpointConfiguration` with the requested formatter.",
+    "pocketstation::session::declaration::endpoint::EndpointDescriptor: Describes the endpoint descriptor contract.",
+    "new: Creates a new `EndpointDescriptor`.",
+    "with_configuration: Sets the configuration on `EndpointDescriptor` and returns the updated value.",
+    "with_input_edge: Declares the bounded delivery policy for routes entering this endpoint.",
+    "node_type_id: Returns the node type identifier held by `EndpointDescriptor`.",
+    "operator_id: Returns the operator identifier held by `EndpointDescriptor`.",
+    "configuration: Returns the configuration held by `EndpointDescriptor`.",
+    "input_edge: Returns the input edge associated with `EndpointDescriptor`."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0b2dadbe3265dde022e4",
+    "test-2c31d24f3d3f3a3bbc51",
+    "test-ea23688d79c3f65ded44"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

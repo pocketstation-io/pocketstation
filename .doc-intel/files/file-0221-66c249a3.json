@@ -1,0 +1,579 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
+  "calls": [
+    "Arc::new",
+    "EndpointConfiguration::new",
+    "EndpointDescriptor::new",
+    "EndpointGroupId::new",
+    "NodeTypeId::from",
+    "OperatorId::new",
+    "SessionMultistemEndpointCoordinator::new",
+    "any",
+    "cfg",
+    "crate::graph::EdgeContract::realtime_audio",
+    "declare_endpoint_and_send",
+    "declares_endpoint_operator",
+    "declares_multistem_recording",
+    "derive",
+    "multistem_recording_edge_contract",
+    "outcome",
+    "receipt",
+    "record",
+    "register_audio_endpoint_driver",
+    "register_multistem_recording",
+    "result",
+    "with",
+    "with_configuration",
+    "with_input_edge"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 22,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 24,
+      "text": "pub const DEFAULT_MULTISTEM_RECORDING_GROUP_ID: &str = \"session.multistem.default.v1\";"
+    },
+    {
+      "line": 48,
+      "text": "EndpointGroupId::new(DEFAULT_MULTISTEM_RECORDING_GROUP_ID),"
+    },
+    {
+      "line": 75,
+      "text": "DEFAULT_MULTISTEM_RECORDING_GROUP_ID,"
+    },
+    {
+      "line": 94,
+      "text": "DEFAULT_MULTISTEM_RECORDING_GROUP_ID,"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "EndpointConfiguration::new",
+    "EndpointDescriptor::new",
+    "EndpointGroupId::new",
+    "NodeTypeId::from",
+    "OperatorId::new",
+    "SessionMultistemEndpointCoordinator::new"
+  ],
+  "content_hash": "f9b43f646896fac23037440f54e5aa015e67b5fe5a7c0f2387662c6d167890a3",
+  "defaults": [
+    {
+      "line": 24,
+      "text": "pub const DEFAULT_MULTISTEM_RECORDING_GROUP_ID: &str = \"session.multistem.default.v1\";"
+    },
+    {
+      "line": 48,
+      "text": "EndpointGroupId::new(DEFAULT_MULTISTEM_RECORDING_GROUP_ID),"
+    },
+    {
+      "line": 75,
+      "text": "DEFAULT_MULTISTEM_RECORDING_GROUP_ID,"
+    },
+    {
+      "line": 94,
+      "text": "DEFAULT_MULTISTEM_RECORDING_GROUP_ID,"
+    }
+  ],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "RECORDER_NODE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "RECORDER_OPERATOR_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 23,
+      "name": "RECORDING_GROUP_CONFIGURATION_KEY",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "DEFAULT_MULTISTEM_RECORDING_GROUP_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "SESSION_RECORDING_MANIFEST_FILE_NAME",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "SESSION_RECORDING_MANIFEST_SCHEMA_VERSION",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 31,
+      "name": "SessionRecordingReceipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "register_multistem_recording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 64,
+      "name": "record",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "record",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 102,
+      "name": "declares_multistem_recording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "multistem_recording_edge_contract",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 1,
+      "text": "//! Session composition for the multistem recording endpoint."
+    },
+    {
+      "line": 4,
+      "text": "//! owns only declaration and registration through the generic Endpoint path."
+    },
+    {
+      "line": 9,
+      "text": "use crate::endpoint::{EndpointDriverFactory, EndpointGroupId};"
+    },
+    {
+      "line": 20,
+      "text": "pub const RECORDER_NODE_TYPE_ID: &str = \"endpoint.recording.multistem\";"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "RECORDER_NODE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "RECORDER_OPERATOR_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 23,
+      "name": "RECORDING_GROUP_CONFIGURATION_KEY",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "DEFAULT_MULTISTEM_RECORDING_GROUP_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "SESSION_RECORDING_MANIFEST_FILE_NAME",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "SESSION_RECORDING_MANIFEST_SCHEMA_VERSION",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 31,
+      "name": "SessionRecordingReceipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "register_multistem_recording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 64,
+      "name": "record",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "record",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 102,
+      "name": "declares_multistem_recording",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "f9b43f646896fac23037440f54e5aa015e67b5fe5a7c0f2387662c6d167890a3",
+      "lines": [
+        1,
+        125
+      ],
+      "path": "src/session/extensions/recording.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0221-66c249a3",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "644e14189927815f381b095c3a59e773e48884c1",
+  "implemented_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
+  "implements": [
+    "SessionRecordingReceipt",
+    "SessionEngineBuilder",
+    "StemHandle",
+    "SourceOutputHandle",
+    "Session"
+  ],
+  "imported_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
+  "imports": [
+    "crate::endpoint::{EndpointDriverFactory, EndpointGroupId}",
+    "crate::graph::NodeTypeId",
+    "crate::recording::{ MultistemRecordingReceipt, RecordingOutcome, SessionMultistemEndpointCoordinator, MULTISTEM_GROUP_CONFIGURATION_KEY, MULTISTEM_NAME_CONFIGURATION_KEY, }",
+    "crate::recording::{ recording_outcome_error_code as session_recording_outcome_error_code, RecordingErrorCode as SessionRecordingErrorCode, RecordingObservations as SessionRecordingObservations, RecordingOutcome as SessionRecordingOutcome, RecordingState as SessionRecordingState, RecordingStemOutcome as SessionRecordingStemOutcome, }",
+    "crate::session::{ EndpointConfiguration, EndpointDescriptor, EndpointExtensionRegistrationError, EndpointHandle, OperatorId, Session, SessionEngineBuilder, SessionError, SourceOutputHandle, StemHandle, }",
+    "std::path::PathBuf",
+    "std::sync::Arc"
+  ],
+  "inputs": [
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "DEFAULT_MULTISTEM_RECORDING_GROUP_ID,",
+    "EndpointGroupId::new(DEFAULT_MULTISTEM_RECORDING_GROUP_ID),",
+    "crate::endpoint::{EndpointDriverFactory, EndpointGroupId}",
+    "crate::graph::NodeTypeId",
+    "crate::recording::{ MultistemRecordingReceipt, RecordingOutcome, SessionMultistemEndpointCoordinator, MULTISTEM_GROUP_CONFIGURATION_KEY, MULTISTEM_NAME_CONFIGURATION_KEY, }",
+    "crate::recording::{ recording_outcome_error_code as session_recording_outcome_error_code, RecordingErrorCode as SessionRecordingErrorCode, RecordingObservations as SessionRecordingObservations, RecordingOutcome as SessionRecordingOutcome, RecordingState as SessionRecordingState, RecordingStemOutcome as SessionRecordingStemOutcome, }",
+    "crate::session::{ EndpointConfiguration, EndpointDescriptor, EndpointExtensionRegistrationError, EndpointHandle, OperatorId, Session, SessionEngineBuilder, SessionError, SourceOutputHandle, StemHandle, }",
+    "pub const DEFAULT_MULTISTEM_RECORDING_GROUP_ID: &str = \"session.multistem.default.v1\";",
+    "std::path::PathBuf",
+    "std::sync::Arc"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 125,
+  "locks": [],
+  "module": "pocketstation::session::extensions::recording",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-b899f2a91d638fb22bfb"
+  ],
+  "outputs": [
+    "const:DEFAULT_MULTISTEM_RECORDING_GROUP_ID",
+    "const:RECORDER_NODE_TYPE_ID",
+    "const:RECORDER_OPERATOR_ID",
+    "const:RECORDING_GROUP_CONFIGURATION_KEY",
+    "const:SESSION_RECORDING_MANIFEST_FILE_NAME",
+    "const:SESSION_RECORDING_MANIFEST_SCHEMA_VERSION",
+    "fn:declares_multistem_recording",
+    "fn:outcome",
+    "fn:record",
+    "fn:register_multistem_recording",
+    "struct:SessionRecordingReceipt"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/extensions/recording.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "multistem_recording_edge_contract",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "RECORDER_NODE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "RECORDER_OPERATOR_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 23,
+      "name": "RECORDING_GROUP_CONFIGURATION_KEY",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "DEFAULT_MULTISTEM_RECORDING_GROUP_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "SESSION_RECORDING_MANIFEST_FILE_NAME",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "SESSION_RECORDING_MANIFEST_SCHEMA_VERSION",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 31,
+      "name": "SessionRecordingReceipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "register_multistem_recording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 64,
+      "name": "record",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "record",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 102,
+      "name": "declares_multistem_recording",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::extensions::recording responsibilities, including Defines the public recorder node type identifier value.; Defines the public recorder operator identifier value.; Defines the public recording group configuration key value.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/recording/endpoint.rs",
+    "REFERENCES:src/recording/writer.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/error.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 7,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 46,
+      "text": "let coordinator = Arc::new(SessionMultistemEndpointCoordinator::new("
+    },
+    {
+      "line": 53,
+      "text": "let factory: Arc<dyn EndpointDriverFactory> = coordinator;"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::session::extensions::recording::RECORDER_NODE_TYPE_ID: Defines the public recorder node type identifier value.",
+    "pocketstation::session::extensions::recording::RECORDER_OPERATOR_ID: Defines the public recorder operator identifier value.",
+    "pocketstation::session::extensions::recording::RECORDING_GROUP_CONFIGURATION_KEY: Defines the public recording group configuration key value.",
+    "pocketstation::session::extensions::recording::DEFAULT_MULTISTEM_RECORDING_GROUP_ID: Defines the public default multistem recording group identifier value.",
+    "pocketstation::session::extensions::recording::SESSION_RECORDING_MANIFEST_FILE_NAME: Defines the public session recording manifest file name value.",
+    "pocketstation::session::extensions::recording::SESSION_RECORDING_MANIFEST_SCHEMA_VERSION: Defines the public session recording manifest schema version value.",
+    "pocketstation::session::extensions::recording::SessionRecordingReceipt: Retains the identity and observation access returned for session recording.",
+    "outcome: Returns the outcome held by `SessionRecordingReceipt`.",
+    "register_multistem_recording: Registers multistem recording for `SessionEngineBuilder`.",
+    "record: Attaches recording output to `StemHandle`.",
+    "record: Attaches recording output to `SourceOutputHandle`.",
+    "declares_multistem_recording: Returns whether `Session` declares multistem recording."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

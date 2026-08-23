@@ -12,7 +12,7 @@
   "configuration_read": [],
   "constructed_by": [],
   "constructs": [],
-  "content_hash": "b88b5eabb0e0f488cc377ad7ac33f18f27e0122eb5ae56c8b4a1e7b22d9d5969",
+  "content_hash": "74dd50e5a85c99dd0055b3e8ede9ae91e0104e830259119488068a29b7c8ce14",
   "defaults": [],
   "defines": [],
   "device_io": [],
@@ -28,10 +28,10 @@
   "evidence": [
     {
       "classification": "DIRECT",
-      "content_hash": "b88b5eabb0e0f488cc377ad7ac33f18f27e0122eb5ae56c8b4a1e7b22d9d5969",
+      "content_hash": "74dd50e5a85c99dd0055b3e8ede9ae91e0104e830259119488068a29b7c8ce14",
       "lines": [
         1,
-        21
+        37
       ],
       "path": "examples/whisper-transcribe/README.md",
       "symbol": null
@@ -52,7 +52,7 @@
   "finalization": [],
   "generated": false,
   "generated_from": "not_applicable",
-  "git_object": "7b2e98e683f48ce357b59136295743fc519e074f",
+  "git_object": "2aee186178587b43acee079af86cab64dd68f7b3",
   "implemented_by": [],
   "implements": [],
   "imported_by": [],
@@ -62,7 +62,7 @@
   ],
   "invariants": [],
   "language": "Markdown",
-  "line_count": 21,
+  "line_count": 37,
   "locks": [],
   "module": "not_applicable",
   "network_io": [],
@@ -119,7 +119,7 @@
   "serialization": [],
   "shutdown_behavior": [],
   "side_effects": [],
-  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],

@@ -14,69 +14,111 @@ use crate::runtime::{EdgeObservations, PlanEdgeFrame, PlanEdgeReceiver};
 use hound::{SampleFormat as WavSampleFormat, WavSpec, WavWriter};
 use serde::Serialize;
 
-const MANIFEST_SCHEMA_VERSION: u32 = 1;
+pub(crate) const RECORDING_MANIFEST_FILE_NAME: &str = "manifest.json";
+pub(crate) const RECORDING_MANIFEST_SCHEMA_VERSION: u32 = 1;
 const WORKER_IDLE_WAIT_MS: u64 = 1;
 const MAX_MANIFEST_GAPS: usize = 1_024;
 const MAX_SILENCE_GAP_NS: u64 = 3_600_000_000_000; // one hour
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as recorder error."]
 pub enum RecorderError {
     #[error("recording output already exists: {0}")]
+    #[doc = "Reported when the owning operation encounters output exists."]
     OutputExists(PathBuf),
     #[error("invalid stem label '{0}'")]
+    #[doc = "Reported when the owning operation encounters invalid stem label."]
     InvalidStemLabel(String),
     #[error("duplicate stem label '{0}'")]
+    #[doc = "Reported when the owning operation encounters duplicate stem label."]
     DuplicateStemLabel(String),
     #[error("stem '{label}' belongs to session {actual}, expected {expected}")]
+    #[doc = "Reported when the owning operation encounters session mismatch."]
     SessionMismatch {
+        #[doc = "Stores the label used by `SessionMismatch`."]
         label: String,
+        #[doc = "Records the value observed by `SessionMismatch`."]
         actual: u64,
+        #[doc = "Records the value expected by `SessionMismatch`."]
         expected: u64,
     },
     #[error("permission denied for stem '{0}'")]
+    #[doc = "Reports that the required permission was denied."]
     PermissionDenied(String),
     #[error("stem '{label}' has invalid sample spec {sample_rate_hz} Hz/{channels} ch")]
+    #[doc = "Reported when the owning operation encounters invalid sample spec."]
     InvalidSampleSpec {
+        #[doc = "Stores the label used by `InvalidSampleSpec`."]
         label: String,
+        #[doc = "Stores the sample rate value for `InvalidSampleSpec`, in hertz."]
         sample_rate_hz: u32,
+        #[doc = "Stores the channels used by `InvalidSampleSpec`."]
         channels: u8,
     },
     #[error("stem '{label}' received source {actual}, expected {expected}")]
+    #[doc = "Reported when the owning operation encounters source mismatch."]
     SourceMismatch {
+        #[doc = "Stores the label used by `SourceMismatch`."]
         label: String,
+        #[doc = "Records the value observed by `SourceMismatch`."]
         actual: u64,
+        #[doc = "Records the value expected by `SourceMismatch`."]
         expected: u64,
     },
     #[error("stem '{label}' frame lineage {field:?} is {actual}, expected {expected}")]
+    #[doc = "Reported when the owning operation encounters lineage mismatch."]
     LineageMismatch {
+        #[doc = "Stores the label used by `LineageMismatch`."]
         label: String,
+        #[doc = "Stores the field used by `LineageMismatch`."]
         field: RecorderLineageField,
+        #[doc = "Records the value observed by `LineageMismatch`."]
         actual: u64,
+        #[doc = "Records the value expected by `LineageMismatch`."]
         expected: u64,
     },
     #[error("stem '{label}' frame spec is {actual_rate_hz} Hz/{actual_channels} ch, expected {expected_rate_hz} Hz/{expected_channels} ch")]
+    #[doc = "Reported when the owning operation encounters frame spec mismatch."]
     FrameSpecMismatch {
+        #[doc = "Stores the label used by `FrameSpecMismatch`."]
         label: String,
+        #[doc = "Stores the actual rate value for `FrameSpecMismatch`, in hertz."]
         actual_rate_hz: u32,
+        #[doc = "Stores the actual channels used by `FrameSpecMismatch`."]
         actual_channels: u8,
+        #[doc = "Stores the expected rate value for `FrameSpecMismatch`, in hertz."]
         expected_rate_hz: u32,
+        #[doc = "Stores the expected channels used by `FrameSpecMismatch`."]
         expected_channels: u8,
     },
     #[error("stem '{0}' has a frame whose samples are not channel-aligned")]
+    #[doc = "Reported when the owning operation encounters unaligned samples."]
     UnalignedSamples(String),
     #[error("stem '{0}' timestamp cannot be normalized")]
+    #[doc = "Reported when the owning operation encounters timestamp out of range."]
     TimestampOutOfRange(String),
     #[error("stem '{label}' gap {duration_ns} ns exceeds the one-hour proof limit")]
-    GapTooLarge { label: String, duration_ns: u64 },
+    #[doc = "Reported when the owning operation encounters gap too large."]
+    GapTooLarge {
+        #[doc = "Stores the label used by `GapTooLarge`."]
+        label: String,
+        #[doc = "Stores the duration value for `GapTooLarge`, in nanoseconds."]
+        duration_ns: u64,
+    },
     #[error("stem '{0}' exceeded the bounded manifest gap count")]
+    #[doc = "Reported when the owning operation encounters too many gaps."]
     TooManyGaps(String),
     #[error("recorder worker '{0}' panicked")]
+    #[doc = "Reported when the owning operation encounters worker panicked."]
     WorkerPanicked(String),
     #[error("I/O error: {0}")]
+    #[doc = "Reported when the owning operation encounters I/O."]
     Io(#[from] std::io::Error),
     #[error("WAV error: {0}")]
+    #[doc = "Reported when the owning operation encounters wav."]
     Wav(#[from] hound::Error),
     #[error("JSON error: {0}")]
+    #[doc = "Reported when the owning operation encounters json."]
     Json(#[from] serde_json::Error),
 }
 
@@ -173,6 +215,7 @@ pub struct RecordingObservations {
 #[doc = "Owns the per-stem recording workers and coordinates their terminal finalization outcome."]
 pub struct MultistemRecording {
     session_id: SessionId,
+    group_id: crate::endpoint::EndpointGroupId,
     session_dir: PathBuf,
     configs: Vec<RecorderStemConfig>,
     workers: Vec<RecorderWorker>,
@@ -183,6 +226,7 @@ impl MultistemRecording {
     pub(crate) fn start_observed(
         output_root: impl AsRef<Path>,
         session_id: SessionId,
+        group_id: crate::endpoint::EndpointGroupId,
         stems: Vec<(RecorderStemConfig, PlanEdgeReceiver, PlanEdgeFrame)>,
     ) -> Result<Self, RecorderError> {
         let stems = stems
@@ -193,12 +237,13 @@ impl MultistemRecording {
                 initial_frame: Some(initial_frame),
             })
             .collect();
-        Self::start_with_inputs(output_root, session_id, stems)
+        Self::start_with_inputs(output_root, session_id, group_id, stems)
     }
 
     fn start_with_inputs(
         output_root: impl AsRef<Path>,
         session_id: SessionId,
+        group_id: crate::endpoint::EndpointGroupId,
         stems: Vec<RecorderStemInput>,
     ) -> Result<Self, RecorderError> {
         let session_dir = output_root
@@ -249,7 +294,7 @@ impl MultistemRecording {
         write_permission_events(&session_dir, &configs)?;
         write_manifest(
             &session_dir,
-            &ManifestDocument::initial(session_id, &configs),
+            &ManifestDocument::initial(session_id, &group_id, &configs),
         )?;
 
         let mut workers = Vec::with_capacity(stems.len());
@@ -271,6 +316,7 @@ impl MultistemRecording {
 
         Ok(Self {
             session_id,
+            group_id,
             session_dir,
             configs,
             workers,
@@ -283,6 +329,7 @@ impl MultistemRecording {
         &self.session_dir
     }
 
+    #[doc = "Returns the observations exposed by `MultistemRecording`."]
     pub fn observations(&self) -> RecordingObservations {
         self.workers.iter().map(RecorderWorker::observations).fold(
             RecordingObservations::default(),
@@ -305,12 +352,14 @@ impl MultistemRecording {
         )
     }
 
+    #[doc = "Requests a graceful stop from `MultistemRecording`."]
     pub fn request_stop(&self) {
         for worker in &self.workers {
             worker.request_stop();
         }
     }
 
+    #[doc = "Finishes work owned by `MultistemRecording`."]
     pub fn finish(mut self) -> Result<RecordingOutcome, RecorderError> {
         self.finalize(None)
     }
@@ -337,6 +386,7 @@ impl MultistemRecording {
         write_destination_metrics(&self.session_dir, &outcomes)?;
         let manifest = ManifestDocument::finished(
             self.session_id,
+            &self.group_id,
             &self.configs,
             &outcomes,
             cancellation_error,
@@ -388,6 +438,7 @@ struct RecorderStemInput {
 }
 
 impl Drop for MultistemRecording {
+    #[doc = "Releases resources owned by `MultistemRecording`."]
     fn drop(&mut self) {
         if self.finished {
             return;
@@ -1105,16 +1156,22 @@ fn write_destination_metrics(
 struct ManifestDocument {
     schema_version: u32,
     session_id: u64,
+    recording_group_id: String,
     state: RecordingState,
     stems: Vec<ManifestStem>,
     errors: Vec<String>,
 }
 
 impl ManifestDocument {
-    fn initial(session_id: SessionId, configs: &[RecorderStemConfig]) -> Self {
+    fn initial(
+        session_id: SessionId,
+        group_id: &crate::endpoint::EndpointGroupId,
+        configs: &[RecorderStemConfig],
+    ) -> Self {
         Self {
-            schema_version: MANIFEST_SCHEMA_VERSION,
+            schema_version: RECORDING_MANIFEST_SCHEMA_VERSION,
             session_id: session_id.0,
+            recording_group_id: group_id.as_str().to_owned(),
             state: RecordingState::Recording,
             stems: configs
                 .iter()
@@ -1126,6 +1183,7 @@ impl ManifestDocument {
 
     fn finished(
         session_id: SessionId,
+        group_id: &crate::endpoint::EndpointGroupId,
         configs: &[RecorderStemConfig],
         outcomes: &[StemWorkerOutcome],
         cancellation_error: Option<String>,
@@ -1147,8 +1205,9 @@ impl ManifestDocument {
             })
             .collect();
         Self {
-            schema_version: MANIFEST_SCHEMA_VERSION,
+            schema_version: RECORDING_MANIFEST_SCHEMA_VERSION,
             session_id: session_id.0,
+            recording_group_id: group_id.as_str().to_owned(),
             state: if errors.is_empty() {
                 RecordingState::Complete
             } else {
@@ -1264,7 +1323,7 @@ fn write_summary(session_dir: &Path, manifest: &ManifestDocument) -> Result<(), 
 }
 
 fn write_manifest(session_dir: &Path, manifest: &ManifestDocument) -> Result<(), RecorderError> {
-    write_json_atomic(&session_dir.join("manifest.json"), manifest)
+    write_json_atomic(&session_dir.join(RECORDING_MANIFEST_FILE_NAME), manifest)
 }
 
 fn write_json_atomic(path: &Path, value: &impl Serialize) -> Result<(), RecorderError> {

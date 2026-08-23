@@ -14,24 +14,40 @@ const LATENCY_HISTOGRAM_BUCKETS: usize = 64;
 const TIMESTAMP_CONTINUITY_TOLERANCE_NS: u64 = 1_000;
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
+#[doc = "Classifies failures reported as plan router error."]
 pub enum PlanRouterError {
     #[error("edge {edge_id:?} has no memory plan")]
-    MissingMemoryPlan { edge_id: EdgeId },
-    #[error("edge {edge_id:?} has zero capacity")]
-    ZeroCapacity { edge_id: EdgeId },
-    #[error("edge {edge_id:?} has invalid bytes_per_frame {bytes_per_frame}")]
-    InvalidFrameBytes {
+    #[doc = "Reported when the owning operation encounters missing memory plan."]
+    MissingMemoryPlan {
+        #[doc = "Identifies the edge identifier recorded by `MissingMemoryPlan`."]
         edge_id: EdgeId,
+    },
+    #[error("edge {edge_id:?} has zero capacity")]
+    #[doc = "Reported when the owning operation encounters zero capacity."]
+    ZeroCapacity {
+        #[doc = "Identifies the edge identifier recorded by `ZeroCapacity`."]
+        edge_id: EdgeId,
+    },
+    #[error("edge {edge_id:?} has invalid bytes_per_frame {bytes_per_frame}")]
+    #[doc = "Reported when the owning operation encounters invalid frame bytes."]
+    InvalidFrameBytes {
+        #[doc = "Identifies the edge identifier recorded by `InvalidFrameBytes`."]
+        edge_id: EdgeId,
+        #[doc = "Stores the bytes per frame used by `InvalidFrameBytes`."]
         bytes_per_frame: usize,
     },
 }
 
+#[doc = "Enumerates the supported plan edge frame cases."]
 pub enum PlanEdgeFrame {
+    #[doc = "Selects the exclusive case of `PlanEdgeFrame`."]
     Exclusive(LineagedAudioFrame),
+    #[doc = "Selects the shared case of `PlanEdgeFrame`."]
     Shared(SharedLineagedAudioFrame),
 }
 
 impl PlanEdgeFrame {
+    #[doc = "Returns the stream identifier held by `PlanEdgeFrame`."]
     pub fn stream_id(&self) -> crate::frame::StreamId {
         match self {
             Self::Exclusive(frame) => frame.frame().stream_id,
@@ -39,6 +55,7 @@ impl PlanEdgeFrame {
         }
     }
 
+    #[doc = "Returns the source identifier held by `PlanEdgeFrame`."]
     pub fn source_id(&self) -> crate::frame::SourceId {
         match self {
             Self::Exclusive(frame) => frame.frame().source_id,
@@ -46,6 +63,7 @@ impl PlanEdgeFrame {
         }
     }
 
+    #[doc = "Returns the sequence number held by `PlanEdgeFrame`."]
     pub fn sequence_number(&self) -> u64 {
         match self {
             Self::Exclusive(frame) => frame.frame().sequence_number,
@@ -53,6 +71,7 @@ impl PlanEdgeFrame {
         }
     }
 
+    #[doc = "Returns the timestamp nanoseconds held by `PlanEdgeFrame`."]
     pub fn timestamp_ns(&self) -> u64 {
         match self {
             Self::Exclusive(frame) => frame.frame().timestamp_ns,
@@ -60,6 +79,7 @@ impl PlanEdgeFrame {
         }
     }
 
+    #[doc = "Returns the sample rate hertz held by `PlanEdgeFrame`."]
     pub fn sample_rate_hz(&self) -> u32 {
         match self {
             Self::Exclusive(frame) => frame.frame().sample_rate_hz,
@@ -67,6 +87,7 @@ impl PlanEdgeFrame {
         }
     }
 
+    #[doc = "Returns the channel count represented by `PlanEdgeFrame`."]
     pub fn channels(&self) -> u8 {
         match self {
             Self::Exclusive(frame) => frame.frame().channels,
@@ -74,6 +95,7 @@ impl PlanEdgeFrame {
         }
     }
 
+    #[doc = "Returns the sample format held by `PlanEdgeFrame`."]
     pub fn sample_format(&self) -> crate::frame::SampleFormat {
         match self {
             Self::Exclusive(frame) => frame.frame().format,
@@ -81,6 +103,7 @@ impl PlanEdgeFrame {
         }
     }
 
+    #[doc = "Returns the audio samples held by `PlanEdgeFrame`."]
     pub fn samples(&self) -> &[f32] {
         match self {
             Self::Exclusive(frame) => frame.frame().buffer.as_slice(),
@@ -88,6 +111,7 @@ impl PlanEdgeFrame {
         }
     }
 
+    #[doc = "Returns the frame lineage carried by `PlanEdgeFrame`."]
     pub fn lineage(&self) -> FrameLineage {
         match self {
             Self::Exclusive(frame) => frame.lineage(),
@@ -97,6 +121,7 @@ impl PlanEdgeFrame {
 }
 
 impl std::fmt::Debug for PlanEdgeFrame {
+    #[doc = "Formats `PlanEdgeFrame` with the requested formatter."]
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Exclusive(frame) => f
@@ -116,6 +141,26 @@ impl std::fmt::Debug for PlanEdgeFrame {
 struct QueuedPlanEdgeFrame {
     frame: PlanEdgeFrame,
     enqueued_at_ns: u64,
+}
+
+pub(crate) struct PlanEdgeReceipt {
+    frame: PlanEdgeFrame,
+    enqueued_at_ns: u64,
+    received_at_ns: u64,
+}
+
+impl PlanEdgeReceipt {
+    pub(crate) fn into_frame(self) -> PlanEdgeFrame {
+        self.frame
+    }
+
+    pub(crate) const fn enqueued_at_ns(&self) -> u64 {
+        self.enqueued_at_ns
+    }
+
+    pub(crate) const fn received_at_ns(&self) -> u64 {
+        self.received_at_ns
+    }
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
@@ -522,6 +567,7 @@ impl EdgeSender {
     }
 }
 
+#[doc = "Receives plan edge values across its declared ownership boundary."]
 pub struct PlanEdgeReceiver {
     edge_id: EdgeId,
     #[cfg(any(test, feature = "internal-testing"))]
@@ -542,15 +588,18 @@ struct FrameContinuity {
 }
 
 impl PlanEdgeReceiver {
+    #[doc = "Returns the edge identifier held by `PlanEdgeReceiver`."]
     pub fn edge_id(&self) -> EdgeId {
         self.edge_id
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Converts the supplied value into `PlanEdgeReceiver`."]
     pub fn from(&self) -> &OutputPortRef {
         &self.from
     }
 
+    #[doc = "Returns the destination owned by `PlanEdgeReceiver`."]
     pub fn to(&self) -> &InputPortRef {
         &self.to
     }
@@ -569,25 +618,31 @@ impl PlanEdgeReceiver {
     pub(crate) fn recv_at(&mut self, delivered_at_ns: u64) -> Option<PlanEdgeFrame> {
         let queued = self.consumer.pop().ok()?;
         self.observe_received(queued, delivered_at_ns)
+            .map(PlanEdgeReceipt::into_frame)
     }
 
-    /// Pops one queued frame before sampling the canonical process clock.
+    /// Pops one queued frame before sampling the monotonic process clock.
     ///
     /// Callers that sample time before attempting the pop can race a producer:
     /// an empty queue may receive a new frame between the timestamp read and the
-    /// pop, manufacturing a receive-before-enqueue observation. Production
+    /// pop, manufacturing a receive-before-enqueue observation. Runtime
     /// destination workers must use this method. The internal `recv_at` method
     /// remains only for deterministic schedulers and runtime tests that already
     /// own a valid timestamp.
     pub fn try_recv(&mut self) -> Option<PlanEdgeFrame> {
-        self.recv_with_clock(crate::timing::monotonic_timestamp_ns)
+        self.try_recv_receipt().map(PlanEdgeReceipt::into_frame)
     }
 
+    pub(crate) fn try_recv_receipt(&mut self) -> Option<PlanEdgeReceipt> {
+        self.recv_receipt_with_clock(crate::timing::monotonic_timestamp_ns)
+    }
+
+    #[doc = "Returns whether abandoned applies to `PlanEdgeReceiver`."]
     pub fn is_abandoned(&self) -> bool {
         self.consumer.is_abandoned()
     }
 
-    fn recv_with_clock(&mut self, clock: impl FnOnce() -> u64) -> Option<PlanEdgeFrame> {
+    fn recv_receipt_with_clock(&mut self, clock: impl FnOnce() -> u64) -> Option<PlanEdgeReceipt> {
         let queued = self.consumer.pop().ok()?;
         let delivered_at_ns = clock();
         self.observe_received(queued, delivered_at_ns)
@@ -597,10 +652,14 @@ impl PlanEdgeReceiver {
         &mut self,
         queued: QueuedPlanEdgeFrame,
         delivered_at_ns: u64,
-    ) -> Option<PlanEdgeFrame> {
+    ) -> Option<PlanEdgeReceipt> {
         self.observe_continuity(&queued.frame);
         self.telemetry.observe_delivery(&queued, delivered_at_ns);
-        Some(queued.frame)
+        Some(PlanEdgeReceipt {
+            frame: queued.frame,
+            enqueued_at_ns: queued.enqueued_at_ns,
+            received_at_ns: delivered_at_ns,
+        })
     }
 
     fn observe_continuity(&mut self, frame: &PlanEdgeFrame) {
@@ -660,10 +719,12 @@ impl PlanEdgeReceiver {
         });
     }
 
+    #[doc = "Returns the observations exposed by `PlanEdgeReceiver`."]
     pub fn observations(&self) -> EdgeObservations {
         self.telemetry.snapshot()
     }
 
+    #[doc = "Marks the next value from `PlanEdgeReceiver` as discontinuous."]
     pub fn mark_discontinuity(&self) {
         self.telemetry
             .manually_reported_discontinuities_total
@@ -673,6 +734,7 @@ impl PlanEdgeReceiver {
             .fetch_add(1, Ordering::Relaxed);
     }
 
+    #[doc = "Returns the mark worker failure held by `PlanEdgeReceiver`."]
     pub fn mark_worker_failure(&self) {
         self.telemetry
             .worker_failures_total
@@ -681,6 +743,7 @@ impl PlanEdgeReceiver {
 }
 
 impl Drop for PlanEdgeReceiver {
+    #[doc = "Releases resources owned by `PlanEdgeReceiver`."]
     fn drop(&mut self) {
         self.alive.store(false, Ordering::Release);
         while self.consumer.pop().is_ok() {
@@ -701,19 +764,27 @@ struct RoutedEdge {
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[doc = "Reports the counters and terminal facts collected for dispatch."]
 pub struct DispatchSummary {
+    #[doc = "Stores the attempted edges used by `DispatchSummary`."]
     pub attempted_edges: u64,
+    #[doc = "Stores the enqueued edges used by `DispatchSummary`."]
     pub enqueued_edges: u64,
+    #[doc = "Stores the dropped edges used by `DispatchSummary`."]
     pub dropped_edges: u64,
+    #[doc = "Stores the copy pool exhausted edges used by `DispatchSummary`."]
     pub copy_pool_exhausted_edges: u64,
+    #[doc = "Stores the freeze failed edges used by `DispatchSummary`."]
     pub freeze_failed_edges: u64,
 }
 
+#[doc = "Routes plan edge according to the compiled edge contracts."]
 pub struct PlanEdgeRouter {
     edges: Vec<RoutedEdge>,
 }
 
 impl PlanEdgeRouter {
+    #[doc = "Creates a new `PlanEdgeRouter`."]
     pub fn new(
         plan: &RuntimePlan,
         ir: &GraphIr,
@@ -887,6 +958,7 @@ impl PlanEdgeRouter {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the observations exposed by `PlanEdgeRouter`."]
     pub fn observations(&self, edge_id: EdgeId) -> Option<EdgeObservations> {
         self.edges
             .iter()
@@ -1269,10 +1341,12 @@ mod tests {
         let pool = AudioBufferPool::new(1, 2);
         router.dispatch_from(source.id(), "out", frame(&pool, 7, 1), 100);
 
-        let received = receivers[0].recv_with_clock(|| 150).unwrap();
+        let receipt = receivers[0].recv_receipt_with_clock(|| 150).unwrap();
         let observations = receivers[0].observations();
 
-        assert_eq!(received.sequence_number(), 1);
+        assert_eq!(receipt.enqueued_at_ns(), 100);
+        assert_eq!(receipt.received_at_ns(), 150);
+        assert_eq!(receipt.into_frame().sequence_number(), 1);
         assert_eq!(observations.enqueue_to_receive_samples_total, 1);
         assert_eq!(observations.enqueue_to_receive_invalid_order_total, 0);
         assert_eq!(observations.enqueue_to_receive_max_ns, 50);

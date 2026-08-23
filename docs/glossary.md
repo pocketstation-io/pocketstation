@@ -48,8 +48,8 @@ Aliases are permitted only where listed. A forbidden alias usually collapses a d
 
 ## Evidence boundary
 
-The claims on **Glossary** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Glossary** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/lib.rs:1-1129` (`DIRECT`)
+- `src/lib.rs:1-1161` (`DIRECT`)
 
 For **Glossary**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

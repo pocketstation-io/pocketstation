@@ -55,6 +55,7 @@ pub struct SignalEdgeObservations {
 }
 
 #[derive(Clone)]
+#[doc = "Owns bounded access to signal edge observation."]
 pub struct SignalEdgeObservationHandle {
     state: Arc<SignalEdgeObservationState>,
 }
@@ -124,11 +125,13 @@ pub struct SignalEdgeSender<Item> {
 }
 
 #[derive(Debug)]
+#[doc = "Reports a signal edge send error."]
 pub struct SignalEdgeSendError<Item> {
     rejected: Item,
 }
 
 impl<Item> SignalEdgeSendError<Item> {
+    #[doc = "Converts `SignalEdgeSendError` into rejected."]
     pub fn into_rejected(self) -> Item {
         self.rejected
     }
@@ -210,6 +213,7 @@ impl SignalEdgeSender<SignalEnvelope> {
     }
 }
 
+#[doc = "Receives signal edge values across its declared ownership boundary."]
 pub struct SignalEdgeReceiver<Item> {
     consumer: Consumer<Item>,
     state: Arc<SignalEdgeObservationState>,
@@ -249,13 +253,19 @@ impl<Item> SignalEdgeReceiver<Item> {
     }
 }
 
+#[doc = "Names the typed edge receiver type used by the public API."]
 pub type TypedEdgeReceiver = SignalEdgeReceiver<Arc<SignalEnvelope>>;
+#[doc = "Names the typed edge observations type used by the public API."]
 pub type TypedEdgeObservations = SignalEdgeObservations;
+#[doc = "Names the typed edge observation handle type used by the public API."]
 pub type TypedEdgeObservationHandle = SignalEdgeObservationHandle;
 
 #[derive(Debug, Clone, Copy)]
+#[doc = "Configures typed edge branch behavior at its owning API boundary."]
 pub struct TypedEdgeBranchSpec {
+    #[doc = "Sets the capacity signals available to `TypedEdgeBranchSpec`."]
     pub capacity_signals: usize,
+    #[doc = "Stores the edge contract used by `TypedEdgeBranchSpec`."]
     pub edge_contract: EdgeContract,
 }
 
@@ -271,6 +281,7 @@ pub struct TypedEdgeFanout {
 }
 
 impl TypedEdgeFanout {
+    #[doc = "Creates a new `TypedEdgeFanout`."]
     pub fn new(
         branch_specs: &[TypedEdgeBranchSpec],
     ) -> Result<(Self, Vec<TypedEdgeReceiver>), TypedEdgeBuildError> {
@@ -315,6 +326,7 @@ impl TypedEdgeFanout {
         Ok((Self { branches }, receivers))
     }
 
+    #[doc = "Publishes its owned operation for `TypedEdgeFanout`."]
     pub fn publish(
         &mut self,
         envelope: SignalEnvelope,
@@ -389,48 +401,72 @@ impl TypedEdgeFanout {
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 #[doc = "Reports how many fan-out branches accepted or dropped one published signal."]
 pub struct TypedEdgePublishReport {
+    #[doc = "Counts the total number of delivered observed by `TypedEdgePublishReport`."]
     pub delivered_total: u64,
+    #[doc = "Counts the total number of dropped observed by `TypedEdgePublishReport`."]
     pub dropped_total: u64,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as typed edge build error."]
 pub enum TypedEdgeBuildError {
     #[error("typed edge fanout requires at least one branch")]
+    #[doc = "Reported when the owning operation encounters no branches."]
     NoBranches,
     #[error("typed edge branch capacity must be greater than zero")]
+    #[doc = "Reported when the owning operation encounters zero capacity."]
     ZeroCapacity,
     #[error("typed edge branch capacity {capacity_signals} exceeds maximum {maximum}")]
+    #[doc = "Reported when the owning operation encounters capacity too large."]
     CapacityTooLarge {
+        #[doc = "Sets the capacity signals available to `CapacityTooLarge`."]
         capacity_signals: usize,
+        #[doc = "Sets the inclusive maximum accepted by `CapacityTooLarge`."]
         maximum: usize,
     },
     #[error("typed edge branch requires an explicit maximum payload size")]
+    #[doc = "Reported when the owning operation encounters missing payload limit."]
     MissingPayloadLimit,
     #[error("typed edge branch maximum payload size must be greater than zero")]
+    #[doc = "Reported when the owning operation encounters zero payload limit."]
     ZeroPayloadLimit,
     #[error("typed edge branch payload limit {max_payload_bytes} exceeds maximum {maximum}")]
+    #[doc = "Reported when the owning operation encounters payload limit too large."]
     PayloadLimitTooLarge {
+        #[doc = "Limits payload storage for `PayloadLimitTooLarge`, in bytes."]
         max_payload_bytes: usize,
+        #[doc = "Sets the inclusive maximum accepted by `PayloadLimitTooLarge`."]
         maximum: usize,
     },
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as typed edge publish error."]
 pub enum TypedEdgePublishError {
     #[error("typed edge fanout has no branches")]
+    #[doc = "Reported when the owning operation encounters no branches."]
     NoBranches,
     #[error("typed edge rejected an invalid signal envelope: {0}")]
+    #[doc = "Reported when the owning operation encounters invalid envelope."]
     InvalidEnvelope(SignalEnvelopeError),
     #[error(
         "typed edge branch {branch_index} rejected {payload_bytes} payload bytes; maximum is {max_payload_bytes}"
     )]
+    #[doc = "Reported when the owning operation encounters payload too large."]
     PayloadTooLarge {
+        #[doc = "Stores the branch index used by `PayloadTooLarge`."]
         branch_index: usize,
+        #[doc = "Stores the payload size for `PayloadTooLarge`, in bytes."]
         payload_bytes: usize,
+        #[doc = "Limits payload storage for `PayloadTooLarge`, in bytes."]
         max_payload_bytes: usize,
     },
     #[error("required typed edge branch {branch_index} is full")]
-    RequiredBranchFull { branch_index: usize },
+    #[doc = "Reported when the owning operation encounters required branch full."]
+    RequiredBranchFull {
+        #[doc = "Stores the branch index used by `RequiredBranchFull`."]
+        branch_index: usize,
+    },
 }
 
 #[cfg(test)]

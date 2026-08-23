@@ -22,7 +22,7 @@ use crate::session::{
     SessionPrepareError, SessionStartFailure, SessionStartOptions, SessionTraceRecorderHandle,
 };
 
-/// Setup-time builder for one canonical Session composition environment.
+/// Registers the components and runtime configuration for one Session.
 ///
 /// The builder owns only registration and runtime configuration. Concrete
 /// capture and endpoint implementations enter through their existing contracts
@@ -40,6 +40,7 @@ pub struct SessionEngineBuilder {
 }
 
 impl SessionEngineBuilder {
+    #[doc = "Creates a new `SessionEngineBuilder`."]
     pub fn new(
         prepare_context: PrepareContext,
         source_queue_capacity_frames: usize,
@@ -63,6 +64,7 @@ impl SessionEngineBuilder {
         })
     }
 
+    #[doc = "Sets the session trace used by `SessionEngineBuilder`."]
     pub fn set_session_trace(
         &mut self,
         session_trace_recorder: SessionTraceRecorderHandle,
@@ -71,6 +73,7 @@ impl SessionEngineBuilder {
         self
     }
 
+    #[doc = "Registers audio endpoint driver for `SessionEngineBuilder`."]
     pub fn register_audio_endpoint_driver(
         &mut self,
         operator_id: OperatorId,
@@ -111,6 +114,7 @@ impl SessionEngineBuilder {
         Ok(self)
     }
 
+    #[doc = "Registers async operator for `SessionEngineBuilder`."]
     pub fn register_async_operator(
         &mut self,
         factory: Arc<dyn AsyncOperatorFactory>,
@@ -119,7 +123,7 @@ impl SessionEngineBuilder {
         Ok(self)
     }
 
-    /// Retains one externally implemented sidecar under the canonical Session
+    /// Retains one externally implemented sidecar under the Session
     /// lifecycle. IDs are unique within the engine so observations and
     /// shutdown failures remain attributable without process-global state.
     pub fn register_sidecar_process(
@@ -218,6 +222,7 @@ impl SessionEngine {
         self.source_registry.manifest(source_type_id)
     }
 
+    #[doc = "Compiles its owned operation for `SessionEngine`."]
     pub fn compile(&self, session: Session) -> Result<CompiledSession, SessionEngineStartError> {
         let spec = session.freeze()?;
         SessionCompiler::with_sources(
@@ -231,6 +236,7 @@ impl SessionEngine {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Starts compiled for `SessionEngine`."]
     pub fn start_compiled(
         &self,
         compiled: CompiledSession,
@@ -255,6 +261,7 @@ impl SessionEngine {
         attach_sidecars(running, &self.sidecar_processes)
     }
 
+    #[doc = "Starts compiled cancellable for `SessionEngine`."]
     pub fn start_compiled_cancellable(
         &self,
         compiled: CompiledSession,
@@ -281,6 +288,7 @@ impl SessionEngine {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Starts the lifecycle represented by `SessionEngine`."]
     pub fn start(
         &self,
         session: Session,
@@ -349,6 +357,7 @@ pub enum SessionEngineStartError {
 }
 
 impl SessionEngineStartError {
+    #[doc = "Starts failure for `SessionEngineStartError`."]
     pub const fn start_failure(&self) -> Option<&SessionStartFailure> {
         match self {
             Self::Start(failure) => Some(failure),
@@ -356,6 +365,7 @@ impl SessionEngineStartError {
         }
     }
 
+    #[doc = "Converts `SessionEngineStartError` into start failure."]
     pub fn into_start_failure(self) -> Option<SessionStartFailure> {
         match self {
             Self::Start(failure) => Some(failure),

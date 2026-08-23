@@ -1,0 +1,629 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 1,
+      "text": "//! Allocation-free capture callback observations."
+    }
+  ],
+  "called_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/capture/capture_owner.rs",
+    "REFERENCES:src/capture/platform/macos/input.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/session_backend.rs",
+    "REFERENCES:src/conformance.rs"
+  ],
+  "calls": [
+    "Arc::clone",
+    "any",
+    "cfg",
+    "derive",
+    "fetch_add",
+    "load",
+    "observation_handle",
+    "observations",
+    "observe_callback_buffer",
+    "observe_dispatch_queue_full",
+    "observe_dispatch_queue_full_frames",
+    "observe_enqueued_frame",
+    "observe_invalid_buffer",
+    "observe_oversized_buffer",
+    "observe_pool_exhaustion",
+    "observe_stream_error",
+    "observe_timestamp_epoch_clamp",
+    "snapshot",
+    "snapshot_values"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 45,
+      "text": "#[cfg(any(test, feature = \"internal-testing\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 50,
+      "text": "#[cfg(any(test, feature = \"internal-testing\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 82,
+      "text": "#[cfg(any(test, target_os = \"linux\", target_os = \"windows\"))]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/capture/capture_owner.rs",
+    "REFERENCES:src/capture/platform/macos/input.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/session_backend.rs",
+    "REFERENCES:src/conformance.rs"
+  ],
+  "constructs": [],
+  "content_hash": "679cb084183e588a581f9cf6b7306d26ac56d1659f209d48322207af6dbb03a1",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 8,
+      "name": "CaptureObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 20,
+      "name": "CaptureObservationValues",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 32,
+      "name": "CaptureObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 46,
+      "name": "CaptureObservationCounters",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "observe_callback_buffer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "observe_enqueued_frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 63,
+      "name": "observe_pool_exhaustion",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "observe_dispatch_queue_full",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "observe_dispatch_queue_full_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "observe_invalid_buffer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "observe_oversized_buffer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 94,
+      "name": "observe_stream_error",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 100,
+      "name": "observe_timestamp_epoch_clamp",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "snapshot_values",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 8,
+      "name": "CaptureObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 32,
+      "name": "CaptureObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 46,
+      "name": "CaptureObservationCounters",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "observe_callback_buffer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "observe_enqueued_frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 63,
+      "name": "observe_pool_exhaustion",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "observe_dispatch_queue_full",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "observe_dispatch_queue_full_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "observe_invalid_buffer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "observe_oversized_buffer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 94,
+      "name": "observe_stream_error",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 100,
+      "name": "observe_timestamp_epoch_clamp",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "snapshot",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "679cb084183e588a581f9cf6b7306d26ac56d1659f209d48322207af6dbb03a1",
+      "lines": [
+        1,
+        130
+      ],
+      "path": "src/capture/observations.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/capture/capture_owner.rs",
+    "REFERENCES:src/capture/platform/macos/input.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/session_backend.rs",
+    "REFERENCES:src/conformance.rs"
+  ],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing",
+    "native-capture"
+  ],
+  "feature_gate": [
+    "internal-testing",
+    "native-capture"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0083-52167575",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "545b619ace5f140110c81292b09d8f1d8c18f1d0",
+  "implemented_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/capture/capture_owner.rs",
+    "REFERENCES:src/capture/platform/macos/input.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/session_backend.rs",
+    "REFERENCES:src/conformance.rs"
+  ],
+  "implements": [
+    "CaptureObservationHandle",
+    "CaptureObservationCounters"
+  ],
+  "imported_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/capture/capture_owner.rs",
+    "REFERENCES:src/capture/platform/macos/input.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/session_backend.rs",
+    "REFERENCES:src/conformance.rs"
+  ],
+  "imports": [
+    "serde::Serialize",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicU64, Ordering}"
+  ],
+  "inputs": [
+    "#[cfg(any(test, feature = \"internal-testing\", feature = \"native-capture\"))]",
+    "#[cfg(any(test, target_os = \"linux\", target_os = \"windows\"))]",
+    "serde::Serialize",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicU64, Ordering}"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 130,
+  "locks": [],
+  "module": "pocketstation::capture::observations",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "fn:observation_handle",
+    "fn:observations",
+    "fn:observe_callback_buffer",
+    "fn:observe_dispatch_queue_full",
+    "fn:observe_dispatch_queue_full_frames",
+    "fn:observe_enqueued_frame",
+    "fn:observe_invalid_buffer",
+    "fn:observe_oversized_buffer",
+    "fn:observe_pool_exhaustion",
+    "fn:observe_stream_error",
+    "fn:observe_timestamp_epoch_clamp",
+    "fn:snapshot",
+    "struct:CaptureObservationCounters",
+    "struct:CaptureObservationHandle",
+    "struct:CaptureObservations"
+  ],
+  "package": "pocketstation",
+  "path": "src/capture/observations.rs",
+  "platform_gate": [
+    "linux",
+    "windows"
+  ],
+  "potential_pitfalls": [
+    "Only applies under the recorded target gate; implementation is not physical qualification."
+  ],
+  "private_surface": [
+    {
+      "kind": "struct",
+      "line": 20,
+      "name": "CaptureObservationValues",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "snapshot_values",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 8,
+      "name": "CaptureObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 32,
+      "name": "CaptureObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 46,
+      "name": "CaptureObservationCounters",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "observe_callback_buffer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "observe_enqueued_frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 63,
+      "name": "observe_pool_exhaustion",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "observe_dispatch_queue_full",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "observe_dispatch_queue_full_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "observe_invalid_buffer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "observe_oversized_buffer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 94,
+      "name": "observe_stream_error",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 100,
+      "name": "observe_timestamp_epoch_clamp",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "snapshot",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::capture::observations responsibilities, including Reports the capture observations collected at an observation boundary.; Counts the total number of callback buffers observed by `CaptureObservations`.; Counts the total number of frames enqueued observed by `CaptureObservations`.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/source-selection.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/select-process-source.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/run-transcription.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/troubleshooting/timing.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [
+    {
+      "line": 5,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 33,
+      "text": "values: Arc<CaptureObservationValues>,"
+    },
+    {
+      "line": 47,
+      "text": "values: Arc<CaptureObservationValues>,"
+    },
+    {
+      "line": 109,
+      "text": "values: Arc::clone(&self.values),"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::capture::observations::CaptureObservations: Reports the capture observations collected at an observation boundary.",
+    "CaptureObservations::callback_buffers_total: Counts the total number of callback buffers observed by `CaptureObservations`.",
+    "CaptureObservations::frames_enqueued_total: Counts the total number of frames enqueued observed by `CaptureObservations`.",
+    "CaptureObservations::pool_exhausted_total: Counts the total number of pool exhausted observed by `CaptureObservations`.",
+    "CaptureObservations::dispatch_queue_full_total: Counts the total number of dispatch queue full observed by `CaptureObservations`.",
+    "CaptureObservations::invalid_buffer_total: Counts the total number of invalid buffer observed by `CaptureObservations`.",
+    "CaptureObservations::oversized_buffer_total: Counts the total number of oversized buffer observed by `CaptureObservations`.",
+    "CaptureObservations::stream_errors_total: Counts the total number of stream errors observed by `CaptureObservations`.",
+    "CaptureObservations::timestamp_epoch_clamps_total: Counts the total number of timestamp epoch clamps observed by `CaptureObservations`.",
+    "pocketstation::capture::observations::CaptureObservationHandle: Owns bounded access to capture observation.",
+    "observations: Returns the observations exposed by `CaptureObservationHandle`.",
+    "pocketstation::capture::observations::CaptureObservationCounters: Setup-time cloneable handle; every observation is one relaxed atomic",
+    "observe_callback_buffer: Records an observation for callback buffer for `CaptureObservationCounters`.",
+    "observe_enqueued_frame: Records an observation for enqueued frame for `CaptureObservationCounters`.",
+    "observe_pool_exhaustion: Records an observation for pool exhaustion for `CaptureObservationCounters`.",
+    "observe_dispatch_queue_full: Records an observation for dispatch queue full for `CaptureObservationCounters`.",
+    "observe_dispatch_queue_full_frames: Records a known number of frames lost at a bounded native or Rust",
+    "observe_oversized_buffer: Records an observation for oversized buffer for `CaptureObservationCounters`.",
+    "observe_stream_error: Records an observation for stream error for `CaptureObservationCounters`.",
+    "observe_timestamp_epoch_clamp: Records an observation for timestamp epoch clamp for `CaptureObservationCounters`.",
+    "observation_handle: Returns a handle for reading observations from `CaptureObservationCounters`.",
+    "snapshot: Returns a point-in-time snapshot of `CaptureObservationCounters`."
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 3,
+      "text": "use serde::Serialize;"
+    },
+    {
+      "line": 7,
+      "text": "#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize)]"
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-1c6d0316ef2c3a9ff8c9"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

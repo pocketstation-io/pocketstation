@@ -1,0 +1,1169 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AudioBufferPool::new",
+    "AudioFrame::try_new",
+    "Box::new",
+    "BridgeSinkTelemetry::default",
+    "MediaCaps::Audio",
+    "MixerTelemetry::default",
+    "Mutex::new",
+    "NodeError::Prepare",
+    "NodeTypeId::from",
+    "RingBuffer::new",
+    "SignalSpec::audio",
+    "SystemOutputTelemetry::default",
+    "Vec::new",
+    "Vec::with_capacity",
+    "accumulators:",
+    "acquire",
+    "audio_port",
+    "channels",
+    "chunks_exact",
+    "clamp",
+    "clear",
+    "clipped_samples",
+    "collect",
+    "crate::frame::SampleSpec::new",
+    "derive",
+    "descriptor",
+    "drain",
+    "extend_from_slice",
+    "fetch_add",
+    "fill",
+    "frames_captured",
+    "frames_emitted",
+    "frames_mixed",
+    "frames_pushed",
+    "instantiate",
+    "is_empty",
+    "is_ok",
+    "iter",
+    "iter_mut",
+    "lane_underruns",
+    "len",
+    "let",
+    "load",
+    "lock",
+    "map",
+    "map_err",
+    "map_or",
+    "min",
+    "mix_tick",
+    "new",
+    "new_with_output_channels",
+    "ok",
+    "ok_or_else",
+    "output_pool_exhaustions",
+    "overrun_count",
+    "pop",
+    "prepare",
+    "process",
+    "pub",
+    "push",
+    "register_builtins",
+    "register_runtime_nodes",
+    "samples",
+    "saturating_add",
+    "saturating_sub",
+    "source_id",
+    "stream_id",
+    "take",
+    "then_some",
+    "timestamp_ns",
+    "to_owned",
+    "try_copy_from_slice",
+    "u64::from",
+    "underrun_count",
+    "unwrap_or",
+    "usize::from",
+    "validate_config",
+    "zip"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 13,
+      "text": "register_builtins, AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps,"
+    },
+    {
+      "line": 99,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 203,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "AudioBufferPool::new",
+    "AudioFrame::try_new",
+    "Box::new",
+    "Mutex::new",
+    "NodeTypeId::from",
+    "RingBuffer::new",
+    "Vec::new",
+    "crate::frame::SampleSpec::new",
+    "new",
+    "u64::from",
+    "usize::from"
+  ],
+  "content_hash": "31e66adcfec65b8b5fa1265452b7714f9046c5bec39f41da63ba2864fe9c2e9d",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "SYSTEM_OUTPUT_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "BRIDGE_ENDPOINT_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "MIXER_FRAME_SAMPLES_PER_CHANNEL",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 22,
+      "name": "MIXER_MAX_FRAME_SAMPLES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 23,
+      "name": "MIXER_ACCUMULATOR_CAPACITY",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "MIXER_POOL_SLOTS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "MIXER_FRAME_DURATION_NS",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 26,
+      "name": "audio_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "register_runtime_nodes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 48,
+      "name": "SystemOutputTelemetry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "frames_captured",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "frames_emitted",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "underrun_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 65,
+      "name": "SystemOutputSourceFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 72,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 87,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 102,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 120,
+      "name": "SystemOutputSourceNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 127,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 130,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 156,
+      "name": "BridgeSinkTelemetry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 162,
+      "name": "frames_pushed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 165,
+      "name": "overrun_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 169,
+      "name": "BridgeSinkFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 176,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 191,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 202,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 224,
+      "name": "BridgeSinkNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 231,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 234,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 246,
+      "name": "MixerTelemetry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "frames_mixed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 257,
+      "name": "lane_underruns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 260,
+      "name": "clipped_samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 263,
+      "name": "output_pool_exhaustions",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 267,
+      "name": "MixerSourceNode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 280,
+      "name": "new_with_output_channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 312,
+      "name": "mix_tick",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 432,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 440,
+      "name": "process",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 20,
+      "text": "pub(crate) const BRIDGE_ENDPOINT_NODE_TYPE_ID: &str = \"endpoint.bridge\";"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "SYSTEM_OUTPUT_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "BRIDGE_ENDPOINT_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "register_runtime_nodes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 48,
+      "name": "SystemOutputTelemetry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "frames_captured",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "frames_emitted",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "underrun_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 65,
+      "name": "SystemOutputSourceFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 72,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 156,
+      "name": "BridgeSinkTelemetry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 162,
+      "name": "frames_pushed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 165,
+      "name": "overrun_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 169,
+      "name": "BridgeSinkFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 176,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 246,
+      "name": "MixerTelemetry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "frames_mixed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 257,
+      "name": "lane_underruns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 260,
+      "name": "clipped_samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 263,
+      "name": "output_pool_exhaustions",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 267,
+      "name": "MixerSourceNode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 280,
+      "name": "new_with_output_channels",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 142,
+      "text": "Err(_) => {"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [
+    {
+      "line": 111,
+      "text": ".map_err(|error| NodeError::Prepare(format!(\"capture ingress lock poisoned: {error}\")))?"
+    },
+    {
+      "line": 215,
+      "text": ".map_err(|error| NodeError::Prepare(format!(\"bridge lock poisoned: {error}\")))?"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 111,
+      "text": ".map_err(|error| NodeError::Prepare(format!(\"capture ingress lock poisoned: {error}\")))?"
+    },
+    {
+      "line": 215,
+      "text": ".map_err(|error| NodeError::Prepare(format!(\"bridge lock poisoned: {error}\")))?"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 111,
+      "text": ".map_err(|error| NodeError::Prepare(format!(\"capture ingress lock poisoned: {error}\")))?"
+    },
+    {
+      "line": 215,
+      "text": ".map_err(|error| NodeError::Prepare(format!(\"bridge lock poisoned: {error}\")))?"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "31e66adcfec65b8b5fa1265452b7714f9046c5bec39f41da63ba2864fe9c2e9d",
+      "lines": [
+        1,
+        445
+      ],
+      "path": "src/runtime/nodes.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0192-f260aaa3",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [
+    {
+      "line": 379,
+      "text": "accumulator.drain(..self.output_samples);"
+    }
+  ],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "f4561fade828653244f228e4356f0a9f1a791665",
+  "implemented_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
+  "implements": [
+    "SystemOutputTelemetry",
+    "SystemOutputSourceFactory",
+    "NodeFactory for SystemOutputSourceFactory",
+    "RuntimeNode for SystemOutputSourceNode",
+    "BridgeSinkTelemetry",
+    "BridgeSinkFactory",
+    "NodeFactory for BridgeSinkFactory",
+    "RuntimeNode for BridgeSinkNode",
+    "MixerTelemetry",
+    "MixerSourceNode",
+    "RuntimeNode for MixerSourceNode"
+  ],
+  "imported_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
+  "imports": [
+    "crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SourceId, StreamId}",
+    "crate::graph::{ register_builtins, AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDescriptor, NodeError, NodeFactory, NodeRegistrationError, NodeRegistry, NodeTypeId, PortDirection, PortSpec, PrepareContext, RuntimeNode, SafetyContract, SignalSpec, }",
+    "rtrb::{Consumer, Producer, RingBuffer}",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "std::sync::{Arc, Mutex}"
+  ],
+  "inputs": [
+    "crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SourceId, StreamId}",
+    "crate::graph::{ register_builtins, AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDescriptor, NodeError, NodeFactory, NodeRegistrationError, NodeRegistry, NodeTypeId, PortDirection, PortSpec, PrepareContext, RuntimeNode, SafetyContract, SignalSpec, }",
+    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
+    "register_builtins, AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps,",
+    "rtrb::{Consumer, Producer, RingBuffer}",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "std::sync::{Arc, Mutex}"
+  ],
+  "invariants": [
+    {
+      "line": 285,
+      "text": "assert!(matches!(output_channels, 1 | 2));"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 445,
+  "locks": [
+    {
+      "line": 7,
+      "text": "use std::sync::{Arc, Mutex};"
+    },
+    {
+      "line": 67,
+      "text": "consumer: Mutex<Option<Consumer<AudioFrame>>>,"
+    },
+    {
+      "line": 77,
+      "text": "consumer: Mutex::new(Some(consumer)),"
+    },
+    {
+      "line": 171,
+      "text": "producer: Mutex<Option<Producer<AudioFrame>>>,"
+    },
+    {
+      "line": 181,
+      "text": "producer: Mutex::new(Some(producer)),"
+    }
+  ],
+  "module": "pocketstation::runtime::nodes",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-06b6cb48eb37e9925506",
+    "pattern-7a6aa0a5f8b3d665473d"
+  ],
+  "outputs": [
+    "Err(_) => {",
+    "const:BRIDGE_ENDPOINT_NODE_TYPE_ID",
+    "const:SYSTEM_OUTPUT_NODE_TYPE_ID",
+    "fn:clipped_samples",
+    "fn:frames_captured",
+    "fn:frames_emitted",
+    "fn:frames_mixed",
+    "fn:frames_pushed",
+    "fn:lane_underruns",
+    "fn:new",
+    "fn:new_with_output_channels",
+    "fn:output_pool_exhaustions",
+    "fn:overrun_count",
+    "fn:register_runtime_nodes",
+    "fn:underrun_count",
+    "struct:BridgeSinkFactory",
+    "struct:BridgeSinkTelemetry",
+    "struct:MixerSourceNode",
+    "struct:MixerTelemetry",
+    "struct:SystemOutputSourceFactory",
+    "struct:SystemOutputTelemetry"
+  ],
+  "package": "pocketstation",
+  "path": "src/runtime/nodes.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "MIXER_FRAME_SAMPLES_PER_CHANNEL",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 22,
+      "name": "MIXER_MAX_FRAME_SAMPLES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 23,
+      "name": "MIXER_ACCUMULATOR_CAPACITY",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "MIXER_POOL_SLOTS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "MIXER_FRAME_DURATION_NS",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 26,
+      "name": "audio_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 87,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 102,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 120,
+      "name": "SystemOutputSourceNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 127,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 130,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 191,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 202,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 224,
+      "name": "BridgeSinkNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 231,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 234,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 312,
+      "name": "mix_tick",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 432,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 440,
+      "name": "process",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "SYSTEM_OUTPUT_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "BRIDGE_ENDPOINT_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "register_runtime_nodes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 48,
+      "name": "SystemOutputTelemetry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "frames_captured",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "frames_emitted",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "underrun_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 65,
+      "name": "SystemOutputSourceFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 72,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 156,
+      "name": "BridgeSinkTelemetry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 162,
+      "name": "frames_pushed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 165,
+      "name": "overrun_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 169,
+      "name": "BridgeSinkFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 176,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 246,
+      "name": "MixerTelemetry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "frames_mixed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 257,
+      "name": "lane_underruns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 260,
+      "name": "clipped_samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 263,
+      "name": "output_pool_exhaustions",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 267,
+      "name": "MixerSourceNode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 280,
+      "name": "new_with_output_channels",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::runtime::nodes responsibilities, including First-party CLI realtime nodes retained behind `internal-testing`.; Registers runtime nodes for `nodes`.; Reports the counters and terminal facts collected for system output.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/errors/runtime-and-sidecars.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/route-sizing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/frame/pool.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/graph/runtime_node.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 7,
+      "text": "use std::sync::{Arc, Mutex};"
+    },
+    {
+      "line": 68,
+      "text": "telemetry: Arc<SystemOutputTelemetry>,"
+    },
+    {
+      "line": 72,
+      "text": "pub fn new(capacity_frames: usize) -> (Self, Producer<AudioFrame>, Arc<SystemOutputTelemetry>) {"
+    },
+    {
+      "line": 74,
+      "text": "let telemetry = Arc::new(SystemOutputTelemetry::default());"
+    },
+    {
+      "line": 78,
+      "text": "telemetry: Arc::clone(&telemetry),"
+    },
+    {
+      "line": 107,
+      "text": ") -> Result<Box<dyn RuntimeNode>, NodeError> {"
+    },
+    {
+      "line": 114,
+      "text": "Ok(Box::new(SystemOutputSourceNode {"
+    },
+    {
+      "line": 116,
+      "text": "telemetry: Arc::clone(&self.telemetry),"
+    },
+    {
+      "line": 123,
+      "text": "telemetry: Arc<SystemOutputTelemetry>,"
+    },
+    {
+      "line": 172,
+      "text": "telemetry: Arc<BridgeSinkTelemetry>,"
+    },
+    {
+      "line": 176,
+      "text": "pub fn new(capacity_frames: usize) -> (Self, Consumer<AudioFrame>, Arc<BridgeSinkTelemetry>) {"
+    },
+    {
+      "line": 178,
+      "text": "let telemetry = Arc::new(BridgeSinkTelemetry::default());"
+    },
+    {
+      "line": 182,
+      "text": "telemetry: Arc::clone(&telemetry),"
+    },
+    {
+      "line": 211,
+      "text": ") -> Result<Box<dyn RuntimeNode>, NodeError> {"
+    },
+    {
+      "line": 218,
+      "text": "Ok(Box::new(BridgeSinkNode {"
+    },
+    {
+      "line": 220,
+      "text": "telemetry: Arc::clone(&self.telemetry),"
+    },
+    {
+      "line": 227,
+      "text": "telemetry: Arc<BridgeSinkTelemetry>,"
+    },
+    {
+      "line": 274,
+      "text": "pool: Arc<AudioBufferPool>,"
+    },
+    {
+      "line": 275,
+      "text": "telemetry: Arc<MixerTelemetry>,"
+    },
+    {
+      "line": 284,
+      "text": ") -> (Self, Vec<Producer<AudioFrame>>, Arc<MixerTelemetry>) {"
+    },
+    {
+      "line": 294,
+      "text": "let telemetry = Arc::new(MixerTelemetry::default());"
+    },
+    {
+      "line": 305,
+      "text": "telemetry: Arc::clone(&telemetry),"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::runtime::nodes: First-party CLI realtime nodes retained behind `internal-testing`.",
+    "pocketstation::runtime::nodes::register_runtime_nodes: Registers runtime nodes for `nodes`.",
+    "pocketstation::runtime::nodes::SystemOutputTelemetry: Reports the counters and terminal facts collected for system output.",
+    "frames_captured: Returns the frames captured associated with `SystemOutputTelemetry`.",
+    "frames_emitted: Returns the frames emitted associated with `SystemOutputTelemetry`.",
+    "underrun_count: Returns the underrun count held by `SystemOutputTelemetry`.",
+    "pocketstation::runtime::nodes::SystemOutputSourceFactory: Constructs system output source implementations from validated declarations.",
+    "new: Creates a new `SystemOutputSourceFactory`.",
+    "descriptor: Returns the descriptor associated with `SystemOutputSourceFactory`.",
+    "validate_config: Validates config for `SystemOutputSourceFactory`.",
+    "instantiate: Instantiates the runtime node described by `SystemOutputSourceFactory`.",
+    "pocketstation::runtime::nodes::BridgeSinkTelemetry: Reports the counters and terminal facts collected for bridge sink.",
+    "frames_pushed: Returns the frames pushed associated with `BridgeSinkTelemetry`.",
+    "overrun_count: Returns the overrun count held by `BridgeSinkTelemetry`.",
+    "pocketstation::runtime::nodes::BridgeSinkFactory: Constructs bridge sink implementations from validated declarations.",
+    "new: Creates a new `BridgeSinkFactory`.",
+    "descriptor: Returns the descriptor associated with `BridgeSinkFactory`.",
+    "validate_config: Validates config for `BridgeSinkFactory`.",
+    "instantiate: Instantiates the runtime node described by `BridgeSinkFactory`.",
+    "pocketstation::runtime::nodes::MixerTelemetry: Reports the counters and terminal facts collected for mixer.",
+    "frames_mixed: Returns the frames mixed associated with `MixerTelemetry`.",
+    "lane_underruns: Returns the lane underruns associated with `MixerTelemetry`.",
+    "clipped_samples: Returns the clipped samples held by `MixerTelemetry`.",
+    "output_pool_exhaustions: Returns the output pool exhaustions associated with `MixerTelemetry`.",
+    "pocketstation::runtime::nodes::MixerSourceNode: Executes the graph-node behavior defined for mixer source.",
+    "new_with_output_channels: Creates `MixerSourceNode` with the supplied output channels.",
+    "prepare: Prepares resources required by `MixerSourceNode`.",
+    "process: Processes an input value through `MixerSourceNode`."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 127,
+      "text": "fn prepare(&mut self, _context: &PrepareContext) -> Result<(), NodeError> {"
+    },
+    {
+      "line": 231,
+      "text": "fn prepare(&mut self, _context: &PrepareContext) -> Result<(), NodeError> {"
+    },
+    {
+      "line": 432,
+      "text": "fn prepare(&mut self, _context: &PrepareContext) -> Result<(), NodeError> {"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

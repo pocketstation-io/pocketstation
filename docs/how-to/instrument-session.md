@@ -16,9 +16,9 @@ Observation handles acquired before the interval you need to diagnose and a writ
 ## Procedure
 
 1. Acquire observation handles before the period you need to inspect.
-2. Snapshot metrics by stable component IDs.
-3. Record a trace for durable lifecycle evidence.
-4. Stop and include the terminal outcome.
+2. Snapshot metrics by typed SessionComponentId values and preserve the observation boundary for each counter or timestamp.
+3. Record versioned SessionTraceRecord values for durable lifecycle and component-failure evidence.
+4. Stop and include SessionTraceTerminal plus the independent recording outcome.
 5. Validate trace structure before diagnosis.
 
 ## Important consequence
@@ -31,31 +31,31 @@ Metrics resolve by stable component ID, the trace validates, and stop contribute
 
 Executable evidence selected for **Instrument a Session** is limited to each test's recorded setup and assertions:
 
-- `given_route_snapshot_when_drop_observed_then_rate_has_explicit_denominator_and_reasons` — given route snapshot when drop observed then rate has explicit denominator and reasons (`src/session/lifecycle/observations.rs:576`; `test-8235b334c09617394406`).
-- `given_route_snapshot_when_latency_observed_then_boundary_units_and_coverage_are_explicit` — given route snapshot when latency observed then boundary units and coverage are explicit (`src/session/lifecycle/observations.rs:604`; `test-964c6ff3404f3a9d5952`).
-- `given_complete_trace_when_validated_then_lifecycle_and_terminal_match` — given complete trace when validated then lifecycle and terminal match (`src/session/lifecycle/trace.rs:988`; `test-9dd947375f94d2a4f21f`).
-- `given_corrupted_record_when_read_then_checksum_is_rejected` — given corrupted record when read then checksum is rejected (`src/session/lifecycle/trace.rs:1012`; `test-9c9f0e0f6d8934622867`).
-- `given_dropped_records_when_validated_then_trace_is_incomplete` — given dropped records when validated then trace is incomplete (`src/session/lifecycle/trace.rs:1115`; `test-7647b415f36fc0ddd5a0`).
-- `given_existing_output_when_started_then_recorder_fails_closed` — given existing output when started then recorder fails closed (`src/session/lifecycle/trace.rs:1090`; `test-3b4ddbb231cb8f0182e8`).
-- `given_invalid_lifecycle_when_validated_then_validation_fails_closed` — given invalid lifecycle when validated then validation fails closed (`src/session/lifecycle/trace.rs:1057`; `test-ad4fc9ea8d172cd4b678`).
-- `given_record_after_terminal_when_validated_then_trace_is_rejected` — given record after terminal when validated then trace is rejected (`src/session/lifecycle/trace.rs:1160`; `test-13dde755fb2a02648705`).
-- `given_sequence_gap_when_validated_then_trace_is_rejected` — given sequence gap when validated then trace is rejected (`src/session/lifecycle/trace.rs:1136`; `test-5863853c4bbea9e5db76`).
-- `given_timestamp_regression_when_validated_then_trace_is_rejected` — given timestamp regression when validated then trace is rejected (`src/session/lifecycle/trace.rs:1148`; `test-3d881d801a5b93012bc6`).
-- `given_truncated_trace_when_read_then_truncation_is_rejected` — given truncated trace when read then truncation is rejected (`src/session/lifecycle/trace.rs:1027`; `test-f5a25488cf2eb39c2921`).
-- `given_unknown_version_when_read_then_version_is_rejected` — given unknown version when read then version is rejected (`src/session/lifecycle/trace.rs:1042`; `test-8ba8bc1dda2af18cb6c5`).
+- `given_route_snapshot_when_drop_observed_then_rate_has_explicit_denominator_and_reasons` — given route snapshot when drop observed then rate has explicit denominator and reasons (`src/session/lifecycle/observations.rs:576`; `test-1402ef12bbb47b0d009a`).
+- `given_route_snapshot_when_latency_observed_then_boundary_units_and_coverage_are_explicit` — given route snapshot when latency observed then boundary units and coverage are explicit (`src/session/lifecycle/observations.rs:604`; `test-b5b5d3d4a17670690cae`).
+- `given_complete_trace_when_validated_then_lifecycle_and_terminal_match` — given complete trace when validated then lifecycle and terminal match (`src/session/lifecycle/trace.rs:988`; `test-20c537693a458a99f6f9`).
+- `given_corrupted_record_when_read_then_checksum_is_rejected` — given corrupted record when read then checksum is rejected (`src/session/lifecycle/trace.rs:1012`; `test-b8839cf2e639dd3e301a`).
+- `given_dropped_records_when_validated_then_trace_is_incomplete` — given dropped records when validated then trace is incomplete (`src/session/lifecycle/trace.rs:1115`; `test-5ee80a5b5a1b2ce74da0`).
+- `given_existing_output_when_started_then_recorder_fails_closed` — given existing output when started then recorder fails closed (`src/session/lifecycle/trace.rs:1090`; `test-dbf6e802afe21cf4b197`).
+- `given_invalid_lifecycle_when_validated_then_validation_fails_closed` — given invalid lifecycle when validated then validation fails closed (`src/session/lifecycle/trace.rs:1057`; `test-10224fcae99d563f600b`).
+- `given_record_after_terminal_when_validated_then_trace_is_rejected` — given record after terminal when validated then trace is rejected (`src/session/lifecycle/trace.rs:1160`; `test-3d007d4a819d105d9058`).
+- `given_sequence_gap_when_validated_then_trace_is_rejected` — given sequence gap when validated then trace is rejected (`src/session/lifecycle/trace.rs:1136`; `test-71add6b39193d7909de3`).
+- `given_timestamp_regression_when_validated_then_trace_is_rejected` — given timestamp regression when validated then trace is rejected (`src/session/lifecycle/trace.rs:1148`; `test-22e90ca672945b18e17f`).
+- `given_truncated_trace_when_read_then_truncation_is_rejected` — given truncated trace when read then truncation is rejected (`src/session/lifecycle/trace.rs:1027`; `test-293abf2537b795f160f7`).
+- `given_unknown_version_when_read_then_version_is_rejected` — given unknown version when read then version is rejected (`src/session/lifecycle/trace.rs:1042`; `test-7d5245f8ecc878c074a6`).
 
 ## Failure signals
 
-- `pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError` — `error-244f57c587055bf75eb3`
-- `pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError` / `ChannelClosed` — `error-c62bf3f6cc4392dfd9d8`
-- `pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError` / `Io` — `error-be4cd1948de0bbc85d86`
-- `pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError` / `WorkerPanicked` — `error-161f13dcc08f6e4e3828`
-- `pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError` — `error-3305e685338d403564e6`
-- `pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError` / `Io` — `error-38569c19585a9b917f3f`
-- `pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError` / `OutputExists` — `error-07d8590399e61aac56a2`
-- `pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError` / `ZeroCapacity` — `error-f454c8143178ad251c50`
-- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` — `error-848c45be5f51a946a540`
-- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `IncompleteTrace` — `error-25f6cc4c2eb526799c56`
+- `pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError` — `error-ffa283db2f8d994a7bb3`
+- `pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError` / `ChannelClosed` — `error-20055d6ea51fc6c90117`
+- `pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError` / `Io` — `error-1fd4ea1ac3006f911ac6`
+- `pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError` / `WorkerPanicked` — `error-590f78f66f3437979d8b`
+- `pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError` — `error-77de2b427998cd0f4d05`
+- `pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError` / `Io` — `error-283f6632813cc4b9c76a`
+- `pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError` / `OutputExists` — `error-75ca8a05c1093104ea59`
+- `pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError` / `ZeroCapacity` — `error-588d0418ebbe33fc1a14`
+- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` — `error-0012f834ccbfd8415156`
+- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `IncompleteTrace` — `error-1028e9754b78cc85646f`
 
 ## API reference
 
@@ -86,7 +86,7 @@ Executable evidence selected for **Instrument a Session** is limited to each tes
 
 ## Evidence boundary
 
-The claims on **Instrument a Session** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Instrument a Session** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `src/session/lifecycle/observations.rs:1-636` (`DIRECT`)
 - `src/session/lifecycle/trace.rs:1-1179` (`DIRECT`)

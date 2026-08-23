@@ -217,7 +217,9 @@
   "non_responsibilities": [
     "Does not establish physical-device qualification merely by implementing a target backend."
   ],
-  "observed_patterns": [],
+  "observed_patterns": [
+    "pattern-afe7f6a61d58d81ae5df"
+  ],
   "outputs": [
     "No emitted value or public declaration is recorded for this file."
   ],
@@ -347,7 +349,7 @@
       "text": "PksDevice* dev = &((PksDriver*)inDriver)->device;"
     }
   ],
-  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [

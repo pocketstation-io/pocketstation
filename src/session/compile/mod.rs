@@ -20,7 +20,7 @@ mod error;
 use crate::session::extensions::builtins::default_session_graph_lowerers;
 pub(crate) use bindings::{CompiledNodeBinding, CompiledSessionBindings};
 pub use compiled::CompiledSession;
-pub use error::SessionCompileError;
+pub use error::{SessionCompileDiagnostic, SessionCompileError};
 
 const AUDIO_OUTPUT_PORT: &str = "audio";
 const AUDIO_INPUT_PORT: &str = "audio";

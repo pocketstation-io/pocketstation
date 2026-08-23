@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Condvar, Mutex};
 use std::thread::{self, JoinHandle};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use crate::endpoint::{
     EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory,
@@ -20,13 +20,18 @@ const MAX_BATCH_CAPACITY_FRAMES: usize = 256;
 const MAX_OUTSTANDING_LEASES: usize = 64;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Configures polled audio endpoint behavior at its owning API boundary."]
 pub struct PolledAudioEndpointConfig {
+    #[doc = "Sets the queue capacity frames available to `PolledAudioEndpointConfig`."]
     pub queue_capacity_frames: usize,
+    #[doc = "Stores the max batch frames used by `PolledAudioEndpointConfig`."]
     pub max_batch_frames: usize,
+    #[doc = "Stores the max outstanding leases used by `PolledAudioEndpointConfig`."]
     pub max_outstanding_leases: usize,
 }
 
 impl Default for PolledAudioEndpointConfig {
+    #[doc = "Returns the default `PolledAudioEndpointConfig` value."]
     fn default() -> Self {
         Self {
             queue_capacity_frames: 32,
@@ -128,11 +133,13 @@ impl PolledAudioEndpointFactory {
 }
 
 #[derive(Clone)]
+#[doc = "Retains the identity and observation access returned for polled audio."]
 pub struct PolledAudioReceipt {
     shared: Arc<ReceiptShared>,
 }
 
 impl PolledAudioReceipt {
+    #[doc = "Attempts to poll through `PolledAudioReceipt`."]
     pub fn try_poll(&self) -> Result<PolledAudioBatchLease, PolledAudioPollError> {
         let mut state = self
             .shared
@@ -161,9 +168,10 @@ impl PolledAudioReceipt {
                 continue;
             };
             while frames.len() < self.shared.max_batch_frames {
-                let Ok(frame) = consumer.pop() else {
+                let Ok(mut frame) = consumer.pop() else {
                     break;
                 };
+                frame.polled_at_ns = crate::timing::monotonic_timestamp_ns();
                 frames.push(frame);
                 self.shared.observe_dequeued(1);
             }
@@ -190,8 +198,54 @@ impl PolledAudioReceipt {
         })
     }
 
+    #[doc = "Returns the observations exposed by `PolledAudioReceipt`."]
     pub fn observations(&self) -> PolledAudioObservations {
         self.shared.observations()
+    }
+
+    /// Waits for a batch until the finite deadline expires.
+    ///
+    /// The wait owns no additional audio queue. Producers wake this receipt
+    /// after publishing into the existing bounded endpoint rings.
+    pub fn wait_poll(
+        &self,
+        timeout: Duration,
+    ) -> Result<Option<PolledAudioBatchLease>, PolledAudioPollError> {
+        let deadline = Instant::now().checked_add(timeout);
+        loop {
+            let generation = self.shared.wake_generation.load(Ordering::Acquire);
+            match self.try_poll() {
+                Ok(batch) => return Ok(Some(batch)),
+                Err(PolledAudioPollError::Empty) => {}
+                Err(error) => return Err(error),
+            }
+            let Some(deadline) = deadline else {
+                return Ok(None);
+            };
+            let now = Instant::now();
+            if now >= deadline {
+                return Ok(None);
+            }
+            let state = self
+                .shared
+                .state
+                .lock()
+                .map_err(|_| PolledAudioPollError::StatePoisoned)?;
+            if self.shared.wake_generation.load(Ordering::Acquire) != generation
+                || self.shared.queue_depth_frames.load(Ordering::Acquire) > 0
+            {
+                drop(state);
+                continue;
+            }
+            let (_state, wait) = self
+                .shared
+                .available
+                .wait_timeout(state, deadline.saturating_duration_since(now))
+                .map_err(|_| PolledAudioPollError::StatePoisoned)?;
+            if wait.timed_out() {
+                return Ok(None);
+            }
+        }
     }
 }
 
@@ -259,6 +313,26 @@ impl<'lease> PolledAudioFrame<'lease> {
         self.delivered.route_id
     }
 
+    #[doc = "Returns the route enqueued at nanoseconds held by `PolledAudioFrame`."]
+    pub fn route_enqueued_at_ns(self) -> u64 {
+        self.delivered.route_enqueued_at_ns
+    }
+
+    #[doc = "Returns the route received at nanoseconds held by `PolledAudioFrame`."]
+    pub fn route_received_at_ns(self) -> u64 {
+        self.delivered.route_received_at_ns
+    }
+
+    #[doc = "Returns the endpoint enqueued at nanoseconds held by `PolledAudioFrame`."]
+    pub fn endpoint_enqueued_at_ns(self) -> u64 {
+        self.delivered.endpoint_enqueued_at_ns
+    }
+
+    #[doc = "Returns the polled at nanoseconds held by `PolledAudioFrame`."]
+    pub fn polled_at_ns(self) -> u64 {
+        self.delivered.polled_at_ns
+    }
+
     #[doc = "Returns the stream identifier held by `PolledAudioFrame`."]
     pub fn stream_id(self) -> StreamId {
         self.delivered.frame.frame().stream_id()
@@ -290,6 +364,10 @@ struct DeliveredAudioFrame {
     endpoint_id: EndpointId,
     connector_id: ConnectorId,
     route_id: RouteId,
+    route_enqueued_at_ns: u64,
+    route_received_at_ns: u64,
+    endpoint_enqueued_at_ns: u64,
+    polled_at_ns: u64,
     frame: LineagedAudioFrame,
 }
 
@@ -301,6 +379,8 @@ struct ReceiptState {
 
 struct ReceiptShared {
     state: Mutex<ReceiptState>,
+    available: Condvar,
+    wake_generation: AtomicU64,
     max_batch_frames: usize,
     registered_endpoints: AtomicU64,
     queue_capacity_frames: AtomicU64,
@@ -330,6 +410,8 @@ impl ReceiptShared {
                 recycled_batches,
                 next_consumer: 0,
             }),
+            available: Condvar::new(),
+            wake_generation: AtomicU64::new(0),
             max_batch_frames: config.max_batch_frames,
             registered_endpoints: AtomicU64::new(0),
             queue_capacity_frames: AtomicU64::new(0),
@@ -399,6 +481,8 @@ impl ReceiptShared {
         self.registered_endpoints.fetch_sub(1, Ordering::Relaxed);
         self.queue_capacity_frames
             .fetch_sub(capacity_frames as u64, Ordering::Relaxed);
+        self.wake_generation.fetch_add(1, Ordering::Release);
+        self.available.notify_all();
         Ok(())
     }
 
@@ -425,6 +509,8 @@ impl ReceiptShared {
         self.frames_delivered_total.fetch_add(1, Ordering::Relaxed);
         let depth = self.queue_depth_frames.load(Ordering::Relaxed);
         self.queue_peak_frames.fetch_max(depth, Ordering::Relaxed);
+        self.wake_generation.fetch_add(1, Ordering::Release);
+        self.available.notify_one();
     }
 
     fn release_queue_reservation(&self) {
@@ -692,7 +778,7 @@ fn run_worker(
                 .fetch_add(1, Ordering::Relaxed);
             shared.frames_received_total.fetch_add(1, Ordering::Relaxed);
             let Some(delivered) = prepare_delivered_frame(
-                frame.into_inner(),
+                frame,
                 endpoint_id,
                 connector_id,
                 route_id,
@@ -744,14 +830,16 @@ fn publish_delivered_frame(
 }
 
 fn prepare_delivered_frame(
-    frame: PlanEdgeFrame,
+    frame: crate::endpoint::EndpointAudioFrame,
     endpoint_id: EndpointId,
     connector_id: ConnectorId,
     route_id: RouteId,
     shared: &ReceiptShared,
     observations: &WorkerObservations,
 ) -> Option<DeliveredAudioFrame> {
-    let PlanEdgeFrame::Exclusive(frame) = frame else {
+    let route_enqueued_at_ns = frame.route_enqueued_at_ns();
+    let route_received_at_ns = frame.route_received_at_ns();
+    let PlanEdgeFrame::Exclusive(frame) = frame.into_inner() else {
         observations
             .invalid_ownership_drops_total
             .fetch_add(1, Ordering::Relaxed);
@@ -764,6 +852,10 @@ fn prepare_delivered_frame(
         endpoint_id,
         connector_id,
         route_id,
+        route_enqueued_at_ns,
+        route_received_at_ns,
+        endpoint_enqueued_at_ns: crate::timing::monotonic_timestamp_ns(),
+        polled_at_ns: 0,
         frame,
     })
 }

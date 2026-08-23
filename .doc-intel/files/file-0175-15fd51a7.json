@@ -1,0 +1,1296 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs",
+    "REFERENCES:src/session/extensions/recording.rs"
+  ],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AtomicBool::new",
+    "Box::new",
+    "Duration::from_millis",
+    "EndpointDriverObservations::default",
+    "EndpointFailure::new",
+    "EndpointPreparationGroup::Shared",
+    "Finished",
+    "HashSet::with_capacity",
+    "MultistemRecording::start_observed",
+    "MultistemRecordingReceiptState::default",
+    "RecorderError::OutputExists",
+    "SessionRecorderTelemetry::default",
+    "SessionRecorderWorker::spawn",
+    "SessionRecorderWorkerOutcome::Finished",
+    "StemLabel::new",
+    "TimelineMapping::new",
+    "Vec::with_capacity",
+    "all",
+    "any",
+    "as_deref",
+    "as_ref",
+    "as_str",
+    "audio_stem_id",
+    "cancel_preparation",
+    "cfg",
+    "channels",
+    "clone",
+    "context",
+    "derive",
+    "derive_recorder_config",
+    "drop",
+    "endpoint_id",
+    "endpoint_observations",
+    "exists",
+    "failed_finalization",
+    "filter_map",
+    "finalized_observations",
+    "finish",
+    "first",
+    "fold",
+    "get",
+    "group_id",
+    "insert",
+    "into",
+    "into_inner",
+    "into_iter",
+    "into_parts",
+    "is_empty",
+    "is_err",
+    "is_open",
+    "is_some",
+    "iter",
+    "iter_mut",
+    "join",
+    "join_and_finalize",
+    "len",
+    "let",
+    "lineage",
+    "load",
+    "map",
+    "map_err",
+    "map_or_else",
+    "mark_worker_failure",
+    "monotonic_timestamp_ns",
+    "name",
+    "new",
+    "node_configuration",
+    "observations",
+    "ok_or_else",
+    "output_root",
+    "preparation_group",
+    "prepare",
+    "prepare_failure",
+    "push",
+    "receipt",
+    "record_initialization_failure",
+    "record_initialization_progress",
+    "recording_outcome_result",
+    "request_stop",
+    "result",
+    "route_context",
+    "route_id",
+    "run_session_recorder",
+    "sample_rate_hz",
+    "saturating_add",
+    "session_id",
+    "session_timeline_origin",
+    "set",
+    "snapshot",
+    "spawn",
+    "start",
+    "std::iter::repeat_with",
+    "store",
+    "take",
+    "thread",
+    "thread::Builder::new",
+    "thread::park_timeout",
+    "to_owned",
+    "to_string",
+    "try_recv",
+    "unpark",
+    "unwrap_or_else",
+    "update",
+    "validate_initial_frame",
+    "zip"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 64,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 69,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 755,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs",
+    "REFERENCES:src/session/extensions/recording.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "AtomicBool::new",
+    "Box::new",
+    "EndpointFailure::new",
+    "StemLabel::new",
+    "TimelineMapping::new",
+    "new",
+    "thread::Builder::new"
+  ],
+  "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 22,
+      "name": "SESSION_RECORDER_IDLE_WAIT_MS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "MULTISTEM_GROUP_CONFIGURATION_KEY",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "MULTISTEM_NAME_CONFIGURATION_KEY",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 28,
+      "name": "MultistemRecordingReceipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "result",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 39,
+      "name": "MultistemRecordingReceiptState",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 49,
+      "name": "SessionMultistemEndpointCoordinator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "output_root",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "group_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "receipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 229,
+      "name": "SessionPreparedStem",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 241,
+      "name": "RecordingSessionIdentity",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 245,
+      "name": "PreparedSessionMultistemEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 255,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 285,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 293,
+      "name": "RunningSessionMultistemEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 300,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 307,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 314,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 352,
+      "name": "failed_finalization",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 365,
+      "name": "SessionRecorderWorker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 373,
+      "name": "spawn",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 406,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 413,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 417,
+      "name": "join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 441,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 451,
+      "name": "SessionRecorderTelemetry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 460,
+      "name": "record_initialization_progress",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 464,
+      "name": "update",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 477,
+      "name": "record_initialization_failure",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 483,
+      "name": "snapshot",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 494,
+      "name": "SessionRecorderWorkerOutcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 503,
+      "name": "run_session_recorder",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 635,
+      "name": "validate_initial_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 669,
+      "name": "derive_recorder_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 695,
+      "name": "prepare_failure",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 699,
+      "name": "endpoint_observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 709,
+      "name": "finalized_observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 734,
+      "name": "recording_outcome_result",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 756,
+      "name": "tests",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 441,
+      "text": "fn drop(&mut self) {"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 8,
+      "text": "use crate::endpoint::{"
+    },
+    {
+      "line": 46,
+      "text": "/// identity. Session startup contributes exact endpoint, route, stem, sample,"
+    },
+    {
+      "line": 89,
+      "text": ".ok_or_else(|| prepare_failure(\"recording endpoint is missing recording_group_id\"))?;"
+    },
+    {
+      "line": 92,
+      "text": "\"recording endpoint belongs to group {declared_group_id:?}, expected {:?}\","
+    },
+    {
+      "line": 106,
+      "text": ".ok_or_else(|| prepare_failure(\"recording group must contain at least one endpoint\"))?;"
+    },
+    {
+      "line": 118,
+      "text": "\"endpoint {:?} belongs to session {}, expected {}\","
+    },
+    {
+      "line": 126,
+      "text": "\"recording group contains duplicate endpoint {:?}\","
+    },
+    {
+      "line": 133,
+      "text": "\"endpoint {:?} is not bound to an audio stem\","
+    },
+    {
+      "line": 153,
+      "text": "\"endpoint {:?} has a different Session timeline origin\","
+    },
+    {
+      "line": 164,
+      "text": "prepare_failure(\"recording endpoint is missing recording_group_id\")"
+    },
+    {
+      "line": 168,
+      "text": "\"endpoint {:?} belongs to recording group {declared_group_id:?}, expected {:?}\","
+    },
+    {
+      "line": 177,
+      "text": ".ok_or_else(|| prepare_failure(\"recording endpoint is missing stem_name\"))?,"
+    },
+    {
+      "line": 197,
+      "text": "\"endpoint {:?} has invalid sample spec {} Hz/{} ch\","
+    },
+    {
+      "line": 541,
+      "text": "\"endpoint {:?} route {:?}: {error}\","
+    },
+    {
+      "line": 573,
+      "text": "\"endpoint {:?} route {:?} stem {:?} is missing its authoritative first frame\","
+    },
+    {
+      "line": 589,
+      "text": "\"endpoint {:?} route {:?}: {error}\","
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "MULTISTEM_GROUP_CONFIGURATION_KEY",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "MULTISTEM_NAME_CONFIGURATION_KEY",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 28,
+      "name": "MultistemRecordingReceipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "result",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 49,
+      "name": "SessionMultistemEndpointCoordinator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "output_root",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "group_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "receipt",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 91,
+      "text": "return Err(prepare_failure(format!("
+    },
+    {
+      "line": 117,
+      "text": "return Err(prepare_failure(format!("
+    },
+    {
+      "line": 125,
+      "text": "return Err(prepare_failure(format!("
+    },
+    {
+      "line": 138,
+      "text": "return Err(prepare_failure(format!("
+    },
+    {
+      "line": 144,
+      "text": "return Err(prepare_failure(format!("
+    },
+    {
+      "line": 152,
+      "text": "return Err(prepare_failure(format!("
+    },
+    {
+      "line": 167,
+      "text": "return Err(prepare_failure(format!("
+    },
+    {
+      "line": 181,
+      "text": "return Err(prepare_failure(format!("
+    },
+    {
+      "line": 191,
+      "text": "return Err(prepare_failure("
+    },
+    {
+      "line": 196,
+      "text": "return Err(prepare_failure(format!("
+    },
+    {
+      "line": 266,
+      "text": "return Err(EndpointFailure::new("
+    },
+    {
+      "line": 329,
+      "text": "result: Err(EndpointFailure::new("
+    },
+    {
+      "line": 339,
+      "text": "result = Err(EndpointFailure::new("
+    },
+    {
+      "line": 359,
+      "text": "result: Err(EndpointFailure::new("
+    },
+    {
+      "line": 536,
+      "text": "if let Err(error) = validate_initial_frame(session_id, stem, &frame) {"
+    },
+    {
+      "line": 584,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 605,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 624,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 643,
+      "text": "return Err(RecorderError::LineageMismatch {"
+    },
+    {
+      "line": 651,
+      "text": "return Err(RecorderError::LineageMismatch {"
+    },
+    {
+      "line": 659,
+      "text": "return Err(RecorderError::FrameSpecMismatch {"
+    },
+    {
+      "line": 745,
+      "text": "Err(EndpointFailure::new("
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [
+    {
+      "line": 179,
+      "text": ".map_err(|error| prepare_failure(error.to_string()))?;"
+    },
+    {
+      "line": 279,
+      "text": ".map_err(|error| EndpointFailure::new(EndpointFailureStage::Start, error.to_string()))?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 179,
+      "text": ".map_err(|error| prepare_failure(error.to_string()))?;"
+    },
+    {
+      "line": 279,
+      "text": ".map_err(|error| EndpointFailure::new(EndpointFailureStage::Start, error.to_string()))?;"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 179,
+      "text": ".map_err(|error| prepare_failure(error.to_string()))?;"
+    },
+    {
+      "line": 279,
+      "text": ".map_err(|error| EndpointFailure::new(EndpointFailureStage::Start, error.to_string()))?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "3d90d8a9ac08f5572beb8fdd72cd451db862942152b69ffe81e1c2fa613b8357",
+      "lines": [
+        1,
+        757
+      ],
+      "path": "src/recording/endpoint.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs",
+    "REFERENCES:src/session/extensions/recording.rs"
+  ],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0175-15fd51a7",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "1c9a295389bbc68293a98f678ac0830ae3e3b006",
+  "implemented_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs",
+    "REFERENCES:src/session/extensions/recording.rs"
+  ],
+  "implements": [
+    "MultistemRecordingReceipt",
+    "SessionMultistemEndpointCoordinator",
+    "EndpointDriverFactory for SessionMultistemEndpointCoordinator",
+    "PreparedEndpointDriver for PreparedSessionMultistemEndpoint",
+    "RunningEndpointDriver for RunningSessionMultistemEndpoint",
+    "SessionRecorderWorker",
+    "Drop for SessionRecorderWorker",
+    "SessionRecorderTelemetry"
+  ],
+  "imported_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs",
+    "REFERENCES:src/session/extensions/recording.rs"
+  ],
+  "imports": [
+    "crate::endpoint::{ EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin, }",
+    "crate::frame::{EndpointId, RouteId, SessionId, StemId}",
+    "crate::recording::{ MultistemRecording, PermissionDecision, PermissionScope, RecorderError, RecorderLineageField, RecorderStemConfig, RecordingObservations, RecordingOutcome, RecordingState, StemLabel, }",
+    "crate::runtime::PlanEdgeFrame",
+    "crate::timing::TimelineMapping",
+    "module:tests",
+    "std::collections::HashSet",
+    "std::path::{Path, PathBuf}",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "std::sync::{Arc, OnceLock}",
+    "std::thread::{self, JoinHandle}",
+    "std::time::Duration"
+  ],
+  "inputs": [
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(test)]",
+    "crate::endpoint::{ EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin, }",
+    "crate::frame::{EndpointId, RouteId, SessionId, StemId}",
+    "crate::recording::{ MultistemRecording, PermissionDecision, PermissionScope, RecorderError, RecorderLineageField, RecorderStemConfig, RecordingObservations, RecordingOutcome, RecordingState, StemLabel, }",
+    "crate::runtime::PlanEdgeFrame",
+    "crate::timing::TimelineMapping",
+    "module:tests",
+    "std::collections::HashSet",
+    "std::path::{Path, PathBuf}",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "std::sync::{Arc, OnceLock}",
+    "std::thread::{self, JoinHandle}",
+    "std::time::Duration"
+  ],
+  "invariants": [
+    {
+      "line": 106,
+      "text": ".ok_or_else(|| prepare_failure(\"recording group must contain at least one endpoint\"))?;"
+    },
+    {
+      "line": 686,
+      "text": "// does not assert an operating-system permission decision."
+    }
+  ],
+  "language": "Rust",
+  "line_count": 757,
+  "locks": [],
+  "module": "pocketstation::recording::endpoint",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-25297d2b3b32d08b7163"
+  ],
+  "outputs": [
+    "const:MULTISTEM_GROUP_CONFIGURATION_KEY",
+    "const:MULTISTEM_NAME_CONFIGURATION_KEY",
+    "fn:group_id",
+    "fn:new",
+    "fn:output_root",
+    "fn:receipt",
+    "fn:result",
+    "return Err(prepare_failure(",
+    "return Err(prepare_failure(format!(",
+    "struct:MultistemRecordingReceipt",
+    "struct:SessionMultistemEndpointCoordinator"
+  ],
+  "package": "pocketstation",
+  "path": "src/recording/endpoint.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 22,
+      "name": "SESSION_RECORDER_IDLE_WAIT_MS",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 39,
+      "name": "MultistemRecordingReceiptState",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 229,
+      "name": "SessionPreparedStem",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 241,
+      "name": "RecordingSessionIdentity",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 245,
+      "name": "PreparedSessionMultistemEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 255,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 285,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 293,
+      "name": "RunningSessionMultistemEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 300,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 307,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 314,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 352,
+      "name": "failed_finalization",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 365,
+      "name": "SessionRecorderWorker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 373,
+      "name": "spawn",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 406,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 413,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 417,
+      "name": "join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 441,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 451,
+      "name": "SessionRecorderTelemetry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 460,
+      "name": "record_initialization_progress",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 464,
+      "name": "update",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 477,
+      "name": "record_initialization_failure",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 483,
+      "name": "snapshot",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 494,
+      "name": "SessionRecorderWorkerOutcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 503,
+      "name": "run_session_recorder",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 635,
+      "name": "validate_initial_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 669,
+      "name": "derive_recorder_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 695,
+      "name": "prepare_failure",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 699,
+      "name": "endpoint_observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 709,
+      "name": "finalized_observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 734,
+      "name": "recording_outcome_result",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 756,
+      "name": "tests",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 272,
+      "text": "let worker = SessionRecorderWorker::spawn("
+    },
+    {
+      "line": 373,
+      "text": "fn spawn("
+    },
+    {
+      "line": 389,
+      "text": ".spawn(move || {"
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "MULTISTEM_GROUP_CONFIGURATION_KEY",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "MULTISTEM_NAME_CONFIGURATION_KEY",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 28,
+      "name": "MultistemRecordingReceipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "result",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 49,
+      "name": "SessionMultistemEndpointCoordinator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "output_root",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "group_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "receipt",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::recording::endpoint responsibilities, including Defines the public multistem group configuration key value.; Defines the public multistem name configuration key value.; Retains the identity and observation access returned for multistem recording.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/stop-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/recording.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/recording.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/endpoint/identity.rs",
+    "REFERENCES:src/endpoint/runtime.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/recording/config.rs",
+    "REFERENCES:src/recording/writer.rs",
+    "REFERENCES:src/runtime/audio/router.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 4,
+      "text": "use std::sync::{Arc, OnceLock};"
+    },
+    {
+      "line": 29,
+      "text": "state: Arc<MultistemRecordingReceiptState>,"
+    },
+    {
+      "line": 52,
+      "text": "receipt_state: Arc<MultistemRecordingReceiptState>,"
+    },
+    {
+      "line": 60,
+      "text": "receipt_state: Arc::new(MultistemRecordingReceiptState::default()),"
+    },
+    {
+      "line": 76,
+      "text": "state: Arc::clone(&self.receipt_state),"
+    },
+    {
+      "line": 102,
+      "text": ") -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 217,
+      "text": "Ok(Box::new(PreparedSessionMultistemEndpoint {"
+    },
+    {
+      "line": 225,
+      "text": "receipt_state: Arc::clone(&self.receipt_state),"
+    },
+    {
+      "line": 251,
+      "text": "receipt_state: Arc<MultistemRecordingReceiptState>,"
+    },
+    {
+      "line": 256,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 257,
+      "text": "start_gate: Arc<EndpointStartGate>,"
+    },
+    {
+      "line": 258,
+      "text": ") -> Result<Box<dyn RunningEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 280,
+      "text": "Ok(Box::new(RunningSessionMultistemEndpoint {"
+    },
+    {
+      "line": 286,
+      "text": "fn cancel_preparation(self: Box<Self>) -> EndpointCancellationOutcome {"
+    },
+    {
+      "line": 296,
+      "text": "receipt_state: Arc<MultistemRecordingReceiptState>,"
+    },
+    {
+      "line": 315,
+      "text": "fn join_and_finalize(mut self: Box<Self>) -> EndpointDriverFinalization {"
+    },
+    {
+      "line": 367,
+      "text": "stop_requested: Arc<AtomicBool>,"
+    },
+    {
+      "line": 369,
+      "text": "telemetry: Arc<SessionRecorderTelemetry>,"
+    },
+    {
+      "line": 378,
+      "text": "start_gate: Arc<EndpointStartGate>,"
+    },
+    {
+      "line": 380,
+      "text": "let stop_requested = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 381,
+      "text": "let worker_stop = Arc::clone(&stop_requested);"
+    },
+    {
+      "line": 382,
+      "text": "let telemetry = Arc::new(SessionRecorderTelemetry::default());"
+    },
+    {
+      "line": 383,
+      "text": "let worker_telemetry = Arc::clone(&telemetry);"
+    },
+    {
+      "line": 440,
+      "text": "impl Drop for SessionRecorderWorker {"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::recording::endpoint::MULTISTEM_GROUP_CONFIGURATION_KEY: Defines the public multistem group configuration key value.",
+    "pocketstation::recording::endpoint::MULTISTEM_NAME_CONFIGURATION_KEY: Defines the public multistem name configuration key value.",
+    "pocketstation::recording::endpoint::MultistemRecordingReceipt: Retains the identity and observation access returned for multistem recording.",
+    "result: Returns the result represented by `MultistemRecordingReceipt`.",
+    "pocketstation::recording::endpoint::SessionMultistemEndpointCoordinator: Canonical Session-owned multistem recorder declaration.",
+    "new: Creates a new `SessionMultistemEndpointCoordinator`.",
+    "output_root: Returns the output root associated with `SessionMultistemEndpointCoordinator`.",
+    "group_id: Returns the group identifier held by `SessionMultistemEndpointCoordinator`.",
+    "receipt: Returns the receipt associated with `SessionMultistemEndpointCoordinator`.",
+    "preparation_group: Returns the preparation group associated with `SessionMultistemEndpointCoordinator`.",
+    "prepare: Prepares resources required by `SessionMultistemEndpointCoordinator`."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 272,
+      "text": "let worker = SessionRecorderWorker::spawn("
+    },
+    {
+      "line": 373,
+      "text": "fn spawn("
+    },
+    {
+      "line": 389,
+      "text": ".spawn(move || {"
+    }
+  ],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [
+    {
+      "line": 99,
+      "text": "fn prepare("
+    },
+    {
+      "line": 255,
+      "text": "fn start("
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 5,
+      "text": "use std::thread::{self, JoinHandle};"
+    },
+    {
+      "line": 272,
+      "text": "let worker = SessionRecorderWorker::spawn("
+    },
+    {
+      "line": 373,
+      "text": "fn spawn("
+    },
+    {
+      "line": 384,
+      "text": "let join_handle = thread::Builder::new()"
+    },
+    {
+      "line": 389,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 410,
+      "text": "join_handle.thread().unpark();"
+    },
+    {
+      "line": 444,
+      "text": "join_handle.thread().unpark();"
+    },
+    {
+      "line": 518,
+      "text": "thread::park_timeout(Duration::from_millis(SESSION_RECORDER_IDLE_WAIT_MS));"
+    },
+    {
+      "line": 562,
+      "text": "thread::park_timeout(Duration::from_millis(SESSION_RECORDER_IDLE_WAIT_MS));"
+    },
+    {
+      "line": 616,
+      "text": "thread::park_timeout(Duration::from_millis(SESSION_RECORDER_IDLE_WAIT_MS));"
+    }
+  ],
+  "visibility": "mixed"
+}

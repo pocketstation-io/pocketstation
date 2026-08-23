@@ -47,51 +47,51 @@ The scope of **Runtime planner** ends at the native contracts and executable con
 
 - `typed_error` — `src/runtime/audio/runner.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/session/extensions/audio_input/source.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `bounded_queue` — `src/session/lifecycle/running.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/session/declaration/typed_stream.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/runtime/nodes.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `clock_correlation` — `src/session/lifecycle/running.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `benches/runtime_plan.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/session/extensions/tests/runtime.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `transactional_registration` — `src/session/lifecycle/events.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/session/compile/tests.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/session/extensions/tests/registry.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `transactional_registration` — `src/session/lifecycle/endpoint_transaction.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/graph/signal/continuity.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `clock_correlation` — `src/runtime/signal/edge.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/session/declaration/spec.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `clock_correlation` — `src/runtime/signal/operator.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/graph/signal/timing.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/session/extensions/builtins.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/graph/signal/envelope.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/graph/named_ports.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/session/compile/mod.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/session/lifecycle/host.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `bounded_queue` — `src/session/lifecycle/trace.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `examples/product_quickstart.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/graph/signal/preparation.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/runtime/audio/executor.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `examples/operator-consumer/src/lib.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `typed_error` — `src/session/lifecycle/endpoint_transaction.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `transactional_registration` — `src/session/lifecycle/mod.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/session/extensions/audio_input/buffer.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/runtime/lifecycle/async_host.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/graph/runtime_node.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `clock_correlation` — `src/session/extensions/audio_input/source.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/runtime/audio/runner.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `buffer_pool` — `src/session/extensions/tests/runtime.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `transactional_registration` — `src/session/lifecycle/engine.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `typed_error` — `src/graph/signal/operator.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `transactional_registration` — `src/session/lifecycle/tests/running.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 
 ## Behavioral evidence
 
 Executable evidence selected for **Runtime planner** is limited to each test's recorded setup and assertions:
 
-- `given_fixed_graph_when_planned_then_runtime_plan_matches_golden_snapshot` — given fixed graph when planned then runtime plan matches golden snapshot (`src/graph/compile/plan.rs:803`; `test-79ec9d2ff6b56808169b`).
-- `given_compiled_graph_when_instrumented_then_metric_ids_are_stable_and_distinct` — given compiled graph when instrumented then metric ids are stable and distinct (`src/graph/compile/plan.rs:785`; `test-1c092b4376cfedf5e86d`).
-- `given_copy_to_branch_pool_edge_when_planned_then_copy_pool_memory_is_reserved` — given copy to branch pool edge when planned then copy pool memory is reserved (`src/graph/compile/plan.rs:734`; `test-1d8783b870fa351a933b`).
-- `given_explicit_jitter_budget_when_planned_then_bounded_capacity_is_derived_from_frame_time` — given explicit jitter budget when planned then bounded capacity is derived from frame time (`src/graph/compile/plan.rs:755`; `test-28b5b52333fa1672705d`).
-- `given_linear_realtime_chain_when_planned_then_single_partition_and_topo_order` — given linear realtime chain when planned then single partition and topo order (`src/graph/compile/plan.rs:834`; `test-9570c9e13e72112e73ef`).
-- `given_linear_realtime_graph_when_planned_then_single_partition_in_topo_order` — given linear realtime graph when planned then single partition in topo order (`src/graph/compile/plan.rs:540`; `test-0ad4ea1abd7124d12740`).
-- `given_many_input_port_with_multiple_sources_when_planned_then_one_fan_in_group` — given many input port with multiple sources when planned then one fan in group (`src/graph/compile/plan.rs:664`; `test-e8c1159b6f21b80587d2`).
-- `given_move_exclusive_edge_in_fan_out_when_planned_then_ownership_is_rejected` — given move exclusive edge in fan out when planned then ownership is rejected (`src/graph/compile/plan.rs:640`; `test-6148b3a94bda4119135e`).
-- `given_output_feeding_two_edges_when_planned_then_one_fan_out_group_with_two_targets` — given output feeding two edges when planned then one fan out group with two targets (`src/graph/compile/plan.rs:610`; `test-42437c4cb8f955f4df43`).
-- `given_realtime_and_model_remote_nodes_when_planned_then_two_partitions_ordered_by_rank` — given realtime and model remote nodes when planned then two partitions ordered by rank (`src/graph/compile/plan.rs:561`; `test-917d8ff26f7ff8e13525`).
-- `given_realtime_consumers_when_planned_then_every_edge_buffered_and_pool_positive` — given realtime consumers when planned then every edge buffered and pool positive (`src/graph/compile/plan.rs:706`; `test-977e6826ff8e82a0a94c`).
-- `given_realtime_to_external_edge_when_planned_then_branch_pool_isolated_from_capture_pool` — given realtime to external edge when planned then branch pool isolated from capture pool (`src/graph/compile/plan.rs:591`; `test-ab3f88fbe7eaddfa92c8`).
+- `given_fixed_graph_when_planned_then_runtime_plan_matches_golden_snapshot` — given fixed graph when planned then runtime plan matches golden snapshot (`src/graph/compile/plan.rs:803`; `test-64cc2617d3ff74792a37`).
+- `given_compiled_graph_when_instrumented_then_metric_ids_are_stable_and_distinct` — given compiled graph when instrumented then metric ids are stable and distinct (`src/graph/compile/plan.rs:785`; `test-aef519dc61d29ebde9b6`).
+- `given_copy_to_branch_pool_edge_when_planned_then_copy_pool_memory_is_reserved` — given copy to branch pool edge when planned then copy pool memory is reserved (`src/graph/compile/plan.rs:734`; `test-1b94392ac4d9cdf72c6b`).
+- `given_explicit_jitter_budget_when_planned_then_bounded_capacity_is_derived_from_frame_time` — given explicit jitter budget when planned then bounded capacity is derived from frame time (`src/graph/compile/plan.rs:755`; `test-872ab5535858c7cfd4ad`).
+- `given_linear_realtime_chain_when_planned_then_single_partition_and_topo_order` — given linear realtime chain when planned then single partition and topo order (`src/graph/compile/plan.rs:834`; `test-e8811bdb59c4f11a3a67`).
+- `given_linear_realtime_graph_when_planned_then_single_partition_in_topo_order` — given linear realtime graph when planned then single partition in topo order (`src/graph/compile/plan.rs:540`; `test-7522f862102177e851a9`).
+- `given_many_input_port_with_multiple_sources_when_planned_then_one_fan_in_group` — given many input port with multiple sources when planned then one fan in group (`src/graph/compile/plan.rs:664`; `test-c692b4bfa6301561ee9f`).
+- `given_move_exclusive_edge_in_fan_out_when_planned_then_ownership_is_rejected` — given move exclusive edge in fan out when planned then ownership is rejected (`src/graph/compile/plan.rs:640`; `test-4097b94881add1fae02a`).
+- `given_output_feeding_two_edges_when_planned_then_one_fan_out_group_with_two_targets` — given output feeding two edges when planned then one fan out group with two targets (`src/graph/compile/plan.rs:610`; `test-86df8a3df685a4932d24`).
+- `given_realtime_and_model_remote_nodes_when_planned_then_two_partitions_ordered_by_rank` — given realtime and model remote nodes when planned then two partitions ordered by rank (`src/graph/compile/plan.rs:561`; `test-f418ca08c5a2a4010c14`).
+- `given_realtime_consumers_when_planned_then_every_edge_buffered_and_pool_positive` — given realtime consumers when planned then every edge buffered and pool positive (`src/graph/compile/plan.rs:706`; `test-dcef49d1856e68958b28`).
+- `given_realtime_to_external_edge_when_planned_then_branch_pool_isolated_from_capture_pool` — given realtime to external edge when planned then branch pool isolated from capture pool (`src/graph/compile/plan.rs:591`; `test-a531f3dc46929f9a6f17`).
 
 ## Stability boundary
 
@@ -110,7 +110,7 @@ Executable evidence selected for **Runtime planner** is limited to each test's r
 
 ## Evidence boundary
 
-The claims on **Runtime planner** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Runtime planner** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `src/graph/compile/plan.rs:1-860` (`DIRECT`)
 - `src/session/compile/compiled.rs:1-107` (`DIRECT`)

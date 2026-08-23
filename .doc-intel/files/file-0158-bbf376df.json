@@ -1,0 +1,1044 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/graph/builtins.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/extensions/source.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
+  "calls": [
+    "Arc::new",
+    "Async",
+    "Definition",
+    "InvalidAsyncManifest",
+    "NodeDefinitionRef::Async",
+    "NodeDefinitionRef::Definition",
+    "NodeDefinitionRef::Runtime",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "RegistryEntry::Async",
+    "RegistryEntry::Definition",
+    "RegistryEntry::Runtime",
+    "Runtime",
+    "Self::Async",
+    "Self::Definition",
+    "Self::Runtime",
+    "Self::default",
+    "any",
+    "as_str",
+    "async_factory",
+    "async_factory_by_operator",
+    "async_node_type_id",
+    "cfg",
+    "clone",
+    "contains",
+    "contains_key",
+    "count",
+    "definition",
+    "derive",
+    "descriptor",
+    "error",
+    "get",
+    "given_builtins_registered_when_len_then_counts_each_factory",
+    "given_duplicate_runtime_node_when_registered_then_first_authority_is_preserved",
+    "given_empty_registry_when_get_unknown_then_returns_none",
+    "given_registered_factory_when_get_then_returns_some",
+    "insert",
+    "instantiate",
+    "is_empty",
+    "is_none",
+    "is_some",
+    "keys",
+    "len",
+    "manifest",
+    "new",
+    "register",
+    "register_async",
+    "register_builtins",
+    "register_definition",
+    "to_owned",
+    "type_ids",
+    "unwrap",
+    "validate",
+    "validate_config"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 5,
+      "text": "ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext,"
+    },
+    {
+      "line": 13,
+      "text": "fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError>;"
+    },
+    {
+      "line": 23,
+      "text": "fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError>;"
+    },
+    {
+      "line": 47,
+      "text": "pub fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 159,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 168,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 173,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 178,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 184,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/graph/builtins.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/extensions/source.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
+  "constructs": [
+    "Arc::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "new"
+  ],
+  "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "trait",
+      "line": 10,
+      "name": "NodeFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 13,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "trait",
+      "line": 20,
+      "name": "NodeDefinition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 23,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 25,
+      "name": "RegistryEntry",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 31,
+      "name": "NodeDefinitionRef",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "descriptor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "validate_config",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 57,
+      "name": "NodeRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 67,
+      "name": "NodeRegistry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "register",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "register_async",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 111,
+      "name": "register_definition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 126,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "definition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "async_factory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 150,
+      "name": "async_factory_by_operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 160,
+      "name": "async_node_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 163,
+      "name": "contains",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 169,
+      "name": "len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 174,
+      "name": "is_empty",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 179,
+      "name": "type_ids",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 185,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 190,
+      "name": "given_registered_factory_when_get_then_returns_some",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 199,
+      "name": "given_empty_registry_when_get_unknown_then_returns_none",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 208,
+      "name": "given_builtins_registered_when_len_then_counts_each_factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "given_duplicate_runtime_node_when_registered_then_first_authority_is_preserved",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "trait",
+      "line": 10,
+      "name": "NodeFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 20,
+      "name": "NodeDefinition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 31,
+      "name": "NodeDefinitionRef",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "descriptor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "validate_config",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 57,
+      "name": "NodeRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 67,
+      "name": "NodeRegistry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "register",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "register_async",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 111,
+      "name": "register_definition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 126,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "definition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "async_factory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 150,
+      "name": "async_factory_by_operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 160,
+      "name": "async_node_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 163,
+      "name": "contains",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 169,
+      "name": "len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 174,
+      "name": "is_empty",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 179,
+      "name": "type_ids",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 80,
+      "text": "return Err(NodeRegistrationError::DuplicateNodeType {"
+    },
+    {
+      "line": 96,
+      "text": "return Err(NodeRegistrationError::DuplicateOperatorId {"
+    },
+    {
+      "line": 102,
+      "text": "return Err(NodeRegistrationError::DuplicateNodeType {"
+    },
+    {
+      "line": 118,
+      "text": "return Err(NodeRegistrationError::DuplicateNodeType {"
+    },
+    {
+      "line": 225,
+      "text": "Err(NodeRegistrationError::DuplicateNodeType { .. })"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 57,
+      "name": "NodeRegistrationError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 228,
+      "text": "assert!(registry.get(&NodeTypeId::from(\"passthrough\")).is_some());"
+    }
+  ],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "39f2381599e2750f024158eee4460efb418a7f683906df9d9fa9327583336e9f",
+      "lines": [
+        1,
+        231
+      ],
+      "path": "src/graph/registry.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/graph/builtins.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/extensions/source.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0158-bbf376df",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "ae7f1b1af59db52cd72513310f1eabffc9ebdfd7",
+  "implemented_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/graph/builtins.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/extensions/source.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
+  "implements": [
+    "NodeDefinitionRef<'_>",
+    "NodeRegistry"
+  ],
+  "imported_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/graph/builtins.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/extensions/source.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
+  "imports": [
+    "crate::graph::OperatorId",
+    "crate::graph::builtins::{register_builtins, PassthroughFactory}",
+    "crate::graph::node::{ ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext, }",
+    "crate::graph::runtime_node::RuntimeNode",
+    "crate::graph::signal::{AsyncOperatorFactory, AsyncOperatorManifestError}",
+    "std::collections::HashMap",
+    "std::sync::Arc",
+    "super::*"
+  ],
+  "inputs": [
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(test)]",
+    "ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext,",
+    "crate::graph::OperatorId",
+    "crate::graph::builtins::{register_builtins, PassthroughFactory}",
+    "crate::graph::node::{ ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext, }",
+    "crate::graph::runtime_node::RuntimeNode",
+    "crate::graph::signal::{AsyncOperatorFactory, AsyncOperatorManifestError}",
+    "fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError>;",
+    "pub fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {",
+    "std::collections::HashMap",
+    "std::sync::Arc",
+    "super::*"
+  ],
+  "invariants": [
+    {
+      "line": 194,
+      "text": "assert!(registry.get(&type_id).is_some());"
+    },
+    {
+      "line": 195,
+      "text": "assert!(registry.contains(&type_id));"
+    },
+    {
+      "line": 202,
+      "text": "assert!(registry.get(&type_id).is_none());"
+    },
+    {
+      "line": 203,
+      "text": "assert!(!registry.contains(&type_id));"
+    },
+    {
+      "line": 204,
+      "text": "assert!(registry.is_empty());"
+    },
+    {
+      "line": 212,
+      "text": "assert!(!registry.is_empty());"
+    },
+    {
+      "line": 223,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 228,
+      "text": "assert!(registry.get(&NodeTypeId::from(\"passthrough\")).is_some());"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 231,
+  "locks": [],
+  "module": "pocketstation::graph::registry",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-cbdc573effe2010bd38e"
+  ],
+  "outputs": [
+    "Err(NodeRegistrationError::DuplicateNodeType { .. })",
+    "enum:NodeDefinitionRef",
+    "enum:NodeRegistrationError",
+    "fn:async_factory",
+    "fn:async_factory_by_operator",
+    "fn:async_node_type_id",
+    "fn:contains",
+    "fn:definition",
+    "fn:descriptor",
+    "fn:get",
+    "fn:is_empty",
+    "fn:len",
+    "fn:new",
+    "fn:register",
+    "fn:register_async",
+    "fn:register_definition",
+    "fn:type_ids",
+    "fn:validate_config",
+    "return Err(NodeRegistrationError::DuplicateNodeType {",
+    "return Err(NodeRegistrationError::DuplicateOperatorId {",
+    "struct:NodeRegistry",
+    "trait:NodeDefinition",
+    "trait:NodeFactory"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/registry.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 13,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 23,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 25,
+      "name": "RegistryEntry",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 185,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 190,
+      "name": "given_registered_factory_when_get_then_returns_some",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 199,
+      "name": "given_empty_registry_when_get_unknown_then_returns_none",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 208,
+      "name": "given_builtins_registered_when_len_then_counts_each_factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "given_duplicate_runtime_node_when_registered_then_first_authority_is_preserved",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "trait",
+      "line": 10,
+      "name": "NodeFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 20,
+      "name": "NodeDefinition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 31,
+      "name": "NodeDefinitionRef",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "descriptor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "validate_config",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 57,
+      "name": "NodeRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 67,
+      "name": "NodeRegistry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "register",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "register_async",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 111,
+      "name": "register_definition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 126,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "definition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "async_factory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 150,
+      "name": "async_factory_by_operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 160,
+      "name": "async_node_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 163,
+      "name": "contains",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 169,
+      "name": "len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 174,
+      "name": "is_empty",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 179,
+      "name": "type_ids",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::registry responsibilities, including Implement this trait to provide node behavior to PocketStation; its methods define the preparation and runtime contract.; Returns the descriptor associated with `NodeFactory`.; Validates config for `NodeFactory`.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/operator.rs",
+    "REFERENCES:src/graph/runtime_node.rs",
+    "REFERENCES:src/graph/signal/operator.rs"
+  ],
+  "resource_ownership": [
+    {
+      "line": 2,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 18,
+      "text": ") -> Result<Box<dyn RuntimeNode>, NodeError>;"
+    },
+    {
+      "line": 27,
+      "text": "Runtime(Arc<dyn NodeFactory>),"
+    },
+    {
+      "line": 28,
+      "text": "Async(Arc<dyn AsyncOperatorFactory>),"
+    },
+    {
+      "line": 29,
+      "text": "Definition(Arc<dyn NodeDefinition>),"
+    },
+    {
+      "line": 33,
+      "text": "Runtime(&'registry Arc<dyn NodeFactory>),"
+    },
+    {
+      "line": 34,
+      "text": "Async(&'registry Arc<dyn AsyncOperatorFactory>),"
+    },
+    {
+      "line": 35,
+      "text": "Definition(&'registry Arc<dyn NodeDefinition>),"
+    },
+    {
+      "line": 77,
+      "text": "pub fn register(&mut self, factory: Arc<dyn NodeFactory>) -> Result<(), NodeRegistrationError> {"
+    },
+    {
+      "line": 91,
+      "text": "factory: Arc<dyn AsyncOperatorFactory>,"
+    },
+    {
+      "line": 114,
+      "text": "definition: Arc<dyn NodeDefinition>,"
+    },
+    {
+      "line": 127,
+      "text": "pub fn get(&self, type_id: &NodeTypeId) -> Option<&Arc<dyn NodeFactory>> {"
+    },
+    {
+      "line": 144,
+      "text": "pub fn async_factory(&self, type_id: &NodeTypeId) -> Option<&Arc<dyn AsyncOperatorFactory>> {"
+    },
+    {
+      "line": 154,
+      "text": ") -> Option<&Arc<dyn AsyncOperatorFactory>> {"
+    },
+    {
+      "line": 192,
+      "text": "registry.register(Arc::new(PassthroughFactory)).unwrap();"
+    },
+    {
+      "line": 219,
+      "text": "registry.register(Arc::new(PassthroughFactory)).unwrap();"
+    },
+    {
+      "line": 221,
+      "text": "let result = registry.register(Arc::new(PassthroughFactory));"
+    }
+  ],
+  "responsibilities": [
+    "pocketstation::graph::registry::NodeFactory: Implement this trait to provide node behavior to PocketStation; its methods define the preparation and runtime contract.",
+    "NodeFactory::descriptor: Returns the descriptor associated with `NodeFactory`.",
+    "NodeFactory::validate_config: Validates config for `NodeFactory`.",
+    "NodeFactory::instantiate: Instantiates the runtime node described by `NodeFactory`.",
+    "pocketstation::graph::registry::NodeDefinition: Implement this trait to provide node definition behavior to PocketStation; its methods define the preparation and runtime contract.",
+    "NodeDefinition::descriptor: Returns the descriptor associated with `NodeDefinition`.",
+    "NodeDefinition::validate_config: Validates config for `NodeDefinition`.",
+    "pocketstation::graph::registry::NodeDefinitionRef: Enumerates the supported node definition ref cases.",
+    "pocketstation::graph::registry::NodeDefinitionRef::Runtime: Represents the runtime alternative defined by `NodeDefinitionRef`.",
+    "pocketstation::graph::registry::NodeDefinitionRef::Async: Represents the async alternative defined by `NodeDefinitionRef`.",
+    "pocketstation::graph::registry::NodeDefinitionRef::Definition: Represents the definition alternative defined by `NodeDefinitionRef`.",
+    "descriptor: Returns the descriptor associated with `NodeDefinitionRef`.",
+    "validate_config: Validates config for `NodeDefinitionRef`.",
+    "pocketstation::graph::registry::NodeRegistrationError: Classifies failures reported as node registration error.",
+    "pocketstation::graph::registry::NodeRegistrationError::InvalidAsyncManifest: Reported when the owning operation encounters invalid async manifest.",
+    "NodeRegistrationError::DuplicateNodeType::node_type_id: Identifies the node type identifier recorded by `DuplicateNodeType`.",
+    "pocketstation::graph::registry::NodeRegistrationError::DuplicateNodeType: Reported when the owning operation encounters duplicate node type.",
+    "NodeRegistrationError::DuplicateOperatorId::operator_id: Identifies the operator identifier recorded by `DuplicateOperatorId`.",
+    "pocketstation::graph::registry::NodeRegistrationError::DuplicateOperatorId: Reported when the owning operation encounters duplicate operator identifier.",
+    "pocketstation::graph::registry::NodeRegistry: Indexes registered node implementations by their stable identities.",
+    "new: Creates a new `NodeRegistry`.",
+    "register: Registers a node definition with `NodeRegistry` while preserving unique identities.",
+    "register_async: Registers async for `NodeRegistry`.",
+    "register_definition: Registers definition for `NodeRegistry`.",
+    "get: Returns the value held by `NodeRegistry`.",
+    "definition: Returns the definition associated with `NodeRegistry`.",
+    "async_factory: Returns the async factory associated with `NodeRegistry`.",
+    "async_factory_by_operator: Returns the async factory by operator associated with `NodeRegistry`.",
+    "async_node_type_id: Returns the async node type identifier held by `NodeRegistry`.",
+    "contains: Returns whether contains is true for `NodeRegistry`.",
+    "len: Returns the number of values held by `NodeRegistry`.",
+    "is_empty: Returns whether `NodeRegistry` contains no values.",
+    "type_ids: Returns the type identifiers held by `NodeRegistry`."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-168f11ada7ce5d1ce624",
+    "test-58487ebb0154c286b1f7",
+    "test-687c08c4ebc7699d891b",
+    "test-76c3eb4c4fd13e959a1c",
+    "test-9e1c8ad04d302a8bf88b",
+    "test-d1a35f5a7d2291285de4",
+    "test-d66fedb0ba400a13dd8b",
+    "test-e96f8506522ac5a30e20",
+    "test-ef1f1bb70542725d2b2a",
+    "test-fdef0638c102be5b4c9a"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

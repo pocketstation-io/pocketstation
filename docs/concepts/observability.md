@@ -13,6 +13,8 @@ Bounded routes and independent components need attributable diagnostics. Aggrega
 ## Relationships
 
 - Observation handles read live counters without taking runtime ownership.
+- `SessionComponentId` identifies source, endpoint, operator, sidecar, and runtime observations without string parsing.
+- Application policy, frame delivery, source faults, discontinuities, and recording state each retain a typed observation boundary.
 - Session events report lifecycle changes.
 - Traces persist selected lifecycle evidence for later structural validation.
 
@@ -59,18 +61,18 @@ The scope of **Observations and metrics** ends at the native contracts and execu
 
 Executable evidence selected for **Observations and metrics** is limited to each test's recorded setup and assertions:
 
-- `given_route_snapshot_when_drop_observed_then_rate_has_explicit_denominator_and_reasons` — given route snapshot when drop observed then rate has explicit denominator and reasons (`src/session/lifecycle/observations.rs:576`; `test-8235b334c09617394406`).
-- `given_route_snapshot_when_latency_observed_then_boundary_units_and_coverage_are_explicit` — given route snapshot when latency observed then boundary units and coverage are explicit (`src/session/lifecycle/observations.rs:604`; `test-964c6ff3404f3a9d5952`).
-- `given_stop_and_join_failures_when_finalized_then_both_failures_and_observations_remain_true` — given stop and join failures when finalized then both failures and observations remain true (`src/endpoint/registry/tests.rs:294`; `test-20a4c27d70a60c9bc881`).
-- `given_typed_operator_routes_when_stopped_then_final_state_and_metrics_are_truthful` — given typed operator routes when stopped then final state and metrics are truthful (`src/session/lifecycle/tests/running.rs:1114`; `test-4a96ceb3ecb843502e07`).
-- `given_orthogonal_provider_status_when_reconnecting_then_endpoint_metrics_remain_canonical` — given orthogonal provider status when reconnecting then endpoint metrics remain canonical (`tests/connector_contract.rs:719`; `test-26abd10938c17cf2eba0`).
-- `given_saturated_connector_route_when_observed_then_drops_are_visible_in_session_metrics` — given saturated connector route when observed then drops are visible in session metrics (`tests/connector_contract.rs:836`; `test-2fa646ca802635256f43`).
-- `given_active_capture_when_owner_is_dropped_then_backend_is_reclaimed` — given active capture when owner is dropped then backend is reclaimed (`src/capture/capture_owner.rs:567`; `test-c55d7a75628c1be024f1`).
-- `given_active_capture_when_stopped_then_backend_is_joined` — given active capture when stopped then backend is joined (`src/capture/capture_owner.rs:540`; `test-4f65c4d2e20b5226cd4f`).
-- `given_backend_frame_when_source_differs_from_open_identity_then_lineage_fails_closed` — given backend frame when source differs from open identity then lineage fails closed (`src/capture/capture_owner.rs:511`; `test-a8dbef4f3b61c752ce0e`).
-- `given_panicking_capture_worker_when_joined_then_typed_failure_is_returned` — given panicking capture worker when joined then typed failure is returned (`src/capture/capture_owner.rs:610`; `test-889c6cfb54cc924fc2b4`).
-- `given_prepared_capture_when_opened_then_bounded_delivery_is_owned` — given prepared capture when opened then bounded delivery is owned (`src/capture/capture_owner.rs:463`; `test-8de0974346f9110044c2`).
-- `given_zero_frame_capacity_when_preparing_then_backend_is_not_prepared` — given zero frame capacity when preparing then backend is not prepared (`src/capture/capture_owner.rs:590`; `test-f42d54d3bd1632c2ccfa`).
+- `given_route_snapshot_when_drop_observed_then_rate_has_explicit_denominator_and_reasons` — given route snapshot when drop observed then rate has explicit denominator and reasons (`src/session/lifecycle/observations.rs:576`; `test-1402ef12bbb47b0d009a`).
+- `given_route_snapshot_when_latency_observed_then_boundary_units_and_coverage_are_explicit` — given route snapshot when latency observed then boundary units and coverage are explicit (`src/session/lifecycle/observations.rs:604`; `test-b5b5d3d4a17670690cae`).
+- `given_stop_and_join_failures_when_finalized_then_both_failures_and_observations_remain_true` — given stop and join failures when finalized then both failures and observations remain true (`src/endpoint/registry/tests.rs:294`; `test-da6484ed83753b351441`).
+- `given_typed_operator_routes_when_stopped_then_final_state_and_metrics_are_truthful` — given typed operator routes when stopped then final state and metrics are truthful (`src/session/lifecycle/tests/running.rs:1114`; `test-89251e3206216dbcb480`).
+- `given_orthogonal_provider_status_when_reconnecting_then_endpoint_metrics_remain_canonical` — given orthogonal provider status when reconnecting then endpoint metrics remain canonical (`tests/connector_contract.rs:719`; `test-0ebb1434ad7b7a743a83`).
+- `given_saturated_connector_route_when_observed_then_drops_are_visible_in_session_metrics` — given saturated connector route when observed then drops are visible in session metrics (`tests/connector_contract.rs:836`; `test-440e0d0f038bd27e531f`).
+- `given_active_capture_when_owner_is_dropped_then_backend_is_reclaimed` — given active capture when owner is dropped then backend is reclaimed (`src/capture/capture_owner.rs:567`; `test-fa34e5723160d56f560f`).
+- `given_active_capture_when_stopped_then_backend_is_joined` — given active capture when stopped then backend is joined (`src/capture/capture_owner.rs:540`; `test-dd4aaaf6b93ddb500769`).
+- `given_backend_frame_when_source_differs_from_open_identity_then_lineage_fails_closed` — given backend frame when source differs from open identity then lineage fails closed (`src/capture/capture_owner.rs:511`; `test-805d755d4acd2257ba9b`).
+- `given_panicking_capture_worker_when_joined_then_typed_failure_is_returned` — given panicking capture worker when joined then typed failure is returned (`src/capture/capture_owner.rs:610`; `test-2d873f94835a177ce436`).
+- `given_prepared_capture_when_opened_then_bounded_delivery_is_owned` — given prepared capture when opened then bounded delivery is owned (`src/capture/capture_owner.rs:463`; `test-a3a0d044f02b7f664bb9`).
+- `given_zero_frame_capacity_when_preparing_then_backend_is_not_prepared` — given zero frame capacity when preparing then backend is not prepared (`src/capture/capture_owner.rs:590`; `test-0afbec4242ea2fad4582`).
 
 ## Related documentation
 
@@ -85,7 +87,7 @@ Executable evidence selected for **Observations and metrics** is limited to each
 
 ## Evidence boundary
 
-The claims on **Observations and metrics** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Observations and metrics** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
 - `src/session/lifecycle/observations.rs:1-636` (`DIRECT`)
 

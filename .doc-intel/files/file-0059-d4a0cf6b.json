@@ -1,0 +1,171 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "18d7218047bd77b599c0639b69c4fead31149beccbc13156fd387512bc818b91",
+  "defaults": [],
+  "defines": [],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 41,
+      "text": "\"kind\": \"endpoint\","
+    },
+    {
+      "line": 54,
+      "text": "\"endpoint\": {"
+    },
+    {
+      "line": 90,
+      "text": "\"kind\": \"endpoint\","
+    },
+    {
+      "line": 113,
+      "text": "{\"component_id\": \"publisher\", \"kind\": \"endpoint\", \"ports\": []},"
+    },
+    {
+      "line": 114,
+      "text": "{\"component_id\": \"publisher\", \"kind\": \"endpoint\", \"ports\": []}"
+    },
+    {
+      "line": 137,
+      "text": "\"error_code\": \"connector.endpoint.invalid_deadline\","
+    },
+    {
+      "line": 144,
+      "text": "\"components\": [{\"component_id\": \"publisher\", \"kind\": \"endpoint\", \"ports\": []}]"
+    },
+    {
+      "line": 146,
+      "text": "\"endpoint\": {\"component_id\": \"publisher\", \"maximum_inflight_items\": 1, \"maximum_payload_bytes\": 1, \"startup_deadline_ms\": 0, \"shutdown_deadline_ms\": 1, \"probe_interval_ms\": 1, \"success_threshold\": 1, \"failure_threshold\": 1}"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "18d7218047bd77b599c0639b69c4fead31149beccbc13156fd387512bc818b91",
+      "lines": [
+        1,
+        164
+      ],
+      "path": "scripts/fixtures/connector-v1-vectors.json",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0059-d4a0cf6b",
+  "file_kind": "automation",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "e9d506214c0461c53aa5545ce851b5be0c98d41d",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "No external input is declared in this file."
+  ],
+  "invariants": [
+    {
+      "line": 129,
+      "text": "\"fields\": [{\"name\": \"token\", \"kind\": \"secret\", \"requirement\": \"defaulted\", \"default\": \"must-never-serialize\", \"documentation\": \"Invalid secret default.\"}]"
+    }
+  ],
+  "language": "JSON",
+  "line_count": 164,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "No emitted value or public declaration is recorded for this file."
+  ],
+  "package": "repository",
+  "path": "scripts/fixtures/connector-v1-vectors.json",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines a repository-owned build, validation, test, or release operation."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/installation.md",
+    "docs/concepts/release-evidence.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/concepts/cargo-features.md",
+    "RELEASE_NOTES.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/how-to/choose-features.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/reference/features.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/best-practices/evidence-boundaries.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [],
+  "responsibilities": [
+    "Defines a repository-owned build, validation, test, or release operation."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

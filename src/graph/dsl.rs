@@ -92,6 +92,7 @@ impl Pipeline {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the spec held by `Pipeline`."]
     pub fn spec(&self) -> &GraphSpec {
         &self.spec
     }

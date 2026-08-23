@@ -2,26 +2,26 @@
   "analysis_stage": "doc_ready",
   "async_boundaries": [
     {
-      "line": 17,
+      "line": 18,
       "text": "realtime AudioFrame lane   typed async lane"
     },
     {
-      "line": 28,
+      "line": 29,
       "text": "blocking, async, logging, or panic on callbacks. Typed sources, external"
     }
   ],
   "atomics": [],
   "callbacks": [
     {
-      "line": 23,
+      "line": 24,
       "text": "recording   callback    endpoint/transport"
     },
     {
-      "line": 28,
+      "line": 29,
       "text": "blocking, async, logging, or panic on callbacks. Typed sources, external"
     },
     {
-      "line": 30,
+      "line": 31,
       "text": "outside that callback lane."
     }
   ],
@@ -32,19 +32,23 @@
   "configuration_read": [],
   "constructed_by": [],
   "constructs": [],
-  "content_hash": "220d019c5293c8f7a7a14f5840e18e485eb3a14821c054d67a43ceb3f4165478",
+  "content_hash": "fae1671b424fd3040dcc54d1dde61f6e8b41d124d8836e490ab93e96bef07dce",
   "defaults": [],
   "defines": [],
   "device_io": [],
   "drop_cleanup": [],
   "endpoints": [
     {
-      "line": 23,
+      "line": 24,
       "text": "recording   callback    endpoint/transport"
     },
     {
-      "line": 29,
+      "line": 30,
       "text": "operators, managed-language sidecars, model work, and endpoint I/O execute"
+    },
+    {
+      "line": 62,
+      "text": "Endpoint, native library, or managed process. Platform and network behavior"
     }
   ],
   "entry_points": [],
@@ -57,10 +61,10 @@
   "evidence": [
     {
       "classification": "DIRECT",
-      "content_hash": "220d019c5293c8f7a7a14f5840e18e485eb3a14821c054d67a43ceb3f4165478",
+      "content_hash": "fae1671b424fd3040dcc54d1dde61f6e8b41d124d8836e490ab93e96bef07dce",
       "lines": [
         1,
-        62
+        64
       ],
       "path": "docs/architecture/overview.md",
       "symbol": null
@@ -76,7 +80,7 @@
   ],
   "ffi_io": [
     {
-      "line": 35,
+      "line": 36,
       "text": "or generic type crosses the C ABI or sidecar protocol."
     }
   ],
@@ -86,7 +90,7 @@
   "finalization": [],
   "generated": false,
   "generated_from": "not_applicable",
-  "git_object": "fed3cd4eed8665800b61d18d180f494577863ef3",
+  "git_object": "73cb958a5f03b34171e81c225bcced019a673f35",
   "implemented_by": [],
   "implements": [],
   "imported_by": [],
@@ -96,7 +100,7 @@
   ],
   "invariants": [],
   "language": "Markdown",
-  "line_count": 62,
+  "line_count": 64,
   "locks": [],
   "module": "not_applicable",
   "network_io": [],
@@ -122,7 +126,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "DECLARED",
-    "text": "Documents Current architecture for repository contributors or PocketStation developers."
+    "text": "Documents How a Session owns and routes audio for repository contributors or PocketStation developers."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -142,29 +146,34 @@
     "docs/reference/lifecycle-evidence.md"
   ],
   "relationship_outputs": [],
-  "resource_ownership": [],
+  "resource_ownership": [
+    {
+      "line": 5,
+      "text": "public lifecycle begins at `Session`; internal modules keep one owner for each"
+    }
+  ],
   "responsibilities": [
-    "Documents Current architecture for repository contributors or PocketStation developers."
+    "Documents How a Session owns and routes audio for repository contributors or PocketStation developers."
   ],
   "retry_behavior": [],
   "serialization": [],
   "shutdown_behavior": [],
   "side_effects": [
     {
-      "line": 35,
+      "line": 36,
       "text": "or generic type crosses the C ABI or sidecar protocol."
     }
   ],
-  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [
     {
-      "line": 17,
+      "line": 18,
       "text": "realtime AudioFrame lane   typed async lane"
     },
     {
-      "line": 28,
+      "line": 29,
       "text": "blocking, async, logging, or panic on callbacks. Typed sources, external"
     }
   ],

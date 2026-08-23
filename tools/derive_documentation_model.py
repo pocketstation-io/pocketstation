@@ -232,7 +232,7 @@ GATE7 = [
     ("DOC-035", "Conformance and qualification", "docs/concepts/conformance.md", "concept", ["abi", "connector", "repository", "conformance"], ["CAP-031"], ["src/conformance.rs", "tests/protocol_compatibility.rs"]),
     ("DOC-036", "Release evidence boundary", "docs/concepts/release-evidence.md", "concept", ["release", "repository"], ["CAP-032"], [".github/workflows/publish.yml", "scripts/publish.sh"]),
     ("DOC-037", "Transcription integration boundary", "docs/concepts/transcription-integration.md", "concept", ["integration"], ["CAP-033"], ["examples/whisper-transcribe/src/lib.rs"]),
-    ("DOC-038", "Build, prepare, and start", "docs/lifecycle/build-prepare-start.md", "lifecycle", ["session", "runtime"], ["CAP-002", "CAP-010", "CAP-011", "CAP-012"], ["src/session/lifecycle/start_contract.rs"]),
+    ("DOC-038", "Build, prepare, and start", "docs/lifecycle/build-prepare-start.md", "lifecycle", ["session", "runtime"], ["CAP-002", "CAP-010", "CAP-011", "CAP-012"], ["src/session/lifecycle/control.rs"]),
     ("DOC-039", "Running ownership", "docs/lifecycle/running.md", "lifecycle", ["session", "runtime"], ["CAP-012", "CAP-026"], ["src/session/lifecycle/running.rs"]),
     ("DOC-040", "Cancellation and rollback", "docs/lifecycle/cancellation-and-rollback.md", "lifecycle", ["session", "runtime"], ["CAP-012"], ["src/session/lifecycle/rollback.rs"]),
     ("DOC-041", "Stop, drain, and finalization", "docs/lifecycle/stop-drain-finalize.md", "lifecycle", ["session", "runtime", "recording", "connector", "endpoint"], ["CAP-012", "CAP-015", "CAP-020", "CAP-022"], ["src/session/lifecycle/running.rs", "src/endpoint/runtime.rs"]),
@@ -287,7 +287,7 @@ GATE8 = [
     ("GUIDE-027", "Choose crate features", "docs/how-to/choose-features.md", ["repository", "release"], ["CAP-001"], ["Cargo.toml"]),
     ("GUIDE-028", "Capture system audio", "docs/how-to/capture-system-audio.md", ["capture", "platform"], ["CAP-003", "CAP-006", "CAP-007"], ["src/capture/query.rs", "src/capture/platform/mod.rs"]),
     ("GUIDE-029", "Map source time into the Session timeline", "docs/how-to/map-source-time.md", ["timing", "frame"], ["CAP-008", "CAP-009"], ["src/timing/timeline_mapping.rs"]),
-    ("GUIDE-030", "Prepare resources before start", "docs/how-to/prepare-session.md", ["session", "runtime"], ["CAP-010", "CAP-011", "CAP-012"], ["src/session/prepare/mod.rs", "src/session/lifecycle/start_contract.rs"]),
+    ("GUIDE-030", "Prepare resources before start", "docs/how-to/prepare-session.md", ["session", "runtime"], ["CAP-010", "CAP-011", "CAP-012"], ["src/session/prepare/mod.rs", "src/session/lifecycle/control.rs"]),
 ]
 for page_id, title, path, domains, caps, paths in GATE8:
     add_page(page_id, title, path, "how-to", 8, domains, caps, paths)

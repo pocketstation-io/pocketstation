@@ -16,7 +16,7 @@ A frozen Session declaration that has already passed structural compilation.
 
 ## Procedure
 
-1. Compile the immutable Session declaration.
+1. Compile the immutable Session declaration and retain SessionCompileDiagnostic if validation fails.
 2. Prepare resources and retain identity mappings.
 3. Handle source and endpoint preparation errors.
 4. Start with the intended cancellation option.
@@ -32,31 +32,31 @@ Every resource mapping is retained, start reaches running state, or a staged fai
 
 Executable evidence selected for **Prepare resources before start** is limited to each test's recorded setup and assertions:
 
-- `given_endpoint_prepare_failure_when_started_then_every_prior_owner_rolls_back` — given endpoint prepare failure when started then every prior owner rolls back (`src/session/lifecycle/tests/running.rs:2248`; `test-0d0c674c4d7598eff201`).
-- `given_operator_prepare_failure_when_started_then_all_prior_owners_roll_back` — given operator prepare failure when started then all prior owners roll back (`src/session/lifecycle/tests/running.rs:1218`; `test-5b0700e73704ac58624e`).
-- `given_receive_before_enqueue_when_observed_then_latency_sample_is_rejected` — given receive before enqueue when observed then latency sample is rejected (`src/runtime/audio/router.rs:1200`; `test-904f86f2ad1e1369647c`).
-- `given_payload_above_branch_limit_when_published_then_all_branches_reject_before_fanout` — given payload above branch limit when published then all branches reject before fanout (`src/runtime/signal/edge.rs:536`; `test-5f2124d7ed0e92c73799`).
-- `given_every_nonaudio_signal_class_when_worker_prepares_then_exact_signal_context_is_received` — given every nonaudio signal class when worker prepares then exact signal context is received (`src/runtime/signal/operator.rs:1752`; `test-8298f7b73ae7319aa84e`).
-- `given_idle_worker_when_cancelled_then_cancel_hook_runs_before_close` — given idle worker when cancelled then cancel hook runs before close (`src/runtime/signal/operator.rs:2343`; `test-f5115a0f815503398dd5`).
-- `given_prepare_context_capacity_disagrees_with_runtime_edge_when_spawned_then_prepare_fails_closed` — given prepare context capacity disagrees with runtime edge when spawned then prepare fails closed (`src/runtime/signal/operator.rs:1808`; `test-ef78893c6bb92b613da0`).
-- `given_prepare_failure_when_readiness_is_awaited_then_waiter_returns_false` — given prepare failure when readiness is awaited then waiter returns false (`src/runtime/signal/operator.rs:2179`; `test-f4209d45de1b92221721`).
-- `given_compiled_derived_route_when_runtime_prepared_then_compiled_topology_is_preserved` — given compiled derived route when runtime prepared then compiled topology is preserved (`src/session/compile/tests.rs:659`; `test-f38493cc0593f603aece`).
-- `given_two_derived_destinations_when_prepared_then_independent_branch_plans_are_preserved` — given two derived destinations when prepared then independent branch plans are preserved (`src/session/compile/tests.rs:685`; `test-d6762b694308bbfc1e5c`).
-- `given_foreign_input_handle_when_connected_then_declaration_fails_before_freeze` — given foreign input handle when connected then declaration fails before freeze (`src/session/declaration/tests/operator_connections.rs:133`; `test-766194f5939b3ddb896d`).
-- `given_start_and_capture_failures_when_mapped_then_specific_classes_are_preserved` — given start and capture failures when mapped then specific classes are preserved (`src/session/error_code.rs:470`; `test-e5e2a976b704c1bcb17d`).
+- `given_session_without_source_when_validated_then_topology_is_rejected` — given session without source when validated then topology is rejected (`src/session/lifecycle/control.rs:218`; `test-3ad011ae6ea2c1d8804b`).
+- `given_supported_source_compositions_when_validated_then_each_is_accepted` — given supported source compositions when validated then each is accepted (`src/session/lifecycle/control.rs:207`; `test-430adf035ce3d16bc420`).
+- `given_endpoint_prepare_failure_when_started_then_every_prior_owner_rolls_back` — given endpoint prepare failure when started then every prior owner rolls back (`src/session/lifecycle/tests/running.rs:2251`; `test-c924643ab2f4f9cf21d1`).
+- `given_operator_prepare_failure_when_started_then_all_prior_owners_roll_back` — given operator prepare failure when started then all prior owners roll back (`src/session/lifecycle/tests/running.rs:1218`; `test-175f3b0edc08fa4b02f4`).
+- `given_receive_before_enqueue_when_observed_then_latency_sample_is_rejected` — given receive before enqueue when observed then latency sample is rejected (`src/runtime/audio/router.rs:1229`; `test-0f111134a8c8ddb61a69`).
+- `given_payload_above_branch_limit_when_published_then_all_branches_reject_before_fanout` — given payload above branch limit when published then all branches reject before fanout (`src/runtime/signal/edge.rs:536`; `test-26e5374e5c20a32afac4`).
+- `given_every_nonaudio_signal_class_when_worker_prepares_then_exact_signal_context_is_received` — given every nonaudio signal class when worker prepares then exact signal context is received (`src/runtime/signal/operator.rs:1752`; `test-0769819bf6f85fc4186c`).
+- `given_idle_worker_when_cancelled_then_cancel_hook_runs_before_close` — given idle worker when cancelled then cancel hook runs before close (`src/runtime/signal/operator.rs:2343`; `test-d5759eae676d2f1b0131`).
+- `given_prepare_context_capacity_disagrees_with_runtime_edge_when_spawned_then_prepare_fails_closed` — given prepare context capacity disagrees with runtime edge when spawned then prepare fails closed (`src/runtime/signal/operator.rs:1808`; `test-94655e5366915899c2bd`).
+- `given_prepare_failure_when_readiness_is_awaited_then_waiter_returns_false` — given prepare failure when readiness is awaited then waiter returns false (`src/runtime/signal/operator.rs:2179`; `test-b865f3f1c4ba6e60ac49`).
+- `given_compiled_derived_route_when_runtime_prepared_then_compiled_topology_is_preserved` — given compiled derived route when runtime prepared then compiled topology is preserved (`src/session/compile/tests.rs:659`; `test-21f8c08b6457bb762def`).
+- `given_graph_mismatch_when_start_fails_then_diagnostic_is_retained` — given graph mismatch when start fails then diagnostic is retained (`src/session/compile/tests.rs:867`; `test-604c0e001a7dcb5f87ae`).
 
 ## Failure signals
 
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `CapturePrepare` — `error-8e2ce672937c8251c7d6`
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `EndpointPrepare` — `error-a45368a6965533fd2ebc`
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `ExternalSourcePrepare` — `error-bbc9e8298f41cb00dbbf`
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `OperatorPrepare` — `error-5982a002389727245e54`
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` — `error-504eed2dbff73ab46e96`
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `Cancelled` — `error-e85546ef287c5d8b1a10`
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `CaptureOpen` — `error-f06eab3e8f6ceeae37d2`
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `EndpointStart` — `error-8dfbde013f90f254043c`
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `ExternalAudioBridge` — `error-87902c069db58b4b0049`
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `ExternalSourceStart` — `error-dd0f49f52c790e0f32f9`
+- `pocketstation::session::lifecycle::control::SessionStartError` / `CapturePrepare` — `error-cd9c5fe2a7f48f75a63f`
+- `pocketstation::session::lifecycle::control::SessionStartError` / `EndpointPrepare` — `error-f08c687e1b9a85a431c8`
+- `pocketstation::session::lifecycle::control::SessionStartError` / `ExternalSourcePrepare` — `error-59e2d48ac5c22ac45b2a`
+- `pocketstation::session::lifecycle::control::SessionStartError` / `OperatorPrepare` — `error-058b95fba882a991d25a`
+- `pocketstation::session::lifecycle::control::SessionStartError` — `error-c23c9a3b9e142e613f0e`
+- `pocketstation::session::lifecycle::control::SessionStartError` / `Cancelled` — `error-14367931dacc2ea6803e`
+- `pocketstation::session::lifecycle::control::SessionStartError` / `CaptureOpen` — `error-b4ace4191cf897863e82`
+- `pocketstation::session::lifecycle::control::SessionStartError` / `EndpointStart` — `error-e4ad4265bd642c956528`
+- `pocketstation::session::lifecycle::control::SessionStartError` / `ExternalAudioBridge` — `error-3a234ccba235becc2ab7`
+- `pocketstation::session::lifecycle::control::SessionStartError` / `ExternalSourceStart` — `error-44e80a6f87ddc7f46d8b`
 
 ## API reference
 
@@ -65,14 +65,14 @@ Executable evidence selected for **Prepare resources before start** is limited t
 
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
-| `pocketstation::session::lifecycle::running::start_prepared_session` | function | Starts prepared session for `running`. | `src/session/lifecycle/running.rs:615` |
-| `pocketstation::session::lifecycle::running::start_prepared_session_cancellable` | function | Starts prepared session cancellable for `running`. | `src/session/lifecycle/running.rs:631` |
+| `pocketstation::session::lifecycle::running::start_prepared_session` | function | Starts prepared session for `running`. | `src/session/lifecycle/running.rs:627` |
+| `pocketstation::session::lifecycle::running::start_prepared_session_cancellable` | function | Starts prepared session cancellable for `running`. | `src/session/lifecycle/running.rs:643` |
+| `pocketstation::session::lifecycle::control::SessionStartError::CapturePrepare` | variant | Reported when the owning operation encounters capture prepare. | `src/session/lifecycle/control.rs:166` |
+| `pocketstation::session::lifecycle::control::SessionStartError::EndpointPrepare` | variant | Reported when the owning operation encounters endpoint prepare. | `src/session/lifecycle/control.rs:160` |
+| `pocketstation::session::lifecycle::control::SessionStartError::ExternalSourcePrepare` | variant | Reported when the owning operation encounters external source prepare. | `src/session/lifecycle/control.rs:127` |
+| `pocketstation::session::lifecycle::control::SessionStartError::OperatorPrepare` | variant | Reported when the owning operation encounters operator prepare. | `src/session/lifecycle/control.rs:152` |
 | `pocketstation::session::lifecycle::engine::SessionEngineStartError::Prepare` | variant | Reported when the owning operation encounters prepare. | `src/session/lifecycle/engine.rs:321` |
-| `pocketstation::session::lifecycle::start_contract::SessionStartError::CapturePrepare` | variant | Reported when the owning operation encounters capture prepare. | `src/session/lifecycle/start_contract.rs:158` |
-| `pocketstation::session::lifecycle::start_contract::SessionStartError::EndpointPrepare` | variant | Reported when the owning operation encounters endpoint prepare. | `src/session/lifecycle/start_contract.rs:152` |
-| `pocketstation::session::lifecycle::start_contract::SessionStartError::ExternalSourcePrepare` | variant | Reported when the owning operation encounters external source prepare. | `src/session/lifecycle/start_contract.rs:119` |
-| `pocketstation::session::lifecycle::start_contract::SessionStartError::OperatorPrepare` | variant | Reported when the owning operation encounters operator prepare. | `src/session/lifecycle/start_contract.rs:144` |
-| `SessionStartError::CapturePrepare::rollback_failures_total` | struct_field | Counts the total number of rollback failures observed by `CapturePrepare`. | `src/session/lifecycle/start_contract.rs:162` |
+| `SessionStartError::CapturePrepare::rollback_failures_total` | struct_field | Counts the total number of rollback failures observed by `CapturePrepare`. | `src/session/lifecycle/control.rs:170` |
 
 ## Related documentation
 
@@ -87,9 +87,9 @@ Executable evidence selected for **Prepare resources before start** is limited t
 
 ## Evidence boundary
 
-The claims on **Prepare resources before start** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Prepare resources before start** are anchored to Git snapshot `136e74888962558aa846d3143a19136a70936f45` and these primary files:
 
-- `src/session/prepare/mod.rs:1-1290` (`DIRECT`)
-- `src/session/lifecycle/start_contract.rs:1-362` (`DIRECT`)
+- `src/session/prepare/mod.rs:1-1331` (`DIRECT`)
+- `src/session/lifecycle/control.rs:1-391` (`DIRECT`)
 
 For **Prepare resources before start**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -7,8 +7,10 @@ use pocketstation::{
     ActiveCaptureBackend, AsyncNode, AsyncOperatorFactory, AudioBufferHandle, AudioBufferPool,
     CallbackCaptureBackend, CaptureDelivery, EndpointAudioFrame, EndpointAudioReceiver,
     EndpointDriverFactory, EndpointPortInput, EndpointSignalReceiver, NodeDefinition,
-    PreparedCaptureBackend, PreparedEndpointDriver, RunningEndpointDriver, Session,
-    SharedAudioBufferHandle, SharedAudioFrame, SignalEnvelope, SourceDriver, SourceFactory, Stream,
+    PolledAudioBatchLease, PolledAudioPollError, PreparedCaptureBackend, PreparedEndpointDriver,
+    RunningEndpointDriver, RunningSession, Session, SessionComponentId, SessionLifecycleState,
+    SessionTraceRecord, SessionTraceRecordKind, SessionTraceTerminal, SharedAudioBufferHandle,
+    SharedAudioFrame, SignalEnvelope, SourceDriver, SourceFactory, Stream,
 };
 
 fn accepts_public_contract<T: ?Sized>() {}
@@ -38,6 +40,16 @@ fn given_supported_contracts_when_named_from_crate_root_then_they_compile() {
     accepts_public_contract::<SharedAudioBufferHandle>();
     accepts_public_contract::<SharedAudioFrame>();
     accepts_public_contract::<SignalSpec>();
+    accepts_public_contract::<SessionComponentId>();
+    accepts_public_contract::<SessionTraceRecord>();
+    accepts_public_contract::<SessionTraceRecordKind>();
+    accepts_public_contract::<SessionTraceTerminal>();
+
+    let _: fn(&RunningSession) -> SessionLifecycleState = RunningSession::state;
+    let _: fn(
+        &RunningSession,
+        std::time::Duration,
+    ) -> Result<Option<PolledAudioBatchLease>, PolledAudioPollError> = RunningSession::wait_audio;
 }
 
 #[test]

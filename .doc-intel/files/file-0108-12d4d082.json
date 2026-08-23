@@ -1,0 +1,553 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
+  "calls": [
+    "Decoder::new",
+    "Opus",
+    "OpusDecoder::new",
+    "OpusDecoder::with_channels",
+    "OpusEncoder::new",
+    "Self::new",
+    "Self::with_channels",
+    "Self::with_max_frame_duration",
+    "Vec::new",
+    "Vec::with_capacity",
+    "capacity",
+    "cfg",
+    "clear",
+    "count",
+    "decode",
+    "decode_into",
+    "decode_packet",
+    "decode_plc_into",
+    "decoder",
+    "default",
+    "derive",
+    "encode_into",
+    "error",
+    "expect",
+    "given_20ms_decoder_when_60ms_concealment_is_requested_then_typed_bound_error_is_returned",
+    "given_encoded_opus_packet_when_decoded_then_contains_960_samples",
+    "given_mono_decoder_when_concealing_10ms_then_480_samples_are_appended",
+    "given_presized_output_when_concealing_repeatedly_then_capacity_stays_fixed",
+    "given_stereo_decoder_when_concealing_20ms_then_1920_samples_are_appended",
+    "is_empty",
+    "iter_mut",
+    "len",
+    "let",
+    "new",
+    "normal",
+    "resize",
+    "samples_at_48k",
+    "unwrap",
+    "unwrap_err",
+    "with_channels",
+    "with_max_frame_duration",
+    "zip"
+  ],
+  "cancellation_behavior": [],
+  "channels": [
+    {
+      "line": 18,
+      "text": "/// samples per channel and writes `frame_size \u00d7 channels` interleaved values,"
+    },
+    {
+      "line": 27,
+      "text": "\"requested {requested_samples_per_channel} Opus samples per channel exceeds configured maximum {maximum_samples_per_channel}\""
+    },
+    {
+      "line": 43,
+      "text": "/// Decoder for an explicit channel layout and a maximum 20 ms packet."
+    }
+  ],
+  "configuration_read": [
+    {
+      "line": 8,
+      "text": "/// Configured for 48 000 Hz, mono per AUDIO-012."
+    },
+    {
+      "line": 180,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
+  "constructs": [
+    "Decoder::new",
+    "OpusDecoder::new",
+    "OpusEncoder::new",
+    "Self::new",
+    "Vec::new",
+    "new"
+  ],
+  "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 15,
+      "name": "OpusDecoder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 25,
+      "name": "OpusDecodeError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "with_channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "with_max_frame_duration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "decode_into",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "decode_plc_into",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 152,
+      "name": "decode_packet",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 175,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 181,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 187,
+      "name": "given_encoded_opus_packet_when_decoded_then_contains_960_samples",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "given_mono_decoder_when_concealing_10ms_then_480_samples_are_appended",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 219,
+      "name": "given_stereo_decoder_when_concealing_20ms_then_1920_samples_are_appended",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 232,
+      "name": "given_presized_output_when_concealing_repeatedly_then_capacity_stays_fixed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 249,
+      "name": "given_20ms_decoder_when_60ms_concealment_is_requested_then_typed_bound_error_is_returned",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 15,
+      "name": "OpusDecoder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 25,
+      "name": "OpusDecodeError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "with_channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "with_max_frame_duration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "decode_into",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "decode_plc_into",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 124,
+      "text": "return Err(OpusDecodeError::FrameDurationExceedsConfiguredMaximum {"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 25,
+      "name": "OpusDecodeError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 176,
+      "text": "Self::new().expect(\"OpusDecoder::new failed with fixed parameters \u2014 libopus not linked?\")"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 34,
+      "text": "Opus(#[from] opus::Error),"
+    }
+  ],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "136964d29d8b64603c854a41c5694c464cc8fff74ac66b9d518febc71e501f61",
+      "lines": [
+        1,
+        267
+      ],
+      "path": "src/codec/decoder.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0108-12d4d082",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "73f8c64441ad455909f3927157f15417cf90f62d",
+  "implemented_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
+  "implements": [
+    "OpusDecoder",
+    "Default for OpusDecoder"
+  ],
+  "imported_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
+  "imports": [
+    "crate::codec::constants::OPUS_FRAME_SAMPLES",
+    "crate::codec::constants::{I16_SCALE, OPUS_SAMPLE_RATE_HZ}",
+    "crate::codec::encoder::OpusEncoder",
+    "crate::codec::encoder::{OpusChannels, OpusFrameDuration}",
+    "opus::{Channels, Decoder}",
+    "super::*"
+  ],
+  "inputs": [
+    "#[cfg(test)]",
+    "/// Configured for 48 000 Hz, mono per AUDIO-012.",
+    "crate::codec::constants::OPUS_FRAME_SAMPLES",
+    "crate::codec::constants::{I16_SCALE, OPUS_SAMPLE_RATE_HZ}",
+    "crate::codec::encoder::OpusEncoder",
+    "crate::codec::encoder::{OpusChannels, OpusFrameDuration}",
+    "opus::{Channels, Decoder}",
+    "super::*"
+  ],
+  "invariants": [
+    {
+      "line": 77,
+      "text": "/// it to reconstruct the *preceding* lost packet.  Callers must hold the"
+    },
+    {
+      "line": 257,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 264,
+      "text": "assert!(pcm_out.is_empty());"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 267,
+  "locks": [],
+  "module": "pocketstation::codec::decoder",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [
+    "pattern-77966d84ef15c5f4836c"
+  ],
+  "outputs": [
+    "enum:OpusDecodeError",
+    "fn:decode_into",
+    "fn:decode_plc_into",
+    "fn:new",
+    "fn:with_channels",
+    "fn:with_max_frame_duration",
+    "return Err(OpusDecodeError::FrameDurationExceedsConfiguredMaximum {",
+    "struct:OpusDecoder"
+  ],
+  "package": "pocketstation",
+  "path": "src/codec/decoder.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 152,
+      "name": "decode_packet",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 175,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 181,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 187,
+      "name": "given_encoded_opus_packet_when_decoded_then_contains_960_samples",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "given_mono_decoder_when_concealing_10ms_then_480_samples_are_appended",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 219,
+      "name": "given_stereo_decoder_when_concealing_20ms_then_1920_samples_are_appended",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 232,
+      "name": "given_presized_output_when_concealing_repeatedly_then_capacity_stays_fixed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 249,
+      "name": "given_20ms_decoder_when_60ms_concealment_is_requested_then_typed_bound_error_is_returned",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 15,
+      "name": "OpusDecoder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 25,
+      "name": "OpusDecodeError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "with_channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "with_max_frame_duration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "decode_into",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "decode_plc_into",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::codec::decoder responsibilities, including Real Opus decoder wrapping libopus via the `opus` crate.; Classifies failures reported as opus decode error.; Reported when the owning operation encounters frame duration exceeds configured maximum.."
+  },
+  "queues": [],
+  "recovery_behavior": [
+    {
+      "line": 79,
+      "text": "/// lost-packet length hint) to recover the lost frame, then again with"
+    }
+  ],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/opus-codec.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/opus-roundtrip.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/codec.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/frames-and-codec.md",
+    "docs/troubleshooting/opus.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/codec/encoder.rs"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "pocketstation::codec::decoder::OpusDecoder: Real Opus decoder wrapping libopus via the `opus` crate.",
+    "pocketstation::codec::decoder::OpusDecodeError: Classifies failures reported as opus decode error.",
+    "pocketstation::codec::decoder::OpusDecodeError::FrameDurationExceedsConfiguredMaximum: Reported when the owning operation encounters frame duration exceeds configured maximum.",
+    "OpusDecodeError::FrameDurationExceedsConfiguredMaximum::requested_samples_per_channel: Stores the requested samples per channel used by `FrameDurationExceedsConfiguredMaximum`.",
+    "OpusDecodeError::FrameDurationExceedsConfiguredMaximum::maximum_samples_per_channel: Stores the maximum samples per channel used by `FrameDurationExceedsConfiguredMaximum`.",
+    "pocketstation::codec::decoder::OpusDecodeError::Opus: Reported when the owning operation encounters opus.",
+    "new: Mono decoder (48 kHz). Back-compatible default for the existing pipeline.",
+    "with_channels: Decoder for an explicit channel layout and a maximum 20 ms packet.",
+    "with_max_frame_duration: Decoder with an explicit maximum packet duration.",
+    "decode_into: Decode a compressed Opus packet into i16 samples, then convert to f32.",
+    "decode_plc_into: Conceal one missing packet while preserving libopus decoder state.",
+    "default: Returns the default `OpusDecoder` value."
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 33,
+      "text": "#[error(\"Opus decode failed: {0}\")]"
+    },
+    {
+      "line": 80,
+      "text": "/// `fec=false` to decode the current packet normally."
+    },
+    {
+      "line": 161,
+      "text": "let decoded_samples_per_channel = decoder.decode(payload, scratch, fec)?;"
+    },
+    {
+      "line": 188,
+      "text": "// Given: encode a 20 ms frame of silence"
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0a190981712f34057776",
+    "test-18e769bfba9f736148f1",
+    "test-1de6d8af11e6b4a84d8d",
+    "test-77bb4d2c9b220a4d7130",
+    "test-8b8900f4ef016b6914cc",
+    "test-8c9746a0022eeccced89",
+    "test-b0b497529291a130aea1",
+    "test-ce093aae4da89b29c34b",
+    "test-db2a97bef9bbe44c5d6d",
+    "test-e274c2e586e3d4a867b8",
+    "test-f3d9f0899054eb532922",
+    "test-f9eb27f8c697619303a9",
+    "test-fa484e4be3d65e78f9fc"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}

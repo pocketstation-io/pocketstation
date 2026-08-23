@@ -507,6 +507,7 @@ pub struct Compiler {
 }
 
 impl Compiler {
+    #[doc = "Creates a new `Compiler`."]
     pub fn new() -> Self {
         Self {
             passes: vec![
@@ -522,6 +523,7 @@ impl Compiler {
         }
     }
 
+    #[doc = "Compiles its owned operation for `Compiler`."]
     pub fn compile(
         &self,
         spec: GraphSpec,
@@ -571,6 +573,7 @@ impl Compiler {
 }
 
 impl Default for Compiler {
+    #[doc = "Returns the default `Compiler` value."]
     fn default() -> Self {
         Self::new()
     }

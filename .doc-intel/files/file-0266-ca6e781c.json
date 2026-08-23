@@ -1,0 +1,307 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "ApplicationSelector::name",
+    "AsyncOperatorManifest::new",
+    "CapturedSignal::signal_spec",
+    "DerivedSignal::signal_spec",
+    "EdgeContract::bounded_async",
+    "EdgeContract::realtime_audio",
+    "EndpointConfiguration::new",
+    "EndpointDescriptor::new",
+    "NodeDescriptor::new",
+    "NodeTypeId::from",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "OperatorOutputRolePolicy::default",
+    "PortSpec::new",
+    "SignalSpec::audio",
+    "SignalSpec::control",
+    "SignalSpec::custom",
+    "Source::application",
+    "capture",
+    "endpoint",
+    "expect",
+    "from_stem",
+    "given_core_extension_typed_stream_when_composed_then_signal_spec_is_runtime_authority",
+    "given_core_extension_wire_signals_when_read_then_ids_are_language_neutral",
+    "manifest",
+    "media",
+    "new",
+    "pocketstation::Session::new",
+    "send",
+    "signal_spec",
+    "through",
+    "wire_id",
+    "with_configuration",
+    "with_copy_policy",
+    "with_media",
+    "with_schema"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "AsyncOperatorManifest::new",
+    "EndpointConfiguration::new",
+    "EndpointDescriptor::new",
+    "NodeDescriptor::new",
+    "NodeTypeId::from",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "PortSpec::new",
+    "new",
+    "pocketstation::Session::new"
+  ],
+  "content_hash": "3c210d5f758f8f3288808ff722442c48a8a97c48d5db8739649a45e74a7af57f",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 9,
+      "name": "CapturedSignal",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 11,
+      "name": "DerivedSignal",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "signal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 20,
+      "name": "signal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "given_core_extension_typed_stream_when_composed_then_signal_spec_is_runtime_authority",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 108,
+      "name": "given_core_extension_wire_signals_when_read_then_ids_are_language_neutral",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 90,
+      "text": "let endpoint = session"
+    },
+    {
+      "line": 91,
+      "text": ".endpoint("
+    },
+    {
+      "line": 93,
+      "text": "NodeTypeId::from(\"dev.pocketstation.test.endpoint.v1\"),"
+    },
+    {
+      "line": 94,
+      "text": "OperatorId::new(\"dev.pocketstation.test.endpoint.v1\"),"
+    },
+    {
+      "line": 98,
+      "text": ".expect(\"endpoint\");"
+    },
+    {
+      "line": 104,
+      "text": "output.send(endpoint).expect(\"typed route\");"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "3c210d5f758f8f3288808ff722442c48a8a97c48d5db8739649a45e74a7af57f",
+      "lines": [
+        1,
+        119
+      ],
+      "path": "tests/core_extension.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0266-ca6e781c",
+  "file_kind": "test",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "d9eddc9f446e97eb475c7833a23f9dbbee5cd45d",
+  "implemented_by": [],
+  "implements": [
+    "StreamSignal for CapturedSignal",
+    "StreamSignal for DerivedSignal"
+  ],
+  "imported_by": [],
+  "imports": [
+    "pocketstation::{ ApplicationSelector, AsyncOperatorManifest, CopyPolicy, EdgeContract, EndpointConfiguration, EndpointDescriptor, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, Operator, OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, SafetyContract, SignalSpec, Source, Stream, StreamSignal, TypedOperator, }"
+  ],
+  "inputs": [
+    "pocketstation::{ ApplicationSelector, AsyncOperatorManifest, CopyPolicy, EdgeContract, EndpointConfiguration, EndpointDescriptor, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, Operator, OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, SafetyContract, SignalSpec, Source, Stream, StreamSignal, TypedOperator, }"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 119,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not define production behavior beyond the test setup and asserted outcome."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "No emitted value or public declaration is recorded for this file."
+  ],
+  "package": "pocketstation",
+  "path": "tests/core_extension.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "struct",
+      "line": 9,
+      "name": "CapturedSignal",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 11,
+      "name": "DerivedSignal",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "signal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 20,
+      "name": "signal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "given_core_extension_typed_stream_when_composed_then_signal_spec_is_runtime_authority",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 108,
+      "name": "given_core_extension_wire_signals_when_read_then_ids_are_language_neutral",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given core extension typed stream when composed then signal spec is runtime authority, given core extension wire signals when read then ids are language neutral under the conditions declared in this test file."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/native-extensions.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/extensions.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/native-extensions.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/extensions-and-abi.md",
+    "docs/troubleshooting/native-extension-load.md",
+    "docs/best-practices/native-extension-trust.md",
+    "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [],
+  "responsibilities": [
+    "CapturedSignal (struct)",
+    "DerivedSignal (struct)",
+    "signal_spec (fn)",
+    "signal_spec (fn)",
+    "manifest (fn)",
+    "given_core_extension_typed_stream_when_composed_then_signal_spec_is_runtime_authority (fn)",
+    "given_core_extension_wire_signals_when_read_then_ids_are_language_neutral (fn)"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-2c31d24f3d3f3a3bbc51",
+    "test-3a38f531a8bffa6ce5ed"
+  ],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

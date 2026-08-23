@@ -1,0 +1,740 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/abi/extension.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/abi/session/error.rs",
+    "REFERENCES:src/abi/session/handle.rs",
+    "REFERENCES:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/native_extension/library.rs"
+  ],
+  "calls": [
+    "cfg",
+    "current",
+    "default",
+    "derive",
+    "invalid",
+    "new",
+    "ok",
+    "repr"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 34,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 154,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/abi/extension.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/abi/session/error.rs",
+    "REFERENCES:src/abi/session/handle.rs",
+    "REFERENCES:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/native_extension/library.rs"
+  ],
+  "constructs": [
+    "new"
+  ],
+  "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 2,
+      "name": "PKS_SESSION_ABI_MAJOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 4,
+      "name": "PKS_SESSION_ABI_MINOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 8,
+      "name": "PksSessionAbiVersion",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "current",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 26,
+      "name": "PksSessionHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "invalid",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 47,
+      "name": "PksSessionHandleKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 56,
+      "name": "PksSessionStatus",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "ok",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 79,
+      "name": "PksSessionStatusCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 101,
+      "name": "PksSessionUtf8",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 108,
+      "name": "PksSessionEngineConfig",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 125,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 146,
+      "name": "PksSessionAppMicDeclaration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 167,
+      "name": "PksSessionLifecycleState",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 179,
+      "name": "PksSessionEventKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 190,
+      "name": "PksSessionSampleFormat",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 196,
+      "name": "PksSessionEndpointObservationStage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 204,
+      "name": "PksSessionEvent",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 220,
+      "name": "PksSessionMetricsSnapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 247,
+      "name": "PksSessionSourceMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 276,
+      "name": "PksSessionRouteMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 328,
+      "name": "PksSessionAudioBatch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 339,
+      "name": "PksSessionAudioFrame",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 2,
+      "name": "PKS_SESSION_ABI_MAJOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 4,
+      "name": "PKS_SESSION_ABI_MINOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 8,
+      "name": "PksSessionAbiVersion",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "current",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 26,
+      "name": "PksSessionHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "invalid",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 47,
+      "name": "PksSessionHandleKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 56,
+      "name": "PksSessionStatus",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "ok",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 79,
+      "name": "PksSessionStatusCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 101,
+      "name": "PksSessionUtf8",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 108,
+      "name": "PksSessionEngineConfig",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 146,
+      "name": "PksSessionAppMicDeclaration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 167,
+      "name": "PksSessionLifecycleState",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 179,
+      "name": "PksSessionEventKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 190,
+      "name": "PksSessionSampleFormat",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 196,
+      "name": "PksSessionEndpointObservationStage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 204,
+      "name": "PksSessionEvent",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 220,
+      "name": "PksSessionMetricsSnapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 247,
+      "name": "PksSessionSourceMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 276,
+      "name": "PksSessionRouteMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 328,
+      "name": "PksSessionAudioBatch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 339,
+      "name": "PksSessionAudioFrame",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ce9720316606706be921ae580882a63cfcd9602a1343d9e4130f4a304b99df4",
+      "lines": [
+        1,
+        364
+      ],
+      "path": "src/abi/session/abi.rs",
+      "symbol": null
+    }
+  ],
+  "example_coverage_status": "no_direct_example_link_extracted",
+  "examples_using": [],
+  "extended_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/abi/extension.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/abi/session/error.rs",
+    "REFERENCES:src/abi/session/handle.rs",
+    "REFERENCES:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/native_extension/library.rs"
+  ],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0070-0c908dc8",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "941b6f70ac1ad64a9413adf2bace8d653ac6a63e",
+  "implemented_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/abi/extension.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/abi/session/error.rs",
+    "REFERENCES:src/abi/session/handle.rs",
+    "REFERENCES:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/native_extension/library.rs"
+  ],
+  "implements": [
+    "PksSessionAbiVersion",
+    "PksSessionHandle",
+    "PksSessionStatus",
+    "Default for PksSessionEngineConfig",
+    "PksSessionAppMicDeclaration"
+  ],
+  "imported_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/abi/extension.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/abi/session/error.rs",
+    "REFERENCES:src/abi/session/handle.rs",
+    "REFERENCES:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/native_extension/library.rs"
+  ],
+  "imports": [
+    "core::mem::size_of"
+  ],
+  "inputs": [
+    "#[cfg(test)]",
+    "core::mem::size_of"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 364,
+  "locks": [],
+  "module": "pocketstation::abi::session::abi",
+  "network_io": [],
+  "non_responsibilities": [
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "const:PKS_SESSION_ABI_MAJOR",
+    "const:PKS_SESSION_ABI_MINOR",
+    "enum:PksSessionEndpointObservationStage",
+    "enum:PksSessionEventKind",
+    "enum:PksSessionHandleKind",
+    "enum:PksSessionLifecycleState",
+    "enum:PksSessionSampleFormat",
+    "enum:PksSessionStatusCode",
+    "fn:current",
+    "fn:invalid",
+    "fn:new",
+    "fn:ok",
+    "struct:PksSessionAbiVersion",
+    "struct:PksSessionAppMicDeclaration",
+    "struct:PksSessionAudioBatch",
+    "struct:PksSessionAudioFrame",
+    "struct:PksSessionEngineConfig",
+    "struct:PksSessionEvent",
+    "struct:PksSessionHandle",
+    "struct:PksSessionMetricsSnapshot",
+    "struct:PksSessionRouteMetrics",
+    "struct:PksSessionSourceMetrics",
+    "struct:PksSessionStatus",
+    "struct:PksSessionUtf8"
+  ],
+  "package": "pocketstation",
+  "path": "src/abi/session/abi.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 125,
+      "name": "default",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 2,
+      "name": "PKS_SESSION_ABI_MAJOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 4,
+      "name": "PKS_SESSION_ABI_MINOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 8,
+      "name": "PksSessionAbiVersion",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "current",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 26,
+      "name": "PksSessionHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "invalid",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 47,
+      "name": "PksSessionHandleKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 56,
+      "name": "PksSessionStatus",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "ok",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 79,
+      "name": "PksSessionStatusCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 101,
+      "name": "PksSessionUtf8",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 108,
+      "name": "PksSessionEngineConfig",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 146,
+      "name": "PksSessionAppMicDeclaration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 167,
+      "name": "PksSessionLifecycleState",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 179,
+      "name": "PksSessionEventKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 190,
+      "name": "PksSessionSampleFormat",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 196,
+      "name": "PksSessionEndpointObservationStage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 204,
+      "name": "PksSessionEvent",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 220,
+      "name": "PksSessionMetricsSnapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 247,
+      "name": "PksSessionSourceMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 276,
+      "name": "PksSessionRouteMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 328,
+      "name": "PksSessionAudioBatch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 339,
+      "name": "PksSessionAudioFrame",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::abi::session::abi responsibilities, including Reports the structured session status.; Stores the code used by `PksSessionStatus`.; Stores the detail used by `PksSessionStatus`.."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/native-extensions.md",
+    "docs/concepts/c-abi-ownership.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/architecture/overview.md",
+    "docs/internals/abi-conformance.md",
+    "docs/glossary.md",
+    "docs/guides/extensions.md",
+    "docs/how-to/use-c-session-api.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/native-extensions.md",
+    "docs/reference/c-abi.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/extensions-and-abi.md",
+    "docs/troubleshooting/native-extension-load.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/native-extension-trust.md",
+    "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [],
+  "resource_ownership": [],
+  "responsibilities": [
+    "pocketstation::abi::session::abi::PksSessionStatus: Reports the structured session status.",
+    "PksSessionStatus::code: Stores the code used by `PksSessionStatus`.",
+    "PksSessionStatus::detail: Stores the detail used by `PksSessionStatus`.",
+    "ok: Creates a successful status value for `PksSessionStatus`.",
+    "new: Creates a new `PksSessionStatus`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode: Enumerates the supported session status code cases.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::Ok: Indicates that the operation completed successfully.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::NullArgument: Identifies the null argument state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::UnsupportedAbiMajor: Identifies the unsupported ABI major state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::InvalidStructSize: Identifies the invalid struct size state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::InvalidHandle: Identifies the invalid handle state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::StaleHandle: Identifies the stale handle state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::NoCapacity: Identifies the no capacity state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::InternalPanic: Identifies the internal panic state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::MisalignedPointer: Identifies the misaligned pointer state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::InvalidArgument: Identifies the invalid argument state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::ForeignHandle: Identifies the foreign handle state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::InvalidLifecycleState: Identifies the invalid lifecycle state state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::WouldBlock: Identifies the would block state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::BackendFailure: Identifies the backend failure state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::Cancelled: Indicates that the operation was cancelled.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::IndexOutOfRange: Identifies the index out of range state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::UnsupportedAbiMinor: Identifies the unsupported ABI minor state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionUtf8: Borrows a UTF-8 byte range across the C Session ABI as a pointer and length.",
+    "PksSessionUtf8::data: Carries the data owned or referenced by `PksSessionUtf8`.",
+    "PksSessionUtf8::len_bytes: Stores the len size for `PksSessionUtf8`, in bytes."
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "136e74888962558aa846d3143a19136a70936f45",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0db570036043ad373bee",
+    "test-77bb4d2c9b220a4d7130"
+  ],
+  "threads": [],
+  "visibility": "mixed"
+}
