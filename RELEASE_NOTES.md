@@ -3,6 +3,26 @@
 PocketStation 1.x is the compatible release line for one source-aware desktop
 audio `Session`.
 
+## 1.1.2
+
+PocketStation 1.1.2 completes the Core contracts required by the Python SDK
+without changing the established 1.1 API:
+
+- application-owned PCM uses the existing bounded Source lifecycle;
+- Session lifecycle, compiler diagnostics, faults, timing, discontinuities,
+  delivery, and recording observations have typed SDK projections;
+- Python-authored Operators can return generated PCM through the existing
+  bounded audio reentry path;
+- recording metadata uses stable additive constants without changing the
+  externally constructible `RecordingOutcome` structure; and
+- source-aware Operator input bindings remain intact when multiple stems use
+  the same Operator.
+
+The stable Session declaration continues to provide application and microphone
+Sources. System-output discovery remains available, but this patch does not add
+a new exhaustive `Source` enum variant. `cargo-semver-checks` passes all 223
+applicable checks against 1.1.1.
+
 ## Scope of the 1.x line
 
 The core workflow keeps one desktop application and one microphone as

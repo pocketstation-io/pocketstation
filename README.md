@@ -25,7 +25,7 @@ You need Rust 1.95 or newer. Native capture is enabled by default.
 
 ```toml
 [dependencies]
-pocketstation = "1.1.1"
+pocketstation = "1.1.2"
 ```
 
 Clone this repository and build the product quickstart:
@@ -50,7 +50,7 @@ prerequisites, expected results, and cleanup.
 For contracts-only tooling or documentation builds, disable native capture:
 
 ```toml
-pocketstation = { version = "1.1.1", default-features = false }
+pocketstation = { version = "1.1.2", default-features = false }
 ```
 
 ## Choose a task
