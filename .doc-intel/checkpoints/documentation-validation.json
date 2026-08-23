@@ -4,12 +4,12 @@
   "build_checkpoint": ".doc-intel/checkpoints/documentation-build.json",
   "claim_failures": [],
   "claims_sha256": "2672c5952ec18419a72735f0f822be561018d39ef8e42a86de53000f560e6591",
-  "created_at": "2026-08-23T18:14:18+00:00",
+  "created_at": "2026-08-23T18:23:10+00:00",
   "docs_digest": "5c0a3d1a95039a00db359d7a0b453b140effcd05c58fe2083415f0e6e426ffbf",
   "dossier_semantic_failures": [],
   "editorial_failures": [],
   "mapping_failures": [],
-  "page_manifest_sha256": "9e3119ff4e30eb22603769e3898bddc53ae2bd5338a1105dd4aa3ca33ea77335",
+  "page_manifest_sha256": "b8a1e7e90a05a88cba04a7411ab06f7ac4e6d44b9f9822e9db21780d4d12b83d",
   "passed": true,
   "source_digest": "4f6e3318be72227f9a90b12b1d7acbab4fc548a530793bd40154ab5960fe56b9"
 }

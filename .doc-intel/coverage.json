@@ -80,7 +80,7 @@
       "status": "pass"
     }
   ],
-  "generated_at": "2026-08-23T18:18:45+00:00",
+  "generated_at": "2026-08-23T18:23:16+00:00",
   "metrics": {
     "analyzed_semantic_files": 276,
     "analyzed_tests": 593,

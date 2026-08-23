@@ -5,6 +5,7 @@ name: rust-facade-ci
     branches: [main]
   pull_request:
     branches: [main]
+    types: [opened, reopened, synchronize, edited]
   workflow_dispatch:
 
 permissions:
