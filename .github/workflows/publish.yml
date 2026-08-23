@@ -33,6 +33,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check out the exact connector conformance corpus
+        uses: actions/checkout@v4
+        with:
+          repository: pocketstation-io/protocol
+          ref: ac36a19a2c29203b2e739c39fb49bc4df4e16a57
+          path: protocol-corpus
+
       - uses: dtolnay/rust-toolchain@stable
 
       - name: Require a version-matched release and guarded main recovery
@@ -95,6 +102,12 @@ jobs:
             ripgrep
 
       - uses: Swatinem/rust-cache@v2
+
+      - name: Materialize the connector conformance corpus
+        run: |
+          mkdir -p ../protocol/conformance/connector/v1
+          cp protocol-corpus/conformance/connector/v1/vectors.json \
+            ../protocol/conformance/connector/v1/vectors.json
 
       - name: Rust formatting
         run: cargo fmt --all -- --check
