@@ -1,0 +1,163 @@
+{
+  "schema_revision": 1,
+  "limits": {
+    "maximum_manifest_entries": 128,
+    "maximum_manifest_text_bytes": 4096,
+    "maximum_configuration_fields": 128,
+    "maximum_configuration_text_bytes": 16384,
+    "maximum_error_message_bytes": 4096
+  },
+  "cases": [
+    {
+      "id": "valid_outbound_audio_endpoint",
+      "expected": "accept",
+      "manifest": {
+        "api_revision": 1,
+        "manifest_revision": 1,
+        "package_id": "dev.pocketstation.relay",
+        "package_version": "0.1.0",
+        "configuration": {
+          "revision": 1,
+          "fields": [
+            {
+              "name": "source_token",
+              "kind": "secret",
+              "requirement": "required",
+              "documentation": "Relay source authentication token."
+            },
+            {
+              "name": "startup_timeout_ms",
+              "kind": "duration_milliseconds",
+              "requirement": "defaulted",
+              "default": 10000,
+              "unsigned_range": [1, 60000],
+              "documentation": "Finite publisher startup deadline."
+            }
+          ]
+        },
+        "components": [
+          {
+            "component_id": "relay.publisher",
+            "kind": "endpoint",
+            "ports": [
+              {
+                "name": "audio",
+                "direction": "input",
+                "signal_spec_id": "pocketstation.signal.pcm-audio.v1",
+                "multiplicity": "many",
+                "required": true
+              }
+            ]
+          }
+        ]
+      },
+      "endpoint": {
+        "component_id": "relay.publisher",
+        "maximum_inflight_items": 256,
+        "maximum_payload_bytes": 1048576,
+        "startup_deadline_ms": 10000,
+        "shutdown_deadline_ms": 5000,
+        "probe_interval_ms": 25,
+        "success_threshold": 1,
+        "failure_threshold": 3
+      }
+    },
+    {
+      "id": "valid_composed_source_operator_endpoint_package",
+      "expected": "accept",
+      "manifest": {
+        "api_revision": 1,
+        "manifest_revision": 2,
+        "package_id": "dev.pocketstation.translation",
+        "package_version": "1.0.0",
+        "configuration": {"revision": 1, "fields": []},
+        "components": [
+          {
+            "component_id": "capture",
+            "kind": "source",
+            "ports": [{"name": "audio", "direction": "output", "signal_spec_id": "pocketstation.signal.pcm-audio.v1", "multiplicity": "one", "required": true}]
+          },
+          {
+            "component_id": "transcribe",
+            "kind": "operator",
+            "ports": [
+              {"name": "audio", "direction": "input", "signal_spec_id": "pocketstation.signal.pcm-audio.v1", "multiplicity": "one", "required": true},
+              {"name": "transcript", "direction": "output", "signal_spec_id": "dev.pocketstation.signal.transcript.v1", "schema_ref": "proto:pocketstation.example.Transcript", "multiplicity": "many", "required": true}
+            ]
+          },
+          {
+            "component_id": "publisher",
+            "kind": "endpoint",
+            "ports": [{"name": "transcript", "direction": "input", "signal_spec_id": "dev.pocketstation.signal.transcript.v1", "schema_ref": "proto:pocketstation.example.Transcript", "multiplicity": "many", "required": true}]
+          }
+        ]
+      }
+    },
+    {
+      "id": "invalid_zero_manifest_revision",
+      "expected": "reject",
+      "error_code": "connector.manifest.invalid_revision",
+      "manifest": {"api_revision": 1, "manifest_revision": 0, "package_id": "dev.pocketstation.invalid", "package_version": "1.0.0", "configuration": {"revision": 1, "fields": []}, "components": []}
+    },
+    {
+      "id": "invalid_duplicate_component_id",
+      "expected": "reject",
+      "error_code": "connector.manifest.duplicate_component",
+      "manifest": {
+        "api_revision": 1,
+        "manifest_revision": 1,
+        "package_id": "dev.pocketstation.invalid",
+        "package_version": "1.0.0",
+        "configuration": {"revision": 1, "fields": []},
+        "components": [
+          {"component_id": "publisher", "kind": "endpoint", "ports": []},
+          {"component_id": "publisher", "kind": "endpoint", "ports": []}
+        ]
+      }
+    },
+    {
+      "id": "invalid_secret_default",
+      "expected": "reject",
+      "error_code": "connector.configuration.secret_default_forbidden",
+      "manifest": {
+        "api_revision": 1,
+        "manifest_revision": 1,
+        "package_id": "dev.pocketstation.invalid",
+        "package_version": "1.0.0",
+        "configuration": {
+          "revision": 1,
+          "fields": [{"name": "token", "kind": "secret", "requirement": "defaulted", "default": "must-never-serialize", "documentation": "Invalid secret default."}]
+        },
+        "components": []
+      }
+    },
+    {
+      "id": "invalid_unbounded_startup_deadline",
+      "expected": "reject",
+      "error_code": "connector.endpoint.invalid_deadline",
+      "manifest": {
+        "api_revision": 1,
+        "manifest_revision": 1,
+        "package_id": "dev.pocketstation.invalid",
+        "package_version": "1.0.0",
+        "configuration": {"revision": 1, "fields": []},
+        "components": [{"component_id": "publisher", "kind": "endpoint", "ports": []}]
+      },
+      "endpoint": {"component_id": "publisher", "maximum_inflight_items": 1, "maximum_payload_bytes": 1, "startup_deadline_ms": 0, "shutdown_deadline_ms": 1, "probe_interval_ms": 1, "success_threshold": 1, "failure_threshold": 1}
+    },
+    {
+      "id": "valid_orthogonal_service_status",
+      "expected": "accept",
+      "service_status": {
+        "delivery_readiness": "not_ready",
+        "health": "degraded",
+        "recovery": "reconnecting",
+        "readiness_reason_code": "relay.ice.reconnecting",
+        "health_reason_code": "relay.network.degraded",
+        "recovery_reason_code": "relay.ice.reconnecting",
+        "revision": 4,
+        "last_transition_elapsed_ns": 125000000
+      }
+    }
+  ]
+}
