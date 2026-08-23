@@ -2,61 +2,46 @@
 
 <!-- claims: CLM-BEST-004-CAP-001,CLM-BEST-004-CAP-002,CLM-BEST-004-CAP-003,CLM-BEST-004-CAP-004,CLM-BEST-004-CAP-005,CLM-BEST-004-SOURCE-001 -->
 
+## Problem
+
+Reducing Session stop to one success flag hides component, recording, sidecar, and trace finalization results.
+
 ## Recommendation
 
-Preserve structured stop, component, recording, sidecar, and trace outcomes before releasing runtime ownership.
+Retain and inspect the complete terminal outcome before releasing runtime ownership or reporting success.
 
-## Why
+## Reason
 
-The repository makes capacity, ownership, identity, lifecycle, and evidence boundaries explicit so failures remain attributable. Bypassing them removes observations and typed outcomes needed for diagnosis.
+Independent components can complete or fail separately after useful work has already occurred.
 
 ## Tradeoff
 
-The recommendation requires explicit configuration and result handling. It does not promise that one capacity, retry budget, selector, or shutdown policy fits every workload. Measure within the API's stated scope.
+Callers must branch over more structured state and decide how partial outputs are presented.
 
 ## When it does not apply
 
-Do not apply a realtime, connector, capture, or extension rule to another lane or boundary unless it exposes the same contract. An internal pattern is not automatically a public recommendation.
+A disposable test that asserts one exact failure can inspect only that field when the fixture proves no other output matters.
 
 ## Repository evidence
 
-- `sidecar_isolation` at `src/connector/mod.rs` (`pattern-00438ff8d2146688eeaf`).
-- `buffer_pool` at `src/session/extensions/audio_input/source.rs` (`pattern-02730342ffe5edf1a1a0`).
-- `typed_error` at `src/session/declaration/typed_stream.rs` (`pattern-0577caa4e8cabf1f0284`).
-- `clock_correlation` at `src/session/lifecycle/running.rs` (`pattern-099903d47c50357c102e`).
-- `typed_error` at `src/connector/worker/endpoint_adapter.rs` (`pattern-0c264e4ec468e7568a9c`).
-- `typed_error` at `src/session/extensions/tests/runtime.rs` (`pattern-0e401638b1f6b8cd709e`).
-- `typed_error` at `src/session/compile/tests.rs` (`pattern-0f5d415b7192b8e10569`).
-- `typed_error` at `src/session/extensions/tests/registry.rs` (`pattern-1051f823fb6b54798236`).
-- `sidecar_isolation` at `src/connector/transport.rs` (`pattern-139a2b492c98807b410f`).
-- `transactional_registration` at `src/session/lifecycle/endpoint_transaction.rs` (`pattern-15c202b8b1da269b86b8`).
-- `sidecar_isolation` at `src/session/mod.rs` (`pattern-21f70c88ad1965778a78`).
-- `sidecar_isolation` at `src/connector/status.rs` (`pattern-2204e930be728d4ccf21`).
-- `typed_error` at `src/recording/endpoint.rs` (`pattern-25297d2b3b32d08b7163`).
-- `typed_error` at `src/recording/endpoint/tests.rs` (`pattern-2b4448626799ffae1fce`).
-- `buffer_pool` at `src/session/extensions/builtins.rs` (`pattern-2bff6ab2da8c5acd813e`).
-- `typed_error` at `src/connector/transport.rs` (`pattern-2ee2fce6c23e17a0e11e`).
-- `typed_error` at `src/recording/writer.rs` (`pattern-302861fed4a6e4c5b34c`).
-- `typed_error` at `src/session/lifecycle/host.rs` (`pattern-302fd4dd990824448edd`).
-- `transactional_registration` at `src/connector/mod.rs` (`pattern-31b76706228fd84bfc03`).
-- `typed_error` at `examples/product_quickstart.rs` (`pattern-382a459c91458f67937e`).
+- `transactional_registration` at `src/session/lifecycle/events.rs` (`pattern-0e732daaf7c441a22fe9`).
 
 ## Executable evidence
 
-The following test bodies are evidence only for their recorded setup:
+Executable evidence selected for **Treat stop outcomes as data** is limited to each test's recorded setup and assertions:
 
+- `given_no_failures_when_terminal_then_state_is_stopped` — given no failures when terminal then state is stopped (`src/session/lifecycle/events.rs:721`; `test-6dd97c870cc349f825f9`).
+- `given_all_failure_classes_when_terminal_then_each_class_is_preserved` — given all failure classes when terminal then each class is preserved (`src/session/lifecycle/events.rs:679`; `test-070a5fc90aa90f7d986a`).
+- `given_all_senders_dropped_when_polled_then_receiver_reports_closed` — given all senders dropped when polled then receiver reports closed (`src/session/lifecycle/events.rs:656`; `test-ed28bb41869db2c16ec2`).
+- `given_closed_receiver_when_publishing_then_drop_and_closure_are_counted` — given closed receiver when publishing then drop and closure are counted (`src/session/lifecycle/events.rs:664`; `test-14b780bec81ca78fbbe6`).
+- `given_events_when_polled_then_fifo_order_and_depth_are_preserved` — given events when polled then fifo order and depth are preserved (`src/session/lifecycle/events.rs:632`; `test-ef7a999d2659ba14b610`).
+- `given_full_queue_when_publishing_then_newest_event_is_dropped_and_counted` — given full queue when publishing then newest event is dropped and counted (`src/session/lifecycle/events.rs:572`; `test-c6f9da58b0231d87b0b9`).
+- `given_oversized_session_event_when_published_then_queue_owned_memory_stays_bounded` — given oversized session event when published then queue owned memory stays bounded (`src/session/lifecycle/events.rs:608`; `test-681a72f40c41938b9b0d`).
 - `given_stop_and_join_failures_when_finalized_then_both_failures_and_observations_remain_true` — given stop and join failures when finalized then both failures and observations remain true (`src/endpoint/registry/tests.rs:294`; `test-20a4c27d70a60c9bc881`).
 - `given_extension_key_matching_old_metadata_when_compiled_then_value_remains_opaque` — given extension key matching old metadata when compiled then value remains opaque (`src/session/compile/tests.rs:769`; `test-e802cd282ad498db0074`).
 - `given_structural_ingress_when_validated_then_session_metadata_is_not_required` — given structural ingress when validated then session metadata is not required (`src/session/extensions/builtins.rs:636`; `test-7406cc23117530680012`).
-- `given_no_failures_when_terminal_then_state_is_stopped` — given no failures when terminal then state is stopped (`src/session/lifecycle/events.rs:721`; `test-6dd97c870cc349f825f9`).
 - `given_host_owned_backends_when_started_then_polled_audio_and_stop_are_real` — given host owned backends when started then polled audio and stop are real (`src/session/lifecycle/host.rs:724`; `test-1e7766766c491d2b7101`).
 - `given_two_sources_when_started_then_gate_lineage_and_repeated_stop_are_truthful` — given two sources when started then gate lineage and repeated stop are truthful (`src/session/lifecycle/tests/running.rs:1309`; `test-39a6ab1a3e3e6782af3a`).
-- `given_typed_operator_routes_when_stopped_then_final_state_and_metrics_are_truthful` — given typed operator routes when stopped then final state and metrics are truthful (`src/session/lifecycle/tests/running.rs:1114`; `test-4a96ceb3ecb843502e07`).
-- `given_grouped_connector_when_session_stops_then_one_worker_is_joined_and_observed` — given grouped connector when session stops then one worker is joined and observed (`tests/connector_contract.rs:679`; `test-aa2345c7b9339f742b48`).
-- `given_worker_failure_or_panic_when_session_stops_then_endpoint_finalization_is_terminal` — given worker failure or panic when session stops then endpoint finalization is terminal (`tests/connector_contract.rs:805`; `test-e56e88c9e99290ea720a`).
-- `given_stopped_public_session_when_new_session_starts_then_capture_restarts_cleanly` — given stopped public session when new session starts then capture restarts cleanly (`tests/session_facade.rs:124`; `test-cbee0768bffa592adde2`).
-- `given_provider_owned_field_name_when_resolved_then_core_preserves_it_opaquely` — given provider owned field name when resolved then core preserves it opaquely (`src/connector/configuration.rs:642`; `test-d9078fd01d0271720b30`).
-- `given_empty_input_group_when_sidecar_prepares_then_structured_error_is_returned` — given empty input group when sidecar prepares then structured error is returned (`src/connector/sidecar.rs:270`; `test-49bd18fb96d67fdba9bf`).
 
 ## Related documentation
 
@@ -71,8 +56,8 @@ The following test bodies are evidence only for their recorded setup:
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Treat stop outcomes as data** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/session/lifecycle/events.rs:1-736` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Treat stop outcomes as data**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

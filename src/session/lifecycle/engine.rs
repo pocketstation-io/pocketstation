@@ -306,7 +306,7 @@ pub enum SessionEngineBuildError {
     #[error("sidecar process ID {sidecar_id} is already registered")]
     #[doc = "Reports duplicate sidecar identifier."]
     DuplicateSidecarId {
-        #[doc = "Identifies the sidecar associated with `DuplicateSidecarId`."]
+        #[doc = "Identifies the sidecar identifier recorded by `DuplicateSidecarId`."]
         sidecar_id: u64,
     },
 }
@@ -323,7 +323,7 @@ pub enum EndpointExtensionRegistrationError {
     #[error("endpoint node type {node_type_id} is already registered with a different contract")]
     #[doc = "Reports conflicting definition."]
     ConflictingDefinition {
-        #[doc = "Identifies the node type associated with `ConflictingDefinition`."]
+        #[doc = "Identifies the node type identifier recorded by `ConflictingDefinition`."]
         node_type_id: String,
     },
 }

@@ -3,7 +3,24 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/endpoint.rs",
+    "REFERENCES:src/session/declaration/selector.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/declaration/typed_stream.rs",
+    "REFERENCES:src/session/error_code.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs",
+    "REFERENCES:src/session/extensions/polled_audio.rs",
+    "REFERENCES:src/session/extensions/recording.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
   "calls": [
     "derive",
     "error"
@@ -11,7 +28,24 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/endpoint.rs",
+    "REFERENCES:src/session/declaration/selector.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/declaration/typed_stream.rs",
+    "REFERENCES:src/session/error_code.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs",
+    "REFERENCES:src/session/extensions/polled_audio.rs",
+    "REFERENCES:src/session/extensions/recording.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
   "constructs": [],
   "content_hash": "d4e6417798977c840b81e7c597a488d9f36c383952c91884e0478bba262e2400",
   "defaults": [],
@@ -72,8 +106,26 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/endpoint.rs",
+    "REFERENCES:src/session/declaration/selector.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/declaration/typed_stream.rs",
+    "REFERENCES:src/session/error_code.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs",
+    "REFERENCES:src/session/extensions/polled_audio.rs",
+    "REFERENCES:src/session/extensions/recording.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -87,15 +139,50 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "eea99404e0aae4ade9533775a117761820d45960",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/endpoint.rs",
+    "REFERENCES:src/session/declaration/selector.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/declaration/typed_stream.rs",
+    "REFERENCES:src/session/error_code.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs",
+    "REFERENCES:src/session/extensions/polled_audio.rs",
+    "REFERENCES:src/session/extensions/recording.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/endpoint.rs",
+    "REFERENCES:src/session/declaration/selector.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/declaration/typed_stream.rs",
+    "REFERENCES:src/session/error_code.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs",
+    "REFERENCES:src/session/extensions/polled_audio.rs",
+    "REFERENCES:src/session/extensions/recording.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
   "imports": [
     "crate::frame::{EndpointId, SessionId, StemId}",
     "crate::session::{OperatorInstanceId, SourceInstanceId}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::frame::{EndpointId, SessionId, StemId}",
+    "crate::session::{OperatorInstanceId, SourceInstanceId}"
   ],
   "invariants": [
     {
@@ -109,18 +196,20 @@
   "module": "pocketstation::session::error",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:SessionError"
   ],
   "package": "pocketstation",
   "path": "src/session/error.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -134,7 +223,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::error`."
+    "text": "Implements pocketstation::session::error responsibilities, including Classifies failures reported as session error.; Reported when the owning operation encounters no sources.; Identifies the stem identifier recorded by `NoRoutes`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -194,9 +283,52 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/session/declaration/spec.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "SessionError"
+    "pocketstation::session::error::SessionError: Classifies failures reported as session error.",
+    "pocketstation::session::error::SessionError::NoSources: Reported when the owning operation encounters no sources.",
+    "SessionError::NoRoutes::stem_id: Identifies the stem identifier recorded by `NoRoutes`.",
+    "pocketstation::session::error::SessionError::NoRoutes: Reported when the owning operation encounters no routes.",
+    "pocketstation::session::error::SessionError::NoSourceOutputs: Reported when the owning operation encounters no source outputs.",
+    "SessionError::NoSourceOutputs::source_instance_id: Identifies the source instance identifier recorded by `NoSourceOutputs`.",
+    "pocketstation::session::error::SessionError::NoSourceOutputRoutes: Reported when the owning operation encounters no source output routes.",
+    "SessionError::NoSourceOutputRoutes::source_instance_id: Identifies the source instance identifier recorded by `NoSourceOutputRoutes`.",
+    "SessionError::NoSourceOutputRoutes::output_port: Stores the output port used by `NoSourceOutputRoutes`.",
+    "SessionError::InvalidSelector::reason: Carries the reason reported by `InvalidSelector`.",
+    "pocketstation::session::error::SessionError::InvalidSelector: Reported when the owning operation encounters invalid selector.",
+    "SessionError::InvalidEndpoint::reason: Carries the reason reported by `InvalidEndpoint`.",
+    "pocketstation::session::error::SessionError::InvalidEndpoint: Reported when the owning operation encounters invalid endpoint.",
+    "SessionError::InvalidOperator::reason: Carries the reason reported by `InvalidOperator`.",
+    "pocketstation::session::error::SessionError::InvalidOperator: Reported when the owning operation encounters invalid operator.",
+    "SessionError::InvalidRoute::reason: Carries the reason reported by `InvalidRoute`.",
+    "pocketstation::session::error::SessionError::InvalidRoute: Reported when the owning operation encounters invalid route.",
+    "pocketstation::session::error::SessionError::ForeignEndpoint: Reported when the owning operation encounters foreign endpoint.",
+    "SessionError::ForeignEndpoint::expected: Records the value expected by `ForeignEndpoint`.",
+    "SessionError::ForeignEndpoint::actual: Records the value observed by `ForeignEndpoint`.",
+    "SessionError::DraftFrozen::session_id: Identifies the session identifier recorded by `DraftFrozen`.",
+    "pocketstation::session::error::SessionError::DraftFrozen: Reported when the owning operation encounters draft frozen.",
+    "pocketstation::session::error::SessionError::DraftPoisoned: Reported when the owning operation encounters draft poisoned.",
+    "pocketstation::session::error::SessionError::IdExhausted: Reported when the owning operation encounters id exhausted.",
+    "SessionError::UnsupportedVersion::major: Stores the major used by `UnsupportedVersion`.",
+    "SessionError::UnsupportedVersion::minor: Stores the minor used by `UnsupportedVersion`.",
+    "pocketstation::session::error::SessionError::UnsupportedVersion: Reported when the owning operation encounters unsupported version.",
+    "SessionError::UnknownEndpoint::endpoint_id: Identifies the endpoint identifier recorded by `UnknownEndpoint`.",
+    "pocketstation::session::error::SessionError::UnknownEndpoint: Reported when the owning operation encounters unknown endpoint.",
+    "SessionError::UnknownStem::stem_id: Identifies the stem identifier recorded by `UnknownStem`.",
+    "pocketstation::session::error::SessionError::UnknownStem: Reported when the owning operation encounters unknown stem.",
+    "pocketstation::session::error::SessionError::UnknownSourceInstance: Reported when the owning operation encounters unknown source instance.",
+    "SessionError::UnknownSourceInstance::source_instance_id: Identifies the source instance identifier recorded by `UnknownSourceInstance`.",
+    "pocketstation::session::error::SessionError::UnknownSourceOutput: Reported when the owning operation encounters unknown source output.",
+    "SessionError::UnknownSourceOutput::source_instance_id: Identifies the source instance identifier recorded by `UnknownSourceOutput`.",
+    "SessionError::UnknownSourceOutput::output_port: Stores the output port used by `UnknownSourceOutput`.",
+    "pocketstation::session::error::SessionError::UnknownOperatorInstance: Reported when the owning operation encounters unknown operator instance.",
+    "SessionError::UnknownOperatorInstance::operator_instance_id: Identifies the operator instance identifier recorded by `UnknownOperatorInstance`.",
+    "pocketstation::session::error::SessionError::OperatorHasNoDestination: Reported when the owning operation encounters operator has no destination.",
+    "SessionError::OperatorHasNoDestination::operator_instance_id: Identifies the operator instance identifier recorded by `OperatorHasNoDestination`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -206,6 +338,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

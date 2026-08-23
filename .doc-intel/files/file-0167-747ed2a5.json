@@ -3,7 +3,13 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/envelope.rs",
+    "REFERENCES:src/graph/signal/lineage.rs"
+  ],
   "calls": [
     "Self::try_new",
     "checked_add",
@@ -28,7 +34,13 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/envelope.rs",
+    "REFERENCES:src/graph/signal/lineage.rs"
+  ],
   "constructs": [
     "Self::try_new",
     "try_new"
@@ -208,8 +220,17 @@
       "symbol": null
     }
   ],
-  "examples_using": [],
-  "extended_by": [],
+  "example_coverage_status": "linked",
+  "examples_using": [
+    "example-3af8a91e442cd41f9135"
+  ],
+  "extended_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/envelope.rs",
+    "REFERENCES:src/graph/signal/lineage.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -223,16 +244,28 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "a6eba00401fef0c65ba5b5457d2fc8f169523718",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/envelope.rs",
+    "REFERENCES:src/graph/signal/lineage.rs"
+  ],
   "implements": [
     "SignalTiming"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/envelope.rs",
+    "REFERENCES:src/graph/signal/lineage.rs"
+  ],
   "imports": [
     "crate::frame::FrameLineage"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::frame::FrameLineage"
   ],
   "invariants": [
     {
@@ -246,20 +279,32 @@
   "module": "pocketstation::graph::signal::timing",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-f7a931232c2556831d2e"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:SignalTimingError",
+    "fn:duration_ns",
+    "fn:from_frame",
+    "fn:observed",
+    "fn:observed_timestamp_ns",
+    "fn:session_timestamp_ns",
+    "fn:source_timestamp_ns",
+    "fn:timestamp_end_ns",
+    "fn:try_new",
+    "fn:with_duration_ns",
+    "return Err(SignalTimingError::TimestampOverflow);",
+    "return Err(SignalTimingError::ZeroDuration);",
+    "struct:SignalTiming"
   ],
   "package": "pocketstation",
   "path": "src/graph/signal/timing.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -332,8 +377,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Source, observation, and Session clock coordinates for one signal."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::signal::timing responsibilities, including Carries a signal timestamp, clock domain, and timing semantics without rewriting source lineage.; Creates a new `SignalTiming` after validating its inputs.; Creates observed signal timing for `SignalTiming`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -371,19 +416,24 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/lineage.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "SignalTiming",
-    "try_new",
-    "observed",
-    "with_duration_ns",
-    "from_frame",
-    "timestamp_end_ns",
-    "source_timestamp_ns",
-    "observed_timestamp_ns",
-    "session_timestamp_ns",
-    "duration_ns",
-    "SignalTimingError"
+    "pocketstation::graph::signal::timing::SignalTiming: Carries a signal timestamp, clock domain, and timing semantics without rewriting source lineage.",
+    "try_new: Creates a new `SignalTiming` after validating its inputs.",
+    "observed: Creates observed signal timing for `SignalTiming`.",
+    "with_duration_ns: Sets the duration nanoseconds on `SignalTiming` and returns the updated value.",
+    "from_frame: Creates `SignalTiming` from frame.",
+    "timestamp_end_ns: Returns the timestamp end nanoseconds held by `SignalTiming`.",
+    "source_timestamp_ns: Returns the source timestamp nanoseconds held by `SignalTiming`.",
+    "observed_timestamp_ns: Returns the observed timestamp nanoseconds held by `SignalTiming`.",
+    "session_timestamp_ns: Returns the session timestamp nanoseconds held by `SignalTiming`.",
+    "duration_ns: Returns the duration nanoseconds held by `SignalTiming`.",
+    "pocketstation::graph::signal::timing::SignalTimingError: Classifies failures reported as signal timing error.",
+    "pocketstation::graph::signal::timing::SignalTimingError::ZeroDuration: Reported when the owning operation encounters zero duration.",
+    "pocketstation::graph::signal::timing::SignalTimingError::TimestampOverflow: Reported when the owning operation encounters timestamp overflow."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -398,6 +448,7 @@
   ],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

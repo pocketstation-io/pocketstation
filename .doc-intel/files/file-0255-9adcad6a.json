@@ -418,6 +418,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -451,7 +452,14 @@
     "std::time::{Duration, Instant}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(feature = \"conformance-fixtures\")]",
+    "ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity,",
+    "fn validate_config(&self, _configuration: &OperatorConfiguration) -> Result<(), ConfigError> {",
+    "pocketstation::{ AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputConfig, AudioInputWriteErrorKind, CallbackCaptureBackend, CaptureError, CaptureMode, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeError, Operator, OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PreparedCaptureBackend, SafetyContract, SampleFormat, SampleSpec, Session, SessionRecordingState, SignalDerivation, SignalEnvelope, SignalPayload, SignalSpec, }",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "std::thread",
+    "std::time::{Duration, Instant}"
   ],
   "invariants": [
     {
@@ -529,20 +537,26 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
   "observed_patterns": [
     "pattern-edf69dcaea64764c5f09"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(AudioInputBufferAcquireError::Closed)",
+    "Err(AudioInputBufferAcquireError::Full) if Instant::now() < deadline => {",
+    "Err(error)",
+    "Err(error) => panic!(\"PCM frame was not accepted before deadline: {error}\"),",
+    "return Err(NodeError::Process("
   ],
   "package": "pocketstation",
   "path": "tests/audio_input.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -687,8 +701,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given audio input when session runs then lineage fanout reentry and recording are real, given bounded audio input when writes are invalid or saturated then ownership is explicit, given running audio input when writer closes then accepted frames are drained under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -742,6 +756,7 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/source-identity.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 2,
@@ -801,29 +816,29 @@
     }
   ],
   "responsibilities": [
-    "FRAME_SAMPLES",
-    "OPERATOR_ID",
-    "OPERATOR_NODE_ID",
-    "UnexpectedOsCapture",
-    "prepare",
-    "sample_spec",
-    "audio_input_config",
-    "given_application_owned_audio_when_written_through_facade_then_session_delivers_its_lineage",
-    "given_bounded_audio_input_when_writes_are_invalid_or_saturated_then_ownership_is_explicit",
-    "given_running_audio_input_when_writer_closes_then_accepted_frames_are_drained",
-    "OperatorControl",
-    "PassThroughFactory",
-    "new",
-    "manifest",
-    "validate_config",
-    "create",
-    "PassThroughNode",
-    "prepare",
-    "process",
-    "given_audio_input_when_session_runs_then_lineage_fanout_reentry_and_recording_are_real",
-    "acquire_before",
-    "send_before",
-    "wait_for_route_delivery"
+    "FRAME_SAMPLES (const)",
+    "OPERATOR_ID (const)",
+    "OPERATOR_NODE_ID (const)",
+    "UnexpectedOsCapture (struct)",
+    "prepare (fn)",
+    "sample_spec (fn)",
+    "audio_input_config (fn)",
+    "given_application_owned_audio_when_written_through_facade_then_session_delivers_its_lineage (fn)",
+    "given_bounded_audio_input_when_writes_are_invalid_or_saturated_then_ownership_is_explicit (fn)",
+    "given_running_audio_input_when_writer_closes_then_accepted_frames_are_drained (fn)",
+    "OperatorControl (struct)",
+    "PassThroughFactory (struct)",
+    "new (fn)",
+    "manifest (fn)",
+    "validate_config (fn)",
+    "create (fn)",
+    "PassThroughNode (struct)",
+    "prepare (fn)",
+    "process (fn)",
+    "given_audio_input_when_session_runs_then_lineage_fanout_reentry_and_recording_are_real (fn)",
+    "acquire_before (fn)",
+    "send_before (fn)",
+    "wait_for_route_delivery (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -880,7 +895,13 @@
       "text": "Box::pin(async move {"
     }
   ],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-11fb08eefd3feaca7cfe",
+    "test-795ca5a283c59dbf6066",
+    "test-93f8a3bbe8b67e6e71ea",
+    "test-fdcedcc753e41fe3767e"
+  ],
   "threads": [
     {
       "line": 3,

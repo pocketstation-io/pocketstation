@@ -176,7 +176,10 @@
       "symbol": null
     }
   ],
-  "examples_using": [],
+  "example_coverage_status": "linked",
+  "examples_using": [
+    "example-eb905a3d30f6d6a02264"
+  ],
   "extended_by": [],
   "extends": [],
   "feature_flags": [],
@@ -205,7 +208,12 @@
     "std::time::Duration"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "CARGO_PKG_VERSION",
+    "pocketstation::connector::{ Connector, ConnectorConfiguration, ConnectorConfigurationConstraint, ConnectorConfigurationField, ConnectorConfigurationRequirement, ConnectorConfigurationSchema, ConnectorConfigurationValue, ConnectorConfigurationValueKind, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorError, ConnectorErrorCode, ConnectorErrorStage, ConnectorInputDescriptor, ConnectorItem, ConnectorManifest, ConnectorReadinessPolicy, ConnectorRetryability, ConnectorSecret, }",
+    "pocketstation::{ ApplicationSelector, AudioCaps, ChannelLayout, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, OperatorId, PortDirection, PortSpec, SafetyContract, SampleFormat, Session, SignalSpec, Source, }",
+    "std::error::Error",
+    "std::sync::Arc",
+    "std::time::Duration"
   ],
   "invariants": [],
   "language": "Rust",
@@ -219,21 +227,22 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification or behavior outside the example's prerequisites."
   ],
   "observed_patterns": [
-    "pattern-b2fbadf2d6a330c083c5",
     "pattern-6e31e7a838ec8f9bc6b1"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "return Err(connector_error("
   ],
   "package": "pocketstation",
   "path": "examples/connector_authoring.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -282,8 +291,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "DECLARED",
+    "text": "Demonstrates the repository-owned connector authoring workflow as compilable example code."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -325,6 +334,7 @@
     "docs/best-practices/connector-retries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 2,
@@ -352,13 +362,13 @@
     }
   ],
   "responsibilities": [
-    "ExampleConnectorFactory",
-    "prepare",
-    "ExampleConnector",
-    "deliver",
-    "connector_error",
-    "connector_manifest",
-    "main"
+    "ExampleConnectorFactory (struct)",
+    "prepare (fn)",
+    "ExampleConnector (struct)",
+    "deliver (fn)",
+    "connector_error (fn)",
+    "connector_manifest (fn)",
+    "main (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -378,6 +388,7 @@
   ],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

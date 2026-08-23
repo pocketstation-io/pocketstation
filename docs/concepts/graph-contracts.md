@@ -2,63 +2,73 @@
 
 <!-- claims: CLM-DOC-020-CAP-001,CLM-DOC-020-SOURCE-001 -->
 
-Declare typed ports, media capabilities, partition safety, copy, loss, delivery, and observability policy.
+## What it is
+
+Graph contracts describe port direction, signal and media compatibility, multiplicity, execution partition, safety, copy, loss, delivery, and observability before a route is compiled.
+
+## Why it exists
+
+A processing graph crosses ownership and execution boundaries. Explicit contracts let the compiler reject incompatible or unsafe connections rather than discovering them after workers start.
+
+## Relationships
+
+- Node and operator manifests own named ports.
+- Edge contracts control finite delivery between compatible ports.
+- The runtime plan preserves the validated topology and policies.
+
+## Invariants and guarantees
+
+- Input and output direction must agree.
+- Signal and media specifications must be compatible.
+- Realtime partitions cannot claim operations that violate their declared safety contract.
+
+## When you encounter it
+
+- **Add an asynchronous operator** — Declare typed ports, implement an operator factory, and route its output.
+
+## Use it
+
+- [Choose route capacity and loss policy](/docs/how-to/configure-route-policy.md)
+- [Connect named operator ports](/docs/how-to/connect-operator-ports.md)
+- [Graph API reference](/docs/reference/graph.md)
 
 ## Scope
 
 - **Describe graph contracts.** Declare typed ports, media capabilities, partition safety, copy, loss, delivery, and observability policy.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Graph contracts** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
-## Contract surface
+## Key API
 
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
-| `pocketstation::graph` | module | Stable signal, port, capability, partition, and extension contracts. | `src/graph/mod.rs:1` |
-| `pocketstation::graph::runtime_node::RuntimeNode` | trait | Realtime invariant: for nodes whose ExecutionClass::is_realtime is true, process() must stay alloc-free, lock-free, log-free, and blocking-free (LAW 15). All working state is sized once in prepare() and reused for the lifetime of the node. | `src/graph/runtime_node.rs:7` |
-| `pocketstation::graph::signal::operator::AsyncNode` | trait | Async operator contract for model, connector, transport, and control-plane work. | `src/graph/signal/operator.rs:13` |
-| `pocketstation::graph::node::PortPrepareContext` | struct | Exact graph-owned contract for one prepared node port. | `src/graph/node.rs:282` |
-| `pocketstation::graph::operator::OperatorId` | struct | Open identifier for a registered graph operator implementation. | `src/graph/operator.rs:16` |
-| `pocketstation::graph::signal::lineage::SignalDerivation` | struct | Source-independent record of the signal consumed by an operator. | `src/graph/signal/lineage.rs:97` |
-| `pocketstation::graph::signal::preparation::AsyncOperatorPrepareContext` | struct | Complete graph-owned preparation contract for one asynchronous Operator. | `src/graph/signal/preparation.rs:22` |
-| `pocketstation::graph::signal::spec::SchemaRef` | struct | Reference to an external schema document. | `src/graph/signal/spec.rs:87` |
-| `pocketstation::graph::signal::spec::SemanticRole` | struct | Semantic role annotation on a port. | `src/graph/signal/spec.rs:57` |
-| `pocketstation::graph::signal::spec::SignalId` | struct | Opaque identifier for a custom signal type. | `src/graph/signal/spec.rs:22` |
-| `pocketstation::graph::signal::spec::SignalSpec` | struct | Full signal contract for a single port. | `src/graph/signal/spec.rs:205` |
-| `pocketstation::graph::partition::ExecutionPartition` | enum | WHERE an operator runs. | `src/graph/partition.rs:18` |
-| `pocketstation::graph::partition::SafetyContract` | enum | WHAT an operator guarantees about its runtime behaviour. | `src/graph/partition.rs:82` |
-| `pocketstation::graph::signal::spec::BinaryFormat` | enum | Binary encoding hint for `SignalClass::Binary`. | `src/graph/signal/spec.rs:141` |
-| `pocketstation::graph::signal::spec::Codec` | enum | Audio encoding format for `SignalClass::EncodedAudio`. | `src/graph/signal/spec.rs:113` |
-| `pocketstation::graph::signal::spec::EventFormat` | enum | Event structure hint for `SignalClass::Event`. | `src/graph/signal/spec.rs:132` |
-| `pocketstation::graph::signal::spec::SignalClass` | enum | The fundamental class of data flowing through a port. | `src/graph/signal/spec.rs:156` |
-| `pocketstation::graph::signal::spec::TextFormat` | enum | Text encoding hint for `SignalClass::Text`. | `src/graph/signal/spec.rs:124` |
-| `pocketstation::graph::signal::preparation::AsyncOperatorEdgePrepareContext` | type_alias | Exact bounded graph edge supplied to an asynchronous Operator at prepare time. | `src/graph/signal/preparation.rs:18` |
-| `pocketstation::graph::partition::ExecutionPartition::AsyncWorker` | variant | Tokio async task. | `src/graph/partition.rs:36` |
+| `pocketstation::graph::ports::AudioCaps` | struct | Declares the sample formats, channel layouts, and rates accepted by an audio port. | `src/graph/ports.rs:48` |
+| `pocketstation::graph::ports::EdgeContract` | struct | Declares the validated constraints applied to edge. | `src/graph/ports.rs:311` |
+| `pocketstation::graph::ports::PortSpec` | struct | Configures port behavior at its owning API boundary. | `src/graph/ports.rs:175` |
+| `pocketstation::graph::spec::EdgeId` | struct | Uniquely identifies edge within its PocketStation ownership scope. | `src/graph/spec.rs:22` |
+| `pocketstation::graph::spec::EdgeSpec` | struct | Configures edge behavior at its owning API boundary. | `src/graph/spec.rs:50` |
+| `pocketstation::graph::spec::GraphSpec` | struct | Configures graph behavior at its owning API boundary. | `src/graph/spec.rs:58` |
+| `pocketstation::graph::spec::InputPortRef` | struct | Names an operator or endpoint input port used as the target of a graph connection. | `src/graph/spec.rs:37` |
+| `pocketstation::graph::spec::NodeId` | struct | Uniquely identifies node within its PocketStation ownership scope. | `src/graph/spec.rs:8` |
+| `pocketstation::graph::spec::NodeSpec` | struct | Configures node behavior at its owning API boundary. | `src/graph/spec.rs:43` |
+| `pocketstation::graph::spec::OutputPortRef` | struct | Names an operator output port used as the origin of a graph connection. | `src/graph/spec.rs:31` |
 
-## Where you encounter it
+## Executable evidence
 
-- **Add an asynchronous operator** — Declare typed ports, implement an operator factory, and route its output.
+Executable evidence selected for **Graph contracts** is limited to each test's recorded setup and assertions:
 
-## Behavior established by tests
-
-The following test bodies are evidence only for their recorded setup:
-
-- `given_compiled_graph_when_instrumented_then_metric_ids_are_stable_and_distinct` — given compiled graph when instrumented then metric ids are stable and distinct (`src/graph/compile/plan.rs:785`; `test-1c092b4376cfedf5e86d`).
-- `given_fixed_graph_when_planned_then_runtime_plan_matches_golden_snapshot` — given fixed graph when planned then runtime plan matches golden snapshot (`src/graph/compile/plan.rs:803`; `test-79ec9d2ff6b56808169b`).
-- `given_linear_realtime_graph_when_planned_then_single_partition_in_topo_order` — given linear realtime graph when planned then single partition in topo order (`src/graph/compile/plan.rs:540`; `test-0ad4ea1abd7124d12740`).
-- `given_fixed_graph_when_compiled_then_topo_order_matches_golden_snapshot` — given fixed graph when compiled then topo order matches golden snapshot (`src/graph/compile/resolve.rs:1252`; `test-6cbc98440137003f4368`).
-- `given_linear_graph_when_compiled_then_topo_orders_source_before_sink` — given linear graph when compiled then topo orders source before sink (`src/graph/compile/resolve.rs:973`; `test-7ece727a2fa318f311df`).
-- `given_default_graph_spec_when_built_then_has_no_nodes_or_edges` — given default graph spec when built then has no nodes or edges (`src/graph/spec.rs:80`; `test-3db527034c49600287e9`).
-- `given_node_spec_in_graph_when_looked_up_by_id_then_returns_it` — given node spec in graph when looked up by id then returns it (`src/graph/spec.rs:87`; `test-efb53040e5153777b34b`).
-- `given_public_facade_when_typed_delivery_declared_then_internal_graph_is_not_required` — given public facade when typed delivery declared then internal graph is not required (`tests/operator_declaration.rs:4`; `test-ea6acbe3b724189ac6ad`).
-- `given_external_consumer_when_declared_then_provider_and_typed_endpoint_use_public_api` — given external consumer when declared then provider and typed endpoint use public api (`examples/operator-consumer/src/lib.rs:120`; `test-ace9b7d11da2036ce899`).
-- `given_gain_config_with_non_numeric_gain_db_when_validate_then_invalid_error` — given gain config with non numeric gain db when validate then invalid error (`src/graph/builtins.rs:256`; `test-0e41065f28a838e0deaf`).
-- `given_gain_config_with_valid_gain_db_when_validate_then_ok` — given gain config with valid gain db when validate then ok (`src/graph/builtins.rs:264`; `test-c5d54824499f245c4c6c`).
-- `given_gain_config_without_gain_db_when_validate_then_missing_error` — given gain config without gain db when validate then missing error (`src/graph/builtins.rs:249`; `test-c2584e0bcdbbb154dfa1`).
-
-## Boundaries
-
-The compiler inventory establishes names, kinds, visibility, and signatures. Tests establish only their exercised conditions. Where retryability, ordering, cancellation, physical qualification, or recovery is not declared, this page leaves it unspecified.
+- `given_any_and_audio_when_negotiated_then_yields_audio` — given any and audio when negotiated then yields audio (`src/graph/ports.rs:496`; `test-b904fea87e8dcf2b473a`).
+- `given_any_audio_caps_when_compat_checked_then_reflexive_and_symmetric` — given any audio caps when compat checked then reflexive and symmetric (`src/graph/ports.rs:607`; `test-c1f0182c0924086f9d64`).
+- `given_any_layout_when_compat_checked_both_directions_then_matches` — given any layout when compat checked both directions then matches (`src/graph/ports.rs:448`; `test-53058cf141f24f476947`).
+- `given_any_media_when_compat_checked_both_directions_then_matches` — given any media when compat checked both directions then matches (`src/graph/ports.rs:489`; `test-52064d0ac0dc51bea641`).
+- `given_audio_and_text_when_media_compat_checked_then_incompatible` — given audio and text when media compat checked then incompatible (`src/graph/ports.rs:483`; `test-49b93cf78810847cc5ff`).
+- `given_audio_pair_when_media_compat_checked_then_compatible` — given audio pair when media compat checked then compatible (`src/graph/ports.rs:476`; `test-363da2d0a58f6635dc58`).
+- `given_bounded_async_when_built_then_contains_no_payload_or_clock_origin_assumption` — given bounded async when built then contains no payload or clock origin assumption (`src/graph/ports.rs:537`; `test-764d8a62597c3f9220c7`).
+- `given_custom_signal_without_schema_when_checked_then_binary_media_rejects_it` — given custom signal without schema when checked then binary media rejects it (`src/graph/ports.rs:575`; `test-2d3675af8d6c3a4d6a26`).
+- `given_incompatible_media_when_negotiated_then_none` — given incompatible media when negotiated then none (`src/graph/ports.rs:502`; `test-9e99ae329b9711ba02b0`).
+- `given_mismatched_rate_when_audio_compat_checked_then_incompatible` — given mismatched rate when audio compat checked then incompatible (`src/graph/ports.rs:467`; `test-8e8af7e321a63058b3c1`).
+- `given_mono_and_stereo_when_channel_count_then_returns_one_and_two` — given mono and stereo when channel count then returns one and two (`src/graph/ports.rs:441`; `test-8304caec6a9e3b31e801`).
+- `given_observability_levels_when_ranked_then_ordered_ascending` — given observability levels when ranked then ordered ascending (`src/graph/ports.rs:553`; `test-91b82bbdd4b3f972899f`).
 
 ## Related documentation
 
@@ -73,8 +83,8 @@ The compiler inventory establishes names, kinds, visibility, and signatures. Tes
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Graph contracts** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/graph/ports.rs:1-618` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Graph contracts**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

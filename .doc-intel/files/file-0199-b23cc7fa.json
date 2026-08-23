@@ -3,7 +3,14 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/compile/mod.rs",
+    "IMPORTS:src/session/compile/mod.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "calls": [
     "HashMap::new",
     "cfg",
@@ -26,7 +33,14 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/compile/mod.rs",
+    "IMPORTS:src/session/compile/mod.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "constructs": [
     "HashMap::new",
     "new"
@@ -135,8 +149,16 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/compile/mod.rs",
+    "IMPORTS:src/session/compile/mod.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -150,11 +172,25 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "3489544c67193ca779033ff564345eb6c6c23aa4",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/compile/mod.rs",
+    "IMPORTS:src/session/compile/mod.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "implements": [
     "CompiledSessionBindings"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/compile/mod.rs",
+    "IMPORTS:src/session/compile/mod.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "imports": [
     "crate::frame::ConnectorId",
     "crate::graph::NodeId",
@@ -162,7 +198,11 @@
     "std::collections::HashMap"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::frame::ConnectorId",
+    "crate::graph::NodeId",
+    "crate::session::{ EndpointId, OperatorInstanceId, RouteId, SourceInstanceId, StemId, StreamOrigin, }",
+    "std::collections::HashMap"
   ],
   "invariants": [
     {
@@ -176,18 +216,25 @@
   "module": "pocketstation::session::compile::bindings",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:CompiledNodeBinding",
+    "fn:insert_node",
+    "fn:new",
+    "fn:node",
+    "fn:node_mut",
+    "struct:CompiledSessionBindings"
   ],
   "package": "pocketstation",
   "path": "src/session/compile/bindings.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -230,8 +277,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Typed authority connecting compiled graph nodes to Session declarations.  Extension-owned `NodeConfig` never carries these identities. Runtime preparation consumes this table directly, so IDs are not serialized to strings and parsed back later."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::compile::bindings responsibilities, including bindings; fmt; compiled session bindings."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -291,14 +338,19 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/graph/spec.rs",
+    "REFERENCES:src/session/declaration/spec.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "CompiledSessionBindings",
-    "CompiledNodeBinding",
-    "new",
-    "node",
-    "node_mut",
-    "insert_node"
+    "CompiledSessionBindings (struct)",
+    "CompiledNodeBinding (enum)",
+    "new (fn)",
+    "node (fn)",
+    "node_mut (fn)",
+    "insert_node (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -308,6 +360,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

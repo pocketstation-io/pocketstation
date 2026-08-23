@@ -2,47 +2,63 @@
 
 <!-- claims: CLM-DOC-023-CAP-001,CLM-DOC-023-SOURCE-001 -->
 
-Return generated PCM from asynchronous processing through an explicit bounded audio reentry bridge.
+## What it is
+
+Audio reentry is the bounded crossing that accepts generated PCM from asynchronous work and returns it to a typed audio route.
+
+## Why it exists
+
+Async operators cannot write directly into the realtime lane without an ownership, format, capacity, and cancellation boundary. The bridge makes those constraints observable.
+
+## Relationships
+
+- An operator declares generated-audio output.
+- `GeneratedAudioBridgeSpec` fixes Session, stem, stream, source, clock, sample format, frame size, and pool capacity.
+- Bridge observations appear in Session metrics and terminal diagnostics.
+
+## Invariants and guarantees
+
+- PCM must match the declared sample specification and frame size.
+- Pool and route capacity remain finite.
+- Closed, cancelled, saturated, and invalid-format outcomes remain distinct.
+
+## When you encounter it
+
+- **Return generated audio** — Bridge asynchronous PCM output back into the bounded audio lane.
+
+## Use it
+
+- [Return generated PCM through a bridge](/docs/how-to/return-generated-audio.md)
+- [Frames or signals are dropped](/docs/troubleshooting/drops-and-saturation.md)
 
 ## Scope
 
 - **Bridge asynchronous output into audio.** Return generated PCM from asynchronous processing through an explicit bounded audio reentry bridge.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Audio reentry** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
-## Contract surface
+## Key API
 
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
-| `audio` | module | Allocation-free realtime audio execution lane. | `src/runtime/audio/mod.rs:1` |
-| `audio` | function | Convenience constructor for PCM audio ports. | `src/graph/signal/spec.rs:269` |
-| `encoded_audio` | function | Convenience constructor for encoded audio ports. | `src/graph/signal/spec.rs:274` |
-| `is_audio` | function | Returns `true` for classes that carry real-time audio on the hot path. | `src/graph/signal/spec.rs:180` |
-| `realtime_audio` | function | Generic realtime PCM edge. Concrete sample rate, frame size, and channel layout are negotiated from connected ports. | `src/graph/ports.rs:391` |
-| `pocketstation::graph::partition::ExecutionPartition::AudioCallback` | variant | Platform OS audio callback — the strictest domain. | `src/graph/partition.rs:24` |
-| `pocketstation::graph::signal::spec::SignalClass::EncodedAudio` | variant | Compressed audio bitstream (Opus packet, AAC frame, …). | `src/graph/signal/spec.rs:162` |
-| `pocketstation::graph::signal::spec::SignalClass::PcmAudio` | variant | Interleaved PCM audio samples (format described by the edge AudioCaps). | `src/graph/signal/spec.rs:160` |
-| `pocketstation::graph::ports::AudioCaps` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/ports.rs:48` |
-| `pocketstation::runtime::audio::router::EdgeObservations` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/audio/router.rs:122` |
-| `pocketstation::runtime::audio::runner::PlanSourceInputObservations` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/audio/runner.rs:22` |
-| `pocketstation::runtime::audio::executor::ExecError` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/audio/executor.rs:20` |
-| `pocketstation::runtime::audio::runner::PlanRunnerError` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/audio/runner.rs:256` |
-| `from_audio` | function | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/signal/envelope.rs:27` |
-| `pocketstation::graph::ports::LossPolicy::ConcealForAudio` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/ports.rs:288` |
-| `pocketstation::graph::ports::MediaCaps::Audio` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/ports.rs:86` |
-| `pocketstation::graph::ports::MediaCaps::EncodedAudio` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/ports.rs:87` |
-| `pocketstation::graph::ports::MediaKind::AudioEncoded` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/ports.rs:18` |
-| `pocketstation::graph::ports::MediaKind::AudioPcm` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/ports.rs:17` |
-| `pocketstation::graph::signal::payload::SignalPayload::Audio` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/signal/payload.rs:11` |
+| `pocketstation::runtime::audio::executor::PlanExecutionSummary` | struct | Reports the counters and terminal facts collected for plan execution. | `src/runtime/audio/executor.rs:37` |
+| `pocketstation::runtime::audio::executor::RealtimePlanExecutor` | struct | Executes realtime plan according to its compiled plan and cancellation contract. | `src/runtime/audio/executor.rs:54` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridge` | struct | Transfers generated audio across the bounded runtime boundary it owns. | `src/runtime/bridge/audio.rs:123` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeSpec` | struct | Configures generated audio bridge behavior at its owning API boundary. | `src/runtime/bridge/audio.rs:19` |
+| `pocketstation::runtime::audio::executor::ExecError` | enum | Classifies failures reported as exec error. | `src/runtime/audio/executor.rs:20` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError` | enum | Classifies failures reported as generated audio bridge start error. | `src/runtime/bridge/audio.rs:46` |
+| `pocketstation::runtime::audio::executor::ExecError::Node` | variant | Reported when the owning operation encounters node. | `src/runtime/audio/executor.rs:22` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidPoolSlots` | variant | Reported when the owning operation encounters invalid pool slots. | `src/runtime/bridge/audio.rs:52` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidSampleSpec` | variant | Reported when the owning operation encounters invalid sample spec. | `src/runtime/bridge/audio.rs:48` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::ThreadStart` | variant | Reported when the owning operation encounters thread start. | `src/runtime/bridge/audio.rs:54` |
 
-## Where you encounter it
+## Executable evidence
 
-- **Return generated audio** — Bridge asynchronous PCM output back into the bounded audio lane.
+Executable evidence selected for **Audio reentry** is limited to each test's recorded setup and assertions:
 
-## Behavior established by tests
-
-The following test bodies are evidence only for their recorded setup:
-
+- `given_full_audio_ingress_when_bridge_sends_then_rejection_is_counted_exactly` — given full audio ingress when bridge sends then rejection is counted exactly (`src/runtime/bridge/audio.rs:497`; `test-c49159871ef385421381`).
+- `given_operator_audio_when_bridged_then_owned_frame_enters_bounded_plan_source` — given operator audio when bridged then owned frame enters bounded plan source (`src/runtime/bridge/audio.rs:335`; `test-0ae60369d5962ff55b0f`).
+- `given_retained_audio_ingress_when_pool_is_exhausted_then_loss_is_counted_exactly` — given retained audio ingress when pool is exhausted then loss is counted exactly (`src/runtime/bridge/audio.rs:459`; `test-1664fa1aa12573253d70`).
 - `given_audio_output_into_text_input_when_compiled_then_media_mismatch` — given audio output into text input when compiled then media mismatch (`src/graph/compile/resolve.rs:1079`; `test-ef4bd9407893b33d7b06`).
 - `given_audio_signal_into_text_signal_when_compiled_then_signal_mismatch` — given audio signal into text signal when compiled then signal mismatch (`src/graph/compile/resolve.rs:1094`; `test-5516fcaedfc2241e34cc`).
 - `given_allocation_allowed_contract_when_valid_for_audio_callback_then_false` — given allocation allowed contract when valid for audio callback then false (`src/graph/partition.rs:168`; `test-b01b34cf6e6f3258c91d`).
@@ -52,13 +68,6 @@ The following test bodies are evidence only for their recorded setup:
 - `given_any_and_audio_when_negotiated_then_yields_audio` — given any and audio when negotiated then yields audio (`src/graph/ports.rs:496`; `test-b904fea87e8dcf2b473a`).
 - `given_any_audio_caps_when_compat_checked_then_reflexive_and_symmetric` — given any audio caps when compat checked then reflexive and symmetric (`src/graph/ports.rs:607`; `test-c1f0182c0924086f9d64`).
 - `given_audio_and_text_when_media_compat_checked_then_incompatible` — given audio and text when media compat checked then incompatible (`src/graph/ports.rs:483`; `test-49b93cf78810847cc5ff`).
-- `given_audio_pair_when_media_compat_checked_then_compatible` — given audio pair when media compat checked then compatible (`src/graph/ports.rs:476`; `test-363da2d0a58f6635dc58`).
-- `given_mismatched_rate_when_audio_compat_checked_then_incompatible` — given mismatched rate when audio compat checked then incompatible (`src/graph/ports.rs:467`; `test-8e8af7e321a63058b3c1`).
-- `given_realtime_audio_when_built_then_physical_caps_remain_negotiable` — given realtime audio when built then physical caps remain negotiable (`src/graph/ports.rs:520`; `test-31c4ce2508a308db7cb9`).
-
-## Boundaries
-
-The compiler inventory establishes names, kinds, visibility, and signatures. Tests establish only their exercised conditions. Where retryability, ordering, cancellation, physical qualification, or recovery is not declared, this page leaves it unspecified.
 
 ## Related documentation
 
@@ -73,8 +82,8 @@ The compiler inventory establishes names, kinds, visibility, and signatures. Tes
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Audio reentry** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/runtime/bridge/audio.rs:1-529` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Audio reentry**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

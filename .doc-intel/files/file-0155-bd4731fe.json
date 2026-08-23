@@ -3,7 +3,16 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/compile/plan.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "calls": [
     "EdgeMetricId",
     "any",
@@ -43,7 +52,16 @@
       "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/compile/plan.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "constructs": [],
   "content_hash": "eb96dd8c4c6cae67944a96d633d5887391382a240cedf537fb48d62c0e46fd78",
   "defaults": [],
@@ -343,8 +361,23 @@
       "symbol": null
     }
   ],
-  "examples_using": [],
-  "extended_by": [],
+  "example_coverage_status": "linked",
+  "examples_using": [
+    "example-3af8a91e442cd41f9135",
+    "example-98550080a5e290de64d1",
+    "example-a82d1d7eb55dad246a1e",
+    "example-d3384f55dfcf268d3ef1"
+  ],
+  "extended_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/compile/plan.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -360,13 +393,31 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "9c1b9d48a1c21adfd866a2e3fa6dc6125ecf6a2a",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/compile/plan.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "implements": [
     "EdgeBufferPlan",
     "MemoryPlan",
     "RuntimePlan"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/compile/plan.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "imports": [
     "crate::graph::partition::ExecutionPartition",
     "crate::graph::ports::{CopyPolicy, EdgeContract, MediaCaps}",
@@ -374,7 +425,11 @@
     "crate::graph::spec::{EdgeId, InputPortRef, NodeId, OutputPortRef}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "crate::graph::partition::ExecutionPartition",
+    "crate::graph::ports::{CopyPolicy, EdgeContract, MediaCaps}",
+    "crate::graph::signal::SignalSpec",
+    "crate::graph::spec::{EdgeId, InputPortRef, NodeId, OutputPortRef}"
   ],
   "invariants": [
     {
@@ -392,20 +447,41 @@
   "module": "pocketstation::graph::plan",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-3cba3102bace53b5f813"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "const:EDGE_RECEIVER_MAX_IN_FLIGHT_FRAMES",
+    "const:EDGE_RING_CAPACITY_FRAMES",
+    "const:FRAME_BYTES_MONO_48K",
+    "const:MAX_EDGE_RING_CAPACITY_FRAMES",
+    "enum:PlanError",
+    "fn:branch_copy_pool_bytes",
+    "fn:branch_copy_pool_capacity_frames",
+    "fn:edge_buffer",
+    "fn:metric_id",
+    "fn:node_count",
+    "fn:partition",
+    "fn:total_bytes",
+    "fn:typed_edge",
+    "struct:EdgeBufferPlan",
+    "struct:EdgeMetricId",
+    "struct:FanInGroup",
+    "struct:FanOutGroup",
+    "struct:MemoryPlan",
+    "struct:PartitionGroup",
+    "struct:RuntimePlan",
+    "struct:SourceOutputPlan",
+    "struct:TypedEdgePlan"
   ],
   "package": "pocketstation",
   "path": "src/graph/plan.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -544,8 +620,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "RuntimePlan \u2014 the lowered, execution-ready shape the planner emits from a verified `GraphIr`. It carries the execution partitions, per-edge buffer sizing, fan-out/fan-in groupings, and stable metric handles the runtime (Wave 6) consumes. No node is executed here; this is the plan, not the run."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::plan responsibilities, including Defines the public frame bytes mono 48 k value.; Defines the public edge ring capacity frames value.; A sequential edge receiver may retain the frame it just popped while it."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -583,30 +659,80 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/partition.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/graph/signal/spec.rs",
+    "REFERENCES:src/graph/spec.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "FRAME_BYTES_MONO_48K",
-    "EDGE_RING_CAPACITY_FRAMES",
-    "EDGE_RECEIVER_MAX_IN_FLIGHT_FRAMES",
-    "MAX_EDGE_RING_CAPACITY_FRAMES",
-    "PlanError",
-    "EdgeMetricId",
-    "EdgeBufferPlan",
-    "total_bytes",
-    "branch_copy_pool_capacity_frames",
-    "branch_copy_pool_bytes",
-    "MemoryPlan",
-    "edge_buffer",
-    "PartitionGroup",
-    "FanOutGroup",
-    "FanInGroup",
-    "TypedEdgePlan",
-    "SourceOutputPlan",
-    "RuntimePlan",
-    "node_count",
-    "partition",
-    "metric_id",
-    "typed_edge"
+    "pocketstation::graph::plan::FRAME_BYTES_MONO_48K: Defines the public frame bytes mono 48 k value.",
+    "pocketstation::graph::plan::EDGE_RING_CAPACITY_FRAMES: Defines the public edge ring capacity frames value.",
+    "pocketstation::graph::plan::EDGE_RECEIVER_MAX_IN_FLIGHT_FRAMES: A sequential edge receiver may retain the frame it just popped while it",
+    "pocketstation::graph::plan::MAX_EDGE_RING_CAPACITY_FRAMES: Sets the maximum supported edge ring capacity frames.",
+    "pocketstation::graph::plan::PlanError: Classifies failures reported as plan error.",
+    "PlanError::FanInOnSinglePort::node: Stores the node used by `FanInOnSinglePort`.",
+    "PlanError::FanInOnSinglePort::port: Stores the port used by `FanInOnSinglePort`.",
+    "pocketstation::graph::plan::PlanError::FanInOnSinglePort: Reported when the owning operation encounters fan in on single port.",
+    "PlanError::MoveExclusiveFanOut::node: Stores the node used by `MoveExclusiveFanOut`.",
+    "PlanError::MoveExclusiveFanOut::port: Stores the port used by `MoveExclusiveFanOut`.",
+    "pocketstation::graph::plan::PlanError::MoveExclusiveFanOut: Reported when the owning operation encounters move exclusive fan out.",
+    "PlanError::MissingEdgeContract::edge: Stores the edge used by `MissingEdgeContract`.",
+    "pocketstation::graph::plan::PlanError::MissingEdgeContract: Reported when the owning operation encounters missing edge contract.",
+    "PlanError::MissingOutputSignal::edge: Stores the edge used by `MissingOutputSignal`.",
+    "pocketstation::graph::plan::PlanError::MissingOutputSignal: Reported when the owning operation encounters missing output signal.",
+    "pocketstation::graph::plan::EdgeMetricId: Uniquely identifies edge metric within its PocketStation ownership scope.",
+    "pocketstation::graph::plan::EdgeBufferPlan: Records the compiled execution and resource plan for edge buffer.",
+    "EdgeBufferPlan::edge: Stores the edge used by `EdgeBufferPlan`.",
+    "EdgeBufferPlan::capacity_frames: Sets the capacity frames available to `EdgeBufferPlan`.",
+    "EdgeBufferPlan::bytes_per_frame: Stores the bytes per frame used by `EdgeBufferPlan`.",
+    "EdgeBufferPlan::copy_policy: Stores the copy policy used by `EdgeBufferPlan`.",
+    "total_bytes: Returns the total bytes held by `EdgeBufferPlan`.",
+    "branch_copy_pool_capacity_frames: Returns the branch copy pool capacity frames held by `EdgeBufferPlan`.",
+    "branch_copy_pool_bytes: Returns the branch copy pool bytes held by `EdgeBufferPlan`.",
+    "pocketstation::graph::plan::MemoryPlan: Records the compiled execution and resource plan for memory.",
+    "MemoryPlan::realtime_pool_bytes: Stores the realtime pool size for `MemoryPlan`, in bytes.",
+    "MemoryPlan::branch_copy_pool_bytes: Stores the branch copy pool size for `MemoryPlan`, in bytes.",
+    "MemoryPlan::edge_buffers: Stores the edge buffers used by `MemoryPlan`.",
+    "edge_buffer: Returns the edge buffer associated with `MemoryPlan`.",
+    "pocketstation::graph::plan::PartitionGroup: A group of nodes assigned to the same execution partition in a compiled plan.",
+    "PartitionGroup::execution: Stores the execution used by `PartitionGroup`.",
+    "PartitionGroup::nodes: Stores the nodes used by `PartitionGroup`.",
+    "pocketstation::graph::plan::FanOutGroup: Groups the compiled edges that share one output port as their origin.",
+    "FanOutGroup::from: Identifies the origin represented by `FanOutGroup`.",
+    "FanOutGroup::targets: Stores the targets used by `FanOutGroup`.",
+    "pocketstation::graph::plan::FanInGroup: Groups the compiled edges mixed into one input port.",
+    "FanInGroup::into: Stores the into used by `FanInGroup`.",
+    "FanInGroup::sources: Stores the sources used by `FanInGroup`.",
+    "pocketstation::graph::plan::TypedEdgePlan: Records the compiled execution and resource plan for typed edge.",
+    "TypedEdgePlan::edge: Stores the edge used by `TypedEdgePlan`.",
+    "TypedEdgePlan::from: Identifies the origin represented by `TypedEdgePlan`.",
+    "TypedEdgePlan::to: Identifies the destination represented by `TypedEdgePlan`.",
+    "TypedEdgePlan::signal: Stores the signal used by `TypedEdgePlan`.",
+    "TypedEdgePlan::media: Stores the media used by `TypedEdgePlan`.",
+    "TypedEdgePlan::contract: Stores the contract used by `TypedEdgePlan`.",
+    "TypedEdgePlan::capacity_signals: Sets the capacity signals available to `TypedEdgePlan`.",
+    "TypedEdgePlan::metric_id: Identifies the metric identifier recorded by `TypedEdgePlan`.",
+    "pocketstation::graph::plan::SourceOutputPlan: One connected output of a graph root that runtime preparation must feed.",
+    "SourceOutputPlan::from: Identifies the origin represented by `SourceOutputPlan`.",
+    "SourceOutputPlan::signal: Stores the signal used by `SourceOutputPlan`.",
+    "SourceOutputPlan::media: Stores the media used by `SourceOutputPlan`.",
+    "SourceOutputPlan::branch_edges: Stores the branch edges used by `SourceOutputPlan`.",
+    "pocketstation::graph::plan::RuntimePlan: Records the compiled execution and resource plan for runtime.",
+    "RuntimePlan::node_order: Stores the node order used by `RuntimePlan`.",
+    "RuntimePlan::partitions: Stores the partitions used by `RuntimePlan`.",
+    "RuntimePlan::memory_plan: Stores the memory plan used by `RuntimePlan`.",
+    "RuntimePlan::edge_metrics: Stores the edge metrics used by `RuntimePlan`.",
+    "RuntimePlan::fan_out: Stores the fan out used by `RuntimePlan`.",
+    "RuntimePlan::fan_in: Stores the fan in used by `RuntimePlan`.",
+    "RuntimePlan::typed_edges: Stores the typed edges used by `RuntimePlan`.",
+    "RuntimePlan::source_outputs: Stores the source outputs used by `RuntimePlan`.",
+    "RuntimePlan::edge_count: Stores the number of edge represented by `RuntimePlan`.",
+    "node_count: Returns the node count held by `RuntimePlan`.",
+    "partition: Returns the partition associated with `RuntimePlan`.",
+    "metric_id: Returns the metric identifier held by `RuntimePlan`.",
+    "typed_edge: Returns the typed edge associated with `RuntimePlan`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -616,7 +742,18 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-1c092b4376cfedf5e86d",
+    "test-1d8783b870fa351a933b",
+    "test-28b5b52333fa1672705d",
+    "test-39097f0adf1fe30dc87a",
+    "test-42437c4cb8f955f4df43",
+    "test-6615dcd3b3105010af0b",
+    "test-977e6826ff8e82a0a94c",
+    "test-ab3f88fbe7eaddfa92c8",
+    "test-d7ac5b66a6a72ddc6e51"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

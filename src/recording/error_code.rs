@@ -99,7 +99,7 @@ impl RecorderError {
     }
 }
 
-#[doc = "Returns the recording outcome error code associated with `error_code`."]
+#[doc = "Returns the recording outcome error code held by `error_code`."]
 pub const fn recording_outcome_error_code(
     outcome: &RecordingOutcome,
 ) -> Option<RecordingErrorCode> {

@@ -48,7 +48,9 @@
   ],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "IMPORTS:examples/whisper-transcribe/src/lib.rs"
+  ],
   "calls": [
     "Io",
     "Serialize",
@@ -95,7 +97,9 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "IMPORTS:examples/whisper-transcribe/src/lib.rs"
+  ],
   "constructs": [
     "Vec::new",
     "new",
@@ -391,8 +395,13 @@
       "symbol": null
     }
   ],
-  "examples_using": [],
-  "extended_by": [],
+  "example_coverage_status": "linked",
+  "examples_using": [
+    "example-98550080a5e290de64d1"
+  ],
+  "extended_by": [
+    "IMPORTS:examples/whisper-transcribe/src/lib.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -427,19 +436,25 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "71dbbeddcc2819b6f1a2d2a9025dc1b2253899fa",
-  "implemented_by": [],
+  "implemented_by": [
+    "IMPORTS:examples/whisper-transcribe/src/lib.rs"
+  ],
   "implements": [
     "WhisperProcessEvidence",
     "ActiveProcessEvidence"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "IMPORTS:examples/whisper-transcribe/src/lib.rs"
+  ],
   "imports": [
     "serde::Serialize",
     "std::path::{Path, PathBuf}",
     "std::time::{SystemTime, UNIX_EPOCH}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "serde::Serialize",
+    "std::path::{Path, PathBuf}",
+    "std::time::{SystemTime, UNIX_EPOCH}"
   ],
   "invariants": [
     {
@@ -453,20 +468,41 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification or behavior outside the example's prerequisites."
   ],
   "observed_patterns": [
     "pattern-13d69f7c5fd945648312"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(error) => Err(error),",
+    "Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(None),",
+    "enum:ProcessEvidenceError",
+    "enum:ProcessOutcome",
+    "fn:begin",
+    "fn:complete",
+    "fn:input_wav_path",
+    "fn:mark_kill_requested",
+    "fn:mark_wait_observed",
+    "fn:new",
+    "fn:output_prefix",
+    "fn:set_argv",
+    "fn:set_pid",
+    "fn:stderr_path",
+    "fn:stdout_path",
+    "fn:transcript_path",
+    "return Err(ProcessEvidenceError::InvalidCaseId);",
+    "struct:ActiveProcessEvidence",
+    "struct:WhisperProcessEvidence",
+    "struct:WhisperProcessReceipt"
   ],
   "package": "pocketstation",
   "path": "examples/whisper-transcribe/src/process_evidence.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -606,8 +642,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "DECLARED",
+    "text": "Demonstrates the repository-owned process evidence workflow as compilable example code."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -630,30 +666,31 @@
     "docs/reference/lifecycle-evidence.md",
     "docs/troubleshooting/transcription-evidence.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "RECEIPT_SCHEMA_VERSION",
-    "CONTENT_HASH_ALGORITHM",
-    "WhisperProcessEvidence",
-    "new",
-    "begin",
-    "ActiveProcessEvidence",
-    "input_wav_path",
-    "stdout_path",
-    "stderr_path",
-    "transcript_path",
-    "output_prefix",
-    "set_pid",
-    "set_argv",
-    "mark_kill_requested",
-    "mark_wait_observed",
-    "complete",
-    "ProcessOutcome",
-    "WhisperProcessReceipt",
-    "ProcessEvidenceError",
-    "hash_file_if_present",
-    "content_hash",
-    "unix_timestamp_ns"
+    "RECEIPT_SCHEMA_VERSION (const)",
+    "CONTENT_HASH_ALGORITHM (const)",
+    "WhisperProcessEvidence (struct)",
+    "new (fn)",
+    "begin (fn)",
+    "ActiveProcessEvidence (struct)",
+    "input_wav_path (fn)",
+    "stdout_path (fn)",
+    "stderr_path (fn)",
+    "transcript_path (fn)",
+    "output_prefix (fn)",
+    "set_pid (fn)",
+    "set_argv (fn)",
+    "mark_kill_requested (fn)",
+    "mark_wait_observed (fn)",
+    "complete (fn)",
+    "ProcessOutcome (enum)",
+    "WhisperProcessReceipt (struct)",
+    "ProcessEvidenceError (enum)",
+    "hash_file_if_present (fn)",
+    "content_hash (fn)",
+    "unix_timestamp_ns (fn)"
   ],
   "retry_behavior": [],
   "serialization": [
@@ -750,6 +787,7 @@
       "text": "match tokio::fs::read(path).await {"
     }
   ],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

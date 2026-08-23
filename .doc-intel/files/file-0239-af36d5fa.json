@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "calls": [
     "allow",
     "any",
@@ -98,7 +101,10 @@
       "text": "ClockDomain, Codec, ConfigError, CopyPolicy, DeliverySemantics, EdgeContract,"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "constructs": [],
   "content_hash": "84116c6c2e208f3fe44a09b01fb373ff69876611b1b4be7e5eeca2c2b64e216c",
   "defaults": [
@@ -209,8 +215,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -226,9 +236,15 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "afe7742159b6f9bb2e5eac059eccafbb3328c409",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "imports": [
     "compile::{CompiledSession, SessionCompileError, SessionCompiler}",
     "crate::endpoint::{ PolledAudioBatchLease, PolledAudioEndpoint, PolledAudioEndpointConfig, PolledAudioEndpointConfigError, PolledAudioFrame, PolledAudioObservations, PolledAudioPollError, PolledAudioReceipt, }",
@@ -279,7 +295,55 @@
     "prepare::{prepare_session_runtime, PreparedSession, SessionPrepareError}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "DEFAULT_MULTISTEM_RECORDING_GROUP_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID,",
+    "compile::{CompiledSession, SessionCompileError, SessionCompiler}",
+    "crate::endpoint::{ PolledAudioBatchLease, PolledAudioEndpoint, PolledAudioEndpointConfig, PolledAudioEndpointConfigError, PolledAudioFrame, PolledAudioObservations, PolledAudioPollError, PolledAudioReceipt, }",
+    "crate::frame::ConnectorId",
+    "crate::frame::{ AudioBufferPool, AudioFrame, AudioFrameBuildError, ClockDomainId, FrameLineage, FrameLineageBuildError, SourceId, StreamId, }",
+    "crate::frame::{EndpointId, RouteId, SampleFormat, SampleSpec, SessionId, StemId}",
+    "crate::graph::NodeRegistrationError",
+    "crate::graph::{ AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError, AudioCaps, BackpressurePolicy, BinaryFormat, ChannelLayout, ClockDomain, Codec, ConfigError, CopyPolicy, DeliverySemantics, EdgeContract, EdgeObservabilityLevel, EventFormat, ExecutionPartition, LossPolicy, MediaCaps, MediaKind, Multiplicity, NodeDefinition, NodeDescriptor, NodeError, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortPrepareContext, PortSpec, PrepareContext, SafetyContract, SchemaRef, SemanticRole, SignalClass, SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker, SignalDerivation, SignalDerivationError, SignalEnvelope, SignalEnvelopeError, SignalId, SignalLineage, SignalPayload, SignalSpec, SignalSpecError, SignalTiming, TextFormat, }",
+    "crate::graph::{NodeConfig as OperatorConfiguration, NodeTypeId}",
+    "declaration::{ ConnectionSpec, ConnectionTarget, EndpointSpec, OperatorInstanceId, SessionSpec, SourceInstanceId, SourceOutputSpec, StreamOrigin, }",
+    "declaration::{ DerivedStreamHandle, OperatorInputHandle, OperatorInstanceHandle, SourceInstanceHandle, }",
+    "declaration::{ EndpointConfiguration, EndpointDescriptor, OperatorId, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, }",
+    "declaration::{ApplicationSelector, DeviceSelector, Source}",
+    "declaration::{DeviceId, ProcessId}",
+    "declaration::{EndpointHandle, Operator, Session, SourceOutputHandle, StemHandle}",
+    "declaration::{OperatorInstanceSpec, StemSpec}",
+    "declaration::{OperatorSpec, SessionSpecVersion, SESSION_SPEC_VERSION}",
+    "declaration::{Stream, StreamSignal, TypedOperator, TypedStreamError}",
+    "error::SessionError",
+    "error_code::{ polled_audio_poll_error_code, session_declaration_error_code, session_start_failure_code, PolledAudioPollErrorCode, SessionDeclarationErrorCode, SessionStartErrorCode, }",
+    "error_code::{ session_stop_failure_codes, SessionRuntimeErrorCode, SessionStopCode, SessionStopFailureCode, }",
+    "extensions::SessionGraphRegistrationError",
+    "extensions::{ DEFAULT_MULTISTEM_RECORDING_GROUP_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, RECORDING_GROUP_CONFIGURATION_KEY, }",
+    "extensions::{ PreparedSourceRuntime, SourceConfiguration, SourceOutputBranchSpec, SourceOutputIdentity, SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceRuntimeObservations, SourceSessionContext, SourceTypeId, }",
+    "extensions::{ SourceCancellation, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourceOutputReceiver, SourcePrepareContext, SourceRegistrationError, SourceRuntimeError, }",
+    "extensions::{ register_session_graph_nodes, APPLICATION_SOURCE_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, }",
+    "extensions::{ session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations, SessionRecordingState, SessionRecordingStemOutcome, }",
+    "extensions::{SessionRecordingOutcome, SessionRecordingReceipt}",
+    "lifecycle::SessionTraceRecorderHandle",
+    "lifecycle::{ CaptureBackendSet, RunningSession, SessionStartCancellation, SessionStartError, SessionStartFailure, SessionStartOptions, SessionStopOutcome, }",
+    "lifecycle::{ EndpointExtensionRegistrationError, SessionEngine, SessionEngineBuildError, SessionEngineBuilder, SessionEngineStartError, }",
+    "lifecycle::{ EndpointObservationStage, SessionAudioReentryMetrics, SessionDerivedRouteMetrics, SessionExternalSourceMetrics, SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteMetrics, SessionSidecarMetrics, SessionSourceMetrics, }",
+    "lifecycle::{ NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuildError, SessionEngineHostBuilder, }",
+    "lifecycle::{ SessionComponentId, SessionControlFailure, SessionEndpointFailure, SessionEvent, SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionFinalizationFailure, SessionFinalizationStage, SessionLifecycleState, SessionRollbackFailure, SessionRollbackStage, SessionSourceFailure, SessionTerminalOutcome, SessionTerminalState, }",
+    "lifecycle::{ SessionEventQueueObservations, SessionRouteDropObservations, SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit, SessionRouteObservationInterval, }",
+    "lifecycle::{ SessionTrace, SessionTraceRecorder, SessionTraceRecorderFinishError, SessionTraceRecorderOutcome, SessionTraceRecorderStartError, SessionTraceValidation, SessionTraceValidationError, }",
+    "lifecycle::{SessionTraceRecord, SessionTraceRecordKind, SessionTraceTerminal}",
+    "lifecycle::{start_prepared_session, start_prepared_session_cancellable}",
+    "module:compile",
+    "module:declaration",
+    "module:error",
+    "module:error_code",
+    "module:extensions",
+    "module:lifecycle",
+    "module:prepare",
+    "prepare::PreparedSourceMapping",
+    "prepare::PreparedWorkerMapping",
+    "prepare::{prepare_session_runtime, PreparedSession, SessionPrepareError}"
   ],
   "invariants": [],
   "language": "Rust",
@@ -288,21 +352,26 @@
   "module": "pocketstation::session",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-74de2f97f45ca110ff2c",
-    "pattern-21f70c88ad1965778a78"
+    "pattern-74de2f97f45ca110ff2c"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "mod:declaration",
+    "mod:error",
+    "mod:error_code",
+    "mod:extensions",
+    "mod:lifecycle"
   ],
   "package": "pocketstation",
   "path": "src/session/mod.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -353,7 +422,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session`."
+    "text": "Implements pocketstation::session responsibilities, including session."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -434,15 +503,31 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "CONTAINS:src/session/compile/mod.rs",
+    "CONTAINS:src/session/declaration/mod.rs",
+    "CONTAINS:src/session/error.rs",
+    "CONTAINS:src/session/error_code.rs",
+    "CONTAINS:src/session/extensions/mod.rs",
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "CONTAINS:src/session/prepare/mod.rs",
+    "IMPORTS:src/session/compile/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/error.rs",
+    "IMPORTS:src/session/error_code.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/prepare/mod.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "compile",
-    "declaration",
-    "error",
-    "error_code",
-    "extensions",
-    "lifecycle",
-    "prepare"
+    "compile (mod)",
+    "declaration (mod)",
+    "error (mod)",
+    "error_code (mod)",
+    "extensions (mod)",
+    "lifecycle (mod)",
+    "prepare (mod)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -469,6 +554,7 @@
   ],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

@@ -16,7 +16,9 @@
   ],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "IMPORTS:src/session/compile/mod.rs"
+  ],
   "calls": [
     "ApplicationSelector::name",
     "ApplicationSelector::process_instance",
@@ -155,7 +157,9 @@
       "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "IMPORTS:src/session/compile/mod.rs"
+  ],
   "constructs": [
     "Arc::new",
     "CompileOnlyAsyncFactory::new",
@@ -568,8 +572,11 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "IMPORTS:src/session/compile/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -583,14 +590,18 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "1ca3fb9bb2d1dccc0644b8b01162934b65c6996b",
-  "implemented_by": [],
+  "implemented_by": [
+    "IMPORTS:src/session/compile/mod.rs"
+  ],
   "implements": [
     "CompileOnlyAsyncFactory",
     "AsyncOperatorFactory for CompileOnlyAsyncFactory",
     "NodeDefinition for CompileOnlyTextEndpointDefinition",
     "EndpointDriverFactory for CompileOnlyEndpointFactory"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "IMPORTS:src/session/compile/mod.rs"
+  ],
   "imports": [
     "crate::endpoint::{ EndpointDriverFactory, EndpointDriverRegistry, EndpointFailure, EndpointFailureStage, EndpointPortInput, PreparedEndpointDriver, }",
     "crate::frame::{SampleFormat, SampleSpec}",
@@ -601,7 +612,16 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "ChannelLayout, ConfigError, CopyPolicy, EdgeObservabilityLevel, ExecutionPartition, LossPolicy,",
+    "crate::endpoint::{ EndpointDriverFactory, EndpointDriverRegistry, EndpointFailure, EndpointFailureStage, EndpointPortInput, PreparedEndpointDriver, }",
+    "crate::frame::{SampleFormat, SampleSpec}",
+    "crate::graph::compile::CompileError",
+    "crate::graph::{ AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, BackpressurePolicy, ChannelLayout, ConfigError, CopyPolicy, EdgeObservabilityLevel, ExecutionPartition, LossPolicy, MediaCaps, Multiplicity, NodeDefinition, NodeDescriptor, NodeError, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, SafetyContract, SemanticRole, SignalSpec, TextFormat, }",
+    "crate::session::{ register_session_graph_nodes, ApplicationSelector, EndpointConfiguration, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, Source, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }",
+    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
+    "fn validate_config(&self, _configuration: &NodeConfig) -> Result<(), ConfigError> {",
+    "std::sync::Arc",
+    "super::*"
   ],
   "invariants": [
     {
@@ -672,20 +692,28 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-0f5d415b7192b8e10569"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(EndpointFailure::new(",
+    "Err(NodeError::Prepare(",
+    "Err(SessionCompileError::GraphCompile(",
+    "Err(SessionCompileError::MissingRequiredOperatorInput { port_name, .. })",
+    "Err(SessionCompileError::OperatorNodeTypeMismatch { .. })",
+    "Err(SessionCompileError::UnknownAsyncOperator { .. })",
+    "Err(SessionCompileError::UnknownOperator { .. })"
   ],
   "package": "pocketstation",
   "path": "src/session/compile/tests.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -945,7 +973,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::compile::tests`."
+    "text": "Implements pocketstation::session::compile::tests responsibilities, including the src/session/compile/tests boundary."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1005,6 +1033,7 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 1,
@@ -1064,48 +1093,36 @@
     }
   ],
   "responsibilities": [
-    "TEST_CONNECTOR_OPERATOR_ID",
-    "TEST_ASYNC_OPERATOR_ID",
-    "TEST_ASYNC_NODE_TYPE_ID",
-    "TEST_TRANSFORM_OPERATOR_ID",
-    "TEST_TRANSFORM_NODE_TYPE_ID",
-    "TEST_NAMED_OPERATOR_ID",
-    "TEST_NAMED_NODE_TYPE_ID",
-    "TEST_TEXT_ENDPOINT_OPERATOR_ID",
-    "TEST_TEXT_ENDPOINT_NODE_TYPE_ID",
-    "TEST_NONTERMINAL_ROLE",
-    "TEST_TERMINAL_ROLE",
-    "CompileOnlyEndpointFactory",
-    "CompileOnlyAsyncFactory",
-    "new",
-    "text_transform",
-    "named_composition",
-    "manifest",
-    "validate_config",
-    "create",
-    "CompileOnlyTextEndpointDefinition",
-    "descriptor",
-    "validate_config",
-    "prepare",
-    "endpoint_registry",
-    "registries",
-    "derived_registries",
-    "derived_spec",
-    "given_one_named_operator_instance_when_compiled_then_all_named_connections_share_one_node",
-    "given_required_named_input_missing_when_compiled_then_failure_precedes_graph_runtime",
-    "two_destination_derived_spec",
-    "product_spec",
-    "given_product_spec_when_compiled_then_six_independent_edges_are_planned",
-    "given_registered_operator_when_compiled_then_manifest_types_and_edge_policies_are_authority",
-    "given_derived_stream_chain_when_compiled_then_operator_output_feeds_next_named_input",
-    "given_unregistered_async_operator_when_compiled_then_typed_error_is_returned",
-    "given_compiled_derived_route_when_runtime_prepared_then_compiled_topology_is_preserved",
-    "given_two_derived_destinations_when_prepared_then_independent_branch_plans_are_preserved",
-    "given_text_operator_sent_to_audio_endpoint_when_compiled_then_signal_mismatch_is_typed",
-    "given_unregistered_operator_when_compiled_then_typed_error_is_returned",
-    "given_operator_node_mismatch_when_compiled_then_typed_error_is_returned",
-    "given_extension_key_matching_old_metadata_when_compiled_then_value_remains_opaque",
-    "given_exact_process_instance_when_lowered_then_typed_declaration_remains_authoritative"
+    "TEST_CONNECTOR_OPERATOR_ID (const)",
+    "TEST_ASYNC_OPERATOR_ID (const)",
+    "TEST_ASYNC_NODE_TYPE_ID (const)",
+    "TEST_TRANSFORM_OPERATOR_ID (const)",
+    "TEST_TRANSFORM_NODE_TYPE_ID (const)",
+    "TEST_NAMED_OPERATOR_ID (const)",
+    "TEST_NAMED_NODE_TYPE_ID (const)",
+    "TEST_TEXT_ENDPOINT_OPERATOR_ID (const)",
+    "TEST_TEXT_ENDPOINT_NODE_TYPE_ID (const)",
+    "TEST_NONTERMINAL_ROLE (const)",
+    "TEST_TERMINAL_ROLE (const)",
+    "CompileOnlyEndpointFactory (struct)",
+    "CompileOnlyAsyncFactory (struct)",
+    "new (fn)",
+    "text_transform (fn)",
+    "named_composition (fn)",
+    "manifest (fn)",
+    "validate_config (fn)",
+    "create (fn)",
+    "CompileOnlyTextEndpointDefinition (struct)",
+    "descriptor (fn)",
+    "validate_config (fn)",
+    "prepare (fn)",
+    "endpoint_registry (fn)",
+    "registries (fn)",
+    "derived_registries (fn)",
+    "derived_spec (fn)",
+    "given_one_named_operator_instance_when_compiled_then_all_named_connections_share_one_node (fn)",
+    "given_required_named_input_missing_when_compiled_then_failure_precedes_graph_runtime (fn)",
+    "two_destination_derived_spec (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1158,7 +1175,22 @@
       "text": ".expect(\"async operator registration\");"
     }
   ],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-31068955505393ed5dce",
+    "test-39097f0adf1fe30dc87a",
+    "test-3c9cfc84af12d388d72a",
+    "test-3d5b3ae5dcbc94861814",
+    "test-43d80b8d3e727ac91d90",
+    "test-99e881c59d26f6126f74",
+    "test-c5a9415d19c5469b6f22",
+    "test-d6762b694308bbfc1e5c",
+    "test-d89d05ca987f1090f073",
+    "test-e802cd282ad498db0074",
+    "test-e9a24a392741b4dbe6e7",
+    "test-f27dda5da849d6322dd8",
+    "test-f38493cc0593f603aece"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

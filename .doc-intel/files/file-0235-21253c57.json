@@ -13,7 +13,17 @@
       "text": "//! no runtime orchestration or capture callback behavior."
     }
   ],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/error_code.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "calls": [
     "Box::new",
     "Source::Application",
@@ -60,7 +70,17 @@
   ],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/error_code.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "constructs": [
     "Box::new"
   ],
@@ -442,8 +462,19 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/error_code.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -457,7 +488,17 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "8659db75d34f6d19e2c906bf223fddddd5ff26a5",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/error_code.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "implements": [
     "Default for SessionStartOptions",
     "SessionStartCancellation",
@@ -467,7 +508,17 @@
     "std::error::Error for SessionStartFailure",
     "SessionStopOutcome"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/error_code.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "imports": [
     "crate::capture::{CallbackCaptureBackend, CaptureError}",
     "crate::endpoint::{EndpointPrepareError, EndpointStartFailure}",
@@ -478,7 +529,13 @@
     "std::sync::atomic::{AtomicBool, Ordering}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::capture::{CallbackCaptureBackend, CaptureError}",
+    "crate::endpoint::{EndpointPrepareError, EndpointStartFailure}",
+    "crate::frame::{EndpointId, StemId}",
+    "crate::runtime::PlanRunnerError",
+    "crate::session::{ OperatorInstanceId, PreparedSession, SessionEventReceiver, SessionRollbackFailure, Source, }",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, Ordering}"
   ],
   "invariants": [
     {
@@ -512,18 +569,46 @@
   "module": "pocketstation::session::lifecycle::start_contract",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(SessionStartError::UnsupportedSourceTopology)",
+    "Some(reason) => Err(SessionStartError::InvalidOptions { reason }),",
+    "enum:SessionStartError",
+    "fn:capture_finalization_failures_total",
+    "fn:endpoint_finalization_failures_total",
+    "fn:error",
+    "fn:input",
+    "fn:into_error",
+    "fn:is_requested",
+    "fn:is_success",
+    "fn:lineage_failures_total",
+    "fn:operator_finalization_failures_total",
+    "fn:request",
+    "fn:rollback_failures",
+    "fn:rollback_failures_total",
+    "fn:runtime_events_total",
+    "fn:runtime_failures_total",
+    "fn:runtime_worker_panicked",
+    "fn:source_send_rejections_total",
+    "fn:take_event_receiver",
+    "fn:validate_source_topology",
+    "fn:validate_start_options",
+    "struct:CaptureBackendSet",
+    "struct:SessionStartCancellation",
+    "struct:SessionStartFailure",
+    "struct:SessionStartOptions",
+    "struct:SessionStopOutcome"
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/start_contract.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -699,8 +784,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Public contract for starting and stopping a prepared Session.  These types describe lifecycle input and failure. They deliberately contain no runtime orchestration or capture callback behavior."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::lifecycle::start contract responsibilities, including Supplies the application and microphone capture backends used while preparing a Session.; Stores the application used by `CaptureBackendSet`.; Stores the microphone used by `CaptureBackendSet`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -760,6 +845,17 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/capture/authorization.rs",
+    "REFERENCES:src/capture/capture_owner.rs",
+    "REFERENCES:src/endpoint/registry.rs",
+    "REFERENCES:src/endpoint/runtime.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/runtime/audio/runner.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/lifecycle/events.rs",
+    "REFERENCES:src/session/prepare/prepared.rs"
+  ],
   "resource_ownership": [
     {
       "line": 7,
@@ -779,34 +875,88 @@
     }
   ],
   "responsibilities": [
-    "CaptureBackendSet",
-    "SessionStartOptions",
-    "default",
-    "validate_start_options",
-    "validate_source_topology",
-    "SessionStartCancellation",
-    "request",
-    "is_requested",
-    "SessionStartError",
-    "rollback_failures_total",
-    "SessionStartFailure",
-    "input",
-    "error",
-    "rollback_failures",
-    "take_event_receiver",
-    "into_error",
-    "fmt",
-    "source",
-    "SessionStopOutcome",
-    "is_success",
-    "capture_finalization_failures_total",
-    "endpoint_finalization_failures_total",
-    "operator_finalization_failures_total",
-    "runtime_worker_panicked",
-    "runtime_failures_total",
-    "lineage_failures_total",
-    "source_send_rejections_total",
-    "runtime_events_total"
+    "pocketstation::session::lifecycle::start_contract::CaptureBackendSet: Supplies the application and microphone capture backends used while preparing a Session.",
+    "CaptureBackendSet::application: Stores the application used by `CaptureBackendSet`.",
+    "CaptureBackendSet::microphone: Stores the microphone used by `CaptureBackendSet`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartOptions: Configures session start behavior at its owning API boundary.",
+    "SessionStartOptions::capture_frame_capacity_frames: Sets the capture frame capacity frames available to `SessionStartOptions`.",
+    "SessionStartOptions::capture_runtime_event_capacity_events: Sets the capture runtime event capacity events available to `SessionStartOptions`.",
+    "SessionStartOptions::runtime_work_budget_frames: Stores the runtime work budget frames used by `SessionStartOptions`.",
+    "SessionStartOptions::runtime_idle_poll_ms: Stores the runtime idle poll value for `SessionStartOptions`, in milliseconds.",
+    "SessionStartOptions::runtime_ready_timeout_ms: Stores the runtime ready timeout value for `SessionStartOptions`, in milliseconds.",
+    "SessionStartOptions::session_event_capacity_events: Sets the session event capacity events available to `SessionStartOptions`.",
+    "default: Returns the default `SessionStartOptions` value.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartCancellation: Thread-safe cancellation request for a Session that has not reached",
+    "request: Requests the state transition represented by `SessionStartCancellation`.",
+    "is_requested: Returns whether requested applies to `SessionStartCancellation`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError: Classifies failures reported as session start error.",
+    "SessionStartError::InvalidOptions::reason: Carries the reason reported by `InvalidOptions`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError::InvalidOptions: Reported when the owning operation encounters invalid options.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError::UnsupportedSourceTopology: Reported when the owning operation encounters unsupported source topology.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError::ExternalSourcePrepare: Reported when the owning operation encounters external source prepare.",
+    "SessionStartError::ExternalSourcePrepare::message: Carries the diagnostic message reported by `ExternalSourcePrepare`.",
+    "SessionStartError::ExternalSourcePrepare::rollback_failures_total: Counts the total number of rollback failures observed by `ExternalSourcePrepare`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError::ExternalAudioBridge: Reported when the owning operation encounters external audio bridge.",
+    "SessionStartError::ExternalAudioBridge::message: Carries the diagnostic message reported by `ExternalAudioBridge`.",
+    "SessionStartError::ExternalAudioBridge::rollback_failures_total: Counts the total number of rollback failures observed by `ExternalAudioBridge`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError::GeneratedAudioBridge: Reported when the owning operation encounters generated audio bridge.",
+    "SessionStartError::GeneratedAudioBridge::message: Carries the diagnostic message reported by `GeneratedAudioBridge`.",
+    "SessionStartError::GeneratedAudioBridge::rollback_failures_total: Counts the total number of rollback failures observed by `GeneratedAudioBridge`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError::ExternalSourceStart: Reported when the owning operation encounters external source start.",
+    "SessionStartError::ExternalSourceStart::message: Carries the diagnostic message reported by `ExternalSourceStart`.",
+    "SessionStartError::ExternalSourceStart::rollback_failures_total: Counts the total number of rollback failures observed by `ExternalSourceStart`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError::OperatorRuntimeHost: Reported when the owning operation encounters operator runtime host.",
+    "SessionStartError::OperatorRuntimeHost::message: Carries the diagnostic message reported by `OperatorRuntimeHost`.",
+    "SessionStartError::OperatorRuntimeHost::rollback_failures_total: Counts the total number of rollback failures observed by `OperatorRuntimeHost`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError::OperatorPrepare: Reported when the owning operation encounters operator prepare.",
+    "SessionStartError::OperatorPrepare::operator_instance_id: Identifies the operator instance identifier recorded by `OperatorPrepare`.",
+    "SessionStartError::OperatorPrepare::message: Carries the diagnostic message reported by `OperatorPrepare`.",
+    "SessionStartError::OperatorPrepare::rollback_failures_total: Counts the total number of rollback failures observed by `OperatorPrepare`.",
+    "SessionStartError::MissingEndpointDeclaration::endpoint_id: Identifies the endpoint identifier recorded by `MissingEndpointDeclaration`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError::MissingEndpointDeclaration: Reported when the owning operation encounters missing endpoint declaration.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError::EndpointPrepare: Reported when the owning operation encounters endpoint prepare.",
+    "SessionStartError::EndpointPrepare::source: Carries the source selected for `EndpointPrepare`.",
+    "SessionStartError::EndpointPrepare::rollback_failures_total: Counts the total number of rollback failures observed by `EndpointPrepare`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError::CapturePrepare: Reported when the owning operation encounters capture prepare.",
+    "SessionStartError::CapturePrepare::stem_id: Identifies the stem identifier recorded by `CapturePrepare`.",
+    "SessionStartError::CapturePrepare::source: Carries the source selected for `CapturePrepare`.",
+    "SessionStartError::CapturePrepare::rollback_failures_total: Counts the total number of rollback failures observed by `CapturePrepare`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError::CaptureOpen: Reported when the owning operation encounters capture open.",
+    "SessionStartError::CaptureOpen::stem_id: Identifies the stem identifier recorded by `CaptureOpen`.",
+    "SessionStartError::CaptureOpen::source: Carries the source selected for `CaptureOpen`.",
+    "SessionStartError::CaptureOpen::rollback_failures_total: Counts the total number of rollback failures observed by `CaptureOpen`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError::EndpointStart: Reported when the owning operation encounters endpoint start.",
+    "SessionStartError::EndpointStart::source: Carries the source selected for `EndpointStart`.",
+    "SessionStartError::EndpointStart::rollback_failures_total: Counts the total number of rollback failures observed by `EndpointStart`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError::RuntimeRunner: Reported when the owning operation encounters runtime runner.",
+    "SessionStartError::RuntimeRunner::source: Carries the source selected for `RuntimeRunner`.",
+    "SessionStartError::RuntimeRunner::rollback_failures_total: Counts the total number of rollback failures observed by `RuntimeRunner`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError::RuntimeWorkerSpawn: Reported when the owning operation encounters runtime worker spawn.",
+    "SessionStartError::RuntimeWorkerSpawn::message: Carries the diagnostic message reported by `RuntimeWorkerSpawn`.",
+    "SessionStartError::RuntimeWorkerSpawn::rollback_failures_total: Counts the total number of rollback failures observed by `RuntimeWorkerSpawn`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError::RuntimeWorkerReady: Reported when the owning operation encounters runtime worker ready.",
+    "SessionStartError::RuntimeWorkerReady::message: Carries the diagnostic message reported by `RuntimeWorkerReady`.",
+    "SessionStartError::RuntimeWorkerReady::rollback_failures_total: Counts the total number of rollback failures observed by `RuntimeWorkerReady`.",
+    "SessionStartError::Cancelled::rollback_failures_total: Counts the total number of rollback failures observed by `Cancelled`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartError::Cancelled: Indicates that the operation was cancelled.",
+    "rollback_failures_total: Returns the rollback failures total held by `SessionStartError`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStartFailure: Reports a session start failure.",
+    "error: Returns the error associated with `SessionStartFailure`.",
+    "rollback_failures: Returns the rollback failures associated with `SessionStartFailure`.",
+    "take_event_receiver: Takes event receiver for `SessionStartFailure`.",
+    "into_error: Converts `SessionStartFailure` into error.",
+    "fmt: Formats `SessionStartFailure` with the requested formatter.",
+    "source: Returns the source held by `SessionStartFailure`.",
+    "pocketstation::session::lifecycle::start_contract::SessionStopOutcome: Reports the structured session stop outcome.",
+    "is_success: Returns whether success applies to `SessionStopOutcome`.",
+    "capture_finalization_failures_total: Returns the capture finalization failures total held by `SessionStopOutcome`.",
+    "endpoint_finalization_failures_total: Returns the endpoint finalization failures total held by `SessionStopOutcome`.",
+    "operator_finalization_failures_total: Returns the operator finalization failures total held by `SessionStopOutcome`.",
+    "runtime_worker_panicked: Returns whether runtime worker panicked is true for `SessionStopOutcome`.",
+    "runtime_failures_total: Returns the runtime failures total held by `SessionStopOutcome`.",
+    "lineage_failures_total: Returns the lineage failures total held by `SessionStopOutcome`.",
+    "source_send_rejections_total: Returns the source send rejections total held by `SessionStopOutcome`.",
+    "runtime_events_total: Returns the runtime events total held by `SessionStopOutcome`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -846,6 +996,7 @@
       "text": "#[error(\"async operator runtime host could not start: {message}\")]"
     }
   ],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [
     {

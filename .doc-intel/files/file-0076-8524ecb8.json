@@ -20,7 +20,19 @@
       "text": "/// control-thread operation, never an audio-callback or realtime operation."
     }
   ],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/capture/platform/macos/session_backend.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/metric_bindings.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs"
+  ],
   "calls": [
     "Arc::clone",
     "Arc::new",
@@ -126,7 +138,19 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/capture/platform/macos/session_backend.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/metric_bindings.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AtomicBool::new",
@@ -694,8 +718,21 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/capture/platform/macos/session_backend.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/metric_bindings.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing",
@@ -713,7 +750,19 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "175dc709c0957e432b0912a1694e042990c38b09",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/capture/platform/macos/session_backend.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/metric_bindings.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs"
+  ],
   "implements": [
     "CaptureLineageSeed",
     "PreparedCapture",
@@ -724,7 +773,19 @@
     "ActiveCaptureBackend for TestActiveBackend",
     "Drop for TestActiveBackend"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/capture/platform/macos/session_backend.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/metric_bindings.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs"
+  ],
   "imports": [
     "crate::capture::frame_stream::{ captured_frame_stream_with_start_gate, CaptureDeliveryStartGate, }",
     "crate::capture::{ CaptureObservationCounters, CaptureRuntimeFailure, CaptureRuntimeFailureClass, SourceGeneration, SourceRecoveryRequirement, SourceRuntimeEvent, StableSourceId, }",
@@ -737,7 +798,18 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(any(test, feature = \"internal-testing\", feature = \"native-capture\"))]",
+    "#[cfg(test)]",
+    "crate::capture::frame_stream::{ captured_frame_stream_with_start_gate, CaptureDeliveryStartGate, }",
+    "crate::capture::{ CaptureObservationCounters, CaptureRuntimeFailure, CaptureRuntimeFailureClass, SourceGeneration, SourceRecoveryRequirement, SourceRuntimeEvent, StableSourceId, }",
+    "crate::capture::{ source_runtime_event_channel, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CapturedFrameObservationHandle, CapturedFrameSender, CapturedFrameStream, CapturedFrameStreamStats, PermissionEpoch, SourceGeneration, SourceRuntimeEvent, SourceRuntimeEventObservationHandle, SourceRuntimeEventObservations, SourceRuntimeEventReceive, SourceRuntimeEventReceiver, SourceRuntimeEventSender, }",
+    "crate::frame::{ ClockDomainId, FrameLineage, FrameLineageError, LineagedAudioFrame, SessionId, SourceId, StemId, }",
+    "crate::frame::{AudioBufferPool, AudioFrame, SessionId, SourceId, StemId, StreamId}",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, Ordering}",
+    "std::sync::atomic::{AtomicU32, AtomicU64, Ordering}",
+    "super::*"
   ],
   "invariants": [
     {
@@ -851,22 +923,53 @@
   "module": "pocketstation::capture::capture_owner",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-ef3e63284a3bfd552cb9",
-    "pattern-cdf053469bf842fa56fb",
-    "pattern-759bee11ea894801e9d4"
+    "pattern-4e5f35f5ec994391399f",
+    "pattern-759bee11ea894801e9d4",
+    "pattern-cdf053469bf842fa56fb"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(CaptureError::CaptureWorkerPanicked {",
+    "Err(FrameLineageError::Source)",
+    "assert!(matches!(prepared, Err(CaptureError::InvalidStreamCapacity)));",
+    "const:CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID",
+    "fn:frame_stream_closed",
+    "fn:join_capture_worker",
+    "fn:new",
+    "fn:observation_receipt",
+    "fn:observations",
+    "fn:open",
+    "fn:open_metadata",
+    "fn:prepare_capture",
+    "fn:prepare_capture_with_start_gate",
+    "fn:session_id",
+    "fn:stem_id",
+    "fn:stop_and_join",
+    "fn:try_next_lineaged_frame",
+    "fn:try_recv_runtime_event",
+    "struct:CaptureDelivery",
+    "struct:CaptureLineageSeed",
+    "struct:CaptureObservationReceipt",
+    "struct:CaptureOpenMetadata",
+    "struct:CaptureOwner",
+    "struct:CaptureOwnerObservations",
+    "struct:CapturePrepareRequest",
+    "struct:CaptureStopOutcome",
+    "struct:PreparedCapture",
+    "trait:ActiveCaptureBackend",
+    "trait:CallbackCaptureBackend",
+    "trait:PreparedCaptureBackend"
   ],
   "package": "pocketstation",
   "path": "src/capture/capture_owner.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -1213,7 +1316,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::capture::capture_owner`."
+    "text": "Implements pocketstation::capture::capture owner responsibilities, including Monotonic timestamp domain used by native capture backends.; Stable session and stem identity assigned before an exact source is opened.; Creates a new `CaptureLineageSeed`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1266,6 +1369,15 @@
     "docs/troubleshooting/timing.md",
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/source-identity.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/capture/authorization.rs",
+    "REFERENCES:src/capture/events.rs",
+    "REFERENCES:src/capture/frame_stream.rs",
+    "REFERENCES:src/capture/observations.rs",
+    "REFERENCES:src/capture/selection.rs",
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/frame/identity.rs"
   ],
   "resource_ownership": [
     {
@@ -1498,60 +1610,57 @@
     }
   ],
   "responsibilities": [
-    "CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID",
-    "CaptureLineageSeed",
-    "new",
-    "session_id",
-    "stem_id",
-    "CaptureOpenMetadata",
-    "CapturePrepareRequest",
-    "CaptureDelivery",
-    "CallbackCaptureBackend",
-    "prepare",
-    "PreparedCaptureBackend",
-    "open",
-    "ActiveCaptureBackend",
-    "source_id",
-    "observation_handle",
-    "observations",
-    "stop_and_join",
-    "PreparedCapture",
-    "open",
-    "CaptureOwnerObservations",
-    "CaptureObservationReceipt",
-    "observations",
-    "CaptureStopOutcome",
-    "CaptureOwner",
-    "try_recv_runtime_event",
-    "try_next_lineaged_frame",
-    "open_metadata",
-    "frame_stream_closed",
-    "observations",
-    "observation_receipt",
-    "stop_and_join",
-    "observe_runtime_event",
-    "prepare_capture",
-    "prepare_capture_with_start_gate",
-    "join_capture_worker",
-    "tests",
-    "TestBackend",
-    "TestPreparedBackend",
-    "TestActiveBackend",
-    "prepare",
-    "open",
-    "source_id",
-    "observation_handle",
-    "observations",
-    "stop_and_join",
-    "drop",
-    "lineage_seed",
-    "test_backend",
-    "given_prepared_capture_when_opened_then_bounded_delivery_is_owned",
-    "given_backend_frame_when_source_differs_from_open_identity_then_lineage_fails_closed",
-    "given_active_capture_when_stopped_then_backend_is_joined",
-    "given_active_capture_when_owner_is_dropped_then_backend_is_reclaimed",
-    "given_zero_frame_capacity_when_preparing_then_backend_is_not_prepared",
-    "given_panicking_capture_worker_when_joined_then_typed_failure_is_returned"
+    "pocketstation::capture::capture_owner::CAPTURE_MONOTONIC_CLOCK_DOMAIN_ID: Monotonic timestamp domain used by native capture backends.",
+    "pocketstation::capture::capture_owner::CaptureLineageSeed: Stable session and stem identity assigned before an exact source is opened.",
+    "new: Creates a new `CaptureLineageSeed`.",
+    "session_id: Returns the session identifier held by `CaptureLineageSeed`.",
+    "stem_id: Returns the stem identifier held by `CaptureLineageSeed`.",
+    "pocketstation::capture::capture_owner::CaptureOpenMetadata: Authoritative lineage state established only after native capture opens.",
+    "CaptureOpenMetadata::session_id: Identifies the session identifier recorded by `CaptureOpenMetadata`.",
+    "CaptureOpenMetadata::source_id: Identifies the source identifier recorded by `CaptureOpenMetadata`.",
+    "CaptureOpenMetadata::stem_id: Identifies the stem identifier recorded by `CaptureOpenMetadata`.",
+    "CaptureOpenMetadata::clock_id: Identifies the clock identifier recorded by `CaptureOpenMetadata`.",
+    "CaptureOpenMetadata::source_generation: Stores the source generation used by `CaptureOpenMetadata`.",
+    "CaptureOpenMetadata::discontinuity_epoch: Stores the discontinuity epoch used by `CaptureOpenMetadata`.",
+    "CaptureOpenMetadata::permission_epoch: Stores the permission epoch used by `CaptureOpenMetadata`.",
+    "pocketstation::capture::capture_owner::CapturePrepareRequest: Setup-time request for one bounded callback-oriented capture owner.",
+    "CapturePrepareRequest::mode: Stores the mode used by `CapturePrepareRequest`.",
+    "CapturePrepareRequest::lineage_seed: Stores the lineage seed used by `CapturePrepareRequest`.",
+    "CapturePrepareRequest::frame_capacity_frames: Sets the frame capacity frames available to `CapturePrepareRequest`.",
+    "CapturePrepareRequest::runtime_event_capacity_events: Sets the runtime event capacity events available to `CapturePrepareRequest`.",
+    "pocketstation::capture::capture_owner::CaptureDelivery: Callback delivery endpoints transferred to a prepared native backend.",
+    "CaptureDelivery::frame_sender: Stores the frame sender used by `CaptureDelivery`.",
+    "CaptureDelivery::runtime_event_sender: Stores the runtime event sender used by `CaptureDelivery`.",
+    "pocketstation::capture::capture_owner::CallbackCaptureBackend: Platform-neutral prepare/open boundary for callback-oriented capture.",
+    "CallbackCaptureBackend::prepare: Prepares resources required by `CallbackCaptureBackend`.",
+    "pocketstation::capture::capture_owner::PreparedCaptureBackend: Backend state that has passed validation but has not started delivery.",
+    "PreparedCaptureBackend::open: Opens the resource represented by `PreparedCaptureBackend`.",
+    "pocketstation::capture::capture_owner::ActiveCaptureBackend: Native capture resources owned for exactly one active capture.",
+    "ActiveCaptureBackend::source_id: Resolved native source identity for every frame emitted by this open.",
+    "ActiveCaptureBackend::observation_handle: Returns a handle for reading observations from `ActiveCaptureBackend`.",
+    "ActiveCaptureBackend::observations: Returns the observations exposed by `ActiveCaptureBackend`.",
+    "ActiveCaptureBackend::stop_and_join: Stops `ActiveCaptureBackend`, joins its worker, and returns the terminal result.",
+    "pocketstation::capture::capture_owner::PreparedCapture: Prepared capture plus its preallocated delivery endpoints.",
+    "open: Opens the resource represented by `PreparedCapture`.",
+    "pocketstation::capture::capture_owner::CaptureOwnerObservations: Aggregate observations from one active capture ownership boundary.",
+    "CaptureOwnerObservations::backend: Stores the backend used by `CaptureOwnerObservations`.",
+    "CaptureOwnerObservations::frame_stream: Stores the frame stream used by `CaptureOwnerObservations`.",
+    "CaptureOwnerObservations::runtime_events: Stores the runtime events used by `CaptureOwnerObservations`.",
+    "pocketstation::capture::capture_owner::CaptureObservationReceipt: Retains the identity and observation access returned for capture observation.",
+    "observations: Returns the observations exposed by `CaptureObservationReceipt`.",
+    "pocketstation::capture::capture_owner::CaptureStopOutcome: Final observations returned only after backend stop and join complete.",
+    "CaptureStopOutcome::observations: Carries the observations collected for `CaptureStopOutcome`.",
+    "pocketstation::capture::capture_owner::CaptureOwner: RAII owner for native capture, its bounded frame stream, and runtime events.",
+    "try_recv_runtime_event: Attempts to recv runtime event through `CaptureOwner`.",
+    "try_next_lineaged_frame: Attempts to next lineaged frame through `CaptureOwner`.",
+    "open_metadata: Returns the open metadata associated with `CaptureOwner`.",
+    "frame_stream_closed: Returns the frame stream closed associated with `CaptureOwner`.",
+    "observations: Returns the observations exposed by `CaptureOwner`.",
+    "observation_receipt: Returns the observation receipt associated with `CaptureOwner`.",
+    "stop_and_join: Stops `CaptureOwner`, joins its worker, and returns the terminal result.",
+    "pocketstation::capture::capture_owner::prepare_capture: Prepares a bounded capture owner without starting native delivery.",
+    "pocketstation::capture::capture_owner::prepare_capture_with_start_gate: Prepares a bounded capture owner behind a caller-owned one-way start gate.",
+    "pocketstation::capture::capture_owner::join_capture_worker: Joins one owned capture worker and preserves panic as a typed failure."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1604,7 +1713,15 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-4f65c4d2e20b5226cd4f",
+    "test-889c6cfb54cc924fc2b4",
+    "test-8de0974346f9110044c2",
+    "test-a8dbef4f3b61c752ce0e",
+    "test-c55d7a75628c1be024f1",
+    "test-f42d54d3bd1632c2ccfa"
+  ],
   "threads": [
     {
       "line": 99,

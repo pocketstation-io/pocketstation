@@ -16,7 +16,10 @@
   ],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/graph/compile/mod.rs",
+    "IMPORTS:src/graph/compile/mod.rs"
+  ],
   "calls": [
     "Arc::new",
     "Box::new",
@@ -168,7 +171,10 @@
       "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/compile/mod.rs",
+    "IMPORTS:src/graph/compile/mod.rs"
+  ],
   "constructs": [
     "Arc::new",
     "Box::new",
@@ -575,8 +581,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/graph/compile/mod.rs",
+    "IMPORTS:src/graph/compile/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -590,7 +600,10 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "240b2d9c0cff823384f14a8f7fcf59937edab645",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/graph/compile/mod.rs",
+    "IMPORTS:src/graph/compile/mod.rs"
+  ],
   "implements": [
     "RuntimePlanner",
     "Default for RuntimePlanner",
@@ -600,7 +613,10 @@
     "NodeFactory for MixerFactory",
     "NodeFactory for AsyncModelFactory"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/graph/compile/mod.rs",
+    "IMPORTS:src/graph/compile/mod.rs"
+  ],
   "imports": [
     "crate::frame::SampleFormat",
     "crate::graph::builtins::PassthroughNode",
@@ -621,7 +637,26 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::frame::SampleFormat",
+    "crate::graph::builtins::PassthroughNode",
+    "crate::graph::compile::Compiler",
+    "crate::graph::dsl::Pipeline",
+    "crate::graph::ir::GraphIr",
+    "crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeTypeId, PrepareContext}",
+    "crate::graph::partition::ExecutionPartition",
+    "crate::graph::partition::{ExecutionPartition, SafetyContract}",
+    "crate::graph::plan::*",
+    "crate::graph::ports::{AudioCaps, ChannelLayout, EdgeContract, PortDirection, PortSpec}",
+    "crate::graph::ports::{CopyPolicy, EdgeContract, MediaCaps, Multiplicity}",
+    "crate::graph::registry::{NodeFactory, NodeRegistry}",
+    "crate::graph::runtime_node::RuntimeNode",
+    "crate::graph::spec::{EdgeId, InputPortRef, NodeId, OutputPortRef}",
+    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
+    "proptest::prelude::*",
+    "std::sync::Arc",
+    "super::*",
+    "use crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeTypeId, PrepareContext};"
   ],
   "invariants": [
     {
@@ -712,22 +747,26 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-2d4589efbc6a28e1e690",
-    "pattern-5961667d513f1fd57f10",
     "pattern-c51f6c9502969abb9937"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "fn:new",
+    "fn:plan",
+    "return Err(PlanError::FanInOnSinglePort {",
+    "return Err(PlanError::MoveExclusiveFanOut {",
+    "struct:RuntimePlanner"
   ],
   "package": "pocketstation",
   "path": "src/graph/compile/plan.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -1071,8 +1110,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "RuntimePlanner \u2014 lowers a verified `GraphIr` into a `RuntimePlan`. The pipeline runs real lowering steps in order: fan-out grouping, fan-in mix grouping (with multiplicity validation), execution-domain partitioning, memory sizing, edge instrumentation, then emit."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::compile::plan responsibilities, including Validates the graph and produces the bounded runtime execution and memory plan.; Creates a new `RuntimePlanner`.; Lower a verified IR into an execution-ready plan.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1109,6 +1148,12 @@
     "docs/troubleshooting/session-start.md",
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/ir.rs",
+    "REFERENCES:src/graph/plan.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/graph/spec.rs"
   ],
   "resource_ownership": [
     {
@@ -1165,62 +1210,10 @@
     }
   ],
   "responsibilities": [
-    "RuntimePlanner",
-    "new",
-    "plan",
-    "plan_source_outputs",
-    "lower_fan_out",
-    "lower_fan_in_mix",
-    "partition_execution_domains",
-    "plan_memory",
-    "plan_typed_edges",
-    "edge_carries_audio",
-    "edge_uses_realtime_audio_lane",
-    "capacity_frames",
-    "validate_fan_out_ownership",
-    "instrument_edges",
-    "bytes_per_frame",
-    "default",
-    "tests",
-    "audio_media",
-    "port",
-    "test_descriptor",
-    "unused_node",
-    "SourceFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "TransformFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "SinkFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "MixerFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "AsyncModelFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "test_registry",
-    "compile",
-    "given_linear_realtime_graph_when_planned_then_single_partition_in_topo_order",
-    "given_realtime_and_model_remote_nodes_when_planned_then_two_partitions_ordered_by_rank",
-    "given_realtime_to_external_edge_when_planned_then_branch_pool_isolated_from_capture_pool",
-    "given_output_feeding_two_edges_when_planned_then_one_fan_out_group_with_two_targets",
-    "given_move_exclusive_edge_in_fan_out_when_planned_then_ownership_is_rejected",
-    "given_many_input_port_with_multiple_sources_when_planned_then_one_fan_in_group",
-    "given_single_input_port_with_multiple_sources_when_planned_then_fan_in_on_single_port_error",
-    "given_realtime_consumers_when_planned_then_every_edge_buffered_and_pool_positive",
-    "given_copy_to_branch_pool_edge_when_planned_then_copy_pool_memory_is_reserved",
-    "given_explicit_jitter_budget_when_planned_then_bounded_capacity_is_derived_from_frame_time",
-    "given_compiled_graph_when_instrumented_then_metric_ids_are_stable_and_distinct",
-    "given_fixed_graph_when_planned_then_runtime_plan_matches_golden_snapshot",
-    "given_linear_realtime_chain_when_planned_then_single_partition_and_topo_order"
+    "pocketstation::graph::compile::plan::RuntimePlanner: Validates the graph and produces the bounded runtime execution and memory plan.",
+    "new: Creates a new `RuntimePlanner`.",
+    "plan: Lower a verified IR into an execution-ready plan.",
+    "default: Returns the default `RuntimePlanner` value."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1316,7 +1309,22 @@
       "text": "let model = graph.add_node(\"model.async\", NodeConfig::new());"
     }
   ],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0ad4ea1abd7124d12740",
+    "test-1c092b4376cfedf5e86d",
+    "test-1d8783b870fa351a933b",
+    "test-28b5b52333fa1672705d",
+    "test-42437c4cb8f955f4df43",
+    "test-6148b3a94bda4119135e",
+    "test-79ec9d2ff6b56808169b",
+    "test-917d8ff26f7ff8e13525",
+    "test-9570c9e13e72112e73ef",
+    "test-977e6826ff8e82a0a94c",
+    "test-a9d800fafb2562c90bd3",
+    "test-ab3f88fbe7eaddfa92c8",
+    "test-e8c1159b6f21b80587d2"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

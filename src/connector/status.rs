@@ -50,42 +50,42 @@ pub struct ConnectorServiceStatus {
 }
 
 impl ConnectorServiceStatus {
-    #[doc = "Returns the delivery readiness associated with `ConnectorServiceStatus`."]
+    #[doc = "Returns the delivery readiness held by `ConnectorServiceStatus`."]
     pub const fn delivery_readiness(&self) -> ConnectorDeliveryReadiness {
         self.delivery_readiness
     }
 
-    #[doc = "Returns the health associated with `ConnectorServiceStatus`."]
+    #[doc = "Returns the health held by `ConnectorServiceStatus`."]
     pub const fn health(&self) -> ConnectorHealth {
         self.health
     }
 
-    #[doc = "Returns the recovery associated with `ConnectorServiceStatus`."]
+    #[doc = "Returns the recovery held by `ConnectorServiceStatus`."]
     pub const fn recovery(&self) -> ConnectorRecovery {
         self.recovery
     }
 
-    #[doc = "Returns the readiness reason code associated with `ConnectorServiceStatus`."]
+    #[doc = "Returns the readiness reason code held by `ConnectorServiceStatus`."]
     pub const fn readiness_reason_code(&self) -> Option<&ConnectorErrorCode> {
         self.readiness_reason_code.as_ref()
     }
 
-    #[doc = "Returns the health reason code associated with `ConnectorServiceStatus`."]
+    #[doc = "Returns the health reason code held by `ConnectorServiceStatus`."]
     pub const fn health_reason_code(&self) -> Option<&ConnectorErrorCode> {
         self.health_reason_code.as_ref()
     }
 
-    #[doc = "Returns the recovery reason code associated with `ConnectorServiceStatus`."]
+    #[doc = "Returns the recovery reason code held by `ConnectorServiceStatus`."]
     pub const fn recovery_reason_code(&self) -> Option<&ConnectorErrorCode> {
         self.recovery_reason_code.as_ref()
     }
 
-    #[doc = "Returns the revision associated with `ConnectorServiceStatus`."]
+    #[doc = "Returns the revision held by `ConnectorServiceStatus`."]
     pub const fn revision(&self) -> u64 {
         self.revision
     }
 
-    #[doc = "Returns the last transition elapsed nanoseconds associated with `ConnectorServiceStatus`."]
+    #[doc = "Returns the last transition elapsed nanoseconds held by `ConnectorServiceStatus`."]
     pub const fn last_transition_elapsed_ns(&self) -> u64 {
         self.last_transition_elapsed_ns
     }

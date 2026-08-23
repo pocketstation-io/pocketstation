@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
   "calls": [
     "any",
     "cfg",
@@ -34,7 +37,10 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
   "constructs": [],
   "content_hash": "a0561caab766091d4935d53121e2f71a77b883d2ff1921b9066d4db5162958c3",
   "defaults": [],
@@ -146,8 +152,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -163,9 +173,15 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "9df2664a3708517d2bef04ea8693cb18ff50f66e",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
   "imports": [
     "engine::{ EndpointExtensionRegistrationError, SessionEngine, SessionEngineBuildError, SessionEngineBuilder, SessionEngineStartError, }",
     "events::{ SessionComponentId, SessionControlFailure, SessionEndpointFailure, SessionEvent, SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionFinalizationFailure, SessionFinalizationStage, SessionLifecycleState, SessionRollbackFailure, SessionRollbackStage, SessionSourceFailure, SessionTerminalOutcome, SessionTerminalState, }",
@@ -190,7 +206,29 @@
     "trace::{SessionTraceRecord, SessionTraceRecordKind, SessionTraceTerminal}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(test)]",
+    "engine::{ EndpointExtensionRegistrationError, SessionEngine, SessionEngineBuildError, SessionEngineBuilder, SessionEngineStartError, }",
+    "events::{ SessionComponentId, SessionControlFailure, SessionEndpointFailure, SessionEvent, SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionFinalizationFailure, SessionFinalizationStage, SessionLifecycleState, SessionRollbackFailure, SessionRollbackStage, SessionSourceFailure, SessionTerminalOutcome, SessionTerminalState, }",
+    "host::{ NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuildError, SessionEngineHostBuilder, }",
+    "module:endpoint_transaction",
+    "module:engine",
+    "module:events",
+    "module:host",
+    "module:metric_bindings",
+    "module:observations",
+    "module:operator_observations",
+    "module:rollback",
+    "module:running",
+    "module:start_contract",
+    "module:trace",
+    "observations::{ EndpointObservationStage, SessionAudioReentryMetrics, SessionDerivedRouteMetrics, SessionEventQueueObservations, SessionExternalSourceMetrics, SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteDropObservations, SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit, SessionRouteMetrics, SessionRouteObservationInterval, SessionSidecarMetrics, SessionSourceMetrics, }",
+    "running::RunningSession",
+    "running::start_prepared_session_cancellable_with_trace",
+    "running::{start_prepared_session, start_prepared_session_cancellable}",
+    "start_contract::{ CaptureBackendSet, SessionStartCancellation, SessionStartError, SessionStartFailure, SessionStartOptions, SessionStopOutcome, }",
+    "trace::{ SessionTrace, SessionTraceRecorder, SessionTraceRecorderFinishError, SessionTraceRecorderHandle, SessionTraceRecorderOutcome, SessionTraceRecorderStartError, SessionTraceValidation, SessionTraceValidationError, }",
+    "trace::{SessionTraceRecord, SessionTraceRecordKind, SessionTraceTerminal}"
   ],
   "invariants": [],
   "language": "Rust",
@@ -199,21 +237,22 @@
   "module": "pocketstation::session::lifecycle",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-42242e8c33db6aa40f15",
-    "pattern-e96e6e14c96a3f84d817"
+    "pattern-42242e8c33db6aa40f15"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/mod.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -304,8 +343,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Session engine construction, transactional startup, observations, and stop."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::lifecycle responsibilities, including lifecycle."
   },
   "queues": [],
   "recovery_behavior": [
@@ -374,22 +413,46 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "CONTAINS:src/session/lifecycle/endpoint_transaction.rs",
+    "CONTAINS:src/session/lifecycle/engine.rs",
+    "CONTAINS:src/session/lifecycle/events.rs",
+    "CONTAINS:src/session/lifecycle/host.rs",
+    "CONTAINS:src/session/lifecycle/metric_bindings.rs",
+    "CONTAINS:src/session/lifecycle/observations.rs",
+    "CONTAINS:src/session/lifecycle/operator_observations.rs",
+    "CONTAINS:src/session/lifecycle/rollback.rs",
+    "CONTAINS:src/session/lifecycle/running.rs",
+    "CONTAINS:src/session/lifecycle/start_contract.rs",
+    "CONTAINS:src/session/lifecycle/trace.rs",
+    "IMPORTS:src/session/lifecycle/endpoint_transaction.rs",
+    "IMPORTS:src/session/lifecycle/engine.rs",
+    "IMPORTS:src/session/lifecycle/events.rs",
+    "IMPORTS:src/session/lifecycle/host.rs",
+    "IMPORTS:src/session/lifecycle/metric_bindings.rs",
+    "IMPORTS:src/session/lifecycle/observations.rs",
+    "IMPORTS:src/session/lifecycle/operator_observations.rs",
+    "IMPORTS:src/session/lifecycle/rollback.rs",
+    "IMPORTS:src/session/lifecycle/running.rs",
+    "IMPORTS:src/session/lifecycle/start_contract.rs",
+    "IMPORTS:src/session/lifecycle/trace.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "endpoint_transaction",
-    "engine",
-    "events",
-    "host",
-    "metric_bindings",
-    "observations",
-    "operator_observations",
-    "rollback",
-    "running",
-    "start_contract",
-    "trace",
-    "tests",
-    "engine",
-    "running"
+    "endpoint_transaction (mod)",
+    "engine (mod)",
+    "events (mod)",
+    "host (mod)",
+    "metric_bindings (mod)",
+    "observations (mod)",
+    "operator_observations (mod)",
+    "rollback (mod)",
+    "running (mod)",
+    "start_contract (mod)",
+    "trace (mod)",
+    "tests (mod)",
+    "engine (mod)",
+    "running (mod)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -417,6 +480,7 @@
   ],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

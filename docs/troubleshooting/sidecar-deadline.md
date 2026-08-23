@@ -2,44 +2,35 @@
 
 <!-- claims: CLM-TRBL-010-CAP-001,CLM-TRBL-010-CAP-002,CLM-TRBL-010-CAP-003,CLM-TRBL-010-CAP-004,CLM-TRBL-010-SOURCE-001 -->
 
-Use this page when you observe **a sidecar misses a deadline**. Diagnose the reported stage and identity before changing route, source, connector, or lifecycle policy.
+## Symptom
 
-## Distinguish the cause
+A sidecar fails to start, exchange a message, drain, or stop before its deadline.
 
-Inspect sidecar state, message kind, protocol limit, and the deadline that expired before choosing drain, abort, or restart.
+## Evidenced causes
+
+- The child command cannot start or exits early.
+- A message kind, framing rule, or byte limit is invalid.
+- Startup, request, drain, or abort exceeds its configured deadline.
+- The host or child closes while work remains.
+
+## Distinguish the causes
+
+Inspect sidecar state, process error, last accepted message kind, protocol limit, and the exact deadline stage.
 
 ## Diagnostic signals
 
-- `pocketstation::connector::error::ConnectorErrorCodeError` / `TooLong` (`error-06f5c52aa07c86ca5062`)
-- `pocketstation::connector::transport::ConnectorAudioRecordError` / `InvalidSampleCount` (`error-093c41e2489cf1bb258d`)
-- `pocketstation::connector::transport::ConnectorAudioRecordError` (`error-0b1f3a3357a77fcef185`)
-- `pocketstation::connector::error::ConnectorErrorCodeError` / `Empty` (`error-0b71c9f1b1489e0d4f9a`)
-- `pocketstation::connector::error::ConnectorErrorBuildError` (`error-0bc8adb0641971704f74`)
-- `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` / `TooManyFields` (`error-0c83ebde568152ad3edf`)
-- `pocketstation::connector::error::ConnectorErrorStage` / `Startup` (`error-0e62627edef059ecab22`)
-- `pocketstation::connector::manifest::ConnectorManifestError` / `InvalidManifestRevision` (`error-10517744910e14c23fc4`)
-- `pocketstation::connector::transport::ConnectorAudioRecordError` / `UnsupportedMinor` (`error-1082687e9dbfd2cadfc5`)
-- `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError` / `InvalidMagic` (`error-143cce14f0e71f68c4cf`)
-- `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` / `InvalidValue` (`error-16fe034657303e4973f8`)
-- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `Wait` (`error-19eabd878a9188bf94ce`)
-- `pocketstation::connector::ConnectorDeclarationError` (`error-1cafe789f84ff34b7955`)
-- `pocketstation::connector::error::ConnectorErrorCodeError` (`error-1d9267787b6c574f3c02`)
-- `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError` / `ReservedFieldSet` (`error-1d9b879cab06d8598907`)
-- `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError` / `InvalidTerminal` (`error-201cc7749bdbbd671d69`)
-- `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` / `ValueTooLarge` (`error-20e58c6bbc3ac729a8e8`)
-- `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError` / `FrameLengthOverflow` (`error-23eba8b87dea81473095`)
-- `pocketstation::connector::transport::ConnectorAudioRecordError` / `Truncated` (`error-287ed1c38c6ad2b533ef`)
-- `pocketstation::connector::manifest::ConnectorManifestError` / `TooManyManifestEntries` (`error-29230b3395a2c8d86df6`)
-- `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError` / `UnknownMessageKind` (`error-2b03bbb58bb17d9482da`)
-- `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` / `WrongType` (`error-2f295a051ff6d0366ead`)
-- `pocketstation::connector::error::ConnectorErrorStage` / `Join` (`error-326d10a69e8bf7fdb781`)
-- `pocketstation::runtime::audio::executor::ExecError` / `Node` (`error-3636f110b3c505b0fc87`)
-- `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` / `UnknownField` (`error-37775f819a84416494a5`)
-- `pocketstation::connector::transport::ConnectorAudioRecordError` / `LengthOverflow` (`error-3a219a96959e38e2b4d8`)
-- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `ProcessingTimeout` (`error-3a3e737bfe0585596712`)
-- `pocketstation::connector::ConnectorObservationLookupError` (`error-3a9f4ee91af2cf43237b`)
-- `pocketstation::connector::ConnectorRegistrationError` (`error-3d8ad8972e7742e4f68e`)
-- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `UnexpectedMessage` (`error-3dbf0292e22bf7695a5b`)
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` (`error-4a7bbf78f1eef4f31cda`)
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `AlreadyReaped` (`error-e3a2e354214fc48a985a`)
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `Closed` (`error-edccf83596e248e6faba`)
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `ControlQueueFull` (`error-bdb3331ea4ef7fe66d05`)
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `DataQueueFull` (`error-bc92e00331c1093a3a5f`)
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `FrameTooLarge` (`error-d2843fac19f48d7e718e`)
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `InvalidConfiguration` (`error-7f2632443ff0a1b229d7`)
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `InvalidDataKind` (`error-a4c5bffd5a950224b28e`)
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `InvalidState` (`error-964a79d02e303c7ceefd`)
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `Io` (`error-464e0427ba81044140fb`)
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `Kill` (`error-b5e61d9a83637a8b0a55`)
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `MissingPipe` (`error-44c57f1bf9e040992e47`)
 
 ## Executable evidence
 
@@ -50,7 +41,7 @@ Inspect sidecar state, message kind, protocol limit, and the deadline that expir
 - `given_core_extension_sidecar_message_when_round_tripped_then_identity_is_stable` exercises given core extension sidecar message when round tripped then identity is stable under its recorded setup (`test-647c9ae6972c9c36f722`).
 - `given_instance_deadline_when_worker_runs_then_configured_timeout_is_authoritative` exercises given instance deadline when worker runs then configured timeout is authoritative under its recorded setup (`test-53f77875f4c688209091`).
 - `given_slow_operator_when_deadline_expires_then_timeout_cancel_and_join_are_observed` exercises given slow operator when deadline expires then timeout cancel and join are observed under its recorded setup (`test-1bec17e5820e3c9ada80`).
-- `given_connector_never_ready_when_startup_deadline_expires_then_failure_is_terminal` exercises given connector never ready when startup deadline expires then failure is terminal under its recorded setup (`test-5cad5d93f0205d9f9891`).
+- `given_connector_never_ready_when_startup_deadline_expires_then_failure_is_terminal` exercises given connector never ready when startup deadline expires then failure is terminal under its recorded setup (`test-c926ac54e34e42c44877`).
 - `given_provider_owned_field_name_when_resolved_then_core_preserves_it_opaquely` exercises given provider owned field name when resolved then core preserves it opaquely under its recorded setup (`test-d9078fd01d0271720b30`).
 - `given_audio_record_when_round_tripped_then_transport_and_lineage_identity_are_preserved` exercises given audio record when round tripped then transport and lineage identity are preserved under its recorded setup (`test-907dfffa894311945559`).
 - `given_invalid_audio_record_when_decoded_then_trailing_and_oversized_payloads_are_rejected` exercises given invalid audio record when decoded then trailing and oversized payloads are rejected under its recorded setup (`test-3f130e9d460c8fbeeeee`).
@@ -59,13 +50,18 @@ Inspect sidecar state, message kind, protocol limit, and the deadline that expir
 - `given_drain_then_abort_when_requested_then_shutdown_intent_upgrades_monotonically` exercises given drain then abort when requested then shutdown intent upgrades monotonically under its recorded setup (`test-50a5f1631531f3816b13`).
 - `given_connected_gain_plan_when_executed_then_only_connected_nodes_run_and_worker_receives_output` exercises given connected gain plan when executed then only connected nodes run and worker receives output under its recorded setup (`test-cd64bb966db1f193ea6f`).
 
-## Corrective action and retry
+## Corrective action
 
-Apply only the action implied by the typed failure or violated precondition. Retry is not safe merely because a failure appears transient. When retryability or recovery is unknown, preserve the failure for application policy or maintainer review.
+Correct the process or protocol contract. Choose drain only when pending work may complete; choose abort when application policy accepts discarding it.
 
-## Data and state
+## Retry and incomplete state
 
-Treat frames, signals, files, acknowledgements, and finalization results produced before failure as potentially partial unless the terminal contract says otherwise. Inspect per-route, per-stem, and per-component outcomes.
+Restart is not automatically safe because external work may have occurred before timeout. Treat acknowledgements and output as partial until terminal state confirms them.
+
+## Related reference
+
+- [Sidecars](/docs/concepts/sidecars.md)
+- [Sidecar Protocol](/docs/reference/sidecar-protocol.md)
 
 ## Related documentation
 
@@ -74,14 +70,14 @@ Treat frames, signals, files, acknowledgements, and finalization results produce
 - [Behavior evidence index](/docs/reference/behavior-evidence.md)
 - [Rust API reference](/docs/reference/rust-api.md)
 - [A connector is not ready](/docs/troubleshooting/connector-readiness.md)
+- [Honor connector retryability](/docs/best-practices/connector-retries.md)
 - [Session stop reports component failures](/docs/troubleshooting/session-stop.md)
 - [Host a managed-process sidecar](/docs/how-to/host-sidecar.md)
-- [Configuration reference](/docs/reference/configuration.md)
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **A sidecar misses a deadline** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/runtime/lifecycle/sidecar_host.rs:1-734` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **A sidecar misses a deadline**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

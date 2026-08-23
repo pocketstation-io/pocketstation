@@ -3,7 +3,7 @@ use crate::graph::signal::payload::SignalPayload;
 use crate::graph::signal::{SignalDerivation, SignalLineage, SignalSpec, SignalTiming};
 
 #[derive(Debug)]
-#[doc = "Represents signal envelope in the PocketStation API."]
+#[doc = "Carries a typed signal payload together with timing, lineage, continuity, and terminal metadata."]
 pub struct SignalEnvelope {
     pub(crate) payload: SignalPayload,
     pub(crate) spec: SignalSpec,
@@ -64,32 +64,32 @@ impl SignalEnvelope {
         self
     }
 
-    #[doc = "Returns the payload associated with `SignalEnvelope`."]
+    #[doc = "Returns the payload held by `SignalEnvelope`."]
     pub const fn payload(&self) -> &SignalPayload {
         &self.payload
     }
 
-    #[doc = "Returns the payload size bytes associated with `SignalEnvelope`."]
+    #[doc = "Returns the payload size bytes held by `SignalEnvelope`."]
     pub fn payload_size_bytes(&self) -> usize {
         self.payload.size_bytes()
     }
 
-    #[doc = "Returns the signal spec associated with `SignalEnvelope`."]
+    #[doc = "Returns the signal spec held by `SignalEnvelope`."]
     pub const fn signal_spec(&self) -> &SignalSpec {
         &self.spec
     }
 
-    #[doc = "Returns the timing associated with `SignalEnvelope`."]
+    #[doc = "Returns the timing held by `SignalEnvelope`."]
     pub const fn timing(&self) -> SignalTiming {
         self.timing
     }
 
-    #[doc = "Returns the frame lineage associated with `SignalEnvelope`."]
+    #[doc = "Returns the frame lineage carried by `SignalEnvelope`."]
     pub const fn lineage(&self) -> Option<SignalLineage> {
         self.lineage
     }
 
-    #[doc = "Returns the derivation associated with `SignalEnvelope`."]
+    #[doc = "Returns the derivation held by `SignalEnvelope`."]
     pub const fn derivation(&self) -> Option<&SignalDerivation> {
         self.derivation.as_ref()
     }
@@ -99,7 +99,7 @@ impl SignalEnvelope {
         self.payload
     }
 
-    #[doc = "Returns the sequence number associated with `SignalEnvelope`."]
+    #[doc = "Returns the sequence number held by `SignalEnvelope`."]
     pub fn sequence_number(&self) -> Option<u64> {
         self.lineage.map(|lineage| lineage.sequence_number).or(
             if let SignalPayload::Audio(frame) = &self.payload {
@@ -110,7 +110,7 @@ impl SignalEnvelope {
         )
     }
 
-    #[doc = "Returns the source identifier associated with `SignalEnvelope`."]
+    #[doc = "Returns the source identifier held by `SignalEnvelope`."]
     pub fn source_id(&self) -> Option<SourceId> {
         self.lineage.map(|lineage| lineage.source_id).or({
             if let SignalPayload::Audio(frame) = &self.payload {
@@ -121,7 +121,7 @@ impl SignalEnvelope {
         })
     }
 
-    #[doc = "Returns the timestamp nanoseconds associated with `SignalEnvelope`."]
+    #[doc = "Returns the timestamp nanoseconds held by `SignalEnvelope`."]
     pub fn timestamp_ns(&self) -> u64 {
         self.timing
             .session_timestamp_ns

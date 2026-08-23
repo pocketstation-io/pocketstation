@@ -38,6 +38,7 @@ pub(crate) struct SessionSourceLoweringContext<'lowering> {
     pub(crate) bindings: &'lowering mut CompiledSessionBindings,
 }
 
+#[doc = "Compiles an immutable Session declaration into a validated graph and runtime plan."]
 pub struct SessionCompiler<'registry> {
     node_registry: &'registry NodeRegistry,
     endpoint_registry: &'registry EndpointDriverRegistry,
@@ -74,6 +75,7 @@ pub(crate) trait SessionGraphLowerer: Send + Sync {
 
 impl<'registry> SessionCompiler<'registry> {
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Creates a new `SessionCompiler`."]
     pub fn new(
         node_registry: &'registry NodeRegistry,
         endpoint_registry: &'registry EndpointDriverRegistry,
@@ -100,6 +102,7 @@ impl<'registry> SessionCompiler<'registry> {
         }
     }
 
+    #[doc = "Compiles its owned operation for `SessionCompiler`."]
     pub fn compile(&self, spec: SessionSpec) -> Result<CompiledSession, SessionCompileError> {
         spec.validate()?;
         self.validate_external_sources(&spec)?;

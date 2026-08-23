@@ -152,6 +152,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -177,7 +178,12 @@
     "std::time::{Duration, Instant}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#![cfg(feature = \"conformance-fixtures\")]",
+    "pocketstation::{ conformance, ApplicationSelector, SessionEventReceive, SessionStartCancellation, SessionStartErrorKind, SessionStopDisposition, Source, }",
+    "std::collections::BTreeSet",
+    "std::env::temp_dir().join(format!(\"pocketstation-{test_name}-{}\", std::process::id()))",
+    "std::path::PathBuf",
+    "std::time::{Duration, Instant}"
   ],
   "invariants": [
     {
@@ -247,20 +253,20 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
-  "observed_patterns": [
-    "pattern-095b17abae307638000d"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "tests/conformance_fixture.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -313,8 +319,8 @@
   ],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given recording routes without root when started then configuration error is typed, given requested cancellation when fixture started then start fails typed, given recording root when two stems finish then terminal outcome is exposed under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -348,14 +354,15 @@
     "docs/best-practices/native-extension-trust.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "artifact_root",
-    "given_fixture_session_when_started_then_two_stems_cross_canonical_engine",
-    "given_requested_cancellation_when_fixture_started_then_start_fails_typed",
-    "given_empty_application_selector_when_declared_then_error_is_typed",
-    "given_recording_routes_without_root_when_started_then_configuration_error_is_typed",
-    "given_recording_root_when_two_stems_finish_then_terminal_outcome_is_exposed"
+    "artifact_root (fn)",
+    "given_fixture_session_when_started_then_two_stems_cross_canonical_engine (fn)",
+    "given_requested_cancellation_when_fixture_started_then_start_fails_typed (fn)",
+    "given_empty_application_selector_when_declared_then_error_is_typed (fn)",
+    "given_recording_routes_without_root_when_started_then_configuration_error_is_typed (fn)",
+    "given_recording_root_when_two_stems_finish_then_terminal_outcome_is_exposed (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -412,7 +419,14 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-3f174846e1cee09648ef",
+    "test-4e0d0d85446be78e3381",
+    "test-7e1a3847baa7ae47b25a",
+    "test-8b8d343b30eac843b319",
+    "test-bec1e3cd7f059a144101"
+  ],
   "threads": [
     {
       "line": 39,

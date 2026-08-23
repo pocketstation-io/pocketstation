@@ -19,6 +19,7 @@ pub struct PolledAudioEndpoint {
 }
 
 impl PolledAudioEndpoint {
+    #[doc = "Creates a new `PolledAudioEndpoint`."]
     pub fn new(config: PolledAudioEndpointConfig) -> Result<Self, PolledAudioEndpointConfigError> {
         let (factory, receipt) = PolledAudioEndpointFactory::new(config)?;
         Ok(Self {
@@ -27,6 +28,7 @@ impl PolledAudioEndpoint {
         })
     }
 
+    #[doc = "Returns the receipt held by `PolledAudioEndpoint`."]
     pub fn receipt(&self) -> PolledAudioReceipt {
         self.receipt.clone()
     }

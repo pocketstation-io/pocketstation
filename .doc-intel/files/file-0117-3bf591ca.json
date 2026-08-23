@@ -3,7 +3,14 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "calls": [
     "Duration::from_secs",
     "derive",
@@ -18,7 +25,14 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "constructs": [
     "new"
   ],
@@ -173,8 +187,16 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -188,16 +210,30 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "6da6c79e94f38e8be67560154f2dccc6d41ae620",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "implements": [
     "ConnectorReadinessPolicy"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "imports": [
     "std::time::Duration"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "std::time::Duration"
   ],
   "invariants": [
     {
@@ -215,20 +251,30 @@
   "module": "pocketstation::connector::readiness",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-bdf45d1b2dace5a77960"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "const:MAX_CONNECTOR_READINESS_THRESHOLD",
+    "const:MAX_CONNECTOR_READINESS_TIMEOUT",
+    "enum:ConnectorReadinessPolicyError",
+    "fn:failure_threshold",
+    "fn:new",
+    "fn:probe_interval",
+    "fn:startup_timeout",
+    "fn:success_threshold",
+    "return Err(ConnectorReadinessPolicyError::InvalidDeadline);",
+    "return Err(ConnectorReadinessPolicyError::InvalidThreshold);",
+    "struct:ConnectorReadinessPolicy"
   ],
   "package": "pocketstation",
   "path": "src/connector/readiness.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -290,7 +336,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::connector::readiness`."
+    "text": "Implements pocketstation::connector::readiness responsibilities, including Sets the maximum supported connector readiness threshold.; Sets the maximum supported connector readiness timeout.; Configures connector readiness behavior at its owning API boundary.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -332,17 +378,20 @@
     "docs/best-practices/connector-retries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "MAX_CONNECTOR_READINESS_THRESHOLD",
-    "MAX_CONNECTOR_READINESS_TIMEOUT",
-    "ConnectorReadinessPolicy",
-    "new",
-    "startup_timeout",
-    "probe_interval",
-    "success_threshold",
-    "failure_threshold",
-    "ConnectorReadinessPolicyError"
+    "pocketstation::connector::readiness::MAX_CONNECTOR_READINESS_THRESHOLD: Sets the maximum supported connector readiness threshold.",
+    "pocketstation::connector::readiness::MAX_CONNECTOR_READINESS_TIMEOUT: Sets the maximum supported connector readiness timeout.",
+    "pocketstation::connector::readiness::ConnectorReadinessPolicy: Configures connector readiness behavior at its owning API boundary.",
+    "new: Creates a new `ConnectorReadinessPolicy`.",
+    "startup_timeout: Returns the startup timeout held by `ConnectorReadinessPolicy`.",
+    "probe_interval: Returns the probe interval held by `ConnectorReadinessPolicy`.",
+    "success_threshold: Returns the success threshold held by `ConnectorReadinessPolicy`.",
+    "failure_threshold: Returns the failure threshold held by `ConnectorReadinessPolicy`.",
+    "pocketstation::connector::readiness::ConnectorReadinessPolicyError: Classifies failures reported as connector readiness policy error.",
+    "pocketstation::connector::readiness::ConnectorReadinessPolicyError::InvalidDeadline: Selects invalid deadline behavior for `ConnectorReadinessPolicyError`.",
+    "pocketstation::connector::readiness::ConnectorReadinessPolicyError::InvalidThreshold: Selects invalid threshold behavior for `ConnectorReadinessPolicyError`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -352,6 +401,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

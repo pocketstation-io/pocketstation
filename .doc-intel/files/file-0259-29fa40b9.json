@@ -71,6 +71,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -94,7 +95,8 @@
     "pocketstation::internal::frame::{ AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId, POOL_SLOT_SAMPLES, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "pocketstation::codec::{OpusDecoder, OpusEncoder, OPUS_MAX_PACKET_BYTES}",
+    "pocketstation::internal::frame::{ AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId, POOL_SLOT_SAMPLES, }"
   ],
   "invariants": [],
   "language": "Rust",
@@ -103,20 +105,22 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
   "observed_patterns": [
     "pattern-fca1858abc40b4d3324a"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "tests/codec_opus_roundtrip.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -129,8 +133,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given sine frame when codec roundtrip runs then sample count is preserved under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -155,9 +159,10 @@
     "docs/errors/frames-and-codec.md",
     "docs/troubleshooting/opus.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "given_sine_frame_when_codec_roundtrip_runs_then_sample_count_is_preserved"
+    "given_sine_frame_when_codec_roundtrip_runs_then_sample_count_is_preserved (fn)"
   ],
   "retry_behavior": [],
   "serialization": [
@@ -176,7 +181,10 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-f2c6d3780d291652810b"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

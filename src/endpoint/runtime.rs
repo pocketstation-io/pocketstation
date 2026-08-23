@@ -22,7 +22,7 @@ impl SessionTimelineOrigin {
         }
     }
 
-    #[doc = "Returns the monotonic timestamp nanoseconds associated with `SessionTimelineOrigin`."]
+    #[doc = "Returns the monotonic timestamp nanoseconds held by `SessionTimelineOrigin`."]
     pub const fn monotonic_timestamp_ns(self) -> u64 {
         self.monotonic_timestamp_ns
     }
@@ -37,11 +37,11 @@ pub enum EndpointInputOrigin {
     Signal,
     #[doc = "Represents the source case of `EndpointInputOrigin`."]
     Source {
-        #[doc = "Identifies the source associated with `Source`."]
+        #[doc = "Identifies the source identifier recorded by `Source`."]
         source_id: SourceId,
-        #[doc = "Identifies the stream associated with `Source`."]
+        #[doc = "Identifies the stream identifier recorded by `Source`."]
         stream_id: StreamId,
-        #[doc = "Identifies the audio stem associated with `Source`."]
+        #[doc = "Identifies the audio stem identifier recorded by `Source`."]
         audio_stem_id: Option<StemId>,
     },
 }
@@ -79,7 +79,7 @@ impl EndpointRouteContext {
         }
     }
 
-    #[doc = "Returns the signal associated with `EndpointRouteContext`."]
+    #[doc = "Returns the signal held by `EndpointRouteContext`."]
     pub const fn signal(route_id: RouteId) -> Self {
         Self {
             route_id,
@@ -87,17 +87,17 @@ impl EndpointRouteContext {
         }
     }
 
-    #[doc = "Returns the route identifier associated with `EndpointRouteContext`."]
+    #[doc = "Returns the route identifier held by `EndpointRouteContext`."]
     pub const fn route_id(self) -> RouteId {
         self.route_id
     }
 
-    #[doc = "Returns the origin associated with `EndpointRouteContext`."]
+    #[doc = "Returns the origin held by `EndpointRouteContext`."]
     pub const fn origin(self) -> EndpointInputOrigin {
         self.origin
     }
 
-    #[doc = "Returns the audio stem identifier associated with `EndpointRouteContext`."]
+    #[doc = "Returns the audio stem identifier held by `EndpointRouteContext`."]
     pub const fn audio_stem_id(self) -> Option<StemId> {
         match self.origin {
             EndpointInputOrigin::Stem(stem_id) => Some(stem_id),
@@ -108,7 +108,7 @@ impl EndpointRouteContext {
 }
 
 #[derive(Debug, Clone)]
-#[doc = "Represents endpoint prepare context in the PocketStation API."]
+#[doc = "Carries the inputs and runtime context required to endpoint prepare."]
 pub struct EndpointPrepareContext {
     session_id: SessionId,
     endpoint_id: EndpointId,
@@ -137,12 +137,12 @@ impl EndpointPrepareContext {
         }
     }
 
-    #[doc = "Returns the session identifier associated with `EndpointPrepareContext`."]
+    #[doc = "Returns the session identifier held by `EndpointPrepareContext`."]
     pub const fn session_id(&self) -> SessionId {
         self.session_id
     }
 
-    #[doc = "Returns the endpoint identifier associated with `EndpointPrepareContext`."]
+    #[doc = "Returns the endpoint identifier held by `EndpointPrepareContext`."]
     pub const fn endpoint_id(&self) -> EndpointId {
         self.endpoint_id
     }
@@ -152,22 +152,22 @@ impl EndpointPrepareContext {
         self
     }
 
-    #[doc = "Returns the connector identifier associated with `EndpointPrepareContext`."]
+    #[doc = "Returns the connector identifier held by `EndpointPrepareContext`."]
     pub const fn connector_id(&self) -> Option<ConnectorId> {
         self.connector_id
     }
 
-    #[doc = "Returns the route context associated with `EndpointPrepareContext`."]
+    #[doc = "Returns the route context held by `EndpointPrepareContext`."]
     pub const fn route_context(&self) -> EndpointRouteContext {
         self.route_context
     }
 
-    #[doc = "Returns the session timeline origin associated with `EndpointPrepareContext`."]
+    #[doc = "Returns the session timeline origin held by `EndpointPrepareContext`."]
     pub const fn session_timeline_origin(&self) -> SessionTimelineOrigin {
         self.session_timeline_origin
     }
 
-    #[doc = "Returns the node configuration associated with `EndpointPrepareContext`."]
+    #[doc = "Returns the node configuration held by `EndpointPrepareContext`."]
     pub const fn node_configuration(&self) -> &NodeConfig {
         &self.node_configuration
     }
@@ -233,12 +233,12 @@ impl EndpointFailure {
         self
     }
 
-    #[doc = "Returns the stage associated with `EndpointFailure`."]
+    #[doc = "Returns the stage held by `EndpointFailure`."]
     pub const fn stage(&self) -> EndpointFailureStage {
         self.stage
     }
 
-    #[doc = "Returns the diagnostic message associated with `EndpointFailure`."]
+    #[doc = "Returns the diagnostic message reported by `EndpointFailure`."]
     pub fn message(&self) -> &str {
         &self.message
     }
@@ -248,7 +248,7 @@ impl EndpointFailure {
         self.code.as_deref()
     }
 
-    #[doc = "Returns the retryability associated with `EndpointFailure`."]
+    #[doc = "Returns the retryability held by `EndpointFailure`."]
     pub const fn retryability(&self) -> Option<EndpointFailureRetryability> {
         self.retryability
     }
@@ -332,16 +332,16 @@ fn increment(counter: &AtomicU64, amount: u64) {
 pub struct EndpointCancellationOutcome {
     #[doc = "Carries the observations collected for `EndpointCancellationOutcome`."]
     pub observations: EndpointDriverObservations,
-    #[doc = "Stores the result associated with `EndpointCancellationOutcome`."]
+    #[doc = "Stores the result used by `EndpointCancellationOutcome`."]
     pub result: Result<(), EndpointFailure>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Represents endpoint driver finalization in the PocketStation API."]
+#[doc = "Reports an endpoint driver's terminal observations and any finalization failure."]
 pub struct EndpointDriverFinalization {
     #[doc = "Carries the observations collected for `EndpointDriverFinalization`."]
     pub observations: EndpointDriverObservations,
-    #[doc = "Stores the result associated with `EndpointDriverFinalization`."]
+    #[doc = "Stores the result used by `EndpointDriverFinalization`."]
     pub result: Result<(), EndpointFailure>,
 }
 
@@ -350,9 +350,9 @@ pub struct EndpointDriverFinalization {
 pub struct EndpointFinalizationOutcome {
     #[doc = "Carries the observations collected for `EndpointFinalizationOutcome`."]
     pub observations: EndpointDriverObservations,
-    #[doc = "Stores the request stop result associated with `EndpointFinalizationOutcome`."]
+    #[doc = "Stores the request stop result used by `EndpointFinalizationOutcome`."]
     pub request_stop_result: Result<(), EndpointFailure>,
-    #[doc = "Stores the join finalize result associated with `EndpointFinalizationOutcome`."]
+    #[doc = "Stores the join finalize result used by `EndpointFinalizationOutcome`."]
     pub join_finalize_result: Result<(), EndpointFailure>,
 }
 
@@ -399,7 +399,7 @@ pub trait RunningEndpointDriver: Send {
         self.request_stop()
     }
 
-    #[doc = "Joins `RunningEndpointDriver` and returns its finalization outcome."]
+    #[doc = "Joins and finalize for `RunningEndpointDriver`."]
     fn join_and_finalize(self: Box<Self>) -> EndpointDriverFinalization;
 }
 
@@ -462,7 +462,7 @@ pub fn endpoint_start_gate() -> (EndpointStartGateController, Arc<EndpointStartG
     )
 }
 
-#[doc = "Represents prepared endpoint in the PocketStation API."]
+#[doc = "Owns endpoint resources after preparation and before its runtime driver starts."]
 pub struct PreparedEndpoint {
     pub(crate) driver: Box<dyn PreparedEndpointDriver>,
 }
@@ -543,7 +543,7 @@ impl fmt::Display for EndpointStartFailure {
 
 impl std::error::Error for EndpointStartFailure {}
 
-#[doc = "Represents running endpoint in the PocketStation API."]
+#[doc = "Owns a started endpoint driver until shutdown and finalization complete."]
 pub struct RunningEndpoint {
     driver: Box<dyn RunningEndpointDriver>,
     shutdown_request: Option<(EndpointShutdownMode, Result<(), EndpointFailure>)>,

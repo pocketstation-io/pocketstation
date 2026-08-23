@@ -3,7 +3,13 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/runtime/audio/mod.rs",
+    "IMPORTS:src/runtime/audio/mod.rs",
+    "REFERENCES:src/runtime/audio/runner.rs",
+    "REFERENCES:src/session/prepare/error.rs",
+    "REFERENCES:src/session/prepare/prepared.rs"
+  ],
   "calls": [
     "Arc::new",
     "AudioBufferPool::new",
@@ -139,7 +145,13 @@
       "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/runtime/audio/mod.rs",
+    "IMPORTS:src/runtime/audio/mod.rs",
+    "REFERENCES:src/runtime/audio/runner.rs",
+    "REFERENCES:src/session/prepare/error.rs",
+    "REFERENCES:src/session/prepare/prepared.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AudioBufferPool::new",
@@ -462,8 +474,15 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/runtime/audio/mod.rs",
+    "IMPORTS:src/runtime/audio/mod.rs",
+    "REFERENCES:src/runtime/audio/runner.rs",
+    "REFERENCES:src/session/prepare/error.rs",
+    "REFERENCES:src/session/prepare/prepared.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -479,14 +498,26 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "2c72c6215702be536f02ca409210ea9ca799e0bb",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/runtime/audio/mod.rs",
+    "IMPORTS:src/runtime/audio/mod.rs",
+    "REFERENCES:src/runtime/audio/runner.rs",
+    "REFERENCES:src/session/prepare/error.rs",
+    "REFERENCES:src/session/prepare/prepared.rs"
+  ],
   "implements": [
     "ExecError",
     "PlanExecutionSummary",
     "RealtimePlanExecutor",
     "NodeFactory for WorkerSinkFactory"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/runtime/audio/mod.rs",
+    "IMPORTS:src/runtime/audio/mod.rs",
+    "REFERENCES:src/runtime/audio/runner.rs",
+    "REFERENCES:src/session/prepare/error.rs",
+    "REFERENCES:src/session/prepare/prepared.rs"
+  ],
   "imports": [
     "crate::frame::AudioFrame",
     "crate::frame::LineagedAudioFrame",
@@ -512,7 +543,32 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(test)]",
+    "crate::frame::AudioFrame",
+    "crate::frame::LineagedAudioFrame",
+    "crate::frame::{ AudioBufferPool, ClockDomainId, FrameLineage, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
+    "crate::graph::compile::Compiler",
+    "crate::graph::compile::RuntimePlanner",
+    "crate::graph::dsl::Pipeline",
+    "crate::graph::ir::GraphIr",
+    "crate::graph::node::PrepareContext",
+    "crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId}",
+    "crate::graph::partition::ExecutionPartition",
+    "crate::graph::plan::RuntimePlan",
+    "crate::graph::register_builtins",
+    "crate::graph::registry::NodeRegistry",
+    "crate::graph::registry::{NodeFactory, NodeRegistry}",
+    "crate::graph::runtime_node::RuntimeNode",
+    "crate::graph::spec::EdgeId",
+    "crate::graph::spec::NodeId",
+    "crate::graph::{ AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalSpec, }",
+    "crate::runtime::audio::EdgeObservations",
+    "crate::runtime::audio::{DispatchSummary, PlanEdgeFrame, PlanEdgeReceiver, PlanEdgeRouter}",
+    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
+    "std::sync::Arc",
+    "super::*",
+    "use crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId};"
   ],
   "invariants": [
     {
@@ -579,22 +635,31 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-3caaa68fb904e3dab03b",
-    "pattern-e733b10763d2378bd7b0",
     "pattern-c2561f2a635a7ffcdd4a"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(NodeError::Prepare(",
+    "enum:ExecError",
+    "fn:execute_from",
+    "fn:from_node",
+    "fn:new",
+    "fn:observations",
+    "return Err(ExecError::Node(format!(",
+    "struct:PlanExecutionSummary",
+    "struct:RealtimePlanExecutor"
   ],
   "package": "pocketstation",
   "path": "src/runtime/audio/executor.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -740,8 +805,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Realtime node execution connected by the bounded edges of a `RuntimePlan`."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::runtime::audio::executor responsibilities, including Classifies failures reported as exec error.; Reported when the owning operation encounters node.; Creates `ExecError` from node.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -797,6 +862,16 @@
     "docs/best-practices/realtime-boundaries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/graph/ir.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/plan.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/graph/runtime_node.rs",
+    "REFERENCES:src/graph/spec.rs",
+    "REFERENCES:src/runtime/audio/router.rs"
+  ],
   "resource_ownership": [
     {
       "line": 33,
@@ -816,29 +891,18 @@
     }
   ],
   "responsibilities": [
-    "ExecError",
-    "from_node",
-    "RealtimeNodeSlot",
-    "PlanExecutionSummary",
-    "observe_dispatch",
-    "RealtimePlanExecutor",
-    "new",
-    "execute_from",
-    "observations",
-    "process_and_dispatch_lineaged",
-    "tests",
-    "audio_port",
-    "WorkerSinkFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "registry",
-    "context",
-    "audio_frame",
-    "lineaged_frame",
-    "given_connected_gain_plan_when_executed_then_only_connected_nodes_run_and_worker_receives_output",
-    "given_realtime_fan_out_when_executed_then_each_mutating_branch_gets_independent_copy",
-    "given_lineaged_frame_when_realtime_operator_executes_then_output_keeps_capture_epochs"
+    "pocketstation::runtime::audio::executor::ExecError: Classifies failures reported as exec error.",
+    "pocketstation::runtime::audio::executor::ExecError::Node: Reported when the owning operation encounters node.",
+    "from_node: Creates `ExecError` from node.",
+    "pocketstation::runtime::audio::executor::PlanExecutionSummary: Reports the counters and terminal facts collected for plan execution.",
+    "PlanExecutionSummary::nodes_executed: Stores the nodes executed used by `PlanExecutionSummary`.",
+    "PlanExecutionSummary::edges_attempted: Stores the edges attempted used by `PlanExecutionSummary`.",
+    "PlanExecutionSummary::edges_enqueued: Stores the edges enqueued used by `PlanExecutionSummary`.",
+    "PlanExecutionSummary::edges_dropped: Stores the edges dropped used by `PlanExecutionSummary`.",
+    "pocketstation::runtime::audio::executor::RealtimePlanExecutor: Executes realtime plan according to its compiled plan and cancellation contract.",
+    "new: Creates a new `RealtimePlanExecutor`.",
+    "execute_from: Executes from for `RealtimePlanExecutor`.",
+    "observations: Returns the observations exposed by `RealtimePlanExecutor`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -886,7 +950,13 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-14905efc2e19f82a8cb2",
+    "test-8f6b3c13a8c5d31e5914",
+    "test-c0c81ff42570a02c1eb9",
+    "test-cd64bb966db1f193ea6f"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

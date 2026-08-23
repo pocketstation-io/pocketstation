@@ -265,6 +265,7 @@ struct TypedEdgeBranchSender {
     max_payload_bytes: usize,
 }
 
+#[doc = "Publishes one immutable signal envelope to the bounded branches of a compiled fan-out edge."]
 pub struct TypedEdgeFanout {
     branches: Vec<TypedEdgeBranchSender>,
 }
@@ -386,6 +387,7 @@ impl TypedEdgeFanout {
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[doc = "Reports how many fan-out branches accepted or dropped one published signal."]
 pub struct TypedEdgePublishReport {
     pub delivered_total: u64,
     pub dropped_total: u64,

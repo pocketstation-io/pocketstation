@@ -104,6 +104,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -126,7 +127,7 @@
     "pocketstation::{ ApplicationSelector, EndpointDescriptor, NodeTypeId, Operator, OperatorConfiguration, OperatorId, Session, Source, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "pocketstation::{ ApplicationSelector, EndpointDescriptor, NodeTypeId, Operator, OperatorConfiguration, OperatorId, Session, Source, }"
   ],
   "invariants": [],
   "language": "Rust",
@@ -144,18 +145,20 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "tests/operator_declaration.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -174,8 +177,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given public session when named operator connected then one instance owns both inputs, given public facade when typed delivery declared then internal graph is not required under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -213,10 +216,11 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "given_public_facade_when_typed_delivery_declared_then_internal_graph_is_not_required",
-    "given_public_session_when_named_operator_connected_then_one_instance_owns_both_inputs"
+    "given_public_facade_when_typed_delivery_declared_then_internal_graph_is_not_required (fn)",
+    "given_public_session_when_named_operator_connected_then_one_instance_owns_both_inputs (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -235,7 +239,11 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-9e128271c40c45bb1c0b",
+    "test-ea6acbe3b724189ac6ad"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

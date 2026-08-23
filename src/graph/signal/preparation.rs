@@ -57,17 +57,17 @@ impl AsyncOperatorPrepareContext {
         })
     }
 
-    #[doc = "Returns the execution partition associated with `AsyncOperatorPrepareContext`."]
+    #[doc = "Returns the execution partition held by `AsyncOperatorPrepareContext`."]
     pub const fn execution_partition(&self) -> ExecutionPartition {
         self.execution_partition
     }
 
-    #[doc = "Returns the inputs associated with `AsyncOperatorPrepareContext`."]
+    #[doc = "Returns the inputs held by `AsyncOperatorPrepareContext`."]
     pub fn inputs(&self) -> &[AsyncOperatorEdgePrepareContext] {
         &self.inputs
     }
 
-    #[doc = "Returns the outputs associated with `AsyncOperatorPrepareContext`."]
+    #[doc = "Returns the outputs held by `AsyncOperatorPrepareContext`."]
     pub fn outputs(&self) -> &[AsyncOperatorEdgePrepareContext] {
         &self.outputs
     }

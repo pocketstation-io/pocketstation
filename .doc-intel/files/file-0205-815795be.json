@@ -3,7 +3,14 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/connector/configuration.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs"
+  ],
   "calls": [
     "DebugValue",
     "EndpointConfiguration::new",
@@ -57,7 +64,14 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/connector/configuration.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs"
+  ],
   "constructs": [
     "EndpointConfiguration::new",
     "EndpointDescriptor::new",
@@ -432,8 +446,16 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/connector/configuration.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -447,7 +469,14 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "a4429f87da3c558e72039568448c7216096d9f9a",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/connector/configuration.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs"
+  ],
   "implements": [
     "Drop for EndpointConfigurationValue",
     "EndpointConfiguration",
@@ -455,7 +484,14 @@
     "std::fmt::Debug for DebugValue<'_>",
     "EndpointDescriptor"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/connector/configuration.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs"
+  ],
   "imports": [
     "crate::graph::OperatorId",
     "crate::graph::{EdgeContract, NodeTypeId}",
@@ -464,7 +500,12 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::graph::OperatorId",
+    "crate::graph::{EdgeContract, NodeTypeId}",
+    "crate::session::SessionError",
+    "std::collections::BTreeMap",
+    "super::*"
   ],
   "invariants": [
     {
@@ -490,18 +531,39 @@
   "module": "pocketstation::session::declaration::endpoint",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "const:BROWSER_NODE_TYPE_ID",
+    "const:BROWSER_OPERATOR_ID",
+    "const:BROWSER_RECEIVER_URI_CONFIGURATION_KEY",
+    "const:CONNECTOR_NODE_TYPE_ID",
+    "fn:configuration",
+    "fn:get",
+    "fn:input_edge",
+    "fn:is_sensitive",
+    "fn:iter",
+    "fn:new",
+    "fn:node_type_id",
+    "fn:operator_id",
+    "fn:validate",
+    "fn:with",
+    "fn:with_configuration",
+    "fn:with_input_edge",
+    "fn:with_sensitive",
+    "return Err(SessionError::InvalidEndpoint {",
+    "struct:EndpointConfiguration",
+    "struct:EndpointDescriptor"
   ],
   "package": "pocketstation",
   "path": "src/session/declaration/endpoint.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -684,7 +746,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::declaration::endpoint`."
+    "text": "Implements pocketstation::session::declaration::endpoint responsibilities, including Defines the public connector node type identifier value.; Defines the public browser node type identifier value.; Defines the public browser operator identifier value.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -746,6 +808,12 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/operator.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/session/error.rs"
+  ],
   "resource_ownership": [
     {
       "line": 24,
@@ -753,35 +821,25 @@
     }
   ],
   "responsibilities": [
-    "CONNECTOR_NODE_TYPE_ID",
-    "BROWSER_NODE_TYPE_ID",
-    "BROWSER_OPERATOR_ID",
-    "BROWSER_RECEIVER_URI_CONFIGURATION_KEY",
-    "EndpointConfiguration",
-    "EndpointConfigurationValue",
-    "drop",
-    "new",
-    "with",
-    "with_sensitive",
-    "get",
-    "is_sensitive",
-    "iter",
-    "validate",
-    "fmt",
-    "DebugValue",
-    "fmt",
-    "EndpointDescriptor",
-    "new",
-    "with_configuration",
-    "with_input_edge",
-    "node_type_id",
-    "operator_id",
-    "configuration",
-    "input_edge",
-    "validate",
-    "tests",
-    "given_endpoint_operator_id_when_imported_from_session_then_endpoint_contract_type_is_reexported",
-    "given_provider_owned_endpoint_key_when_validated_then_core_keeps_it_open"
+    "pocketstation::session::declaration::endpoint::CONNECTOR_NODE_TYPE_ID: Defines the public connector node type identifier value.",
+    "pocketstation::session::declaration::endpoint::BROWSER_NODE_TYPE_ID: Defines the public browser node type identifier value.",
+    "pocketstation::session::declaration::endpoint::BROWSER_OPERATOR_ID: Defines the public browser operator identifier value.",
+    "pocketstation::session::declaration::endpoint::EndpointConfiguration: Configures endpoint behavior at its owning API boundary.",
+    "new: Creates a new `EndpointConfiguration`.",
+    "with: Returns `EndpointConfiguration` with the supplied entry applied.",
+    "with_sensitive: Adds a setup-time value whose normal debug representation is redacted.",
+    "get: Returns the value held by `EndpointConfiguration`.",
+    "is_sensitive: Returns whether sensitive applies to `EndpointConfiguration`.",
+    "iter: Iterates over the values held by `EndpointConfiguration`.",
+    "fmt: Formats `EndpointConfiguration` with the requested formatter.",
+    "pocketstation::session::declaration::endpoint::EndpointDescriptor: Describes the endpoint descriptor contract.",
+    "new: Creates a new `EndpointDescriptor`.",
+    "with_configuration: Sets the configuration on `EndpointDescriptor` and returns the updated value.",
+    "with_input_edge: Declares the bounded delivery policy for routes entering this endpoint.",
+    "node_type_id: Returns the node type identifier held by `EndpointDescriptor`.",
+    "operator_id: Returns the operator identifier held by `EndpointDescriptor`.",
+    "configuration: Returns the configuration held by `EndpointDescriptor`.",
+    "input_edge: Returns the input edge associated with `EndpointDescriptor`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -791,7 +849,12 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-c1047cbdeb5a7bf9bc3b",
+    "test-c7f7a0c2cf17718838d1",
+    "test-fa9b9109ca59e684b0da"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

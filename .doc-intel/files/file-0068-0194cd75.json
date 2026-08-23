@@ -3,14 +3,20 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "calls": [
     "pub"
   ],
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "constructs": [],
   "content_hash": "a3099215fc78fa852a295746ab65a3fe0bcd4b020a7cd2172709e0da081da4f6",
   "defaults": [],
@@ -81,8 +87,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -96,9 +106,15 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "d8baaf5dbf0430d1f8671a5c567a527da36e6317",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "imports": [
     "module:codec",
     "module:executable_extension",
@@ -106,7 +122,10 @@
     "module:session"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "module:codec",
+    "module:executable_extension",
+    "module:extension",
+    "module:session"
   ],
   "invariants": [],
   "language": "Rust",
@@ -115,18 +134,22 @@
   "module": "pocketstation::abi",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "mod:executable_extension",
+    "mod:extension",
+    "mod:session"
   ],
   "package": "pocketstation",
   "path": "src/abi/mod.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -159,7 +182,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::abi`."
+    "text": "Implements pocketstation::abi responsibilities, including abi."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -193,12 +216,22 @@
     "docs/best-practices/native-extension-trust.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "CONTAINS:src/abi/codec.rs",
+    "CONTAINS:src/abi/executable_extension.rs",
+    "CONTAINS:src/abi/extension.rs",
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/codec.rs",
+    "IMPORTS:src/abi/executable_extension.rs",
+    "IMPORTS:src/abi/extension.rs",
+    "IMPORTS:src/abi/session/mod.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "codec",
-    "executable_extension",
-    "extension",
-    "session"
+    "codec (mod)",
+    "executable_extension (mod)",
+    "extension (mod)",
+    "session (mod)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -208,6 +241,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

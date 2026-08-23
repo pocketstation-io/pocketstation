@@ -229,7 +229,7 @@ use crate::session::{
     CONNECTOR_NODE_TYPE_ID,
 };
 
-#[doc = "Represents session in the PocketStation API."]
+#[doc = "Owns a mutable Session declaration and the host configuration used to compile, prepare, and start it."]
 pub struct Session {
     declaration: crate::session::Session,
     host_builder: Option<SessionEngineHostBuilder>,
@@ -379,7 +379,7 @@ impl Session {
         SessionBuilder::default()
     }
 
-    #[doc = "Returns the id associated with `Session`."]
+    #[doc = "Returns the id held by `Session`."]
     pub fn id(&self) -> crate::session::SessionId {
         self.declaration.id()
     }
@@ -794,7 +794,7 @@ impl Default for Session {
     }
 }
 
-#[doc = "Represents running session in the PocketStation API."]
+#[doc = "Owns a started Session together with event, polling, recording, trace, and stop resources."]
 pub struct RunningSession {
     host: SessionEngineHost,
     running: crate::session::RunningSession,
@@ -808,7 +808,7 @@ pub struct RunningSession {
 }
 
 impl RunningSession {
-    #[doc = "Returns the session identifier associated with `RunningSession`."]
+    #[doc = "Returns the session identifier held by `RunningSession`."]
     pub fn session_id(&self) -> crate::session::SessionId {
         self.running.session_id()
     }
@@ -818,12 +818,12 @@ impl RunningSession {
         self.receipt.try_poll()
     }
 
-    #[doc = "Returns the audio observations associated with `RunningSession`."]
+    #[doc = "Returns the audio observations held by `RunningSession`."]
     pub fn audio_observations(&self) -> PolledAudioObservations {
         self.receipt.observations()
     }
 
-    #[doc = "Returns the recording outcome associated with `RunningSession`."]
+    #[doc = "Returns the recording outcome held by `RunningSession`."]
     pub fn recording_outcome(&self) -> Option<&crate::session::SessionRecordingOutcome> {
         self.recording_receipt
             .as_ref()
@@ -835,12 +835,12 @@ impl RunningSession {
         self.events.try_recv()
     }
 
-    #[doc = "Returns the event observations associated with `RunningSession`."]
+    #[doc = "Returns the event observations held by `RunningSession`."]
     pub fn event_observations(&self) -> SessionEventQueueObservations {
         self.events.observations()
     }
 
-    #[doc = "Returns the metrics snapshot associated with `RunningSession`."]
+    #[doc = "Returns the metrics snapshot held by `RunningSession`."]
     pub fn metrics_snapshot(&self) -> Result<SessionMetricsSnapshot, SessionRuntimeError> {
         self.host
             .metrics_snapshot(&self.events, 0, Some(&self.running))
@@ -858,7 +858,7 @@ impl RunningSession {
         self.running.external_source_metrics()
     }
 
-    #[doc = "Returns the sidecar metrics associated with `RunningSession`."]
+    #[doc = "Returns the sidecar metrics held by `RunningSession`."]
     pub fn sidecar_metrics(&self) -> Box<[SessionSidecarMetrics]> {
         self.running.sidecar_metrics()
     }
@@ -880,7 +880,7 @@ impl RunningSession {
         self.running.try_receive_sidecar_signal(sidecar_id)
     }
 
-    #[doc = "Receives the next sidecar signal owned by `RunningSession`."]
+    #[doc = "Receives sidecar signal for `RunningSession`."]
     pub fn receive_sidecar_signal(
         &self,
         sidecar_id: u64,
@@ -899,7 +899,7 @@ impl RunningSession {
         self.running.audio_reentry_metrics()
     }
 
-    #[doc = "Returns the session trace outcome associated with `RunningSession`."]
+    #[doc = "Returns the session trace outcome held by `RunningSession`."]
     pub fn session_trace_outcome(
         &self,
     ) -> Option<Result<&SessionTraceRecorderOutcome, &SessionTraceRecorderFinishError>> {
@@ -985,7 +985,7 @@ impl SessionStartError {
         self.code
     }
 
-    #[doc = "Returns the diagnostic message associated with `SessionStartError`."]
+    #[doc = "Returns the diagnostic message reported by `SessionStartError`."]
     pub fn message(&self) -> &str {
         &self.message
     }
@@ -1072,13 +1072,13 @@ pub enum SessionEndpointError {
     #[error("Session endpoint operator id '{operator_id}' is already registered")]
     #[doc = "Reports duplicate operator identifier."]
     DuplicateOperatorId {
-        #[doc = "Identifies the operator associated with `DuplicateOperatorId`."]
+        #[doc = "Identifies the operator identifier recorded by `DuplicateOperatorId`."]
         operator_id: String,
     },
     #[error("Session endpoint node type id '{node_type_id}' is already registered")]
     #[doc = "Reports duplicate node type identifier."]
     DuplicateNodeTypeId {
-        #[doc = "Identifies the node type associated with `DuplicateNodeTypeId`."]
+        #[doc = "Identifies the node type identifier recorded by `DuplicateNodeTypeId`."]
         node_type_id: String,
     },
 }
@@ -1158,12 +1158,12 @@ pub struct SessionCancelResult {
 }
 
 impl SessionCancelResult {
-    #[doc = "Returns the disposition associated with `SessionCancelResult`."]
+    #[doc = "Returns the disposition held by `SessionCancelResult`."]
     pub fn disposition(self) -> SessionCancelDisposition {
         self.disposition
     }
 
-    #[doc = "Returns the outcome associated with `SessionCancelResult`."]
+    #[doc = "Returns the outcome held by `SessionCancelResult`."]
     pub fn outcome(self) -> SessionStopOutcome {
         self.outcome
     }
@@ -1182,12 +1182,12 @@ pub struct SessionStopResult {
 }
 
 impl SessionStopResult {
-    #[doc = "Returns the disposition associated with `SessionStopResult`."]
+    #[doc = "Returns the disposition held by `SessionStopResult`."]
     pub fn disposition(self) -> SessionStopDisposition {
         self.disposition
     }
 
-    #[doc = "Returns the outcome associated with `SessionStopResult`."]
+    #[doc = "Returns the outcome held by `SessionStopResult`."]
     pub fn outcome(self) -> SessionStopOutcome {
         self.outcome
     }

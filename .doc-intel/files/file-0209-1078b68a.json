@@ -157,6 +157,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -180,7 +181,8 @@
     "crate::session::{ ApplicationSelector, ConnectionTarget, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, SessionError, Source, StreamOrigin, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::graph::NodeTypeId",
+    "crate::session::{ ApplicationSelector, ConnectionTarget, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, SessionError, Source, StreamOrigin, }"
   ],
   "invariants": [
     {
@@ -227,20 +229,20 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-ae24beb62389597b558a"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "assert!(matches!(result, Err(SessionError::InvalidOperator { .. })));"
   ],
   "package": "pocketstation",
   "path": "src/session/declaration/tests/operator_connections.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -284,7 +286,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::declaration::tests::operator_connections`."
+    "text": "Implements pocketstation::session::declaration::tests::operator connections responsibilities, including the src/session/declaration/tests/operator connections boundary."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -344,14 +346,15 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "operator",
-    "endpoint",
-    "given_declared_operator_when_named_ports_connected_then_one_instance_owns_all_connections",
-    "given_through_sugar_when_frozen_then_canonical_instance_and_connection_records_are_used",
-    "given_duplicate_named_input_when_connected_then_declaration_fails_immediately",
-    "given_foreign_input_handle_when_connected_then_declaration_fails_before_freeze"
+    "operator (fn)",
+    "endpoint (fn)",
+    "given_declared_operator_when_named_ports_connected_then_one_instance_owns_all_connections (fn)",
+    "given_through_sugar_when_frozen_then_canonical_instance_and_connection_records_are_used (fn)",
+    "given_duplicate_named_input_when_connected_then_declaration_fails_immediately (fn)",
+    "given_foreign_input_handle_when_connected_then_declaration_fails_before_freeze (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -382,7 +385,13 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-716d5311ec84f59825a1",
+    "test-766194f5939b3ddb896d",
+    "test-858f27a0fc9c849c962b",
+    "test-f9a6ec4f71dbaf6d8083"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

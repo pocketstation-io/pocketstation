@@ -3,7 +3,14 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "calls": [
     "Application",
     "ApplicationSelector::process_instance",
@@ -58,7 +65,14 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "constructs": [
     "ProcessId::new",
     "StableSourceId::new",
@@ -433,8 +447,20 @@
       "symbol": null
     }
   ],
-  "examples_using": [],
-  "extended_by": [],
+  "example_coverage_status": "linked",
+  "examples_using": [
+    "example-1b4a3fb7b1a5a748e4c1",
+    "example-a82d1d7eb55dad246a1e",
+    "example-eb905a3d30f6d6a02264"
+  ],
+  "extended_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -448,7 +474,14 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "4d3c831bbf529460e9d01588c55427fa64ae7f52",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "implements": [
     "ProcessId",
     "DeviceId",
@@ -456,7 +489,14 @@
     "DeviceSelector",
     "Source"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "imports": [
     "crate::capture::{SourceKind, StableSourceId}",
     "crate::frame::Platform",
@@ -464,7 +504,11 @@
     "super::{ApplicationSelector, ProcessId}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::capture::{SourceKind, StableSourceId}",
+    "crate::frame::Platform",
+    "crate::session::SessionError",
+    "super::{ApplicationSelector, ProcessId}"
   ],
   "invariants": [
     {
@@ -514,18 +558,41 @@
   "module": "pocketstation::session::declaration::selector",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(SessionError::InvalidSelector {",
+    "Err(SessionError::InvalidSelector { .. })",
+    "Self::Name(name) if name.trim().is_empty() => Err(SessionError::InvalidSelector {",
+    "enum:ApplicationSelector",
+    "enum:DeviceSelector",
+    "enum:Source",
+    "fn:application",
+    "fn:as_str",
+    "fn:bundle_id",
+    "fn:default",
+    "fn:get",
+    "fn:id",
+    "fn:microphone",
+    "fn:microphone_default",
+    "fn:name",
+    "fn:new",
+    "fn:process_id",
+    "fn:process_instance",
+    "fn:stable_id",
+    "fn:validate",
+    "struct:DeviceId",
+    "struct:ProcessId"
   ],
   "package": "pocketstation",
   "path": "src/session/declaration/selector.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -690,7 +757,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::declaration::selector`."
+    "text": "Implements pocketstation::session::declaration::selector responsibilities, including Uniquely identifies process within its PocketStation ownership scope.; Creates a new `ProcessId`.; Returns the value held by `ProcessId`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -750,34 +817,42 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/capture/identity.rs",
+    "REFERENCES:src/session/error.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "ProcessId",
-    "new",
-    "get",
-    "DeviceId",
-    "new",
-    "as_str",
-    "ApplicationSelector",
-    "bundle_id",
-    "process_id",
-    "process_instance",
-    "stable_id",
-    "name",
-    "validate",
-    "DeviceSelector",
-    "default",
-    "id",
-    "validate",
-    "Source",
-    "application",
-    "microphone",
-    "microphone_default",
-    "validate",
-    "tests",
-    "given_zero_pid_when_process_instance_validated_then_selector_is_rejected",
-    "given_non_application_identity_when_process_instance_validated_then_selector_is_rejected",
-    "given_empty_stable_key_when_process_instance_validated_then_selector_is_rejected"
+    "pocketstation::session::declaration::selector::ProcessId: Uniquely identifies process within its PocketStation ownership scope.",
+    "new: Creates a new `ProcessId`.",
+    "get: Returns the value held by `ProcessId`.",
+    "pocketstation::session::declaration::selector::DeviceId: Uniquely identifies device within its PocketStation ownership scope.",
+    "new: Creates a new `DeviceId`.",
+    "as_str: Returns the stable string representation of `DeviceId`.",
+    "pocketstation::session::declaration::selector::ApplicationSelector: Enumerates the supported application selector cases.",
+    "pocketstation::session::declaration::selector::ApplicationSelector::BundleId: Selects bundle identifier behavior for `ApplicationSelector`.",
+    "pocketstation::session::declaration::selector::ApplicationSelector::ProcessId: Selects process identifier behavior for `ApplicationSelector`.",
+    "pocketstation::session::declaration::selector::ApplicationSelector::ProcessInstance: Selects process instance behavior for `ApplicationSelector`.",
+    "ApplicationSelector::ProcessInstance::process_id: Identifies the process identifier recorded by `ProcessInstance`.",
+    "ApplicationSelector::ProcessInstance::stable_id: Identifies the stable identifier recorded by `ProcessInstance`.",
+    "pocketstation::session::declaration::selector::ApplicationSelector::StableId: Selects stable identifier behavior for `ApplicationSelector`.",
+    "pocketstation::session::declaration::selector::ApplicationSelector::Name: Selects name behavior for `ApplicationSelector`.",
+    "bundle_id: Returns the bundle identifier held by `ApplicationSelector`.",
+    "process_id: Returns the process identifier held by `ApplicationSelector`.",
+    "process_instance: Creates `ApplicationSelector` for one exact process instance.",
+    "stable_id: Returns the stable identifier held by `ApplicationSelector`.",
+    "name: Returns the name associated with `ApplicationSelector`.",
+    "pocketstation::session::declaration::selector::DeviceSelector: Enumerates the supported device selector cases.",
+    "pocketstation::session::declaration::selector::DeviceSelector::Default: Selects default behavior for `DeviceSelector`.",
+    "pocketstation::session::declaration::selector::DeviceSelector::Id: Selects id behavior for `DeviceSelector`.",
+    "default: Returns the default `DeviceSelector` value.",
+    "id: Returns the id held by `DeviceSelector`.",
+    "pocketstation::session::declaration::selector::Source: Enumerates the supported source cases.",
+    "pocketstation::session::declaration::selector::Source::Application: Represents the application alternative defined by `Source`.",
+    "pocketstation::session::declaration::selector::Source::Microphone: Represents the microphone alternative defined by `Source`.",
+    "application: Returns the application held by `Source`.",
+    "microphone: Creates `Source` for the selected microphone device.",
+    "microphone_default: Creates `Source` for the host default microphone."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -800,7 +875,45 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-1633b6167eec91db04e2",
+    "test-17d9667bcb3d339c7157",
+    "test-17e4dc1ca2adbca9862d",
+    "test-2d7cf1284199bcec7268",
+    "test-2fa646ca802635256f43",
+    "test-390684dc1d26033a71fa",
+    "test-3c9cfc84af12d388d72a",
+    "test-3f174846e1cee09648ef",
+    "test-42bab06a6020bf545d3a",
+    "test-43d80b8d3e727ac91d90",
+    "test-4e0d0d85446be78e3381",
+    "test-515932a17fbda0cd662d",
+    "test-69203660038a41959c14",
+    "test-6a5d630191363f7e4442",
+    "test-6e2b2556c5e641fda848",
+    "test-716d5311ec84f59825a1",
+    "test-766194f5939b3ddb896d",
+    "test-7e1a3847baa7ae47b25a",
+    "test-858f27a0fc9c849c962b",
+    "test-8b8d343b30eac843b319",
+    "test-94e7fa143670693acd86",
+    "test-99e881c59d26f6126f74",
+    "test-9e128271c40c45bb1c0b",
+    "test-ace9b7d11da2036ce899",
+    "test-af845290a54732a7cf35",
+    "test-bec1e3cd7f059a144101",
+    "test-c03c1e7f3591b6b9a633",
+    "test-c5a9415d19c5469b6f22",
+    "test-c7deea8505c28b2f4d0d",
+    "test-c926ac54e34e42c44877",
+    "test-cdff89219c2eef8f0d45",
+    "test-dac823b98be9f727652f",
+    "test-e802cd282ad498db0074",
+    "test-e9a24a392741b4dbe6e7",
+    "test-ea6acbe3b724189ac6ad",
+    "test-f9a6ec4f71dbaf6d8083"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

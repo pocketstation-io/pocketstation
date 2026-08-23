@@ -9,7 +9,7 @@
 - **Route realtime audio.** Deliver pooled audio frames through independent fixed-capacity routes governed by explicit edge policy.
 - **Carry typed signals.** Represent audio-adjacent text, event, binary, metric, and custom-schema payloads with timing and lineage.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Architecture overview** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
 ## Ownership map
 
@@ -20,34 +20,33 @@ These statements describe repository contracts at the documented snapshot. They 
 
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
-| `audio` | module | Allocation-free realtime audio execution lane. | `src/runtime/audio/mod.rs:1` |
-| `authorization` | module | Explicit capture authorization evidence and open outcomes. | `src/capture/authorization.rs:1` |
-| `identity` | module | Stable source identity and source discovery state. | `src/capture/identity.rs:1` |
-| `lifecycle` | module | Non-realtime runtime ownership and process-protocol lifecycle. | `src/runtime/lifecycle/mod.rs:1` |
-| `lineage` | module | Compact source-aware lineage carried on realtime audio frames. | `src/frame/lineage.rs:1` |
 | `pocketstation` | module | # PocketStation | `src/lib.rs:1` |
-| `pocketstation::codec` | module | Real Opus encode, decode, and packet-loss concealment primitives. | `src/codec/mod.rs:1` |
-| `pocketstation::graph` | module | Stable signal, port, capability, partition, and extension contracts. | `src/graph/mod.rs:1` |
-| `pocketstation::timing` | module | Timing primitives owned by the PocketStation runtime. | `src/timing/mod.rs:1` |
-| `pool` | module | Fixed-capacity realtime audio storage and ownership handles. | `src/frame/pool.rs:1` |
-| `query` | module | Control-plane source discovery queries used by the first-party CLI. | `src/capture/query.rs:1` |
-| `selection` | module | Capture selection semantics; control-plane only. | `src/capture/selection.rs:1` |
-| `signal` | module | Bounded asynchronous signal execution lane. | `src/runtime/signal/mod.rs:1` |
-| `pocketstation::capture::capture_owner::ActiveCaptureBackend` | trait | Native capture resources owned for exactly one active capture. | `src/capture/capture_owner.rs:100` |
-| `pocketstation::capture::capture_owner::CallbackCaptureBackend` | trait | Platform-neutral prepare/open boundary for callback-oriented capture. | `src/capture/capture_owner.rs:83` |
-| `pocketstation::capture::capture_owner::PreparedCaptureBackend` | trait | Backend state that has passed validation but has not started delivery. | `src/capture/capture_owner.rs:88` |
-| `pocketstation::connector::worker::driver::ConnectorDriver` | trait | Provider-specific behavior executed on Core's bounded connector worker. | `src/connector/worker/driver.rs:92` |
-| `pocketstation::connector::worker::driver::ConnectorDriverFactory` | trait | Prepares provider state while Core retains receiver and lifecycle authority. | `src/connector/worker/driver.rs:123` |
-| `pocketstation::endpoint::runtime::PreparedEndpointDriver` | trait | Prepared endpoint resources that have not started consuming their edge. | `src/endpoint/runtime.rs:318` |
-| `pocketstation::endpoint::runtime::RunningEndpointDriver` | trait | Active endpoint resources owned until finalization. | `src/endpoint/runtime.rs:336` |
-| `pocketstation::graph::runtime_node::RuntimeNode` | trait | Realtime invariant: for nodes whose ExecutionClass::is_realtime is true, process() must stay alloc-free, lock-free, log-free, and blocking-free (LAW 15). All working state is sized once in prepare() and reused for the lifetime of the node. | `src/graph/runtime_node.rs:7` |
-| `pocketstation::graph::signal::operator::AsyncNode` | trait | Async operator contract for model, connector, transport, and control-plane work. | `src/graph/signal/operator.rs:13` |
-| `pocketstation::session::declaration::typed_stream::StreamSignal` | trait | Compile-time marker supplied by an SDK or external package. | `src/session/declaration/typed_stream.rs:15` |
+| `pocketstation::RunningSession` | struct | Owns a started Session together with event, polling, recording, trace, and stop resources. | `src/lib.rs:785` |
+| `pocketstation::Session` | struct | Owns a mutable Session declaration and the host configuration used to compile, prepare, and start it. | `src/lib.rs:232` |
 | `pocketstation::SessionBuilder` | struct | Setup-time configuration for the public Rust Session. | `src/lib.rs:271` |
+| `pocketstation::SessionCancelResult` | struct | Reports the structured session cancel result. | `src/lib.rs:1091` |
+| `pocketstation::SessionStartError` | struct | Stable façade error for Session startup. | `src/lib.rs:940` |
+| `pocketstation::SessionStopResult` | struct | Reports the structured session stop result. | `src/lib.rs:1111` |
+| `pocketstation::graph::compile::resolve::Compiler` | struct | Runs the ordered graph-validation passes that resolve a graph specification into executable IR. | `src/graph/compile/resolve.rs:444` |
+| `pocketstation::graph::ports::AudioCaps` | struct | Declares the sample formats, channel layouts, and rates accepted by an audio port. | `src/graph/ports.rs:48` |
+| `pocketstation::graph::ports::EdgeContract` | struct | Declares the validated constraints applied to edge. | `src/graph/ports.rs:311` |
+| `pocketstation::graph::ports::PortSpec` | struct | Configures port behavior at its owning API boundary. | `src/graph/ports.rs:175` |
+| `pocketstation::graph::signal::envelope::SignalEnvelope` | struct | Carries a typed signal payload together with timing, lineage, continuity, and terminal metadata. | `src/graph/signal/envelope.rs:6` |
+| `pocketstation::graph::signal::spec::SchemaRef` | struct | Reference to an external schema document. | `src/graph/signal/spec.rs:87` |
+| `pocketstation::graph::signal::spec::SemanticRole` | struct | Semantic role annotation on a port. | `src/graph/signal/spec.rs:57` |
+| `pocketstation::graph::signal::spec::SignalId` | struct | Opaque identifier for a custom signal type. | `src/graph/signal/spec.rs:22` |
+| `pocketstation::graph::signal::spec::SignalSpec` | struct | Full signal contract for a single port. | `src/graph/signal/spec.rs:205` |
+| `pocketstation::runtime::audio::router::DispatchSummary` | struct | Reports the counters and terminal facts collected for dispatch. | `src/runtime/audio/router.rs:667` |
+| `pocketstation::runtime::audio::router::EdgeObservations` | struct | Reports the edge observations collected at an observation boundary. | `src/runtime/audio/router.rs:122` |
+| `pocketstation::runtime::audio::router::PlanEdgeObservationHandle` | struct | Cloneable read-only access to one plan edge's authoritative live telemetry. | `src/runtime/audio/router.rs:211` |
+| `pocketstation::runtime::audio::router::PlanEdgeReceiver` | struct | Receives plan edge values across its declared ownership boundary. | `src/runtime/audio/router.rs:488` |
+| `pocketstation::runtime::audio::router::PlanEdgeRouter` | struct | Routes plan edge according to the compiled edge contracts. | `src/runtime/audio/router.rs:675` |
+| `pocketstation::runtime::audio::runner::PlanRunnerCancellation` | struct | Shares a lock-free cancellation flag between the Session owner and the realtime plan runner. | `src/runtime/audio/runner.rs:89` |
+| `pocketstation::runtime::audio::runner::PlanRunnerFinishSummary` | struct | Reports the counters and terminal facts collected for plan runner finish. | `src/runtime/audio/runner.rs:298` |
+| `pocketstation::runtime::audio::runner::PlanRunnerStepSummary` | struct | Reports the counters and terminal facts collected for plan runner step. | `src/runtime/audio/runner.rs:270` |
 
 ## Observed implementation patterns
 
-- `sidecar_isolation` — `src/connector/mod.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/runtime/audio/runner.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/session/extensions/audio_input/source.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `clock_correlation` — `src/frame/audio.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
@@ -55,32 +54,33 @@ These statements describe repository contracts at the documented snapshot. They 
 - `buffer_pool` — `examples/whisper-transcribe/src/lib.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/session/declaration/typed_stream.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/runtime/nodes.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `bounded_queue` — `tests/conformance_fixture.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `clock_correlation` — `src/session/lifecycle/running.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `src/runtime/lifecycle/async_host.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `benches/runtime_plan.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/connector/worker/endpoint_adapter.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/session/extensions/tests/runtime.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `bounded_queue` — `src/graph/ports.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `transactional_registration` — `src/session/lifecycle/events.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/session/compile/tests.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/session/extensions/tests/registry.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `tests/codec_hot_path_alloc.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `src/connector/transport.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `examples/whisper-transcribe/src/process_evidence.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/frame/pool.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `transactional_registration` — `src/session/lifecycle/endpoint_transaction.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `benches/runtime_plan.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `clock_correlation` — `src/timing/timeline_mapping.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `src/session/mod.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `src/connector/status.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `clock_correlation` — `src/timing/clock_drift.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `clock_correlation` — `src/capture/platform/macos/macos_tap.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/recording/endpoint.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `src/lib.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `buffer_pool` — `tests/public_api_boundary.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `buffer_pool` — `src/session/extensions/builtins.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `buffer_pool` — `src/graph/signal/envelope.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/graph/named_ports.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/connector/transport.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/recording/writer.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/session/lifecycle/host.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `bounded_queue` — `src/capture/platform/windows/windows.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `transactional_registration` — `src/connector/mod.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `bounded_queue` — `src/session/lifecycle/trace.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `examples/product_quickstart.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 
 ## Behavioral evidence
 
-The following test bodies are evidence only for their recorded setup:
+Executable evidence selected for **Architecture overview** is limited to each test's recorded setup and assertions:
 
 - `given_external_consumer_when_declared_then_provider_and_typed_endpoint_use_public_api` — given external consumer when declared then provider and typed endpoint use public api (`examples/operator-consumer/src/lib.rs:120`; `test-ace9b7d11da2036ce899`).
 - `given_discontinuity_change_inside_window_when_processed_then_window_is_rejected` — given discontinuity change inside window when processed then window is rejected (`examples/whisper-transcribe/src/lib.rs:1400`; `test-ecb60c6da5bff96b4580`).
@@ -97,7 +97,7 @@ The following test bodies are evidence only for their recorded setup:
 
 ## Stability boundary
 
-This page explains internals. Public compatibility comes from exported Rust declarations, the C header, manifests, error codes, and explicit compatibility artifacts—not private module layout.
+**Architecture overview** describes internal ownership. Its private module layout is not a compatibility promise; compatibility comes from exported Rust declarations, the C header, manifests, error codes, and explicit compatibility artifacts.
 
 ## Related documentation
 
@@ -112,9 +112,9 @@ This page explains internals. Public compatibility comes from exported Rust decl
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Architecture overview** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/lib.rs:1-1129` (`DIRECT`)
 - `src/runtime/mod.rs:1-20` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Architecture overview**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -14,6 +14,7 @@ use crate::session::{
     OperatorInstanceId, PreparedSession, SessionEventReceiver, SessionRollbackFailure, Source,
 };
 
+#[doc = "Supplies the application and microphone capture backends used while preparing a Session."]
 pub struct CaptureBackendSet<'backend> {
     pub application: &'backend dyn CallbackCaptureBackend,
     pub microphone: &'backend dyn CallbackCaptureBackend,
@@ -166,7 +167,7 @@ pub enum SessionStartError {
     #[error("operator {operator_instance_id:?} preparation failed: {message}")]
     #[doc = "Reports operator prepare."]
     OperatorPrepare {
-        #[doc = "Identifies the operator instance associated with `OperatorPrepare`."]
+        #[doc = "Identifies the operator instance identifier recorded by `OperatorPrepare`."]
         operator_instance_id: OperatorInstanceId,
         #[doc = "Carries the diagnostic message reported by `OperatorPrepare`."]
         message: String,
@@ -176,14 +177,14 @@ pub enum SessionStartError {
     #[error("endpoint {endpoint_id:?} declaration is absent")]
     #[doc = "Reports missing endpoint declaration."]
     MissingEndpointDeclaration {
-        #[doc = "Identifies the endpoint associated with `MissingEndpointDeclaration`."]
+        #[doc = "Identifies the endpoint identifier recorded by `MissingEndpointDeclaration`."]
         endpoint_id: EndpointId,
     },
     #[error("endpoint preparation failed: {source}")]
     #[doc = "Reports endpoint prepare."]
     EndpointPrepare {
         #[source]
-        #[doc = "Carries the source associated with `EndpointPrepare`."]
+        #[doc = "Carries the source selected for `EndpointPrepare`."]
         source: EndpointPrepareError,
         #[doc = "Counts the total number of rollback failures observed by `EndpointPrepare`."]
         rollback_failures_total: u64,
@@ -191,10 +192,10 @@ pub enum SessionStartError {
     #[error("capture preparation failed for stem {stem_id:?}: {source}")]
     #[doc = "Reports capture prepare."]
     CapturePrepare {
-        #[doc = "Identifies the stem associated with `CapturePrepare`."]
+        #[doc = "Identifies the stem identifier recorded by `CapturePrepare`."]
         stem_id: StemId,
         #[source]
-        #[doc = "Carries the source associated with `CapturePrepare`."]
+        #[doc = "Carries the source selected for `CapturePrepare`."]
         source: CaptureError,
         #[doc = "Counts the total number of rollback failures observed by `CapturePrepare`."]
         rollback_failures_total: u64,
@@ -202,10 +203,10 @@ pub enum SessionStartError {
     #[error("capture open failed for stem {stem_id:?}: {source}")]
     #[doc = "Reports capture open."]
     CaptureOpen {
-        #[doc = "Identifies the stem associated with `CaptureOpen`."]
+        #[doc = "Identifies the stem identifier recorded by `CaptureOpen`."]
         stem_id: StemId,
         #[source]
-        #[doc = "Carries the source associated with `CaptureOpen`."]
+        #[doc = "Carries the source selected for `CaptureOpen`."]
         source: CaptureError,
         #[doc = "Counts the total number of rollback failures observed by `CaptureOpen`."]
         rollback_failures_total: u64,
@@ -214,7 +215,7 @@ pub enum SessionStartError {
     #[doc = "Reports endpoint start."]
     EndpointStart {
         #[source]
-        #[doc = "Carries the source associated with `EndpointStart`."]
+        #[doc = "Carries the source selected for `EndpointStart`."]
         source: EndpointStartFailure,
         #[doc = "Counts the total number of rollback failures observed by `EndpointStart`."]
         rollback_failures_total: u64,
@@ -223,7 +224,7 @@ pub enum SessionStartError {
     #[doc = "Reports runtime runner."]
     RuntimeRunner {
         #[source]
-        #[doc = "Carries the source associated with `RuntimeRunner`."]
+        #[doc = "Carries the source selected for `RuntimeRunner`."]
         source: PlanRunnerError,
         #[doc = "Counts the total number of rollback failures observed by `RuntimeRunner`."]
         rollback_failures_total: u64,
@@ -388,42 +389,42 @@ impl SessionStopOutcome {
             && self.source_send_rejections_total == 0
     }
 
-    #[doc = "Returns the capture finalization failures total associated with `SessionStopOutcome`."]
+    #[doc = "Returns the capture finalization failures total held by `SessionStopOutcome`."]
     pub const fn capture_finalization_failures_total(&self) -> u64 {
         self.capture_finalization_failures_total
     }
 
-    #[doc = "Returns the endpoint finalization failures total associated with `SessionStopOutcome`."]
+    #[doc = "Returns the endpoint finalization failures total held by `SessionStopOutcome`."]
     pub const fn endpoint_finalization_failures_total(&self) -> u64 {
         self.endpoint_finalization_failures_total
     }
 
-    #[doc = "Returns the operator finalization failures total associated with `SessionStopOutcome`."]
+    #[doc = "Returns the operator finalization failures total held by `SessionStopOutcome`."]
     pub const fn operator_finalization_failures_total(&self) -> u64 {
         self.operator_finalization_failures_total
     }
 
-    #[doc = "Returns the runtime worker panicked associated with `SessionStopOutcome`."]
+    #[doc = "Returns whether runtime worker panicked is true for `SessionStopOutcome`."]
     pub const fn runtime_worker_panicked(&self) -> bool {
         self.runtime_worker_panicked
     }
 
-    #[doc = "Returns the runtime failures total associated with `SessionStopOutcome`."]
+    #[doc = "Returns the runtime failures total held by `SessionStopOutcome`."]
     pub const fn runtime_failures_total(&self) -> u64 {
         self.runtime_failures_total
     }
 
-    #[doc = "Returns the lineage failures total associated with `SessionStopOutcome`."]
+    #[doc = "Returns the lineage failures total held by `SessionStopOutcome`."]
     pub const fn lineage_failures_total(&self) -> u64 {
         self.lineage_failures_total
     }
 
-    #[doc = "Returns the source send rejections total associated with `SessionStopOutcome`."]
+    #[doc = "Returns the source send rejections total held by `SessionStopOutcome`."]
     pub const fn source_send_rejections_total(&self) -> u64 {
         self.source_send_rejections_total
     }
 
-    #[doc = "Returns the runtime events total associated with `SessionStopOutcome`."]
+    #[doc = "Returns the runtime events total held by `SessionStopOutcome`."]
     pub const fn runtime_events_total(&self) -> u64 {
         self.runtime_events_total
     }

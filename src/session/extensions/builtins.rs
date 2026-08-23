@@ -32,7 +32,7 @@ pub enum SessionGraphRegistrationError {
     #[error("Session structural node type '{node_type_id}' is already registered")]
     #[doc = "Reports duplicate node type."]
     DuplicateNodeType {
-        #[doc = "Identifies the node type associated with `DuplicateNodeType`."]
+        #[doc = "Identifies the node type identifier recorded by `DuplicateNodeType`."]
         node_type_id: String,
     },
 }

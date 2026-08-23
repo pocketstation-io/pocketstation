@@ -2,48 +2,33 @@
 
 <!-- claims: CLM-BEST-003-CAP-001,CLM-BEST-003-CAP-002,CLM-BEST-003-CAP-003,CLM-BEST-003-SOURCE-001 -->
 
+## Problem
+
+Flattening frames into anonymous PCM removes the evidence needed to distinguish sources, generations, routes, and discontinuities.
+
 ## Recommendation
 
-Retain source, stream, stem, generation, clock, sequence, and derivation identity instead of flattening frames into anonymous PCM.
+Preserve Session, source, stem, stream, route, clock, sequence, generation, and derivation identity through every transformation.
 
-## Why
+## Reason
 
-The repository makes capacity, ownership, identity, lifecycle, and evidence boundaries explicit so failures remain attributable. Bypassing them removes observations and typed outcomes needed for diagnosis.
+Lineage lets recordings, operators, and diagnostics attribute output to the exact upstream source state.
 
 ## Tradeoff
 
-The recommendation requires explicit configuration and result handling. It does not promise that one capacity, retry budget, selector, or shutdown policy fits every workload. Measure within the API's stated scope.
+Retaining metadata costs storage and requires transformations to propagate it correctly.
 
 ## When it does not apply
 
-Do not apply a realtime, connector, capture, or extension rule to another lane or boundary unless it exposes the same contract. An internal pattern is not automatically a public recommendation.
+A final export format may omit internal identity when that loss is explicit and no later diagnostic depends on it.
 
 ## Repository evidence
 
-- `clock_correlation` at `src/frame/audio.rs` (`pattern-0311869ce2fb5212a274`).
-- `typed_error` at `src/capture/platform/macos/session_backend.rs` (`pattern-035a929706d6f2663fc7`).
-- `typed_error` at `src/frame/pool.rs` (`pattern-145c92021b15c7666c35`).
-- `clock_correlation` at `src/capture/platform/macos/macos_tap.rs` (`pattern-23af111759191a2f8466`).
-- `bounded_queue` at `src/capture/platform/windows/windows.rs` (`pattern-309edebd4b99b7fb4fa4`).
-- `buffer_pool` at `src/capture/frame_stream.rs` (`pattern-4ebf36dac7fcbed340c2`).
 - `clock_correlation` at `src/frame/lineage.rs` (`pattern-503fc1d95fe068d3ac6f`).
-- `typed_error` at `src/capture/platform/macos/loopback.rs` (`pattern-55b152cec6c363114987`).
-- `buffer_pool` at `benches/capture_to_stream.rs` (`pattern-56f8584f50d6f6096f99`).
-- `buffer_pool` at `src/capture/observations.rs` (`pattern-593c226a7db903f9671d`).
-- `bounded_queue` at `src/capture/events.rs` (`pattern-5f72bbb5f3b23f8d98e0`).
-- `typed_error` at `src/capture/authorization.rs` (`pattern-60b331af4808cc0a57a0`).
-- `buffer_pool` at `src/capture/platform/macos/input.rs` (`pattern-60de980358115d0b3e5b`).
-- `typed_error` at `src/capture/platform/macos/input.rs` (`pattern-62b059719a1f9dafb171`).
-- `buffer_pool` at `tests/capture_hot_path_alloc.rs` (`pattern-6c7ca1b02510b89f5480`).
-- `typed_error` at `src/capture/capture_owner.rs` (`pattern-759bee11ea894801e9d4`).
-- `clock_correlation` at `src/capture/timeline.rs` (`pattern-85798d9f164c752449ba`).
-- `clock_correlation` at `src/capture/tests.rs` (`pattern-87f80c5f5df30e1c05d6`).
-- `buffer_pool` at `benches/audio_buffer_pool.rs` (`pattern-88d5d10d4c8e80149f0f`).
-- `buffer_pool` at `src/frame/audio.rs` (`pattern-8c2dc4f399c8eb61d8ce`).
 
 ## Executable evidence
 
-The following test bodies are evidence only for their recorded setup:
+Executable evidence selected for **Preserve source identity** is limited to each test's recorded setup and assertions:
 
 - `given_backend_frame_when_source_differs_from_open_identity_then_lineage_fails_closed` — given backend frame when source differs from open identity then lineage fails closed (`src/capture/capture_owner.rs:511`; `test-a8dbef4f3b61c752ce0e`).
 - `given_missing_exact_source_when_classified_then_stable_key_is_preserved` — given missing exact source when classified then stable key is preserved (`src/capture/platform/linux/pipewire.rs:1894`; `test-50620fcc9117c7ad3cf6`).
@@ -71,9 +56,9 @@ The following test bodies are evidence only for their recorded setup:
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Preserve source identity** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/capture/identity.rs:1-166` (`DIRECT`)
 - `src/frame/lineage.rs:1-101` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Preserve source identity**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

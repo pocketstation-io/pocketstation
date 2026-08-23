@@ -16,18 +16,28 @@ use crate::runtime::{
 const LOST_WAKEUP_FALLBACK_INTERVAL: Duration = Duration::from_millis(100);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Configures generated audio bridge behavior at its owning API boundary."]
 pub struct GeneratedAudioBridgeSpec {
+    #[doc = "Identifies the session identifier recorded by `GeneratedAudioBridgeSpec`."]
     pub session_id: SessionId,
+    #[doc = "Identifies the stem identifier recorded by `GeneratedAudioBridgeSpec`."]
     pub stem_id: StemId,
+    #[doc = "Identifies the stream identifier recorded by `GeneratedAudioBridgeSpec`."]
     pub stream_id: StreamId,
+    #[doc = "Identifies the source identifier recorded by `GeneratedAudioBridgeSpec`."]
     pub source_id: SourceId,
+    #[doc = "Identifies the clock identifier recorded by `GeneratedAudioBridgeSpec`."]
     pub clock_id: ClockDomainId,
+    #[doc = "Stores the sample spec used by `GeneratedAudioBridgeSpec`."]
     pub sample_spec: SampleSpec,
+    #[doc = "Stores the samples per frame used by `GeneratedAudioBridgeSpec`."]
     pub samples_per_frame: usize,
+    #[doc = "Stores the pool slots used by `GeneratedAudioBridgeSpec`."]
     pub pool_slots: usize,
 }
 
 impl GeneratedAudioBridgeSpec {
+    #[doc = "Validates `GeneratedAudioBridgeSpec` against its declared contract."]
     pub fn validate(self) -> Result<(), GeneratedAudioBridgeStartError> {
         if self.sample_spec.sample_rate_hz == 0 || self.sample_spec.channels == 0 {
             return Err(GeneratedAudioBridgeStartError::InvalidSampleSpec);
@@ -43,14 +53,19 @@ impl GeneratedAudioBridgeSpec {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as generated audio bridge start error."]
 pub enum GeneratedAudioBridgeStartError {
     #[error("generated-audio bridge sample rate and channel count must be non-zero")]
+    #[doc = "Reported when the owning operation encounters invalid sample spec."]
     InvalidSampleSpec,
     #[error("generated-audio bridge samples per frame must be non-zero")]
+    #[doc = "Reported when the owning operation encounters zero frame samples."]
     ZeroFrameSamples,
     #[error("generated-audio bridge pool slots must be between 1 and 64")]
+    #[doc = "Reported when the owning operation encounters invalid pool slots."]
     InvalidPoolSlots,
     #[error("generated-audio bridge worker thread could not start")]
+    #[doc = "Reported when the owning operation encounters thread start."]
     ThreadStart,
 }
 
@@ -120,6 +135,7 @@ impl GeneratedAudioBridgeObservationHandle {
     }
 }
 
+#[doc = "Transfers generated audio across the bounded runtime boundary it owns."]
 pub struct GeneratedAudioBridge {
     stem_id: StemId,
     cancellation: Arc<AtomicBool>,
@@ -128,6 +144,7 @@ pub struct GeneratedAudioBridge {
 }
 
 impl GeneratedAudioBridge {
+    #[doc = "Spawns its owned operation for `GeneratedAudioBridge`."]
     pub fn spawn(
         receiver: TypedEdgeReceiver,
         sender: PlanSourceSender,
@@ -175,12 +192,14 @@ impl GeneratedAudioBridge {
         self.observations.clone()
     }
 
+    #[doc = "Finishes input to `GeneratedAudioBridge`, joins its worker, and returns the terminal result."]
     pub fn finish_and_join(mut self) {
         if let Some(join) = self.join.take() {
             let _ = join.join();
         }
     }
 
+    #[doc = "Cancels and join for `GeneratedAudioBridge`."]
     pub fn cancel_and_join(mut self) {
         self.cancellation.store(true, Ordering::Release);
         if let Some(join) = self.join.take() {
@@ -190,6 +209,7 @@ impl GeneratedAudioBridge {
 }
 
 impl Drop for GeneratedAudioBridge {
+    #[doc = "Releases resources owned by `GeneratedAudioBridge`."]
     fn drop(&mut self) {
         self.cancellation.store(true, Ordering::Release);
         if let Some(join) = self.join.take() {

@@ -159,7 +159,7 @@ impl ConnectorObservationHandle {
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[doc = "Reports the connector observations collected at an observation boundary."]
 pub struct ConnectorObservations {
-    #[doc = "Stores the service status associated with `ConnectorObservations`."]
+    #[doc = "Stores the service status used by `ConnectorObservations`."]
     pub service_status: ConnectorServiceStatus,
     #[doc = "Counts the total number of status transitions observed by `ConnectorObservations`."]
     pub status_transitions_total: u64,
@@ -176,11 +176,11 @@ pub struct ConnectorObservations {
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[doc = "Reports the connector runtime observations collected at an observation boundary."]
 pub struct ConnectorRuntimeObservations {
-    #[doc = "Identifies the endpoint associated with `ConnectorRuntimeObservations`."]
+    #[doc = "Identifies the endpoint identifiers recorded by `ConnectorRuntimeObservations`."]
     pub endpoint_ids: Arc<[EndpointId]>,
-    #[doc = "Stores the connector associated with `ConnectorRuntimeObservations`."]
+    #[doc = "Stores the connector used by `ConnectorRuntimeObservations`."]
     pub connector: ConnectorObservations,
-    #[doc = "Stores the endpoint associated with `ConnectorRuntimeObservations`."]
+    #[doc = "Stores the endpoint used by `ConnectorRuntimeObservations`."]
     pub endpoint: EndpointDriverObservations,
 }
 

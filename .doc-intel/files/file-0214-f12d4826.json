@@ -3,7 +3,13 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/audio_input/buffer.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs"
+  ],
   "calls": [
     "capacity_frames",
     "checked_mul",
@@ -35,7 +41,13 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/audio_input/buffer.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs"
+  ],
   "constructs": [
     "new",
     "usize::from"
@@ -335,8 +347,15 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/audio_input/buffer.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -355,13 +374,25 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "a9fbc63691865f9f2d453a723ae9e8e4dfedb8f8",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/audio_input/buffer.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs"
+  ],
   "implements": [
     "AudioInputConfig",
     "AudioInput",
     "fmt::Debug for AudioInput"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/audio_input/buffer.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs"
+  ],
   "imports": [
     "buffer::{ AudioInputBuffer, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputObservations, AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, }",
     "crate::session::declaration::{SourceInstanceHandle, SourceOutputHandle}",
@@ -373,7 +404,14 @@
     "std::fmt"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "buffer::{ AudioInputBuffer, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputObservations, AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, }",
+    "crate::session::declaration::{SourceInstanceHandle, SourceOutputHandle}",
+    "crate::{SampleFormat, SampleSpec}",
+    "module:buffer",
+    "module:source",
+    "source::AudioInputFactory",
+    "source::{AudioInputError, PcmSource}",
+    "std::fmt"
   ],
   "invariants": [
     {
@@ -395,18 +433,41 @@
   "module": "pocketstation::session::extensions::audio_input",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "const:PCM_SOURCE_TYPE_ID",
+    "enum:AudioInputConfigError",
+    "fn:capacity_frames",
+    "fn:close",
+    "fn:frame_samples_per_channel",
+    "fn:interleaved_samples_per_frame",
+    "fn:into_pcm_source",
+    "fn:new",
+    "fn:observations",
+    "fn:output",
+    "fn:sample_spec",
+    "fn:source",
+    "fn:try_acquire",
+    "fn:try_send",
+    "fn:try_write",
+    "return Err(AudioInputConfigError::InvalidCapacity);",
+    "return Err(AudioInputConfigError::UnsupportedChannelCount);",
+    "return Err(AudioInputConfigError::UnsupportedSampleFormat);",
+    "return Err(AudioInputConfigError::ZeroFrameSamples);",
+    "return Err(AudioInputConfigError::ZeroSampleRate);",
+    "struct:AudioInput",
+    "struct:AudioInputConfig"
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/audio_input/mod.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -547,7 +608,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::extensions::audio_input`."
+    "text": "Implements pocketstation::session::extensions::audio input responsibilities, including Stable runtime identity of the underlying PCM source implementation.; Configures audio input behavior at its owning API boundary.; Creates a new `AudioInputConfig`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -609,30 +670,41 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "CONTAINS:src/session/extensions/audio_input/buffer.rs",
+    "CONTAINS:src/session/extensions/audio_input/source.rs",
+    "IMPORTS:src/session/extensions/audio_input/buffer.rs",
+    "IMPORTS:src/session/extensions/audio_input/source.rs",
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/extensions/audio_input/buffer.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "buffer",
-    "source",
-    "MAX_CAPACITY_FRAMES",
-    "PCM_SOURCE_TYPE_ID",
-    "AudioInputConfig",
-    "new",
-    "sample_spec",
-    "capacity_frames",
-    "frame_samples_per_channel",
-    "interleaved_samples_per_frame",
-    "AudioInputConfigError",
-    "AudioInput",
-    "new",
-    "source",
-    "output",
-    "try_acquire",
-    "try_write",
-    "try_send",
-    "close",
-    "observations",
-    "into_pcm_source",
-    "fmt"
+    "pocketstation::session::extensions::audio_input::PCM_SOURCE_TYPE_ID: Stable runtime identity of the underlying PCM source implementation.",
+    "pocketstation::session::extensions::audio_input::AudioInputConfig: Configures audio input behavior at its owning API boundary.",
+    "new: Creates a new `AudioInputConfig`.",
+    "sample_spec: Returns the sample spec held by `AudioInputConfig`.",
+    "capacity_frames: Returns the capacity frames held by `AudioInputConfig`.",
+    "frame_samples_per_channel: Returns the frame samples per channel associated with `AudioInputConfig`.",
+    "pocketstation::session::extensions::audio_input::AudioInputConfigError: Classifies failures reported as audio input config error.",
+    "pocketstation::session::extensions::audio_input::AudioInputConfigError::ZeroSampleRate: Reported when the owning operation encounters zero sample rate.",
+    "pocketstation::session::extensions::audio_input::AudioInputConfigError::UnsupportedChannelCount: Reported when the owning operation encounters unsupported channel count.",
+    "pocketstation::session::extensions::audio_input::AudioInputConfigError::UnsupportedSampleFormat: Reported when the owning operation encounters unsupported sample format.",
+    "pocketstation::session::extensions::audio_input::AudioInputConfigError::InvalidCapacity: Reported when the owning operation encounters invalid capacity.",
+    "pocketstation::session::extensions::audio_input::AudioInputConfigError::ZeroFrameSamples: Reported when the owning operation encounters zero frame samples.",
+    "pocketstation::session::extensions::audio_input::AudioInputConfigError::FrameSampleCountOverflow: Reported when the owning operation encounters frame sample count overflow.",
+    "pocketstation::session::extensions::audio_input::AudioInput: Intent-first fa\u00e7ade for feeding audio already owned by the embedding",
+    "source: Returns the source held by `AudioInput`.",
+    "output: Returns the output held by `AudioInput`.",
+    "try_acquire: Acquires one preallocated buffer owned by this input.",
+    "try_write: Writes one complete interleaved frame without blocking.",
+    "try_send: Submits one previously acquired buffer without blocking.",
+    "close: Closes this application-owned input after its accepted frames drain.",
+    "observations: Returns the observations exposed by `AudioInput`.",
+    "into_pcm_source: Converts the convenience fa\u00e7ade into explicit source, output, and",
+    "fmt: Formats `AudioInput` with the requested formatter."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -642,6 +714,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

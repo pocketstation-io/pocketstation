@@ -2,31 +2,35 @@
 
 <!-- claims: CLM-TRBL-009-CAP-001,CLM-TRBL-009-CAP-002,CLM-TRBL-009-CAP-003,CLM-TRBL-009-SOURCE-001 -->
 
-Use this page when you observe **a native extension does not load**. Diagnose the reported stage and identity before changing route, source, connector, or lifecycle policy.
+## Symptom
 
-## Distinguish the cause
+Loading a native extension returns a path, library, ABI, descriptor, or registration error.
 
-Check absolute path, canonicalization, regular-file, library-load, entrypoint, ABI-version, descriptor, and registration errors in their reported order.
+## Evidenced causes
+
+- The path is relative, cannot be canonicalized, or is not a regular file.
+- The dynamic loader cannot open the library or find the required entry point.
+- The ABI version or descriptor is incompatible.
+- Registration conflicts and transaction rollback runs.
+
+## Distinguish the causes
+
+Follow the reported stages in order: path validation, library load, entry point, ABI, descriptor, registration, rollback.
 
 ## Diagnostic signals
 
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `UnsupportedAbiMinor` (`error-1a38891e490c637fd1f2`)
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` (`error-1a6a79718688c3bd3715`)
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `InvalidLibraryDescriptor` (`error-1f5abab34214f5b63b01`)
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `InvalidRegistration` (`error-1fc53703fe6fb00d8fab`)
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `RegistrationAcquisitionFailed` (`error-21780b72885c9e29a71c`)
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `DuplicateRegistration` (`error-3ea568577af25a2fc5e6`)
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `EntrypointFailed` (`error-480de969fd202f51c549`)
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `EntrypointPanicked` (`error-527bf9a9b68ccbda6c90`)
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `PathNotAbsolute` (`error-6baafa30dcc94f68cad3`)
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `PathCanonicalizationFailed` (`error-735365ce5d41572f06f2`)
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `PathNotFile` (`error-76f6466e465a0d7a52d9`)
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `RegistrationAcquisitionPanicked` (`error-86e449bc7fc67119dab5`)
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `EntrypointMissing` (`error-b09bbf6a2e20bddb6588`)
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `UnsupportedAbiMajor` (`error-bbda4884c178e8e9698d`)
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `RegistrationStateUnavailable` (`error-c7729f534adabf1f25cb`)
-- `pocketstation::native_extension::NativeExtensionLibraryError` (`error-c8625ea4d5c0a2384c45`)
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `LibraryLoadFailed` (`error-fda081be8f949890171b`)
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `LibraryLoadFailed` (`error-565dce9eae9619340a07`)
+- `pocketstation::native_extension::NativeExtensionLibraryError` (`error-3f67c43b32f6fcad4623`)
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` (`error-e8cfe53ac16a24ec271a`)
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `DuplicateRegistration` (`error-ae300d01d210d603e094`)
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `EntrypointFailed` (`error-62cf0cb93419ca1b424f`)
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `EntrypointMissing` (`error-8055e200b698a55ee9e7`)
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `EntrypointPanicked` (`error-09da0172ff632c40da5e`)
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `InvalidLibraryDescriptor` (`error-32deb305311b19362a8f`)
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `InvalidRegistration` (`error-f891b63a492cbaf2009f`)
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `PathCanonicalizationFailed` (`error-39b8d96537c461086e6c`)
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `PathNotAbsolute` (`error-9aed4d89020aafc100ff`)
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `PathNotFile` (`error-eef8f8fbabb3ea4776ae`)
 
 ## Executable evidence
 
@@ -46,13 +50,18 @@ Check absolute path, canonicalization, regular-file, library-load, entrypoint, A
 - `given_encoder_when_destroy_null_then_no_crash` exercises given encoder when destroy null then no crash under its recorded setup (`test-c5614104f53b6b245bfd`).
 - `given_invalid_channel_count_when_create_then_returns_null` exercises given invalid channel count when create then returns null under its recorded setup (`test-736ddd354b42f58df4ad`).
 
-## Corrective action and retry
+## Corrective action
 
-Apply only the action implied by the typed failure or violated precondition. Retry is not safe merely because a failure appears transient. When retryability or recovery is unknown, preserve the failure for application policy or maintainer review.
+Use a trusted canonical absolute library built for the target and correct the first failing ABI or registration contract.
 
-## Data and state
+## Retry and incomplete state
 
-Treat frames, signals, files, acknowledgements, and finalization results produced before failure as potentially partial unless the terminal contract says otherwise. Inspect per-route, per-stem, and per-component outcomes.
+Do not repeatedly execute an untrusted or incompatible library. Failed registration is not partial success unless the receipt and registry prove otherwise.
+
+## Related reference
+
+- [Native Extensions](/docs/concepts/native-extensions.md)
+- [Native Extensions](/docs/reference/native-extensions.md)
 
 ## Related documentation
 
@@ -67,8 +76,8 @@ Treat frames, signals, files, acknowledgements, and finalization results produce
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **A native extension does not load** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/native_extension/library.rs:1-272` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **A native extension does not load**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

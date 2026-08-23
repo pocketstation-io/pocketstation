@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs"
+  ],
   "calls": [
     "Arc::new",
     "Box::new",
@@ -85,7 +88,10 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs"
+  ],
   "constructs": [
     "Arc::new",
     "Box::new",
@@ -357,8 +363,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -372,13 +382,19 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "017a04df9dd6bab3dfe911889e11c8fa6290fa0c",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs"
+  ],
   "implements": [
     "SidecarConnectorDriverFactory",
     "ConnectorDriverFactory for SidecarConnectorDriverFactory",
     "ConnectorDriver for SidecarConnectorDriver"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs"
+  ],
   "imports": [
     "crate::runtime::SidecarHost",
     "crate::{ EndpointGroupId, EndpointPreparationGroup, EndpointShutdownMode, RouteId, SidecarHostError, SidecarMessage, SidecarMessageKind, SidecarProcessSpec, SidecarProtocolLimits, SignalPayload, }",
@@ -387,7 +403,12 @@
     "super::{ ConnectorAudioRecord, ConnectorConfigurationRecord, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorError, ConnectorErrorStage, ConnectorInputDescriptor, ConnectorItem, ConnectorRetryability, ResolvedConnectorConfiguration, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::runtime::SidecarHost",
+    "crate::{ EndpointGroupId, EndpointPreparationGroup, EndpointShutdownMode, RouteId, SidecarHostError, SidecarMessage, SidecarMessageKind, SidecarProcessSpec, SidecarProtocolLimits, SignalPayload, }",
+    "std::sync::Arc",
+    "super::*",
+    "super::{ ConnectorAudioRecord, ConnectorConfigurationRecord, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorError, ConnectorErrorStage, ConnectorInputDescriptor, ConnectorItem, ConnectorRetryability, ResolvedConnectorConfiguration, }"
   ],
   "invariants": [
     {
@@ -409,21 +430,32 @@
   "module": "pocketstation::connector::sidecar",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-3d974f8a195e8a91eecd",
     "pattern-aa4acf0858d935d02808"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(SidecarHostError::DataQueueFull) => Ok(ConnectorDeliveryOutcome::Dropped),",
+    "Err(error) => Err(sidecar_error(",
+    "Err(error) => error,",
+    "const:CONNECTOR_AUDIO_RECORD_SCHEMA",
+    "const:CONNECTOR_AUDIO_RECORD_SIGNAL_ID",
+    "fn:new",
+    "fn:process",
+    "fn:sidecar_connector_factory",
+    "return Err(connector_error(",
+    "struct:SidecarConnectorDriverFactory"
   ],
   "package": "pocketstation",
   "path": "src/connector/sidecar.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -550,7 +582,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::connector::sidecar`."
+    "text": "Implements pocketstation::connector::sidecar responsibilities, including Defines the public connector audio record signal identifier value.; Defines the public connector audio record schema value.; Adapts a bounded PocketStation sidecar process to the Connector driver SPI.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -592,6 +624,17 @@
     "docs/best-practices/connector-retries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/connector/configuration.rs",
+    "REFERENCES:src/connector/error.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/endpoint/identity.rs",
+    "REFERENCES:src/endpoint/runtime.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/runtime/lifecycle/sidecar_host.rs",
+    "REFERENCES:src/runtime/lifecycle/sidecar_protocol.rs"
+  ],
   "resource_ownership": [
     {
       "line": 1,
@@ -619,24 +662,14 @@
     }
   ],
   "responsibilities": [
-    "CONNECTOR_AUDIO_RECORD_SIGNAL_ID",
-    "CONNECTOR_AUDIO_RECORD_SCHEMA",
-    "SidecarConnectorDriverFactory",
-    "new",
-    "process",
-    "preparation_group",
-    "prepare",
-    "SidecarConnectorDriver",
-    "deliver",
-    "shutdown",
-    "cancel_preparation",
-    "message_from_item",
-    "sidecar_error",
-    "connector_error",
-    "sidecar_connector_factory",
-    "tests",
-    "given_empty_input_group_when_sidecar_prepares_then_structured_error_is_returned",
-    "given_sidecar_host_errors_when_classified_then_retryability_is_preserved"
+    "pocketstation::connector::sidecar::CONNECTOR_AUDIO_RECORD_SIGNAL_ID: Defines the public connector audio record signal identifier value.",
+    "pocketstation::connector::sidecar::CONNECTOR_AUDIO_RECORD_SCHEMA: Defines the public connector audio record schema value.",
+    "pocketstation::connector::sidecar::SidecarConnectorDriverFactory: Adapts a bounded PocketStation sidecar process to the Connector driver SPI.",
+    "new: Creates a new `SidecarConnectorDriverFactory`.",
+    "process: Processes an input value through `SidecarConnectorDriverFactory`.",
+    "preparation_group: Returns the preparation group associated with `SidecarConnectorDriverFactory`.",
+    "prepare: Prepares resources required by `SidecarConnectorDriverFactory`.",
+    "pocketstation::connector::sidecar::sidecar_connector_factory: Creates a connector driver factory backed by the supplied sidecar process."
   ],
   "retry_behavior": [],
   "serialization": [
@@ -690,7 +723,12 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-49bd18fb96d67fdba9bf",
+    "test-98ad8a10ce6f978fe856",
+    "test-ae5c25d0ba6141b1a13a"
+  ],
   "threads": [
     {
       "line": 85,

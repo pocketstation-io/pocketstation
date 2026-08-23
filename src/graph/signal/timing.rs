@@ -3,7 +3,7 @@
 use crate::frame::FrameLineage;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Represents signal timing in the PocketStation API."]
+#[doc = "Carries a signal timestamp, clock domain, and timing semantics without rewriting source lineage."]
 pub struct SignalTiming {
     pub(crate) source_timestamp_ns: Option<u64>,
     pub(crate) observed_timestamp_ns: u64,
@@ -67,29 +67,29 @@ impl SignalTiming {
         }
     }
 
-    #[doc = "Returns the timestamp end nanoseconds associated with `SignalTiming`."]
+    #[doc = "Returns the timestamp end nanoseconds held by `SignalTiming`."]
     pub fn timestamp_end_ns(self) -> Option<u64> {
         self.source_timestamp_ns
             .zip(self.duration_ns)
             .map(|(start, duration)| start.saturating_add(duration))
     }
 
-    #[doc = "Returns the source timestamp nanoseconds associated with `SignalTiming`."]
+    #[doc = "Returns the source timestamp nanoseconds held by `SignalTiming`."]
     pub const fn source_timestamp_ns(self) -> Option<u64> {
         self.source_timestamp_ns
     }
 
-    #[doc = "Returns the observed timestamp nanoseconds associated with `SignalTiming`."]
+    #[doc = "Returns the observed timestamp nanoseconds held by `SignalTiming`."]
     pub const fn observed_timestamp_ns(self) -> u64 {
         self.observed_timestamp_ns
     }
 
-    #[doc = "Returns the session timestamp nanoseconds associated with `SignalTiming`."]
+    #[doc = "Returns the session timestamp nanoseconds held by `SignalTiming`."]
     pub const fn session_timestamp_ns(self) -> Option<u64> {
         self.session_timestamp_ns
     }
 
-    #[doc = "Returns the duration nanoseconds associated with `SignalTiming`."]
+    #[doc = "Returns the duration nanoseconds held by `SignalTiming`."]
     pub const fn duration_ns(self) -> Option<u64> {
         self.duration_ns
     }

@@ -7,11 +7,11 @@
 - **Route realtime audio.** Deliver pooled audio frames through independent fixed-capacity routes governed by explicit edge policy.
 - **Describe graph contracts.** Declare typed ports, media capabilities, partition safety, copy, loss, delivery, and observability policy.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Choose route capacity and loss policy** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
 ## Prerequisites
 
-Read the linked concept and confirm that target platform, Cargo features, source or provider dependencies, and application-owned permission work match this task. Keep returned typed errors and outcomes available for verification.
+The producer and consumer execution partitions, acceptable loss behavior, and observations you can measure.
 
 ## Procedure
 
@@ -21,60 +21,57 @@ Read the linked concept and confirm that target platform, Cargo features, source
 4. Compile and handle rejected contracts.
 5. Measure queue depth, saturation, and drops before changing capacity.
 
-## APIs used
+## Important consequence
 
-| Public declaration | Kind | Declared purpose | Source |
-|---|---|---|---|
-| `pocketstation::graph::ports::LossPolicy` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/ports.rs:287` |
-| `pocketstation::graph::ports::LossPolicy::ConcealForAudio` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/ports.rs:288` |
-| `pocketstation::graph::ports::LossPolicy::DropAllowed` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/ports.rs:290` |
-| `pocketstation::graph::ports::LossPolicy::MustDeliverOrFail` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/ports.rs:289` |
-| `pocketstation::graph::signal::operator::OperatorDeadlinePolicy` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/signal/operator.rs:52` |
-| `pocketstation::graph::signal::operator::OperatorOutputRolePolicy` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/signal/operator.rs:69` |
-| `pocketstation::graph::signal::operator::OperatorPermissionPolicy` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/signal/operator.rs:46` |
-| `pocketstation::runtime::audio::router::EdgeObservations` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/audio/router.rs:122` |
-| `pocketstation::graph::ports::BackpressurePolicy` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/ports.rs:265` |
-| `pocketstation::graph::ports::CopyPolicy` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/ports.rs:280` |
-| `pocketstation::graph::signal::operator::OperatorCancellationPolicy` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/signal/operator.rs:57` |
-| `pocketstation::graph::signal::operator::OperatorFailurePolicy` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/signal/operator.rs:63` |
-| `capacity_signals` | function | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/node.rs:361` |
-| `copy_policy` | function | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/ports.rs:353` |
-| `loss` | function | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/ports.rs:349` |
-| `policy_epoch` | function | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/signal/lineage.rs:80` |
+Capacity is a workload decision; change it only after observing the constrained route.
 
 ## Verify the outcome
 
-The following test bodies are evidence only for their recorded setup:
+The declaration compiles, route depth stays within capacity, and saturation or drops match the selected policy.
 
-- `given_explicit_jitter_budget_when_planned_then_bounded_capacity_is_derived_from_frame_time` — given explicit jitter budget when planned then bounded capacity is derived from frame time (`src/graph/compile/plan.rs:755`; `test-28b5b52333fa1672705d`).
-- `given_compiled_text_edge_when_router_builds_then_only_audio_edge_gets_audio_receiver` — given compiled text edge when router builds then only audio edge gets audio receiver (`src/runtime/audio/router.rs:983`; `test-c5f24b62056cfa546c3a`).
-- `given_retained_audio_ingress_when_pool_is_exhausted_then_loss_is_counted_exactly` — given retained audio ingress when pool is exhausted then loss is counted exactly (`src/runtime/bridge/audio.rs:459`; `test-1664fa1aa12573253d70`).
-- `given_capacity_above_global_bound_when_fanout_built_then_setup_fails` — given capacity above global bound when fanout built then setup fails (`src/runtime/signal/edge.rs:575`; `test-f0893eafe636572bd65e`).
-- `given_full_terminal_branch_when_finished_then_final_loss_fails_closed` — given full terminal branch when finished then final loss fails closed (`src/runtime/signal/operator.rs:2371`; `test-df034af78b2cc7bf98f9`).
-- `given_prepare_context_capacity_disagrees_with_runtime_edge_when_spawned_then_prepare_fails_closed` — given prepare context capacity disagrees with runtime edge when spawned then prepare fails closed (`src/runtime/signal/operator.rs:1808`; `test-ef78893c6bb92b613da0`).
-- `given_preallocated_three_edge_router_when_frame_dispatched_then_no_heap_allocation_occurs` — given preallocated three edge router when frame dispatched then no heap allocation occurs (`tests/runtime_plan_router_alloc.rs:53`; `test-49ea3414f8bb90cf86b1`).
-- `given_external_consumer_when_declared_then_provider_and_typed_endpoint_use_public_api` — given external consumer when declared then provider and typed endpoint use public api (`examples/operator-consumer/src/lib.rs:120`; `test-ace9b7d11da2036ce899`).
-- `given_gain_config_with_non_numeric_gain_db_when_validate_then_invalid_error` — given gain config with non numeric gain db when validate then invalid error (`src/graph/builtins.rs:256`; `test-0e41065f28a838e0deaf`).
-- `given_gain_config_with_valid_gain_db_when_validate_then_ok` — given gain config with valid gain db when validate then ok (`src/graph/builtins.rs:264`; `test-c5d54824499f245c4c6c`).
-- `given_gain_config_without_gain_db_when_validate_then_missing_error` — given gain config without gain db when validate then missing error (`src/graph/builtins.rs:249`; `test-c2584e0bcdbbb154dfa1`).
-- `given_mono_frame_when_mono_mixed_then_frame_is_unchanged` — given mono frame when mono mixed then frame is unchanged (`src/graph/builtins.rs:330`; `test-d76ec44bacdca3f6a506`).
+Executable evidence selected for **Choose route capacity and loss policy** is limited to each test's recorded setup and assertions:
+
+- `given_any_and_audio_when_negotiated_then_yields_audio` — given any and audio when negotiated then yields audio (`src/graph/ports.rs:496`; `test-b904fea87e8dcf2b473a`).
+- `given_any_audio_caps_when_compat_checked_then_reflexive_and_symmetric` — given any audio caps when compat checked then reflexive and symmetric (`src/graph/ports.rs:607`; `test-c1f0182c0924086f9d64`).
+- `given_any_layout_when_compat_checked_both_directions_then_matches` — given any layout when compat checked both directions then matches (`src/graph/ports.rs:448`; `test-53058cf141f24f476947`).
+- `given_any_media_when_compat_checked_both_directions_then_matches` — given any media when compat checked both directions then matches (`src/graph/ports.rs:489`; `test-52064d0ac0dc51bea641`).
+- `given_audio_and_text_when_media_compat_checked_then_incompatible` — given audio and text when media compat checked then incompatible (`src/graph/ports.rs:483`; `test-49b93cf78810847cc5ff`).
+- `given_audio_pair_when_media_compat_checked_then_compatible` — given audio pair when media compat checked then compatible (`src/graph/ports.rs:476`; `test-363da2d0a58f6635dc58`).
+- `given_bounded_async_when_built_then_contains_no_payload_or_clock_origin_assumption` — given bounded async when built then contains no payload or clock origin assumption (`src/graph/ports.rs:537`; `test-764d8a62597c3f9220c7`).
+- `given_custom_signal_without_schema_when_checked_then_binary_media_rejects_it` — given custom signal without schema when checked then binary media rejects it (`src/graph/ports.rs:575`; `test-2d3675af8d6c3a4d6a26`).
+- `given_incompatible_media_when_negotiated_then_none` — given incompatible media when negotiated then none (`src/graph/ports.rs:502`; `test-9e99ae329b9711ba02b0`).
+- `given_mismatched_rate_when_audio_compat_checked_then_incompatible` — given mismatched rate when audio compat checked then incompatible (`src/graph/ports.rs:467`; `test-8e8af7e321a63058b3c1`).
+- `given_mono_and_stereo_when_channel_count_then_returns_one_and_two` — given mono and stereo when channel count then returns one and two (`src/graph/ports.rs:441`; `test-8304caec6a9e3b31e801`).
+- `given_observability_levels_when_ranked_then_ordered_ascending` — given observability levels when ranked then ordered ascending (`src/graph/ports.rs:553`; `test-91b82bbdd4b3f972899f`).
 
 ## Failure signals
 
-- `pocketstation::graph::node::NodeDescriptorError` / `InvalidSafetyContract` — `error-04b7031025a9b635fdbf`
-- `pocketstation::graph::node::ConfigError` — `error-0be8ad81000b2924c24c`
-- `pocketstation::graph::compile::resolve::CompileError` — `error-0da3f91a5f274a27ab76`
-- `pocketstation::graph::signal::operator::AsyncOperatorManifestError` / `ZeroProcessTimeout` — `error-10e3a522fa28fccdfc60`
-- `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError` / `InvalidMagic` — `error-143cce14f0e71f68c4cf`
-- `pocketstation::graph::signal::operator::OperatorFailurePolicy` / `StopWorker` — `error-14ca51fa44623142d004`
-- `pocketstation::graph::node::NodeError` / `Process` — `error-170066b0b40a26e0e33d`
-- `pocketstation::graph::signal::continuity::SignalContinuityError` / `SequenceGapWithoutDiscontinuity` — `error-18565faf820bbf8e2650`
-- `pocketstation::graph::compile::resolve::CompileError` / `MediaMismatch` — `error-1877b4a7bdffa5d7ed88`
-- `pocketstation::graph::signal::continuity::SignalContinuityError` / `InvalidEnvelope` — `error-1897c7da4711d75eb14d`
-- `pocketstation::graph::plan::PlanError` / `MoveExclusiveFanOut` — `error-18d1485abaf31198b6d8`
-- `pocketstation::graph::node::NodeDescriptorError` / `EmptyDisplayName` — `error-1981cbd27763ca5ffcbe`
+- `pocketstation::graph::ports::PortSpecError` — `error-5601bc96e0f09d517ffa`
+- `pocketstation::graph::ports::PortSpecError` / `EmptyName` — `error-de68a6f4314abffa41f2`
+- `pocketstation::graph::ports::PortSpecError` / `InvalidSignal` — `error-144a7c7033b72fb3ebe8`
+- `pocketstation::graph::ports::PortSpecError` / `SignalMediaMismatch` — `error-41dfb8544f872cc47db6`
+- `pocketstation::runtime::audio::router::PlanRouterError` / `ZeroCapacity` — `error-7255bf1a56077c9e285a`
+- `pocketstation::graph::signal::continuity::SignalContinuityError` / `PolicyRegressed` — `error-f2258ab42f5ae5dce1b8`
+- `pocketstation::graph::signal::operator::AsyncOperatorManifestError` / `UnsupportedInputCopyPolicy` — `error-6d81801c1dd5a761b3e3`
+- `pocketstation::graph::signal::operator::AsyncOperatorManifestError` / `ZeroQueueCapacity` — `error-ef879570e842b0c2eb11`
+- `pocketstation::graph::signal::operator::OperatorFailurePolicy` — `error-44fb15ca3442b2f85ae6`
+- `pocketstation::graph::signal::operator::OperatorFailurePolicy` / `Continue` — `error-6ed8b75a0a575926d427`
 
-Retry only when the relevant API or error contract explicitly permits it. An error name, a transient-looking message, or a successful prior run is not retry evidence.
+## API reference
+
+- [Graph Contracts](/docs/concepts/graph-contracts.md)
+- [Route Sizing](/docs/best-practices/route-sizing.md)
+
+| Public declaration | Kind | Declared purpose | Source |
+|---|---|---|---|
+| `pocketstation::graph::ports::LossPolicy` | enum | Selects the loss policy used by PocketStation. | `src/graph/ports.rs:287` |
+| `pocketstation::graph::ports::LossPolicy::ConcealForAudio` | variant | Selects conceal for audio behavior for `LossPolicy`. | `src/graph/ports.rs:288` |
+| `pocketstation::graph::ports::LossPolicy::DropAllowed` | variant | Selects drop allowed behavior for `LossPolicy`. | `src/graph/ports.rs:290` |
+| `pocketstation::graph::ports::LossPolicy::MustDeliverOrFail` | variant | Selects must deliver or fail behavior for `LossPolicy`. | `src/graph/ports.rs:289` |
+| `pocketstation::runtime::audio::router::PlanRouterError::ZeroCapacity` | variant | Reported when the owning operation encounters zero capacity. | `src/runtime/audio/router.rs:21` |
+| `PlanRouterError::ZeroCapacity::edge_id` | struct_field | Identifies the edge identifier recorded by `ZeroCapacity`. | `src/runtime/audio/router.rs:21` |
+| `pocketstation::runtime::audio::router::DispatchSummary` | struct | Reports the counters and terminal facts collected for dispatch. | `src/runtime/audio/router.rs:667` |
+| `pocketstation::runtime::audio::router::EdgeObservations` | struct | Reports the edge observations collected at an observation boundary. | `src/runtime/audio/router.rs:122` |
 
 ## Related documentation
 
@@ -89,8 +86,8 @@ Retry only when the relevant API or error contract explicitly permits it. An err
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Choose route capacity and loss policy** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/graph/ports.rs:1-618` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Choose route capacity and loss policy**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

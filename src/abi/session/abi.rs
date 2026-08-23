@@ -55,9 +55,9 @@ pub enum PksSessionHandleKind {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[doc = "Reports the structured session status."]
 pub struct PksSessionStatus {
-    #[doc = "Stores the code associated with `PksSessionStatus`."]
+    #[doc = "Stores the code used by `PksSessionStatus`."]
     pub code: u32,
-    #[doc = "Stores the detail associated with `PksSessionStatus`."]
+    #[doc = "Stores the detail used by `PksSessionStatus`."]
     pub detail: u32,
 }
 
@@ -121,7 +121,7 @@ pub enum PksSessionStatusCode {
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-#[doc = "Represents session UTF-8 in the PocketStation API."]
+#[doc = "Borrows a UTF-8 byte range across the C Session ABI as a pointer and length."]
 pub struct PksSessionUtf8 {
     #[doc = "Carries the data owned or referenced by `PksSessionUtf8`."]
     pub data: *const u8,

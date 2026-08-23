@@ -509,6 +509,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -541,7 +542,16 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "BinaryFormat, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition,",
+    "_ => Err(ConfigError::Missing(\"mode=accepted\".to_owned())),",
+    "crate::endpoint::{ EndpointDriverFactory, EndpointFailure, EndpointFailureStage, EndpointPortInput, PreparedEndpointDriver, }",
+    "crate::frame::{SampleFormat, SampleSpec}",
+    "crate::graph::{ AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, BackpressurePolicy, BinaryFormat, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeError, NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PrepareContext, SafetyContract, SemanticRole, SignalSpec, TextFormat, }",
+    "crate::session::{ DeviceSelector, EndpointDescriptor, Operator, OperatorConfiguration, OperatorId, Session, SessionCompileError, SessionEngine, SessionEngineBuilder, SessionStartOptions, Source, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourcePrepareContext, SourceRegistrationError, SourceTypeId, }",
+    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
+    "fn validate_config(&self, _configuration: &NodeConfig) -> Result<(), ConfigError> {",
+    "fn validate_config(&self, configuration: &SourceConfiguration) -> Result<(), ConfigError> {",
+    "std::sync::Arc"
   ],
   "invariants": [
     {
@@ -579,20 +589,24 @@
   "module": "pocketstation::session::extensions::tests::composition",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-c928f7f83606dfe42c56"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(EndpointFailure::new(",
+    "Err(NodeError::Prepare(",
+    "_ => Err(ConfigError::Missing(\"mode=accepted\".to_owned())),"
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/tests/composition.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -864,7 +878,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::extensions::tests::composition`."
+    "text": "Implements pocketstation::session::extensions::tests::composition responsibilities, including the src/session/extensions/tests/composition boundary."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -924,6 +938,7 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 1,
@@ -979,50 +994,36 @@
     }
   ],
   "responsibilities": [
-    "SOURCE_TYPE_ID",
-    "TYPED_ENDPOINT_NODE_TYPE_ID",
-    "TYPED_ENDPOINT_OPERATOR_ID",
-    "AUDIO_ENDPOINT_NODE_TYPE_ID",
-    "AUDIO_ENDPOINT_OPERATOR_ID",
-    "TEXT_ENDPOINT_NODE_TYPE_ID",
-    "TEXT_ENDPOINT_OPERATOR_ID",
-    "OPERATOR_NODE_TYPE_ID",
-    "OPERATOR_ID",
-    "CompileOnlySourceFactory",
-    "CompileOnlySourceDriver",
-    "prepare",
-    "next",
-    "close",
-    "manifest",
-    "validate_config",
-    "create",
-    "CompileOnlyEndpointDefinition",
-    "descriptor",
-    "validate_config",
-    "CompileOnlyEndpointFactory",
-    "prepare",
-    "CompileOnlyOperatorFactory",
-    "manifest",
-    "validate_config",
-    "create",
-    "source_type_id",
-    "audio_port",
-    "typed_port",
-    "text_port",
-    "source_factory",
-    "endpoint_descriptor",
-    "operator_factory",
-    "builder",
-    "configuration",
-    "endpoint",
-    "compile",
-    "given_custom_source_output_when_compiled_then_session_identity_and_typed_plan_are_preserved",
-    "given_external_pcm_output_when_compiled_then_bounded_audio_edge_is_planned",
-    "given_external_output_through_operator_when_compiled_then_normal_typed_edges_are_used",
-    "given_unknown_manifest_output_when_compiled_then_typed_error_is_returned",
-    "given_unregistered_external_source_when_compiled_then_registry_error_is_typed",
-    "given_builtin_microphone_when_compiled_after_extension_then_existing_stem_path_is_unchanged",
-    "given_source_type_conflicting_with_registered_node_when_registered_then_conflict_is_typed"
+    "SOURCE_TYPE_ID (const)",
+    "TYPED_ENDPOINT_NODE_TYPE_ID (const)",
+    "TYPED_ENDPOINT_OPERATOR_ID (const)",
+    "AUDIO_ENDPOINT_NODE_TYPE_ID (const)",
+    "AUDIO_ENDPOINT_OPERATOR_ID (const)",
+    "TEXT_ENDPOINT_NODE_TYPE_ID (const)",
+    "TEXT_ENDPOINT_OPERATOR_ID (const)",
+    "OPERATOR_NODE_TYPE_ID (const)",
+    "OPERATOR_ID (const)",
+    "CompileOnlySourceFactory (struct)",
+    "CompileOnlySourceDriver (struct)",
+    "prepare (fn)",
+    "next (fn)",
+    "close (fn)",
+    "manifest (fn)",
+    "validate_config (fn)",
+    "create (fn)",
+    "CompileOnlyEndpointDefinition (struct)",
+    "descriptor (fn)",
+    "validate_config (fn)",
+    "CompileOnlyEndpointFactory (struct)",
+    "prepare (fn)",
+    "CompileOnlyOperatorFactory (struct)",
+    "manifest (fn)",
+    "validate_config (fn)",
+    "create (fn)",
+    "source_type_id (fn)",
+    "audio_port (fn)",
+    "typed_port (fn)",
+    "text_port (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1045,7 +1046,16 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-1e9492347c366dc04946",
+    "test-477958c0b22fe8487982",
+    "test-47a24acc078d39a5614e",
+    "test-4e5aeb90e44be738cb79",
+    "test-4ee45ca045d2ee40a2a5",
+    "test-713c01edd07447a5d6d1",
+    "test-7b2a27d3e5c20136dc6a"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

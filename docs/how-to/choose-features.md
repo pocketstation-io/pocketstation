@@ -6,11 +6,11 @@
 
 - **Install and feature-select the crate.** Add PocketStation to a Cargo package and choose native capture, contracts-only, conformance, or internal test features.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Choose crate features** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
 ## Prerequisites
 
-Read the linked concept and confirm that target platform, Cargo features, source or provider dependencies, and application-owned permission work match this task. Keep returned typed errors and outcomes available for verification.
+The consumer role: native capture application, contracts-only library, conformance harness, or repository test.
 
 ## Procedure
 
@@ -20,13 +20,15 @@ Read the linked concept and confirm that target platform, Cargo features, source
 4. Reserve internal-testing for repository checks.
 5. Rebuild after feature changes.
 
-## APIs used
+## Important consequence
 
-No intentionally public Rust declaration is owned directly by this evidence domain. Use the linked protocol or repository reference.
+Cargo unifies features across the dependency graph, so inspect the resolved build rather than one dependency line in isolation.
 
 ## Verify the outcome
 
-The following test bodies are evidence only for their recorded setup:
+`cargo check` succeeds with the selected feature set and only the intended gated modules are visible.
+
+Executable evidence selected for **Choose crate features** is limited to each test's recorded setup and assertions:
 
 - `given_normal_crate_root_when_scanned_then_implementation_owners_are_private` — given normal crate root when scanned then implementation owners are private (`tests/public_api_boundary.rs:41`; `test-0b0f2295b7da3933b922`).
 - `given_supported_contracts_when_named_from_crate_root_then_they_compile` — given supported contracts when named from crate root then they compile (`tests/public_api_boundary.rs:14`; `test-4693b2633263a52e0bdf`).
@@ -40,9 +42,14 @@ The following test bodies are evidence only for their recorded setup:
 
 ## Failure signals
 
-No domain-specific error record is assigned. Preserve the returned error and use the general error index.
+No task-specific public error was resolved for choose crate features; preserve the owning API's returned error.
 
-Retry only when the relevant API or error contract explicitly permits it. An error name, a transient-looking message, or a successful prior run is not retry evidence.
+## API reference
+
+- [Cargo Features](/docs/concepts/cargo-features.md)
+- [Configuration](/docs/reference/configuration.md)
+
+No intentionally public Rust declaration is owned directly by **Choose crate features**. Its contract is expressed by the linked repository, protocol, or qualification evidence instead.
 
 ## Related documentation
 
@@ -57,8 +64,8 @@ Retry only when the relevant API or error contract explicitly permits it. An err
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Choose crate features** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `Cargo.toml:1-180` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Choose crate features**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

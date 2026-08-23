@@ -18,7 +18,7 @@ pub enum SignalPayload {
 }
 
 impl SignalPayload {
-    #[doc = "Returns the supports associated with `SignalPayload`."]
+    #[doc = "Returns whether supports is true for `SignalPayload`."]
     pub fn supports(&self, spec: &SignalSpec) -> bool {
         matches!(
             (self, &spec.class),

@@ -61,7 +61,7 @@ pub use worker::{
     ConnectorWorker,
 };
 
-#[doc = "Represents connector in the PocketStation API."]
+#[doc = "Declares a connector endpoint and the manifest-backed configuration used to instantiate it."]
 pub struct Connector {
     manifest: Arc<ConnectorManifest>,
     endpoint_factory: Arc<dyn EndpointDriverFactory>,
@@ -121,14 +121,14 @@ impl Connector {
         Self::with_driver(manifest, sidecar_connector_factory(process))
     }
 
-    #[doc = "Returns the manifest associated with `Connector`."]
+    #[doc = "Returns the manifest held by `Connector`."]
     pub fn manifest(&self) -> &ConnectorManifest {
         &self.manifest
     }
 }
 
 #[derive(Clone)]
-#[doc = "Represents registered connector in the PocketStation API."]
+#[doc = "Retains a connector declaration after its factory has been registered with the node registry."]
 pub struct RegisteredConnector {
     session_id: crate::SessionId,
     manifest: Arc<ConnectorManifest>,
@@ -136,12 +136,12 @@ pub struct RegisteredConnector {
 }
 
 impl RegisteredConnector {
-    #[doc = "Returns the session identifier associated with `RegisteredConnector`."]
+    #[doc = "Returns the session identifier held by `RegisteredConnector`."]
     pub const fn session_id(&self) -> crate::SessionId {
         self.session_id
     }
 
-    #[doc = "Returns the manifest associated with `RegisteredConnector`."]
+    #[doc = "Returns the manifest held by `RegisteredConnector`."]
     pub fn manifest(&self) -> &ConnectorManifest {
         &self.manifest
     }
@@ -251,9 +251,9 @@ pub enum ConnectorDeclarationError {
     #[error("connector is registered to Session {registered:?}, not Session {requested:?}")]
     #[doc = "Reports wrong session."]
     WrongSession {
-        #[doc = "Stores the registered associated with `WrongSession`."]
+        #[doc = "Stores the registered used by `WrongSession`."]
         registered: crate::SessionId,
-        #[doc = "Stores the requested associated with `WrongSession`."]
+        #[doc = "Stores the requested used by `WrongSession`."]
         requested: crate::SessionId,
     },
     #[error(transparent)]
@@ -270,9 +270,9 @@ pub enum ConnectorObservationLookupError {
     #[error("connector is registered to Session {registered:?}, not Session {requested:?}")]
     #[doc = "Reports wrong session."]
     WrongSession {
-        #[doc = "Stores the registered associated with `WrongSession`."]
+        #[doc = "Stores the registered used by `WrongSession`."]
         registered: crate::SessionId,
-        #[doc = "Stores the requested associated with `WrongSession`."]
+        #[doc = "Stores the requested used by `WrongSession`."]
         requested: crate::SessionId,
     },
 }

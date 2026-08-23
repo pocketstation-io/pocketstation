@@ -13,7 +13,7 @@ pub struct NodeHandle {
 }
 
 impl NodeHandle {
-    #[doc = "Returns the id associated with `NodeHandle`."]
+    #[doc = "Returns the id held by `NodeHandle`."]
     pub fn id(&self) -> NodeId {
         self.id
     }
@@ -34,7 +34,7 @@ impl NodeHandle {
 }
 
 #[derive(Default)]
-#[doc = "Represents pipeline in the PocketStation API."]
+#[doc = "Builds typed operator connections on a Session while preserving port and signal contracts."]
 pub struct Pipeline {
     spec: GraphSpec,
     next_node: u32,

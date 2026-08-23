@@ -7,7 +7,7 @@
 - **Use the versioned C ABI.** Declare, start, observe, stop, and release Sessions and extension callbacks through the public C boundary.
 - **Validate protocol and conformance boundaries.** Check ABI layout, cross-language behavior, connector vectors, and protocol compatibility against versioned fixtures.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **ABI and conformance model** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
 ## Ownership map
 
@@ -18,50 +18,46 @@ These statements describe repository contracts at the documented snapshot. They 
 
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
-| `pocketstation::abi::executable_extension::PksExtensionCallbacks` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/executable_extension.rs:91` |
-| `pocketstation::abi::executable_extension::PksExtensionLibrary` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/executable_extension.rs:123` |
-| `pocketstation::abi::executable_extension::PksExtensionPipelineDeclaration` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/executable_extension.rs:168` |
-| `pocketstation::abi::executable_extension::PksExtensionSignalBuffer` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/executable_extension.rs:153` |
-| `pocketstation::abi::executable_extension::PksExtensionSignalView` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/executable_extension.rs:138` |
-| `pocketstation::abi::extension::PksExtensionAbiVersion` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/extension.rs:14` |
-| `pocketstation::abi::extension::PksExtensionDescriptor` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/extension.rs:47` |
-| `pocketstation::abi::extension::PksExtensionPort` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/extension.rs:60` |
-| `pocketstation::abi::session::abi::PksSessionStatus` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:56` |
-| `pocketstation::abi::session::abi::PksSessionUtf8` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:101` |
-| `pocketstation::abi::extension::PksExtensionKind` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/extension.rs:32` |
-| `pocketstation::abi::extension::PksExtensionPortDirection` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/extension.rs:40` |
-| `pocketstation::abi::session::abi::PksSessionStatusCode` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:79` |
-| `new` | function | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:69` |
-| `ok` | function | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:62` |
-| `pocketstation::abi::executable_extension::PksExtensionAcquireRegistrationCallback` | type_alias | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/executable_extension.rs:110` |
-| `pocketstation::abi::executable_extension::PksExtensionCreateCallback` | type_alias | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/executable_extension.rs:56` |
-| `pocketstation::abi::executable_extension::PksExtensionDestroyCallback` | type_alias | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/executable_extension.rs:87` |
-| `pocketstation::abi::executable_extension::PksExtensionEndpointConsumeCallback` | type_alias | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/executable_extension.rs:77` |
-| `pocketstation::abi::executable_extension::PksExtensionFinishCallback` | type_alias | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/executable_extension.rs:85` |
-| `pocketstation::abi::executable_extension::PksExtensionLibraryEntrypoint` | type_alias | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/executable_extension.rs:133` |
-| `pocketstation::abi::executable_extension::PksExtensionOperatorProcessCallback` | type_alias | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/executable_extension.rs:70` |
-| `pocketstation::abi::executable_extension::PksExtensionPrepareCallback` | type_alias | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/executable_extension.rs:48` |
-| `pocketstation::abi::executable_extension::PksExtensionSourceNextCallback` | type_alias | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/executable_extension.rs:63` |
+| `pocketstation::abi::session::abi::PksSessionStatus` | struct | Reports the structured session status. | `src/abi/session/abi.rs:56` |
+| `pocketstation::abi::session::abi::PksSessionUtf8` | struct | Borrows a UTF-8 byte range across the C Session ABI as a pointer and length. | `src/abi/session/abi.rs:101` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode` | enum | Enumerates the supported session status code cases. | `src/abi/session/abi.rs:79` |
+| `new` | function | Creates a new `PksSessionStatus`. | `src/abi/session/abi.rs:69` |
+| `ok` | function | Creates a successful status value for `PksSessionStatus`. | `src/abi/session/abi.rs:62` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::BackendFailure` | variant | Identifies the backend failure state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:93` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::Cancelled` | variant | Indicates that the operation was cancelled. | `src/abi/session/abi.rs:94` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::ForeignHandle` | variant | Identifies the foreign handle state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:90` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::IndexOutOfRange` | variant | Identifies the index out of range state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:95` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::InternalPanic` | variant | Identifies the internal panic state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:87` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::InvalidArgument` | variant | Identifies the invalid argument state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:89` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::InvalidHandle` | variant | Identifies the invalid handle state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:84` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::InvalidLifecycleState` | variant | Identifies the invalid lifecycle state state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:91` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::InvalidStructSize` | variant | Identifies the invalid struct size state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:83` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::MisalignedPointer` | variant | Identifies the misaligned pointer state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:88` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::NoCapacity` | variant | Identifies the no capacity state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:86` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::NullArgument` | variant | Identifies the null argument state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:81` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::Ok` | variant | Indicates that the operation completed successfully. | `src/abi/session/abi.rs:80` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::StaleHandle` | variant | Identifies the stale handle state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:85` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::UnsupportedAbiMajor` | variant | Identifies the unsupported ABI major state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:82` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::UnsupportedAbiMinor` | variant | Identifies the unsupported ABI minor state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:96` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::WouldBlock` | variant | Identifies the would block state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:92` |
+| `PksSessionStatus::code` | struct_field | Stores the code used by `PksSessionStatus`. | `src/abi/session/abi.rs:57` |
+| `PksSessionStatus::detail` | struct_field | Stores the detail used by `PksSessionStatus`. | `src/abi/session/abi.rs:58` |
 
 ## Observed implementation patterns
 
-- `bounded_queue` — `tests/conformance_fixture.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `tests/public_api_boundary.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `clock_correlation` — `src/abi/executable_extension.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `bounded_queue` — `src/abi/executable_extension.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/abi/executable_extension.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `benches/generated_audio_bridge.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/abi/session/mod.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/abi/session/conformance_fixture.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/abi/session/mod.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `typed_error` — `tests/macos_native_ring_contract.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/abi/session/conformance_fixture.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/abi/session/runtime.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `tests/protocol_compatibility.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 
 ## Behavioral evidence
 
-The following test bodies are evidence only for their recorded setup:
+Executable evidence selected for **ABI and conformance model** is limited to each test's recorded setup and assertions:
 
 - `abi_codec_cpp_conformance` — abi codec cpp conformance (`tests/abi_codec_cpp_conformance.cpp:1`; `test-6fbae5633a1419379cd7`).
 - `abi_session_c_conformance` — abi session c conformance (`tests/abi_session_c_conformance.c:1`; `test-1ab6697ee6c783b1c41b`).
@@ -78,7 +74,7 @@ The following test bodies are evidence only for their recorded setup:
 
 ## Stability boundary
 
-This page explains internals. Public compatibility comes from exported Rust declarations, the C header, manifests, error codes, and explicit compatibility artifacts—not private module layout.
+**ABI and conformance model** describes internal ownership. Its private module layout is not a compatibility promise; compatibility comes from exported Rust declarations, the C header, manifests, error codes, and explicit compatibility artifacts.
 
 ## Related documentation
 
@@ -93,9 +89,9 @@ This page explains internals. Public compatibility comes from exported Rust decl
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **ABI and conformance model** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/abi/mod.rs:1-5` (`DIRECT`)
 - `src/conformance.rs:1-1252` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **ABI and conformance model**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -1,3 +1,10 @@
+//! Provides the built-in passthrough, gain, and mono-mix graph nodes.
+//!
+//! The module exposes node factories, their runtime nodes, and registration
+//! support for conformance and internal-testing builds. Application graph
+//! composition uses the public graph contracts rather than depending on these
+//! fixture implementations as a provider-extension guarantee.
+
 use std::sync::Arc;
 
 use crate::frame::{AudioFrame, SampleFormat};
@@ -64,9 +71,11 @@ fn mono_audio_port(name: &str, direction: PortDirection) -> PortSpec {
     }
 }
 
+#[doc = "Constructs passthrough implementations from validated declarations."]
 pub struct PassthroughFactory;
 
 impl NodeFactory for PassthroughFactory {
+    #[doc = "Returns the descriptor held by `PassthroughFactory`."]
     fn descriptor(&self) -> NodeDescriptor {
         NodeDescriptor {
             type_id: NodeTypeId::from(PASSTHROUGH_NODE_TYPE_ID),
@@ -79,10 +88,12 @@ impl NodeFactory for PassthroughFactory {
         }
     }
 
+    #[doc = "Validates config for `PassthroughFactory`."]
     fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
         Ok(())
     }
 
+    #[doc = "Instantiates the runtime node described by `PassthroughFactory`."]
     fn instantiate(
         &self,
         _cx: &PrepareContext,
@@ -92,21 +103,26 @@ impl NodeFactory for PassthroughFactory {
     }
 }
 
+#[doc = "Executes the graph-node behavior defined for passthrough."]
 pub struct PassthroughNode;
 
 impl RuntimeNode for PassthroughNode {
+    #[doc = "Prepares resources required by `PassthroughNode`."]
     fn prepare(&mut self, _cx: &PrepareContext) -> Result<(), NodeError> {
         Ok(())
     }
 
+    #[doc = "Processes an input value through `PassthroughNode`."]
     fn process(&mut self, frame: AudioFrame) -> Result<Option<AudioFrame>, NodeError> {
         Ok(Some(frame))
     }
 }
 
+#[doc = "Constructs gain implementations from validated declarations."]
 pub struct GainFactory;
 
 impl NodeFactory for GainFactory {
+    #[doc = "Returns the descriptor held by `GainFactory`."]
     fn descriptor(&self) -> NodeDescriptor {
         NodeDescriptor {
             type_id: NodeTypeId::from(GAIN_NODE_TYPE_ID),
@@ -119,6 +135,7 @@ impl NodeFactory for GainFactory {
         }
     }
 
+    #[doc = "Validates config for `GainFactory`."]
     fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {
         match config.get(GAIN_CONFIGURATION_KEY) {
             None => Err(ConfigError::Missing(GAIN_CONFIGURATION_KEY.to_owned())),
@@ -132,6 +149,7 @@ impl NodeFactory for GainFactory {
         }
     }
 
+    #[doc = "Instantiates the runtime node described by `GainFactory`."]
     fn instantiate(
         &self,
         _cx: &PrepareContext,
@@ -146,15 +164,18 @@ impl NodeFactory for GainFactory {
     }
 }
 
+#[doc = "Executes the graph-node behavior defined for gain."]
 pub struct GainNode {
     gain_ratio: f32, // dimensionless amplitude ratio derived from gain_db
 }
 
 impl RuntimeNode for GainNode {
+    #[doc = "Prepares resources required by `GainNode`."]
     fn prepare(&mut self, _cx: &PrepareContext) -> Result<(), NodeError> {
         Ok(())
     }
 
+    #[doc = "Processes an input value through `GainNode`."]
     fn process(&mut self, mut frame: AudioFrame) -> Result<Option<AudioFrame>, NodeError> {
         for sample in frame.buffer.as_mut_slice() {
             *sample *= self.gain_ratio;
@@ -163,9 +184,11 @@ impl RuntimeNode for GainNode {
     }
 }
 
+#[doc = "Constructs mono mix implementations from validated declarations."]
 pub struct MonoMixFactory;
 
 impl NodeFactory for MonoMixFactory {
+    #[doc = "Returns the descriptor held by `MonoMixFactory`."]
     fn descriptor(&self) -> NodeDescriptor {
         NodeDescriptor {
             type_id: NodeTypeId::from(MONO_MIX_NODE_TYPE_ID),
@@ -178,10 +201,12 @@ impl NodeFactory for MonoMixFactory {
         }
     }
 
+    #[doc = "Validates config for `MonoMixFactory`."]
     fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {
         Ok(())
     }
 
+    #[doc = "Instantiates the runtime node described by `MonoMixFactory`."]
     fn instantiate(
         &self,
         _cx: &PrepareContext,
@@ -191,13 +216,16 @@ impl NodeFactory for MonoMixFactory {
     }
 }
 
+#[doc = "Executes the graph-node behavior defined for mono mix."]
 pub struct MonoMixNode;
 
 impl RuntimeNode for MonoMixNode {
+    #[doc = "Prepares resources required by `MonoMixNode`."]
     fn prepare(&mut self, _cx: &PrepareContext) -> Result<(), NodeError> {
         Ok(())
     }
 
+    #[doc = "Processes an input value through `MonoMixNode`."]
     fn process(&mut self, mut frame: AudioFrame) -> Result<Option<AudioFrame>, NodeError> {
         if frame.channels == STEREO_CHANNEL_COUNT {
             let samples = frame.buffer.as_mut_slice();
@@ -217,6 +245,7 @@ impl RuntimeNode for MonoMixNode {
     }
 }
 
+#[doc = "Registers builtins for `builtins`."]
 pub fn register_builtins(
     registry: &mut NodeRegistry,
 ) -> Result<(), crate::graph::NodeRegistrationError> {

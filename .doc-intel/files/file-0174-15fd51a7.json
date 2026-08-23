@@ -3,7 +3,11 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs",
+    "REFERENCES:src/session/extensions/recording.rs"
+  ],
   "calls": [
     "Arc::clone",
     "Arc::new",
@@ -129,7 +133,11 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs",
+    "REFERENCES:src/session/extensions/recording.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AtomicBool::new",
@@ -659,8 +667,13 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs",
+    "REFERENCES:src/session/extensions/recording.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -676,7 +689,11 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "b47ec1853414df55108a5ad53f435866ec97e3f9",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs",
+    "REFERENCES:src/session/extensions/recording.rs"
+  ],
   "implements": [
     "MultistemRecordingReceipt",
     "SessionMultistemEndpointCoordinator",
@@ -687,7 +704,11 @@
     "Drop for SessionRecorderWorker",
     "SessionRecorderTelemetry"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/recording/mod.rs",
+    "IMPORTS:src/recording/mod.rs",
+    "REFERENCES:src/session/extensions/recording.rs"
+  ],
   "imports": [
     "crate::endpoint::{ EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin, }",
     "crate::frame::{EndpointId, RouteId, SessionId, StemId}",
@@ -703,7 +724,20 @@
     "std::time::Duration"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(test)]",
+    "crate::endpoint::{ EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin, }",
+    "crate::frame::{EndpointId, RouteId, SessionId, StemId}",
+    "crate::recording::{ MultistemRecording, PermissionDecision, PermissionScope, RecorderError, RecorderLineageField, RecorderStemConfig, RecordingObservations, RecordingOutcome, RecordingState, StemLabel, }",
+    "crate::runtime::PlanEdgeFrame",
+    "crate::timing::TimelineMapping",
+    "module:tests",
+    "std::collections::HashSet",
+    "std::path::{Path, PathBuf}",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "std::sync::{Arc, OnceLock}",
+    "std::thread::{self, JoinHandle}",
+    "std::time::Duration"
   ],
   "invariants": [
     {
@@ -721,20 +755,32 @@
   "module": "pocketstation::recording::endpoint",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-25297d2b3b32d08b7163"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "const:MULTISTEM_GROUP_CONFIGURATION_KEY",
+    "const:MULTISTEM_NAME_CONFIGURATION_KEY",
+    "fn:group_id",
+    "fn:new",
+    "fn:output_root",
+    "fn:receipt",
+    "fn:result",
+    "return Err(prepare_failure(",
+    "return Err(prepare_failure(format!(",
+    "struct:MultistemRecordingReceipt",
+    "struct:SessionMultistemEndpointCoordinator"
   ],
   "package": "pocketstation",
   "path": "src/recording/endpoint.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -1008,7 +1054,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::recording::endpoint`."
+    "text": "Implements pocketstation::recording::endpoint responsibilities, including Defines the public multistem group configuration key value.; Defines the public multistem name configuration key value.; Retains the identity and observation access returned for multistem recording.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1038,6 +1084,16 @@
     "docs/troubleshooting/recording-incomplete.md",
     "docs/troubleshooting/session-stop.md",
     "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/endpoint/identity.rs",
+    "REFERENCES:src/endpoint/runtime.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/recording/config.rs",
+    "REFERENCES:src/recording/writer.rs",
+    "REFERENCES:src/runtime/audio/router.rs"
   ],
   "resource_ownership": [
     {
@@ -1138,48 +1194,17 @@
     }
   ],
   "responsibilities": [
-    "SESSION_RECORDER_IDLE_WAIT_MS",
-    "MULTISTEM_GROUP_CONFIGURATION_KEY",
-    "MULTISTEM_NAME_CONFIGURATION_KEY",
-    "MultistemRecordingReceipt",
-    "result",
-    "MultistemRecordingReceiptState",
-    "SessionMultistemEndpointCoordinator",
-    "new",
-    "output_root",
-    "group_id",
-    "receipt",
-    "preparation_group",
-    "prepare",
-    "SessionPreparedStem",
-    "PreparedSessionMultistemEndpoint",
-    "start",
-    "cancel_preparation",
-    "RunningSessionMultistemEndpoint",
-    "observations",
-    "request_stop",
-    "join_and_finalize",
-    "failed_finalization",
-    "SessionRecorderWorker",
-    "spawn",
-    "request_stop",
-    "observations",
-    "join",
-    "drop",
-    "SessionRecorderTelemetry",
-    "record_initialization_progress",
-    "update",
-    "record_initialization_failure",
-    "snapshot",
-    "SessionRecorderWorkerOutcome",
-    "run_session_recorder",
-    "validate_initial_frame",
-    "derive_recorder_config",
-    "prepare_failure",
-    "endpoint_observations",
-    "finalized_observations",
-    "recording_outcome_result",
-    "tests"
+    "pocketstation::recording::endpoint::MULTISTEM_GROUP_CONFIGURATION_KEY: Defines the public multistem group configuration key value.",
+    "pocketstation::recording::endpoint::MULTISTEM_NAME_CONFIGURATION_KEY: Defines the public multistem name configuration key value.",
+    "pocketstation::recording::endpoint::MultistemRecordingReceipt: Retains the identity and observation access returned for multistem recording.",
+    "result: Returns the result represented by `MultistemRecordingReceipt`.",
+    "pocketstation::recording::endpoint::SessionMultistemEndpointCoordinator: Canonical Session-owned multistem recorder declaration.",
+    "new: Creates a new `SessionMultistemEndpointCoordinator`.",
+    "output_root: Returns the output root associated with `SessionMultistemEndpointCoordinator`.",
+    "group_id: Returns the group identifier held by `SessionMultistemEndpointCoordinator`.",
+    "receipt: Returns the receipt associated with `SessionMultistemEndpointCoordinator`.",
+    "preparation_group: Returns the preparation group associated with `SessionMultistemEndpointCoordinator`.",
+    "prepare: Prepares resources required by `SessionMultistemEndpointCoordinator`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1211,6 +1236,7 @@
   ],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [
     {

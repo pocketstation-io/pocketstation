@@ -100,6 +100,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -123,7 +124,14 @@
     "std::process::Command"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(unix)]",
+    "CARGO_MANIFEST_DIR",
+    "CC",
+    "let compiler = std::env::var(\"CC\").unwrap_or_else(|_| \"cc\".to_owned());",
+    "let executable_dir = std::env::current_exe()",
+    "std::env::temp_dir().join(format!(\"{executable_name}-{}\", std::process::id()));",
+    "std::path::{Path, PathBuf}",
+    "std::process::Command"
   ],
   "invariants": [],
   "language": "Rust",
@@ -132,18 +140,20 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "tests/abi_session_c_conformance.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -198,8 +208,8 @@
   ],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given abi 1 0 metrics buffer when polled then tail canary is unchanged, given public c harness when linked and executed then real engine compile passes under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -233,11 +243,12 @@
     "docs/best-practices/native-extension-trust.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "compile_and_run_c_harness",
-    "given_public_c_harness_when_linked_and_executed_then_real_engine_compile_passes",
-    "given_abi_1_0_metrics_buffer_when_polled_then_tail_canary_is_unchanged"
+    "compile_and_run_c_harness (fn)",
+    "given_public_c_harness_when_linked_and_executed_then_real_engine_compile_passes (fn)",
+    "given_abi_1_0_metrics_buffer_when_polled_then_tail_canary_is_unchanged (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -264,7 +275,11 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-34dd8af9e396e87d95ce",
+    "test-d793211ce6e22db443b8"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

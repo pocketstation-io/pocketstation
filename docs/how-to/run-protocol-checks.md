@@ -7,11 +7,11 @@
 - **Validate protocol and conformance boundaries.** Check ABI layout, cross-language behavior, connector vectors, and protocol compatibility against versioned fixtures.
 - **Build and publish repository artifacts.** Run architecture, protocol, package, platform, and release checks used by the repository publication workflow.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Run protocol checks** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
 ## Prerequisites
 
-Read the linked concept and confirm that target platform, Cargo features, source or provider dependencies, and application-owned permission work match this task. Keep returned typed errors and outcomes available for verification.
+The repository toolchain plus every public, sibling, or private fixture named by the selected check.
 
 ## Procedure
 
@@ -21,30 +21,15 @@ Read the linked concept and confirm that target platform, Cargo features, source
 4. Distinguish absent prerequisites from assertion failures.
 5. Record command, target, and fixture revision.
 
-## APIs used
+## Important consequence
 
-| Public declaration | Kind | Declared purpose | Source |
-|---|---|---|---|
-| `pocketstation::connector::worker::driver::ConnectorDriver` | trait | Provider-specific behavior executed on Core's bounded connector worker. | `src/connector/worker/driver.rs:92` |
-| `pocketstation::connector::worker::driver::ConnectorDriverFactory` | trait | Prepares provider state while Core retains receiver and lifecycle authority. | `src/connector/worker/driver.rs:123` |
-| `pocketstation::connector::sidecar::SidecarConnectorDriverFactory` | struct | Adapts a bounded PocketStation sidecar process to the Connector driver SPI. | `src/connector/sidecar.rs:24` |
-| `pocketstation::connector::transport::ConnectorConfigurationRecord` | struct | Canonical typed configuration handed to a connector sidecar during its bounded Configure handshake. Secret classification survives the boundary; Debug output continues to redact secret values. | `src/connector/transport.rs:42` |
-| `pocketstation::connector::worker::driver::ConnectorInputDescriptor` | struct | Immutable Session and graph metadata for one connector input. | `src/connector/worker/driver.rs:16` |
-| `pocketstation::connector::worker::driver::ConnectorDeliveryOutcome` | enum | Explicit delivery result used for Core-owned accounting. | `src/connector/worker/driver.rs:83` |
-| `pocketstation::connector::worker::driver::ConnectorItem` | enum | One bounded item delivered by Core to a connector driver. | `src/connector/worker/driver.rs:62` |
-| `expose_secret` | function | Exposes the secret to the owning connector during setup or worker use. | `src/connector/configuration.rs:37` |
-| `sidecar` | function | Builds an outbound Connector backed by one bounded sidecar process. | `src/connector/mod.rs:112` |
-| `with_driver` | function | Builds a connector whose bounded receiver loop is owned by Core. | `src/connector/mod.rs:88` |
-| `pocketstation::connector` | module | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/connector/mod.rs:1` |
-| `pocketstation::connector::worker::ConnectorFactory` | trait | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/connector/worker/mod.rs:17` |
-| `pocketstation::connector::worker::ConnectorWorker` | trait | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/connector/worker/mod.rs:32` |
-| `pocketstation::abi::executable_extension::PksExtensionCallbacks` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/executable_extension.rs:91` |
-| `pocketstation::abi::executable_extension::PksExtensionLibrary` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/executable_extension.rs:123` |
-| `pocketstation::abi::executable_extension::PksExtensionPipelineDeclaration` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/executable_extension.rs:168` |
+Separate a missing prerequisite, compilation error, assertion failure, and unqualified physical path.
 
 ## Verify the outcome
 
-The following test bodies are evidence only for their recorded setup:
+Each command exits successfully and its target, feature set, fixture revision, and evidence scope are recorded.
+
+Executable evidence selected for **Run protocol checks** is limited to each test's recorded setup and assertions:
 
 - `test-publish-recovery` — test publish recovery (`scripts/test-publish-recovery.sh:1`; `test-adb1dc831caefa6dcbaa`).
 - `test-session-c-conformance` — test session c conformance (`scripts/test-session-c-conformance.sh:1`; `test-ff28fea505d22371ce41`).
@@ -61,20 +46,23 @@ The following test bodies are evidence only for their recorded setup:
 
 ## Failure signals
 
-- `pocketstation::connector::error::ConnectorErrorCodeError` / `TooLong` — `error-06f5c52aa07c86ca5062`
-- `pocketstation::connector::transport::ConnectorAudioRecordError` / `InvalidSampleCount` — `error-093c41e2489cf1bb258d`
-- `pocketstation::connector::transport::ConnectorAudioRecordError` — `error-0b1f3a3357a77fcef185`
-- `pocketstation::connector::error::ConnectorErrorCodeError` / `Empty` — `error-0b71c9f1b1489e0d4f9a`
-- `pocketstation::connector::error::ConnectorErrorBuildError` — `error-0bc8adb0641971704f74`
-- `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` / `TooManyFields` — `error-0c83ebde568152ad3edf`
-- `pocketstation::connector::error::ConnectorErrorStage` / `Startup` — `error-0e62627edef059ecab22`
-- `pocketstation::connector::manifest::ConnectorManifestError` / `InvalidManifestRevision` — `error-10517744910e14c23fc4`
-- `pocketstation::connector::transport::ConnectorAudioRecordError` / `UnsupportedMinor` — `error-1082687e9dbfd2cadfc5`
-- `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` / `InvalidValue` — `error-16fe034657303e4973f8`
-- `pocketstation::connector::ConnectorDeclarationError` — `error-1cafe789f84ff34b7955`
-- `pocketstation::connector::error::ConnectorErrorCodeError` — `error-1d9267787b6c574f3c02`
+No task-specific public error was resolved for run protocol checks; preserve the owning API's returned error.
 
-Retry only when the relevant API or error contract explicitly permits it. An error name, a transient-looking message, or a successful prior run is not retry evidence.
+## API reference
+
+- [Conformance](/docs/concepts/conformance.md)
+- [Test Evidence](/docs/reference/test-evidence.md)
+
+| Public declaration | Kind | Declared purpose | Source |
+|---|---|---|---|
+| `pocketstation::conformance` | module | Deterministic canonical-engine fixture for external conformance harnesses. | `src/conformance.rs:1` |
+| `pocketstation::conformance::ExtensionConformanceReport` | struct | Language-neutral outcome returned by the W20 fixture. | `src/conformance.rs:573` |
+| `pocketstation::conformance::ExtensionSignal` | struct | Owns one signal payload used by the native-extension conformance fixtures. | `src/conformance.rs:1181` |
+| `pocketstation::conformance::ObservedEndpointError` | enum | Classifies failures reported as observed endpoint error. | `src/conformance.rs:345` |
+| `pocketstation::conformance::observed_browser` | function | Declares and registers a deterministic native browser boundary used only by cross-language conformance harnesses. | `src/conformance.rs:335` |
+| `pocketstation::conformance::observed_connector` | function | Declares and registers a deterministic native connector used only by cross-language conformance harnesses. | `src/conformance.rs:274` |
+| `pocketstation::conformance::run_extension_vector` | function | Executes the neutral typed Source -> `Stream<T>` -> Operator -> Endpoint vector through the canonical public Session. | `src/conformance.rs:1006` |
+| `pocketstation::conformance::session` | function | Runs the conformance assertions for the Session contract. | `src/conformance.rs:198` |
 
 ## Related documentation
 
@@ -89,8 +77,8 @@ Retry only when the relevant API or error contract explicitly permits it. An err
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Run protocol checks** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `scripts/check_protocol.sh:1-132` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Run protocol checks**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

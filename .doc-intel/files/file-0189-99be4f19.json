@@ -3,7 +3,14 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPORTS:src/runtime/lifecycle/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/lifecycle/sidecar_host.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "calls": [
     "InvalidTerminal",
     "InvalidUtf8",
@@ -82,7 +89,14 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPORTS:src/runtime/lifecycle/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/lifecycle/sidecar_host.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "constructs": [
     "SidecarMessageKind::try_from",
     "try_from",
@@ -437,8 +451,16 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPORTS:src/runtime/lifecycle/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/lifecycle/sidecar_host.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -452,19 +474,36 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "afcb288cdb6a8c2fb522bcce64c6f9cd8ded2be2",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPORTS:src/runtime/lifecycle/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/lifecycle/sidecar_host.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "implements": [
     "TryFrom<u8> for SidecarMessageKind",
     "Default for SidecarProtocolLimits",
     "SidecarProtocolLimits",
     "SidecarMessage"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPORTS:src/runtime/lifecycle/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/lifecycle/sidecar_host.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "imports": [
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "8 => Ok(Self::Configure),",
+    "Configure = 8,",
+    "super::*"
   ],
   "invariants": [
     {
@@ -482,21 +521,42 @@
   "module": "pocketstation::runtime::lifecycle::sidecar_protocol",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-8e20e712bfc478b0a055",
     "pattern-a0b53d2c9580d1339c1f"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "_ => Err(SidecarProtocolError::UnknownMessageKind(value)),",
+    "const:SIDECAR_PROTOCOL_MAJOR",
+    "const:SIDECAR_PROTOCOL_MINOR",
+    "enum:SidecarMessageKind",
+    "enum:SidecarProtocolError",
+    "fn:decode",
+    "fn:encode",
+    "fn:max_frame_bytes",
+    "fn:validate",
+    "return Err(SidecarProtocolError::EmptySignalId);",
+    "return Err(SidecarProtocolError::FrameTooLarge);",
+    "return Err(SidecarProtocolError::InvalidMagic);",
+    "return Err(SidecarProtocolError::ReservedFieldSet);",
+    "return Err(SidecarProtocolError::Truncated);",
+    "return Err(SidecarProtocolError::UnsupportedMajor(major));",
+    "return Err(SidecarProtocolError::UnsupportedMinor(minor));",
+    "return Err(if expected > input.len() {",
+    "struct:SidecarMessage",
+    "struct:SidecarProtocolLimits",
+    "value => return Err(SidecarProtocolError::InvalidTerminal(value)),"
   ],
   "package": "pocketstation",
   "path": "src/runtime/lifecycle/sidecar_protocol.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -655,7 +715,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::runtime::lifecycle::sidecar_protocol`."
+    "text": "Implements pocketstation::runtime::lifecycle::sidecar protocol responsibilities, including Selects the sidecar message kind used by PocketStation.; Selects signal behavior for `SidecarMessageKind`.; Selects ready behavior for `SidecarMessageKind`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -711,33 +771,59 @@
     "docs/best-practices/realtime-boundaries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "MAGIC",
-    "HEADER_BYTES",
-    "SIDECAR_PROTOCOL_MAJOR",
-    "SIDECAR_PROTOCOL_MINOR",
-    "SidecarMessageKind",
-    "Error",
-    "try_from",
-    "SidecarProtocolLimits",
-    "default",
-    "max_frame_bytes",
-    "SidecarMessage",
-    "encode",
-    "decode",
-    "validate",
-    "push_len",
-    "read_u16",
-    "read_u32",
-    "read_u64",
-    "read_text",
-    "optional_text",
-    "validate_length",
-    "SidecarProtocolError",
-    "tests",
-    "given_core_extension_sidecar_message_when_round_tripped_then_identity_is_stable",
-    "given_core_extension_oversized_sidecar_payload_when_encoded_then_fails_closed"
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind: Selects the sidecar message kind used by PocketStation.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Signal: Selects signal behavior for `SidecarMessageKind`.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Ready: Selects ready behavior for `SidecarMessageKind`.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Error: Selects error behavior for `SidecarMessageKind`.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Cancel: Selects cancel behavior for `SidecarMessageKind`.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Close: Selects close behavior for `SidecarMessageKind`.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Hello: Selects hello behavior for `SidecarMessageKind`.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Manifest: Selects manifest behavior for `SidecarMessageKind`.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Configure: Selects configure behavior for `SidecarMessageKind`.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Observation: Selects observation behavior for `SidecarMessageKind`.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind::Closed: Reports that the underlying channel or resource is closed.",
+    "Error: Specifies the error type returned by `SidecarMessageKind` operations.",
+    "try_from: Attempts to from through `SidecarMessageKind`.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolLimits: Sets the maximum sidecar message and buffered-byte sizes enforced by protocol I/O.",
+    "SidecarProtocolLimits::max_signal_id_bytes: Stores the max signal id size for `SidecarProtocolLimits`, in bytes.",
+    "SidecarProtocolLimits::max_role_bytes: Stores the max role size for `SidecarProtocolLimits`, in bytes.",
+    "SidecarProtocolLimits::max_schema_bytes: Stores the max schema size for `SidecarProtocolLimits`, in bytes.",
+    "SidecarProtocolLimits::max_payload_bytes: Limits payload storage for `SidecarProtocolLimits`, in bytes.",
+    "default: Returns the default `SidecarProtocolLimits` value.",
+    "max_frame_bytes: Returns the max frame bytes held by `SidecarProtocolLimits`.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessage: Carries one typed control or signal message across the sidecar protocol.",
+    "SidecarMessage::kind: Stores the kind used by `SidecarMessage`.",
+    "SidecarMessage::terminal: Indicates whether terminal applies to `SidecarMessage`.",
+    "SidecarMessage::stream_id: Identifies the stream identifier recorded by `SidecarMessage`.",
+    "SidecarMessage::sequence_number: Stores the sequence number used by `SidecarMessage`.",
+    "SidecarMessage::timestamp_ns: Stores the timestamp value for `SidecarMessage`, in nanoseconds.",
+    "SidecarMessage::signal_id: Identifies the signal identifier recorded by `SidecarMessage`.",
+    "SidecarMessage::role: Stores the role used by `SidecarMessage`.",
+    "SidecarMessage::schema: Stores the schema used by `SidecarMessage`.",
+    "SidecarMessage::payload: Stores the payload used by `SidecarMessage`.",
+    "encode: Encodes input through `SidecarMessage`.",
+    "decode: Decodes input through `SidecarMessage`.",
+    "validate: Validates `SidecarMessage` against its declared contract.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError: Classifies failures reported as sidecar protocol error.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::Truncated: Reported when the owning operation encounters truncated.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::TrailingBytes: Reported when the owning operation encounters trailing bytes.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::InvalidMagic: Reported when the owning operation encounters invalid magic.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::UnsupportedMajor: Reported when the owning operation encounters unsupported major.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::UnsupportedMinor: Reported when the owning operation encounters unsupported minor.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::UnknownMessageKind: Reported when the owning operation encounters unknown message kind.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::InvalidTerminal: Reported when the owning operation encounters invalid terminal.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::ReservedFieldSet: Reported when the owning operation encounters reserved field set.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::EmptySignalId: Reported when the owning operation encounters empty signal identifier.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::FieldTooLarge: Reported when the owning operation encounters field too large.",
+    "SidecarProtocolError::FieldTooLarge::field: Stores the field used by `FieldTooLarge`.",
+    "SidecarProtocolError::FieldTooLarge::actual: Records the value observed by `FieldTooLarge`.",
+    "SidecarProtocolError::FieldTooLarge::maximum: Sets the inclusive maximum accepted by `FieldTooLarge`.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::InvalidUtf8: Reported when the owning operation encounters invalid UTF-8.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::FrameLengthOverflow: Reported when the owning operation encounters frame length overflow.",
+    "pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError::FrameTooLarge: Reported when the owning operation encounters frame too large."
   ],
   "retry_behavior": [],
   "serialization": [
@@ -768,7 +854,11 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-647c9ae6972c9c36f722",
+    "test-f94228781a9717656566"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

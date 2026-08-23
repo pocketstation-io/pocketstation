@@ -106,12 +106,12 @@ impl NodeConfig {
         self.values.get(key).is_some_and(|entry| entry.sensitive)
     }
 
-    #[doc = "Returns the get f32 associated with `NodeConfig`."]
+    #[doc = "Returns the get f32 held by `NodeConfig`."]
     pub fn get_f32(&self, key: &str) -> Option<f32> {
         self.get(key).and_then(|raw| raw.parse().ok())
     }
 
-    #[doc = "Returns the get u32 associated with `NodeConfig`."]
+    #[doc = "Returns the get u32 held by `NodeConfig`."]
     pub fn get_u32(&self, key: &str) -> Option<u32> {
         self.get(key).and_then(|raw| raw.parse().ok())
     }
@@ -159,7 +159,7 @@ pub enum ConfigError {
     #[error("invalid config '{key}': {reason}")]
     #[doc = "Reports invalid."]
     Invalid {
-        #[doc = "Stores the key associated with `Invalid`."]
+        #[doc = "Stores the key used by `Invalid`."]
         key: String,
         #[doc = "Carries the reason reported by `Invalid`."]
         reason: String,
@@ -186,7 +186,7 @@ pub enum NodeError {
     )]
     #[doc = "Reports external boundary execution."]
     ExternalBoundaryExecution {
-        #[doc = "Identifies the node type associated with `ExternalBoundaryExecution`."]
+        #[doc = "Identifies the node type identifier recorded by `ExternalBoundaryExecution`."]
         node_type_id: NodeTypeId,
     },
     #[error(transparent)]
@@ -254,32 +254,32 @@ impl NodeDescriptor {
         })
     }
 
-    #[doc = "Returns the type identifier associated with `NodeDescriptor`."]
+    #[doc = "Returns the type identifier held by `NodeDescriptor`."]
     pub const fn type_id(&self) -> &NodeTypeId {
         &self.type_id
     }
 
-    #[doc = "Returns the display name associated with `NodeDescriptor`."]
+    #[doc = "Returns the display name held by `NodeDescriptor`."]
     pub const fn display_name(&self) -> &'static str {
         self.display_name
     }
 
-    #[doc = "Returns the inputs associated with `NodeDescriptor`."]
+    #[doc = "Returns the inputs held by `NodeDescriptor`."]
     pub fn inputs(&self) -> &[PortSpec] {
         &self.inputs
     }
 
-    #[doc = "Returns the outputs associated with `NodeDescriptor`."]
+    #[doc = "Returns the outputs held by `NodeDescriptor`."]
     pub fn outputs(&self) -> &[PortSpec] {
         &self.outputs
     }
 
-    #[doc = "Returns the execution associated with `NodeDescriptor`."]
+    #[doc = "Returns the execution held by `NodeDescriptor`."]
     pub const fn execution(&self) -> ExecutionPartition {
         self.execution
     }
 
-    #[doc = "Returns the safety associated with `NodeDescriptor`."]
+    #[doc = "Returns the safety held by `NodeDescriptor`."]
     pub const fn safety(&self) -> SafetyContract {
         self.safety
     }
@@ -311,9 +311,9 @@ pub enum NodeDescriptorError {
 }
 
 #[derive(Debug, Clone)]
-#[doc = "Represents prepare context in the PocketStation API."]
+#[doc = "Carries the inputs and runtime context required to prepare."]
 pub struct PrepareContext {
-    #[doc = "Stores the sample spec associated with `PrepareContext`."]
+    #[doc = "Stores the sample spec used by `PrepareContext`."]
     pub sample_spec: SampleSpec,
 }
 
@@ -386,37 +386,37 @@ impl PortPrepareContext {
         })
     }
 
-    #[doc = "Returns the edge identifier associated with `PortPrepareContext`."]
+    #[doc = "Returns the edge identifier held by `PortPrepareContext`."]
     pub const fn edge_id(&self) -> Option<EdgeId> {
         self.edge_id
     }
 
-    #[doc = "Returns the port name associated with `PortPrepareContext`."]
+    #[doc = "Returns the port name held by `PortPrepareContext`."]
     pub fn port_name(&self) -> &str {
         &self.port_name
     }
 
-    #[doc = "Returns the direction associated with `PortPrepareContext`."]
+    #[doc = "Returns the direction held by `PortPrepareContext`."]
     pub const fn direction(&self) -> PortDirection {
         self.direction
     }
 
-    #[doc = "Returns the signal associated with `PortPrepareContext`."]
+    #[doc = "Returns the signal held by `PortPrepareContext`."]
     pub const fn signal(&self) -> &SignalSpec {
         &self.signal
     }
 
-    #[doc = "Returns the media associated with `PortPrepareContext`."]
+    #[doc = "Returns the media held by `PortPrepareContext`."]
     pub const fn media(&self) -> MediaCaps {
         self.media
     }
 
-    #[doc = "Returns the edge contract associated with `PortPrepareContext`."]
+    #[doc = "Returns the edge contract held by `PortPrepareContext`."]
     pub const fn edge_contract(&self) -> EdgeContract {
         self.edge_contract
     }
 
-    #[doc = "Returns the capacity signals associated with `PortPrepareContext`."]
+    #[doc = "Returns the capacity signals held by `PortPrepareContext`."]
     pub const fn capacity_signals(&self) -> usize {
         self.capacity_signals
     }

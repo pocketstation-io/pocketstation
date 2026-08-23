@@ -3,7 +3,12 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "calls": [
     "derive",
     "pub"
@@ -11,7 +16,12 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "constructs": [],
   "content_hash": "f2b0de8ed71a848d039127a25993b8c45e97727246c4d1fe7851d9e553744e7a",
   "defaults": [],
@@ -117,8 +127,14 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -132,9 +148,19 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "6e4187c752055d5ef5c2cef600e00e3dcbf0d1f1",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "imports": [
     "crate::capture::CaptureObservationReceipt",
     "crate::endpoint::EndpointDriverObservations",
@@ -144,7 +170,12 @@
     "super::observations::{ SessionDerivedRouteMetrics, SessionExternalSourceMetrics, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteMetrics, SessionSourceMetrics, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::capture::CaptureObservationReceipt",
+    "crate::endpoint::EndpointDriverObservations",
+    "crate::frame::{EndpointId, RouteId, StemId}",
+    "crate::runtime::{ AsyncOperatorObservations, AsyncOperatorOutputObservationHandle, EdgeObservations, PlanEdgeObservationHandle, PlanSourceObservationHandle, }",
+    "crate::session::declaration::OperatorInstanceId",
+    "super::observations::{ SessionDerivedRouteMetrics, SessionExternalSourceMetrics, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteMetrics, SessionSourceMetrics, }"
   ],
   "invariants": [],
   "language": "Rust",
@@ -153,18 +184,25 @@
   "module": "pocketstation::session::lifecycle::metric_bindings",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "struct:DerivedRouteObservationBinding",
+    "struct:FinalEndpointObservation",
+    "struct:FinalOperatorObservation",
+    "struct:RouteObservationBinding",
+    "struct:SourceObservationBinding",
+    "type:IndexedSessionMetrics"
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/metric_bindings.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -207,8 +245,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Runtime observation handles and their finalized Session-level snapshots."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::lifecycle::metric bindings responsibilities, including metric bindings; source observation binding; stem id."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -268,6 +306,17 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/capture/capture_owner.rs",
+    "REFERENCES:src/endpoint/runtime.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/runtime/audio/runner.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/observations.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs"
+  ],
   "resource_ownership": [
     {
       "line": 36,
@@ -295,12 +344,12 @@
     }
   ],
   "responsibilities": [
-    "SourceObservationBinding",
-    "RouteObservationBinding",
-    "DerivedRouteObservationBinding",
-    "IndexedSessionMetrics",
-    "FinalEndpointObservation",
-    "FinalOperatorObservation"
+    "SourceObservationBinding (struct)",
+    "RouteObservationBinding (struct)",
+    "DerivedRouteObservationBinding (struct)",
+    "IndexedSessionMetrics (type)",
+    "FinalEndpointObservation (struct)",
+    "FinalOperatorObservation (struct)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -310,6 +359,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

@@ -36,11 +36,11 @@ pub enum SourceState {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[doc = "Uniquely identifies stable source."]
 pub struct StableSourceId {
-    #[doc = "Stores the platform associated with `StableSourceId`."]
+    #[doc = "Stores the platform used by `StableSourceId`."]
     pub platform: Platform,
-    #[doc = "Stores the kind associated with `StableSourceId`."]
+    #[doc = "Stores the kind used by `StableSourceId`."]
     pub kind: SourceKind,
-    #[doc = "Stores the stable key associated with `StableSourceId`."]
+    #[doc = "Stores the stable key used by `StableSourceId`."]
     pub stable_key: String,
 }
 
@@ -95,28 +95,28 @@ impl StableSourceId {
 }
 
 #[derive(Debug, Clone)]
-#[doc = "Represents capture source in the PocketStation API."]
+#[doc = "Owns production of capture values and its lifecycle state."]
 pub struct CaptureSource {
-    #[doc = "Identifies the stable associated with `CaptureSource`."]
+    #[doc = "Identifies the stable identifier recorded by `CaptureSource`."]
     pub stable_id: StableSourceId,
-    #[doc = "Stores the name associated with `CaptureSource`."]
+    #[doc = "Stores the name used by `CaptureSource`."]
     pub name: String,
-    #[doc = "Identifies the process associated with `CaptureSource`."]
+    #[doc = "Identifies the process identifier recorded by `CaptureSource`."]
     pub process_id: Option<u32>,
-    #[doc = "Identifies the app associated with `CaptureSource`."]
+    #[doc = "Identifies the app identifier recorded by `CaptureSource`."]
     pub app_id: Option<String>,
-    #[doc = "Stores the device uid associated with `CaptureSource`."]
+    #[doc = "Stores the device uid used by `CaptureSource`."]
     pub device_uid: Option<String>,
-    #[doc = "Stores the state associated with `CaptureSource`."]
+    #[doc = "Stores the state used by `CaptureSource`."]
     pub state: SourceState,
     #[doc = "Stores the sample rate value for `CaptureSource`, in hertz."]
     pub sample_rate_hz: u32,
-    #[doc = "Stores the channels associated with `CaptureSource`."]
+    #[doc = "Stores the channels used by `CaptureSource`."]
     pub channels: u16,
 }
 
 impl CaptureSource {
-    #[doc = "Returns the identity strength associated with `CaptureSource`."]
+    #[doc = "Returns the identity strength held by `CaptureSource`."]
     pub fn identity_strength(&self) -> SourceIdentityStrength {
         match self.stable_id.kind {
             SourceKind::Application if self.app_id.is_some() && self.process_id.is_some() => {

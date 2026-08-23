@@ -3,7 +3,22 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/graph/builtins.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/extensions/source.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "calls": [
     "Arc::new",
     "Async",
@@ -100,7 +115,22 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/graph/builtins.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/extensions/source.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "constructs": [
     "Arc::new",
     "NodeRegistry::new",
@@ -473,8 +503,24 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/graph/builtins.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/extensions/source.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -490,12 +536,42 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "ae7f1b1af59db52cd72513310f1eabffc9ebdfd7",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/graph/builtins.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/extensions/source.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "implements": [
     "NodeDefinitionRef<'_>",
     "NodeRegistry"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/graph/builtins.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/extensions/source.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "imports": [
     "crate::graph::OperatorId",
     "crate::graph::builtins::{register_builtins, PassthroughFactory}",
@@ -507,7 +583,19 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(test)]",
+    "ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext,",
+    "crate::graph::OperatorId",
+    "crate::graph::builtins::{register_builtins, PassthroughFactory}",
+    "crate::graph::node::{ ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext, }",
+    "crate::graph::runtime_node::RuntimeNode",
+    "crate::graph::signal::{AsyncOperatorFactory, AsyncOperatorManifestError}",
+    "fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError>;",
+    "pub fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {",
+    "std::collections::HashMap",
+    "std::sync::Arc",
+    "super::*"
   ],
   "invariants": [
     {
@@ -549,20 +637,44 @@
   "module": "pocketstation::graph::registry",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-cbdc573effe2010bd38e"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(NodeRegistrationError::DuplicateNodeType { .. })",
+    "enum:NodeDefinitionRef",
+    "enum:NodeRegistrationError",
+    "fn:async_factory",
+    "fn:async_factory_by_operator",
+    "fn:async_node_type_id",
+    "fn:contains",
+    "fn:definition",
+    "fn:descriptor",
+    "fn:get",
+    "fn:is_empty",
+    "fn:len",
+    "fn:new",
+    "fn:register",
+    "fn:register_async",
+    "fn:register_definition",
+    "fn:type_ids",
+    "fn:validate_config",
+    "return Err(NodeRegistrationError::DuplicateNodeType {",
+    "return Err(NodeRegistrationError::DuplicateOperatorId {",
+    "struct:NodeRegistry",
+    "trait:NodeDefinition",
+    "trait:NodeFactory"
   ],
   "package": "pocketstation",
   "path": "src/graph/registry.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -757,7 +869,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::graph::registry`."
+    "text": "Implements pocketstation::graph::registry responsibilities, including Implement this trait to provide node behavior to PocketStation; its methods define the preparation and runtime contract.; Returns the descriptor associated with `NodeFactory`.; Validates config for `NodeFactory`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -794,6 +906,12 @@
     "docs/troubleshooting/session-start.md",
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/operator.rs",
+    "REFERENCES:src/graph/runtime_node.rs",
+    "REFERENCES:src/graph/signal/operator.rs"
   ],
   "resource_ownership": [
     {
@@ -866,37 +984,39 @@
     }
   ],
   "responsibilities": [
-    "NodeFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "NodeDefinition",
-    "descriptor",
-    "validate_config",
-    "RegistryEntry",
-    "NodeDefinitionRef",
-    "descriptor",
-    "validate_config",
-    "NodeRegistrationError",
-    "NodeRegistry",
-    "new",
-    "register",
-    "register_async",
-    "register_definition",
-    "get",
-    "definition",
-    "async_factory",
-    "async_factory_by_operator",
-    "async_node_type_id",
-    "contains",
-    "len",
-    "is_empty",
-    "type_ids",
-    "tests",
-    "given_registered_factory_when_get_then_returns_some",
-    "given_empty_registry_when_get_unknown_then_returns_none",
-    "given_builtins_registered_when_len_then_counts_each_factory",
-    "given_duplicate_runtime_node_when_registered_then_first_authority_is_preserved"
+    "pocketstation::graph::registry::NodeFactory: Implement this trait to provide node behavior to PocketStation; its methods define the preparation and runtime contract.",
+    "NodeFactory::descriptor: Returns the descriptor associated with `NodeFactory`.",
+    "NodeFactory::validate_config: Validates config for `NodeFactory`.",
+    "NodeFactory::instantiate: Instantiates the runtime node described by `NodeFactory`.",
+    "pocketstation::graph::registry::NodeDefinition: Implement this trait to provide node definition behavior to PocketStation; its methods define the preparation and runtime contract.",
+    "NodeDefinition::descriptor: Returns the descriptor associated with `NodeDefinition`.",
+    "NodeDefinition::validate_config: Validates config for `NodeDefinition`.",
+    "pocketstation::graph::registry::NodeDefinitionRef: Enumerates the supported node definition ref cases.",
+    "pocketstation::graph::registry::NodeDefinitionRef::Runtime: Represents the runtime alternative defined by `NodeDefinitionRef`.",
+    "pocketstation::graph::registry::NodeDefinitionRef::Async: Represents the async alternative defined by `NodeDefinitionRef`.",
+    "pocketstation::graph::registry::NodeDefinitionRef::Definition: Represents the definition alternative defined by `NodeDefinitionRef`.",
+    "descriptor: Returns the descriptor associated with `NodeDefinitionRef`.",
+    "validate_config: Validates config for `NodeDefinitionRef`.",
+    "pocketstation::graph::registry::NodeRegistrationError: Classifies failures reported as node registration error.",
+    "pocketstation::graph::registry::NodeRegistrationError::InvalidAsyncManifest: Reported when the owning operation encounters invalid async manifest.",
+    "NodeRegistrationError::DuplicateNodeType::node_type_id: Identifies the node type identifier recorded by `DuplicateNodeType`.",
+    "pocketstation::graph::registry::NodeRegistrationError::DuplicateNodeType: Reported when the owning operation encounters duplicate node type.",
+    "NodeRegistrationError::DuplicateOperatorId::operator_id: Identifies the operator identifier recorded by `DuplicateOperatorId`.",
+    "pocketstation::graph::registry::NodeRegistrationError::DuplicateOperatorId: Reported when the owning operation encounters duplicate operator identifier.",
+    "pocketstation::graph::registry::NodeRegistry: Indexes registered node implementations by their stable identities.",
+    "new: Creates a new `NodeRegistry`.",
+    "register: Registers a node definition with `NodeRegistry` while preserving unique identities.",
+    "register_async: Registers async for `NodeRegistry`.",
+    "register_definition: Registers definition for `NodeRegistry`.",
+    "get: Returns the value held by `NodeRegistry`.",
+    "definition: Returns the definition associated with `NodeRegistry`.",
+    "async_factory: Returns the async factory associated with `NodeRegistry`.",
+    "async_factory_by_operator: Returns the async factory by operator associated with `NodeRegistry`.",
+    "async_node_type_id: Returns the async node type identifier held by `NodeRegistry`.",
+    "contains: Returns whether contains is true for `NodeRegistry`.",
+    "len: Returns the number of values held by `NodeRegistry`.",
+    "is_empty: Returns whether `NodeRegistry` contains no values.",
+    "type_ids: Returns the type identifiers held by `NodeRegistry`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -906,7 +1026,19 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-3c9cfc84af12d388d72a",
+    "test-41190864ca572d90d1a9",
+    "test-6615dcd3b3105010af0b",
+    "test-85b9176c8aff351621b9",
+    "test-9fe8de186bd1af18a867",
+    "test-aa4e55522d6667752261",
+    "test-b951b0b08bbe3b9fb23a",
+    "test-c3d829c8e4d87e90b4f0",
+    "test-c5f24b62056cfa546c3a",
+    "test-d7ac5b66a6a72ddc6e51"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

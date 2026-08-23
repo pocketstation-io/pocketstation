@@ -43,9 +43,9 @@ pub enum ApplicationSelector {
     ProcessId(ProcessId),
     #[doc = "Selects process instance behavior for `ApplicationSelector`."]
     ProcessInstance {
-        #[doc = "Identifies the process associated with `ProcessInstance`."]
+        #[doc = "Identifies the process identifier recorded by `ProcessInstance`."]
         process_id: ProcessId,
-        #[doc = "Identifies the stable associated with `ProcessInstance`."]
+        #[doc = "Identifies the stable identifier recorded by `ProcessInstance`."]
         stable_id: StableSourceId,
     },
     #[doc = "Selects stable identifier behavior for `ApplicationSelector`."]
@@ -55,12 +55,12 @@ pub enum ApplicationSelector {
 }
 
 impl ApplicationSelector {
-    #[doc = "Returns the bundle identifier associated with `ApplicationSelector`."]
+    #[doc = "Returns the bundle identifier held by `ApplicationSelector`."]
     pub fn bundle_id(bundle_id: impl Into<String>) -> Self {
         Self::BundleId(bundle_id.into())
     }
 
-    #[doc = "Returns the process identifier associated with `ApplicationSelector`."]
+    #[doc = "Returns the process identifier held by `ApplicationSelector`."]
     pub const fn process_id(process_id: ProcessId) -> Self {
         Self::ProcessId(process_id)
     }
@@ -73,12 +73,12 @@ impl ApplicationSelector {
         }
     }
 
-    #[doc = "Returns the stable identifier associated with `ApplicationSelector`."]
+    #[doc = "Returns the stable identifier held by `ApplicationSelector`."]
     pub fn stable_id(source_id: StableSourceId) -> Self {
         Self::StableId(source_id)
     }
 
-    #[doc = "Returns the name associated with `ApplicationSelector`."]
+    #[doc = "Returns the name held by `ApplicationSelector`."]
     pub fn name(name: impl Into<String>) -> Self {
         Self::Name(name.into())
     }
@@ -137,7 +137,7 @@ impl DeviceSelector {
         Self::Default
     }
 
-    #[doc = "Returns the id associated with `DeviceSelector`."]
+    #[doc = "Returns the id held by `DeviceSelector`."]
     pub fn id(device_id: DeviceId) -> Self {
         Self::Id(device_id)
     }
@@ -164,7 +164,7 @@ pub enum Source {
 }
 
 impl Source {
-    #[doc = "Returns the application associated with `Source`."]
+    #[doc = "Returns the application held by `Source`."]
     pub fn application(selector: ApplicationSelector) -> Self {
         Self::Application(selector)
     }

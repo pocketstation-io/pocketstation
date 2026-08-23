@@ -8,7 +8,7 @@ use crate::timing::monotonic_timestamp_ns;
 
 use super::AudioInputConfig;
 
-#[doc = "Represents audio input buffer in the PocketStation API."]
+#[doc = "Leases bounded PCM storage from an external-audio input until the caller submits or releases it."]
 pub struct AudioInputBuffer {
     writer_id: u64,
     buffer: AudioBufferHandle,
@@ -17,12 +17,12 @@ pub struct AudioInputBuffer {
 }
 
 impl AudioInputBuffer {
-    #[doc = "Returns the sample capacity associated with `AudioInputBuffer`."]
+    #[doc = "Returns the sample capacity held by `AudioInputBuffer`."]
     pub fn sample_capacity(&self) -> usize {
         self.sample_capacity
     }
 
-    #[doc = "Returns the sample count associated with `AudioInputBuffer`."]
+    #[doc = "Returns the sample count held by `AudioInputBuffer`."]
     pub fn sample_count(&self) -> usize {
         self.buffer.len()
     }
@@ -45,7 +45,7 @@ impl AudioInputBuffer {
         self.buffer.as_slice()
     }
 
-    #[doc = "Returns the samples mut associated with `AudioInputBuffer`."]
+    #[doc = "Returns the samples mut held by `AudioInputBuffer`."]
     pub fn samples_mut(&mut self) -> &mut [f32] {
         self.buffer.as_mut_slice()
     }
@@ -82,9 +82,9 @@ pub(super) struct AudioInputState {
 pub struct AudioInputObservations {
     #[doc = "Sets the capacity frames available to `AudioInputObservations`."]
     pub capacity_frames: u64,
-    #[doc = "Stores the buffer slots associated with `AudioInputObservations`."]
+    #[doc = "Stores the buffer slots used by `AudioInputObservations`."]
     pub buffer_slots: u64,
-    #[doc = "Stores the available buffers associated with `AudioInputObservations`."]
+    #[doc = "Stores the available buffers used by `AudioInputObservations`."]
     pub available_buffers: u64,
     #[doc = "Counts the total number of accepted observed by `AudioInputObservations`."]
     pub accepted_total: u64,
@@ -92,9 +92,9 @@ pub struct AudioInputObservations {
     pub full_total: u64,
     #[doc = "Counts the total number of invalid observed by `AudioInputObservations`."]
     pub invalid_total: u64,
-    #[doc = "Stores the cancelled associated with `AudioInputObservations`."]
+    #[doc = "Stores the cancelled used by `AudioInputObservations`."]
     pub cancelled: bool,
-    #[doc = "Stores the closed associated with `AudioInputObservations`."]
+    #[doc = "Stores the closed used by `AudioInputObservations`."]
     pub closed: bool,
 }
 
@@ -106,7 +106,7 @@ pub(super) struct QueuedAudioInputFrame {
     pub(super) discontinuity_epoch: u64,
 }
 
-#[doc = "Represents audio input writer in the PocketStation API."]
+#[doc = "Sends audio input values across its declared ownership boundary."]
 pub struct AudioInputWriter {
     pub(super) writer_id: u64,
     pub(super) config: AudioInputConfig,
@@ -119,7 +119,7 @@ pub struct AudioInputWriter {
 }
 
 impl AudioInputWriter {
-    #[doc = "Returns the configuration associated with `AudioInputWriter`."]
+    #[doc = "Returns the configuration held by `AudioInputWriter`."]
     pub const fn configuration(&self) -> AudioInputConfig {
         self.config
     }
@@ -322,9 +322,9 @@ pub enum AudioInputBufferError {
     #[error("audio buffer contains {actual_samples} samples; expected exactly {expected_samples}")]
     #[doc = "Reports wrong frame length."]
     WrongFrameLength {
-        #[doc = "Stores the expected samples associated with `WrongFrameLength`."]
+        #[doc = "Stores the expected samples used by `WrongFrameLength`."]
         expected_samples: usize,
-        #[doc = "Stores the actual samples associated with `WrongFrameLength`."]
+        #[doc = "Stores the actual samples used by `WrongFrameLength`."]
         actual_samples: usize,
     },
     #[error("audio buffer capacity rejected the samples: {0}")]

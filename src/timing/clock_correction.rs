@@ -1,7 +1,7 @@
 const MAX_CORRECTION_NS: i64 = 10_000_000;
 
 #[derive(Debug, Clone, Copy)]
-#[doc = "Represents clock correction controller in the PocketStation API."]
+#[doc = "Applies bounded proportional corrections from measured clock offsets without changing lineage."]
 pub struct ClockCorrectionController {
     proportional_gain: f64,
     integral_gain: f64,
@@ -36,20 +36,20 @@ impl ClockCorrectionController {
         self.last_correction_ns
     }
 
-    #[doc = "Returns the last offset nanoseconds associated with `ClockCorrectionController`."]
+    #[doc = "Returns the last offset nanoseconds held by `ClockCorrectionController`."]
     pub fn last_offset_ns(&self) -> i64 {
         self.last_offset_ns
     }
-    #[doc = "Returns the last correction nanoseconds associated with `ClockCorrectionController`."]
+    #[doc = "Returns the last correction nanoseconds held by `ClockCorrectionController`."]
     pub fn last_correction_ns(&self) -> i64 {
         self.last_correction_ns
     }
-    #[doc = "Returns the integral error nanoseconds associated with `ClockCorrectionController`."]
+    #[doc = "Returns the integral error nanoseconds held by `ClockCorrectionController`."]
     pub fn integral_error_ns(&self) -> f64 {
         self.integral_error_ns
     }
 
-    #[doc = "Returns the integral nanoseconds associated with `ClockCorrectionController`."]
+    #[doc = "Returns the integral nanoseconds held by `ClockCorrectionController`."]
     pub fn integral_ns(&self) -> f64 {
         self.integral_error_ns
     }

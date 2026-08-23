@@ -230,6 +230,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -304,7 +305,16 @@
     "tempfile::TempDir"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "CARGO_MANIFEST_DIR",
+    "pocketstation::native_extension::{ NativeExtensionKind, NativeExtensionLibraryErrorCode, EXTENSION_LIBRARY_ENTRYPOINT_V1, }",
+    "pocketstation::{ EndpointDescriptor, NodeTypeId, Operator, OperatorConfiguration, OperatorId, Session, SourceConfiguration, SourceTypeId, }",
+    "std::env::consts::DLL_PREFIX,",
+    "std::env::consts::DLL_SUFFIX",
+    "std::fs",
+    "std::path::{Path, PathBuf}",
+    "std::process::Command",
+    "std::time::{Duration, Instant}",
+    "tempfile::TempDir"
   ],
   "invariants": [
     {
@@ -363,18 +373,20 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "tests/native_extension_library.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -471,8 +483,8 @@
   ],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given unsupported library abi when loaded then registration never mutates session, given valid native library when loaded then canonical session executes complete pipeline, given relative library path when loaded then ambient search is rejected under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -499,20 +511,21 @@
     "docs/best-practices/native-extension-trust.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "SOURCE_ID",
-    "OPERATOR_ID",
-    "ENDPOINT_ID",
-    "CompiledPlugin",
-    "compile_plugin",
-    "marker_text",
-    "given_relative_library_path_when_loaded_then_ambient_search_is_rejected",
-    "given_library_without_entrypoint_when_loaded_then_typed_error_is_returned",
-    "given_unsupported_library_abi_when_loaded_then_registration_never_mutates_session",
-    "given_acquired_malformed_registration_when_loaded_then_context_is_destroyed_once",
-    "given_valid_native_library_when_loaded_then_canonical_session_executes_complete_pipeline",
-    "given_duplicate_library_import_when_loaded_then_second_import_is_transactional"
+    "SOURCE_ID (const)",
+    "OPERATOR_ID (const)",
+    "ENDPOINT_ID (const)",
+    "CompiledPlugin (struct)",
+    "compile_plugin (fn)",
+    "marker_text (fn)",
+    "given_relative_library_path_when_loaded_then_ambient_search_is_rejected (fn)",
+    "given_library_without_entrypoint_when_loaded_then_typed_error_is_returned (fn)",
+    "given_unsupported_library_abi_when_loaded_then_registration_never_mutates_session (fn)",
+    "given_acquired_malformed_registration_when_loaded_then_context_is_destroyed_once (fn)",
+    "given_valid_native_library_when_loaded_then_canonical_session_executes_complete_pipeline (fn)",
+    "given_duplicate_library_import_when_loaded_then_second_import_is_transactional (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -589,7 +602,15 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-008f5c468f41d11fc947",
+    "test-17108da423c933ddbc98",
+    "test-337b49655c0e010a7d5c",
+    "test-47090f2c38cec228990b",
+    "test-67789b29ed2d07d71c3d",
+    "test-d8a393c10a8e4326265b"
+  ],
   "threads": [
     {
       "line": 176,

@@ -3,7 +3,19 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/runtime/audio/mod.rs",
+    "IMPORTS:src/runtime/audio/mod.rs",
+    "REFERENCES:src/runtime/bridge/audio.rs",
+    "REFERENCES:src/session/lifecycle/metric_bindings.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs",
+    "REFERENCES:src/session/prepare/error.rs",
+    "REFERENCES:src/session/prepare/mappings.rs",
+    "REFERENCES:src/session/prepare/mod.rs",
+    "REFERENCES:src/session/prepare/prepared.rs"
+  ],
   "calls": [
     "Arc::clone",
     "Arc::new",
@@ -149,7 +161,19 @@
       "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/runtime/audio/mod.rs",
+    "IMPORTS:src/runtime/audio/mod.rs",
+    "REFERENCES:src/runtime/bridge/audio.rs",
+    "REFERENCES:src/session/lifecycle/metric_bindings.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs",
+    "REFERENCES:src/session/prepare/error.rs",
+    "REFERENCES:src/session/prepare/mappings.rs",
+    "REFERENCES:src/session/prepare/mod.rs",
+    "REFERENCES:src/session/prepare/prepared.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AtomicBool::new",
@@ -712,8 +736,21 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/runtime/audio/mod.rs",
+    "IMPORTS:src/runtime/audio/mod.rs",
+    "REFERENCES:src/runtime/bridge/audio.rs",
+    "REFERENCES:src/session/lifecycle/metric_bindings.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs",
+    "REFERENCES:src/session/prepare/error.rs",
+    "REFERENCES:src/session/prepare/mappings.rs",
+    "REFERENCES:src/session/prepare/mod.rs",
+    "REFERENCES:src/session/prepare/prepared.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -729,7 +766,19 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "20652a541c60f240e7d06c7bfa0353cf1d62af07",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/runtime/audio/mod.rs",
+    "IMPORTS:src/runtime/audio/mod.rs",
+    "REFERENCES:src/runtime/bridge/audio.rs",
+    "REFERENCES:src/session/lifecycle/metric_bindings.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs",
+    "REFERENCES:src/session/prepare/error.rs",
+    "REFERENCES:src/session/prepare/mappings.rs",
+    "REFERENCES:src/session/prepare/mod.rs",
+    "REFERENCES:src/session/prepare/prepared.rs"
+  ],
   "implements": [
     "PlanSourceInputTelemetry",
     "PlanRunnerCancellation",
@@ -741,7 +790,19 @@
     "RealtimePlanRunner",
     "NodeFactory for WorkerSinkFactory"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/runtime/audio/mod.rs",
+    "IMPORTS:src/runtime/audio/mod.rs",
+    "REFERENCES:src/runtime/bridge/audio.rs",
+    "REFERENCES:src/session/lifecycle/metric_bindings.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs",
+    "REFERENCES:src/session/prepare/error.rs",
+    "REFERENCES:src/session/prepare/mappings.rs",
+    "REFERENCES:src/session/prepare/mod.rs",
+    "REFERENCES:src/session/prepare/prepared.rs"
+  ],
   "imports": [
     "crate::frame::LineagedAudioFrame",
     "crate::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
@@ -762,7 +823,28 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(feature = \"internal-testing\")]",
+    "#[cfg(test)]",
+    "crate::frame::LineagedAudioFrame",
+    "crate::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
+    "crate::graph::compile::Compiler",
+    "crate::graph::compile::RuntimePlanner",
+    "crate::graph::dsl::Pipeline",
+    "crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId}",
+    "crate::graph::partition::ExecutionPartition",
+    "crate::graph::registry::{NodeFactory, NodeRegistry}",
+    "crate::graph::spec::NodeId",
+    "crate::graph::{ AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalSpec, }",
+    "crate::graph::{register_builtins, PrepareContext, RuntimeNode}",
+    "crate::runtime::PlanEdgeFrame",
+    "crate::runtime::audio::{ExecError, PlanExecutionSummary, RealtimePlanExecutor}",
+    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
+    "rtrb::{Consumer, Producer, RingBuffer}",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "super::*",
+    "use crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId};"
   ],
   "invariants": [
     {
@@ -837,23 +919,52 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-c15693ac67ca78bd46be",
-    "pattern-550a0db4c916e2cf76fd",
-    "pattern-a9ca7c19337ef948059e",
-    "pattern-007b832d1ee35a325c5f"
+    "pattern-007b832d1ee35a325c5f",
+    "pattern-550a0db4c916e2cf76fd"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(NodeError::Prepare(",
+    "Err(rtrb::PushError::Full(frame)) => {",
+    "enum:PlanRunnerDrainPolicy",
+    "enum:PlanRunnerError",
+    "enum:PlanSourceSendError",
+    "enum:PlanSourceSendOutcome",
+    "fn:finish",
+    "fn:is_requested",
+    "fn:new",
+    "fn:observation_handle",
+    "fn:observations",
+    "fn:plan_source_channel",
+    "fn:process_ready",
+    "fn:request",
+    "fn:source_node_id",
+    "fn:source_observations",
+    "fn:try_recv_for_testing",
+    "fn:try_send",
+    "return Err(PlanRunnerError::AlreadyFinished);",
+    "return Err(PlanRunnerError::DuplicateSource {",
+    "return Err(PlanRunnerError::ZeroSourceCapacity {",
+    "return Err(PlanRunnerError::ZeroWorkBudget);",
+    "struct:PlanRunnerCancellation",
+    "struct:PlanRunnerFinishSummary",
+    "struct:PlanRunnerStepSummary",
+    "struct:PlanSourceInput",
+    "struct:PlanSourceInputObservations",
+    "struct:PlanSourceObservationHandle",
+    "struct:PlanSourceSender",
+    "struct:RealtimePlanRunner"
   ],
   "package": "pocketstation",
   "path": "src/runtime/audio/runner.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -1167,8 +1278,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Bounded multi-source ingress for one realtime plan executor.  The runner is polled by its owning processing thread. It does not spawn a thread, block, or publish Session lifecycle state."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::runtime::audio::runner responsibilities, including Selects the plan runner drain policy used by PocketStation.; Selects drain queued behavior for `PlanRunnerDrainPolicy`.; Selects discard queued behavior for `PlanRunnerDrainPolicy`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1223,6 +1334,11 @@
     "docs/best-practices/route-sizing.md",
     "docs/best-practices/realtime-boundaries.md",
     "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/graph/spec.rs",
+    "REFERENCES:src/runtime/audio/executor.rs"
   ],
   "resource_ownership": [
     {
@@ -1279,57 +1395,63 @@
     }
   ],
   "responsibilities": [
-    "PlanRunnerDrainPolicy",
-    "PlanSourceInputObservations",
-    "PlanSourceInputTelemetry",
-    "new",
-    "queue_depth_frames",
-    "observe_enqueue",
-    "snapshot",
-    "PlanRunnerCancellation",
-    "new",
-    "request",
-    "is_requested",
-    "default",
-    "PlanSourceSendError",
-    "PlanSourceSendOutcome",
-    "PlanSourceSender",
-    "PlanSourceObservationHandle",
-    "observations",
-    "try_send",
-    "observations",
-    "observation_handle",
-    "PlanSourceInput",
-    "source_node_id",
-    "observations",
-    "try_recv",
-    "try_recv_for_testing",
-    "discard_queued",
-    "plan_source_channel",
-    "PlanRunnerError",
-    "PlanRunnerStepSummary",
-    "observe_execution",
-    "PlanRunnerFinishSummary",
-    "RealtimePlanRunner",
-    "new",
-    "process_ready",
-    "source_observations",
-    "finish",
-    "process_ready_with_clock",
-    "finish_with_clock",
-    "next_ready_source",
-    "tests",
-    "WorkerSinkFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "frame",
-    "RunnerFixture",
-    "runner_fixture",
-    "given_two_ready_sources_when_processed_then_each_source_dispatches_independently",
-    "given_queued_sources_when_cancelled_with_budget_then_drain_is_bounded_and_rest_discards",
-    "given_queued_sources_when_cancelled_with_discard_then_no_frame_executes",
-    "given_full_source_input_when_more_frames_arrive_then_newest_rejects_and_counts"
+    "pocketstation::runtime::audio::runner::PlanRunnerDrainPolicy: Selects the plan runner drain policy used by PocketStation.",
+    "pocketstation::runtime::audio::runner::PlanRunnerDrainPolicy::DrainQueued: Selects drain queued behavior for `PlanRunnerDrainPolicy`.",
+    "pocketstation::runtime::audio::runner::PlanRunnerDrainPolicy::DiscardQueued: Selects discard queued behavior for `PlanRunnerDrainPolicy`.",
+    "pocketstation::runtime::audio::runner::PlanSourceInputObservations: Reports the plan source input observations collected at an observation boundary.",
+    "PlanSourceInputObservations::queue_capacity_frames: Sets the queue capacity frames available to `PlanSourceInputObservations`.",
+    "PlanSourceInputObservations::queue_depth_frames: Reports the queue depth frames observed by `PlanSourceInputObservations`.",
+    "PlanSourceInputObservations::queue_peak_frames: Reports the queue peak frames observed by `PlanSourceInputObservations`.",
+    "PlanSourceInputObservations::frames_enqueued_total: Counts the total number of frames enqueued observed by `PlanSourceInputObservations`.",
+    "PlanSourceInputObservations::frames_delivered_total: Counts the total number of frames delivered observed by `PlanSourceInputObservations`.",
+    "PlanSourceInputObservations::frames_rejected_full_total: Counts the total number of frames rejected full observed by `PlanSourceInputObservations`.",
+    "PlanSourceInputObservations::frames_rejected_cancelled_total: Counts the total number of frames rejected cancelled observed by `PlanSourceInputObservations`.",
+    "PlanSourceInputObservations::frames_discarded_total: Counts the total number of frames discarded observed by `PlanSourceInputObservations`.",
+    "pocketstation::runtime::audio::runner::PlanRunnerCancellation: Shares a lock-free cancellation flag between the Session owner and the realtime plan runner.",
+    "new: Creates a new `PlanRunnerCancellation`.",
+    "request: Requests the state transition represented by `PlanRunnerCancellation`.",
+    "is_requested: Returns whether requested applies to `PlanRunnerCancellation`.",
+    "default: Returns the default `PlanRunnerCancellation` value.",
+    "pocketstation::runtime::audio::runner::PlanSourceSendError: Classifies failures reported as plan source send error.",
+    "pocketstation::runtime::audio::runner::PlanSourceSendError::Cancelled: Indicates that the operation was cancelled.",
+    "pocketstation::runtime::audio::runner::PlanSourceSendError::Full: Reports that bounded capacity is full.",
+    "pocketstation::runtime::audio::runner::PlanSourceSendOutcome: Classifies the observable plan source send outcome.",
+    "pocketstation::runtime::audio::runner::PlanSourceSendOutcome::Enqueued: Identifies the enqueued state or stage represented by `PlanSourceSendOutcome`.",
+    "pocketstation::runtime::audio::runner::PlanSourceSendOutcome::Rejected: Identifies the rejected state or stage represented by `PlanSourceSendOutcome`.",
+    "PlanSourceSendOutcome::Rejected::error: Stores the error used by `Rejected`.",
+    "PlanSourceSendOutcome::Rejected::frame: Stores the frame used by `Rejected`.",
+    "pocketstation::runtime::audio::runner::PlanSourceSender: Sends plan source values across its declared ownership boundary.",
+    "pocketstation::runtime::audio::runner::PlanSourceObservationHandle: Owns bounded access to plan source observation.",
+    "observations: Returns the observations exposed by `PlanSourceObservationHandle`.",
+    "try_send: Attempts to send a value through `PlanSourceSender` without waiting for capacity.",
+    "observations: Returns the observations exposed by `PlanSourceSender`.",
+    "observation_handle: Returns a handle for reading observations from `PlanSourceSender`.",
+    "pocketstation::runtime::audio::runner::PlanSourceInput: Carries typed input for plan source.",
+    "source_node_id: Returns the source node identifier held by `PlanSourceInput`.",
+    "observations: Returns the observations exposed by `PlanSourceInput`.",
+    "try_recv_for_testing: Attempts to recv for testing through `PlanSourceInput`.",
+    "pocketstation::runtime::audio::runner::plan_source_channel: Plans source channel for `runner`.",
+    "pocketstation::runtime::audio::runner::PlanRunnerError: Classifies failures reported as plan runner error.",
+    "PlanRunnerError::ZeroSourceCapacity::source_node_id: Identifies the source node identifier recorded by `ZeroSourceCapacity`.",
+    "pocketstation::runtime::audio::runner::PlanRunnerError::ZeroSourceCapacity: Reported when the owning operation encounters zero source capacity.",
+    "PlanRunnerError::DuplicateSource::source_node_id: Identifies the source node identifier recorded by `DuplicateSource`.",
+    "pocketstation::runtime::audio::runner::PlanRunnerError::DuplicateSource: Reported when the owning operation encounters duplicate source.",
+    "pocketstation::runtime::audio::runner::PlanRunnerError::ZeroWorkBudget: Reported when the owning operation encounters zero work budget.",
+    "pocketstation::runtime::audio::runner::PlanRunnerError::AlreadyFinished: Reported when the owning operation encounters already finished.",
+    "pocketstation::runtime::audio::runner::PlanRunnerError::Execution: Reported when the owning operation encounters execution.",
+    "pocketstation::runtime::audio::runner::PlanRunnerStepSummary: Reports the counters and terminal facts collected for plan runner step.",
+    "PlanRunnerStepSummary::source_frames_processed_total: Counts the total number of source frames processed observed by `PlanRunnerStepSummary`.",
+    "PlanRunnerStepSummary::execution: Stores the execution used by `PlanRunnerStepSummary`.",
+    "pocketstation::runtime::audio::runner::PlanRunnerFinishSummary: Reports the counters and terminal facts collected for plan runner finish.",
+    "PlanRunnerFinishSummary::source_frames_processed_total: Counts the total number of source frames processed observed by `PlanRunnerFinishSummary`.",
+    "PlanRunnerFinishSummary::source_frames_discarded_total: Counts the total number of source frames discarded observed by `PlanRunnerFinishSummary`.",
+    "PlanRunnerFinishSummary::drain_budget_exhausted: Stores the drain budget exhausted used by `PlanRunnerFinishSummary`.",
+    "PlanRunnerFinishSummary::execution: Stores the execution used by `PlanRunnerFinishSummary`.",
+    "pocketstation::runtime::audio::runner::RealtimePlanRunner: Executes realtime plan according to its compiled plan and cancellation contract.",
+    "new: Creates a new `RealtimePlanRunner`.",
+    "process_ready: Processes the ready inputs for `RealtimePlanRunner`.",
+    "source_observations: Returns the source observations held by `RealtimePlanRunner`.",
+    "finish: Finishes work owned by `RealtimePlanRunner`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1348,7 +1470,17 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0ae60369d5962ff55b0f",
+    "test-1664fa1aa12573253d70",
+    "test-218c72d3cc7560654f20",
+    "test-31632b8eb3f0b3c90934",
+    "test-85537f6d9bc6ada5654e",
+    "test-9884a85b98ea454bb6cf",
+    "test-c49159871ef385421381",
+    "test-e8ced072a71ada7c3d25"
+  ],
   "threads": [
     {
       "line": 3,

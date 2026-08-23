@@ -7,11 +7,11 @@
 - **Select and resolve capture sources.** Discover capture candidates and resolve application, process, device, and system queries to stable source identities.
 - **Observe permission and source lifecycle.** Query non-prompting authorization where observable and receive source-generation, loss, and permission-epoch changes.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Select a process-scoped source** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
 ## Prerequisites
 
-Read the linked concept and confirm that target platform, Cargo features, source or provider dependencies, and application-owned permission work match this task. Keep returned typed errors and outcomes available for verification.
+A discovery result that exposes process-instance identity rather than only a display name.
 
 ## Procedure
 
@@ -21,30 +21,15 @@ Read the linked concept and confirm that target platform, Cargo features, source
 4. Observe generation changes instead of assuming process identity is permanent.
 5. Handle empty or ambiguous resolution as a typed result.
 
-## APIs used
+## Important consequence
 
-| Public declaration | Kind | Declared purpose | Source |
-|---|---|---|---|
-| `pocketstation::capture::selection::ProcessTreeScope` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/selection.rs:83` |
-| `pocketstation::capture::authorization::SourceIdentityStrength::ApplicationIdAndProcessId` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/authorization.rs:258` |
-| `pocketstation::capture::authorization::SourceIdentityStrength::ProcessId` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/authorization.rs:260` |
-| `pocketstation::capture::selection::CaptureMode::Process` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/selection.rs:20` |
-| `pocketstation::capture::selection::ProcessTreeScope::ApplicationIdentity` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/selection.rs:86` |
-| `pocketstation::capture::selection::ProcessTreeScope::NotApplicable` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/selection.rs:87` |
-| `pocketstation::capture::selection::ProcessTreeScope::SelectedProcessAndDescendants` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/selection.rs:85` |
-| `pocketstation::capture::selection::ProcessTreeScope::SelectedProcessOnly` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/selection.rs:84` |
-| `pocketstation::capture::selection::SelectorPersistenceScope::ProcessLifetime` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/selection.rs:74` |
-| `identity::CaptureSource::process_id` | struct_field | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/identity.rs:85` |
-| `selection::CaptureMode::ExactApplication::process_id` | struct_field | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/selection.rs:22` |
-| `selection` | module | Capture selection semantics; control-plane only. | `src/capture/selection.rs:1` |
-| `ActiveCaptureBackend::source_id` | function | Resolved native source identity for every frame emitted by this open. | `src/capture/capture_owner.rs:105` |
-| `process_tree_scope` | function | Reports the native process boundary represented by this discovery result without making the CLI reconstruct a private capture mode. | `src/capture/identity.rs:140` |
-| `process_tree_scope` | function | Reports the process boundary requested from the native backend. | `src/capture/selection.rs:55` |
-| `selector_persistence_scope` | function | Reports how long this discovered selector can be reused without rediscovery. The capture owner remains authoritative for opening it. | `src/capture/identity.rs:114` |
+Reject zero process IDs, empty stable keys, and non-application identities instead of weakening the selector.
 
 ## Verify the outcome
 
-The following test bodies are evidence only for their recorded setup:
+Resolution returns the intended exact process instance and later generation changes remain observable.
+
+Executable evidence selected for **Select a process-scoped source** is limited to each test's recorded setup and assertions:
 
 - `given_process_scoped_exact_selector_when_identity_is_transient_then_matching_pid_is_allowed` — given process scoped exact selector when identity is transient then matching pid is allowed (`src/capture/platform/linux/pipewire.rs:1980`; `test-281d496a5f325c196fe0`).
 - `given_pipewire_process_callbacks_when_source_changes_then_realtime_contract_remains_explicit` — given pipewire process callbacks when source changes then realtime contract remains explicit (`tests/capture_callback_source_contract.rs:99`; `test-8e4f6e83c1cbdb5caf59`).
@@ -61,20 +46,27 @@ The following test bodies are evidence only for their recorded setup:
 
 ## Failure signals
 
-- `pocketstation::capture::events::CaptureRuntimeFailure` — `error-11b972ad42d5de880e06`
-- `pocketstation::capture::events::CaptureRuntimeFailureClass` / `BackendClass` — `error-29e952ae7432566a9e95`
-- `pocketstation::capture::authorization::CaptureError` / `CaptureWorkerPanicked` — `error-365f9b6fbda74eb0d631`
-- `pocketstation::capture::authorization::CaptureError` / `PermissionDenied` — `error-38030156125346a8e892`
-- `pocketstation::capture::authorization::CaptureError` / `NotSupported` — `error-3b4b5393164d9f6f12a5`
-- `pocketstation::capture::events::CaptureRuntimeFailureClass` / `PlatformStatus` — `error-3c6fcc22deb2f54788ba`
-- `pocketstation::capture::authorization::CaptureError` / `SourceUnavailable` — `error-71c87f975acc9e22a402`
-- `pocketstation::capture::authorization::CaptureError` / `BackendSetupRequired` — `error-8db0fec69a9c7158ffdf`
-- `pocketstation::capture::authorization::CaptureError` — `error-96ffe4bc4254583d1e17`
-- `pocketstation::capture::events::CaptureRuntimeFailureClass` / `SourceInstanceExited` — `error-a9c0f7dfff744e9ba6b7`
-- `pocketstation::capture::authorization::CaptureError` / `BackendInit` — `error-b320ea1cba2b3c8dc4c7`
-- `pocketstation::capture::authorization::CaptureError` / `InvalidStreamCapacity` — `error-bcf5d4d897b6bd0784bf`
+- `pocketstation::capture::authorization::CaptureError` / `SourceUnavailable` — `error-61051d668a17eec6c3ac`
+- `pocketstation::capture::authorization::CaptureError` / `InvalidRuntimeEventCapacity` — `error-c683702117e27ad45f33`
+- `pocketstation::capture::events::CaptureRuntimeFailureClass` / `SourceInstanceExited` — `error-35fe109728e80f2b126f`
+- `pocketstation::capture::timeline::CaptureSampleTimelineError` / `SourcePositionMovedBackward` — `error-3812c0f164d9b3c8357b`
+- `pocketstation::capture::timeline::CaptureSampleTimelineError` / `SourcePositionOverflow` — `error-51de207a9656d496b4d1`
 
-Retry only when the relevant API or error contract explicitly permits it. An error name, a transient-looking message, or a successful prior run is not retry evidence.
+## API reference
+
+- [Source Selection](/docs/concepts/source-selection.md)
+- [Capture](/docs/reference/capture.md)
+
+| Public declaration | Kind | Declared purpose | Source |
+|---|---|---|---|
+| `pocketstation::capture::selection::ProcessTreeScope` | enum | Selects the process tree scope used by PocketStation. | `src/capture/selection.rs:83` |
+| `pocketstation::capture::authorization::SourceIdentityStrength::ApplicationIdAndProcessId` | variant | Represents the application id and process identifier alternative defined by `SourceIdentityStrength`. | `src/capture/authorization.rs:258` |
+| `pocketstation::capture::authorization::SourceIdentityStrength::ProcessId` | variant | Represents the process identifier alternative defined by `SourceIdentityStrength`. | `src/capture/authorization.rs:260` |
+| `pocketstation::capture::selection::CaptureMode::Process` | variant | Selects process behavior for `CaptureMode`. | `src/capture/selection.rs:20` |
+| `pocketstation::capture::selection::ProcessTreeScope::ApplicationIdentity` | variant | Selects application identity behavior for `ProcessTreeScope`. | `src/capture/selection.rs:86` |
+| `pocketstation::capture::selection::ProcessTreeScope::NotApplicable` | variant | Selects not applicable behavior for `ProcessTreeScope`. | `src/capture/selection.rs:87` |
+| `pocketstation::capture::selection::ProcessTreeScope::SelectedProcessAndDescendants` | variant | Selects selected process and descendants behavior for `ProcessTreeScope`. | `src/capture/selection.rs:85` |
+| `pocketstation::capture::selection::ProcessTreeScope::SelectedProcessOnly` | variant | Selects selected process only behavior for `ProcessTreeScope`. | `src/capture/selection.rs:84` |
 
 ## Related documentation
 
@@ -89,8 +81,8 @@ Retry only when the relevant API or error contract explicitly permits it. An err
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Select a process-scoped source** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/session/declaration/selector.rs:1-215` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Select a process-scoped source**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

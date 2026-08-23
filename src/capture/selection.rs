@@ -27,14 +27,14 @@ pub enum CaptureMode {
     Process(u32),
     #[doc = "Selects exact application behavior for `CaptureMode`."]
     ExactApplication {
-        #[doc = "Identifies the process associated with `ExactApplication`."]
+        #[doc = "Identifies the process identifier recorded by `ExactApplication`."]
         process_id: u32,
-        #[doc = "Identifies the stable associated with `ExactApplication`."]
+        #[doc = "Identifies the stable identifier recorded by `ExactApplication`."]
         stable_id: StableSourceId,
     },
     #[doc = "Selects exact application stable behavior for `CaptureMode`."]
     ExactApplicationStable {
-        #[doc = "Identifies the stable associated with `ExactApplicationStable`."]
+        #[doc = "Identifies the stable identifier recorded by `ExactApplicationStable`."]
         stable_id: StableSourceId,
     },
     #[doc = "Selects input device behavior for `CaptureMode`."]

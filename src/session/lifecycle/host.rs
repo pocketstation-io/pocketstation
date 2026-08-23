@@ -274,6 +274,7 @@ impl SessionEngineHostBuilder {
         self
     }
 
+    #[doc = "Borrows the mutable engine builder owned by `SessionEngineHostBuilder`."]
     pub fn engine_builder(&mut self) -> &mut SessionEngineBuilder {
         &mut self.engine_builder
     }

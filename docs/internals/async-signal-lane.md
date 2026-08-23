@@ -7,7 +7,7 @@
 - **Implement asynchronous operators.** Register operator factories that consume and emit named typed signals on the asynchronous execution lane.
 - **Carry typed signals.** Represent audio-adjacent text, event, binary, metric, and custom-schema payloads with timing and lineage.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Asynchronous signal lane** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
 ## Ownership map
 
@@ -18,84 +18,84 @@ These statements describe repository contracts at the documented snapshot. They 
 
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
-| `pocketstation::graph::plan::PlanError::MissingOutputSignal` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/plan.rs:29` |
-| `PlanError::MissingOutputSignal::edge` | struct_field | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/plan.rs:29` |
-| `signal` | module | Bounded asynchronous signal execution lane. | `src/runtime/signal/mod.rs:1` |
 | `pocketstation::graph::signal::operator::AsyncNode` | trait | Async operator contract for model, connector, transport, and control-plane work. | `src/graph/signal/operator.rs:13` |
-| `pocketstation::graph::signal::lineage::SignalDerivation` | struct | Source-independent record of the signal consumed by an operator. | `src/graph/signal/lineage.rs:97` |
-| `pocketstation::graph::signal::preparation::AsyncOperatorPrepareContext` | struct | Complete graph-owned preparation contract for one asynchronous Operator. | `src/graph/signal/preparation.rs:22` |
+| `pocketstation::graph::signal::operator::AsyncOperatorFactory` | trait | Implement this trait to provide async operator behavior to PocketStation; its methods define the preparation and runtime contract. | `src/graph/signal/operator.rs:368` |
+| `pocketstation::graph::signal::envelope::SignalEnvelope` | struct | Carries a typed signal payload together with timing, lineage, continuity, and terminal metadata. | `src/graph/signal/envelope.rs:6` |
+| `pocketstation::graph::signal::operator::AsyncOperatorManifest` | struct | Describes the async operator manifest contract. | `src/graph/signal/operator.rs:127` |
+| `pocketstation::graph::signal::operator::OperatorDeadlinePolicy` | struct | Configures operator deadline behavior at its owning API boundary. | `src/graph/signal/operator.rs:52` |
+| `pocketstation::graph::signal::operator::OperatorOutputRolePolicy` | struct | Configures operator output role behavior at its owning API boundary. | `src/graph/signal/operator.rs:69` |
+| `pocketstation::graph::signal::operator::OperatorPermissionPolicy` | struct | Configures operator permission behavior at its owning API boundary. | `src/graph/signal/operator.rs:46` |
 | `pocketstation::graph::signal::spec::SchemaRef` | struct | Reference to an external schema document. | `src/graph/signal/spec.rs:87` |
 | `pocketstation::graph::signal::spec::SemanticRole` | struct | Semantic role annotation on a port. | `src/graph/signal/spec.rs:57` |
 | `pocketstation::graph::signal::spec::SignalId` | struct | Opaque identifier for a custom signal type. | `src/graph/signal/spec.rs:22` |
 | `pocketstation::graph::signal::spec::SignalSpec` | struct | Full signal contract for a single port. | `src/graph/signal/spec.rs:205` |
-| `pocketstation::graph::signal::spec::BinaryFormat` | enum | Binary encoding hint for `SignalClass::Binary`. | `src/graph/signal/spec.rs:141` |
-| `pocketstation::graph::signal::spec::Codec` | enum | Audio encoding format for `SignalClass::EncodedAudio`. | `src/graph/signal/spec.rs:113` |
-| `pocketstation::graph::signal::spec::EventFormat` | enum | Event structure hint for `SignalClass::Event`. | `src/graph/signal/spec.rs:132` |
-| `pocketstation::graph::signal::spec::SignalClass` | enum | The fundamental class of data flowing through a port. | `src/graph/signal/spec.rs:156` |
-| `pocketstation::graph::signal::spec::TextFormat` | enum | Text encoding hint for `SignalClass::Text`. | `src/graph/signal/spec.rs:124` |
-| `pocketstation::graph::signal::preparation::AsyncOperatorEdgePrepareContext` | type_alias | Exact bounded graph edge supplied to an asynchronous Operator at prepare time. | `src/graph/signal/preparation.rs:18` |
-| `pocketstation::graph::signal::spec::SignalClass::Any` | variant | Wildcard accepted only at deliberately open graph boundaries. | `src/graph/signal/spec.rs:158` |
-| `pocketstation::graph::signal::spec::SignalClass::Binary` | variant | Opaque binary blob. | `src/graph/signal/spec.rs:172` |
-| `pocketstation::graph::signal::spec::SignalClass::Control` | variant | Graph control messages (route patches, session lifecycle, mute/unmute). | `src/graph/signal/spec.rs:170` |
-| `pocketstation::graph::signal::spec::SignalClass::Custom` | variant | Extension point for community / vendor signals. Use a stable reverse-domain identifier. | `src/graph/signal/spec.rs:175` |
-| `pocketstation::graph::signal::spec::SignalClass::EncodedAudio` | variant | Compressed audio bitstream (Opus packet, AAC frame, …). | `src/graph/signal/spec.rs:162` |
-| `pocketstation::graph::signal::spec::SignalClass::Event` | variant | Discrete event payloads. | `src/graph/signal/spec.rs:166` |
-| `pocketstation::graph::signal::spec::SignalClass::Metrics` | variant | Telemetry and observability counters / gauges. | `src/graph/signal/spec.rs:168` |
-| `pocketstation::graph::signal::spec::SignalClass::PcmAudio` | variant | Interleaved PCM audio samples (format described by the edge AudioCaps). | `src/graph/signal/spec.rs:160` |
+| `pocketstation::runtime::signal::edge::SignalEdgeObservationHandle` | struct | Owns bounded access to signal edge observation. | `src/runtime/signal/edge.rs:49` |
+| `pocketstation::runtime::signal::edge::SignalEdgeObservations` | struct | Reports the signal edge observations collected at an observation boundary. | `src/runtime/signal/edge.rs:31` |
+| `pocketstation::runtime::signal::edge::SignalEdgeReceiver` | struct | Receives signal edge values across its declared ownership boundary. | `src/runtime/signal/edge.rs:204` |
+| `pocketstation::runtime::signal::edge::SignalEdgeSendError` | struct | Reports a signal edge send error. | `src/runtime/signal/edge.rs:118` |
+| `pocketstation::runtime::signal::edge::TypedEdgeBranchSpec` | struct | Configures typed edge branch behavior at its owning API boundary. | `src/runtime/signal/edge.rs:248` |
+| `pocketstation::runtime::signal::edge::TypedEdgeFanout` | struct | Publishes one immutable signal envelope to the bounded branches of a compiled fan-out edge. | `src/runtime/signal/edge.rs:259` |
+| `pocketstation::runtime::signal::edge::TypedEdgePublishReport` | struct | Reports how many fan-out branches accepted or dropped one published signal. | `src/runtime/signal/edge.rs:380` |
+| `pocketstation::runtime::signal::operator::AsyncOperatorWorker` | struct | Owns the asynchronous operator task, typed I/O, cancellation, and terminal join result. | `src/runtime/signal/operator.rs:250` |
+| `pocketstation::runtime::signal::operator::CompiledOperatorInputContract` | struct | Declares the validated constraints applied to compiled operator input. | `src/runtime/signal/operator.rs:103` |
+| `pocketstation::graph::signal::envelope::SignalEnvelopeError` | enum | Classifies failures reported as signal envelope error. | `src/graph/signal/envelope.rs:137` |
+| `pocketstation::graph::signal::operator::AsyncOperatorManifestError` | enum | Classifies failures reported as async operator manifest error. | `src/graph/signal/operator.rs:321` |
+| `pocketstation::graph::signal::operator::OperatorCancellationPolicy` | enum | Selects the operator cancellation policy used by PocketStation. | `src/graph/signal/operator.rs:57` |
+| `pocketstation::graph::signal::operator::OperatorFailurePolicy` | enum | Selects the operator failure policy used by PocketStation. | `src/graph/signal/operator.rs:63` |
 
 ## Observed implementation patterns
 
 - `typed_error` — `src/runtime/audio/runner.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/runtime/nodes.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `src/runtime/lifecycle/async_host.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `benches/runtime_plan.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `bounded_queue` — `src/graph/ports.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `benches/runtime_plan.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/graph/signal/envelope.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `bounded_queue` — `src/graph/compile/plan.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/graph/named_ports.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/runtime/audio/executor.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `buffer_pool` — `src/graph/plan.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `src/runtime/signal/operator.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `examples/operator-consumer/src/lib.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/runtime/lifecycle/async_host.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/graph/runtime_node.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `src/runtime/signal/io.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `src/runtime/audio/router.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/runtime/audio/runner.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `buffer_pool` — `src/graph/compile/plan.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `src/runtime/signal/edge.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/graph/signal/operator.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `bounded_queue` — `src/runtime/nodes.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `src/runtime/nodes.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `clock_correlation` — `src/runtime/audio/router.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `tests/runtime_plan_router_alloc.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/graph/builtins.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `bounded_queue` — `src/runtime/audio/router.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/runtime/nodes.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `src/runtime/signal/mod.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `sidecar_isolation` — `src/runtime/lifecycle/sidecar_protocol.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `sidecar_isolation` — `src/runtime/lifecycle/sidecar_host.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `clock_correlation` — `src/graph/signal/lineage.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/runtime/bridge/audio.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/runtime/signal/operator.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/runtime/lifecycle/sidecar_protocol.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `clock_correlation` — `src/graph/signal/envelope.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `buffer_pool` — `src/runtime/signal/operator.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `buffer_pool` — `src/runtime/audio/router.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `bounded_queue` — `src/runtime/signal/edge.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/graph/source.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/runtime/audio/executor.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/graph/compile/plan.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `clock_correlation` — `tests/runtime_plan_router_alloc.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/graph/registry.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `buffer_pool` — `tests/runtime_plan_router_alloc.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 
 ## Behavioral evidence
 
-The following test bodies are evidence only for their recorded setup:
+Executable evidence selected for **Asynchronous signal lane** is limited to each test's recorded setup and assertions:
 
-- `given_audio_signal_into_text_signal_when_compiled_then_signal_mismatch` — given audio signal into text signal when compiled then signal mismatch (`src/graph/compile/resolve.rs:1094`; `test-5516fcaedfc2241e34cc`).
-- `given_shipped_signal_wire_ids_when_audited_then_protocol_namespace_stays_versioned` — given shipped signal wire ids when audited then protocol namespace stays versioned (`src/graph/identifier.rs:180`; `test-2ffb33b44ce1e1a84da1`).
-- `given_custom_signal_without_schema_when_checked_then_binary_media_rejects_it` — given custom signal without schema when checked then binary media rejects it (`src/graph/ports.rs:575`; `test-2d3675af8d6c3a4d6a26`).
-- `given_supported_non_audio_signals_when_checked_then_media_is_symmetric` — given supported non audio signals when checked then media is symmetric (`src/graph/ports.rs:559`; `test-d97a306ad6dc3558e082`).
-- `given_contiguous_signals_when_replayed_then_continuity_is_deterministic` — given contiguous signals when replayed then continuity is deterministic (`src/graph/signal/envelope.rs:390`; `test-d0dc80cc2da279b6a618`).
-- `given_custom_signal_with_role_when_built_then_fields_accessible` — given custom signal with role when built then fields accessible (`src/graph/signal/spec.rs:389`; `test-592b8677db2ba5e30ba7`).
-- `given_signal_id_when_as_str_then_returns_inner` — given signal id when as str then returns inner (`src/graph/signal/spec.rs:422`; `test-3fa05de5ac89880ef9e0`).
 - `given_full_owned_signal_edge_when_audio_sent_then_frame_returns_without_allocation` — given full owned signal edge when audio sent then frame returns without allocation (`src/runtime/signal/edge.rs:460`; `test-bf7094bd0d63b90cc8fe`).
 - `given_one_branch_when_signal_published_then_receiver_has_exclusive_ownership` — given one branch when signal published then receiver has exclusive ownership (`src/runtime/signal/edge.rs:626`; `test-9674b8f8edebf8590582`).
 - `given_registered_signal_consumer_when_item_enqueued_then_parked_thread_is_woken` — given registered signal consumer when item enqueued then parked thread is woken (`src/runtime/signal/edge.rs:469`; `test-2c211fee5a326cacf730`).
 - `given_every_nonaudio_signal_class_when_worker_prepares_then_exact_signal_context_is_received` — given every nonaudio signal class when worker prepares then exact signal context is received (`src/runtime/signal/operator.rs:1752`; `test-8298f7b73ae7319aa84e`).
-- `given_external_consumer_when_declared_then_provider_and_typed_endpoint_use_public_api` — given external consumer when declared then provider and typed endpoint use public api (`examples/operator-consumer/src/lib.rs:120`; `test-ace9b7d11da2036ce899`).
+- `given_capacity_above_global_bound_when_fanout_built_then_setup_fails` — given capacity above global bound when fanout built then setup fails (`src/runtime/signal/edge.rs:575`; `test-f0893eafe636572bd65e`).
+- `given_independent_shared_branches_when_one_saturates_then_other_continues` — given independent shared branches when one saturates then other continues (`src/runtime/signal/edge.rs:493`; `test-2141f78e081b32717401`).
+- `given_missing_or_zero_payload_limit_when_fanout_built_then_setup_fails` — given missing or zero payload limit when fanout built then setup fails (`src/runtime/signal/edge.rs:591`; `test-6c3a749ca1eaac051f1f`).
+- `given_payload_above_branch_limit_when_published_then_all_branches_reject_before_fanout` — given payload above branch limit when published then all branches reject before fanout (`src/runtime/signal/edge.rs:536`; `test-5f2124d7ed0e92c73799`).
+- `given_payload_limit_above_global_bound_when_fanout_built_then_setup_fails` — given payload limit above global bound when fanout built then setup fails (`src/runtime/signal/edge.rs:609`; `test-dd6a20d29e9e95a48939`).
+- `given_audio_output_without_audio_port_when_processed_then_worker_rejects_it` — given audio output without audio port when processed then worker rejects it (`src/runtime/signal/operator.rs:2466`; `test-f0e8c28b4853dfd07393`).
+- `given_cancellation_when_operator_has_pending_state_then_no_final_is_fabricated` — given cancellation when operator has pending state then no final is fabricated (`src/runtime/signal/operator.rs:2308`; `test-8f495e7bcc9df9f06f5a`).
+- `given_compiled_lineaged_edge_when_worker_runs_then_exact_session_stem_is_preserved` — given compiled lineaged edge when worker runs then exact session stem is preserved (`src/runtime/signal/operator.rs:2208`; `test-6615dcd3b3105010af0b`).
 
 ## Stability boundary
 
-This page explains internals. Public compatibility comes from exported Rust declarations, the C header, manifests, error codes, and explicit compatibility artifacts—not private module layout.
+**Asynchronous signal lane** describes internal ownership. Its private module layout is not a compatibility promise; compatibility comes from exported Rust declarations, the C header, manifests, error codes, and explicit compatibility artifacts.
 
 ## Related documentation
 
@@ -110,9 +110,9 @@ This page explains internals. Public compatibility comes from exported Rust decl
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Asynchronous signal lane** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/runtime/signal/edge.rs:1-651` (`DIRECT`)
 - `src/runtime/signal/operator.rs:1-2573` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Asynchronous signal lane**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

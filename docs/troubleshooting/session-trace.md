@@ -2,70 +2,65 @@
 
 <!-- claims: CLM-TRBL-017-CAP-001,CLM-TRBL-017-CAP-002,CLM-TRBL-017-CAP-003,CLM-TRBL-017-SOURCE-001 -->
 
-Use this page when you observe **session trace validation fails**. Diagnose the reported stage and identity before changing route, source, connector, or lifecycle policy.
+## Symptom
 
-## Distinguish the cause
+Session trace validation returns a structural, identity, ordering, or terminal-record error.
 
-Use the trace validation error and record index to distinguish ordering, identity, and terminal-record failures. Do not rewrite a trace to make validation pass.
+## Evidenced causes
+
+- A record is out of order or references an inconsistent Session or component ID.
+- A required metrics snapshot or terminal record is missing.
+- The trace is truncated or belongs to a different run.
+
+## Distinguish the causes
+
+Use the validation error and record index to inspect the first invalid transition, then compare stable IDs and terminal state.
 
 ## Diagnostic signals
 
-- `pocketstation::session::declaration::typed_stream::TypedStreamError` / `OutputSignalMismatch` (`error-00e5716261eba0f8cf3d`)
-- `pocketstation::session::error::SessionError` / `UnknownStem` (`error-00f6e798d158df66c847`)
-- `pocketstation::session::error_code::SessionStartErrorCode` / `StartCancelled` (`error-01d3fc855e2a00319076`)
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `OperatorPrepare` (`error-023d6ab0b23a50a614ff`)
-- `pocketstation::session::error_code::SessionStartErrorCode` / `TraceRecorderSetupFailed` (`error-0279b2b6b0cb3b5801bc`)
-- `pocketstation::session::prepare::error::SessionPrepareError` / `MissingOperatorSignalInput` (`error-037ddc3e193da74177f8`)
-- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `InvalidLayout` (`error-05c60389efcb84311921`)
-- `pocketstation::session::prepare::error::SessionPrepareError` (`error-085082b521c14e5ecd1e`)
-- `pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind` / `Closed` (`error-08a7536094bfb2242b17`)
-- `pocketstation::session::lifecycle::host::SessionEngineHostBuildError` / `EndpointExtensionRegistration` (`error-09837185c7fca0f70618`)
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `MissingEndpointDeclaration` (`error-0bc2f7c0b9f9dbf8ddd7`)
-- `pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError` / `ZeroCapacity` (`error-0bd6f58be40ade9a01fe`)
-- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `SequenceGap` (`error-0c04a3eedb823da29323`)
-- `pocketstation::session::prepare::error::SessionPrepareError` / `MissingExternalAudioIngress` (`error-0cc0ae8a8cc4f1e05996`)
-- `pocketstation::session::lifecycle::engine::SessionEngineBuildError` / `DuplicateSidecarId` (`error-0ce1015c73b65576cbeb`)
-- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `TimestampRegression` (`error-0d567cf627daa0adfee1`)
-- `pocketstation::session::error_code::SessionStartErrorCode` / `MissingEndpointDeclaration` (`error-0e46a3d13215bfc3898f`)
-- `pocketstation::session::extensions::audio_input::AudioInputConfigError` (`error-108ece57ea443c789d81`)
-- `pocketstation::session::extensions::audio_input::source::AudioInputError` / `Manifest` (`error-11863b3a293345b0bb2d`)
-- `pocketstation::session::compile::error::SessionCompileError` / `UnknownEndpointInputPort` (`error-1281b697f9f4d62194b1`)
-- `pocketstation::session::prepare::error::SessionPrepareError` / `MissingTypedEdgePlan` (`error-12fef698a1fbec823e7e`)
-- `pocketstation::session::prepare::error::SessionPrepareError` / `MissingAsyncOperatorFactory` (`error-1310461ef521d30d4686`)
-- `pocketstation::session::error_code::SessionStartErrorCode` / `MissingEventReceiver` (`error-13dd584b4e2e8eaa490c`)
-- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `RecordAfterTerminal` (`error-16e269f1786471c2db63`)
-- `pocketstation::session::error::SessionError` / `UnknownSourceOutput` (`error-16edb8f15b75c471db64`)
-- `pocketstation::session::compile::error::SessionCompileError` / `AmbiguousEndpointInput` (`error-17674f66426c713d90a2`)
-- `pocketstation::session::lifecycle::events::SessionRollbackFailure` (`error-1955a522796dc25c325d`)
-- `pocketstation::session::declaration::typed_stream::TypedStreamError` / `MissingPort` (`error-1bd7ae7942029f778071`)
-- `pocketstation::session::error_code::SessionStartErrorCode` (`error-1c7816652dd061fb1141`)
-- `pocketstation::session::extensions::audio_input::source::AudioInputError` (`error-1de3680efda0db59054d`)
+- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` (`error-848c45be5f51a946a540`)
+- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `IncompleteTrace` (`error-25f6cc4c2eb526799c56`)
+- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `InvalidChecksum` (`error-b072b76ca0d38c96e1d1`)
+- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `InvalidLayout` (`error-593cb18777dd2057bdbf`)
+- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `InvalidLifecycleTransition` (`error-9690e2f3b754faadcd88`)
+- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `InvalidMagic` (`error-836f7498bf3b02195d18`)
+- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `Io` (`error-f8b39f4bd37df3de8588`)
+- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `MissingTerminal` (`error-ec2f87e710a1d7377cf2`)
+- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `RecordAfterTerminal` (`error-19306e8b303a03a07dcf`)
+- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `SequenceGap` (`error-09749855b5e930dd5279`)
+- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `SessionMismatch` (`error-5e9e3fcb261c37238b9e`)
+- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `TerminalMismatch` (`error-6f5c5b09a57ad2c3ecfb`)
 
 ## Executable evidence
 
+- `given_invalid_lifecycle_when_validated_then_validation_fails_closed` exercises given invalid lifecycle when validated then validation fails closed under its recorded setup (`test-ad4fc9ea8d172cd4b678`).
+- `given_complete_trace_when_validated_then_lifecycle_and_terminal_match` exercises given complete trace when validated then lifecycle and terminal match under its recorded setup (`test-9dd947375f94d2a4f21f`).
+- `given_dropped_records_when_validated_then_trace_is_incomplete` exercises given dropped records when validated then trace is incomplete under its recorded setup (`test-7647b415f36fc0ddd5a0`).
+- `given_existing_output_when_started_then_recorder_fails_closed` exercises given existing output when started then recorder fails closed under its recorded setup (`test-3b4ddbb231cb8f0182e8`).
+- `given_record_after_terminal_when_validated_then_trace_is_rejected` exercises given record after terminal when validated then trace is rejected under its recorded setup (`test-13dde755fb2a02648705`).
+- `given_sequence_gap_when_validated_then_trace_is_rejected` exercises given sequence gap when validated then trace is rejected under its recorded setup (`test-5863853c4bbea9e5db76`).
+- `given_timestamp_regression_when_validated_then_trace_is_rejected` exercises given timestamp regression when validated then trace is rejected under its recorded setup (`test-3d881d801a5b93012bc6`).
+- `given_truncated_trace_when_read_then_truncation_is_rejected` exercises given truncated trace when read then truncation is rejected under its recorded setup (`test-f5a25488cf2eb39c2921`).
+- `given_zero_capacity_when_started_then_recorder_fails_closed` exercises given zero capacity when started then recorder fails closed under its recorded setup (`test-fcc195708afeec03a930`).
+- `given_corrupted_record_when_read_then_checksum_is_rejected` exercises given corrupted record when read then checksum is rejected under its recorded setup (`test-9c9f0e0f6d8934622867`).
+- `given_unknown_version_when_read_then_version_is_rejected` exercises given unknown version when read then version is rejected under its recorded setup (`test-8ba8bc1dda2af18cb6c5`).
 - `given_unrouted_stem_when_session_frozen_then_validation_fails_closed` exercises given unrouted stem when session frozen then validation fails closed under its recorded setup (`test-1633b6167eec91db04e2`).
 - `given_derived_stream_without_destination_when_frozen_then_validation_fails_closed` exercises given derived stream without destination when frozen then validation fails closed under its recorded setup (`test-94e7fa143670693acd86`).
-- `given_invalid_lifecycle_when_validated_then_validation_fails_closed` exercises given invalid lifecycle when validated then validation fails closed under its recorded setup (`test-ad4fc9ea8d172cd4b678`).
-- `given_public_facade_when_session_trace_enabled_then_trace_replays_complete_lifecycle` exercises given public facade when session trace enabled then trace replays complete lifecycle under its recorded setup (`test-4f8b8179e33a1ceba291`).
+- `given_public_facade_when_session_trace_enabled_then_trace_replays_complete_lifecycle` exercises given public facade when session trace enabled then trace replays complete lifecycle under its recorded setup (`test-17d9667bcb3d339c7157`).
 - `given_cloned_stem_when_session_frozen_then_mutation_is_rejected` exercises given cloned stem when session frozen then mutation is rejected under its recorded setup (`test-1682e00b3166c4846a92`).
-- `given_derived_stream_when_through_called_again_then_chain_is_preserved_in_session_spec` exercises given derived stream when through called again then chain is preserved in session spec under its recorded setup (`test-837dd73be7d5c552ef15`).
-- `given_operator_when_declared_then_session_scoped_instance_and_routes_are_preserved` exercises given operator when declared then session scoped instance and routes are preserved under its recorded setup (`test-69203660038a41959c14`).
-- `given_endpoint_operator_id_when_imported_from_session_then_endpoint_contract_type_is_reexported` exercises given endpoint operator id when imported from session then endpoint contract type is reexported under its recorded setup (`test-c1047cbdeb5a7bf9bc3b`).
-- `given_newer_minor_version_when_validated_then_schema_fails_closed` exercises given newer minor version when validated then schema fails closed under its recorded setup (`test-7fe4fdd3769bd70886b6`).
-- `given_duplicate_named_input_when_connected_then_declaration_fails_immediately` exercises given duplicate named input when connected then declaration fails immediately under its recorded setup (`test-f9a6ec4f71dbaf6d8083`).
-- `given_foreign_input_handle_when_connected_then_declaration_fails_before_freeze` exercises given foreign input handle when connected then declaration fails before freeze under its recorded setup (`test-766194f5939b3ddb896d`).
-- `given_duplicate_type_when_session_nodes_registered_then_registry_is_unchanged` exercises given duplicate type when session nodes registered then registry is unchanged under its recorded setup (`test-417c35b0251dee5fe0b7`).
-- `given_structural_ingress_when_validated_then_session_metadata_is_not_required` exercises given structural ingress when validated then session metadata is not required under its recorded setup (`test-7406cc23117530680012`).
-- `register_session_graph_nodes` exercises register session graph nodes under its recorded setup (`test-3d5f82ddbefbd9cd1a57`).
-- `given_nonportable_source_identities_when_constructed_then_each_fails_typed` exercises given nonportable source identities when constructed then each fails typed under its recorded setup (`test-49c22efdf198e8e31c91`).
 
-## Corrective action and retry
+## Corrective action
 
-Apply only the action implied by the typed failure or violated precondition. Retry is not safe merely because a failure appears transient. When retryability or recovery is unknown, preserve the failure for application policy or maintainer review.
+Fix the recorder or collection workflow and produce a new trace; retain the invalid trace as failure evidence.
 
-## Data and state
+## Retry and incomplete state
 
-Treat frames, signals, files, acknowledgements, and finalization results produced before failure as potentially partial unless the terminal contract says otherwise. Inspect per-route, per-stem, and per-component outcomes.
+Validation is deterministic for the artifact, so retrying unchanged bytes cannot repair it. The trace may be incomplete and must not be rewritten as observed history.
+
+## Related reference
+
+- [Session Traces](/docs/concepts/session-traces.md)
+- [Lifecycle Evidence](/docs/reference/lifecycle-evidence.md)
 
 ## Related documentation
 
@@ -80,8 +75,8 @@ Treat frames, signals, files, acknowledgements, and finalization results produce
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Session trace validation fails** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/session/lifecycle/trace.rs:1-1179` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Session trace validation fails**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

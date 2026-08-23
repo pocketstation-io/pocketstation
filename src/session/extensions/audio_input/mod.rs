@@ -58,17 +58,17 @@ impl AudioInputConfig {
         })
     }
 
-    #[doc = "Returns the sample spec associated with `AudioInputConfig`."]
+    #[doc = "Returns the sample spec held by `AudioInputConfig`."]
     pub const fn sample_spec(self) -> SampleSpec {
         self.sample_spec
     }
 
-    #[doc = "Returns the capacity frames associated with `AudioInputConfig`."]
+    #[doc = "Returns the capacity frames held by `AudioInputConfig`."]
     pub const fn capacity_frames(self) -> usize {
         self.capacity_frames
     }
 
-    #[doc = "Returns the frame samples per channel associated with `AudioInputConfig`."]
+    #[doc = "Returns the frame samples per channel held by `AudioInputConfig`."]
     pub const fn frame_samples_per_channel(self) -> usize {
         self.frame_samples_per_channel
     }
@@ -112,12 +112,12 @@ impl AudioInput {
         Self { pcm }
     }
 
-    #[doc = "Returns the source associated with `AudioInput`."]
+    #[doc = "Returns the source held by `AudioInput`."]
     pub const fn source(&self) -> &SourceInstanceHandle {
         self.pcm.source()
     }
 
-    #[doc = "Returns the output associated with `AudioInput`."]
+    #[doc = "Returns the output held by `AudioInput`."]
     pub const fn output(&self) -> &SourceOutputHandle {
         self.pcm.output()
     }

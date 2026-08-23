@@ -155,7 +155,7 @@ impl SourceManifest {
         Ok(manifest)
     }
 
-    #[doc = "Returns the source type identifier associated with `SourceManifest`."]
+    #[doc = "Returns the source type identifier held by `SourceManifest`."]
     pub const fn source_type_id(&self) -> &SourceTypeId {
         &self.source_type_id
     }
@@ -184,17 +184,17 @@ impl SourceManifest {
         self.implementation_generation
     }
 
-    #[doc = "Returns the outputs associated with `SourceManifest`."]
+    #[doc = "Returns the outputs held by `SourceManifest`."]
     pub fn outputs(&self) -> &[PortSpec] {
         &self.outputs
     }
 
-    #[doc = "Returns the execution associated with `SourceManifest`."]
+    #[doc = "Returns the execution held by `SourceManifest`."]
     pub const fn execution(&self) -> ExecutionPartition {
         self.execution
     }
 
-    #[doc = "Returns the safety associated with `SourceManifest`."]
+    #[doc = "Returns the safety held by `SourceManifest`."]
     pub const fn safety(&self) -> SafetyContract {
         self.safety
     }
@@ -235,43 +235,43 @@ impl SourceManifest {
         Ok(())
     }
 
-    #[doc = "Returns the output port associated with `SourceManifest`."]
+    #[doc = "Returns the output port held by `SourceManifest`."]
     pub fn output_port(&self, name: &str) -> Option<&PortSpec> {
         self.outputs.iter().find(|output| output.name == name)
     }
 }
 
 #[derive(Debug, Clone)]
-#[doc = "Represents source prepare context in the PocketStation API."]
+#[doc = "Carries the inputs and runtime context required to source prepare."]
 pub struct SourcePrepareContext {
-    #[doc = "Stores the manifest associated with `SourcePrepareContext`."]
+    #[doc = "Stores the manifest used by `SourcePrepareContext`."]
     pub manifest: SourceManifest,
-    #[doc = "Stores the session associated with `SourcePrepareContext`."]
+    #[doc = "Stores the session used by `SourcePrepareContext`."]
     pub session: Option<SourceSessionContext>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Represents source output identity in the PocketStation API."]
+#[doc = "Identifies one declared source output by source type, output port, and stream identity."]
 pub struct SourceOutputIdentity {
-    #[doc = "Stores the output port associated with `SourceOutputIdentity`."]
+    #[doc = "Stores the output port used by `SourceOutputIdentity`."]
     pub output_port: String,
-    #[doc = "Identifies the stream associated with `SourceOutputIdentity`."]
+    #[doc = "Identifies the stream identifier recorded by `SourceOutputIdentity`."]
     pub stream_id: StreamId,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Represents source session context in the PocketStation API."]
+#[doc = "Carries the inputs and runtime context required to source session."]
 pub struct SourceSessionContext {
-    #[doc = "Identifies the session associated with `SourceSessionContext`."]
+    #[doc = "Identifies the session identifier recorded by `SourceSessionContext`."]
     pub session_id: SessionId,
-    #[doc = "Identifies the source associated with `SourceSessionContext`."]
+    #[doc = "Identifies the source identifier recorded by `SourceSessionContext`."]
     pub source_id: SourceId,
-    #[doc = "Stores the outputs associated with `SourceSessionContext`."]
+    #[doc = "Stores the outputs used by `SourceSessionContext`."]
     pub outputs: Vec<SourceOutputIdentity>,
 }
 
 impl SourceSessionContext {
-    #[doc = "Returns the output associated with `SourceSessionContext`."]
+    #[doc = "Returns the output held by `SourceSessionContext`."]
     pub fn output(&self, output_port: &str) -> Option<&SourceOutputIdentity> {
         self.outputs
             .iter()
@@ -280,7 +280,7 @@ impl SourceSessionContext {
 }
 
 #[derive(Clone)]
-#[doc = "Represents source cancellation in the PocketStation API."]
+#[doc = "Exposes the cancellation state observed by a running external source driver."]
 pub struct SourceCancellation {
     cancelled: Arc<AtomicBool>,
 }
@@ -293,17 +293,17 @@ impl SourceCancellation {
 }
 
 #[derive(Debug)]
-#[doc = "Represents source emission in the PocketStation API."]
+#[doc = "Carries one external-source emission with its output-port identity and signal envelope."]
 pub struct SourceEmission {
-    #[doc = "Stores the output port associated with `SourceEmission`."]
+    #[doc = "Stores the output port used by `SourceEmission`."]
     pub output_port: String,
-    #[doc = "Stores the envelope associated with `SourceEmission`."]
+    #[doc = "Stores the envelope used by `SourceEmission`."]
     pub envelope: SignalEnvelope,
     #[doc = "Indicates whether terminal applies to `SourceEmission`."]
     pub terminal: bool,
 }
 
-#[doc = "Defines the implementation contract for source."]
+#[doc = "Implement this trait to provide source behavior to PocketStation; its methods define the preparation and runtime contract."]
 pub trait SourceDriver: Send {
     #[doc = "Prepares resources required by `SourceDriver`."]
     fn prepare(&mut self, context: &SourcePrepareContext) -> Result<(), SourceDriverError>;
@@ -316,9 +316,9 @@ pub trait SourceDriver: Send {
     fn close(&mut self) -> Result<(), SourceDriverError>;
 }
 
-#[doc = "Defines the implementation contract for source."]
+#[doc = "Implement this trait to provide source behavior to PocketStation; its methods define the preparation and runtime contract."]
 pub trait SourceFactory: Send + Sync {
-    #[doc = "Returns the manifest associated with `SourceFactory`."]
+    #[doc = "Returns the manifest held by `SourceFactory`."]
     fn manifest(&self) -> &SourceManifest;
     #[doc = "Validates config for `SourceFactory`."]
     fn validate_config(&self, configuration: &SourceConfiguration) -> Result<(), ConfigError>;
@@ -456,7 +456,7 @@ pub struct SourceRuntimeObservations {
     pub policy_change_total: u64,
     #[doc = "Indicates whether ready applies to `SourceRuntimeObservations`."]
     pub ready: bool,
-    #[doc = "Stores the joined associated with `SourceRuntimeObservations`."]
+    #[doc = "Stores the joined used by `SourceRuntimeObservations`."]
     pub joined: bool,
 }
 
@@ -481,6 +481,7 @@ impl SourceRuntimeObservationHandle {
     }
 }
 
+#[doc = "Owns an external source driver's cancellation handle, observations, and terminal worker join."]
 pub struct SourceRuntime {
     cancellation: SourceCancellation,
     observations: SourceRuntimeObservationHandle,

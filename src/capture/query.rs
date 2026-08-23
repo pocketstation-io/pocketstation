@@ -53,13 +53,13 @@ pub fn resolve_query(query: &SourceQuery, sources: &[CaptureSource]) -> Vec<Capt
         .collect()
 }
 
-#[doc = "Defines the implementation contract for source."]
+#[doc = "Implement this trait to provide source behavior to PocketStation; its methods define the preparation and runtime contract."]
 pub trait SourceProvider {
     #[doc = "Discovers the resources visible to `SourceProvider`."]
     fn discover(&self, query: &SourceQuery) -> Vec<CaptureSource>;
 }
 
-#[doc = "Represents local source provider in the PocketStation API."]
+#[doc = "Discovers and resolves capture sources through the target platform backend."]
 pub struct LocalSourceProvider;
 
 impl SourceProvider for LocalSourceProvider {

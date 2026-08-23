@@ -15,6 +15,7 @@ use crate::runtime::{
 use crate::session::declaration::OperatorInstanceId;
 use crate::session::{SourceConfiguration, SourceInstanceId, SourceTypeId};
 
+#[doc = "Correlates the prepared identities and runtime resources for prepared source."]
 pub struct PreparedSourceMapping {
     pub(crate) stem_id: StemId,
     pub(crate) sender: PlanSourceSender,
@@ -22,16 +23,19 @@ pub struct PreparedSourceMapping {
 
 impl PreparedSourceMapping {
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the stem identifier held by `PreparedSourceMapping`."]
     pub const fn stem_id(&self) -> StemId {
         self.stem_id
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the sender observations held by `PreparedSourceMapping`."]
     pub fn sender_observations(&self) -> crate::runtime::PlanSourceInputObservations {
         self.sender.observations()
     }
 }
 
+#[doc = "Correlates the prepared identities and runtime resources for prepared worker."]
 pub struct PreparedWorkerMapping {
     pub(crate) route_id: RouteId,
     pub(crate) endpoint_id: EndpointId,
@@ -128,6 +132,7 @@ pub(crate) struct PreparedExternalTypedRoute {
     pub(crate) edge_contract: EdgeContract,
 }
 
+#[doc = "Correlates the prepared identities and runtime resources for prepared signal route."]
 pub struct PreparedSignalRouteMapping {
     pub(crate) route_id: RouteId,
     pub(crate) stem_id: Option<StemId>,
@@ -157,6 +162,7 @@ impl PreparedSignalRouteMapping {
     }
 }
 
+#[doc = "Correlates the prepared identities and runtime resources for prepared operator."]
 pub struct PreparedOperatorMapping {
     pub(crate) node_id: NodeId,
     pub(crate) instance_id: OperatorInstanceId,
@@ -240,31 +246,37 @@ impl PreparedOperatorMapping {
 
 impl PreparedWorkerMapping {
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the route identifier held by `PreparedWorkerMapping`."]
     pub const fn route_id(&self) -> RouteId {
         self.route_id
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the stem identifier held by `PreparedWorkerMapping`."]
     pub const fn stem_id(&self) -> StemId {
         self.origin.stem_id()
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the endpoint identifier held by `PreparedWorkerMapping`."]
     pub const fn endpoint_id(&self) -> EndpointId {
         self.endpoint_id
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the node configuration held by `PreparedWorkerMapping`."]
     pub const fn node_configuration(&self) -> &NodeConfig {
         &self.node_configuration
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the receiver observations held by `PreparedWorkerMapping`."]
     pub fn receiver_observations(&self) -> crate::runtime::EdgeObservations {
         self.receiver.observations()
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Prepares context for `PreparedWorkerMapping`."]
     pub const fn prepare_context(&self) -> &PrepareContext {
         &self.prepare_context
     }

@@ -54,6 +54,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -88,7 +89,8 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "There is no legacy `asp` Cargo feature and no compiled fallback stub. The SDK never",
+    "cargo build --release --features macos-asp-driver-artifact"
   ],
   "invariants": [
     {
@@ -102,25 +104,28 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish physical-device qualification merely by implementing a target backend."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "repository",
   "path": "native/macos/asp/README.md",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
     "classification": "DECLARED",
-    "text": "Documents macOS capture native boundary."
+    "text": "Documents macOS capture native boundary for repository contributors or PocketStation developers."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -161,8 +166,11 @@
     "docs/troubleshooting/native-build.md",
     "docs/best-practices/evidence-boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
-  "responsibilities": [],
+  "responsibilities": [
+    "Documents macOS capture native boundary for repository contributors or PocketStation developers."
+  ],
   "retry_behavior": [],
   "serialization": [],
   "shutdown_behavior": [],
@@ -193,6 +201,7 @@
       "text": "lock, blocking, async, logging, and panic free. Reader allocation and native"
     }
   ],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

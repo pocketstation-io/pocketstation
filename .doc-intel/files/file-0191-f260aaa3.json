@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "calls": [
     "Arc::clone",
     "Arc::new",
@@ -102,7 +105,10 @@
       "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AudioBufferPool::new",
@@ -559,8 +565,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -579,7 +589,10 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "66f30c5e8a051198e9a7815096286c43d3ea51ca",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "implements": [
     "SystemOutputTelemetry",
     "SystemOutputSourceFactory",
@@ -593,7 +606,10 @@
     "MixerSourceNode",
     "RuntimeNode for MixerSourceNode"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "imports": [
     "crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SourceId, StreamId}",
     "crate::graph::{ register_builtins, AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDescriptor, NodeError, NodeFactory, NodeRegistrationError, NodeRegistry, NodeTypeId, PortDirection, PortSpec, PrepareContext, RuntimeNode, SafetyContract, SignalSpec, }",
@@ -602,7 +618,13 @@
     "std::sync::{Arc, Mutex}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SourceId, StreamId}",
+    "crate::graph::{ register_builtins, AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDescriptor, NodeError, NodeFactory, NodeRegistrationError, NodeRegistry, NodeTypeId, PortDirection, PortSpec, PrepareContext, RuntimeNode, SafetyContract, SignalSpec, }",
+    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
+    "register_builtins, AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps,",
+    "rtrb::{Consumer, Producer, RingBuffer}",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "std::sync::{Arc, Mutex}"
   ],
   "invariants": [
     {
@@ -637,23 +659,43 @@
   "module": "pocketstation::runtime::nodes",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-63aef9d26f2a98d76eea",
     "pattern-06b6cb48eb37e9925506",
-    "pattern-67ea0547a35e7f54b3c5",
     "pattern-7a6aa0a5f8b3d665473d"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(_) => {",
+    "const:BRIDGE_ENDPOINT_NODE_TYPE_ID",
+    "const:SYSTEM_OUTPUT_NODE_TYPE_ID",
+    "fn:clipped_samples",
+    "fn:frames_captured",
+    "fn:frames_emitted",
+    "fn:frames_mixed",
+    "fn:frames_pushed",
+    "fn:lane_underruns",
+    "fn:new",
+    "fn:new_with_output_channels",
+    "fn:output_pool_exhaustions",
+    "fn:overrun_count",
+    "fn:register_runtime_nodes",
+    "fn:underrun_count",
+    "struct:BridgeSinkFactory",
+    "struct:BridgeSinkTelemetry",
+    "struct:MixerSourceNode",
+    "struct:MixerTelemetry",
+    "struct:SystemOutputSourceFactory",
+    "struct:SystemOutputTelemetry"
   ],
   "package": "pocketstation",
   "path": "src/runtime/nodes.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -913,8 +955,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "First-party CLI realtime nodes retained behind `internal-testing`.  These are concrete bounded nodes executed by the canonical realtime plan; they are not a second runtime and are not part of the stable SDK surface."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::runtime::nodes responsibilities, including First-party CLI realtime nodes retained behind `internal-testing`.; Registers runtime nodes for `nodes`.; Reports the counters and terminal facts collected for system output.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -969,6 +1011,15 @@
     "docs/best-practices/route-sizing.md",
     "docs/best-practices/realtime-boundaries.md",
     "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/frame/pool.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/graph/runtime_node.rs"
   ],
   "resource_ownership": [
     {
@@ -1061,48 +1112,34 @@
     }
   ],
   "responsibilities": [
-    "SYSTEM_OUTPUT_NODE_TYPE_ID",
-    "BRIDGE_ENDPOINT_NODE_TYPE_ID",
-    "MIXER_FRAME_SAMPLES_PER_CHANNEL",
-    "MIXER_MAX_FRAME_SAMPLES",
-    "MIXER_ACCUMULATOR_CAPACITY",
-    "MIXER_POOL_SLOTS",
-    "MIXER_FRAME_DURATION_NS",
-    "audio_port",
-    "register_runtime_nodes",
-    "SystemOutputTelemetry",
-    "frames_captured",
-    "frames_emitted",
-    "underrun_count",
-    "SystemOutputSourceFactory",
-    "new",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "SystemOutputSourceNode",
-    "prepare",
-    "process",
-    "BridgeSinkTelemetry",
-    "frames_pushed",
-    "overrun_count",
-    "BridgeSinkFactory",
-    "new",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "BridgeSinkNode",
-    "prepare",
-    "process",
-    "MixerTelemetry",
-    "frames_mixed",
-    "lane_underruns",
-    "clipped_samples",
-    "output_pool_exhaustions",
-    "MixerSourceNode",
-    "new_with_output_channels",
-    "mix_tick",
-    "prepare",
-    "process"
+    "pocketstation::runtime::nodes: First-party CLI realtime nodes retained behind `internal-testing`.",
+    "pocketstation::runtime::nodes::register_runtime_nodes: Registers runtime nodes for `nodes`.",
+    "pocketstation::runtime::nodes::SystemOutputTelemetry: Reports the counters and terminal facts collected for system output.",
+    "frames_captured: Returns the frames captured associated with `SystemOutputTelemetry`.",
+    "frames_emitted: Returns the frames emitted associated with `SystemOutputTelemetry`.",
+    "underrun_count: Returns the underrun count held by `SystemOutputTelemetry`.",
+    "pocketstation::runtime::nodes::SystemOutputSourceFactory: Constructs system output source implementations from validated declarations.",
+    "new: Creates a new `SystemOutputSourceFactory`.",
+    "descriptor: Returns the descriptor associated with `SystemOutputSourceFactory`.",
+    "validate_config: Validates config for `SystemOutputSourceFactory`.",
+    "instantiate: Instantiates the runtime node described by `SystemOutputSourceFactory`.",
+    "pocketstation::runtime::nodes::BridgeSinkTelemetry: Reports the counters and terminal facts collected for bridge sink.",
+    "frames_pushed: Returns the frames pushed associated with `BridgeSinkTelemetry`.",
+    "overrun_count: Returns the overrun count held by `BridgeSinkTelemetry`.",
+    "pocketstation::runtime::nodes::BridgeSinkFactory: Constructs bridge sink implementations from validated declarations.",
+    "new: Creates a new `BridgeSinkFactory`.",
+    "descriptor: Returns the descriptor associated with `BridgeSinkFactory`.",
+    "validate_config: Validates config for `BridgeSinkFactory`.",
+    "instantiate: Instantiates the runtime node described by `BridgeSinkFactory`.",
+    "pocketstation::runtime::nodes::MixerTelemetry: Reports the counters and terminal facts collected for mixer.",
+    "frames_mixed: Returns the frames mixed associated with `MixerTelemetry`.",
+    "lane_underruns: Returns the lane underruns associated with `MixerTelemetry`.",
+    "clipped_samples: Returns the clipped samples held by `MixerTelemetry`.",
+    "output_pool_exhaustions: Returns the output pool exhaustions associated with `MixerTelemetry`.",
+    "pocketstation::runtime::nodes::MixerSourceNode: Executes the graph-node behavior defined for mixer source.",
+    "new_with_output_channels: Creates `MixerSourceNode` with the supplied output channels.",
+    "prepare: Prepares resources required by `MixerSourceNode`.",
+    "process: Processes an input value through `MixerSourceNode`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1125,6 +1162,7 @@
   ],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

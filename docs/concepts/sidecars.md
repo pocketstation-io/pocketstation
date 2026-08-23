@@ -2,46 +2,60 @@
 
 <!-- claims: CLM-DOC-029-CAP-001,CLM-DOC-029-SOURCE-001 -->
 
-Exchange bounded protocol messages with a child process under explicit deadlines and lifecycle states.
+## What it is
+
+A sidecar is a managed child process that exchanges bounded messages with a host through an explicit startup, readiness, cancellation, drain, abort, and terminal-state protocol.
+
+## Why it exists
+
+Some integrations must run outside the Rust process. The sidecar contract keeps process lifetime, message limits, and deadlines observable instead of treating the child as an unbounded subprocess call.
+
+## Relationships
+
+- `SidecarProcessSpec` declares the command and protocol limits.
+- `SidecarHost` owns the child and lifecycle deadlines.
+- A connector can adapt the sidecar boundary through its driver contract.
+
+## Invariants and guarantees
+
+- Messages remain within declared kinds and byte limits.
+- Drain and abort are different shutdown modes.
+- Process isolation does not imply authentication or sandboxing.
+
+## When you encounter it
+
+- **Host an out-of-process worker** — Spawn a sidecar and enforce bounded messages, deadlines, cancellation, and terminal state.
+
+## Use it
+
+- [Host a managed-process sidecar](/docs/how-to/host-sidecar.md)
+- [A sidecar misses a deadline](/docs/troubleshooting/sidecar-deadline.md)
+- [Security boundaries](/docs/security/boundaries.md)
 
 ## Scope
 
 - **Host managed-process sidecars.** Exchange bounded protocol messages with a child process under explicit deadlines and lifecycle states.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Sidecar lifecycle** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
-## Contract surface
+## Key API
 
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarDeadlines` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:54` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostSnapshot` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:133` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarProcessSpec` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:71` |
-| `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessage` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_protocol.rs:73` |
-| `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolLimits` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_protocol.rs:43` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:686` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarState` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:21` |
-| `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_protocol.rs:9` |
-| `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_protocol.rs:292` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::AlreadyReaped` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:730` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Closed` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:706` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::ControlQueueFull` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:704` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::DataQueueFull` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:702` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::FrameTooLarge` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:700` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::InvalidConfiguration` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:688` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::InvalidDataKind` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:724` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::InvalidState` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:719` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Io` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:696` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Kill` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:728` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::MissingPipe` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:694` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarDeadlines` | struct | Sets finite startup, I/O, shutdown, and reap deadlines for a sidecar process. | `src/runtime/lifecycle/sidecar_host.rs:54` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHost` | struct | Owns the resources and lifecycle for sidecar. | `src/runtime/lifecycle/sidecar_host.rs:157` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostObservations` | struct | Reports the sidecar host observations collected at an observation boundary. | `src/runtime/lifecycle/sidecar_host.rs:109` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostSnapshot` | struct | Reports the sidecar host snapshot collected at an observation boundary. | `src/runtime/lifecycle/sidecar_host.rs:133` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarProcessSpec` | struct | Configures sidecar process behavior at its owning API boundary. | `src/runtime/lifecycle/sidecar_host.rs:71` |
+| `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessage` | struct | Carries one typed control or signal message across the sidecar protocol. | `src/runtime/lifecycle/sidecar_protocol.rs:73` |
+| `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolLimits` | struct | Sets the maximum sidecar message and buffered-byte sizes enforced by protocol I/O. | `src/runtime/lifecycle/sidecar_protocol.rs:43` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` | enum | Classifies failures reported as sidecar host error. | `src/runtime/lifecycle/sidecar_host.rs:686` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarState` | enum | Selects the sidecar state used by PocketStation. | `src/runtime/lifecycle/sidecar_host.rs:21` |
+| `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind` | enum | Selects the sidecar message kind used by PocketStation. | `src/runtime/lifecycle/sidecar_protocol.rs:9` |
 
-## Where you encounter it
+## Executable evidence
 
-- **Host an out-of-process worker** — Spawn a sidecar and enforce bounded messages, deadlines, cancellation, and terminal state.
-
-## Behavior established by tests
-
-The following test bodies are evidence only for their recorded setup:
+Executable evidence selected for **Sidecar lifecycle** is limited to each test's recorded setup and assertions:
 
 - `given_empty_input_group_when_sidecar_prepares_then_structured_error_is_returned` — given empty input group when sidecar prepares then structured error is returned (`src/connector/sidecar.rs:270`; `test-49bd18fb96d67fdba9bf`).
 - `given_sidecar_host_errors_when_classified_then_retryability_is_preserved` — given sidecar host errors when classified then retryability is preserved (`src/connector/sidecar.rs:286`; `test-98ad8a10ce6f978fe856`).
@@ -56,10 +70,6 @@ The following test bodies are evidence only for their recorded setup:
 - `given_drain_then_abort_when_requested_then_shutdown_intent_upgrades_monotonically` — given drain then abort when requested then shutdown intent upgrades monotonically (`src/connector/worker/coordination.rs:216`; `test-50a5f1631531f3816b13`).
 - `given_connected_gain_plan_when_executed_then_only_connected_nodes_run_and_worker_receives_output` — given connected gain plan when executed then only connected nodes run and worker receives output (`src/runtime/audio/executor.rs:331`; `test-cd64bb966db1f193ea6f`).
 
-## Boundaries
-
-The compiler inventory establishes names, kinds, visibility, and signatures. Tests establish only their exercised conditions. Where retryability, ordering, cancellation, physical qualification, or recovery is not declared, this page leaves it unspecified.
-
 ## Related documentation
 
 - [Glossary](/docs/glossary.md)
@@ -73,8 +83,8 @@ The compiler inventory establishes names, kinds, visibility, and signatures. Tes
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Sidecar lifecycle** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/runtime/lifecycle/sidecar_host.rs:1-734` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Sidecar lifecycle**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

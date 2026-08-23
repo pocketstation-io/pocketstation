@@ -8,7 +8,10 @@
       "text": "//! AUDIO-001: platform callback writes f32 PCM \u2192 Rust Opus encode \u2192 Swift WebRTC send."
     }
   ],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/abi/mod.rs",
+    "IMPORTS:src/abi/mod.rs"
+  ],
   "calls": [
     "AssertUnwindSafe",
     "Box::from_raw",
@@ -82,7 +85,10 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/abi/mod.rs",
+    "IMPORTS:src/abi/mod.rs"
+  ],
   "constructs": [
     "Box::new"
   ],
@@ -354,8 +360,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/abi/mod.rs",
+    "IMPORTS:src/abi/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -474,11 +484,17 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "84729fbbfdcf06511d8d969fe9878f01e70a77fc",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/abi/mod.rs",
+    "IMPORTS:src/abi/mod.rs"
+  ],
   "implements": [
     "PksCodecErrorCode"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/abi/mod.rs",
+    "IMPORTS:src/abi/mod.rs"
+  ],
   "imports": [
     "crate::codec::{OpusChannels, OpusConfig, OpusEncodeError, OpusEncoder}",
     "std::f32::consts::PI",
@@ -487,7 +503,12 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::codec::{OpusChannels, OpusConfig, OpusEncodeError, OpusEncoder}",
+    "std::f32::consts::PI",
+    "std::os::raw::{c_int, c_uchar, c_uint}",
+    "std::panic::{catch_unwind, AssertUnwindSafe}",
+    "super::*"
   ],
   "invariants": [
     {
@@ -621,18 +642,31 @@
   "module": "pocketstation::abi::codec",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(OpusEncodeError::InvalidFrameSampleCount { .. }) => {",
+    "Err(OpusEncodeError::Opus(_)) => PksCodecErrorCode::Encode.as_c_int(),",
+    "Err(OpusEncodeError::Opus(_)) => {",
+    "Err(_) => PksCodecErrorCode::Encode.as_c_int(),",
+    "Err(_) => std::ptr::null_mut(),",
+    "enum:PksCodecErrorCode",
+    "fn:pks_encode_opus",
+    "fn:pks_opus_encoder_create",
+    "fn:pks_opus_encoder_destroy",
+    "fn:pks_opus_encoder_set_bitrate",
+    "fn:pks_opus_max_packet_bytes",
+    "struct:PksOpusEncoder"
   ],
   "package": "pocketstation",
   "path": "src/abi/codec.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -802,8 +836,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "C compatibility boundary for the PocketStation Opus codec.  This is not the Session engine ABI.  The checked header is the unified `include/pocketstation.h`.  Canonical SDK copies use the same `pocketstation.h` name. Swift usage: import via module.modulemap in sdk-ios (AUDIO-001). AUDIO-001: platform callback writes f32 PCM \u2192 Rust Opus encode \u2192 Swift WebRTC send."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::abi::codec responsibilities, including codec; clone; fmt."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -837,6 +871,9 @@
     "docs/best-practices/native-extension-trust.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/codec/encoder.rs"
+  ],
   "resource_ownership": [
     {
       "line": 95,
@@ -848,33 +885,33 @@
     }
   ],
   "responsibilities": [
-    "PksCodecErrorCode",
-    "as_c_int",
-    "codec_int_call",
-    "codec_pointer_call",
-    "codec_void_call",
-    "PksOpusEncoder",
-    "pks_opus_max_packet_bytes",
-    "pks_opus_encoder_create",
-    "pks_opus_encoder_destroy",
-    "pks_opus_encoder_set_bitrate",
-    "pks_encode_opus",
-    "tests",
-    "sine_960",
-    "given_wrong_sample_rate_when_create_then_returns_null",
-    "given_invalid_channel_count_when_create_then_returns_null",
-    "given_stereo_channels_when_create_then_succeeds",
-    "given_valid_pcm_when_encode_then_returns_positive_byte_count",
-    "given_null_encoder_when_encode_then_returns_minus_one",
-    "given_small_output_buffer_when_encode_then_packet_is_not_truncated",
-    "given_invalid_frame_size_when_encode_then_error_is_typed_without_writing",
-    "given_rejected_capacity_when_retried_then_encoder_state_is_unchanged",
-    "given_panicking_abi_bodies_when_guarded_then_panics_are_contained",
-    "given_encoder_when_destroy_null_then_no_crash",
-    "given_valid_encoder_when_set_bitrate_then_returns_zero",
-    "given_null_encoder_when_set_bitrate_then_returns_minus_one",
-    "given_bitrate_change_when_encode_then_still_produces_valid_packet",
-    "given_sine_440hz_when_round_trip_then_decoded_has_energy"
+    "PksCodecErrorCode (enum)",
+    "as_c_int (fn)",
+    "codec_int_call (fn)",
+    "codec_pointer_call (fn)",
+    "codec_void_call (fn)",
+    "PksOpusEncoder (struct)",
+    "pks_opus_max_packet_bytes (fn)",
+    "pks_opus_encoder_create (fn)",
+    "pks_opus_encoder_destroy (fn)",
+    "pks_opus_encoder_set_bitrate (fn)",
+    "pks_encode_opus (fn)",
+    "tests (mod)",
+    "sine_960 (fn)",
+    "given_wrong_sample_rate_when_create_then_returns_null (fn)",
+    "given_invalid_channel_count_when_create_then_returns_null (fn)",
+    "given_stereo_channels_when_create_then_succeeds (fn)",
+    "given_valid_pcm_when_encode_then_returns_positive_byte_count (fn)",
+    "given_null_encoder_when_encode_then_returns_minus_one (fn)",
+    "given_small_output_buffer_when_encode_then_packet_is_not_truncated (fn)",
+    "given_invalid_frame_size_when_encode_then_error_is_typed_without_writing (fn)",
+    "given_rejected_capacity_when_retried_then_encoder_state_is_unchanged (fn)",
+    "given_panicking_abi_bodies_when_guarded_then_panics_are_contained (fn)",
+    "given_encoder_when_destroy_null_then_no_crash (fn)",
+    "given_valid_encoder_when_set_bitrate_then_returns_zero (fn)",
+    "given_null_encoder_when_set_bitrate_then_returns_minus_one (fn)",
+    "given_bitrate_change_when_encode_then_still_produces_valid_packet (fn)",
+    "given_sine_440hz_when_round_trip_then_decoded_has_energy (fn)"
   ],
   "retry_behavior": [],
   "serialization": [
@@ -998,7 +1035,23 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-03d685383aaeadb55cad",
+    "test-041037b5b9482d79c8e2",
+    "test-1e4368d9ab7990c79bd7",
+    "test-3e20a259ad1a0f55a8c8",
+    "test-3ef29585c598a6893a44",
+    "test-479779860d7c9008393b",
+    "test-5095853239081deb1c37",
+    "test-60e08c6e7ec6bb4b5978",
+    "test-736ddd354b42f58df4ad",
+    "test-aacee03d309d729527c8",
+    "test-b8c63b228dfc74959626",
+    "test-c5614104f53b6b245bfd",
+    "test-d02294e14bc1e7d6bfd2",
+    "test-d3686b94180b732c8001"
+  ],
   "threads": [
     {
       "line": 46,

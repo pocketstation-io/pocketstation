@@ -19,6 +19,7 @@ struct ActiveDesktopCapture {
 }
 
 impl CallbackCaptureBackend for DesktopCaptureBackend {
+    #[doc = "Prepares resources required by `DesktopCaptureBackend`."]
     fn prepare(&self, mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {
         Ok(Box::new(PreparedDesktopCapture { mode }))
     }

@@ -112,6 +112,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -136,7 +137,10 @@
     "pocketstation::internal::frame::{AudioBufferPool, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "assert_no_alloc::*",
+    "pocketstation::internal::codec::{ OpusDecoder, OpusEncoder, OpusFrameDuration, OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, }",
+    "pocketstation::internal::frame::{AudioBufferPool, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ}"
   ],
   "invariants": [
     {
@@ -154,20 +158,22 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
   "observed_patterns": [
     "pattern-10d2eeb94420867a2507"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "tests/codec_hot_path_alloc.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "static",
@@ -198,8 +204,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given hot path when 100 frames then zero heap allocs, given preallocated decoder when 100 packets are concealed then zero heap allocs under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -224,12 +230,13 @@
     "docs/errors/frames-and-codec.md",
     "docs/troubleshooting/opus.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "A",
-    "given_hot_path_when_100_frames_then_zero_heap_allocs",
-    "given_preallocated_decoder_when_100_packets_are_concealed_then_zero_heap_allocs",
-    "build_sine"
+    "A (static)",
+    "given_hot_path_when_100_frames_then_zero_heap_allocs (fn)",
+    "given_preallocated_decoder_when_100_packets_are_concealed_then_zero_heap_allocs (fn)",
+    "build_sine (fn)"
   ],
   "retry_behavior": [],
   "serialization": [
@@ -258,7 +265,11 @@
     }
   ],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-c03103a64eeeb21abb1b",
+    "test-d150aed65b6b3b930cdf"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

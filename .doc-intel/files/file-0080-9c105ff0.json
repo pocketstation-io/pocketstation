@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs"
+  ],
   "calls": [
     "Vec::new",
     "clone",
@@ -23,7 +26,10 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs"
+  ],
   "constructs": [
     "Vec::new"
   ],
@@ -108,8 +114,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -123,17 +133,24 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "20180fe7b40d6e2ac0f409969c9f973002593511",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs"
+  ],
   "implements": [
     "SourceLifecycleRegistry"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs"
+  ],
   "imports": [
     "std::collections::{HashMap, HashSet}",
     "super::{CaptureSource, SourceGeneration, SourceState, StableSourceId}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "std::collections::{HashMap, HashSet}",
+    "super::{CaptureSource, SourceGeneration, SourceState, StableSourceId}"
   ],
   "invariants": [
     {
@@ -147,18 +164,23 @@
   "module": "pocketstation::capture::lifecycle_registry",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:SourceGenerationTransition",
+    "fn:generation",
+    "fn:observe_complete_snapshot",
+    "struct:SourceLifecycleRegistry"
   ],
   "package": "pocketstation",
   "path": "src/capture/lifecycle_registry.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -196,8 +218,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Control-plane source generation tracking for explicit rediscovery."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::capture::lifecycle registry responsibilities, including Enumerates the supported source generation transition cases.; Represents the disappeared alternative defined by `SourceGenerationTransition`.; Identifies the stable identifier recorded by `Disappeared`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -251,13 +273,23 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/source-identity.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/capture/events.rs",
+    "REFERENCES:src/capture/identity.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "SourceGenerationTransition",
-    "SourceGenerationState",
-    "SourceLifecycleRegistry",
-    "observe_complete_snapshot",
-    "generation"
+    "pocketstation::capture::lifecycle_registry::SourceGenerationTransition: Enumerates the supported source generation transition cases.",
+    "pocketstation::capture::lifecycle_registry::SourceGenerationTransition::Disappeared: Represents the disappeared alternative defined by `SourceGenerationTransition`.",
+    "lifecycle_registry::SourceGenerationTransition::Disappeared::stable_id: Identifies the stable identifier recorded by `Disappeared`.",
+    "lifecycle_registry::SourceGenerationTransition::Disappeared::generation: Stores the generation used by `Disappeared`.",
+    "pocketstation::capture::lifecycle_registry::SourceGenerationTransition::Reappeared: Represents the reappeared alternative defined by `SourceGenerationTransition`.",
+    "lifecycle_registry::SourceGenerationTransition::Reappeared::stable_id: Identifies the stable identifier recorded by `Reappeared`.",
+    "lifecycle_registry::SourceGenerationTransition::Reappeared::previous_generation: Stores the previous generation used by `Reappeared`.",
+    "lifecycle_registry::SourceGenerationTransition::Reappeared::generation: Stores the generation used by `Reappeared`.",
+    "pocketstation::capture::lifecycle_registry::SourceLifecycleRegistry: Assigns source generations across complete discovery snapshots.",
+    "observe_complete_snapshot: Records an observation for complete snapshot for `SourceLifecycleRegistry`.",
+    "generation: Returns the generation associated with `SourceLifecycleRegistry`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -267,6 +299,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

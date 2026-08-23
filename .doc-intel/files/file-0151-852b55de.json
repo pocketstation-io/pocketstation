@@ -3,7 +3,9 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "calls": [
     "Arc::new",
     "Compiler::new",
@@ -48,7 +50,9 @@
       "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "constructs": [
     "Arc::new",
     "Compiler::new",
@@ -136,8 +140,11 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -151,18 +158,26 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "bb8b27ba312e5a2859286c87043bcf1f77e8973b",
-  "implemented_by": [],
+  "implemented_by": [
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "implements": [
     "NodeDefinition for Definition"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "imports": [
     "crate::graph::compile::{CompileError, Compiler}",
     "crate::graph::{ ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeRegistry, NodeTypeId, Pipeline, PortDirection, PortSpec, SafetyContract, SignalSpec, TextFormat, }",
     "std::sync::Arc"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition,",
+    "crate::graph::compile::{CompileError, Compiler}",
+    "crate::graph::{ ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeRegistry, NodeTypeId, Pipeline, PortDirection, PortSpec, SafetyContract, SignalSpec, TextFormat, }",
+    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
+    "std::sync::Arc"
   ],
   "invariants": [
     {
@@ -189,20 +204,22 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-2eceeaaee3e6da04704d"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "assert!(matches!(result, Err(CompileError::UnknownPort { port, .. }) if port == \"missing\"));"
   ],
   "package": "pocketstation",
   "path": "src/graph/named_ports.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -258,7 +275,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::graph::named_ports`."
+    "text": "Implements pocketstation::graph::named ports responsibilities, including the src/graph/named ports boundary."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -296,6 +313,7 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 1,
@@ -311,14 +329,14 @@
     }
   ],
   "responsibilities": [
-    "Definition",
-    "descriptor",
-    "validate_config",
-    "port",
-    "definition",
-    "registry",
-    "given_exact_named_inputs_when_compiled_then_one_multi_port_node_is_preserved",
-    "given_unknown_named_input_when_compiled_then_failure_precedes_runtime"
+    "Definition (struct)",
+    "descriptor (fn)",
+    "validate_config (fn)",
+    "port (fn)",
+    "definition (fn)",
+    "registry (fn)",
+    "given_exact_named_inputs_when_compiled_then_one_multi_port_node_is_preserved (fn)",
+    "given_unknown_named_input_when_compiled_then_failure_precedes_runtime (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -341,7 +359,11 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-547f292fc53c973e1c33",
+    "test-898cd2ae0c6b04c280a5"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

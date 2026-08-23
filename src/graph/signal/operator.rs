@@ -23,7 +23,7 @@ pub trait AsyncNode: Send {
         input: SignalEnvelope,
     ) -> AsyncNodeFuture<'a, Result<Vec<SignalEnvelope>, NodeError>>;
 
-    #[doc = "Returns the process port associated with `AsyncNode`."]
+    #[doc = "Returns the process port held by `AsyncNode`."]
     fn process_port<'a>(
         &'a mut self,
         _input_port: &'a str,
@@ -51,9 +51,9 @@ pub trait AsyncNode: Send {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = "Configures operator permission."]
 pub struct OperatorPermissionPolicy {
-    #[doc = "Stores the network allowed associated with `OperatorPermissionPolicy`."]
+    #[doc = "Stores the network allowed used by `OperatorPermissionPolicy`."]
     pub network_allowed: bool,
-    #[doc = "Stores the filesystem allowed associated with `OperatorPermissionPolicy`."]
+    #[doc = "Stores the filesystem allowed used by `OperatorPermissionPolicy`."]
     pub filesystem_allowed: bool,
 }
 
@@ -85,14 +85,14 @@ pub enum OperatorFailurePolicy {
 #[derive(Debug, Clone, Default)]
 #[doc = "Configures operator output role."]
 pub struct OperatorOutputRolePolicy {
-    #[doc = "Stores the allowed associated with `OperatorOutputRolePolicy`."]
+    #[doc = "Stores the allowed used by `OperatorOutputRolePolicy`."]
     pub allowed: Vec<SemanticRole>,
     #[doc = "Indicates whether terminal applies to `OperatorOutputRolePolicy`."]
     pub terminal: Vec<SemanticRole>,
 }
 
 impl OperatorOutputRolePolicy {
-    #[doc = "Returns the accepts associated with `OperatorOutputRolePolicy`."]
+    #[doc = "Returns whether accepts is true for `OperatorOutputRolePolicy`."]
     pub fn accepts(&self, signal: &SignalSpec, declared_port: &SignalSpec) -> bool {
         if self.allowed.is_empty() {
             return signal.role == declared_port.role;
@@ -197,67 +197,67 @@ impl AsyncOperatorManifest {
         Ok(manifest)
     }
 
-    #[doc = "Returns the operator identifier associated with `AsyncOperatorManifest`."]
+    #[doc = "Returns the operator identifier held by `AsyncOperatorManifest`."]
     pub const fn operator_id(&self) -> &OperatorId {
         &self.operator_id
     }
 
-    #[doc = "Returns the revision associated with `AsyncOperatorManifest`."]
+    #[doc = "Returns the revision held by `AsyncOperatorManifest`."]
     pub const fn revision(&self) -> u32 {
         self.revision
     }
 
-    #[doc = "Returns the generation associated with `AsyncOperatorManifest`."]
+    #[doc = "Returns the generation held by `AsyncOperatorManifest`."]
     pub const fn generation(&self) -> u32 {
         self.generation
     }
 
-    #[doc = "Returns the node associated with `AsyncOperatorManifest`."]
+    #[doc = "Returns the node held by `AsyncOperatorManifest`."]
     pub const fn node(&self) -> &NodeDescriptor {
         &self.node
     }
 
-    #[doc = "Returns the input edge associated with `AsyncOperatorManifest`."]
+    #[doc = "Returns the input edge held by `AsyncOperatorManifest`."]
     pub const fn input_edge(&self) -> EdgeContract {
         self.input_edge
     }
 
-    #[doc = "Returns the output edge associated with `AsyncOperatorManifest`."]
+    #[doc = "Returns the output edge held by `AsyncOperatorManifest`."]
     pub const fn output_edge(&self) -> EdgeContract {
         self.output_edge
     }
 
-    #[doc = "Returns the queue capacity frames associated with `AsyncOperatorManifest`."]
+    #[doc = "Returns the queue capacity frames held by `AsyncOperatorManifest`."]
     pub const fn queue_capacity_frames(&self) -> usize {
         self.queue_capacity_frames
     }
 
-    #[doc = "Returns the permission associated with `AsyncOperatorManifest`."]
+    #[doc = "Returns the permission held by `AsyncOperatorManifest`."]
     pub const fn permission(&self) -> OperatorPermissionPolicy {
         self.permission
     }
 
-    #[doc = "Returns the deadline associated with `AsyncOperatorManifest`."]
+    #[doc = "Returns the deadline held by `AsyncOperatorManifest`."]
     pub const fn deadline(&self) -> OperatorDeadlinePolicy {
         self.deadline
     }
 
-    #[doc = "Returns the cancellation associated with `AsyncOperatorManifest`."]
+    #[doc = "Returns the cancellation held by `AsyncOperatorManifest`."]
     pub const fn cancellation(&self) -> OperatorCancellationPolicy {
         self.cancellation
     }
 
-    #[doc = "Returns the failure associated with `AsyncOperatorManifest`."]
+    #[doc = "Returns the failure held by `AsyncOperatorManifest`."]
     pub const fn failure(&self) -> OperatorFailurePolicy {
         self.failure
     }
 
-    #[doc = "Returns the output roles associated with `AsyncOperatorManifest`."]
+    #[doc = "Returns the output roles held by `AsyncOperatorManifest`."]
     pub const fn output_roles(&self) -> &OperatorOutputRolePolicy {
         &self.output_roles
     }
 
-    #[doc = "Returns the input ports associated with `AsyncOperatorManifest`."]
+    #[doc = "Returns the input ports held by `AsyncOperatorManifest`."]
     pub fn input_ports(&self) -> impl Iterator<Item = &PortSpec> {
         self.node
             .inputs
@@ -265,7 +265,7 @@ impl AsyncOperatorManifest {
             .filter(|port| port.direction == PortDirection::Input)
     }
 
-    #[doc = "Returns the output ports associated with `AsyncOperatorManifest`."]
+    #[doc = "Returns the output ports held by `AsyncOperatorManifest`."]
     pub fn output_ports(&self) -> impl Iterator<Item = &PortSpec> {
         self.node
             .outputs
@@ -427,9 +427,9 @@ pub enum AsyncOperatorManifestError {
     TerminalOutputRoleNotAllowed,
 }
 
-#[doc = "Defines the implementation contract for async operator."]
+#[doc = "Implement this trait to provide async operator behavior to PocketStation; its methods define the preparation and runtime contract."]
 pub trait AsyncOperatorFactory: Send + Sync {
-    #[doc = "Returns the manifest associated with `AsyncOperatorFactory`."]
+    #[doc = "Returns the manifest held by `AsyncOperatorFactory`."]
     fn manifest(&self) -> &AsyncOperatorManifest;
     #[doc = "Validates config for `AsyncOperatorFactory`."]
     fn validate_config(&self, configuration: &NodeConfig) -> Result<(), crate::graph::ConfigError>;

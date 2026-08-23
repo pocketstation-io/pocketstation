@@ -57,6 +57,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -77,7 +78,10 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "cargo clippy --all-targets --all-features -- -D warnings",
+    "cargo test --quiet --features internal-testing --test capture_hot_path_alloc",
+    "cargo test --quiet --features internal-testing --test codec_hot_path_alloc",
+    "cargo test --quiet --features internal-testing --test runtime_plan_router_alloc"
   ],
   "invariants": [],
   "language": "Shell",
@@ -86,25 +90,27 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "repository",
   "path": "scripts/check_protocol.sh",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines a repository build, validation, CI, or release operation."
+    "text": "Defines a repository-owned build, validation, test, or release operation."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -132,8 +138,11 @@
     "docs/troubleshooting/native-build.md",
     "docs/best-practices/evidence-boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
-  "responsibilities": [],
+  "responsibilities": [
+    "Defines a repository-owned build, validation, test, or release operation."
+  ],
   "retry_behavior": [],
   "serialization": [],
   "shutdown_behavior": [],
@@ -142,6 +151,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

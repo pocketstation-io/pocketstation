@@ -44,7 +44,7 @@ pub enum ChannelLayout {
 }
 
 impl ChannelLayout {
-    #[doc = "Returns the channel count associated with `ChannelLayout`."]
+    #[doc = "Returns the channel count held by `ChannelLayout`."]
     pub fn channel_count(self) -> Option<u8> {
         match self {
             Self::Mono => Some(1),
@@ -60,15 +60,15 @@ impl ChannelLayout {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Represents audio caps in the PocketStation API."]
+#[doc = "Declares the sample formats, channel layouts, and rates accepted by an audio port."]
 pub struct AudioCaps {
     #[doc = "Stores the sample rate value for `AudioCaps`, in hertz."]
     pub sample_rate_hz: Option<u32>, // None = any rate accepted
-    #[doc = "Stores the frame samples associated with `AudioCaps`."]
+    #[doc = "Stores the frame samples used by `AudioCaps`."]
     pub frame_samples: Option<usize>, // None = any frame length accepted
-    #[doc = "Stores the channel layout associated with `AudioCaps`."]
+    #[doc = "Stores the channel layout used by `AudioCaps`."]
     pub channel_layout: ChannelLayout,
-    #[doc = "Stores the format associated with `AudioCaps`."]
+    #[doc = "Stores the format used by `AudioCaps`."]
     pub format: SampleFormat,
 }
 
@@ -252,32 +252,32 @@ impl PortSpec {
         })
     }
 
-    #[doc = "Returns the name associated with `PortSpec`."]
+    #[doc = "Returns the name held by `PortSpec`."]
     pub fn name(&self) -> &str {
         &self.name
     }
 
-    #[doc = "Returns the direction associated with `PortSpec`."]
+    #[doc = "Returns the direction held by `PortSpec`."]
     pub const fn direction(&self) -> PortDirection {
         self.direction
     }
 
-    #[doc = "Returns the signal associated with `PortSpec`."]
+    #[doc = "Returns the signal held by `PortSpec`."]
     pub const fn signal(&self) -> &SignalSpec {
         &self.signal
     }
 
-    #[doc = "Returns the media associated with `PortSpec`."]
+    #[doc = "Returns the media held by `PortSpec`."]
     pub const fn media(&self) -> MediaCaps {
         self.media
     }
 
-    #[doc = "Returns the multiplicity associated with `PortSpec`."]
+    #[doc = "Returns the multiplicity held by `PortSpec`."]
     pub const fn multiplicity(&self) -> Multiplicity {
         self.multiplicity
     }
 
-    #[doc = "Returns the required associated with `PortSpec`."]
+    #[doc = "Returns the required held by `PortSpec`."]
     pub const fn required(&self) -> bool {
         self.required
     }
@@ -377,7 +377,7 @@ pub enum EdgeObservabilityLevel {
 }
 
 impl EdgeObservabilityLevel {
-    #[doc = "Returns the rank associated with `EdgeObservabilityLevel`."]
+    #[doc = "Returns the rank held by `EdgeObservabilityLevel`."]
     pub fn rank(self) -> u8 {
         match self {
             Self::Off => 0,
@@ -388,7 +388,7 @@ impl EdgeObservabilityLevel {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Represents edge contract in the PocketStation API."]
+#[doc = "Declares the validated constraints applied to edge."]
 pub struct EdgeContract {
     pub(crate) media: MediaCaps,
     pub(crate) clock: ClockDomain,
@@ -403,52 +403,52 @@ pub struct EdgeContract {
 }
 
 impl EdgeContract {
-    #[doc = "Returns the media associated with `EdgeContract`."]
+    #[doc = "Returns the media held by `EdgeContract`."]
     pub const fn media(&self) -> MediaCaps {
         self.media
     }
 
-    #[doc = "Returns the clock associated with `EdgeContract`."]
+    #[doc = "Returns the clock held by `EdgeContract`."]
     pub const fn clock(&self) -> ClockDomain {
         self.clock
     }
 
-    #[doc = "Returns the latency budget milliseconds associated with `EdgeContract`."]
+    #[doc = "Returns the latency budget milliseconds held by `EdgeContract`."]
     pub const fn latency_budget_ms(&self) -> Option<u32> {
         self.latency_budget_ms
     }
 
-    #[doc = "Returns the jitter budget milliseconds associated with `EdgeContract`."]
+    #[doc = "Returns the jitter budget milliseconds held by `EdgeContract`."]
     pub const fn jitter_budget_ms(&self) -> Option<u32> {
         self.jitter_budget_ms
     }
 
-    #[doc = "Returns the backpressure associated with `EdgeContract`."]
+    #[doc = "Returns the backpressure held by `EdgeContract`."]
     pub const fn backpressure(&self) -> BackpressurePolicy {
         self.backpressure
     }
 
-    #[doc = "Returns the delivery associated with `EdgeContract`."]
+    #[doc = "Returns the delivery held by `EdgeContract`."]
     pub const fn delivery(&self) -> DeliverySemantics {
         self.delivery
     }
 
-    #[doc = "Returns the loss associated with `EdgeContract`."]
+    #[doc = "Returns the loss held by `EdgeContract`."]
     pub const fn loss(&self) -> LossPolicy {
         self.loss
     }
 
-    #[doc = "Returns the copy policy associated with `EdgeContract`."]
+    #[doc = "Returns the copy policy held by `EdgeContract`."]
     pub const fn copy_policy(&self) -> CopyPolicy {
         self.copy_policy
     }
 
-    #[doc = "Returns the observability associated with `EdgeContract`."]
+    #[doc = "Returns the observability held by `EdgeContract`."]
     pub const fn observability(&self) -> EdgeObservabilityLevel {
         self.observability
     }
 
-    #[doc = "Returns the max payload bytes associated with `EdgeContract`."]
+    #[doc = "Returns the max payload bytes held by `EdgeContract`."]
     pub const fn max_payload_bytes(&self) -> Option<usize> {
         self.max_payload_bytes
     }

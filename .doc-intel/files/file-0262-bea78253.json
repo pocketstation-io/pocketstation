@@ -73,6 +73,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -97,7 +98,7 @@
     "pocketstation::{ EndpointDriverFactory, EndpointFailure, EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, OperatorConfiguration, PreparedEndpointDriver, RouteId, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "pocketstation::{ EndpointDriverFactory, EndpointFailure, EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, OperatorConfiguration, PreparedEndpointDriver, RouteId, }"
   ],
   "invariants": [],
   "language": "Rust",
@@ -106,21 +107,22 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
   "observed_patterns": [
-    "pattern-ba010980ee41cec78f8d",
     "pattern-88d3fc2b07df818eff6e"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "tests/connector_grouping_public_surface.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -151,8 +153,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given external factory when grouping routes then public shared group is addressable under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -194,6 +196,7 @@
     "docs/best-practices/connector-retries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 22,
@@ -201,10 +204,10 @@
     }
   ],
   "responsibilities": [
-    "ExternalConnectorFactory",
-    "preparation_group",
-    "prepare",
-    "given_external_factory_when_grouping_routes_then_public_shared_group_is_addressable"
+    "ExternalConnectorFactory (struct)",
+    "preparation_group (fn)",
+    "prepare (fn)",
+    "given_external_factory_when_grouping_routes_then_public_shared_group_is_addressable (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -223,7 +226,10 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-771b49f6eeae48ddfb9b"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

@@ -3,7 +3,11 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs"
+  ],
   "calls": [
     "FnMut",
     "HandleTable::new",
@@ -50,7 +54,11 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs"
+  ],
   "constructs": [
     "HandleTable::new",
     "new"
@@ -265,8 +273,13 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -280,12 +293,20 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "84a1551efca4b0b203d645af49ca2e35b5dfca11",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs"
+  ],
   "implements": [
     "Default for HandleSlot<T>",
     "HandleTable<T>"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs"
+  ],
   "imports": [
     "crate::abi::session::abi::PksSessionHandleKind",
     "crate::abi::session::abi::{PksSessionHandle, PksSessionHandleKind}",
@@ -293,7 +314,11 @@
     "super::HandleTable"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::abi::session::abi::PksSessionHandleKind",
+    "crate::abi::session::abi::{PksSessionHandle, PksSessionHandleKind}",
+    "crate::abi::session::error::AbiError",
+    "super::HandleTable"
   ],
   "invariants": [],
   "language": "Rust",
@@ -302,18 +327,32 @@
   "module": "pocketstation::abi::session::handle",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(AbiError::NoCapacity)",
+    "None => Err(AbiError::StaleHandle),",
+    "fn:active_count",
+    "fn:for_each_mut",
+    "fn:get",
+    "fn:get_mut",
+    "fn:insert",
+    "fn:new",
+    "fn:remove",
+    "return Err(AbiError::ForeignHandle);",
+    "return Err(AbiError::InvalidHandle);",
+    "return Err(AbiError::StaleHandle);",
+    "struct:HandleTable"
   ],
   "package": "pocketstation",
   "path": "src/abi/session/handle.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -424,7 +463,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::abi::session::handle`."
+    "text": "Implements pocketstation::abi::session::handle responsibilities, including handle; fmt; handle slot."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -458,6 +497,10 @@
     "docs/best-practices/native-extension-trust.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/abi/session/abi.rs",
+    "REFERENCES:src/abi/session/error.rs"
+  ],
   "resource_ownership": [
     {
       "line": 23,
@@ -465,23 +508,23 @@
     }
   ],
   "responsibilities": [
-    "HandleSlot",
-    "default",
-    "HandleTable",
-    "new",
-    "insert",
-    "get",
-    "get_mut",
-    "remove",
-    "active_count",
-    "for_each_mut",
-    "slot",
-    "slot_mut",
-    "validate_owner",
-    "tests",
-    "given_removed_handle_when_lookup_then_stale_is_reported",
-    "given_full_table_when_insert_then_capacity_failure_is_returned",
-    "given_other_scope_when_lookup_then_foreign_handle_is_reported"
+    "HandleSlot (struct)",
+    "default (fn)",
+    "HandleTable (struct)",
+    "new (fn)",
+    "insert (fn)",
+    "get (fn)",
+    "get_mut (fn)",
+    "remove (fn)",
+    "active_count (fn)",
+    "for_each_mut (fn)",
+    "slot (fn)",
+    "slot_mut (fn)",
+    "validate_owner (fn)",
+    "tests (mod)",
+    "given_removed_handle_when_lookup_then_stale_is_reported (fn)",
+    "given_full_table_when_insert_then_capacity_failure_is_returned (fn)",
+    "given_other_scope_when_lookup_then_foreign_handle_is_reported (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -491,7 +534,18 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0ae60369d5962ff55b0f",
+    "test-1664fa1aa12573253d70",
+    "test-716956fd7ff21d2765ad",
+    "test-9352f7a742c1f649857a",
+    "test-9ec51c75cedb5ffaef0f",
+    "test-a0dac1b61a0737f50473",
+    "test-a76e025cf00946b166f4",
+    "test-c49159871ef385421381",
+    "test-ee9437f141714a79bbc7"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

@@ -36,7 +36,7 @@ impl StreamProfile {
         }
     }
 
-    #[doc = "Returns the frame duration associated with `StreamProfile`."]
+    #[doc = "Returns the frame duration held by `StreamProfile`."]
     pub const fn frame_duration(self) -> OpusFrameDuration {
         match self {
             Self::VoiceAgentMono10ms | Self::MusicStereo10ms => OpusFrameDuration::Ms10,
@@ -47,7 +47,7 @@ impl StreamProfile {
         }
     }
 
-    #[doc = "Returns the application associated with `StreamProfile`."]
+    #[doc = "Returns the application held by `StreamProfile`."]
     pub const fn application(self) -> OpusApplication {
         match self {
             Self::VoiceMono20ms => OpusApplication::Voip,
@@ -58,7 +58,7 @@ impl StreamProfile {
         }
     }
 
-    #[doc = "Returns the bitrate kbps associated with `StreamProfile`."]
+    #[doc = "Returns the bitrate kbps held by `StreamProfile`."]
     pub const fn bitrate_kbps(self) -> u32 {
         match self {
             Self::VoiceMono20ms | Self::VoiceAgentMono10ms => VOICE_BITRATE_KBPS,
@@ -68,7 +68,7 @@ impl StreamProfile {
         }
     }
 
-    #[doc = "Returns the frame milliseconds associated with `StreamProfile`."]
+    #[doc = "Returns the frame milliseconds held by `StreamProfile`."]
     pub const fn frame_ms(self) -> u16 {
         match self.frame_duration() {
             OpusFrameDuration::Ms10 => 10,
@@ -83,7 +83,7 @@ impl StreamProfile {
         matches!(self.channels(), OpusChannels::Stereo)
     }
 
-    #[doc = "Returns the opus config associated with `StreamProfile`."]
+    #[doc = "Returns the opus config held by `StreamProfile`."]
     pub const fn opus_config(self) -> OpusConfig {
         OpusConfig {
             sample_rate: OpusSampleRate::Hz48000,

@@ -1674,7 +1674,10 @@
       "symbol": null
     }
   ],
-  "examples_using": [],
+  "example_coverage_status": "linked",
+  "examples_using": [
+    "example-3af8a91e442cd41f9135"
+  ],
   "extended_by": [],
   "extends": [],
   "feature_flags": [],
@@ -1779,7 +1782,27 @@
     "tokio::process::{Child, Command}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    ") -> Result<AsyncOperatorManifest, ConfigError> {",
+    ".unwrap_or(DEFAULT_PROCESS_TIMEOUT_MS);",
+    "AsyncOperatorPrepareContext, AudioCaps, ChannelLayout, ConfigError, CopyPolicy, EdgeContract,",
+    "ConfigError::Invalid {",
+    "const DEFAULT_PROCESS_TIMEOUT_MS: u32 = 60_000;",
+    "fn validate_config(&self, configuration: &OperatorConfiguration) -> Result<(), ConfigError> {",
+    "module:process_evidence",
+    "pocketstation::{ AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorPrepareContext, AudioCaps, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeError, NodeTypeId, OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, SafetyContract, SampleFormat, SemanticRole, SignalDerivation, SignalEnvelope, SignalLineage, SignalPayload, SignalSpec, SignalTiming, SourceId, TextFormat, }",
+    "pocketstation::{ AudioBufferPool, AudioFrame, BinaryFormat, ClockDomainId, FrameLineage, PortPrepareContext, SampleFormat, SampleSpec, SessionId, SignalLineage, SignalSpec, SignalTiming, SourceId, StemId, StreamId, }",
+    "process_evidence::ActiveProcessEvidence",
+    "process_evidence::{ ProcessEvidenceError, ProcessOutcome, WhisperProcessEvidence, WhisperProcessReceipt, }",
+    "process_timeout_ms: DEFAULT_PROCESS_TIMEOUT_MS",
+    "return Err(ConfigError::Invalid {",
+    "std::io::Cursor",
+    "std::os::unix::fs::PermissionsExt",
+    "std::path::{Path, PathBuf}",
+    "std::process::Stdio",
+    "std::time::Duration",
+    "super::*",
+    "tempfile::TempDir",
+    "tokio::process::{Child, Command}"
   ],
   "invariants": [
     {
@@ -1913,23 +1936,43 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification or behavior outside the example's prerequisites."
   ],
   "observed_patterns": [
-    "pattern-dee628e71ec7c1c0ff7b",
     "pattern-05350b66e882a52b5fe0",
     "pattern-78780c49a001a9fa415d",
     "pattern-ab77075f8e2f3f9c0d25"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(ConfigError::Invalid {",
+    "Err(_) => {",
+    "const:EVIDENCE_CASE_ID_CONFIGURATION_KEY",
+    "const:EVIDENCE_ROOT_CONFIGURATION_KEY",
+    "const:TRANSCRIPT_FINAL_ROLE",
+    "const:TRANSCRIPT_PARTIAL_ROLE",
+    "const:WHISPER_OPERATOR_ID",
+    "fn:new",
+    "fn:transcript_final_spec",
+    "fn:transcript_partial_spec",
+    "fn:with_gpu",
+    "fn:with_process_evidence",
+    "fn:with_process_timeout_ms",
+    "fn:with_window_duration_ms",
+    "return Err(ConfigError::Invalid {",
+    "return Err(NodeError::Prepare(format!(",
+    "return Err(NodeError::Process(format!(",
+    "return Err(NodeError::ProcessTimeout {",
+    "struct:WhisperConnector",
+    "struct:WhisperOperatorFactory"
   ],
   "package": "pocketstation",
   "path": "examples/whisper-transcribe/src/lib.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -2367,8 +2410,8 @@
     }
   ],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "DECLARED",
+    "text": "Demonstrates the repository-owned lib workflow as compilable example code."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -2390,6 +2433,9 @@
     "docs/reference/test-evidence.md",
     "docs/reference/lifecycle-evidence.md",
     "docs/troubleshooting/transcription-evidence.md"
+  ],
+  "relationship_outputs": [
+    "IMPORTS:examples/whisper-transcribe/src/process_evidence.rs"
   ],
   "resource_ownership": [
     {
@@ -2422,72 +2468,36 @@
     }
   ],
   "responsibilities": [
-    "process_evidence",
-    "WhisperConnector",
-    "WindowOrigin",
-    "WHISPER_OPERATOR_ID",
-    "TRANSCRIPT_PARTIAL_ROLE",
-    "TRANSCRIPT_FINAL_ROLE",
-    "transcript_partial_spec",
-    "transcript_final_spec",
-    "WHISPER_OPERATOR_REVISION",
-    "WHISPER_OPERATOR_GENERATION",
-    "LANGUAGE_CONFIGURATION_KEY",
-    "GPU_CONFIGURATION_KEY",
-    "WINDOW_DURATION_MS_CONFIGURATION_KEY",
-    "PROCESS_TIMEOUT_MS_CONFIGURATION_KEY",
-    "DEFAULT_PROCESS_TIMEOUT_MS",
-    "PROCESS_TIMEOUT_CLEANUP_MARGIN_MS",
-    "EVIDENCE_ROOT_CONFIGURATION_KEY",
-    "EVIDENCE_CASE_ID_CONFIGURATION_KEY",
-    "WhisperOperatorFactory",
-    "new",
-    "manifest",
-    "validate_config",
-    "resolve_manifest",
-    "create",
-    "validate_positive_u32",
-    "new",
-    "with_gpu",
-    "with_window_duration_ms",
-    "with_process_timeout_ms",
-    "with_process_evidence",
-    "require_file",
-    "transcribe",
-    "command_argv",
-    "terminate_active_child",
-    "encode_wav",
-    "process_audio",
-    "transcribe_samples",
-    "output_for_origin",
-    "reset_stream",
-    "update_origin",
-    "validate_window_continuation",
-    "prepare",
-    "process",
-    "flush",
-    "cancel",
-    "close",
-    "tests",
-    "test_prepare_context",
-    "connector_fixture",
-    "audio_frame",
-    "lineaged_envelope",
-    "binary_envelope",
-    "prepared_window_connector",
-    "given_instance_timeout_when_manifest_resolves_then_deadline_matches_configuration",
-    "given_wav_envelope_when_connector_runs_then_text_lineage_is_preserved",
-    "given_missing_binary_when_prepare_runs_then_connector_fails_closed",
-    "given_hung_provider_when_deadline_expires_then_child_is_killed_and_reaped",
-    "given_process_evidence_when_provider_succeeds_then_actual_invocation_is_persisted",
-    "given_process_evidence_when_provider_times_out_then_kill_and_reap_are_persisted",
-    "given_outer_cancellation_when_process_is_active_then_child_receipt_is_finalized",
-    "given_typed_audio_when_window_fills_then_partial_precedes_one_final_transcript",
-    "given_lineaged_window_when_transcribed_then_derived_range_covers_every_frame",
-    "given_two_complete_windows_when_finished_then_partials_and_single_final_cover_stream",
-    "given_source_change_inside_window_when_processed_then_window_is_rejected_and_reset",
-    "given_discontinuity_change_inside_window_when_processed_then_window_is_rejected",
-    "given_permission_change_inside_window_when_processed_then_window_is_rejected"
+    "process_evidence (mod)",
+    "WhisperConnector (struct)",
+    "WindowOrigin (struct)",
+    "WHISPER_OPERATOR_ID (const)",
+    "TRANSCRIPT_PARTIAL_ROLE (const)",
+    "TRANSCRIPT_FINAL_ROLE (const)",
+    "transcript_partial_spec (fn)",
+    "transcript_final_spec (fn)",
+    "WHISPER_OPERATOR_REVISION (const)",
+    "WHISPER_OPERATOR_GENERATION (const)",
+    "LANGUAGE_CONFIGURATION_KEY (const)",
+    "GPU_CONFIGURATION_KEY (const)",
+    "WINDOW_DURATION_MS_CONFIGURATION_KEY (const)",
+    "PROCESS_TIMEOUT_MS_CONFIGURATION_KEY (const)",
+    "DEFAULT_PROCESS_TIMEOUT_MS (const)",
+    "PROCESS_TIMEOUT_CLEANUP_MARGIN_MS (const)",
+    "EVIDENCE_ROOT_CONFIGURATION_KEY (const)",
+    "EVIDENCE_CASE_ID_CONFIGURATION_KEY (const)",
+    "WhisperOperatorFactory (struct)",
+    "new (fn)",
+    "manifest (fn)",
+    "validate_config (fn)",
+    "resolve_manifest (fn)",
+    "create (fn)",
+    "validate_positive_u32 (fn)",
+    "new (fn)",
+    "with_gpu (fn)",
+    "with_window_duration_ms (fn)",
+    "with_process_timeout_ms (fn)",
+    "with_process_evidence (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -3088,7 +3098,22 @@
       "text": ".await"
     }
   ],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-19a765a0dbacdd29aee0",
+    "test-21347646a3ff78175454",
+    "test-3ed49534bf02ce80cbcb",
+    "test-461c6ec95bfefc8bb314",
+    "test-87f552f09cb152e83b10",
+    "test-96cab447b1d1ad9b61d9",
+    "test-b79c368693e08eaa7d95",
+    "test-b8a974fb8cab9b036630",
+    "test-d05ebeb952bf0753b799",
+    "test-d2c23e54192a869ee546",
+    "test-e2540be9a42100cc68c1",
+    "test-e3fecbbc626c7ca91545",
+    "test-ecb60c6da5bff96b4580"
+  ],
   "threads": [
     {
       "line": 414,

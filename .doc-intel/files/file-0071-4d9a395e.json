@@ -3,7 +3,14 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/abi/session/handle.rs",
+    "REFERENCES:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs"
+  ],
   "calls": [
     "PksSessionStatus::new",
     "derive",
@@ -13,7 +20,14 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/abi/session/handle.rs",
+    "REFERENCES:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs"
+  ],
   "constructs": [
     "PksSessionStatus::new"
   ],
@@ -75,8 +89,16 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/abi/session/handle.rs",
+    "REFERENCES:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -99,16 +121,30 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "163bfeed45656e9c4b4f95f6e9b814346495c892",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/abi/session/handle.rs",
+    "REFERENCES:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs"
+  ],
   "implements": [
     "AbiError"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/abi/session/handle.rs",
+    "REFERENCES:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs"
+  ],
   "imports": [
     "crate::abi::session::abi::{PksSessionStatus, PksSessionStatusCode}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::abi::session::abi::{PksSessionStatus, PksSessionStatusCode}"
   ],
   "invariants": [],
   "language": "Rust",
@@ -117,18 +153,22 @@
   "module": "pocketstation::abi::session::error",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:AbiError",
+    "fn:status"
   ],
   "package": "pocketstation",
   "path": "src/abi/session/error.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -148,7 +188,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::abi::session::error`."
+    "text": "Implements pocketstation::abi::session::error responsibilities, including error; clone; fmt."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -182,10 +222,13 @@
     "docs/best-practices/native-extension-trust.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/abi/session/abi.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "AbiError",
-    "status"
+    "AbiError (enum)",
+    "status (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -204,6 +247,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

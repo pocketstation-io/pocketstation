@@ -3,7 +3,16 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/endpoint/polled_audio.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/error_code.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs"
+  ],
   "calls": [
     "Arc::clone",
     "Arc::new",
@@ -114,7 +123,16 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/endpoint/polled_audio.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/error_code.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AtomicBool::new",
@@ -804,8 +822,18 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/endpoint/polled_audio.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/error_code.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -819,7 +847,16 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "1465a3e22ec78347b1c6c63ca55b9b01b65b0bb4",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/endpoint/polled_audio.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/error_code.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs"
+  ],
   "implements": [
     "Default for PolledAudioEndpointConfig",
     "PolledAudioEndpointFactory",
@@ -832,7 +869,16 @@
     "PreparedEndpointDriver for PreparedPolledAudioEndpoint",
     "RunningEndpointDriver for RunningPolledAudioEndpoint"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/endpoint/polled_audio.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/error_code.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs"
+  ],
   "imports": [
     "crate::endpoint::{ EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointPortInput, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }",
     "crate::frame::{ConnectorId, EndpointId, FrameLineage, LineagedAudioFrame, RouteId, StreamId}",
@@ -845,7 +891,16 @@
     "std::time::Duration"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::endpoint::{ EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointPortInput, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }",
+    "crate::frame::{ConnectorId, EndpointId, FrameLineage, LineagedAudioFrame, RouteId, StreamId}",
+    "crate::runtime::{PlanEdgeFrame, PlanEdgeObservationHandle}",
+    "module:tests",
+    "rtrb::{Consumer, Producer, PushError, RingBuffer}",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "std::sync::{Arc, Mutex}",
+    "std::thread::{self, JoinHandle}",
+    "std::time::Duration"
   ],
   "invariants": [
     {
@@ -880,20 +935,50 @@
   "module": "pocketstation::endpoint::polled_audio_driver",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-95395d6c5aa33e8e7aca"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(EndpointFailure::new(",
+    "Err(PushError::Full(_frame)) => {",
+    "Err(observed) => depth = observed,",
+    "None => Err(EndpointFailure::new(",
+    "enum:PolledAudioEndpointConfigError",
+    "enum:PolledAudioPollError",
+    "fn:channels",
+    "fn:connector_id",
+    "fn:endpoint_id",
+    "fn:frame",
+    "fn:is_empty",
+    "fn:len",
+    "fn:lineage",
+    "fn:new",
+    "fn:observations",
+    "fn:route_id",
+    "fn:sample_rate_hz",
+    "fn:samples",
+    "fn:stream_id",
+    "fn:try_poll",
+    "return Err(PolledAudioPollError::Empty);",
+    "return Err(PolledAudioPollError::LeaseCapacityExhausted);",
+    "return Err(prepare_failure(",
+    "struct:PolledAudioBatchLease",
+    "struct:PolledAudioEndpointConfig",
+    "struct:PolledAudioEndpointFactory",
+    "struct:PolledAudioFrame",
+    "struct:PolledAudioObservations",
+    "struct:PolledAudioReceipt"
   ],
   "package": "pocketstation",
   "path": "src/endpoint/polled_audio_driver.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -1249,7 +1334,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::endpoint::polled_audio_driver`."
+    "text": "Implements pocketstation::endpoint::polled audio driver responsibilities, including Configures polled audio endpoint behavior at its owning API boundary.; Sets the queue capacity frames available to `PolledAudioEndpointConfig`.; Stores the max batch frames used by `PolledAudioEndpointConfig`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1284,6 +1369,14 @@
     "docs/troubleshooting/connector-readiness.md",
     "docs/troubleshooting/session-stop.md",
     "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/endpoint/runtime.rs",
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/frame/lineage.rs",
+    "REFERENCES:src/runtime/audio/router.rs"
   ],
   "resource_ownership": [
     {
@@ -1392,63 +1485,54 @@
     }
   ],
   "responsibilities": [
-    "WORK_BUDGET_FRAMES",
-    "IDLE_POLL_INTERVAL",
-    "MAX_QUEUE_CAPACITY_FRAMES",
-    "MAX_BATCH_CAPACITY_FRAMES",
-    "MAX_OUTSTANDING_LEASES",
-    "PolledAudioEndpointConfig",
-    "default",
-    "PolledAudioEndpointConfigError",
-    "PolledAudioObservations",
-    "PolledAudioPollError",
-    "PolledAudioEndpointFactory",
-    "new",
-    "PolledAudioReceipt",
-    "try_poll",
-    "observations",
-    "PolledAudioBatchLease",
-    "len",
-    "is_empty",
-    "frame",
-    "drop",
-    "PolledAudioFrame",
-    "lineage",
-    "endpoint_id",
-    "route_id",
-    "stream_id",
-    "connector_id",
-    "sample_rate_hz",
-    "channels",
-    "samples",
-    "DeliveredAudioFrame",
-    "ReceiptState",
-    "ReceiptShared",
-    "new",
-    "register_consumer",
-    "remove_consumer",
-    "try_reserve_queue_slot",
-    "observe_enqueued",
-    "release_queue_reservation",
-    "observe_queue_full_drop",
-    "observe_dequeued",
-    "observations",
-    "prepare",
-    "PreparedPolledAudioEndpoint",
-    "start",
-    "cancel_preparation",
-    "RunningPolledAudioEndpoint",
-    "observations",
-    "request_stop",
-    "join_and_finalize",
-    "WorkerObservations",
-    "run_worker",
-    "publish_delivered_frame",
-    "prepare_delivered_frame",
-    "endpoint_observations",
-    "prepare_failure",
-    "validate_config",
-    "tests"
+    "pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfig: Configures polled audio endpoint behavior at its owning API boundary.",
+    "PolledAudioEndpointConfig::queue_capacity_frames: Sets the queue capacity frames available to `PolledAudioEndpointConfig`.",
+    "PolledAudioEndpointConfig::max_batch_frames: Stores the max batch frames used by `PolledAudioEndpointConfig`.",
+    "PolledAudioEndpointConfig::max_outstanding_leases: Stores the max outstanding leases used by `PolledAudioEndpointConfig`.",
+    "default: Returns the default `PolledAudioEndpointConfig` value.",
+    "pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError: Classifies failures reported as polled audio endpoint config error.",
+    "pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError::ZeroQueueCapacity: Reported when the owning operation encounters zero queue capacity.",
+    "pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError::ZeroBatchCapacity: Reported when the owning operation encounters zero batch capacity.",
+    "pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError::ZeroLeaseCapacity: Reported when the owning operation encounters zero lease capacity.",
+    "pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError::QueueCapacityTooLarge: Reported when the owning operation encounters queue capacity too large.",
+    "pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError::BatchCapacityTooLarge: Reported when the owning operation encounters batch capacity too large.",
+    "pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError::LeaseCapacityTooLarge: Reported when the owning operation encounters lease capacity too large.",
+    "pocketstation::endpoint::polled_audio_driver::PolledAudioObservations: Reports the polled audio observations collected at an observation boundary.",
+    "PolledAudioObservations::registered_endpoints: Stores the registered endpoints used by `PolledAudioObservations`.",
+    "PolledAudioObservations::queue_capacity_frames: Sets the queue capacity frames available to `PolledAudioObservations`.",
+    "PolledAudioObservations::queue_depth_frames: Reports the queue depth frames observed by `PolledAudioObservations`.",
+    "PolledAudioObservations::queue_peak_frames: Reports the queue peak frames observed by `PolledAudioObservations`.",
+    "PolledAudioObservations::queue_depth_invariant_failures_total: Counts the total number of queue depth invariant failures observed by `PolledAudioObservations`.",
+    "PolledAudioObservations::frames_received_total: Counts the total number of frames received observed by `PolledAudioObservations`.",
+    "PolledAudioObservations::frames_delivered_total: Counts the total number of frames delivered observed by `PolledAudioObservations`.",
+    "PolledAudioObservations::queue_full_drops_total: Counts the total number of queue full drops observed by `PolledAudioObservations`.",
+    "PolledAudioObservations::invalid_ownership_drops_total: Counts the total number of invalid ownership drops observed by `PolledAudioObservations`.",
+    "PolledAudioObservations::lease_capacity_count: Sets the lease capacity count available to `PolledAudioObservations`.",
+    "PolledAudioObservations::outstanding_leases: Stores the outstanding leases used by `PolledAudioObservations`.",
+    "PolledAudioObservations::lease_exhausted_total: Counts the total number of lease exhausted observed by `PolledAudioObservations`.",
+    "PolledAudioObservations::batches_polled_total: Counts the total number of batches polled observed by `PolledAudioObservations`.",
+    "PolledAudioObservations::frames_polled_total: Counts the total number of frames polled observed by `PolledAudioObservations`.",
+    "pocketstation::endpoint::polled_audio_driver::PolledAudioPollError: Classifies failures reported as polled audio poll error.",
+    "pocketstation::endpoint::polled_audio_driver::PolledAudioPollError::Empty: Represents an empty value or collection.",
+    "pocketstation::endpoint::polled_audio_driver::PolledAudioPollError::LeaseCapacityExhausted: Reported when the owning operation encounters lease capacity exhausted.",
+    "pocketstation::endpoint::polled_audio_driver::PolledAudioPollError::StatePoisoned: Reported when the owning operation encounters state poisoned.",
+    "pocketstation::endpoint::polled_audio_driver::PolledAudioReceipt: Retains the identity and observation access returned for polled audio.",
+    "try_poll: Attempts to poll through `PolledAudioReceipt`.",
+    "observations: Returns the observations exposed by `PolledAudioReceipt`.",
+    "pocketstation::endpoint::polled_audio_driver::PolledAudioBatchLease: Owns bounded access to polled audio batch.",
+    "len: Returns the number of values held by `PolledAudioBatchLease`.",
+    "is_empty: Returns whether `PolledAudioBatchLease` contains no values.",
+    "frame: Returns the frame held by `PolledAudioBatchLease`.",
+    "drop: Releases resources owned by `PolledAudioBatchLease`.",
+    "pocketstation::endpoint::polled_audio_driver::PolledAudioFrame: Carries one polled audio payload together with its declared metadata.",
+    "lineage: Returns the frame lineage carried by `PolledAudioFrame`.",
+    "endpoint_id: Returns the endpoint identifier held by `PolledAudioFrame`.",
+    "route_id: Returns the route identifier held by `PolledAudioFrame`.",
+    "stream_id: Returns the stream identifier held by `PolledAudioFrame`.",
+    "connector_id: Returns the connector identifier held by `PolledAudioFrame`.",
+    "sample_rate_hz: Returns the sample rate hertz held by `PolledAudioFrame`.",
+    "channels: Returns the channel count represented by `PolledAudioFrame`.",
+    "samples: Returns the audio samples held by `PolledAudioFrame`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1509,7 +1593,14 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0f7fd199d4e6b26c8395",
+    "test-162e3f6748e6f4f9bf07",
+    "test-1c0e175d584cd2910a77",
+    "test-1e7766766c491d2b7101",
+    "test-53df4ef903e72a1de69c"
+  ],
   "threads": [
     {
       "line": 3,

@@ -14,7 +14,7 @@ impl NodeId {
         Self(index)
     }
 
-    #[doc = "Returns the index associated with `NodeId`."]
+    #[doc = "Returns the index held by `NodeId`."]
     pub fn index(self) -> u32 {
         self.0
     }
@@ -25,60 +25,60 @@ impl NodeId {
 pub struct EdgeId(pub(crate) u32);
 
 impl EdgeId {
-    #[doc = "Returns the index associated with `EdgeId`."]
+    #[doc = "Returns the index held by `EdgeId`."]
     pub fn index(self) -> u32 {
         self.0
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Represents output port ref in the PocketStation API."]
+#[doc = "Names an operator output port used as the origin of a graph connection."]
 pub struct OutputPortRef {
-    #[doc = "Stores the node associated with `OutputPortRef`."]
+    #[doc = "Stores the node used by `OutputPortRef`."]
     pub node: NodeId,
-    #[doc = "Stores the port associated with `OutputPortRef`."]
+    #[doc = "Stores the port used by `OutputPortRef`."]
     pub port: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Represents input port ref in the PocketStation API."]
+#[doc = "Names an operator or endpoint input port used as the target of a graph connection."]
 pub struct InputPortRef {
-    #[doc = "Stores the node associated with `InputPortRef`."]
+    #[doc = "Stores the node used by `InputPortRef`."]
     pub node: NodeId,
-    #[doc = "Stores the port associated with `InputPortRef`."]
+    #[doc = "Stores the port used by `InputPortRef`."]
     pub port: String,
 }
 
 #[derive(Debug, Clone)]
 #[doc = "Configures node."]
 pub struct NodeSpec {
-    #[doc = "Identifies the id associated with `NodeSpec`."]
+    #[doc = "Identifies the id recorded by `NodeSpec`."]
     pub id: NodeId,
-    #[doc = "Identifies the type associated with `NodeSpec`."]
+    #[doc = "Identifies the type identifier recorded by `NodeSpec`."]
     pub type_id: NodeTypeId,
-    #[doc = "Stores the config associated with `NodeSpec`."]
+    #[doc = "Stores the config used by `NodeSpec`."]
     pub config: NodeConfig,
 }
 
 #[derive(Debug, Clone)]
 #[doc = "Configures edge."]
 pub struct EdgeSpec {
-    #[doc = "Identifies the id associated with `EdgeSpec`."]
+    #[doc = "Identifies the id recorded by `EdgeSpec`."]
     pub id: EdgeId,
     #[doc = "Identifies the origin represented by `EdgeSpec`."]
     pub from: OutputPortRef,
     #[doc = "Identifies the destination represented by `EdgeSpec`."]
     pub to: InputPortRef,
-    #[doc = "Stores the requested associated with `EdgeSpec`."]
+    #[doc = "Stores the requested used by `EdgeSpec`."]
     pub requested: Option<EdgeContract>, // None = compiler negotiates from port caps (Wave 4)
 }
 
 #[derive(Debug, Clone, Default)]
 #[doc = "Configures graph."]
 pub struct GraphSpec {
-    #[doc = "Stores the nodes associated with `GraphSpec`."]
+    #[doc = "Stores the nodes used by `GraphSpec`."]
     pub nodes: Vec<NodeSpec>,
-    #[doc = "Stores the edges associated with `GraphSpec`."]
+    #[doc = "Stores the edges used by `GraphSpec`."]
     pub edges: Vec<EdgeSpec>,
 }
 

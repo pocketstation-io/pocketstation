@@ -27,7 +27,7 @@ Use these terms consistently. Code spelling anchors a term to a compiler symbol;
 | **signal** | `SignalEnvelope` | A typed asynchronous payload with specification, timing, and lineage. | — | message |
 | **audio frame** | `AudioFrame` | A pooled PCM buffer paired with sample specification and frame lineage. | frame | — |
 | **buffer pool** | `AudioBufferPool` | A fixed-capacity owner that supplies reusable audio storage. | — | — |
-| **audio reentry** | `AudioReentryBridge` | The bounded crossing that returns asynchronously generated PCM to the audio lane. | Bridge | — |
+| **audio reentry** | `SessionAudioReentryMetrics` | The bounded crossing that returns asynchronously generated PCM to the audio lane. | Bridge | — |
 | **Session declaration** | `SessionSpec` | The immutable specification produced before compilation and runtime preparation. | Session spec | — |
 | **compiled Session** | `CompiledSession` | A validated and resolved Session plan ready for resource preparation. | — | — |
 | **prepared Session** | `PreparedSession` | A Session whose source and endpoint resources have been prepared but not started. | — | — |
@@ -38,7 +38,7 @@ Use these terms consistently. Code spelling anchors a term to a compiler symbol;
 | **source generation** | `SourceGeneration` | A monotonic identity revision used when an observed source changes incarnation. | — | — |
 | **permission epoch** | `PermissionEpoch` | A revision associated with authorization state observation. | — | — |
 | **readiness** | `ConnectorReadinessPolicy` | The connector policy governing readiness observations before delivery. | — | health |
-| **retry budget** | `RetryBudget` | A finite connector limit on retry attempts or elapsed retry work. | — | infinite retry |
+| **retryability** | `ConnectorRetryability` | The connector failure classification that tells application policy whether the same operation may be attempted again, must wait for reconfiguration, or must not be retried. | — | retry budget, infinite retry |
 | **C ABI** | `PksSessionStatus` | The versioned C representation of Session and extension operations. | — | Rust API |
 | **conformance** | `conformance` | Executable evidence that a boundary matches a versioned contract under stated conditions. | — | qualification |
 
@@ -48,8 +48,8 @@ Aliases are permitted only where listed. A forbidden alias usually collapses a d
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Glossary** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/lib.rs:1-1129` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Glossary**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs"
+  ],
   "calls": [
     "Arc::clone",
     "Arc::new",
@@ -61,7 +64,10 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AtomicBool::new",
@@ -237,8 +243,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -269,14 +279,20 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "d8709a79ffe0b332184a25b9a125de0913420d8a",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs"
+  ],
   "implements": [
     "CallbackCaptureBackend for DeterministicCaptureBackend",
     "PreparedCaptureBackend for DeterministicPreparedCapture",
     "ActiveCaptureBackend for DeterministicActiveCapture",
     "Drop for DeterministicActiveCapture"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs"
+  ],
   "imports": [
     "crate::abi::session::{ abi_call, engine_options, guard_pointer_alignment, read_versioned_record, runtime_state, write_record, AbiError, PksSessionEngineConfig, PksSessionHandle, PksSessionStatus, }",
     "crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend, }",
@@ -288,7 +304,14 @@
     "std::time::Duration"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::abi::session::{ abi_call, engine_options, guard_pointer_alignment, read_versioned_record, runtime_state, write_record, AbiError, PksSessionEngineConfig, PksSessionHandle, PksSessionStatus, }",
+    "crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend, }",
+    "crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId}",
+    "crate::graph::PrepareContext",
+    "crate::session::{NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuilder}",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, Ordering}",
+    "std::time::Duration"
   ],
   "invariants": [],
   "language": "Rust",
@@ -297,21 +320,25 @@
   "module": "pocketstation::abi::session::conformance_fixture",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-89c11b4a94980624b4e5",
     "pattern-c94cceb556c86ba83b5b"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "fn:pks_session_conformance_engine_create",
+    "fn:pks_session_conformance_panic"
   ],
   "package": "pocketstation",
   "path": "src/abi/session/conformance_fixture.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -403,7 +430,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::abi::session::conformance_fixture`."
+    "text": "Implements pocketstation::abi::session::conformance fixture responsibilities, including conformance fixture; deterministic capture backend; deterministic prepared capture."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -436,6 +463,16 @@
     "docs/troubleshooting/conformance-fixtures.md",
     "docs/best-practices/native-extension-trust.md",
     "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/abi/session/abi.rs",
+    "REFERENCES:src/abi/session/error.rs",
+    "REFERENCES:src/capture/authorization.rs",
+    "REFERENCES:src/capture/capture_owner.rs",
+    "REFERENCES:src/capture/observations.rs",
+    "REFERENCES:src/capture/selection.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
   ],
   "resource_ownership": [
     {
@@ -492,19 +529,19 @@
     }
   ],
   "responsibilities": [
-    "DeterministicCaptureBackend",
-    "DeterministicPreparedCapture",
-    "DeterministicActiveCapture",
-    "prepare",
-    "open",
-    "source_id",
-    "observation_handle",
-    "observations",
-    "stop_and_join",
-    "drop",
-    "conformance_host",
-    "pks_session_conformance_engine_create",
-    "pks_session_conformance_panic"
+    "DeterministicCaptureBackend (struct)",
+    "DeterministicPreparedCapture (struct)",
+    "DeterministicActiveCapture (struct)",
+    "prepare (fn)",
+    "open (fn)",
+    "source_id (fn)",
+    "observation_handle (fn)",
+    "observations (fn)",
+    "stop_and_join (fn)",
+    "drop (fn)",
+    "conformance_host (fn)",
+    "pks_session_conformance_engine_create (fn)",
+    "pks_session_conformance_panic (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -540,6 +577,7 @@
   ],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [
     {

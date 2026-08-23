@@ -12,7 +12,14 @@
   ],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
   "calls": [
     "ApplicationSelector::BundleId",
     "ApplicationSelector::Name",
@@ -263,7 +270,14 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AsyncRuntimeHost::new",
@@ -1258,8 +1272,16 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -1296,13 +1318,27 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "c93d7ea02f5364f643f4a363332ef6abc143e1d9",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
   "implements": [
     "RunningSession",
     "Drop for RunningSession",
     "CaptureAcquisitionError"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
   "imports": [
     "crate::capture::{ capture_delivery_start_gate, prepare_capture_with_start_gate, CaptureDeliveryStartGate, CaptureError, CaptureLineageSeed, CaptureMode, CapturePrepareRequest, CaptureStopOutcome, InputDeviceSelector, SourceRuntimeEventReceive, }",
     "crate::capture::{CaptureMode, SourceKind, StableSourceId}",
@@ -1326,7 +1362,28 @@
     "super::capture_mode"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(test)]",
+    "crate::capture::{ capture_delivery_start_gate, prepare_capture_with_start_gate, CaptureDeliveryStartGate, CaptureError, CaptureLineageSeed, CaptureMode, CapturePrepareRequest, CaptureStopOutcome, InputDeviceSelector, SourceRuntimeEventReceive, }",
+    "crate::capture::{CaptureMode, SourceKind, StableSourceId}",
+    "crate::endpoint::{ endpoint_start_gate, EndpointDriverObservations, EndpointDriverRegistry, EndpointFailure, EndpointFinalizationOutcome, EndpointPortInput, EndpointPrepareContext, EndpointRouteContext, RunningEndpoint, SessionTimelineOrigin, }",
+    "crate::frame::Platform",
+    "crate::frame::{ClockDomainId, EndpointId, RouteId, SessionId, StemId}",
+    "crate::runtime::{ AsyncOperatorNamedOutputBranchSpec, AsyncOperatorObservationHandle, AsyncOperatorObservations, AsyncOperatorOutput, AsyncOperatorTypedInput, AsyncOperatorWorker, AsyncRuntimeHost, CompiledOperatorInputContract, GeneratedAudioBridge, GeneratedAudioBridgeSpec, PlanRunnerDrainPolicy, PlanRunnerError, PlanRunnerFinishSummary, PlanSourceSendError, PlanSourceSendOutcome, RealtimePlanRunner, SessionOperatorInput, SidecarHost, SidecarHostError, SidecarHostSnapshot, SidecarMessage, }",
+    "crate::session::lifecycle::endpoint_transaction::{ prepare_endpoint_batches, prepare_endpoints, rollback_prepared_endpoints, PendingEndpointPortInput, PreparedEndpointBinding, }",
+    "crate::session::lifecycle::events::{session_event_channel, SessionEventSender}",
+    "crate::session::lifecycle::metric_bindings::{ DerivedRouteObservationBinding, FinalEndpointObservation, FinalOperatorObservation, IndexedSessionMetrics, RouteObservationBinding, SourceObservationBinding, }",
+    "crate::session::lifecycle::operator_observations::{ OperatorInputObservation, OperatorInputObservationBinding, }",
+    "crate::session::lifecycle::rollback::StartupRollback",
+    "crate::session::lifecycle::start_contract::{ validate_source_topology, validate_start_options, CaptureBackendSet, SessionStartCancellation, SessionStartError, SessionStartFailure, SessionStartOptions, SessionStopOutcome, }",
+    "crate::session::prepare::{ PreparedExternalSourceMapping, PreparedExternalSourceTarget, PreparedOperatorInputMapping, PreparedOperatorMapping, PreparedOperatorOutputTarget, PreparedSignalRouteMapping, }",
+    "crate::session::{ ApplicationSelector, DeviceSelector, EndpointObservationStage, OperatorInstanceId, PreparedSession, PreparedSourceRuntime, SessionAudioReentryMetrics, SessionComponentId, SessionControlFailure, SessionDerivedRouteMetrics, SessionEventReceiver, SessionExternalSourceMetrics, SessionFinalizationFailure, SessionFinalizationStage, SessionLifecycleState, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRollbackFailure, SessionRollbackStage, SessionRouteMetrics, SessionSidecarMetrics, SessionSourceFailure, SessionSourceMetrics, SessionTerminalOutcome, SessionTraceRecorderHandle, Source, SourceOutputBranchSpec, SourceOutputIdentity, SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceSessionContext, }",
+    "crate::session::{ApplicationSelector, ProcessId, Source}",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, Ordering}",
+    "std::thread::JoinHandle",
+    "std::time::Duration",
+    "super::capture_mode"
   ],
   "invariants": [],
   "language": "Rust",
@@ -1335,23 +1392,46 @@
   "module": "pocketstation::session::lifecycle::running",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-8ad9322893fb077b98d0",
-    "pattern-d2156be22b7fdad21daa",
     "pattern-099903d47c50357c102e",
+    "pattern-8ad9322893fb077b98d0",
     "pattern-eea7a0d04a047e2090c1"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err((error, rollback_failures)) => {",
+    "Err(error) => Some(error.to_string()),",
+    "Err(source) => {",
+    "fn:attach_sidecars",
+    "fn:audio_reentry_metrics",
+    "fn:cancel",
+    "fn:derived_route_metrics",
+    "fn:external_source_metrics",
+    "fn:indexed_metrics",
+    "fn:indexed_metrics_full",
+    "fn:operator_metrics",
+    "fn:receive_sidecar_signal",
+    "fn:session_id",
+    "fn:sidecar_metrics",
+    "fn:start_prepared_session",
+    "fn:start_prepared_session_cancellable",
+    "fn:start_prepared_session_cancellable_with_trace",
+    "fn:stop",
+    "fn:take_event_receiver",
+    "fn:try_receive_sidecar_signal",
+    "fn:try_send_sidecar_signal",
+    "return Err(complete_start_failure(",
+    "struct:RunningSession"
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/running.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -1750,7 +1830,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::lifecycle::running`."
+    "text": "Implements pocketstation::session::lifecycle::running responsibilities, including Owns a started Session together with event, polling, recording, trace, and stop resources.; Returns the session identifier held by `RunningSession`.; Takes event receiver for `RunningSession`.."
   },
   "queues": [],
   "recovery_behavior": [
@@ -2391,6 +2471,37 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/capture/authorization.rs",
+    "REFERENCES:src/capture/capture_owner.rs",
+    "REFERENCES:src/capture/frame_stream.rs",
+    "REFERENCES:src/capture/selection.rs",
+    "REFERENCES:src/endpoint/registry.rs",
+    "REFERENCES:src/endpoint/runtime.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/runtime/audio/runner.rs",
+    "REFERENCES:src/runtime/bridge/audio.rs",
+    "REFERENCES:src/runtime/lifecycle/async_host.rs",
+    "REFERENCES:src/runtime/lifecycle/sidecar_host.rs",
+    "REFERENCES:src/runtime/lifecycle/sidecar_protocol.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/observations.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/declaration/selector.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/extensions/source.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/events.rs",
+    "REFERENCES:src/session/lifecycle/metric_bindings.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/operator_observations.rs",
+    "REFERENCES:src/session/lifecycle/rollback.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs",
+    "REFERENCES:src/session/lifecycle/trace.rs",
+    "REFERENCES:src/session/prepare/mappings.rs",
+    "REFERENCES:src/session/prepare/prepared.rs"
+  ],
   "resource_ownership": [
     {
       "line": 2,
@@ -2494,68 +2605,22 @@
     }
   ],
   "responsibilities": [
-    "RuntimeSource",
-    "OpenedCapture",
-    "RuntimeWorkerStart",
-    "RuntimeWorkerOutcome",
-    "RunningEndpointBinding",
-    "PendingSignalEndpointInput",
-    "PreparedOperatorRuntime",
-    "RunningOperatorBinding",
-    "PendingOperatorTypedInput",
-    "PreparedExternalRuntimeBinding",
-    "RunningExternalRuntimeBinding",
-    "SignalEndpointPreparationResult",
-    "OperatorFinalizationOutcome",
-    "SidecarFinalizationOutcome",
-    "SessionFinalizationOutcomes",
-    "OperatorTermination",
-    "RunningSession",
-    "session_id",
-    "take_event_receiver",
-    "operator_metrics",
-    "external_source_metrics",
-    "derived_route_metrics",
-    "audio_reentry_metrics",
-    "sidecar_metrics",
-    "try_send_sidecar_signal",
-    "try_receive_sidecar_signal",
-    "receive_sidecar_signal",
-    "attach_sidecars",
-    "indexed_metrics",
-    "indexed_metrics_full",
-    "stop",
-    "cancel",
-    "stop_once",
-    "endpoint_observations",
-    "drop",
-    "start_prepared_session",
-    "start_prepared_session_cancellable",
-    "start_prepared_session_cancellable_with_trace",
-    "ExternalSourcePreparation",
-    "prepare_external_source_runtimes",
-    "prepare_operator_runtimes",
-    "collect_and_prepare_operator_endpoint_inputs",
-    "prepare_and_open_captures",
-    "CaptureAcquisitionError",
-    "rollback",
-    "capture_mode",
-    "run_runtime_worker",
-    "rollback_operator_runtimes",
-    "terminate_operators",
-    "rollback_running_operators",
-    "rollback_running_endpoints",
-    "rollback_captures",
-    "rollback_runtime_resources",
-    "rollback_worker_outcome",
-    "rollback_started_runtime",
-    "stop_outcome",
-    "publish_terminal_events",
-    "publish_endpoint_outcome_failures",
-    "push_finalization_failure",
-    "complete_start_failure",
-    "selector_tests",
-    "given_process_instance_selector_when_capture_mode_built_then_exact_identity_is_preserved"
+    "pocketstation::session::lifecycle::running::RunningSession: Owns a started Session together with event, polling, recording, trace, and stop resources.",
+    "session_id: Returns the session identifier held by `RunningSession`.",
+    "take_event_receiver: Takes event receiver for `RunningSession`.",
+    "operator_metrics: Returns the operator metrics held by `RunningSession`.",
+    "external_source_metrics: Returns the external source metrics held by `RunningSession`.",
+    "derived_route_metrics: Returns the derived route metrics held by `RunningSession`.",
+    "audio_reentry_metrics: Returns the audio reentry metrics held by `RunningSession`.",
+    "sidecar_metrics: Returns the sidecar metrics held by `RunningSession`.",
+    "try_send_sidecar_signal: Attempts to send sidecar signal through `RunningSession`.",
+    "try_receive_sidecar_signal: Attempts to receive sidecar signal through `RunningSession`.",
+    "receive_sidecar_signal: Receives sidecar signal for `RunningSession`.",
+    "stop: Stops `RunningSession` and returns its terminal result.",
+    "cancel: Requests cancellation of `RunningSession`.",
+    "drop: Releases resources owned by `RunningSession`.",
+    "pocketstation::session::lifecycle::running::start_prepared_session: Starts prepared session for `running`.",
+    "pocketstation::session::lifecycle::running::start_prepared_session_cancellable: Starts prepared session cancellable for `running`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -2649,7 +2714,22 @@
       "text": ".await"
     }
   ],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0b0bd95d531bc40cd567",
+    "test-0d0c674c4d7598eff201",
+    "test-1d9f4de1e64929bbc714",
+    "test-1fb05e48bf49b929bebb",
+    "test-31812eb2169080e1bba6",
+    "test-35a321e64379e644e1b7",
+    "test-39a6ab1a3e3e6782af3a",
+    "test-3c7b5a91848359ab3ef8",
+    "test-42bab06a6020bf545d3a",
+    "test-4a96ceb3ecb843502e07",
+    "test-5c8c016269be4635fd2f",
+    "test-bdedfb8ca6cbd5442810",
+    "test-dac823b98be9f727652f"
+  ],
   "threads": [
     {
       "line": 3,

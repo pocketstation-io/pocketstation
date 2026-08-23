@@ -156,6 +156,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -191,7 +192,18 @@
     "std::path::PathBuf"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(target_os = \"macos\")]",
+    "CARGO_FEATURE_MACOS_ASP_DRIVER_ARTIFACT",
+    "CARGO_FEATURE_NATIVE_CAPTURE",
+    "CARGO_MANIFEST_DIR",
+    "OUT_DIR",
+    "SDKROOT",
+    "if std::env::var_os(\"CARGO_FEATURE_MACOS_ASP_DRIVER_ARTIFACT\").is_some() {",
+    "if std::env::var_os(\"CARGO_FEATURE_NATIVE_CAPTURE\").is_some() {",
+    "let manifest = PathBuf::from(std::env::var(\"CARGO_MANIFEST_DIR\").expect(\"manifest dir\"));",
+    "let out_dir = PathBuf::from(std::env::var(\"OUT_DIR\").expect(\"OUT_DIR\"));",
+    "let sdk = std::env::var(\"SDKROOT\").unwrap_or_else(|_| {",
+    "std::path::PathBuf"
   ],
   "invariants": [
     {
@@ -205,18 +217,21 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "build.rs",
   "platform_gate": [
     "macos"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Only applies under the recorded target gate; implementation is not physical qualification.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -259,8 +274,8 @@
   ],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "DIRECT",
+    "text": "Selects and compiles the target-specific native shim used by the native-capture feature."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -279,11 +294,12 @@
     "docs/reference/test-evidence.md",
     "docs/reference/lifecycle-evidence.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "main",
-    "build_macos_capture_bridge",
-    "build_macos_asp_driver_artifact"
+    "main (fn)",
+    "build_macos_capture_bridge (fn)",
+    "build_macos_asp_driver_artifact (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -326,6 +342,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

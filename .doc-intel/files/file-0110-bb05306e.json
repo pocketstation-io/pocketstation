@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
   "calls": [
     "application",
     "bitrate_kbps",
@@ -24,7 +27,10 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
   "constructs": [],
   "content_hash": "9ed939b52b42d7a5eca13300a76378606430da1bdfe28a4cebf65c13a569595a",
   "defaults": [],
@@ -185,8 +191,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -200,17 +210,25 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "5ecf1022d9177c35991c3ea7c3c3a7558f522294",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
   "implements": [
     "StreamProfile"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
   "imports": [
     "crate::codec::{OpusApplication, OpusChannels, OpusConfig, OpusFrameDuration, OpusSampleRate}",
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::codec::{OpusApplication, OpusChannels, OpusConfig, OpusFrameDuration, OpusSampleRate}",
+    "super::*"
   ],
   "invariants": [],
   "language": "Rust",
@@ -219,18 +237,27 @@
   "module": "pocketstation::codec::profile",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:StreamProfile",
+    "fn:application",
+    "fn:bitrate_kbps",
+    "fn:channels",
+    "fn:frame_duration",
+    "fn:frame_ms",
+    "fn:is_stereo",
+    "fn:opus_config"
   ],
   "package": "pocketstation",
   "path": "src/codec/profile.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -322,8 +349,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Named transport encoding profiles resolved to concrete Opus configuration."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::codec::profile responsibilities, including Enumerates the supported stream profile cases.; Represents the voice mono20ms alternative defined by `StreamProfile`.; Represents the voice agent mono10ms alternative defined by `StreamProfile`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -348,22 +375,25 @@
     "docs/errors/frames-and-codec.md",
     "docs/troubleshooting/opus.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/codec/encoder.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "VOICE_BITRATE_KBPS",
-    "MUSIC_STEREO_BITRATE_KBPS",
-    "MUSIC_STEREO_10MS_BITRATE_KBPS",
-    "HIFI_STEREO_BITRATE_KBPS",
-    "StreamProfile",
-    "channels",
-    "frame_duration",
-    "application",
-    "bitrate_kbps",
-    "frame_ms",
-    "is_stereo",
-    "opus_config",
-    "tests",
-    "given_stereo_profiles_when_resolved_then_channels_remain_stereo"
+    "pocketstation::codec::profile::StreamProfile: Enumerates the supported stream profile cases.",
+    "pocketstation::codec::profile::StreamProfile::VoiceMono20ms: Represents the voice mono20ms alternative defined by `StreamProfile`.",
+    "pocketstation::codec::profile::StreamProfile::VoiceAgentMono10ms: Represents the voice agent mono10ms alternative defined by `StreamProfile`.",
+    "pocketstation::codec::profile::StreamProfile::MusicStereo20ms: Represents the music stereo20ms alternative defined by `StreamProfile`.",
+    "pocketstation::codec::profile::StreamProfile::MusicStereo10ms: Represents the music stereo10ms alternative defined by `StreamProfile`.",
+    "pocketstation::codec::profile::StreamProfile::BroadcastStereo20ms: Represents the broadcast stereo20ms alternative defined by `StreamProfile`.",
+    "pocketstation::codec::profile::StreamProfile::HifiStereo20ms: Represents the hifi stereo20ms alternative defined by `StreamProfile`.",
+    "channels: Returns the channel count represented by `StreamProfile`.",
+    "frame_duration: Returns the frame duration associated with `StreamProfile`.",
+    "application: Returns the application held by `StreamProfile`.",
+    "bitrate_kbps: Returns the bitrate kbps associated with `StreamProfile`.",
+    "frame_ms: Returns the frame milliseconds held by `StreamProfile`.",
+    "is_stereo: Returns whether stereo applies to `StreamProfile`.",
+    "opus_config: Returns the opus config held by `StreamProfile`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -373,7 +403,10 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-d3ece76c1850dce41742"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

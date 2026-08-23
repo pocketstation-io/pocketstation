@@ -153,13 +153,13 @@ Use this index to move from a first Session to the exact contract, task, failure
 
 ## Best practices
 
+- [Honor connector retryability](/docs/best-practices/connector-retries.md)
 - [Keep qualification claims scoped](/docs/best-practices/evidence-boundaries.md)
 - [Keep realtime callbacks bounded](/docs/best-practices/realtime-boundaries.md)
 - [Load extensions from trusted absolute paths](/docs/best-practices/native-extension-trust.md)
 - [Preserve source identity](/docs/best-practices/source-identity.md)
 - [Size bounded routes from observations](/docs/best-practices/route-sizing.md)
 - [Treat stop outcomes as data](/docs/best-practices/terminal-outcomes.md)
-- [Use finite connector retry budgets](/docs/best-practices/connector-retries.md)
 
 ## Platforms
 
@@ -197,9 +197,9 @@ Use this index to move from a first Session to the exact contract, task, failure
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **PocketStation documentation** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `Cargo.toml:1-180` (`DIRECT`)
 - `src/lib.rs:1-1129` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **PocketStation documentation**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

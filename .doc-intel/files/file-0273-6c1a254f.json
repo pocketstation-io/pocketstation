@@ -169,6 +169,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -199,7 +200,15 @@
     "pocketstation::internal::runtime::{ plan_source_channel, PlanEdgeRouter, PlanRunnerCancellation, PlanSourceSendOutcome, RealtimePlanExecutor, RealtimePlanRunner, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "assert_no_alloc::{assert_no_alloc, AllocDisabler}",
+    "pocketstation::internal::frame::{ AudioBufferHandle, AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
+    "pocketstation::internal::graph::compiler::Compiler",
+    "pocketstation::internal::graph::dsl::Pipeline",
+    "pocketstation::internal::graph::node::{NodeConfig, PrepareContext}",
+    "pocketstation::internal::graph::planner::RuntimePlanner",
+    "pocketstation::internal::graph::register_builtins",
+    "pocketstation::internal::graph::registry::NodeRegistry",
+    "pocketstation::internal::runtime::{ plan_source_channel, PlanEdgeRouter, PlanRunnerCancellation, PlanSourceSendOutcome, RealtimePlanExecutor, RealtimePlanRunner, }"
   ],
   "invariants": [
     {
@@ -242,22 +251,23 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
   "observed_patterns": [
-    "pattern-db58b2484fc047e653cc",
-    "pattern-6cd1a46f8aad41f0b460",
-    "pattern-c7686b64ae95c87133d3"
+    "pattern-c7686b64ae95c87133d3",
+    "pattern-db58b2484fc047e653cc"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "tests/runtime_plan_router_alloc.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "static",
@@ -300,8 +310,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given preallocated three edge router when frame dispatched then no heap allocation occurs, given prepared multi source runner when ready frames process then no heap allocation occurs, given prepared realtime plan when connected nodes execute then no heap allocation occurs under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -357,14 +367,15 @@
     "docs/best-practices/realtime-boundaries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "ALLOCATOR",
-    "with_lineage",
-    "audio_frame",
-    "given_preallocated_three_edge_router_when_frame_dispatched_then_no_heap_allocation_occurs",
-    "given_prepared_realtime_plan_when_connected_nodes_execute_then_no_heap_allocation_occurs",
-    "given_prepared_multi_source_runner_when_ready_frames_process_then_no_heap_allocation_occurs"
+    "ALLOCATOR (static)",
+    "with_lineage (fn)",
+    "audio_frame (fn)",
+    "given_preallocated_three_edge_router_when_frame_dispatched_then_no_heap_allocation_occurs (fn)",
+    "given_prepared_realtime_plan_when_connected_nodes_execute_then_no_heap_allocation_occurs (fn)",
+    "given_prepared_multi_source_runner_when_ready_frames_process_then_no_heap_allocation_occurs (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -391,7 +402,12 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-49ea3414f8bb90cf86b1",
+    "test-85537f6d9bc6ada5654e",
+    "test-8f6b3c13a8c5d31e5914"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

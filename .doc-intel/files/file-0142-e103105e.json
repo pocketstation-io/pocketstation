@@ -3,7 +3,15 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/frame/mod.rs",
+    "IMPORTS:src/frame/mod.rs",
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/runtime/bridge/audio.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/extensions/audio_input/buffer.rs"
+  ],
   "calls": [
     "Arc::clone",
     "Arc::new",
@@ -79,7 +87,15 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/frame/mod.rs",
+    "IMPORTS:src/frame/mod.rs",
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/runtime/bridge/audio.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/extensions/audio_input/buffer.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AtomicU64::new",
@@ -561,8 +577,19 @@
       "symbol": null
     }
   ],
-  "examples_using": [],
-  "extended_by": [],
+  "example_coverage_status": "linked",
+  "examples_using": [
+    "example-3af8a91e442cd41f9135"
+  ],
+  "extended_by": [
+    "CONTAINS:src/frame/mod.rs",
+    "IMPORTS:src/frame/mod.rs",
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/runtime/bridge/audio.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/extensions/audio_input/buffer.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -593,7 +620,15 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "ea7bfec84cd8cda899cc9c1a11aeaa2c3369f5e0",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/frame/mod.rs",
+    "IMPORTS:src/frame/mod.rs",
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/runtime/bridge/audio.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/extensions/audio_input/buffer.rs"
+  ],
   "implements": [
     "AudioBufferPool",
     "AudioBufferHandle",
@@ -603,7 +638,15 @@
     "Drop for SharedAudioBufferHandle",
     "fmt::Debug for SharedAudioBufferHandle"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/frame/mod.rs",
+    "IMPORTS:src/frame/mod.rs",
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/runtime/bridge/audio.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/extensions/audio_input/buffer.rs"
+  ],
   "imports": [
     "std::cell::UnsafeCell",
     "std::fmt",
@@ -611,7 +654,11 @@
     "std::sync::atomic::{AtomicU64, AtomicUsize, Ordering}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "std::cell::UnsafeCell",
+    "std::fmt",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicU64, AtomicUsize, Ordering}"
   ],
   "invariants": [
     {
@@ -661,21 +708,49 @@
   "module": "pocketstation::frame::pool",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-c7c57018931d0870377f",
-    "pattern-145c92021b15c7666c35"
+    "pattern-145c92021b15c7666c35",
+    "pattern-c7c57018931d0870377f"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(observed) => current = observed,",
+    "const:POOL_MAX_SLOTS",
+    "enum:AudioBufferWriteError",
+    "fn:acquire",
+    "fn:acquire_failures",
+    "fn:as_mut_slice",
+    "fn:as_slice",
+    "fn:available_slots",
+    "fn:freeze",
+    "fn:index",
+    "fn:is_empty",
+    "fn:is_in_use",
+    "fn:len",
+    "fn:new",
+    "fn:release_shared_for_testing",
+    "fn:set_shared_ref_count_for_testing",
+    "fn:shared_ref_count",
+    "fn:slot_count",
+    "fn:slot_size",
+    "fn:try_clone",
+    "fn:try_copy_from_slice",
+    "fn:try_set_len",
+    "return Err(AudioBufferWriteError::CapacityExceeded {",
+    "return Err(self);",
+    "struct:AudioBufferHandle",
+    "struct:AudioBufferPool",
+    "struct:SharedAudioBufferHandle"
   ],
   "package": "pocketstation",
   "path": "src/frame/pool.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -917,8 +992,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Fixed-capacity realtime audio storage and ownership handles.  Allocation happens only when the pool is constructed. Acquire, share, and final `Drop` use atomics and never allocate, lock, block, or log."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::frame::pool responsibilities, including Fixed-capacity realtime audio storage and ownership handles.; Defines the public pool max slots value.; Classifies failures reported as audio buffer write error.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -950,6 +1025,7 @@
     "docs/best-practices/realtime-boundaries.md",
     "docs/best-practices/source-identity.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 4,
@@ -1021,45 +1097,41 @@
     }
   ],
   "responsibilities": [
-    "POOL_MAX_SLOTS",
-    "AudioBufferWriteError",
-    "AudioBufferPool",
-    "new",
-    "slot_size",
-    "slot_count",
-    "acquire_failures",
-    "available_slots",
-    "acquire",
-    "is_in_use",
-    "shared_ref_count",
-    "set_shared_ref_count_for_testing",
-    "release_shared_for_testing",
-    "begin_shared",
-    "try_retain_shared",
-    "release_shared",
-    "release",
-    "slot",
-    "slot_mut_ptr",
-    "AudioBufferHandle",
-    "len",
-    "is_empty",
-    "index",
-    "as_slice",
-    "as_mut_slice",
-    "try_set_len",
-    "try_copy_from_slice",
-    "freeze",
-    "drop",
-    "fmt",
-    "SharedAudioBufferHandle",
-    "len",
-    "is_empty",
-    "index",
-    "as_slice",
-    "try_clone",
-    "shared_ref_count",
-    "drop",
-    "fmt"
+    "pool: Fixed-capacity realtime audio storage and ownership handles.",
+    "pocketstation::frame::pool::POOL_MAX_SLOTS: Defines the public pool max slots value.",
+    "pocketstation::frame::pool::AudioBufferWriteError: Classifies failures reported as audio buffer write error.",
+    "pocketstation::frame::pool::AudioBufferWriteError::CapacityExceeded: Reported when the owning operation encounters capacity exceeded.",
+    "pool::AudioBufferWriteError::CapacityExceeded::requested_samples: Stores the requested samples used by `CapacityExceeded`.",
+    "pool::AudioBufferWriteError::CapacityExceeded::capacity_samples: Sets the capacity samples available to `CapacityExceeded`.",
+    "pocketstation::frame::pool::AudioBufferPool: Owns fixed-capacity reusable audio slots and reports acquisition pressure without allocating per frame.",
+    "new: Creates a new `AudioBufferPool`.",
+    "slot_size: Returns the slot size associated with `AudioBufferPool`.",
+    "slot_count: Returns the slot count held by `AudioBufferPool`.",
+    "acquire_failures: Returns the acquire failures associated with `AudioBufferPool`.",
+    "available_slots: Returns the available slots associated with `AudioBufferPool`.",
+    "acquire: Attempts to acquire an available buffer slot from `AudioBufferPool`.",
+    "is_in_use: Returns whether in use applies to `AudioBufferPool`.",
+    "shared_ref_count: Returns the shared ref count held by `AudioBufferPool`.",
+    "pocketstation::frame::pool::AudioBufferHandle: Owns bounded access to audio buffer.",
+    "len: Returns the number of values held by `AudioBufferHandle`.",
+    "is_empty: Returns whether `AudioBufferHandle` contains no values.",
+    "index: Returns the index held by `AudioBufferHandle`.",
+    "as_slice: Borrows `AudioBufferHandle` as slice.",
+    "as_mut_slice: Borrows `AudioBufferHandle` as mut slice.",
+    "try_set_len: Changes the visible sample length without panicking.",
+    "try_copy_from_slice: Copies samples into this fixed-capacity slot without panicking.",
+    "freeze: Freezes mutable storage owned by `AudioBufferHandle` into its shared immutable form.",
+    "drop: Releases resources owned by `AudioBufferHandle`.",
+    "fmt: Formats `AudioBufferHandle` with the requested formatter.",
+    "pocketstation::frame::pool::SharedAudioBufferHandle: Owns bounded access to shared audio buffer.",
+    "len: Returns the number of values held by `SharedAudioBufferHandle`.",
+    "is_empty: Returns whether `SharedAudioBufferHandle` contains no values.",
+    "index: Returns the index held by `SharedAudioBufferHandle`.",
+    "as_slice: Borrows `SharedAudioBufferHandle` as slice.",
+    "try_clone: Attempts to clone through `SharedAudioBufferHandle`.",
+    "shared_ref_count: Returns the shared ref count held by `SharedAudioBufferHandle`.",
+    "drop: Releases resources owned by `SharedAudioBufferHandle`.",
+    "fmt: Formats `SharedAudioBufferHandle` with the requested formatter."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1086,7 +1158,42 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0ae60369d5962ff55b0f",
+    "test-1edbc7a0f2144708b165",
+    "test-2058f9d84350161875c9",
+    "test-313b41483777dcb204b9",
+    "test-3445330c5dd8a9dd1200",
+    "test-40b982b2ce71c9f8cbd2",
+    "test-49979c93a52886e25166",
+    "test-49ea3414f8bb90cf86b1",
+    "test-4bc64d93e4a041067a60",
+    "test-4f61f7c1e0c9b8c6c3ca",
+    "test-53df4ef903e72a1de69c",
+    "test-5df473b160e87b1a3092",
+    "test-68e9e2da0555f62e4946",
+    "test-7607ea6bdc1ab707af10",
+    "test-79bf48bafa059f208bc2",
+    "test-85537f6d9bc6ada5654e",
+    "test-8f6b3c13a8c5d31e5914",
+    "test-931c3c8a724375d8c6e5",
+    "test-b4a40d2be0b35f5464ef",
+    "test-bce087e83b434cd19363",
+    "test-bcfd12a436362de05085",
+    "test-c03103a64eeeb21abb1b",
+    "test-c1b43b3b2228397d07cd",
+    "test-ccab0237c9f3dfb9cddf",
+    "test-dcfc2ba5c5cd222ed81e",
+    "test-dde445e05c14558c788a",
+    "test-e1e8072dd531e72a3bbb",
+    "test-e2f8e7a7f18caa97e503",
+    "test-e32ec18234812bec720e",
+    "test-eab0bbace82ed1b49614",
+    "test-f2c6d3780d291652810b",
+    "test-f8946231a23a1c5d14de",
+    "test-fe62839cf173426b6159"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

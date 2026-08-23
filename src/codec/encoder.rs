@@ -16,7 +16,7 @@ pub enum OpusFrameDuration {
 }
 
 impl OpusFrameDuration {
-    #[doc = "Returns the samples at 48k associated with `OpusFrameDuration`."]
+    #[doc = "Returns the samples at 48k held by `OpusFrameDuration`."]
     pub fn samples_at_48k(self) -> usize {
         match self {
             Self::Ms10 => 480,
@@ -37,7 +37,7 @@ pub enum OpusChannels {
 }
 
 impl OpusChannels {
-    #[doc = "Returns the count associated with `OpusChannels`."]
+    #[doc = "Returns the count held by `OpusChannels`."]
     pub fn count(self) -> u8 {
         match self {
             Self::Mono => 1,
@@ -55,7 +55,7 @@ pub enum OpusSampleRate {
 }
 
 impl OpusSampleRate {
-    #[doc = "Returns the hz associated with `OpusSampleRate`."]
+    #[doc = "Returns the hz held by `OpusSampleRate`."]
     pub fn hz(self) -> u32 {
         match self {
             Self::Hz48000 => 48_000,
@@ -63,7 +63,7 @@ impl OpusSampleRate {
     }
 }
 
-/// Opus application mode.
+/// Selects the Opus encoder mode used to tune speech or general audio.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OpusApplication {
     /// Optimised for voice (VOIP). Default for PocketStation broadcast.
@@ -82,11 +82,11 @@ pub enum OpusApplication {
 pub struct OpusConfig {
     /// Sample rate. Opus only supports 48 kHz internally.
     pub sample_rate: OpusSampleRate,
-    /// Channel layout.
+    /// Selects the mono or stereo channel layout accepted by the encoder.
     pub channels: OpusChannels,
     /// Frame duration. Default: 20 ms (AUDIO-012).
     pub frame_duration: OpusFrameDuration,
-    /// Opus application mode.
+    /// Selects the Opus application mode used when the encoder is created.
     pub application: OpusApplication,
     /// Target bitrate in kbps. None = Opus auto (variable bitrate).
     pub bitrate_kbps: Option<u32>,
@@ -148,7 +148,7 @@ pub enum OpusEncodeError {
     InvalidFrameSampleCount {
         #[doc = "Stores the number of sample represented by `InvalidFrameSampleCount`."]
         sample_count: usize,
-        #[doc = "Stores the channels associated with `InvalidFrameSampleCount`."]
+        #[doc = "Stores the channels used by `InvalidFrameSampleCount`."]
         channels: usize,
         #[doc = "Stores the number of expected sample represented by `InvalidFrameSampleCount`."]
         expected_sample_count: usize,

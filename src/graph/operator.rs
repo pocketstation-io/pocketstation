@@ -34,7 +34,7 @@ impl OperatorId {
         crate::graph::identifier::is_portable_contract_id(self.as_str())
     }
 
-    #[doc = "Returns the syntax version associated with `OperatorId`."]
+    #[doc = "Returns the syntax version held by `OperatorId`."]
     pub const fn syntax_version() -> u16 {
         OPERATOR_ID_SYNTAX_VERSION
     }

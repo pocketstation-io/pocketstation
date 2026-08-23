@@ -356,6 +356,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -404,7 +405,19 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::endpoint::runtime::EndpointStartFailureCause",
+    "crate::endpoint::{ endpoint_start_gate, EndpointCancellationOutcome, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailureStage, EndpointFinalizationOutcome, EndpointPrepareContext, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }",
+    "crate::frame::{EndpointId, SampleFormat, SampleSpec, SessionId}",
+    "crate::graph::compile::Compiler",
+    "crate::graph::compile::RuntimePlanner",
+    "crate::graph::dsl::Pipeline",
+    "crate::graph::node::{NodeConfig, PrepareContext}",
+    "crate::graph::register_builtins",
+    "crate::graph::registry::NodeRegistry",
+    "crate::graph::{EdgeContract, MediaCaps, SignalSpec}",
+    "crate::runtime::{PlanEdgeReceiver, PlanEdgeRouter}",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "super::*"
   ],
   "invariants": [
     {
@@ -475,20 +488,27 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-91075ec091d43c89f1c3"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(EndpointDriverRegistryError::OperatorNodeTypeConflict {",
+    "Err(EndpointFailure::new(",
+    "Err(EndpointPrepareError::Driver(EndpointFailure { .. }))",
+    "Err(EndpointPrepareError::NotRegistered { .. })",
+    "Err(failure) => failure,",
+    "return Err(EndpointFailure::new("
   ],
   "package": "pocketstation",
   "path": "src/endpoint/registry/tests.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -628,7 +648,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::endpoint::registry::tests`."
+    "text": "Implements pocketstation::endpoint::registry::tests responsibilities, including the src/endpoint/registry/tests boundary."
   },
   "queues": [],
   "recovery_behavior": [
@@ -677,6 +697,7 @@
     "docs/troubleshooting/session-stop.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 34,
@@ -760,28 +781,28 @@
     }
   ],
   "responsibilities": [
-    "TestDriverControl",
-    "new",
-    "TestDriverFactory",
-    "TestPreparedDriver",
-    "TestRunningDriver",
-    "prepare",
-    "start",
-    "cancel_preparation",
-    "observations",
-    "request_stop",
-    "join_and_finalize",
-    "observations",
-    "receiver",
-    "context",
-    "input",
-    "registry_with",
-    "given_prior_preparation_when_next_endpoint_fails_then_prior_endpoint_rolls_back_explicitly",
-    "given_closed_start_gate_when_endpoint_starts_then_delivery_waits_until_session_opens_gate",
-    "given_already_open_start_gate_when_endpoint_start_requested_then_start_fails_recoverably",
-    "given_stop_and_join_failures_when_finalized_then_both_failures_and_observations_remain_true",
-    "given_exact_operator_and_node_pair_when_resolved_then_other_pair_is_not_substituted",
-    "given_registered_operator_when_other_node_is_requested_then_conflict_preserves_first_binding"
+    "TestDriverControl (struct)",
+    "new (fn)",
+    "TestDriverFactory (struct)",
+    "TestPreparedDriver (struct)",
+    "TestRunningDriver (struct)",
+    "prepare (fn)",
+    "start (fn)",
+    "cancel_preparation (fn)",
+    "observations (fn)",
+    "request_stop (fn)",
+    "join_and_finalize (fn)",
+    "observations (fn)",
+    "receiver (fn)",
+    "context (fn)",
+    "input (fn)",
+    "registry_with (fn)",
+    "given_prior_preparation_when_next_endpoint_fails_then_prior_endpoint_rolls_back_explicitly (fn)",
+    "given_closed_start_gate_when_endpoint_starts_then_delivery_waits_until_session_opens_gate (fn)",
+    "given_already_open_start_gate_when_endpoint_start_requested_then_start_fails_recoverably (fn)",
+    "given_stop_and_join_failures_when_finalized_then_both_failures_and_observations_remain_true (fn)",
+    "given_exact_operator_and_node_pair_when_resolved_then_other_pair_is_not_substituted (fn)",
+    "given_registered_operator_when_other_node_is_requested_then_conflict_preserves_first_binding (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -862,7 +883,15 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-20a4c27d70a60c9bc881",
+    "test-311a13acdbeb4fafa4a7",
+    "test-7448e4dd59deb4afc7c9",
+    "test-cd73c609f0b99f88ac58",
+    "test-e54b5c0d131fa58cfa96",
+    "test-e8c1d06b58a459a61c14"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

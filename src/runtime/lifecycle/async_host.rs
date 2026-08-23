@@ -7,15 +7,23 @@ use tokio::runtime::{Builder, Handle};
 use tokio::sync::oneshot;
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as async runtime host error."]
 pub enum AsyncRuntimeHostError {
     #[error("failed to start owned async runtime: {0}")]
+    #[doc = "Reported when the owning operation encounters start."]
     Start(String),
     #[error("owned async runtime stopped before returning a lifecycle result")]
+    #[doc = "Reported when the owning operation encounters runtime stopped."]
     RuntimeStopped,
     #[error("owned async runtime thread panicked during shutdown")]
+    #[doc = "Reported when the owning operation encounters shutdown panicked."]
     ShutdownPanicked,
     #[error("owned async runtime did not return within {timeout_ms} ms")]
-    HostTimeout { timeout_ms: u64 },
+    #[doc = "Reported when the owning operation encounters host timeout."]
+    HostTimeout {
+        #[doc = "Stores the timeout value for `HostTimeout`, in milliseconds."]
+        timeout_ms: u64,
+    },
 }
 
 /// Session-owned async executor for connector and derived-endpoint lifecycle.
@@ -30,6 +38,7 @@ pub struct AsyncRuntimeHost {
 }
 
 impl AsyncRuntimeHost {
+    #[doc = "Creates a new `AsyncRuntimeHost`."]
     pub fn new(thread_name: impl Into<String>) -> Result<Self, AsyncRuntimeHostError> {
         let (handle_sender, handle_receiver) = mpsc::sync_channel(1);
         let (shutdown_sender, shutdown_receiver) = oneshot::channel();
@@ -62,6 +71,7 @@ impl AsyncRuntimeHost {
         })
     }
 
+    #[doc = "Executes its owned operation for `AsyncRuntimeHost`."]
     pub fn execute<F>(
         &self,
         timeout: Duration,
@@ -88,6 +98,7 @@ impl AsyncRuntimeHost {
         }
     }
 
+    #[doc = "Shuts down `AsyncRuntimeHost` according to its lifecycle contract."]
     pub fn shutdown(mut self) -> Result<(), AsyncRuntimeHostError> {
         if let Some(shutdown) = self.shutdown.take() {
             let _ = shutdown.send(());
@@ -102,6 +113,7 @@ impl AsyncRuntimeHost {
 }
 
 impl Drop for AsyncRuntimeHost {
+    #[doc = "Releases resources owned by `AsyncRuntimeHost`."]
     fn drop(&mut self) {
         if let Some(shutdown) = self.shutdown.take() {
             let _ = shutdown.send(());

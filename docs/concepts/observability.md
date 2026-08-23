@@ -2,65 +2,75 @@
 
 <!-- claims: CLM-DOC-030-CAP-001,CLM-DOC-030-SOURCE-001 -->
 
-Read route, source, operator, sidecar, endpoint, drop, latency, queue, and terminal observations.
+## What it is
 
-## Scope
+Observations are stable metrics, events, and snapshots keyed by Session and component identity. They expose queue, drop, latency, readiness, source, operator, endpoint, connector, sidecar, and terminal state.
 
-- **Observe Session metrics and events.** Read route, source, operator, sidecar, endpoint, drop, latency, queue, and terminal observations.
+## Why it exists
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+Bounded routes and independent components need attributable diagnostics. Aggregate success alone cannot identify which route saturated or which component failed to finalize.
 
-## Contract surface
+## Relationships
 
-| Public declaration | Kind | Declared purpose | Source |
-|---|---|---|---|
-| `pocketstation::session::lifecycle::observations::SessionAudioReentryMetrics` | struct | Exact boundedness and lifecycle accounting for one operator PCM output re-entering the Session audio lane. | `src/session/lifecycle/observations.rs:253` |
-| `pocketstation::session::lifecycle::observations::SessionMetricsSnapshot` | struct | Authoritative point-in-time observations for the current Session boundary. | `src/session/lifecycle/observations.rs:36` |
-| `pocketstation::session::lifecycle::observations::SessionSidecarMetrics` | struct | Exact bounded-queue and process-lifecycle accounting for one Session-owned language-neutral sidecar. | `src/session/lifecycle/observations.rs:133` |
-| `pocketstation::session::lifecycle::observations::SessionDerivedRouteMetrics` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/observations.rs:431` |
-| `pocketstation::session::lifecycle::observations::SessionExternalSourceMetrics` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/observations.rs:124` |
-| `pocketstation::session::lifecycle::observations::SessionOperatorInputMetrics` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/observations.rs:242` |
-| `pocketstation::session::lifecycle::observations::SessionOperatorMetrics` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/observations.rs:382` |
-| `pocketstation::session::lifecycle::observations::SessionRouteMetrics` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/observations.rs:139` |
-| `pocketstation::session::lifecycle::observations::SessionSourceMetrics` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/observations.rs:117` |
-| `pocketstation::capture::capture_owner::CaptureOwnerObservations` | struct | Aggregate observations from one active capture ownership boundary. | `src/capture/capture_owner.rs:160` |
-| `pocketstation::session::lifecycle::observations::SessionEventQueueObservations` | struct | Point-in-time observations for a session's bounded control-event queue. | `src/session/lifecycle/observations.rs:17` |
-| `pocketstation::session::lifecycle::observations::SessionRouteDropObservations` | struct | Explicit numerator, denominator, interval, and typed reasons for one route. | `src/session/lifecycle/observations.rs:157` |
-| `pocketstation::session::lifecycle::observations::SessionRouteLatencyObservations` | struct | Common-clock source timestamp to route-receive latency in nanoseconds. | `src/session/lifecycle/observations.rs:182` |
-| `pocketstation::session::lifecycle::observations::SessionRouteObservationInterval` | enum | Interval covered by monotonic route counters. | `src/session/lifecycle/observations.rs:150` |
-| `from_open_observations` | function | Records platform authorization observations without inferring them from a generic backend result. Callers must pass `NotObservable` when their platform has no authoritative query for the requested capture class. | `src/capture/authorization.rs:76` |
-| `observations` | function | Snapshots the bounded edge counters for this endpoint input. | `src/endpoint/contract.rs:108` |
-| `pocketstation::session::lifecycle::observations::SessionRouteObservationInterval::RouteLifetimeToSnapshot` | variant | From route start through the instant of the Session snapshot. | `src/session/lifecycle/observations.rs:152` |
-| `SessionOperatorMetrics::input_edge` | struct_field | Sole counter authority for input delivered by the compiled Session plan. | `src/session/lifecycle/observations.rs:389` |
-| `SessionOperatorMetrics::input_ports` | struct_field | Exact per-port input accounting. `input_edge` is the compatibility aggregate across this slice. | `src/session/lifecycle/observations.rs:392` |
-| `SignalEdgeObservations::delivered_total` | struct_field | Compatibility alias for `enqueued_total`. | `src/runtime/signal/edge.rs:44` |
+- Observation handles read live counters without taking runtime ownership.
+- Session events report lifecycle changes.
+- Traces persist selected lifecycle evidence for later structural validation.
 
-## Where you encounter it
+## Invariants and guarantees
+
+- Counters describe the observation boundary that produced them.
+- Missing metrics are not converted into zero unless the type contract says so.
+- Observations support diagnosis but do not create performance guarantees.
+
+## When you encounter it
 
 - **Author a connector** — Declare a connector manifest and run its endpoint worker under finite delivery and shutdown policy.
 - **Host an out-of-process worker** — Spawn a sidecar and enforce bounded messages, deadlines, cancellation, and terminal state.
 - **Diagnose a running Session** — Correlate events, metrics, trace records, stable error codes, and terminal outcomes.
 
-## Behavior established by tests
+## Use it
 
-The following test bodies are evidence only for their recorded setup:
+- [Instrument a Session](/docs/how-to/instrument-session.md)
+- [Size routes from observations](/docs/best-practices/route-sizing.md)
+- [Observations reference](/docs/reference/observations.md)
 
-- `observations` — observations (`src/capture/capture_owner.rs:253`; `test-6c30e98c2843011d2b2e`).
-- `observations` — observations (`src/capture/events.rs:314`; `test-09066e0a4bfc4d299258`).
+## Scope
+
+- **Observe Session metrics and events.** Read route, source, operator, sidecar, endpoint, drop, latency, queue, and terminal observations.
+
+The scope of **Observations and metrics** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
+
+## Key API
+
+| Public declaration | Kind | Declared purpose | Source |
+|---|---|---|---|
+| `pocketstation::session::lifecycle::observations::SessionAudioReentryMetrics` | struct | Exact boundedness and lifecycle accounting for one operator PCM output re-entering the Session audio lane. | `src/session/lifecycle/observations.rs:253` |
+| `pocketstation::session::lifecycle::observations::SessionDerivedRouteMetrics` | struct | Reports the session derived route metrics collected at an observation boundary. | `src/session/lifecycle/observations.rs:431` |
+| `pocketstation::session::lifecycle::observations::SessionExternalSourceMetrics` | struct | Reports the session external source metrics collected at an observation boundary. | `src/session/lifecycle/observations.rs:124` |
+| `pocketstation::session::lifecycle::observations::SessionMetricsSnapshot` | struct | Authoritative point-in-time observations for the current Session boundary. | `src/session/lifecycle/observations.rs:36` |
+| `pocketstation::session::lifecycle::observations::SessionOperatorInputMetrics` | struct | Reports the session operator input metrics collected at an observation boundary. | `src/session/lifecycle/observations.rs:242` |
+| `pocketstation::session::lifecycle::observations::SessionOperatorMetrics` | struct | Reports the session operator metrics collected at an observation boundary. | `src/session/lifecycle/observations.rs:382` |
+| `pocketstation::session::lifecycle::observations::SessionRouteMetrics` | struct | Reports the session route metrics collected at an observation boundary. | `src/session/lifecycle/observations.rs:139` |
+| `pocketstation::session::lifecycle::observations::SessionSidecarMetrics` | struct | Exact bounded-queue and process-lifecycle accounting for one Session-owned language-neutral sidecar. | `src/session/lifecycle/observations.rs:133` |
+| `pocketstation::session::lifecycle::observations::SessionSourceMetrics` | struct | Reports the session source metrics collected at an observation boundary. | `src/session/lifecycle/observations.rs:117` |
+| `pocketstation::runtime::signal::observations::AsyncOperatorObservationHandle` | struct | Owns bounded access to async operator observation. | `src/runtime/signal/observations.rs:47` |
+
+## Executable evidence
+
+Executable evidence selected for **Observations and metrics** is limited to each test's recorded setup and assertions:
+
+- `given_route_snapshot_when_drop_observed_then_rate_has_explicit_denominator_and_reasons` — given route snapshot when drop observed then rate has explicit denominator and reasons (`src/session/lifecycle/observations.rs:576`; `test-8235b334c09617394406`).
+- `given_route_snapshot_when_latency_observed_then_boundary_units_and_coverage_are_explicit` — given route snapshot when latency observed then boundary units and coverage are explicit (`src/session/lifecycle/observations.rs:604`; `test-964c6ff3404f3a9d5952`).
 - `given_stop_and_join_failures_when_finalized_then_both_failures_and_observations_remain_true` — given stop and join failures when finalized then both failures and observations remain true (`src/endpoint/registry/tests.rs:294`; `test-20a4c27d70a60c9bc881`).
-- `observations` — observations (`src/runtime/audio/executor.rs:185`; `test-8e5dda8471ef4129edb9`).
-- `observations` — observations (`src/runtime/audio/router.rs:849`; `test-75f0a25930a60efd39e9`).
-- `observations` — observations (`src/runtime/audio/runner.rs:174`; `test-b1965f6e40d10be0df1e`).
-- `source_observations` — source observations (`src/runtime/audio/runner.rs:346`; `test-b098416e730e910b8ece`).
-- `observations` — observations (`src/runtime/signal/edge.rs:225`; `test-666d71083357335630fa`).
 - `given_typed_operator_routes_when_stopped_then_final_state_and_metrics_are_truthful` — given typed operator routes when stopped then final state and metrics are truthful (`src/session/lifecycle/tests/running.rs:1114`; `test-4a96ceb3ecb843502e07`).
-- `receiver_observations` — receiver observations (`src/session/prepare/mappings.rs:260`; `test-7a4e60b11ce4b43df7a7`).
-- `sender_observations` — sender observations (`src/session/prepare/mappings.rs:27`; `test-c2c3da3d927ec6c07167`).
-- `route_observations` — route observations (`src/session/prepare/prepared.rs:58`; `test-9de2ef861c91c59abd5b`).
-
-## Boundaries
-
-The compiler inventory establishes names, kinds, visibility, and signatures. Tests establish only their exercised conditions. Where retryability, ordering, cancellation, physical qualification, or recovery is not declared, this page leaves it unspecified.
+- `given_orthogonal_provider_status_when_reconnecting_then_endpoint_metrics_remain_canonical` — given orthogonal provider status when reconnecting then endpoint metrics remain canonical (`tests/connector_contract.rs:719`; `test-26abd10938c17cf2eba0`).
+- `given_saturated_connector_route_when_observed_then_drops_are_visible_in_session_metrics` — given saturated connector route when observed then drops are visible in session metrics (`tests/connector_contract.rs:836`; `test-2fa646ca802635256f43`).
+- `given_active_capture_when_owner_is_dropped_then_backend_is_reclaimed` — given active capture when owner is dropped then backend is reclaimed (`src/capture/capture_owner.rs:567`; `test-c55d7a75628c1be024f1`).
+- `given_active_capture_when_stopped_then_backend_is_joined` — given active capture when stopped then backend is joined (`src/capture/capture_owner.rs:540`; `test-4f65c4d2e20b5226cd4f`).
+- `given_backend_frame_when_source_differs_from_open_identity_then_lineage_fails_closed` — given backend frame when source differs from open identity then lineage fails closed (`src/capture/capture_owner.rs:511`; `test-a8dbef4f3b61c752ce0e`).
+- `given_panicking_capture_worker_when_joined_then_typed_failure_is_returned` — given panicking capture worker when joined then typed failure is returned (`src/capture/capture_owner.rs:610`; `test-889c6cfb54cc924fc2b4`).
+- `given_prepared_capture_when_opened_then_bounded_delivery_is_owned` — given prepared capture when opened then bounded delivery is owned (`src/capture/capture_owner.rs:463`; `test-8de0974346f9110044c2`).
+- `given_zero_frame_capacity_when_preparing_then_backend_is_not_prepared` — given zero frame capacity when preparing then backend is not prepared (`src/capture/capture_owner.rs:590`; `test-f42d54d3bd1632c2ccfa`).
 
 ## Related documentation
 
@@ -75,8 +85,8 @@ The compiler inventory establishes names, kinds, visibility, and signatures. Tes
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Observations and metrics** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/session/lifecycle/observations.rs:1-636` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Observations and metrics**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

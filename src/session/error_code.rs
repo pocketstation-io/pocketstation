@@ -250,7 +250,7 @@ impl SessionStopFailureCode {
     }
 }
 
-#[doc = "Returns the session declaration error code associated with `error_code`."]
+#[doc = "Returns the session declaration error code held by `error_code`."]
 pub const fn session_declaration_error_code(error: &SessionError) -> SessionDeclarationErrorCode {
     match error {
         SessionError::NoSources => SessionDeclarationErrorCode::NoSources,
@@ -281,7 +281,7 @@ pub const fn session_declaration_error_code(error: &SessionError) -> SessionDecl
     }
 }
 
-#[doc = "Returns the session start failure code associated with `error_code`."]
+#[doc = "Returns the session start failure code held by `error_code`."]
 pub const fn session_start_failure_code(error: &SessionStartError) -> SessionStartErrorCode {
     match error {
         SessionStartError::InvalidOptions { .. } => SessionStartErrorCode::InvalidStartOptions,
@@ -312,7 +312,7 @@ pub const fn session_start_failure_code(error: &SessionStartError) -> SessionSta
     }
 }
 
-#[doc = "Returns the polled audio poll error code associated with `error_code`."]
+#[doc = "Returns the polled audio poll error code held by `error_code`."]
 pub const fn polled_audio_poll_error_code(error: PolledAudioPollError) -> PolledAudioPollErrorCode {
     match error {
         PolledAudioPollError::Empty => PolledAudioPollErrorCode::Empty,

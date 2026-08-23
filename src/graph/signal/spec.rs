@@ -191,13 +191,13 @@ pub enum SignalClass {
     EncodedAudio(Codec),
     /// UTF-8 or structured text.
     Text(TextFormat),
-    /// Discrete event payloads.
+    /// Carries discrete event payloads described by an [`EventFormat`].
     Event(EventFormat),
     /// Telemetry and observability counters / gauges.
     Metrics,
     /// Graph control messages (route patches, session lifecycle, mute/unmute).
     Control,
-    /// Opaque binary blob.
+    /// Carries an opaque binary payload described by a [`BinaryFormat`].
     Binary(BinaryFormat),
     /// Extension point for community / vendor signals.
     /// Use a stable reverse-domain identifier.
@@ -241,17 +241,17 @@ pub struct SignalSpec {
 }
 
 impl SignalSpec {
-    #[doc = "Returns the class associated with `SignalSpec`."]
+    #[doc = "Returns the class held by `SignalSpec`."]
     pub const fn class(&self) -> &SignalClass {
         &self.class
     }
 
-    #[doc = "Returns the role associated with `SignalSpec`."]
+    #[doc = "Returns the role held by `SignalSpec`."]
     pub const fn role(&self) -> Option<&SemanticRole> {
         self.role.as_ref()
     }
 
-    #[doc = "Returns the schema associated with `SignalSpec`."]
+    #[doc = "Returns the schema held by `SignalSpec`."]
     pub const fn schema(&self) -> Option<&SchemaRef> {
         self.schema.as_ref()
     }

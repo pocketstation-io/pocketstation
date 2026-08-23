@@ -6,11 +6,11 @@
 
 - **Inject external PCM.** Acquire bounded input buffers and write externally produced PCM through the source extension lifecycle.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Inject external PCM** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
 ## Prerequisites
 
-Read the linked concept and confirm that target platform, Cargo features, source or provider dependencies, and application-owned permission work match this task. Keep returned typed errors and outcomes available for verification.
+An `AudioInputConfig` matching the producer's rate, channels, frame shape, and finite buffer capacity.
 
 ## Procedure
 
@@ -20,60 +20,57 @@ Read the linked concept and confirm that target platform, Cargo features, source
 4. Submit through AudioInputWriter and route the source.
 5. Handle acquire, write, cancellation, and runtime errors separately.
 
-## APIs used
+## Important consequence
 
-| Public declaration | Kind | Declared purpose | Source |
-|---|---|---|---|
-| `pocketstation::session::lifecycle::observations::SessionExternalSourceMetrics` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/observations.rs:124` |
-| `external_source` | function | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/observations.rs:87` |
-| `external_source_count` | function | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/observations.rs:83` |
-| `pocketstation::session::compile::error::SessionCompileError::InvalidExternalSourceConfiguration` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/compile/error.rs:78` |
-| `pocketstation::session::compile::error::SessionCompileError::UnknownExternalSource` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/compile/error.rs:69` |
-| `pocketstation::session::compile::error::SessionCompileError::UnknownExternalSourceOutput` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/compile/error.rs:73` |
-| `pocketstation::session::lifecycle::start_contract::SessionStartError::ExternalAudioBridge` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/start_contract.rs:124` |
-| `pocketstation::session::lifecycle::start_contract::SessionStartError::ExternalSourcePrepare` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/start_contract.rs:119` |
-| `pocketstation::session::lifecycle::start_contract::SessionStartError::ExternalSourceStart` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/start_contract.rs:134` |
-| `pocketstation::session::prepare::error::SessionPrepareError::InvalidExternalAudioMedia` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/prepare/error.rs:26` |
-| `pocketstation::session::prepare::error::SessionPrepareError::MissingExternalAudioIngress` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/prepare/error.rs:19` |
-| `pocketstation::session::prepare::error::SessionPrepareError::MissingExternalSourceDefinition` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/prepare/error.rs:24` |
-| `pocketstation::session::prepare::error::SessionPrepareError::MissingExternalSourceRouteEdge` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/prepare/error.rs:37` |
-| `SessionCompileError::InvalidExternalSourceConfiguration::reason` | struct_field | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/compile/error.rs:80` |
-| `SessionCompileError::InvalidExternalSourceConfiguration::source_type_id` | struct_field | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/compile/error.rs:79` |
-| `SessionCompileError::UnknownExternalSource::source_type_id` | struct_field | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/compile/error.rs:69` |
+Acquisition exhaustion, invalid write shape, closure, and cancellation require different responses.
 
 ## Verify the outcome
 
-The following test bodies are evidence only for their recorded setup:
+The writer acquires, fills, and submits a buffer whose frames arrive on the declared Session route.
 
+Executable evidence selected for **Inject external PCM** is limited to each test's recorded setup and assertions:
+
+- `given_application_owned_audio_when_written_through_facade_then_session_delivers_its_lineage` — given application owned audio when written through facade then session delivers its lineage (`tests/audio_input.rs:37`; `test-fdcedcc753e41fe3767e`).
+- `given_audio_input_when_session_runs_then_lineage_fanout_reentry_and_recording_are_real` — given audio input when session runs then lineage fanout reentry and recording are real (`tests/audio_input.rs:345`; `test-11fb08eefd3feaca7cfe`).
+- `given_bounded_audio_input_when_writes_are_invalid_or_saturated_then_ownership_is_explicit` — given bounded audio input when writes are invalid or saturated then ownership is explicit (`tests/audio_input.rs:73`; `test-795ca5a283c59dbf6066`).
+- `given_running_audio_input_when_writer_closes_then_accepted_frames_are_drained` — given running audio input when writer closes then accepted frames are drained (`tests/audio_input.rs:155`; `test-93f8a3bbe8b67e6e71ea`).
 - `given_active_asp_when_required_then_sdk_accepts_external_provisioning` — given active asp when required then sdk accepts external provisioning (`src/capture/platform/macos/loopback.rs:317`; `test-094ea52b81e34a03e0e1`).
-- `external_source_declarations` — external source declarations (`src/session/compile/compiled.rs:34`; `test-067a9c1179f9fa65bb67`).
 - `given_external_output_through_operator_when_compiled_then_normal_typed_edges_are_used` — given external output through operator when compiled then normal typed edges are used (`src/session/extensions/tests/composition.rs:355`; `test-1e9492347c366dc04946`).
 - `given_external_pcm_output_when_compiled_then_bounded_audio_edge_is_planned` — given external pcm output when compiled then bounded audio edge is planned (`src/session/extensions/tests/composition.rs:333`; `test-477958c0b22fe8487982`).
 - `given_unregistered_external_source_when_compiled_then_registry_error_is_typed` — given unregistered external source when compiled then registry error is typed (`src/session/extensions/tests/composition.rs:411`; `test-713c01edd07447a5d6d1`).
 - `given_external_pcm_source_when_session_runs_then_audio_uses_bounded_ingress_with_source_identity` — given external pcm source when session runs then audio uses bounded ingress with source identity (`src/session/extensions/tests/runtime.rs:823`; `test-1d9f4de1e64929bbc714`).
 - `given_one_external_source_failure_when_session_runs_then_unrelated_source_completes` — given one external source failure when session runs then unrelated source completes (`src/session/extensions/tests/runtime.rs:734`; `test-bdedfb8ca6cbd5442810`).
 - `given_public_session_when_external_source_declared_then_handles_are_nameable` — given public session when external source declared then handles are nameable (`tests/external_source.rs:16`; `test-b5c32ca30bd2143fa264`).
-- `given_public_facade_when_external_destinations_run_then_all_branches_receive_media` — given public facade when external destinations run then all branches receive media (`tests/session_facade.rs:22`; `test-cc60ba7d0baeb4db3d4c`).
-- `frame_stream_closed` — frame stream closed (`src/capture/capture_owner.rs:248`; `test-3ab763bff0cd08d4b4e1`).
-- `given_active_capture_when_owner_is_dropped_then_backend_is_reclaimed` — given active capture when owner is dropped then backend is reclaimed (`src/capture/capture_owner.rs:567`; `test-c55d7a75628c1be024f1`).
-- `given_active_capture_when_stopped_then_backend_is_joined` — given active capture when stopped then backend is joined (`src/capture/capture_owner.rs:540`; `test-4f65c4d2e20b5226cd4f`).
+- `given_public_facade_when_external_destinations_run_then_all_branches_receive_media` — given public facade when external destinations run then all branches receive media (`tests/session_facade.rs:20`; `test-2d7cf1284199bcec7268`).
 
 ## Failure signals
 
-- `pocketstation::session::declaration::typed_stream::TypedStreamError` / `OutputSignalMismatch` — `error-00e5716261eba0f8cf3d`
-- `pocketstation::session::error::SessionError` / `UnknownStem` — `error-00f6e798d158df66c847`
-- `pocketstation::session::error_code::SessionStartErrorCode` / `StartCancelled` — `error-01d3fc855e2a00319076`
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `OperatorPrepare` — `error-023d6ab0b23a50a614ff`
-- `pocketstation::session::error_code::SessionStartErrorCode` / `TraceRecorderSetupFailed` — `error-0279b2b6b0cb3b5801bc`
-- `pocketstation::session::prepare::error::SessionPrepareError` / `MissingOperatorSignalInput` — `error-037ddc3e193da74177f8`
-- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `InvalidLayout` — `error-05c60389efcb84311921`
-- `pocketstation::session::prepare::error::SessionPrepareError` — `error-085082b521c14e5ecd1e`
-- `pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind` / `Closed` — `error-08a7536094bfb2242b17`
-- `pocketstation::session::lifecycle::host::SessionEngineHostBuildError` / `EndpointExtensionRegistration` — `error-09837185c7fca0f70618`
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `MissingEndpointDeclaration` — `error-0bc2f7c0b9f9dbf8ddd7`
-- `pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError` / `ZeroCapacity` — `error-0bd6f58be40ade9a01fe`
+- `pocketstation::session::compile::error::SessionCompileError` / `InvalidExternalSourceConfiguration` — `error-f39e1d5ca300f380beb9`
+- `pocketstation::session::compile::error::SessionCompileError` / `UnknownExternalSource` — `error-231bc903bf77aa3f85cc`
+- `pocketstation::session::compile::error::SessionCompileError` / `UnknownExternalSourceOutput` — `error-037aa7c44b2e63b89b5b`
+- `pocketstation::session::error::SessionError` / `NoSourceOutputRoutes` — `error-64505d377325b507747f`
+- `pocketstation::session::error::SessionError` / `NoSourceOutputs` — `error-d932f27c30a809afe3de`
+- `pocketstation::session::error::SessionError` / `NoSources` — `error-9eb3fbac890e3bf91775`
+- `pocketstation::session::error::SessionError` / `UnknownSourceInstance` — `error-5ff90c62bdca8982aa9b`
+- `pocketstation::session::error::SessionError` / `UnknownSourceOutput` — `error-871c9f44851885637584`
+- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `ExternalAudioBridge` — `error-87902c069db58b4b0049`
+- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `ExternalSourcePrepare` — `error-bbc9e8298f41cb00dbbf`
 
-Retry only when the relevant API or error contract explicitly permits it. An error name, a transient-looking message, or a successful prior run is not retry evidence.
+## API reference
+
+- [External Pcm](/docs/concepts/external-pcm.md)
+- [Capture](/docs/reference/capture.md)
+
+| Public declaration | Kind | Declared purpose | Source |
+|---|---|---|---|
+| `pocketstation::session::extensions::audio_input::AudioInput` | struct | Intent-first façade for feeding audio already owned by the embedding application into a Session. | `src/session/extensions/audio_input/mod.rs:94` |
+| `pocketstation::session::extensions::audio_input::AudioInputConfig` | struct | Configures audio input behavior at its owning API boundary. | `src/session/extensions/audio_input/mod.rs:22` |
+| `pocketstation::session::extensions::audio_input::buffer::AudioInputBuffer` | struct | Leases bounded PCM storage from an external-audio input until the caller submits or releases it. | `src/session/extensions/audio_input/buffer.rs:11` |
+| `pocketstation::session::extensions::audio_input::buffer::AudioInputObservations` | struct | Reports the audio input observations collected at an observation boundary. | `src/session/extensions/audio_input/buffer.rs:72` |
+| `pocketstation::session::extensions::audio_input::buffer::AudioInputWriteError` | struct | Reports a audio input write error. | `src/session/extensions/audio_input/buffer.rs:305` |
+| `pocketstation::session::extensions::audio_input::buffer::AudioInputWriter` | struct | Sends audio input values across its declared ownership boundary. | `src/session/extensions/audio_input/buffer.rs:91` |
+| `pocketstation::session::extensions::audio_input::source::PcmSource` | struct | Low-level PCM source ownership for integrations that separately retain the Session handles and producer writer. | `src/session/extensions/audio_input/source.rs:33` |
+| `pocketstation::session::extensions::audio_input::AudioInputConfigError` | enum | Classifies failures reported as audio input config error. | `src/session/extensions/audio_input/mod.rs:77` |
 
 ## Related documentation
 
@@ -87,8 +84,8 @@ Retry only when the relevant API or error contract explicitly permits it. An err
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Inject external PCM** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `tests/audio_input.rs:1-577` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Inject external PCM**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -3,7 +3,12 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "calls": [
     "BTreeSet::new",
     "Vec::new",
@@ -45,7 +50,12 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "constructs": [
     "BTreeSet::new",
     "Vec::new",
@@ -471,8 +481,14 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -486,20 +502,32 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "2936591c40c9515ae62f9aee7c1de915c2ea1168",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "implements": [
     "ConnectorCapability",
     "ConnectorRequirement",
     "ConnectorManifest"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "imports": [
     "crate::graph::{ExecutionPartition, NodeDescriptor, OperatorId}",
     "std::collections::BTreeSet",
     "super::{ConnectorConfigurationSchema, ConnectorReadinessPolicy}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::graph::{ExecutionPartition, NodeDescriptor, OperatorId}",
+    "std::collections::BTreeSet",
+    "super::{ConnectorConfigurationSchema, ConnectorReadinessPolicy}"
   ],
   "invariants": [
     {
@@ -529,20 +557,52 @@
   "module": "pocketstation::connector::manifest",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-ec72b9d6dae5b40c0408"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "const:CONNECTOR_API_REVISION",
+    "const:MAX_CONNECTOR_MANIFEST_ENTRIES",
+    "const:MAX_CONNECTOR_MANIFEST_TEXT_BYTES",
+    "enum:ConnectorManifestError",
+    "fn:api_revision",
+    "fn:capabilities",
+    "fn:configuration",
+    "fn:documentation",
+    "fn:id",
+    "fn:manifest_revision",
+    "fn:new",
+    "fn:node",
+    "fn:operator_id",
+    "fn:package_version",
+    "fn:readiness",
+    "fn:required",
+    "fn:requirements",
+    "fn:validate",
+    "fn:with_capability",
+    "fn:with_requirement",
+    "return Err(ConnectorManifestError::EmptyOperatorId);",
+    "return Err(ConnectorManifestError::InvalidManifestEntry);",
+    "return Err(ConnectorManifestError::InvalidManifestRevision);",
+    "return Err(ConnectorManifestError::InvalidPackageVersion);",
+    "return Err(ConnectorManifestError::ManifestEntryTooLarge);",
+    "return Err(ConnectorManifestError::MissingInputPort);",
+    "return Err(ConnectorManifestError::OutputPortNotSupported);",
+    "return Err(ConnectorManifestError::RealtimeExecutionForbidden);",
+    "return Err(ConnectorManifestError::TooManyManifestEntries);",
+    "return Err(ConnectorManifestError::UnsupportedApiRevision {",
+    "struct:ConnectorCapability",
+    "struct:ConnectorManifest",
+    "struct:ConnectorRequirement"
   ],
   "package": "pocketstation",
   "path": "src/connector/manifest.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -725,7 +785,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::connector::manifest`."
+    "text": "Implements pocketstation::connector::manifest responsibilities, including Defines the public connector API revision value.; Sets the maximum supported connector manifest entries.; Sets the maximum supported connector manifest text bytes.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -767,37 +827,55 @@
     "docs/best-practices/connector-retries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/connector/configuration.rs",
+    "REFERENCES:src/connector/readiness.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/operator.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "CONNECTOR_API_REVISION",
-    "MAX_CONNECTOR_MANIFEST_ENTRIES",
-    "MAX_CONNECTOR_MANIFEST_TEXT_BYTES",
-    "ConnectorCapability",
-    "new",
-    "id",
-    "documentation",
-    "ConnectorRequirement",
-    "new",
-    "id",
-    "required",
-    "documentation",
-    "ConnectorManifest",
-    "new",
-    "with_capability",
-    "with_requirement",
-    "api_revision",
-    "manifest_revision",
-    "operator_id",
-    "package_version",
-    "node",
-    "configuration",
-    "readiness",
-    "capabilities",
-    "requirements",
-    "validate",
-    "validate_manifest_entry",
-    "validate_unique_entries",
-    "ConnectorManifestError"
+    "pocketstation::connector::manifest::CONNECTOR_API_REVISION: Defines the public connector API revision value.",
+    "pocketstation::connector::manifest::MAX_CONNECTOR_MANIFEST_ENTRIES: Sets the maximum supported connector manifest entries.",
+    "pocketstation::connector::manifest::MAX_CONNECTOR_MANIFEST_TEXT_BYTES: Sets the maximum supported connector manifest text bytes.",
+    "pocketstation::connector::manifest::ConnectorCapability: Declares a capability advertised by a connector manifest.",
+    "new: Creates a new `ConnectorCapability`.",
+    "id: Returns the id held by `ConnectorCapability`.",
+    "documentation: Returns the documentation held by `ConnectorCapability`.",
+    "pocketstation::connector::manifest::ConnectorRequirement: Declares a host or configuration requirement that must be satisfied before connector use.",
+    "new: Creates a new `ConnectorRequirement`.",
+    "id: Returns the id held by `ConnectorRequirement`.",
+    "required: Returns the required held by `ConnectorRequirement`.",
+    "documentation: Returns the documentation held by `ConnectorRequirement`.",
+    "pocketstation::connector::manifest::ConnectorManifest: Describes the connector manifest contract.",
+    "new: Creates a new `ConnectorManifest`.",
+    "with_capability: Sets the capability on `ConnectorManifest` and returns the updated value.",
+    "with_requirement: Sets the requirement on `ConnectorManifest` and returns the updated value.",
+    "api_revision: Returns the API revision held by `ConnectorManifest`.",
+    "manifest_revision: Returns the manifest revision held by `ConnectorManifest`.",
+    "operator_id: Returns the operator identifier held by `ConnectorManifest`.",
+    "package_version: Returns the package version held by `ConnectorManifest`.",
+    "node: Returns the node held by `ConnectorManifest`.",
+    "configuration: Returns the configuration held by `ConnectorManifest`.",
+    "readiness: Returns the readiness held by `ConnectorManifest`.",
+    "capabilities: Returns the capabilities held by `ConnectorManifest`.",
+    "requirements: Returns the requirements held by `ConnectorManifest`.",
+    "validate: Validates `ConnectorManifest` against its declared contract.",
+    "pocketstation::connector::manifest::ConnectorManifestError: Classifies failures reported as connector manifest error.",
+    "ConnectorManifestError::UnsupportedApiRevision::requested: Stores the requested used by `UnsupportedApiRevision`.",
+    "ConnectorManifestError::UnsupportedApiRevision::supported: Stores the supported used by `UnsupportedApiRevision`.",
+    "pocketstation::connector::manifest::ConnectorManifestError::UnsupportedApiRevision: Reported when the owning operation encounters unsupported API revision.",
+    "pocketstation::connector::manifest::ConnectorManifestError::InvalidManifestRevision: Reported when the owning operation encounters invalid manifest revision.",
+    "pocketstation::connector::manifest::ConnectorManifestError::EmptyOperatorId: Reported when the owning operation encounters empty operator identifier.",
+    "pocketstation::connector::manifest::ConnectorManifestError::InvalidPackageVersion: Reported when the owning operation encounters invalid package version.",
+    "pocketstation::connector::manifest::ConnectorManifestError::MissingInputPort: Reported when the owning operation encounters missing input port.",
+    "pocketstation::connector::manifest::ConnectorManifestError::OutputPortNotSupported: Reported when the owning operation encounters output port not supported.",
+    "pocketstation::connector::manifest::ConnectorManifestError::RealtimeExecutionForbidden: Reported when the owning operation encounters realtime execution forbidden.",
+    "pocketstation::connector::manifest::ConnectorManifestError::InvalidManifestEntry: Reported when the owning operation encounters invalid manifest entry.",
+    "pocketstation::connector::manifest::ConnectorManifestError::ManifestEntryTooLarge: Reported when the owning operation encounters manifest entry too large.",
+    "pocketstation::connector::manifest::ConnectorManifestError::TooManyManifestEntries: Reported when the owning operation encounters too many manifest entries.",
+    "ConnectorManifestError::DuplicateManifestEntry::id: Identifies the id recorded by `DuplicateManifestEntry`.",
+    "pocketstation::connector::manifest::ConnectorManifestError::DuplicateManifestEntry: Reported when the owning operation encounters duplicate manifest entry."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -807,6 +885,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

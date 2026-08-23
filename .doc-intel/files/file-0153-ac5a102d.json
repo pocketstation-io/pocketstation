@@ -3,7 +3,24 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/endpoint/registry.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/graph/signal/lineage.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/endpoint.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/declaration/typed_stream.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
   "calls": [
     "OperatorId",
     "OperatorId::new",
@@ -31,7 +48,24 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/endpoint/registry.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/graph/signal/lineage.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/endpoint.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/declaration/typed_stream.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
   "constructs": [
     "OperatorId::new",
     "new"
@@ -152,8 +186,26 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/endpoint/registry.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/graph/signal/lineage.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/endpoint.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/declaration/typed_stream.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -167,16 +219,51 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "80957e3640604adb6a051721aaba3e95763a27d1",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/endpoint/registry.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/graph/signal/lineage.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/endpoint.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/declaration/typed_stream.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
   "implements": [
     "OperatorId"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/endpoint/registry.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/graph/signal/lineage.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/declaration/endpoint.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/declaration/typed_stream.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
   "imports": [
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "super::*"
   ],
   "invariants": [],
   "language": "Rust",
@@ -185,18 +272,25 @@
   "module": "pocketstation::graph::operator",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "const:OPERATOR_ID_SYNTAX_VERSION",
+    "fn:as_str",
+    "fn:is_portable",
+    "fn:new",
+    "fn:syntax_version",
+    "struct:OperatorId"
   ],
   "package": "pocketstation",
   "path": "src/graph/operator.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -253,7 +347,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::graph::operator`."
+    "text": "Implements pocketstation::graph::operator responsibilities, including Version of the serialized operator-identifier syntax.; Open identifier for a registered graph operator implementation.; Creates a new `OperatorId`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -291,16 +385,15 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "OPERATOR_ID_SYNTAX_VERSION",
-    "OperatorId",
-    "new",
-    "as_str",
-    "is_portable",
-    "syntax_version",
-    "tests",
-    "given_operator_id_when_serialized_then_version_one_is_a_transparent_string"
+    "pocketstation::graph::operator::OPERATOR_ID_SYNTAX_VERSION: Version of the serialized operator-identifier syntax.",
+    "pocketstation::graph::operator::OperatorId: Open identifier for a registered graph operator implementation.",
+    "new: Creates a new `OperatorId`.",
+    "as_str: Returns the stable string representation of `OperatorId`.",
+    "is_portable: Reports whether this value is a portable implementation contract ID.",
+    "syntax_version: Returns the syntax version held by `OperatorId`."
   ],
   "retry_behavior": [],
   "serialization": [
@@ -319,7 +412,11 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-91c6760e9ada9a5d771b",
+    "test-c1047cbdeb5a7bf9bc3b"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

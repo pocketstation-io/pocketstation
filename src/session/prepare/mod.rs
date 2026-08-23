@@ -30,6 +30,7 @@ pub use mappings::{
 };
 pub use prepared::PreparedSession;
 
+#[doc = "Prepares session runtime for `prepare`."]
 pub fn prepare_session_runtime(
     compiled: CompiledSession,
     node_registry: &NodeRegistry,

@@ -38,7 +38,7 @@ pub enum NativeExtensionKind {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Represents native extension registration in the PocketStation API."]
+#[doc = "Identifies one node registration imported transactionally from a native extension."]
 pub struct NativeExtensionRegistration {
     pub(crate) id: String,
     pub(crate) kind: NativeExtensionKind,
@@ -47,7 +47,7 @@ pub struct NativeExtensionRegistration {
 }
 
 impl NativeExtensionRegistration {
-    #[doc = "Returns the id associated with `NativeExtensionRegistration`."]
+    #[doc = "Returns the id held by `NativeExtensionRegistration`."]
     pub fn id(&self) -> &str {
         &self.id
     }
@@ -57,12 +57,12 @@ impl NativeExtensionRegistration {
         self.kind
     }
 
-    #[doc = "Returns the revision associated with `NativeExtensionRegistration`."]
+    #[doc = "Returns the revision held by `NativeExtensionRegistration`."]
     pub const fn revision(&self) -> u32 {
         self.revision
     }
 
-    #[doc = "Returns the generation associated with `NativeExtensionRegistration`."]
+    #[doc = "Returns the generation held by `NativeExtensionRegistration`."]
     pub const fn generation(&self) -> u32 {
         self.generation
     }
@@ -77,12 +77,12 @@ pub struct NativeExtensionLibrary {
 }
 
 impl NativeExtensionLibrary {
-    #[doc = "Returns the canonical path associated with `NativeExtensionLibrary`."]
+    #[doc = "Returns the canonical path held by `NativeExtensionLibrary`."]
     pub fn canonical_path(&self) -> &Path {
         &self.canonical_path
     }
 
-    #[doc = "Returns the registrations associated with `NativeExtensionLibrary`."]
+    #[doc = "Returns the registrations held by `NativeExtensionLibrary`."]
     pub fn registrations(&self) -> &[NativeExtensionRegistration] {
         &self.registrations
     }
@@ -165,12 +165,12 @@ impl NativeExtensionLibraryError {
         self.code
     }
 
-    #[doc = "Returns the diagnostic message associated with `NativeExtensionLibraryError`."]
+    #[doc = "Returns the diagnostic message reported by `NativeExtensionLibraryError`."]
     pub fn message(&self) -> &str {
         &self.message
     }
 
-    #[doc = "Returns the path associated with `NativeExtensionLibraryError`."]
+    #[doc = "Returns the path held by `NativeExtensionLibraryError`."]
     pub fn path(&self) -> Option<&Path> {
         self.path.as_deref()
     }

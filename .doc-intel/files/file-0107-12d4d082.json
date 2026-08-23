@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
   "calls": [
     "Decoder::new",
     "Opus",
@@ -73,7 +76,10 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
   "constructs": [
     "Decoder::new",
     "OpusDecoder::new",
@@ -263,8 +269,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -278,12 +288,18 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "73f8c64441ad455909f3927157f15417cf90f62d",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
   "implements": [
     "OpusDecoder",
     "Default for OpusDecoder"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
   "imports": [
     "crate::codec::constants::OPUS_FRAME_SAMPLES",
     "crate::codec::constants::{I16_SCALE, OPUS_SAMPLE_RATE_HZ}",
@@ -293,7 +309,14 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "/// Configured for 48 000 Hz, mono per AUDIO-012.",
+    "crate::codec::constants::OPUS_FRAME_SAMPLES",
+    "crate::codec::constants::{I16_SCALE, OPUS_SAMPLE_RATE_HZ}",
+    "crate::codec::encoder::OpusEncoder",
+    "crate::codec::encoder::{OpusChannels, OpusFrameDuration}",
+    "opus::{Channels, Decoder}",
+    "super::*"
   ],
   "invariants": [
     {
@@ -315,18 +338,27 @@
   "module": "pocketstation::codec::decoder",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:OpusDecodeError",
+    "fn:decode_into",
+    "fn:decode_plc_into",
+    "fn:new",
+    "fn:with_channels",
+    "fn:with_max_frame_duration",
+    "return Err(OpusDecodeError::FrameDurationExceedsConfiguredMaximum {",
+    "struct:OpusDecoder"
   ],
   "package": "pocketstation",
   "path": "src/codec/decoder.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -425,7 +457,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::codec::decoder`."
+    "text": "Implements pocketstation::codec::decoder responsibilities, including Real Opus decoder wrapping libopus via the `opus` crate.; Classifies failures reported as opus decode error.; Reported when the owning operation encounters frame duration exceeds configured maximum.."
   },
   "queues": [],
   "recovery_behavior": [
@@ -455,23 +487,23 @@
     "docs/errors/frames-and-codec.md",
     "docs/troubleshooting/opus.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/codec/encoder.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "OpusDecoder",
-    "OpusDecodeError",
-    "new",
-    "with_channels",
-    "with_max_frame_duration",
-    "decode_into",
-    "decode_plc_into",
-    "decode_packet",
-    "default",
-    "tests",
-    "given_encoded_opus_packet_when_decoded_then_contains_960_samples",
-    "given_mono_decoder_when_concealing_10ms_then_480_samples_are_appended",
-    "given_stereo_decoder_when_concealing_20ms_then_1920_samples_are_appended",
-    "given_presized_output_when_concealing_repeatedly_then_capacity_stays_fixed",
-    "given_20ms_decoder_when_60ms_concealment_is_requested_then_typed_bound_error_is_returned"
+    "pocketstation::codec::decoder::OpusDecoder: Real Opus decoder wrapping libopus via the `opus` crate.",
+    "pocketstation::codec::decoder::OpusDecodeError: Classifies failures reported as opus decode error.",
+    "pocketstation::codec::decoder::OpusDecodeError::FrameDurationExceedsConfiguredMaximum: Reported when the owning operation encounters frame duration exceeds configured maximum.",
+    "OpusDecodeError::FrameDurationExceedsConfiguredMaximum::requested_samples_per_channel: Stores the requested samples per channel used by `FrameDurationExceedsConfiguredMaximum`.",
+    "OpusDecodeError::FrameDurationExceedsConfiguredMaximum::maximum_samples_per_channel: Stores the maximum samples per channel used by `FrameDurationExceedsConfiguredMaximum`.",
+    "pocketstation::codec::decoder::OpusDecodeError::Opus: Reported when the owning operation encounters opus.",
+    "new: Mono decoder (48 kHz). Back-compatible default for the existing pipeline.",
+    "with_channels: Decoder for an explicit channel layout and a maximum 20 ms packet.",
+    "with_max_frame_duration: Decoder with an explicit maximum packet duration.",
+    "decode_into: Decode a compressed Opus packet into i16 samples, then convert to f32.",
+    "decode_plc_into: Conceal one missing packet while preserving libopus decoder state.",
+    "default: Returns the default `OpusDecoder` value."
   ],
   "retry_behavior": [],
   "serialization": [
@@ -498,7 +530,22 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-3a6668288d371a23c543",
+    "test-4bde7cfc5f108b457aad",
+    "test-792afd9b5fceaa2832c6",
+    "test-7f059c025029ab48d42b",
+    "test-a33c833b56c360107d03",
+    "test-a80dbf6b40aa2cc2df6c",
+    "test-aff38e39586de67b7ec9",
+    "test-c03103a64eeeb21abb1b",
+    "test-d150aed65b6b3b930cdf",
+    "test-d58d461257beb4e70632",
+    "test-e9a038c59aa6148e49f9",
+    "test-f2b28e6d34edfbf95af0",
+    "test-f2c6d3780d291652810b"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

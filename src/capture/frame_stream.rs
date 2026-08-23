@@ -20,9 +20,9 @@ pub enum CapturedFrameDelivery {
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 #[doc = "Reports the captured frame stream stats collected at an observation boundary."]
 pub struct CapturedFrameStreamStats {
-    #[doc = "Stores the delivered frames associated with `CapturedFrameStreamStats`."]
+    #[doc = "Stores the delivered frames used by `CapturedFrameStreamStats`."]
     pub delivered_frames: u64,
-    #[doc = "Stores the dropped newest frames associated with `CapturedFrameStreamStats`."]
+    #[doc = "Stores the dropped newest frames used by `CapturedFrameStreamStats`."]
     pub dropped_newest_frames: u64,
     #[doc = "Counts the total number of frames discarded before start observed by `CapturedFrameStreamStats`."]
     pub frames_discarded_before_start_total: u64,

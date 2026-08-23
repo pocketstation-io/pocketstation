@@ -31,7 +31,7 @@ pub enum CompileError {
     #[error("node {type_id} has invalid config: {reason}")]
     #[doc = "Reports invalid config."]
     InvalidConfig {
-        #[doc = "Identifies the type associated with `InvalidConfig`."]
+        #[doc = "Identifies the type identifier recorded by `InvalidConfig`."]
         type_id: String,
         #[doc = "Carries the reason reported by `InvalidConfig`."]
         reason: String,
@@ -42,35 +42,35 @@ pub enum CompileError {
     #[error("node {node}: unknown port {port}")]
     #[doc = "Reports unknown port."]
     UnknownPort {
-        #[doc = "Stores the node associated with `UnknownPort`."]
+        #[doc = "Stores the node used by `UnknownPort`."]
         node: u32,
-        #[doc = "Stores the port associated with `UnknownPort`."]
+        #[doc = "Stores the port used by `UnknownPort`."]
         port: String,
     },
     #[error("node {node}: port {port} connected against its declared direction")]
     #[doc = "Reports wrong port direction."]
     WrongPortDirection {
-        #[doc = "Stores the node associated with `WrongPortDirection`."]
+        #[doc = "Stores the node used by `WrongPortDirection`."]
         node: u32,
-        #[doc = "Stores the port associated with `WrongPortDirection`."]
+        #[doc = "Stores the port used by `WrongPortDirection`."]
         port: String,
     },
     #[error("node {node}: input port {port} fans in clock domains {expected:?} and {found:?} without a clock adapter")]
     #[doc = "Reports clock domain mismatch."]
     ClockDomainMismatch {
-        #[doc = "Stores the node associated with `ClockDomainMismatch`."]
+        #[doc = "Stores the node used by `ClockDomainMismatch`."]
         node: u32,
-        #[doc = "Stores the port associated with `ClockDomainMismatch`."]
+        #[doc = "Stores the port used by `ClockDomainMismatch`."]
         port: String,
         #[doc = "Records the value expected by `ClockDomainMismatch`."]
         expected: ClockDomain,
-        #[doc = "Stores the found associated with `ClockDomainMismatch`."]
+        #[doc = "Stores the found used by `ClockDomainMismatch`."]
         found: ClockDomain,
     },
     #[error("edge {edge}: media {from} incompatible with {to}")]
     #[doc = "Reports media mismatch."]
     MediaMismatch {
-        #[doc = "Stores the edge associated with `MediaMismatch`."]
+        #[doc = "Stores the edge used by `MediaMismatch`."]
         edge: u32,
         #[doc = "Identifies the origin represented by `MediaMismatch`."]
         from: String,
@@ -80,7 +80,7 @@ pub enum CompileError {
     #[error("edge {edge}: signal {from} incompatible with {to}")]
     #[doc = "Reports signal mismatch."]
     SignalMismatch {
-        #[doc = "Stores the edge associated with `SignalMismatch`."]
+        #[doc = "Stores the edge used by `SignalMismatch`."]
         edge: u32,
         #[doc = "Identifies the origin represented by `SignalMismatch`."]
         from: String,
@@ -92,19 +92,19 @@ pub enum CompileError {
     )]
     #[doc = "Reports invalid safety contract."]
     InvalidSafetyContract {
-        #[doc = "Stores the node associated with `InvalidSafetyContract`."]
+        #[doc = "Stores the node used by `InvalidSafetyContract`."]
         node: u32,
-        #[doc = "Identifies the type associated with `InvalidSafetyContract`."]
+        #[doc = "Identifies the type identifier recorded by `InvalidSafetyContract`."]
         type_id: String,
-        #[doc = "Stores the execution associated with `InvalidSafetyContract`."]
+        #[doc = "Stores the execution used by `InvalidSafetyContract`."]
         execution: crate::graph::partition::ExecutionPartition,
-        #[doc = "Stores the safety associated with `InvalidSafetyContract`."]
+        #[doc = "Stores the safety used by `InvalidSafetyContract`."]
         safety: crate::graph::partition::SafetyContract,
     },
     #[error("edge {edge}: invalid realtime boundary: {reason}")]
     #[doc = "Reports invalid realtime edge."]
     InvalidRealtimeEdge {
-        #[doc = "Stores the edge associated with `InvalidRealtimeEdge`."]
+        #[doc = "Stores the edge used by `InvalidRealtimeEdge`."]
         edge: u32,
         #[doc = "Carries the reason reported by `InvalidRealtimeEdge`."]
         reason: String,
@@ -115,9 +115,9 @@ pub enum CompileError {
     #[error("edge {edge} needs adapter {type_id} but it is not registered")]
     #[doc = "Reports adapter unavailable."]
     AdapterUnavailable {
-        #[doc = "Stores the edge associated with `AdapterUnavailable`."]
+        #[doc = "Stores the edge used by `AdapterUnavailable`."]
         edge: u32,
-        #[doc = "Identifies the type associated with `AdapterUnavailable`."]
+        #[doc = "Identifies the type identifier recorded by `AdapterUnavailable`."]
         type_id: String,
     },
 }
@@ -501,6 +501,7 @@ impl GraphPass for CycleDetectionPass {
     }
 }
 
+#[doc = "Runs the ordered graph-validation passes that resolve a graph specification into executable IR."]
 pub struct Compiler {
     passes: Vec<Box<dyn GraphPass>>,
 }

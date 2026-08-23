@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "calls": [
     "ClockDomainId",
     "OnceLock::new",
@@ -25,7 +28,10 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "constructs": [
     "OnceLock::new",
     "u64::try_from"
@@ -117,8 +123,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -132,9 +142,15 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "988d0adf91afc1cd53a4d79d9ee0d9953935c23b",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "imports": [
     "clock_correction::ClockCorrectionController",
     "clock_drift::{ClockDriftEstimator, ClockDriftSnapshot}",
@@ -148,7 +164,17 @@
     "timeline_mapping::TimelineMapping"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "clock_correction::ClockCorrectionController",
+    "clock_drift::{ClockDriftEstimator, ClockDriftSnapshot}",
+    "crate::frame::ClockDomainId",
+    "module:clock_correction",
+    "module:clock_drift",
+    "module:timeline_mapping",
+    "std::sync::OnceLock",
+    "std::time::Instant",
+    "super::monotonic_timestamp_ns",
+    "timeline_mapping::TimelineMapping"
   ],
   "invariants": [
     {
@@ -174,20 +200,23 @@
   "module": "pocketstation::timing",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-c2880aa18fd8bab36b2b"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "const:PROCESS_MONOTONIC_CLOCK_DOMAIN_ID",
+    "fn:monotonic_timestamp_ns"
   ],
   "package": "pocketstation",
   "path": "src/timing/mod.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -243,8 +272,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Timing primitives owned by the PocketStation runtime.  Clock estimation and correction support source-aware stem alignment."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::timing responsibilities, including Timing primitives owned by the PocketStation runtime.; Clock-domain identity for timestamps produced by PocketStation's shared; Process-wide monotonic timestamp domain shared by capture, routing, and."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -271,16 +300,20 @@
     "docs/reference/lifecycle-evidence.md",
     "docs/troubleshooting/timing.md"
   ],
+  "relationship_outputs": [
+    "CONTAINS:src/timing/clock_correction.rs",
+    "CONTAINS:src/timing/clock_drift.rs",
+    "CONTAINS:src/timing/timeline_mapping.rs",
+    "IMPORTS:src/timing/clock_correction.rs",
+    "IMPORTS:src/timing/clock_drift.rs",
+    "IMPORTS:src/timing/timeline_mapping.rs",
+    "REFERENCES:src/frame/identity.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "clock_correction",
-    "clock_drift",
-    "timeline_mapping",
-    "PROCESS_MONOTONIC_CLOCK_DOMAIN_ID",
-    "monotonic_timestamp_ns",
-    "ORIGIN",
-    "monotonic_clock_tests",
-    "given_shared_monotonic_clock_when_sampled_then_value_never_moves_backwards"
+    "pocketstation::timing: Timing primitives owned by the PocketStation runtime.",
+    "pocketstation::timing::PROCESS_MONOTONIC_CLOCK_DOMAIN_ID: Clock-domain identity for timestamps produced by PocketStation's shared",
+    "pocketstation::timing::monotonic_timestamp_ns: Process-wide monotonic timestamp domain shared by capture, routing, and"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -290,7 +323,10 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-57367813fb8f3e9a505c"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

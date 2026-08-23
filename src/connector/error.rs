@@ -9,7 +9,7 @@ pub const MAX_CONNECTOR_ERROR_CODE_BYTES: usize = 160;
 pub const MAX_CONNECTOR_ERROR_MESSAGE_BYTES: usize = 4_096;
 
 #[derive(Clone, PartialEq, Eq, Hash)]
-#[doc = "Represents connector error code in the PocketStation API."]
+#[doc = "Carries the stable external error code exported for a connector failure."]
 pub struct ConnectorErrorCode(Arc<str>);
 
 impl ConnectorErrorCode {
@@ -137,17 +137,17 @@ impl ConnectorError {
         &self.code
     }
 
-    #[doc = "Returns the stage associated with `ConnectorError`."]
+    #[doc = "Returns the stage held by `ConnectorError`."]
     pub const fn stage(&self) -> ConnectorErrorStage {
         self.stage
     }
 
-    #[doc = "Returns the retryability associated with `ConnectorError`."]
+    #[doc = "Returns the retryability held by `ConnectorError`."]
     pub const fn retryability(&self) -> ConnectorRetryability {
         self.retryability
     }
 
-    #[doc = "Returns the diagnostic message associated with `ConnectorError`."]
+    #[doc = "Returns the diagnostic message reported by `ConnectorError`."]
     pub fn message(&self) -> &str {
         &self.message
     }

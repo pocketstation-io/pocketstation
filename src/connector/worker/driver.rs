@@ -25,42 +25,42 @@ pub struct ConnectorInputDescriptor {
 }
 
 impl ConnectorInputDescriptor {
-    #[doc = "Returns the endpoint identifier associated with `ConnectorInputDescriptor`."]
+    #[doc = "Returns the endpoint identifier held by `ConnectorInputDescriptor`."]
     pub const fn endpoint_id(&self) -> EndpointId {
         self.endpoint_id
     }
 
-    #[doc = "Returns the connector identifier associated with `ConnectorInputDescriptor`."]
+    #[doc = "Returns the connector identifier held by `ConnectorInputDescriptor`."]
     pub const fn connector_id(&self) -> Option<crate::ConnectorId> {
         self.connector_id
     }
 
-    #[doc = "Returns the route identifier associated with `ConnectorInputDescriptor`."]
+    #[doc = "Returns the route identifier held by `ConnectorInputDescriptor`."]
     pub const fn route_id(&self) -> RouteId {
         self.route_id
     }
 
-    #[doc = "Returns the port name associated with `ConnectorInputDescriptor`."]
+    #[doc = "Returns the port name held by `ConnectorInputDescriptor`."]
     pub fn port_name(&self) -> &str {
         &self.port_name
     }
 
-    #[doc = "Returns the signal spec associated with `ConnectorInputDescriptor`."]
+    #[doc = "Returns the signal spec held by `ConnectorInputDescriptor`."]
     pub const fn signal_spec(&self) -> &SignalSpec {
         &self.signal
     }
 
-    #[doc = "Returns the media associated with `ConnectorInputDescriptor`."]
+    #[doc = "Returns the media held by `ConnectorInputDescriptor`."]
     pub const fn media(&self) -> MediaCaps {
         self.media
     }
 
-    #[doc = "Returns the edge contract associated with `ConnectorInputDescriptor`."]
+    #[doc = "Returns the edge contract held by `ConnectorInputDescriptor`."]
     pub const fn edge_contract(&self) -> crate::EdgeContract {
         self.edge_contract
     }
 
-    #[doc = "Returns the configuration associated with `ConnectorInputDescriptor`."]
+    #[doc = "Returns the configuration held by `ConnectorInputDescriptor`."]
     pub const fn configuration(&self) -> &ResolvedConnectorConfiguration {
         &self.configuration
     }
@@ -70,22 +70,22 @@ impl ConnectorInputDescriptor {
 pub enum ConnectorItem<'a> {
     #[doc = "Represents the audio case of `ConnectorItem`."]
     Audio {
-        #[doc = "Stores the input associated with `Audio`."]
+        #[doc = "Stores the input used by `Audio`."]
         input: &'a ConnectorInputDescriptor,
-        #[doc = "Stores the frame associated with `Audio`."]
+        #[doc = "Stores the frame used by `Audio`."]
         frame: EndpointAudioFrame,
     },
     #[doc = "Represents the signal case of `ConnectorItem`."]
     Signal {
-        #[doc = "Stores the input associated with `Signal`."]
+        #[doc = "Stores the input used by `Signal`."]
         input: &'a ConnectorInputDescriptor,
-        #[doc = "Stores the signal associated with `Signal`."]
+        #[doc = "Stores the signal used by `Signal`."]
         signal: Arc<SignalEnvelope>,
     },
 }
 
 impl ConnectorItem<'_> {
-    #[doc = "Returns the input associated with `ConnectorItem`."]
+    #[doc = "Returns the input held by `ConnectorItem`."]
     pub const fn input(&self) -> &ConnectorInputDescriptor {
         match self {
             Self::Audio { input, .. } | Self::Signal { input, .. } => input,
@@ -143,7 +143,7 @@ pub trait ConnectorDriver: Send + 'static {
 
 /// Prepares provider state while Core retains receiver and lifecycle authority.
 pub trait ConnectorDriverFactory: Send + Sync {
-    #[doc = "Returns the preparation group associated with `ConnectorDriverFactory`."]
+    #[doc = "Returns the preparation group held by `ConnectorDriverFactory`."]
     fn preparation_group(
         &self,
         route_id: RouteId,

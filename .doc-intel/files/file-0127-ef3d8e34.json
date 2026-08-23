@@ -3,7 +3,17 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/endpoint/registry.rs",
+    "REFERENCES:src/recording/endpoint.rs"
+  ],
   "calls": [
     "EndpointGroupId",
     "Route",
@@ -19,7 +29,17 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/endpoint/registry.rs",
+    "REFERENCES:src/recording/endpoint.rs"
+  ],
   "constructs": [
     "new"
   ],
@@ -107,8 +127,19 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/endpoint/registry.rs",
+    "REFERENCES:src/recording/endpoint.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -122,16 +153,36 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "63a4588ce3de97e50a30bd519a17c38cc998b6ae",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/endpoint/registry.rs",
+    "REFERENCES:src/recording/endpoint.rs"
+  ],
   "implements": [
     "EndpointGroupId"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/endpoint/registry.rs",
+    "REFERENCES:src/recording/endpoint.rs"
+  ],
   "imports": [
     "crate::graph::OperatorId"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::graph::OperatorId"
   ],
   "invariants": [
     {
@@ -145,18 +196,23 @@
   "module": "pocketstation::endpoint::identity",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:EndpointPreparationGroup",
+    "fn:as_str",
+    "fn:new",
+    "struct:EndpointGroupId"
   ],
   "package": "pocketstation",
   "path": "src/endpoint/identity.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -188,7 +244,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::endpoint::identity`."
+    "text": "Implements pocketstation::endpoint::identity responsibilities, including Explicit Session-scoped grouping key for endpoints that share one lifecycle.; Creates a new `EndpointGroupId`.; Returns the stable string representation of `EndpointGroupId`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -224,6 +280,9 @@
     "docs/troubleshooting/session-stop.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/identity.rs"
+  ],
   "resource_ownership": [
     {
       "line": 6,
@@ -231,10 +290,12 @@
     }
   ],
   "responsibilities": [
-    "EndpointGroupId",
-    "new",
-    "as_str",
-    "EndpointPreparationGroup"
+    "pocketstation::endpoint::identity::EndpointGroupId: Explicit Session-scoped grouping key for endpoints that share one lifecycle.",
+    "new: Creates a new `EndpointGroupId`.",
+    "as_str: Returns the stable string representation of `EndpointGroupId`.",
+    "pocketstation::endpoint::identity::EndpointPreparationGroup: Factory-owned decision for batching endpoint inputs into one lifecycle.",
+    "pocketstation::endpoint::identity::EndpointPreparationGroup::Route: Represents the route alternative defined by `EndpointPreparationGroup`.",
+    "pocketstation::endpoint::identity::EndpointPreparationGroup::Shared: Represents the shared alternative defined by `EndpointPreparationGroup`."
   ],
   "retry_behavior": [],
   "serialization": [
@@ -253,6 +314,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

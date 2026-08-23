@@ -20,7 +20,7 @@ impl SourceInstanceId {
         Self(value)
     }
 
-    #[doc = "Returns the value associated with `SourceInstanceId`."]
+    #[doc = "Returns the value held by `SourceInstanceId`."]
     pub const fn value(self) -> u64 {
         self.0
     }
@@ -36,13 +36,14 @@ impl OperatorInstanceId {
         Self(value)
     }
 
-    #[doc = "Returns the value associated with `OperatorInstanceId`."]
+    #[doc = "Returns the value held by `OperatorInstanceId`."]
     pub const fn value(self) -> u64 {
         self.0
     }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Identifies the major and minor version of the immutable Session declaration schema."]
 pub struct SessionSpecVersion {
     major: u16,
     minor: u16,
@@ -80,22 +81,22 @@ pub struct SourceInstanceSpec {
 }
 
 impl SourceInstanceSpec {
-    #[doc = "Returns the instance identifier associated with `SourceInstanceSpec`."]
+    #[doc = "Returns the instance identifier held by `SourceInstanceSpec`."]
     pub const fn instance_id(&self) -> SourceInstanceId {
         self.instance_id
     }
 
-    #[doc = "Returns the source identifier associated with `SourceInstanceSpec`."]
+    #[doc = "Returns the source identifier held by `SourceInstanceSpec`."]
     pub const fn source_id(&self) -> SourceId {
         self.source_id
     }
 
-    #[doc = "Returns the source type identifier associated with `SourceInstanceSpec`."]
+    #[doc = "Returns the source type identifier held by `SourceInstanceSpec`."]
     pub const fn source_type_id(&self) -> &SourceTypeId {
         &self.source_type_id
     }
 
-    #[doc = "Returns the configuration associated with `SourceInstanceSpec`."]
+    #[doc = "Returns the configuration held by `SourceInstanceSpec`."]
     pub const fn configuration(&self) -> &SourceConfiguration {
         &self.configuration
     }
@@ -146,17 +147,17 @@ impl GeneratedAudioIngressSpec {
 }
 
 impl SourceOutputSpec {
-    #[doc = "Returns the source instance identifier associated with `SourceOutputSpec`."]
+    #[doc = "Returns the source instance identifier held by `SourceOutputSpec`."]
     pub const fn source_instance_id(&self) -> SourceInstanceId {
         self.source_instance_id
     }
 
-    #[doc = "Returns the output port associated with `SourceOutputSpec`."]
+    #[doc = "Returns the output port held by `SourceOutputSpec`."]
     pub fn output_port(&self) -> &str {
         &self.output_port
     }
 
-    #[doc = "Returns the stream identifier associated with `SourceOutputSpec`."]
+    #[doc = "Returns the stream identifier held by `SourceOutputSpec`."]
     pub const fn stream_id(&self) -> StreamId {
         self.stream_id
     }
@@ -226,20 +227,20 @@ pub enum StreamOrigin {
     Stem(StemId),
     #[doc = "Represents the source output case of `StreamOrigin`."]
     SourceOutput {
-        #[doc = "Identifies the source instance associated with `SourceOutput`."]
+        #[doc = "Identifies the source instance identifier recorded by `SourceOutput`."]
         source_instance_id: SourceInstanceId,
-        #[doc = "Stores the output port associated with `SourceOutput`."]
+        #[doc = "Stores the output port used by `SourceOutput`."]
         output_port: String,
-        #[doc = "Identifies the stream associated with `SourceOutput`."]
+        #[doc = "Identifies the stream identifier recorded by `SourceOutput`."]
         stream_id: StreamId,
-        #[doc = "Identifies the source associated with `SourceOutput`."]
+        #[doc = "Identifies the source identifier recorded by `SourceOutput`."]
         source_id: SourceId,
     },
     #[doc = "Represents the operator output case of `StreamOrigin`."]
     OperatorOutput {
-        #[doc = "Identifies the operator instance associated with `OperatorOutput`."]
+        #[doc = "Identifies the operator instance identifier recorded by `OperatorOutput`."]
         operator_instance_id: OperatorInstanceId,
-        #[doc = "Stores the output port associated with `OperatorOutput`."]
+        #[doc = "Stores the output port used by `OperatorOutput`."]
         output_port: Option<String>,
     },
 }
@@ -249,16 +250,16 @@ pub enum StreamOrigin {
 pub enum ConnectionTarget {
     #[doc = "Represents the operator input case of `ConnectionTarget`."]
     OperatorInput {
-        #[doc = "Identifies the operator instance associated with `OperatorInput`."]
+        #[doc = "Identifies the operator instance identifier recorded by `OperatorInput`."]
         operator_instance_id: OperatorInstanceId,
-        #[doc = "Stores the input port associated with `OperatorInput`."]
+        #[doc = "Stores the input port used by `OperatorInput`."]
         input_port: Option<String>,
     },
     #[doc = "Represents the endpoint input case of `ConnectionTarget`."]
     EndpointInput {
-        #[doc = "Identifies the endpoint associated with `EndpointInput`."]
+        #[doc = "Identifies the endpoint identifier recorded by `EndpointInput`."]
         endpoint_id: EndpointId,
-        #[doc = "Stores the input port associated with `EndpointInput`."]
+        #[doc = "Stores the input port used by `EndpointInput`."]
         input_port: Option<String>,
     },
 }
@@ -273,34 +274,34 @@ pub struct ConnectionSpec {
 }
 
 impl OperatorInstanceSpec {
-    #[doc = "Returns the instance identifier associated with `OperatorInstanceSpec`."]
+    #[doc = "Returns the instance identifier held by `OperatorInstanceSpec`."]
     pub const fn instance_id(&self) -> OperatorInstanceId {
         self.instance_id
     }
 
-    #[doc = "Returns the operator identifier associated with `OperatorInstanceSpec`."]
+    #[doc = "Returns the operator identifier held by `OperatorInstanceSpec`."]
     pub const fn operator_id(&self) -> &OperatorId {
         &self.operator_id
     }
 
-    #[doc = "Returns the configuration associated with `OperatorInstanceSpec`."]
+    #[doc = "Returns the configuration held by `OperatorInstanceSpec`."]
     pub const fn configuration(&self) -> &OperatorConfiguration {
         &self.configuration
     }
 }
 
 impl ConnectionSpec {
-    #[doc = "Returns the id associated with `ConnectionSpec`."]
+    #[doc = "Returns the id held by `ConnectionSpec`."]
     pub const fn id(&self) -> RouteId {
         self.route_id
     }
 
-    #[doc = "Returns the origin associated with `ConnectionSpec`."]
+    #[doc = "Returns the origin held by `ConnectionSpec`."]
     pub const fn origin(&self) -> &StreamOrigin {
         &self.origin
     }
 
-    #[doc = "Returns the target associated with `ConnectionSpec`."]
+    #[doc = "Returns the target held by `ConnectionSpec`."]
     pub const fn target(&self) -> &ConnectionTarget {
         &self.target
     }

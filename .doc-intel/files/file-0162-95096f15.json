@@ -3,12 +3,18 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "calls": [],
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "constructs": [],
   "content_hash": "e826149a665dafaa246a8a3a3e4b744cccaabc77698339afd53b17f1e8e4c6b6",
   "defaults": [],
@@ -84,8 +90,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -99,9 +109,15 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "a41884909f7d5100504a24441c6603654203af70",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "imports": [
     "continuity::{SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker}",
     "envelope::{SignalEnvelope, SignalEnvelopeError}",
@@ -121,7 +137,22 @@
     "timing::{SignalTiming, SignalTimingError}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "continuity::{SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker}",
+    "envelope::{SignalEnvelope, SignalEnvelopeError}",
+    "lineage::{SignalDerivation, SignalDerivationError, SignalLineage, SignalLineageError}",
+    "module:continuity",
+    "module:envelope",
+    "module:lineage",
+    "module:operator",
+    "module:payload",
+    "module:preparation",
+    "module:spec",
+    "module:timing",
+    "operator::{ AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, }",
+    "payload::SignalPayload",
+    "preparation::{ AsyncNodeFuture, AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext, }",
+    "spec::{ BinaryFormat, Codec, EventFormat, SchemaRef, SemanticRole, SignalClass, SignalId, SignalSpec, SignalSpecError, TextFormat, }",
+    "timing::{SignalTiming, SignalTimingError}"
   ],
   "invariants": [],
   "language": "Rust",
@@ -130,18 +161,20 @@
   "module": "pocketstation::graph::signal",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "src/graph/signal/mod.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -196,8 +229,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Signal vocabulary, envelopes, lineage, and asynchronous Operator contract."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::signal responsibilities, including signal."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -241,16 +274,34 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
+  "relationship_outputs": [
+    "CONTAINS:src/graph/signal/continuity.rs",
+    "CONTAINS:src/graph/signal/envelope.rs",
+    "CONTAINS:src/graph/signal/lineage.rs",
+    "CONTAINS:src/graph/signal/operator.rs",
+    "CONTAINS:src/graph/signal/payload.rs",
+    "CONTAINS:src/graph/signal/preparation.rs",
+    "CONTAINS:src/graph/signal/spec.rs",
+    "CONTAINS:src/graph/signal/timing.rs",
+    "IMPORTS:src/graph/signal/continuity.rs",
+    "IMPORTS:src/graph/signal/envelope.rs",
+    "IMPORTS:src/graph/signal/lineage.rs",
+    "IMPORTS:src/graph/signal/operator.rs",
+    "IMPORTS:src/graph/signal/payload.rs",
+    "IMPORTS:src/graph/signal/preparation.rs",
+    "IMPORTS:src/graph/signal/spec.rs",
+    "IMPORTS:src/graph/signal/timing.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "continuity",
-    "envelope",
-    "lineage",
-    "operator",
-    "payload",
-    "preparation",
-    "spec",
-    "timing"
+    "continuity (mod)",
+    "envelope (mod)",
+    "lineage (mod)",
+    "operator (mod)",
+    "payload (mod)",
+    "preparation (mod)",
+    "spec (mod)",
+    "timing (mod)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -260,6 +311,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

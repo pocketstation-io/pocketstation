@@ -3,12 +3,18 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "calls": [],
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "constructs": [],
   "content_hash": "8732e702f70b2e65280ac2f4cccd05899847d296375b4df1d8846394db99be16",
   "defaults": [],
@@ -66,8 +72,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -81,9 +91,15 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "ec63ed0aa6cb5acc5a6e1e3eddf152c0a10dd831",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "imports": [
     "audio::*",
     "identity::*",
@@ -97,7 +113,16 @@
     "pool::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "audio::*",
+    "identity::*",
+    "lineage::*",
+    "module:audio",
+    "module:identity",
+    "module:lineage",
+    "module:platform",
+    "module:pool",
+    "platform::Platform",
+    "pool::*"
   ],
   "invariants": [],
   "language": "Rust",
@@ -106,18 +131,20 @@
   "module": "pocketstation::frame",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "src/frame/mod.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -154,8 +181,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Realtime audio frame ownership.  Platform and graph identities are intentionally separate from pooled audio storage. The audio module remains specialized; arbitrary signals use the asynchronous signal lane."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::frame responsibilities, including frame."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -193,13 +220,25 @@
     "docs/best-practices/realtime-boundaries.md",
     "docs/best-practices/source-identity.md"
   ],
+  "relationship_outputs": [
+    "CONTAINS:src/frame/audio.rs",
+    "CONTAINS:src/frame/identity.rs",
+    "CONTAINS:src/frame/lineage.rs",
+    "CONTAINS:src/frame/platform.rs",
+    "CONTAINS:src/frame/pool.rs",
+    "IMPORTS:src/frame/audio.rs",
+    "IMPORTS:src/frame/identity.rs",
+    "IMPORTS:src/frame/lineage.rs",
+    "IMPORTS:src/frame/platform.rs",
+    "IMPORTS:src/frame/pool.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "audio",
-    "identity",
-    "lineage",
-    "platform",
-    "pool"
+    "audio (mod)",
+    "identity (mod)",
+    "lineage (mod)",
+    "platform (mod)",
+    "pool (mod)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -209,6 +248,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

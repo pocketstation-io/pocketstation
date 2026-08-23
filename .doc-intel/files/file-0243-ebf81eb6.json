@@ -3,7 +3,13 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/prepare/mod.rs",
+    "IMPORTS:src/session/prepare/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "calls": [
     "any",
     "cancellation_requested",
@@ -68,7 +74,13 @@
       "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/prepare/mod.rs",
+    "IMPORTS:src/session/prepare/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "constructs": [],
   "content_hash": "3d467a2897d8480751323078d2aefb1a68f817f5010ed2cdbb538485667d386c",
   "defaults": [],
@@ -210,8 +222,15 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/prepare/mod.rs",
+    "IMPORTS:src/session/prepare/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -227,11 +246,23 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "56202bf5d8cc43d065586e63c3946eff1fbcac03",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/prepare/mod.rs",
+    "IMPORTS:src/session/prepare/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "implements": [
     "PreparedSession"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/prepare/mod.rs",
+    "IMPORTS:src/session/prepare/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "imports": [
     "crate::frame::{RouteId, SessionId}",
     "crate::runtime::{PlanRunnerCancellation, PlanSourceInput, RealtimePlanExecutor}",
@@ -239,7 +270,11 @@
     "super::{ PreparedExternalSourceMapping, PreparedOperatorMapping, PreparedSourceMapping, PreparedWorkerMapping, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "crate::frame::{RouteId, SessionId}",
+    "crate::runtime::{PlanRunnerCancellation, PlanSourceInput, RealtimePlanExecutor}",
+    "crate::session::SessionSpec",
+    "super::{ PreparedExternalSourceMapping, PreparedOperatorMapping, PreparedSourceMapping, PreparedWorkerMapping, }"
   ],
   "invariants": [],
   "language": "Rust",
@@ -248,18 +283,28 @@
   "module": "pocketstation::session::prepare::prepared",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "fn:cancellation_requested",
+    "fn:operator_mappings",
+    "fn:route_observations",
+    "fn:session_id",
+    "fn:source_input_count",
+    "fn:source_mappings",
+    "fn:spec",
+    "fn:worker_mappings",
+    "struct:PreparedSession"
   ],
   "package": "pocketstation",
   "path": "src/session/prepare/prepared.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -320,8 +365,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Setup-time ownership produced from one compiled Session."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::prepare::prepared responsibilities, including Setup-time ownership for one compiled Session.; Returns the session identifier held by `PreparedSession`.; Returns the spec associated with `PreparedSession`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -381,17 +426,25 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/runtime/audio/runner.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "PreparedSession",
-    "session_id",
-    "spec",
-    "source_mappings",
-    "source_input_count",
-    "worker_mappings",
-    "operator_mappings",
-    "route_observations",
-    "cancellation_requested"
+    "pocketstation::session::prepare::prepared::PreparedSession: Setup-time ownership for one compiled Session.",
+    "session_id: Returns the session identifier held by `PreparedSession`.",
+    "spec: Returns the spec associated with `PreparedSession`.",
+    "source_mappings: Returns the source mappings associated with `PreparedSession`.",
+    "source_input_count: Returns the source input count held by `PreparedSession`.",
+    "worker_mappings: Returns the worker mappings associated with `PreparedSession`.",
+    "operator_mappings: Returns the operator mappings associated with `PreparedSession`.",
+    "route_observations: Returns the route observations held by `PreparedSession`.",
+    "cancellation_requested: Returns whether cancellation requested is true for `PreparedSession`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -406,7 +459,10 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-65636093cab026afe1f5"
+  ],
   "threads": [
     {
       "line": 16,

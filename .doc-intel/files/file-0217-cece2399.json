@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
   "calls": [
     "any",
     "cfg",
@@ -33,7 +36,10 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
   "constructs": [],
   "content_hash": "397c29801fff071b3c0e6aaa93a80188419886f4398c8f72ad06a05575cc28f5",
   "defaults": [
@@ -139,8 +145,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -156,9 +166,15 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "7668a2924439150a53235b52ec5274033ea96106",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
   "imports": [
     "audio_input::AudioInputFactory",
     "audio_input::{ AudioInput, AudioInputBuffer, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputConfig, AudioInputConfigError, AudioInputError, AudioInputObservations, AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, PcmSource, PCM_SOURCE_TYPE_ID, }",
@@ -179,7 +195,26 @@
     "source::{SourceOutputReceiver, SourceRuntimeError}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(test)]",
+    "DEFAULT_MULTISTEM_RECORDING_GROUP_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID,",
+    "audio_input::AudioInputFactory",
+    "audio_input::{ AudioInput, AudioInputBuffer, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputConfig, AudioInputConfigError, AudioInputError, AudioInputObservations, AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, PcmSource, PCM_SOURCE_TYPE_ID, }",
+    "builtins::SessionGraphRegistrationError",
+    "builtins::{ register_session_graph_nodes, APPLICATION_SOURCE_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, }",
+    "module:audio_input",
+    "module:builtins",
+    "module:composition",
+    "module:native_library",
+    "module:polled_audio",
+    "module:recording",
+    "module:registry",
+    "module:runtime",
+    "module:source",
+    "recording::{ DEFAULT_MULTISTEM_RECORDING_GROUP_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, RECORDING_GROUP_CONFIGURATION_KEY, }",
+    "recording::{ session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations, SessionRecordingOutcome, SessionRecordingReceipt, SessionRecordingState, SessionRecordingStemOutcome, }",
+    "source::{ PreparedSourceRuntime, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourceOutputBranchSpec, SourceOutputIdentity, SourcePrepareContext, SourceRegistrationError, SourceRegistry, SourceRuntime, SourceRuntimeObservationHandle, SourceRuntimeObservations, SourceSessionContext, SourceTypeId, SourceTypeIdError, }",
+    "source::{SourceOutputReceiver, SourceRuntimeError}"
   ],
   "invariants": [],
   "language": "Rust",
@@ -188,18 +223,21 @@
   "module": "pocketstation::session::extensions",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "mod:builtins",
+    "mod:source"
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/mod.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -267,8 +305,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Session extension integration.  Registration contracts live here; extension implementation and provider policy remain outside the core Session lifecycle."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::extensions responsibilities, including extensions."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -331,18 +369,32 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "CONTAINS:src/session/extensions/audio_input/mod.rs",
+    "CONTAINS:src/session/extensions/builtins.rs",
+    "CONTAINS:src/session/extensions/native_library.rs",
+    "CONTAINS:src/session/extensions/polled_audio.rs",
+    "CONTAINS:src/session/extensions/recording.rs",
+    "CONTAINS:src/session/extensions/source.rs",
+    "IMPORTS:src/session/extensions/audio_input/mod.rs",
+    "IMPORTS:src/session/extensions/builtins.rs",
+    "IMPORTS:src/session/extensions/native_library.rs",
+    "IMPORTS:src/session/extensions/polled_audio.rs",
+    "IMPORTS:src/session/extensions/recording.rs",
+    "IMPORTS:src/session/extensions/source.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "audio_input",
-    "builtins",
-    "native_library",
-    "polled_audio",
-    "recording",
-    "source",
-    "tests",
-    "composition",
-    "registry",
-    "runtime"
+    "audio_input (mod)",
+    "builtins (mod)",
+    "native_library (mod)",
+    "polled_audio (mod)",
+    "recording (mod)",
+    "source (mod)",
+    "tests (mod)",
+    "composition (mod)",
+    "registry (mod)",
+    "runtime (mod)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -352,6 +404,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

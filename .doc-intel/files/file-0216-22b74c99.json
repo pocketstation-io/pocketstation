@@ -3,7 +3,11 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
   "calls": [
     "Arc::new",
     "AudioBufferPool::new",
@@ -135,7 +139,11 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AudioBufferPool::new",
@@ -590,8 +598,13 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -607,7 +620,11 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "4dbad0a770c6d9fc0431ed5c63187534b542fbf3",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
   "implements": [
     "SessionGraphLowerer for BuiltinSourceLowerer",
     "SessionGraphLowerer for OperatorAudioLowerer",
@@ -618,7 +635,11 @@
     "EndpointBoundaryDefinition",
     "NodeDefinition for EndpointBoundaryDefinition"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
   "imports": [
     "crate::frame::SampleFormat",
     "crate::frame::{AudioBufferPool, SampleSpec, SourceId, StreamId}",
@@ -632,7 +653,20 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(test)]",
+    "ConfigError, ExecutionPartition, NodeConfig, NodeDefinition, NodeDescriptor, NodeError,",
+    "crate::frame::SampleFormat",
+    "crate::frame::{AudioBufferPool, SampleSpec, SourceId, StreamId}",
+    "crate::frame::{AudioFrame, SampleSpec}",
+    "crate::graph::{ AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalSpec, }",
+    "crate::graph::{ ConfigError, ExecutionPartition, NodeConfig, NodeDefinition, NodeDescriptor, NodeError, NodeFactory, NodeRegistry, NodeTypeId, Pipeline, PrepareContext, RuntimeNode, }",
+    "crate::session::compile::{ select_operator_port, CompiledNodeBinding, CompiledSessionBindings, LoweredOperator, SessionCompileError, SessionGraphLowerer, SessionSourceLoweringContext, }",
+    "crate::session::{EndpointSpec, OperatorInstanceId, SessionSpec, Source, StemId}",
+    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
+    "std::collections::HashMap",
+    "std::sync::Arc",
+    "super::*"
   ],
   "invariants": [
     {
@@ -670,21 +704,36 @@
   "module": "pocketstation::session::extensions::builtins",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-2bff6ab2da8c5acd813e",
     "pattern-f113caf0c47b76f1137c"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(SessionGraphRegistrationError::DuplicateNodeType { .. })",
+    "const:APPLICATION_SOURCE_NODE_TYPE_ID",
+    "const:EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID",
+    "const:GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID",
+    "const:GENERATED_AUDIO_INGRESS_NODE_TYPE_ID",
+    "const:MICROPHONE_SOURCE_NODE_TYPE_ID",
+    "enum:SessionGraphRegistrationError",
+    "fn:audio_endpoint_boundary_definition",
+    "fn:default_session_graph_lowerers",
+    "fn:register_session_graph_nodes",
+    "fn:register_session_graph_nodes_with_sample_spec",
+    "return Err(SessionCompileError::AudioBridgeOutputNotExclusive {",
+    "return Err(SessionCompileError::InvalidAudioBridgeOutput {",
+    "return Err(SessionGraphRegistrationError::DuplicateNodeType {"
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/builtins.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -969,7 +1018,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::extensions::builtins`."
+    "text": "Implements pocketstation::session::extensions::builtins responsibilities, including Defines the public application source node type identifier value.; Defines the public microphone source node type identifier value.; Classifies failures reported as session graph registration error.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1028,6 +1077,19 @@
     "docs/troubleshooting/session-trace.md",
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/graph/dsl.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/graph/runtime_node.rs",
+    "REFERENCES:src/session/compile/bindings.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/declaration/spec.rs"
   ],
   "resource_ownership": [
     {
@@ -1100,52 +1162,12 @@
     }
   ],
   "responsibilities": [
-    "AUDIO_PORT",
-    "APPLICATION_SOURCE_NODE_TYPE_ID",
-    "MICROPHONE_SOURCE_NODE_TYPE_ID",
-    "EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID",
-    "GENERATED_AUDIO_INGRESS_NODE_TYPE_ID",
-    "GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID",
-    "SessionGraphRegistrationError",
-    "register_session_graph_nodes",
-    "register_session_graph_nodes_with_sample_spec",
-    "default_session_graph_lowerers",
-    "BuiltinSourceLowerer",
-    "lower_source_nodes",
-    "lower_operator_edges",
-    "endpoint_config",
-    "OperatorAudioLowerer",
-    "lower_source_nodes",
-    "lower_operator_edges",
-    "endpoint_config",
-    "AudioIngressFactory",
-    "new",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "channel_layout_for",
-    "GeneratedAudioBridgeDefinition",
-    "descriptor",
-    "validate_config",
-    "SourceIngressNode",
-    "prepare",
-    "process",
-    "EndpointBoundaryDefinition",
-    "new",
-    "audio_endpoint_boundary_definition",
-    "descriptor",
-    "validate_config",
-    "audio_port",
-    "tests",
-    "prepare_context",
-    "sample_spec",
-    "endpoint_config",
-    "frame",
-    "given_empty_registry_when_components_registered_then_descriptors_and_lowerers_exist",
-    "given_duplicate_type_when_session_nodes_registered_then_registry_is_unchanged",
-    "given_application_ingress_when_frame_processed_then_identity_is_forwarded",
-    "given_audio_endpoint_extension_when_requested_then_definition_is_not_boot_registered",
-    "given_structural_ingress_when_validated_then_session_metadata_is_not_required"
+    "pocketstation::session::extensions::builtins::APPLICATION_SOURCE_NODE_TYPE_ID: Defines the public application source node type identifier value.",
+    "pocketstation::session::extensions::builtins::MICROPHONE_SOURCE_NODE_TYPE_ID: Defines the public microphone source node type identifier value.",
+    "pocketstation::session::extensions::builtins::SessionGraphRegistrationError: Classifies failures reported as session graph registration error.",
+    "SessionGraphRegistrationError::DuplicateNodeType::node_type_id: Identifies the node type identifier recorded by `DuplicateNodeType`.",
+    "pocketstation::session::extensions::builtins::SessionGraphRegistrationError::DuplicateNodeType: Reported when the owning operation encounters duplicate node type.",
+    "pocketstation::session::extensions::builtins::register_session_graph_nodes: Registers session graph nodes for `builtins`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1160,7 +1182,14 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-1cb08ff3b9451aa56aa4",
+    "test-417c35b0251dee5fe0b7",
+    "test-7406cc23117530680012",
+    "test-84c788845bd7a774d0a9",
+    "test-85b9176c8aff351621b9"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

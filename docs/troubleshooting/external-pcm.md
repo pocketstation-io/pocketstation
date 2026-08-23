@@ -2,44 +2,35 @@
 
 <!-- claims: CLM-TRBL-018-CAP-001,CLM-TRBL-018-CAP-002,CLM-TRBL-018-CAP-003,CLM-TRBL-018-CAP-004,CLM-TRBL-018-SOURCE-001 -->
 
-Use this page when you observe **external pcm input is saturated**. Diagnose the reported stage and identity before changing route, source, connector, or lifecycle policy.
+## Symptom
 
-## Distinguish the cause
+External PCM buffer acquisition or submission reports saturation, closure, cancellation, or invalid frame shape.
 
-Distinguish buffer acquisition exhaustion from write format or capacity errors and cancellation. Use observations before changing bounded capacity.
+## Evidenced causes
+
+- All finite input buffers are leased.
+- The submitted sample count or format does not match `AudioInputConfig`.
+- The input source is closed or its Session was cancelled.
+- The downstream route cannot accept the frame.
+
+## Distinguish the causes
+
+Inspect acquisition failures, available slots, outstanding buffers, write error, cancellation state, and downstream route observations.
 
 ## Diagnostic signals
 
-- `pocketstation::session::declaration::typed_stream::TypedStreamError` / `OutputSignalMismatch` (`error-00e5716261eba0f8cf3d`)
-- `pocketstation::session::error::SessionError` / `UnknownStem` (`error-00f6e798d158df66c847`)
-- `pocketstation::session::error_code::SessionStartErrorCode` / `StartCancelled` (`error-01d3fc855e2a00319076`)
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `OperatorPrepare` (`error-023d6ab0b23a50a614ff`)
-- `pocketstation::session::error_code::SessionStartErrorCode` / `TraceRecorderSetupFailed` (`error-0279b2b6b0cb3b5801bc`)
-- `pocketstation::session::prepare::error::SessionPrepareError` / `MissingOperatorSignalInput` (`error-037ddc3e193da74177f8`)
-- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `InvalidLayout` (`error-05c60389efcb84311921`)
-- `pocketstation::session::prepare::error::SessionPrepareError` (`error-085082b521c14e5ecd1e`)
-- `pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind` / `Closed` (`error-08a7536094bfb2242b17`)
-- `pocketstation::session::lifecycle::host::SessionEngineHostBuildError` / `EndpointExtensionRegistration` (`error-09837185c7fca0f70618`)
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `MissingEndpointDeclaration` (`error-0bc2f7c0b9f9dbf8ddd7`)
-- `pocketstation::session::lifecycle::trace::SessionTraceRecorderStartError` / `ZeroCapacity` (`error-0bd6f58be40ade9a01fe`)
-- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `SequenceGap` (`error-0c04a3eedb823da29323`)
-- `pocketstation::session::prepare::error::SessionPrepareError` / `MissingExternalAudioIngress` (`error-0cc0ae8a8cc4f1e05996`)
-- `pocketstation::session::lifecycle::engine::SessionEngineBuildError` / `DuplicateSidecarId` (`error-0ce1015c73b65576cbeb`)
-- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `TimestampRegression` (`error-0d567cf627daa0adfee1`)
-- `pocketstation::session::error_code::SessionStartErrorCode` / `MissingEndpointDeclaration` (`error-0e46a3d13215bfc3898f`)
-- `pocketstation::session::extensions::audio_input::AudioInputConfigError` (`error-108ece57ea443c789d81`)
-- `pocketstation::session::extensions::audio_input::source::AudioInputError` / `Manifest` (`error-11863b3a293345b0bb2d`)
-- `pocketstation::capture::events::CaptureRuntimeFailure` (`error-11b972ad42d5de880e06`)
-- `pocketstation::session::compile::error::SessionCompileError` / `UnknownEndpointInputPort` (`error-1281b697f9f4d62194b1`)
-- `pocketstation::session::prepare::error::SessionPrepareError` / `MissingTypedEdgePlan` (`error-12fef698a1fbec823e7e`)
-- `pocketstation::session::prepare::error::SessionPrepareError` / `MissingAsyncOperatorFactory` (`error-1310461ef521d30d4686`)
-- `pocketstation::session::error_code::SessionStartErrorCode` / `MissingEventReceiver` (`error-13dd584b4e2e8eaa490c`)
-- `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError` / `InvalidMagic` (`error-143cce14f0e71f68c4cf`)
-- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `RecordAfterTerminal` (`error-16e269f1786471c2db63`)
-- `pocketstation::session::error::SessionError` / `UnknownSourceOutput` (`error-16edb8f15b75c471db64`)
-- `pocketstation::session::compile::error::SessionCompileError` / `AmbiguousEndpointInput` (`error-17674f66426c713d90a2`)
-- `pocketstation::session::lifecycle::events::SessionRollbackFailure` (`error-1955a522796dc25c325d`)
-- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `Wait` (`error-19eabd878a9188bf94ce`)
+- `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError` (`error-fdc385a5c70e04dd3cdf`)
+- `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError` / `Cancelled` (`error-b7aa4ebc1860ffa7ee22`)
+- `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError` / `Closed` (`error-fb9a6f0c357fd99e74ea`)
+- `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError` / `Full` (`error-ada63bea703945e2d3a7`)
+- `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError` (`error-be4e946430b3a1e7ff29`)
+- `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError` / `Capacity` (`error-0865208765b6bdbf9f60`)
+- `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError` / `Empty` (`error-de475678e480c72f6785`)
+- `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError` / `MisalignedChannels` (`error-8a05309b88b80dfecd31`)
+- `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError` / `WrongFrameLength` (`error-ca5f261127aad9f5428b`)
+- `pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError` / `WrongSource` (`error-3c9080bfef27a80c5bcb`)
+- `pocketstation::session::extensions::audio_input::buffer::AudioInputWriteError` (`error-bd1aefa9086d9f905e1b`)
+- `pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind` (`error-c5fc409b75ad1482b6f4`)
 
 ## Executable evidence
 
@@ -53,19 +44,24 @@ Distinguish buffer acquisition exhaustion from write format or capacity errors a
 - `given_operator_composition_with_named_multi_input_output_manifest_then_each_declared_port_executes` exercises given operator composition with named multi input output manifest then each declared port executes under its recorded setup (`test-716956fd7ff21d2765ad`).
 - `given_operator_composition_with_three_external_operators_then_derived_output_crosses_each_bounded_edge` exercises given operator composition with three external operators then derived output crosses each bounded edge under its recorded setup (`test-9ec51c75cedb5ffaef0f`).
 - `given_two_inputs_when_processed_then_nonterminal_and_terminal_reach_each_branch` exercises given two inputs when processed then nonterminal and terminal reach each branch under its recorded setup (`test-23bf71cedc9a9fc7172c`).
-- `input_mut` exercises input mut under its recorded setup (`test-c2f81d47835d0ed9aa78`).
-- `external_source_declarations` exercises external source declarations under its recorded setup (`test-067a9c1179f9fa65bb67`).
 - `given_derived_stream_chain_when_compiled_then_operator_output_feeds_next_named_input` exercises given derived stream chain when compiled then operator output feeds next named input under its recorded setup (`test-e9a24a392741b4dbe6e7`).
 - `given_required_named_input_missing_when_compiled_then_failure_precedes_graph_runtime` exercises given required named input missing when compiled then failure precedes graph runtime under its recorded setup (`test-99e881c59d26f6126f74`).
 - `given_duplicate_named_input_when_connected_then_declaration_fails_immediately` exercises given duplicate named input when connected then declaration fails immediately under its recorded setup (`test-f9a6ec4f71dbaf6d8083`).
+- `given_foreign_input_handle_when_connected_then_declaration_fails_before_freeze` exercises given foreign input handle when connected then declaration fails before freeze under its recorded setup (`test-766194f5939b3ddb896d`).
+- `given_external_output_through_operator_when_compiled_then_normal_typed_edges_are_used` exercises given external output through operator when compiled then normal typed edges are used under its recorded setup (`test-1e9492347c366dc04946`).
 
-## Corrective action and retry
+## Corrective action
 
-Apply only the action implied by the typed failure or violated precondition. Retry is not safe merely because a failure appears transient. When retryability or recovery is unknown, preserve the failure for application policy or maintainer review.
+Release or submit outstanding buffers, correct frame shape, or create a new input after terminal closure.
 
-## Data and state
+## Retry and incomplete state
 
-Treat frames, signals, files, acknowledgements, and finalization results produced before failure as potentially partial unless the terminal contract says otherwise. Inspect per-route, per-stem, and per-component outcomes.
+Retry acquisition only after capacity returns. Never replay a submitted frame unless application semantics permit duplication; accepted and rejected frames can leave a partial stream.
+
+## Related reference
+
+- [External Pcm](/docs/concepts/external-pcm.md)
+- [Capture](/docs/reference/capture.md)
 
 ## Related documentation
 
@@ -80,8 +76,8 @@ Treat frames, signals, files, acknowledgements, and finalization results produce
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **External PCM input is saturated** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/session/extensions/audio_input/buffer.rs:1-367` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **External PCM input is saturated**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

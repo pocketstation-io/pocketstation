@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "calls": [
     "SignalSpec::any",
     "SignalSpec::audio",
@@ -80,7 +83,10 @@
       "text": "#[cfg(feature = \"internal-testing\")]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "constructs": [],
   "content_hash": "dd6873b1fc08844e81bf6b33711f703fc74bc4aa09f97dd293176ad13a4e2490",
   "defaults": [],
@@ -280,8 +286,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -297,9 +307,15 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "761ef280317192913607b4fe69bc894a8ae08c73",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "imports": [
     "crate::endpoint::POLLED_AUDIO_OPERATOR_ID",
     "crate::graph::builtins::{ GAIN_CONFIGURATION_KEY, GAIN_NODE_TYPE_ID, MONO_MIX_NODE_TYPE_ID, PASSTHROUGH_NODE_TYPE_ID, }",
@@ -311,7 +327,16 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(feature = \"internal-testing\")]",
+    "#[cfg(test)]",
+    "crate::endpoint::POLLED_AUDIO_OPERATOR_ID",
+    "crate::graph::builtins::{ GAIN_CONFIGURATION_KEY, GAIN_NODE_TYPE_ID, MONO_MIX_NODE_TYPE_ID, PASSTHROUGH_NODE_TYPE_ID, }",
+    "crate::recording::{MULTISTEM_GROUP_CONFIGURATION_KEY, MULTISTEM_NAME_CONFIGURATION_KEY}",
+    "crate::session::declaration::{ BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, BROWSER_RECEIVER_URI_CONFIGURATION_KEY, CONNECTOR_NODE_TYPE_ID, }",
+    "crate::session::extensions::builtins::{ APPLICATION_SOURCE_NODE_TYPE_ID, EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID, GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID, GENERATED_AUDIO_INGRESS_NODE_TYPE_ID, MICROPHONE_SOURCE_NODE_TYPE_ID, }",
+    "crate::session::extensions::{ PCM_SOURCE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }",
+    "crate::{BinaryFormat, Codec, EventFormat, SignalSpec, TextFormat}",
+    "super::*"
   ],
   "invariants": [
     {
@@ -389,18 +414,26 @@
   "module": "pocketstation::graph::identifier",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "const:MAX_CONFIGURATION_KEY_BYTES",
+    "const:MAX_IDENTIFIER_BYTES",
+    "fn:is_first_party_configuration_key",
+    "fn:is_first_party_structural_node_id",
+    "fn:is_node_type_id",
+    "fn:is_portable_contract_id",
+    "fn:is_protocol_id"
   ],
   "package": "pocketstation",
   "path": "src/graph/identifier.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -528,8 +561,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Syntax checks for the distinct identifier categories owned by the graph.  Portable contract identifiers are available to public identifier types. First-party structural and configuration conventions are test-only audits; external providers retain their native identifier and configuration syntax."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::identifier responsibilities, including identifier; max identifier bytes; is portable contract id."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -567,28 +600,29 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "MAX_IDENTIFIER_BYTES",
-    "MAX_CONFIGURATION_KEY_BYTES",
-    "is_portable_contract_id",
-    "is_first_party_structural_node_id",
-    "is_node_type_id",
-    "is_protocol_id",
-    "is_first_party_configuration_key",
-    "is_bounded_ascii",
-    "is_kebab_segment",
-    "is_snake_segment",
-    "is_node_segment",
-    "is_segment",
-    "is_revision_segment",
-    "tests",
-    "given_first_party_contract_ids_when_audited_then_each_is_portable_and_versioned",
-    "given_first_party_structural_ids_when_audited_then_each_uses_snake_segments",
-    "given_first_party_configuration_keys_when_audited_then_each_is_bounded_snake_case",
-    "given_shipped_signal_wire_ids_when_audited_then_protocol_namespace_stays_versioned",
-    "given_wrong_category_syntax_when_validated_then_it_is_rejected",
-    "given_internal_runtime_node_ids_when_audited_then_they_use_endpoint_vocabulary"
+    "MAX_IDENTIFIER_BYTES (const)",
+    "MAX_CONFIGURATION_KEY_BYTES (const)",
+    "is_portable_contract_id (fn)",
+    "is_first_party_structural_node_id (fn)",
+    "is_node_type_id (fn)",
+    "is_protocol_id (fn)",
+    "is_first_party_configuration_key (fn)",
+    "is_bounded_ascii (fn)",
+    "is_kebab_segment (fn)",
+    "is_snake_segment (fn)",
+    "is_node_segment (fn)",
+    "is_segment (fn)",
+    "is_revision_segment (fn)",
+    "tests (mod)",
+    "given_first_party_contract_ids_when_audited_then_each_is_portable_and_versioned (fn)",
+    "given_first_party_structural_ids_when_audited_then_each_uses_snake_segments (fn)",
+    "given_first_party_configuration_keys_when_audited_then_each_is_bounded_snake_case (fn)",
+    "given_shipped_signal_wire_ids_when_audited_then_protocol_namespace_stays_versioned (fn)",
+    "given_wrong_category_syntax_when_validated_then_it_is_rejected (fn)",
+    "given_internal_runtime_node_ids_when_audited_then_they_use_endpoint_vocabulary (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -598,7 +632,15 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0a0ae3ed89b91ea4098b",
+    "test-2ffb33b44ce1e1a84da1",
+    "test-4134b294aea35bdc9255",
+    "test-9d098b7cf4d784a630d2",
+    "test-be2bbad2f774a6839ed2",
+    "test-c20f73f78d3a220fe430"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

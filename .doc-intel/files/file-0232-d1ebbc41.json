@@ -3,7 +3,11 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "calls": [
     "EdgeObservations::default",
     "OperatorInputObservation::Plan",
@@ -25,7 +29,11 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "constructs": [],
   "content_hash": "15c5f0f217e848e21063715a17b707d00f61309a24572bfa4d049a12074070cd",
   "defaults": [],
@@ -108,8 +116,13 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -123,17 +136,26 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "f75211a08ac4f2e203b20c024a07d6da52ac8635",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "implements": [
     "OperatorInputObservationBinding"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "imports": [
     "crate::runtime::{EdgeObservations, PlanEdgeObservationHandle, TypedEdgeObservationHandle}",
     "super::observations::SessionOperatorInputMetrics"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::runtime::{EdgeObservations, PlanEdgeObservationHandle, TypedEdgeObservationHandle}",
+    "super::observations::SessionOperatorInputMetrics"
   ],
   "invariants": [],
   "language": "Rust",
@@ -142,18 +164,23 @@
   "module": "pocketstation::session::lifecycle::operator_observations",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:OperatorInputObservation",
+    "fn:aggregate",
+    "fn:per_port",
+    "struct:OperatorInputObservationBinding"
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/operator_observations.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -191,8 +218,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Internal projection of operator input-edge observations into Session metrics."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::lifecycle::operator observations responsibilities, including operator observations; operator input observation; 0."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -252,6 +279,11 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/runtime/signal/edge.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs"
+  ],
   "resource_ownership": [
     {
       "line": 64,
@@ -259,11 +291,11 @@
     }
   ],
   "responsibilities": [
-    "OperatorInputObservation",
-    "OperatorInputObservationBinding",
-    "aggregate",
-    "per_port",
-    "edge_observations"
+    "OperatorInputObservation (enum)",
+    "OperatorInputObservationBinding (struct)",
+    "aggregate (fn)",
+    "per_port (fn)",
+    "edge_observations (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -273,6 +305,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

@@ -100,16 +100,27 @@ impl SessionOperatorInput {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Declares the validated constraints applied to compiled operator input."]
 pub struct CompiledOperatorInputContract {
+    #[doc = "Identifies the edge identifier recorded by `CompiledOperatorInputContract`."]
     pub edge_id: EdgeId,
+    #[doc = "Stores the operator node used by `CompiledOperatorInputContract`."]
     pub operator_node: NodeId,
+    #[doc = "Identifies the session identifier recorded by `CompiledOperatorInputContract`."]
     pub session_id: SessionId,
+    #[doc = "Identifies the stem identifier recorded by `CompiledOperatorInputContract`."]
     pub stem_id: StemId,
+    #[doc = "Identifies the source identifier recorded by `CompiledOperatorInputContract`."]
     pub source_id: Option<SourceId>,
+    #[doc = "Stores the input port used by `CompiledOperatorInputContract`."]
     pub input_port: String,
+    #[doc = "Stores the signal spec used by `CompiledOperatorInputContract`."]
     pub signal_spec: SignalSpec,
+    #[doc = "Stores the media used by `CompiledOperatorInputContract`."]
     pub media: MediaCaps,
+    #[doc = "Stores the edge contract used by `CompiledOperatorInputContract`."]
     pub edge_contract: EdgeContract,
+    #[doc = "Sets the capacity signals available to `CompiledOperatorInputContract`."]
     pub capacity_signals: usize,
 }
 
@@ -247,6 +258,7 @@ fn clone_non_audio_payload(payload: &SignalPayload) -> Option<SignalPayload> {
     }
 }
 
+#[doc = "Owns the asynchronous operator task, typed I/O, cancellation, and terminal join result."]
 pub struct AsyncOperatorWorker {
     #[cfg(any(test, feature = "internal-testing"))]
     input: Option<AsyncOperatorInput>,
@@ -533,6 +545,7 @@ fn validate_prepare_context(
 
 impl AsyncOperatorWorker {
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Spawns its owned operation for `AsyncOperatorWorker`."]
     pub fn spawn(
         factory: Arc<dyn AsyncOperatorFactory>,
         configuration: &NodeConfig,
@@ -601,6 +614,7 @@ impl AsyncOperatorWorker {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Spawns composed for `AsyncOperatorWorker`."]
     pub fn spawn_composed(
         factory: Arc<dyn AsyncOperatorFactory>,
         configuration: &NodeConfig,
@@ -761,6 +775,7 @@ impl AsyncOperatorWorker {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Prepares and spawn from plan edge for `AsyncOperatorWorker`."]
     pub async fn prepare_and_spawn_from_plan_edge(
         factory: Arc<dyn AsyncOperatorFactory>,
         configuration: &NodeConfig,
@@ -914,14 +929,17 @@ impl AsyncOperatorWorker {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the input mut held by `AsyncOperatorWorker`."]
     pub fn input_mut(&mut self) -> Result<&mut AsyncOperatorInput, AsyncOperatorInputAccessError> {
         self.input.as_mut().ok_or(AsyncOperatorInputAccessError)
     }
 
+    #[doc = "Returns the observations exposed by `AsyncOperatorWorker`."]
     pub fn observations(&self) -> AsyncOperatorObservationHandle {
         self.observations.clone()
     }
 
+    #[doc = "Cancels and join for `AsyncOperatorWorker`."]
     pub async fn cancel_and_join(self) -> Result<(), AsyncOperatorWorkerError> {
         self.cancellation.store(true, Ordering::Release);
         self.cancellation_notify.notify_one();
@@ -930,6 +948,7 @@ impl AsyncOperatorWorker {
         self.join.await?
     }
 
+    #[doc = "Finishes input to `AsyncOperatorWorker`, joins its worker, and returns the terminal result."]
     pub async fn finish_and_join(self) -> Result<(), AsyncOperatorWorkerError> {
         #[cfg(any(test, feature = "internal-testing"))]
         drop(self.input);

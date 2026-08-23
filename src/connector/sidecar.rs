@@ -40,7 +40,7 @@ impl SidecarConnectorDriverFactory {
 }
 
 impl ConnectorDriverFactory for SidecarConnectorDriverFactory {
-    #[doc = "Returns the preparation group associated with `SidecarConnectorDriverFactory`."]
+    #[doc = "Returns the preparation group held by `SidecarConnectorDriverFactory`."]
     fn preparation_group(
         &self,
         _route_id: RouteId,

@@ -153,6 +153,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -178,7 +179,7 @@
     "pocketstation::{ ApplicationSelector, AsyncOperatorManifest, CopyPolicy, EdgeContract, EndpointConfiguration, EndpointDescriptor, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, Operator, OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, SafetyContract, SignalSpec, Source, Stream, StreamSignal, TypedOperator, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "pocketstation::{ ApplicationSelector, AsyncOperatorManifest, CopyPolicy, EdgeContract, EndpointConfiguration, EndpointDescriptor, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, Operator, OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, SafetyContract, SignalSpec, Source, Stream, StreamSignal, TypedOperator, }"
   ],
   "invariants": [],
   "language": "Rust",
@@ -187,18 +188,20 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "tests/core_extension.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -247,8 +250,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given core extension wire signals when read then ids are language neutral, given core extension typed stream when composed then signal spec is runtime authority under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -275,15 +278,16 @@
     "docs/best-practices/native-extension-trust.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "CapturedSignal",
-    "DerivedSignal",
-    "signal_spec",
-    "signal_spec",
-    "manifest",
-    "given_core_extension_typed_stream_when_composed_then_signal_spec_is_runtime_authority",
-    "given_core_extension_wire_signals_when_read_then_ids_are_language_neutral"
+    "CapturedSignal (struct)",
+    "DerivedSignal (struct)",
+    "signal_spec (fn)",
+    "signal_spec (fn)",
+    "manifest (fn)",
+    "given_core_extension_typed_stream_when_composed_then_signal_spec_is_runtime_authority (fn)",
+    "given_core_extension_wire_signals_when_read_then_ids_are_language_neutral (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -293,7 +297,11 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-67b73fc4fe5bce8cb97f",
+    "test-c7f7a0c2cf17718838d1"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

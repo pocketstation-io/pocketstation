@@ -20,7 +20,11 @@
   ],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/graph/compile/mod.rs",
+    "IMPORTS:src/graph/compile/mod.rs",
+    "REFERENCES:src/session/compile/error.rs"
+  ],
   "calls": [
     "Arc::new",
     "Box::new",
@@ -240,7 +244,11 @@
       "text": "Some(crate::graph::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES)"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/compile/mod.rs",
+    "IMPORTS:src/graph/compile/mod.rs",
+    "REFERENCES:src/session/compile/error.rs"
+  ],
   "constructs": [
     "Arc::new",
     "Box::new",
@@ -1118,8 +1126,13 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/graph/compile/mod.rs",
+    "IMPORTS:src/graph/compile/mod.rs",
+    "REFERENCES:src/session/compile/error.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -1133,7 +1146,11 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "037783ac1da6887f0ae3f2bf76833b8d92a00f8d",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/graph/compile/mod.rs",
+    "IMPORTS:src/graph/compile/mod.rs",
+    "REFERENCES:src/session/compile/error.rs"
+  ],
   "implements": [
     "CompileContext<'a>",
     "InsertAdapterNodesPass",
@@ -1162,7 +1179,11 @@
     "NodeFactory for MonoOnlySinkFactory",
     "NodeFactory for StereoSinkFactory"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/graph/compile/mod.rs",
+    "IMPORTS:src/graph/compile/mod.rs",
+    "REFERENCES:src/session/compile/error.rs"
+  ],
   "imports": [
     "crate::frame::SampleFormat",
     "crate::graph::builtins::PassthroughNode",
@@ -1183,7 +1204,26 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::frame::SampleFormat",
+    "crate::graph::builtins::PassthroughNode",
+    "crate::graph::dsl::Pipeline",
+    "crate::graph::ir::{GraphIr, ResolvedEdge, ResolvedNode}",
+    "crate::graph::node::{ConfigError, NodeConfig, NodeTypeId, PrepareContext}",
+    "crate::graph::node::{NodeConfig, NodeDescriptor, NodeTypeId}",
+    "crate::graph::partition::{ExecutionPartition, SafetyContract}",
+    "crate::graph::ports::{ BackpressurePolicy, ChannelLayout, ClockDomain, EdgeContract, MediaCaps, PortDirection, PortSpec, }",
+    "crate::graph::ports::{AudioCaps, ChannelLayout, Multiplicity}",
+    "crate::graph::registry::NodeFactory",
+    "crate::graph::registry::NodeRegistry",
+    "crate::graph::runtime_node::RuntimeNode",
+    "crate::graph::spec::{ EdgeId, EdgeSpec, GraphSpec, InputPortRef, NodeId, NodeSpec, OutputPortRef, }",
+    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
+    "proptest::prelude::*",
+    "std::collections::{BTreeMap, BTreeSet}",
+    "std::sync::Arc",
+    "super::*",
+    "use crate::graph::node::{ConfigError, NodeConfig, NodeTypeId, PrepareContext};"
   ],
   "invariants": [
     {
@@ -1326,21 +1366,45 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-b2196da7812aa576e6e6",
     "pattern-df71ba55a86c5b0cc5ce"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(CompileError::UnknownPort {",
+    "Err(ConfigError::Invalid {",
+    "enum:CompileError",
+    "fn:compile",
+    "fn:new",
+    "return Err(CompileError::ClockDomainMismatch {",
+    "return Err(CompileError::CycleDetected);",
+    "return Err(CompileError::InvalidRealtimeEdge {",
+    "return Err(CompileError::InvalidSafetyContract {",
+    "return Err(CompileError::MediaMismatch {",
+    "return Err(CompileError::SignalMismatch {",
+    "return Err(CompileError::UnknownNode(node_id.index()));",
+    "return Err(CompileError::WrongPortDirection {",
+    "struct:CompileContext",
+    "struct:Compiler",
+    "struct:CycleDetectionPass",
+    "struct:InsertAdapterNodesPass",
+    "struct:NegotiateCapsPass",
+    "struct:ValidateClockDomainsPass",
+    "struct:ValidateNodeIdsPass",
+    "struct:ValidatePortsPass",
+    "struct:ValidateRealtimeBoundariesPass",
+    "struct:ValidateSafetyContractsPass",
+    "trait:GraphPass"
   ],
   "package": "pocketstation",
   "path": "src/graph/compile/resolve.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -2037,8 +2101,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Verification-pass pipeline that turns a `GraphSpec` into a checked `GraphIr`. Resolution binds descriptors; ordered passes validate ids, ports, media, clock domains, realtime boundaries, and acyclicity. Lowering into a `RuntimePlan` lives in `planner::RuntimePlanner` (Wave 5)."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::compile::resolve responsibilities, including Classifies failures reported as compile error.; Reported when the owning operation encounters unknown node type.; Identifies the type identifier recorded by `InvalidConfig`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -2075,6 +2139,14 @@
     "docs/troubleshooting/session-start.md",
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/ir.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/partition.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/graph/spec.rs"
   ],
   "resource_ownership": [
     {
@@ -2243,106 +2315,47 @@
     }
   ],
   "responsibilities": [
-    "MONO_DOWNMIX_ADAPTER_TYPE",
-    "CompileError",
-    "CompileContext",
-    "new",
-    "GraphPass",
-    "run",
-    "find_node",
-    "ensure_port",
-    "port_media",
-    "port_spec",
-    "audio_layout",
-    "InsertAdapterNodesPass",
-    "needs_mono_downmix",
-    "run",
-    "ValidateNodeIdsPass",
-    "run",
-    "ValidateSafetyContractsPass",
-    "run",
-    "ValidatePortsPass",
-    "run",
-    "ValidateClockDomainsPass",
-    "run",
-    "NegotiateCapsPass",
-    "run",
-    "ValidateRealtimeBoundariesPass",
-    "run",
-    "CycleDetectionPass",
-    "run",
-    "Compiler",
-    "new",
-    "compile",
-    "resolve",
-    "default",
-    "tests",
-    "audio_media",
-    "audio_media_with",
-    "port",
-    "test_descriptor",
-    "unused_node",
-    "SourceFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "TransformFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "SinkFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "MixerFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "AsyncModelFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "BinarySourceFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "BinarySinkFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "TextSinkFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "SignalTextSinkFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "UnsafeRealtimeFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "RejectingFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "StereoSourceFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "MonoOnlySinkFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "StereoSinkFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "test_registry",
-    "given_linear_graph_when_compiled_then_topo_orders_source_before_sink",
-    "given_unspecified_binary_edge_when_compiled_then_bounded_async_contract_is_derived",
-    "given_unregistered_type_when_compiled_then_unknown_node_type",
-    "given_node_with_rejecting_config_when_compiled_then_invalid_config"
+    "pocketstation::graph::compile::resolve::CompileError: Classifies failures reported as compile error.",
+    "pocketstation::graph::compile::resolve::CompileError::UnknownNodeType: Reported when the owning operation encounters unknown node type.",
+    "CompileError::InvalidConfig::type_id: Identifies the type identifier recorded by `InvalidConfig`.",
+    "CompileError::InvalidConfig::reason: Carries the reason reported by `InvalidConfig`.",
+    "pocketstation::graph::compile::resolve::CompileError::InvalidConfig: Reported when the owning operation encounters invalid config.",
+    "pocketstation::graph::compile::resolve::CompileError::UnknownNode: Reported when the owning operation encounters unknown node.",
+    "CompileError::UnknownPort::node: Stores the node used by `UnknownPort`.",
+    "CompileError::UnknownPort::port: Stores the port used by `UnknownPort`.",
+    "pocketstation::graph::compile::resolve::CompileError::UnknownPort: Reported when the owning operation encounters unknown port.",
+    "CompileError::WrongPortDirection::node: Stores the node used by `WrongPortDirection`.",
+    "CompileError::WrongPortDirection::port: Stores the port used by `WrongPortDirection`.",
+    "pocketstation::graph::compile::resolve::CompileError::WrongPortDirection: Reported when the owning operation encounters wrong port direction.",
+    "pocketstation::graph::compile::resolve::CompileError::ClockDomainMismatch: Reported when the owning operation encounters clock domain mismatch.",
+    "CompileError::ClockDomainMismatch::node: Stores the node used by `ClockDomainMismatch`.",
+    "CompileError::ClockDomainMismatch::port: Stores the port used by `ClockDomainMismatch`.",
+    "CompileError::ClockDomainMismatch::expected: Records the value expected by `ClockDomainMismatch`.",
+    "CompileError::ClockDomainMismatch::found: Stores the found used by `ClockDomainMismatch`.",
+    "CompileError::MediaMismatch::edge: Stores the edge used by `MediaMismatch`.",
+    "CompileError::MediaMismatch::from: Identifies the origin represented by `MediaMismatch`.",
+    "CompileError::MediaMismatch::to: Identifies the destination represented by `MediaMismatch`.",
+    "pocketstation::graph::compile::resolve::CompileError::MediaMismatch: Reported when the owning operation encounters media mismatch.",
+    "CompileError::SignalMismatch::edge: Stores the edge used by `SignalMismatch`.",
+    "CompileError::SignalMismatch::from: Identifies the origin represented by `SignalMismatch`.",
+    "CompileError::SignalMismatch::to: Identifies the destination represented by `SignalMismatch`.",
+    "pocketstation::graph::compile::resolve::CompileError::SignalMismatch: Reported when the owning operation encounters signal mismatch.",
+    "pocketstation::graph::compile::resolve::CompileError::InvalidSafetyContract: Reported when the owning operation encounters invalid safety contract.",
+    "CompileError::InvalidSafetyContract::node: Stores the node used by `InvalidSafetyContract`.",
+    "CompileError::InvalidSafetyContract::type_id: Identifies the type identifier recorded by `InvalidSafetyContract`.",
+    "CompileError::InvalidSafetyContract::execution: Stores the execution used by `InvalidSafetyContract`.",
+    "CompileError::InvalidSafetyContract::safety: Stores the safety used by `InvalidSafetyContract`.",
+    "CompileError::InvalidRealtimeEdge::edge: Stores the edge used by `InvalidRealtimeEdge`.",
+    "CompileError::InvalidRealtimeEdge::reason: Carries the reason reported by `InvalidRealtimeEdge`.",
+    "pocketstation::graph::compile::resolve::CompileError::InvalidRealtimeEdge: Reported when the owning operation encounters invalid realtime edge.",
+    "pocketstation::graph::compile::resolve::CompileError::CycleDetected: Reported when the owning operation encounters cycle detected.",
+    "CompileError::AdapterUnavailable::edge: Stores the edge used by `AdapterUnavailable`.",
+    "CompileError::AdapterUnavailable::type_id: Identifies the type identifier recorded by `AdapterUnavailable`.",
+    "pocketstation::graph::compile::resolve::CompileError::AdapterUnavailable: Reported when the owning operation encounters adapter unavailable.",
+    "pocketstation::graph::compile::resolve::Compiler: Runs the ordered graph-validation passes that resolve a graph specification into executable IR.",
+    "new: Creates a new `Compiler`.",
+    "compile: Compiles its owned operation for `Compiler`.",
+    "default: Returns the default `Compiler` value."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -2438,7 +2451,27 @@
       "text": "let model = graph.add_node(\"model.async\", NodeConfig::new());"
     }
   ],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-08478d6eef6999bc6a73",
+    "test-3dd54e90aaf4832a8387",
+    "test-4ca4c05069c83f512be0",
+    "test-5516fcaedfc2241e34cc",
+    "test-5cacda604a7b24ba31ee",
+    "test-65a2b9b9fd5cc9674c26",
+    "test-6cbc98440137003f4368",
+    "test-6dba13dc9eb08d12b1a1",
+    "test-732335ff31e319cd06ff",
+    "test-7a4558ff5b55d4925b12",
+    "test-7ece727a2fa318f311df",
+    "test-85a33b287fefd710b3a1",
+    "test-8c765cd365efcd62766c",
+    "test-92bc66964b3eeb57cf0b",
+    "test-c783550ebba9b9074d47",
+    "test-d6491a6fd6138141fd51",
+    "test-ef4bd9407893b33d7b06",
+    "test-f6fe68993af8cd133a10"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

@@ -3,7 +3,12 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
   "calls": [
     "Arc::new",
     "EndpointConfiguration::new",
@@ -54,7 +59,12 @@
       "text": "DEFAULT_MULTISTEM_RECORDING_GROUP_ID,"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
   "constructs": [
     "Arc::new",
     "EndpointConfiguration::new",
@@ -251,8 +261,14 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -268,7 +284,12 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "b0f8d7dd59c29066cd6e5670e29216e949168c65",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
   "implements": [
     "SessionRecordingReceipt",
     "SessionEngineBuilder",
@@ -276,7 +297,12 @@
     "SourceOutputHandle",
     "Session"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
   "imports": [
     "crate::endpoint::{EndpointDriverFactory, EndpointGroupId}",
     "crate::graph::NodeTypeId",
@@ -287,7 +313,17 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "DEFAULT_MULTISTEM_RECORDING_GROUP_ID,",
+    "EndpointGroupId::new(DEFAULT_MULTISTEM_RECORDING_GROUP_ID),",
+    "crate::endpoint::{EndpointDriverFactory, EndpointGroupId}",
+    "crate::graph::NodeTypeId",
+    "crate::recording::{ MultistemRecordingReceipt, RecordingOutcome, SessionMultistemEndpointCoordinator, MULTISTEM_GROUP_CONFIGURATION_KEY, MULTISTEM_NAME_CONFIGURATION_KEY, }",
+    "crate::recording::{ recording_outcome_error_code as session_recording_outcome_error_code, RecordingErrorCode as SessionRecordingErrorCode, RecordingObservations as SessionRecordingObservations, RecordingOutcome as SessionRecordingOutcome, RecordingState as SessionRecordingState, RecordingStemOutcome as SessionRecordingStemOutcome, }",
+    "crate::session::{ EndpointConfiguration, EndpointDescriptor, EndpointExtensionRegistrationError, EndpointHandle, OperatorId, Session, SessionEngineBuilder, SessionError, SourceOutputHandle, StemHandle, }",
+    "pub const DEFAULT_MULTISTEM_RECORDING_GROUP_ID: &str = \"session.multistem.default.v1\";",
+    "std::path::PathBuf",
+    "std::sync::Arc"
   ],
   "invariants": [],
   "language": "Rust",
@@ -296,20 +332,30 @@
   "module": "pocketstation::session::extensions::recording",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-b899f2a91d638fb22bfb"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "const:DEFAULT_MULTISTEM_RECORDING_GROUP_ID",
+    "const:RECORDER_NODE_TYPE_ID",
+    "const:RECORDER_OPERATOR_ID",
+    "const:RECORDING_GROUP_CONFIGURATION_KEY",
+    "fn:declares_multistem_recording",
+    "fn:outcome",
+    "fn:record",
+    "fn:register_multistem_recording",
+    "struct:SessionRecordingReceipt"
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/recording.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -383,8 +429,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Session composition for the multistem recording endpoint.  Recording owns persistence, timeline, policy, and finalization. Session owns only declaration and registration through the generic Endpoint path."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::extensions::recording responsibilities, including Defines the public recorder node type identifier value.; Defines the public recorder operator identifier value.; Defines the public recording group configuration key value.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -444,6 +490,14 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/recording/endpoint.rs",
+    "REFERENCES:src/recording/writer.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/error.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
   "resource_ownership": [
     {
       "line": 7,
@@ -459,17 +513,16 @@
     }
   ],
   "responsibilities": [
-    "RECORDER_NODE_TYPE_ID",
-    "RECORDER_OPERATOR_ID",
-    "RECORDING_GROUP_CONFIGURATION_KEY",
-    "DEFAULT_MULTISTEM_RECORDING_GROUP_ID",
-    "SessionRecordingReceipt",
-    "outcome",
-    "register_multistem_recording",
-    "record",
-    "record",
-    "declares_multistem_recording",
-    "multistem_recording_edge_contract"
+    "pocketstation::session::extensions::recording::RECORDER_NODE_TYPE_ID: Defines the public recorder node type identifier value.",
+    "pocketstation::session::extensions::recording::RECORDER_OPERATOR_ID: Defines the public recorder operator identifier value.",
+    "pocketstation::session::extensions::recording::RECORDING_GROUP_CONFIGURATION_KEY: Defines the public recording group configuration key value.",
+    "pocketstation::session::extensions::recording::DEFAULT_MULTISTEM_RECORDING_GROUP_ID: Defines the public default multistem recording group identifier value.",
+    "pocketstation::session::extensions::recording::SessionRecordingReceipt: Retains the identity and observation access returned for session recording.",
+    "outcome: Returns the outcome held by `SessionRecordingReceipt`.",
+    "register_multistem_recording: Registers multistem recording for `SessionEngineBuilder`.",
+    "record: Attaches recording output to `StemHandle`.",
+    "record: Attaches recording output to `SourceOutputHandle`.",
+    "declares_multistem_recording: Returns whether `Session` declares multistem recording."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -479,6 +532,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

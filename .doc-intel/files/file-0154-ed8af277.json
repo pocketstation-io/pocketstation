@@ -41,7 +41,15 @@
       "text": "/// Not the OS audio callback, but still real-time-safe: no alloc, no locks,"
     }
   ],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/plan.rs",
+    "REFERENCES:src/graph/signal/preparation.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
   "calls": [
     "calls",
     "cfg",
@@ -73,7 +81,15 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/plan.rs",
+    "REFERENCES:src/graph/signal/preparation.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
   "constructs": [],
   "content_hash": "1b85b74401cd4fd807b2bab54137b47c6d61e29cd4a2e7c3fa388e0aa53bcb26",
   "defaults": [],
@@ -252,8 +268,17 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/plan.rs",
+    "REFERENCES:src/graph/signal/preparation.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -267,17 +292,34 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "916d9df2625d8ef9497f88e479f1019b131d9475",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/plan.rs",
+    "REFERENCES:src/graph/signal/preparation.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
   "implements": [
     "ExecutionPartition",
     "SafetyContract"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/plan.rs",
+    "REFERENCES:src/graph/signal/preparation.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
   "imports": [
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "super::*"
   ],
   "invariants": [
     {
@@ -387,18 +429,25 @@
   "module": "pocketstation::graph::partition",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:ExecutionPartition",
+    "enum:SafetyContract",
+    "fn:is_valid_for",
+    "fn:needs_bridge_to",
+    "fn:rank",
+    "fn:requires_realtime_safety"
   ],
   "package": "pocketstation",
   "path": "src/graph/partition.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -520,8 +569,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "ExecutionPartition and SafetyContract \u2014 the two orthogonal axes of operator placement.  These are separate types because they answer different questions: `ExecutionPartition` \u2014 WHERE does this operator run? `SafetyContract`     \u2014 WHAT does it guarantee about its runtime behaviour?  The compiler enforces: `SafetyContract::RealtimeSafe` is only valid on `AudioCallback` or `RealtimeCpu` partitions.  Any edge that crosses partition boundaries gets a compiler-inserted `Bridge`; no cross-partition calls on the hot path."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::partition responsibilities, including WHERE an operator runs.; Platform OS audio callback \u2014 the strictest domain.; Dedicated real-time processing thread.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -559,27 +608,25 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "ExecutionPartition",
-    "requires_realtime_safety",
-    "rank",
-    "needs_bridge_to",
-    "SafetyContract",
-    "is_valid_for",
-    "tests",
-    "given_audio_callback_partition_when_requires_realtime_safety_then_true",
-    "given_non_realtime_partitions_when_requires_realtime_safety_then_false",
-    "given_partitions_when_ranked_then_audio_callback_is_lowest",
-    "given_same_partition_when_needs_bridge_then_false",
-    "given_different_partitions_when_needs_bridge_then_true",
-    "given_realtime_safe_contract_when_valid_for_audio_callback_then_true",
-    "given_allocation_allowed_contract_when_valid_for_audio_callback_then_false",
-    "given_network_allowed_contract_when_valid_for_async_worker_then_true",
-    "given_network_allowed_contract_when_valid_for_blocking_worker_then_false",
-    "given_external_service_contract_when_valid_for_external_partition_then_true",
-    "given_blocking_allowed_contract_when_valid_for_blocking_worker_then_true",
-    "given_blocking_allowed_contract_when_valid_for_async_worker_then_false"
+    "pocketstation::graph::partition::ExecutionPartition: WHERE an operator runs.",
+    "pocketstation::graph::partition::ExecutionPartition::AudioCallback: Platform OS audio callback \u2014 the strictest domain.",
+    "pocketstation::graph::partition::ExecutionPartition::RealtimeCpu: Dedicated real-time processing thread.",
+    "pocketstation::graph::partition::ExecutionPartition::AsyncWorker: Tokio async task.",
+    "pocketstation::graph::partition::ExecutionPartition::BlockingWorker: `spawn_blocking` thread.",
+    "pocketstation::graph::partition::ExecutionPartition::External: Remote service \u2014 always async, always network-required.",
+    "requires_realtime_safety: Returns `true` if the partition requires strict real-time safety.",
+    "rank: Priority rank for scheduling: lower = higher priority.",
+    "needs_bridge_to: Returns `true` if crossing from `self` to `other` requires a compiler-inserted Bridge.",
+    "pocketstation::graph::partition::SafetyContract: WHAT an operator guarantees about its runtime behaviour.",
+    "pocketstation::graph::partition::SafetyContract::RealtimeSafe: No heap allocation, no locking, no blocking, no logging.",
+    "pocketstation::graph::partition::SafetyContract::AllocationAllowed: May heap-allocate but must not block or make network calls.",
+    "pocketstation::graph::partition::SafetyContract::BlockingAllowed: May block the current OS thread.",
+    "pocketstation::graph::partition::SafetyContract::NetworkAllowed: May make network calls (implies async + allocation allowed).",
+    "pocketstation::graph::partition::SafetyContract::ExternalService: Backed by a remote service; all calls are async network operations.",
+    "is_valid_for: Returns `true` if this contract is compatible with the given partition."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -618,7 +665,21 @@
       "text": "/// Backed by a remote service; all calls are async network operations."
     }
   ],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0ed6d5e5aedfb9880e78",
+    "test-2dbca6af06117c1c9bdb",
+    "test-715ab55819026a5e2ee1",
+    "test-96ea4c397551a4ce0e9e",
+    "test-9fe28fb63ae0393a08b9",
+    "test-ab7f796ae61bc0efc199",
+    "test-b01b34cf6e6f3258c91d",
+    "test-b898c8afe76701619b1a",
+    "test-be44211d143bc96ed250",
+    "test-d54ff707a3d77d445397",
+    "test-eff95761245ec9c01147",
+    "test-f326eff9f3993aedf33e"
+  ],
   "threads": [
     {
       "line": 14,

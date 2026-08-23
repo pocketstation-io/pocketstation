@@ -110,6 +110,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -134,7 +135,9 @@
     "pocketstation::internal::codec::{ OpusApplication, OpusChannels, OpusConfig, OpusEncoder, OpusFrameDuration, OpusSampleRate, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "criterion::{criterion_group, criterion_main, BenchmarkId, Criterion}",
+    "opus::{Application, Channels}",
+    "pocketstation::internal::codec::{ OpusApplication, OpusChannels, OpusConfig, OpusEncoder, OpusFrameDuration, OpusSampleRate, }"
   ],
   "invariants": [
     {
@@ -148,18 +151,20 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "benches/opus_encode.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -196,8 +201,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "A2 \u2014 OpusEncode budget validation.  Validates \u00a711.3: FrameBus \u2192 Opus encoder \u2264 2ms per 20ms frame.  Run: cargo bench -p pocketstation --bench opus_encode  Pass threshold: p99 \u2264 2ms (2_000_000 ns)."
+    "classification": "INFERRED",
+    "text": "Implements not applicable responsibilities, including the benches/opus encode boundary."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -222,6 +227,7 @@
     "docs/errors/frames-and-codec.md",
     "docs/troubleshooting/opus.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 33,
@@ -229,11 +235,11 @@
     }
   ],
   "responsibilities": [
-    "SAMPLES_20MS_MONO",
-    "SAMPLES_20MS_STEREO",
-    "SAMPLES_10MS_MONO",
-    "pcm_sine",
-    "bench_opus_encode"
+    "SAMPLES_20MS_MONO (const)",
+    "SAMPLES_20MS_STEREO (const)",
+    "SAMPLES_10MS_MONO (const)",
+    "pcm_sine (fn)",
+    "bench_opus_encode (fn)"
   ],
   "retry_behavior": [],
   "serialization": [
@@ -268,6 +274,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

@@ -54,6 +54,7 @@ pub struct SystemLoopbackSource(Impl);
 
 impl SystemLoopbackSource {
     #[cfg(feature = "internal-testing")]
+    #[doc = "Returns the capture mode held by `SystemLoopbackSource`."]
     pub fn capture_mode<F>(mode: CaptureMode, callback: F) -> Result<Self, LoopbackError>
     where
         F: FnMut(AudioFrame) + Send + 'static,
@@ -245,6 +246,7 @@ impl SystemLoopbackSource {
         }))
     }
 
+    #[doc = "Returns the observations exposed by `SystemLoopbackSource`."]
     pub fn observations(&self) -> CaptureObservations {
         match &self.0 {
             Impl::Tap(source) => source.observations(),
@@ -252,6 +254,7 @@ impl SystemLoopbackSource {
         }
     }
 
+    #[doc = "Returns the source identifier held by `SystemLoopbackSource`."]
     pub fn source_id(&self) -> crate::frame::SourceId {
         match &self.0 {
             Impl::Tap(source) => source.source_id(),
@@ -264,6 +267,7 @@ impl SystemLoopbackSource {
         }
     }
 
+    #[doc = "Returns a handle for reading observations from `SystemLoopbackSource`."]
     pub fn observation_handle(&self) -> CaptureObservationHandle {
         match &self.0 {
             Impl::Tap(source) => source.observation_handle(),
@@ -271,6 +275,7 @@ impl SystemLoopbackSource {
         }
     }
 
+    #[doc = "Stops `SystemLoopbackSource`, joins its worker, and returns the terminal result."]
     pub fn stop_and_join(mut self) -> Result<CaptureObservations, LoopbackError> {
         self.stop_reader()
     }
@@ -296,6 +301,7 @@ impl SystemLoopbackSource {
 
 /// Drop contract — control thread only: signal and join the owned reader.
 impl Drop for SystemLoopbackSource {
+    #[doc = "Releases resources owned by `SystemLoopbackSource`."]
     fn drop(&mut self) {
         let _ = self.stop_reader();
     }

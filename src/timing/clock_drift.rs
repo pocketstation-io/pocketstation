@@ -3,7 +3,7 @@ const DRIFT_WINDOW_SAMPLES: usize = 100;
 #[derive(Debug, Clone, Copy, Default, PartialEq)]
 #[doc = "Reports the clock drift snapshot collected at an observation boundary."]
 pub struct ClockDriftSnapshot {
-    #[doc = "Stores the drift ppm associated with `ClockDriftSnapshot`."]
+    #[doc = "Stores the drift ppm used by `ClockDriftSnapshot`."]
     pub drift_ppm: f64,
     #[doc = "Stores the accumulated error value for `ClockDriftSnapshot`, in nanoseconds."]
     pub accumulated_error_ns: i64,
@@ -11,7 +11,7 @@ pub struct ClockDriftSnapshot {
     pub observed_samples_count: u64,
 }
 
-#[doc = "Represents clock drift estimator in the PocketStation API."]
+#[doc = "Estimates source-clock drift from accumulated source and Session timing observations."]
 pub struct ClockDriftEstimator {
     observations: [(f64, f64); DRIFT_WINDOW_SAMPLES],
     write_index: usize,
@@ -63,11 +63,11 @@ impl ClockDriftEstimator {
         self.estimate();
     }
 
-    #[doc = "Returns the drift ppm associated with `ClockDriftEstimator`."]
+    #[doc = "Returns the drift ppm held by `ClockDriftEstimator`."]
     pub fn drift_ppm(&self) -> f64 {
         self.drift_ppm
     }
-    #[doc = "Returns the accumulated error nanoseconds associated with `ClockDriftEstimator`."]
+    #[doc = "Returns the accumulated error nanoseconds held by `ClockDriftEstimator`."]
     pub fn accumulated_error_ns(&self) -> i64 {
         self.accumulated_error_ns
     }

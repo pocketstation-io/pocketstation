@@ -3,7 +3,12 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/extensions/audio_input/mod.rs",
+    "IMPORTS:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs"
+  ],
   "calls": [
     "AudioInputBufferError::Capacity",
     "AudioInputWriteError::new",
@@ -72,7 +77,12 @@
     }
   ],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/extensions/audio_input/mod.rs",
+    "IMPORTS:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs"
+  ],
   "constructs": [
     "AudioInputWriteError::new",
     "Self::new",
@@ -551,8 +561,14 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/extensions/audio_input/mod.rs",
+    "IMPORTS:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -566,7 +582,12 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "f6d30cb4352aad836b7c6c524912b2c08e5fdc34",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/extensions/audio_input/mod.rs",
+    "IMPORTS:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs"
+  ],
   "implements": [
     "AudioInputBuffer",
     "fmt::Debug for AudioInputBuffer",
@@ -578,7 +599,12 @@
     "fmt::Display for AudioInputWriteError",
     "std::error::Error for AudioInputWriteError"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/extensions/audio_input/mod.rs",
+    "IMPORTS:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/session/extensions/audio_input/source.rs"
+  ],
   "imports": [
     "crate::frame::{AudioBufferHandle, AudioBufferPool, AudioBufferWriteError}",
     "crate::runtime::SignalEdgeSender",
@@ -589,7 +615,13 @@
     "super::AudioInputConfig"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::frame::{AudioBufferHandle, AudioBufferPool, AudioBufferWriteError}",
+    "crate::runtime::SignalEdgeSender",
+    "crate::timing::monotonic_timestamp_ns",
+    "std::fmt",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "super::AudioInputConfig"
   ],
   "invariants": [],
   "language": "Rust",
@@ -598,21 +630,50 @@
   "module": "pocketstation::session::extensions::audio_input::buffer",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-bf9d68a8d25141b92721",
-    "pattern-45cc0a7c968cd3197190"
+    "pattern-45cc0a7c968cd3197190",
+    "pattern-bf9d68a8d25141b92721"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:AudioInputBufferAcquireError",
+    "enum:AudioInputBufferError",
+    "enum:AudioInputWriteErrorKind",
+    "fn:close",
+    "fn:configuration",
+    "fn:into_rejected",
+    "fn:kind",
+    "fn:mark_discontinuity",
+    "fn:observations",
+    "fn:sample_capacity",
+    "fn:sample_count",
+    "fn:samples",
+    "fn:samples_mut",
+    "fn:try_acquire",
+    "fn:try_copy_from_slice",
+    "fn:try_send",
+    "fn:try_set_sample_count",
+    "fn:try_write",
+    "if let Err(error) = buffer.try_copy_from_slice(samples) {",
+    "return Err(AudioInputBufferAcquireError::Cancelled);",
+    "return Err(AudioInputBufferAcquireError::Closed);",
+    "return Err(AudioInputWriteError::new(",
+    "struct:AudioInputBuffer",
+    "struct:AudioInputObservations",
+    "struct:AudioInputState",
+    "struct:AudioInputWriteError",
+    "struct:AudioInputWriter",
+    "struct:QueuedAudioInputFrame"
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/audio_input/buffer.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -807,7 +868,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::extensions::audio_input::buffer`."
+    "text": "Implements pocketstation::session::extensions::audio input::buffer responsibilities, including Leases bounded PCM storage from an external-audio input until the caller submits or releases it.; Returns the sample capacity held by `AudioInputBuffer`.; Returns the sample count held by `AudioInputBuffer`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -867,6 +928,11 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/pool.rs",
+    "REFERENCES:src/runtime/signal/edge.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs"
+  ],
   "resource_ownership": [
     {
       "line": 3,
@@ -882,37 +948,55 @@
     }
   ],
   "responsibilities": [
-    "AudioInputBuffer",
-    "sample_capacity",
-    "sample_count",
-    "try_set_sample_count",
-    "try_copy_from_slice",
-    "samples",
-    "samples_mut",
-    "mark_discontinuity",
-    "fmt",
-    "AudioInputState",
-    "AudioInputObservations",
-    "QueuedAudioInputFrame",
-    "AudioInputWriter",
-    "configuration",
-    "try_acquire",
-    "try_write",
-    "try_send",
-    "close",
-    "observations",
-    "fmt",
-    "AudioInputBufferAcquireError",
-    "AudioInputBufferError",
-    "AudioInputWriteErrorKind",
-    "AudioInputWriteError",
-    "new",
-    "kind",
-    "into_rejected",
-    "from",
-    "fmt",
-    "fmt",
-    "sample_duration_ns"
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputBuffer: Leases bounded PCM storage from an external-audio input until the caller submits or releases it.",
+    "sample_capacity: Returns the sample capacity held by `AudioInputBuffer`.",
+    "sample_count: Returns the sample count held by `AudioInputBuffer`.",
+    "try_set_sample_count: Attempts to set sample count through `AudioInputBuffer`.",
+    "try_copy_from_slice: Attempts to copy from slice through `AudioInputBuffer`.",
+    "samples: Returns the audio samples held by `AudioInputBuffer`.",
+    "samples_mut: Returns the samples mut held by `AudioInputBuffer`.",
+    "mark_discontinuity: Marks the next value from `AudioInputBuffer` as discontinuous.",
+    "fmt: Formats `AudioInputBuffer` with the requested formatter.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputObservations: Reports the audio input observations collected at an observation boundary.",
+    "AudioInputObservations::capacity_frames: Sets the capacity frames available to `AudioInputObservations`.",
+    "AudioInputObservations::buffer_slots: Stores the buffer slots used by `AudioInputObservations`.",
+    "AudioInputObservations::available_buffers: Stores the available buffers used by `AudioInputObservations`.",
+    "AudioInputObservations::accepted_total: Counts the total number of accepted observed by `AudioInputObservations`.",
+    "AudioInputObservations::full_total: Counts the total number of full observed by `AudioInputObservations`.",
+    "AudioInputObservations::invalid_total: Counts the total number of invalid observed by `AudioInputObservations`.",
+    "AudioInputObservations::cancelled: Stores the cancelled used by `AudioInputObservations`.",
+    "AudioInputObservations::closed: Stores the closed used by `AudioInputObservations`.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputWriter: Sends audio input values across its declared ownership boundary.",
+    "configuration: Returns the configuration held by `AudioInputWriter`.",
+    "try_acquire: Attempts to acquire through `AudioInputWriter`.",
+    "try_write: Attempts to write through `AudioInputWriter`.",
+    "try_send: Attempts to send a value through `AudioInputWriter` without waiting for capacity.",
+    "close: Closes `AudioInputWriter` to further work.",
+    "observations: Returns the observations exposed by `AudioInputWriter`.",
+    "fmt: Formats `AudioInputWriter` with the requested formatter.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError: Classifies failures reported as audio input buffer acquire error.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError::Full: Reports that bounded capacity is full.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError::Closed: Reports that the underlying channel or resource is closed.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferAcquireError::Cancelled: Indicates that the operation was cancelled.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError: Classifies failures reported as audio input buffer error.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError::WrongSource: Reported when the owning operation encounters wrong source.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError::Empty: Represents an empty value or collection.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError::MisalignedChannels: Reported when the owning operation encounters misaligned channels.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError::WrongFrameLength: Reported when the owning operation encounters wrong frame length.",
+    "AudioInputBufferError::WrongFrameLength::expected_samples: Stores the expected samples used by `WrongFrameLength`.",
+    "AudioInputBufferError::WrongFrameLength::actual_samples: Stores the actual samples used by `WrongFrameLength`.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputBufferError::Capacity: Reported when the owning operation encounters capacity.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind: Selects the audio input write error kind used by PocketStation.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind::Full: Reports that bounded capacity is full.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind::Closed: Reports that the underlying channel or resource is closed.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind::Cancelled: Indicates that the operation was cancelled.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind::InvalidBuffer: Selects invalid buffer behavior for `AudioInputWriteErrorKind`.",
+    "pocketstation::session::extensions::audio_input::buffer::AudioInputWriteError: Reports a audio input write error.",
+    "kind: Returns the kind represented by `AudioInputWriteError`.",
+    "into_rejected: Converts `AudioInputWriteError` into rejected.",
+    "from: Converts the supplied value into `AudioInputWriteError`.",
+    "fmt: Formats `AudioInputWriteError` with the requested formatter.",
+    "fmt: Formats `AudioInputWriteError` with the requested formatter."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -922,7 +1006,10 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-795ca5a283c59dbf6066"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

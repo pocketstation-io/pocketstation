@@ -195,6 +195,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -227,7 +228,11 @@
     "std::time::{Duration, Instant}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(feature = \"conformance-fixtures\")]",
+    "pocketstation::SessionRecordingState",
+    "pocketstation::{Session, Source}",
+    "std::thread",
+    "std::time::{Duration, Instant}"
   ],
   "invariants": [
     {
@@ -269,18 +274,20 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "tests/session_facade.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -323,8 +330,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given public facade when session trace enabled then trace replays complete lifecycle, given public facade when external destinations run then all branches receive media, given stopped public session when new session starts then capture restarts cleanly under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -384,14 +391,15 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "given_public_facade_when_session_declared_then_canonical_types_are_used",
-    "given_public_facade_when_external_destinations_run_then_all_branches_receive_media",
-    "given_public_facade_when_session_trace_enabled_then_trace_replays_complete_lifecycle",
-    "given_stopped_public_session_when_new_session_starts_then_capture_restarts_cleanly",
-    "wait_for_both_stems",
-    "wait_for_external_routes"
+    "given_public_facade_when_session_declared_then_canonical_types_are_used (fn)",
+    "given_public_facade_when_external_destinations_run_then_all_branches_receive_media (fn)",
+    "given_public_facade_when_session_trace_enabled_then_trace_replays_complete_lifecycle (fn)",
+    "given_stopped_public_session_when_new_session_starts_then_capture_restarts_cleanly (fn)",
+    "wait_for_both_stems (fn)",
+    "wait_for_external_routes (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -435,7 +443,13 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-17d9667bcb3d339c7157",
+    "test-2d7cf1284199bcec7268",
+    "test-6a5d630191363f7e4442",
+    "test-af845290a54732a7cf35"
+  ],
   "threads": [
     {
       "line": 2,

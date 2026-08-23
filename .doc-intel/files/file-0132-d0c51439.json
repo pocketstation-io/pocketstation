@@ -3,7 +3,16 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs"
+  ],
   "calls": [
     "Driver",
     "Self::default",
@@ -47,7 +56,16 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs"
+  ],
   "constructs": [
     "new"
   ],
@@ -291,8 +309,18 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -308,11 +336,29 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "e79d5060f47a5422d6702fbde8e86776e238929f",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs"
+  ],
   "implements": [
     "EndpointDriverRegistry"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs"
+  ],
   "imports": [
     "crate::endpoint::{ EndpointDriverFactory, EndpointFailure, EndpointPortInput, EndpointPreparationGroup, OperatorId, PreparedEndpoint, }",
     "crate::graph::NodeTypeId",
@@ -321,7 +367,13 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(test)]",
+    "crate::endpoint::{ EndpointDriverFactory, EndpointFailure, EndpointPortInput, EndpointPreparationGroup, OperatorId, PreparedEndpoint, }",
+    "crate::graph::NodeTypeId",
+    "module:tests",
+    "std::collections::HashMap",
+    "std::sync::Arc"
   ],
   "invariants": [
     {
@@ -343,18 +395,35 @@
   "module": "pocketstation::endpoint::registry",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:EndpointDriverRegistryError",
+    "enum:EndpointPrepareError",
+    "fn:contains",
+    "fn:new",
+    "fn:node_type_id",
+    "fn:preparation_group",
+    "fn:prepare",
+    "fn:prepare_batch",
+    "fn:register",
+    "fn:validate_registration",
+    "return Err(EndpointDriverRegistryError::Duplicate {",
+    "return Err(EndpointDriverRegistryError::EmptyNodeTypeId);",
+    "return Err(EndpointDriverRegistryError::EmptyOperatorId);",
+    "return Err(EndpointDriverRegistryError::OperatorNodeTypeConflict {",
+    "return Err(EndpointPrepareError::EmptyBatch);",
+    "struct:EndpointDriverRegistry"
   ],
   "package": "pocketstation",
   "path": "src/endpoint/registry.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -447,7 +516,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::endpoint::registry`."
+    "text": "Implements pocketstation::endpoint::registry responsibilities, including Classifies failures reported as endpoint driver registry error.; Reported when the owning operation encounters empty operator identifier.; Reported when the owning operation encounters empty node type identifier.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -483,6 +552,14 @@
     "docs/troubleshooting/session-stop.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/endpoint/identity.rs",
+    "REFERENCES:src/endpoint/runtime.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/operator.rs"
+  ],
   "resource_ownership": [
     {
       "line": 2,
@@ -498,20 +575,23 @@
     }
   ],
   "responsibilities": [
-    "RegisteredEndpointDriver",
-    "EndpointDriverRegistryError",
-    "EndpointPrepareError",
-    "EndpointDriverRegistry",
-    "new",
-    "register",
-    "validate_registration",
-    "contains",
-    "node_type_id",
-    "preparation_group",
-    "prepare",
-    "prepare_batch",
-    "registration",
-    "tests"
+    "pocketstation::endpoint::registry::EndpointDriverRegistryError: Classifies failures reported as endpoint driver registry error.",
+    "pocketstation::endpoint::registry::EndpointDriverRegistryError::EmptyOperatorId: Reported when the owning operation encounters empty operator identifier.",
+    "pocketstation::endpoint::registry::EndpointDriverRegistryError::EmptyNodeTypeId: Reported when the owning operation encounters empty node type identifier.",
+    "pocketstation::endpoint::registry::EndpointDriverRegistryError::Duplicate: Reported when the owning operation encounters duplicate.",
+    "EndpointDriverRegistryError::Duplicate::operator_id: Identifies the operator identifier recorded by `Duplicate`.",
+    "EndpointDriverRegistryError::Duplicate::node_type_id: Identifies the node type identifier recorded by `Duplicate`.",
+    "pocketstation::endpoint::registry::EndpointDriverRegistryError::OperatorNodeTypeConflict: Reported when the owning operation encounters operator node type conflict.",
+    "EndpointDriverRegistryError::OperatorNodeTypeConflict::operator_id: Identifies the operator identifier recorded by `OperatorNodeTypeConflict`.",
+    "EndpointDriverRegistryError::OperatorNodeTypeConflict::registered_node_type_id: Identifies the registered node type identifier recorded by `OperatorNodeTypeConflict`.",
+    "EndpointDriverRegistryError::OperatorNodeTypeConflict::requested_node_type_id: Identifies the requested node type identifier recorded by `OperatorNodeTypeConflict`.",
+    "pocketstation::endpoint::registry::EndpointPrepareError: Classifies failures reported as endpoint prepare error.",
+    "pocketstation::endpoint::registry::EndpointPrepareError::EmptyBatch: Reported when the owning operation encounters empty batch.",
+    "pocketstation::endpoint::registry::EndpointPrepareError::NotRegistered: Reported when the owning operation encounters not registered.",
+    "EndpointPrepareError::NotRegistered::operator_id: Identifies the operator identifier recorded by `NotRegistered`.",
+    "EndpointPrepareError::NotRegistered::node_type_id: Identifies the node type identifier recorded by `NotRegistered`.",
+    "pocketstation::endpoint::registry::EndpointPrepareError::Driver: Reported when the owning operation encounters driver.",
+    "pocketstation::endpoint::registry::EndpointDriverRegistry: Indexes registered endpoint driver implementations by their stable identities."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -530,7 +610,12 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-497452363244c581f9e6",
+    "test-5c3ff5e741df683ae4d8",
+    "test-9352f7a742c1f649857a"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

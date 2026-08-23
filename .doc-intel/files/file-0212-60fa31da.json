@@ -3,7 +3,12 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs",
+    "REFERENCES:src/error_code.rs",
+    "REFERENCES:src/lib.rs"
+  ],
   "calls": [
     "CaptureError::BackendInit",
     "CaptureError::ModeUnsupported",
@@ -48,7 +53,12 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs",
+    "REFERENCES:src/error_code.rs",
+    "REFERENCES:src/lib.rs"
+  ],
   "constructs": [
     "crate::session::OperatorInstanceId::new"
   ],
@@ -332,8 +342,14 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs",
+    "REFERENCES:src/error_code.rs",
+    "REFERENCES:src/lib.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -347,7 +363,12 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "133f0ba83733f16cbc7b7874fd19c37aafbe5bce",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs",
+    "REFERENCES:src/error_code.rs",
+    "REFERENCES:src/lib.rs"
+  ],
   "implements": [
     "SessionDeclarationErrorCode",
     "SessionStartErrorCode",
@@ -356,7 +377,12 @@
     "SessionStopCode",
     "SessionStopFailureCode"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs",
+    "REFERENCES:src/error_code.rs",
+    "REFERENCES:src/lib.rs"
+  ],
   "imports": [
     "crate::capture::CaptureError",
     "crate::session::{ EndpointId, PolledAudioPollError, SessionError, SessionId, SessionStartError, StemId, }",
@@ -365,7 +391,12 @@
     "super::{ capture_error_code, polled_audio_poll_error_code, session_declaration_error_code, session_start_failure_code, PolledAudioPollErrorCode, SessionDeclarationErrorCode, SessionRuntimeErrorCode, SessionStartErrorCode, SessionStopCode, SessionStopFailureCode, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::capture::CaptureError",
+    "crate::session::{ EndpointId, PolledAudioPollError, SessionError, SessionId, SessionStartError, StemId, }",
+    "crate::session::{PolledAudioPollError, SessionError, SessionStartError, SessionStopOutcome}",
+    "std::collections::HashSet",
+    "super::{ capture_error_code, polled_audio_poll_error_code, session_declaration_error_code, session_start_failure_code, PolledAudioPollErrorCode, SessionDeclarationErrorCode, SessionRuntimeErrorCode, SessionStartErrorCode, SessionStopCode, SessionStopFailureCode, }"
   ],
   "invariants": [
     {
@@ -379,18 +410,30 @@
   "module": "pocketstation::session::error_code",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:PolledAudioPollErrorCode",
+    "enum:SessionDeclarationErrorCode",
+    "enum:SessionRuntimeErrorCode",
+    "enum:SessionStartErrorCode",
+    "enum:SessionStopCode",
+    "enum:SessionStopFailureCode",
+    "fn:as_str",
+    "fn:polled_audio_poll_error_code",
+    "fn:session_declaration_error_code",
+    "fn:session_start_failure_code",
+    "fn:session_stop_failure_codes"
   ],
   "package": "pocketstation",
   "path": "src/session/error_code.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -531,7 +574,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::error_code`."
+    "text": "Implements pocketstation::session::error code responsibilities, including Stable language-neutral code for a Session declaration failure.; Reported when the owning operation encounters no sources.; Reported when the owning operation encounters no routes.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -591,6 +634,12 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/capture/authorization.rs",
+    "REFERENCES:src/endpoint/polled_audio_driver.rs",
+    "REFERENCES:src/session/error.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs"
+  ],
   "resource_ownership": [
     {
       "line": 265,
@@ -598,28 +647,74 @@
     }
   ],
   "responsibilities": [
-    "SessionDeclarationErrorCode",
-    "as_str",
-    "SessionStartErrorCode",
-    "as_str",
-    "SessionRuntimeErrorCode",
-    "as_str",
-    "PolledAudioPollErrorCode",
-    "as_str",
-    "SessionStopCode",
-    "as_str",
-    "SessionStopFailureCode",
-    "as_str",
-    "session_declaration_error_code",
-    "session_start_failure_code",
-    "polled_audio_poll_error_code",
-    "session_stop_failure_codes",
-    "capture_error_code",
-    "tests",
-    "given_stable_code_vocabulary_when_serialized_then_values_are_unique_and_namespaced",
-    "given_declaration_errors_when_mapped_then_every_variant_has_a_stable_code",
-    "given_start_and_capture_failures_when_mapped_then_specific_classes_are_preserved",
-    "given_polled_audio_failures_when_mapped_then_every_status_is_preserved"
+    "pocketstation::session::error_code::SessionDeclarationErrorCode: Stable language-neutral code for a Session declaration failure.",
+    "pocketstation::session::error_code::SessionDeclarationErrorCode::NoSources: Reported when the owning operation encounters no sources.",
+    "pocketstation::session::error_code::SessionDeclarationErrorCode::NoRoutes: Reported when the owning operation encounters no routes.",
+    "pocketstation::session::error_code::SessionDeclarationErrorCode::NoSourceOutputs: Reported when the owning operation encounters no source outputs.",
+    "pocketstation::session::error_code::SessionDeclarationErrorCode::InvalidSelector: Reported when the owning operation encounters invalid selector.",
+    "pocketstation::session::error_code::SessionDeclarationErrorCode::InvalidEndpoint: Reported when the owning operation encounters invalid endpoint.",
+    "pocketstation::session::error_code::SessionDeclarationErrorCode::InvalidOperator: Reported when the owning operation encounters invalid operator.",
+    "pocketstation::session::error_code::SessionDeclarationErrorCode::InvalidRoute: Reported when the owning operation encounters invalid route.",
+    "pocketstation::session::error_code::SessionDeclarationErrorCode::ForeignEndpoint: Reported when the owning operation encounters foreign endpoint.",
+    "pocketstation::session::error_code::SessionDeclarationErrorCode::DraftFrozen: Reported when the owning operation encounters draft frozen.",
+    "pocketstation::session::error_code::SessionDeclarationErrorCode::InternalStateUnavailable: Reported when the owning operation encounters internal state unavailable.",
+    "pocketstation::session::error_code::SessionDeclarationErrorCode::IdExhausted: Reported when the owning operation encounters id exhausted.",
+    "pocketstation::session::error_code::SessionDeclarationErrorCode::UnsupportedVersion: Reported when the owning operation encounters unsupported version.",
+    "pocketstation::session::error_code::SessionDeclarationErrorCode::UnknownEndpoint: Reported when the owning operation encounters unknown endpoint.",
+    "pocketstation::session::error_code::SessionDeclarationErrorCode::UnknownStem: Reported when the owning operation encounters unknown stem.",
+    "pocketstation::session::error_code::SessionDeclarationErrorCode::UnknownSource: Reported when the owning operation encounters unknown source.",
+    "pocketstation::session::error_code::SessionDeclarationErrorCode::UnknownOperatorInstance: Reported when the owning operation encounters unknown operator instance.",
+    "pocketstation::session::error_code::SessionDeclarationErrorCode::OperatorHasNoDestination: Reported when the owning operation encounters operator has no destination.",
+    "as_str: Returns the stable string representation of `SessionDeclarationErrorCode`.",
+    "pocketstation::session::error_code::SessionStartErrorCode: Stable language-neutral code for Session startup.",
+    "pocketstation::session::error_code::SessionStartErrorCode::HostSetupFailed: Reported when the owning operation encounters host setup failed.",
+    "pocketstation::session::error_code::SessionStartErrorCode::UnsupportedPlatform: Reported when the owning operation encounters unsupported platform.",
+    "pocketstation::session::error_code::SessionStartErrorCode::StartCancelled: Reported when the owning operation encounters start cancelled.",
+    "pocketstation::session::error_code::SessionStartErrorCode::InvalidSelector: Reported when the owning operation encounters invalid selector.",
+    "pocketstation::session::error_code::SessionStartErrorCode::DeclarationInvalid: Reported when the owning operation encounters declaration invalid.",
+    "pocketstation::session::error_code::SessionStartErrorCode::CompileFailed: Reported when the owning operation encounters compile failed.",
+    "pocketstation::session::error_code::SessionStartErrorCode::RuntimePrepareFailed: Reported when the owning operation encounters runtime prepare failed.",
+    "pocketstation::session::error_code::SessionStartErrorCode::InvalidStartOptions: Reported when the owning operation encounters invalid start options.",
+    "pocketstation::session::error_code::SessionStartErrorCode::UnsupportedSourceTopology: Reported when the owning operation encounters unsupported source topology.",
+    "pocketstation::session::error_code::SessionStartErrorCode::MissingEndpointDeclaration: Reported when the owning operation encounters missing endpoint declaration.",
+    "pocketstation::session::error_code::SessionStartErrorCode::EndpointPrepareFailed: Reported when the owning operation encounters endpoint prepare failed.",
+    "pocketstation::session::error_code::SessionStartErrorCode::CapturePermissionDenied: Reported when the owning operation encounters capture permission denied.",
+    "pocketstation::session::error_code::SessionStartErrorCode::CaptureSourceUnavailable: Reported when the owning operation encounters capture source unavailable.",
+    "pocketstation::session::error_code::SessionStartErrorCode::CaptureUnsupported: Reported when the owning operation encounters capture unsupported.",
+    "pocketstation::session::error_code::SessionStartErrorCode::CaptureBackendFailed: Reported when the owning operation encounters capture backend failed.",
+    "pocketstation::session::error_code::SessionStartErrorCode::EndpointStartFailed: Reported when the owning operation encounters endpoint start failed.",
+    "pocketstation::session::error_code::SessionStartErrorCode::RuntimeStartFailed: Reported when the owning operation encounters runtime start failed.",
+    "pocketstation::session::error_code::SessionStartErrorCode::MissingAudioReceipt: Reported when the owning operation encounters missing audio receipt.",
+    "pocketstation::session::error_code::SessionStartErrorCode::MissingRecordingConfiguration: Reported when the owning operation encounters missing recording configuration.",
+    "pocketstation::session::error_code::SessionStartErrorCode::MissingEventReceiver: Reported when the owning operation encounters missing event receiver.",
+    "pocketstation::session::error_code::SessionStartErrorCode::TraceRecorderSetupFailed: Reported when the owning operation encounters trace recorder setup failed.",
+    "as_str: Returns the stable string representation of `SessionStartErrorCode`.",
+    "pocketstation::session::error_code::SessionRuntimeErrorCode: Stable language-neutral code for a running-Session projection failure.",
+    "pocketstation::session::error_code::SessionRuntimeErrorCode::MissingMetricsSnapshot: Reported when the owning operation encounters missing metrics snapshot.",
+    "as_str: Returns the stable string representation of `SessionRuntimeErrorCode`.",
+    "pocketstation::session::error_code::PolledAudioPollErrorCode: Stable language-neutral code for bounded polled-audio status.",
+    "pocketstation::session::error_code::PolledAudioPollErrorCode::Empty: Represents an empty value or collection.",
+    "pocketstation::session::error_code::PolledAudioPollErrorCode::LeaseCapacityExhausted: Reported when the owning operation encounters lease capacity exhausted.",
+    "pocketstation::session::error_code::PolledAudioPollErrorCode::InternalStateUnavailable: Reported when the owning operation encounters internal state unavailable.",
+    "as_str: Returns the stable string representation of `PolledAudioPollErrorCode`.",
+    "pocketstation::session::error_code::SessionStopCode: Stable language-neutral status for an idempotent Session stop.",
+    "pocketstation::session::error_code::SessionStopCode::Stopped: Indicates that the operation stopped normally.",
+    "pocketstation::session::error_code::SessionStopCode::AlreadyStopped: Indicates that the operation had already stopped.",
+    "pocketstation::session::error_code::SessionStopCode::StopFailed: Represents the stop failed alternative defined by `SessionStopCode`.",
+    "as_str: Returns the stable string representation of `SessionStopCode`.",
+    "pocketstation::session::error_code::SessionStopFailureCode: Stable language-neutral cause retained by a failed Session stop.",
+    "pocketstation::session::error_code::SessionStopFailureCode::RuntimeWorkerPanicked: Reported when the owning operation encounters runtime worker panicked.",
+    "pocketstation::session::error_code::SessionStopFailureCode::CaptureFinalizationFailed: Reported when the owning operation encounters capture finalization failed.",
+    "pocketstation::session::error_code::SessionStopFailureCode::OperatorFinalizationFailed: Reported when the owning operation encounters operator finalization failed.",
+    "pocketstation::session::error_code::SessionStopFailureCode::EndpointFinalizationFailed: Reported when the owning operation encounters endpoint finalization failed.",
+    "pocketstation::session::error_code::SessionStopFailureCode::RuntimeFailed: Reported when the owning operation encounters runtime failed.",
+    "pocketstation::session::error_code::SessionStopFailureCode::LineageFailed: Reported when the owning operation encounters lineage failed.",
+    "pocketstation::session::error_code::SessionStopFailureCode::SourceSendRejected: Reported when the owning operation encounters source send rejected.",
+    "as_str: Returns the stable string representation of `SessionStopFailureCode`.",
+    "pocketstation::session::error_code::session_declaration_error_code: Returns the session declaration error code held by `error_code`.",
+    "pocketstation::session::error_code::session_start_failure_code: Returns the session start failure code held by `error_code`.",
+    "pocketstation::session::error_code::polled_audio_poll_error_code: Returns the polled audio poll error code held by `error_code`.",
+    "pocketstation::session::error_code::session_stop_failure_codes: Returns every stable failure code carried by a Session stop result."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -638,7 +733,13 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-329bc302c00850a37487",
+    "test-36b002bb02a82e639fa5",
+    "test-9dbe226d688b419c44dd",
+    "test-e5e2a976b704c1bcb17d"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

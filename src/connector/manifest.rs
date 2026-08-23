@@ -12,7 +12,7 @@ pub const MAX_CONNECTOR_MANIFEST_ENTRIES: usize = 128;
 pub const MAX_CONNECTOR_MANIFEST_TEXT_BYTES: usize = 4_096;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Represents connector capability in the PocketStation API."]
+#[doc = "Declares a capability advertised by a connector manifest."]
 pub struct ConnectorCapability {
     id: String,
     documentation: String,
@@ -32,19 +32,19 @@ impl ConnectorCapability {
         Ok(entry)
     }
 
-    #[doc = "Returns the id associated with `ConnectorCapability`."]
+    #[doc = "Returns the id held by `ConnectorCapability`."]
     pub fn id(&self) -> &str {
         &self.id
     }
 
-    #[doc = "Returns the documentation associated with `ConnectorCapability`."]
+    #[doc = "Returns the documentation held by `ConnectorCapability`."]
     pub fn documentation(&self) -> &str {
         &self.documentation
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Represents connector requirement in the PocketStation API."]
+#[doc = "Declares a host or configuration requirement that must be satisfied before connector use."]
 pub struct ConnectorRequirement {
     id: String,
     required: bool,
@@ -67,17 +67,17 @@ impl ConnectorRequirement {
         Ok(entry)
     }
 
-    #[doc = "Returns the id associated with `ConnectorRequirement`."]
+    #[doc = "Returns the id held by `ConnectorRequirement`."]
     pub fn id(&self) -> &str {
         &self.id
     }
 
-    #[doc = "Returns the required associated with `ConnectorRequirement`."]
+    #[doc = "Returns the required held by `ConnectorRequirement`."]
     pub const fn required(&self) -> bool {
         self.required
     }
 
-    #[doc = "Returns the documentation associated with `ConnectorRequirement`."]
+    #[doc = "Returns the documentation held by `ConnectorRequirement`."]
     pub fn documentation(&self) -> &str {
         &self.documentation
     }
@@ -137,47 +137,47 @@ impl ConnectorManifest {
         self
     }
 
-    #[doc = "Returns the API revision associated with `ConnectorManifest`."]
+    #[doc = "Returns the API revision held by `ConnectorManifest`."]
     pub const fn api_revision(&self) -> u32 {
         self.api_revision
     }
 
-    #[doc = "Returns the manifest revision associated with `ConnectorManifest`."]
+    #[doc = "Returns the manifest revision held by `ConnectorManifest`."]
     pub const fn manifest_revision(&self) -> u32 {
         self.manifest_revision
     }
 
-    #[doc = "Returns the operator identifier associated with `ConnectorManifest`."]
+    #[doc = "Returns the operator identifier held by `ConnectorManifest`."]
     pub const fn operator_id(&self) -> &OperatorId {
         &self.operator_id
     }
 
-    #[doc = "Returns the package version associated with `ConnectorManifest`."]
+    #[doc = "Returns the package version held by `ConnectorManifest`."]
     pub fn package_version(&self) -> &str {
         &self.package_version
     }
 
-    #[doc = "Returns the node associated with `ConnectorManifest`."]
+    #[doc = "Returns the node held by `ConnectorManifest`."]
     pub const fn node(&self) -> &NodeDescriptor {
         &self.node
     }
 
-    #[doc = "Returns the configuration associated with `ConnectorManifest`."]
+    #[doc = "Returns the configuration held by `ConnectorManifest`."]
     pub const fn configuration(&self) -> &ConnectorConfigurationSchema {
         &self.configuration
     }
 
-    #[doc = "Returns the readiness associated with `ConnectorManifest`."]
+    #[doc = "Returns the readiness held by `ConnectorManifest`."]
     pub const fn readiness(&self) -> ConnectorReadinessPolicy {
         self.readiness
     }
 
-    #[doc = "Returns the capabilities associated with `ConnectorManifest`."]
+    #[doc = "Returns the capabilities held by `ConnectorManifest`."]
     pub fn capabilities(&self) -> &[ConnectorCapability] {
         &self.capabilities
     }
 
-    #[doc = "Returns the requirements associated with `ConnectorManifest`."]
+    #[doc = "Returns the requirements held by `ConnectorManifest`."]
     pub fn requirements(&self) -> &[ConnectorRequirement] {
         &self.requirements
     }
@@ -259,9 +259,9 @@ pub enum ConnectorManifestError {
     #[error("connector API revision {requested} is unsupported; Core supports {supported}")]
     #[doc = "Reports unsupported API revision."]
     UnsupportedApiRevision {
-        #[doc = "Stores the requested associated with `UnsupportedApiRevision`."]
+        #[doc = "Stores the requested used by `UnsupportedApiRevision`."]
         requested: u32,
-        #[doc = "Stores the supported associated with `UnsupportedApiRevision`."]
+        #[doc = "Stores the supported used by `UnsupportedApiRevision`."]
         supported: u32,
     },
     #[error("connector manifest revision must be non-zero")]
@@ -294,7 +294,7 @@ pub enum ConnectorManifestError {
     #[error("connector manifest contains duplicate entry '{id}'")]
     #[doc = "Reports duplicate manifest entry."]
     DuplicateManifestEntry {
-        #[doc = "Identifies the id associated with `DuplicateManifestEntry`."]
+        #[doc = "Identifies the id recorded by `DuplicateManifestEntry`."]
         id: String,
     },
 }

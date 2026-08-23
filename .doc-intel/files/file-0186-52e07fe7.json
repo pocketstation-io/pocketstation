@@ -68,7 +68,11 @@
   ],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPORTS:src/runtime/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "calls": [
     "Arc::clone",
     "Arc::new",
@@ -140,7 +144,11 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPORTS:src/runtime/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AsyncRuntimeHost::new",
@@ -350,8 +358,13 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPORTS:src/runtime/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -365,12 +378,20 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "d4fd74d275226c6f6368cd48b24b615b3e0c9e66",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPORTS:src/runtime/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "implements": [
     "AsyncRuntimeHost",
     "Drop for AsyncRuntimeHost"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/runtime/lifecycle/mod.rs",
+    "IMPORTS:src/runtime/lifecycle/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "imports": [
     "std::future::Future",
     "std::sync::Arc",
@@ -383,7 +404,16 @@
     "tokio::sync::oneshot"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "std::future::Future",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, Ordering}",
+    "std::sync::mpsc",
+    "std::thread::{self, JoinHandle}",
+    "std::time::Duration",
+    "super::*",
+    "tokio::runtime::{Builder, Handle}",
+    "tokio::sync::oneshot"
   ],
   "invariants": [
     {
@@ -405,21 +435,31 @@
   "module": "pocketstation::runtime::lifecycle::async_host",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-0b62d1010395e9d56174",
     "pattern-4b4827ead247761ef305"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(AsyncRuntimeHostError::HostTimeout {",
+    "Err(error) => {",
+    "Err(mpsc::RecvTimeoutError::Disconnected) => Err(AsyncRuntimeHostError::RuntimeStopped),",
+    "Ok(Err(_)) | Err(mpsc::RecvTimeoutError::Timeout) => {",
+    "enum:AsyncRuntimeHostError",
+    "fn:execute",
+    "fn:new",
+    "fn:shutdown",
+    "let _ = handle_sender.send(Err(error.to_string()));",
+    "struct:AsyncRuntimeHost"
   ],
   "package": "pocketstation",
   "path": "src/runtime/lifecycle/async_host.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -497,7 +537,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::runtime::lifecycle::async_host`."
+    "text": "Implements pocketstation::runtime::lifecycle::async host responsibilities, including Classifies failures reported as async runtime host error.; Reported when the owning operation encounters start.; Reported when the owning operation encounters runtime stopped.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -553,6 +593,7 @@
     "docs/best-practices/realtime-boundaries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 104,
@@ -572,16 +613,17 @@
     }
   ],
   "responsibilities": [
-    "AsyncRuntimeHostError",
-    "AsyncRuntimeHost",
-    "new",
-    "execute",
-    "shutdown",
-    "drop",
-    "tests",
-    "given_sync_caller_when_future_executes_then_result_returns_from_owned_runtime",
-    "given_tokio_caller_when_sync_lifecycle_executes_then_no_nested_runtime_panics",
-    "given_slow_future_when_deadline_expires_then_host_returns_typed_timeout"
+    "pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError: Classifies failures reported as async runtime host error.",
+    "pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError::Start: Reported when the owning operation encounters start.",
+    "pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError::RuntimeStopped: Reported when the owning operation encounters runtime stopped.",
+    "pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError::ShutdownPanicked: Reported when the owning operation encounters shutdown panicked.",
+    "AsyncRuntimeHostError::HostTimeout::timeout_ms: Stores the timeout value for `HostTimeout`, in milliseconds.",
+    "pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHostError::HostTimeout: Reported when the owning operation encounters host timeout.",
+    "pocketstation::runtime::lifecycle::async_host::AsyncRuntimeHost: Session-owned async executor for connector and derived-endpoint lifecycle.",
+    "new: Creates a new `AsyncRuntimeHost`.",
+    "execute: Executes its owned operation for `AsyncRuntimeHost`.",
+    "shutdown: Shuts down `AsyncRuntimeHost` according to its lifecycle contract.",
+    "drop: Releases resources owned by `AsyncRuntimeHost`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -715,7 +757,12 @@
       "text": "tokio::time::sleep(Duration::from_secs(1)).await;"
     }
   ],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-905856446bbeb46b221d",
+    "test-9e709c123ea73a9a1332",
+    "test-d5a7aaac26a126b55f7d"
+  ],
   "threads": [
     {
       "line": 3,

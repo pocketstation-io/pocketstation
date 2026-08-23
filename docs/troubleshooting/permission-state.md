@@ -2,30 +2,33 @@
 
 <!-- claims: CLM-TRBL-004-CAP-001,CLM-TRBL-004-CAP-002,CLM-TRBL-004-CAP-003,CLM-TRBL-004-CAP-004,CLM-TRBL-004-CAP-005,CLM-TRBL-004-SOURCE-001 -->
 
-Use this page when you observe **permission state is denied or unobservable**. Diagnose the reported stage and identity before changing route, source, connector, or lifecycle policy.
+## Symptom
 
-## Distinguish the cause
+Permission preflight reports denied or cannot produce a reliable state.
 
-Treat NotObservable as neither grant nor denial. The source-open result is authoritative where the platform has no single process-wide observation.
+## Evidenced causes
+
+- The platform reports a real denial.
+- The target exposes no non-prompting observation and returns `NotObservable`.
+- Authorization changed after a previous observation.
+
+## Distinguish the causes
+
+Treat denied and unobservable as different values. Compare the permission epoch and use the next source-open outcome as authority.
 
 ## Diagnostic signals
 
-- `pocketstation::capture::events::CaptureRuntimeFailure` (`error-11b972ad42d5de880e06`)
-- `pocketstation::capture::events::CaptureRuntimeFailureClass` / `BackendClass` (`error-29e952ae7432566a9e95`)
-- `pocketstation::capture::authorization::CaptureError` / `CaptureWorkerPanicked` (`error-365f9b6fbda74eb0d631`)
-- `pocketstation::capture::authorization::CaptureError` / `PermissionDenied` (`error-38030156125346a8e892`)
-- `pocketstation::capture::authorization::CaptureError` / `NotSupported` (`error-3b4b5393164d9f6f12a5`)
-- `pocketstation::capture::events::CaptureRuntimeFailureClass` / `PlatformStatus` (`error-3c6fcc22deb2f54788ba`)
-- `pocketstation::capture::authorization::CaptureError` / `SourceUnavailable` (`error-71c87f975acc9e22a402`)
-- `pocketstation::capture::authorization::CaptureError` / `BackendSetupRequired` (`error-8db0fec69a9c7158ffdf`)
-- `pocketstation::capture::authorization::CaptureError` (`error-96ffe4bc4254583d1e17`)
-- `pocketstation::capture::events::CaptureRuntimeFailureClass` / `SourceInstanceExited` (`error-a9c0f7dfff744e9ba6b7`)
-- `pocketstation::capture::authorization::CaptureError` / `BackendInit` (`error-b320ea1cba2b3c8dc4c7`)
-- `pocketstation::capture::authorization::CaptureError` / `InvalidStreamCapacity` (`error-bcf5d4d897b6bd0784bf`)
-- `pocketstation::capture::authorization::CaptureError` / `ModeUnsupported` (`error-bf1be2fb486df6136dc5`)
-- `pocketstation::capture::authorization::CaptureError` / `InvalidRuntimeEventCapacity` (`error-ceedf8c06740748c9bd5`)
-- `pocketstation::capture::authorization::CaptureError` / `BackendStatus` (`error-e8046b5b5989518ee482`)
-- `pocketstation::capture::events::CaptureRuntimeFailureClass` (`error-ea2d5a94280522f41764`)
+- `pocketstation::capture::authorization::CaptureError` / `PermissionDenied` (`error-d902cf4c11a93cbcb084`)
+- `pocketstation::capture::authorization::CaptureError` (`error-7905cc933b9eb45fe4ef`)
+- `pocketstation::capture::authorization::CaptureError` / `BackendInit` (`error-ffea5e00d982c5213eba`)
+- `pocketstation::capture::authorization::CaptureError` / `BackendSetupRequired` (`error-6e8f9f8ca8efa76ded69`)
+- `pocketstation::capture::authorization::CaptureError` / `BackendStatus` (`error-533b29bac30886d8c79c`)
+- `pocketstation::capture::authorization::CaptureError` / `CaptureWorkerPanicked` (`error-01c4b3cce2fa1669ee13`)
+- `pocketstation::capture::authorization::CaptureError` / `InvalidRuntimeEventCapacity` (`error-c683702117e27ad45f33`)
+- `pocketstation::capture::authorization::CaptureError` / `InvalidStreamCapacity` (`error-6167103023ec8fded812`)
+- `pocketstation::capture::authorization::CaptureError` / `ModeUnsupported` (`error-786199dd7e94542436f2`)
+- `pocketstation::capture::authorization::CaptureError` / `NotSupported` (`error-0f2fd6c6275925740175`)
+- `pocketstation::capture::authorization::CaptureError` / `SourceUnavailable` (`error-61051d668a17eec6c3ac`)
 
 ## Executable evidence
 
@@ -38,20 +41,25 @@ Treat NotObservable as neither grant nor denial. The source-open result is autho
 - `given_process_only_application_when_identity_inspected_then_strength_is_not_overstated` exercises given process only application when identity inspected then strength is not overstated under its recorded setup (`test-d54d43b584bfdf5600ab`).
 - `given_revoked_permission_when_snapshotted_then_revocation_and_new_epoch_are_preserved` exercises given revoked permission when snapshotted then revocation and new epoch are preserved under its recorded setup (`test-458fc5c9256649d9f55e`).
 - `given_unclassified_backend_failure_when_snapshotted_then_permission_is_not_guessed` exercises given unclassified backend failure when snapshotted then permission is not guessed under its recorded setup (`test-109c3c453f0c382dcb45`).
-- `frame_stream_closed` exercises frame stream closed under its recorded setup (`test-3ab763bff0cd08d4b4e1`).
 - `given_active_capture_when_owner_is_dropped_then_backend_is_reclaimed` exercises given active capture when owner is dropped then backend is reclaimed under its recorded setup (`test-c55d7a75628c1be024f1`).
 - `given_active_capture_when_stopped_then_backend_is_joined` exercises given active capture when stopped then backend is joined under its recorded setup (`test-4f65c4d2e20b5226cd4f`).
 - `given_backend_frame_when_source_differs_from_open_identity_then_lineage_fails_closed` exercises given backend frame when source differs from open identity then lineage fails closed under its recorded setup (`test-a8dbef4f3b61c752ce0e`).
 - `given_panicking_capture_worker_when_joined_then_typed_failure_is_returned` exercises given panicking capture worker when joined then typed failure is returned under its recorded setup (`test-889c6cfb54cc924fc2b4`).
 - `given_prepared_capture_when_opened_then_bounded_delivery_is_owned` exercises given prepared capture when opened then bounded delivery is owned under its recorded setup (`test-8de0974346f9110044c2`).
+- `given_zero_frame_capacity_when_preparing_then_backend_is_not_prepared` exercises given zero frame capacity when preparing then backend is not prepared under its recorded setup (`test-f42d54d3bd1632c2ccfa`).
 
-## Corrective action and retry
+## Corrective action
 
-Apply only the action implied by the typed failure or violated precondition. Retry is not safe merely because a failure appears transient. When retryability or recovery is unknown, preserve the failure for application policy or maintainer review.
+For denial, guide the developer through the host's platform UI. For unobservable state, continue only through an explicit user action and handle the open result.
 
-## Data and state
+## Retry and incomplete state
 
-Treat frames, signals, files, acknowledgements, and finalization results produced before failure as potentially partial unless the terminal contract says otherwise. Inspect per-route, per-stem, and per-component outcomes.
+A denied state is not safe to hammer with retries; an unobservable state is not success. No source frames exist until opening succeeds.
+
+## Related reference
+
+- [Permissions And Source Lifecycle](/docs/concepts/permissions-and-source-lifecycle.md)
+- [Capture](/docs/reference/capture.md)
 
 ## Related documentation
 
@@ -66,8 +74,8 @@ Treat frames, signals, files, acknowledgements, and finalization results produce
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Permission state is denied or unobservable** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/capture/authorization.rs:1-318` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Permission state is denied or unobservable**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

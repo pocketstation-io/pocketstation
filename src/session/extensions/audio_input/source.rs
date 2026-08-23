@@ -49,22 +49,22 @@ impl PcmSource {
         }
     }
 
-    #[doc = "Returns the source associated with `PcmSource`."]
+    #[doc = "Returns the source held by `PcmSource`."]
     pub const fn source(&self) -> &SourceInstanceHandle {
         &self.source
     }
 
-    #[doc = "Returns the output associated with `PcmSource`."]
+    #[doc = "Returns the output held by `PcmSource`."]
     pub const fn output(&self) -> &SourceOutputHandle {
         &self.output
     }
 
-    #[doc = "Returns the writer associated with `PcmSource`."]
+    #[doc = "Returns the writer held by `PcmSource`."]
     pub const fn writer(&self) -> &AudioInputWriter {
         &self.writer
     }
 
-    #[doc = "Returns the writer mut associated with `PcmSource`."]
+    #[doc = "Returns the writer mut held by `PcmSource`."]
     pub fn writer_mut(&mut self) -> &mut AudioInputWriter {
         &mut self.writer
     }

@@ -38,6 +38,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -58,7 +59,7 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "No external input is declared in this file."
   ],
   "invariants": [],
   "language": "Shell",
@@ -76,25 +77,27 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "repository",
   "path": "scripts/test-publish-recovery.sh",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines a repository build, validation, CI, or release operation."
+    "text": "Defines a repository-owned build, validation, test, or release operation."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -122,8 +125,11 @@
     "docs/troubleshooting/native-build.md",
     "docs/best-practices/evidence-boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
-  "responsibilities": [],
+  "responsibilities": [
+    "Defines a repository-owned build, validation, test, or release operation."
+  ],
   "retry_behavior": [],
   "serialization": [],
   "shutdown_behavior": [],
@@ -141,7 +147,10 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-adb1dc831caefa6dcbaa"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

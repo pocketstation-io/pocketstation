@@ -3,7 +3,15 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/builtins.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/extensions/builtins.rs"
+  ],
   "calls": [
     "free",
     "prepare",
@@ -12,7 +20,15 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/builtins.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/extensions/builtins.rs"
+  ],
   "constructs": [],
   "content_hash": "e9d778ff29721b16ffb7d04b9335fe2e951704326a3842d37812cf0aff4ead8c",
   "defaults": [],
@@ -65,8 +81,17 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/builtins.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/extensions/builtins.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -80,15 +105,32 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "86c497bb7b53c0381bf6e0444173bd490e600d97",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/builtins.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/extensions/builtins.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/builtins.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/nodes.rs",
+    "REFERENCES:src/session/extensions/builtins.rs"
+  ],
   "imports": [
     "crate::frame::AudioFrame",
     "crate::graph::node::{NodeError, PrepareContext}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::frame::AudioFrame",
+    "crate::graph::node::{NodeError, PrepareContext}"
   ],
   "invariants": [
     {
@@ -106,20 +148,22 @@
   "module": "pocketstation::graph::runtime_node",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-4b495789777872e04c34"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "trait:RuntimeNode"
   ],
   "package": "pocketstation",
   "path": "src/graph/runtime_node.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -146,7 +190,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::graph::runtime_node`."
+    "text": "Implements pocketstation::graph::runtime node responsibilities, including Realtime invariant: for nodes whose ExecutionClass::is_realtime is true, process(); Prepares resources required by `RuntimeNode`.; Processes an input value through `RuntimeNode`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -184,11 +228,15 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/graph/node.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "RuntimeNode",
-    "prepare",
-    "process"
+    "pocketstation::graph::runtime_node::RuntimeNode: Realtime invariant: for nodes whose ExecutionClass::is_realtime is true, process()",
+    "RuntimeNode::prepare: Prepares resources required by `RuntimeNode`.",
+    "RuntimeNode::process: Processes an input value through `RuntimeNode`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -207,6 +255,7 @@
   ],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

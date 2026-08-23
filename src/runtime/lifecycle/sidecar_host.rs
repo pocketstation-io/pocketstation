@@ -63,13 +63,13 @@ impl SidecarState {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Represents sidecar deadlines in the PocketStation API."]
+#[doc = "Sets finite startup, I/O, shutdown, and reap deadlines for a sidecar process."]
 pub struct SidecarDeadlines {
     #[doc = "Indicates whether ready applies to `SidecarDeadlines`."]
     pub ready: Duration,
-    #[doc = "Stores the processing associated with `SidecarDeadlines`."]
+    #[doc = "Stores the processing used by `SidecarDeadlines`."]
     pub processing: Duration,
-    #[doc = "Stores the shutdown associated with `SidecarDeadlines`."]
+    #[doc = "Stores the shutdown used by `SidecarDeadlines`."]
     pub shutdown: Duration,
 }
 
@@ -87,19 +87,19 @@ impl Default for SidecarDeadlines {
 #[derive(Debug, Clone)]
 #[doc = "Configures sidecar process."]
 pub struct SidecarProcessSpec {
-    #[doc = "Identifies the id associated with `SidecarProcessSpec`."]
+    #[doc = "Identifies the id recorded by `SidecarProcessSpec`."]
     pub id: u64,
-    #[doc = "Stores the program associated with `SidecarProcessSpec`."]
+    #[doc = "Stores the program used by `SidecarProcessSpec`."]
     pub program: PathBuf,
-    #[doc = "Stores the arguments associated with `SidecarProcessSpec`."]
+    #[doc = "Stores the arguments used by `SidecarProcessSpec`."]
     pub arguments: Vec<OsString>,
-    #[doc = "Stores the configuration associated with `SidecarProcessSpec`."]
+    #[doc = "Stores the configuration used by `SidecarProcessSpec`."]
     pub configuration: Vec<u8>,
     #[doc = "Sets the data capacity messages available to `SidecarProcessSpec`."]
     pub data_capacity_messages: usize,
-    #[doc = "Stores the protocol limits associated with `SidecarProcessSpec`."]
+    #[doc = "Stores the protocol limits used by `SidecarProcessSpec`."]
     pub protocol_limits: SidecarProtocolLimits,
-    #[doc = "Stores the deadlines associated with `SidecarProcessSpec`."]
+    #[doc = "Stores the deadlines used by `SidecarProcessSpec`."]
     pub deadlines: SidecarDeadlines,
 }
 
@@ -158,9 +158,9 @@ impl SidecarHostObservations {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[doc = "Reports the sidecar host snapshot collected at an observation boundary."]
 pub struct SidecarHostSnapshot {
-    #[doc = "Stores the state associated with `SidecarHostSnapshot`."]
+    #[doc = "Stores the state used by `SidecarHostSnapshot`."]
     pub state: SidecarState,
-    #[doc = "Stores the state transitions associated with `SidecarHostSnapshot`."]
+    #[doc = "Stores the state transitions used by `SidecarHostSnapshot`."]
     pub state_transitions: u64,
     #[doc = "Counts the total number of data enqueued observed by `SidecarHostSnapshot`."]
     pub data_enqueued_total: u64,
@@ -179,7 +179,7 @@ pub struct SidecarHostSnapshot {
 }
 
 impl SidecarHostSnapshot {
-    #[doc = "Returns the visited associated with `SidecarHostSnapshot`."]
+    #[doc = "Returns the visited held by `SidecarHostSnapshot`."]
     pub const fn visited(self, state: SidecarState) -> bool {
         self.state_transitions & (1u64 << state as u8) != 0
     }

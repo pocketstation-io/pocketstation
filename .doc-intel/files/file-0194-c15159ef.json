@@ -8,7 +8,16 @@
   ],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/metric_bindings.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
   "calls": [
     "any",
     "cfg",
@@ -61,7 +70,16 @@
       "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/metric_bindings.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
   "constructs": [],
   "content_hash": "dd49d50146550a9dacdbc4c70c53e0133bcb62656cf693221d529bd2f97e1cb3",
   "defaults": [],
@@ -229,8 +247,18 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/metric_bindings.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -246,11 +274,29 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "122186c62fe7cd0eb1924247dade1c01c3995e2c",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/metric_bindings.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
   "implements": [
     "AsyncOperatorInput"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/lifecycle/endpoint_transaction.rs",
+    "REFERENCES:src/session/lifecycle/metric_bindings.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
   "imports": [
     "crate::frame::AudioFrame",
     "crate::graph::SignalEnvelope",
@@ -262,7 +308,15 @@
     "super::observations::AsyncOperatorObservationState"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "crate::frame::AudioFrame",
+    "crate::graph::SignalEnvelope",
+    "crate::graph::{EdgeContract, EdgeId, MediaCaps, SignalSpec}",
+    "std::sync::Arc",
+    "std::sync::atomic::Ordering",
+    "super::edge::{ TypedEdgeBranchSpec, TypedEdgeObservationHandle, TypedEdgeObservations, TypedEdgeReceiver, }",
+    "super::edge::{SignalEdgeSendError, SignalEdgeSender}",
+    "super::observations::AsyncOperatorObservationState"
   ],
   "invariants": [
     {
@@ -276,20 +330,30 @@
   "module": "pocketstation::runtime::signal::io",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-520a0bbdfc42436280d2"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "fn:send",
+    "fn:send_audio",
+    "struct:AsyncOperatorInput",
+    "struct:AsyncOperatorInputAccessError",
+    "struct:AsyncOperatorNamedOutput",
+    "struct:AsyncOperatorNamedOutputBranchSpec",
+    "struct:AsyncOperatorTypedInput",
+    "type:AsyncOperatorOutput",
+    "type:AsyncOperatorOutputBranchSpec",
+    "type:AsyncOperatorOutputObservationHandle",
+    "type:AsyncOperatorOutputObservations"
   ],
   "package": "pocketstation",
   "path": "src/runtime/signal/io.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -362,8 +426,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Bounded operator ingress and named output contracts."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::runtime::signal::io responsibilities, including Carries typed input for async operator.; Reports a async operator input access error.; Sends a value through `AsyncOperatorInput`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -419,6 +483,15 @@
     "docs/best-practices/realtime-boundaries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/graph/signal/envelope.rs",
+    "REFERENCES:src/graph/signal/spec.rs",
+    "REFERENCES:src/graph/spec.rs",
+    "REFERENCES:src/runtime/signal/edge.rs",
+    "REFERENCES:src/runtime/signal/observations.rs"
+  ],
   "resource_ownership": [
     {
       "line": 6,
@@ -430,17 +503,28 @@
     }
   ],
   "responsibilities": [
-    "AsyncOperatorInput",
-    "AsyncOperatorInputAccessError",
-    "send",
-    "send_audio",
-    "AsyncOperatorOutput",
-    "AsyncOperatorOutputObservationHandle",
-    "AsyncOperatorOutputBranchSpec",
-    "AsyncOperatorOutputObservations",
-    "AsyncOperatorTypedInput",
-    "AsyncOperatorNamedOutputBranchSpec",
-    "AsyncOperatorNamedOutput"
+    "pocketstation::runtime::signal::io::AsyncOperatorInput: Carries typed input for async operator.",
+    "pocketstation::runtime::signal::io::AsyncOperatorInputAccessError: Reports a async operator input access error.",
+    "send: Sends a value through `AsyncOperatorInput`.",
+    "send_audio: Sends audio for `AsyncOperatorInput`.",
+    "pocketstation::runtime::signal::io::AsyncOperatorOutput: Names the async operator output type used by the public API.",
+    "pocketstation::runtime::signal::io::AsyncOperatorOutputObservationHandle: Names the async operator output observation handle type used by the public API.",
+    "pocketstation::runtime::signal::io::AsyncOperatorOutputBranchSpec: Names the async operator output branch spec type used by the public API.",
+    "pocketstation::runtime::signal::io::AsyncOperatorOutputObservations: Names the async operator output observations type used by the public API.",
+    "pocketstation::runtime::signal::io::AsyncOperatorTypedInput: Carries typed input for async operator typed.",
+    "AsyncOperatorTypedInput::port_name: Stores the port name used by `AsyncOperatorTypedInput`.",
+    "AsyncOperatorTypedInput::receiver: Stores the receiver used by `AsyncOperatorTypedInput`.",
+    "AsyncOperatorTypedInput::edge_id: Identifies the edge identifier recorded by `AsyncOperatorTypedInput`.",
+    "AsyncOperatorTypedInput::signal_spec: Stores the signal spec used by `AsyncOperatorTypedInput`.",
+    "AsyncOperatorTypedInput::media: Stores the media used by `AsyncOperatorTypedInput`.",
+    "AsyncOperatorTypedInput::edge_contract: Stores the edge contract used by `AsyncOperatorTypedInput`.",
+    "AsyncOperatorTypedInput::capacity_signals: Sets the capacity signals available to `AsyncOperatorTypedInput`.",
+    "pocketstation::runtime::signal::io::AsyncOperatorNamedOutputBranchSpec: Configures async operator named output branch behavior at its owning API boundary.",
+    "AsyncOperatorNamedOutputBranchSpec::output_port: Stores the output port used by `AsyncOperatorNamedOutputBranchSpec`.",
+    "AsyncOperatorNamedOutputBranchSpec::branch: Stores the branch used by `AsyncOperatorNamedOutputBranchSpec`.",
+    "pocketstation::runtime::signal::io::AsyncOperatorNamedOutput: Carries typed output from async operator named.",
+    "AsyncOperatorNamedOutput::output_port: Stores the output port used by `AsyncOperatorNamedOutput`.",
+    "AsyncOperatorNamedOutput::receiver: Stores the receiver used by `AsyncOperatorNamedOutput`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -455,6 +539,7 @@
       "text": "#[error(\"this async operator consumes a compiled plan edge and has no direct input sender\")]"
     }
   ],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

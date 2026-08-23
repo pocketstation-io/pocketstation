@@ -3,7 +3,14 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/polled_audio.rs",
+    "REFERENCES:src/session/extensions/recording.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
   "calls": [
     "Arc::clone",
     "Compile",
@@ -120,7 +127,14 @@
       "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/polled_audio.rs",
+    "REFERENCES:src/session/extensions/recording.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
   "constructs": [
     "EndpointDriverRegistry::new",
     "NodeRegistry::new",
@@ -547,8 +561,16 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/polled_audio.rs",
+    "REFERENCES:src/session/extensions/recording.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -564,13 +586,27 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "4d27eaad08f32074c08bd52a67c09dac519c8be4",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/polled_audio.rs",
+    "REFERENCES:src/session/extensions/recording.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
   "implements": [
     "SessionEngineBuilder",
     "SessionEngine",
     "SessionEngineStartError"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/lifecycle/mod.rs",
+    "IMPORTS:src/session/lifecycle/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/polled_audio.rs",
+    "REFERENCES:src/session/extensions/recording.rs",
+    "REFERENCES:src/session/lifecycle/host.rs"
+  ],
   "imports": [
     "crate::endpoint::{EndpointDriverFactory, EndpointDriverRegistry, EndpointDriverRegistryError}",
     "crate::graph::{ AsyncOperatorFactory, NodeDefinition, NodeRegistrationError, NodeRegistry, NodeTypeId, PrepareContext, }",
@@ -583,7 +619,16 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "crate::endpoint::{EndpointDriverFactory, EndpointDriverRegistry, EndpointDriverRegistryError}",
+    "crate::graph::{ AsyncOperatorFactory, NodeDefinition, NodeRegistrationError, NodeRegistry, NodeTypeId, PrepareContext, }",
+    "crate::runtime::{SidecarHost, SidecarHostError, SidecarProcessSpec}",
+    "crate::session::compile::SessionGraphLowerer",
+    "crate::session::extensions::builtins::{ audio_endpoint_boundary_definition, register_session_graph_nodes_with_sample_spec, }",
+    "crate::session::extensions::source::{ source_node_definition, SourceFactory, SourceRegistrationError, SourceRegistry, }",
+    "crate::session::extensions::source::{SourceManifest, SourceTypeId}",
+    "crate::session::{ prepare_session_runtime, CaptureBackendSet, CompiledSession, OperatorId, RunningSession, Session, SessionCompileError, SessionCompiler, SessionError, SessionGraphRegistrationError, SessionPrepareError, SessionStartFailure, SessionStartOptions, SessionTraceRecorderHandle, }",
+    "std::sync::Arc"
   ],
   "invariants": [
     {
@@ -633,21 +678,48 @@
   "module": "pocketstation::session::lifecycle::engine",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-5ada9e33f908593228be",
-    "pattern-fdcf872a3dcf7ace27e8"
+    "pattern-5ada9e33f908593228be"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(error) => {",
+    "Some(reason) => Err(SessionEngineBuildError::InvalidConfiguration { reason }),",
+    "enum:EndpointExtensionRegistrationError",
+    "enum:SessionEngineBuildError",
+    "enum:SessionEngineStartError",
+    "fn:build",
+    "fn:compile",
+    "fn:into_start_failure",
+    "fn:new",
+    "fn:register_async_operator",
+    "fn:register_audio_endpoint_driver",
+    "fn:register_endpoint",
+    "fn:register_sidecar_process",
+    "fn:register_source_factory",
+    "fn:set_session_trace",
+    "fn:source_manifest",
+    "fn:start",
+    "fn:start_compiled",
+    "fn:start_compiled_cancellable",
+    "fn:start_failure",
+    "return Err(EndpointExtensionRegistrationError::ConflictingDefinition {",
+    "return Err(SessionEngineBuildError::DuplicateSidecarId {",
+    "return Err(SessionEngineStartError::Sidecar(error));",
+    "return Err(SourceRegistrationError::DuplicateSourceType(source_type_id));",
+    "return Err(SourceRegistrationError::NodeTypeConflict(source_type_id));",
+    "struct:SessionEngine",
+    "struct:SessionEngineBuilder"
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/engine.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -799,7 +871,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::lifecycle::engine`."
+    "text": "Implements pocketstation::session::lifecycle::engine responsibilities, including Setup-time builder for one canonical Session composition environment.; Creates a new `SessionEngineBuilder`.; Sets the session trace used by `SessionEngineBuilder`.."
   },
   "queues": [],
   "recovery_behavior": [
@@ -864,6 +936,26 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/endpoint/registry.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/operator.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/lifecycle/sidecar_host.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/error.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/extensions/source.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs",
+    "REFERENCES:src/session/lifecycle/trace.rs",
+    "REFERENCES:src/session/prepare/error.rs"
+  ],
   "resource_ownership": [
     {
       "line": 1,
@@ -903,29 +995,41 @@
     }
   ],
   "responsibilities": [
-    "SessionEngineBuilder",
-    "new",
-    "set_session_trace",
-    "register_audio_endpoint_driver",
-    "register_endpoint",
-    "register_async_operator",
-    "register_sidecar_process",
-    "register_source_factory",
-    "source_manifest",
-    "build",
-    "SessionEngine",
-    "source_manifest",
-    "compile",
-    "start_compiled",
-    "start_compiled_cancellable",
-    "start",
-    "SessionEngineBuildError",
-    "EndpointExtensionRegistrationError",
-    "SessionEngineStartError",
-    "start_failure",
-    "into_start_failure",
-    "attach_sidecars",
-    "validate_engine_configuration"
+    "pocketstation::session::lifecycle::engine::SessionEngineBuilder: Setup-time builder for one canonical Session composition environment.",
+    "new: Creates a new `SessionEngineBuilder`.",
+    "set_session_trace: Sets the session trace used by `SessionEngineBuilder`.",
+    "register_audio_endpoint_driver: Registers audio endpoint driver for `SessionEngineBuilder`.",
+    "register_endpoint: Atomically registers an endpoint's compiler contract and runtime driver.",
+    "register_async_operator: Registers async operator for `SessionEngineBuilder`.",
+    "register_sidecar_process: Retains one externally implemented sidecar under the canonical Session",
+    "register_source_factory: Registers one externally implemented source contract by stable type ID.",
+    "source_manifest: Returns the validated manifest currently registered for `source_type_id`.",
+    "build: Consumes all setup state so no partially populated registry can escape.",
+    "pocketstation::session::lifecycle::engine::SessionEngine: Canonical production composition path for one safe Rust Session engine.",
+    "source_manifest: Returns the validated source manifest retained by this engine.",
+    "compile: Compiles its owned operation for `SessionEngine`.",
+    "start_compiled: Starts compiled for `SessionEngine`.",
+    "start_compiled_cancellable: Starts compiled cancellable for `SessionEngine`.",
+    "start: Starts the lifecycle represented by `SessionEngine`.",
+    "pocketstation::session::lifecycle::engine::SessionEngineBuildError: Classifies failures reported as session engine build error.",
+    "pocketstation::session::lifecycle::engine::SessionEngineBuildError::StructuralNodeRegistration: Reported when the owning operation encounters structural node registration.",
+    "SessionEngineBuildError::InvalidConfiguration::reason: Carries the reason reported by `InvalidConfiguration`.",
+    "pocketstation::session::lifecycle::engine::SessionEngineBuildError::InvalidConfiguration: Reported when the owning operation encounters invalid configuration.",
+    "SessionEngineBuildError::DuplicateSidecarId::sidecar_id: Identifies the sidecar identifier recorded by `DuplicateSidecarId`.",
+    "pocketstation::session::lifecycle::engine::SessionEngineBuildError::DuplicateSidecarId: Reported when the owning operation encounters duplicate sidecar identifier.",
+    "pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError: Classifies failures reported as endpoint extension registration error.",
+    "pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError::Definition: Reported when the owning operation encounters definition.",
+    "pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError::Driver: Reported when the owning operation encounters driver.",
+    "EndpointExtensionRegistrationError::ConflictingDefinition::node_type_id: Identifies the node type identifier recorded by `ConflictingDefinition`.",
+    "pocketstation::session::lifecycle::engine::EndpointExtensionRegistrationError::ConflictingDefinition: Reported when the owning operation encounters conflicting definition.",
+    "pocketstation::session::lifecycle::engine::SessionEngineStartError: Classifies failures reported as session engine start error.",
+    "pocketstation::session::lifecycle::engine::SessionEngineStartError::Freeze: Reported when the owning operation encounters freeze.",
+    "pocketstation::session::lifecycle::engine::SessionEngineStartError::Compile: Reported when the owning operation encounters compile.",
+    "pocketstation::session::lifecycle::engine::SessionEngineStartError::Prepare: Reported when the owning operation encounters prepare.",
+    "pocketstation::session::lifecycle::engine::SessionEngineStartError::Start: Reported when the owning operation encounters start.",
+    "pocketstation::session::lifecycle::engine::SessionEngineStartError::Sidecar: Reported when the owning operation encounters sidecar.",
+    "start_failure: Starts failure for `SessionEngineStartError`.",
+    "into_start_failure: Converts `SessionEngineStartError` into start failure."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -966,7 +1070,22 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0b0bd95d531bc40cd567",
+    "test-1d9f4de1e64929bbc714",
+    "test-47a24acc078d39a5614e",
+    "test-5263477c96ed5c56254e",
+    "test-713c01edd07447a5d6d1",
+    "test-75068ae98b1f33133b7e",
+    "test-7b2a27d3e5c20136dc6a",
+    "test-8f6ddc436234dad2de93",
+    "test-b6b63f5fa91486160b00",
+    "test-bdedfb8ca6cbd5442810",
+    "test-c7123c9a3040e49ca9e8",
+    "test-d838f7a9b732b788e3e9",
+    "test-f698d35649fa52eabf28"
+  ],
   "threads": [
     {
       "line": 350,

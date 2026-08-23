@@ -8,7 +8,9 @@
       "text": "// control thread. It never runs on an audio callback."
     }
   ],
-  "called_by": [],
+  "called_by": [
+    "IMPORTS:src/capture/platform/windows/mod.rs"
+  ],
   "calls": [
     "AppCapability::Create",
     "CheckAccess",
@@ -28,7 +30,9 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "IMPORTS:src/capture/platform/windows/mod.rs"
+  ],
   "constructs": [
     "HSTRING::from"
   ],
@@ -115,8 +119,11 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "IMPORTS:src/capture/platform/windows/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -139,12 +146,16 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "449a93a0301c8fce60b00df246fcd095a0f4acf6",
-  "implemented_by": [],
+  "implemented_by": [
+    "IMPORTS:src/capture/platform/windows/mod.rs"
+  ],
   "implements": [
     "WinRtApartment",
     "Drop for WinRtApartment"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "IMPORTS:src/capture/platform/windows/mod.rs"
+  ],
   "imports": [
     "crate::capture::PermissionObservation",
     "windows::Security::Authorization::AppCapabilityAccess::{ AppCapability, AppCapabilityAccessStatus, }",
@@ -152,7 +163,10 @@
     "windows_core::{Error, HRESULT, HSTRING}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::capture::PermissionObservation",
+    "windows::Security::Authorization::AppCapabilityAccess::{ AppCapability, AppCapabilityAccessStatus, }",
+    "windows::Win32::System::WinRT::{RoInitialize, RoUninitialize, RO_INIT_MULTITHREADED}",
+    "windows_core::{Error, HRESULT, HSTRING}"
   ],
   "invariants": [
     {
@@ -166,20 +180,25 @@
   "module": "pocketstation::capture::platform::windows::authorization",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-f36079402c22d64d761f"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(error) => Err(error),",
+    "Err(error) if error.code() == RPC_E_CHANGED_MODE => Ok(Self {",
+    "fn:microphone_permission_observation"
   ],
   "package": "pocketstation",
   "path": "src/capture/platform/windows/authorization.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -223,8 +242,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Non-prompting Windows microphone capability observation."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::capture::platform::windows::authorization responsibilities, including the src/capture/platform/windows/authorization boundary."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -278,6 +297,7 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/source-identity.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 60,
@@ -285,12 +305,12 @@
     }
   ],
   "responsibilities": [
-    "RPC_E_CHANGED_MODE",
-    "microphone_permission_observation",
-    "permission_observation",
-    "WinRtApartment",
-    "initialize",
-    "drop"
+    "RPC_E_CHANGED_MODE (const)",
+    "microphone_permission_observation (fn)",
+    "permission_observation (fn)",
+    "WinRtApartment (struct)",
+    "initialize (fn)",
+    "drop (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -309,6 +329,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [
     {

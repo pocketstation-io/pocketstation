@@ -8,7 +8,12 @@
   ],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/envelope.rs"
+  ],
   "calls": [
     "allow",
     "as_str",
@@ -42,7 +47,12 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/envelope.rs"
+  ],
   "constructs": [
     "new",
     "try_new"
@@ -356,8 +366,14 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/envelope.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -371,19 +387,31 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "66f1ac1feef66b5a349b6280fa845b86d9f092ba",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/envelope.rs"
+  ],
   "implements": [
     "SignalLineage",
     "SignalDerivation"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/envelope.rs"
+  ],
   "imports": [
     "crate::frame::{ClockDomainId, ConnectorId, FrameLineage, SessionId, SourceId, StreamId}",
     "crate::graph::operator::OperatorId",
     "crate::graph::signal::SignalTiming"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::frame::{ClockDomainId, ConnectorId, FrameLineage, SessionId, SourceId, StreamId}",
+    "crate::graph::operator::OperatorId",
+    "crate::graph::signal::SignalTiming"
   ],
   "invariants": [
     {
@@ -401,20 +429,46 @@
   "module": "pocketstation::graph::signal::lineage",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-8f3b868f3807b8fa1bb0"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:SignalDerivationError",
+    "enum:SignalLineageError",
+    "fn:clock_id",
+    "fn:connector_id",
+    "fn:discontinuity_epoch",
+    "fn:from_frame",
+    "fn:new",
+    "fn:operator_generation",
+    "fn:operator_id",
+    "fn:operator_revision",
+    "fn:policy_epoch",
+    "fn:sequence_number",
+    "fn:session_id",
+    "fn:source_generation",
+    "fn:source_id",
+    "fn:stream_id",
+    "fn:try_new",
+    "fn:upstream_lineage",
+    "fn:upstream_timing",
+    "return Err(SignalDerivationError::EmptyOperatorId);",
+    "return Err(SignalDerivationError::InvalidTimestampRange);",
+    "return Err(SignalDerivationError::ZeroOperatorVersion);",
+    "return Err(SignalLineageError::ZeroSourceGeneration);",
+    "struct:SignalDerivation",
+    "struct:SignalLineage"
   ],
   "package": "pocketstation",
   "path": "src/graph/signal/lineage.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -547,8 +601,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Source-independent signal lineage and derivation."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::signal::lineage responsibilities, including Preserves source, stream, generation, discontinuity, and policy identity across signal processing.; Creates a new `SignalLineage` after validating its inputs.; Creates `SignalLineage` from frame.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -586,29 +640,39 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/frame/lineage.rs",
+    "REFERENCES:src/graph/operator.rs",
+    "REFERENCES:src/graph/signal/timing.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "SignalLineage",
-    "try_new",
-    "from_frame",
-    "session_id",
-    "stream_id",
-    "source_id",
-    "clock_id",
-    "sequence_number",
-    "source_generation",
-    "discontinuity_epoch",
-    "policy_epoch",
-    "SignalLineageError",
-    "SignalDerivation",
-    "new",
-    "upstream_lineage",
-    "upstream_timing",
-    "operator_id",
-    "operator_revision",
-    "operator_generation",
-    "connector_id",
-    "SignalDerivationError"
+    "pocketstation::graph::signal::lineage::SignalLineage: Preserves source, stream, generation, discontinuity, and policy identity across signal processing.",
+    "try_new: Creates a new `SignalLineage` after validating its inputs.",
+    "from_frame: Creates `SignalLineage` from frame.",
+    "session_id: Returns the session identifier held by `SignalLineage`.",
+    "stream_id: Returns the stream identifier held by `SignalLineage`.",
+    "source_id: Returns the source identifier held by `SignalLineage`.",
+    "clock_id: Returns the clock identifier held by `SignalLineage`.",
+    "sequence_number: Returns the sequence number held by `SignalLineage`.",
+    "source_generation: Returns the source generation associated with `SignalLineage`.",
+    "discontinuity_epoch: Returns the discontinuity epoch associated with `SignalLineage`.",
+    "policy_epoch: Returns the policy epoch associated with `SignalLineage`.",
+    "pocketstation::graph::signal::lineage::SignalLineageError: Classifies failures reported as signal lineage error.",
+    "pocketstation::graph::signal::lineage::SignalLineageError::ZeroSourceGeneration: Reported when the owning operation encounters zero source generation.",
+    "pocketstation::graph::signal::lineage::SignalDerivation: Source-independent record of the signal consumed by an operator.",
+    "new: Creates a new `SignalDerivation`.",
+    "upstream_lineage: Returns the upstream lineage held by `SignalDerivation`.",
+    "upstream_timing: Returns the upstream timing associated with `SignalDerivation`.",
+    "operator_id: Returns the operator identifier held by `SignalDerivation`.",
+    "operator_revision: Returns the operator revision held by `SignalDerivation`.",
+    "operator_generation: Returns the operator generation associated with `SignalDerivation`.",
+    "connector_id: Returns the connector identifier held by `SignalDerivation`.",
+    "pocketstation::graph::signal::lineage::SignalDerivationError: Classifies failures reported as signal derivation error.",
+    "pocketstation::graph::signal::lineage::SignalDerivationError::InvalidTimestampRange: Reported when the owning operation encounters invalid timestamp range.",
+    "pocketstation::graph::signal::lineage::SignalDerivationError::EmptyOperatorId: Reported when the owning operation encounters empty operator identifier.",
+    "pocketstation::graph::signal::lineage::SignalDerivationError::ZeroOperatorVersion: Reported when the owning operation encounters zero operator version."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -628,6 +692,7 @@
       "text": "/// contracts exactly once at the realtime-to-async boundary."
     }
   ],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
   "calls": [
     "Arc::clone",
     "Box::new",
@@ -123,7 +126,10 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
   "constructs": [
     "Box::new",
     "NodeTypeId::from",
@@ -404,8 +410,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -419,9 +429,15 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "b7c87f0f40461fc1a677b22a2f5dc28dce993bd8",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs"
+  ],
   "imports": [
     "crate::frame::StemId",
     "crate::frame::{SampleFormat, SampleSpec}",
@@ -443,7 +459,25 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::frame::StemId",
+    "crate::frame::{SampleFormat, SampleSpec}",
+    "crate::graph::ir::GraphIr",
+    "crate::graph::{ChannelLayout, MediaCaps}",
+    "crate::graph::{EdgeContract, NodeId, NodeRegistry, NodeTypeId, PrepareContext}",
+    "crate::runtime::{ plan_source_channel, AsyncOperatorOutputBranchSpec, PlanEdgeReceiver, PlanRunnerCancellation, PlanSourceInput, RealtimePlanExecutor, TypedEdgeBranchSpec, }",
+    "crate::session::compile::{CompiledNodeBinding, CompiledSessionBindings}",
+    "crate::session::{CompiledSession, ConnectionTarget, SessionSpec, StreamOrigin}",
+    "error::SessionPrepareError",
+    "mappings::{ PreparedExternalAudioIngress, PreparedExternalOperatorInput, PreparedExternalSourceBranch, PreparedExternalSourceMapping, PreparedExternalSourceTarget, PreparedExternalTypedRoute, PreparedGeneratedAudioIngress, PreparedOperatorInputMapping, PreparedOperatorOutputMapping, PreparedOperatorOutputTarget, PreparedTypedInputOrigin, PreparedWorkerOrigin, }",
+    "mappings::{ PreparedOperatorMapping, PreparedSignalRouteMapping, PreparedSourceMapping, PreparedWorkerMapping, }",
+    "module:error",
+    "module:mappings",
+    "module:prepared",
+    "module:tests",
+    "prepared::PreparedSession",
+    "std::collections::{HashMap, HashSet}",
+    "std::sync::Arc"
   ],
   "invariants": [],
   "language": "Rust",
@@ -452,18 +486,26 @@
   "module": "pocketstation::session::prepare",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "fn:prepare_session_runtime",
+    "return Err(SessionPrepareError::DuplicateSourceNode { stem_id: stem.id() });",
+    "return Err(SessionPrepareError::IncompatibleNodeBinding {",
+    "return Err(SessionPrepareError::InvalidExternalAudioMedia {",
+    "return Err(SessionPrepareError::InvalidGeneratedAudioMedia {",
+    "return Err(SessionPrepareError::OperatorDeclarationMismatch {",
+    "return Err(SessionPrepareError::OperatorDeclarationMismatch { node_id: node.id() });"
   ],
   "package": "pocketstation",
   "path": "src/session/prepare/mod.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -550,7 +592,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::prepare`."
+    "text": "Implements pocketstation::session::prepare responsibilities, including Prepares session runtime for `prepare`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -613,6 +655,30 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "CONTAINS:src/session/prepare/error.rs",
+    "CONTAINS:src/session/prepare/mappings.rs",
+    "CONTAINS:src/session/prepare/prepared.rs",
+    "IMPORTS:src/session/prepare/error.rs",
+    "IMPORTS:src/session/prepare/mappings.rs",
+    "IMPORTS:src/session/prepare/prepared.rs",
+    "IMPORTS:src/session/prepare/tests.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/graph/ir.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/plan.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/graph/spec.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/runtime/audio/runner.rs",
+    "REFERENCES:src/session/compile/bindings.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/prepare/error.rs",
+    "REFERENCES:src/session/prepare/mappings.rs",
+    "REFERENCES:src/session/prepare/prepared.rs"
+  ],
   "resource_ownership": [
     {
       "line": 2,
@@ -628,19 +694,7 @@
     }
   ],
   "responsibilities": [
-    "error",
-    "mappings",
-    "prepared",
-    "prepare_session_runtime",
-    "prepare_generated_audio_ingresses",
-    "prepare_external_sources",
-    "external_audio_stem_id",
-    "prepare_sources",
-    "WorkerMappingContext",
-    "map_worker_receivers",
-    "prepare_context_for_media",
-    "required_node_binding",
-    "tests"
+    "pocketstation::session::prepare::prepare_session_runtime: Prepares session runtime for `prepare`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -675,7 +729,16 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-04bb182c251930dad2c7",
+    "test-0bd49b746292f0decebe",
+    "test-3a12498da9c257b26e78",
+    "test-65636093cab026afe1f5",
+    "test-8cdb61f3648f25710114",
+    "test-d6762b694308bbfc1e5c",
+    "test-f38493cc0593f603aece"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

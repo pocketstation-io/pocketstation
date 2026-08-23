@@ -2,70 +2,66 @@
 
 <!-- claims: CLM-TRBL-006-CAP-001,CLM-TRBL-006-CAP-002,CLM-TRBL-006-CAP-003,CLM-TRBL-006-CAP-004,CLM-TRBL-006-CAP-005,CLM-TRBL-006-CAP-006,CLM-TRBL-006-CAP-007,CLM-TRBL-006-SOURCE-001 -->
 
-Use this page when you observe **frames or signals are dropped**. Diagnose the reported stage and identity before changing route, source, connector, or lifecycle policy.
+## Symptom
 
-## Distinguish the cause
+Route observations report drops, saturation, full queues, or rejected signals.
 
-Compare queue depth, saturation, and drop observations by route. Change capacity only after identifying the constrained consumer and its declared loss and backpressure policy.
+## Evidenced causes
+
+- A consumer is slower than its producer at the configured capacity.
+- A polled-audio lease remains outstanding and consumes receipt capacity.
+- A signal payload exceeds its branch limit.
+- The selected loss or delivery policy rejects work at saturation.
+
+## Distinguish the causes
+
+Compare capacity, current depth, peak depth, drop counters, lease counters, and branch identity. Identify one constrained route before changing global settings.
 
 ## Diagnostic signals
 
-- `pocketstation::endpoint::runtime::EndpointFailureStage` / `CancelPreparation` (`error-0265bb447764629fa47b`)
-- `pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError` / `ZeroLeaseCapacity` (`error-0370b7ecbdf2b9d6fbdb`)
-- `pocketstation::graph::node::NodeDescriptorError` / `InvalidSafetyContract` (`error-04b7031025a9b635fdbf`)
-- `pocketstation::graph::node::ConfigError` (`error-0be8ad81000b2924c24c`)
-- `pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError` / `QueueCapacityTooLarge` (`error-0bed26cd5cd9ccfe0b20`)
-- `pocketstation::graph::compile::resolve::CompileError` (`error-0da3f91a5f274a27ab76`)
-- `pocketstation::endpoint::registry::EndpointDriverRegistryError` / `OperatorNodeTypeConflict` (`error-0db6114718e1d213362f`)
-- `pocketstation::graph::signal::operator::AsyncOperatorManifestError` / `ZeroProcessTimeout` (`error-10e3a522fa28fccdfc60`)
-- `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError` / `InvalidMagic` (`error-143cce14f0e71f68c4cf`)
-- `pocketstation::graph::signal::operator::OperatorFailurePolicy` / `StopWorker` (`error-14ca51fa44623142d004`)
-- `pocketstation::graph::node::NodeError` / `Process` (`error-170066b0b40a26e0e33d`)
-- `pocketstation::graph::signal::continuity::SignalContinuityError` / `SequenceGapWithoutDiscontinuity` (`error-18565faf820bbf8e2650`)
-- `pocketstation::graph::compile::resolve::CompileError` / `MediaMismatch` (`error-1877b4a7bdffa5d7ed88`)
-- `pocketstation::graph::signal::continuity::SignalContinuityError` / `InvalidEnvelope` (`error-1897c7da4711d75eb14d`)
-- `pocketstation::graph::plan::PlanError` / `MoveExclusiveFanOut` (`error-18d1485abaf31198b6d8`)
-- `pocketstation::graph::node::NodeDescriptorError` / `EmptyDisplayName` (`error-1981cbd27763ca5ffcbe`)
-- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `Wait` (`error-19eabd878a9188bf94ce`)
-- `pocketstation::graph::signal::operator::AsyncOperatorManifestError` / `InputEdgeMediaMismatch` (`error-1be7a5d9b8d5cbceab93`)
-- `pocketstation::endpoint::polled_audio_driver::PolledAudioPollError` / `LeaseCapacityExhausted` (`error-1d54a56031f21d638e8a`)
-- `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError` / `ReservedFieldSet` (`error-1d9b879cab06d8598907`)
-- `pocketstation::graph::node::ConfigError` / `Missing` (`error-1fb4b2d84a6cf23abbd9`)
-- `pocketstation::endpoint::runtime::EndpointFailureStage` (`error-1fdd7e0417ea75e9688a`)
-- `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError` / `InvalidTerminal` (`error-201cc7749bdbbd671d69`)
-- `pocketstation::endpoint::runtime::EndpointFailure` (`error-21860e8a08d6660b2cd4`)
-- `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError` / `FrameLengthOverflow` (`error-23eba8b87dea81473095`)
-- `pocketstation::graph::signal::operator::AsyncOperatorManifestError` / `OutputEdgeMediaMismatch` (`error-2431503c1bc613dbc5c4`)
-- `pocketstation::graph::registry::NodeRegistrationError` / `DuplicateNodeType` (`error-243f5b367fb16b38fdea`)
-- `pocketstation::endpoint::polled_audio_driver::PolledAudioPollError` / `Empty` (`error-25cba0c2435c181a17c1`)
-- `pocketstation::graph::signal::continuity::SignalContinuityError` / `IdentityChanged` (`error-2652e90b3fd931c3b8db`)
-- `pocketstation::graph::signal::continuity::SignalContinuityError` / `RecoveryWithoutDiscontinuity` (`error-28b1fb124ed036dbd23a`)
+- `pocketstation::runtime::signal::edge::TypedEdgeBuildError` / `CapacityTooLarge` (`error-bcd6542f96923bf14c04`)
+- `pocketstation::runtime::audio::router::PlanRouterError` (`error-05bda3230590ed4ebdc0`)
+- `pocketstation::runtime::audio::router::PlanRouterError` / `InvalidFrameBytes` (`error-10b07438d146ff25f5ff`)
+- `pocketstation::runtime::audio::router::PlanRouterError` / `MissingMemoryPlan` (`error-94555f2e6e2802978bfc`)
+- `pocketstation::runtime::audio::router::PlanRouterError` / `ZeroCapacity` (`error-7255bf1a56077c9e285a`)
+- `pocketstation::runtime::signal::edge::SignalEdgeSendError` (`error-188081bb302d41d8b38b`)
+- `pocketstation::runtime::signal::edge::TypedEdgeBuildError` (`error-0aced45f2e76e7a1963a`)
+- `pocketstation::runtime::signal::edge::TypedEdgeBuildError` / `MissingPayloadLimit` (`error-6596343e02ed441de62a`)
+- `pocketstation::runtime::signal::edge::TypedEdgeBuildError` / `NoBranches` (`error-9444b35743da5ffb7cde`)
+- `pocketstation::runtime::signal::edge::TypedEdgeBuildError` / `PayloadLimitTooLarge` (`error-a5fa26e0cedca7c83187`)
+- `pocketstation::runtime::signal::edge::TypedEdgeBuildError` / `ZeroCapacity` (`error-5b084c27791c642d425c`)
+- `pocketstation::runtime::signal::edge::TypedEdgeBuildError` / `ZeroPayloadLimit` (`error-e0e2a1789be560383b81`)
 
 ## Executable evidence
 
 - `given_enqueued_and_dropped_frames_when_observed_then_drop_rate_uses_all_attempts` exercises given enqueued and dropped frames when observed then drop rate uses all attempts under its recorded setup (`test-9a0bb689d2371b66a92f`).
-- `given_supported_non_audio_signals_when_checked_then_media_is_symmetric` exercises given supported non audio signals when checked then media is symmetric under its recorded setup (`test-d97a306ad6dc3558e082`).
-- `given_contiguous_signals_when_replayed_then_continuity_is_deterministic` exercises given contiguous signals when replayed then continuity is deterministic under its recorded setup (`test-d0dc80cc2da279b6a618`).
 - `given_lineaged_source_fan_out_when_branch_frames_are_copied_then_exact_lineage_is_preserved` exercises given lineaged source fan out when branch frames are copied then exact lineage is preserved under its recorded setup (`test-d798548d6c8b059ba1a8`).
 - `given_shutdown_with_queued_shared_frames_when_receivers_drop_then_pool_slots_are_released` exercises given shutdown with queued shared frames when receivers drop then pool slots are released under its recorded setup (`test-f8946231a23a1c5d14de`).
 - `given_slow_full_branch_when_more_frames_dispatched_then_other_branch_continues` exercises given slow full branch when more frames dispatched then other branch continues under its recorded setup (`test-98b1ad304d1d5b646f6a`).
-- `given_full_source_input_when_more_frames_arrive_then_newest_rejects_and_counts` exercises given full source input when more frames arrive then newest rejects and counts under its recorded setup (`test-9884a85b98ea454bb6cf`).
-- `dropped_count` exercises dropped count under its recorded setup (`test-701b8246fe39c342f6ed`).
-- `given_prepared_multi_source_runner_when_ready_frames_process_then_no_heap_allocation_occurs` exercises given prepared multi source runner when ready frames process then no heap allocation occurs under its recorded setup (`test-85537f6d9bc6ada5654e`).
-- `given_external_consumer_when_declared_then_provider_and_typed_endpoint_use_public_api` exercises given external consumer when declared then provider and typed endpoint use public api under its recorded setup (`test-ace9b7d11da2036ce899`).
-- `into_plan_edge_receiver` exercises into plan edge receiver under its recorded setup (`test-0eec7a35869b3b94ca49`).
-- `plan_edge_observation_handle` exercises plan edge observation handle under its recorded setup (`test-f8b5136b41672df7481a`).
-- `given_concurrent_publish_and_poll_when_observed_then_depth_stays_bounded_and_returns_to_zero` exercises given concurrent publish and poll when observed then depth stays bounded and returns to zero under its recorded setup (`test-53df4ef903e72a1de69c`).
-- `given_held_batch_when_polled_then_samples_stay_stable_and_lease_exhaustion_is_counted` exercises given held batch when polled then samples stay stable and lease exhaustion is counted under its recorded setup (`test-1c0e175d584cd2910a77`).
-- `given_impossible_dequeue_when_observed_then_depth_saturates_and_failure_is_explicit` exercises given impossible dequeue when observed then depth saturates and failure is explicit under its recorded setup (`test-7760a60bd2740c15c01d`).
+- `given_compiled_text_edge_when_router_builds_then_only_audio_edge_gets_audio_receiver` exercises given compiled text edge when router builds then only audio edge gets audio receiver under its recorded setup (`test-c5f24b62056cfa546c3a`).
+- `given_failed_branch_when_receiver_drops_then_unrelated_branch_continues` exercises given failed branch when receiver drops then unrelated branch continues under its recorded setup (`test-b5854f13d50d15dfdbe3`).
+- `given_foreign_clock_timestamp_when_delivered_then_source_latency_is_not_fabricated` exercises given foreign clock timestamp when delivered then source latency is not fabricated under its recorded setup (`test-133d3a4b4c11520b3884`).
+- `given_lineage_discontinuity_epoch_change_when_received_then_declared_discontinuity_is_counted` exercises given lineage discontinuity epoch change when received then declared discontinuity is counted under its recorded setup (`test-fceb86228ea42976addb`).
+- `given_observation_handle_when_consumer_detects_gap_then_live_discontinuity_is_visible` exercises given observation handle when consumer detects gap then live discontinuity is visible under its recorded setup (`test-225f3db0b8f734fb6907`).
+- `given_observation_handle_when_producer_fills_edge_then_live_queue_and_drop_are_visible` exercises given observation handle when producer fills edge then live queue and drop are visible under its recorded setup (`test-7acd587c9b13ea33929e`).
+- `given_observation_handle_when_receiver_drops_then_shutdown_snapshot_remains_available` exercises given observation handle when receiver drops then shutdown snapshot remains available under its recorded setup (`test-b85189f2f3734f3dad88`).
+- `given_one_source_with_three_edges_when_dispatched_then_every_edge_receives_identified_frame` exercises given one source with three edges when dispatched then every edge receives identified frame under its recorded setup (`test-413eb70a225c14f5ec09`).
+- `given_queued_frame_when_clocked_receive_runs_then_clock_is_sampled_after_pop` exercises given queued frame when clocked receive runs then clock is sampled after pop under its recorded setup (`test-f09950594dbe438e24cb`).
+- `given_receive_before_enqueue_when_observed_then_latency_sample_is_rejected` exercises given receive before enqueue when observed then latency sample is rejected under its recorded setup (`test-904f86f2ad1e1369647c`).
+- `given_receiver_holds_popped_frame_when_queue_has_room_then_next_copy_is_enqueued` exercises given receiver holds popped frame when queue has room then next copy is enqueued under its recorded setup (`test-e0585ce3a8b66eeaa5f4`).
 
-## Corrective action and retry
+## Corrective action
 
-Apply only the action implied by the typed failure or violated precondition. Retry is not safe merely because a failure appears transient. When retryability or recovery is unknown, preserve the failure for application policy or maintainer review.
+Release leases, fix the slow consumer, reduce work, or deliberately choose a different capacity and edge policy.
 
-## Data and state
+## Retry and incomplete state
 
-Treat frames, signals, files, acknowledgements, and finalization results produced before failure as potentially partial unless the terminal contract says otherwise. Inspect per-route, per-stem, and per-component outcomes.
+A dropped item cannot be recovered by retry unless the producer and contract support replay. Other routes can remain complete or become independently partial.
+
+## Related reference
+
+- [Realtime Routing](/docs/concepts/realtime-routing.md)
+- [Route Sizing](/docs/best-practices/route-sizing.md)
 
 ## Related documentation
 
@@ -80,9 +76,9 @@ Treat frames, signals, files, acknowledgements, and finalization results produce
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Frames or signals are dropped** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/runtime/audio/router.rs:1-1615` (`DIRECT`)
 - `src/runtime/signal/edge.rs:1-651` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Frames or signals are dropped**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

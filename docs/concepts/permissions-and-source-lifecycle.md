@@ -2,47 +2,61 @@
 
 <!-- claims: CLM-DOC-011-CAP-001,CLM-DOC-011-SOURCE-001 -->
 
-Query non-prompting authorization where observable and receive source-generation, loss, and permission-epoch changes.
+## What it is
+
+Permission and source lifecycle records separate authorization observation from source generation, disappearance, reappearance, and open outcomes.
+
+## Why it exists
+
+Desktop authorization is not one universal process-wide Boolean. Keeping observation, prompts, and open results distinct prevents advisory state from being promoted to a guarantee.
+
+## Relationships
+
+- The host application owns prompts and user-facing permission flow.
+- Capture preparation or opening returns the authoritative typed result.
+- Permission epochs and source generations identify changes that affect later frames.
+
+## Invariants and guarantees
+
+- Observation does not prompt.
+- `NotObservable` is neither granted nor denied.
+- Frames retain the generation and permission evidence in effect when they were produced.
+
+## When you encounter it
+
+- **Select a durable source** — Discover and resolve a source selector while preserving identity and source-generation changes.
+- **Handle platform permission** — Perform non-prompting observation, own the prompt UX, and treat source opening as authoritative.
+
+## Use it
+
+- [Observe permission without prompting](/docs/how-to/observe-permission.md)
+- [Permission state is denied or unobservable](/docs/troubleshooting/permission-state.md)
+- [A capture source disappears](/docs/troubleshooting/source-loss.md)
 
 ## Scope
 
 - **Observe permission and source lifecycle.** Query non-prompting authorization where observable and receive source-generation, loss, and permission-epoch changes.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Permissions and source lifecycle** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
-## Contract surface
+## Key API
 
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
-| `pocketstation::capture::events::SourceLifecycleEventKind` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/events.rs:25` |
-| `pocketstation::capture::events::SourceLifecycleEventKind::PermissionChanged` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/events.rs:28` |
-| `pocketstation::capture::events::SourceLifecycleEventKind::PermissionRevoked` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/events.rs:29` |
-| `pocketstation::capture::events::SourceLifecycleEventKind::ReplacementObserved` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/events.rs:27` |
-| `pocketstation::capture::events::SourceLifecycleEventKind::SourceReappeared` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/events.rs:30` |
-| `pocketstation::capture::events::SourceLifecycleEventKind::SourceUnavailable` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/events.rs:26` |
-| `pocketstation::capture::authorization::CapturePermissionLifecycle` | struct | Control-plane owner for one source's observed authorization epoch. | `src/capture/authorization.rs:183` |
-| `ActiveCaptureBackend::source_id` | function | Resolved native source identity for every frame emitted by this open. | `src/capture/capture_owner.rs:105` |
-| `source_id` | function | Derives the immutable captured-frame identity for this resolved source. | `src/capture/identity.rs:46` |
-| `pocketstation::capture::query::SourceProvider` | trait | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/query.rs:48` |
-| `pocketstation::capture::events::SourceGeneration` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/events.rs:12` |
-| `pocketstation::capture::events::SourceRuntimeEventObservationHandle` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/events.rs:200` |
-| `pocketstation::capture::events::SourceRuntimeEventObservations` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/events.rs:111` |
-| `pocketstation::capture::events::SourceRuntimeEventSender` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/events.rs:224` |
-| `pocketstation::capture::identity::CaptureSource` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/identity.rs:82` |
-| `pocketstation::capture::identity::StableSourceId` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/identity.rs:26` |
-| `pocketstation::capture::query::LocalSourceProvider` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/query.rs:52` |
-| `pocketstation::capture::authorization::SourceIdentityStrength` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/authorization.rs:257` |
-| `pocketstation::capture::events::SourceRecoveryRequirement` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/events.rs:35` |
-| `pocketstation::capture::events::SourceRuntimeEvent` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/capture/events.rs:53` |
+| `pocketstation::capture::lifecycle_registry::SourceLifecycleRegistry` | struct | Assigns source generations across complete discovery snapshots. | `src/capture/lifecycle_registry.rs:31` |
+| `pocketstation::capture::events::SourceLifecycleEventKind` | enum | Selects the source lifecycle event kind used by PocketStation. | `src/capture/events.rs:25` |
+| `pocketstation::capture::lifecycle_registry::SourceGenerationTransition` | enum | Enumerates the supported source generation transition cases. | `src/capture/lifecycle_registry.rs:8` |
+| `pocketstation::capture::events::SourceLifecycleEventKind::PermissionChanged` | variant | Identifies the permission changed state or stage represented by `SourceLifecycleEventKind`. | `src/capture/events.rs:28` |
+| `pocketstation::capture::events::SourceLifecycleEventKind::PermissionRevoked` | variant | Identifies the permission revoked state or stage represented by `SourceLifecycleEventKind`. | `src/capture/events.rs:29` |
+| `pocketstation::capture::events::SourceLifecycleEventKind::ReplacementObserved` | variant | Identifies the replacement observed state or stage represented by `SourceLifecycleEventKind`. | `src/capture/events.rs:27` |
+| `pocketstation::capture::events::SourceLifecycleEventKind::SourceReappeared` | variant | Identifies the source reappeared state or stage represented by `SourceLifecycleEventKind`. | `src/capture/events.rs:30` |
+| `pocketstation::capture::events::SourceLifecycleEventKind::SourceUnavailable` | variant | Identifies the source unavailable state or stage represented by `SourceLifecycleEventKind`. | `src/capture/events.rs:26` |
+| `pocketstation::capture::lifecycle_registry::SourceGenerationTransition::Disappeared` | variant | Represents the disappeared alternative defined by `SourceGenerationTransition`. | `src/capture/lifecycle_registry.rs:9` |
+| `pocketstation::capture::lifecycle_registry::SourceGenerationTransition::Reappeared` | variant | Represents the reappeared alternative defined by `SourceGenerationTransition`. | `src/capture/lifecycle_registry.rs:13` |
 
-## Where you encounter it
+## Executable evidence
 
-- **Select a durable source** — Discover and resolve a source selector while preserving identity and source-generation changes.
-- **Handle platform permission** — Perform non-prompting observation, own the prompt UX, and treat source opening as authoritative.
-
-## Behavior established by tests
-
-The following test bodies are evidence only for their recorded setup:
+Executable evidence selected for **Permissions and source lifecycle** is limited to each test's recorded setup and assertions:
 
 - `given_backend_frame_when_source_differs_from_open_identity_then_lineage_fails_closed` — given backend frame when source differs from open identity then lineage fails closed (`src/capture/capture_owner.rs:511`; `test-a8dbef4f3b61c752ce0e`).
 - `given_missing_exact_source_when_classified_then_stable_key_is_preserved` — given missing exact source when classified then stable key is preserved (`src/capture/platform/linux/pipewire.rs:1894`; `test-50620fcc9117c7ad3cf6`).
@@ -57,10 +71,6 @@ The following test bodies are evidence only for their recorded setup:
 - `given_stable_source_id_when_derived_twice_then_same_source_id` — given stable source id when derived twice then same source id (`src/capture/tests.rs:165`; `test-fed684d712fbb6a9afdb`).
 - `given_two_different_stable_ids_when_derived_then_different_source_ids` — given two different stable ids when derived then different source ids (`src/capture/tests.rs:183`; `test-b80d89e4327e5d2695b5`).
 
-## Boundaries
-
-The compiler inventory establishes names, kinds, visibility, and signatures. Tests establish only their exercised conditions. Where retryability, ordering, cancellation, physical qualification, or recovery is not declared, this page leaves it unspecified.
-
 ## Related documentation
 
 - [Glossary](/docs/glossary.md)
@@ -74,9 +84,9 @@ The compiler inventory establishes names, kinds, visibility, and signatures. Tes
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Permissions and source lifecycle** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/capture/authorization.rs:1-318` (`DIRECT`)
 - `src/capture/events.rs:1-344` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Permissions and source lifecycle**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

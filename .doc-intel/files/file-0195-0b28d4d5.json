@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "calls": [
     "any",
     "cfg",
@@ -29,7 +32,10 @@
       "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "constructs": [],
   "content_hash": "cabcdb336364108c24721b3186801be6278da7c517dfaa06639d9472c861099f",
   "defaults": [],
@@ -87,8 +93,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -104,9 +114,15 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "54f0c05dc71b84644322aafe9be14dc780696247",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "imports": [
     "edge::{ TypedEdgeBranchSpec, TypedEdgeBuildError, TypedEdgeFanout, TypedEdgeObservationHandle, TypedEdgeObservations, TypedEdgePublishError, TypedEdgeReceiver, }",
     "edge::{SignalEdge, SignalEdgeReceiver, SignalEdgeSender}",
@@ -127,7 +143,24 @@
     "operator::{AsyncOperatorWorker, CompiledOperatorInputContract}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "edge::{ TypedEdgeBranchSpec, TypedEdgeBuildError, TypedEdgeFanout, TypedEdgeObservationHandle, TypedEdgeObservations, TypedEdgePublishError, TypedEdgeReceiver, }",
+    "edge::{SignalEdge, SignalEdgeReceiver, SignalEdgeSender}",
+    "edge::{SignalEdgeSendError, TypedEdgePublishReport}",
+    "error::AsyncOperatorWorkerError",
+    "io::AsyncOperatorInputAccessError",
+    "io::AsyncOperatorOutputObservations",
+    "io::{ AsyncOperatorNamedOutputBranchSpec, AsyncOperatorOutput, AsyncOperatorOutputBranchSpec, AsyncOperatorOutputObservationHandle, AsyncOperatorTypedInput, }",
+    "io::{AsyncOperatorInput, AsyncOperatorNamedOutput}",
+    "module:edge",
+    "module:error",
+    "module:io",
+    "module:observations",
+    "module:operator",
+    "observations::AsyncOperatorObservationHandle",
+    "observations::AsyncOperatorObservations",
+    "operator::SessionOperatorInput",
+    "operator::{AsyncOperatorWorker, CompiledOperatorInputContract}"
   ],
   "invariants": [],
   "language": "Rust",
@@ -136,20 +169,20 @@
   "module": "pocketstation::runtime::signal",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-85c7b461927afa826713"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "src/runtime/signal/mod.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -186,8 +219,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Bounded asynchronous signal execution lane."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::runtime::signal responsibilities, including Bounded asynchronous signal execution lane.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -252,13 +285,21 @@
     "docs/best-practices/realtime-boundaries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "CONTAINS:src/runtime/signal/edge.rs",
+    "CONTAINS:src/runtime/signal/error.rs",
+    "CONTAINS:src/runtime/signal/io.rs",
+    "CONTAINS:src/runtime/signal/observations.rs",
+    "CONTAINS:src/runtime/signal/operator.rs",
+    "IMPORTS:src/runtime/signal/edge.rs",
+    "IMPORTS:src/runtime/signal/error.rs",
+    "IMPORTS:src/runtime/signal/io.rs",
+    "IMPORTS:src/runtime/signal/observations.rs",
+    "IMPORTS:src/runtime/signal/operator.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "edge",
-    "error",
-    "io",
-    "observations",
-    "operator"
+    "signal: Bounded asynchronous signal execution lane."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -268,6 +309,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

@@ -5,14 +5,22 @@ use std::collections::{HashMap, HashSet};
 use super::{CaptureSource, SourceGeneration, SourceState, StableSourceId};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Enumerates the supported source generation transition cases."]
 pub enum SourceGenerationTransition {
+    #[doc = "Selects the disappeared case of `SourceGenerationTransition`."]
     Disappeared {
+        #[doc = "Identifies the stable identifier recorded by `Disappeared`."]
         stable_id: StableSourceId,
+        #[doc = "Stores the generation used by `Disappeared`."]
         generation: SourceGeneration,
     },
+    #[doc = "Selects the reappeared case of `SourceGenerationTransition`."]
     Reappeared {
+        #[doc = "Identifies the stable identifier recorded by `Reappeared`."]
         stable_id: StableSourceId,
+        #[doc = "Stores the previous generation used by `Reappeared`."]
         previous_generation: SourceGeneration,
+        #[doc = "Stores the generation used by `Reappeared`."]
         generation: SourceGeneration,
     },
 }
@@ -33,6 +41,7 @@ pub struct SourceLifecycleRegistry {
 }
 
 impl SourceLifecycleRegistry {
+    #[doc = "Records an observation for complete snapshot for `SourceLifecycleRegistry`."]
     pub fn observe_complete_snapshot(
         &mut self,
         sources: &[CaptureSource],
@@ -81,6 +90,7 @@ impl SourceLifecycleRegistry {
         transitions
     }
 
+    #[doc = "Returns the generation held by `SourceLifecycleRegistry`."]
     pub fn generation(&self, stable_id: &StableSourceId) -> Option<SourceGeneration> {
         self.entries.get(stable_id).map(|state| state.generation)
     }

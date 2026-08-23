@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs"
+  ],
   "calls": [
     "EndpointConfiguration::new",
     "NodeTypeId::from",
@@ -17,7 +20,10 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs"
+  ],
   "constructs": [
     "EndpointConfiguration::new",
     "NodeTypeId::from",
@@ -99,8 +105,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -114,19 +124,27 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "4343e8b8c0771561b154057021d8a1efe750caca",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs"
+  ],
   "implements": [
     "Session",
     "SessionEngineBuilder"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs"
+  ],
   "imports": [
     "crate::endpoint::{PolledAudioEndpoint, POLLED_AUDIO_OPERATOR_ID}",
     "crate::graph::NodeTypeId",
     "crate::session::{ EndpointConfiguration, EndpointExtensionRegistrationError, EndpointHandle, OperatorId, Session, SessionEngineBuilder, SessionError, CONNECTOR_NODE_TYPE_ID, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::endpoint::{PolledAudioEndpoint, POLLED_AUDIO_OPERATOR_ID}",
+    "crate::graph::NodeTypeId",
+    "crate::session::{ EndpointConfiguration, EndpointExtensionRegistrationError, EndpointHandle, OperatorId, Session, SessionEngineBuilder, SessionError, CONNECTOR_NODE_TYPE_ID, }"
   ],
   "invariants": [],
   "language": "Rust",
@@ -135,18 +153,21 @@
   "module": "pocketstation::session::extensions::polled_audio",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "fn:polled_audio",
+    "fn:register_polled_audio_endpoint"
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/polled_audio.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -165,8 +186,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Session composition for the bounded polled-audio endpoint.  The endpoint module owns the concrete driver and queue. Session owns only declaration and registration against the canonical endpoint contracts."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::extensions::polled audio responsibilities, including Declares a bounded polled-audio endpoint on `Session`.; Registers polled audio endpoint for `SessionEngineBuilder`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -226,10 +247,16 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/endpoint/polled_audio.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/error.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "polled_audio",
-    "register_polled_audio_endpoint"
+    "polled_audio: Declares a bounded polled-audio endpoint on `Session`.",
+    "register_polled_audio_endpoint: Registers polled audio endpoint for `SessionEngineBuilder`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -239,6 +266,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

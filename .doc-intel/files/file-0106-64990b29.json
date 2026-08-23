@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
   "calls": [
     "kHz",
     "profile",
@@ -12,7 +15,10 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
   "constructs": [],
   "content_hash": "731744f018f75e0ba4b8c79067ac9a3e12bc06b39e7ef998672ef6cf0bfa2739",
   "defaults": [],
@@ -101,8 +107,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -116,12 +126,18 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "b109852bff6596385e2ba7e4d1de154c9ba0a49e",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/codec/mod.rs",
+    "IMPORTS:src/codec/mod.rs"
+  ],
   "imports": [],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "No external input is declared in this file."
   ],
   "invariants": [],
   "language": "Rust",
@@ -130,18 +146,24 @@
   "module": "pocketstation::codec::constants",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "const:I16_SCALE",
+    "const:OPUS_FRAME_SAMPLES",
+    "const:OPUS_MAX_PACKET_BYTES",
+    "const:OPUS_SAMPLE_RATE_HZ",
+    "const:VOICE_AGENT_FRAME_SAMPLES"
   ],
   "package": "pocketstation",
   "path": "src/codec/constants.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -179,7 +201,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::codec::constants`."
+    "text": "Implements pocketstation::codec::constants responsibilities, including 48 000 Hz, mono, VOIP application profile (AUDIO-012 default).; 20 ms frame = 960 samples at 48 kHz (AUDIO-012).; 10 ms frame = 480 samples at 48 kHz (voice-agent low-latency mode, RFC 6716 \u00a73.1).."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -204,13 +226,13 @@
     "docs/errors/frames-and-codec.md",
     "docs/troubleshooting/opus.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "OPUS_SAMPLE_RATE_HZ",
-    "OPUS_FRAME_SAMPLES",
-    "VOICE_AGENT_FRAME_SAMPLES",
-    "OPUS_MAX_PACKET_BYTES",
-    "I16_SCALE"
+    "pocketstation::codec::constants::OPUS_SAMPLE_RATE_HZ: 48 000 Hz, mono, VOIP application profile (AUDIO-012 default).",
+    "pocketstation::codec::constants::OPUS_FRAME_SAMPLES: 20 ms frame = 960 samples at 48 kHz (AUDIO-012).",
+    "pocketstation::codec::constants::VOICE_AGENT_FRAME_SAMPLES: 10 ms frame = 480 samples at 48 kHz (voice-agent low-latency mode, RFC 6716 \u00a73.1).",
+    "pocketstation::codec::constants::OPUS_MAX_PACKET_BYTES: Maximum number of bytes the Opus encoder can emit per 20 ms frame."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -220,6 +242,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

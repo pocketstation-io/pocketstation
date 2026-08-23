@@ -62,7 +62,7 @@ pub enum PolledAudioEndpointConfigError {
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 #[doc = "Reports the polled audio observations collected at an observation boundary."]
 pub struct PolledAudioObservations {
-    #[doc = "Stores the registered endpoints associated with `PolledAudioObservations`."]
+    #[doc = "Stores the registered endpoints used by `PolledAudioObservations`."]
     pub registered_endpoints: u64,
     #[doc = "Sets the queue capacity frames available to `PolledAudioObservations`."]
     pub queue_capacity_frames: u64,
@@ -82,7 +82,7 @@ pub struct PolledAudioObservations {
     pub invalid_ownership_drops_total: u64,
     #[doc = "Sets the lease capacity count available to `PolledAudioObservations`."]
     pub lease_capacity_count: u64,
-    #[doc = "Stores the outstanding leases associated with `PolledAudioObservations`."]
+    #[doc = "Stores the outstanding leases used by `PolledAudioObservations`."]
     pub outstanding_leases: u64,
     #[doc = "Counts the total number of lease exhausted observed by `PolledAudioObservations`."]
     pub lease_exhausted_total: u64,
@@ -212,7 +212,7 @@ impl PolledAudioBatchLease {
         self.len() == 0
     }
 
-    #[doc = "Returns the frame associated with `PolledAudioBatchLease`."]
+    #[doc = "Returns the frame held by `PolledAudioBatchLease`."]
     pub fn frame(&self, index: usize) -> Option<PolledAudioFrame<'_>> {
         self.frames
             .as_ref()?
@@ -238,38 +238,38 @@ impl Drop for PolledAudioBatchLease {
 }
 
 #[derive(Clone, Copy)]
-#[doc = "Represents polled audio frame in the PocketStation API."]
+#[doc = "Carries one polled audio payload together with its declared metadata."]
 pub struct PolledAudioFrame<'lease> {
     delivered: &'lease DeliveredAudioFrame,
 }
 
 impl<'lease> PolledAudioFrame<'lease> {
-    #[doc = "Returns the frame lineage associated with `PolledAudioFrame`."]
+    #[doc = "Returns the frame lineage carried by `PolledAudioFrame`."]
     pub fn lineage(self) -> FrameLineage {
         self.delivered.frame.lineage()
     }
 
-    #[doc = "Returns the endpoint identifier associated with `PolledAudioFrame`."]
+    #[doc = "Returns the endpoint identifier held by `PolledAudioFrame`."]
     pub fn endpoint_id(self) -> EndpointId {
         self.delivered.endpoint_id
     }
 
-    #[doc = "Returns the route identifier associated with `PolledAudioFrame`."]
+    #[doc = "Returns the route identifier held by `PolledAudioFrame`."]
     pub fn route_id(self) -> RouteId {
         self.delivered.route_id
     }
 
-    #[doc = "Returns the stream identifier associated with `PolledAudioFrame`."]
+    #[doc = "Returns the stream identifier held by `PolledAudioFrame`."]
     pub fn stream_id(self) -> StreamId {
         self.delivered.frame.frame().stream_id()
     }
 
-    #[doc = "Returns the connector identifier associated with `PolledAudioFrame`."]
+    #[doc = "Returns the connector identifier held by `PolledAudioFrame`."]
     pub fn connector_id(self) -> ConnectorId {
         self.delivered.connector_id
     }
 
-    #[doc = "Returns the sample rate hertz associated with `PolledAudioFrame`."]
+    #[doc = "Returns the sample rate hertz held by `PolledAudioFrame`."]
     pub fn sample_rate_hz(self) -> u32 {
         self.delivered.frame.frame().sample_rate_hz
     }

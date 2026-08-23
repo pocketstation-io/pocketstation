@@ -8,7 +8,10 @@
       "text": "\"connector worker thread panicked outside its contained run callback\","
     }
   ],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs"
+  ],
   "calls": [
     "Arc::clone",
     "Arc::new",
@@ -91,7 +94,10 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs"
+  ],
   "constructs": [
     "Arc::new",
     "Box::new",
@@ -429,8 +435,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -444,7 +454,10 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "f68d478d5620a6f16ed86ec31b87bbe00d0091a9",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs"
+  ],
   "implements": [
     "EndpointDriverFactory for ConnectorDriverEndpointAdapter",
     "EndpointDriverFactory for ConnectorEndpointAdapter",
@@ -454,7 +467,10 @@
     "RunningEndpointDriver for RunningConnectorWorker",
     "Drop for RunningConnectorWorker"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs"
+  ],
   "imports": [
     "crate::connector::{ ConnectorError, ConnectorErrorStage, ConnectorManifest, ConnectorObservationHandle, ConnectorObservationStore, ConnectorReadinessPolicy, }",
     "crate::endpoint::EndpointDriverObservationHandle",
@@ -468,7 +484,16 @@
     "super::{ConnectorContext, ConnectorFactory, ConnectorWorker}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::connector::{ ConnectorError, ConnectorErrorStage, ConnectorManifest, ConnectorObservationHandle, ConnectorObservationStore, ConnectorReadinessPolicy, }",
+    "crate::endpoint::EndpointDriverObservationHandle",
+    "crate::{ EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointPortInput, EndpointPreparationGroup, EndpointShutdownMode, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }",
+    "std::panic::{catch_unwind, AssertUnwindSafe}",
+    "std::sync::{Arc, Mutex}",
+    "std::thread::{self, JoinHandle}",
+    "super::coordination::{ConnectorStopToken, ReadinessProbeState}",
+    "super::driver::{prepare_connector_driver, ConnectorDriverFactory}",
+    "super::supervisor::{ internal_connector_error, supervise_startup_readiness, wait_for_start_gate, ConnectorWorkerState, }",
+    "super::{ConnectorContext, ConnectorFactory, ConnectorWorker}"
   ],
   "invariants": [
     {
@@ -503,21 +528,27 @@
   "module": "pocketstation::connector::worker::endpoint_adapter",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-cf32a83b08a8eee406c3",
     "pattern-0c264e4ec468e7568a9c"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(error) => {",
+    "Err(error.into_endpoint_failure())",
+    "fn:connector_driver_endpoint_factory",
+    "fn:connector_endpoint_factory",
+    "return Err(EndpointFailure::new(",
+    "return Err(error.into_endpoint_failure());"
   ],
   "package": "pocketstation",
   "path": "src/connector/worker/endpoint_adapter.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -673,7 +704,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::connector::worker::endpoint_adapter`."
+    "text": "Implements pocketstation::connector::worker::endpoint adapter responsibilities, including endpoint adapter; connector endpoint factory; connector driver endpoint factory."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -714,6 +745,22 @@
     "docs/best-practices/terminal-outcomes.md",
     "docs/best-practices/connector-retries.md",
     "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/connector/configuration.rs",
+    "REFERENCES:src/connector/error.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/observations.rs",
+    "REFERENCES:src/connector/readiness.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/endpoint/identity.rs",
+    "REFERENCES:src/endpoint/runtime.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/graph/node.rs"
   ],
   "resource_ownership": [
     {
@@ -858,29 +905,29 @@
     }
   ],
   "responsibilities": [
-    "connector_endpoint_factory",
-    "connector_driver_endpoint_factory",
-    "ConnectorDriverEndpointAdapter",
-    "preparation_group",
-    "prepare",
-    "configuration_endpoint_failure",
-    "ConnectorEndpointAdapter",
-    "preparation_group",
-    "prepare",
-    "endpoint_ids",
-    "PreparedConnectorWorker",
-    "start",
-    "cancel_preparation",
-    "drop",
-    "spawn_worker",
-    "cancel_worker",
-    "RunningConnectorWorker",
-    "stop_and_join",
-    "observations",
-    "request_stop",
-    "request_shutdown",
-    "join_and_finalize",
-    "drop"
+    "connector_endpoint_factory (fn)",
+    "connector_driver_endpoint_factory (fn)",
+    "ConnectorDriverEndpointAdapter (struct)",
+    "preparation_group (fn)",
+    "prepare (fn)",
+    "configuration_endpoint_failure (fn)",
+    "ConnectorEndpointAdapter (struct)",
+    "preparation_group (fn)",
+    "prepare (fn)",
+    "endpoint_ids (fn)",
+    "PreparedConnectorWorker (struct)",
+    "start (fn)",
+    "cancel_preparation (fn)",
+    "drop (fn)",
+    "spawn_worker (fn)",
+    "cancel_worker (fn)",
+    "RunningConnectorWorker (struct)",
+    "stop_and_join (fn)",
+    "observations (fn)",
+    "request_stop (fn)",
+    "request_shutdown (fn)",
+    "join_and_finalize (fn)",
+    "drop (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -985,6 +1032,7 @@
   ],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [
     {

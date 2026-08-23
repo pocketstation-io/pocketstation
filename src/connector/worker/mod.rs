@@ -14,9 +14,9 @@ pub use driver::{
 };
 pub(crate) use endpoint_adapter::{connector_driver_endpoint_factory, connector_endpoint_factory};
 
-#[doc = "Defines the implementation contract for connector."]
+#[doc = "Implement this trait to provide connector behavior to PocketStation; its methods define the preparation and runtime contract."]
 pub trait ConnectorFactory: Send + Sync {
-    #[doc = "Returns the preparation group associated with `ConnectorFactory`."]
+    #[doc = "Returns the preparation group held by `ConnectorFactory`."]
     fn preparation_group(
         &self,
         route_id: crate::RouteId,
@@ -32,7 +32,7 @@ pub trait ConnectorFactory: Send + Sync {
     ) -> Result<Box<dyn ConnectorWorker>, ConnectorError>;
 }
 
-#[doc = "Defines the implementation contract for connector worker."]
+#[doc = "Implement this trait to provide connector worker behavior to PocketStation; its methods define the preparation and runtime contract."]
 pub trait ConnectorWorker: Send + 'static {
     #[doc = "Runs `ConnectorWorker` until completion or cancellation."]
     fn run(self: Box<Self>, context: ConnectorContext) -> ConnectorRunOutcome;
@@ -61,7 +61,7 @@ impl ConnectorRunOutcome {
         Self::new(Ok(()))
     }
 
-    #[doc = "Returns the failure associated with `ConnectorRunOutcome`."]
+    #[doc = "Returns the failure held by `ConnectorRunOutcome`."]
     pub fn failure(error: ConnectorError) -> Self {
         Self::new(Err(error))
     }

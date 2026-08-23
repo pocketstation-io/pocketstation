@@ -2,61 +2,46 @@
 
 <!-- claims: CLM-BEST-001-CAP-001,CLM-BEST-001-CAP-002,CLM-BEST-001-CAP-003,CLM-BEST-001-SOURCE-001 -->
 
+## Problem
+
+A guessed route capacity can either saturate under load or reserve more memory than the route needs.
+
 ## Recommendation
 
-Measure each bounded route's queue, saturation, drop, and latency observations before changing capacity.
+Measure queue depth, peak depth, saturation, drops, and latency for each route before changing its finite capacity.
 
-## Why
+## Reason
 
-The repository makes capacity, ownership, identity, lifecycle, and evidence boundaries explicit so failures remain attributable. Bypassing them removes observations and typed outcomes needed for diagnosis.
+Per-route observations identify the constrained consumer and keep one branch from hiding another branch's behavior.
 
 ## Tradeoff
 
-The recommendation requires explicit configuration and result handling. It does not promise that one capacity, retry budget, selector, or shutdown policy fits every workload. Measure within the API's stated scope.
+Measurement adds instrumentation and a representative workload; a larger capacity can trade memory and latency for fewer immediate rejections.
 
 ## When it does not apply
 
-Do not apply a realtime, connector, capture, or extension rule to another lane or boundary unless it exposes the same contract. An internal pattern is not automatically a public recommendation.
+Do not reuse one measured capacity for a route with a different producer, consumer, frame size, or loss policy.
 
 ## Repository evidence
 
-- `typed_error` at `src/runtime/audio/runner.rs` (`pattern-007b832d1ee35a325c5f`).
-- `buffer_pool` at `src/runtime/nodes.rs` (`pattern-06b6cb48eb37e9925506`).
-- `sidecar_isolation` at `src/runtime/lifecycle/async_host.rs` (`pattern-0b62d1010395e9d56174`).
-- `buffer_pool` at `benches/runtime_plan.rs` (`pattern-0bed8aaed06c69250bca`).
-- `bounded_queue` at `src/graph/ports.rs` (`pattern-0e9aafce5b5917888ef1`).
-- `sidecar_isolation` at `benches/runtime_plan.rs` (`pattern-190078991e6fb29b089b`).
-- `buffer_pool` at `src/graph/signal/envelope.rs` (`pattern-2c19d9af46f0136c5084`).
-- `bounded_queue` at `src/graph/compile/plan.rs` (`pattern-2d4589efbc6a28e1e690`).
-- `typed_error` at `src/graph/named_ports.rs` (`pattern-2eceeaaee3e6da04704d`).
-- `buffer_pool` at `src/runtime/audio/executor.rs` (`pattern-3caaa68fb904e3dab03b`).
-- `buffer_pool` at `src/graph/plan.rs` (`pattern-3cba3102bace53b5f813`).
-- `sidecar_isolation` at `src/runtime/signal/operator.rs` (`pattern-3da02ff64109c6786946`).
-- `typed_error` at `examples/operator-consumer/src/lib.rs` (`pattern-3dd96e814fdbb6001ead`).
-- `typed_error` at `src/runtime/lifecycle/async_host.rs` (`pattern-4b4827ead247761ef305`).
-- `typed_error` at `src/graph/runtime_node.rs` (`pattern-4b495789777872e04c34`).
-- `sidecar_isolation` at `src/runtime/signal/io.rs` (`pattern-520a0bbdfc42436280d2`).
-- `sidecar_isolation` at `src/runtime/audio/router.rs` (`pattern-545a8ffd6d5188242445`).
-- `buffer_pool` at `src/runtime/audio/runner.rs` (`pattern-550a0db4c916e2cf76fd`).
-- `buffer_pool` at `src/graph/compile/plan.rs` (`pattern-5961667d513f1fd57f10`).
-- `sidecar_isolation` at `src/runtime/signal/edge.rs` (`pattern-5b4a5379bfca29277451`).
+- `buffer_pool` at `src/runtime/audio/router.rs` (`pattern-bb441f171fed3994bd2a`).
 
 ## Executable evidence
 
-The following test bodies are evidence only for their recorded setup:
+Executable evidence selected for **Size bounded routes from observations** is limited to each test's recorded setup and assertions:
 
-- `given_explicit_jitter_budget_when_planned_then_bounded_capacity_is_derived_from_frame_time` — given explicit jitter budget when planned then bounded capacity is derived from frame time (`src/graph/compile/plan.rs:755`; `test-28b5b52333fa1672705d`).
-- `given_realtime_to_external_edge_when_planned_then_branch_pool_isolated_from_capture_pool` — given realtime to external edge when planned then branch pool isolated from capture pool (`src/graph/compile/plan.rs:591`; `test-ab3f88fbe7eaddfa92c8`).
-- `given_async_producer_into_realtime_consumer_with_bounded_edge_when_compiled_then_invalid_realtime_edge` — given async producer into realtime consumer with bounded edge when compiled then invalid realtime edge (`src/graph/compile/resolve.rs:1122`; `test-f6fe68993af8cd133a10`).
-- `given_unspecified_binary_edge_when_compiled_then_bounded_async_contract_is_derived` — given unspecified binary edge when compiled then bounded async contract is derived (`src/graph/compile/resolve.rs:994`; `test-8c765cd365efcd62766c`).
-- `given_first_party_configuration_keys_when_audited_then_each_is_bounded_snake_case` — given first party configuration keys when audited then each is bounded snake case (`src/graph/identifier.rs:168`; `test-9d098b7cf4d784a630d2`).
-- `given_bounded_async_when_built_then_contains_no_payload_or_clock_origin_assumption` — given bounded async when built then contains no payload or clock origin assumption (`src/graph/ports.rs:537`; `test-764d8a62597c3f9220c7`).
-- `given_audio_and_typed_root_outputs_when_planned_then_each_branch_has_bounded_authority` — given audio and typed root outputs when planned then each branch has bounded authority (`src/graph/source.rs:51`; `test-d7ac5b66a6a72ddc6e51`).
-- `observations` — observations (`src/runtime/audio/executor.rs:185`; `test-8e5dda8471ef4129edb9`).
-- `from` — from (`src/runtime/audio/router.rs:510`; `test-bd1711e374cc4ec84e26`).
-- `observations` — observations (`src/runtime/audio/router.rs:849`; `test-75f0a25930a60efd39e9`).
-- `given_queued_sources_when_cancelled_with_budget_then_drain_is_bounded_and_rest_discards` — given queued sources when cancelled with budget then drain is bounded and rest discards (`src/runtime/audio/runner.rs:636`; `test-31632b8eb3f0b3c90934`).
-- `observations` — observations (`src/runtime/audio/runner.rs:174`; `test-b1965f6e40d10be0df1e`).
+- `given_compiled_text_edge_when_router_builds_then_only_audio_edge_gets_audio_receiver` — given compiled text edge when router builds then only audio edge gets audio receiver (`src/runtime/audio/router.rs:983`; `test-c5f24b62056cfa546c3a`).
+- `given_enqueued_and_dropped_frames_when_observed_then_drop_rate_uses_all_attempts` — given enqueued and dropped frames when observed then drop rate uses all attempts (`src/runtime/audio/router.rs:1241`; `test-9a0bb689d2371b66a92f`).
+- `given_failed_branch_when_receiver_drops_then_unrelated_branch_continues` — given failed branch when receiver drops then unrelated branch continues (`src/runtime/audio/router.rs:1518`; `test-b5854f13d50d15dfdbe3`).
+- `given_foreign_clock_timestamp_when_delivered_then_source_latency_is_not_fabricated` — given foreign clock timestamp when delivered then source latency is not fabricated (`src/runtime/audio/router.rs:1182`; `test-133d3a4b4c11520b3884`).
+- `given_lineage_discontinuity_epoch_change_when_received_then_declared_discontinuity_is_counted` — given lineage discontinuity epoch change when received then declared discontinuity is counted (`src/runtime/audio/router.rs:1117`; `test-fceb86228ea42976addb`).
+- `given_lineaged_source_fan_out_when_branch_frames_are_copied_then_exact_lineage_is_preserved` — given lineaged source fan out when branch frames are copied then exact lineage is preserved (`src/runtime/audio/router.rs:1076`; `test-d798548d6c8b059ba1a8`).
+- `given_observation_handle_when_consumer_detects_gap_then_live_discontinuity_is_visible` — given observation handle when consumer detects gap then live discontinuity is visible (`src/runtime/audio/router.rs:1410`; `test-225f3db0b8f734fb6907`).
+- `given_observation_handle_when_producer_fills_edge_then_live_queue_and_drop_are_visible` — given observation handle when producer fills edge then live queue and drop are visible (`src/runtime/audio/router.rs:1374`; `test-7acd587c9b13ea33929e`).
+- `given_observation_handle_when_receiver_drops_then_shutdown_snapshot_remains_available` — given observation handle when receiver drops then shutdown snapshot remains available (`src/runtime/audio/router.rs:1439`; `test-b85189f2f3734f3dad88`).
+- `given_one_source_with_three_edges_when_dispatched_then_every_edge_receives_identified_frame` — given one source with three edges when dispatched then every edge receives identified frame (`src/runtime/audio/router.rs:1044`; `test-413eb70a225c14f5ec09`).
+- `given_queued_frame_when_clocked_receive_runs_then_clock_is_sampled_after_pop` — given queued frame when clocked receive runs then clock is sampled after pop (`src/runtime/audio/router.rs:1217`; `test-f09950594dbe438e24cb`).
+- `given_receive_before_enqueue_when_observed_then_latency_sample_is_rejected` — given receive before enqueue when observed then latency sample is rejected (`src/runtime/audio/router.rs:1200`; `test-904f86f2ad1e1369647c`).
 
 ## Related documentation
 
@@ -71,9 +56,9 @@ The following test bodies are evidence only for their recorded setup:
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Size bounded routes from observations** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/runtime/audio/router.rs:1-1615` (`DIRECT`)
 - `src/session/lifecycle/observations.rs:1-636` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Size bounded routes from observations**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -7,44 +7,44 @@
 - **Validate protocol and conformance boundaries.** Check ABI layout, cross-language behavior, connector vectors, and protocol compatibility against versioned fixtures.
 - **Build and publish repository artifacts.** Run architecture, protocol, package, platform, and release checks used by the repository publication workflow.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Compatibility and evidence** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
 ## Implemented boundary
 
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
-| `audio` | module | Allocation-free realtime audio execution lane. | `src/runtime/audio/mod.rs:1` |
-| `authorization` | module | Explicit capture authorization evidence and open outcomes. | `src/capture/authorization.rs:1` |
-| `identity` | module | Stable source identity and source discovery state. | `src/capture/identity.rs:1` |
-| `lifecycle` | module | Non-realtime runtime ownership and process-protocol lifecycle. | `src/runtime/lifecycle/mod.rs:1` |
-| `lineage` | module | Compact source-aware lineage carried on realtime audio frames. | `src/frame/lineage.rs:1` |
-| `pocketstation` | module | # PocketStation | `src/lib.rs:1` |
-| `pocketstation::codec` | module | Real Opus encode, decode, and packet-loss concealment primitives. | `src/codec/mod.rs:1` |
-| `pocketstation::graph` | module | Stable signal, port, capability, partition, and extension contracts. | `src/graph/mod.rs:1` |
-| `pocketstation::timing` | module | Timing primitives owned by the PocketStation runtime. | `src/timing/mod.rs:1` |
-| `pool` | module | Fixed-capacity realtime audio storage and ownership handles. | `src/frame/pool.rs:1` |
-| `query` | module | Control-plane source discovery queries used by the first-party CLI. | `src/capture/query.rs:1` |
-| `selection` | module | Capture selection semantics; control-plane only. | `src/capture/selection.rs:1` |
-| `signal` | module | Bounded asynchronous signal execution lane. | `src/runtime/signal/mod.rs:1` |
-| `pocketstation::capture::capture_owner::ActiveCaptureBackend` | trait | Native capture resources owned for exactly one active capture. | `src/capture/capture_owner.rs:100` |
-| `pocketstation::capture::capture_owner::CallbackCaptureBackend` | trait | Platform-neutral prepare/open boundary for callback-oriented capture. | `src/capture/capture_owner.rs:83` |
-| `pocketstation::capture::capture_owner::PreparedCaptureBackend` | trait | Backend state that has passed validation but has not started delivery. | `src/capture/capture_owner.rs:88` |
-| `pocketstation::connector::worker::driver::ConnectorDriver` | trait | Provider-specific behavior executed on Core's bounded connector worker. | `src/connector/worker/driver.rs:92` |
-| `pocketstation::connector::worker::driver::ConnectorDriverFactory` | trait | Prepares provider state while Core retains receiver and lifecycle authority. | `src/connector/worker/driver.rs:123` |
-| `pocketstation::endpoint::runtime::PreparedEndpointDriver` | trait | Prepared endpoint resources that have not started consuming their edge. | `src/endpoint/runtime.rs:318` |
-| `pocketstation::endpoint::runtime::RunningEndpointDriver` | trait | Active endpoint resources owned until finalization. | `src/endpoint/runtime.rs:336` |
+| `pocketstation::conformance` | module | Deterministic canonical-engine fixture for external conformance harnesses. | `src/conformance.rs:1` |
+| `pocketstation::conformance::ExtensionConformanceReport` | struct | Language-neutral outcome returned by the W20 fixture. | `src/conformance.rs:573` |
+| `pocketstation::conformance::ExtensionSignal` | struct | Owns one signal payload used by the native-extension conformance fixtures. | `src/conformance.rs:1181` |
+| `pocketstation::conformance::ObservedEndpointError` | enum | Classifies failures reported as observed endpoint error. | `src/conformance.rs:345` |
+| `pocketstation::conformance::observed_browser` | function | Declares and registers a deterministic native browser boundary used only by cross-language conformance harnesses. | `src/conformance.rs:335` |
+| `pocketstation::conformance::observed_connector` | function | Declares and registers a deterministic native connector used only by cross-language conformance harnesses. | `src/conformance.rs:274` |
+| `pocketstation::conformance::run_extension_vector` | function | Executes the neutral typed Source -> `Stream<T>` -> Operator -> Endpoint vector through the canonical public Session. | `src/conformance.rs:1006` |
+| `pocketstation::conformance::session` | function | Runs the conformance assertions for the Session contract. | `src/conformance.rs:198` |
+| `pocketstation::conformance::session_for_saturation` | function | Creates a finite fixture that produces enough frames to overflow a deliberately unconsumed canonical route. | `src/conformance.rs:204` |
+| `pocketstation::conformance::session_with_recording` | function | Creates the deterministic canonical-engine fixture with multistem recording. | `src/conformance.rs:209` |
+| `pocketstation::conformance::session_with_recording_and_trace` | function | Creates the deterministic canonical-engine fixture with both aligned multistem recording and a bounded Session diagnostic trace. | `src/conformance.rs:231` |
+| `pocketstation::conformance::session_with_trace` | function | Creates the deterministic canonical-engine fixture with a bounded Session Session diagnostic trace recorder. | `src/conformance.rs:217` |
+| `signal_spec` | function | Returns the signal spec held by `ExtensionSignal`. | `src/conformance.rs:1184` |
+| `pocketstation::conformance::EXTENSION_ENDPOINT_ID` | constant | Defines the public extension endpoint identifier value. | `src/conformance.rs:559` |
+| `pocketstation::conformance::EXTENSION_ENDPOINT_INPUT_PORT` | constant | Defines the public extension endpoint input port value. | `src/conformance.rs:564` |
+| `pocketstation::conformance::EXTENSION_ENDPOINT_NODE_ID` | constant | Defines the public extension endpoint node identifier value. | `src/conformance.rs:560` |
+| `pocketstation::conformance::EXTENSION_INPUT_PAYLOAD` | constant | Defines the public extension input payload value. | `src/conformance.rs:565` |
+| `pocketstation::conformance::EXTENSION_OPERATOR_ID` | constant | Defines the public extension operator identifier value. | `src/conformance.rs:557` |
+| `pocketstation::conformance::EXTENSION_OPERATOR_INPUT_PORT` | constant | Defines the public extension operator input port value. | `src/conformance.rs:562` |
+| `pocketstation::conformance::EXTENSION_OPERATOR_NODE_ID` | constant | Defines the public extension operator node identifier value. | `src/conformance.rs:558` |
 
 ## Permission and source opening
 
-Permission observation and source opening are separate. The host application owns prompts and selection UI. A non-prompting observation is advisory where implemented; preparation or open returns the authoritative result.
+For **Compatibility and evidence**, permission observation and source opening remain separate. The host application owns prompts and selection UI. A non-prompting observation is advisory where implemented; preparation or open returns the authoritative result.
 
 ## Qualification boundary
 
-Target-specific files, Cargo dependencies, or CI establish implementation or build evidence only. They do not establish that every device, operating-system revision, packaging context, permission state, or physical path was qualified.
+The target-specific files, Cargo dependencies, and CI cited by **Compatibility and evidence** establish implementation or build evidence only. They do not qualify every device, operating-system revision, packaging context, permission state, or physical path.
 
 ## Executable evidence
 
-The following test bodies are evidence only for their recorded setup:
+Executable evidence selected for **Compatibility and evidence** is limited to each test's recorded setup and assertions:
 
 - `given_process_evidence_when_provider_succeeds_then_actual_invocation_is_persisted` — given process evidence when provider succeeds then actual invocation is persisted (`examples/whisper-transcribe/src/lib.rs:1129`; `test-461c6ec95bfefc8bb314`).
 - `given_process_evidence_when_provider_times_out_then_kill_and_reap_are_persisted` — given process evidence when provider times out then kill and reap are persisted (`examples/whisper-transcribe/src/lib.rs:1180`; `test-96cab447b1d1ad9b61d9`).
@@ -72,9 +72,9 @@ The following test bodies are evidence only for their recorded setup:
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Compatibility and evidence** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `docs/compatibility/c-abi-v1.baseline:1-76` (`DIRECT`)
 - `.github/workflows/ci.yml:1-63` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Compatibility and evidence**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

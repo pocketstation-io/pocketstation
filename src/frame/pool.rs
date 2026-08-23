@@ -18,14 +18,14 @@ pub enum AudioBufferWriteError {
     )]
     #[doc = "Reports capacity exceeded."]
     CapacityExceeded {
-        #[doc = "Stores the requested samples associated with `CapacityExceeded`."]
+        #[doc = "Stores the requested samples used by `CapacityExceeded`."]
         requested_samples: usize,
         #[doc = "Sets the capacity samples available to `CapacityExceeded`."]
         capacity_samples: usize,
     },
 }
 
-#[doc = "Represents audio buffer pool in the PocketStation API."]
+#[doc = "Owns fixed-capacity reusable audio slots and reports acquisition pressure without allocating per frame."]
 pub struct AudioBufferPool {
     slots: Box<[UnsafeCell<Box<[f32]>>]>,
     shared_ref_counts: Box<[AtomicUsize]>,
@@ -65,19 +65,19 @@ impl AudioBufferPool {
         })
     }
 
-    #[doc = "Returns the slot size associated with `AudioBufferPool`."]
+    #[doc = "Returns the slot size held by `AudioBufferPool`."]
     pub fn slot_size(&self) -> usize {
         self.slot_size
     }
-    #[doc = "Returns the slot count associated with `AudioBufferPool`."]
+    #[doc = "Returns the slot count held by `AudioBufferPool`."]
     pub fn slot_count(&self) -> usize {
         self.slots.len()
     }
-    #[doc = "Returns the acquire failures associated with `AudioBufferPool`."]
+    #[doc = "Returns the acquire failures held by `AudioBufferPool`."]
     pub fn acquire_failures(&self) -> usize {
         self.acquire_failures.load(Ordering::Relaxed)
     }
-    #[doc = "Returns the available slots associated with `AudioBufferPool`."]
+    #[doc = "Returns the available slots held by `AudioBufferPool`."]
     pub fn available_slots(&self) -> usize {
         self.free_mask.load(Ordering::Acquire).count_ones() as usize
     }
@@ -111,7 +111,7 @@ impl AudioBufferPool {
         self.free_mask.load(Ordering::Acquire) & (1u64 << index) == 0
     }
 
-    #[doc = "Returns the shared ref count associated with `AudioBufferPool`."]
+    #[doc = "Returns the shared ref count held by `AudioBufferPool`."]
     pub fn shared_ref_count(&self, index: u32) -> usize {
         self.shared_ref_counts
             .get(index as usize)
@@ -224,7 +224,7 @@ impl AudioBufferHandle {
     pub fn is_empty(&self) -> bool {
         self.len == 0
     }
-    #[doc = "Returns the index associated with `AudioBufferHandle`."]
+    #[doc = "Returns the index held by `AudioBufferHandle`."]
     pub fn index(&self) -> u32 {
         self.index
     }
@@ -318,7 +318,7 @@ impl SharedAudioBufferHandle {
         self.len == 0
     }
 
-    #[doc = "Returns the index associated with `SharedAudioBufferHandle`."]
+    #[doc = "Returns the index held by `SharedAudioBufferHandle`."]
     pub fn index(&self) -> u32 {
         self.index
     }
@@ -340,7 +340,7 @@ impl SharedAudioBufferHandle {
         })
     }
 
-    #[doc = "Returns the shared ref count associated with `SharedAudioBufferHandle`."]
+    #[doc = "Returns the shared ref count held by `SharedAudioBufferHandle`."]
     pub fn shared_ref_count(&self) -> usize {
         self.pool.shared_ref_count(self.index)
     }

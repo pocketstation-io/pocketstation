@@ -116,6 +116,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -158,7 +159,10 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "CARGO_MANIFEST_DIR",
+    "pocketstation::graph::SignalSpec",
+    "pocketstation::{ ActiveCaptureBackend, AsyncNode, AsyncOperatorFactory, AudioBufferHandle, AudioBufferPool, CallbackCaptureBackend, CaptureDelivery, EndpointAudioFrame, EndpointAudioReceiver, EndpointDriverFactory, EndpointPortInput, EndpointSignalReceiver, NodeDefinition, PreparedCaptureBackend, PreparedEndpointDriver, RunningEndpointDriver, Session, SharedAudioBufferHandle, SharedAudioFrame, SignalEnvelope, SourceDriver, SourceFactory, Stream, }",
+    "std::sync::Arc"
   ],
   "invariants": [
     {
@@ -196,20 +200,22 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
   "observed_patterns": [
     "pattern-2973216be17e52591275"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "tests/public_api_boundary.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -252,8 +258,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Compile and source boundary for the normal (non-`internal-testing`) crate."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given normal crate root when scanned then implementation owners are private, given supported contracts when named from crate root then they compile, given endpoint spi when source is scanned then connector policy never flows downward under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -286,6 +292,7 @@
     "docs/troubleshooting/native-build.md",
     "docs/best-practices/evidence-boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 3,
@@ -301,12 +308,12 @@
     }
   ],
   "responsibilities": [
-    "accepts_public_contract",
-    "given_supported_contracts_when_named_from_crate_root_then_they_compile",
-    "given_normal_crate_root_when_scanned_then_implementation_owners_are_private",
-    "given_endpoint_spi_when_source_is_scanned_then_connector_policy_never_flows_downward",
-    "given_connector_authoring_layer_when_scanned_then_it_does_not_duplicate_core_runtime_policy",
-    "rust_sources"
+    "accepts_public_contract (fn)",
+    "given_supported_contracts_when_named_from_crate_root_then_they_compile (fn)",
+    "given_normal_crate_root_when_scanned_then_implementation_owners_are_private (fn)",
+    "given_endpoint_spi_when_source_is_scanned_then_connector_policy_never_flows_downward (fn)",
+    "given_connector_authoring_layer_when_scanned_then_it_does_not_duplicate_core_runtime_policy (fn)",
+    "rust_sources (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -333,7 +340,13 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0b0f2295b7da3933b922",
+    "test-4693b2633263a52e0bdf",
+    "test-8703810e1a604377a54e",
+    "test-bcf303db85cca8b13bc2"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

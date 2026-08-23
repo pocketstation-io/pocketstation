@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "calls": [
     "Arc::new",
     "AudioBufferPool::new",
@@ -109,7 +112,10 @@
       "text": "assert!(matches!(result, Err(ConfigError::Invalid { .. })));"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AudioBufferPool::new",
@@ -513,8 +519,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -528,7 +538,10 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "53cae8006fddf925fefbf18e1872f6f833dc4020",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "implements": [
     "NodeFactory for PassthroughFactory",
     "RuntimeNode for PassthroughNode",
@@ -537,7 +550,10 @@
     "NodeFactory for MonoMixFactory",
     "RuntimeNode for MonoMixNode"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs"
+  ],
   "imports": [
     "crate::frame::{AudioBufferPool, SampleSpec, SourceId, StreamId}",
     "crate::frame::{AudioFrame, SampleFormat}",
@@ -551,7 +567,25 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    ".map_err(|err| ConfigError::Invalid {",
+    ".ok_or_else(|| ConfigError::Missing(GAIN_CONFIGURATION_KEY.to_owned()))?;",
+    "ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext,",
+    "None => Err(ConfigError::Missing(GAIN_CONFIGURATION_KEY.to_owned())),",
+    "assert!(matches!(result, Err(ConfigError::Invalid { .. })));",
+    "assert!(matches!(result, Err(ConfigError::Missing(_))));",
+    "crate::frame::{AudioBufferPool, SampleSpec, SourceId, StreamId}",
+    "crate::frame::{AudioFrame, SampleFormat}",
+    "crate::graph::node::{ ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext, }",
+    "crate::graph::partition::{ExecutionPartition, SafetyContract}",
+    "crate::graph::ports::{ AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, }",
+    "crate::graph::registry::{NodeFactory, NodeRegistry}",
+    "crate::graph::runtime_node::RuntimeNode",
+    "crate::graph::signal::SignalSpec",
+    "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {",
+    "fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {",
+    "std::sync::Arc",
+    "super::*"
   ],
   "invariants": [
     {
@@ -589,21 +623,36 @@
   "module": "pocketstation::graph::builtins",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-f7a0f2b8559c49e92e8a",
-    "pattern-6df4af5874cc801c4344"
+    "pattern-6df4af5874cc801c4344",
+    "pattern-f7a0f2b8559c49e92e8a"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "None => Err(ConfigError::Missing(GAIN_CONFIGURATION_KEY.to_owned())),",
+    "assert!(matches!(result, Err(ConfigError::Invalid { .. })));",
+    "assert!(matches!(result, Err(ConfigError::Missing(_))));",
+    "const:GAIN_CONFIGURATION_KEY",
+    "const:GAIN_NODE_TYPE_ID",
+    "const:MONO_MIX_NODE_TYPE_ID",
+    "const:PASSTHROUGH_NODE_TYPE_ID",
+    "fn:register_builtins",
+    "struct:GainFactory",
+    "struct:GainNode",
+    "struct:MonoMixFactory",
+    "struct:MonoMixNode",
+    "struct:PassthroughFactory",
+    "struct:PassthroughNode"
   ],
   "package": "pocketstation",
   "path": "src/graph/builtins.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -876,7 +925,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::graph::builtins`."
+    "text": "Implements pocketstation::graph::builtins responsibilities, including Constructs passthrough implementations from validated declarations.; Returns the descriptor associated with `PassthroughFactory`.; Validates config for `PassthroughFactory`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -913,6 +962,13 @@
     "docs/troubleshooting/session-start.md",
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/graph/runtime_node.rs"
   ],
   "resource_ownership": [
     {
@@ -957,50 +1013,28 @@
     }
   ],
   "responsibilities": [
-    "GAIN_CONFIGURATION_KEY",
-    "PASSTHROUGH_NODE_TYPE_ID",
-    "GAIN_NODE_TYPE_ID",
-    "MONO_MIX_NODE_TYPE_ID",
-    "MONO_CHANNEL_COUNT",
-    "STEREO_CHANNEL_COUNT",
-    "MONO_MIX_SCALE",
-    "any_port",
-    "audio_port",
-    "mono_audio_port",
-    "PassthroughFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "PassthroughNode",
-    "prepare",
-    "process",
-    "GainFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "GainNode",
-    "prepare",
-    "process",
-    "MonoMixFactory",
-    "descriptor",
-    "validate_config",
-    "instantiate",
-    "MonoMixNode",
-    "prepare",
-    "process",
-    "register_builtins",
-    "tests",
-    "prepare_cx",
-    "frame_with_samples",
-    "frame_with_channels",
-    "given_gain_config_without_gain_db_when_validate_then_missing_error",
-    "given_gain_config_with_non_numeric_gain_db_when_validate_then_invalid_error",
-    "given_gain_config_with_valid_gain_db_when_validate_then_ok",
-    "given_unity_gain_node_when_process_then_samples_unchanged",
-    "given_six_db_gain_node_when_process_then_samples_scaled_by_linear_gain",
-    "given_passthrough_node_when_process_then_returns_frame_unchanged",
-    "given_stereo_frame_when_mono_mixed_then_channels_and_samples_are_downmixed",
-    "given_mono_frame_when_mono_mixed_then_frame_is_unchanged"
+    "pocketstation::graph::builtins::PassthroughFactory: Constructs passthrough implementations from validated declarations.",
+    "descriptor: Returns the descriptor associated with `PassthroughFactory`.",
+    "validate_config: Validates config for `PassthroughFactory`.",
+    "instantiate: Instantiates the runtime node described by `PassthroughFactory`.",
+    "pocketstation::graph::builtins::PassthroughNode: Executes the graph-node behavior defined for passthrough.",
+    "prepare: Prepares resources required by `PassthroughNode`.",
+    "process: Processes an input value through `PassthroughNode`.",
+    "pocketstation::graph::builtins::GainFactory: Constructs gain implementations from validated declarations.",
+    "descriptor: Returns the descriptor associated with `GainFactory`.",
+    "validate_config: Validates config for `GainFactory`.",
+    "instantiate: Instantiates the runtime node described by `GainFactory`.",
+    "pocketstation::graph::builtins::GainNode: Executes the graph-node behavior defined for gain.",
+    "prepare: Prepares resources required by `GainNode`.",
+    "process: Processes an input value through `GainNode`.",
+    "pocketstation::graph::builtins::MonoMixFactory: Constructs mono mix implementations from validated declarations.",
+    "descriptor: Returns the descriptor associated with `MonoMixFactory`.",
+    "validate_config: Validates config for `MonoMixFactory`.",
+    "instantiate: Instantiates the runtime node described by `MonoMixFactory`.",
+    "pocketstation::graph::builtins::MonoMixNode: Executes the graph-node behavior defined for mono mix.",
+    "prepare: Prepares resources required by `MonoMixNode`.",
+    "process: Processes an input value through `MonoMixNode`.",
+    "pocketstation::graph::builtins::register_builtins: Registers builtins for `builtins`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1023,7 +1057,23 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0e41065f28a838e0deaf",
+    "test-41190864ca572d90d1a9",
+    "test-49ea3414f8bb90cf86b1",
+    "test-6615dcd3b3105010af0b",
+    "test-681eed046f58e8486db9",
+    "test-7b9d00604bd1f54f6bfb",
+    "test-85537f6d9bc6ada5654e",
+    "test-8f6b3c13a8c5d31e5914",
+    "test-a11ec53516f0e2c9bed1",
+    "test-aac58d9d619b8280715f",
+    "test-c2584e0bcdbbb154dfa1",
+    "test-c5d54824499f245c4c6c",
+    "test-d76ec44bacdca3f6a506",
+    "test-f022cf78595274582c24"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

@@ -20,7 +20,11 @@
       "text": "callback(frame);"
     }
   ],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs"
+  ],
   "calls": [
     "API",
     "AudioBufferPool::new",
@@ -186,7 +190,11 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs"
+  ],
   "constructs": [
     "AudioBufferPool::new",
     "AudioFrame::new",
@@ -774,8 +782,13 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -870,14 +883,22 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "8b75f6d0615d1adf34f99203cf8cce9248c8fbd3",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs"
+  ],
   "implements": [
     "ProcessTap",
     "Drop for ProcessTap",
     "TapLoopbackSource",
     "Drop for TapLoopbackSource"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs"
+  ],
   "imports": [
     "crate::capture::{ CaptureError, CaptureMode, CaptureSource, SourceKind, SourceState, StableSourceId, }",
     "crate::capture::{ initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations, CaptureSource, SourceKind, SourceState, StableSourceId, }",
@@ -889,7 +910,17 @@
     "super::{ exact_application_open_audit, process_timestamp_ns, source_host_timestamp_ns, stable_source_id, tap_error, AuditedCaptureSource, ExactApplicationOpenAudit, ProcessTapReadBatch, CORE_AUDIO_PERMISSION_DENIED_STATUS, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "PKS_TAP_DIAG",
+    "crate::capture::{ CaptureError, CaptureMode, CaptureSource, SourceKind, SourceState, StableSourceId, }",
+    "crate::capture::{ initialize_monotonic_timestamp_domain, monotonic_timestamp_ns, CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations, CaptureSource, SourceKind, SourceState, StableSourceId, }",
+    "crate::frame::Platform",
+    "crate::frame::{AudioBufferPool, AudioFrame, Platform, StreamId}",
+    "crate::timing::TimelineMapping",
+    "if std::env::var_os(\"PKS_TAP_DIAG\").is_some() {",
+    "std::ptr::NonNull",
+    "std::time::Duration",
+    "super::{ exact_application_open_audit, process_timestamp_ns, source_host_timestamp_ns, stable_source_id, tap_error, AuditedCaptureSource, ExactApplicationOpenAudit, ProcessTapReadBatch, CORE_AUDIO_PERMISSION_DENIED_STATUS, }"
   ],
   "invariants": [],
   "language": "Rust",
@@ -898,22 +929,38 @@
   "module": "pocketstation::capture::platform::macos::macos_tap",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-91faf4734a58e42cc572",
-    "pattern-23af111759191a2f8466",
     "pattern-f45af1cbfa2e2a2a1fd1"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "CaptureMode::InputDevice(_) => Err(LoopbackError::ModeUnsupported(mode.clone())),",
+    "Err(LoopbackError::SourceUnavailable {",
+    "Err(tap_error(status_code, stage_code))",
+    "fn:capture_mode_with_runtime_event_sender",
+    "fn:discover_sources_native",
+    "fn:observation_handle",
+    "fn:observations",
+    "fn:source_id",
+    "fn:stop_and_join",
+    "fn:tap_available",
+    "if let Err(payload) = worker {",
+    "return Err(LoopbackError::BackendInit(",
+    "return Err(LoopbackError::BackendInit(format!(",
+    "return Err(LoopbackError::ModeUnsupported(mode));",
+    "return Err(LoopbackError::ModeUnsupported(mode.clone()));",
+    "struct:TapLoopbackSource"
   ],
   "package": "pocketstation",
   "path": "src/capture/platform/macos/macos_tap.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -1292,8 +1339,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "CoreAudio process tap backend \u2014 macOS 14.4+ (public support claim).  Uses `AudioHardwareCreateProcessTap` + `CATapDescription` to capture audio from specific processes or the global system output mix without routing changes, HAL plugin installation, or Screen Recording permission."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::capture::platform::macos::macos tap responsibilities, including Returns `true` when the CoreAudio process tap API is available.; Enumerate all running processes that have audio output.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1347,6 +1394,16 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/source-identity.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/capture/authorization.rs",
+    "REFERENCES:src/capture/events.rs",
+    "REFERENCES:src/capture/identity.rs",
+    "REFERENCES:src/capture/observations.rs",
+    "REFERENCES:src/capture/selection.rs",
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/timing/timeline_mapping.rs"
+  ],
   "resource_ownership": [
     {
       "line": 412,
@@ -1366,67 +1423,8 @@
     }
   ],
   "responsibilities": [
-    "RawSourceInfo",
-    "AuditedCaptureSource",
-    "pks_process_tap_available",
-    "pks_discover_sources",
-    "pks_create_process_tap",
-    "pks_tap_start",
-    "pks_destroy_process_tap",
-    "pks_tap_read_frames_timed",
-    "pks_tap_current_host_time_ns",
-    "pks_tap_drop_count",
-    "pks_tap_sample_rate",
-    "pks_tap_channels",
-    "pks_tap_level",
-    "tap_available",
-    "discover_sources_native",
-    "discover_sources_native_with_audit",
-    "MAX",
-    "cstr_to_string",
-    "cstr_to_opt",
-    "ProcessTap",
-    "ProcessTapReadBatch",
-    "source_host_timestamp_ns",
-    "process_timestamp_ns",
-    "CORE_AUDIO_PERMISSION_DENIED_STATUS",
-    "tap_operation",
-    "tap_error",
-    "stable_source_id",
-    "ExactApplicationOpenAudit",
-    "exact_application_open_audit",
-    "capture_exact_application_open_audit",
-    "verify_exact_application_open_audit",
-    "global",
-    "for_pids",
-    "create",
-    "start",
-    "sample_rate_hz",
-    "channel_count",
-    "read_frames",
-    "current_host_time_ns",
-    "drop_count",
-    "drop",
-    "POOL_CAPACITY_FRAMES",
-    "TapLoopbackSource",
-    "capture_mode_with_runtime_event_sender",
-    "source_id",
-    "observations",
-    "observation_handle",
-    "stop_and_join",
-    "stop_reader",
-    "drop",
-    "tests",
-    "audited_application",
-    "given_core_audio_permission_status_when_mapped_then_denial_remains_typed",
-    "given_reader_position_before_native_anchor_when_mapped_then_sample_delta_is_preserved",
-    "given_native_host_time_when_normalized_then_process_clock_boundary_is_comparable",
-    "given_other_core_audio_status_when_mapped_then_raw_status_is_preserved",
-    "given_exact_application_target_when_framed_then_stable_identity_is_preserved",
-    "given_reused_pid_with_different_application_when_verified_then_target_is_rejected",
-    "given_same_pid_and_application_when_verified_then_target_is_retained",
-    "given_same_pid_and_application_with_new_creation_when_audited_then_reuse_is_detected",
-    "given_missing_creation_time_when_audited_then_exact_open_fails_closed"
+    "pocketstation::capture::platform::macos::macos_tap::tap_available: Returns `true` when the CoreAudio process tap API is available.",
+    "pocketstation::capture::platform::macos::macos_tap::discover_sources_native: Enumerate all running processes that have audio output."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1594,7 +1592,18 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-02f8243c416d85f0ef0c",
+    "test-2a026a1558d59d8eaac7",
+    "test-51b07027d04f4b13be09",
+    "test-55d1d56a08dae220e1d4",
+    "test-6f4ba1dfb2d103e389b4",
+    "test-afb8b00e7e6a55f6d16d",
+    "test-b9c818abc1db3faf9091",
+    "test-bb302ee91ce25914320b",
+    "test-e4f9e412f0b3f6d23f1b"
+  ],
   "threads": [
     {
       "line": 317,

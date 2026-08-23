@@ -132,7 +132,9 @@
       "text": "// ALSA path calls callback inline; use a dummy dispatch thread for uniform struct layout."
     }
   ],
-  "called_by": [],
+  "called_by": [
+    "IMPORTS:src/capture/platform/linux/mod.rs"
+  ],
   "calls": [
     "Application",
     "Arc::new",
@@ -423,7 +425,9 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "IMPORTS:src/capture/platform/linux/mod.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AtomicU64::new",
@@ -1713,8 +1717,11 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "IMPORTS:src/capture/platform/linux/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -1737,14 +1744,18 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "03f4d64d5a66c228b5e4a8268f4cee2b3f7d8376",
-  "implemented_by": [],
+  "implemented_by": [
+    "IMPORTS:src/capture/platform/linux/mod.rs"
+  ],
   "implements": [
     "PipeWireCaptureState",
     "DesktopCaptureSource",
     "SystemLoopbackSource",
     "Drop for SystemLoopbackSource"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "IMPORTS:src/capture/platform/linux/mod.rs"
+  ],
   "imports": [
     "alsa::Direction",
     "alsa::pcm::{Access, Format, HwParams, PCM}",
@@ -1771,7 +1782,32 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "XDG_RUNTIME_DIR",
+    "alsa::Direction",
+    "alsa::pcm::{Access, Format, HwParams, PCM}",
+    "crate::capture::{ CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations, CaptureSampleTimeline, CaptureSource, SourceKind, StableSourceId, }",
+    "crate::capture::{CaptureError, SourceKind, SourceState, StableSourceId}",
+    "crate::capture::{CaptureSource, SourceKind, SourceState, StableSourceId}",
+    "crate::frame::Platform",
+    "crate::frame::{ AudioBufferHandle, AudioBufferPool, AudioFrame, Platform, SourceId, StreamId, POOL_SLOT_SAMPLES, SAMPLE_RATE_HZ, }",
+    "let runtime_dir = std::env::var(\"XDG_RUNTIME_DIR\")",
+    "pipewire as pw",
+    "pw::properties::properties",
+    "pw::spa",
+    "pw::spa::pod::Pod",
+    "rtrb::{Producer, RingBuffer}",
+    "spa::param::audio::AudioFormat",
+    "std::cell::RefCell",
+    "std::num::NonZeroU32",
+    "std::rc::Rc",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "std::sync::mpsc",
+    "std::sync::mpsc as smpsc",
+    "std::sync::{Arc, Once}",
+    "std::thread",
+    "std::time::Duration",
+    "super::*"
   ],
   "invariants": [
     {
@@ -1890,7 +1926,7 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-995cc5e22e1ecd8d8a0c",
@@ -1898,14 +1934,33 @@
     "pattern-faf4961ac29cdc3c9ff9"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(error) => Err(error),",
+    "None => Err(LoopbackError::BackendInit(format!(",
+    "fn:capture",
+    "fn:capture_mode",
+    "fn:capture_mode_with_runtime_event_sender",
+    "fn:discover_sources_linux",
+    "fn:observation_handle",
+    "fn:observations",
+    "fn:source_id",
+    "fn:stop_and_join",
+    "return Err(\"PipeWire changed capture format after negotiation\");",
+    "return Err(\"PipeWire did not negotiate interleaved f32 audio\");",
+    "return Err(\"PipeWire negotiated an unexpected channel count\");",
+    "return Err(LoopbackError::BackendInit(format!(",
+    "return Err(LoopbackError::ModeUnsupported(mode));",
+    "return Err(source_unavailable(&stable_id.stable_key));",
+    "struct:DesktopCaptureSource",
+    "struct:SystemLoopbackSource"
   ],
   "package": "pocketstation",
   "path": "src/capture/platform/linux/pipewire.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -2451,8 +2506,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Linux system audio loopback via PipeWire (primary) with snd-aloop ALSA fallback.  ## PipeWire path  A dedicated OS thread named `\"pks-pipewire-capture\"` owns the PipeWire `MainLoop` for its entire lifetime.  PipeWire objects are not `Send`/`Sync`, so all creation happens inside that thread.  Audio data flows from the PipeWire RT process callback through a lock-free `rtrb::RingBuffer` to a dispatcher thread (`\"pks-pipewire-dispatch\"`), which invokes the user callback without holding any PipeWire lock.  ## Hot-path rule (RT callback \u2014 strictly enforced)  The PipeWire process callback does only lock-free work: - `AudioBufferPool::acquire()` \u2014 lock-free CAS bitset - byte copy from PipeWire buffer into pool slot (ptr::copy_nonoverlapping) - `rtrb::Producer::push()` \u2014 wait-free SPSC push, drops frame when ring is full"
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::capture::platform::linux::pipewire responsibilities, including the src/capture/platform/linux/pipewire boundary."
   },
   "queues": [],
   "recovery_behavior": [
@@ -2515,6 +2570,7 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/source-identity.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 24,
@@ -2562,90 +2618,36 @@
     }
   ],
   "responsibilities": [
-    "CAPTURE_CHANNEL_COUNT",
-    "MICROPHONE_CHANNEL_COUNT",
-    "CAPTURE_FRAME_SAMPLES",
-    "PIPEWIRE_CALLBACK_MAX_SAMPLES",
-    "CAPTURE_POOL_CAPACITY_FRAMES",
-    "DISPATCH_QUEUE_CAPACITY_FRAMES",
-    "PW_NODE_LATENCY",
-    "PW_STOP_POLL_MS",
-    "PW_OPEN_TIMEOUT",
-    "PW_TARGET_OBJECT",
-    "PW_NODE_DONT_FALLBACK",
-    "PW_STATE_RESTORE_PROPS",
-    "PW_STATE_RESTORE_TARGET",
-    "PW_NODE_DONT_MOVE",
-    "PW_NODE_DONT_RECONNECT",
-    "ALSA_LOOPBACK_DEVICE",
-    "PipeWireDiscoveredNode",
-    "ApplicationIdentityScope",
-    "PipeWireTimelineMode",
-    "NegotiatedPipeWireFormat",
-    "PipeWireCaptureState",
-    "new",
-    "set_negotiated_format",
-    "advance_sample_timeline",
-    "pipewire_source_sample_position",
-    "parse_pipewire_negotiated_format",
-    "signal_pipewire_open_if_ready",
-    "parse_pipewire_sample_rate",
-    "parse_pipewire_channel_count",
-    "pipewire_application_identity",
-    "select_unique_exact_application",
-    "pipewire_f32_plane",
-    "copy_pipewire_f32_samples",
-    "pipewire_f32_sample_count",
-    "capture_channel_count",
-    "acquire_capture_buffer",
-    "enqueue_capture_frame",
-    "source_unavailable",
-    "system_mix_source_id",
-    "SystemLoopbackSource",
-    "DesktopCaptureSource",
-    "capture_mode",
-    "capture_mode_with_runtime_event_sender",
-    "observations",
-    "source_id",
-    "observation_handle",
-    "stop_and_join",
-    "capture",
-    "capture_mode",
-    "capture_mode_with_runtime_event_sender",
-    "observations",
-    "source_id",
-    "observation_handle",
-    "stop_and_join",
-    "stop_workers",
-    "pipewire_node_target",
-    "drop",
-    "initialize_pipewire_once",
-    "PIPEWIRE_INIT",
-    "pipewire_available",
-    "run_pipewire",
-    "discover_sources_linux",
-    "enumerate_pipewire_nodes",
-    "run_pipewire_targeted",
-    "run_alsa",
-    "tests",
-    "frame_from_pool",
-    "discovered_application",
-    "given_capture_mode_when_channels_selected_then_microphone_is_mono_and_output_is_stereo",
-    "given_exhausted_capture_pool_when_acquiring_then_failure_is_observed_once",
-    "given_full_dispatch_ring_when_producer_pushes_then_failure_is_observed_once",
-    "given_missing_exact_source_when_classified_then_stable_key_is_preserved",
-    "given_pipewire_application_metadata_when_identity_is_derived_then_persistent_fields_win",
-    "given_exact_application_selector_when_one_live_node_matches_then_current_target_is_selected",
-    "given_exact_application_selector_when_identity_is_transient_then_selection_fails_closed",
-    "given_process_scoped_exact_selector_when_identity_is_transient_then_matching_pid_is_allowed",
-    "given_exact_application_selector_when_multiple_nodes_match_then_selection_is_ambiguous",
-    "given_pipewire_properties_when_native_format_is_reported_then_unknown_is_not_fabricated",
-    "given_negotiated_format_when_one_buffer_is_dropped_then_sample_timeline_keeps_its_duration",
-    "given_negotiated_format_when_channel_count_changes_then_capture_fails_closed",
-    "given_process_mode_when_pipewire_unavailable_then_mode_unsupported_not_system_mix",
-    "given_application_mode_when_pipewire_unavailable_then_mode_unsupported_not_system_mix",
-    "given_exact_stable_application_when_pipewire_unavailable_then_mode_is_not_weakened",
-    "given_process_mode_when_node_not_found_then_backend_init_error_not_system_mix"
+    "CAPTURE_CHANNEL_COUNT (const)",
+    "MICROPHONE_CHANNEL_COUNT (const)",
+    "CAPTURE_FRAME_SAMPLES (const)",
+    "PIPEWIRE_CALLBACK_MAX_SAMPLES (const)",
+    "CAPTURE_POOL_CAPACITY_FRAMES (const)",
+    "DISPATCH_QUEUE_CAPACITY_FRAMES (const)",
+    "PW_NODE_LATENCY (const)",
+    "PW_STOP_POLL_MS (const)",
+    "PW_OPEN_TIMEOUT (const)",
+    "PW_TARGET_OBJECT (const)",
+    "PW_NODE_DONT_FALLBACK (const)",
+    "PW_STATE_RESTORE_PROPS (const)",
+    "PW_STATE_RESTORE_TARGET (const)",
+    "PW_NODE_DONT_MOVE (const)",
+    "PW_NODE_DONT_RECONNECT (const)",
+    "ALSA_LOOPBACK_DEVICE (const)",
+    "PipeWireDiscoveredNode (struct)",
+    "ApplicationIdentityScope (enum)",
+    "PipeWireTimelineMode (enum)",
+    "NegotiatedPipeWireFormat (struct)",
+    "PipeWireCaptureState (struct)",
+    "new (fn)",
+    "set_negotiated_format (fn)",
+    "advance_sample_timeline (fn)",
+    "pipewire_source_sample_position (fn)",
+    "parse_pipewire_negotiated_format (fn)",
+    "signal_pipewire_open_if_ready (fn)",
+    "parse_pipewire_sample_rate (fn)",
+    "parse_pipewire_channel_count (fn)",
+    "pipewire_application_identity (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -2770,7 +2772,25 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-03b9dd302a982e69d584",
+    "test-06acab2e5df43578641f",
+    "test-1993ee9e15230d1f6226",
+    "test-1a09c0b9480a09c36429",
+    "test-281d496a5f325c196fe0",
+    "test-50620fcc9117c7ad3cf6",
+    "test-69d4e0c97753aed54953",
+    "test-7477ad1c961dad51886d",
+    "test-9d0c37c66d5de8c35a03",
+    "test-a19b8c36cc500e40f220",
+    "test-b6715ab214572748c3d2",
+    "test-bcfd12a436362de05085",
+    "test-c28f1242d8a2b60457db",
+    "test-d95b10aa2227cf4f9ffb",
+    "test-e2539685a9c80008839f",
+    "test-e32ec18234812bec720e"
+  ],
   "threads": [
     {
       "line": 5,

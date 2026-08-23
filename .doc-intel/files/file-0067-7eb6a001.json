@@ -3,7 +3,11 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/abi/mod.rs",
+    "IMPORTS:src/abi/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs"
+  ],
   "calls": [
     "AssertUnwindSafe",
     "FnOnce",
@@ -54,7 +58,11 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/abi/mod.rs",
+    "IMPORTS:src/abi/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs"
+  ],
   "constructs": [
     "PksSessionStatus::new",
     "Vec::new"
@@ -389,8 +397,13 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/abi/mod.rs",
+    "IMPORTS:src/abi/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -441,12 +454,20 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "2b39b9a3f504a72d78758dfc4681dcc0cff908b2",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/abi/mod.rs",
+    "IMPORTS:src/abi/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs"
+  ],
   "implements": [
     "PksExtensionAbiVersion",
     "ExtensionAbiError"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/abi/mod.rs",
+    "IMPORTS:src/abi/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs"
+  ],
   "imports": [
     "crate::abi::session::{PksSessionStatus, PksSessionStatusCode, PksSessionUtf8}",
     "std::mem::{align_of, size_of}",
@@ -455,7 +476,12 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::abi::session::{PksSessionStatus, PksSessionStatusCode, PksSessionUtf8}",
+    "std::mem::{align_of, size_of}",
+    "std::panic::{catch_unwind, AssertUnwindSafe}",
+    "std::slice",
+    "super::*"
   ],
   "invariants": [
     {
@@ -477,18 +503,34 @@
   "module": "pocketstation::abi::extension",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(ExtensionAbiError::InvalidArgument)",
+    "Err(_) => PksSessionStatus::new(PksSessionStatusCode::InternalPanic, 0),",
+    "Ok(Err(error)) => error.status(),",
+    "_ => return Err(ExtensionAbiError::InvalidArgument),",
+    "const:PKS_EXTENSION_ABI_MAJOR",
+    "const:PKS_EXTENSION_ABI_MINOR",
+    "enum:PksExtensionKind",
+    "enum:PksExtensionPortDirection",
+    "fn:pks_extension_abi_get_version",
+    "fn:pks_extension_abi_is_compatible",
+    "fn:pks_extension_descriptor_validate",
+    "return Err(ExtensionAbiError::InvalidArgument);",
+    "struct:PksExtensionAbiVersion",
+    "struct:PksExtensionDescriptor",
+    "struct:PksExtensionPort"
   ],
   "package": "pocketstation",
   "path": "src/abi/extension.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -647,7 +689,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::abi::extension`."
+    "text": "Implements pocketstation::abi::extension responsibilities, including Defines the major version of extension ABI.; Defines the minor version of extension ABI.; Carries the major and minor native-extension ABI versions checked during loading.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -681,33 +723,43 @@
     "docs/best-practices/native-extension-trust.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/abi/session/abi.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "PKS_EXTENSION_ABI_MAJOR",
-    "PKS_EXTENSION_ABI_MINOR",
-    "MAX_PORTS",
-    "MAX_IDENTIFIER_BYTES",
-    "PksExtensionAbiVersion",
-    "current",
-    "PksExtensionKind",
-    "PksExtensionPortDirection",
-    "PksExtensionDescriptor",
-    "PksExtensionPort",
-    "pks_extension_abi_get_version",
-    "pks_extension_abi_is_compatible",
-    "pks_extension_descriptor_validate",
-    "extension_call",
-    "guard_version",
-    "guard_size",
-    "guard_pointer",
-    "guard_mut_pointer",
-    "validate_text",
-    "bytes",
-    "ExtensionAbiError",
-    "status",
-    "tests",
-    "text",
-    "given_core_extension_c_descriptor_when_validated_then_version_and_ports_pass"
+    "pocketstation::abi::extension::PKS_EXTENSION_ABI_MAJOR: Defines the major version of extension ABI.",
+    "pocketstation::abi::extension::PKS_EXTENSION_ABI_MINOR: Defines the minor version of extension ABI.",
+    "pocketstation::abi::extension::PksExtensionAbiVersion: Carries the major and minor native-extension ABI versions checked during loading.",
+    "PksExtensionAbiVersion::struct_size_bytes: Stores the byte size of the `PksExtensionAbiVersion` ABI structure.",
+    "PksExtensionAbiVersion::abi_major: Stores the major ABI version expected by `PksExtensionAbiVersion`.",
+    "PksExtensionAbiVersion::abi_minor: Stores the minor ABI version expected by `PksExtensionAbiVersion`.",
+    "pocketstation::abi::extension::PksExtensionKind: Selects the extension kind used by PocketStation.",
+    "pocketstation::abi::extension::PksExtensionKind::Source: Selects source behavior for `PksExtensionKind`.",
+    "pocketstation::abi::extension::PksExtensionKind::Operator: Selects operator behavior for `PksExtensionKind`.",
+    "pocketstation::abi::extension::PksExtensionKind::Endpoint: Selects endpoint behavior for `PksExtensionKind`.",
+    "pocketstation::abi::extension::PksExtensionPortDirection: Selects the extension port direction used by PocketStation.",
+    "pocketstation::abi::extension::PksExtensionPortDirection::Input: Selects input behavior for `PksExtensionPortDirection`.",
+    "pocketstation::abi::extension::PksExtensionPortDirection::Output: Selects output behavior for `PksExtensionPortDirection`.",
+    "pocketstation::abi::extension::PksExtensionDescriptor: Describes the extension descriptor contract.",
+    "PksExtensionDescriptor::struct_size_bytes: Stores the byte size of the `PksExtensionDescriptor` ABI structure.",
+    "PksExtensionDescriptor::abi_major: Stores the major ABI version expected by `PksExtensionDescriptor`.",
+    "PksExtensionDescriptor::abi_minor: Stores the minor ABI version expected by `PksExtensionDescriptor`.",
+    "PksExtensionDescriptor::kind: Stores the kind used by `PksExtensionDescriptor`.",
+    "PksExtensionDescriptor::revision: Stores the revision used by `PksExtensionDescriptor`.",
+    "PksExtensionDescriptor::generation: Stores the generation used by `PksExtensionDescriptor`.",
+    "PksExtensionDescriptor::port_count: Stores the number of port represented by `PksExtensionDescriptor`.",
+    "PksExtensionDescriptor::extension_id: Identifies the extension identifier recorded by `PksExtensionDescriptor`.",
+    "pocketstation::abi::extension::PksExtensionPort: Describes one native-extension port across the C ABI, including direction and signal metadata.",
+    "PksExtensionPort::struct_size_bytes: Stores the byte size of the `PksExtensionPort` ABI structure.",
+    "PksExtensionPort::abi_major: Stores the major ABI version expected by `PksExtensionPort`.",
+    "PksExtensionPort::abi_minor: Stores the minor ABI version expected by `PksExtensionPort`.",
+    "PksExtensionPort::direction: Stores the direction used by `PksExtensionPort`.",
+    "PksExtensionPort::required: Indicates whether required applies to `PksExtensionPort`.",
+    "PksExtensionPort::name: Stores the name used by `PksExtensionPort`.",
+    "PksExtensionPort::signal_id: Identifies the signal identifier recorded by `PksExtensionPort`.",
+    "PksExtensionPort::semantic_role: Stores the semantic role used by `PksExtensionPort`.",
+    "PksExtensionPort::schema: Stores the schema used by `PksExtensionPort`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -754,7 +806,10 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-4766cfbb0d0cdab01cdc"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

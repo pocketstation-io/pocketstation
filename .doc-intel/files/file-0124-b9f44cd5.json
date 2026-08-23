@@ -3,7 +3,14 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "calls": [
     "EndpointPreparationGroup::Route",
     "Self::new",
@@ -23,7 +30,14 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "constructs": [
     "Self::new",
     "new"
@@ -209,8 +223,18 @@
       "symbol": null
     }
   ],
-  "examples_using": [],
-  "extended_by": [],
+  "example_coverage_status": "linked",
+  "examples_using": [
+    "example-3af8a91e442cd41f9135"
+  ],
+  "extended_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -224,11 +248,25 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "f4937aae79b26fc53e4d6e8c976250b1d98743ba",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "implements": [
     "ConnectorRunOutcome"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "imports": [
     "coordination::ConnectorContext",
     "crate::{EndpointPortInput, EndpointPreparationGroup}",
@@ -241,7 +279,15 @@
     "super::ConnectorError"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "coordination::ConnectorContext",
+    "crate::{EndpointPortInput, EndpointPreparationGroup}",
+    "driver::{ ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorInputDescriptor, ConnectorItem, }",
+    "endpoint_adapter::{connector_driver_endpoint_factory, connector_endpoint_factory}",
+    "module:coordination",
+    "module:driver",
+    "module:endpoint_adapter",
+    "module:supervisor",
+    "super::ConnectorError"
   ],
   "invariants": [],
   "language": "Rust",
@@ -250,21 +296,30 @@
   "module": "pocketstation::connector::worker",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-ed289ca51a4061af7afe",
     "pattern-c957078837b218bf4f89"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Self::new(Err(error))",
+    "fn:failure",
+    "fn:into_result",
+    "fn:new",
+    "fn:result",
+    "fn:success",
+    "struct:ConnectorRunOutcome",
+    "trait:ConnectorFactory",
+    "trait:ConnectorWorker"
   ],
   "package": "pocketstation",
   "path": "src/connector/worker/mod.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -369,7 +424,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::connector::worker`."
+    "text": "Implements pocketstation::connector::worker responsibilities, including Implement this trait to provide connector behavior to PocketStation; its methods define the preparation and runtime contract.; Returns the preparation group associated with `ConnectorFactory`.; Prepares resources required by `ConnectorFactory`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -413,6 +468,22 @@
     "docs/best-practices/connector-retries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "CONTAINS:src/connector/worker/coordination.rs",
+    "CONTAINS:src/connector/worker/driver.rs",
+    "CONTAINS:src/connector/worker/endpoint_adapter.rs",
+    "CONTAINS:src/connector/worker/supervisor.rs",
+    "IMPORTS:src/connector/worker/coordination.rs",
+    "IMPORTS:src/connector/worker/driver.rs",
+    "IMPORTS:src/connector/worker/endpoint_adapter.rs",
+    "IMPORTS:src/connector/worker/supervisor.rs",
+    "REFERENCES:src/connector/error.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/endpoint/identity.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/graph/node.rs"
+  ],
   "resource_ownership": [
     {
       "line": 29,
@@ -428,22 +499,17 @@
     }
   ],
   "responsibilities": [
-    "coordination",
-    "driver",
-    "endpoint_adapter",
-    "supervisor",
-    "ConnectorFactory",
-    "preparation_group",
-    "prepare",
-    "ConnectorWorker",
-    "run",
-    "cancel_preparation",
-    "ConnectorRunOutcome",
-    "new",
-    "success",
-    "failure",
-    "result",
-    "into_result"
+    "pocketstation::connector::worker::ConnectorFactory: Implement this trait to provide connector behavior to PocketStation; its methods define the preparation and runtime contract.",
+    "ConnectorFactory::preparation_group: Returns the preparation group associated with `ConnectorFactory`.",
+    "ConnectorFactory::prepare: Prepares resources required by `ConnectorFactory`.",
+    "pocketstation::connector::worker::ConnectorWorker: Implement this trait to provide connector worker behavior to PocketStation; its methods define the preparation and runtime contract.",
+    "ConnectorWorker::run: Runs `ConnectorWorker` until completion or cancellation.",
+    "ConnectorWorker::cancel_preparation: Cancels preparation for `ConnectorWorker`.",
+    "pocketstation::connector::worker::ConnectorRunOutcome: Reports the structured connector run outcome.",
+    "new: Creates a new `ConnectorRunOutcome`.",
+    "success: Returns whether `ConnectorRunOutcome` completed successfully.",
+    "failure: Returns the failure held by `ConnectorRunOutcome`.",
+    "result: Returns the result represented by `ConnectorRunOutcome`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -458,7 +524,11 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-8dc1f35d1fe44a3ada8b",
+    "test-be218c3d19791b4fd501"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

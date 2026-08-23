@@ -2,32 +2,33 @@
 
 <!-- claims: CLM-BEST-007-CAP-001,CLM-BEST-007-CAP-002,CLM-BEST-007-CAP-003,CLM-BEST-007-CAP-004,CLM-BEST-007-CAP-005,CLM-BEST-007-SOURCE-001 -->
 
+## Problem
+
+Build, VM, conformance, and physical-device evidence answer different questions and can be accidentally promoted into broad support claims.
+
 ## Recommendation
 
-Label build, virtual-machine, conformance, and physical-device evidence separately; never promote one scope into another.
+Label every platform or provider claim with the command, target, fixture, environment, and evidence class that established it.
 
-## Why
+## Reason
 
-The repository makes capacity, ownership, identity, lifecycle, and evidence boundaries explicit so failures remain attributable. Bypassing them removes observations and typed outcomes needed for diagnosis.
+Scoped labels let maintainers distinguish implementation presence from real-device or live-provider qualification.
 
 ## Tradeoff
 
-The recommendation requires explicit configuration and result handling. It does not promise that one capacity, retry budget, selector, or shutdown policy fits every workload. Measure within the API's stated scope.
+Narrow claims are less convenient than one support badge, but they remain auditable and avoid unsupported guarantees.
 
 ## When it does not apply
 
-Do not apply a realtime, connector, capture, or extension rule to another lane or boundary unless it exposes the same contract. An internal pattern is not automatically a public recommendation.
+You may combine scopes only when the published statement explicitly lists every constituent environment and result.
 
 ## Repository evidence
 
-- `buffer_pool` at `tests/public_api_boundary.rs` (`pattern-2973216be17e52591275`).
-- `buffer_pool` at `scripts/check_pks_single_engine_boundary.sh` (`pattern-691896feff36ac00f8fd`).
-- `buffer_pool` at `benches/generated_audio_bridge.rs` (`pattern-75ee714be751c7038ff7`).
-- `sidecar_isolation` at `tests/protocol_compatibility.rs` (`pattern-fe84fb6f35a53c802413`).
+This recommendation is tied directly to the page's source evidence.
 
 ## Executable evidence
 
-The following test bodies are evidence only for their recorded setup:
+Executable evidence selected for **Keep qualification claims scoped** is limited to each test's recorded setup and assertions:
 
 - `test-publish-recovery` — test publish recovery (`scripts/test-publish-recovery.sh:1`; `test-adb1dc831caefa6dcbaa`).
 - `test-session-c-conformance` — test session c conformance (`scripts/test-session-c-conformance.sh:1`; `test-ff28fea505d22371ce41`).
@@ -52,9 +53,9 @@ The following test bodies are evidence only for their recorded setup:
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Keep qualification claims scoped** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `.github/workflows/ci.yml:1-63` (`DIRECT`)
 - `src/capture/platform/mod.rs:1-7` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Keep qualification claims scoped**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

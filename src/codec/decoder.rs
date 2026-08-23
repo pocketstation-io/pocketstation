@@ -29,9 +29,9 @@ pub enum OpusDecodeError {
     )]
     #[doc = "Reports frame duration exceeds configured maximum."]
     FrameDurationExceedsConfiguredMaximum {
-        #[doc = "Stores the requested samples per channel associated with `FrameDurationExceedsConfiguredMaximum`."]
+        #[doc = "Stores the requested samples per channel used by `FrameDurationExceedsConfiguredMaximum`."]
         requested_samples_per_channel: usize,
-        #[doc = "Stores the maximum samples per channel associated with `FrameDurationExceedsConfiguredMaximum`."]
+        #[doc = "Stores the maximum samples per channel used by `FrameDurationExceedsConfiguredMaximum`."]
         maximum_samples_per_channel: usize,
     },
     #[error("Opus decode failed: {0}")]

@@ -192,13 +192,13 @@ pub struct EdgeObservations {
 }
 
 impl EdgeObservations {
-    #[doc = "Returns the frames attempted total associated with `EdgeObservations`."]
+    #[doc = "Returns the frames attempted total held by `EdgeObservations`."]
     pub fn frames_attempted_total(self) -> u64 {
         self.frames_enqueued_total
             .saturating_add(self.frames_dropped_total)
     }
 
-    #[doc = "Returns the drop rate pct associated with `EdgeObservations`."]
+    #[doc = "Returns the drop rate pct held by `EdgeObservations`."]
     pub fn drop_rate_pct(self) -> f64 {
         let frames_attempted_total = self.frames_attempted_total();
         if frames_attempted_total == 0 {
@@ -782,6 +782,7 @@ impl PlanEdgeRouter {
         Ok((Self { edges }, receivers))
     }
 
+    #[doc = "Routes one lineaged audio frame from the named plan output through `PlanEdgeRouter`."]
     pub fn dispatch_from(
         &mut self,
         node_id: NodeId,

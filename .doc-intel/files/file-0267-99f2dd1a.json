@@ -66,6 +66,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -86,7 +87,7 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "No external input is declared in this file."
   ],
   "invariants": [
     {
@@ -300,25 +301,27 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "repository",
   "path": "tests/macos_native_ring_contract.c",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Provides executable repository-owned behavioral evidence."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for macos native ring contract under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -352,8 +355,11 @@
     "docs/best-practices/native-extension-trust.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
-  "responsibilities": [],
+  "responsibilities": [
+    "Provides executable evidence for macos native ring contract under the conditions declared in this test file."
+  ],
   "retry_behavior": [],
   "serialization": [],
   "shutdown_behavior": [],
@@ -362,7 +368,10 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-3fbcf9295b42f7dd9bf7"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

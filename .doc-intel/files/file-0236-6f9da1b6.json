@@ -521,6 +521,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -561,7 +562,14 @@
     "std::time::{Duration, Instant}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend, }",
+    "crate::endpoint::{ EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointDriverRegistryError, EndpointFailure, EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }",
+    "crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId}",
+    "crate::graph::{NodeTypeId, PrepareContext}",
+    "crate::session::{ ApplicationSelector, CaptureBackendSet, DeviceSelector, EndpointConfiguration, EndpointExtensionRegistrationError, OperatorId, PolledAudioEndpoint, PolledAudioEndpointConfig, PolledAudioPollError, Session, SessionCompileError, SessionEngineBuilder, SessionEngineStartError, SessionStartError, SessionStartOptions, Source, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "std::time::{Duration, Instant}"
   ],
   "invariants": [
     {
@@ -628,22 +636,27 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-95f5108aef0b18289bdb",
-    "pattern-7eecba675f804dd8adaa",
-    "pattern-690f1327b10f770a5f78"
+    "pattern-690f1327b10f770a5f78",
+    "pattern-95f5108aef0b18289bdb"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(CaptureError::BackendInit(",
+    "Err(EndpointExtensionRegistrationError::Driver(",
+    "Err(PolledAudioPollError::Empty) if Instant::now() < deadline => {",
+    "Err(error) => error,",
+    "Err(error) => panic!(\"polled endpoint did not receive capture: {error}\"),"
   ],
   "package": "pocketstation",
   "path": "src/session/lifecycle/tests/engine.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -908,7 +921,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::lifecycle::tests::engine`."
+    "text": "Implements pocketstation::session::lifecycle::tests::engine responsibilities, including the src/session/lifecycle/tests/engine boundary."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -968,6 +981,7 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 2,
@@ -1115,48 +1129,36 @@
     }
   ],
   "responsibilities": [
-    "CONNECTOR_OPERATOR_ID",
-    "TestCaptureBackend",
-    "TestPreparedCapture",
-    "TestActiveCapture",
-    "DeliveringCaptureBackend",
-    "DeliveringPreparedCapture",
-    "DeliveringActiveCapture",
-    "prepare",
-    "open",
-    "source_id",
-    "observation_handle",
-    "observations",
-    "stop_and_join",
-    "prepare",
-    "open",
-    "source_id",
-    "observation_handle",
-    "observations",
-    "stop_and_join",
-    "drop",
-    "TestEndpointControl",
-    "TestEndpointFactory",
-    "TestPreparedEndpoint",
-    "TestRunningEndpoint",
-    "preparation_group",
-    "prepare",
-    "start",
-    "cancel_preparation",
-    "observations",
-    "request_stop",
-    "join_and_finalize",
-    "prepare_context",
-    "prepare_context_16khz",
-    "endpoint_factory",
-    "product_session",
-    "given_session_plan_when_prepared_then_stem_media_is_preserved",
-    "given_16khz_session_when_started_then_compiled_endpoint_contexts_preserve_declared_rate",
-    "given_separated_engine_stages_when_started_then_canonical_owners_are_preserved",
-    "given_deterministic_capture_when_polled_then_real_runtime_branch_copy_and_lineage_are_exposed",
-    "given_duplicate_or_conflicting_operator_when_registering_then_builder_fails_typed",
-    "given_unregistered_declared_operator_when_starting_then_compile_failure_remains_typed",
-    "given_capture_open_failure_when_starting_then_transactional_failure_is_preserved"
+    "CONNECTOR_OPERATOR_ID (const)",
+    "TestCaptureBackend (struct)",
+    "TestPreparedCapture (struct)",
+    "TestActiveCapture (struct)",
+    "DeliveringCaptureBackend (struct)",
+    "DeliveringPreparedCapture (struct)",
+    "DeliveringActiveCapture (struct)",
+    "prepare (fn)",
+    "open (fn)",
+    "source_id (fn)",
+    "observation_handle (fn)",
+    "observations (fn)",
+    "stop_and_join (fn)",
+    "prepare (fn)",
+    "open (fn)",
+    "source_id (fn)",
+    "observation_handle (fn)",
+    "observations (fn)",
+    "stop_and_join (fn)",
+    "drop (fn)",
+    "TestEndpointControl (struct)",
+    "TestEndpointFactory (struct)",
+    "TestPreparedEndpoint (struct)",
+    "TestRunningEndpoint (struct)",
+    "preparation_group (fn)",
+    "prepare (fn)",
+    "start (fn)",
+    "cancel_preparation (fn)",
+    "observations (fn)",
+    "request_stop (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1253,7 +1255,16 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-036ad7eaba4f64ee56a4",
+    "test-162e3f6748e6f4f9bf07",
+    "test-75068ae98b1f33133b7e",
+    "test-bed8372d17bfb826172a",
+    "test-c766d5c9c30b1ae0e9e9",
+    "test-d838f7a9b732b788e3e9",
+    "test-da387939636155cf1ba2"
+  ],
   "threads": [
     {
       "line": 45,

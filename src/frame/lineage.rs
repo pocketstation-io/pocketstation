@@ -3,7 +3,7 @@
 use crate::frame::{ClockDomainId, SessionId, SourceId, StemId};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Represents frame lineage in the PocketStation API."]
+#[doc = "Preserves source, stream, sequence, clock, generation, and discontinuity identity for an audio frame."]
 pub struct FrameLineage {
     pub(crate) session_id: SessionId,
     pub(crate) source_id: SourceId,
@@ -55,48 +55,48 @@ impl FrameLineage {
         })
     }
 
-    #[doc = "Returns the session identifier associated with `FrameLineage`."]
+    #[doc = "Returns the session identifier held by `FrameLineage`."]
     pub const fn session_id(self) -> SessionId {
         self.session_id
     }
-    #[doc = "Returns the source identifier associated with `FrameLineage`."]
+    #[doc = "Returns the source identifier held by `FrameLineage`."]
     pub const fn source_id(self) -> SourceId {
         self.source_id
     }
-    #[doc = "Returns the stem identifier associated with `FrameLineage`."]
+    #[doc = "Returns the stem identifier held by `FrameLineage`."]
     pub const fn stem_id(self) -> StemId {
         self.stem_id
     }
-    #[doc = "Returns the clock identifier associated with `FrameLineage`."]
+    #[doc = "Returns the clock identifier held by `FrameLineage`."]
     pub const fn clock_id(self) -> ClockDomainId {
         self.clock_id
     }
-    #[doc = "Returns the sequence number associated with `FrameLineage`."]
+    #[doc = "Returns the sequence number held by `FrameLineage`."]
     pub const fn sequence_number(self) -> u64 {
         self.sequence_num
     }
-    #[doc = "Returns the timestamp start nanoseconds associated with `FrameLineage`."]
+    #[doc = "Returns the timestamp start nanoseconds held by `FrameLineage`."]
     pub const fn timestamp_start_ns(self) -> u64 {
         self.timestamp_start_ns
     }
-    #[doc = "Returns the duration nanoseconds associated with `FrameLineage`."]
+    #[doc = "Returns the duration nanoseconds held by `FrameLineage`."]
     pub const fn duration_ns(self) -> u64 {
         self.duration_ns
     }
-    #[doc = "Returns the source generation associated with `FrameLineage`."]
+    #[doc = "Returns the source generation held by `FrameLineage`."]
     pub const fn source_generation(self) -> u32 {
         self.source_generation
     }
-    #[doc = "Returns the discontinuity epoch associated with `FrameLineage`."]
+    #[doc = "Returns the discontinuity epoch held by `FrameLineage`."]
     pub const fn discontinuity_epoch(self) -> u64 {
         self.discontinuity_epoch
     }
-    #[doc = "Returns the permission epoch associated with `FrameLineage`."]
+    #[doc = "Returns the permission epoch held by `FrameLineage`."]
     pub const fn permission_epoch(self) -> u64 {
         self.permission_epoch
     }
 
-    #[doc = "Returns the timestamp end nanoseconds associated with `FrameLineage`."]
+    #[doc = "Returns the timestamp end nanoseconds held by `FrameLineage`."]
     pub fn timestamp_end_ns(self) -> u64 {
         self.timestamp_start_ns.saturating_add(self.duration_ns)
     }

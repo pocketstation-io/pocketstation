@@ -38,17 +38,24 @@ pub struct CaptureSampleTimeline {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
+#[doc = "Classifies failures reported as capture sample timeline error."]
 pub enum CaptureSampleTimelineError {
+    #[doc = "Reported when the owning operation encounters mixed advance modes."]
     MixedAdvanceModes,
+    #[doc = "Reported when the owning operation encounters source position overflow."]
     SourcePositionOverflow,
+    #[doc = "Reported when the owning operation encounters source position moved backward."]
     SourcePositionMovedBackward {
+        #[doc = "Stores the expected at least used by `SourcePositionMovedBackward`."]
         expected_at_least: u64,
+        #[doc = "Stores the observed used by `SourcePositionMovedBackward`."]
         observed: u64,
     },
 }
 
 #[cfg(any(test, feature = "internal-testing", feature = "native-capture"))]
 impl CaptureSampleTimeline {
+    #[doc = "Creates a new `CaptureSampleTimeline`."]
     pub fn new(sample_rate_hz: NonZeroU32) -> Self {
         Self {
             sample_rate_hz,

@@ -3,7 +3,16 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "calls": [
     "Arc::new",
     "AtomicU8::new",
@@ -69,7 +78,16 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AtomicU8::new",
@@ -472,8 +490,18 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -487,12 +515,30 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "6c294659f59d83b9991ee1d07c947ce8e964cbe7",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "implements": [
     "ConnectorContext",
     "ConnectorStopToken"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "imports": [
     "crate::connector::{ ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorCode, ConnectorHealth, ConnectorObservationError, ConnectorReadinessPolicy, ConnectorRecovery, }",
     "crate::{EndpointDriverObservations, EndpointShutdownMode}",
@@ -503,7 +549,14 @@
     "super::supervisor::ConnectorWorkerState"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::connector::{ ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorCode, ConnectorHealth, ConnectorObservationError, ConnectorReadinessPolicy, ConnectorRecovery, }",
+    "crate::{EndpointDriverObservations, EndpointShutdownMode}",
+    "std::sync::atomic::{AtomicU8, Ordering}",
+    "std::sync::{Arc, Condvar, Mutex}",
+    "std::time::Duration",
+    "super::*",
+    "super::supervisor::ConnectorWorkerState"
   ],
   "invariants": [
     {
@@ -546,20 +599,46 @@
   "module": "pocketstation::connector::worker::coordination",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-62aec1768a5d595e60b2"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "fn:endpoint_observations",
+    "fn:is_abort_requested",
+    "fn:is_requested",
+    "fn:is_stop_requested",
+    "fn:mode",
+    "fn:new",
+    "fn:record_discontinuity",
+    "fn:record_failure",
+    "fn:record_frame_delivered",
+    "fn:record_frame_dropped",
+    "fn:record_frame_received",
+    "fn:record_retry",
+    "fn:report_readiness_failure",
+    "fn:report_readiness_success",
+    "fn:request",
+    "fn:set_connected",
+    "fn:set_degraded",
+    "fn:set_healthy",
+    "fn:set_not_ready",
+    "fn:set_ready",
+    "fn:set_reconnecting",
+    "fn:shutdown_mode",
+    "fn:wait_for_stop",
+    "fn:wait_timeout",
+    "struct:ConnectorContext",
+    "struct:ConnectorStopToken",
+    "struct:ReadinessProbeState"
   ],
   "package": "pocketstation",
   "path": "src/connector/worker/coordination.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -748,7 +827,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::connector::worker::coordination`."
+    "text": "Implements pocketstation::connector::worker::coordination responsibilities, including Carries the inputs and runtime context required to connector.; Returns whether stop requested applies to `ConnectorContext`.; Returns the shutdown mode held by `ConnectorContext`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -790,6 +869,13 @@
     "docs/best-practices/connector-retries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/connector/error.rs",
+    "REFERENCES:src/connector/observations.rs",
+    "REFERENCES:src/connector/readiness.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs",
+    "REFERENCES:src/endpoint/runtime.rs"
+  ],
   "resource_ownership": [
     {
       "line": 2,
@@ -809,36 +895,26 @@
     }
   ],
   "responsibilities": [
-    "ConnectorContext",
-    "ReadinessProbeState",
-    "is_stop_requested",
-    "shutdown_mode",
-    "is_abort_requested",
-    "wait_for_stop",
-    "set_ready",
-    "set_not_ready",
-    "set_degraded",
-    "set_healthy",
-    "set_reconnecting",
-    "set_connected",
-    "report_readiness_success",
-    "report_readiness_failure",
-    "record_frame_received",
-    "record_frame_delivered",
-    "record_frame_dropped",
-    "record_discontinuity",
-    "record_retry",
-    "record_failure",
-    "endpoint_observations",
-    "ConnectorStopToken",
-    "ConnectorStopState",
-    "new",
-    "request",
-    "is_requested",
-    "mode",
-    "wait_timeout",
-    "tests",
-    "given_drain_then_abort_when_requested_then_shutdown_intent_upgrades_monotonically"
+    "pocketstation::connector::worker::coordination::ConnectorContext: Carries the inputs and runtime context required to connector.",
+    "is_stop_requested: Returns whether stop requested applies to `ConnectorContext`.",
+    "shutdown_mode: Returns the shutdown mode held by `ConnectorContext`.",
+    "is_abort_requested: Returns whether abort requested applies to `ConnectorContext`.",
+    "wait_for_stop: Waits until a stop request is visible to `ConnectorContext`.",
+    "set_ready: Sets the ready used by `ConnectorContext`.",
+    "set_not_ready: Sets the not ready used by `ConnectorContext`.",
+    "set_degraded: Sets the degraded used by `ConnectorContext`.",
+    "set_healthy: Sets the healthy used by `ConnectorContext`.",
+    "set_reconnecting: Sets the reconnecting used by `ConnectorContext`.",
+    "set_connected: Sets the connected used by `ConnectorContext`.",
+    "report_readiness_success: Records a successful readiness probe for `ConnectorContext`.",
+    "report_readiness_failure: Returns the report readiness failure held by `ConnectorContext`.",
+    "record_frame_received: Records frame received for `ConnectorContext`.",
+    "record_frame_delivered: Records frame delivered for `ConnectorContext`.",
+    "record_frame_dropped: Records frame dropped for `ConnectorContext`.",
+    "record_discontinuity: Records discontinuity for `ConnectorContext`.",
+    "record_retry: Records retry for `ConnectorContext`.",
+    "record_failure: Records failure for `ConnectorContext`.",
+    "endpoint_observations: Returns the endpoint observations held by `ConnectorContext`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -901,7 +977,12 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-2b8e9c0a8c7f0d70b58d",
+    "test-419dab21186354b9da79",
+    "test-50a5f1631531f3816b13"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

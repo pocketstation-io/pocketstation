@@ -11,7 +11,7 @@ use crate::connector::{
 };
 
 #[derive(Clone)]
-#[doc = "Represents connector context in the PocketStation API."]
+#[doc = "Carries the inputs and runtime context required to connector."]
 pub struct ConnectorContext {
     pub(super) stop: ConnectorStopToken,
     pub(super) state: ConnectorWorkerState,
@@ -31,7 +31,7 @@ impl ConnectorContext {
         self.stop.is_requested()
     }
 
-    #[doc = "Returns the shutdown mode associated with `ConnectorContext`."]
+    #[doc = "Returns the shutdown mode held by `ConnectorContext`."]
     pub fn shutdown_mode(&self) -> Option<EndpointShutdownMode> {
         self.stop.mode()
     }
@@ -106,7 +106,7 @@ impl ConnectorContext {
         self.set_ready()
     }
 
-    #[doc = "Returns the report readiness failure associated with `ConnectorContext`."]
+    #[doc = "Returns the report readiness failure held by `ConnectorContext`."]
     pub fn report_readiness_failure(&self, reason_code: ConnectorErrorCode) -> bool {
         let reached_threshold = {
             let mut probes = self
@@ -155,7 +155,7 @@ impl ConnectorContext {
         self.state.connector().record_failure(error)
     }
 
-    #[doc = "Returns the endpoint observations associated with `ConnectorContext`."]
+    #[doc = "Returns the endpoint observations held by `ConnectorContext`."]
     pub fn endpoint_observations(&self) -> EndpointDriverObservations {
         self.state.endpoint().snapshot()
     }

@@ -20,7 +20,10 @@
       "text": "// context and callback are retained by the library lease."
     }
   ],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/native_extension/mod.rs",
+    "IMPORTS:src/native_extension/mod.rs"
+  ],
   "calls": [
     "Arc::clone",
     "Arc::new",
@@ -67,7 +70,10 @@
       "text": "// function pointer Options and raw pointers use null as their empty"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/native_extension/mod.rs",
+    "IMPORTS:src/native_extension/mod.rs"
+  ],
   "constructs": [
     "Arc::new",
     "BTreeSet::new",
@@ -255,8 +261,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/native_extension/mod.rs",
+    "IMPORTS:src/native_extension/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -319,9 +329,15 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "3b256be44541e176fad2fc10899c2cd1b4ad85ab",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/native_extension/mod.rs",
+    "IMPORTS:src/native_extension/mod.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/native_extension/mod.rs",
+    "IMPORTS:src/native_extension/mod.rs"
+  ],
   "imports": [
     "crate::abi::executable_extension::{ build_registration_with_library, destroy_acquired_registration, ExecutableExtensionRegistration, MAX_LIBRARY_REGISTRATIONS, }",
     "libloading::Library",
@@ -331,7 +347,13 @@
     "super::{ NativeExtensionKind, NativeExtensionLibrary, NativeExtensionLibraryError, NativeExtensionLibraryErrorCode, NativeExtensionRegistration, PksExtensionCallbacks, PksExtensionDescriptor, PksExtensionKind, PksExtensionLibrary, PksExtensionLibraryEntrypoint, PksSessionStatus, PksSessionStatusCode, EXTENSION_LIBRARY_ENTRYPOINT_V1, PKS_EXTENSION_ABI_MAJOR, PKS_EXTENSION_ABI_MINOR, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "// function pointer Options and raw pointers use null as their empty",
+    "crate::abi::executable_extension::{ build_registration_with_library, destroy_acquired_registration, ExecutableExtensionRegistration, MAX_LIBRARY_REGISTRATIONS, }",
+    "libloading::Library",
+    "std::collections::BTreeSet",
+    "std::path::Path",
+    "std::sync::Arc",
+    "super::{ NativeExtensionKind, NativeExtensionLibrary, NativeExtensionLibraryError, NativeExtensionLibraryErrorCode, NativeExtensionRegistration, PksExtensionCallbacks, PksExtensionDescriptor, PksExtensionKind, PksExtensionLibrary, PksExtensionLibraryEntrypoint, PksSessionStatus, PksSessionStatusCode, EXTENSION_LIBRARY_ENTRYPOINT_V1, PKS_EXTENSION_ABI_MAJOR, PKS_EXTENSION_ABI_MINOR, }"
   ],
   "invariants": [
     {
@@ -345,18 +367,24 @@
   "module": "pocketstation::native_extension::library",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(format!(\"status={} detail={}\", status.code, status.detail))",
+    "fn:load_native_extension_library",
+    "return Err(NativeExtensionLibraryError::new(",
+    "struct:LoadedNativeExtensionLibrary"
   ],
   "package": "pocketstation",
   "path": "src/native_extension/library.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -395,7 +423,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::native_extension::library`."
+    "text": "Implements pocketstation::native extension::library responsibilities, including library; extension library entrypoint v1 nul; loaded native extension library."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -422,6 +450,11 @@
     "docs/best-practices/native-extension-trust.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/abi/session/abi.rs",
+    "REFERENCES:src/native_extension/mod.rs"
+  ],
   "resource_ownership": [
     {
       "line": 3,
@@ -437,11 +470,11 @@
     }
   ],
   "responsibilities": [
-    "EXTENSION_LIBRARY_ENTRYPOINT_V1_NUL",
-    "LoadedNativeExtensionLibrary",
-    "load_native_extension_library",
-    "validate_library_descriptor",
-    "status_ok"
+    "EXTENSION_LIBRARY_ENTRYPOINT_V1_NUL (const)",
+    "LoadedNativeExtensionLibrary (struct)",
+    "load_native_extension_library (fn)",
+    "validate_library_descriptor (fn)",
+    "status_ok (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -500,6 +533,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

@@ -75,7 +75,7 @@ impl SessionMetricsSnapshot {
         }
     }
 
-    #[doc = "Returns the event queue associated with `SessionMetricsSnapshot`."]
+    #[doc = "Returns the event queue held by `SessionMetricsSnapshot`."]
     pub const fn event_queue(&self) -> SessionEventQueueObservations {
         self.event_queue
     }
@@ -85,52 +85,52 @@ impl SessionMetricsSnapshot {
         self.polled_audio
     }
 
-    #[doc = "Returns the source count associated with `SessionMetricsSnapshot`."]
+    #[doc = "Returns the source count held by `SessionMetricsSnapshot`."]
     pub fn source_count(&self) -> usize {
         self.sources.len()
     }
 
-    #[doc = "Returns the source associated with `SessionMetricsSnapshot`."]
+    #[doc = "Returns the source held by `SessionMetricsSnapshot`."]
     pub fn source(&self, index: usize) -> Option<&SessionSourceMetrics> {
         self.sources.get(index)
     }
 
-    #[doc = "Returns the external source count associated with `SessionMetricsSnapshot`."]
+    #[doc = "Returns the external source count held by `SessionMetricsSnapshot`."]
     pub fn external_source_count(&self) -> usize {
         self.external_sources.len()
     }
 
-    #[doc = "Returns the external source associated with `SessionMetricsSnapshot`."]
+    #[doc = "Returns the external source held by `SessionMetricsSnapshot`."]
     pub fn external_source(&self, index: usize) -> Option<&SessionExternalSourceMetrics> {
         self.external_sources.get(index)
     }
 
-    #[doc = "Returns the route count associated with `SessionMetricsSnapshot`."]
+    #[doc = "Returns the route count held by `SessionMetricsSnapshot`."]
     pub fn route_count(&self) -> usize {
         self.routes.len()
     }
 
-    #[doc = "Returns the route associated with `SessionMetricsSnapshot`."]
+    #[doc = "Returns the route held by `SessionMetricsSnapshot`."]
     pub fn route(&self, index: usize) -> Option<&SessionRouteMetrics> {
         self.routes.get(index)
     }
 
-    #[doc = "Returns the operator count associated with `SessionMetricsSnapshot`."]
+    #[doc = "Returns the operator count held by `SessionMetricsSnapshot`."]
     pub fn operator_count(&self) -> usize {
         self.operators.len()
     }
 
-    #[doc = "Returns the operator associated with `SessionMetricsSnapshot`."]
+    #[doc = "Returns the operator held by `SessionMetricsSnapshot`."]
     pub fn operator(&self, index: usize) -> Option<&SessionOperatorMetrics> {
         self.operators.get(index)
     }
 
-    #[doc = "Returns the derived route count associated with `SessionMetricsSnapshot`."]
+    #[doc = "Returns the derived route count held by `SessionMetricsSnapshot`."]
     pub fn derived_route_count(&self) -> usize {
         self.derived_routes.len()
     }
 
-    #[doc = "Returns the derived route associated with `SessionMetricsSnapshot`."]
+    #[doc = "Returns the derived route held by `SessionMetricsSnapshot`."]
     pub fn derived_route(&self, index: usize) -> Option<&SessionDerivedRouteMetrics> {
         self.derived_routes.get(index)
     }
@@ -139,22 +139,22 @@ impl SessionMetricsSnapshot {
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 #[doc = "Reports the session source metrics collected at an observation boundary."]
 pub struct SessionSourceMetrics {
-    #[doc = "Identifies the stem associated with `SessionSourceMetrics`."]
+    #[doc = "Identifies the stem identifier recorded by `SessionSourceMetrics`."]
     pub stem_id: StemId,
-    #[doc = "Stores the capture associated with `SessionSourceMetrics`."]
+    #[doc = "Stores the capture used by `SessionSourceMetrics`."]
     pub capture: CaptureOwnerObservations,
-    #[doc = "Stores the ingress associated with `SessionSourceMetrics`."]
+    #[doc = "Stores the ingress used by `SessionSourceMetrics`."]
     pub ingress: PlanSourceInputObservations,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 #[doc = "Reports the session external source metrics collected at an observation boundary."]
 pub struct SessionExternalSourceMetrics {
-    #[doc = "Identifies the source instance associated with `SessionExternalSourceMetrics`."]
+    #[doc = "Identifies the source instance identifier recorded by `SessionExternalSourceMetrics`."]
     pub source_instance_id: SourceInstanceId,
-    #[doc = "Identifies the source associated with `SessionExternalSourceMetrics`."]
+    #[doc = "Identifies the source identifier recorded by `SessionExternalSourceMetrics`."]
     pub source_id: SourceId,
-    #[doc = "Stores the runtime associated with `SessionExternalSourceMetrics`."]
+    #[doc = "Stores the runtime used by `SessionExternalSourceMetrics`."]
     pub runtime: SourceRuntimeObservations,
 }
 
@@ -162,24 +162,24 @@ pub struct SessionExternalSourceMetrics {
 /// language-neutral sidecar.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct SessionSidecarMetrics {
-    #[doc = "Identifies the sidecar associated with `SessionSidecarMetrics`."]
+    #[doc = "Identifies the sidecar identifier recorded by `SessionSidecarMetrics`."]
     pub sidecar_id: u64,
-    #[doc = "Stores the host associated with `SessionSidecarMetrics`."]
+    #[doc = "Stores the host used by `SessionSidecarMetrics`."]
     pub host: SidecarHostSnapshot,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 #[doc = "Reports the session route metrics collected at an observation boundary."]
 pub struct SessionRouteMetrics {
-    #[doc = "Identifies the route associated with `SessionRouteMetrics`."]
+    #[doc = "Identifies the route identifier recorded by `SessionRouteMetrics`."]
     pub route_id: RouteId,
-    #[doc = "Identifies the endpoint associated with `SessionRouteMetrics`."]
+    #[doc = "Identifies the endpoint identifier recorded by `SessionRouteMetrics`."]
     pub endpoint_id: EndpointId,
-    #[doc = "Stores the edge associated with `SessionRouteMetrics`."]
+    #[doc = "Stores the edge used by `SessionRouteMetrics`."]
     pub edge: EdgeObservations,
-    #[doc = "Stores the endpoint associated with `SessionRouteMetrics`."]
+    #[doc = "Stores the endpoint used by `SessionRouteMetrics`."]
     pub endpoint: Option<EndpointDriverObservations>,
-    #[doc = "Stores the endpoint observation stage associated with `SessionRouteMetrics`."]
+    #[doc = "Stores the endpoint observation stage used by `SessionRouteMetrics`."]
     pub endpoint_observation_stage: EndpointObservationStage,
     #[doc = "Counts the total number of endpoint finalization failures observed by `SessionRouteMetrics`."]
     pub endpoint_finalization_failures_total: u64,
@@ -195,9 +195,9 @@ pub enum SessionRouteObservationInterval {
 /// Explicit numerator, denominator, interval, and typed reasons for one route.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct SessionRouteDropObservations {
-    #[doc = "Identifies the route associated with `SessionRouteDropObservations`."]
+    #[doc = "Identifies the route identifier recorded by `SessionRouteDropObservations`."]
     pub route_id: RouteId,
-    #[doc = "Stores the interval associated with `SessionRouteDropObservations`."]
+    #[doc = "Stores the interval used by `SessionRouteDropObservations`."]
     pub interval: SessionRouteObservationInterval,
     #[doc = "Counts the total number of frames dropped observed by `SessionRouteDropObservations`."]
     pub frames_dropped_total: u64,
@@ -218,7 +218,7 @@ pub struct SessionRouteDropObservations {
 }
 
 impl SessionRouteDropObservations {
-    #[doc = "Returns the drop rate pct associated with `SessionRouteDropObservations`."]
+    #[doc = "Returns the drop rate pct held by `SessionRouteDropObservations`."]
     pub fn drop_rate_pct(self) -> f64 {
         if self.frames_attempted_total == 0 {
             0.0
@@ -231,11 +231,11 @@ impl SessionRouteDropObservations {
 /// Common-clock source timestamp to route-receive latency in nanoseconds.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct SessionRouteLatencyObservations {
-    #[doc = "Identifies the route associated with `SessionRouteLatencyObservations`."]
+    #[doc = "Identifies the route identifier recorded by `SessionRouteLatencyObservations`."]
     pub route_id: RouteId,
-    #[doc = "Stores the boundary associated with `SessionRouteLatencyObservations`."]
+    #[doc = "Stores the boundary used by `SessionRouteLatencyObservations`."]
     pub boundary: SessionRouteLatencyBoundary,
-    #[doc = "Stores the unit associated with `SessionRouteLatencyObservations`."]
+    #[doc = "Stores the unit used by `SessionRouteLatencyObservations`."]
     pub unit: SessionRouteLatencyUnit,
     #[doc = "Counts the total number of samples observed by `SessionRouteLatencyObservations`."]
     pub samples_total: u64,
@@ -268,7 +268,7 @@ pub enum SessionRouteLatencyUnit {
 }
 
 impl SessionRouteMetrics {
-    #[doc = "Returns the drop observations associated with `SessionRouteMetrics`."]
+    #[doc = "Returns the drop observations held by `SessionRouteMetrics`."]
     pub fn drop_observations(self) -> SessionRouteDropObservations {
         SessionRouteDropObservations {
             route_id: self.route_id,
@@ -286,7 +286,7 @@ impl SessionRouteMetrics {
         }
     }
 
-    #[doc = "Returns the source to receive latency associated with `SessionRouteMetrics`."]
+    #[doc = "Returns the source to receive latency held by `SessionRouteMetrics`."]
     pub const fn source_to_receive_latency(self) -> SessionRouteLatencyObservations {
         SessionRouteLatencyObservations {
             route_id: self.route_id,
@@ -308,9 +308,9 @@ impl SessionRouteMetrics {
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[doc = "Reports the session operator input metrics collected at an observation boundary."]
 pub struct SessionOperatorInputMetrics {
-    #[doc = "Stores the port name associated with `SessionOperatorInputMetrics`."]
+    #[doc = "Stores the port name used by `SessionOperatorInputMetrics`."]
     pub port_name: String,
-    #[doc = "Stores the edge associated with `SessionOperatorInputMetrics`."]
+    #[doc = "Stores the edge used by `SessionOperatorInputMetrics`."]
     pub edge: EdgeObservations,
 }
 
@@ -371,97 +371,97 @@ impl SessionAudioReentryMetrics {
         }
     }
 
-    #[doc = "Returns the operator instance identifier associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the operator instance identifier held by `SessionAudioReentryMetrics`."]
     pub const fn operator_instance_id(self) -> OperatorInstanceId {
         self.operator_instance_id
     }
 
-    #[doc = "Returns the stem identifier associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the stem identifier held by `SessionAudioReentryMetrics`."]
     pub const fn stem_id(self) -> StemId {
         self.stem_id
     }
 
-    #[doc = "Returns the queue capacity signals associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the queue capacity signals held by `SessionAudioReentryMetrics`."]
     pub const fn queue_capacity_signals(self) -> u64 {
         self.queue_capacity_signals
     }
 
-    #[doc = "Returns the queue depth signals associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the queue depth signals held by `SessionAudioReentryMetrics`."]
     pub const fn queue_depth_signals(self) -> u64 {
         self.queue_depth_signals
     }
 
-    #[doc = "Returns the queue peak signals associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the queue peak signals held by `SessionAudioReentryMetrics`."]
     pub const fn queue_peak_signals(self) -> u64 {
         self.queue_peak_signals
     }
 
-    #[doc = "Returns the signals enqueued total associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the signals enqueued total held by `SessionAudioReentryMetrics`."]
     pub const fn signals_enqueued_total(self) -> u64 {
         self.signals_enqueued_total
     }
 
-    #[doc = "Returns the signals received total associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the signals received total held by `SessionAudioReentryMetrics`."]
     pub const fn signals_received_total(self) -> u64 {
         self.signals_received_total
     }
 
-    #[doc = "Returns the signals dropped total associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the signals dropped total held by `SessionAudioReentryMetrics`."]
     pub const fn signals_dropped_total(self) -> u64 {
         self.signals_dropped_total
     }
 
-    #[doc = "Returns the pool slots associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the pool slots held by `SessionAudioReentryMetrics`."]
     pub const fn pool_slots(self) -> u64 {
         self.pool_slots
     }
 
-    #[doc = "Returns the frame capacity samples associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the frame capacity samples held by `SessionAudioReentryMetrics`."]
     pub const fn frame_capacity_samples(self) -> u64 {
         self.frame_capacity_samples
     }
 
-    #[doc = "Returns the maximum buffered audio bytes associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the maximum buffered audio bytes held by `SessionAudioReentryMetrics`."]
     pub const fn maximum_buffered_audio_bytes(self) -> u64 {
         self.maximum_buffered_audio_bytes
     }
 
-    #[doc = "Returns the normalized total associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the normalized total held by `SessionAudioReentryMetrics`."]
     pub const fn normalized_total(self) -> u64 {
         self.normalized_total
     }
 
-    #[doc = "Returns the invalid total associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the invalid total held by `SessionAudioReentryMetrics`."]
     pub const fn invalid_total(self) -> u64 {
         self.invalid_total
     }
 
-    #[doc = "Returns the shared audio rejected total associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the shared audio rejected total held by `SessionAudioReentryMetrics`."]
     pub const fn shared_audio_rejected_total(self) -> u64 {
         self.shared_audio_rejected_total
     }
 
-    #[doc = "Returns the pool exhausted total associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the pool exhausted total held by `SessionAudioReentryMetrics`."]
     pub const fn pool_exhausted_total(self) -> u64 {
         self.pool_exhausted_total
     }
 
-    #[doc = "Returns the ingress rejected total associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the ingress rejected total held by `SessionAudioReentryMetrics`."]
     pub const fn ingress_rejected_total(self) -> u64 {
         self.ingress_rejected_total
     }
 
-    #[doc = "Returns the audio frames enqueued total associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the audio frames enqueued total held by `SessionAudioReentryMetrics`."]
     pub const fn audio_frames_enqueued_total(self) -> u64 {
         self.audio_frames_enqueued_total
     }
 
-    #[doc = "Returns the cancellation total associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns the cancellation total held by `SessionAudioReentryMetrics`."]
     pub const fn cancellation_total(self) -> u64 {
         self.cancellation_total
     }
 
-    #[doc = "Returns the joined associated with `SessionAudioReentryMetrics`."]
+    #[doc = "Returns whether joined is true for `SessionAudioReentryMetrics`."]
     pub const fn joined(self) -> bool {
         self.joined
     }
@@ -470,7 +470,7 @@ impl SessionAudioReentryMetrics {
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[doc = "Reports the session operator metrics collected at an observation boundary."]
 pub struct SessionOperatorMetrics {
-    #[doc = "Identifies the operator instance associated with `SessionOperatorMetrics`."]
+    #[doc = "Identifies the operator instance identifier recorded by `SessionOperatorMetrics`."]
     pub operator_instance_id: OperatorInstanceId,
     /// Sole counter authority for input delivered by the compiled Session plan.
     ///
@@ -481,48 +481,48 @@ pub struct SessionOperatorMetrics {
     /// Exact per-port input accounting. `input_edge` is the compatibility
     /// aggregate across this slice.
     pub input_ports: Box<[SessionOperatorInputMetrics]>,
-    #[doc = "Stores the worker associated with `SessionOperatorMetrics`."]
+    #[doc = "Stores the worker used by `SessionOperatorMetrics`."]
     pub worker: AsyncOperatorObservations,
     #[doc = "Counts the total number of finalization failures observed by `SessionOperatorMetrics`."]
     pub finalization_failures_total: u64,
 }
 
 impl SessionOperatorMetrics {
-    #[doc = "Returns the input port associated with `SessionOperatorMetrics`."]
+    #[doc = "Returns the input port held by `SessionOperatorMetrics`."]
     pub fn input_port(&self, name: &str) -> Option<&SessionOperatorInputMetrics> {
         self.input_ports.iter().find(|port| port.port_name == name)
     }
-    #[doc = "Returns the input queue capacity frames associated with `SessionOperatorMetrics`."]
+    #[doc = "Returns the input queue capacity frames held by `SessionOperatorMetrics`."]
     pub const fn input_queue_capacity_frames(&self) -> u64 {
         self.input_edge.queue_capacity_frames
     }
 
-    #[doc = "Returns the input queue depth frames associated with `SessionOperatorMetrics`."]
+    #[doc = "Returns the input queue depth frames held by `SessionOperatorMetrics`."]
     pub const fn input_queue_depth_frames(&self) -> u64 {
         self.input_edge.queue_depth_frames
     }
 
-    #[doc = "Returns the input queue peak frames associated with `SessionOperatorMetrics`."]
+    #[doc = "Returns the input queue peak frames held by `SessionOperatorMetrics`."]
     pub const fn input_queue_peak_frames(&self) -> u64 {
         self.input_edge.queue_peak_frames
     }
 
-    #[doc = "Returns the input attempted total associated with `SessionOperatorMetrics`."]
+    #[doc = "Returns the input attempted total held by `SessionOperatorMetrics`."]
     pub fn input_attempted_total(&self) -> u64 {
         self.input_edge.frames_attempted_total()
     }
 
-    #[doc = "Returns the input enqueued total associated with `SessionOperatorMetrics`."]
+    #[doc = "Returns the input enqueued total held by `SessionOperatorMetrics`."]
     pub const fn input_enqueued_total(&self) -> u64 {
         self.input_edge.frames_enqueued_total
     }
 
-    #[doc = "Returns the input delivered total associated with `SessionOperatorMetrics`."]
+    #[doc = "Returns the input delivered total held by `SessionOperatorMetrics`."]
     pub const fn input_delivered_total(&self) -> u64 {
         self.input_edge.frames_delivered_total
     }
 
-    #[doc = "Returns the input dropped total associated with `SessionOperatorMetrics`."]
+    #[doc = "Returns the input dropped total held by `SessionOperatorMetrics`."]
     pub const fn input_dropped_total(&self) -> u64 {
         self.input_edge.frames_dropped_total
     }
@@ -531,15 +531,15 @@ impl SessionOperatorMetrics {
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 #[doc = "Reports the session derived route metrics collected at an observation boundary."]
 pub struct SessionDerivedRouteMetrics {
-    #[doc = "Identifies the route associated with `SessionDerivedRouteMetrics`."]
+    #[doc = "Identifies the route identifier recorded by `SessionDerivedRouteMetrics`."]
     pub route_id: RouteId,
-    #[doc = "Identifies the endpoint associated with `SessionDerivedRouteMetrics`."]
+    #[doc = "Identifies the endpoint identifier recorded by `SessionDerivedRouteMetrics`."]
     pub endpoint_id: EndpointId,
     #[doc = "Carries the output produced by `SessionDerivedRouteMetrics`."]
     pub output: AsyncOperatorOutputObservations,
-    #[doc = "Stores the endpoint associated with `SessionDerivedRouteMetrics`."]
+    #[doc = "Stores the endpoint used by `SessionDerivedRouteMetrics`."]
     pub endpoint: Option<EndpointDriverObservations>,
-    #[doc = "Stores the endpoint observation stage associated with `SessionDerivedRouteMetrics`."]
+    #[doc = "Stores the endpoint observation stage used by `SessionDerivedRouteMetrics`."]
     pub endpoint_observation_stage: EndpointObservationStage,
     #[doc = "Counts the total number of endpoint finalization failures observed by `SessionDerivedRouteMetrics`."]
     pub endpoint_finalization_failures_total: u64,

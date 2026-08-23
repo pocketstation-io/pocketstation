@@ -23,29 +23,29 @@ pub enum PlanError {
     #[error("input port '{port}' on node {node} has multiplicity One but receives multiple edges")]
     #[doc = "Reports fan in on single port."]
     FanInOnSinglePort {
-        #[doc = "Stores the node associated with `FanInOnSinglePort`."]
+        #[doc = "Stores the node used by `FanInOnSinglePort`."]
         node: u32,
-        #[doc = "Stores the port associated with `FanInOnSinglePort`."]
+        #[doc = "Stores the port used by `FanInOnSinglePort`."]
         port: String,
     },
     #[error("output port '{port}' on node {node} uses MoveExclusive in a fan-out group")]
     #[doc = "Reports move exclusive fan out."]
     MoveExclusiveFanOut {
-        #[doc = "Stores the node associated with `MoveExclusiveFanOut`."]
+        #[doc = "Stores the node used by `MoveExclusiveFanOut`."]
         node: u32,
-        #[doc = "Stores the port associated with `MoveExclusiveFanOut`."]
+        #[doc = "Stores the port used by `MoveExclusiveFanOut`."]
         port: String,
     },
     #[error("compiled edge {edge:?} is missing its negotiated contract")]
     #[doc = "Reports missing edge contract."]
     MissingEdgeContract {
-        #[doc = "Stores the edge associated with `MissingEdgeContract`."]
+        #[doc = "Stores the edge used by `MissingEdgeContract`."]
         edge: EdgeId,
     },
     #[error("compiled edge {edge:?} is missing its declared output signal")]
     #[doc = "Reports missing output signal."]
     MissingOutputSignal {
-        #[doc = "Stores the edge associated with `MissingOutputSignal`."]
+        #[doc = "Stores the edge used by `MissingOutputSignal`."]
         edge: EdgeId,
     },
 }
@@ -102,12 +102,14 @@ pub struct PartitionGroup {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Groups the compiled edges that share one output port as their origin."]
 pub struct FanOutGroup {
     pub from: OutputPortRef,
     pub targets: Vec<EdgeId>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Groups the compiled edges mixed into one input port."]
 pub struct FanInGroup {
     pub into: InputPortRef,
     pub sources: Vec<EdgeId>, // runtime mixes these into the single input port

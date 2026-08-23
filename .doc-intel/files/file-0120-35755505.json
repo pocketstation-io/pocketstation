@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs"
+  ],
   "calls": [
     "ClockDomainId::new",
     "ConnectorAudioRecord::decode",
@@ -137,7 +140,10 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs"
+  ],
   "constructs": [
     "ClockDomainId::new",
     "ConnectorAudioRecord::try_new",
@@ -1027,8 +1033,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -1042,12 +1052,18 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "f333ef0783cd68a2ba9a4ad8d34d919378a71b3d",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs"
+  ],
   "implements": [
     "ConnectorConfigurationRecord",
     "ConnectorAudioRecord"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs"
+  ],
   "imports": [
     "crate::{ ClockDomainId, ConnectorId, EndpointId, FrameLineage, RouteId, SampleFormat, SessionId, SourceId, StemId, StreamId, }",
     "std::mem::size_of",
@@ -1056,7 +1072,13 @@
     "super::{ ConnectorConfiguration, ConnectorConfigurationValue, ConnectorSecret, ResolvedConnectorConfiguration, MAX_CONNECTOR_CONFIGURATION_FIELDS, MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "/// bounded Configure handshake. Secret classification survives the boundary;",
+    "crate::{ ClockDomainId, ConnectorId, EndpointId, FrameLineage, RouteId, SampleFormat, SessionId, SourceId, StemId, StreamId, }",
+    "std::mem::size_of",
+    "super::*",
+    "super::ConnectorItem",
+    "super::{ ConnectorConfiguration, ConnectorConfigurationValue, ConnectorSecret, ResolvedConnectorConfiguration, MAX_CONNECTOR_CONFIGURATION_FIELDS, MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES, }"
   ],
   "invariants": [
     {
@@ -1074,23 +1096,51 @@
   "module": "pocketstation::connector::transport",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-7b68019126c4c1540ebc",
-    "pattern-139a2b492c98807b410f",
-    "pattern-eff6ece8ed4556f78f30",
-    "pattern-2ee2fce6c23e17a0e11e"
+    "pattern-2ee2fce6c23e17a0e11e",
+    "pattern-eff6ece8ed4556f78f30"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "const:CONNECTOR_AUDIO_RECORD_MAJOR",
+    "const:CONNECTOR_AUDIO_RECORD_MINOR",
+    "const:CONNECTOR_CONFIGURATION_RECORD_MAJOR",
+    "const:CONNECTOR_CONFIGURATION_RECORD_MINOR",
+    "const:MAX_CONNECTOR_AUDIO_RECORD_PORT_BYTES",
+    "const:MAX_CONNECTOR_AUDIO_RECORD_SAMPLES",
+    "enum:ConnectorAudioRecordError",
+    "enum:ConnectorConfigurationRecordError",
+    "fn:configuration",
+    "fn:decode",
+    "fn:encode",
+    "fn:from_item",
+    "fn:from_resolved",
+    "fn:into_configuration",
+    "fn:metadata",
+    "fn:port_name",
+    "fn:samples",
+    "fn:try_new",
+    "return Err(ConnectorConfigurationRecordError::InvalidFieldName);",
+    "return Err(ConnectorConfigurationRecordError::InvalidMagic);",
+    "return Err(ConnectorConfigurationRecordError::ReservedFieldSet);",
+    "return Err(ConnectorConfigurationRecordError::TooManyFields);",
+    "return Err(ConnectorConfigurationRecordError::Truncated);",
+    "return Err(ConnectorConfigurationRecordError::UnsupportedMajor(major));",
+    "return Err(ConnectorConfigurationRecordError::UnsupportedMinor(minor));",
+    "return Err(ConnectorConfigurationRecordError::ValueTooLarge);",
+    "struct:ConnectorAudioMetadata",
+    "struct:ConnectorAudioRecord",
+    "struct:ConnectorConfigurationRecord"
   ],
   "package": "pocketstation",
   "path": "src/connector/transport.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -1417,7 +1467,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::connector::transport`."
+    "text": "Implements pocketstation::connector::transport responsibilities, including Defines the major version of connector audio record.; Defines the minor version of connector audio record.; Sets the maximum supported connector audio record port bytes.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1459,61 +1509,74 @@
     "docs/best-practices/connector-retries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/connector/configuration.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/frame/lineage.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "MAGIC",
-    "HEADER_BYTES",
-    "FLAG_CONNECTOR_ID_PRESENT",
-    "SAMPLE_FORMAT_F32_INTERLEAVED",
-    "CONNECTOR_AUDIO_RECORD_MAJOR",
-    "CONNECTOR_AUDIO_RECORD_MINOR",
-    "MAX_CONNECTOR_AUDIO_RECORD_PORT_BYTES",
-    "MAX_CONNECTOR_AUDIO_RECORD_SAMPLES",
-    "CONFIGURATION_MAGIC",
-    "CONFIGURATION_HEADER_BYTES",
-    "CONFIGURATION_ENTRY_HEADER_BYTES",
-    "CONFIGURATION_TEXT",
-    "CONFIGURATION_BOOLEAN",
-    "CONFIGURATION_SIGNED_INTEGER",
-    "CONFIGURATION_UNSIGNED_INTEGER",
-    "CONFIGURATION_DURATION_MILLISECONDS",
-    "CONFIGURATION_BYTE_COUNT",
-    "CONFIGURATION_SECRET",
-    "CONNECTOR_CONFIGURATION_RECORD_MAJOR",
-    "CONNECTOR_CONFIGURATION_RECORD_MINOR",
-    "ConnectorConfigurationRecord",
-    "from_resolved",
-    "configuration",
-    "into_configuration",
-    "encode",
-    "decode",
-    "encode_configuration_value",
-    "decode_configuration_value",
-    "decode_text",
-    "decode_eight",
-    "map_audio_record_read_error",
-    "ConnectorConfigurationRecordError",
-    "ConnectorAudioMetadata",
-    "ConnectorAudioRecord",
-    "try_new",
-    "from_item",
-    "port_name",
-    "metadata",
-    "samples",
-    "encode",
-    "decode",
-    "validate",
-    "push_u32",
-    "read_u16",
-    "read_u32",
-    "read_u64",
-    "ConnectorAudioRecordError",
-    "tests",
-    "record",
-    "given_audio_record_when_round_tripped_then_transport_and_lineage_identity_are_preserved",
-    "given_invalid_audio_record_when_decoded_then_trailing_and_oversized_payloads_are_rejected",
-    "given_typed_configuration_when_round_tripped_then_types_and_secret_redaction_are_preserved",
-    "given_invalid_configuration_record_when_decoded_then_unknown_kinds_and_trailing_bytes_are_rejected"
+    "pocketstation::connector::transport::CONNECTOR_AUDIO_RECORD_MAJOR: Defines the major version of connector audio record.",
+    "pocketstation::connector::transport::CONNECTOR_AUDIO_RECORD_MINOR: Defines the minor version of connector audio record.",
+    "pocketstation::connector::transport::MAX_CONNECTOR_AUDIO_RECORD_PORT_BYTES: Sets the maximum supported connector audio record port bytes.",
+    "pocketstation::connector::transport::MAX_CONNECTOR_AUDIO_RECORD_SAMPLES: Sets the maximum supported connector audio record samples.",
+    "pocketstation::connector::transport::CONNECTOR_CONFIGURATION_RECORD_MAJOR: Defines the major version of connector configuration record.",
+    "pocketstation::connector::transport::CONNECTOR_CONFIGURATION_RECORD_MINOR: Defines the minor version of connector configuration record.",
+    "pocketstation::connector::transport::ConnectorConfigurationRecord: Canonical typed configuration handed to a connector sidecar during its",
+    "from_resolved: Creates `ConnectorConfigurationRecord` from resolved.",
+    "configuration: Returns the configuration held by `ConnectorConfigurationRecord`.",
+    "into_configuration: Converts `ConnectorConfigurationRecord` into configuration.",
+    "encode: Encodes input through `ConnectorConfigurationRecord`.",
+    "decode: Decodes input through `ConnectorConfigurationRecord`.",
+    "pocketstation::connector::transport::ConnectorConfigurationRecordError: Classifies failures reported as connector configuration record error.",
+    "pocketstation::connector::transport::ConnectorConfigurationRecordError::Truncated: Reported when the owning operation encounters truncated.",
+    "pocketstation::connector::transport::ConnectorConfigurationRecordError::TrailingBytes: Reported when the owning operation encounters trailing bytes.",
+    "pocketstation::connector::transport::ConnectorConfigurationRecordError::InvalidMagic: Reported when the owning operation encounters invalid magic.",
+    "pocketstation::connector::transport::ConnectorConfigurationRecordError::UnsupportedMajor: Reported when the owning operation encounters unsupported major.",
+    "pocketstation::connector::transport::ConnectorConfigurationRecordError::UnsupportedMinor: Reported when the owning operation encounters unsupported minor.",
+    "pocketstation::connector::transport::ConnectorConfigurationRecordError::ReservedFieldSet: Reported when the owning operation encounters reserved field set.",
+    "pocketstation::connector::transport::ConnectorConfigurationRecordError::TooManyFields: Reported when the owning operation encounters too many fields.",
+    "pocketstation::connector::transport::ConnectorConfigurationRecordError::InvalidFieldName: Reported when the owning operation encounters invalid field name.",
+    "pocketstation::connector::transport::ConnectorConfigurationRecordError::DuplicateField: Reported when the owning operation encounters duplicate field.",
+    "pocketstation::connector::transport::ConnectorConfigurationRecordError::ValueTooLarge: Reported when the owning operation encounters value too large.",
+    "pocketstation::connector::transport::ConnectorConfigurationRecordError::InvalidValue: Reported when the owning operation encounters invalid value.",
+    "pocketstation::connector::transport::ConnectorConfigurationRecordError::UnknownValueKind: Reported when the owning operation encounters unknown value kind.",
+    "pocketstation::connector::transport::ConnectorConfigurationRecordError::LengthOverflow: Reported when the owning operation encounters length overflow.",
+    "pocketstation::connector::transport::ConnectorAudioMetadata: Carries source, stream, timing, and format metadata beside a connector audio record.",
+    "ConnectorAudioMetadata::endpoint_id: Identifies the endpoint identifier recorded by `ConnectorAudioMetadata`.",
+    "ConnectorAudioMetadata::connector_id: Identifies the connector identifier recorded by `ConnectorAudioMetadata`.",
+    "ConnectorAudioMetadata::route_id: Identifies the route identifier recorded by `ConnectorAudioMetadata`.",
+    "ConnectorAudioMetadata::stream_id: Identifies the stream identifier recorded by `ConnectorAudioMetadata`.",
+    "ConnectorAudioMetadata::lineage: Stores the lineage used by `ConnectorAudioMetadata`.",
+    "ConnectorAudioMetadata::sample_rate_hz: Stores the sample rate value for `ConnectorAudioMetadata`, in hertz.",
+    "ConnectorAudioMetadata::channels: Stores the channels used by `ConnectorAudioMetadata`.",
+    "ConnectorAudioMetadata::sample_format: Stores the sample format used by `ConnectorAudioMetadata`.",
+    "pocketstation::connector::transport::ConnectorAudioRecord: Records one immutable connector audio observation.",
+    "try_new: Creates a new `ConnectorAudioRecord` after validating its inputs.",
+    "from_item: Creates `ConnectorAudioRecord` from item.",
+    "port_name: Returns the port name held by `ConnectorAudioRecord`.",
+    "metadata: Returns the metadata held by `ConnectorAudioRecord`.",
+    "samples: Returns the audio samples held by `ConnectorAudioRecord`.",
+    "encode: Encodes input through `ConnectorAudioRecord`.",
+    "decode: Decodes input through `ConnectorAudioRecord`.",
+    "pocketstation::connector::transport::ConnectorAudioRecordError: Classifies failures reported as connector audio record error.",
+    "pocketstation::connector::transport::ConnectorAudioRecordError::NotAudio: Reported when the owning operation encounters not audio.",
+    "pocketstation::connector::transport::ConnectorAudioRecordError::Truncated: Reported when the owning operation encounters truncated.",
+    "pocketstation::connector::transport::ConnectorAudioRecordError::TrailingBytes: Reported when the owning operation encounters trailing bytes.",
+    "pocketstation::connector::transport::ConnectorAudioRecordError::InvalidMagic: Reported when the owning operation encounters invalid magic.",
+    "pocketstation::connector::transport::ConnectorAudioRecordError::UnsupportedMajor: Reported when the owning operation encounters unsupported major.",
+    "pocketstation::connector::transport::ConnectorAudioRecordError::UnsupportedMinor: Reported when the owning operation encounters unsupported minor.",
+    "pocketstation::connector::transport::ConnectorAudioRecordError::InvalidHeaderSize: Reported when the owning operation encounters invalid header size.",
+    "pocketstation::connector::transport::ConnectorAudioRecordError::ReservedFieldSet: Reported when the owning operation encounters reserved field set.",
+    "pocketstation::connector::transport::ConnectorAudioRecordError::InvalidPortName: Reported when the owning operation encounters invalid port name.",
+    "pocketstation::connector::transport::ConnectorAudioRecordError::InvalidSampleSpec: Reported when the owning operation encounters invalid sample spec.",
+    "pocketstation::connector::transport::ConnectorAudioRecordError::UnsupportedSampleFormat: Reported when the owning operation encounters unsupported sample format.",
+    "pocketstation::connector::transport::ConnectorAudioRecordError::InvalidSampleCount: Reported when the owning operation encounters invalid sample count.",
+    "pocketstation::connector::transport::ConnectorAudioRecordError::InvalidLineage: Reported when the owning operation encounters invalid lineage.",
+    "pocketstation::connector::transport::ConnectorAudioRecordError::InvalidConnectorId: Reported when the owning operation encounters invalid connector identifier.",
+    "pocketstation::connector::transport::ConnectorAudioRecordError::LengthOverflow: Reported when the owning operation encounters length overflow."
   ],
   "retry_behavior": [],
   "serialization": [
@@ -1584,7 +1647,13 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-214a9dfd247b433b190b",
+    "test-3f130e9d460c8fbeeeee",
+    "test-907dfffa894311945559",
+    "test-943083fa631d93d1b735"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

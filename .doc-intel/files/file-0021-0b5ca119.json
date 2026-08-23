@@ -40,6 +40,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -60,7 +61,7 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "No external input is declared in this file."
   ],
   "invariants": [],
   "language": "Markdown",
@@ -69,25 +70,27 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not override compiler-visible API contracts or executable test evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "repository",
   "path": "docs/README.md",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
     "classification": "DECLARED",
-    "text": "Documents PocketStation developer documentation."
+    "text": "Documents PocketStation developer documentation for repository contributors or PocketStation developers."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -106,8 +109,11 @@
     "docs/reference/test-evidence.md",
     "docs/reference/lifecycle-evidence.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
-  "responsibilities": [],
+  "responsibilities": [
+    "Documents PocketStation developer documentation for repository contributors or PocketStation developers."
+  ],
   "retry_behavior": [],
   "serialization": [],
   "shutdown_behavior": [],
@@ -121,6 +127,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

@@ -3,7 +3,12 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/recording/config.rs"
+  ],
   "calls": [
     "TimelineMapping::new",
     "cfg",
@@ -24,7 +29,12 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/recording/config.rs"
+  ],
   "constructs": [
     "TimelineMapping::new",
     "new"
@@ -116,8 +126,14 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/recording/config.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -131,16 +147,27 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "ee74d9b23c0ac19459b247b09431ad920c089245",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/recording/config.rs"
+  ],
   "implements": [
     "TimelineMapping"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/recording/config.rs"
+  ],
   "imports": [
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "super::*"
   ],
   "invariants": [],
   "language": "Rust",
@@ -149,20 +176,22 @@
   "module": "pocketstation::timing::timeline_mapping",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-1a2ab2aee6f2ef76950e"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "fn:new",
+    "fn:normalize_timestamp_ns",
+    "struct:TimelineMapping"
   ],
   "package": "pocketstation",
   "path": "src/timing/timeline_mapping.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -213,7 +242,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::timing::timeline_mapping`."
+    "text": "Implements pocketstation::timing::timeline mapping responsibilities, including Correlates the prepared identities and runtime resources for timeline.; Stores the source origin value for `TimelineMapping`, in nanoseconds.; Stores the session origin value for `TimelineMapping`, in nanoseconds.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -236,15 +265,14 @@
     "docs/reference/lifecycle-evidence.md",
     "docs/troubleshooting/timing.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "TimelineMapping",
-    "new",
-    "normalize_timestamp_ns",
-    "tests",
-    "given_later_source_timestamp_when_normalized_then_session_delta_is_preserved",
-    "given_earlier_source_timestamp_when_normalized_then_session_delta_is_preserved",
-    "given_unrepresentable_timestamp_when_normalized_then_none_is_returned"
+    "pocketstation::timing::timeline_mapping::TimelineMapping: Correlates the prepared identities and runtime resources for timeline.",
+    "TimelineMapping::source_origin_ns: Stores the source origin value for `TimelineMapping`, in nanoseconds.",
+    "TimelineMapping::session_origin_ns: Stores the session origin value for `TimelineMapping`, in nanoseconds.",
+    "new: Creates a new `TimelineMapping`.",
+    "normalize_timestamp_ns: Returns the normalize timestamp nanoseconds held by `TimelineMapping`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -254,7 +282,12 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-015542ca1efbea673a8b",
+    "test-c3b7c9068ca6ad167eb7",
+    "test-f2c4e3765204ee0ffc2e"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

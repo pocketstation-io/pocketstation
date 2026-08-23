@@ -3,7 +3,18 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/abi/extension.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/abi/session/error.rs",
+    "REFERENCES:src/abi/session/handle.rs",
+    "REFERENCES:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/native_extension/library.rs"
+  ],
   "calls": [
     "cfg",
     "current",
@@ -26,7 +37,18 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/abi/extension.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/abi/session/error.rs",
+    "REFERENCES:src/abi/session/handle.rs",
+    "REFERENCES:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/native_extension/library.rs"
+  ],
   "constructs": [
     "new"
   ],
@@ -363,8 +385,20 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/abi/extension.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/abi/session/error.rs",
+    "REFERENCES:src/abi/session/handle.rs",
+    "REFERENCES:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/native_extension/library.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -378,7 +412,18 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "941b6f70ac1ad64a9413adf2bace8d653ac6a63e",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/abi/extension.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/abi/session/error.rs",
+    "REFERENCES:src/abi/session/handle.rs",
+    "REFERENCES:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/native_extension/library.rs"
+  ],
   "implements": [
     "PksSessionAbiVersion",
     "PksSessionHandle",
@@ -386,12 +431,24 @@
     "Default for PksSessionEngineConfig",
     "PksSessionAppMicDeclaration"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/abi/extension.rs",
+    "REFERENCES:src/abi/session/conformance_fixture.rs",
+    "REFERENCES:src/abi/session/error.rs",
+    "REFERENCES:src/abi/session/handle.rs",
+    "REFERENCES:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/native_extension/library.rs"
+  ],
   "imports": [
     "core::mem::size_of"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "core::mem::size_of"
   ],
   "invariants": [],
   "language": "Rust",
@@ -400,18 +457,43 @@
   "module": "pocketstation::abi::session::abi",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "const:PKS_SESSION_ABI_MAJOR",
+    "const:PKS_SESSION_ABI_MINOR",
+    "enum:PksSessionEndpointObservationStage",
+    "enum:PksSessionEventKind",
+    "enum:PksSessionHandleKind",
+    "enum:PksSessionLifecycleState",
+    "enum:PksSessionSampleFormat",
+    "enum:PksSessionStatusCode",
+    "fn:current",
+    "fn:invalid",
+    "fn:new",
+    "fn:ok",
+    "struct:PksSessionAbiVersion",
+    "struct:PksSessionAppMicDeclaration",
+    "struct:PksSessionAudioBatch",
+    "struct:PksSessionAudioFrame",
+    "struct:PksSessionEngineConfig",
+    "struct:PksSessionEvent",
+    "struct:PksSessionHandle",
+    "struct:PksSessionMetricsSnapshot",
+    "struct:PksSessionRouteMetrics",
+    "struct:PksSessionSourceMetrics",
+    "struct:PksSessionStatus",
+    "struct:PksSessionUtf8"
   ],
   "package": "pocketstation",
   "path": "src/abi/session/abi.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -576,7 +658,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::abi::session::abi`."
+    "text": "Implements pocketstation::abi::session::abi responsibilities, including Reports the structured session status.; Stores the code used by `PksSessionStatus`.; Stores the detail used by `PksSessionStatus`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -610,34 +692,35 @@
     "docs/best-practices/native-extension-trust.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "PKS_SESSION_ABI_MAJOR",
-    "PKS_SESSION_ABI_MINOR",
-    "PksSessionAbiVersion",
-    "current",
-    "PksSessionHandle",
-    "invalid",
-    "PksSessionHandleKind",
-    "PksSessionStatus",
-    "ok",
-    "new",
-    "PksSessionStatusCode",
-    "PksSessionUtf8",
-    "PksSessionEngineConfig",
-    "default",
-    "PksSessionAppMicDeclaration",
-    "new",
-    "PksSessionLifecycleState",
-    "PksSessionEventKind",
-    "PksSessionSampleFormat",
-    "PksSessionEndpointObservationStage",
-    "PksSessionEvent",
-    "PksSessionMetricsSnapshot",
-    "PksSessionSourceMetrics",
-    "PksSessionRouteMetrics",
-    "PksSessionAudioBatch",
-    "PksSessionAudioFrame"
+    "pocketstation::abi::session::abi::PksSessionStatus: Reports the structured session status.",
+    "PksSessionStatus::code: Stores the code used by `PksSessionStatus`.",
+    "PksSessionStatus::detail: Stores the detail used by `PksSessionStatus`.",
+    "ok: Creates a successful status value for `PksSessionStatus`.",
+    "new: Creates a new `PksSessionStatus`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode: Enumerates the supported session status code cases.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::Ok: Indicates that the operation completed successfully.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::NullArgument: Identifies the null argument state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::UnsupportedAbiMajor: Identifies the unsupported ABI major state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::InvalidStructSize: Identifies the invalid struct size state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::InvalidHandle: Identifies the invalid handle state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::StaleHandle: Identifies the stale handle state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::NoCapacity: Identifies the no capacity state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::InternalPanic: Identifies the internal panic state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::MisalignedPointer: Identifies the misaligned pointer state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::InvalidArgument: Identifies the invalid argument state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::ForeignHandle: Identifies the foreign handle state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::InvalidLifecycleState: Identifies the invalid lifecycle state state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::WouldBlock: Identifies the would block state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::BackendFailure: Identifies the backend failure state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::Cancelled: Indicates that the operation was cancelled.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::IndexOutOfRange: Identifies the index out of range state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionStatusCode::UnsupportedAbiMinor: Identifies the unsupported ABI minor state or stage represented by `PksSessionStatusCode`.",
+    "pocketstation::abi::session::abi::PksSessionUtf8: Borrows a UTF-8 byte range across the C Session ABI as a pointer and length.",
+    "PksSessionUtf8::data: Carries the data owned or referenced by `PksSessionUtf8`.",
+    "PksSessionUtf8::len_bytes: Stores the len size for `PksSessionUtf8`, in bytes."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -647,7 +730,11 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-4766cfbb0d0cdab01cdc",
+    "test-d58d461257beb4e70632"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

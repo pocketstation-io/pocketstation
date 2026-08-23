@@ -424,7 +424,11 @@
   ],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "calls": [
     "Arc::clone",
     "Arc::new",
@@ -818,7 +822,11 @@
       "text": "fn validate_config(&self, _configuration: &NodeConfig) -> Result<(), ConfigError> {"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AsyncOperatorEdgePrepareContext::new",
@@ -1997,8 +2005,13 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -2014,7 +2027,11 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "8448e04c1d473d1dd3d4edaf128c1eb12fe8ed3a",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "implements": [
     "SessionOperatorInput",
     "AsyncOperatorWorkerSource",
@@ -2025,7 +2042,11 @@
     "AsyncOperatorFactory for PrepareCaptureFactory",
     "AsyncNode for PrepareCaptureNode"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "imports": [
     "crate::frame::{ AudioBufferPool, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleFormat, SessionId, SourceId, StemId, StreamId, }",
     "crate::frame::{SessionId, SourceId, StemId}",
@@ -2050,7 +2071,28 @@
     "tokio::task::JoinHandle"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "crate::frame::{ AudioBufferPool, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleFormat, SessionId, SourceId, StemId, StreamId, }",
+    "crate::frame::{SessionId, SourceId, StemId}",
+    "crate::graph::compile::{Compiler, RuntimePlanner}",
+    "crate::graph::{ AsyncNode, AsyncOperatorEdgePrepareContext, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorPrepareContext, EdgeContract, MediaCaps, NodeConfig, NodeError, OperatorCancellationPolicy, OperatorFailurePolicy, PortDirection, SignalEnvelope, SignalPayload, SignalSpec, }",
+    "crate::graph::{ register_builtins, AudioCaps, BinaryFormat, ChannelLayout, ConfigError, EventFormat, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeRegistrationError, NodeRegistry, NodeTypeId, OperatorDeadlinePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, Pipeline, PortDirection, PortSpec, SafetyContract, SemanticRole, SignalDerivation, SignalLineage, SignalSpec, SignalTiming, TextFormat, }",
+    "crate::graph::{EdgeId, NodeId}",
+    "crate::runtime::{PlanEdgeFrame, PlanEdgeReceiver}",
+    "crate::runtime::{SignalEdge, SignalEdgeReceiver}",
+    "crate::runtime::{TypedEdgeFanout, TypedEdgePublishError, TypedEdgeReceiver}",
+    "std::sync::Arc",
+    "std::sync::Mutex",
+    "std::sync::atomic::AtomicUsize",
+    "std::sync::atomic::{AtomicBool, Ordering}",
+    "std::time::Duration",
+    "super::*",
+    "super::error::AsyncOperatorWorkerError",
+    "super::io::{ AsyncOperatorInput, AsyncOperatorInputAccessError, AsyncOperatorOutput, AsyncOperatorOutputBranchSpec, }",
+    "super::io::{ AsyncOperatorNamedOutput, AsyncOperatorNamedOutputBranchSpec, AsyncOperatorTypedInput, }",
+    "super::observations::{AsyncOperatorObservationHandle, AsyncOperatorObservationState}",
+    "tokio::sync::Notify",
+    "tokio::task::JoinHandle"
   ],
   "invariants": [
     {
@@ -2201,23 +2243,42 @@
   "module": "pocketstation::runtime::signal::operator",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-ed20125623009d38bfb6",
+    "pattern-98e87d1228c961cbf000",
     "pattern-a802d2ac57167b98a256",
-    "pattern-3da02ff64109c6786946",
-    "pattern-98e87d1228c961cbf000"
+    "pattern-ed20125623009d38bfb6"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(AsyncOperatorWorkerError::InvalidPlanInput { kind: \"shared\" })",
+    "Err(shared) => {",
+    "enum:SessionOperatorInput",
+    "fn:cancel_and_join",
+    "fn:finish_and_join",
+    "fn:input_mut",
+    "fn:observations",
+    "fn:prepare_and_spawn_from_plan_edge",
+    "fn:prepare_and_spawn_session_composed",
+    "fn:spawn",
+    "fn:spawn_composed",
+    "fn:spawn_with_context",
+    "return Err(AsyncOperatorWorkerError::OutputSignalMismatch);",
+    "return Err(AsyncOperatorWorkerError::PlanInputLineageMismatch);",
+    "return Err(AsyncOperatorWorkerError::SharedAudioTypedInput);",
+    "return Err(NodeError::Prepare(",
+    "return Err(NodeError::Prepare(format!(",
+    "struct:AsyncOperatorWorker",
+    "struct:CompiledOperatorInputContract"
   ],
   "package": "pocketstation",
   "path": "src/runtime/signal/operator.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -2858,7 +2919,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::runtime::signal::operator`."
+    "text": "Implements pocketstation::runtime::signal::operator responsibilities, including Declares the validated constraints applied to compiled operator input.; Identifies the edge identifier recorded by `CompiledOperatorInputContract`.; Stores the operator node used by `CompiledOperatorInputContract`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -2913,6 +2974,22 @@
     "docs/best-practices/route-sizing.md",
     "docs/best-practices/realtime-boundaries.md",
     "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/graph/signal/envelope.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/graph/signal/payload.rs",
+    "REFERENCES:src/graph/signal/preparation.rs",
+    "REFERENCES:src/graph/signal/spec.rs",
+    "REFERENCES:src/graph/spec.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/runtime/signal/edge.rs",
+    "REFERENCES:src/runtime/signal/error.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/observations.rs"
   ],
   "resource_ownership": [
     {
@@ -3377,97 +3454,26 @@
     }
   ],
   "responsibilities": [
-    "ASYNC_OPERATOR_IDLE_POLL_INTERVAL",
-    "AsyncOperatorWorkerSource",
-    "SessionOperatorInput",
-    "prepare_edge",
-    "into_source",
-    "CompiledOperatorInputContract",
-    "recv",
-    "is_abandoned",
-    "port_name",
-    "AsyncOperatorWorkerInputs",
-    "one",
-    "recv",
-    "is_abandoned",
-    "NamedOutputFanout",
-    "clone_non_audio_payload",
-    "AsyncOperatorWorker",
-    "build_output_branches",
-    "build_named_output_branches",
-    "prepare_edge",
-    "simple_prepare_context",
-    "composed_prepare_context",
-    "session_composed_prepare_context",
-    "validate_prepare_context",
-    "spawn",
-    "spawn_with_context",
-    "spawn_composed",
-    "prepare_and_spawn_session_composed",
-    "prepare_and_spawn_from_plan_edge",
-    "spawn_with_source",
-    "input_mut",
-    "observations",
-    "cancel_and_join",
-    "finish_and_join",
-    "run_worker",
-    "run_prepared_worker",
-    "run_operator_loop",
-    "ProcessAttempt",
-    "cancel_node",
-    "fan_out_outputs",
-    "tests",
-    "TEST_NONTERMINAL_ROLE",
-    "TEST_TERMINAL_ROLE",
-    "nonterminal_spec",
-    "terminal_spec",
-    "TestBehavior",
-    "TestFactory",
-    "manifest",
-    "validate_config",
-    "resolve_manifest",
-    "create",
-    "TestNode",
-    "prepare",
-    "process",
-    "flush",
-    "cancel",
-    "close",
-    "port",
-    "manifest",
-    "factory",
-    "envelope",
-    "output_branch",
-    "text_typed_input",
-    "text_input_factory",
-    "text_envelope",
-    "PrepareCaptureFactory",
-    "manifest",
-    "validate_config",
-    "create",
-    "PrepareCaptureNode",
-    "prepare",
-    "process",
-    "prepare_capture_manifest",
-    "given_every_nonaudio_signal_class_when_worker_prepares_then_exact_signal_context_is_received",
-    "given_prepare_context_capacity_disagrees_with_runtime_edge_when_spawned_then_prepare_fails_closed",
-    "given_operator_composition_with_three_external_operators_then_derived_output_crosses_each_bounded_edge",
-    "given_operator_composition_with_named_multi_input_output_manifest_then_each_declared_port_executes",
-    "given_duplicate_async_node_type_when_registered_then_first_authority_is_preserved",
-    "given_full_input_branch_when_sent_then_overflow_is_counted_and_join_is_bounded",
-    "given_two_inputs_when_processed_then_nonterminal_and_terminal_reach_each_branch",
-    "given_graceful_finish_when_operator_has_pending_state_then_one_final_is_emitted",
-    "given_prepare_failure_when_readiness_is_awaited_then_waiter_returns_false",
-    "given_compiled_lineaged_edge_when_worker_runs_then_exact_session_stem_is_preserved",
-    "given_cancellation_when_operator_has_pending_state_then_no_final_is_fabricated",
-    "given_idle_worker_when_cancelled_then_cancel_hook_runs_before_close",
-    "given_full_terminal_branch_when_finished_then_final_loss_fails_closed",
-    "given_wrong_output_class_when_processed_then_worker_rejects_it",
-    "given_undeclared_output_role_when_processed_then_worker_rejects_it",
-    "given_audio_output_without_audio_port_when_processed_then_worker_rejects_it",
-    "given_slow_operator_when_deadline_expires_then_timeout_cancel_and_join_are_observed",
-    "given_instance_deadline_when_worker_runs_then_configured_timeout_is_authoritative",
-    "given_node_reported_timeout_when_observed_then_it_is_not_a_process_failure"
+    "pocketstation::runtime::signal::operator::CompiledOperatorInputContract: Declares the validated constraints applied to compiled operator input.",
+    "CompiledOperatorInputContract::edge_id: Identifies the edge identifier recorded by `CompiledOperatorInputContract`.",
+    "CompiledOperatorInputContract::operator_node: Stores the operator node used by `CompiledOperatorInputContract`.",
+    "CompiledOperatorInputContract::session_id: Identifies the session identifier recorded by `CompiledOperatorInputContract`.",
+    "CompiledOperatorInputContract::stem_id: Identifies the stem identifier recorded by `CompiledOperatorInputContract`.",
+    "CompiledOperatorInputContract::source_id: Identifies the source identifier recorded by `CompiledOperatorInputContract`.",
+    "CompiledOperatorInputContract::input_port: Stores the input port used by `CompiledOperatorInputContract`.",
+    "CompiledOperatorInputContract::signal_spec: Stores the signal spec used by `CompiledOperatorInputContract`.",
+    "CompiledOperatorInputContract::media: Stores the media used by `CompiledOperatorInputContract`.",
+    "CompiledOperatorInputContract::edge_contract: Stores the edge contract used by `CompiledOperatorInputContract`.",
+    "CompiledOperatorInputContract::capacity_signals: Sets the capacity signals available to `CompiledOperatorInputContract`.",
+    "pocketstation::runtime::signal::operator::AsyncOperatorWorker: Owns the asynchronous operator task, typed I/O, cancellation, and terminal join result.",
+    "spawn: Spawns its owned operation for `AsyncOperatorWorker`.",
+    "spawn_with_context: Starts a directly-fed worker with an already negotiated signal-shaped",
+    "spawn_composed: Spawns composed for `AsyncOperatorWorker`.",
+    "prepare_and_spawn_from_plan_edge: Prepares and spawn from plan edge for `AsyncOperatorWorker`.",
+    "input_mut: Returns the input mut associated with `AsyncOperatorWorker`.",
+    "observations: Returns the observations exposed by `AsyncOperatorWorker`.",
+    "cancel_and_join: Cancels and join for `AsyncOperatorWorker`.",
+    "finish_and_join: Finishes input to `AsyncOperatorWorker`, joins its worker, and returns the terminal result."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -4160,7 +4166,28 @@
       "text": "worker.finish_and_join().await.unwrap();"
     }
   ],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-12ef395dca26d9d33f88",
+    "test-1bec17e5820e3c9ada80",
+    "test-23bf71cedc9a9fc7172c",
+    "test-53f77875f4c688209091",
+    "test-6615dcd3b3105010af0b",
+    "test-716956fd7ff21d2765ad",
+    "test-78fa5617e6bce70cd79c",
+    "test-8298f7b73ae7319aa84e",
+    "test-8f495e7bcc9df9f06f5a",
+    "test-932daa336ec5d49f804c",
+    "test-95905f4e18a52f786a53",
+    "test-9ec51c75cedb5ffaef0f",
+    "test-9fe8de186bd1af18a867",
+    "test-bc6e3ebd53693f487168",
+    "test-df034af78b2cc7bf98f9",
+    "test-ef78893c6bb92b613da0",
+    "test-f0e8c28b4853dfd07393",
+    "test-f4209d45de1b92221721",
+    "test-f5115a0f815503398dd5"
+  ],
   "threads": [
     {
       "line": 270,

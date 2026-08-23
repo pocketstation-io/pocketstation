@@ -21,15 +21,19 @@ use crate::recording::{
 };
 
 const SESSION_RECORDER_IDLE_WAIT_MS: u64 = 1;
+#[doc = "Defines the public multistem group configuration key value."]
 pub const MULTISTEM_GROUP_CONFIGURATION_KEY: &str = "recording_group_id";
+#[doc = "Defines the public multistem name configuration key value."]
 pub const MULTISTEM_NAME_CONFIGURATION_KEY: &str = "stem_name";
 
 #[derive(Clone)]
+#[doc = "Retains the identity and observation access returned for multistem recording."]
 pub struct MultistemRecordingReceipt {
     state: Arc<MultistemRecordingReceiptState>,
 }
 
 impl MultistemRecordingReceipt {
+    #[doc = "Returns the result represented by `MultistemRecordingReceipt`."]
     pub fn result(&self) -> Option<&RecordingOutcome> {
         self.state.result.get()
     }
@@ -53,6 +57,7 @@ pub struct SessionMultistemEndpointCoordinator {
 }
 
 impl SessionMultistemEndpointCoordinator {
+    #[doc = "Creates a new `SessionMultistemEndpointCoordinator`."]
     pub fn new(output_root: impl Into<PathBuf>, group_id: EndpointGroupId) -> Self {
         Self {
             output_root: output_root.into(),
@@ -62,15 +67,18 @@ impl SessionMultistemEndpointCoordinator {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the output root held by `SessionMultistemEndpointCoordinator`."]
     pub fn output_root(&self) -> &Path {
         &self.output_root
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the group identifier held by `SessionMultistemEndpointCoordinator`."]
     pub fn group_id(&self) -> &EndpointGroupId {
         &self.group_id
     }
 
+    #[doc = "Returns the receipt held by `SessionMultistemEndpointCoordinator`."]
     pub fn receipt(&self) -> MultistemRecordingReceipt {
         MultistemRecordingReceipt {
             state: Arc::clone(&self.receipt_state),
@@ -79,6 +87,7 @@ impl SessionMultistemEndpointCoordinator {
 }
 
 impl EndpointDriverFactory for SessionMultistemEndpointCoordinator {
+    #[doc = "Returns the preparation group held by `SessionMultistemEndpointCoordinator`."]
     fn preparation_group(
         &self,
         _route_id: RouteId,
@@ -96,6 +105,7 @@ impl EndpointDriverFactory for SessionMultistemEndpointCoordinator {
         Ok(EndpointPreparationGroup::Shared(self.group_id.clone()))
     }
 
+    #[doc = "Prepares resources required by `SessionMultistemEndpointCoordinator`."]
     fn prepare(
         &self,
         inputs: Vec<EndpointPortInput>,

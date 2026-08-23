@@ -12,7 +12,7 @@ pub enum SessionCompileError {
     #[error("operator {operator_id} is not registered")]
     #[doc = "Reports unknown operator."]
     UnknownOperator {
-        #[doc = "Identifies the operator associated with `UnknownOperator`."]
+        #[doc = "Identifies the operator identifier recorded by `UnknownOperator`."]
         operator_id: String,
     },
     #[error(
@@ -20,23 +20,23 @@ pub enum SessionCompileError {
     )]
     #[doc = "Reports operator node type mismatch."]
     OperatorNodeTypeMismatch {
-        #[doc = "Identifies the operator associated with `OperatorNodeTypeMismatch`."]
+        #[doc = "Identifies the operator identifier recorded by `OperatorNodeTypeMismatch`."]
         operator_id: String,
-        #[doc = "Identifies the registered node type associated with `OperatorNodeTypeMismatch`."]
+        #[doc = "Identifies the registered node type identifier recorded by `OperatorNodeTypeMismatch`."]
         registered_node_type_id: String,
-        #[doc = "Identifies the declared node type associated with `OperatorNodeTypeMismatch`."]
+        #[doc = "Identifies the declared node type identifier recorded by `OperatorNodeTypeMismatch`."]
         declared_node_type_id: String,
     },
     #[error("async operator {operator_id} is not registered")]
     #[doc = "Reports unknown async operator."]
     UnknownAsyncOperator {
-        #[doc = "Identifies the operator associated with `UnknownAsyncOperator`."]
+        #[doc = "Identifies the operator identifier recorded by `UnknownAsyncOperator`."]
         operator_id: String,
     },
     #[error("derived endpoint node type {node_type_id} is not registered")]
     #[doc = "Reports unknown endpoint node type."]
     UnknownEndpointNodeType {
-        #[doc = "Identifies the node type associated with `UnknownEndpointNodeType`."]
+        #[doc = "Identifies the node type identifier recorded by `UnknownEndpointNodeType`."]
         node_type_id: String,
     },
     #[error(
@@ -44,7 +44,7 @@ pub enum SessionCompileError {
     )]
     #[doc = "Reports ambiguous endpoint input."]
     AmbiguousEndpointInput {
-        #[doc = "Identifies the node type associated with `AmbiguousEndpointInput`."]
+        #[doc = "Identifies the node type identifier recorded by `AmbiguousEndpointInput`."]
         node_type_id: String,
         #[doc = "Counts the total number of input ports observed by `AmbiguousEndpointInput`."]
         input_ports_total: usize,
@@ -52,27 +52,27 @@ pub enum SessionCompileError {
     #[error("operator {operator_id} requires explicit {direction} port selection")]
     #[doc = "Reports ambiguous operator port."]
     AmbiguousOperatorPort {
-        #[doc = "Identifies the operator associated with `AmbiguousOperatorPort`."]
+        #[doc = "Identifies the operator identifier recorded by `AmbiguousOperatorPort`."]
         operator_id: String,
-        #[doc = "Stores the direction associated with `AmbiguousOperatorPort`."]
+        #[doc = "Stores the direction used by `AmbiguousOperatorPort`."]
         direction: &'static str,
     },
     #[error("operator {operator_id} has no {direction} port named '{port_name}'")]
     #[doc = "Reports unknown operator port."]
     UnknownOperatorPort {
-        #[doc = "Identifies the operator associated with `UnknownOperatorPort`."]
+        #[doc = "Identifies the operator identifier recorded by `UnknownOperatorPort`."]
         operator_id: String,
-        #[doc = "Stores the direction associated with `UnknownOperatorPort`."]
+        #[doc = "Stores the direction used by `UnknownOperatorPort`."]
         direction: &'static str,
-        #[doc = "Stores the port name associated with `UnknownOperatorPort`."]
+        #[doc = "Stores the port name used by `UnknownOperatorPort`."]
         port_name: String,
     },
     #[error("operator instance {operator_instance_id:?} required input port '{port_name}' is not connected")]
     #[doc = "Reports missing required operator input."]
     MissingRequiredOperatorInput {
-        #[doc = "Identifies the operator instance associated with `MissingRequiredOperatorInput`."]
+        #[doc = "Identifies the operator instance identifier recorded by `MissingRequiredOperatorInput`."]
         operator_instance_id: OperatorInstanceId,
-        #[doc = "Stores the port name associated with `MissingRequiredOperatorInput`."]
+        #[doc = "Stores the port name used by `MissingRequiredOperatorInput`."]
         port_name: String,
     },
     #[error(
@@ -80,9 +80,9 @@ pub enum SessionCompileError {
     )]
     #[doc = "Reports invalid audio bridge output."]
     InvalidAudioBridgeOutput {
-        #[doc = "Identifies the operator instance associated with `InvalidAudioBridgeOutput`."]
+        #[doc = "Identifies the operator instance identifier recorded by `InvalidAudioBridgeOutput`."]
         operator_instance_id: OperatorInstanceId,
-        #[doc = "Stores the output port associated with `InvalidAudioBridgeOutput`."]
+        #[doc = "Stores the output port used by `InvalidAudioBridgeOutput`."]
         output_port: String,
     },
     #[error(
@@ -90,29 +90,29 @@ pub enum SessionCompileError {
     )]
     #[doc = "Reports audio bridge output not exclusive."]
     AudioBridgeOutputNotExclusive {
-        #[doc = "Identifies the operator instance associated with `AudioBridgeOutputNotExclusive`."]
+        #[doc = "Identifies the operator instance identifier recorded by `AudioBridgeOutputNotExclusive`."]
         operator_instance_id: OperatorInstanceId,
-        #[doc = "Stores the output port associated with `AudioBridgeOutputNotExclusive`."]
+        #[doc = "Stores the output port used by `AudioBridgeOutputNotExclusive`."]
         output_port: String,
     },
     #[error("operator instance {operator_instance_id:?} input port '{port_name}' is connected more than once")]
     #[doc = "Reports duplicate operator input connection."]
     DuplicateOperatorInputConnection {
-        #[doc = "Identifies the operator instance associated with `DuplicateOperatorInputConnection`."]
+        #[doc = "Identifies the operator instance identifier recorded by `DuplicateOperatorInputConnection`."]
         operator_instance_id: OperatorInstanceId,
-        #[doc = "Stores the port name associated with `DuplicateOperatorInputConnection`."]
+        #[doc = "Stores the port name used by `DuplicateOperatorInputConnection`."]
         port_name: String,
     },
     #[error("required source node type {node_type_id} is not registered")]
     #[doc = "Reports unknown source node type."]
     UnknownSourceNodeType {
-        #[doc = "Identifies the node type associated with `UnknownSourceNodeType`."]
+        #[doc = "Identifies the node type identifier recorded by `UnknownSourceNodeType`."]
         node_type_id: String,
     },
     #[error("external source type {source_type_id} is not registered on SessionEngine")]
     #[doc = "Reports unknown external source."]
     UnknownExternalSource {
-        #[doc = "Identifies the source type associated with `UnknownExternalSource`."]
+        #[doc = "Identifies the source type identifier recorded by `UnknownExternalSource`."]
         source_type_id: SourceTypeId,
     },
     #[error(
@@ -120,15 +120,15 @@ pub enum SessionCompileError {
     )]
     #[doc = "Reports unknown external source output."]
     UnknownExternalSourceOutput {
-        #[doc = "Identifies the source type associated with `UnknownExternalSourceOutput`."]
+        #[doc = "Identifies the source type identifier recorded by `UnknownExternalSourceOutput`."]
         source_type_id: SourceTypeId,
-        #[doc = "Stores the output port associated with `UnknownExternalSourceOutput`."]
+        #[doc = "Stores the output port used by `UnknownExternalSourceOutput`."]
         output_port: String,
     },
     #[error("external source type {source_type_id} configuration is invalid: {reason}")]
     #[doc = "Reports invalid external source configuration."]
     InvalidExternalSourceConfiguration {
-        #[doc = "Identifies the source type associated with `InvalidExternalSourceConfiguration`."]
+        #[doc = "Identifies the source type identifier recorded by `InvalidExternalSourceConfiguration`."]
         source_type_id: SourceTypeId,
         #[doc = "Carries the reason reported by `InvalidExternalSourceConfiguration`."]
         reason: String,
@@ -136,9 +136,9 @@ pub enum SessionCompileError {
     #[error("endpoint node type {node_type_id} has no input port named '{port_name}'")]
     #[doc = "Reports unknown endpoint input port."]
     UnknownEndpointInputPort {
-        #[doc = "Identifies the node type associated with `UnknownEndpointInputPort`."]
+        #[doc = "Identifies the node type identifier recorded by `UnknownEndpointInputPort`."]
         node_type_id: String,
-        #[doc = "Stores the port name associated with `UnknownEndpointInputPort`."]
+        #[doc = "Stores the port name used by `UnknownEndpointInputPort`."]
         port_name: String,
     },
     #[error(transparent)]

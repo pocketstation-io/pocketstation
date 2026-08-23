@@ -68,24 +68,24 @@ pub enum SessionFinalizationStage {
 pub enum SessionComponentId {
     #[doc = "Represents the source case of `SessionComponentId`."]
     Source {
-        #[doc = "Identifies the stem associated with `Source`."]
+        #[doc = "Identifies the stem identifier recorded by `Source`."]
         stem_id: StemId,
     },
     #[doc = "Represents the endpoint case of `SessionComponentId`."]
     Endpoint {
-        #[doc = "Identifies the route associated with `Endpoint`."]
+        #[doc = "Identifies the route identifier recorded by `Endpoint`."]
         route_id: RouteId,
-        #[doc = "Identifies the endpoint associated with `Endpoint`."]
+        #[doc = "Identifies the endpoint identifier recorded by `Endpoint`."]
         endpoint_id: EndpointId,
     },
     #[doc = "Represents the operator case of `SessionComponentId`."]
     Operator {
-        #[doc = "Identifies the operator instance associated with `Operator`."]
+        #[doc = "Identifies the operator instance identifier recorded by `Operator`."]
         operator_instance_id: OperatorInstanceId,
     },
     #[doc = "Represents the sidecar case of `SessionComponentId`."]
     Sidecar {
-        #[doc = "Identifies the sidecar associated with `Sidecar`."]
+        #[doc = "Identifies the sidecar identifier recorded by `Sidecar`."]
         sidecar_id: u64,
     },
     #[doc = "Represents the runtime case of `SessionComponentId`."]
@@ -113,17 +113,17 @@ impl SessionControlFailure {
         }
     }
 
-    #[doc = "Returns the component associated with `SessionControlFailure`."]
+    #[doc = "Returns the component held by `SessionControlFailure`."]
     pub const fn component(&self) -> SessionComponentId {
         self.component
     }
 
-    #[doc = "Returns the operation associated with `SessionControlFailure`."]
+    #[doc = "Returns the operation held by `SessionControlFailure`."]
     pub const fn operation(&self) -> &'static str {
         self.operation
     }
 
-    #[doc = "Returns the error class associated with `SessionControlFailure`."]
+    #[doc = "Returns the error class held by `SessionControlFailure`."]
     pub fn error_class(&self) -> &str {
         &self.error_class
     }
@@ -353,7 +353,7 @@ impl SessionEvent {
         Self { session_id, kind }
     }
 
-    #[doc = "Returns the session identifier associated with `SessionEvent`."]
+    #[doc = "Returns the session identifier held by `SessionEvent`."]
     pub const fn session_id(&self) -> SessionId {
         self.session_id
     }

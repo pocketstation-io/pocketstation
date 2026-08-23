@@ -7,11 +7,11 @@
 - **Encode and decode Opus.** Configure stateful Opus encoders and decoders and convert between PocketStation audio frames and packets.
 - **Preserve frame identity and lineage.** Carry source, stream, stem, route, clock, sequence, generation, and derivation identity with audio frames.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Encode and decode Opus** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
 ## Prerequisites
 
-Read the linked concept and confirm that target platform, Cargo features, source or provider dependencies, and application-owned permission work match this task. Keep returned typed errors and outcomes available for verification.
+An Opus profile supported by the crate and PCM frames matching its sample rate, channels, and duration.
 
 ## Procedure
 
@@ -21,31 +21,17 @@ Read the linked concept and confirm that target platform, Cargo features, source
 4. Construct the matching decoder and decode packets.
 5. Use the round-trip test as executable compatibility evidence.
 
-## APIs used
+## Important consequence
 
-| Public declaration | Kind | Declared purpose | Source |
-|---|---|---|---|
-| `pocketstation::codec::decoder::OpusDecoder` | struct | Real Opus decoder wrapping libopus via the `opus` crate. | `src/codec/decoder.rs:15` |
-| `pocketstation::codec::encoder::OpusConfig` | struct | Explicit configuration for an Opus encoder instance. | `src/codec/encoder.rs:72` |
-| `pocketstation::codec::encoder::OpusEncoder` | struct | Real Opus encoder wrapping libopus via the `opus` crate. | `src/codec/encoder.rs:157` |
-| `pocketstation::codec::encoder::OpusApplication` | enum | Opus application mode. | `src/codec/encoder.rs:58` |
-| `pocketstation::codec::encoder::OpusChannels` | enum | Typed channel count for Opus — prevents silent u8 misuse. | `src/codec/encoder.rs:27` |
-| `pocketstation::codec::encoder::OpusFrameDuration` | enum | Supported Opus frame duration at 48 kHz. | `src/codec/encoder.rs:7` |
-| `pocketstation::codec::encoder::OpusSampleRate` | enum | Typed sample rate. Opus internally always uses 48 kHz; this type makes the constraint explicit rather than hiding it behind a `u32` constant. | `src/codec/encoder.rs:44` |
-| `pocketstation::codec::encoder::OpusApplication::Audio` | variant | Optimised for audio quality (music/broadcast). | `src/codec/encoder.rs:64` |
-| `pocketstation::codec::encoder::OpusApplication::LowDelay` | variant | Optimised for low algorithmic delay. Use for real-time voice agents. | `src/codec/encoder.rs:62` |
-| `pocketstation::codec::encoder::OpusApplication::Voip` | variant | Optimised for voice (VOIP). Default for PocketStation broadcast. | `src/codec/encoder.rs:60` |
-| `pocketstation::codec::decoder::OpusDecodeError` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/codec/decoder.rs:25` |
-| `pocketstation::codec::encoder::OpusEncodeError` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/codec/encoder.rs:131` |
-| `pocketstation::codec::decoder::OpusDecodeError::FrameDurationExceedsConfiguredMaximum` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/codec/decoder.rs:29` |
-| `pocketstation::codec::decoder::OpusDecodeError::Opus` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/codec/decoder.rs:34` |
-| `pocketstation::codec::encoder::OpusChannels::Mono` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/codec/encoder.rs:28` |
-| `pocketstation::codec::encoder::OpusChannels::Stereo` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/codec/encoder.rs:29` |
+Keep encoder and decoder state aligned; a codec error does not establish safe replay of the same state.
 
 ## Verify the outcome
 
-The following test bodies are evidence only for their recorded setup:
+The encoder produces a packet and the matching decoder returns the expected frame shape under the repository round-trip test.
 
+Executable evidence selected for **Encode and decode Opus** is limited to each test's recorded setup and assertions:
+
+- `given_sine_frame_when_codec_roundtrip_runs_then_sample_count_is_preserved` — given sine frame when codec roundtrip runs then sample count is preserved (`tests/codec_opus_roundtrip.rs:4`; `test-f2c6d3780d291652810b`).
 - `given_encoded_opus_packet_when_decoded_then_contains_960_samples` — given encoded opus packet when decoded then contains 960 samples (`src/codec/decoder.rs:184`; `test-e9a038c59aa6148e49f9`).
 - `given_20ms_decoder_when_60ms_concealment_is_requested_then_typed_bound_error_is_returned` — given 20ms decoder when 60ms concealment is requested then typed bound error is returned (`src/codec/decoder.rs:246`; `test-f2b28e6d34edfbf95af0`).
 - `given_mono_decoder_when_concealing_10ms_then_480_samples_are_appended` — given mono decoder when concealing 10ms then 480 samples are appended (`src/codec/decoder.rs:203`; `test-7f059c025029ab48d42b`).
@@ -57,24 +43,31 @@ The following test bodies are evidence only for their recorded setup:
 - `given_optimised_encode_when_same_input_then_packet_bytes_identical` — given optimised encode when same input then packet bytes identical (`src/codec/encoder.rs:487`; `test-b46acca2f325d3bbcfb1`).
 - `given_oversized_frame_when_encoded_then_error_is_typed_and_output_is_cleared` — given oversized frame when encoded then error is typed and output is cleared (`src/codec/encoder.rs:349`; `test-91992c707d12d6b613a9`).
 - `given_partial_stereo_frame_when_encoded_then_error_is_typed` — given partial stereo frame when encoded then error is typed (`src/codec/encoder.rs:368`; `test-807b1db710dc9ad5f27a`).
-- `given_sine_wave_when_opus_round_trip_runs_then_approximate_magnitude_is_preserved` — given sine wave when opus round trip runs then approximate magnitude is preserved (`src/codec/encoder.rs:393`; `test-a80dbf6b40aa2cc2df6c`).
 
 ## Failure signals
 
-- `pocketstation::frame::pool::AudioBufferWriteError` / `CapacityExceeded` — `error-2317926ecc3df1fe0485`
-- `pocketstation::frame::lineage::FrameLineageBuildError` / `ZeroSourceGeneration` — `error-2333fb8ed9ffc64dfe3d`
-- `pocketstation::frame::lineage::FrameLineageBuildError` / `ZeroDuration` — `error-36112cc71bb577df5cc6`
-- `pocketstation::frame::audio::AudioFrameBuildError` / `ZeroSampleRate` — `error-3d530ffcc82f2ae60152`
-- `pocketstation::frame::pool::AudioBufferWriteError` — `error-44d619f15116bb8d5f0e`
-- `pocketstation::frame::audio::AudioFrameBuildError` — `error-47bd33a1cf3d0c5fa264`
-- `pocketstation::codec::encoder::OpusEncodeError` / `Opus` — `error-7f9c7f9db13f5030ecb1`
-- `pocketstation::frame::lineage::FrameLineageBuildError` — `error-886f021bf510039ccdbb`
-- `pocketstation::codec::encoder::OpusEncodeError` / `InvalidFrameSampleCount` — `error-a9fc3232ddadf6734ba1`
-- `pocketstation::codec::encoder::OpusEncodeError` — `error-ab24633d76ea98a177e1`
-- `pocketstation::codec::decoder::OpusDecodeError` / `FrameDurationExceedsConfiguredMaximum` — `error-bd82320c958728697aec`
-- `pocketstation::frame::lineage::FrameLineageBuildError` / `TimestampOverflow` — `error-bd9d2580f5c500ca2920`
+- `pocketstation::codec::decoder::OpusDecodeError` — `error-9b6a20dfec56d0f963ec`
+- `pocketstation::codec::decoder::OpusDecodeError` / `FrameDurationExceedsConfiguredMaximum` — `error-4055838a830f20f7900a`
+- `pocketstation::codec::decoder::OpusDecodeError` / `Opus` — `error-7b6f20bfd81327986061`
+- `pocketstation::codec::encoder::OpusEncodeError` — `error-ae09263b8f4f85f0d5e8`
+- `pocketstation::codec::encoder::OpusEncodeError` / `InvalidFrameSampleCount` — `error-edbece7c0fc9e4199d02`
+- `pocketstation::codec::encoder::OpusEncodeError` / `Opus` — `error-3beedf48b3ab09500606`
 
-Retry only when the relevant API or error contract explicitly permits it. An error name, a transient-looking message, or a successful prior run is not retry evidence.
+## API reference
+
+- [Opus Codec](/docs/concepts/opus-codec.md)
+- [Codec](/docs/reference/codec.md)
+
+| Public declaration | Kind | Declared purpose | Source |
+|---|---|---|---|
+| `pocketstation::codec::decoder::OpusDecoder` | struct | Real Opus decoder wrapping libopus via the `opus` crate. | `src/codec/decoder.rs:15` |
+| `pocketstation::codec::encoder::OpusConfig` | struct | Explicit configuration for an Opus encoder instance. | `src/codec/encoder.rs:72` |
+| `pocketstation::codec::encoder::OpusEncoder` | struct | Real Opus encoder wrapping libopus via the `opus` crate. | `src/codec/encoder.rs:157` |
+| `pocketstation::codec::decoder::OpusDecodeError` | enum | Classifies failures reported as opus decode error. | `src/codec/decoder.rs:25` |
+| `pocketstation::codec::encoder::OpusApplication` | enum | Selects the Opus encoder mode used to tune speech or general audio. | `src/codec/encoder.rs:58` |
+| `pocketstation::codec::encoder::OpusChannels` | enum | Typed channel count for Opus — prevents silent u8 misuse. | `src/codec/encoder.rs:27` |
+| `pocketstation::codec::encoder::OpusEncodeError` | enum | Classifies failures reported as opus encode error. | `src/codec/encoder.rs:131` |
+| `pocketstation::codec::encoder::OpusFrameDuration` | enum | Supported Opus frame duration at 48 kHz. | `src/codec/encoder.rs:7` |
 
 ## Related documentation
 
@@ -89,8 +82,8 @@ Retry only when the relevant API or error contract explicitly permits it. An err
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Encode and decode Opus** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `tests/codec_opus_roundtrip.rs:1-33` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Encode and decode Opus**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

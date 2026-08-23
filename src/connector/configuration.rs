@@ -10,7 +10,7 @@ pub const MAX_CONNECTOR_CONFIGURATION_FIELDS: usize = 128;
 pub const MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES: usize = 16 * 1024;
 
 #[derive(Clone, PartialEq, Eq)]
-#[doc = "Represents connector secret in the PocketStation API."]
+#[doc = "Owns a connector secret with redacted diagnostics and byte clearing on explicit reset or drop."]
 pub struct ConnectorSecret(String);
 
 impl ConnectorSecret {
@@ -221,7 +221,7 @@ pub enum ConnectorConfigurationConstraint {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Represents connector configuration field in the PocketStation API."]
+#[doc = "Declares one typed connector configuration field and its validation constraints."]
 pub struct ConnectorConfigurationField {
     name: String,
     value_kind: ConnectorConfigurationValueKind,
@@ -257,45 +257,45 @@ impl ConnectorConfigurationField {
     }
 
     #[must_use]
-    #[doc = "Returns the deprecated associated with `ConnectorConfigurationField`."]
+    #[doc = "Returns the deprecated held by `ConnectorConfigurationField`."]
     pub fn deprecated(mut self, message: impl Into<String>) -> Self {
         self.deprecation = Some(message.into());
         self
     }
 
-    #[doc = "Returns the name associated with `ConnectorConfigurationField`."]
+    #[doc = "Returns the name held by `ConnectorConfigurationField`."]
     pub fn name(&self) -> &str {
         &self.name
     }
 
-    #[doc = "Returns the value kind associated with `ConnectorConfigurationField`."]
+    #[doc = "Returns the value kind held by `ConnectorConfigurationField`."]
     pub const fn value_kind(&self) -> ConnectorConfigurationValueKind {
         self.value_kind
     }
 
-    #[doc = "Returns the requirement associated with `ConnectorConfigurationField`."]
+    #[doc = "Returns the requirement held by `ConnectorConfigurationField`."]
     pub const fn requirement(&self) -> &ConnectorConfigurationRequirement {
         &self.requirement
     }
 
-    #[doc = "Returns the documentation associated with `ConnectorConfigurationField`."]
+    #[doc = "Returns the documentation held by `ConnectorConfigurationField`."]
     pub fn documentation(&self) -> &str {
         &self.documentation
     }
 
-    #[doc = "Returns the constraints associated with `ConnectorConfigurationField`."]
+    #[doc = "Returns the constraints held by `ConnectorConfigurationField`."]
     pub fn constraints(&self) -> &[ConnectorConfigurationConstraint] {
         &self.constraints
     }
 
-    #[doc = "Returns the deprecation associated with `ConnectorConfigurationField`."]
+    #[doc = "Returns the deprecation held by `ConnectorConfigurationField`."]
     pub fn deprecation(&self) -> Option<&str> {
         self.deprecation.as_deref()
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Represents connector configuration schema in the PocketStation API."]
+#[doc = "Validates connector configuration values against the manifest-declared field set."]
 pub struct ConnectorConfigurationSchema {
     revision: u32,
     fields: Vec<ConnectorConfigurationField>,
@@ -312,17 +312,17 @@ impl ConnectorConfigurationSchema {
         Ok(schema)
     }
 
-    #[doc = "Returns the revision associated with `ConnectorConfigurationSchema`."]
+    #[doc = "Returns the revision held by `ConnectorConfigurationSchema`."]
     pub const fn revision(&self) -> u32 {
         self.revision
     }
 
-    #[doc = "Returns the fields associated with `ConnectorConfigurationSchema`."]
+    #[doc = "Returns the fields held by `ConnectorConfigurationSchema`."]
     pub fn fields(&self) -> &[ConnectorConfigurationField] {
         &self.fields
     }
 
-    #[doc = "Returns the field associated with `ConnectorConfigurationSchema`."]
+    #[doc = "Returns the field held by `ConnectorConfigurationSchema`."]
     pub fn field(&self, name: &str) -> Option<&ConnectorConfigurationField> {
         self.fields.iter().find(|field| field.name == name)
     }
@@ -708,12 +708,12 @@ impl ConnectorConfigurationError {
         self.code
     }
 
-    #[doc = "Returns the field associated with `ConnectorConfigurationError`."]
+    #[doc = "Returns the field held by `ConnectorConfigurationError`."]
     pub fn field(&self) -> Option<&str> {
         self.field.as_deref()
     }
 
-    #[doc = "Returns the diagnostic message associated with `ConnectorConfigurationError`."]
+    #[doc = "Returns the diagnostic message reported by `ConnectorConfigurationError`."]
     pub fn message(&self) -> &str {
         &self.message
     }

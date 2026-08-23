@@ -86,6 +86,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -109,7 +110,14 @@
     "std::process::Command"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(unix)]",
+    "CARGO_MANIFEST_DIR",
+    "CXX",
+    "let compiler = std::env::var(\"CXX\").unwrap_or_else(|_| \"c++\".to_owned());",
+    "let executable_dir = std::env::current_exe()",
+    "let output_path = std::env::temp_dir().join(format!(",
+    "std::path::PathBuf",
+    "std::process::Command"
   ],
   "invariants": [],
   "language": "Rust",
@@ -118,18 +126,20 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "tests/abi_codec_cpp_conformance.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -172,8 +182,8 @@
   ],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given cpp consumer when linked then codec symbols keep c linkage under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -207,9 +217,10 @@
     "docs/best-practices/native-extension-trust.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "given_cpp_consumer_when_linked_then_codec_symbols_keep_c_linkage"
+    "given_cpp_consumer_when_linked_then_codec_symbols_keep_c_linkage (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -236,7 +247,10 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-be218c3d19791b4fd501"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

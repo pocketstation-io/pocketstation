@@ -30,6 +30,7 @@ pub use DesktopCaptureSource as InternalDesktopCaptureSource;
 
 #[cfg(target_os = "macos")]
 // The implementation is held for RAII; dropping it stops the selected capture source.
+#[doc = "Owns production of desktop capture values and its lifecycle state."]
 pub struct DesktopCaptureSource(DesktopCaptureImplementation);
 
 #[cfg(target_os = "macos")]
@@ -41,6 +42,7 @@ enum DesktopCaptureImplementation {
 #[cfg(target_os = "macos")]
 impl DesktopCaptureSource {
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the capture mode held by `DesktopCaptureSource`."]
     pub fn capture_mode<F>(
         mode: crate::capture::CaptureMode,
         callback: F,
@@ -79,6 +81,7 @@ impl DesktopCaptureSource {
         }
     }
 
+    #[doc = "Returns the observations exposed by `DesktopCaptureSource`."]
     pub fn observations(&self) -> crate::capture::CaptureObservations {
         match &self.0 {
             DesktopCaptureImplementation::Input(source) => source.observations(),
@@ -86,6 +89,7 @@ impl DesktopCaptureSource {
         }
     }
 
+    #[doc = "Returns the source identifier held by `DesktopCaptureSource`."]
     pub fn source_id(&self) -> crate::frame::SourceId {
         match &self.0 {
             DesktopCaptureImplementation::Input(source) => source.source_id(),
@@ -93,6 +97,7 @@ impl DesktopCaptureSource {
         }
     }
 
+    #[doc = "Returns a handle for reading observations from `DesktopCaptureSource`."]
     pub fn observation_handle(&self) -> crate::capture::CaptureObservationHandle {
         match &self.0 {
             DesktopCaptureImplementation::Input(source) => source.observation_handle(),
@@ -100,6 +105,7 @@ impl DesktopCaptureSource {
         }
     }
 
+    #[doc = "Stops `DesktopCaptureSource`, joins its worker, and returns the terminal result."]
     pub fn stop_and_join(
         self,
     ) -> Result<crate::capture::CaptureObservations, crate::capture::CaptureError> {

@@ -16,7 +16,20 @@
   ],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/edge.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
   "calls": [
     "AsyncOperatorEdgePrepareContext::new",
     "AsyncOperatorPrepareContext::new",
@@ -117,7 +130,20 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/edge.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
   "constructs": [
     "AsyncOperatorEdgePrepareContext::new",
     "AsyncOperatorPrepareContext::new",
@@ -523,8 +549,25 @@
       "symbol": null
     }
   ],
-  "examples_using": [],
-  "extended_by": [],
+  "example_coverage_status": "linked",
+  "examples_using": [
+    "example-3af8a91e442cd41f9135",
+    "example-d3384f55dfcf268d3ef1"
+  ],
+  "extended_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/edge.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -538,12 +581,38 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "db19c9c3994962345232dfe60086e44b454eb700",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/edge.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
   "implements": [
     "SignalEnvelope",
     "AsyncNode for EchoAsyncNode"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/graph/signal/continuity.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/edge.rs",
+    "REFERENCES:src/runtime/signal/io.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
   "imports": [
     "crate::frame::{AudioBufferPool, ClockDomainId, SessionId, StemId, StreamId}",
     "crate::frame::{AudioFrame, FrameLineage, SourceId}",
@@ -554,7 +623,14 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::frame::{AudioBufferPool, ClockDomainId, SessionId, StemId, StreamId}",
+    "crate::frame::{AudioFrame, FrameLineage, SourceId}",
+    "crate::graph::signal::payload::SignalPayload",
+    "crate::graph::signal::{SignalDerivation, SignalLineage, SignalSpec, SignalTiming}",
+    "crate::graph::{ AsyncNode, AsyncNodeFuture, AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext, BinaryFormat, Codec, EdgeContract, EventFormat, ExecutionPartition, MediaCaps, NodeError, PortDirection, SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker, SignalId, TextFormat, }",
+    "std::task::{Context, Poll, Waker}",
+    "super::*"
   ],
   "invariants": [
     {
@@ -592,21 +668,47 @@
   "module": "pocketstation::graph::signal::envelope",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-2c19d9af46f0136c5084",
     "pattern-a166906b05a45a18f8ee"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(SignalContinuityError::RecoveryWithoutDiscontinuity)",
+    "Err(SignalContinuityError::SequenceGapWithoutDiscontinuity)",
+    "Err(SignalEnvelopeError::PayloadSpecMismatch)",
+    "enum:SignalEnvelopeError",
+    "fn:derivation",
+    "fn:from_audio",
+    "fn:into_payload",
+    "fn:lineage",
+    "fn:map_payload",
+    "fn:payload",
+    "fn:payload_size_bytes",
+    "fn:sequence_number",
+    "fn:signal_spec",
+    "fn:source_id",
+    "fn:timestamp_ns",
+    "fn:timing",
+    "fn:untracked",
+    "fn:validate",
+    "fn:with_derivation",
+    "fn:with_lineage",
+    "return Err(NodeError::Process(\"async node not prepared\".to_owned()));",
+    "return Err(SignalEnvelopeError::PayloadSpecMismatch);",
+    "return Err(SignalEnvelopeError::SequenceMismatch);",
+    "return Err(SignalEnvelopeError::SourceMismatch);",
+    "struct:SignalEnvelope"
   ],
   "package": "pocketstation",
   "path": "src/graph/signal/envelope.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -825,7 +927,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::graph::signal::envelope`."
+    "text": "Implements pocketstation::graph::signal::envelope responsibilities, including Carries a typed signal payload together with timing, lineage, continuity, and terminal metadata.; Creates an envelope for data that has not yet entered a source-aware; Creates `SignalEnvelope` from audio.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -863,6 +965,15 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/frame/lineage.rs",
+    "REFERENCES:src/graph/signal/lineage.rs",
+    "REFERENCES:src/graph/signal/payload.rs",
+    "REFERENCES:src/graph/signal/spec.rs",
+    "REFERENCES:src/graph/signal/timing.rs"
+  ],
   "resource_ownership": [
     {
       "line": 210,
@@ -874,41 +985,28 @@
     }
   ],
   "responsibilities": [
-    "SignalEnvelope",
-    "untracked",
-    "from_audio",
-    "map_payload",
-    "with_lineage",
-    "with_derivation",
-    "payload",
-    "payload_size_bytes",
-    "signal_spec",
-    "timing",
-    "lineage",
-    "derivation",
-    "into_payload",
-    "sequence_number",
-    "source_id",
-    "timestamp_ns",
-    "validate",
-    "SignalEnvelopeError",
-    "tests",
-    "prepare_cx",
-    "block_on_ready",
-    "EchoAsyncNode",
-    "prepare",
-    "process",
-    "given_text_storage_when_checked_against_text_spec_then_representation_is_supported",
-    "given_echo_async_node_when_process_after_prepare_then_envelope_is_returned",
-    "given_echo_async_node_when_process_before_prepare_then_error_is_returned",
-    "given_fundamental_payloads_when_enveloped_then_specs_are_symmetric",
-    "given_payload_and_incompatible_spec_when_validated_then_rejected",
-    "given_generic_lineage_when_enveloped_then_no_frame_lineage_is_required",
-    "given_audio_frame_lineage_when_enveloped_then_generic_lineage_is_projected",
-    "generic_envelope",
-    "given_contiguous_signals_when_replayed_then_continuity_is_deterministic",
-    "given_gap_without_discontinuity_when_replayed_then_rejected",
-    "given_recovery_without_discontinuity_when_replayed_then_rejected"
+    "pocketstation::graph::signal::envelope::SignalEnvelope: Carries a typed signal payload together with timing, lineage, continuity, and terminal metadata.",
+    "untracked: Creates an envelope for data that has not yet entered a source-aware",
+    "from_audio: Creates `SignalEnvelope` from audio.",
+    "map_payload: Transforms the payload held by `SignalEnvelope` while preserving envelope metadata.",
+    "with_lineage: Sets the lineage on `SignalEnvelope` and returns the updated value.",
+    "with_derivation: Sets the derivation on `SignalEnvelope` and returns the updated value.",
+    "payload: Returns the payload associated with `SignalEnvelope`.",
+    "payload_size_bytes: Returns the payload size bytes held by `SignalEnvelope`.",
+    "signal_spec: Returns the signal spec held by `SignalEnvelope`.",
+    "timing: Returns the timing associated with `SignalEnvelope`.",
+    "lineage: Returns the frame lineage carried by `SignalEnvelope`.",
+    "derivation: Returns the derivation associated with `SignalEnvelope`.",
+    "into_payload: Converts `SignalEnvelope` into payload.",
+    "sequence_number: Returns the sequence number held by `SignalEnvelope`.",
+    "source_id: Returns the source identifier held by `SignalEnvelope`.",
+    "timestamp_ns: Returns the timestamp nanoseconds held by `SignalEnvelope`.",
+    "validate: Validates `SignalEnvelope` against its declared contract.",
+    "pocketstation::graph::signal::envelope::SignalEnvelopeError: Classifies failures reported as signal envelope error.",
+    "pocketstation::graph::signal::envelope::SignalEnvelopeError::InvalidSignalSpec: Reported when the owning operation encounters invalid signal spec.",
+    "pocketstation::graph::signal::envelope::SignalEnvelopeError::PayloadSpecMismatch: Reported when the owning operation encounters payload spec mismatch.",
+    "pocketstation::graph::signal::envelope::SignalEnvelopeError::SequenceMismatch: Reported when the owning operation encounters sequence mismatch.",
+    "pocketstation::graph::signal::envelope::SignalEnvelopeError::SourceMismatch: Reported when the owning operation encounters source mismatch."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -940,7 +1038,23 @@
       "text": "return Err(NodeError::Process(\"async node not prepared\".to_owned()));"
     }
   ],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0ae60369d5962ff55b0f",
+    "test-33e18236d232fb399a6a",
+    "test-49ea3414f8bb90cf86b1",
+    "test-675fc593bb481d67a026",
+    "test-80aa65affe9c51f00bde",
+    "test-85537f6d9bc6ada5654e",
+    "test-8f6b3c13a8c5d31e5914",
+    "test-92478dc6bd675ec61686",
+    "test-9d67f3359220613efda8",
+    "test-bfea57e87a139988d3b9",
+    "test-cd345e8d13b510a9eaa5",
+    "test-d0dc80cc2da279b6a618",
+    "test-d84f14d43b88331c2181",
+    "test-e2f8e7a7f18caa97e503"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

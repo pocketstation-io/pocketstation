@@ -3,7 +3,14 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/transport.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "calls": [
     "Box::new",
     "ConnectorRunOutcome::failure",
@@ -65,7 +72,14 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/transport.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "constructs": [
     "Box::new"
   ],
@@ -380,8 +394,16 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/transport.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -395,13 +417,27 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "8da872bb28839d501d8a3a5b20f3ddfb1c9d7e48",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/transport.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "implements": [
     "ConnectorInputDescriptor",
     "ConnectorItem<'_>",
     "ConnectorWorker for PollingConnectorWorker"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/connector/worker/mod.rs",
+    "IMPORTS:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/transport.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "imports": [
     "crate::connector::{ConnectorError, ResolvedConnectorConfiguration}",
     "crate::{ EndpointAudioFrame, EndpointId, EndpointPortInput, EndpointPreparationGroup, EndpointReceiver, EndpointShutdownMode, MediaCaps, RouteId, SignalEnvelope, SignalSpec, }",
@@ -410,7 +446,11 @@
     "super::{ConnectorContext, ConnectorRunOutcome, ConnectorWorker}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::connector::{ConnectorError, ResolvedConnectorConfiguration}",
+    "crate::{ EndpointAudioFrame, EndpointId, EndpointPortInput, EndpointPreparationGroup, EndpointReceiver, EndpointShutdownMode, MediaCaps, RouteId, SignalEnvelope, SignalSpec, }",
+    "std::sync::Arc",
+    "std::time::Duration",
+    "super::{ConnectorContext, ConnectorRunOutcome, ConnectorWorker}"
   ],
   "invariants": [
     {
@@ -424,21 +464,41 @@
   "module": "pocketstation::connector::worker::driver",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-a6a76a8e4974d5910060",
     "pattern-e065b0a6fab311b67644"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(error) => ConnectorRunOutcome::failure(error),",
+    "Err(error) => return ConnectorRunOutcome::failure(error),",
+    "enum:ConnectorDeliveryOutcome",
+    "enum:ConnectorItem",
+    "fn:configuration",
+    "fn:connector_id",
+    "fn:edge_contract",
+    "fn:endpoint_id",
+    "fn:input",
+    "fn:media",
+    "fn:port_name",
+    "fn:prepare_connector_driver",
+    "fn:route_id",
+    "fn:signal_spec",
+    "if let Err(error) = driver.idle(&context) {",
+    "if let Err(error) = driver.start(&context) {",
+    "return Err(super::supervisor::internal_connector_error(",
+    "struct:ConnectorInputDescriptor",
+    "trait:ConnectorDriver",
+    "trait:ConnectorDriverFactory"
   ],
   "package": "pocketstation",
   "path": "src/connector/worker/driver.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -615,7 +675,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::connector::worker::driver`."
+    "text": "Implements pocketstation::connector::worker::driver responsibilities, including Immutable Session and graph metadata for one connector input.; Returns the endpoint identifier held by `ConnectorInputDescriptor`.; Returns the connector identifier held by `ConnectorInputDescriptor`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -657,6 +717,19 @@
     "docs/best-practices/connector-retries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/connector/configuration.rs",
+    "REFERENCES:src/connector/error.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/endpoint/identity.rs",
+    "REFERENCES:src/endpoint/runtime.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/graph/signal/envelope.rs",
+    "REFERENCES:src/graph/signal/spec.rs"
+  ],
   "resource_ownership": [
     {
       "line": 1,
@@ -696,34 +769,35 @@
     }
   ],
   "responsibilities": [
-    "DRIVER_IDLE_WAIT",
-    "ConnectorInputDescriptor",
-    "endpoint_id",
-    "connector_id",
-    "route_id",
-    "port_name",
-    "signal_spec",
-    "media",
-    "edge_contract",
-    "configuration",
-    "ConnectorItem",
-    "input",
-    "ConnectorDeliveryOutcome",
-    "ConnectorDriver",
-    "start",
-    "deliver",
-    "idle",
-    "shutdown",
-    "cancel_preparation",
-    "ConnectorDriverFactory",
-    "preparation_group",
-    "prepare",
-    "prepare_connector_driver",
-    "DriverInput",
-    "PollingConnectorWorker",
-    "run",
-    "cancel_preparation",
-    "record_discontinuity"
+    "pocketstation::connector::worker::driver::ConnectorInputDescriptor: Immutable Session and graph metadata for one connector input.",
+    "endpoint_id: Returns the endpoint identifier held by `ConnectorInputDescriptor`.",
+    "connector_id: Returns the connector identifier held by `ConnectorInputDescriptor`.",
+    "route_id: Returns the route identifier held by `ConnectorInputDescriptor`.",
+    "port_name: Returns the port name held by `ConnectorInputDescriptor`.",
+    "signal_spec: Returns the signal spec held by `ConnectorInputDescriptor`.",
+    "media: Returns the media held by `ConnectorInputDescriptor`.",
+    "edge_contract: Returns the edge contract held by `ConnectorInputDescriptor`.",
+    "configuration: Returns the configuration held by `ConnectorInputDescriptor`.",
+    "pocketstation::connector::worker::driver::ConnectorItem: One bounded item delivered by Core to a connector driver.",
+    "pocketstation::connector::worker::driver::ConnectorItem::Audio: Represents the audio alternative defined by `ConnectorItem`.",
+    "ConnectorItem::Audio::input: Stores the input used by `Audio`.",
+    "ConnectorItem::Audio::frame: Stores the frame used by `Audio`.",
+    "pocketstation::connector::worker::driver::ConnectorItem::Signal: Represents the signal alternative defined by `ConnectorItem`.",
+    "ConnectorItem::Signal::input: Stores the input used by `Signal`.",
+    "ConnectorItem::Signal::signal: Stores the signal used by `Signal`.",
+    "input: Returns the input held by `ConnectorItem`.",
+    "pocketstation::connector::worker::driver::ConnectorDeliveryOutcome: Explicit delivery result used for Core-owned accounting.",
+    "pocketstation::connector::worker::driver::ConnectorDeliveryOutcome::Delivered: Identifies the delivered state or stage represented by `ConnectorDeliveryOutcome`.",
+    "pocketstation::connector::worker::driver::ConnectorDeliveryOutcome::Dropped: Identifies the dropped state or stage represented by `ConnectorDeliveryOutcome`.",
+    "pocketstation::connector::worker::driver::ConnectorDriver: Provider-specific behavior executed on Core's bounded connector worker.",
+    "ConnectorDriver::start: Starts the lifecycle represented by `ConnectorDriver`.",
+    "ConnectorDriver::deliver: Delivers the next input through `ConnectorDriver`.",
+    "ConnectorDriver::idle: Advances `ConnectorDriver` while no input is available.",
+    "ConnectorDriver::shutdown: Shuts down `ConnectorDriver` according to its lifecycle contract.",
+    "ConnectorDriver::cancel_preparation: Cancels preparation for `ConnectorDriver`.",
+    "pocketstation::connector::worker::driver::ConnectorDriverFactory: Prepares provider state while Core retains receiver and lifecycle authority.",
+    "ConnectorDriverFactory::preparation_group: Returns the preparation group associated with `ConnectorDriverFactory`.",
+    "ConnectorDriverFactory::prepare: Prepares resources required by `ConnectorDriverFactory`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -759,6 +833,7 @@
   ],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

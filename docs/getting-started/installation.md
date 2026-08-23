@@ -2,12 +2,6 @@
 
 <!-- claims: CLM-DOC-002-CAP-001,CLM-DOC-002-SOURCE-001 -->
 
-## Scope
-
-- **Install and feature-select the crate.** Add PocketStation to a Cargo package and choose native capture, contracts-only, conformance, or internal test features.
-
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
-
 ## Prerequisites
 
 - Rust 1.95 or newer, as declared by package metadata.
@@ -29,13 +23,19 @@ pocketstation = { version = "1.1.1", default-features = false }
 
 Run `cargo check` to verify dependency resolution. Feature selection is compile-time configuration.
 
+## Scope
+
+- **Install and feature-select the crate.** Add PocketStation to a Cargo package and choose native capture, contracts-only, conformance, or internal test features.
+
+The scope of **Install PocketStation** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
+
 ## Public entry points
 
-No intentionally public Rust declaration is owned directly by this evidence domain. Use the linked protocol or repository reference.
+No intentionally public Rust declaration is owned directly by **Install PocketStation**. Its contract is expressed by the linked repository, protocol, or qualification evidence instead.
 
 ## Executable evidence
 
-The following test bodies are evidence only for their recorded setup:
+Executable evidence selected for **Install PocketStation** is limited to each test's recorded setup and assertions:
 
 - `test-publish-recovery` — test publish recovery (`scripts/test-publish-recovery.sh:1`; `test-adb1dc831caefa6dcbaa`).
 - `test-session-c-conformance` — test session c conformance (`scripts/test-session-c-conformance.sh:1`; `test-ff28fea505d22371ce41`).
@@ -60,8 +60,8 @@ The following test bodies are evidence only for their recorded setup:
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Install PocketStation** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `Cargo.toml:1-180` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Install PocketStation**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

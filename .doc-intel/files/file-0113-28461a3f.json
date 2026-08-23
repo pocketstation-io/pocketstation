@@ -3,7 +3,19 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/observations.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/status.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "calls": [
     "Arc::from",
     "ConnectorErrorCode",
@@ -53,7 +65,19 @@
       "text": "ConnectorErrorStage::Configuration | ConnectorErrorStage::Prepare => {"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/observations.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/status.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "constructs": [
     "Arc::from",
     "EndpointFailure::new",
@@ -366,8 +390,21 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/observations.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/status.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -381,21 +418,49 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "aec50de0a1955c6f6fcc205e9be2585e29d18a18",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/observations.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/status.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "implements": [
     "ConnectorErrorCode",
     "fmt::Debug for ConnectorErrorCode",
     "fmt::Display for ConnectorErrorCode",
     "ConnectorError"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/connector/observations.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/status.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/mod.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "imports": [
     "crate::{EndpointFailure, EndpointFailureRetryability, EndpointFailureStage}",
     "std::fmt",
     "std::sync::Arc"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "Configuration,",
+    "ConnectorErrorStage::Configuration | ConnectorErrorStage::Prepare => {",
+    "crate::{EndpointFailure, EndpointFailureRetryability, EndpointFailureStage}",
+    "std::fmt",
+    "std::sync::Arc"
   ],
   "invariants": [
     {
@@ -413,20 +478,41 @@
   "module": "pocketstation::connector::error",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-9ea9251c9fbe65c4e367"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "const:MAX_CONNECTOR_ERROR_CODE_BYTES",
+    "const:MAX_CONNECTOR_ERROR_MESSAGE_BYTES",
+    "enum:ConnectorErrorBuildError",
+    "enum:ConnectorErrorCodeError",
+    "enum:ConnectorErrorStage",
+    "enum:ConnectorRetryability",
+    "fn:as_str",
+    "fn:code",
+    "fn:internal",
+    "fn:internal_with_retryability",
+    "fn:into_endpoint_failure",
+    "fn:message",
+    "fn:new",
+    "fn:retryability",
+    "fn:stage",
+    "return Err(ConnectorErrorBuildError::EmptyMessage);",
+    "return Err(ConnectorErrorBuildError::MessageTooLarge);",
+    "return Err(ConnectorErrorCodeError::Empty);",
+    "return Err(ConnectorErrorCodeError::InvalidCharacter);",
+    "return Err(ConnectorErrorCodeError::TooLong);",
+    "struct:ConnectorError",
+    "struct:ConnectorErrorCode"
   ],
   "package": "pocketstation",
   "path": "src/connector/error.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -555,7 +641,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::connector::error`."
+    "text": "Implements pocketstation::connector::error responsibilities, including Sets the maximum supported connector error code bytes.; Sets the maximum supported connector error message bytes.; Carries the stable external error code exported for a connector failure.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -597,6 +683,9 @@
     "docs/best-practices/connector-retries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/endpoint/runtime.rs"
+  ],
   "resource_ownership": [
     {
       "line": 2,
@@ -616,26 +705,40 @@
     }
   ],
   "responsibilities": [
-    "MAX_CONNECTOR_ERROR_CODE_BYTES",
-    "MAX_CONNECTOR_ERROR_MESSAGE_BYTES",
-    "ConnectorErrorCode",
-    "new",
-    "as_str",
-    "fmt",
-    "fmt",
-    "ConnectorErrorCodeError",
-    "ConnectorErrorStage",
-    "ConnectorRetryability",
-    "ConnectorError",
-    "new",
-    "code",
-    "stage",
-    "retryability",
-    "message",
-    "into_endpoint_failure",
-    "internal",
-    "internal_with_retryability",
-    "ConnectorErrorBuildError"
+    "pocketstation::connector::error::MAX_CONNECTOR_ERROR_CODE_BYTES: Sets the maximum supported connector error code bytes.",
+    "pocketstation::connector::error::MAX_CONNECTOR_ERROR_MESSAGE_BYTES: Sets the maximum supported connector error message bytes.",
+    "pocketstation::connector::error::ConnectorErrorCode: Carries the stable external error code exported for a connector failure.",
+    "new: Creates a new `ConnectorErrorCode`.",
+    "as_str: Returns the stable string representation of `ConnectorErrorCode`.",
+    "fmt: Formats `ConnectorErrorCode` with the requested formatter.",
+    "fmt: Formats `ConnectorErrorCode` with the requested formatter.",
+    "pocketstation::connector::error::ConnectorErrorCodeError: Classifies failures reported as connector error code error.",
+    "pocketstation::connector::error::ConnectorErrorCodeError::Empty: Represents an empty value or collection.",
+    "pocketstation::connector::error::ConnectorErrorCodeError::TooLong: Reported when the owning operation encounters too long.",
+    "pocketstation::connector::error::ConnectorErrorCodeError::InvalidCharacter: Reported when the owning operation encounters invalid character.",
+    "pocketstation::connector::error::ConnectorErrorStage: Selects the connector error stage used by PocketStation.",
+    "pocketstation::connector::error::ConnectorErrorStage::Configuration: Identifies the configuration state or stage represented by `ConnectorErrorStage`.",
+    "pocketstation::connector::error::ConnectorErrorStage::Prepare: Identifies the prepare state or stage represented by `ConnectorErrorStage`.",
+    "pocketstation::connector::error::ConnectorErrorStage::Startup: Identifies the startup state or stage represented by `ConnectorErrorStage`.",
+    "pocketstation::connector::error::ConnectorErrorStage::Readiness: Identifies the readiness state or stage represented by `ConnectorErrorStage`.",
+    "pocketstation::connector::error::ConnectorErrorStage::Delivery: Identifies the delivery state or stage represented by `ConnectorErrorStage`.",
+    "pocketstation::connector::error::ConnectorErrorStage::Retry: Identifies the retry state or stage represented by `ConnectorErrorStage`.",
+    "pocketstation::connector::error::ConnectorErrorStage::Shutdown: Identifies the shutdown state or stage represented by `ConnectorErrorStage`.",
+    "pocketstation::connector::error::ConnectorErrorStage::Join: Identifies the join state or stage represented by `ConnectorErrorStage`.",
+    "pocketstation::connector::error::ConnectorRetryability: Enumerates the supported connector retryability cases.",
+    "pocketstation::connector::error::ConnectorRetryability::Never: Selects never behavior for `ConnectorRetryability`.",
+    "pocketstation::connector::error::ConnectorRetryability::Retryable: Selects retryable behavior for `ConnectorRetryability`.",
+    "pocketstation::connector::error::ConnectorRetryability::RetryAfterReconfiguration: Selects retry after reconfiguration behavior for `ConnectorRetryability`.",
+    "pocketstation::connector::error::ConnectorError: Reports a connector error.",
+    "new: Creates a new `ConnectorError`.",
+    "code: Returns the stable error or status code represented by `ConnectorError`.",
+    "stage: Returns the stage held by `ConnectorError`.",
+    "retryability: Returns the retryability associated with `ConnectorError`.",
+    "message: Returns the diagnostic message reported by `ConnectorError`.",
+    "into_endpoint_failure: Converts `ConnectorError` into endpoint failure.",
+    "pocketstation::connector::error::ConnectorErrorBuildError: Classifies failures reported as connector error build error.",
+    "pocketstation::connector::error::ConnectorErrorBuildError::EmptyMessage: Reported when the owning operation encounters empty message.",
+    "pocketstation::connector::error::ConnectorErrorBuildError::MessageTooLarge: Reported when the owning operation encounters message too large."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -645,7 +748,10 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-ae5c25d0ba6141b1a13a"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

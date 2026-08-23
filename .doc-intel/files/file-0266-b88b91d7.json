@@ -425,6 +425,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -520,7 +521,12 @@
     "std::mem::size_of"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(not(no_entrypoint))]",
+    "PKS_FIXTURE_MARKER",
+    "std::ffi::c_void",
+    "std::fs::OpenOptions",
+    "std::io::Write",
+    "std::mem::size_of"
   ],
   "invariants": [],
   "language": "Rust",
@@ -529,18 +535,21 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "tests/fixtures/native_extension_plugin.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -865,8 +874,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for native extension plugin under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -899,6 +908,7 @@
     "docs/troubleshooting/native-build.md",
     "docs/best-practices/evidence-boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 249,
@@ -930,59 +940,36 @@
     }
   ],
   "responsibilities": [
-    "ABI_MAJOR",
-    "ABI_MINOR",
-    "STATUS_OK",
-    "STATUS_INVALID_ARGUMENT",
-    "KIND_SOURCE",
-    "KIND_OPERATOR",
-    "KIND_ENDPOINT",
-    "PORT_INPUT",
-    "PORT_OUTPUT",
-    "END_OF_STREAM",
-    "Status",
-    "Utf8",
-    "Descriptor",
-    "Port",
-    "SignalView",
-    "SignalBuffer",
-    "Validate",
-    "Create",
-    "Prepare",
-    "SourceNext",
-    "OperatorProcess",
-    "EndpointConsume",
-    "Lifecycle",
-    "Destroy",
-    "Callbacks",
-    "Acquire",
-    "ExtensionLibrary",
-    "RegistrationContext",
-    "InstanceContext",
-    "utf8",
-    "SOURCE_ID",
-    "OPERATOR_ID",
-    "ENDPOINT_ID",
-    "SIGNAL_ID",
-    "SCHEMA",
-    "EMPTY",
-    "SOURCE_PORTS",
-    "OPERATOR_PORTS",
-    "ENDPOINT_PORTS",
-    "status",
-    "marker",
-    "validate",
-    "create",
-    "prepare",
-    "source_next",
-    "operator_process",
-    "endpoint_consume",
-    "lifecycle",
-    "destroy_instance",
-    "destroy_registration",
-    "callbacks",
-    "acquire",
-    "pks_extension_library_v1"
+    "ABI_MAJOR (const)",
+    "ABI_MINOR (const)",
+    "STATUS_OK (const)",
+    "STATUS_INVALID_ARGUMENT (const)",
+    "KIND_SOURCE (const)",
+    "KIND_OPERATOR (const)",
+    "KIND_ENDPOINT (const)",
+    "PORT_INPUT (const)",
+    "PORT_OUTPUT (const)",
+    "END_OF_STREAM (const)",
+    "Status (struct)",
+    "Utf8 (struct)",
+    "Descriptor (struct)",
+    "Port (struct)",
+    "SignalView (struct)",
+    "SignalBuffer (struct)",
+    "Validate (type)",
+    "Create (type)",
+    "Prepare (type)",
+    "SourceNext (type)",
+    "OperatorProcess (type)",
+    "EndpointConsume (type)",
+    "Lifecycle (type)",
+    "Destroy (type)",
+    "Callbacks (struct)",
+    "Acquire (type)",
+    "ExtensionLibrary (struct)",
+    "RegistrationContext (struct)",
+    "InstanceContext (struct)",
+    "utf8 (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1155,6 +1142,7 @@
     }
   ],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

@@ -58,19 +58,19 @@
     }
   },
   "last_command": "verify-pass",
-  "last_error": "every page must have authored status before documentation validation",
+  "last_error": null,
   "next_file": null,
   "next_page": null,
   "next_symbol": null,
   "pages": 145,
   "pages_validated": 145,
   "phase": "final",
-  "public_symbols": 2951,
+  "public_symbols": 3873,
   "schema_version": 1,
   "semantic_files": 274,
   "semantic_files_analyzed": 274,
   "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
-  "symbols_analyzed": 8219,
+  "symbols_analyzed": 8908,
   "tracked_files": 278,
-  "updated_at": "2026-08-23T16:17:14+00:00"
+  "updated_at": "2026-08-23T17:41:29+00:00"
 }

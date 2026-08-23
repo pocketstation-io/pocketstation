@@ -2,25 +2,48 @@
 
 <!-- claims: CLM-DOC-037-CAP-001,CLM-DOC-037-SOURCE-001 -->
 
-Use the repository-owned Whisper example to send captured stems to an external transcription process with evidence output.
+## What it is
+
+The Whisper example is a separate Cargo package that captures PocketStation stems and crosses into an external transcription process while recording process evidence.
+
+## Why it exists
+
+Transcription behavior depends on an executable and environment outside the core crate. The example makes that integration boundary visible instead of claiming the SDK itself performs transcription.
+
+## Relationships
+
+- PocketStation capture and polling supply audio stems.
+- The example owns conversion and child-process invocation.
+- A process-evidence artifact records what external work actually ran.
+
+## Invariants and guarantees
+
+- Example compilation proves API compatibility, not process availability.
+- A transcript without matching process evidence is not accepted as verified execution.
+- The external process contract does not expand Core's guarantees.
+
+## When you encounter it
+
+- **Transcribe captured stems** — Run the repository transcription example and preserve process evidence for its external boundary.
+
+## Use it
+
+- [Run the transcription example](/docs/how-to/run-transcription.md)
+- [Transcription process evidence is missing](/docs/troubleshooting/transcription-evidence.md)
 
 ## Scope
 
 - **Integrate transcription processing.** Use the repository-owned Whisper example to send captured stems to an external transcription process with evidence output.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Transcription integration boundary** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
-## Contract surface
+## Key API
 
-No intentionally public Rust declaration is owned directly by this evidence domain. Use the linked protocol or repository reference.
+No intentionally public Rust declaration is owned directly by **Transcription integration boundary**. Its contract is expressed by the linked repository, protocol, or qualification evidence instead.
 
-## Where you encounter it
+## Executable evidence
 
-- **Transcribe captured stems** — Run the repository transcription example and preserve process evidence for its external boundary.
-
-## Behavior established by tests
-
-The following test bodies are evidence only for their recorded setup:
+Executable evidence selected for **Transcription integration boundary** is limited to each test's recorded setup and assertions:
 
 - `given_discontinuity_change_inside_window_when_processed_then_window_is_rejected` — given discontinuity change inside window when processed then window is rejected (`examples/whisper-transcribe/src/lib.rs:1400`; `test-ecb60c6da5bff96b4580`).
 - `given_hung_provider_when_deadline_expires_then_child_is_killed_and_reaped` — given hung provider when deadline expires then child is killed and reaped (`examples/whisper-transcribe/src/lib.rs:1108`; `test-d2c23e54192a869ee546`).
@@ -35,10 +58,6 @@ The following test bodies are evidence only for their recorded setup:
 - `given_two_complete_windows_when_finished_then_partials_and_single_final_cover_stream` — given two complete windows when finished then partials and single final cover stream (`examples/whisper-transcribe/src/lib.rs:1338`; `test-3ed49534bf02ce80cbcb`).
 - `given_typed_audio_when_window_fills_then_partial_precedes_one_final_transcript` — given typed audio when window fills then partial precedes one final transcript (`examples/whisper-transcribe/src/lib.rs:1263`; `test-b79c368693e08eaa7d95`).
 
-## Boundaries
-
-The compiler inventory establishes names, kinds, visibility, and signatures. Tests establish only their exercised conditions. Where retryability, ordering, cancellation, physical qualification, or recovery is not declared, this page leaves it unspecified.
-
 ## Related documentation
 
 - [Glossary](/docs/glossary.md)
@@ -51,8 +70,8 @@ The compiler inventory establishes names, kinds, visibility, and signatures. Tes
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Transcription integration boundary** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `examples/whisper-transcribe/src/lib.rs:1-1440` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Transcription integration boundary**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

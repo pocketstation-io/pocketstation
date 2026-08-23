@@ -12,7 +12,14 @@
   ],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/operator.rs"
+  ],
   "calls": [
     "NodeError::Prepare",
     "Vec::new",
@@ -30,7 +37,14 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/operator.rs"
+  ],
   "constructs": [
     "Vec::new",
     "new"
@@ -155,8 +169,16 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/operator.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -170,11 +192,25 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "f69447405d308c760cee8ae4024e0dbc74e0d45f",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/operator.rs"
+  ],
   "implements": [
     "AsyncOperatorPrepareContext"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/runtime/signal/operator.rs"
+  ],
   "imports": [
     "crate::graph::node::{NodeError, PortPrepareContext}",
     "crate::graph::{ExecutionPartition, PortDirection}",
@@ -182,7 +218,10 @@
     "std::pin::Pin"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::graph::node::{NodeError, PortPrepareContext}",
+    "crate::graph::{ExecutionPartition, PortDirection}",
+    "std::future::Future",
+    "std::pin::Pin"
   ],
   "invariants": [
     {
@@ -200,18 +239,27 @@
   "module": "pocketstation::graph::signal::preparation",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "fn:execution_partition",
+    "fn:inputs",
+    "fn:new",
+    "fn:outputs",
+    "return Err(NodeError::Prepare(",
+    "struct:AsyncOperatorPrepareContext",
+    "type:AsyncNodeFuture",
+    "type:AsyncOperatorEdgePrepareContext"
   ],
   "package": "pocketstation",
   "path": "src/graph/signal/preparation.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -260,8 +308,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Signal-shaped asynchronous Operator preparation contracts."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::signal::preparation responsibilities, including Names the future returned by async node operations.; Exact bounded graph edge supplied to an asynchronous Operator at prepare time.; Complete graph-owned preparation contract for one asynchronous Operator.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -299,6 +347,10 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/partition.rs"
+  ],
   "resource_ownership": [
     {
       "line": 9,
@@ -306,13 +358,13 @@
     }
   ],
   "responsibilities": [
-    "AsyncNodeFuture",
-    "AsyncOperatorEdgePrepareContext",
-    "AsyncOperatorPrepareContext",
-    "new",
-    "execution_partition",
-    "inputs",
-    "outputs"
+    "pocketstation::graph::signal::preparation::AsyncNodeFuture: Names the future returned by async node operations.",
+    "pocketstation::graph::signal::preparation::AsyncOperatorEdgePrepareContext: Exact bounded graph edge supplied to an asynchronous Operator at prepare time.",
+    "pocketstation::graph::signal::preparation::AsyncOperatorPrepareContext: Complete graph-owned preparation contract for one asynchronous Operator.",
+    "new: Creates a new `AsyncOperatorPrepareContext`.",
+    "execution_partition: Returns the execution partition associated with `AsyncOperatorPrepareContext`.",
+    "inputs: Returns the inputs associated with `AsyncOperatorPrepareContext`.",
+    "outputs: Returns the outputs associated with `AsyncOperatorPrepareContext`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -344,6 +396,7 @@
       "text": "\"async operator prepare requires bounded input and output edges\".to_owned(),"
     }
   ],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

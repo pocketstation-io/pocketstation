@@ -40,7 +40,20 @@
   ],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/declaration/typed_stream.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
   "calls": [
     "Box::pin",
     "Vec::new",
@@ -107,7 +120,20 @@
       "text": ") -> Result<AsyncOperatorManifest, crate::graph::ConfigError> {"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/declaration/typed_stream.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
   "constructs": [
     "Vec::new",
     "new"
@@ -650,8 +676,24 @@
       "symbol": null
     }
   ],
-  "examples_using": [],
-  "extended_by": [],
+  "example_coverage_status": "linked",
+  "examples_using": [
+    "example-3af8a91e442cd41f9135"
+  ],
+  "extended_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/declaration/typed_stream.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -665,19 +707,49 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "225e08bb0bae5e94a5673e5fa2c44c8a4e2d7354",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/declaration/typed_stream.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
   "implements": [
     "OperatorOutputRolePolicy",
     "AsyncOperatorManifest"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/conformance.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/runtime/signal/operator.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/declaration/typed_stream.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mappings.rs"
+  ],
   "imports": [
     "crate::graph::signal::preparation::{AsyncNodeFuture, AsyncOperatorPrepareContext}",
     "crate::graph::{ BackpressurePolicy, CopyPolicy, EdgeContract, ExecutionPartition, NodeConfig, NodeDescriptor, NodeError, OperatorId, PortDirection, PortSpec, SafetyContract, SignalSpec, }",
     "crate::graph::{SemanticRole, SignalEnvelope}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    ") -> Result<AsyncOperatorManifest, crate::graph::ConfigError> {",
+    "crate::graph::signal::preparation::{AsyncNodeFuture, AsyncOperatorPrepareContext}",
+    "crate::graph::{ BackpressurePolicy, CopyPolicy, EdgeContract, ExecutionPartition, NodeConfig, NodeDescriptor, NodeError, OperatorId, PortDirection, PortSpec, SafetyContract, SignalSpec, }",
+    "crate::graph::{SemanticRole, SignalEnvelope}",
+    "fn validate_config(&self, configuration: &NodeConfig) -> Result<(), crate::graph::ConfigError>;"
   ],
   "invariants": [
     {
@@ -719,21 +791,58 @@
   "module": "pocketstation::graph::signal::operator",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-bfed5fe79acb80f7a409",
     "pattern-5f99cb91e2817f944360"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:AsyncOperatorManifestError",
+    "enum:OperatorCancellationPolicy",
+    "enum:OperatorFailurePolicy",
+    "fn:accepts",
+    "fn:cancellation",
+    "fn:deadline",
+    "fn:failure",
+    "fn:generation",
+    "fn:input_edge",
+    "fn:input_ports",
+    "fn:is_terminal",
+    "fn:new",
+    "fn:node",
+    "fn:operator_id",
+    "fn:output_edge",
+    "fn:output_ports",
+    "fn:output_roles",
+    "fn:permission",
+    "fn:queue_capacity_frames",
+    "fn:revision",
+    "fn:validate",
+    "return Err(AsyncOperatorManifestError::DuplicateOutputRole);",
+    "return Err(AsyncOperatorManifestError::EmptyOperatorId);",
+    "return Err(AsyncOperatorManifestError::EmptyOutputRole);",
+    "return Err(AsyncOperatorManifestError::InvalidSafetyContract);",
+    "return Err(AsyncOperatorManifestError::RealtimePartition);",
+    "return Err(AsyncOperatorManifestError::TerminalOutputRoleNotAllowed);",
+    "return Err(AsyncOperatorManifestError::ZeroGeneration);",
+    "return Err(AsyncOperatorManifestError::ZeroProcessTimeout);",
+    "return Err(AsyncOperatorManifestError::ZeroQueueCapacity);",
+    "return Err(AsyncOperatorManifestError::ZeroRevision);",
+    "struct:AsyncOperatorManifest",
+    "struct:OperatorDeadlinePolicy",
+    "struct:OperatorOutputRolePolicy",
+    "struct:OperatorPermissionPolicy",
+    "trait:AsyncNode",
+    "trait:AsyncOperatorFactory"
   ],
   "package": "pocketstation",
   "path": "src/graph/signal/operator.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -976,7 +1085,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::graph::signal::operator`."
+    "text": "Implements pocketstation::graph::signal::operator responsibilities, including Async operator contract for model, connector, transport, and control-plane work.; Prepares resources required by `AsyncNode`.; Processes an input value through `AsyncNode`.."
   },
   "queues": [
     {
@@ -1019,6 +1128,14 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/operator.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/graph/signal/envelope.rs",
+    "REFERENCES:src/graph/signal/preparation.rs",
+    "REFERENCES:src/graph/signal/spec.rs"
+  ],
   "resource_ownership": [
     {
       "line": 33,
@@ -1038,45 +1155,74 @@
     }
   ],
   "responsibilities": [
-    "AsyncNode",
-    "prepare",
-    "process",
-    "process_port",
-    "flush",
-    "cancel",
-    "close",
-    "OperatorPermissionPolicy",
-    "OperatorDeadlinePolicy",
-    "OperatorCancellationPolicy",
-    "OperatorFailurePolicy",
-    "OperatorOutputRolePolicy",
-    "accepts",
-    "is_terminal",
-    "validate",
-    "has_duplicate_roles",
-    "AsyncOperatorManifest",
-    "new",
-    "operator_id",
-    "revision",
-    "generation",
-    "node",
-    "input_edge",
-    "output_edge",
-    "queue_capacity_frames",
-    "permission",
-    "deadline",
-    "cancellation",
-    "failure",
-    "output_roles",
-    "input_ports",
-    "output_ports",
-    "validate",
-    "AsyncOperatorManifestError",
-    "AsyncOperatorFactory",
-    "manifest",
-    "validate_config",
-    "resolve_manifest",
-    "create"
+    "pocketstation::graph::signal::operator::AsyncNode: Async operator contract for model, connector, transport, and control-plane work.",
+    "AsyncNode::prepare: Prepares resources required by `AsyncNode`.",
+    "AsyncNode::process: Processes an input value through `AsyncNode`.",
+    "AsyncNode::process_port: Returns the process port held by `AsyncNode`.",
+    "AsyncNode::flush: Flushes pending output from `AsyncNode` at the end of a run.",
+    "AsyncNode::cancel: Requests cancellation of `AsyncNode`.",
+    "AsyncNode::close: Closes `AsyncNode` to further work.",
+    "pocketstation::graph::signal::operator::OperatorPermissionPolicy: Configures operator permission behavior at its owning API boundary.",
+    "OperatorPermissionPolicy::network_allowed: Stores the network allowed used by `OperatorPermissionPolicy`.",
+    "OperatorPermissionPolicy::filesystem_allowed: Stores the filesystem allowed used by `OperatorPermissionPolicy`.",
+    "pocketstation::graph::signal::operator::OperatorDeadlinePolicy: Configures operator deadline behavior at its owning API boundary.",
+    "OperatorDeadlinePolicy::process_timeout_ms: Stores the process timeout value for `OperatorDeadlinePolicy`, in milliseconds.",
+    "pocketstation::graph::signal::operator::OperatorCancellationPolicy: Selects the operator cancellation policy used by PocketStation.",
+    "pocketstation::graph::signal::operator::OperatorCancellationPolicy::DiscardQueued: Selects discard queued behavior for `OperatorCancellationPolicy`.",
+    "pocketstation::graph::signal::operator::OperatorCancellationPolicy::DrainQueued: Selects drain queued behavior for `OperatorCancellationPolicy`.",
+    "pocketstation::graph::signal::operator::OperatorFailurePolicy: Selects the operator failure policy used by PocketStation.",
+    "pocketstation::graph::signal::operator::OperatorFailurePolicy::Continue: Selects continue behavior for `OperatorFailurePolicy`.",
+    "pocketstation::graph::signal::operator::OperatorFailurePolicy::StopWorker: Selects stop worker behavior for `OperatorFailurePolicy`.",
+    "pocketstation::graph::signal::operator::OperatorOutputRolePolicy: Configures operator output role behavior at its owning API boundary.",
+    "OperatorOutputRolePolicy::allowed: Stores the allowed used by `OperatorOutputRolePolicy`.",
+    "OperatorOutputRolePolicy::terminal: Indicates whether terminal applies to `OperatorOutputRolePolicy`.",
+    "accepts: Returns whether accepts is true for `OperatorOutputRolePolicy`.",
+    "is_terminal: Returns whether terminal applies to `OperatorOutputRolePolicy`.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifest: Describes the async operator manifest contract.",
+    "new: Creates a new `AsyncOperatorManifest`.",
+    "operator_id: Returns the operator identifier held by `AsyncOperatorManifest`.",
+    "revision: Returns the revision held by `AsyncOperatorManifest`.",
+    "generation: Returns the generation associated with `AsyncOperatorManifest`.",
+    "node: Returns the node held by `AsyncOperatorManifest`.",
+    "input_edge: Returns the input edge associated with `AsyncOperatorManifest`.",
+    "output_edge: Returns the output edge associated with `AsyncOperatorManifest`.",
+    "queue_capacity_frames: Returns the queue capacity frames held by `AsyncOperatorManifest`.",
+    "permission: Returns the permission associated with `AsyncOperatorManifest`.",
+    "deadline: Returns the deadline associated with `AsyncOperatorManifest`.",
+    "cancellation: Returns the cancellation associated with `AsyncOperatorManifest`.",
+    "failure: Returns the failure held by `AsyncOperatorManifest`.",
+    "output_roles: Returns the output roles associated with `AsyncOperatorManifest`.",
+    "input_ports: Returns the input ports held by `AsyncOperatorManifest`.",
+    "output_ports: Returns the output ports held by `AsyncOperatorManifest`.",
+    "validate: Validates `AsyncOperatorManifest` against its declared contract.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError: Classifies failures reported as async operator manifest error.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::EmptyOperatorId: Reported when the owning operation encounters empty operator identifier.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::ZeroRevision: Reported when the owning operation encounters zero revision.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::ZeroGeneration: Reported when the owning operation encounters zero generation.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::ZeroQueueCapacity: Reported when the owning operation encounters zero queue capacity.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::ZeroProcessTimeout: Reported when the owning operation encounters zero process timeout.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::RealtimePartition: Reported when the owning operation encounters realtime partition.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::InvalidSafetyContract: Reported when the owning operation encounters invalid safety contract.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::NetworkPermissionMismatch: Reported when the owning operation encounters network permission mismatch.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::MissingInputPort: Reported when the owning operation encounters missing input port.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::MissingOutputPort: Reported when the owning operation encounters missing output port.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::UnsupportedBackpressure: Reported when the owning operation encounters unsupported backpressure.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::UnsupportedInputCopyPolicy: Reported when the owning operation encounters unsupported input copy policy.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::UnsupportedOutputBackpressure: Reported when the owning operation encounters unsupported output backpressure.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::InputEdgeMediaMismatch: Reported when the owning operation encounters input edge media mismatch.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::OutputEdgeMediaMismatch: Reported when the owning operation encounters output edge media mismatch.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::InvalidInputSignal: Reported when the owning operation encounters invalid input signal.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::InvalidOutputSignal: Reported when the owning operation encounters invalid output signal.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::InputSignalMediaMismatch: Reported when the owning operation encounters input signal media mismatch.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::OutputSignalMediaMismatch: Reported when the owning operation encounters output signal media mismatch.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::EmptyOutputRole: Reported when the owning operation encounters empty output role.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::DuplicateOutputRole: Reported when the owning operation encounters duplicate output role.",
+    "pocketstation::graph::signal::operator::AsyncOperatorManifestError::TerminalOutputRoleNotAllowed: Reported when the owning operation encounters terminal output role not allowed.",
+    "pocketstation::graph::signal::operator::AsyncOperatorFactory: Implement this trait to provide async operator behavior to PocketStation; its methods define the preparation and runtime contract.",
+    "AsyncOperatorFactory::manifest: Returns the manifest held by `AsyncOperatorFactory`.",
+    "AsyncOperatorFactory::validate_config: Validates config for `AsyncOperatorFactory`.",
+    "AsyncOperatorFactory::resolve_manifest: Resolves manifest for `AsyncOperatorFactory`.",
+    "AsyncOperatorFactory::create: Creates the runtime implementation described by `AsyncOperatorFactory`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1128,7 +1274,12 @@
       "text": "#[error(\"async operator output currently requires BoundedQueue backpressure\")]"
     }
   ],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-3ed49534bf02ce80cbcb",
+    "test-b79c368693e08eaa7d95",
+    "test-e3fecbbc626c7ca91545"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

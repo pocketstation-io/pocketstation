@@ -57,7 +57,7 @@ impl ConnectorConfigurationRecord {
         Self(values)
     }
 
-    #[doc = "Returns the configuration associated with `ConnectorConfigurationRecord`."]
+    #[doc = "Returns the configuration held by `ConnectorConfigurationRecord`."]
     pub const fn configuration(&self) -> &ConnectorConfiguration {
         &self.0
     }
@@ -303,28 +303,28 @@ pub enum ConnectorConfigurationRecordError {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Represents connector audio metadata in the PocketStation API."]
+#[doc = "Carries source, stream, timing, and format metadata beside a connector audio record."]
 pub struct ConnectorAudioMetadata {
-    #[doc = "Identifies the endpoint associated with `ConnectorAudioMetadata`."]
+    #[doc = "Identifies the endpoint identifier recorded by `ConnectorAudioMetadata`."]
     pub endpoint_id: EndpointId,
-    #[doc = "Identifies the connector associated with `ConnectorAudioMetadata`."]
+    #[doc = "Identifies the connector identifier recorded by `ConnectorAudioMetadata`."]
     pub connector_id: Option<ConnectorId>,
-    #[doc = "Identifies the route associated with `ConnectorAudioMetadata`."]
+    #[doc = "Identifies the route identifier recorded by `ConnectorAudioMetadata`."]
     pub route_id: RouteId,
-    #[doc = "Identifies the stream associated with `ConnectorAudioMetadata`."]
+    #[doc = "Identifies the stream identifier recorded by `ConnectorAudioMetadata`."]
     pub stream_id: StreamId,
-    #[doc = "Stores the lineage associated with `ConnectorAudioMetadata`."]
+    #[doc = "Stores the lineage used by `ConnectorAudioMetadata`."]
     pub lineage: FrameLineage,
     #[doc = "Stores the sample rate value for `ConnectorAudioMetadata`, in hertz."]
     pub sample_rate_hz: u32,
-    #[doc = "Stores the channels associated with `ConnectorAudioMetadata`."]
+    #[doc = "Stores the channels used by `ConnectorAudioMetadata`."]
     pub channels: u8,
-    #[doc = "Stores the sample format associated with `ConnectorAudioMetadata`."]
+    #[doc = "Stores the sample format used by `ConnectorAudioMetadata`."]
     pub sample_format: SampleFormat,
 }
 
 #[derive(Debug, Clone, PartialEq)]
-#[doc = "Represents connector audio record in the PocketStation API."]
+#[doc = "Records one immutable connector audio observation."]
 pub struct ConnectorAudioRecord {
     port_name: String,
     metadata: ConnectorAudioMetadata,
@@ -369,12 +369,12 @@ impl ConnectorAudioRecord {
         )
     }
 
-    #[doc = "Returns the port name associated with `ConnectorAudioRecord`."]
+    #[doc = "Returns the port name held by `ConnectorAudioRecord`."]
     pub fn port_name(&self) -> &str {
         &self.port_name
     }
 
-    #[doc = "Returns the metadata associated with `ConnectorAudioRecord`."]
+    #[doc = "Returns the metadata held by `ConnectorAudioRecord`."]
     pub const fn metadata(&self) -> &ConnectorAudioMetadata {
         &self.metadata
     }

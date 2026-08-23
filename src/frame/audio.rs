@@ -22,9 +22,9 @@ pub enum SampleFormat {
 pub struct SampleSpec {
     #[doc = "Stores the sample rate value for `SampleSpec`, in hertz."]
     pub sample_rate_hz: u32,
-    #[doc = "Stores the channels associated with `SampleSpec`."]
+    #[doc = "Stores the channels used by `SampleSpec`."]
     pub channels: u8,
-    #[doc = "Stores the format associated with `SampleSpec`."]
+    #[doc = "Stores the format used by `SampleSpec`."]
     pub format: SampleFormat,
 }
 
@@ -38,14 +38,14 @@ impl SampleSpec {
         }
     }
 
-    #[doc = "Returns the frame samples for duration milliseconds associated with `SampleSpec`."]
+    #[doc = "Returns the frame samples for duration milliseconds held by `SampleSpec`."]
     pub fn frame_samples_for_duration_ms(&self, duration_ms: u32) -> usize {
         (self.sample_rate_hz * duration_ms / 1000) as usize * self.channels as usize
     }
 }
 
 #[derive(Debug)]
-#[doc = "Represents audio frame in the PocketStation API."]
+#[doc = "Carries one audio payload together with its declared metadata."]
 pub struct AudioFrame {
     pub(crate) stream_id: StreamId,
     pub(crate) source_id: SourceId,
@@ -69,9 +69,9 @@ pub enum AudioFrameBuildError {
     #[error("audio frame sample count {samples} is not divisible by {channels} channels")]
     #[doc = "Reports misaligned samples."]
     MisalignedSamples {
-        #[doc = "Stores the samples associated with `MisalignedSamples`."]
+        #[doc = "Stores the samples used by `MisalignedSamples`."]
         samples: usize,
-        #[doc = "Stores the channels associated with `MisalignedSamples`."]
+        #[doc = "Stores the channels used by `MisalignedSamples`."]
         channels: u8,
     },
 }
@@ -135,17 +135,17 @@ impl AudioFrame {
         }
     }
 
-    #[doc = "Returns the stream identifier associated with `AudioFrame`."]
+    #[doc = "Returns the stream identifier held by `AudioFrame`."]
     pub const fn stream_id(&self) -> StreamId {
         self.stream_id
     }
 
-    #[doc = "Returns the source identifier associated with `AudioFrame`."]
+    #[doc = "Returns the source identifier held by `AudioFrame`."]
     pub const fn source_id(&self) -> SourceId {
         self.source_id
     }
 
-    #[doc = "Returns the sample rate hertz associated with `AudioFrame`."]
+    #[doc = "Returns the sample rate hertz held by `AudioFrame`."]
     pub const fn sample_rate_hz(&self) -> u32 {
         self.sample_rate_hz
     }
@@ -155,17 +155,17 @@ impl AudioFrame {
         self.channels
     }
 
-    #[doc = "Returns the format associated with `AudioFrame`."]
+    #[doc = "Returns the format held by `AudioFrame`."]
     pub const fn format(&self) -> SampleFormat {
         self.format
     }
 
-    #[doc = "Returns the timestamp nanoseconds associated with `AudioFrame`."]
+    #[doc = "Returns the timestamp nanoseconds held by `AudioFrame`."]
     pub const fn timestamp_ns(&self) -> u64 {
         self.timestamp_ns
     }
 
-    #[doc = "Returns the sequence number associated with `AudioFrame`."]
+    #[doc = "Returns the sequence number held by `AudioFrame`."]
     pub const fn sequence_number(&self) -> u64 {
         self.sequence_number
     }
@@ -202,7 +202,7 @@ impl AudioFrame {
 }
 
 #[derive(Debug)]
-#[doc = "Represents shared audio frame in the PocketStation API."]
+#[doc = "Carries one shared audio payload together with its declared metadata."]
 pub struct SharedAudioFrame {
     pub(crate) stream_id: StreamId,
     pub(crate) source_id: SourceId,
@@ -215,17 +215,17 @@ pub struct SharedAudioFrame {
 }
 
 impl SharedAudioFrame {
-    #[doc = "Returns the stream identifier associated with `SharedAudioFrame`."]
+    #[doc = "Returns the stream identifier held by `SharedAudioFrame`."]
     pub const fn stream_id(&self) -> StreamId {
         self.stream_id
     }
 
-    #[doc = "Returns the source identifier associated with `SharedAudioFrame`."]
+    #[doc = "Returns the source identifier held by `SharedAudioFrame`."]
     pub const fn source_id(&self) -> SourceId {
         self.source_id
     }
 
-    #[doc = "Returns the sample rate hertz associated with `SharedAudioFrame`."]
+    #[doc = "Returns the sample rate hertz held by `SharedAudioFrame`."]
     pub const fn sample_rate_hz(&self) -> u32 {
         self.sample_rate_hz
     }
@@ -235,17 +235,17 @@ impl SharedAudioFrame {
         self.channels
     }
 
-    #[doc = "Returns the format associated with `SharedAudioFrame`."]
+    #[doc = "Returns the format held by `SharedAudioFrame`."]
     pub const fn format(&self) -> SampleFormat {
         self.format
     }
 
-    #[doc = "Returns the timestamp nanoseconds associated with `SharedAudioFrame`."]
+    #[doc = "Returns the timestamp nanoseconds held by `SharedAudioFrame`."]
     pub const fn timestamp_ns(&self) -> u64 {
         self.timestamp_ns
     }
 
-    #[doc = "Returns the sequence number associated with `SharedAudioFrame`."]
+    #[doc = "Returns the sequence number held by `SharedAudioFrame`."]
     pub const fn sequence_number(&self) -> u64 {
         self.sequence_number
     }

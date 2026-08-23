@@ -3,7 +3,11 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/session/extensions/polled_audio.rs"
+  ],
   "calls": [
     "Arc::new",
     "PolledAudioEndpointFactory::new",
@@ -17,7 +21,11 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/session/extensions/polled_audio.rs"
+  ],
   "constructs": [
     "Arc::new",
     "PolledAudioEndpointFactory::new",
@@ -131,8 +139,13 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/session/extensions/polled_audio.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -146,11 +159,19 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "3453f1d0f79effa0f1d1a511814df8fb9bd42027",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/session/extensions/polled_audio.rs"
+  ],
   "implements": [
     "PolledAudioEndpoint"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/endpoint/mod.rs",
+    "IMPORTS:src/endpoint/mod.rs",
+    "REFERENCES:src/session/extensions/polled_audio.rs"
+  ],
   "imports": [
     "crate::endpoint::EndpointDriverFactory",
     "crate::endpoint::polled_audio_driver::PolledAudioEndpointFactory",
@@ -158,7 +179,10 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::endpoint::EndpointDriverFactory",
+    "crate::endpoint::polled_audio_driver::PolledAudioEndpointFactory",
+    "crate::endpoint::polled_audio_driver::{ PolledAudioEndpointConfig, PolledAudioEndpointConfigError, PolledAudioReceipt, }",
+    "std::sync::Arc"
   ],
   "invariants": [],
   "language": "Rust",
@@ -167,18 +191,24 @@
   "module": "pocketstation::endpoint::polled_audio",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "const:POLLED_AUDIO_OPERATOR_ID",
+    "fn:factory",
+    "fn:new",
+    "fn:receipt",
+    "struct:PolledAudioEndpoint"
   ],
   "package": "pocketstation",
   "path": "src/endpoint/polled_audio.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -216,7 +246,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::endpoint::polled_audio`."
+    "text": "Implements pocketstation::endpoint::polled audio responsibilities, including Safe composition owner for application-polled audio.; Creates a new `PolledAudioEndpoint`.; Returns the receipt associated with `PolledAudioEndpoint`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -252,6 +282,10 @@
     "docs/troubleshooting/session-stop.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/endpoint/contract.rs",
+    "REFERENCES:src/endpoint/polled_audio_driver.rs"
+  ],
   "resource_ownership": [
     {
       "line": 1,
@@ -275,11 +309,9 @@
     }
   ],
   "responsibilities": [
-    "POLLED_AUDIO_OPERATOR_ID",
-    "PolledAudioEndpoint",
-    "new",
-    "receipt",
-    "factory"
+    "pocketstation::endpoint::polled_audio::PolledAudioEndpoint: Safe composition owner for application-polled audio.",
+    "new: Creates a new `PolledAudioEndpoint`.",
+    "receipt: Returns the receipt associated with `PolledAudioEndpoint`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -289,6 +321,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

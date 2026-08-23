@@ -44,6 +44,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -64,7 +65,8 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "serde = { version = \"1\", features = [\"derive\"] }",
+    "tokio = { version = \"1\", features = [\"fs\", \"macros\", \"process\", \"rt-multi-thread\", \"time\"] }"
   ],
   "invariants": [],
   "language": "TOML",
@@ -73,25 +75,27 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification or behavior outside the example's prerequisites."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "repository",
   "path": "examples/whisper-transcribe/Cargo.toml",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Provides repository-owned intended-use evidence."
+    "classification": "DECLARED",
+    "text": "Demonstrates the repository-owned cargo workflow as compilable example code."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -114,8 +118,11 @@
     "docs/reference/lifecycle-evidence.md",
     "docs/troubleshooting/transcription-evidence.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
-  "responsibilities": [],
+  "responsibilities": [
+    "Demonstrates the repository-owned cargo workflow as compilable example code."
+  ],
   "retry_behavior": [],
   "serialization": [
     {
@@ -134,6 +141,7 @@
       "text": "tokio = { version = \"1\", features = [\"fs\", \"macros\", \"process\", \"rt-multi-thread\", \"time\"] }"
     }
   ],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [
     {

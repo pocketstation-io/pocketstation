@@ -7,11 +7,11 @@
 - **Use the versioned C ABI.** Declare, start, observe, stop, and release Sessions and extension callbacks through the public C boundary.
 - **Classify public failures.** Expose stable typed errors and cross-boundary error codes without inferring retry or recovery guarantees.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Operate a Session through C** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
 ## Prerequisites
 
-Read the linked concept and confirm that target platform, Cargo features, source or provider dependencies, and application-owned permission work match this task. Keep returned typed errors and outcomes available for verification.
+The repository header, a compatible ABI version, and correct ownership for every opaque handle and callback context.
 
 ## Procedure
 
@@ -21,36 +21,21 @@ Read the linked concept and confirm that target platform, Cargo features, source
 4. Stop before releasing runtime ownership.
 5. Release each handle with its matching ABI function.
 
-## APIs used
+## Important consequence
 
-| Public declaration | Kind | Declared purpose | Source |
-|---|---|---|---|
-| `pocketstation::abi::session::abi::PksSessionStatus` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:56` |
-| `pocketstation::abi::session::abi::PksSessionUtf8` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:101` |
-| `pocketstation::abi::session::abi::PksSessionStatusCode` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:79` |
-| `pocketstation::abi::session::abi::PksSessionStatusCode::BackendFailure` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:93` |
-| `pocketstation::abi::session::abi::PksSessionStatusCode::Cancelled` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:94` |
-| `pocketstation::abi::session::abi::PksSessionStatusCode::ForeignHandle` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:90` |
-| `pocketstation::abi::session::abi::PksSessionStatusCode::IndexOutOfRange` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:95` |
-| `pocketstation::abi::session::abi::PksSessionStatusCode::InternalPanic` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:87` |
-| `pocketstation::abi::session::abi::PksSessionStatusCode::InvalidArgument` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:89` |
-| `pocketstation::abi::session::abi::PksSessionStatusCode::InvalidHandle` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:84` |
-| `pocketstation::abi::session::abi::PksSessionStatusCode::InvalidLifecycleState` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:91` |
-| `pocketstation::abi::session::abi::PksSessionStatusCode::InvalidStructSize` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:83` |
-| `pocketstation::abi::session::abi::PksSessionStatusCode::MisalignedPointer` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:88` |
-| `pocketstation::abi::session::abi::PksSessionStatusCode::NoCapacity` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:86` |
-| `pocketstation::abi::session::abi::PksSessionStatusCode::NullArgument` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:81` |
-| `pocketstation::abi::session::abi::PksSessionStatusCode::Ok` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/abi/session/abi.rs:80` |
+Do not let a Rust panic, borrowed pointer, or library context escape its declared ABI lifetime.
 
 ## Verify the outcome
 
-The following test bodies are evidence only for their recorded setup:
+Every call returns an accepted `PksSessionStatus`, stop completes, and each handle is released by its matching function.
 
+Executable evidence selected for **Operate a Session through C** is limited to each test's recorded setup and assertions:
+
+- `abi_session_c_success_conformance` — abi session c success conformance (`tests/abi_session_c_success_conformance.c:1`; `test-a2314a88cf28de25b331`).
 - `given_deterministic_session_when_polled_then_audio_lease_is_bounded_and_stable` — given deterministic session when polled then audio lease is bounded and stable (`src/abi/session/mod.rs:1036`; `test-16c3dd3ac223381ec20a`).
 - `given_native_engine_when_created_then_real_session_declaration_compiles` — given native engine when created then real session declaration compiles (`src/abi/session/mod.rs:929`; `test-ec0f9d1e4ec547217e7b`).
 - `abi_session_c_conformance` — abi session c conformance (`tests/abi_session_c_conformance.c:1`; `test-1ab6697ee6c783b1c41b`).
 - `abi_session_c_metrics_canary` — abi session c metrics canary (`tests/abi_session_c_metrics_canary.c:1`; `test-fe902c5e04fb9d6f128e`).
-- `abi_session_c_success_conformance` — abi session c success conformance (`tests/abi_session_c_success_conformance.c:1`; `test-a2314a88cf28de25b331`).
 - `given_fixture_session_when_started_then_two_stems_cross_canonical_engine` — given fixture session when started then two stems cross canonical engine (`tests/conformance_fixture.rs:14`; `test-bec1e3cd7f059a144101`).
 - `given_bitrate_change_when_encode_then_still_produces_valid_packet` — given bitrate change when encode then still produces valid packet (`src/abi/codec.rs:416`; `test-60e08c6e7ec6bb4b5978`).
 - `given_encoder_when_destroy_null_then_no_crash` — given encoder when destroy null then no crash (`src/abi/codec.rs:384`; `test-c5614104f53b6b245bfd`).
@@ -61,9 +46,23 @@ The following test bodies are evidence only for their recorded setup:
 
 ## Failure signals
 
-No domain-specific error record is assigned. Preserve the returned error and use the general error index.
+No task-specific public error was resolved for operate a session through c; preserve the owning API's returned error.
 
-Retry only when the relevant API or error contract explicitly permits it. An error name, a transient-looking message, or a successful prior run is not retry evidence.
+## API reference
+
+- [C Abi Ownership](/docs/concepts/c-abi-ownership.md)
+- [C Abi](/docs/reference/c-abi.md)
+
+| Public declaration | Kind | Declared purpose | Source |
+|---|---|---|---|
+| `pocketstation::abi::session::abi::PksSessionStatus` | struct | Reports the structured session status. | `src/abi/session/abi.rs:56` |
+| `pocketstation::abi::session::abi::PksSessionUtf8` | struct | Borrows a UTF-8 byte range across the C Session ABI as a pointer and length. | `src/abi/session/abi.rs:101` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode` | enum | Enumerates the supported session status code cases. | `src/abi/session/abi.rs:79` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::BackendFailure` | variant | Identifies the backend failure state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:93` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::Cancelled` | variant | Indicates that the operation was cancelled. | `src/abi/session/abi.rs:94` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::ForeignHandle` | variant | Identifies the foreign handle state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:90` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::IndexOutOfRange` | variant | Identifies the index out of range state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:95` |
+| `pocketstation::abi::session::abi::PksSessionStatusCode::InternalPanic` | variant | Identifies the internal panic state or stage represented by `PksSessionStatusCode`. | `src/abi/session/abi.rs:87` |
 
 ## Related documentation
 
@@ -78,8 +77,8 @@ Retry only when the relevant API or error contract explicitly permits it. An err
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Operate a Session through C** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `tests/abi_session_c_success_conformance.c:1-191` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Operate a Session through C**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

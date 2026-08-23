@@ -2,14 +2,6 @@
 
 <!-- claims: CLM-DOC-004-CAP-001,CLM-DOC-004-CAP-002,CLM-DOC-004-CAP-003,CLM-DOC-004-SOURCE-001 -->
 
-## Scope
-
-- **Install and feature-select the crate.** Add PocketStation to a Cargo package and choose native capture, contracts-only, conformance, or internal test features.
-- **Validate protocol and conformance boundaries.** Check ABI layout, cross-language behavior, connector vectors, and protocol compatibility against versioned fixtures.
-- **Integrate transcription processing.** Use the repository-owned Whisper example to send captured stems to an external transcription process with evidence output.
-
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
-
 ## Compile the examples
 
 Run `cargo test --examples --all-features` for top-level examples. Run `cargo check --manifest-path examples/operator-consumer/Cargo.toml` and `cargo check --manifest-path examples/whisper-transcribe/Cargo.toml` for nested packages.
@@ -23,13 +15,21 @@ Compilation establishes API compatibility. It does not establish that capture de
 - `operator-consumer` consumes the operator contract as a separate package.
 - `whisper-transcribe` owns an external-process evidence boundary.
 
+## Scope
+
+- **Install and feature-select the crate.** Add PocketStation to a Cargo package and choose native capture, contracts-only, conformance, or internal test features.
+- **Validate protocol and conformance boundaries.** Check ABI layout, cross-language behavior, connector vectors, and protocol compatibility against versioned fixtures.
+- **Integrate transcription processing.** Use the repository-owned Whisper example to send captured stems to an external transcription process with evidence output.
+
+The scope of **Run the examples** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
+
 ## Public entry points
 
-No intentionally public Rust declaration is owned directly by this evidence domain. Use the linked protocol or repository reference.
+No intentionally public Rust declaration is owned directly by **Run the examples**. Its contract is expressed by the linked repository, protocol, or qualification evidence instead.
 
 ## Executable evidence
 
-The following test bodies are evidence only for their recorded setup:
+Executable evidence selected for **Run the examples** is limited to each test's recorded setup and assertions:
 
 - `given_discontinuity_change_inside_window_when_processed_then_window_is_rejected` — given discontinuity change inside window when processed then window is rejected (`examples/whisper-transcribe/src/lib.rs:1400`; `test-ecb60c6da5bff96b4580`).
 - `given_hung_provider_when_deadline_expires_then_child_is_killed_and_reaped` — given hung provider when deadline expires then child is killed and reaped (`examples/whisper-transcribe/src/lib.rs:1108`; `test-d2c23e54192a869ee546`).
@@ -57,9 +57,9 @@ The following test bodies are evidence only for their recorded setup:
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Run the examples** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `Cargo.toml:1-180` (`DIRECT`)
 - `examples/product_quickstart.rs:1-61` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Run the examples**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

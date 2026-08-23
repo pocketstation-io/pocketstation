@@ -188,6 +188,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -211,7 +212,8 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, SessionId, SourceId, StemId, StreamId, }",
+    "super::*"
   ],
   "invariants": [
     {
@@ -241,22 +243,24 @@
   "module": "pocketstation::endpoint::polled_audio_driver::tests",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-5a665572187409651b60",
-    "pattern-a3b3fcad4d50a67e95c6",
-    "pattern-ffa343bd7bb55707fdb9"
+    "pattern-a3b3fcad4d50a67e95c6"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(PolledAudioPollError::Empty) => thread::yield_now(),",
+    "Err(PolledAudioPollError::LeaseCapacityExhausted)",
+    "Err(error) => panic!(\"unexpected concurrent poll result: {error}\"),"
   ],
   "package": "pocketstation",
   "path": "src/endpoint/polled_audio_driver/tests.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -329,7 +333,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::endpoint::polled_audio_driver::tests`."
+    "text": "Implements pocketstation::endpoint::polled audio driver::tests responsibilities, including the src/endpoint/polled audio driver/tests boundary."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -365,6 +369,7 @@
     "docs/troubleshooting/session-stop.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 12,
@@ -408,16 +413,16 @@
     }
   ],
   "responsibilities": [
-    "ENDPOINT_ID",
-    "CONNECTOR_ID",
-    "ROUTE_ID",
-    "lineaged_frame",
-    "delivered",
-    "given_shared_branch_when_published_then_it_is_rejected_and_counted",
-    "given_held_batch_when_polled_then_samples_stay_stable_and_lease_exhaustion_is_counted",
-    "given_concurrent_publish_and_poll_when_observed_then_depth_stays_bounded_and_returns_to_zero",
-    "given_untrusted_oversized_capacities_when_constructed_then_all_fail_before_allocation",
-    "given_impossible_dequeue_when_observed_then_depth_saturates_and_failure_is_explicit"
+    "ENDPOINT_ID (const)",
+    "CONNECTOR_ID (const)",
+    "ROUTE_ID (const)",
+    "lineaged_frame (fn)",
+    "delivered (fn)",
+    "given_shared_branch_when_published_then_it_is_rejected_and_counted (fn)",
+    "given_held_batch_when_polled_then_samples_stay_stable_and_lease_exhaustion_is_counted (fn)",
+    "given_concurrent_publish_and_poll_when_observed_then_depth_stays_bounded_and_returns_to_zero (fn)",
+    "given_untrusted_oversized_capacities_when_constructed_then_all_fail_before_allocation (fn)",
+    "given_impossible_dequeue_when_observed_then_depth_saturates_and_failure_is_explicit (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -432,7 +437,14 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0f7fd199d4e6b26c8395",
+    "test-1c0e175d584cd2910a77",
+    "test-222aff6ea1901627942e",
+    "test-53df4ef903e72a1de69c",
+    "test-7760a60bd2740c15c01d"
+  ],
   "threads": [
     {
       "line": 160,

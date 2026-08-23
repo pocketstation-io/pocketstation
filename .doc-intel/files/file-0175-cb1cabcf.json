@@ -275,6 +275,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -338,7 +339,22 @@
     "tempfile::TempDir"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::endpoint::{ endpoint_start_gate, EndpointDriverRegistry, EndpointPrepareContext, EndpointRouteContext, OperatorId, SessionTimelineOrigin, }",
+    "crate::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, RouteId, SampleFormat, SampleSpec, SourceId, StemId, StreamId, }",
+    "crate::graph::compile::Compiler",
+    "crate::graph::compile::RuntimePlanner",
+    "crate::graph::dsl::Pipeline",
+    "crate::graph::node::{NodeConfig, PrepareContext}",
+    "crate::graph::register_builtins",
+    "crate::graph::registry::NodeRegistry",
+    "crate::graph::spec::{EdgeId, NodeId}",
+    "crate::graph::{EdgeContract, MediaCaps, NodeTypeId, SignalSpec}",
+    "crate::runtime::{PlanEdgeReceiver, PlanEdgeRouter}",
+    "std::fs::File",
+    "std::thread",
+    "std::time::{Duration, Instant}",
+    "super::*",
+    "tempfile::TempDir"
   ],
   "invariants": [
     {
@@ -385,22 +401,23 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-6d5a88478cbd7fa1d968",
     "pattern-3f7ec65b3a0b92c01e6c",
-    "pattern-2b4448626799ffae1fce"
+    "pattern-6d5a88478cbd7fa1d968"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(error) => error,"
   ],
   "package": "pocketstation",
   "path": "src/recording/endpoint/tests.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -498,7 +515,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::recording::endpoint::tests`."
+    "text": "Implements pocketstation::recording::endpoint::tests responsibilities, including the src/recording/endpoint/tests boundary."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -529,6 +546,7 @@
     "docs/troubleshooting/session-stop.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 162,
@@ -536,21 +554,21 @@
     }
   ],
   "responsibilities": [
-    "SESSION_ID",
-    "GROUP_ID",
-    "OPERATOR_ID",
-    "NODE_TYPE_ID",
-    "FRAME_SAMPLES",
-    "input",
-    "session_input",
-    "lineaged_frame_with_permission",
-    "router_with_sources",
-    "session_endpoint_registry",
-    "wait_for_received",
-    "wait_for_failure",
-    "given_session_context_and_two_first_frames_when_recorded_then_manifest_derives_capture_lineage_and_common_origin",
-    "given_session_recorder_input_without_audio_stem_origin_when_prepared_then_it_is_rejected",
-    "given_derived_permission_epoch_when_later_frame_changes_it_then_recording_fails_closed"
+    "SESSION_ID (const)",
+    "GROUP_ID (const)",
+    "OPERATOR_ID (const)",
+    "NODE_TYPE_ID (const)",
+    "FRAME_SAMPLES (const)",
+    "input (fn)",
+    "session_input (fn)",
+    "lineaged_frame_with_permission (fn)",
+    "router_with_sources (fn)",
+    "session_endpoint_registry (fn)",
+    "wait_for_received (fn)",
+    "wait_for_failure (fn)",
+    "given_session_context_and_two_first_frames_when_recorded_then_manifest_derives_capture_lineage_and_common_origin (fn)",
+    "given_session_recorder_input_without_audio_stem_origin_when_prepared_then_it_is_rejected (fn)",
+    "given_derived_permission_epoch_when_later_frame_changes_it_then_recording_fails_closed (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -591,7 +609,12 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-497452363244c581f9e6",
+    "test-5c3ff5e741df683ae4d8",
+    "test-9352f7a742c1f649857a"
+  ],
   "threads": [
     {
       "line": 2,

@@ -7,11 +7,11 @@
 - **Bridge asynchronous output into audio.** Return generated PCM from asynchronous processing through an explicit bounded audio reentry bridge.
 - **Implement asynchronous operators.** Register operator factories that consume and emit named typed signals on the asynchronous execution lane.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Return generated PCM through a bridge** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
 ## Prerequisites
 
-Read the linked concept and confirm that target platform, Cargo features, source or provider dependencies, and application-owned permission work match this task. Keep returned typed errors and outcomes available for verification.
+An async operator output declared as generated audio and a target sample specification for the audio lane.
 
 ## Procedure
 
@@ -21,31 +21,19 @@ Read the linked concept and confirm that target platform, Cargo features, source
 4. Write from the asynchronous lane.
 5. Observe accepted, saturated, closed, or cancelled outcomes.
 
-## APIs used
+## Important consequence
 
-| Public declaration | Kind | Declared purpose | Source |
-|---|---|---|---|
-| `needs_bridge_to` | function | Returns `true` if crossing from `self` to `other` requires a compiler-inserted Bridge. | `src/graph/partition.rs:71` |
-| `audio` | module | Allocation-free realtime audio execution lane. | `src/runtime/audio/mod.rs:1` |
-| `lifecycle` | module | Non-realtime runtime ownership and process-protocol lifecycle. | `src/runtime/lifecycle/mod.rs:1` |
-| `pocketstation::graph` | module | Stable signal, port, capability, partition, and extension contracts. | `src/graph/mod.rs:1` |
-| `signal` | module | Bounded asynchronous signal execution lane. | `src/runtime/signal/mod.rs:1` |
-| `pocketstation::graph::runtime_node::RuntimeNode` | trait | Realtime invariant: for nodes whose ExecutionClass::is_realtime is true, process() must stay alloc-free, lock-free, log-free, and blocking-free (LAW 15). All working state is sized once in prepare() and reused for the lifetime of the node. | `src/graph/runtime_node.rs:7` |
-| `pocketstation::graph::signal::operator::AsyncNode` | trait | Async operator contract for model, connector, transport, and control-plane work. | `src/graph/signal/operator.rs:13` |
-| `pocketstation::graph::node::PortPrepareContext` | struct | Exact graph-owned contract for one prepared node port. | `src/graph/node.rs:282` |
-| `pocketstation::graph::operator::OperatorId` | struct | Open identifier for a registered graph operator implementation. | `src/graph/operator.rs:16` |
-| `pocketstation::graph::signal::lineage::SignalDerivation` | struct | Source-independent record of the signal consumed by an operator. | `src/graph/signal/lineage.rs:97` |
-| `pocketstation::graph::signal::preparation::AsyncOperatorPrepareContext` | struct | Complete graph-owned preparation contract for one asynchronous Operator. | `src/graph/signal/preparation.rs:22` |
-| `pocketstation::graph::signal::spec::SchemaRef` | struct | Reference to an external schema document. | `src/graph/signal/spec.rs:87` |
-| `pocketstation::graph::signal::spec::SemanticRole` | struct | Semantic role annotation on a port. | `src/graph/signal/spec.rs:57` |
-| `pocketstation::graph::signal::spec::SignalId` | struct | Opaque identifier for a custom signal type. | `src/graph/signal/spec.rs:22` |
-| `pocketstation::graph::signal::spec::SignalSpec` | struct | Full signal contract for a single port. | `src/graph/signal/spec.rs:205` |
-| `pocketstation::graph::partition::ExecutionPartition` | enum | WHERE an operator runs. | `src/graph/partition.rs:18` |
+Never write generated PCM directly into the realtime lane or silently change its lineage.
 
 ## Verify the outcome
 
-The following test bodies are evidence only for their recorded setup:
+PCM writes are accepted by the bridge and Session audio-reentry observations advance without format or capacity failure.
 
+Executable evidence selected for **Return generated PCM through a bridge** is limited to each test's recorded setup and assertions:
+
+- `given_full_audio_ingress_when_bridge_sends_then_rejection_is_counted_exactly` — given full audio ingress when bridge sends then rejection is counted exactly (`src/runtime/bridge/audio.rs:497`; `test-c49159871ef385421381`).
+- `given_operator_audio_when_bridged_then_owned_frame_enters_bounded_plan_source` — given operator audio when bridged then owned frame enters bounded plan source (`src/runtime/bridge/audio.rs:335`; `test-0ae60369d5962ff55b0f`).
+- `given_retained_audio_ingress_when_pool_is_exhausted_then_loss_is_counted_exactly` — given retained audio ingress when pool is exhausted then loss is counted exactly (`src/runtime/bridge/audio.rs:459`; `test-1664fa1aa12573253d70`).
 - `given_passthrough_node_when_process_then_returns_frame_unchanged` — given passthrough node when process then returns frame unchanged (`src/graph/builtins.rs:300`; `test-681eed046f58e8486db9`).
 - `given_non_numeric_config_when_get_f32_then_returns_none` — given non numeric config when get f32 then returns none (`src/graph/node.rs:384`; `test-e8a88787bf728526e24e`).
 - `given_non_numeric_config_when_get_u32_then_returns_none` — given non numeric config when get u32 then returns none (`src/graph/node.rs:396`; `test-822e3a824202ce79818e`).
@@ -55,26 +43,35 @@ The following test bodies are evidence only for their recorded setup:
 - `given_empty_registry_when_get_unknown_then_returns_none` — given empty registry when get unknown then returns none (`src/graph/registry.rs:196`; `test-b951b0b08bbe3b9fb23a`).
 - `given_registered_factory_when_get_then_returns_some` — given registered factory when get then returns some (`src/graph/registry.rs:187`; `test-c3d829c8e4d87e90b4f0`).
 - `given_echo_async_node_when_process_after_prepare_then_envelope_is_returned` — given echo async node when process after prepare then envelope is returned (`src/graph/signal/envelope.rs:233`; `test-9d67f3359220613efda8`).
-- `given_echo_async_node_when_process_before_prepare_then_error_is_returned` — given echo async node when process before prepare then error is returned (`src/graph/signal/envelope.rs:251`; `test-bfea57e87a139988d3b9`).
-- `given_semantic_role_when_as_str_then_returns_inner` — given semantic role when as str then returns inner (`src/graph/signal/spec.rs:428`; `test-e0dd4a7d461ad612034d`).
-- `given_signal_id_when_as_str_then_returns_inner` — given signal id when as str then returns inner (`src/graph/signal/spec.rs:422`; `test-3fa05de5ac89880ef9e0`).
 
 ## Failure signals
 
-- `pocketstation::graph::node::NodeDescriptorError` / `InvalidSafetyContract` — `error-04b7031025a9b635fdbf`
-- `pocketstation::graph::node::ConfigError` — `error-0be8ad81000b2924c24c`
-- `pocketstation::graph::compile::resolve::CompileError` — `error-0da3f91a5f274a27ab76`
-- `pocketstation::graph::signal::operator::AsyncOperatorManifestError` / `ZeroProcessTimeout` — `error-10e3a522fa28fccdfc60`
-- `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError` / `InvalidMagic` — `error-143cce14f0e71f68c4cf`
-- `pocketstation::graph::signal::operator::OperatorFailurePolicy` / `StopWorker` — `error-14ca51fa44623142d004`
-- `pocketstation::graph::node::NodeError` / `Process` — `error-170066b0b40a26e0e33d`
-- `pocketstation::graph::signal::continuity::SignalContinuityError` / `SequenceGapWithoutDiscontinuity` — `error-18565faf820bbf8e2650`
-- `pocketstation::graph::compile::resolve::CompileError` / `MediaMismatch` — `error-1877b4a7bdffa5d7ed88`
-- `pocketstation::graph::signal::continuity::SignalContinuityError` / `InvalidEnvelope` — `error-1897c7da4711d75eb14d`
-- `pocketstation::graph::plan::PlanError` / `MoveExclusiveFanOut` — `error-18d1485abaf31198b6d8`
-- `pocketstation::graph::node::NodeDescriptorError` / `EmptyDisplayName` — `error-1981cbd27763ca5ffcbe`
+- `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError` — `error-06c9ed5aca510482d20b`
+- `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError` / `InvalidPoolSlots` — `error-8e0b53591f08cb47068e`
+- `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError` / `InvalidSampleSpec` — `error-e1157bd0c212286a966a`
+- `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError` / `ThreadStart` — `error-6c1f04e94d399bc4d454`
+- `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError` / `ZeroFrameSamples` — `error-a32547cd6342dd0315cc`
+- `pocketstation::graph::compile::resolve::CompileError` — `error-ed02262328948395fc81`
+- `pocketstation::graph::node::ConfigError` — `error-a40a6a70ccfabb71722d`
+- `pocketstation::graph::node::NodeDescriptorError` — `error-9a066e9f78f364e655fd`
+- `pocketstation::graph::node::NodeError` — `error-d9fa2ee902e569cf2691`
+- `pocketstation::graph::node::NodeError` / `Config` — `error-a3f8758a059f27327504`
 
-Retry only when the relevant API or error contract explicitly permits it. An error name, a transient-looking message, or a successful prior run is not retry evidence.
+## API reference
+
+- [Audio Reentry](/docs/concepts/audio-reentry.md)
+- [Observations](/docs/reference/observations.md)
+
+| Public declaration | Kind | Declared purpose | Source |
+|---|---|---|---|
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridge` | struct | Transfers generated audio across the bounded runtime boundary it owns. | `src/runtime/bridge/audio.rs:123` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeSpec` | struct | Configures generated audio bridge behavior at its owning API boundary. | `src/runtime/bridge/audio.rs:19` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError` | enum | Classifies failures reported as generated audio bridge start error. | `src/runtime/bridge/audio.rs:46` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidPoolSlots` | variant | Reported when the owning operation encounters invalid pool slots. | `src/runtime/bridge/audio.rs:52` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidSampleSpec` | variant | Reported when the owning operation encounters invalid sample spec. | `src/runtime/bridge/audio.rs:48` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::ThreadStart` | variant | Reported when the owning operation encounters thread start. | `src/runtime/bridge/audio.rs:54` |
+| `pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::ZeroFrameSamples` | variant | Reported when the owning operation encounters zero frame samples. | `src/runtime/bridge/audio.rs:50` |
+| `GeneratedAudioBridgeSpec::clock_id` | struct_field | Identifies the clock identifier recorded by `GeneratedAudioBridgeSpec`. | `src/runtime/bridge/audio.rs:24` |
 
 ## Related documentation
 
@@ -89,8 +86,8 @@ Retry only when the relevant API or error contract explicitly permits it. An err
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Return generated PCM through a bridge** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/runtime/bridge/audio.rs:1-529` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Return generated PCM through a bridge**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs"
+  ],
   "calls": [
     "ClockDriftEstimator::new",
     "Self::new",
@@ -38,7 +41,10 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs"
+  ],
   "constructs": [
     "ClockDriftEstimator::new",
     "Self::new",
@@ -210,8 +216,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -225,17 +235,24 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "6928008a2e855e884cf0ebb50126847441585cd5",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs"
+  ],
   "implements": [
     "ClockDriftEstimator",
     "Default for ClockDriftEstimator"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs"
+  ],
   "imports": [
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "super::*"
   ],
   "invariants": [
     {
@@ -261,20 +278,26 @@
   "module": "pocketstation::timing::clock_drift",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-225de6039a1eb9a832d0"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "fn:accumulated_error_ns",
+    "fn:drift_ppm",
+    "fn:new",
+    "fn:observe",
+    "fn:snapshot",
+    "struct:ClockDriftEstimator",
+    "struct:ClockDriftSnapshot"
   ],
   "package": "pocketstation",
   "path": "src/timing/clock_drift.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -379,7 +402,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::timing::clock_drift`."
+    "text": "Implements pocketstation::timing::clock drift responsibilities, including Reports the clock drift snapshot collected at an observation boundary.; Stores the drift ppm used by `ClockDriftSnapshot`.; Stores the accumulated error value for `ClockDriftSnapshot`, in nanoseconds.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -402,24 +425,20 @@
     "docs/reference/lifecycle-evidence.md",
     "docs/troubleshooting/timing.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "DRIFT_WINDOW_SAMPLES",
-    "ClockDriftSnapshot",
-    "ClockDriftEstimator",
-    "new",
-    "observe",
-    "drift_ppm",
-    "accumulated_error_ns",
-    "snapshot",
-    "estimate",
-    "default",
-    "tests",
-    "given_aligned_clocks_when_observed_then_drift_is_near_zero",
-    "given_faster_runtime_clock_when_observed_then_drift_is_positive",
-    "given_slower_runtime_clock_when_observed_then_drift_is_negative",
-    "given_large_absolute_timestamps_when_observed_then_relative_drift_stays_precise",
-    "given_observations_when_snapshotted_then_lineage_metrics_are_reported"
+    "pocketstation::timing::clock_drift::ClockDriftSnapshot: Reports the clock drift snapshot collected at an observation boundary.",
+    "ClockDriftSnapshot::drift_ppm: Stores the drift ppm used by `ClockDriftSnapshot`.",
+    "ClockDriftSnapshot::accumulated_error_ns: Stores the accumulated error value for `ClockDriftSnapshot`, in nanoseconds.",
+    "ClockDriftSnapshot::observed_samples_count: Stores the number of observed samples represented by `ClockDriftSnapshot`.",
+    "pocketstation::timing::clock_drift::ClockDriftEstimator: Estimates source-clock drift from accumulated source and Session timing observations.",
+    "new: Creates a new `ClockDriftEstimator`.",
+    "observe: Returns the current observation exposed by `ClockDriftEstimator`.",
+    "drift_ppm: Returns the drift ppm associated with `ClockDriftEstimator`.",
+    "accumulated_error_ns: Returns the accumulated error nanoseconds held by `ClockDriftEstimator`.",
+    "snapshot: Returns a point-in-time snapshot of `ClockDriftEstimator`.",
+    "default: Returns the default `ClockDriftEstimator` value."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -429,7 +448,14 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-24a29769eb9c240f93a1",
+    "test-5c4146a598e6cdc11175",
+    "test-62316896388e623801b8",
+    "test-da38283fb00d196f31c4",
+    "test-eff93c107acb8107fb7d"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

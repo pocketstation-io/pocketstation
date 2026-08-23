@@ -720,6 +720,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -756,7 +757,14 @@
     "std::time::Instant"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(feature = \"conformance-fixtures\")]",
+    "pocketstation::connector::{ Connector, ConnectorConfiguration, ConnectorConfigurationConstraint, ConnectorConfigurationErrorCode, ConnectorConfigurationField, ConnectorConfigurationRequirement, ConnectorConfigurationSchema, ConnectorConfigurationValue, ConnectorConfigurationValueKind, ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorCode, ConnectorErrorStage, ConnectorFactory, ConnectorHealth, ConnectorManifest, ConnectorReadinessPolicy, ConnectorRecovery, ConnectorRetryability, ConnectorRunOutcome, ConnectorSecret, ConnectorWorker, MAX_CONNECTOR_ERROR_MESSAGE_BYTES, }",
+    "pocketstation::connector::{ ConnectorAudioRecord, ConnectorDeliveryOutcome, ConnectorDriver, ConnectorDriverFactory, ConnectorInputDescriptor, ConnectorItem, }",
+    "pocketstation::{ AudioCaps, ChannelLayout, EdgeContract, EndpointPortInput, EndpointPreparationGroup, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, OperatorId, PortDirection, PortSpec, SafetyContract, SampleFormat, SignalSpec, }",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, AtomicU8, Ordering}",
+    "std::time::Duration",
+    "std::time::Instant"
   ],
   "invariants": [
     {
@@ -886,21 +894,23 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
   "observed_patterns": [
-    "pattern-e20ea1c9cecea2dcc3df",
     "pattern-4795dd3768d5a3e46d6b"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(connector_error(",
+    "return Err(connector_error("
   ],
   "package": "pocketstation",
   "path": "tests/connector_contract.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -1140,8 +1150,8 @@
   ],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given typed schema when configuration resolves then defaults apply and secrets redact, given orthogonal provider status when reconnecting then endpoint metrics remain canonical, given saturated connector route when observed then drops are visible in session metrics under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1183,6 +1193,7 @@
     "docs/best-practices/connector-retries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 3,
@@ -1306,44 +1317,36 @@
     }
   ],
   "responsibilities": [
-    "given_connector_public_surface_when_inspected_then_managed_aliases_are_absent",
-    "configuration_schema",
-    "manifest",
-    "manifest_with_readiness",
-    "configuration",
-    "fault_configuration",
-    "connector_error",
-    "RejectingFactory",
-    "prepare",
-    "given_typed_schema_when_configuration_resolves_then_defaults_apply_and_secrets_redact",
-    "given_registered_connector_when_declared_then_identity_is_session_scoped",
-    "given_duplicate_connector_identity_when_registered_then_registration_is_rejected",
-    "given_connector_error_when_inspected_then_code_is_stable_and_machine_readable",
-    "FaultControl",
-    "FaultFactory",
-    "preparation_group",
-    "prepare",
-    "FaultWorker",
-    "run",
-    "cancel_preparation",
-    "register_fault_connector",
-    "register_fault_connector_with_manifest",
-    "routed_fault_session",
-    "DriverControl",
-    "DriverFactory",
-    "preparation_group",
-    "prepare",
-    "TestDriver",
-    "deliver",
-    "shutdown",
-    "given_connector_driver_when_two_stems_run_then_core_owns_typed_delivery_and_drain",
-    "given_prior_preparation_when_connector_prepare_fails_then_prior_work_rolls_back",
-    "given_grouped_connector_when_session_stops_then_one_worker_is_joined_and_observed",
-    "given_grouped_connector_when_session_is_cancelled_then_abort_intent_reaches_worker",
-    "given_orthogonal_provider_status_when_reconnecting_then_endpoint_metrics_remain_canonical",
-    "given_connector_never_ready_when_startup_deadline_expires_then_failure_is_terminal",
-    "given_worker_failure_or_panic_when_session_stops_then_endpoint_finalization_is_terminal",
-    "given_saturated_connector_route_when_observed_then_drops_are_visible_in_session_metrics"
+    "given_connector_public_surface_when_inspected_then_managed_aliases_are_absent (fn)",
+    "configuration_schema (fn)",
+    "manifest (fn)",
+    "manifest_with_readiness (fn)",
+    "configuration (fn)",
+    "fault_configuration (fn)",
+    "connector_error (fn)",
+    "RejectingFactory (struct)",
+    "prepare (fn)",
+    "given_typed_schema_when_configuration_resolves_then_defaults_apply_and_secrets_redact (fn)",
+    "given_registered_connector_when_declared_then_identity_is_session_scoped (fn)",
+    "given_duplicate_connector_identity_when_registered_then_registration_is_rejected (fn)",
+    "given_connector_error_when_inspected_then_code_is_stable_and_machine_readable (fn)",
+    "FaultControl (struct)",
+    "FaultFactory (struct)",
+    "preparation_group (fn)",
+    "prepare (fn)",
+    "FaultWorker (struct)",
+    "run (fn)",
+    "cancel_preparation (fn)",
+    "register_fault_connector (fn)",
+    "register_fault_connector_with_manifest (fn)",
+    "routed_fault_session (fn)",
+    "DriverControl (struct)",
+    "DriverFactory (struct)",
+    "preparation_group (fn)",
+    "prepare (fn)",
+    "TestDriver (struct)",
+    "deliver (fn)",
+    "shutdown (fn)"
   ],
   "retry_behavior": [],
   "serialization": [
@@ -1440,7 +1443,22 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-20c3cf08187aa1f02fcd",
+    "test-26abd10938c17cf2eba0",
+    "test-2fa646ca802635256f43",
+    "test-40ed6b8bb8e60b0fd01a",
+    "test-5576ad13d627ff481e0b",
+    "test-6e2b2556c5e641fda848",
+    "test-834e8847ff5d70b04b11",
+    "test-92f5704ec6ee88e59fd8",
+    "test-ae5c25d0ba6141b1a13a",
+    "test-c7deea8505c28b2f4d0d",
+    "test-c926ac54e34e42c44877",
+    "test-da2fb847d5c7f22349e8",
+    "test-e1ff05b0ec4b54a78b0b"
+  ],
   "threads": [
     {
       "line": 617,

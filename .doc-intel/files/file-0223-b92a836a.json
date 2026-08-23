@@ -169,6 +169,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -197,7 +198,12 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "ConfigError, ExecutionPartition, MediaCaps, Multiplicity, PortDirection, PortSpec,",
+    "crate::graph::PrepareContext",
+    "crate::graph::{ ConfigError, ExecutionPartition, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalSpec, }",
+    "crate::session::{ SampleFormat, SampleSpec, SessionEngineBuilder, SessionStartOptions, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourceRegistrationError, SourceTypeId, }",
+    "fn validate_config(&self, _configuration: &SourceConfiguration) -> Result<(), ConfigError> {",
+    "std::sync::Arc"
   ],
   "invariants": [
     {
@@ -219,20 +225,22 @@
   "module": "pocketstation::session::extensions::tests::registry",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-1051f823fb6b54798236"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/tests/registry.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -324,7 +332,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::extensions::tests::registry`."
+    "text": "Implements pocketstation::session::extensions::tests::registry responsibilities, including the src/session/extensions/tests/registry boundary."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -384,6 +392,7 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 1,
@@ -407,20 +416,20 @@
     }
   ],
   "responsibilities": [
-    "RegistrationOnlyDriver",
-    "prepare",
-    "next",
-    "close",
-    "RegistrationOnlyFactory",
-    "manifest",
-    "validate_config",
-    "create",
-    "source_type_id",
-    "factory",
-    "builder",
-    "given_source_factory_when_registered_then_built_engine_retains_manifest",
-    "given_registered_identity_when_revision_conflicts_then_first_factory_is_preserved",
-    "given_zero_revision_when_registered_then_public_boundary_rejects_manifest"
+    "RegistrationOnlyDriver (struct)",
+    "prepare (fn)",
+    "next (fn)",
+    "close (fn)",
+    "RegistrationOnlyFactory (struct)",
+    "manifest (fn)",
+    "validate_config (fn)",
+    "create (fn)",
+    "source_type_id (fn)",
+    "factory (fn)",
+    "builder (fn)",
+    "given_source_factory_when_registered_then_built_engine_retains_manifest (fn)",
+    "given_registered_identity_when_revision_conflicts_then_first_factory_is_preserved (fn)",
+    "given_zero_revision_when_registered_then_public_boundary_rejects_manifest (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -435,7 +444,12 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-5263477c96ed5c56254e",
+    "test-8f6ddc436234dad2de93",
+    "test-c7123c9a3040e49ca9e8"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

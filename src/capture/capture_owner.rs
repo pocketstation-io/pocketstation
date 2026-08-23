@@ -71,9 +71,9 @@ pub struct CapturePrepareRequest {
 /// source failures through `runtime_event_sender`. Both sends are bounded and
 /// non-blocking. A backend must not retain another unbounded delivery path.
 pub struct CaptureDelivery {
-    #[doc = "Stores the frame sender associated with `CaptureDelivery`."]
+    #[doc = "Stores the frame sender used by `CaptureDelivery`."]
     pub frame_sender: CapturedFrameSender,
-    #[doc = "Stores the runtime event sender associated with `CaptureDelivery`."]
+    #[doc = "Stores the runtime event sender used by `CaptureDelivery`."]
     pub runtime_event_sender: SourceRuntimeEventSender,
 }
 
@@ -114,7 +114,7 @@ pub trait ActiveCaptureBackend: Send {
     #[doc = "Returns the observations exposed by `ActiveCaptureBackend`."]
     fn observations(&self) -> CaptureObservations;
 
-    #[doc = "Stops and join for `ActiveCaptureBackend`."]
+    #[doc = "Stops `ActiveCaptureBackend`, joins its worker, and returns the terminal result."]
     fn stop_and_join(self: Box<Self>) -> Result<CaptureObservations, CaptureError>;
 }
 
@@ -165,11 +165,11 @@ impl PreparedCapture {
 /// Aggregate observations from one active capture ownership boundary.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct CaptureOwnerObservations {
-    #[doc = "Stores the backend associated with `CaptureOwnerObservations`."]
+    #[doc = "Stores the backend used by `CaptureOwnerObservations`."]
     pub backend: CaptureObservations,
-    #[doc = "Stores the frame stream associated with `CaptureOwnerObservations`."]
+    #[doc = "Stores the frame stream used by `CaptureOwnerObservations`."]
     pub frame_stream: CapturedFrameStreamStats,
-    #[doc = "Stores the runtime events associated with `CaptureOwnerObservations`."]
+    #[doc = "Stores the runtime events used by `CaptureOwnerObservations`."]
     pub runtime_events: SourceRuntimeEventObservations,
 }
 

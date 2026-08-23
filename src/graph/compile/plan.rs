@@ -8,9 +8,11 @@ use crate::graph::partition::ExecutionPartition;
 use crate::graph::plan::*;
 use crate::graph::ports::{CopyPolicy, EdgeContract, MediaCaps, Multiplicity};
 use crate::graph::spec::{EdgeId, InputPortRef, NodeId, OutputPortRef};
+#[doc = "Validates the graph and produces the bounded runtime execution and memory plan."]
 pub struct RuntimePlanner;
 
 impl RuntimePlanner {
+    #[doc = "Creates a new `RuntimePlanner`."]
     pub fn new() -> Self {
         Self
     }
@@ -346,6 +348,7 @@ impl RuntimePlanner {
 }
 
 impl Default for RuntimePlanner {
+    #[doc = "Returns the default `RuntimePlanner` value."]
     fn default() -> Self {
         Self::new()
     }

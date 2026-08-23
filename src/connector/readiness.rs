@@ -44,22 +44,22 @@ impl ConnectorReadinessPolicy {
         })
     }
 
-    #[doc = "Returns the startup timeout associated with `ConnectorReadinessPolicy`."]
+    #[doc = "Returns the startup timeout held by `ConnectorReadinessPolicy`."]
     pub const fn startup_timeout(self) -> Duration {
         self.startup_timeout
     }
 
-    #[doc = "Returns the probe interval associated with `ConnectorReadinessPolicy`."]
+    #[doc = "Returns the probe interval held by `ConnectorReadinessPolicy`."]
     pub const fn probe_interval(self) -> Duration {
         self.probe_interval
     }
 
-    #[doc = "Returns the success threshold associated with `ConnectorReadinessPolicy`."]
+    #[doc = "Returns the success threshold held by `ConnectorReadinessPolicy`."]
     pub const fn success_threshold(self) -> u32 {
         self.success_threshold
     }
 
-    #[doc = "Returns the failure threshold associated with `ConnectorReadinessPolicy`."]
+    #[doc = "Returns the failure threshold held by `ConnectorReadinessPolicy`."]
     pub const fn failure_threshold(self) -> u32 {
         self.failure_threshold
     }

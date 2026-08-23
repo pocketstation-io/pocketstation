@@ -110,7 +110,10 @@
       "symbol": null
     }
   ],
-  "examples_using": [],
+  "example_coverage_status": "linked",
+  "examples_using": [
+    "example-d3384f55dfcf268d3ef1"
+  ],
   "extended_by": [],
   "extends": [],
   "feature_flags": [],
@@ -139,7 +142,10 @@
     "whisper_transcribe_example::WhisperConnector"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "let mut arguments = std::env::args_os().skip(1).map(PathBuf::from);",
+    "pocketstation::{ AsyncNode, AsyncOperatorPrepareContext, AudioCaps, BinaryFormat, ChannelLayout, EdgeContract, ExecutionPartition, MediaCaps, PortDirection, PortPrepareContext, SampleFormat, SignalEnvelope, SignalPayload, SignalSpec, TextFormat, }",
+    "std::path::PathBuf",
+    "whisper_transcribe_example::WhisperConnector"
   ],
   "invariants": [],
   "language": "Rust",
@@ -148,20 +154,22 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification or behavior outside the example's prerequisites."
   ],
   "observed_patterns": [
     "pattern-b3ae5e0d6b047003e494"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "_ => return Err(\"Whisper connector returned a non-text signal\".into()),"
   ],
   "package": "pocketstation",
   "path": "examples/whisper-transcribe/src/main.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -185,8 +193,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "DECLARED",
+    "text": "Demonstrates the repository-owned main workflow as compilable example code."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -209,6 +217,7 @@
     "docs/reference/lifecycle-evidence.md",
     "docs/troubleshooting/transcription-evidence.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 16,
@@ -216,8 +225,8 @@
     }
   ],
   "responsibilities": [
-    "usage",
-    "main"
+    "usage (fn)",
+    "main (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -262,6 +271,7 @@
       "text": ".await?"
     }
   ],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

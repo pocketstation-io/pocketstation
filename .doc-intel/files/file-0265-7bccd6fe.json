@@ -82,6 +82,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -106,7 +107,9 @@
     "super::super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "pocketstation::{ Session, SessionSourceError, SourceConfiguration, SourceFactory, SourceInstanceHandle, SourceInstanceId, SourceOutputHandle, SourceTypeId, }",
+    "std::sync::Arc",
+    "super::super::*"
   ],
   "invariants": [],
   "language": "Rust",
@@ -115,18 +118,20 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "tests/external_source.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -157,8 +162,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given public session when external source declared then handles are nameable under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -212,6 +217,7 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/source-identity.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 5,
@@ -227,10 +233,10 @@
     }
   ],
   "responsibilities": [
-    "register_source_signature",
-    "session",
-    "external_source",
-    "given_public_session_when_external_source_declared_then_handles_are_nameable"
+    "register_source_signature (fn)",
+    "session (mod)",
+    "external_source (mod)",
+    "given_public_session_when_external_source_declared_then_handles_are_nameable (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -240,7 +246,10 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-b5c32ca30bd2143fa264"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

@@ -148,22 +148,22 @@ impl EndpointDescriptor {
         self
     }
 
-    #[doc = "Returns the node type identifier associated with `EndpointDescriptor`."]
+    #[doc = "Returns the node type identifier held by `EndpointDescriptor`."]
     pub fn node_type_id(&self) -> &NodeTypeId {
         &self.node_type_id
     }
 
-    #[doc = "Returns the operator identifier associated with `EndpointDescriptor`."]
+    #[doc = "Returns the operator identifier held by `EndpointDescriptor`."]
     pub fn operator_id(&self) -> &OperatorId {
         &self.operator_id
     }
 
-    #[doc = "Returns the configuration associated with `EndpointDescriptor`."]
+    #[doc = "Returns the configuration held by `EndpointDescriptor`."]
     pub fn configuration(&self) -> &EndpointConfiguration {
         &self.configuration
     }
 
-    #[doc = "Returns the input edge associated with `EndpointDescriptor`."]
+    #[doc = "Returns the input edge held by `EndpointDescriptor`."]
     pub const fn input_edge(&self) -> Option<EdgeContract> {
         self.input_edge
     }

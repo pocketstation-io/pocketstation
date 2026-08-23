@@ -44,7 +44,11 @@
   ],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/runtime/signal/operator.rs"
+  ],
   "calls": [
     "Cancel",
     "Close",
@@ -57,7 +61,11 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/runtime/signal/operator.rs"
+  ],
   "constructs": [],
   "content_hash": "aed14f154ebf9607f5a204319066910a8797d9f8e8a206f5dc28bb64990c7086",
   "defaults": [],
@@ -105,8 +113,13 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/runtime/signal/operator.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -120,14 +133,22 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "5c7ed56446b2e2e86c0009a1e28d5f38586554b5",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/runtime/signal/operator.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/runtime/signal/mod.rs",
+    "IMPORTS:src/runtime/signal/mod.rs",
+    "REFERENCES:src/runtime/signal/operator.rs"
+  ],
   "imports": [
     "crate::graph::NodeError"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::graph::NodeError"
   ],
   "invariants": [],
   "language": "Rust",
@@ -136,20 +157,20 @@
   "module": "pocketstation::runtime::signal::error",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-cb957ae2bace7d39e70b"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:AsyncOperatorWorkerError"
   ],
   "package": "pocketstation",
   "path": "src/runtime/signal/error.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -162,8 +183,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Failures produced by async operator preparation, execution, and shutdown."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::runtime::signal::error responsibilities, including Classifies failures reported as async operator worker error.; Reported when the owning operation encounters prepare.; Stores the timeout value for `PrepareTimeout`, in milliseconds.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -219,9 +240,43 @@
     "docs/best-practices/realtime-boundaries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/node.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "AsyncOperatorWorkerError"
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError: Classifies failures reported as async operator worker error.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Prepare: Reported when the owning operation encounters prepare.",
+    "AsyncOperatorWorkerError::PrepareTimeout::timeout_ms: Stores the timeout value for `PrepareTimeout`, in milliseconds.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::PrepareTimeout: Reported when the owning operation encounters prepare timeout.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Process: Reported when the owning operation encounters process.",
+    "AsyncOperatorWorkerError::Timeout::timeout_ms: Stores the timeout value for `Timeout`, in milliseconds.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Timeout: Reported when the owning operation encounters timeout.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Close: Reported when the owning operation encounters close.",
+    "AsyncOperatorWorkerError::CloseTimeout::timeout_ms: Stores the timeout value for `CloseTimeout`, in milliseconds.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::CloseTimeout: Reported when the owning operation encounters close timeout.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Cancel: Reported when the owning operation encounters cancel.",
+    "AsyncOperatorWorkerError::CancelTimeout::timeout_ms: Stores the timeout value for `CancelTimeout`, in milliseconds.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::CancelTimeout: Reported when the owning operation encounters cancel timeout.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::MissingDerivedLineage: Reported when the owning operation encounters missing derived lineage.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::DerivedLineageMismatch: Reported when the owning operation encounters derived lineage mismatch.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::OutputSignalMismatch: Reported when the owning operation encounters output signal mismatch.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::UndeclaredOutputRole: Reported when the owning operation encounters undeclared output role.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::MissingOutputContract: Reported when the owning operation encounters missing output contract.",
+    "AsyncOperatorWorkerError::UnknownInputPort::port_name: Stores the port name used by `UnknownInputPort`.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::UnknownInputPort: Reported when the owning operation encounters unknown input port.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::AmbiguousOutputPort: Reported when the owning operation encounters ambiguous output port.",
+    "AsyncOperatorWorkerError::TerminalOutputDropped::branch_index: Stores the branch index used by `TerminalOutputDropped`.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::TerminalOutputDropped: Reported when the owning operation encounters terminal output dropped.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::OutputPayloadTooLarge: Reported when the owning operation encounters output payload too large.",
+    "AsyncOperatorWorkerError::OutputPayloadTooLarge::branch_index: Stores the branch index used by `OutputPayloadTooLarge`.",
+    "AsyncOperatorWorkerError::OutputPayloadTooLarge::payload_bytes: Stores the payload size for `OutputPayloadTooLarge`, in bytes.",
+    "AsyncOperatorWorkerError::OutputPayloadTooLarge::max_payload_bytes: Limits payload storage for `OutputPayloadTooLarge`, in bytes.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::Join: Reported when the owning operation encounters join.",
+    "AsyncOperatorWorkerError::InvalidPlanInput::kind: Stores the kind used by `InvalidPlanInput`.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::InvalidPlanInput: Reported when the owning operation encounters invalid plan input.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::PlanInputLineageMismatch: Reported when the owning operation encounters plan input lineage mismatch.",
+    "pocketstation::runtime::signal::error::AsyncOperatorWorkerError::SharedAudioTypedInput: Reported when the owning operation encounters shared audio typed input."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -290,6 +345,7 @@
       "text": "#[error(\"compiled async input lineage does not match its Session stem contract\")]"
     }
   ],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

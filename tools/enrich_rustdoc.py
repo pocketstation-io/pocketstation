@@ -23,6 +23,85 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 DB = ROOT / ".doc-intel"
 IMPL_OWNERS: dict[int, str] = {}
+SOURCE_DOC_IMPROVEMENTS = {
+    "pocketstation::codec::encoder::OpusApplication": "Selects the Opus encoder mode used to tune speech or general audio.",
+    "OpusConfig::channels": "Selects the mono or stereo channel layout accepted by the encoder.",
+    "OpusConfig::application": "Selects the Opus application mode used when the encoder is created.",
+    "pocketstation::graph::signal::spec::SignalClass::Event": "Carries discrete event payloads described by an `EventFormat`.",
+    "pocketstation::graph::signal::spec::SignalClass::Binary": "Carries an opaque binary payload described by a `BinaryFormat`.",
+}
+
+STRUCT_DOCS = {
+    "Operator": "Declares one operator instance, including its stable operator identity and validated node configuration.",
+    "TypedOperator": "Binds an operator declaration to its typed input and output ports so graph connections preserve signal specifications.",
+    "SessionCompiler": "Compiles an immutable Session declaration into a validated graph and runtime plan.",
+    "CompiledSession": "Owns the validated Session specification and declarations produced by compilation.",
+    "AudioInputBuffer": "Leases bounded PCM storage from an external-audio input until the caller submits or releases it.",
+    "SourceOutputIdentity": "Identifies one declared source output by source type, output port, and stream identity.",
+    "SourceCancellation": "Exposes the cancellation state observed by a running external source driver.",
+    "SourceEmission": "Carries one external-source emission with its output-port identity and signal envelope.",
+    "SessionTraceRecorder": "Collects ordered lifecycle records and writes the trace artifact during Session finalization.",
+    "SessionTrace": "Contains the ordered lifecycle records read from a Session trace artifact.",
+    "SessionTraceTerminal": "Records the terminal Session disposition and component failures stored in a trace.",
+    "SessionTraceValidation": "Reports the validated identity and record count of a parsed Session trace.",
+    "ExtensionSignal": "Owns one signal payload used by the native-extension conformance fixtures.",
+    "PksSessionUtf8": "Borrows a UTF-8 byte range across the C Session ABI as a pointer and length.",
+    "SignalTiming": "Carries a signal timestamp, clock domain, and timing semantics without rewriting source lineage.",
+    "PermissionEpoch": "Identifies the permission-observation generation attached to captured lineage.",
+    "SignalLineage": "Preserves source, stream, generation, discontinuity, and policy identity across signal processing.",
+    "Connector": "Declares a connector endpoint and the manifest-backed configuration used to instantiate it.",
+    "RegisteredConnector": "Retains a connector declaration after its factory has been registered with the node registry.",
+    "PksExtensionAbiVersion": "Carries the major and minor native-extension ABI versions checked during loading.",
+    "PksExtensionPort": "Describes one native-extension port across the C ABI, including direction and signal metadata.",
+    "SignalContinuityObservation": "Reports sequence or timestamp continuity observed for one signal stream.",
+    "SignalContinuityTracker": "Tracks sequence and timing progress so discontinuities remain observable.",
+    "ConnectorSecret": "Owns a connector secret with redacted diagnostics and byte clearing on explicit reset or drop.",
+    "ConnectorConfigurationField": "Declares one typed connector configuration field and its validation constraints.",
+    "ConnectorConfigurationSchema": "Validates connector configuration values against the manifest-declared field set.",
+    "SignalEnvelope": "Carries a typed signal payload together with timing, lineage, continuity, and terminal metadata.",
+    "PksExtensionCallbacks": "Defines the optional function table through which a native extension prepares, runs, stops, and releases instances.",
+    "PksExtensionLibrary": "Owns a loaded native-extension library and the registrations imported from its validated descriptor.",
+    "PksExtensionSignalView": "Borrows one signal payload and metadata for delivery into a native-extension callback.",
+    "PksExtensionSignalBuffer": "Provides bounded extension-owned storage for a signal returned through the native ABI.",
+    "LocalSourceProvider": "Discovers and resolves capture sources through the target platform backend.",
+    "ConnectorCapability": "Declares a capability advertised by a connector manifest.",
+    "ConnectorRequirement": "Declares a host or configuration requirement that must be satisfied before connector use.",
+    "ConnectorAudioMetadata": "Carries source, stream, timing, and format metadata beside a connector audio record.",
+    "Pipeline": "Builds typed operator connections on a Session while preserving port and signal contracts.",
+    "FrameLineage": "Preserves source, stream, sequence, clock, generation, and discontinuity identity for an audio frame.",
+    "ConnectorErrorCode": "Carries the stable external error code exported for a connector failure.",
+    "AudioBufferPool": "Owns fixed-capacity reusable audio slots and reports acquisition pressure without allocating per frame.",
+    "RuntimePlanner": "Validates the graph and produces the bounded runtime execution and memory plan.",
+    "AudioCaps": "Declares the sample formats, channel layouts, and rates accepted by an audio port.",
+    "ResolvedEdge": "Binds one compiled graph edge to its resolved source, destination, and contract.",
+    "GraphIr": "Stores the resolved nodes, edges, and topological order used by runtime planning.",
+    "AsyncOperatorWorker": "Owns the asynchronous operator task, typed I/O, cancellation, and terminal join result.",
+    "StemLabel": "Stores the validated human-readable label used for one recording stem.",
+    "EndpointDriverFinalization": "Reports an endpoint driver's terminal observations and any finalization failure.",
+    "PreparedEndpoint": "Owns endpoint resources after preparation and before its runtime driver starts.",
+    "RunningEndpoint": "Owns a started endpoint driver until shutdown and finalization complete.",
+    "SidecarDeadlines": "Sets finite startup, I/O, shutdown, and reap deadlines for a sidecar process.",
+    "SourceGeneration": "Identifies one appearance generation of a capture source across loss and reappearance.",
+    "ClockDriftEstimator": "Estimates source-clock drift from accumulated source and Session timing observations.",
+    "OutputPortRef": "Names an operator output port used as the origin of a graph connection.",
+    "InputPortRef": "Names an operator or endpoint input port used as the target of a graph connection.",
+    "Session": "Owns a mutable Session declaration and the host configuration used to compile, prepare, and start it.",
+    "RunningSession": "Owns a started Session together with event, polling, recording, trace, and stop resources.",
+    "SidecarProtocolLimits": "Sets the maximum sidecar message and buffered-byte sizes enforced by protocol I/O.",
+    "SidecarMessage": "Carries one typed control or signal message across the sidecar protocol.",
+    "NativeExtensionRegistration": "Identifies one node registration imported transactionally from a native extension.",
+    "ClockCorrectionController": "Applies bounded proportional corrections from measured clock offsets without changing lineage.",
+    "PlanRunnerCancellation": "Shares a lock-free cancellation flag between the Session owner and the realtime plan runner.",
+    "TypedEdgeFanout": "Publishes one immutable signal envelope to the bounded branches of a compiled fan-out edge.",
+    "SourceRuntime": "Owns an external source driver's cancellation handle, observations, and terminal worker join.",
+    "CaptureBackendSet": "Supplies the application and microphone capture backends used while preparing a Session.",
+    "Compiler": "Runs the ordered graph-validation passes that resolve a graph specification into executable IR.",
+    "FanOutGroup": "Groups the compiled edges that share one output port as their origin.",
+    "FanInGroup": "Groups the compiled edges mixed into one input port.",
+    "SessionSpecVersion": "Identifies the major and minor version of the immutable Session declaration schema.",
+    "MultistemRecording": "Owns the per-stem recording workers and coordinates their terminal finalization outcome.",
+    "TypedEdgePublishReport": "Reports how many fan-out branches accepted or dropped one published signal.",
+}
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -90,7 +169,7 @@ def field_doc(name: str, owner: str) -> str:
         "maximum": f"Sets the inclusive maximum accepted by `{owner}`.",
         "from": f"Identifies the origin represented by `{owner}`.",
         "to": f"Identifies the destination represented by `{owner}`.",
-        "source": f"Carries the source associated with `{owner}`.",
+        "source": f"Carries the source selected for `{owner}`.",
         "output": f"Carries the output produced by `{owner}`.",
         "failure": f"Carries the failure reported by `{owner}`.",
         "outcome": f"Carries the terminal outcome reported by `{owner}`.",
@@ -100,7 +179,7 @@ def field_doc(name: str, owner: str) -> str:
         return exact[name]
     phrase = words(name)
     if name.endswith(("_id", "_ids")) or name == "id":
-        return f"Identifies the {phrase.removesuffix(' identifier').removesuffix(' identifiers')} associated with `{owner}`."
+        return f"Identifies the {phrase} recorded by `{owner}`."
     if name.endswith("_ns"):
         return f"Stores the {phrase.removesuffix(' nanoseconds')} value for `{owner}`, in nanoseconds."
     if name.endswith("_ms"):
@@ -129,7 +208,7 @@ def field_doc(name: str, owner: str) -> str:
         "validate_configuration", "acquire_registration",
     }:
         return f"Provides the {phrase} callback used by `{owner}`."
-    return f"Stores the {phrase} associated with `{owner}`."
+    return f"Stores the {phrase} used by `{owner}`."
 
 
 def variant_doc(name: str, owner: str) -> str:
@@ -151,13 +230,13 @@ def variant_doc(name: str, owner: str) -> str:
     }
     if name in explicit:
         return explicit[name]
-    if any(token in lower_owner for token in ("error", "failure")):
-        return f"Reports {phrase}."
-    if any(token in lower_owner for token in ("status", "state", "phase", "outcome", "disposition", "event", "delivery")):
-        return f"Indicates the {phrase} state for `{owner}`."
-    if any(token in lower_owner for token in ("policy", "mode", "kind", "scope", "direction", "format", "semantics", "level", "requirement", "selector")):
+    if any(token in lower_owner for token in ("status", "state", "stage", "phase", "outcome", "disposition", "event", "delivery")):
+        return f"Identifies the {phrase} state or stage represented by `{owner}`."
+    if any(token in lower_owner for token in ("policy", "mode", "kind", "scope", "direction", "format", "semantics", "level", "requirement", "selector", "retryability")):
         return f"Selects {phrase} behavior for `{owner}`."
-    return f"Represents the {phrase} case of `{owner}`."
+    if any(token in lower_owner for token in ("error", "failure")):
+        return f"Reported when the owning operation encounters {phrase}."
+    return f"Represents the {phrase} alternative defined by `{owner}`."
 
 
 def function_doc(name: str, owner: str) -> str:
@@ -201,16 +280,16 @@ def function_doc(name: str, owner: str) -> str:
         "snapshot": f"Returns a point-in-time snapshot of {subject}.",
         "connect": f"Connects the requested ports through {subject}.",
         "process": f"Processes an input value through {subject}.",
-        "output": f"Returns the output associated with {subject}.",
-        "input": f"Returns the input associated with {subject}.",
-        "configuration": f"Returns the configuration associated with {subject}.",
-        "manifest": f"Returns the manifest associated with {subject}.",
+        "output": f"Returns the output held by {subject}.",
+        "input": f"Returns the input held by {subject}.",
+        "configuration": f"Returns the configuration held by {subject}.",
+        "manifest": f"Returns the manifest held by {subject}.",
         "kind": f"Returns the kind represented by {subject}.",
         "code": f"Returns the stable error or status code represented by {subject}.",
-        "message": f"Returns the diagnostic message associated with {subject}.",
+        "message": f"Returns the diagnostic message reported by {subject}.",
         "samples": f"Returns the audio samples held by {subject}.",
         "channels": f"Returns the channel count represented by {subject}.",
-        "lineage": f"Returns the frame lineage associated with {subject}.",
+        "lineage": f"Returns the frame lineage carried by {subject}.",
         "resolve": f"Resolves {subject} into its validated representation.",
         "matches": f"Returns whether an input satisfies {subject}.",
         "declare": f"Adds the declaration represented by {subject} to its Session.",
@@ -225,6 +304,13 @@ def function_doc(name: str, owner: str) -> str:
         "result": f"Returns the result represented by {subject}.",
         "success": f"Returns whether {subject} completed successfully.",
         "into_parts": f"Consumes {subject} and returns its component values.",
+        "to": f"Returns the destination owned by {subject}.",
+        "stop_and_join": f"Stops {subject}, joins its worker, and returns the terminal result.",
+        "finish_and_join": f"Finishes input to {subject}, joins its worker, and returns the terminal result.",
+        "close_and_reap": f"Closes {subject} and reaps its child process.",
+        "new_with_output_channels": f"Creates {subject} with the supplied output channels.",
+        "process_ready": f"Processes the ready inputs for {subject}.",
+        "declares_multistem_recording": f"Returns whether {subject} declares multistem recording.",
     }
     if name in exact:
         return exact[name]
@@ -236,7 +322,13 @@ def function_doc(name: str, owner: str) -> str:
         "failure", "outcome", "stage", "documentation", "required",
     )
     if name in accessors:
-        return f"Returns the {phrase} associated with {subject}."
+        return f"Returns the {phrase} held by {subject}."
+    predicates = {
+        "runtime_worker_panicked", "cancellation_requested", "joined", "supports",
+        "accepts", "contains", "declares_multistem_recording",
+    }
+    if name in predicates:
+        return f"Returns whether {phrase} is true for {subject}."
     if name.startswith(("is_", "has_", "accepts_", "supports_")):
         return f"Returns whether {words(name.removeprefix('is_').removeprefix('has_'))} applies to {subject}."
     if name.startswith("with_"):
@@ -258,6 +350,9 @@ def function_doc(name: str, owner: str) -> str:
         ("poll_", "Polls for"), ("take_", "Takes"), ("resolve_", "Resolves"),
         ("compile_", "Compiles"), ("validate_", "Validates"), ("cancel_", "Cancels"),
         ("prepare_", "Prepares"), ("start_", "Starts"), ("stop_", "Stops"),
+        ("spawn_", "Spawns"), ("join_", "Joins"), ("execute_", "Executes"),
+        ("send_", "Sends"), ("receive_", "Receives"), ("publish_", "Publishes"),
+        ("observe_", "Records an observation for"), ("plan_", "Plans"),
     ):
         if name.startswith(prefix):
             return f"{verb} {words(name[len(prefix):])} for {subject}."
@@ -298,6 +393,14 @@ def function_doc(name: str, owner: str) -> str:
         "observed": f"Creates observed signal timing for {subject}.",
         "out": f"Selects a named output port from {subject}.",
         "in_": f"Selects a named input port from {subject}.",
+        "captured_frame_stream": "Wraps the supplied capture receiver as a stream of captured frames.",
+        "source_runtime_event_channel": "Creates the bounded sender and receiver used for source runtime events.",
+        "session_stop_failure_codes": "Returns every stable failure code carried by a Session stop result.",
+        "discover_input_sources_native": "Discovers microphone input sources through the native macOS backend.",
+        "session": "Runs the conformance assertions for the Session contract.",
+        "connector": f"Declares a connector endpoint on {subject} with the supplied operator identity and configuration.",
+        "engine_builder": f"Borrows the mutable engine builder owned by {subject}.",
+        "dispatch_from": f"Routes one lineaged audio frame from the named plan output through {subject}.",
     }
     if name in semantic_actions:
         return semantic_actions[name]
@@ -316,6 +419,17 @@ def function_doc(name: str, owner: str) -> str:
         "runtime_worker_panicked", "target", "name", "outputs", "inputs", "disposition", "generation",
         "descriptor", "direction", "format", "retryability", "frame_samples_per_channel",
         "metrics_snapshot",
+        "version", "major", "minor", "partition", "state", "frames_mixed", "receipt",
+        "stems", "typed_edge", "output_root", "open_metadata", "output_pool_exhaustions",
+        "source_declarations", "plan_edge_observation_handle", "generated_audio_ingresses",
+        "source_failures", "endpoints", "native", "frame_stream_closed", "edge_buffer",
+        "connections", "operator_mappings", "spec", "type_str", "source_mappings",
+        "recording_receipt", "polled_audio_receipt", "rollback_failures", "error", "browser",
+        "frames_pushed", "source_instances", "endpoint_declarations", "lane_underruns",
+        "topo_order", "engine", "observation_receipt", "frames_captured",
+        "cancellation_requested", "endpoint_failures", "external_source_declarations",
+        "frames_emitted", "input_mut", "operators", "event", "finalization_failures",
+        "worker_mappings",
     }
     if name in semantic_properties:
         return f"Returns the {phrase} associated with {subject}."
@@ -337,8 +451,18 @@ def function_doc(name: str, owner: str) -> str:
         "value_kind", "visited", "worker", "writer", "writer_mut", "samples_mut",
     }
     if name in noun_names or name.endswith(noun_suffixes):
-        return f"Returns the {phrase} associated with {subject}."
-    return f"Performs the {phrase} operation defined by {subject}."
+        return f"Returns the {phrase} held by {subject}."
+    action_verbs = {
+        "build": "Builds", "compile": "Compiles", "execute": "Executes",
+        "spawn": "Spawns", "join": "Joins", "publish": "Publishes",
+        "receive": "Receives", "send": "Sends", "wait": "Waits for",
+        "open": "Opens", "close": "Closes", "process": "Processes",
+    }
+    first, _, remainder = name.partition("_")
+    if first in action_verbs:
+        target = words(remainder) if remainder else "its owned operation"
+        return f"{action_verbs[first]} {target} for {subject}."
+    return f"Executes the `{name}` contract for {subject}."
 
 
 def item_doc(record: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> str:
@@ -356,12 +480,15 @@ def item_doc(record: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> str:
     if kind == "module":
         return f"Types and operations for {phrase}."
     if kind == "struct":
+        if name in STRUCT_DOCS:
+            return STRUCT_DOCS[name]
         if lower.endswith(("error", "failure")):
             return f"Reports a {phrase}."
         if lower.endswith(("config", "configuration", "options", "policy", "spec")):
-            return f"Configures {phrase.removesuffix(' configuration').removesuffix(' config').removesuffix(' options').removesuffix(' policy').removesuffix(' spec')}."
+            subject = phrase.removesuffix(' configuration').removesuffix(' config').removesuffix(' options').removesuffix(' policy').removesuffix(' spec')
+            return f"Configures {subject} behavior at its owning API boundary."
         if lower.endswith(("id", "identifier")):
-            return f"Uniquely identifies {phrase.removesuffix(' identifier')}."
+            return f"Uniquely identifies {phrase.removesuffix(' identifier')} within its PocketStation ownership scope."
         if lower.endswith(("observations", "metrics", "snapshot", "stats")):
             return f"Reports the {phrase} collected at an observation boundary."
         if lower.endswith(("outcome", "result", "status")):
@@ -372,7 +499,35 @@ def item_doc(record: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> str:
             return f"Describes the {phrase} contract."
         if lower.endswith(("handle", "lease", "guard")):
             return f"Owns bounded access to {phrase.removesuffix(' handle').removesuffix(' lease').removesuffix(' guard')}."
-        return f"Represents {phrase} in the PocketStation API."
+        roles = (
+            (("context",), "Carries the inputs and runtime context required to {subject}."),
+            (("factory",), "Constructs {subject} implementations from validated declarations."),
+            (("registry",), "Indexes registered {subject} implementations by their stable identities."),
+            (("sender", "writer"), "Sends {subject} values across its declared ownership boundary."),
+            (("receiver",), "Receives {subject} values across its declared ownership boundary."),
+            (("plan",), "Records the compiled execution and resource plan for {subject}."),
+            (("mapping",), "Correlates the prepared identities and runtime resources for {subject}."),
+            (("record",), "Records one immutable {subject} observation."),
+            (("frame",), "Carries one {subject} payload together with its declared metadata."),
+            (("contract",), "Declares the validated constraints applied to {subject}."),
+            (("bridge",), "Transfers {subject} across the bounded runtime boundary it owns."),
+            (("router",), "Routes {subject} according to the compiled edge contracts."),
+            (("host",), "Owns the resources and lifecycle for {subject}."),
+            (("executor", "runner"), "Executes {subject} according to its compiled plan and cancellation contract."),
+            (("telemetry", "summary"), "Reports the counters and terminal facts collected for {subject}."),
+            (("receipt",), "Retains the identity and observation access returned for {subject}."),
+            (("input",), "Carries typed input for {subject}."),
+            (("output",), "Carries typed output from {subject}."),
+            (("node",), "Executes the graph-node behavior defined for {subject}."),
+            (("source",), "Owns production of {subject} values and its lifecycle state."),
+        )
+        for suffixes, template in roles:
+            if lower.endswith(suffixes):
+                subject_name = phrase
+                for suffix in suffixes:
+                    subject_name = subject_name.removesuffix(f" {suffix}")
+                return template.format(subject=subject_name or phrase)
+        return f"Carries the typed state and values defined by the `{name}` public contract."
     if kind == "enum":
         if lower.endswith(("error", "failure")):
             return f"Classifies failures reported as {phrase}."
@@ -383,7 +538,7 @@ def item_doc(record: dict[str, Any], by_id: dict[str, dict[str, Any]]) -> str:
         return f"Enumerates the supported {phrase} cases."
     if kind == "trait":
         role = phrase.removesuffix(" factory").removesuffix(" provider").removesuffix(" driver")
-        return f"Defines the implementation contract for {role}."
+        return f"Implement this trait to provide {role} behavior to PocketStation; its methods define the preparation and runtime contract."
     if kind == "type_alias":
         if lower.endswith("callback"):
             action_name = re.sub(r"Callback$", "", re.sub(r"^PksExtension", "", name))
@@ -459,6 +614,21 @@ def main() -> None:
         action="store_true",
         help="Replace first-pass generic function descriptions with semantic descriptions",
     )
+    parser.add_argument(
+        "--sync-current-generated",
+        action="store_true",
+        help="Replace or insert generated docs at frozen compiler spans in the current worktree",
+    )
+    parser.add_argument(
+        "--refresh-current-generated",
+        action="store_true",
+        help="Replace previously generated source attributes with the current semantic descriptions",
+    )
+    parser.add_argument(
+        "--polish-current-attributes",
+        action="store_true",
+        help="Repair known first-pass wording in current source documentation attributes",
+    )
     args = parser.parse_args()
 
     records = read_jsonl(DB / "symbol-manifest.jsonl")
@@ -477,6 +647,37 @@ def main() -> None:
         for child in impl.get("items", []):
             IMPL_OWNERS[int(child)] = owner
 
+    if args.polish_current_attributes:
+        changed = 0
+        substitutions = (
+            (
+                re.compile(r'Returns the ([^"\n]+?) associated with (`[^`]+`)\.'),
+                r'Returns the \1 held by \2.',
+            ),
+            (
+                re.compile(r'Carries the source associated with (`[^`]+`)\.'),
+                r'Carries the source selected for \1.',
+            ),
+            (
+                re.compile(r'Represents the ([^"\n]+?) alternative defined by (`[^`]+`)\.'),
+                r'Selects the \1 case of \2.',
+            ),
+            (
+                re.compile(r'Returns the (runtime worker panicked|cancellation requested|joined|supports|accepts|contains) held by (`[^`]+`)\.'),
+                r'Returns whether \1 is true for \2.',
+            ),
+        )
+        for source_path in sorted((ROOT / "src").rglob("*.rs")):
+            text = source_path.read_text()
+            updated = text
+            for pattern, replacement in substitutions:
+                updated, count = pattern.subn(replacement, updated)
+                changed += count
+            if updated != text:
+                source_path.write_text(updated)
+        print(f"source_doc_attributes_polished={changed}")
+        return
+
     by_file: dict[str, list[tuple[int, dict[str, Any], str]]] = defaultdict(list)
     for record in missing:
         item = index[str(record["compiler_id"])]
@@ -486,20 +687,113 @@ def main() -> None:
         line, column = span["begin"]
         by_file[record["source_file"]].append(((line << 32) | column, record, item_doc(record, by_id)))
 
+    if args.sync_current_generated:
+        inserted = 0
+        skipped_changed = 0
+        manifest = {record["path"]: record for record in read_jsonl(DB / "repository-manifest.jsonl")}
+        for path in sorted(by_file):
+            source_path = ROOT / path
+            if sha256(source_path.read_bytes()) != manifest[path]["sha256"]:
+                skipped_changed += len(by_file[path])
+                continue
+            lines = source_path.read_text().splitlines(keepends=True)
+            seen: set[tuple[int, int]] = set()
+            for _sort_key, record, doc in sorted(by_file[path], key=lambda value: value[0], reverse=True):
+                span = index[str(record["compiler_id"])]["span"]
+                line, column = span["begin"]
+                location = (line, column)
+                if location in seen:
+                    raise SystemExit(f"duplicate generated documentation span at {path}:{line}:{column}")
+                seen.add(location)
+                current = lines[line - 1]
+                offset = column - 1
+                prefix, rest = current[:offset], current[offset:]
+                attribute = f"#[doc = {json.dumps(doc, ensure_ascii=False)}] "
+                lines[line - 1] = prefix + attribute + rest
+                inserted += 1
+            source_path.write_text("".join(lines))
+        print(f"generated_docs_inserted={inserted} skipped_changed_records={skipped_changed}")
+        return
+
     if args.export_ledger:
         ledger = []
-        for path in sorted(by_file):
-            for _sort_key, record, doc in by_file[path]:
-                ledger.append({
-                    "symbol_id": record["symbol_id"],
-                    "qualified_name": record["qualified_name"],
-                    "source_file": path,
-                    "documentation": doc,
-                })
+        generated = {
+            record["symbol_id"]: doc
+            for entries in by_file.values()
+            for _sort_key, record, doc in entries
+        }
+        for record in records:
+            if not record.get("public_api"):
+                continue
+            compiler_docs = index[str(record["compiler_id"])].get("docs")
+            documentation = SOURCE_DOC_IMPROVEMENTS.get(
+                record["qualified_name"],
+                compiler_docs.strip() if compiler_docs else generated.get(record["symbol_id"], ""),
+            )
+            ledger.append({
+                "symbol_id": record["symbol_id"],
+                "qualified_name": record["qualified_name"],
+                "source_file": record["source_file"],
+                "documentation": documentation,
+                "origin": (
+                    "improved_in_current_source" if record["qualified_name"] in SOURCE_DOC_IMPROVEMENTS
+                    else "snapshot_source" if compiler_docs
+                    else "generated_for_current_source"
+                ),
+            })
         with (DB / "native-docs.jsonl").open("w") as handle:
             for row in sorted(ledger, key=lambda value: value["symbol_id"]):
                 handle.write(json.dumps(row, sort_keys=True, separators=(",", ":")) + "\n")
         print(f"native_docs_exported={len(ledger)}")
+        return
+
+    if args.refresh_current_generated:
+        native = {
+            row["symbol_id"]: row
+            for row in read_jsonl(DB / "native-docs.jsonl")
+            if row.get("origin") == "generated_for_current_source"
+        }
+        changed = 0
+        unchanged = 0
+        already_different = []
+        for path in sorted(by_file):
+            source_path = ROOT / path
+            text = source_path.read_text()
+            for _sort_key, record, doc in by_file[path]:
+                previous = native.get(record["symbol_id"])
+                if not previous:
+                    continue
+                old_doc = previous["documentation"]
+                old = f"#[doc = {json.dumps(old_doc, ensure_ascii=False)}]"
+                new = f"#[doc = {json.dumps(doc, ensure_ascii=False)}]"
+                if old_doc == doc and new in text:
+                    unchanged += 1
+                    continue
+                if old not in text:
+                    legacy_docs = []
+                    if record["kind"] == "struct":
+                        legacy_docs.extend([
+                            f"Represents {words(record['name'])} in the PocketStation API.",
+                            f"Represents the {words(record['name'])} value exposed by the PocketStation API.",
+                        ])
+                    legacy = next((
+                        f"#[doc = {json.dumps(candidate, ensure_ascii=False)}]"
+                        for candidate in legacy_docs
+                        if f"#[doc = {json.dumps(candidate, ensure_ascii=False)}]" in text
+                    ), None)
+                    if not legacy:
+                        already_different.append(record["symbol_id"])
+                        continue
+                    old = legacy
+                text = text.replace(old, new, 1)
+                changed += 1
+            source_path.write_text(text)
+        print(
+            f"generated_docs_refreshed={changed} unchanged={unchanged} "
+            f"already_different={len(already_different)}"
+        )
+        for symbol_id in already_different[:20]:
+            print(f"already_different {symbol_id}")
         return
 
     if args.refresh_generic_functions:

@@ -2,15 +2,23 @@
 
 <!-- claims: CLM-TRBL-014-CAP-001,CLM-TRBL-014-CAP-002,CLM-TRBL-014-SOURCE-001 -->
 
-Use this page when you observe **transcription process evidence is missing**. Diagnose the reported stage and identity before changing route, source, connector, or lifecycle policy.
+## Symptom
 
-## Distinguish the cause
+The transcription example produces no process-evidence artifact or the artifact does not match the run.
 
-Verify that the child process ran, its output was captured, and the evidence artifact corresponds to this source revision.
+## Evidenced causes
+
+- The external executable did not start or could not be found.
+- Captured input never reached the process step.
+- The child output was not persisted or belongs to another source revision.
+
+## Distinguish the causes
+
+Verify child start, exit status, captured output, evidence path, and recorded source revision independently from example compilation.
 
 ## Diagnostic signals
 
-No domain-specific error variant is assigned. Use the stable error-code index and terminal outcome.
+No error declaration is tied directly to transcription process evidence is missing; use the owning component's typed outcome and observations.
 
 ## Executable evidence
 
@@ -28,13 +36,18 @@ No domain-specific error variant is assigned. Use the stable error-code index an
 - `given_typed_audio_when_window_fills_then_partial_precedes_one_final_transcript` exercises given typed audio when window fills then partial precedes one final transcript under its recorded setup (`test-b79c368693e08eaa7d95`).
 - `given_wav_envelope_when_connector_runs_then_text_lineage_is_preserved` exercises given wav envelope when connector runs then text lineage is preserved under its recorded setup (`test-21347646a3ff78175454`).
 
-## Corrective action and retry
+## Corrective action
 
-Apply only the action implied by the typed failure or violated precondition. Retry is not safe merely because a failure appears transient. When retryability or recovery is unknown, preserve the failure for application policy or maintainer review.
+Correct the external process prerequisite and rerun the example so it writes a fresh matching artifact.
 
-## Data and state
+## Retry and incomplete state
 
-Treat frames, signals, files, acknowledgements, and finalization results produced before failure as potentially partial unless the terminal contract says otherwise. Inspect per-route, per-stem, and per-component outcomes.
+Do not treat a compile-only rerun as execution evidence. Capture or process output from an interrupted run can be incomplete.
+
+## Related reference
+
+- [Transcription Integration](/docs/concepts/transcription-integration.md)
+- [Run Transcription](/docs/how-to/run-transcription.md)
 
 ## Related documentation
 
@@ -49,8 +62,8 @@ Treat frames, signals, files, acknowledgements, and finalization results produce
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Transcription process evidence is missing** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `examples/whisper-transcribe/src/process_evidence.rs:1-211` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Transcription process evidence is missing**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

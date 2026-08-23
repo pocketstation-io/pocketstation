@@ -24,27 +24,27 @@ impl EndpointAudioFrame {
         self.frame
     }
 
-    #[doc = "Returns the source identifier associated with `EndpointAudioFrame`."]
+    #[doc = "Returns the source identifier held by `EndpointAudioFrame`."]
     pub fn source_id(&self) -> SourceId {
         self.frame.source_id()
     }
 
-    #[doc = "Returns the stream identifier associated with `EndpointAudioFrame`."]
+    #[doc = "Returns the stream identifier held by `EndpointAudioFrame`."]
     pub fn stream_id(&self) -> StreamId {
         self.frame.stream_id()
     }
 
-    #[doc = "Returns the sequence number associated with `EndpointAudioFrame`."]
+    #[doc = "Returns the sequence number held by `EndpointAudioFrame`."]
     pub fn sequence_number(&self) -> u64 {
         self.frame.sequence_number()
     }
 
-    #[doc = "Returns the timestamp nanoseconds associated with `EndpointAudioFrame`."]
+    #[doc = "Returns the timestamp nanoseconds held by `EndpointAudioFrame`."]
     pub fn timestamp_ns(&self) -> u64 {
         self.frame.timestamp_ns()
     }
 
-    #[doc = "Returns the sample rate hertz associated with `EndpointAudioFrame`."]
+    #[doc = "Returns the sample rate hertz held by `EndpointAudioFrame`."]
     pub fn sample_rate_hz(&self) -> u32 {
         self.frame.sample_rate_hz()
     }
@@ -54,7 +54,7 @@ impl EndpointAudioFrame {
         self.frame.channels()
     }
 
-    #[doc = "Returns the sample format associated with `EndpointAudioFrame`."]
+    #[doc = "Returns the sample format held by `EndpointAudioFrame`."]
     pub fn sample_format(&self) -> SampleFormat {
         self.frame.sample_format()
     }
@@ -64,7 +64,7 @@ impl EndpointAudioFrame {
         self.frame.samples()
     }
 
-    #[doc = "Returns the frame lineage associated with `EndpointAudioFrame`."]
+    #[doc = "Returns the frame lineage carried by `EndpointAudioFrame`."]
     pub fn lineage(&self) -> FrameLineage {
         self.frame.lineage()
     }
@@ -109,7 +109,7 @@ impl EndpointAudioReceiver {
         self.receiver.mark_discontinuity();
     }
 
-    #[doc = "Returns the mark worker failure associated with `EndpointAudioReceiver`."]
+    #[doc = "Returns the mark worker failure held by `EndpointAudioReceiver`."]
     pub fn mark_worker_failure(&self) {
         self.receiver.mark_worker_failure();
     }
@@ -162,16 +162,16 @@ impl EndpointSignalReceiver {
 pub enum EndpointReceiver {
     #[doc = "Represents the audio case of `EndpointReceiver`."]
     Audio {
-        #[doc = "Stores the receiver associated with `Audio`."]
+        #[doc = "Stores the receiver used by `Audio`."]
         receiver: EndpointAudioReceiver,
-        #[doc = "Stores the sample spec associated with `Audio`."]
+        #[doc = "Stores the sample spec used by `Audio`."]
         sample_spec: SampleSpec,
     },
     #[doc = "Represents the signal case of `EndpointReceiver`."]
     Signal(EndpointSignalReceiver),
 }
 
-#[doc = "Represents endpoint port input in the PocketStation API."]
+#[doc = "Carries typed input for endpoint port."]
 pub struct EndpointPortInput {
     port_name: String,
     signal: SignalSpec,
@@ -222,32 +222,32 @@ impl EndpointPortInput {
         }
     }
 
-    #[doc = "Returns the port name associated with `EndpointPortInput`."]
+    #[doc = "Returns the port name held by `EndpointPortInput`."]
     pub fn port_name(&self) -> &str {
         &self.port_name
     }
 
-    #[doc = "Returns the signal spec associated with `EndpointPortInput`."]
+    #[doc = "Returns the signal spec held by `EndpointPortInput`."]
     pub const fn signal_spec(&self) -> &SignalSpec {
         &self.signal
     }
 
-    #[doc = "Returns the media associated with `EndpointPortInput`."]
+    #[doc = "Returns the media held by `EndpointPortInput`."]
     pub const fn media(&self) -> &MediaCaps {
         &self.media
     }
 
-    #[doc = "Returns the edge contract associated with `EndpointPortInput`."]
+    #[doc = "Returns the edge contract held by `EndpointPortInput`."]
     pub const fn edge_contract(&self) -> &EdgeContract {
         &self.edge_contract
     }
 
-    #[doc = "Returns the context associated with `EndpointPortInput`."]
+    #[doc = "Returns the context held by `EndpointPortInput`."]
     pub const fn context(&self) -> &EndpointPrepareContext {
         &self.context
     }
 
-    #[doc = "Returns the receiver associated with `EndpointPortInput`."]
+    #[doc = "Returns the receiver held by `EndpointPortInput`."]
     pub const fn receiver(&self) -> &EndpointReceiver {
         &self.receiver
     }
@@ -258,9 +258,9 @@ impl EndpointPortInput {
     }
 }
 
-#[doc = "Defines the implementation contract for endpoint."]
+#[doc = "Implement this trait to provide endpoint behavior to PocketStation; its methods define the preparation and runtime contract."]
 pub trait EndpointDriverFactory: Send + Sync {
-    #[doc = "Returns the preparation group associated with `EndpointDriverFactory`."]
+    #[doc = "Returns the preparation group held by `EndpointDriverFactory`."]
     fn preparation_group(
         &self,
         route_id: crate::frame::RouteId,

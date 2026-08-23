@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs"
+  ],
   "calls": [
     "AspReader",
     "Self",
@@ -33,7 +36,10 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs"
+  ],
   "constructs": [],
   "content_hash": "1887bb14ff3e2aca760538229558101290d20d60169b2a3cea00dc4936fd8705",
   "defaults": [],
@@ -229,8 +235,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -325,18 +335,25 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "0aedd32a346f3f4b7923d1ec7e3a477375474854",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs"
+  ],
   "implements": [
     "AspReader",
     "Drop for AspReader"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs"
+  ],
   "imports": [
     "std::ffi::c_float",
     "std::ffi::c_uint"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "std::ffi::c_float",
+    "std::ffi::c_uint"
   ],
   "invariants": [
     {
@@ -350,18 +367,29 @@
   "module": "pocketstation::capture::platform::macos::macos_asp",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "fn:asp_is_installed",
+    "fn:channels",
+    "fn:drop_count",
+    "fn:open",
+    "fn:read_frames",
+    "fn:sample_rate",
+    "fn:timeline_reject_callback_count",
+    "struct:AspReadBatch",
+    "struct:AspReader"
   ],
   "package": "pocketstation",
   "path": "src/capture/platform/macos/macos_asp.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -477,8 +505,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Reads from the PocketStation HAL plugin POSIX shared memory ring."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::capture::platform::macos::macos asp responsibilities, including macos asp; pks asp is installed; pks asp open reader."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -532,6 +560,7 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/source-identity.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 100,
@@ -543,24 +572,24 @@
     }
   ],
   "responsibilities": [
-    "pks_asp_is_installed",
-    "pks_asp_open_reader",
-    "pks_asp_sample_rate",
-    "pks_asp_channels",
-    "pks_asp_drop_count",
-    "pks_asp_timeline_reject_callback_count",
-    "pks_asp_read_frames",
-    "pks_asp_close_reader",
-    "asp_is_installed",
-    "AspReader",
-    "AspReadBatch",
-    "open",
-    "sample_rate",
-    "channels",
-    "drop_count",
-    "timeline_reject_callback_count",
-    "read_frames",
-    "drop"
+    "pks_asp_is_installed (fn)",
+    "pks_asp_open_reader (fn)",
+    "pks_asp_sample_rate (fn)",
+    "pks_asp_channels (fn)",
+    "pks_asp_drop_count (fn)",
+    "pks_asp_timeline_reject_callback_count (fn)",
+    "pks_asp_read_frames (fn)",
+    "pks_asp_close_reader (fn)",
+    "asp_is_installed (fn)",
+    "AspReader (struct)",
+    "AspReadBatch (struct)",
+    "open (fn)",
+    "sample_rate (fn)",
+    "channels (fn)",
+    "drop_count (fn)",
+    "timeline_reject_callback_count (fn)",
+    "read_frames (fn)",
+    "drop (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -651,6 +680,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

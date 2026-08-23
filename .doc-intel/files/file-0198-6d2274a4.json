@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "calls": [
     "as_mut_vec",
     "clear_string",
@@ -14,7 +17,10 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "constructs": [],
   "content_hash": "8e118ce6894d3cee22c139cc3982d30638907a73ad73d34d22ff341eb2c46ce6",
   "defaults": [],
@@ -55,8 +61,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -79,14 +89,20 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "d6c7c71ef8c3eec1fa98cc7468b9f3aaab266cb2",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "imports": [
     "std::sync::atomic::{compiler_fence, Ordering}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "std::sync::atomic::{compiler_fence, Ordering}"
   ],
   "invariants": [],
   "language": "Rust",
@@ -95,18 +111,21 @@
   "module": "pocketstation::secret",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "fn:clear_string"
   ],
   "package": "pocketstation",
   "path": "src/secret.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -120,7 +139,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::secret`."
+    "text": "Implements pocketstation::secret responsibilities, including secret; clear string."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -139,9 +158,10 @@
     "docs/reference/test-evidence.md",
     "docs/reference/lifecycle-evidence.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "clear_string"
+    "clear_string (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -160,6 +180,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

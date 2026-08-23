@@ -5,13 +5,13 @@
 ## Scope
 
 - **Host managed-process sidecars.** Exchange bounded protocol messages with a child process under explicit deadlines and lifecycle states.
-- **Run connector workers.** Supervise connector delivery, acknowledgement, retry budgets, readiness, cancellation, drain, and abort.
+- **Run connector workers.** Supervise connector delivery, acknowledgement, readiness, cancellation, drain, and abort while reporting retry attempts and typed retryability.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Host a managed-process sidecar** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
 ## Prerequisites
 
-Read the linked concept and confirm that target platform, Cargo features, source or provider dependencies, and application-owned permission work match this task. Keep returned typed errors and outcomes available for verification.
+A bounded `SidecarProcessSpec`, declared message kinds, and explicit startup and shutdown deadlines.
 
 ## Procedure
 
@@ -21,30 +21,15 @@ Read the linked concept and confirm that target platform, Cargo features, source
 4. Apply cancellation, drain, or abort through lifecycle state.
 5. Inspect host snapshot and terminal error before restart.
 
-## APIs used
+## Important consequence
 
-| Public declaration | Kind | Declared purpose | Source |
-|---|---|---|---|
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarProcessSpec` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:71` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::ProcessingTimeout` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:717` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarDeadlines` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:54` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostSnapshot` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:133` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:686` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarState` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:21` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::AlreadyReaped` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:730` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Closed` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:706` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::ControlQueueFull` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:704` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::DataQueueFull` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:702` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::FrameTooLarge` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:700` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::InvalidConfiguration` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:688` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::InvalidDataKind` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:724` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::InvalidState` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:719` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Io` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:696` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::Kill` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:728` |
+A managed process boundary does not itself provide sandboxing or authentication.
 
 ## Verify the outcome
 
-The following test bodies are evidence only for their recorded setup:
+The child reaches running state, exchanges only accepted messages, and ends in the requested drained or aborted terminal state.
+
+Executable evidence selected for **Host a managed-process sidecar** is limited to each test's recorded setup and assertions:
 
 - `given_sidecar_host_errors_when_classified_then_retryability_is_preserved` — given sidecar host errors when classified then retryability is preserved (`src/connector/sidecar.rs:286`; `test-98ad8a10ce6f978fe856`).
 - `given_empty_input_group_when_sidecar_prepares_then_structured_error_is_returned` — given empty input group when sidecar prepares then structured error is returned (`src/connector/sidecar.rs:270`; `test-49bd18fb96d67fdba9bf`).
@@ -61,20 +46,32 @@ The following test bodies are evidence only for their recorded setup:
 
 ## Failure signals
 
-- `pocketstation::connector::error::ConnectorErrorCodeError` / `TooLong` — `error-06f5c52aa07c86ca5062`
-- `pocketstation::connector::transport::ConnectorAudioRecordError` / `InvalidSampleCount` — `error-093c41e2489cf1bb258d`
-- `pocketstation::connector::transport::ConnectorAudioRecordError` — `error-0b1f3a3357a77fcef185`
-- `pocketstation::connector::error::ConnectorErrorCodeError` / `Empty` — `error-0b71c9f1b1489e0d4f9a`
-- `pocketstation::connector::error::ConnectorErrorBuildError` — `error-0bc8adb0641971704f74`
-- `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` / `TooManyFields` — `error-0c83ebde568152ad3edf`
-- `pocketstation::connector::error::ConnectorErrorStage` / `Startup` — `error-0e62627edef059ecab22`
-- `pocketstation::connector::manifest::ConnectorManifestError` / `InvalidManifestRevision` — `error-10517744910e14c23fc4`
-- `pocketstation::connector::transport::ConnectorAudioRecordError` / `UnsupportedMinor` — `error-1082687e9dbfd2cadfc5`
-- `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError` / `InvalidMagic` — `error-143cce14f0e71f68c4cf`
-- `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` / `InvalidValue` — `error-16fe034657303e4973f8`
-- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `Wait` — `error-19eabd878a9188bf94ce`
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `AlreadyReaped` — `error-e3a2e354214fc48a985a`
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `Kill` — `error-b5e61d9a83637a8b0a55`
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `ProcessingTimeout` — `error-4330ee949bb0b39b87c5`
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `UnknownSidecar` — `error-9fd66aa4b6879249a810`
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `Wait` — `error-953c2a508ab4a201718f`
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` — `error-4a7bbf78f1eef4f31cda`
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `Closed` — `error-edccf83596e248e6faba`
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `ControlQueueFull` — `error-bdb3331ea4ef7fe66d05`
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `DataQueueFull` — `error-bc92e00331c1093a3a5f`
+- `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` / `FrameTooLarge` — `error-d2843fac19f48d7e718e`
 
-Retry only when the relevant API or error contract explicitly permits it. An error name, a transient-looking message, or a successful prior run is not retry evidence.
+## API reference
+
+- [Sidecars](/docs/concepts/sidecars.md)
+- [Sidecar Protocol](/docs/reference/sidecar-protocol.md)
+
+| Public declaration | Kind | Declared purpose | Source |
+|---|---|---|---|
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarProcessSpec` | struct | Configures sidecar process behavior at its owning API boundary. | `src/runtime/lifecycle/sidecar_host.rs:71` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError::ProcessingTimeout` | variant | Reported when the owning operation encounters processing timeout. | `src/runtime/lifecycle/sidecar_host.rs:717` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarDeadlines` | struct | Sets finite startup, I/O, shutdown, and reap deadlines for a sidecar process. | `src/runtime/lifecycle/sidecar_host.rs:54` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHost` | struct | Owns the resources and lifecycle for sidecar. | `src/runtime/lifecycle/sidecar_host.rs:157` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostObservations` | struct | Reports the sidecar host observations collected at an observation boundary. | `src/runtime/lifecycle/sidecar_host.rs:109` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostSnapshot` | struct | Reports the sidecar host snapshot collected at an observation boundary. | `src/runtime/lifecycle/sidecar_host.rs:133` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` | enum | Classifies failures reported as sidecar host error. | `src/runtime/lifecycle/sidecar_host.rs:686` |
+| `pocketstation::runtime::lifecycle::sidecar_host::SidecarState` | enum | Selects the sidecar state used by PocketStation. | `src/runtime/lifecycle/sidecar_host.rs:21` |
 
 ## Related documentation
 
@@ -89,8 +86,8 @@ Retry only when the relevant API or error contract explicitly permits it. An err
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Host a managed-process sidecar** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/runtime/lifecycle/sidecar_host.rs:1-734` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Host a managed-process sidecar**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

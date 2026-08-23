@@ -15,23 +15,23 @@ use super::timeline::monotonic_timestamp_ns;
 /// separately and must not be relabeled as an OS permission preflight.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct CaptureAuthorizationSnapshot {
-    #[doc = "Stores the capability associated with `CaptureAuthorizationSnapshot`."]
+    #[doc = "Stores the capability used by `CaptureAuthorizationSnapshot`."]
     pub capability: CaptureCapabilityState,
-    #[doc = "Stores the os permission associated with `CaptureAuthorizationSnapshot`."]
+    #[doc = "Stores the os permission used by `CaptureAuthorizationSnapshot`."]
     pub os_permission: PermissionObservation,
-    #[doc = "Stores the application policy associated with `CaptureAuthorizationSnapshot`."]
+    #[doc = "Stores the application policy used by `CaptureAuthorizationSnapshot`."]
     pub application_policy: ApplicationPolicyObservation,
-    #[doc = "Stores the session grant associated with `CaptureAuthorizationSnapshot`."]
+    #[doc = "Stores the session grant used by `CaptureAuthorizationSnapshot`."]
     pub session_grant: CaptureSessionGrant,
-    #[doc = "Stores the capture scope associated with `CaptureAuthorizationSnapshot`."]
+    #[doc = "Stores the capture scope used by `CaptureAuthorizationSnapshot`."]
     pub capture_scope: CaptureScope,
-    #[doc = "Stores the identity strength associated with `CaptureAuthorizationSnapshot`."]
+    #[doc = "Stores the identity strength used by `CaptureAuthorizationSnapshot`."]
     pub identity_strength: SourceIdentityStrength,
-    #[doc = "Stores the permission epoch associated with `CaptureAuthorizationSnapshot`."]
+    #[doc = "Stores the permission epoch used by `CaptureAuthorizationSnapshot`."]
     pub permission_epoch: PermissionEpoch,
     #[doc = "Stores the observed at value for `CaptureAuthorizationSnapshot`, in nanoseconds."]
     pub observed_at_ns: u64,
-    #[doc = "Stores the open outcome associated with `CaptureAuthorizationSnapshot`."]
+    #[doc = "Stores the open outcome used by `CaptureAuthorizationSnapshot`."]
     pub open_outcome: CaptureOpenOutcome,
 }
 
@@ -187,13 +187,13 @@ pub enum PermissionObservation {
 /// it never converts a generic backend error into permission state.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct CapturePermissionTransition {
-    #[doc = "Stores the kind associated with `CapturePermissionTransition`."]
+    #[doc = "Stores the kind used by `CapturePermissionTransition`."]
     pub kind: SourceLifecycleEventKind,
-    #[doc = "Stores the previous associated with `CapturePermissionTransition`."]
+    #[doc = "Stores the previous used by `CapturePermissionTransition`."]
     pub previous: PermissionObservation,
-    #[doc = "Stores the current associated with `CapturePermissionTransition`."]
+    #[doc = "Stores the current used by `CapturePermissionTransition`."]
     pub current: PermissionObservation,
-    #[doc = "Stores the permission epoch associated with `CapturePermissionTransition`."]
+    #[doc = "Stores the permission epoch used by `CapturePermissionTransition`."]
     pub permission_epoch: PermissionEpoch,
 }
 
@@ -224,7 +224,7 @@ impl CapturePermissionLifecycle {
         self.current
     }
 
-    #[doc = "Returns the permission epoch associated with `CapturePermissionLifecycle`."]
+    #[doc = "Returns the permission epoch held by `CapturePermissionLifecycle`."]
     pub const fn permission_epoch(self) -> PermissionEpoch {
         self.permission_epoch
     }
@@ -287,17 +287,17 @@ pub enum CaptureSessionGrant {
 pub enum CaptureScope {
     #[doc = "Selects exact application behavior for `CaptureScope`."]
     ExactApplication {
-        #[doc = "Identifies the stable associated with `ExactApplication`."]
+        #[doc = "Identifies the stable identifier recorded by `ExactApplication`."]
         stable_id: String,
     },
     #[doc = "Selects exact input device behavior for `CaptureScope`."]
     ExactInputDevice {
-        #[doc = "Identifies the stable associated with `ExactInputDevice`."]
+        #[doc = "Identifies the stable identifier recorded by `ExactInputDevice`."]
         stable_id: String,
     },
     #[doc = "Selects exact output device behavior for `CaptureScope`."]
     ExactOutputDevice {
-        #[doc = "Identifies the stable associated with `ExactOutputDevice`."]
+        #[doc = "Identifies the stable identifier recorded by `ExactOutputDevice`."]
         stable_id: String,
     },
     #[doc = "Selects system mix behavior for `CaptureScope`."]
@@ -322,7 +322,7 @@ pub enum SourceIdentityStrength {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(transparent)]
-#[doc = "Represents permission epoch in the PocketStation API."]
+#[doc = "Identifies the permission-observation generation attached to captured lineage."]
 pub struct PermissionEpoch(pub u64);
 
 impl PermissionEpoch {
@@ -364,29 +364,29 @@ pub enum CaptureError {
     #[error("capture backend setup required for {backend}: {action}")]
     #[doc = "Reports backend setup required."]
     BackendSetupRequired {
-        #[doc = "Stores the backend associated with `BackendSetupRequired`."]
+        #[doc = "Stores the backend used by `BackendSetupRequired`."]
         backend: &'static str,
-        #[doc = "Stores the action associated with `BackendSetupRequired`."]
+        #[doc = "Stores the action used by `BackendSetupRequired`."]
         action: &'static str,
     },
     #[error("capture permission denied while {operation}")]
     #[doc = "Reports that the required permission was denied."]
     PermissionDenied {
-        #[doc = "Stores the operation associated with `PermissionDenied`."]
+        #[doc = "Stores the operation used by `PermissionDenied`."]
         operation: &'static str,
     },
     #[error("capture backend failed while {operation}: status {status_code}")]
     #[doc = "Reports backend status."]
     BackendStatus {
-        #[doc = "Stores the operation associated with `BackendStatus`."]
+        #[doc = "Stores the operation used by `BackendStatus`."]
         operation: &'static str,
-        #[doc = "Stores the status code associated with `BackendStatus`."]
+        #[doc = "Stores the status code used by `BackendStatus`."]
         status_code: i32,
     },
     #[error("selected capture source is unavailable: {stable_key}")]
     #[doc = "Reports source unavailable."]
     SourceUnavailable {
-        #[doc = "Stores the stable key associated with `SourceUnavailable`."]
+        #[doc = "Stores the stable key used by `SourceUnavailable`."]
         stable_key: String,
     },
     #[error("capture mode not supported on this backend: {0:?}")]
@@ -401,7 +401,7 @@ pub enum CaptureError {
     #[error("capture worker panicked while joining: {worker}")]
     #[doc = "Reports capture worker panicked."]
     CaptureWorkerPanicked {
-        #[doc = "Stores the worker associated with `CaptureWorkerPanicked`."]
+        #[doc = "Stores the worker used by `CaptureWorkerPanicked`."]
         worker: &'static str,
     },
 }

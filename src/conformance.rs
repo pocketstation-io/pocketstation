@@ -37,6 +37,7 @@ const SLOW_BRANCH_QUEUE_CAPACITY_FRAMES: usize = RECORDING_EDGE_CAPACITY_FRAMES 
 /// remains lossless even if its worker is not scheduled until capture ends.
 /// The independently configured half-capacity polled branch still saturates.
 pub const FRAMES_PER_SOURCE: u64 = RECORDING_EDGE_CAPACITY_FRAMES as u64;
+#[doc = "Defines the public observed connector operator identifier value."]
 pub const OBSERVED_CONNECTOR_OPERATOR_ID: &str = "io.pocketstation.conformance.connector.v1";
 
 #[derive(Clone, Copy)]
@@ -195,6 +196,7 @@ impl Drop for DeterministicActiveCapture {
     }
 }
 
+#[doc = "Runs the conformance assertions for the Session contract."]
 pub fn session() -> Result<Session, SessionEngineHostBuildError> {
     session_with_options(None, FRAMES_PER_SOURCE)
 }
@@ -342,16 +344,22 @@ pub fn observed_browser(
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as observed endpoint error."]
 pub enum ObservedEndpointError {
     #[error("invalid conformance connector contract: {0}")]
+    #[doc = "Reported when the owning operation encounters contract."]
     Contract(String),
     #[error(transparent)]
+    #[doc = "Reported when the owning operation encounters declaration."]
     Declaration(#[from] SessionError),
     #[error(transparent)]
+    #[doc = "Reported when the owning operation encounters registration."]
     Registration(#[from] SessionEndpointError),
     #[error(transparent)]
+    #[doc = "Reported when the owning operation encounters connector registration."]
     ConnectorRegistration(#[from] crate::connector::ConnectorRegistrationError),
     #[error(transparent)]
+    #[doc = "Reported when the owning operation encounters connector declaration."]
     ConnectorDeclaration(#[from] crate::connector::ConnectorDeclarationError),
 }
 
@@ -550,19 +558,33 @@ impl Drop for RunningObservedEndpoint {
 // W20 cross-language conformance uses deliberately neutral vocabulary. These
 // identities are shared verbatim by Rust, C, managed SDK, and PKSS fixtures;
 // no Rust type identity is serialized at any boundary.
+#[doc = "Defines the public extension signal identifier value."]
 pub const EXTENSION_SIGNAL_ID: &str = "org.pocketstation.conformance.signal.v1";
+#[doc = "Defines the public extension schema identifier value."]
 pub const EXTENSION_SCHEMA_ID: &str = "urn:pocketstation:conformance:signal:v1";
+#[doc = "Defines the public extension role identifier value."]
 pub const EXTENSION_ROLE_ID: &str = "org.pocketstation.conformance.terminal.v1";
+#[doc = "Defines the public extension source type identifier value."]
 pub const EXTENSION_SOURCE_TYPE_ID: &str = "org.pocketstation.conformance.source.fixture.v1";
+#[doc = "Defines the public extension operator identifier value."]
 pub const EXTENSION_OPERATOR_ID: &str = "org.pocketstation.conformance.operator.v1";
+#[doc = "Defines the public extension operator node identifier value."]
 pub const EXTENSION_OPERATOR_NODE_ID: &str = "org.pocketstation.conformance.operator-node.v1";
+#[doc = "Defines the public extension endpoint identifier value."]
 pub const EXTENSION_ENDPOINT_ID: &str = "org.pocketstation.conformance.endpoint.v1";
+#[doc = "Defines the public extension endpoint node identifier value."]
 pub const EXTENSION_ENDPOINT_NODE_ID: &str = "org.pocketstation.conformance.endpoint-node.v1";
+#[doc = "Defines the public extension source port value."]
 pub const EXTENSION_SOURCE_PORT: &str = "out";
+#[doc = "Defines the public extension operator input port value."]
 pub const EXTENSION_OPERATOR_INPUT_PORT: &str = "in";
+#[doc = "Defines the public extension operator output port value."]
 pub const EXTENSION_OPERATOR_OUTPUT_PORT: &str = "out";
+#[doc = "Defines the public extension endpoint input port value."]
 pub const EXTENSION_ENDPOINT_INPUT_PORT: &str = "in";
+#[doc = "Defines the public extension input payload value."]
 pub const EXTENSION_INPUT_PAYLOAD: &[u8] = b"seed";
+#[doc = "Defines the public extension output payload value."]
 pub const EXTENSION_OUTPUT_PAYLOAD: &[u8] = b"seed!";
 
 /// Language-neutral outcome returned by the W20 fixture.
@@ -571,35 +593,65 @@ pub const EXTENSION_OUTPUT_PAYLOAD: &[u8] = b"seed!";
 /// canonical `Session` and its registered Source/Operator/Endpoint owners.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ExtensionConformanceReport {
+    #[doc = "Identifies the signal identifier recorded by `ExtensionConformanceReport`."]
     pub signal_id: &'static str,
+    #[doc = "Identifies the schema identifier recorded by `ExtensionConformanceReport`."]
     pub schema_id: &'static str,
+    #[doc = "Identifies the role identifier recorded by `ExtensionConformanceReport`."]
     pub role_id: &'static str,
+    #[doc = "Identifies the source type identifier recorded by `ExtensionConformanceReport`."]
     pub source_type_id: &'static str,
+    #[doc = "Identifies the operator identifier recorded by `ExtensionConformanceReport`."]
     pub operator_id: &'static str,
+    #[doc = "Identifies the endpoint identifier recorded by `ExtensionConformanceReport`."]
     pub endpoint_id: &'static str,
+    #[doc = "Stores the input payload used by `ExtensionConformanceReport`."]
     pub input_payload: &'static str,
+    #[doc = "Stores the output payload used by `ExtensionConformanceReport`."]
     pub output_payload: &'static str,
+    #[doc = "Stores the failure requested used by `ExtensionConformanceReport`."]
     pub failure_requested: bool,
+    #[doc = "Counts the total number of source prepared observed by `ExtensionConformanceReport`."]
     pub source_prepared_total: u64,
+    #[doc = "Counts the total number of source emitted observed by `ExtensionConformanceReport`."]
     pub source_emitted_total: u64,
+    #[doc = "Counts the total number of source closed observed by `ExtensionConformanceReport`."]
     pub source_closed_total: u64,
+    #[doc = "Counts the total number of operator prepared observed by `ExtensionConformanceReport`."]
     pub operator_prepared_total: u64,
+    #[doc = "Counts the total number of operator processed observed by `ExtensionConformanceReport`."]
     pub operator_processed_total: u64,
+    #[doc = "Counts the total number of operator output observed by `ExtensionConformanceReport`."]
     pub operator_output_total: u64,
+    #[doc = "Counts the total number of operator failure observed by `ExtensionConformanceReport`."]
     pub operator_failure_total: u64,
+    #[doc = "Counts the total number of operator closed observed by `ExtensionConformanceReport`."]
     pub operator_closed_total: u64,
+    #[doc = "Counts the total number of endpoint prepared observed by `ExtensionConformanceReport`."]
     pub endpoint_prepared_total: u64,
+    #[doc = "Counts the total number of endpoint received observed by `ExtensionConformanceReport`."]
     pub endpoint_received_total: u64,
+    #[doc = "Counts the total number of endpoint stopped observed by `ExtensionConformanceReport`."]
     pub endpoint_stopped_total: u64,
+    #[doc = "Counts the total number of endpoint finalized observed by `ExtensionConformanceReport`."]
     pub endpoint_finalized_total: u64,
+    #[doc = "Counts the total number of lifecycle event observed by `ExtensionConformanceReport`."]
     pub lifecycle_event_total: u64,
+    #[doc = "Counts the total number of terminal event observed by `ExtensionConformanceReport`."]
     pub terminal_event_total: u64,
+    #[doc = "Sets the queue capacity signals available to `ExtensionConformanceReport`."]
     pub queue_capacity_signals: u64,
+    #[doc = "Reports the queue peak signals observed by `ExtensionConformanceReport`."]
     pub queue_peak_signals: u64,
+    #[doc = "Sets the route capacity signals available to `ExtensionConformanceReport`."]
     pub route_capacity_signals: u64,
+    #[doc = "Reports the route peak signals observed by `ExtensionConformanceReport`."]
     pub route_peak_signals: u64,
+    #[doc = "Counts the total number of route delivered observed by `ExtensionConformanceReport`."]
     pub route_delivered_total: u64,
+    #[doc = "Stores the maximum buffered payload size for `ExtensionConformanceReport`, in bytes."]
     pub maximum_buffered_payload_bytes: u64,
+    #[doc = "Stores the stop success used by `ExtensionConformanceReport`."]
     pub stop_success: bool,
 }
 
@@ -1178,9 +1230,11 @@ pub fn run_extension_vector(failure_requested: bool) -> Result<ExtensionConforma
     })
 }
 
+#[doc = "Owns one signal payload used by the native-extension conformance fixtures."]
 pub struct ExtensionSignal;
 
 impl crate::StreamSignal for ExtensionSignal {
+    #[doc = "Returns the signal spec held by `ExtensionSignal`."]
     fn signal_spec() -> crate::SignalSpec {
         extension_signal_spec()
     }

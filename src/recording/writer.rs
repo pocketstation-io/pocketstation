@@ -93,21 +93,21 @@ pub enum RecordingState {
 }
 
 #[derive(Debug, Clone, Serialize)]
-#[doc = "Represents discontinuity record in the PocketStation API."]
+#[doc = "Records one immutable discontinuity observation."]
 pub struct DiscontinuityRecord {
-    #[doc = "Identifies the stem associated with `DiscontinuityRecord`."]
+    #[doc = "Identifies the stem identifier recorded by `DiscontinuityRecord`."]
     pub stem_id: u64,
-    #[doc = "Stores the label associated with `DiscontinuityRecord`."]
+    #[doc = "Stores the label used by `DiscontinuityRecord`."]
     pub label: String,
-    #[doc = "Stores the kind associated with `DiscontinuityRecord`."]
+    #[doc = "Stores the kind used by `DiscontinuityRecord`."]
     pub kind: DiscontinuityKind,
     #[doc = "Stores the timestamp start value for `DiscontinuityRecord`, in nanoseconds."]
     pub timestamp_start_ns: u64,
     #[doc = "Stores the timestamp end value for `DiscontinuityRecord`, in nanoseconds."]
     pub timestamp_end_ns: u64,
-    #[doc = "Stores the sequence start associated with `DiscontinuityRecord`."]
+    #[doc = "Stores the sequence start used by `DiscontinuityRecord`."]
     pub sequence_start: Option<u64>,
-    #[doc = "Stores the sequence end associated with `DiscontinuityRecord`."]
+    #[doc = "Stores the sequence end used by `DiscontinuityRecord`."]
     pub sequence_end: Option<u64>,
 }
 
@@ -126,32 +126,32 @@ pub enum DiscontinuityKind {
 #[derive(Debug, Clone)]
 #[doc = "Reports the structured recording outcome."]
 pub struct RecordingOutcome {
-    #[doc = "Stores the session dir associated with `RecordingOutcome`."]
+    #[doc = "Stores the session dir used by `RecordingOutcome`."]
     pub session_dir: PathBuf,
-    #[doc = "Stores the state associated with `RecordingOutcome`."]
+    #[doc = "Stores the state used by `RecordingOutcome`."]
     pub state: RecordingState,
-    #[doc = "Stores the completed stems associated with `RecordingOutcome`."]
+    #[doc = "Stores the completed stems used by `RecordingOutcome`."]
     pub completed_stems: usize,
-    #[doc = "Stores the failed stems associated with `RecordingOutcome`."]
+    #[doc = "Stores the failed stems used by `RecordingOutcome`."]
     pub failed_stems: usize,
-    #[doc = "Stores the stems associated with `RecordingOutcome`."]
+    #[doc = "Stores the stems used by `RecordingOutcome`."]
     pub stems: Vec<RecordingStemOutcome>,
 }
 
 #[derive(Debug, Clone)]
 #[doc = "Reports the structured recording stem outcome."]
 pub struct RecordingStemOutcome {
-    #[doc = "Stores the label associated with `RecordingStemOutcome`."]
+    #[doc = "Stores the label used by `RecordingStemOutcome`."]
     pub label: String,
-    #[doc = "Stores the written frames associated with `RecordingStemOutcome`."]
+    #[doc = "Stores the written frames used by `RecordingStemOutcome`."]
     pub written_frames: u64,
-    #[doc = "Stores the stale frames associated with `RecordingStemOutcome`."]
+    #[doc = "Stores the stale frames used by `RecordingStemOutcome`."]
     pub stale_frames: u64,
-    #[doc = "Stores the gap ranges associated with `RecordingStemOutcome`."]
+    #[doc = "Stores the gap ranges used by `RecordingStemOutcome`."]
     pub gap_ranges: Vec<DiscontinuityRecord>,
-    #[doc = "Stores the error associated with `RecordingStemOutcome`."]
+    #[doc = "Stores the error used by `RecordingStemOutcome`."]
     pub error: Option<String>,
-    #[doc = "Stores the edge observations associated with `RecordingStemOutcome`."]
+    #[doc = "Stores the edge observations used by `RecordingStemOutcome`."]
     pub edge_observations: EdgeObservations,
 }
 
@@ -170,6 +170,7 @@ pub struct RecordingObservations {
     pub failures_total: u64,
 }
 
+#[doc = "Owns the per-stem recording workers and coordinates their terminal finalization outcome."]
 pub struct MultistemRecording {
     session_id: SessionId,
     session_dir: PathBuf,

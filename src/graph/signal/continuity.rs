@@ -3,18 +3,18 @@
 use crate::graph::signal::{SignalEnvelope, SignalEnvelopeError, SignalLineage, SignalTiming};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Represents signal continuity observation in the PocketStation API."]
+#[doc = "Reports sequence or timestamp continuity observed for one signal stream."]
 pub struct SignalContinuityObservation {
-    #[doc = "Stores the discontinuity observed associated with `SignalContinuityObservation`."]
+    #[doc = "Stores the discontinuity observed used by `SignalContinuityObservation`."]
     pub discontinuity_observed: bool,
-    #[doc = "Stores the source recovered associated with `SignalContinuityObservation`."]
+    #[doc = "Stores the source recovered used by `SignalContinuityObservation`."]
     pub source_recovered: bool,
-    #[doc = "Stores the policy changed associated with `SignalContinuityObservation`."]
+    #[doc = "Stores the policy changed used by `SignalContinuityObservation`."]
     pub policy_changed: bool,
 }
 
 #[derive(Debug, Default)]
-#[doc = "Represents signal continuity tracker in the PocketStation API."]
+#[doc = "Tracks sequence and timing progress so discontinuities remain observable."]
 pub struct SignalContinuityTracker {
     previous: Option<(SignalLineage, SignalTiming)>,
 }

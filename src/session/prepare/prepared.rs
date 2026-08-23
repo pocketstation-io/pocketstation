@@ -28,36 +28,43 @@ pub struct PreparedSession {
 
 impl PreparedSession {
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the session identifier held by `PreparedSession`."]
     pub const fn session_id(&self) -> SessionId {
         self.spec.session_id()
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the spec held by `PreparedSession`."]
     pub fn spec(&self) -> &SessionSpec {
         &self.spec
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the source mappings held by `PreparedSession`."]
     pub fn source_mappings(&self) -> &[PreparedSourceMapping] {
         &self.source_mappings
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the source input count held by `PreparedSession`."]
     pub fn source_input_count(&self) -> usize {
         self.source_inputs.len()
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the worker mappings held by `PreparedSession`."]
     pub fn worker_mappings(&self) -> &[PreparedWorkerMapping] {
         &self.worker_mappings
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the operator mappings held by `PreparedSession`."]
     pub fn operator_mappings(&self) -> &[PreparedOperatorMapping] {
         &self.operator_mappings
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns the route observations held by `PreparedSession`."]
     pub fn route_observations(
         &self,
         route_id: RouteId,
@@ -70,6 +77,7 @@ impl PreparedSession {
     }
 
     #[cfg(any(test, feature = "internal-testing"))]
+    #[doc = "Returns whether cancellation requested is true for `PreparedSession`."]
     pub fn cancellation_requested(&self) -> bool {
         self.cancellation.is_requested()
     }

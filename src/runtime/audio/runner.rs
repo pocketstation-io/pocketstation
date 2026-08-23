@@ -95,6 +95,7 @@ impl PlanSourceInputTelemetry {
 }
 
 #[derive(Clone)]
+#[doc = "Shares a lock-free cancellation flag between the Session owner and the realtime plan runner."]
 pub struct PlanRunnerCancellation {
     requested: Arc<AtomicBool>,
 }
@@ -267,13 +268,13 @@ pub enum PlanRunnerError {
     #[error("source node {source_node_id} has zero input capacity")]
     #[doc = "Reports zero source capacity."]
     ZeroSourceCapacity {
-        #[doc = "Identifies the source node associated with `ZeroSourceCapacity`."]
+        #[doc = "Identifies the source node identifier recorded by `ZeroSourceCapacity`."]
         source_node_id: u32,
     },
     #[error("source node {source_node_id} is registered more than once")]
     #[doc = "Reports duplicate source."]
     DuplicateSource {
-        #[doc = "Identifies the source node associated with `DuplicateSource`."]
+        #[doc = "Identifies the source node identifier recorded by `DuplicateSource`."]
         source_node_id: u32,
     },
     #[error("runner work budget must be greater than zero")]

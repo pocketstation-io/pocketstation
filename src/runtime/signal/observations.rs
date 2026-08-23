@@ -54,7 +54,7 @@ pub struct AsyncOperatorObservations {
     pub idle_poll_total: u64,
     #[doc = "Indicates whether ready applies to `AsyncOperatorObservations`."]
     pub ready: bool,
-    #[doc = "Stores the joined associated with `AsyncOperatorObservations`."]
+    #[doc = "Stores the joined used by `AsyncOperatorObservations`."]
     pub joined: bool,
 }
 

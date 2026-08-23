@@ -7,7 +7,7 @@
 - **Compile Session declarations.** Validate declarations, resolve bindings, and lower a Session specification into an executable plan.
 - **Prepare runtime resources.** Prepare source and endpoint runtimes while preserving the mapping back to declaration identities.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Runtime planner** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
 ## Ownership map
 
@@ -18,30 +18,30 @@ These statements describe repository contracts at the documented snapshot. They 
 
 | Public declaration | Kind | Declared purpose | Source |
 |---|---|---|---|
-| `pocketstation::graph::runtime_node::RuntimeNode` | trait | Realtime invariant: for nodes whose ExecutionClass::is_realtime is true, process() must stay alloc-free, lock-free, log-free, and blocking-free (LAW 15). All working state is sized once in prepare() and reused for the lifetime of the node. | `src/graph/runtime_node.rs:7` |
-| `pocketstation::session::error_code::SessionRuntimeErrorCode` | enum | Stable language-neutral code for a running-Session projection failure. | `src/session/error_code.rs:116` |
-| `pocketstation::runtime::audio::router::EdgeObservations` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/audio/router.rs:122` |
-| `pocketstation::runtime::audio::runner::PlanSourceInputObservations` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/audio/runner.rs:22` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarDeadlines` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:54` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostSnapshot` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:133` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarProcessSpec` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:71` |
-| `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessage` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_protocol.rs:73` |
-| `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolLimits` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_protocol.rs:43` |
-| `pocketstation::runtime::signal::edge::SignalEdgeObservations` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/signal/edge.rs:31` |
-| `pocketstation::runtime::signal::observations::AsyncOperatorObservations` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/signal/observations.rs:29` |
-| `pocketstation::session::extensions::source::SourceRuntimeObservations` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/extensions/source.rs:394` |
-| `pocketstation::runtime::audio::executor::ExecError` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/audio/executor.rs:20` |
-| `pocketstation::runtime::audio::runner::PlanRunnerError` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/audio/runner.rs:256` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarHostError` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:686` |
-| `pocketstation::runtime::lifecycle::sidecar_host::SidecarState` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_host.rs:21` |
-| `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarMessageKind` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_protocol.rs:9` |
-| `pocketstation::runtime::lifecycle::sidecar_protocol::SidecarProtocolError` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/lifecycle/sidecar_protocol.rs:292` |
-| `RuntimeNode::prepare` | function | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/runtime_node.rs:8` |
-| `RuntimeNode::process` | function | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/graph/runtime_node.rs:9` |
-| `runtime_events_total` | function | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/start_contract.rs:358` |
-| `runtime_failures_total` | function | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/start_contract.rs:346` |
-| `runtime_worker_panicked` | function | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/start_contract.rs:342` |
-| `pocketstation::runtime::signal::io::AsyncOperatorOutputObservations` | type_alias | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/runtime/signal/io.rs:77` |
+| `pocketstation::graph::compile::plan::RuntimePlanner` | struct | Validates the graph and produces the bounded runtime execution and memory plan. | `src/graph/compile/plan.rs:11` |
+| `pocketstation::session::prepare::prepare_session_runtime` | function | Prepares session runtime for `prepare`. | `src/session/prepare/mod.rs:33` |
+| `pocketstation::graph::compile::resolve::Compiler` | struct | Runs the ordered graph-validation passes that resolve a graph specification into executable IR. | `src/graph/compile/resolve.rs:444` |
+| `pocketstation::session::compile::SessionCompiler` | struct | Compiles an immutable Session declaration into a validated graph and runtime plan. | `src/session/compile/mod.rs:41` |
+| `pocketstation::session::compile::compiled::CompiledSession` | struct | Owns the validated Session specification and declarations produced by compilation. | `src/session/compile/compiled.rs:13` |
+| `pocketstation::session::prepare::mappings::PreparedOperatorMapping` | struct | Correlates the prepared identities and runtime resources for prepared operator. | `src/session/prepare/mappings.rs:160` |
+| `pocketstation::session::prepare::mappings::PreparedSignalRouteMapping` | struct | Correlates the prepared identities and runtime resources for prepared signal route. | `src/session/prepare/mappings.rs:131` |
+| `pocketstation::session::prepare::mappings::PreparedSourceMapping` | struct | Correlates the prepared identities and runtime resources for prepared source. | `src/session/prepare/mappings.rs:18` |
+| `pocketstation::session::prepare::mappings::PreparedWorkerMapping` | struct | Correlates the prepared identities and runtime resources for prepared worker. | `src/session/prepare/mappings.rs:35` |
+| `pocketstation::session::prepare::prepared::PreparedSession` | struct | Setup-time ownership for one compiled Session. | `src/session/prepare/prepared.rs:18` |
+| `pocketstation::graph::compile::resolve::CompileError` | enum | Classifies failures reported as compile error. | `src/graph/compile/resolve.rs:26` |
+| `cancellation_requested` | function | Returns whether cancellation requested is true for `PreparedSession`. | `src/session/prepare/prepared.rs:73` |
+| `compile` | function | Compiles its owned operation for `Compiler`. | `src/graph/compile/resolve.rs:464` |
+| `compile` | function | Compiles its owned operation for `SessionCompiler`. | `src/session/compile/mod.rs:103` |
+| `default` | function | Returns the default `RuntimePlanner` value. | `src/graph/compile/plan.rs:349` |
+| `default` | function | Returns the default `Compiler` value. | `src/graph/compile/resolve.rs:513` |
+| `edge_count` | function | Returns the edge count held by `CompiledSession`. | `src/session/compile/compiled.rs:52` |
+| `endpoint_declarations` | function | Returns the endpoint declarations associated with `CompiledSession`. | `src/session/compile/compiled.rs:42` |
+| `endpoint_id` | function | Returns the endpoint identifier held by `PreparedWorkerMapping`. | `src/session/prepare/mappings.rs:253` |
+| `external_source_declarations` | function | Returns the external source declarations associated with `CompiledSession`. | `src/session/compile/compiled.rs:37` |
+| `new` | function | Creates a new `RuntimePlanner`. | `src/graph/compile/plan.rs:14` |
+| `new` | function | Creates a new `Compiler`. | `src/graph/compile/resolve.rs:449` |
+| `new` | function | Creates a new `SessionCompiler`. | `src/session/compile/mod.rs:77` |
+| `node_configuration` | function | Returns the node configuration held by `PreparedWorkerMapping`. | `src/session/prepare/mappings.rs:258` |
 
 ## Observed implementation patterns
 
@@ -50,52 +50,52 @@ These statements describe repository contracts at the documented snapshot. They 
 - `typed_error` — `src/session/declaration/typed_stream.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/runtime/nodes.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `clock_correlation` — `src/session/lifecycle/running.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `src/runtime/lifecycle/async_host.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `benches/runtime_plan.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/session/extensions/tests/runtime.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `bounded_queue` — `src/graph/ports.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `transactional_registration` — `src/session/lifecycle/events.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/session/compile/tests.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/session/extensions/tests/registry.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `transactional_registration` — `src/session/lifecycle/endpoint_transaction.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `benches/runtime_plan.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `src/session/mod.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/session/extensions/builtins.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/graph/signal/envelope.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `bounded_queue` — `src/graph/compile/plan.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/graph/named_ports.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/session/lifecycle/host.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `bounded_queue` — `src/session/lifecycle/trace.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `examples/product_quickstart.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `src/session/lifecycle/observations.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `buffer_pool` — `src/runtime/audio/executor.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `buffer_pool` — `src/graph/plan.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
-- `sidecar_isolation` — `src/runtime/signal/operator.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `examples/operator-consumer/src/lib.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/session/lifecycle/endpoint_transaction.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `transactional_registration` — `src/session/lifecycle/mod.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/session/extensions/audio_input/buffer.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/runtime/lifecycle/async_host.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 - `typed_error` — `src/graph/runtime_node.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `clock_correlation` — `src/session/extensions/audio_input/source.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `buffer_pool` — `src/runtime/audio/runner.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `buffer_pool` — `src/session/extensions/tests/runtime.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `transactional_registration` — `src/session/lifecycle/engine.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `typed_error` — `src/graph/signal/operator.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
+- `transactional_registration` — `src/session/lifecycle/tests/running.rs` (`OBSERVED_IMPLEMENTATION_PATTERN`).
 
 ## Behavioral evidence
 
-The following test bodies are evidence only for their recorded setup:
+Executable evidence selected for **Runtime planner** is limited to each test's recorded setup and assertions:
 
 - `given_fixed_graph_when_planned_then_runtime_plan_matches_golden_snapshot` — given fixed graph when planned then runtime plan matches golden snapshot (`src/graph/compile/plan.rs:803`; `test-79ec9d2ff6b56808169b`).
-- `given_internal_runtime_node_ids_when_audited_then_they_use_endpoint_vocabulary` — given internal runtime node ids when audited then they use endpoint vocabulary (`src/graph/identifier.rs:224`; `test-4134b294aea35bdc9255`).
-- `given_unknown_named_input_when_compiled_then_failure_precedes_runtime` — given unknown named input when compiled then failure precedes runtime (`src/graph/named_ports.rs:87`; `test-547f292fc53c973e1c33`).
-- `given_duplicate_runtime_node_when_registered_then_first_authority_is_preserved` — given duplicate runtime node when registered then first authority is preserved (`src/graph/registry.rs:214`; `test-aa4e55522d6667752261`).
-- `given_sync_caller_when_future_executes_then_result_returns_from_owned_runtime` — given sync caller when future executes then result returns from owned runtime (`src/runtime/lifecycle/async_host.rs:120`; `test-d5a7aaac26a126b55f7d`).
-- `given_tokio_caller_when_sync_lifecycle_executes_then_no_nested_runtime_panics` — given tokio caller when sync lifecycle executes then no nested runtime panics (`src/runtime/lifecycle/async_host.rs:129`; `test-905856446bbeb46b221d`).
-- `given_prepare_context_capacity_disagrees_with_runtime_edge_when_spawned_then_prepare_fails_closed` — given prepare context capacity disagrees with runtime edge when spawned then prepare fails closed (`src/runtime/signal/operator.rs:1808`; `test-ef78893c6bb92b613da0`).
-- `given_compiled_derived_route_when_runtime_prepared_then_compiled_topology_is_preserved` — given compiled derived route when runtime prepared then compiled topology is preserved (`src/session/compile/tests.rs:659`; `test-f38493cc0593f603aece`).
-- `given_required_named_input_missing_when_compiled_then_failure_precedes_graph_runtime` — given required named input missing when compiled then failure precedes graph runtime (`src/session/compile/tests.rs:384`; `test-99e881c59d26f6126f74`).
-- `given_deterministic_capture_when_polled_then_real_runtime_branch_copy_and_lineage_are_exposed` — given deterministic capture when polled then real runtime branch copy and lineage are exposed (`src/session/lifecycle/tests/engine.rs:440`; `test-162e3f6748e6f4f9bf07`).
-- `given_one_source_failure_when_runtime_continues_then_healthy_source_frame_is_delivered` — given one source failure when runtime continues then healthy source frame is delivered (`src/session/lifecycle/tests/running.rs:1468`; `test-35a321e64379e644e1b7`).
-- `given_external_consumer_when_declared_then_provider_and_typed_endpoint_use_public_api` — given external consumer when declared then provider and typed endpoint use public api (`examples/operator-consumer/src/lib.rs:120`; `test-ace9b7d11da2036ce899`).
+- `given_compiled_graph_when_instrumented_then_metric_ids_are_stable_and_distinct` — given compiled graph when instrumented then metric ids are stable and distinct (`src/graph/compile/plan.rs:785`; `test-1c092b4376cfedf5e86d`).
+- `given_copy_to_branch_pool_edge_when_planned_then_copy_pool_memory_is_reserved` — given copy to branch pool edge when planned then copy pool memory is reserved (`src/graph/compile/plan.rs:734`; `test-1d8783b870fa351a933b`).
+- `given_explicit_jitter_budget_when_planned_then_bounded_capacity_is_derived_from_frame_time` — given explicit jitter budget when planned then bounded capacity is derived from frame time (`src/graph/compile/plan.rs:755`; `test-28b5b52333fa1672705d`).
+- `given_linear_realtime_chain_when_planned_then_single_partition_and_topo_order` — given linear realtime chain when planned then single partition and topo order (`src/graph/compile/plan.rs:834`; `test-9570c9e13e72112e73ef`).
+- `given_linear_realtime_graph_when_planned_then_single_partition_in_topo_order` — given linear realtime graph when planned then single partition in topo order (`src/graph/compile/plan.rs:540`; `test-0ad4ea1abd7124d12740`).
+- `given_many_input_port_with_multiple_sources_when_planned_then_one_fan_in_group` — given many input port with multiple sources when planned then one fan in group (`src/graph/compile/plan.rs:664`; `test-e8c1159b6f21b80587d2`).
+- `given_move_exclusive_edge_in_fan_out_when_planned_then_ownership_is_rejected` — given move exclusive edge in fan out when planned then ownership is rejected (`src/graph/compile/plan.rs:640`; `test-6148b3a94bda4119135e`).
+- `given_output_feeding_two_edges_when_planned_then_one_fan_out_group_with_two_targets` — given output feeding two edges when planned then one fan out group with two targets (`src/graph/compile/plan.rs:610`; `test-42437c4cb8f955f4df43`).
+- `given_realtime_and_model_remote_nodes_when_planned_then_two_partitions_ordered_by_rank` — given realtime and model remote nodes when planned then two partitions ordered by rank (`src/graph/compile/plan.rs:561`; `test-917d8ff26f7ff8e13525`).
+- `given_realtime_consumers_when_planned_then_every_edge_buffered_and_pool_positive` — given realtime consumers when planned then every edge buffered and pool positive (`src/graph/compile/plan.rs:706`; `test-977e6826ff8e82a0a94c`).
+- `given_realtime_to_external_edge_when_planned_then_branch_pool_isolated_from_capture_pool` — given realtime to external edge when planned then branch pool isolated from capture pool (`src/graph/compile/plan.rs:591`; `test-ab3f88fbe7eaddfa92c8`).
 
 ## Stability boundary
 
-This page explains internals. Public compatibility comes from exported Rust declarations, the C header, manifests, error codes, and explicit compatibility artifacts—not private module layout.
+**Runtime planner** describes internal ownership. Its private module layout is not a compatibility promise; compatibility comes from exported Rust declarations, the C header, manifests, error codes, and explicit compatibility artifacts.
 
 ## Related documentation
 
@@ -110,9 +110,9 @@ This page explains internals. Public compatibility comes from exported Rust decl
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Runtime planner** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/graph/compile/plan.rs:1-860` (`DIRECT`)
 - `src/session/compile/compiled.rs:1-107` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Runtime planner**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

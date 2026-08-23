@@ -13,12 +13,12 @@ use crate::session::{
 /// `SignalSpec` remains the runtime and cross-language authority. Rust type
 /// identity is never serialized or exposed through the C ABI.
 pub trait StreamSignal: Send + Sync + 'static {
-    #[doc = "Returns the signal spec associated with `StreamSignal`."]
+    #[doc = "Returns the signal spec held by `StreamSignal`."]
     fn signal_spec() -> SignalSpec;
 }
 
 #[derive(Debug, Clone)]
-#[doc = "Represents typed operator in the PocketStation API."]
+#[doc = "Binds an operator declaration to its typed input and output ports so graph connections preserve signal specifications."]
 pub struct TypedOperator<Input, Output> {
     operator: Operator,
     input_port: String,
@@ -71,27 +71,27 @@ impl<Input: StreamSignal, Output: StreamSignal> TypedOperator<Input, Output> {
         })
     }
 
-    #[doc = "Returns the operator identifier associated with `TypedOperator`."]
+    #[doc = "Returns the operator identifier held by `TypedOperator`."]
     pub const fn operator_id(&self) -> &OperatorId {
         self.operator.operator_id()
     }
 
-    #[doc = "Returns the input port associated with `TypedOperator`."]
+    #[doc = "Returns the input port held by `TypedOperator`."]
     pub fn input_port(&self) -> &str {
         &self.input_port
     }
 
-    #[doc = "Returns the output port associated with `TypedOperator`."]
+    #[doc = "Returns the output port held by `TypedOperator`."]
     pub fn output_port(&self) -> &str {
         &self.output_port
     }
 
-    #[doc = "Returns the input spec associated with `TypedOperator`."]
+    #[doc = "Returns the input spec held by `TypedOperator`."]
     pub const fn input_spec(&self) -> &SignalSpec {
         &self.input_spec
     }
 
-    #[doc = "Returns the output spec associated with `TypedOperator`."]
+    #[doc = "Returns the output spec held by `TypedOperator`."]
     pub const fn output_spec(&self) -> &SignalSpec {
         &self.output_spec
     }
@@ -134,7 +134,7 @@ impl<Signal: StreamSignal> Stream<Signal> {
         })
     }
 
-    #[doc = "Returns the signal spec associated with `Stream`."]
+    #[doc = "Returns the signal spec held by `Stream`."]
     pub const fn signal_spec(&self) -> &SignalSpec {
         &self.signal_spec
     }
@@ -205,41 +205,41 @@ pub enum TypedStreamError {
     #[error("operator declaration '{declaration}' does not match manifest '{manifest}'")]
     #[doc = "Reports operator identity mismatch."]
     OperatorIdentityMismatch {
-        #[doc = "Stores the declaration associated with `OperatorIdentityMismatch`."]
+        #[doc = "Stores the declaration used by `OperatorIdentityMismatch`."]
         declaration: String,
-        #[doc = "Stores the manifest associated with `OperatorIdentityMismatch`."]
+        #[doc = "Stores the manifest used by `OperatorIdentityMismatch`."]
         manifest: String,
     },
     #[error("typed stream port '{port}' is not declared for direction {direction:?}")]
     #[doc = "Reports unknown port."]
     UnknownPort {
-        #[doc = "Stores the direction associated with `UnknownPort`."]
+        #[doc = "Stores the direction used by `UnknownPort`."]
         direction: PortDirection,
-        #[doc = "Stores the port associated with `UnknownPort`."]
+        #[doc = "Stores the port used by `UnknownPort`."]
         port: String,
     },
     #[error("typed stream manifest has no port for direction {direction:?}")]
     #[doc = "Reports missing port."]
     MissingPort {
-        #[doc = "Stores the direction associated with `MissingPort`."]
+        #[doc = "Stores the direction used by `MissingPort`."]
         direction: PortDirection,
     },
     #[error("typed stream manifest requires explicit port selection for direction {direction:?}")]
     #[doc = "Reports ambiguous port."]
     AmbiguousPort {
-        #[doc = "Stores the direction associated with `AmbiguousPort`."]
+        #[doc = "Stores the direction used by `AmbiguousPort`."]
         direction: PortDirection,
     },
     #[error("typed operator input marker does not match port '{port}'")]
     #[doc = "Reports input signal mismatch."]
     InputSignalMismatch {
-        #[doc = "Stores the port associated with `InputSignalMismatch`."]
+        #[doc = "Stores the port used by `InputSignalMismatch`."]
         port: String,
     },
     #[error("typed operator output marker does not match port '{port}'")]
     #[doc = "Reports output signal mismatch."]
     OutputSignalMismatch {
-        #[doc = "Stores the port associated with `OutputSignalMismatch`."]
+        #[doc = "Stores the port used by `OutputSignalMismatch`."]
         port: String,
     },
     #[error("typed capture stem markers must describe PCM audio")]

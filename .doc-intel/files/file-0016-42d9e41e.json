@@ -161,6 +161,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -202,7 +203,17 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "criterion::{black_box, criterion_group, criterion_main, Criterion, Throughput}",
+    "pocketstation::internal::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
+    "pocketstation::internal::graph::NodeId",
+    "pocketstation::internal::graph::compiler::Compiler",
+    "pocketstation::internal::graph::dsl::Pipeline",
+    "pocketstation::internal::graph::node::{NodeConfig, PrepareContext}",
+    "pocketstation::internal::graph::planner::RuntimePlanner",
+    "pocketstation::internal::graph::register_builtins",
+    "pocketstation::internal::graph::registry::NodeRegistry",
+    "pocketstation::internal::runtime::{ plan_source_channel, PlanEdgeReceiver, PlanEdgeRouter, PlanRunnerCancellation, PlanSourceSendOutcome, PlanSourceSender, RealtimePlanExecutor, RealtimePlanRunner, }",
+    "std::sync::Arc"
   ],
   "invariants": [
     {
@@ -237,22 +248,23 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-0bed8aaed06c69250bca",
-    "pattern-190078991e6fb29b089b",
     "pattern-e6328fbaa144215cdb33"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "benches/runtime_plan.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -296,7 +308,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "text": "Implements not applicable responsibilities, including the benches/runtime plan boundary."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -352,6 +364,7 @@
     "docs/best-practices/realtime-boundaries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 1,
@@ -363,12 +376,12 @@
     }
   ],
   "responsibilities": [
-    "FRAME_SAMPLES",
-    "lineaged_frame",
-    "three_branch_plan",
-    "drain",
-    "bench_runtime_plan",
-    "send_source_frame"
+    "FRAME_SAMPLES (const)",
+    "lineaged_frame (fn)",
+    "three_branch_plan (fn)",
+    "drain (fn)",
+    "bench_runtime_plan (fn)",
+    "send_source_frame (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -391,6 +404,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

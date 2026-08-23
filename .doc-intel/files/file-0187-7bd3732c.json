@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "calls": [
     "any",
     "cfg",
@@ -21,7 +24,10 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "constructs": [],
   "content_hash": "ef2a31e5d3cc0185eeedf993a077b9c3539b93110fc1407e77b501e091e9bf3f",
   "defaults": [],
@@ -67,8 +73,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -84,9 +94,15 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "d0fa43132ab3217909de3be32190648129124fbf",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "imports": [
     "async_host::AsyncRuntimeHost",
     "async_host::AsyncRuntimeHostError",
@@ -98,7 +114,16 @@
     "sidecar_protocol::{ SidecarMessage, SidecarMessageKind, SidecarProtocolError, SidecarProtocolLimits, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(test)]",
+    "async_host::AsyncRuntimeHost",
+    "async_host::AsyncRuntimeHostError",
+    "module:async_host",
+    "module:sidecar_host",
+    "module:sidecar_protocol",
+    "sidecar_host::CONTROL_SIGNAL_ID",
+    "sidecar_host::{ SidecarDeadlines, SidecarHost, SidecarHostError, SidecarHostSnapshot, SidecarProcessSpec, SidecarState, }",
+    "sidecar_protocol::{ SidecarMessage, SidecarMessageKind, SidecarProtocolError, SidecarProtocolLimits, }"
   ],
   "invariants": [],
   "language": "Rust",
@@ -107,20 +132,20 @@
   "module": "pocketstation::runtime::lifecycle",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-d3dd2136b3d4dcedef9a"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "src/runtime/lifecycle/mod.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -145,8 +170,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Non-realtime runtime ownership and process-protocol lifecycle."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::runtime::lifecycle responsibilities, including Non-realtime runtime ownership and process-protocol lifecycle.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -205,11 +230,17 @@
     "docs/best-practices/realtime-boundaries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "CONTAINS:src/runtime/lifecycle/async_host.rs",
+    "CONTAINS:src/runtime/lifecycle/sidecar_host.rs",
+    "CONTAINS:src/runtime/lifecycle/sidecar_protocol.rs",
+    "IMPORTS:src/runtime/lifecycle/async_host.rs",
+    "IMPORTS:src/runtime/lifecycle/sidecar_host.rs",
+    "IMPORTS:src/runtime/lifecycle/sidecar_protocol.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "async_host",
-    "sidecar_host",
-    "sidecar_protocol"
+    "lifecycle: Non-realtime runtime ownership and process-protocol lifecycle."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -219,6 +250,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

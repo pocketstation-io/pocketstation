@@ -129,7 +129,9 @@
       "text": "callback,"
     }
   ],
-  "called_by": [],
+  "called_by": [
+    "IMPORTS:src/capture/platform/windows/mod.rs"
+  ],
   "calls": [
     "Activate",
     "ActivateAudioInterfaceAsync",
@@ -408,7 +410,9 @@
     }
   ],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "IMPORTS:src/capture/platform/windows/mod.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AtomicU64::new",
@@ -1988,8 +1992,11 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "IMPORTS:src/capture/platform/windows/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -2132,7 +2139,9 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "8f704fc69518ada68ffbade1282fb949b1278ee9",
-  "implemented_by": [],
+  "implemented_by": [
+    "IMPORTS:src/capture/platform/windows/mod.rs"
+  ],
   "implements": [
     "DesktopCaptureSource",
     "ProcessLoopbackScope",
@@ -2153,7 +2162,9 @@
     "ProcessLoopbackStream",
     "Drop for ProcessLoopbackStream"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "IMPORTS:src/capture/platform/windows/mod.rs"
+  ],
   "imports": [
     "crate::capture::platform::windows::open_lifecycle::{ report_open, wait_for_completion, wait_for_open, CancellableWaitOutcome, OpenCancellation, OpenReportError, OpenWaitOutcome, }",
     "crate::capture::platform::windows::packet_delivery::{plan_packet_read, PacketReadPlan}",
@@ -2197,7 +2208,46 @@
     "windows_core::{Interface, PWSTR}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::capture::platform::windows::open_lifecycle::{ report_open, wait_for_completion, wait_for_open, CancellableWaitOutcome, OpenCancellation, OpenReportError, OpenWaitOutcome, }",
+    "crate::capture::platform::windows::packet_delivery::{plan_packet_read, PacketReadPlan}",
+    "crate::capture::platform::windows::process_identity::ProcessInstanceFingerprint",
+    "crate::capture::platform::windows::runtime_lifecycle::{ classify_platform_status, WindowsRuntimeFailureDisposition, }",
+    "crate::capture::{ monotonic_timestamp_ns, source_runtime_event_channel, CaptureError as LoopbackError, CaptureMode, CaptureObservationCounters, CaptureObservationHandle, CaptureObservations, CaptureRuntimeFailure, CaptureRuntimeFailureClass, InputDeviceSelector, SourceGeneration, SourceKind, SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventObservations, SourceRuntimeEventReceive, SourceRuntimeEventReceiver, SourceRuntimeEventSender, StableSourceId, }",
+    "crate::capture::{CaptureSource, SourceKind, SourceState, StableSourceId}",
+    "crate::frame::Platform",
+    "crate::frame::{ AudioBufferPool, AudioFrame, Platform, SourceId, StreamId, POOL_MAX_SLOTS, SAMPLE_RATE_HZ, }",
+    "std::mem::size_of",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "std::time::Duration",
+    "wasapi::{AudioClient, DeviceEnumerator, Direction, SampleType, StreamMode, WaveFormat}",
+    "windows::Win32::Foundation::CloseHandle",
+    "windows::Win32::Foundation::ERROR_INVALID_PARAMETER",
+    "windows::Win32::Foundation::FILETIME",
+    "windows::Win32::Foundation::{ERROR_TIMEOUT, E_ABORT, E_FAIL, E_POINTER}",
+    "windows::Win32::Foundation::{GetLastError, WAIT_FAILED, WAIT_OBJECT_0, WAIT_TIMEOUT}",
+    "windows::Win32::Media::Audio::AUDCLNT_BUFFERFLAGS_SILENT",
+    "windows::Win32::Media::Audio::{ AUDIOCLIENT_ACTIVATION_PARAMS, AUDIOCLIENT_ACTIVATION_PARAMS_0, AUDIOCLIENT_ACTIVATION_TYPE_PROCESS_LOOPBACK, AUDIOCLIENT_PROCESS_LOOPBACK_PARAMS, PROCESS_LOOPBACK_MODE_INCLUDE_TARGET_PROCESS_TREE, }",
+    "windows::Win32::Media::Audio::{ ActivateAudioInterfaceAsync, IActivateAudioInterfaceCompletionHandler, IAudioClient, VIRTUAL_AUDIO_DEVICE_PROCESS_LOOPBACK, }",
+    "windows::Win32::Media::Audio::{ IAudioCaptureClient, AUDCLNT_SHAREMODE_SHARED, AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM, AUDCLNT_STREAMFLAGS_EVENTCALLBACK, AUDCLNT_STREAMFLAGS_LOOPBACK, AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY, WAVEFORMATEX, }",
+    "windows::Win32::Media::Audio::{ eMultimedia, eRender, AudioSessionStateActive, IAudioSessionControl, IAudioSessionControl2, IAudioSessionEnumerator, IAudioSessionManager2, IMMDeviceEnumerator, MMDeviceEnumerator, }",
+    "windows::Win32::Media::timeBeginPeriod",
+    "windows::Win32::Media::timeEndPeriod",
+    "windows::Win32::System::Com::{CoCreateInstance, CLSCTX_ALL}",
+    "windows::Win32::System::Threading::AvRevertMmThreadCharacteristics",
+    "windows::Win32::System::Threading::AvSetMmThreadCharacteristicsW",
+    "windows::Win32::System::Threading::CreateEventW",
+    "windows::Win32::System::Threading::GetProcessTimes",
+    "windows::Win32::System::Threading::WaitForSingleObject",
+    "windows::Win32::System::Threading::{ OpenProcess, PROCESS_ACCESS_RIGHTS, PROCESS_QUERY_LIMITED_INFORMATION, }",
+    "windows::Win32::System::Threading::{ OpenProcess, QueryFullProcessImageNameW, PROCESS_NAME_WIN32, PROCESS_QUERY_LIMITED_INFORMATION, }",
+    "windows::Win32::System::Threading::{OpenProcess, PROCESS_QUERY_LIMITED_INFORMATION}",
+    "windows::Win32::System::Variant::VT_BLOB",
+    "windows_core::HRESULT",
+    "windows_core::PCWSTR",
+    "windows_core::w",
+    "windows_core::{IUnknown, Interface}",
+    "windows_core::{Interface, PWSTR}"
   ],
   "invariants": [
     {
@@ -2223,22 +2273,48 @@
   "module": "pocketstation::capture::platform::windows::windows",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-309edebd4b99b7fb4fa4",
-    "pattern-f9e102ed6531249f31b3",
-    "pattern-be78846cdd9f37e81d4e"
+    "pattern-be78846cdd9f37e81d4e",
+    "pattern-f9e102ed6531249f31b3"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(LoopbackError::BackendInit(activation_error.to_string()))",
+    "Err(LoopbackError::SourceUnavailable {",
+    "Err(activation_error) => {",
+    "Err(activation_error) if open_cancellation.is_cancelled() => {",
+    "Err(error) => {",
+    "Err(error) if error.code() == HRESULT::from_win32(ERROR_INVALID_PARAMETER.0) => {",
+    "const:WASAPI_PROCESS_LOOPBACK_PERIOD_100NS",
+    "fn:capture",
+    "fn:capture_mode",
+    "fn:capture_mode_with_runtime_event_sender",
+    "fn:discover_sources_windows",
+    "fn:enter",
+    "fn:observation_handle",
+    "fn:observations",
+    "fn:runtime_event_observations",
+    "fn:source_id",
+    "fn:stop_and_join",
+    "fn:try_recv_runtime_event",
+    "if let Err(query_error @ LoopbackError::SourceUnavailable { .. }) =",
+    "return Err(LoopbackError::SourceUnavailable {",
+    "return Err(query_error);",
+    "struct:DesktopCaptureSource",
+    "struct:SystemLoopbackSource",
+    "struct:WindowsAudioThreadPriorityGuard"
   ],
   "package": "pocketstation",
   "path": "src/capture/platform/windows/windows.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -2829,8 +2905,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Windows WASAPI loopback capture backend.  Supports two modes:  - `CaptureMode::SystemMix` -- captures the system-wide audio mix using `AUDCLNT_STREAMFLAGS_LOOPBACK` on the default render endpoint. Available on Windows Vista+.  - `CaptureMode::Process(pid)` -- captures audio from a single process using `ActivateAudioInterfaceAsync` with process-loopback params. Available on Windows 10 2004+ (build 19041).  # Hot-path invariants  No allocation, locking, logging, or panicking on the audio delivery path. Pool slot acquisition is lock-free (atomic CAS in `AudioBufferPool::acquire`).  # Process-loopback activation and period  The third-party `AudioClient::new_application_loopback_client` waits without a cancellation or deadline. This backend therefore owns the narrow `ActivateAudioInterfaceAsync` process-loopback boundary and retains the activation inputs with the Windows-owned completion handler. System-mix and input-device capture continue to use the third-party wrapper.  Process loopback does not expose a useful device period. The period passed to `IAudioClient::Initialize` is irrelevant in this mode, so we use `WASAPI_PROCESS_LOOPBACK_PERIOD_100NS` (10 ms in 100-ns units) as a safe p"
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::capture::platform::windows::windows responsibilities, including the src/capture/platform/windows/windows boundary."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -2884,6 +2960,7 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/source-identity.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 33,
@@ -2987,101 +3064,36 @@
     }
   ],
   "responsibilities": [
-    "CAPTURE_CHANNEL_COUNT",
-    "CAPTURE_POOL_CAPACITY_FRAMES",
-    "WASAPI_CALLBACK_MAX_SAMPLES",
-    "BUFFER_DURATION_100NS",
-    "WASAPI_PROCESS_LOOPBACK_PERIOD_100NS",
-    "WAIT_TIMEOUT_MS",
-    "BACKEND_OPEN_TIMEOUT_DURATION",
-    "PROCESS_ACTIVATION_TIMEOUT_DURATION",
-    "PROCESS_ACTIVATION_CANCELLATION_POLL_DURATION",
-    "OPEN_WORKER_CANCELLATION_GRACE_DURATION",
-    "DISPATCH_QUEUE_CAPACITY_FRAMES",
-    "RUNTIME_EVENT_CHANNEL_CAPACITY_EVENTS",
-    "_",
-    "SystemLoopbackSource",
-    "DesktopCaptureSource",
-    "capture_mode",
-    "capture_mode_with_runtime_event_sender",
-    "observations",
-    "source_id",
-    "observation_handle",
-    "try_recv_runtime_event",
-    "runtime_event_observations",
-    "stop_and_join",
-    "ProcessLoopbackScope",
-    "open_client",
-    "verify_process_instance",
-    "query_process_instance",
-    "query_process_creation_time_100ns",
-    "query_process_creation_time_from_handle",
-    "ProcessInstanceWatch",
-    "ProcessInstanceWatchObservation",
-    "open",
-    "PROCESS_SYNCHRONIZE",
-    "poll",
-    "drop",
-    "ComApartmentGuard",
-    "initialize_mta",
-    "drop",
-    "WorkerExitNotifier",
-    "new",
-    "drop",
-    "ProcessLoopbackActivationHandler",
-    "ProcessLoopbackActivationParameters",
-    "new",
-    "property_ptr",
-    "ActivateCompleted",
-    "activate_process_loopback_client",
-    "capture",
-    "capture_mode",
-    "capture_mode_with_runtime_event_sender",
-    "capture_mode_with_runtime_events",
-    "observations",
-    "observation_handle",
-    "source_id",
-    "try_recv_runtime_event",
-    "runtime_event_observations",
-    "stop_and_join",
-    "stop_workers",
-    "resolve_application_mode",
-    "drop",
-    "WindowsAudioThreadPriorityGuard",
-    "enter",
-    "drop",
-    "target_wave_format",
-    "deliver_packet",
-    "CaptureLoopState",
-    "CaptureWorkerContext",
-    "into_loop_state",
-    "CaptureLoopFailure",
-    "operation",
-    "error_class",
-    "disposition",
-    "runtime_event",
-    "into_capture_error",
-    "capture_loop",
-    "CALLBACK_MAX_BYTES",
-    "ProcessLoopbackStream",
-    "initialize",
-    "IEEE_FLOAT_FORMAT_TAG",
-    "BITS_PER_SAMPLE",
-    "BYTES_PER_SAMPLE",
-    "start",
-    "stop",
-    "drop",
-    "capture_process_loopback",
-    "CALLBACK_MAX_BYTES",
-    "signal_open",
-    "signal_process_open",
-    "run_system_loopback",
-    "discover_sources_windows",
-    "enumerate_wasapi_input_devices",
-    "enumerate_wasapi_sessions",
-    "run_process_loopback",
-    "run_input_capture",
-    "ensure_input_device_is_available"
+    "CAPTURE_CHANNEL_COUNT (const)",
+    "CAPTURE_POOL_CAPACITY_FRAMES (const)",
+    "WASAPI_CALLBACK_MAX_SAMPLES (const)",
+    "BUFFER_DURATION_100NS (const)",
+    "WASAPI_PROCESS_LOOPBACK_PERIOD_100NS (const)",
+    "WAIT_TIMEOUT_MS (const)",
+    "BACKEND_OPEN_TIMEOUT_DURATION (const)",
+    "PROCESS_ACTIVATION_TIMEOUT_DURATION (const)",
+    "PROCESS_ACTIVATION_CANCELLATION_POLL_DURATION (const)",
+    "OPEN_WORKER_CANCELLATION_GRACE_DURATION (const)",
+    "DISPATCH_QUEUE_CAPACITY_FRAMES (const)",
+    "RUNTIME_EVENT_CHANNEL_CAPACITY_EVENTS (const)",
+    "_ (const)",
+    "SystemLoopbackSource (struct)",
+    "DesktopCaptureSource (struct)",
+    "capture_mode (fn)",
+    "capture_mode_with_runtime_event_sender (fn)",
+    "observations (fn)",
+    "source_id (fn)",
+    "observation_handle (fn)",
+    "try_recv_runtime_event (fn)",
+    "runtime_event_observations (fn)",
+    "stop_and_join (fn)",
+    "ProcessLoopbackScope (enum)",
+    "open_client (fn)",
+    "verify_process_instance (fn)",
+    "query_process_instance (fn)",
+    "query_process_creation_time_100ns (fn)",
+    "query_process_creation_time_from_handle (fn)",
+    "ProcessInstanceWatch (struct)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -3395,6 +3407,7 @@
       "text": "/// no allocation, lock, block, async operation, logging, or panic."
     }
   ],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [
     {

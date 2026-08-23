@@ -3,7 +3,12 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
   "calls": [
     "CompiledSessionBindings::new",
     "Compiler::new",
@@ -132,7 +137,12 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
   "constructs": [
     "CompiledSessionBindings::new",
     "Compiler::new",
@@ -679,8 +689,14 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -696,11 +712,21 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "eaddf1ea360319d2aaeb1301ea4d36fccb15de34",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
   "implements": [
     "SessionCompiler<'registry>"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/mod.rs",
+    "IMPORTS:src/session/mod.rs",
+    "REFERENCES:src/session/extensions/builtins.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs"
+  ],
   "imports": [
     "bindings::{CompiledNodeBinding, CompiledSessionBindings}",
     "compiled::CompiledSession",
@@ -718,7 +744,22 @@
     "std::sync::Arc"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(test)]",
+    "bindings::{CompiledNodeBinding, CompiledSessionBindings}",
+    "compiled::CompiledSession",
+    "crate::endpoint::EndpointDriverRegistry",
+    "crate::graph::compile::{Compiler, RuntimePlanner}",
+    "crate::graph::{ EdgeContract, MediaCaps, NodeConfig, NodeHandle, NodeId, NodeRegistry, NodeTypeId, OutputPortRef, Pipeline, }",
+    "crate::session::extensions::builtins::default_session_graph_lowerers",
+    "crate::session::{ ConnectionSpec, ConnectionTarget, EndpointSpec, OperatorInstanceId, SessionError, SessionSpec, SourceInstanceId, SourceRegistry, StreamOrigin, }",
+    "error::SessionCompileError",
+    "module:bindings",
+    "module:compiled",
+    "module:error",
+    "module:tests",
+    "std::collections::HashMap",
+    "std::sync::Arc"
   ],
   "invariants": [],
   "language": "Rust",
@@ -736,18 +777,41 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(SessionError::UnknownStem { stem_id }.into())",
+    "fn:compile",
+    "fn:endpoint_node_config",
+    "fn:new",
+    "fn:select_operator_port",
+    "fn:with_sources",
+    "return Err(SessionCompileError::AmbiguousEndpointInput {",
+    "return Err(SessionCompileError::DuplicateOperatorInputConnection {",
+    "return Err(SessionCompileError::MissingRequiredOperatorInput {",
+    "return Err(SessionCompileError::OperatorNodeTypeMismatch {",
+    "return Err(SessionCompileError::UnknownAsyncOperator {",
+    "return Err(SessionCompileError::UnknownExternalSourceOutput {",
+    "return Err(SessionCompileError::UnknownOperator {",
+    "return Err(SessionCompileError::UnknownSourceNodeType {",
+    "return Err(SessionError::UnknownStem { stem_id: *stem_id }.into());",
+    "struct:LoweredOperator",
+    "struct:SessionCompiler",
+    "struct:SessionSourceLoweringContext",
+    "trait:SessionGraphLowerer",
+    "type:LoweredExternalAudioIngressNodes",
+    "type:LoweredExternalSourceNodes",
+    "type:LoweredStemNodes"
   ],
   "package": "pocketstation",
   "path": "src/session/compile/mod.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -960,7 +1024,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::compile`."
+    "text": "Implements pocketstation::session::compile responsibilities, including Compiles an immutable Session declaration into a validated graph and runtime plan.; Creates a new `SessionCompiler`.; Compiles its owned operation for `SessionCompiler`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1023,6 +1087,28 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "CONTAINS:src/session/compile/bindings.rs",
+    "CONTAINS:src/session/compile/compiled.rs",
+    "CONTAINS:src/session/compile/error.rs",
+    "IMPORTS:src/session/compile/bindings.rs",
+    "IMPORTS:src/session/compile/compiled.rs",
+    "IMPORTS:src/session/compile/error.rs",
+    "IMPORTS:src/session/compile/tests.rs",
+    "REFERENCES:src/endpoint/registry.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/graph/dsl.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/graph/registry.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/graph/spec.rs",
+    "REFERENCES:src/session/compile/bindings.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/compile/error.rs",
+    "REFERENCES:src/session/declaration/spec.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
   "resource_ownership": [
     {
       "line": 2,
@@ -1038,40 +1124,9 @@
     }
   ],
   "responsibilities": [
-    "bindings",
-    "compiled",
-    "error",
-    "AUDIO_OUTPUT_PORT",
-    "AUDIO_INPUT_PORT",
-    "LoweredStemNodes",
-    "LoweredExternalSourceNodes",
-    "LoweredExternalAudioIngressNodes",
-    "SessionSourceLoweringContext",
-    "SessionCompiler",
-    "SessionGraphLowerer",
-    "lower_source_nodes",
-    "lower_operator_edges",
-    "endpoint_config",
-    "new",
-    "with_sources",
-    "compile",
-    "validate_external_sources",
-    "validate_endpoint_operators",
-    "validate_async_operators",
-    "lower_graph_spec",
-    "endpoint_config_for_stem",
-    "external_source_output_ref",
-    "specialize_audio_edge",
-    "specialize_edge_media",
-    "LoweredOperator",
-    "operator_input_connections",
-    "select_endpoint_input",
-    "select_operator_port",
-    "operator_source_stem_id",
-    "visit",
-    "operator_lineage_origin",
-    "endpoint_node_config",
-    "tests"
+    "pocketstation::session::compile::SessionCompiler: Compiles an immutable Session declaration into a validated graph and runtime plan.",
+    "new: Creates a new `SessionCompiler`.",
+    "compile: Compiles its owned operation for `SessionCompiler`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1090,6 +1145,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

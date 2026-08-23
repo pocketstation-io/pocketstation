@@ -65,6 +65,7 @@ fn input_capture_timestamp(
     }
 }
 
+#[doc = "Owns production of macos input values and its lifecycle state."]
 pub struct MacosInputSource {
     stream: Option<cpal::Stream>,
     reader_thread: Option<std::thread::JoinHandle<()>>,
@@ -220,18 +221,22 @@ impl MacosInputSource {
         })
     }
 
+    #[doc = "Returns the source identifier held by `MacosInputSource`."]
     pub fn source_id(&self) -> crate::frame::SourceId {
         self.source_id
     }
 
+    #[doc = "Returns the observations exposed by `MacosInputSource`."]
     pub fn observations(&self) -> CaptureObservations {
         self.counters.snapshot()
     }
 
+    #[doc = "Returns a handle for reading observations from `MacosInputSource`."]
     pub fn observation_handle(&self) -> CaptureObservationHandle {
         self.counters.observation_handle()
     }
 
+    #[doc = "Stops `MacosInputSource`, joins its worker, and returns the terminal result."]
     pub fn stop_and_join(mut self) -> Result<CaptureObservations, CaptureError> {
         let counters = self.counters.clone();
         self.stop_reader()?;
@@ -248,11 +253,13 @@ impl MacosInputSource {
 }
 
 impl Drop for MacosInputSource {
+    #[doc = "Releases resources owned by `MacosInputSource`."]
     fn drop(&mut self) {
         let _ = self.stop_reader();
     }
 }
 
+#[doc = "Discovers microphone input sources through the native macOS backend."]
 pub fn discover_input_sources_native() -> Vec<CaptureSource> {
     let host = cpal::default_host();
     let default_id = host

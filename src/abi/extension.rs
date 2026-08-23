@@ -13,7 +13,7 @@ const MAX_IDENTIFIER_BYTES: u32 = 1_024;
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-#[doc = "Represents extension ABI version in the PocketStation API."]
+#[doc = "Carries the major and minor native-extension ABI versions checked during loading."]
 pub struct PksExtensionAbiVersion {
     #[doc = "Stores the byte size of the `PksExtensionAbiVersion` ABI structure."]
     pub struct_size_bytes: u32,
@@ -65,21 +65,21 @@ pub struct PksExtensionDescriptor {
     pub abi_major: u16,
     #[doc = "Stores the minor ABI version expected by `PksExtensionDescriptor`."]
     pub abi_minor: u16,
-    #[doc = "Stores the kind associated with `PksExtensionDescriptor`."]
+    #[doc = "Stores the kind used by `PksExtensionDescriptor`."]
     pub kind: u32,
-    #[doc = "Stores the revision associated with `PksExtensionDescriptor`."]
+    #[doc = "Stores the revision used by `PksExtensionDescriptor`."]
     pub revision: u32,
-    #[doc = "Stores the generation associated with `PksExtensionDescriptor`."]
+    #[doc = "Stores the generation used by `PksExtensionDescriptor`."]
     pub generation: u32,
     #[doc = "Stores the number of port represented by `PksExtensionDescriptor`."]
     pub port_count: u32,
-    #[doc = "Identifies the extension associated with `PksExtensionDescriptor`."]
+    #[doc = "Identifies the extension identifier recorded by `PksExtensionDescriptor`."]
     pub extension_id: PksSessionUtf8,
 }
 
 #[repr(C)]
 #[derive(Clone, Copy)]
-#[doc = "Represents extension port in the PocketStation API."]
+#[doc = "Describes one native-extension port across the C ABI, including direction and signal metadata."]
 pub struct PksExtensionPort {
     #[doc = "Stores the byte size of the `PksExtensionPort` ABI structure."]
     pub struct_size_bytes: u32,
@@ -87,17 +87,17 @@ pub struct PksExtensionPort {
     pub abi_major: u16,
     #[doc = "Stores the minor ABI version expected by `PksExtensionPort`."]
     pub abi_minor: u16,
-    #[doc = "Stores the direction associated with `PksExtensionPort`."]
+    #[doc = "Stores the direction used by `PksExtensionPort`."]
     pub direction: u32,
     #[doc = "Indicates whether required applies to `PksExtensionPort`."]
     pub required: u32,
-    #[doc = "Stores the name associated with `PksExtensionPort`."]
+    #[doc = "Stores the name used by `PksExtensionPort`."]
     pub name: PksSessionUtf8,
-    #[doc = "Identifies the signal associated with `PksExtensionPort`."]
+    #[doc = "Identifies the signal identifier recorded by `PksExtensionPort`."]
     pub signal_id: PksSessionUtf8,
-    #[doc = "Stores the semantic role associated with `PksExtensionPort`."]
+    #[doc = "Stores the semantic role used by `PksExtensionPort`."]
     pub semantic_role: PksSessionUtf8,
-    #[doc = "Stores the schema associated with `PksExtensionPort`."]
+    #[doc = "Stores the schema used by `PksExtensionPort`."]
     pub schema: PksSessionUtf8,
 }
 

@@ -47,6 +47,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -76,7 +77,7 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "No external input is declared in this file."
   ],
   "invariants": [],
   "language": "Markdown",
@@ -85,27 +86,28 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
   ],
-  "observed_patterns": [
-    "pattern-93908f5bdcbc41dcd9e9"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "repository",
   "path": ".github/PULL_REQUEST_TEMPLATE.md",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines a repository build, validation, CI, or release operation."
+    "classification": "DIRECT",
+    "text": "Defines the evidence and validation checklist required from pull requests."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -124,8 +126,11 @@
     "docs/reference/test-evidence.md",
     "docs/reference/lifecycle-evidence.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
-  "responsibilities": [],
+  "responsibilities": [
+    "Defines the evidence and validation checklist required from pull requests."
+  ],
   "retry_behavior": [],
   "serialization": [],
   "shutdown_behavior": [],
@@ -143,6 +148,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

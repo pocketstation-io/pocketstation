@@ -3,14 +3,20 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "calls": [
     "pub"
   ],
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "constructs": [],
   "content_hash": "de27f2e26c91bea2974d9cd0e1802eb2bad33a955ee19ad91d92b2d4cf134cb0",
   "defaults": [],
@@ -83,8 +89,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -98,9 +108,15 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "df0132b6c642b748bd376ed11a6e6fffcd4089f0",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "imports": [
     "contract::{ EndpointAudioFrame, EndpointAudioReceiver, EndpointDriverFactory, EndpointPortInput, EndpointReceiver, EndpointSignalReceiver, }",
     "identity::OperatorId",
@@ -119,7 +135,21 @@
     "runtime::{ endpoint_start_gate, EndpointDriverObservationHandle, EndpointFinalizationOutcome, EndpointStartFailure, PreparedEndpoint, RunningEndpoint, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "contract::{ EndpointAudioFrame, EndpointAudioReceiver, EndpointDriverFactory, EndpointPortInput, EndpointReceiver, EndpointSignalReceiver, }",
+    "identity::OperatorId",
+    "identity::{EndpointGroupId, EndpointPreparationGroup}",
+    "module:contract",
+    "module:identity",
+    "module:polled_audio",
+    "module:polled_audio_driver",
+    "module:registry",
+    "module:runtime",
+    "polled_audio::POLLED_AUDIO_OPERATOR_ID",
+    "polled_audio::PolledAudioEndpoint",
+    "polled_audio_driver::{ PolledAudioBatchLease, PolledAudioEndpointConfig, PolledAudioEndpointConfigError, PolledAudioFrame, PolledAudioObservations, PolledAudioPollError, PolledAudioReceipt, }",
+    "registry::{ EndpointDriverRegistry, EndpointDriverRegistryError, EndpointPrepareError, }",
+    "runtime::{ EndpointCancellationOutcome, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureRetryability, EndpointFailureStage, EndpointInputOrigin, EndpointPrepareContext, EndpointRouteContext, EndpointShutdownMode, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin, }",
+    "runtime::{ endpoint_start_gate, EndpointDriverObservationHandle, EndpointFinalizationOutcome, EndpointStartFailure, PreparedEndpoint, RunningEndpoint, }"
   ],
   "invariants": [],
   "language": "Rust",
@@ -128,18 +158,20 @@
   "module": "pocketstation::endpoint",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "src/endpoint/mod.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -182,8 +214,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Endpoint-driver lifecycle and registry contracts.  This crate owns setup-time endpoint state transitions. It does not implement connectors, relay protocols, recording algorithms, or worker threads."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::endpoint responsibilities, including endpoint."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -222,14 +254,28 @@
     "docs/troubleshooting/session-stop.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "CONTAINS:src/endpoint/contract.rs",
+    "CONTAINS:src/endpoint/identity.rs",
+    "CONTAINS:src/endpoint/polled_audio.rs",
+    "CONTAINS:src/endpoint/polled_audio_driver.rs",
+    "CONTAINS:src/endpoint/registry.rs",
+    "CONTAINS:src/endpoint/runtime.rs",
+    "IMPORTS:src/endpoint/contract.rs",
+    "IMPORTS:src/endpoint/identity.rs",
+    "IMPORTS:src/endpoint/polled_audio.rs",
+    "IMPORTS:src/endpoint/polled_audio_driver.rs",
+    "IMPORTS:src/endpoint/registry.rs",
+    "IMPORTS:src/endpoint/runtime.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "contract",
-    "identity",
-    "polled_audio",
-    "polled_audio_driver",
-    "registry",
-    "runtime"
+    "contract (mod)",
+    "identity (mod)",
+    "polled_audio (mod)",
+    "polled_audio_driver (mod)",
+    "registry (mod)",
+    "runtime (mod)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -239,6 +285,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

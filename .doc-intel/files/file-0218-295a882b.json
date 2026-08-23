@@ -12,7 +12,10 @@
       "text": "/// function pointers, descriptors, borrowed arrays, and callback contexts"
     }
   ],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs"
+  ],
   "calls": [
     "BTreeSet::new",
     "NativeExtensionLibraryError::duplicate_registration",
@@ -38,7 +41,10 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs"
+  ],
   "constructs": [
     "BTreeSet::new",
     "OperatorId::new"
@@ -147,8 +153,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -179,11 +189,17 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "139e1bb02c7bf2e3dabe4580051b58614b6db804",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs"
+  ],
   "implements": [
     "Session"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/extensions/mod.rs",
+    "IMPORTS:src/session/extensions/mod.rs"
+  ],
   "imports": [
     "crate::abi::executable_extension::ExecutableExtensionRegistration",
     "crate::native_extension::{NativeExtensionLibrary, NativeExtensionLibraryError}",
@@ -192,7 +208,11 @@
     "std::path::Path"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::abi::executable_extension::ExecutableExtensionRegistration",
+    "crate::native_extension::{NativeExtensionLibrary, NativeExtensionLibraryError}",
+    "crate::{EndpointExtensionRegistration, OperatorId, Session}",
+    "std::collections::BTreeSet",
+    "std::path::Path"
   ],
   "invariants": [
     {
@@ -222,18 +242,22 @@
   "module": "pocketstation::session::extensions::native_library",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "fn:load_native_extension_library",
+    "return Err(NativeExtensionLibraryError::duplicate_registration("
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/native_library.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -247,7 +271,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::extensions::native_library`."
+    "text": "Implements pocketstation::session::extensions::native library responsibilities, including Loads one trusted native dynamic library from an exact absolute path and."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -307,9 +331,12 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/native_extension/mod.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "load_native_extension_library"
+    "load_native_extension_library: Loads one trusted native dynamic library from an exact absolute path and"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -336,6 +363,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

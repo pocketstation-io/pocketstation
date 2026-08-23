@@ -3,7 +3,16 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/compile/plan.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "calls": [
     "any",
     "as_str",
@@ -27,7 +36,16 @@
       "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/compile/plan.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "constructs": [],
   "content_hash": "cd0cd4da825d36345eadb44cca7796cececee85cd43ce2c60d20d2078c50db8a",
   "defaults": [],
@@ -164,8 +182,18 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/compile/plan.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -181,19 +209,40 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "51511d642f05ad6748d846957fe0d3d171dac834",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/compile/plan.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "implements": [
     "ResolvedNode",
     "GraphIr"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/graph/mod.rs",
+    "IMPORTS:src/graph/mod.rs",
+    "REFERENCES:src/graph/compile/plan.rs",
+    "REFERENCES:src/graph/compile/resolve.rs",
+    "REFERENCES:src/runtime/audio/executor.rs",
+    "REFERENCES:src/runtime/audio/router.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "imports": [
     "crate::graph::node::NodeDescriptor",
     "crate::graph::ports::{EdgeContract, MediaCaps}",
     "crate::graph::spec::{EdgeSpec, NodeId, NodeSpec}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "crate::graph::node::NodeDescriptor",
+    "crate::graph::ports::{EdgeContract, MediaCaps}",
+    "crate::graph::spec::{EdgeSpec, NodeId, NodeSpec}"
   ],
   "invariants": [],
   "language": "Rust",
@@ -202,18 +251,28 @@
   "module": "pocketstation::graph::ir",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "fn:edge_count",
+    "fn:id",
+    "fn:node",
+    "fn:node_count",
+    "fn:topo_order",
+    "fn:type_str",
+    "struct:GraphIr",
+    "struct:ResolvedEdge",
+    "struct:ResolvedNode"
   ],
   "package": "pocketstation",
   "path": "src/graph/ir.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -274,8 +333,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Typed intermediate representation the compiler produces from a `GraphSpec`. Resolution attaches each node's descriptor; the verification passes fill the negotiated media, edge contracts, and topological order in place."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph::ir responsibilities, including Executes the graph-node behavior defined for resolved.; Stores the spec used by `ResolvedNode`.; Stores the descriptor used by `ResolvedNode`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -313,17 +372,30 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/graph/spec.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "ResolvedNode",
-    "id",
-    "type_str",
-    "ResolvedEdge",
-    "GraphIr",
-    "node_count",
-    "edge_count",
-    "node",
-    "topo_order"
+    "pocketstation::graph::ir::ResolvedNode: Executes the graph-node behavior defined for resolved.",
+    "ResolvedNode::spec: Stores the spec used by `ResolvedNode`.",
+    "ResolvedNode::descriptor: Stores the descriptor used by `ResolvedNode`.",
+    "id: Returns the id held by `ResolvedNode`.",
+    "type_str: Returns the type str associated with `ResolvedNode`.",
+    "pocketstation::graph::ir::ResolvedEdge: Binds one compiled graph edge to its resolved source, destination, and contract.",
+    "ResolvedEdge::spec: Stores the spec used by `ResolvedEdge`.",
+    "ResolvedEdge::media: Stores the media used by `ResolvedEdge`.",
+    "ResolvedEdge::contract: Stores the contract used by `ResolvedEdge`.",
+    "pocketstation::graph::ir::GraphIr: Stores the resolved nodes, edges, and topological order used by runtime planning.",
+    "GraphIr::nodes: Stores the nodes used by `GraphIr`.",
+    "GraphIr::edges: Stores the edges used by `GraphIr`.",
+    "GraphIr::topo_order: Stores the topo order used by `GraphIr`.",
+    "node_count: Returns the node count held by `GraphIr`.",
+    "edge_count: Returns the edge count held by `GraphIr`.",
+    "node: Returns the node held by `GraphIr`.",
+    "topo_order: Returns the topo order associated with `GraphIr`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -333,7 +405,11 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-65a2b9b9fd5cc9674c26",
+    "test-6dba13dc9eb08d12b1a1"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

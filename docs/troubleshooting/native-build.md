@@ -2,30 +2,34 @@
 
 <!-- claims: CLM-TRBL-015-CAP-001,CLM-TRBL-015-CAP-002,CLM-TRBL-015-CAP-003,CLM-TRBL-015-CAP-004,CLM-TRBL-015-SOURCE-001 -->
 
-Use this page when you observe **a native-capture build fails**. Diagnose the reported stage and identity before changing route, source, connector, or lifecycle policy.
+## Symptom
 
-## Distinguish the cause
+A build with the default native-capture feature fails for the selected target.
 
-Reproduce without default features to separate Core contracts from native dependencies, then restore native capture and diagnose the selected target dependency.
+## Evidenced causes
+
+- A target-specific native dependency or development library is unavailable.
+- The build script selects a native shim that cannot compile.
+- The toolchain or target does not meet package metadata and dependency requirements.
+
+## Distinguish the causes
+
+First run a contracts-only check with default features disabled. Then restore native capture and inspect the failing target dependency or build-script stage.
 
 ## Diagnostic signals
 
-- `pocketstation::capture::events::CaptureRuntimeFailure` (`error-11b972ad42d5de880e06`)
-- `pocketstation::capture::events::CaptureRuntimeFailureClass` / `BackendClass` (`error-29e952ae7432566a9e95`)
-- `pocketstation::capture::authorization::CaptureError` / `CaptureWorkerPanicked` (`error-365f9b6fbda74eb0d631`)
-- `pocketstation::capture::authorization::CaptureError` / `PermissionDenied` (`error-38030156125346a8e892`)
-- `pocketstation::capture::authorization::CaptureError` / `NotSupported` (`error-3b4b5393164d9f6f12a5`)
-- `pocketstation::capture::events::CaptureRuntimeFailureClass` / `PlatformStatus` (`error-3c6fcc22deb2f54788ba`)
-- `pocketstation::capture::authorization::CaptureError` / `SourceUnavailable` (`error-71c87f975acc9e22a402`)
-- `pocketstation::capture::authorization::CaptureError` / `BackendSetupRequired` (`error-8db0fec69a9c7158ffdf`)
-- `pocketstation::capture::authorization::CaptureError` (`error-96ffe4bc4254583d1e17`)
-- `pocketstation::capture::events::CaptureRuntimeFailureClass` / `SourceInstanceExited` (`error-a9c0f7dfff744e9ba6b7`)
-- `pocketstation::capture::authorization::CaptureError` / `BackendInit` (`error-b320ea1cba2b3c8dc4c7`)
-- `pocketstation::capture::authorization::CaptureError` / `InvalidStreamCapacity` (`error-bcf5d4d897b6bd0784bf`)
-- `pocketstation::capture::authorization::CaptureError` / `ModeUnsupported` (`error-bf1be2fb486df6136dc5`)
-- `pocketstation::capture::authorization::CaptureError` / `InvalidRuntimeEventCapacity` (`error-ceedf8c06740748c9bd5`)
-- `pocketstation::capture::authorization::CaptureError` / `BackendStatus` (`error-e8046b5b5989518ee482`)
-- `pocketstation::capture::events::CaptureRuntimeFailureClass` (`error-ea2d5a94280522f41764`)
+- `pocketstation::capture::authorization::CaptureError` (`error-7905cc933b9eb45fe4ef`)
+- `pocketstation::capture::authorization::CaptureError` / `BackendInit` (`error-ffea5e00d982c5213eba`)
+- `pocketstation::capture::authorization::CaptureError` / `BackendSetupRequired` (`error-6e8f9f8ca8efa76ded69`)
+- `pocketstation::capture::authorization::CaptureError` / `BackendStatus` (`error-533b29bac30886d8c79c`)
+- `pocketstation::capture::authorization::CaptureError` / `CaptureWorkerPanicked` (`error-01c4b3cce2fa1669ee13`)
+- `pocketstation::capture::authorization::CaptureError` / `InvalidRuntimeEventCapacity` (`error-c683702117e27ad45f33`)
+- `pocketstation::capture::authorization::CaptureError` / `InvalidStreamCapacity` (`error-6167103023ec8fded812`)
+- `pocketstation::capture::authorization::CaptureError` / `ModeUnsupported` (`error-786199dd7e94542436f2`)
+- `pocketstation::capture::authorization::CaptureError` / `NotSupported` (`error-0f2fd6c6275925740175`)
+- `pocketstation::capture::authorization::CaptureError` / `PermissionDenied` (`error-d902cf4c11a93cbcb084`)
+- `pocketstation::capture::authorization::CaptureError` / `SourceUnavailable` (`error-61051d668a17eec6c3ac`)
+- `pocketstation::capture::events::CaptureRuntimeFailure` (`error-ee187ecbd20c3485593b`)
 
 ## Executable evidence
 
@@ -37,21 +41,26 @@ Reproduce without default features to separate Core contracts from native depend
 - `given_backend_frame_when_source_differs_from_open_identity_then_lineage_fails_closed` exercises given backend frame when source differs from open identity then lineage fails closed under its recorded setup (`test-a8dbef4f3b61c752ce0e`).
 - `given_panicking_capture_worker_when_joined_then_typed_failure_is_returned` exercises given panicking capture worker when joined then typed failure is returned under its recorded setup (`test-889c6cfb54cc924fc2b4`).
 - `given_prepared_capture_when_opened_then_bounded_delivery_is_owned` exercises given prepared capture when opened then bounded delivery is owned under its recorded setup (`test-8de0974346f9110044c2`).
-- `join_capture_worker` exercises join capture worker under its recorded setup (`test-89b10abefa1f5c9a47e2`).
-- `prepare_capture` exercises prepare capture under its recorded setup (`test-59d7e50bbae31896948a`).
-- `captured_frame_stream` exercises captured frame stream under its recorded setup (`test-0e40457259bf43cdd2a7`).
 - `given_capture_mode_when_channels_selected_then_microphone_is_mono_and_output_is_stereo` exercises given capture mode when channels selected then microphone is mono and output is stereo under its recorded setup (`test-c28f1242d8a2b60457db`).
 - `given_exact_application_selector_when_identity_is_transient_then_selection_fails_closed` exercises given exact application selector when identity is transient then selection fails closed under its recorded setup (`test-1a09c0b9480a09c36429`).
 - `given_exhausted_capture_pool_when_acquiring_then_failure_is_observed_once` exercises given exhausted capture pool when acquiring then failure is observed once under its recorded setup (`test-bcfd12a436362de05085`).
 - `given_pipewire_properties_when_native_format_is_reported_then_unknown_is_not_fabricated` exercises given pipewire properties when native format is reported then unknown is not fabricated under its recorded setup (`test-03b9dd302a982e69d584`).
+- `given_capture_before_callback_when_mapped_then_process_timestamp_preserves_delay` exercises given capture before callback when mapped then process timestamp preserves delay under its recorded setup (`test-8a2ea38f6f2c1b3ffa2f`).
+- `given_capture_before_process_epoch_when_mapped_then_timestamp_is_earliest_representable` exercises given capture before process epoch when mapped then timestamp is earliest representable under its recorded setup (`test-9519b3f93a4a0e689bcc`).
+- `given_promptable_or_observable_permission_when_opening_input_then_native_open_decides` exercises given promptable or observable permission when opening input then native open decides under its recorded setup (`test-847d3fefe4665db8dd14`).
 
-## Corrective action and retry
+## Corrective action
 
-Apply only the action implied by the typed failure or violated precondition. Retry is not safe merely because a failure appears transient. When retryability or recovery is unknown, preserve the failure for application policy or maintainer review.
+Install the target prerequisite or choose contracts-only mode when you do not need native capture.
 
-## Data and state
+## Retry and incomplete state
 
-Treat frames, signals, files, acknowledgements, and finalization results produced before failure as potentially partial unless the terminal contract says otherwise. Inspect per-route, per-stem, and per-component outcomes.
+Rebuilding after environment correction is safe; it does not prove physical capture qualification. No runtime data exists from a failed build.
+
+## Related reference
+
+- [Cargo Features](/docs/concepts/cargo-features.md)
+- [Compatibility](/docs/platform/compatibility.md)
 
 ## Related documentation
 
@@ -66,9 +75,9 @@ Treat frames, signals, files, acknowledgements, and finalization results produce
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **A native-capture build fails** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `Cargo.toml:1-180` (`DIRECT`)
 - `build.rs:1-118` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **A native-capture build fails**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

@@ -96,15 +96,45 @@ RUST_ITEM = re.compile(
     r"(?P<name>[A-Za-z_][A-Za-z0-9_]*)"
 )
 TEST_ITEM = re.compile(
-    r"(?ms)(?P<attrs>(?:\s*#\[[^]]*(?:test|rstest)[^]]*\]\s*)+)"
+    r"(?ms)(?P<attrs>(?:\s*#\[[^]]*\]\s*)+)"
     r"(?:pub(?:\([^)]*\))?\s+)?(?:async\s+)?fn\s+"
     r"(?P<name>[A-Za-z_][A-Za-z0-9_]*)\s*\("
+)
+EXECUTABLE_RUST_TEST_ATTRIBUTE = re.compile(
+    r"#\[\s*(?:(?:[A-Za-z_][A-Za-z0-9_]*::)*test|(?:[A-Za-z_][A-Za-z0-9_]*::)*rstest)\b"
 )
 ENV_VAR = re.compile(
     r"(?:std::env::var|env::var|var_os|option_env!|env!)\s*\(\s*\"([A-Z][A-Z0-9_]*)\""
 )
 MARKDOWN_LINK = re.compile(r"(?<!!)\[[^]]+\]\(([^)]+)\)")
 PLACEHOLDER = re.compile(r"(?i)\b(?:TODO|TBD|FIXME|XXX|lorem ipsum|coming soon)\b")
+
+PUBLICATION_BOILERPLATE = (
+    "The compiler exposes this declaration; its native description remains a Gate 9 obligation.",
+    "Read the linked concept and confirm that target platform, Cargo features, source or provider dependencies, and application-owned permission work match this task.",
+    "The following test bodies are evidence only for their recorded setup:",
+    "An inventory row establishes that a declaration, test, lifecycle operation, configuration surface, or protocol element exists at the frozen snapshot.",
+    "These statements describe repository contracts at the documented snapshot.",
+    "A file's presence proves implementation or declaration at this snapshot.",
+    "Apply only the action implied by the typed failure or violated precondition.",
+    "Treat frames, signals, files, acknowledgements, and finalization results produced before failure as potentially partial",
+)
+
+REQUIRED_PAGE_SECTIONS = {
+    "concept": {
+        "What it is", "Why it exists", "Relationships", "Invariants and guarantees",
+        "When you encounter it", "Use it",
+    },
+    "how-to": {"Prerequisites", "Procedure", "Verify the outcome", "Failure signals", "API reference"},
+    "troubleshooting": {
+        "Symptom", "Evidenced causes", "Distinguish the causes", "Corrective action",
+        "Retry and incomplete state", "Related reference",
+    },
+    "best-practice": {
+        "Problem", "Recommendation", "Reason", "Tradeoff", "When it does not apply",
+        "Repository evidence",
+    },
+}
 
 
 class CompilerError(RuntimeError):
@@ -1069,6 +1099,8 @@ def test_records_for_file(
     records: list[dict[str, Any]] = []
     if path.endswith(".rs"):
         for match in TEST_ITEM.finditer(text):
+            if not EXECUTABLE_RUST_TEST_ATTRIBUTE.search(match.group("attrs")):
+                continue
             end = brace_end(text, match.end())
             body = text[match.start():end]
             begin_line = line_number(text, match.start())
@@ -1182,6 +1214,8 @@ def cmd_extract_surfaces(_arguments: argparse.Namespace) -> None:
     by_symbol_id = {record["symbol_id"]: record for record in symbols}
     symbols_by_name: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for symbol in symbols:
+        symbol["tests"] = []
+        symbol["examples"] = []
         symbols_by_name[symbol["name"]].append(symbol)
     tests: list[dict[str, Any]] = []
     examples: list[dict[str, Any]] = []
@@ -1425,7 +1459,10 @@ def cmd_extract_surfaces(_arguments: argparse.Namespace) -> None:
     write_jsonl(DB / "symbols.jsonl", list(by_symbol_id.values()))
     write_jsonl(REPOSITORY_MANIFEST, files)
     write_jsonl(DB / "inventory.jsonl", files)
-    edges = read_jsonl(EDGE_MANIFEST)
+    edges = [
+        edge for edge in read_jsonl(EDGE_MANIFEST)
+        if edge.get("kind") not in {"TESTED_BY", "EXEMPLIFIED_BY"}
+    ]
     existing = {(edge["source"], edge["kind"], edge.get("target")) for edge in edges}
     for test in tests:
         for symbol_id in test["production_symbols"]:
@@ -1580,6 +1617,163 @@ def page_claims(page_id: str, claims: list[dict[str, Any]]) -> list[dict[str, An
     return [claim for claim in claims if claim.get("documentation_page") == page_id]
 
 
+def native_documentation_by_symbol() -> dict[str, str]:
+    path = DB / "native-docs.jsonl"
+    if not path.exists():
+        return {}
+    return {
+        record["symbol_id"]: str(record.get("documentation", "")).strip()
+        for record in read_jsonl(path)
+    }
+
+
+def native_documentation_failures(symbols: list[dict[str, Any]]) -> list[str]:
+    """Reject symbol-count coverage that has no meaningful description behind it."""
+    generated = native_documentation_by_symbol()
+    failures: list[str] = []
+    for symbol in symbols:
+        if not symbol.get("public_api"):
+            continue
+        description = generated.get(symbol["symbol_id"], "")
+        normalized = re.sub(r"\s+", " ", description).strip()
+        if not normalized or normalized.lower() in {"unknown", "not_applicable", "not applicable"}:
+            failures.append(f"{symbol['symbol_id']}: public symbol has no native description")
+            continue
+        if len(re.findall(r"[A-Za-z0-9]+", normalized)) < 4:
+            failures.append(f"{symbol['symbol_id']}: native description is too small to state a purpose")
+        if any(snippet.lower() in normalized.lower() for snippet in PUBLICATION_BOILERPLATE):
+            failures.append(f"{symbol['symbol_id']}: native description contains publication boilerplate")
+    rejected_source_patterns = (
+        "Generated native API description",
+        "Performs the ",
+        " value exposed by the PocketStation API",
+        " in the PocketStation API",
+        "Defines the implementation contract for",
+        "Stops and join",
+        "Carries the typed state and values defined by",
+        "Executes the `",
+    )
+    for source in sorted((ROOT / "src").rglob("*.rs")):
+        text = source.read_text()
+        for pattern in rejected_source_patterns:
+            if pattern in text:
+                failures.append(
+                    f"{source.relative_to(ROOT)}: current source documentation contains rejected wording {pattern!r}"
+                )
+    return failures
+
+
+def claim_marker_failures(pages: list[dict[str, Any]], claims: list[dict[str, Any]]) -> list[str]:
+    failures: list[str] = []
+    claims_by_page: dict[str, set[str]] = defaultdict(set)
+    for claim in claims:
+        claims_by_page[str(claim.get("documentation_page"))].add(str(claim.get("claim_id")))
+    for page in pages:
+        path = ROOT / page["path"]
+        if not path.exists():
+            failures.append(f"{page['page_id']}: page absent while validating claim mappings")
+            continue
+        text = path.read_text()
+        declared: set[str] = set()
+        for value in re.findall(r"<!--\s*claims:\s*([^>]+?)\s*-->", text):
+            declared.update(token.strip() for token in value.split(",") if token.strip())
+        expected = claims_by_page.get(page["page_id"], set())
+        if declared != expected:
+            failures.append(
+                f"{page['page_id']}: page-to-claim mapping differs "
+                f"(declared {len(declared)}, ledger {len(expected)})"
+            )
+    manifest_paths = {page["path"] for page in pages}
+    for claim in claims:
+        if claim.get("documentation_path") not in manifest_paths:
+            failures.append(f"{claim.get('claim_id')}: claim points outside the page manifest")
+    return failures
+
+
+def editorial_page_failures(pages: list[dict[str, Any]]) -> list[str]:
+    """Apply deterministic page-shape and anti-template checks.
+
+    This does not pretend to replace an editor. It does make the previously
+    accepted failure modes—generic page shells and copied filler—non-publishable.
+    """
+    failures: list[str] = []
+    paragraphs: dict[str, list[str]] = defaultdict(list)
+    for page in pages:
+        path = ROOT / page["path"]
+        if not path.exists():
+            failures.append(f"{page['page_id']}: page absent")
+            continue
+        text = path.read_text()
+        headings = {
+            match.group(1).strip()
+            for match in re.finditer(r"(?m)^##\s+(.+?)\s*$", text)
+        }
+        required = set(REQUIRED_PAGE_SECTIONS.get(page.get("doc_class"), set()))
+        if page.get("path") == "docs/getting-started/rust-quickstart.md":
+            required.update({
+                "Audience", "Prerequisites", "Supported environment", "Install",
+                "Program", "Run it", "Success", "Common first-run failures", "Next steps",
+            })
+        missing = sorted(required - headings)
+        if missing:
+            failures.append(f"{page['page_id']}: required sections absent: {missing}")
+        for snippet in PUBLICATION_BOILERPLATE:
+            if snippet.lower() in text.lower():
+                failures.append(f"{page['page_id']}: prohibited generic publication text: {snippet[:72]}")
+        for raw in re.split(r"\n\s*\n", text):
+            paragraph = re.sub(r"\s+", " ", raw).strip()
+            if (
+                len(paragraph.split()) < 18
+                or paragraph.startswith(("#", "|", "- ", "<!--", "```"))
+                or re.match(r"^\d+\.\s", paragraph)
+            ):
+                continue
+            paragraphs[paragraph].append(page["page_id"])
+    for paragraph, page_ids in paragraphs.items():
+        if len(set(page_ids)) > 3:
+            failures.append(
+                f"repeated prose appears in {len(set(page_ids))} pages: "
+                f"{paragraph[:120]}"
+            )
+    return failures
+
+
+def dossier_semantic_failures(files: list[dict[str, Any]]) -> list[str]:
+    failures: list[str] = []
+    for record in files:
+        if not record.get("semantic") or not record.get("dossier"):
+            continue
+        dossier = read_json(ROOT / record["dossier"])
+        purpose = dossier.get("purpose", {})
+        purpose_text = purpose.get("text", "") if isinstance(purpose, dict) else str(purpose)
+        if (
+            len(purpose_text.split()) < 4
+            or "not_applicable" in purpose_text
+            or "Provides repository-owned content at" in purpose_text
+        ):
+            failures.append(f"{record['path']}: dossier purpose is a filename fallback")
+        non_responsibilities = dossier.get("non_responsibilities")
+        if not isinstance(non_responsibilities, list) or not non_responsibilities:
+            failures.append(f"{record['path']}: dossier has no explicit non-responsibility")
+        elif any(str(item).strip().lower() == "unknown" for item in non_responsibilities):
+            failures.append(f"{record['path']}: dossier leaves non-responsibility as unknown")
+        for field in ("inputs", "outputs"):
+            values = dossier.get(field)
+            if not isinstance(values, list) or not values:
+                failures.append(f"{record['path']}: dossier {field} are absent")
+            elif any("See compiler-backed symbol signatures" in str(value) for value in values):
+                failures.append(f"{record['path']}: dossier {field} retain a schema placeholder")
+        if not dossier.get("related_docs"):
+            failures.append(f"{record['path']}: dossier has no reverse documentation mapping")
+        if dossier.get("test_coverage_status") not in {"linked", "no_direct_test_link_extracted"}:
+            failures.append(f"{record['path']}: dossier test coverage disposition is absent")
+        if dossier.get("example_coverage_status") not in {"linked", "no_direct_example_link_extracted"}:
+            failures.append(f"{record['path']}: dossier example coverage disposition is absent")
+        if dossier.get("path") != record["path"] or dossier.get("file_id") != record["file_id"]:
+            failures.append(f"{record['path']}: dossier identity differs from manifest")
+    return failures
+
+
 def command_checkpoint(name: str, commands: list[list[str]]) -> dict[str, Any]:
     results: list[dict[str, Any]] = []
     passed = True
@@ -1649,6 +1843,8 @@ def cmd_sync_pages(_arguments: argparse.Namespace) -> None:
             page["status"] = "authored"
             page["content_sha256"] = sha256_file(path)
             page["word_count"] = len(text.split())
+    failures.extend(editorial_page_failures(pages))
+    failures.extend(claim_marker_failures(pages, claims))
     write_jsonl(PAGE_MANIFEST, pages)
     authored_pages = [page for page in pages if page.get("status") == "authored"]
     surface_rules = {
@@ -1683,6 +1879,18 @@ def cmd_sync_pages(_arguments: argparse.Namespace) -> None:
         for page in authored_pages:
             if capability["capability_id"] in page["capability_ids"]:
                 doc_map.append({"entity_id": capability["capability_id"], "entity_type": "capability", "documentation_page": page["path"]})
+    native_reference = next(
+        (page for page in authored_pages if page["doc_class"] == "reference" and "rust-api" in page["path"]),
+        None,
+    )
+    if native_reference:
+        for symbol in read_jsonl(SYMBOL_MANIFEST):
+            if symbol.get("public_api") and symbol.get("reference_status") == "covered":
+                doc_map.append({
+                    "entity_id": symbol["symbol_id"],
+                    "entity_type": "symbol",
+                    "documentation_page": native_reference["path"],
+                })
     write_jsonl(DB / "doc-map.jsonl", sorted(doc_map, key=lambda record: (record["entity_type"], record["entity_id"], record["documentation_page"])))
     state["phase"] = "documentation"
     state["last_command"] = "sync-pages"
@@ -1725,32 +1933,37 @@ def cmd_record_rustdoc(arguments: argparse.Namespace) -> None:
     state = load_state()
     if not state.get("docs_generation_allowed"):
         raise CompilerError("rustdoc coverage may only be recorded after verifier Gates 0-6 pass")
-    command = [
-        "cargo", "rustdoc", "--lib", "--no-default-features", "--",
-        "-Z", "unstable-options", "--show-coverage",
+    commands = [
+        ["cargo", "rustdoc", "--lib", "--no-default-features", "--", "-Z", "unstable-options", "--show-coverage"],
+        ["cargo", "rustdoc", "--lib", "--all-features", "--", "-Z", "unstable-options", "--show-coverage"],
     ]
-    outcome = run(*command, check=False, env={"RUSTC_BOOTSTRAP": "1"})
-    combined = outcome.stdout + "\n" + outcome.stderr
-    # `rustdoc --show-coverage` prints two Percentage columns: item coverage and
-    # example coverage. Parse the Total row positionally so the example value
-    # can never overwrite the item-coverage result.
-    total_row = re.search(
-        r"^\|\s*Total\s*\|\s*(\d+)\s*\|\s*([0-9]+(?:\.[0-9]+)?)%\s*\|\s*(\d+)\s*\|\s*([0-9]+(?:\.[0-9]+)?)%\s*\|$",
-        combined,
-        re.MULTILINE,
-    )
-    documented = int(total_row.group(1)) if total_row else None
-    total = None  # rustdoc reports the numerator and rounded percentage only.
-    percent = float(total_row.group(2)) if total_row else None
+    matrix = []
+    for command in commands:
+        outcome = run(*command, check=False, env={"RUSTC_BOOTSTRAP": "1"})
+        combined = outcome.stdout + "\n" + outcome.stderr
+        # `rustdoc --show-coverage` prints item and example percentages. Parse
+        # the Total row positionally so the example value cannot replace item
+        # coverage.
+        total_row = re.search(
+            r"^\|\s*Total\s*\|\s*(\d+)\s*\|\s*([0-9]+(?:\.[0-9]+)?)%\s*\|\s*(\d+)\s*\|\s*([0-9]+(?:\.[0-9]+)?)%\s*\|$",
+            combined,
+            re.MULTILINE,
+        )
+        matrix.append({
+            "command": command,
+            "returncode": outcome.returncode,
+            "stdout": outcome.stdout[-30000:],
+            "stderr": outcome.stderr[-30000:],
+            "documented": int(total_row.group(1)) if total_row else None,
+            "percent": float(total_row.group(2)) if total_row else None,
+        })
+    percent = min((record["percent"] for record in matrix if record["percent"] is not None), default=None)
     checkpoint = {
-        "command": command,
-        "returncode": outcome.returncode,
-        "stdout": outcome.stdout[-30000:],
-        "stderr": outcome.stderr[-30000:],
-        "documented": documented,
-        "total": total,
+        "commands": matrix,
+        "documented": max((record["documented"] or 0 for record in matrix), default=0),
+        "total": None,
         "percent": percent,
-        "passed": outcome.returncode == 0 and percent == 100.0,
+        "passed": bool(matrix) and all(record["returncode"] == 0 and record["percent"] == 100.0 for record in matrix),
         "source_digest": current_source_digest(),
         "created_at": now(),
     }
@@ -1763,6 +1976,20 @@ def cmd_record_rustdoc(arguments: argparse.Namespace) -> None:
             symbol["reference_pages"] = [native_reference["path"]] if checkpoint["passed"] and native_reference else []
     write_jsonl(SYMBOL_MANIFEST, symbols)
     write_jsonl(DB / "symbols.jsonl", symbols)
+    doc_map = [
+        record for record in read_jsonl(DB / "doc-map.jsonl")
+        if record.get("entity_type") != "symbol"
+    ]
+    if checkpoint["passed"] and native_reference:
+        doc_map.extend({
+            "entity_id": symbol["symbol_id"],
+            "entity_type": "symbol",
+            "documentation_page": native_reference["path"],
+        } for symbol in symbols if symbol["public_api"])
+    write_jsonl(DB / "doc-map.jsonl", sorted(
+        doc_map,
+        key=lambda record: (record["entity_type"], record["entity_id"], record["documentation_page"]),
+    ))
     state["last_command"] = "record-rustdoc"
     refresh_state_counts(state)
     save_state(state)
@@ -1830,16 +2057,27 @@ def cmd_validate_docs(_arguments: argparse.Namespace) -> None:
     claim_failures: list[str] = []
     for claim in claims:
         claim_failures.extend(f"{claim.get('claim_id')}: {failure}" for failure in validate_evidence(claim.get("evidence"), file_by_path))
+    editorial_failures = editorial_page_failures(pages)
+    mapping_failures = claim_marker_failures(pages, claims)
+    api_failures = native_documentation_failures(read_jsonl(SYMBOL_MANIFEST))
+    dossier_failures_found = dossier_semantic_failures(files)
     links = validate_internal_links(pages)
     commands = [
         ["python3", "tools/build_documentation.py", "--check"],
         ["cargo", "doc", "--no-deps", "--all-features"],
     ]
     build = command_checkpoint("documentation-build", commands)
-    passed = not claim_failures and not links and build["passed"]
+    passed = not (
+        claim_failures or editorial_failures or mapping_failures or api_failures
+        or dossier_failures_found or links
+    ) and build["passed"]
     checkpoint = {
         "passed": passed,
         "claim_failures": claim_failures,
+        "editorial_failures": editorial_failures,
+        "mapping_failures": mapping_failures,
+        "api_documentation_failures": api_failures,
+        "dossier_semantic_failures": dossier_failures_found,
         "broken_internal_links": links,
         "docs_digest": current_docs_digest(pages),
         "page_manifest_sha256": sha256_file(PAGE_MANIFEST),
@@ -1991,14 +2229,24 @@ def verify_all(state: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, A
     behaviors = read_jsonl(DB / "behaviors.jsonl")
     lifecycles = read_jsonl(DB / "lifecycles.jsonl")
     protocols = read_jsonl(DB / "protocols.jsonl")
+    patterns = read_jsonl(DB / "patterns.jsonl")
     capabilities = read_jsonl(DB / "capabilities.jsonl")
     journeys = read_jsonl(DB / "user-journeys.jsonl")
     pages = read_jsonl(PAGE_MANIFEST)
     claims = read_jsonl(DB / "claims.jsonl")
+    doc_map = read_jsonl(DB / "doc-map.jsonl")
     file_by_path = {record["path"]: record for record in files}
+    dossier_quality = dossier_semantic_failures(files)
+    native_doc_quality = native_documentation_failures(symbols)
+    editorial_quality = editorial_page_failures(pages)
+    claim_mapping_quality = claim_marker_failures(pages, claims)
     gates: list[dict[str, Any]] = []
     gates.append(gate_result(0, "Repository snapshot + manifest", frozen_manifest_failures(state, files)))
-    gates.append(gate_result(1, "Every semantic file analyzed", dossier_failures(files, "discovered")))
+    gates.append(gate_result(
+        1,
+        "Every semantic file analyzed",
+        [*dossier_failures(files, "discovered"), *dossier_quality],
+    ))
     gate2_failures: list[str] = []
     if not symbols:
         gate2_failures.append("symbol manifest is empty")
@@ -2061,8 +2309,32 @@ def verify_all(state: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, A
             if record.get("status") != "analyzed":
                 gate4_failures.append(f"{name} record is not analyzed: {record}")
             gate4_failures.extend(f"{name}: {failure}" for failure in validate_evidence(record.get("evidence"), file_by_path))
+    for test in tests:
+        if test.get("path", "").endswith(".rs") and not EXECUTABLE_RUST_TEST_ATTRIBUTE.search(test.get("attributes", "")):
+            gate4_failures.append(f"{test.get('test_id')}: Rust test record lacks an executable test attribute")
     if not (DB / "conflicts.jsonl").exists() or not (DB / "unknowns.jsonl").exists():
         gate4_failures.append("conflicts or unknowns ledger is absent")
+    refinement = DB / "checkpoints" / "intelligence-refinement.json"
+    if not refinement.exists() or read_json(refinement).get("snapshot") != state.get("snapshot"):
+        gate4_failures.append("intelligence refinement checkpoint is absent or targets another snapshot")
+    for error in errors:
+        for field in ("trigger_condition", "developer_action", "retryable", "recoverable"):
+            if str(error.get(field, "")).strip().lower() in {"", "unknown"}:
+                gate4_failures.append(f"{error.get('error_id')}: {field} is unresolved without disposition")
+        if error.get("test_coverage_status") not in {"linked", "no_direct_test_link_extracted"}:
+            gate4_failures.append(f"{error.get('error_id')}: test coverage disposition is absent")
+    for item in config:
+        for field in ("default", "when_read", "precedence", "invalid_value_behavior"):
+            if str(item.get(field, "")).strip().lower() in {"", "unknown"}:
+                gate4_failures.append(f"{item.get('config_id')}: {field} is unresolved without disposition")
+    for lifecycle in lifecycles:
+        for field in ("source_state", "destination_state", "guard", "recovery", "idempotence"):
+            if str(lifecycle.get(field, "")).strip().lower() in {"", "unknown"}:
+                gate4_failures.append(f"{lifecycle.get('lifecycle_id')}: {field} is unresolved without disposition")
+    for pattern in patterns:
+        for field in ("problem", "how_implemented", "constraints", "tradeoffs", "failure_behavior"):
+            if str(pattern.get(field, "")).strip().lower() in {"", "unknown"}:
+                gate4_failures.append(f"{pattern.get('pattern_id')}: {field} is unresolved without disposition")
     gates.append(gate_result(4, "Behaviors, errors, lifecycles, and configuration extracted", gate4_failures))
     gate5_failures: list[str] = []
     if not capabilities:
@@ -2092,6 +2364,14 @@ def verify_all(state: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, A
         gate6_failures.append("page ledger is empty")
     if not (DB / "terminology.json").exists() or read_json(DB / "terminology.json").get("status") != "reviewed":
         gate6_failures.append("terminology registry is not reviewed")
+    else:
+        known_symbols = {record["symbol_id"] for record in symbols}
+        for term in read_json(DB / "terminology.json").get("terms", []):
+            defining = term.get("first_defining_symbol")
+            if defining not in known_symbols:
+                gate6_failures.append(
+                    f"terminology {term.get('canonical_name')}: first defining symbol is unresolved"
+                )
     page_ids = {page.get("page_id") for page in pages}
     if len(page_ids) != len(pages):
         gate6_failures.append("page IDs are absent or duplicated")
@@ -2110,7 +2390,7 @@ def verify_all(state: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, A
     gates.append(gate_result(6, "Information architecture reviewed against evidence", gate6_failures))
     for gate_number, name in ((7, "Concept documentation"), (8, "How-to documentation")):
         target = [page for page in pages if page.get("gate") == gate_number]
-        failures = []
+        failures = editorial_page_failures(target)
         if not target:
             failures.append(f"no pages assigned to Gate {gate_number}")
         for page in target:
@@ -2120,14 +2400,34 @@ def verify_all(state: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, A
                 failures.append(f"{page.get('page_id')}: page absent")
         gates.append(gate_result(gate_number, name, failures))
     gate9_failures: list[str] = []
+    gate9_failures.extend(native_doc_quality)
     rustdoc_checkpoint_path = DB / "checkpoints" / "rustdoc-coverage.json"
     rustdoc_checkpoint, stale = checkpoint_current(rustdoc_checkpoint_path, "source_digest", current_source_digest())
     gate9_failures.extend(stale)
     if rustdoc_checkpoint and rustdoc_checkpoint.get("percent") != 100.0:
         gate9_failures.append(f"native Rust API coverage is {rustdoc_checkpoint.get('percent')}%, not 100%")
+    symbol_mappings = {
+        record.get("entity_id") for record in doc_map
+        if record.get("entity_type") == "symbol"
+    }
+    native_reference = next(
+        (page for page in pages if page.get("doc_class") == "reference" and "rust-api" in page.get("path", "")),
+        None,
+    )
+    native_reference_text = (
+        (ROOT / native_reference["path"]).read_text()
+        if native_reference and (ROOT / native_reference["path"]).exists()
+        else ""
+    )
     for symbol in symbols:
-        if symbol.get("public_api") and symbol.get("reference_status") != "covered":
+        if not symbol.get("public_api"):
+            continue
+        if symbol.get("reference_status") != "covered":
             gate9_failures.append(f"{symbol['symbol_id']}: public symbol lacks reference coverage")
+        if symbol["symbol_id"] not in symbol_mappings:
+            gate9_failures.append(f"{symbol['symbol_id']}: public symbol lacks reverse documentation mapping")
+        if symbol["symbol_id"] not in native_reference_text:
+            gate9_failures.append(f"{symbol['symbol_id']}: public symbol is absent from the exhaustive Rust API page")
     reference_pages = [page for page in pages if page.get("gate") == 9]
     if not reference_pages:
         gate9_failures.append("no reference pages assigned to Gate 9")
@@ -2142,6 +2442,7 @@ def verify_all(state: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, A
                 identifier = next((record.get(key) for key in ("error_id", "config_id", "behavior_id", "lifecycle_id", "protocol_id") if record.get(key)), "unknown")
                 gate10_failures.append(f"{name} {identifier}: documentation coverage pending")
     target10 = [page for page in pages if page.get("gate") == 10]
+    gate10_failures.extend(editorial_page_failures(target10))
     if not target10:
         gate10_failures.append("no troubleshooting/error/best-practice pages assigned to Gate 10")
     for page in target10:
@@ -2184,6 +2485,10 @@ def verify_all(state: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, A
     for unknown in read_jsonl(DB / "unknowns.jsonl"):
         if unknown.get("status") != "explicit":
             gate12_failures.append(f"{unknown.get('unknown_id')}: unknown is not explicit")
+    gate12_failures.extend(editorial_quality)
+    gate12_failures.extend(claim_mapping_quality)
+    gate12_failures.extend(dossier_quality)
+    gate12_failures.extend(native_doc_quality)
     gates.append(gate_result(12, "Documentation build + link validation", gate12_failures))
     capability_concept = {
         capability["capability_id"] for capability in capabilities
@@ -2288,6 +2593,8 @@ def cmd_verify(_arguments: argparse.Namespace) -> None:
     state["phase"] = "final" if all_pass else phases[first_failed]
     state["last_command"] = "verify-pass" if all_pass else "verify-fail"
     state["completion"] = all_pass
+    if all_pass:
+        state["last_error"] = None
     refresh_state_counts(state)
     save_state(state)
     coverage = {

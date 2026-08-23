@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "calls": [
     "any",
     "cfg",
@@ -53,7 +56,10 @@
       "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "constructs": [],
   "content_hash": "c38deaa474dac59ac24e059959f8c33eb23cdfafa47855454750232c5a53ee3d",
   "defaults": [
@@ -267,8 +273,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -284,9 +294,15 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "41c436e4781498e3af0f088bcf798c41dcee732e",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/lib.rs",
+    "IMPORTS:src/lib.rs"
+  ],
   "imports": [
     "builtins::register_builtins",
     "dsl::{NodeHandle, Pipeline}",
@@ -322,7 +338,42 @@
     "spec::{EdgeSpec, InputPortRef, NodeSpec}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(test)]",
+    "ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PortPrepareContext,",
+    "builtins::register_builtins",
+    "dsl::{NodeHandle, Pipeline}",
+    "module:builtins",
+    "module:compile",
+    "module:dsl",
+    "module:identifier",
+    "module:ir",
+    "module:named_ports",
+    "module:node",
+    "module:operator",
+    "module:partition",
+    "module:plan",
+    "module:ports",
+    "module:registry",
+    "module:runtime_node",
+    "module:signal",
+    "module:source",
+    "module:spec",
+    "node::{ ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PortPrepareContext, PrepareContext, }",
+    "operator::OPERATOR_ID_SYNTAX_VERSION",
+    "operator::OperatorId",
+    "partition::{ExecutionPartition, SafetyContract}",
+    "ports::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES",
+    "ports::{ AudioCaps, BackpressurePolicy, ChannelLayout, ClockDomain, CopyPolicy, DeliverySemantics, EdgeContract, EdgeObservabilityLevel, LossPolicy, MediaCaps, MediaKind, Multiplicity, PortDirection, PortSpec, MAX_ASYNC_PAYLOAD_BYTES, }",
+    "pub(crate) use ports::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES;",
+    "registry::NodeDefinitionRef",
+    "registry::{NodeDefinition, NodeFactory, NodeRegistrationError, NodeRegistry}",
+    "runtime_node::RuntimeNode",
+    "signal::{ AsyncNode, AsyncNodeFuture, AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext, SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker, SignalDerivation, SignalDerivationError, SignalEnvelope, SignalEnvelopeError, SignalLineage, SignalLineageError, SignalPayload, SignalTiming, SignalTimingError, }",
+    "signal::{ AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, }",
+    "signal::{ BinaryFormat, Codec, EventFormat, SchemaRef, SemanticRole, SignalClass, SignalId, SignalSpec, SignalSpecError, TextFormat, }",
+    "spec::{EdgeId, GraphSpec, NodeId, OutputPortRef}",
+    "spec::{EdgeSpec, InputPortRef, NodeSpec}"
   ],
   "invariants": [],
   "language": "Rust",
@@ -331,18 +382,33 @@
   "module": "pocketstation::graph",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "mod:builtins",
+    "mod:compile",
+    "mod:dsl",
+    "mod:identifier",
+    "mod:ir",
+    "mod:node",
+    "mod:operator",
+    "mod:partition",
+    "mod:plan",
+    "mod:ports",
+    "mod:registry",
+    "mod:runtime_node",
+    "mod:signal",
+    "mod:spec"
   ],
   "package": "pocketstation",
   "path": "src/graph/mod.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -446,8 +512,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Stable graph-extension contracts.  This namespace exposes signal, media, port, partition, and extension contracts. Declaration builders, registries, compiler stages, IR, runtime plans, and executable nodes are private engine implementation."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::graph responsibilities, including Stable signal, port, capability, partition, and extension contracts.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -496,24 +562,41 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
+  "relationship_outputs": [
+    "CONTAINS:src/graph/builtins.rs",
+    "CONTAINS:src/graph/compile/mod.rs",
+    "CONTAINS:src/graph/dsl.rs",
+    "CONTAINS:src/graph/identifier.rs",
+    "CONTAINS:src/graph/ir.rs",
+    "CONTAINS:src/graph/node.rs",
+    "CONTAINS:src/graph/operator.rs",
+    "CONTAINS:src/graph/partition.rs",
+    "CONTAINS:src/graph/plan.rs",
+    "CONTAINS:src/graph/ports.rs",
+    "CONTAINS:src/graph/registry.rs",
+    "CONTAINS:src/graph/runtime_node.rs",
+    "CONTAINS:src/graph/signal/mod.rs",
+    "CONTAINS:src/graph/spec.rs",
+    "IMPORTS:src/graph/builtins.rs",
+    "IMPORTS:src/graph/compile/mod.rs",
+    "IMPORTS:src/graph/dsl.rs",
+    "IMPORTS:src/graph/identifier.rs",
+    "IMPORTS:src/graph/ir.rs",
+    "IMPORTS:src/graph/named_ports.rs",
+    "IMPORTS:src/graph/node.rs",
+    "IMPORTS:src/graph/operator.rs",
+    "IMPORTS:src/graph/partition.rs",
+    "IMPORTS:src/graph/plan.rs",
+    "IMPORTS:src/graph/ports.rs",
+    "IMPORTS:src/graph/registry.rs",
+    "IMPORTS:src/graph/runtime_node.rs",
+    "IMPORTS:src/graph/signal/mod.rs",
+    "IMPORTS:src/graph/source.rs",
+    "IMPORTS:src/graph/spec.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "builtins",
-    "compile",
-    "dsl",
-    "identifier",
-    "ir",
-    "named_ports",
-    "node",
-    "operator",
-    "partition",
-    "plan",
-    "ports",
-    "registry",
-    "runtime_node",
-    "signal",
-    "source",
-    "spec"
+    "pocketstation::graph: Stable signal, port, capability, partition, and extension contracts."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -523,6 +606,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

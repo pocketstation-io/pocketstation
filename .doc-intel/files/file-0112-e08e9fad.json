@@ -3,7 +3,16 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/transport.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "calls": [
     "BTreeSet::new",
     "Boolean",
@@ -112,7 +121,16 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/transport.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "constructs": [
     "BTreeSet::new",
     "ConnectorConfiguration::new",
@@ -923,8 +941,20 @@
       "symbol": null
     }
   ],
-  "examples_using": [],
-  "extended_by": [],
+  "example_coverage_status": "linked",
+  "examples_using": [
+    "example-eb905a3d30f6d6a02264"
+  ],
+  "extended_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/transport.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -938,7 +968,16 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "8e43e97cd49120b2dde6507b448252b5b82e9373",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/transport.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "implements": [
     "ConnectorSecret",
     "fmt::Debug for ConnectorSecret",
@@ -951,7 +990,16 @@
     "ConnectorConfigurationErrorCode",
     "ConnectorConfigurationError"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/manifest.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/sidecar.rs",
+    "REFERENCES:src/connector/transport.rs",
+    "REFERENCES:src/connector/worker/driver.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs"
+  ],
   "imports": [
     "crate::graph::NodeConfig",
     "crate::session::EndpointConfiguration",
@@ -960,7 +1008,12 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::graph::NodeConfig",
+    "crate::session::EndpointConfiguration",
+    "std::collections::{BTreeMap, BTreeSet}",
+    "std::fmt",
+    "super::*"
   ],
   "invariants": [
     {
@@ -986,20 +1039,47 @@
   "module": "pocketstation::connector::configuration",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-de7c99034c8dc65ae6d5"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "const:MAX_CONNECTOR_CONFIGURATION_FIELDS",
+    "const:MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES",
+    "enum:ConnectorConfigurationConstraint",
+    "enum:ConnectorConfigurationRequirement",
+    "enum:ConnectorConfigurationValue",
+    "enum:ConnectorConfigurationValueKind",
+    "fn:constraints",
+    "fn:deprecated",
+    "fn:deprecation",
+    "fn:documentation",
+    "fn:expose_secret",
+    "fn:get",
+    "fn:insert",
+    "fn:is_empty",
+    "fn:iter",
+    "fn:kind",
+    "fn:len",
+    "fn:name",
+    "fn:new",
+    "fn:requirement",
+    "fn:value_kind",
+    "fn:with",
+    "fn:with_constraint",
+    "return Err(ConnectorConfigurationError::new(",
+    "struct:ConnectorConfiguration",
+    "struct:ConnectorConfigurationField",
+    "struct:ConnectorConfigurationSchema",
+    "struct:ConnectorSecret"
   ],
   "package": "pocketstation",
   "path": "src/connector/configuration.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -1344,7 +1424,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::connector::configuration`."
+    "text": "Implements pocketstation::connector::configuration responsibilities, including Sets the maximum supported connector configuration fields.; Sets the maximum supported connector configuration text bytes.; Owns a connector secret with redacted diagnostics and byte clearing on explicit reset or drop.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1386,6 +1466,10 @@
     "docs/best-practices/connector-retries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/session/declaration/endpoint.rs"
+  ],
   "resource_ownership": [
     {
       "line": 48,
@@ -1393,62 +1477,92 @@
     }
   ],
   "responsibilities": [
-    "MAX_CONNECTOR_CONFIGURATION_FIELDS",
-    "MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES",
-    "ConnectorSecret",
-    "new",
-    "expose_secret",
-    "fmt",
-    "drop",
-    "ConnectorConfigurationValueKind",
-    "ConnectorConfigurationValue",
-    "kind",
-    "encoded",
-    "text_bytes",
-    "ConnectorConfiguration",
-    "new",
-    "with",
-    "insert",
-    "get",
-    "iter",
-    "len",
-    "is_empty",
-    "ConnectorConfigurationRequirement",
-    "ConnectorConfigurationConstraint",
-    "ConnectorConfigurationField",
-    "new",
-    "with_constraint",
-    "deprecated",
-    "name",
-    "value_kind",
-    "requirement",
-    "documentation",
-    "constraints",
-    "deprecation",
-    "ConnectorConfigurationSchema",
-    "new",
-    "revision",
-    "fields",
-    "field",
-    "resolve",
-    "resolve_node_config",
-    "validate_schema",
-    "ResolvedConnectorConfiguration",
-    "get",
-    "iter",
-    "into_endpoint_configuration",
-    "parse_encoded_value",
-    "validate_constraints",
-    "validate_value",
-    "ConnectorConfigurationErrorCode",
-    "as_str",
-    "ConnectorConfigurationError",
-    "code",
-    "field",
-    "message",
-    "new",
-    "tests",
-    "given_provider_owned_field_name_when_resolved_then_core_preserves_it_opaquely"
+    "pocketstation::connector::configuration::MAX_CONNECTOR_CONFIGURATION_FIELDS: Sets the maximum supported connector configuration fields.",
+    "pocketstation::connector::configuration::MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES: Sets the maximum supported connector configuration text bytes.",
+    "pocketstation::connector::configuration::ConnectorSecret: Owns a connector secret with redacted diagnostics and byte clearing on explicit reset or drop.",
+    "new: Creates a new `ConnectorSecret`.",
+    "expose_secret: Exposes the secret to the owning connector during setup or worker use.",
+    "fmt: Formats `ConnectorSecret` with the requested formatter.",
+    "drop: Releases resources owned by `ConnectorSecret`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValueKind: Selects the connector configuration value kind used by PocketStation.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValueKind::Text: Selects text behavior for `ConnectorConfigurationValueKind`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValueKind::Boolean: Selects boolean behavior for `ConnectorConfigurationValueKind`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValueKind::SignedInteger: Selects signed integer behavior for `ConnectorConfigurationValueKind`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValueKind::UnsignedInteger: Selects unsigned integer behavior for `ConnectorConfigurationValueKind`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValueKind::DurationMilliseconds: Selects duration milliseconds behavior for `ConnectorConfigurationValueKind`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValueKind::ByteCount: Selects byte count behavior for `ConnectorConfigurationValueKind`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValueKind::Secret: Selects secret behavior for `ConnectorConfigurationValueKind`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValue: Enumerates the supported connector configuration value cases.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValue::Text: Represents the text alternative defined by `ConnectorConfigurationValue`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValue::Boolean: Represents the boolean alternative defined by `ConnectorConfigurationValue`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValue::SignedInteger: Represents the signed integer alternative defined by `ConnectorConfigurationValue`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValue::UnsignedInteger: Represents the unsigned integer alternative defined by `ConnectorConfigurationValue`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValue::DurationMilliseconds: Represents the duration milliseconds alternative defined by `ConnectorConfigurationValue`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValue::ByteCount: Represents the byte count alternative defined by `ConnectorConfigurationValue`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationValue::Secret: Represents the secret alternative defined by `ConnectorConfigurationValue`.",
+    "kind: Returns the kind represented by `ConnectorConfigurationValue`.",
+    "pocketstation::connector::configuration::ConnectorConfiguration: Configures connector behavior at its owning API boundary.",
+    "new: Creates a new `ConnectorConfiguration`.",
+    "with: Returns `ConnectorConfiguration` with the supplied entry applied.",
+    "insert: Inserts a typed configuration value into `ConnectorConfiguration`.",
+    "get: Returns the value held by `ConnectorConfiguration`.",
+    "iter: Iterates over the values held by `ConnectorConfiguration`.",
+    "len: Returns the number of values held by `ConnectorConfiguration`.",
+    "is_empty: Returns whether `ConnectorConfiguration` contains no values.",
+    "pocketstation::connector::configuration::ConnectorConfigurationRequirement: Selects the connector configuration requirement used by PocketStation.",
+    "pocketstation::connector::configuration::ConnectorConfigurationRequirement::Required: Selects required behavior for `ConnectorConfigurationRequirement`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationRequirement::Optional: Selects optional behavior for `ConnectorConfigurationRequirement`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationRequirement::Default: Selects default behavior for `ConnectorConfigurationRequirement`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationConstraint: Enumerates the supported connector configuration constraint cases.",
+    "pocketstation::connector::configuration::ConnectorConfigurationConstraint::NonEmpty: Represents the non empty alternative defined by `ConnectorConfigurationConstraint`.",
+    "ConnectorConfigurationConstraint::TextLengthBytes::minimum: Sets the inclusive minimum accepted by `TextLengthBytes`.",
+    "ConnectorConfigurationConstraint::TextLengthBytes::maximum: Sets the inclusive maximum accepted by `TextLengthBytes`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationConstraint::TextLengthBytes: Represents the text length bytes alternative defined by `ConnectorConfigurationConstraint`.",
+    "ConnectorConfigurationConstraint::SignedRange::minimum: Sets the inclusive minimum accepted by `SignedRange`.",
+    "ConnectorConfigurationConstraint::SignedRange::maximum: Sets the inclusive maximum accepted by `SignedRange`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationConstraint::SignedRange: Represents the signed range alternative defined by `ConnectorConfigurationConstraint`.",
+    "ConnectorConfigurationConstraint::UnsignedRange::minimum: Sets the inclusive minimum accepted by `UnsignedRange`.",
+    "ConnectorConfigurationConstraint::UnsignedRange::maximum: Sets the inclusive maximum accepted by `UnsignedRange`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationConstraint::UnsignedRange: Represents the unsigned range alternative defined by `ConnectorConfigurationConstraint`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationConstraint::OneOf: Represents the one of alternative defined by `ConnectorConfigurationConstraint`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationField: Declares one typed connector configuration field and its validation constraints.",
+    "new: Creates a new `ConnectorConfigurationField`.",
+    "with_constraint: Sets the constraint on `ConnectorConfigurationField` and returns the updated value.",
+    "deprecated: Returns the deprecated held by `ConnectorConfigurationField`.",
+    "name: Returns the name associated with `ConnectorConfigurationField`.",
+    "value_kind: Returns the value kind held by `ConnectorConfigurationField`.",
+    "requirement: Returns the requirement held by `ConnectorConfigurationField`.",
+    "documentation: Returns the documentation held by `ConnectorConfigurationField`.",
+    "constraints: Returns the constraints held by `ConnectorConfigurationField`.",
+    "deprecation: Returns the deprecation held by `ConnectorConfigurationField`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationSchema: Validates connector configuration values against the manifest-declared field set.",
+    "new: Creates a new `ConnectorConfigurationSchema`.",
+    "revision: Returns the revision held by `ConnectorConfigurationSchema`.",
+    "fields: Returns the fields held by `ConnectorConfigurationSchema`.",
+    "field: Returns the field held by `ConnectorConfigurationSchema`.",
+    "resolve: Resolves `ConnectorConfigurationSchema` into its validated representation.",
+    "pocketstation::connector::configuration::ResolvedConnectorConfiguration: Configures resolved connector behavior at its owning API boundary.",
+    "get: Returns the value held by `ResolvedConnectorConfiguration`.",
+    "iter: Iterates over the values held by `ResolvedConnectorConfiguration`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode: Enumerates the supported connector configuration error code cases.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::InvalidSchema: Reported when the owning operation encounters invalid schema.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::DuplicateField: Reported when the owning operation encounters duplicate field.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::TooManyFields: Reported when the owning operation encounters too many fields.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::UnknownField: Reported when the owning operation encounters unknown field.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::MissingRequiredField: Reported when the owning operation encounters missing required field.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::WrongType: Reported when the owning operation encounters wrong type.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::InvalidValue: Reported when the owning operation encounters invalid value.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::ConstraintViolation: Reported when the owning operation encounters constraint violation.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::ValueTooLarge: Reported when the owning operation encounters value too large.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::EmptySecret: Reported when the owning operation encounters empty secret.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::SecretDefaultForbidden: Reported when the owning operation encounters secret default forbidden.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::SecretClassificationMismatch: Reported when the owning operation encounters secret classification mismatch.",
+    "pocketstation::connector::configuration::ConnectorConfigurationErrorCode::UnexpectedSensitiveValue: Reported when the owning operation encounters unexpected sensitive value.",
+    "as_str: Returns the stable string representation of `ConnectorConfigurationErrorCode`.",
+    "pocketstation::connector::configuration::ConnectorConfigurationError: Reports a connector configuration error.",
+    "code: Returns the stable error or status code represented by `ConnectorConfigurationError`.",
+    "field: Returns the field held by `ConnectorConfigurationError`.",
+    "message: Returns the diagnostic message reported by `ConnectorConfigurationError`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1458,7 +1572,10 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-d9078fd01d0271720b30"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

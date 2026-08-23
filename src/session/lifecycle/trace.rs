@@ -28,36 +28,36 @@ const FNV_PRIME: u64 = 0x0000_0100_0000_01b3;
 pub enum SessionTraceRecordKind {
     #[doc = "Selects lifecycle behavior for `SessionTraceRecordKind`."]
     Lifecycle {
-        #[doc = "Stores the state associated with `Lifecycle`."]
+        #[doc = "Stores the state used by `Lifecycle`."]
         state: SessionLifecycleState,
     },
     #[doc = "Selects source failure behavior for `SessionTraceRecordKind`."]
     SourceFailure {
-        #[doc = "Identifies the stem associated with `SourceFailure`."]
+        #[doc = "Identifies the stem identifier recorded by `SourceFailure`."]
         stem_id: StemId,
     },
     #[doc = "Selects endpoint failure behavior for `SessionTraceRecordKind`."]
     EndpointFailure {
-        #[doc = "Identifies the route associated with `EndpointFailure`."]
+        #[doc = "Identifies the route identifier recorded by `EndpointFailure`."]
         route_id: RouteId,
-        #[doc = "Identifies the endpoint associated with `EndpointFailure`."]
+        #[doc = "Identifies the endpoint identifier recorded by `EndpointFailure`."]
         endpoint_id: EndpointId,
-        #[doc = "Stores the stage code associated with `EndpointFailure`."]
+        #[doc = "Stores the stage code used by `EndpointFailure`."]
         stage_code: u8,
     },
     #[doc = "Selects rollback failure behavior for `SessionTraceRecordKind`."]
     RollbackFailure {
-        #[doc = "Stores the stage associated with `RollbackFailure`."]
+        #[doc = "Stores the stage used by `RollbackFailure`."]
         stage: SessionRollbackStage,
     },
     #[doc = "Selects finalization failure behavior for `SessionTraceRecordKind`."]
     FinalizationFailure {
-        #[doc = "Stores the stage associated with `FinalizationFailure`."]
+        #[doc = "Stores the stage used by `FinalizationFailure`."]
         stage: SessionFinalizationStage,
     },
     #[doc = "Selects terminal behavior for `SessionTraceRecordKind`."]
     Terminal {
-        #[doc = "Stores the state associated with `Terminal`."]
+        #[doc = "Stores the state used by `Terminal`."]
         state: SessionTerminalState,
         #[doc = "Counts the total number of source failures observed by `Terminal`."]
         source_failures_total: u64,
@@ -71,15 +71,15 @@ pub enum SessionTraceRecordKind {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-#[doc = "Represents session trace record in the PocketStation API."]
+#[doc = "Records one immutable session trace observation."]
 pub struct SessionTraceRecord {
     #[doc = "Stores the sequence index used by `SessionTraceRecord`."]
     pub sequence_index: u64,
     #[doc = "Stores the observed at value for `SessionTraceRecord`, in nanoseconds."]
     pub observed_at_ns: u64,
-    #[doc = "Identifies the session associated with `SessionTraceRecord`."]
+    #[doc = "Identifies the session identifier recorded by `SessionTraceRecord`."]
     pub session_id: SessionId,
-    #[doc = "Stores the kind associated with `SessionTraceRecord`."]
+    #[doc = "Stores the kind used by `SessionTraceRecord`."]
     pub kind: SessionTraceRecordKind,
 }
 
@@ -93,7 +93,7 @@ pub(crate) enum SessionTraceRecordDelivery {
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[doc = "Reports the structured session trace recorder outcome."]
 pub struct SessionTraceRecorderOutcome {
-    #[doc = "Stores the path associated with `SessionTraceRecorderOutcome`."]
+    #[doc = "Stores the path used by `SessionTraceRecorderOutcome`."]
     pub path: PathBuf,
     #[doc = "Counts the total number of records attempted observed by `SessionTraceRecorderOutcome`."]
     pub records_attempted_total: u64,
@@ -103,7 +103,7 @@ pub struct SessionTraceRecorderOutcome {
     pub records_dropped_total: u64,
     #[doc = "Counts the total number of records written observed by `SessionTraceRecorderOutcome`."]
     pub records_written_total: u64,
-    #[doc = "Stores the rolling hash associated with `SessionTraceRecorderOutcome`."]
+    #[doc = "Stores the rolling hash used by `SessionTraceRecorderOutcome`."]
     pub rolling_hash: u64,
 }
 
@@ -125,7 +125,7 @@ pub enum SessionTraceRecorderStartError {
     #[error("session trace output already exists: {path}")]
     #[doc = "Reports output exists."]
     OutputExists {
-        #[doc = "Stores the path associated with `OutputExists`."]
+        #[doc = "Stores the path used by `OutputExists`."]
         path: PathBuf,
     },
     #[error("session trace I/O failed: {0}")]
@@ -193,7 +193,7 @@ impl SessionTraceRecorderHandle {
     }
 }
 
-#[doc = "Represents session trace recorder in the PocketStation API."]
+#[doc = "Collects ordered lifecycle records and writes the trace artifact during Session finalization."]
 pub struct SessionTraceRecorder {
     path: PathBuf,
     handle: SessionTraceRecorderHandle,
@@ -240,7 +240,7 @@ impl SessionTraceRecorder {
         })
     }
 
-    #[doc = "Returns the handle associated with `SessionTraceRecorder`."]
+    #[doc = "Returns the handle held by `SessionTraceRecorder`."]
     pub fn handle(&self) -> SessionTraceRecorderHandle {
         self.handle.clone()
     }
@@ -288,7 +288,7 @@ impl SessionTraceRecorder {
             .ok_or(SessionTraceRecorderFinishError::ChannelClosed)
     }
 
-    #[doc = "Returns the outcome associated with `SessionTraceRecorder`."]
+    #[doc = "Returns the outcome held by `SessionTraceRecorder`."]
     pub fn outcome(&self) -> Option<&SessionTraceRecorderOutcome> {
         self.outcome.as_ref()
     }
@@ -302,7 +302,7 @@ impl Drop for SessionTraceRecorder {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-#[doc = "Represents session trace in the PocketStation API."]
+#[doc = "Contains the ordered lifecycle records read from a Session trace artifact."]
 pub struct SessionTrace {
     session_id: SessionId,
     records: Box<[SessionTraceRecord]>,
@@ -317,17 +317,17 @@ impl SessionTrace {
         decode_trace(path, &bytes)
     }
 
-    #[doc = "Returns the session identifier associated with `SessionTrace`."]
+    #[doc = "Returns the session identifier held by `SessionTrace`."]
     pub const fn session_id(&self) -> SessionId {
         self.session_id
     }
 
-    #[doc = "Returns the records associated with `SessionTrace`."]
+    #[doc = "Returns the records held by `SessionTrace`."]
     pub fn records(&self) -> &[SessionTraceRecord] {
         &self.records
     }
 
-    #[doc = "Returns the outcome associated with `SessionTrace`."]
+    #[doc = "Returns the outcome held by `SessionTrace`."]
     pub const fn outcome(&self) -> &SessionTraceRecorderOutcome {
         &self.outcome
     }
@@ -392,9 +392,9 @@ impl SessionTrace {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-#[doc = "Represents session trace terminal in the PocketStation API."]
+#[doc = "Records the terminal Session disposition and component failures stored in a trace."]
 pub struct SessionTraceTerminal {
-    #[doc = "Stores the state associated with `SessionTraceTerminal`."]
+    #[doc = "Stores the state used by `SessionTraceTerminal`."]
     pub state: SessionTerminalState,
     #[doc = "Counts the total number of source failures observed by `SessionTraceTerminal`."]
     pub source_failures_total: u64,
@@ -407,11 +407,11 @@ pub struct SessionTraceTerminal {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-#[doc = "Represents session trace validation in the PocketStation API."]
+#[doc = "Reports the validated identity and record count of a parsed Session trace."]
 pub struct SessionTraceValidation {
-    #[doc = "Identifies the session associated with `SessionTraceValidation`."]
+    #[doc = "Identifies the session identifier recorded by `SessionTraceValidation`."]
     pub session_id: SessionId,
-    #[doc = "Stores the lifecycle associated with `SessionTraceValidation`."]
+    #[doc = "Stores the lifecycle used by `SessionTraceValidation`."]
     pub lifecycle: Box<[SessionLifecycleState]>,
     #[doc = "Indicates whether terminal applies to `SessionTraceValidation`."]
     pub terminal: SessionTraceTerminal,

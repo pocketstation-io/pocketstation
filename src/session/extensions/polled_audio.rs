@@ -11,6 +11,7 @@ use crate::session::{
 };
 
 impl Session {
+    #[doc = "Declares a bounded polled-audio endpoint on `Session`."]
     pub fn polled_audio(&self) -> Result<EndpointHandle, SessionError> {
         self.connector(
             OperatorId::new(POLLED_AUDIO_OPERATOR_ID),
@@ -20,6 +21,7 @@ impl Session {
 }
 
 impl SessionEngineBuilder {
+    #[doc = "Registers polled audio endpoint for `SessionEngineBuilder`."]
     pub fn register_polled_audio_endpoint(
         &mut self,
         endpoint: &PolledAudioEndpoint,

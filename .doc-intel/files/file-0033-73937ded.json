@@ -250,7 +250,10 @@
       "symbol": null
     }
   ],
-  "examples_using": [],
+  "example_coverage_status": "linked",
+  "examples_using": [
+    "example-1b4a3fb7b1a5a748e4c1"
+  ],
   "extended_by": [],
   "extends": [],
   "feature_flags": [],
@@ -279,7 +282,11 @@
     "whisper_transcribe_example::{WhisperOperatorFactory, WHISPER_OPERATOR_ID}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    ") -> Result<(), pocketstation::ConfigError> {",
+    "pocketstation::{ EndpointCancellationOutcome, EndpointDescriptor, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointPortInput, EndpointReceiver, EndpointStartGate, ExecutionPartition, MediaCaps, Multiplicity, NodeDefinition, NodeDescriptor, NodeTypeId, Operator, OperatorConfiguration, OperatorId, PortDirection, PortSpec, PreparedEndpointDriver, RunningEndpointDriver, SafetyContract, Session, SignalSpec, Source, TextFormat, }",
+    "std::sync::Arc",
+    "whisper_transcribe_example::{WhisperOperatorFactory, WHISPER_OPERATOR_ID}"
   ],
   "invariants": [],
   "language": "Rust",
@@ -288,20 +295,22 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification or behavior outside the example's prerequisites."
   ],
   "observed_patterns": [
     "pattern-3dd96e814fdbb6001ead"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "return Err(EndpointFailure::new("
   ],
   "package": "pocketstation",
   "path": "examples/operator-consumer/src/lib.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -405,7 +414,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "DECLARED",
-    "text": "Compile boundary for an external provider and typed endpoint consumer.  This package intentionally depends only on the public `pocketstation` fa\u00e7ade and an example provider package."
+    "text": "Demonstrates the repository-owned lib workflow as compilable example code."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -443,6 +452,7 @@
     "docs/troubleshooting/drops-and-saturation.md",
     "docs/best-practices/route-sizing.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 8,
@@ -494,22 +504,22 @@
     }
   ],
   "responsibilities": [
-    "tests",
-    "TEXT_ENDPOINT_OPERATOR_ID",
-    "TEXT_ENDPOINT_NODE_TYPE_ID",
-    "TextEndpointDefinition",
-    "descriptor",
-    "validate_config",
-    "TextEndpointFactory",
-    "prepare",
-    "PreparedTextEndpoint",
-    "start",
-    "cancel_preparation",
-    "RunningTextEndpoint",
-    "observations",
-    "request_stop",
-    "join_and_finalize",
-    "given_external_consumer_when_declared_then_provider_and_typed_endpoint_use_public_api"
+    "tests (mod)",
+    "TEXT_ENDPOINT_OPERATOR_ID (const)",
+    "TEXT_ENDPOINT_NODE_TYPE_ID (const)",
+    "TextEndpointDefinition (struct)",
+    "descriptor (fn)",
+    "validate_config (fn)",
+    "TextEndpointFactory (struct)",
+    "prepare (fn)",
+    "PreparedTextEndpoint (struct)",
+    "start (fn)",
+    "cancel_preparation (fn)",
+    "RunningTextEndpoint (struct)",
+    "observations (fn)",
+    "request_stop (fn)",
+    "join_and_finalize (fn)",
+    "given_external_consumer_when_declared_then_provider_and_typed_endpoint_use_public_api (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -528,7 +538,10 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-ace9b7d11da2036ce899"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

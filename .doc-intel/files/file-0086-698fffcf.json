@@ -8,7 +8,10 @@
       "text": "/// This control-path query must never run from an audio callback."
     }
   ],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs"
+  ],
   "calls": [
     "cfg",
     "given_authorization_values_when_mapped_then_every_state_remains_distinct",
@@ -24,7 +27,10 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs"
+  ],
   "constructs": [],
   "content_hash": "438a75d1e103888b9618b85661d15f2ce31188d0dc16d2817073be60c046df0e",
   "defaults": [],
@@ -113,8 +119,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -137,15 +147,23 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "0855a212ff422a72868c3c1d2666b176f6b85fb9",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/capture/platform/macos/mod.rs",
+    "IMPORTS:src/capture/platform/macos/mod.rs"
+  ],
   "imports": [
     "crate::capture::PermissionObservation",
     "super::{permission_observation, AUTHORIZED, DENIED, NOT_DETERMINED, RESTRICTED}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::capture::PermissionObservation",
+    "super::{permission_observation, AUTHORIZED, DENIED, NOT_DETERMINED, RESTRICTED}"
   ],
   "invariants": [
     {
@@ -159,18 +177,20 @@
   "module": "pocketstation::capture::platform::macos::authorization",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "fn:microphone_permission_observation"
   ],
   "package": "pocketstation",
   "path": "src/capture/platform/macos/authorization.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -233,7 +253,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::capture::platform::macos::authorization`."
+    "text": "Implements pocketstation::capture::platform::macos::authorization responsibilities, including authorization; not determined; restricted."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -287,17 +307,20 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/source-identity.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/capture/authorization.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "NOT_DETERMINED",
-    "RESTRICTED",
-    "DENIED",
-    "AUTHORIZED",
-    "pks_microphone_authorization_status",
-    "microphone_permission_observation",
-    "permission_observation",
-    "tests",
-    "given_authorization_values_when_mapped_then_every_state_remains_distinct"
+    "NOT_DETERMINED (const)",
+    "RESTRICTED (const)",
+    "DENIED (const)",
+    "AUTHORIZED (const)",
+    "pks_microphone_authorization_status (fn)",
+    "microphone_permission_observation (fn)",
+    "permission_observation (fn)",
+    "tests (mod)",
+    "given_authorization_values_when_mapped_then_every_state_remains_distinct (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -316,7 +339,10 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-6b528a3cf33716f63062"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

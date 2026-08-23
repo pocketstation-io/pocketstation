@@ -12,7 +12,10 @@
       "text": "/// callback only reads the initialized monotonic origin."
     }
   ],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs"
+  ],
   "calls": [
     "advance",
     "advance_from_source_position",
@@ -64,7 +67,10 @@
       "text": "#[cfg(any(test, target_os = \"linux\"))]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs"
+  ],
   "constructs": [
     "new",
     "u128::from"
@@ -206,8 +212,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing",
@@ -225,16 +235,24 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "583e420f18865e37677e49b7229b553043bfdaf6",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs"
+  ],
   "implements": [
     "CaptureSampleTimeline"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs"
+  ],
   "imports": [
     "std::num::NonZeroU32"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\", feature = \"native-capture\"))]",
+    "#[cfg(any(test, target_os = \"linux\"))]",
+    "std::num::NonZeroU32"
   ],
   "invariants": [
     {
@@ -252,20 +270,28 @@
   "module": "pocketstation::capture::timeline",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-85798d9f164c752449ba"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:CaptureSampleTimelineError",
+    "fn:advance",
+    "fn:advance_from_source_position",
+    "fn:initialize_monotonic_timestamp_domain",
+    "fn:monotonic_timestamp_ns",
+    "fn:new",
+    "return Err(CaptureSampleTimelineError::MixedAdvanceModes);",
+    "return Err(CaptureSampleTimelineError::SourcePositionMovedBackward {",
+    "struct:CaptureSampleTimeline"
   ],
   "package": "pocketstation",
   "path": "src/capture/timeline.rs",
   "platform_gate": [
     "linux"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Only applies under the recorded target gate; implementation is not physical qualification."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -314,8 +340,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Source-sample time mapped into PocketStation's monotonic clock domain."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::capture::timeline responsibilities, including Initializes the process-wide capture timestamp domain from a setup thread.; Process-wide monotonic timestamp domain used by every capture adapter.; Source-time clock for capture streams whose media cadence is defined by."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -369,15 +395,20 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/source-identity.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "initialize_monotonic_timestamp_domain",
-    "monotonic_timestamp_ns",
-    "CaptureSampleTimeline",
-    "CaptureSampleTimelineError",
-    "new",
-    "advance",
-    "advance_from_source_position"
+    "pocketstation::capture::timeline::initialize_monotonic_timestamp_domain: Initializes the process-wide capture timestamp domain from a setup thread.",
+    "pocketstation::capture::timeline::monotonic_timestamp_ns: Process-wide monotonic timestamp domain used by every capture adapter.",
+    "pocketstation::capture::timeline::CaptureSampleTimeline: Source-time clock for capture streams whose media cadence is defined by",
+    "pocketstation::capture::timeline::CaptureSampleTimelineError: Classifies failures reported as capture sample timeline error.",
+    "pocketstation::capture::timeline::CaptureSampleTimelineError::MixedAdvanceModes: Reported when the owning operation encounters mixed advance modes.",
+    "pocketstation::capture::timeline::CaptureSampleTimelineError::SourcePositionOverflow: Reported when the owning operation encounters source position overflow.",
+    "pocketstation::capture::timeline::CaptureSampleTimelineError::SourcePositionMovedBackward: Reported when the owning operation encounters source position moved backward.",
+    "CaptureSampleTimelineError::SourcePositionMovedBackward::expected_at_least: Stores the expected at least used by `SourcePositionMovedBackward`.",
+    "CaptureSampleTimelineError::SourcePositionMovedBackward::observed: Stores the observed used by `SourcePositionMovedBackward`.",
+    "new: Creates a new `CaptureSampleTimeline`.",
+    "advance_from_source_position: Returns a buffer's source-time start from its native sample-frame"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -401,7 +432,11 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-6f92449ae2068cad145e",
+    "test-99083db5a93958229c27"
+  ],
   "threads": [
     {
       "line": 6,

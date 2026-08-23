@@ -8,11 +8,11 @@
 - **Use the versioned C ABI.** Declare, start, observe, stop, and release Sessions and extension callbacks through the public C boundary.
 - **Validate protocol and conformance boundaries.** Check ABI layout, cross-language behavior, connector vectors, and protocol compatibility against versioned fixtures.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Build and load a native extension** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
 ## Prerequisites
 
-Read the linked concept and confirm that target platform, Cargo features, source or provider dependencies, and application-owned permission work match this task. Keep returned typed errors and outcomes available for verification.
+A dynamic library for the current target, a compatible ABI descriptor, and a host trust decision for its canonical path.
 
 ## Procedure
 
@@ -22,30 +22,15 @@ Read the linked concept and confirm that target platform, Cargo features, source
 4. Load through Session and retain the receipt.
 5. Handle registration rollback and executable-code lifetime.
 
-## APIs used
+## Important consequence
 
-| Public declaration | Kind | Declared purpose | Source |
-|---|---|---|---|
-| `pocketstation::native_extension::NativeExtensionLibraryErrorCode::LibraryLoadFailed` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/native_extension/mod.rs:82` |
-| `pocketstation::native_extension::NativeExtensionLibrary` | struct | Immutable receipt for registrations imported into one Session. Executable code ownership remains internal to the registered factories and drivers. | `src/native_extension/mod.rs:62` |
-| `pocketstation::native_extension::EXTENSION_LIBRARY_ENTRYPOINT_V1` | constant | Exact exported symbol required from a native Extension ABI v1 dynamic library. The suffix follows the ABI major; compatible minor revisions use the same entrypoint. | `src/native_extension/mod.rs:24` |
-| `pocketstation::native_extension::NativeExtensionLibraryError` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/native_extension/mod.rs:124` |
-| `pocketstation::native_extension::NativeExtensionRegistration` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/native_extension/mod.rs:34` |
-| `pocketstation::native_extension::NativeExtensionKind` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/native_extension/mod.rs:27` |
-| `pocketstation::native_extension::NativeExtensionLibraryErrorCode` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/native_extension/mod.rs:78` |
-| `pocketstation::native_extension::NativeExtensionKind::Endpoint` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/native_extension/mod.rs:30` |
-| `pocketstation::native_extension::NativeExtensionKind::Operator` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/native_extension/mod.rs:29` |
-| `pocketstation::native_extension::NativeExtensionKind::Source` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/native_extension/mod.rs:28` |
-| `pocketstation::native_extension::NativeExtensionLibraryErrorCode::DuplicateRegistration` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/native_extension/mod.rs:92` |
-| `pocketstation::native_extension::NativeExtensionLibraryErrorCode::EntrypointFailed` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/native_extension/mod.rs:85` |
-| `pocketstation::native_extension::NativeExtensionLibraryErrorCode::EntrypointMissing` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/native_extension/mod.rs:83` |
-| `pocketstation::native_extension::NativeExtensionLibraryErrorCode::EntrypointPanicked` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/native_extension/mod.rs:84` |
-| `pocketstation::native_extension::NativeExtensionLibraryErrorCode::InvalidLibraryDescriptor` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/native_extension/mod.rs:88` |
-| `pocketstation::native_extension::NativeExtensionLibraryErrorCode::InvalidRegistration` | variant | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/native_extension/mod.rs:91` |
+Treat path validation, library loading, entry point, ABI, descriptor, and registration as distinct failure stages.
 
 ## Verify the outcome
 
-The following test bodies are evidence only for their recorded setup:
+The loader returns a receipt, all registrations appear together, and the library remains owned while callbacks are reachable.
+
+Executable evidence selected for **Build and load a native extension** is limited to each test's recorded setup and assertions:
 
 - `given_valid_native_library_when_loaded_then_canonical_session_executes_complete_pipeline` — given valid native library when loaded then canonical session executes complete pipeline (`tests/native_extension_library.rs:123`; `test-17108da423c933ddbc98`).
 - `given_core_extension_c_descriptor_when_validated_then_version_and_ports_pass` — given core extension c descriptor when validated then version and ports pass (`src/abi/extension.rs:286`; `test-4766cfbb0d0cdab01cdc`).
@@ -62,20 +47,32 @@ The following test bodies are evidence only for their recorded setup:
 
 ## Failure signals
 
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `UnsupportedAbiMinor` — `error-1a38891e490c637fd1f2`
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` — `error-1a6a79718688c3bd3715`
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `InvalidLibraryDescriptor` — `error-1f5abab34214f5b63b01`
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `InvalidRegistration` — `error-1fc53703fe6fb00d8fab`
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `RegistrationAcquisitionFailed` — `error-21780b72885c9e29a71c`
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `DuplicateRegistration` — `error-3ea568577af25a2fc5e6`
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `EntrypointFailed` — `error-480de969fd202f51c549`
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `EntrypointPanicked` — `error-527bf9a9b68ccbda6c90`
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `PathNotAbsolute` — `error-6baafa30dcc94f68cad3`
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `PathCanonicalizationFailed` — `error-735365ce5d41572f06f2`
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `PathNotFile` — `error-76f6466e465a0d7a52d9`
-- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `RegistrationAcquisitionPanicked` — `error-86e449bc7fc67119dab5`
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `LibraryLoadFailed` — `error-565dce9eae9619340a07`
+- `pocketstation::native_extension::NativeExtensionLibraryError` — `error-3f67c43b32f6fcad4623`
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` — `error-e8cfe53ac16a24ec271a`
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `DuplicateRegistration` — `error-ae300d01d210d603e094`
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `EntrypointFailed` — `error-62cf0cb93419ca1b424f`
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `EntrypointMissing` — `error-8055e200b698a55ee9e7`
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `EntrypointPanicked` — `error-09da0172ff632c40da5e`
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `InvalidLibraryDescriptor` — `error-32deb305311b19362a8f`
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `InvalidRegistration` — `error-f891b63a492cbaf2009f`
+- `pocketstation::native_extension::NativeExtensionLibraryErrorCode` / `PathCanonicalizationFailed` — `error-39b8d96537c461086e6c`
 
-Retry only when the relevant API or error contract explicitly permits it. An error name, a transient-looking message, or a successful prior run is not retry evidence.
+## API reference
+
+- [Native Extensions](/docs/concepts/native-extensions.md)
+- [Native Extensions](/docs/reference/native-extensions.md)
+
+| Public declaration | Kind | Declared purpose | Source |
+|---|---|---|---|
+| `pocketstation::native_extension::NativeExtensionLibraryErrorCode::LibraryLoadFailed` | variant | Reported when the owning operation encounters library load failed. | `src/native_extension/mod.rs:82` |
+| `pocketstation::native_extension::NativeExtensionLibrary` | struct | Immutable receipt for registrations imported into one Session. Executable code ownership remains internal to the registered factories and drivers. | `src/native_extension/mod.rs:62` |
+| `pocketstation::native_extension::NativeExtensionLibraryError` | struct | Reports a native extension library error. | `src/native_extension/mod.rs:124` |
+| `pocketstation::native_extension::NativeExtensionRegistration` | struct | Identifies one node registration imported transactionally from a native extension. | `src/native_extension/mod.rs:34` |
+| `pocketstation::native_extension::NativeExtensionKind` | enum | Selects the native extension kind used by PocketStation. | `src/native_extension/mod.rs:27` |
+| `pocketstation::native_extension::NativeExtensionLibraryErrorCode` | enum | Enumerates the supported native extension library error code cases. | `src/native_extension/mod.rs:78` |
+| `pocketstation::native_extension::EXTENSION_LIBRARY_ENTRYPOINT_V1` | constant | Exact exported symbol required from a native Extension ABI v1 dynamic library. The suffix follows the ABI major; compatible minor revisions use the same entrypoint. | `src/native_extension/mod.rs:24` |
+| `pocketstation::native_extension::NativeExtensionKind::Endpoint` | variant | Selects endpoint behavior for `NativeExtensionKind`. | `src/native_extension/mod.rs:30` |
 
 ## Related documentation
 
@@ -90,9 +87,9 @@ Retry only when the relevant API or error contract explicitly permits it. An err
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Build and load a native extension** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `tests/fixtures/native_extension_plugin.rs:1-427` (`DIRECT`)
 - `src/native_extension/library.rs:1-272` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Build and load a native extension**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

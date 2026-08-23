@@ -3,7 +3,15 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/compile/mod.rs",
+    "IMPORTS:src/session/compile/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "calls": [
     "any",
     "bindings",
@@ -101,7 +109,15 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/compile/mod.rs",
+    "IMPORTS:src/session/compile/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "constructs": [],
   "content_hash": "cc098c7a37a78a44d5a88db82707eb4742abe800f39329567beb2fdd420d60e7",
   "defaults": [],
@@ -334,8 +350,17 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/compile/mod.rs",
+    "IMPORTS:src/session/compile/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -351,11 +376,27 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "3d0c470cf699adc4b8e1f847cca776595cf40ccf",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/compile/mod.rs",
+    "IMPORTS:src/session/compile/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "implements": [
     "CompiledSession"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/compile/mod.rs",
+    "IMPORTS:src/session/compile/mod.rs",
+    "REFERENCES:src/abi/session/runtime.rs",
+    "REFERENCES:src/session/compile/mod.rs",
+    "REFERENCES:src/session/lifecycle/engine.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/prepare/mod.rs"
+  ],
   "imports": [
     "crate::graph::ir::GraphIr",
     "crate::session::SessionId",
@@ -364,7 +405,12 @@
     "super::CompiledSessionBindings"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "crate::graph::ir::GraphIr",
+    "crate::session::SessionId",
+    "crate::session::SessionSpec",
+    "crate::session::declaration::{EndpointSpec, SourceInstanceSpec, StemSpec}",
+    "super::CompiledSessionBindings"
   ],
   "invariants": [],
   "language": "Rust",
@@ -373,18 +419,36 @@
   "module": "pocketstation::session::compile::compiled",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "fn:bindings",
+    "fn:bindings_mut",
+    "fn:edge_count",
+    "fn:endpoint_declarations",
+    "fn:external_source_declarations",
+    "fn:graph_ir",
+    "fn:graph_ir_mut",
+    "fn:into_runtime_parts",
+    "fn:node_count",
+    "fn:planned_audio_edge_count",
+    "fn:planned_edge_count",
+    "fn:planned_source_output_count",
+    "fn:planned_typed_edge_count",
+    "fn:session_id",
+    "fn:source_declarations",
+    "fn:spec",
+    "struct:CompiledSession"
   ],
   "package": "pocketstation",
   "path": "src/session/compile/compiled.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
@@ -493,8 +557,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Immutable compiled Session plus its typed runtime bindings."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::session::compile::compiled responsibilities, including Owns the validated Session specification and declarations produced by compilation.; Returns the session identifier held by `CompiledSession`.; Returns the spec associated with `CompiledSession`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -554,25 +618,24 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/graph/ir.rs",
+    "REFERENCES:src/graph/plan.rs",
+    "REFERENCES:src/session/compile/bindings.rs",
+    "REFERENCES:src/session/declaration/spec.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "CompiledSession",
-    "session_id",
-    "spec",
-    "source_declarations",
-    "external_source_declarations",
-    "endpoint_declarations",
-    "node_count",
-    "edge_count",
-    "planned_edge_count",
-    "planned_source_output_count",
-    "planned_typed_edge_count",
-    "planned_audio_edge_count",
-    "into_runtime_parts",
-    "graph_ir",
-    "graph_ir_mut",
-    "bindings",
-    "bindings_mut"
+    "pocketstation::session::compile::compiled::CompiledSession: Owns the validated Session specification and declarations produced by compilation.",
+    "session_id: Returns the session identifier held by `CompiledSession`.",
+    "spec: Returns the spec associated with `CompiledSession`.",
+    "source_declarations: Returns the source declarations associated with `CompiledSession`.",
+    "external_source_declarations: Returns the external source declarations associated with `CompiledSession`.",
+    "endpoint_declarations: Returns the endpoint declarations associated with `CompiledSession`.",
+    "node_count: Returns the node count held by `CompiledSession`.",
+    "edge_count: Returns the edge count held by `CompiledSession`.",
+    "planned_edge_count: Returns the planned edge count held by `CompiledSession`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -582,7 +645,13 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-31068955505393ed5dce",
+    "test-39097f0adf1fe30dc87a",
+    "test-4e5aeb90e44be738cb79",
+    "test-4ee45ca045d2ee40a2a5"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

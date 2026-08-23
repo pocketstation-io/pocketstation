@@ -3,7 +3,12 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/extensions/audio_input/mod.rs",
+    "IMPORTS:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs"
+  ],
   "calls": [
     "Arc::clone",
     "Arc::new",
@@ -105,7 +110,12 @@
       "text": "Err(ConfigError::Invalid {"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/extensions/audio_input/mod.rs",
+    "IMPORTS:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AtomicU64::new",
@@ -450,8 +460,14 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/extensions/audio_input/mod.rs",
+    "IMPORTS:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -465,7 +481,12 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "11b5f2dd545ed924b7d3d5406183b4d67e9ce953",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/extensions/audio_input/mod.rs",
+    "IMPORTS:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs"
+  ],
   "implements": [
     "PcmSource",
     "fmt::Debug for PcmSource",
@@ -474,7 +495,12 @@
     "SourceDriver for AudioInputDriver",
     "AudioInputDriver"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/extensions/audio_input/mod.rs",
+    "IMPORTS:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/lib.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs"
+  ],
   "imports": [
     "crate::frame::{AudioBufferPool, AudioFrame}",
     "crate::graph::{ AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalEnvelope, SignalLineage, SignalSpec, SignalTiming, }",
@@ -492,7 +518,24 @@
     "super::{AudioInputConfig, AudioInputConfigError, PCM_SOURCE_TYPE_ID}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity,",
+    "Configuration(#[from] AudioInputConfigError),",
+    "Err(ConfigError::Invalid {",
+    "crate::frame::{AudioBufferPool, AudioFrame}",
+    "crate::graph::{ AudioCaps, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalEnvelope, SignalLineage, SignalSpec, SignalTiming, }",
+    "crate::runtime::{SignalEdge, SignalEdgeReceiver}",
+    "crate::session::declaration::{SourceInstanceHandle, SourceOutputHandle}",
+    "crate::timing::{monotonic_timestamp_ns, PROCESS_MONOTONIC_CLOCK_DOMAIN_ID}",
+    "crate::{SampleSpec, SessionError}",
+    "fn validate_config(&self, configuration: &SourceConfiguration) -> Result<(), ConfigError> {",
+    "std::collections::BTreeMap",
+    "std::fmt",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "std::sync::{Arc, Mutex}",
+    "std::time::Duration",
+    "super::buffer::{AudioInputState, AudioInputWriter, QueuedAudioInputFrame}",
+    "super::super::source::{ SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourcePrepareContext, SourceSessionContext, SourceTypeId, SourceTypeIdError, }",
+    "super::{AudioInputConfig, AudioInputConfigError, PCM_SOURCE_TYPE_ID}"
   ],
   "invariants": [
     {
@@ -523,7 +566,7 @@
   "module": "pocketstation::session::extensions::audio_input::source",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-02730342ffe5edf1a1a0",
@@ -531,14 +574,31 @@
     "pattern-8933ee8675c6a1d5b74f"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(ConfigError::Invalid {",
+    "_ => return Err(AudioInputConfigError::UnsupportedChannelCount.into()),",
+    "enum:AudioInputError",
+    "fn:bind",
+    "fn:cancel",
+    "fn:into_parts",
+    "fn:new",
+    "fn:output",
+    "fn:reserve",
+    "fn:source",
+    "fn:writer",
+    "fn:writer_mut",
+    "return Err(AudioInputError::IncompatibleContract);",
+    "struct:AudioInputFactory",
+    "struct:AudioInputReservation",
+    "struct:PcmSource"
   ],
   "package": "pocketstation",
   "path": "src/session/extensions/audio_input/source.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -709,7 +769,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::extensions::audio_input::source`."
+    "text": "Implements pocketstation::session::extensions::audio input::source responsibilities, including Low-level PCM source ownership for integrations that separately retain the; Returns the source held by `PcmSource`.; Returns the output held by `PcmSource`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -769,6 +829,17 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/graph/node.rs",
+    "REFERENCES:src/runtime/signal/edge.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/error.rs",
+    "REFERENCES:src/session/extensions/audio_input/buffer.rs",
+    "REFERENCES:src/session/extensions/audio_input/mod.rs",
+    "REFERENCES:src/session/extensions/source.rs"
+  ],
   "resource_ownership": [
     {
       "line": 4,
@@ -824,33 +895,21 @@
     }
   ],
   "responsibilities": [
-    "OUTPUT_PORT",
-    "DRIVER_IDLE_WAIT",
-    "NEXT_AUDIO_INPUT_WRITER_ID",
-    "PcmSource",
-    "new",
-    "source",
-    "output",
-    "writer",
-    "writer_mut",
-    "into_parts",
-    "fmt",
-    "AudioInputError",
-    "PendingAudioInput",
-    "AudioInputReservation",
-    "AudioInputFactory",
-    "AudioInputDriver",
-    "manifest",
-    "validate_config",
-    "create",
-    "new",
-    "reserve",
-    "bind",
-    "cancel",
-    "prepare",
-    "next",
-    "close",
-    "emission"
+    "pocketstation::session::extensions::audio_input::source::PcmSource: Low-level PCM source ownership for integrations that separately retain the",
+    "source: Returns the source held by `PcmSource`.",
+    "output: Returns the output held by `PcmSource`.",
+    "writer: Returns the writer held by `PcmSource`.",
+    "writer_mut: Returns the writer mut held by `PcmSource`.",
+    "into_parts: Consumes `PcmSource` and returns its component values.",
+    "fmt: Formats `PcmSource` with the requested formatter.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError: Classifies failures reported as audio input error.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::Configuration: Reported when the owning operation encounters configuration.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::SourceTypeId: Reported when the owning operation encounters source type identifier.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::Manifest: Reported when the owning operation encounters manifest.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::Session: Reported when the owning operation encounters session.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::RegistrationStateUnavailable: Reported when the owning operation encounters registration state unavailable.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::IncompatibleContract: Reported when the owning operation encounters incompatible contract.",
+    "pocketstation::session::extensions::audio_input::source::AudioInputError::InstanceIdentityExhausted: Reported when the owning operation encounters instance identity exhausted."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -865,6 +924,7 @@
   ],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [
     {

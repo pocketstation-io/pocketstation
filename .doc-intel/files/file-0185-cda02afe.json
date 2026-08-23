@@ -3,14 +3,20 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "calls": [
     "pub"
   ],
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "constructs": [],
   "content_hash": "75f5222d46291dccd6af108b8d92127308da8356d8b49bdf57ce5189c96f9cf2",
   "defaults": [],
@@ -44,8 +50,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -59,16 +69,24 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "8029917c5ca53cc809be34bf25fbfd041554d3e8",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "imports": [
     "audio::GeneratedAudioBridgeObservations",
     "audio::{GeneratedAudioBridge, GeneratedAudioBridgeSpec}",
     "module:audio"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "audio::GeneratedAudioBridgeObservations",
+    "audio::{GeneratedAudioBridge, GeneratedAudioBridgeSpec}",
+    "module:audio"
   ],
   "invariants": [],
   "language": "Rust",
@@ -77,20 +95,20 @@
   "module": "pocketstation::runtime::bridge",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-cfafe9322bee43c82610"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "src/runtime/bridge/mod.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -103,8 +121,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Explicit bounded crossings between execution partitions."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::runtime::bridge responsibilities, including bridge."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -162,9 +180,13 @@
     "docs/best-practices/realtime-boundaries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "CONTAINS:src/runtime/bridge/audio.rs",
+    "IMPORTS:src/runtime/bridge/audio.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "audio"
+    "audio (mod)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -174,6 +196,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

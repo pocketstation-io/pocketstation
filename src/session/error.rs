@@ -11,13 +11,13 @@ pub enum SessionError {
     #[error("stem {stem_id:?} has no destination route")]
     #[doc = "Reports no routes."]
     NoRoutes {
-        #[doc = "Identifies the stem associated with `NoRoutes`."]
+        #[doc = "Identifies the stem identifier recorded by `NoRoutes`."]
         stem_id: StemId,
     },
     #[error("external source instance {source_instance_id:?} has no declared output")]
     #[doc = "Reports no source outputs."]
     NoSourceOutputs {
-        #[doc = "Identifies the source instance associated with `NoSourceOutputs`."]
+        #[doc = "Identifies the source instance identifier recorded by `NoSourceOutputs`."]
         source_instance_id: SourceInstanceId,
     },
     #[error(
@@ -25,9 +25,9 @@ pub enum SessionError {
     )]
     #[doc = "Reports no source output routes."]
     NoSourceOutputRoutes {
-        #[doc = "Identifies the source instance associated with `NoSourceOutputRoutes`."]
+        #[doc = "Identifies the source instance identifier recorded by `NoSourceOutputRoutes`."]
         source_instance_id: SourceInstanceId,
-        #[doc = "Stores the output port associated with `NoSourceOutputRoutes`."]
+        #[doc = "Stores the output port used by `NoSourceOutputRoutes`."]
         output_port: String,
     },
     #[error("invalid source selector: {reason}")]
@@ -65,7 +65,7 @@ pub enum SessionError {
     #[error("session draft {session_id:?} is already frozen")]
     #[doc = "Reports draft frozen."]
     DraftFrozen {
-        #[doc = "Identifies the session associated with `DraftFrozen`."]
+        #[doc = "Identifies the session identifier recorded by `DraftFrozen`."]
         session_id: SessionId,
     },
     #[error("session draft lock is poisoned")]
@@ -77,27 +77,27 @@ pub enum SessionError {
     #[error("unsupported SessionSpec version {major}.{minor}")]
     #[doc = "Reports unsupported version."]
     UnsupportedVersion {
-        #[doc = "Stores the major associated with `UnsupportedVersion`."]
+        #[doc = "Stores the major used by `UnsupportedVersion`."]
         major: u16,
-        #[doc = "Stores the minor associated with `UnsupportedVersion`."]
+        #[doc = "Stores the minor used by `UnsupportedVersion`."]
         minor: u16,
     },
     #[error("route references unknown endpoint {endpoint_id:?}")]
     #[doc = "Reports unknown endpoint."]
     UnknownEndpoint {
-        #[doc = "Identifies the endpoint associated with `UnknownEndpoint`."]
+        #[doc = "Identifies the endpoint identifier recorded by `UnknownEndpoint`."]
         endpoint_id: EndpointId,
     },
     #[error("route references unknown stem {stem_id:?}")]
     #[doc = "Reports unknown stem."]
     UnknownStem {
-        #[doc = "Identifies the stem associated with `UnknownStem`."]
+        #[doc = "Identifies the stem identifier recorded by `UnknownStem`."]
         stem_id: StemId,
     },
     #[error("route references unknown external source instance {source_instance_id:?}")]
     #[doc = "Reports unknown source instance."]
     UnknownSourceInstance {
-        #[doc = "Identifies the source instance associated with `UnknownSourceInstance`."]
+        #[doc = "Identifies the source instance identifier recorded by `UnknownSourceInstance`."]
         source_instance_id: SourceInstanceId,
     },
     #[error(
@@ -105,21 +105,21 @@ pub enum SessionError {
     )]
     #[doc = "Reports unknown source output."]
     UnknownSourceOutput {
-        #[doc = "Identifies the source instance associated with `UnknownSourceOutput`."]
+        #[doc = "Identifies the source instance identifier recorded by `UnknownSourceOutput`."]
         source_instance_id: SourceInstanceId,
-        #[doc = "Stores the output port associated with `UnknownSourceOutput`."]
+        #[doc = "Stores the output port used by `UnknownSourceOutput`."]
         output_port: String,
     },
     #[error("route references unknown operator instance {operator_instance_id:?}")]
     #[doc = "Reports unknown operator instance."]
     UnknownOperatorInstance {
-        #[doc = "Identifies the operator instance associated with `UnknownOperatorInstance`."]
+        #[doc = "Identifies the operator instance identifier recorded by `UnknownOperatorInstance`."]
         operator_instance_id: OperatorInstanceId,
     },
     #[error("operator instance {operator_instance_id:?} has no terminal destination")]
     #[doc = "Reports operator has no destination."]
     OperatorHasNoDestination {
-        #[doc = "Identifies the operator instance associated with `OperatorHasNoDestination`."]
+        #[doc = "Identifies the operator instance identifier recorded by `OperatorHasNoDestination`."]
         operator_instance_id: OperatorInstanceId,
     },
 }

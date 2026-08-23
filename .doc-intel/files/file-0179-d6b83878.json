@@ -212,6 +212,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -274,7 +275,18 @@
     "tempfile::TempDir"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, SourceId, StemId, StreamId, }",
+    "crate::graph::compile::Compiler",
+    "crate::graph::compile::RuntimePlanner",
+    "crate::graph::dsl::Pipeline",
+    "crate::graph::node::NodeConfig",
+    "crate::graph::register_builtins",
+    "crate::graph::registry::NodeRegistry",
+    "crate::graph::spec::NodeId",
+    "crate::runtime::PlanEdgeRouter",
+    "crate::timing::TimelineMapping",
+    "super::*",
+    "tempfile::TempDir"
   ],
   "invariants": [
     {
@@ -313,21 +325,23 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-6bffa10b3a1d568dbf58",
     "pattern-8a6b1bec850500dfb0e9"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "src/recording/writer/tests.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -389,7 +403,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::recording::writer::tests`."
+    "text": "Implements pocketstation::recording::writer::tests responsibilities, including the src/recording/writer/tests boundary."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -420,17 +434,18 @@
     "docs/troubleshooting/session-stop.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "FRAME_SAMPLES",
-    "frame",
-    "stem_config",
-    "router_with_sources",
-    "given_fractional_stereo_gap_when_silence_is_sized_then_channels_remain_aligned",
-    "given_two_clock_mapped_stems_when_finished_then_two_aligned_playable_wavs_are_written",
-    "given_timestamp_and_sequence_gap_when_finished_then_silence_and_events_preserve_time",
-    "given_queued_audio_when_recording_cancelled_then_wav_header_is_playable_and_manifest_incomplete",
-    "given_failed_recorder_branch_when_more_frames_dispatched_then_healthy_branch_continues"
+    "FRAME_SAMPLES (const)",
+    "frame (fn)",
+    "stem_config (fn)",
+    "router_with_sources (fn)",
+    "given_fractional_stereo_gap_when_silence_is_sized_then_channels_remain_aligned (fn)",
+    "given_two_clock_mapped_stems_when_finished_then_two_aligned_playable_wavs_are_written (fn)",
+    "given_timestamp_and_sequence_gap_when_finished_then_silence_and_events_preserve_time (fn)",
+    "given_queued_audio_when_recording_cancelled_then_wav_header_is_playable_and_manifest_incomplete (fn)",
+    "given_failed_recorder_branch_when_more_frames_dispatched_then_healthy_branch_continues (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -481,7 +496,14 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-186865304c35cff29002",
+    "test-19f291f86bfba30549dc",
+    "test-68bd764f7d45a4b8fbe7",
+    "test-8457eec8d2b39e34dee4",
+    "test-a11ec53516f0e2c9bed1"
+  ],
   "threads": [
     {
       "line": 289,

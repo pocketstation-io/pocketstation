@@ -3,7 +3,14 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "calls": [
     "Arc::clone",
     "Arc::new",
@@ -54,7 +61,14 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AtomicU64::new",
@@ -383,8 +397,16 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -398,12 +420,26 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "103c0800df1bf8041ed60660f444ffdfb18af0ef",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "implements": [
     "ConnectorObservationHandle",
     "ConnectorObservationStore"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/connector/mod.rs",
+    "IMPORTS:src/connector/mod.rs",
+    "REFERENCES:src/connector/mod.rs",
+    "REFERENCES:src/connector/worker/coordination.rs",
+    "REFERENCES:src/connector/worker/endpoint_adapter.rs",
+    "REFERENCES:src/connector/worker/supervisor.rs"
+  ],
   "imports": [
     "crate::endpoint::EndpointDriverObservationHandle",
     "crate::{EndpointDriverObservations, EndpointId}",
@@ -414,7 +450,13 @@
     "super::{ ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorCode, ConnectorHealth, ConnectorRecovery, ConnectorServiceStatus, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::endpoint::EndpointDriverObservationHandle",
+    "crate::{EndpointDriverObservations, EndpointId}",
+    "std::collections::HashMap",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "std::sync::{Arc, Mutex}",
+    "std::time::Instant",
+    "super::{ ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorCode, ConnectorHealth, ConnectorRecovery, ConnectorServiceStatus, }"
   ],
   "invariants": [],
   "language": "Rust",
@@ -452,20 +494,34 @@
   "module": "pocketstation::connector::observations",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-d954414b5a5c752cfe87"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:ConnectorObservationError",
+    "fn:install",
+    "fn:new",
+    "fn:observation",
+    "fn:record_failure",
+    "fn:record_retry",
+    "fn:set_delivery_readiness",
+    "fn:set_health",
+    "fn:set_recovery",
+    "fn:snapshot",
+    "fn:snapshots",
+    "struct:ConnectorObservationHandle",
+    "struct:ConnectorObservationStore",
+    "struct:ConnectorObservations",
+    "struct:ConnectorRuntimeObservations"
   ],
   "package": "pocketstation",
   "path": "src/connector/observations.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -600,7 +656,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::connector::observations`."
+    "text": "Implements pocketstation::connector::observations responsibilities, including Owns bounded access to connector observation.; Returns a point-in-time snapshot of `ConnectorObservationHandle`.; Reports the connector observations collected at an observation boundary.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -641,6 +697,12 @@
     "docs/best-practices/terminal-outcomes.md",
     "docs/best-practices/connector-retries.md",
     "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/connector/error.rs",
+    "REFERENCES:src/connector/status.rs",
+    "REFERENCES:src/endpoint/runtime.rs",
+    "REFERENCES:src/frame/identity.rs"
   ],
   "resource_ownership": [
     {
@@ -685,27 +747,21 @@
     }
   ],
   "responsibilities": [
-    "ConnectorObservationHandle",
-    "ConnectorObservationState",
-    "new",
-    "snapshot",
-    "set_delivery_readiness",
-    "set_health",
-    "set_recovery",
-    "record_retry",
-    "record_failure",
-    "lock_status",
-    "finish_transition",
-    "ConnectorObservations",
-    "ConnectorRuntimeObservations",
-    "ConnectorObservationError",
-    "ConnectorObservationStore",
-    "ConnectorObservationEntry",
-    "new",
-    "install",
-    "observation",
-    "snapshots",
-    "increment"
+    "pocketstation::connector::observations::ConnectorObservationHandle: Owns bounded access to connector observation.",
+    "snapshot: Returns a point-in-time snapshot of `ConnectorObservationHandle`.",
+    "pocketstation::connector::observations::ConnectorObservations: Reports the connector observations collected at an observation boundary.",
+    "ConnectorObservations::service_status: Stores the service status used by `ConnectorObservations`.",
+    "ConnectorObservations::status_transitions_total: Counts the total number of status transitions observed by `ConnectorObservations`.",
+    "ConnectorObservations::retry_attempts_total: Counts the total number of retry attempts observed by `ConnectorObservations`.",
+    "ConnectorObservations::reconnects_total: Counts the total number of reconnects observed by `ConnectorObservations`.",
+    "ConnectorObservations::failures_total: Counts the total number of failures observed by `ConnectorObservations`.",
+    "ConnectorObservations::last_error: Carries the last error reported by `ConnectorObservations`.",
+    "pocketstation::connector::observations::ConnectorRuntimeObservations: Reports the connector runtime observations collected at an observation boundary.",
+    "ConnectorRuntimeObservations::endpoint_ids: Identifies the endpoint identifiers recorded by `ConnectorRuntimeObservations`.",
+    "ConnectorRuntimeObservations::connector: Stores the connector used by `ConnectorRuntimeObservations`.",
+    "ConnectorRuntimeObservations::endpoint: Stores the endpoint used by `ConnectorRuntimeObservations`.",
+    "pocketstation::connector::observations::ConnectorObservationError: Classifies failures reported as connector observation error.",
+    "pocketstation::connector::observations::ConnectorObservationError::StateUnavailable: Reported when the owning operation encounters state unavailable."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -715,6 +771,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

@@ -26,9 +26,9 @@ pub enum EndpointDriverRegistryError {
     )]
     #[doc = "Reports duplicate."]
     Duplicate {
-        #[doc = "Identifies the operator associated with `Duplicate`."]
+        #[doc = "Identifies the operator identifier recorded by `Duplicate`."]
         operator_id: String,
-        #[doc = "Identifies the node type associated with `Duplicate`."]
+        #[doc = "Identifies the node type identifier recorded by `Duplicate`."]
         node_type_id: String,
     },
     #[error(
@@ -36,11 +36,11 @@ pub enum EndpointDriverRegistryError {
     )]
     #[doc = "Reports operator node type conflict."]
     OperatorNodeTypeConflict {
-        #[doc = "Identifies the operator associated with `OperatorNodeTypeConflict`."]
+        #[doc = "Identifies the operator identifier recorded by `OperatorNodeTypeConflict`."]
         operator_id: String,
-        #[doc = "Identifies the registered node type associated with `OperatorNodeTypeConflict`."]
+        #[doc = "Identifies the registered node type identifier recorded by `OperatorNodeTypeConflict`."]
         registered_node_type_id: String,
-        #[doc = "Identifies the requested node type associated with `OperatorNodeTypeConflict`."]
+        #[doc = "Identifies the requested node type identifier recorded by `OperatorNodeTypeConflict`."]
         requested_node_type_id: String,
     },
 }
@@ -56,9 +56,9 @@ pub enum EndpointPrepareError {
     )]
     #[doc = "Reports not registered."]
     NotRegistered {
-        #[doc = "Identifies the operator associated with `NotRegistered`."]
+        #[doc = "Identifies the operator identifier recorded by `NotRegistered`."]
         operator_id: String,
-        #[doc = "Identifies the node type associated with `NotRegistered`."]
+        #[doc = "Identifies the node type identifier recorded by `NotRegistered`."]
         node_type_id: String,
     },
     #[error(transparent)]

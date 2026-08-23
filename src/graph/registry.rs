@@ -8,9 +8,9 @@ use crate::graph::runtime_node::RuntimeNode;
 use crate::graph::signal::{AsyncOperatorFactory, AsyncOperatorManifestError};
 use crate::graph::OperatorId;
 
-#[doc = "Defines the implementation contract for node."]
+#[doc = "Implement this trait to provide node behavior to PocketStation; its methods define the preparation and runtime contract."]
 pub trait NodeFactory: Send + Sync {
-    #[doc = "Returns the descriptor associated with `NodeFactory`."]
+    #[doc = "Returns the descriptor held by `NodeFactory`."]
     fn descriptor(&self) -> NodeDescriptor;
     #[doc = "Validates config for `NodeFactory`."]
     fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError>;
@@ -22,9 +22,9 @@ pub trait NodeFactory: Send + Sync {
     ) -> Result<Box<dyn RuntimeNode>, NodeError>;
 }
 
-#[doc = "Defines the implementation contract for node definition."]
+#[doc = "Implement this trait to provide node definition behavior to PocketStation; its methods define the preparation and runtime contract."]
 pub trait NodeDefinition: Send + Sync {
-    #[doc = "Returns the descriptor associated with `NodeDefinition`."]
+    #[doc = "Returns the descriptor held by `NodeDefinition`."]
     fn descriptor(&self) -> NodeDescriptor;
     #[doc = "Validates config for `NodeDefinition`."]
     fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError>;
@@ -73,19 +73,19 @@ pub enum NodeRegistrationError {
     #[error("node type is already registered: {node_type_id}")]
     #[doc = "Reports duplicate node type."]
     DuplicateNodeType {
-        #[doc = "Identifies the node type associated with `DuplicateNodeType`."]
+        #[doc = "Identifies the node type identifier recorded by `DuplicateNodeType`."]
         node_type_id: String,
     },
     #[error("operator id is already registered: {operator_id}")]
     #[doc = "Reports duplicate operator identifier."]
     DuplicateOperatorId {
-        #[doc = "Identifies the operator associated with `DuplicateOperatorId`."]
+        #[doc = "Identifies the operator identifier recorded by `DuplicateOperatorId`."]
         operator_id: String,
     },
 }
 
 #[derive(Default)]
-#[doc = "Represents node registry in the PocketStation API."]
+#[doc = "Indexes registered node implementations by their stable identities."]
 pub struct NodeRegistry {
     entries: HashMap<NodeTypeId, RegistryEntry>,
     async_operator_types: HashMap<OperatorId, NodeTypeId>,
@@ -158,7 +158,7 @@ impl NodeRegistry {
         }
     }
 
-    #[doc = "Returns the definition associated with `NodeRegistry`."]
+    #[doc = "Returns the definition held by `NodeRegistry`."]
     pub fn definition(&self, type_id: &NodeTypeId) -> Option<NodeDefinitionRef<'_>> {
         match self.entries.get(type_id)? {
             RegistryEntry::Runtime(factory) => Some(NodeDefinitionRef::Runtime(factory)),
@@ -169,7 +169,7 @@ impl NodeRegistry {
         }
     }
 
-    #[doc = "Returns the async factory associated with `NodeRegistry`."]
+    #[doc = "Returns the async factory held by `NodeRegistry`."]
     pub fn async_factory(&self, type_id: &NodeTypeId) -> Option<&Arc<dyn AsyncOperatorFactory>> {
         match self.entries.get(type_id) {
             Some(RegistryEntry::Async(factory)) => Some(factory),
@@ -177,7 +177,7 @@ impl NodeRegistry {
         }
     }
 
-    #[doc = "Returns the async factory by operator associated with `NodeRegistry`."]
+    #[doc = "Returns the async factory by operator held by `NodeRegistry`."]
     pub fn async_factory_by_operator(
         &self,
         operator_id: &OperatorId,
@@ -191,7 +191,7 @@ impl NodeRegistry {
         self.async_operator_types.get(operator_id)
     }
 
-    #[doc = "Returns the contains associated with `NodeRegistry`."]
+    #[doc = "Returns whether contains is true for `NodeRegistry`."]
     pub fn contains(&self, type_id: &NodeTypeId) -> bool {
         self.entries.contains_key(type_id)
     }

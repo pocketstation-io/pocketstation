@@ -53,7 +53,7 @@ impl TryFrom<u8> for SidecarMessageKind {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Represents sidecar protocol limits in the PocketStation API."]
+#[doc = "Sets the maximum sidecar message and buffered-byte sizes enforced by protocol I/O."]
 pub struct SidecarProtocolLimits {
     #[doc = "Stores the max signal id size for `SidecarProtocolLimits`, in bytes."]
     pub max_signal_id_bytes: usize,
@@ -78,7 +78,7 @@ impl Default for SidecarProtocolLimits {
 }
 
 impl SidecarProtocolLimits {
-    #[doc = "Returns the max frame bytes associated with `SidecarProtocolLimits`."]
+    #[doc = "Returns the max frame bytes held by `SidecarProtocolLimits`."]
     pub fn max_frame_bytes(self) -> Result<usize, SidecarProtocolError> {
         HEADER_BYTES
             .checked_add(self.max_signal_id_bytes)
@@ -90,25 +90,25 @@ impl SidecarProtocolLimits {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[doc = "Represents sidecar message in the PocketStation API."]
+#[doc = "Carries one typed control or signal message across the sidecar protocol."]
 pub struct SidecarMessage {
-    #[doc = "Stores the kind associated with `SidecarMessage`."]
+    #[doc = "Stores the kind used by `SidecarMessage`."]
     pub kind: SidecarMessageKind,
     #[doc = "Indicates whether terminal applies to `SidecarMessage`."]
     pub terminal: bool,
-    #[doc = "Identifies the stream associated with `SidecarMessage`."]
+    #[doc = "Identifies the stream identifier recorded by `SidecarMessage`."]
     pub stream_id: u64,
-    #[doc = "Stores the sequence number associated with `SidecarMessage`."]
+    #[doc = "Stores the sequence number used by `SidecarMessage`."]
     pub sequence_number: u64,
     #[doc = "Stores the timestamp value for `SidecarMessage`, in nanoseconds."]
     pub timestamp_ns: u64,
-    #[doc = "Identifies the signal associated with `SidecarMessage`."]
+    #[doc = "Identifies the signal identifier recorded by `SidecarMessage`."]
     pub signal_id: String,
-    #[doc = "Stores the role associated with `SidecarMessage`."]
+    #[doc = "Stores the role used by `SidecarMessage`."]
     pub role: Option<String>,
-    #[doc = "Stores the schema associated with `SidecarMessage`."]
+    #[doc = "Stores the schema used by `SidecarMessage`."]
     pub schema: Option<String>,
-    #[doc = "Stores the payload associated with `SidecarMessage`."]
+    #[doc = "Stores the payload used by `SidecarMessage`."]
     pub payload: Vec<u8>,
 }
 
@@ -354,7 +354,7 @@ pub enum SidecarProtocolError {
     #[error("sidecar {field} length {actual} exceeds {maximum}")]
     #[doc = "Reports field too large."]
     FieldTooLarge {
-        #[doc = "Stores the field associated with `FieldTooLarge`."]
+        #[doc = "Stores the field used by `FieldTooLarge`."]
         field: &'static str,
         #[doc = "Records the value observed by `FieldTooLarge`."]
         actual: usize,

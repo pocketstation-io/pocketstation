@@ -3,7 +3,18 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs",
+    "REFERENCES:src/capture/authorization.rs",
+    "REFERENCES:src/capture/capture_owner.rs",
+    "REFERENCES:src/capture/lifecycle_registry.rs",
+    "REFERENCES:src/capture/platform/macos/input.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/session/lifecycle/events.rs"
+  ],
   "calls": [
     "Arc::clone",
     "Arc::new",
@@ -73,7 +84,18 @@
       "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs",
+    "REFERENCES:src/capture/authorization.rs",
+    "REFERENCES:src/capture/capture_owner.rs",
+    "REFERENCES:src/capture/lifecycle_registry.rs",
+    "REFERENCES:src/capture/platform/macos/input.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/session/lifecycle/events.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AtomicU64::new",
@@ -462,8 +484,20 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs",
+    "REFERENCES:src/capture/authorization.rs",
+    "REFERENCES:src/capture/capture_owner.rs",
+    "REFERENCES:src/capture/lifecycle_registry.rs",
+    "REFERENCES:src/capture/platform/macos/input.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/session/lifecycle/events.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing",
@@ -481,7 +515,18 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "00bbbe1d2b7236d34c3f55dd7cb07ed75e3d6103",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs",
+    "REFERENCES:src/capture/authorization.rs",
+    "REFERENCES:src/capture/capture_owner.rs",
+    "REFERENCES:src/capture/lifecycle_registry.rs",
+    "REFERENCES:src/capture/platform/macos/input.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/session/lifecycle/events.rs"
+  ],
   "implements": [
     "SourceGeneration",
     "SourceRuntimeEvent",
@@ -490,7 +535,18 @@
     "SourceRuntimeEventSender",
     "SourceRuntimeEventReceiver"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/capture/mod.rs",
+    "IMPORTS:src/capture/mod.rs",
+    "REFERENCES:src/capture/authorization.rs",
+    "REFERENCES:src/capture/capture_owner.rs",
+    "REFERENCES:src/capture/lifecycle_registry.rs",
+    "REFERENCES:src/capture/platform/macos/input.rs",
+    "REFERENCES:src/capture/platform/macos/loopback.rs",
+    "REFERENCES:src/capture/platform/macos/macos_tap.rs",
+    "REFERENCES:src/capture/platform/macos/mod.rs",
+    "REFERENCES:src/session/lifecycle/events.rs"
+  ],
   "imports": [
     "serde::Serialize",
     "std::sync::Arc",
@@ -499,7 +555,13 @@
     "super::identity::StableSourceId"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "#[cfg(any(test, feature = \"internal-testing\", feature = \"native-capture\"))]",
+    "serde::Serialize",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "super::authorization::CaptureError",
+    "super::identity::StableSourceId"
   ],
   "invariants": [],
   "language": "Rust",
@@ -508,20 +570,49 @@
   "module": "pocketstation::capture::events",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-5f72bbb5f3b23f8d98e0"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(observed) => depth = observed,",
+    "Err(std::sync::mpsc::TryRecvError::Disconnected) => SourceRuntimeEventReceive::Closed,",
+    "Err(std::sync::mpsc::TryRecvError::Empty) => SourceRuntimeEventReceive::Empty,",
+    "Err(std::sync::mpsc::TrySendError::Disconnected(queued)) => {",
+    "Err(std::sync::mpsc::TrySendError::Full(queued)) => {",
+    "const:INITIAL",
+    "const:MAX_SOURCE_RUNTIME_EVENT_OWNED_BYTES",
+    "enum:CaptureRuntimeFailureClass",
+    "enum:SourceLifecycleEventKind",
+    "enum:SourceRecoveryRequirement",
+    "enum:SourceRuntimeEvent",
+    "enum:SourceRuntimeEventDelivery",
+    "enum:SourceRuntimeEventReceive",
+    "fn:next",
+    "fn:observation_handle",
+    "fn:observations",
+    "fn:owned_bytes",
+    "fn:publish_backend_failure",
+    "fn:source_runtime_event_channel",
+    "fn:try_recv",
+    "fn:try_send",
+    "return Err(CaptureError::InvalidRuntimeEventCapacity);",
+    "struct:CaptureRuntimeFailure",
+    "struct:SourceGeneration",
+    "struct:SourceRuntimeEventObservationHandle",
+    "struct:SourceRuntimeEventObservations",
+    "struct:SourceRuntimeEventReceiver",
+    "struct:SourceRuntimeEventSender"
   ],
   "package": "pocketstation",
   "path": "src/capture/events.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "struct",
@@ -718,8 +809,8 @@
     }
   ],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Bounded capture-runtime failure and lifecycle event channel."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::capture::events responsibilities, including Identifies one appearance generation of a capture source across loss and reappearance.; Provides the initial value for `SourceGeneration`.; Returns the generation assigned after explicit rediscovery.."
   },
   "queues": [
     {
@@ -778,6 +869,10 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/source-identity.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/capture/authorization.rs",
+    "REFERENCES:src/capture/identity.rs"
+  ],
   "resource_ownership": [
     {
       "line": 5,
@@ -809,36 +904,68 @@
     }
   ],
   "responsibilities": [
-    "SourceGeneration",
-    "INITIAL",
-    "next",
-    "SourceLifecycleEventKind",
-    "SourceRecoveryRequirement",
-    "CaptureRuntimeFailureClass",
-    "CaptureRuntimeFailure",
-    "SourceRuntimeEvent",
-    "MAX_SOURCE_RUNTIME_EVENT_OWNED_BYTES",
-    "owned_bytes",
-    "SourceRuntimeEventDelivery",
-    "SourceRuntimeEventReceive",
-    "SourceRuntimeEventObservations",
-    "SourceRuntimeEventCounters",
-    "new",
-    "reserve_owned_bytes",
-    "cancel_owned_bytes",
-    "QueuedSourceRuntimeEvent",
-    "SourceRuntimeEventObservationHandle",
-    "observations",
-    "SourceRuntimeEventSender",
-    "try_send",
-    "observations",
-    "observation_handle",
-    "publish_backend_failure",
-    "SourceRuntimeEventReceiver",
-    "try_recv",
-    "observations",
-    "observation_handle",
-    "source_runtime_event_channel"
+    "pocketstation::capture::events::SourceGeneration: Identifies one appearance generation of a capture source across loss and reappearance.",
+    "INITIAL: Provides the initial value for `SourceGeneration`.",
+    "next: Returns the generation assigned after explicit rediscovery.",
+    "pocketstation::capture::events::SourceLifecycleEventKind: Selects the source lifecycle event kind used by PocketStation.",
+    "pocketstation::capture::events::SourceLifecycleEventKind::SourceUnavailable: Identifies the source unavailable state or stage represented by `SourceLifecycleEventKind`.",
+    "pocketstation::capture::events::SourceLifecycleEventKind::ReplacementObserved: Identifies the replacement observed state or stage represented by `SourceLifecycleEventKind`.",
+    "pocketstation::capture::events::SourceLifecycleEventKind::PermissionChanged: Identifies the permission changed state or stage represented by `SourceLifecycleEventKind`.",
+    "pocketstation::capture::events::SourceLifecycleEventKind::PermissionRevoked: Identifies the permission revoked state or stage represented by `SourceLifecycleEventKind`.",
+    "pocketstation::capture::events::SourceLifecycleEventKind::SourceReappeared: Identifies the source reappeared state or stage represented by `SourceLifecycleEventKind`.",
+    "pocketstation::capture::events::SourceRecoveryRequirement: Selects the source recovery requirement used by PocketStation.",
+    "pocketstation::capture::events::SourceRecoveryRequirement::ExplicitRediscoveryAndNewSession: Selects explicit rediscovery and new session behavior for `SourceRecoveryRequirement`.",
+    "pocketstation::capture::events::CaptureRuntimeFailureClass: Enumerates the supported capture runtime failure class cases.",
+    "pocketstation::capture::events::CaptureRuntimeFailureClass::SourceInstanceExited: Reported when the owning operation encounters source instance exited.",
+    "events::CaptureRuntimeFailureClass::PlatformStatus::status_code: Stores the status code used by `PlatformStatus`.",
+    "pocketstation::capture::events::CaptureRuntimeFailureClass::PlatformStatus: Reported when the owning operation encounters platform status.",
+    "events::CaptureRuntimeFailureClass::BackendClass::class: Stores the class used by `BackendClass`.",
+    "pocketstation::capture::events::CaptureRuntimeFailureClass::BackendClass: Reported when the owning operation encounters backend class.",
+    "pocketstation::capture::events::CaptureRuntimeFailure: Reports a capture runtime failure.",
+    "events::CaptureRuntimeFailure::operation: Stores the operation used by `CaptureRuntimeFailure`.",
+    "events::CaptureRuntimeFailure::error_class: Stores the error class used by `CaptureRuntimeFailure`.",
+    "pocketstation::capture::events::SourceRuntimeEvent: Classifies the observable source runtime event.",
+    "pocketstation::capture::events::SourceRuntimeEvent::SourceUnavailable: Identifies the source unavailable state or stage represented by `SourceRuntimeEvent`.",
+    "events::SourceRuntimeEvent::SourceUnavailable::stable_id: Identifies the stable identifier recorded by `SourceUnavailable`.",
+    "events::SourceRuntimeEvent::SourceUnavailable::generation: Stores the generation used by `SourceUnavailable`.",
+    "events::SourceRuntimeEvent::SourceUnavailable::recovery_requirement: Stores the recovery requirement used by `SourceUnavailable`.",
+    "events::SourceRuntimeEvent::SourceUnavailable::failure: Carries the failure reported by `SourceUnavailable`.",
+    "pocketstation::capture::events::SourceRuntimeEvent::BackendFailure: Identifies the backend failure state or stage represented by `SourceRuntimeEvent`.",
+    "events::SourceRuntimeEvent::BackendFailure::stable_id: Identifies the stable identifier recorded by `BackendFailure`.",
+    "events::SourceRuntimeEvent::BackendFailure::generation: Stores the generation used by `BackendFailure`.",
+    "events::SourceRuntimeEvent::BackendFailure::failure: Carries the failure reported by `BackendFailure`.",
+    "pocketstation::capture::events::MAX_SOURCE_RUNTIME_EVENT_OWNED_BYTES: Maximum heap storage retained by one queued capture-runtime event.",
+    "pocketstation::capture::events::SourceRuntimeEventDelivery: Enumerates the supported source runtime event delivery cases.",
+    "pocketstation::capture::events::SourceRuntimeEventDelivery::Enqueued: Identifies the enqueued state or stage represented by `SourceRuntimeEventDelivery`.",
+    "pocketstation::capture::events::SourceRuntimeEventDelivery::DroppedFull: Identifies the dropped full state or stage represented by `SourceRuntimeEventDelivery`.",
+    "pocketstation::capture::events::SourceRuntimeEventDelivery::DroppedOversized: Identifies the dropped oversized state or stage represented by `SourceRuntimeEventDelivery`.",
+    "pocketstation::capture::events::SourceRuntimeEventDelivery::ReceiverClosed: Identifies the receiver closed state or stage represented by `SourceRuntimeEventDelivery`.",
+    "pocketstation::capture::events::SourceRuntimeEventReceive: Enumerates the supported source runtime event receive cases.",
+    "pocketstation::capture::events::SourceRuntimeEventReceive::Event: Identifies the event state or stage represented by `SourceRuntimeEventReceive`.",
+    "pocketstation::capture::events::SourceRuntimeEventReceive::Empty: Represents an empty value or collection.",
+    "pocketstation::capture::events::SourceRuntimeEventReceive::Closed: Reports that the underlying channel or resource is closed.",
+    "pocketstation::capture::events::SourceRuntimeEventObservations: Reports the source runtime event observations collected at an observation boundary.",
+    "events::SourceRuntimeEventObservations::capacity_event_count: Sets the capacity event count available to `SourceRuntimeEventObservations`.",
+    "events::SourceRuntimeEventObservations::maximum_event_owned_bytes: Stores the maximum event owned size for `SourceRuntimeEventObservations`, in bytes.",
+    "events::SourceRuntimeEventObservations::maximum_buffered_owned_bytes: Stores the maximum buffered owned size for `SourceRuntimeEventObservations`, in bytes.",
+    "events::SourceRuntimeEventObservations::depth_events: Reports the depth events observed by `SourceRuntimeEventObservations`.",
+    "events::SourceRuntimeEventObservations::depth_owned_bytes: Stores the depth owned size for `SourceRuntimeEventObservations`, in bytes.",
+    "events::SourceRuntimeEventObservations::peak_depth_owned_bytes: Stores the peak depth owned size for `SourceRuntimeEventObservations`, in bytes.",
+    "events::SourceRuntimeEventObservations::events_enqueued_total: Counts the total number of events enqueued observed by `SourceRuntimeEventObservations`.",
+    "events::SourceRuntimeEventObservations::events_dropped_total: Counts the total number of events dropped observed by `SourceRuntimeEventObservations`.",
+    "events::SourceRuntimeEventObservations::events_dropped_oversized_total: Counts the total number of events dropped oversized observed by `SourceRuntimeEventObservations`.",
+    "pocketstation::capture::events::SourceRuntimeEventObservationHandle: Owns bounded access to source runtime event observation.",
+    "observations: Returns the observations exposed by `SourceRuntimeEventObservationHandle`.",
+    "pocketstation::capture::events::SourceRuntimeEventSender: Sends source runtime event values across its declared ownership boundary.",
+    "try_send: Publishes from a capture worker without blocking. When the bounded",
+    "observations: Returns the observations exposed by `SourceRuntimeEventSender`.",
+    "observation_handle: Returns a handle for reading observations from `SourceRuntimeEventSender`.",
+    "pocketstation::capture::events::publish_backend_failure: Publishes one exact post-open backend failure without introducing another",
+    "pocketstation::capture::events::SourceRuntimeEventReceiver: Receives source runtime event values across its declared ownership boundary.",
+    "try_recv: Attempts to receive the next value from `SourceRuntimeEventReceiver` without waiting.",
+    "observations: Returns the observations exposed by `SourceRuntimeEventReceiver`.",
+    "observation_handle: Returns a handle for reading observations from `SourceRuntimeEventReceiver`.",
+    "pocketstation::capture::events::source_runtime_event_channel: Creates the bounded sender and receiver used for source runtime events."
   ],
   "retry_behavior": [],
   "serialization": [
@@ -877,7 +1004,15 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0e46fb5b9fd52e41122d",
+    "test-11b326c09cc37ec133a0",
+    "test-16dd12044eae17ce2455",
+    "test-646ba0adceea7a75bfb9",
+    "test-a4e5dca7830715334adf",
+    "test-d9ef3e69d3286b859a37"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

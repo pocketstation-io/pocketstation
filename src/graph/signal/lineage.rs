@@ -5,7 +5,7 @@ use crate::graph::operator::OperatorId;
 use crate::graph::signal::SignalTiming;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[doc = "Represents signal lineage in the PocketStation API."]
+#[doc = "Preserves source, stream, generation, discontinuity, and policy identity across signal processing."]
 pub struct SignalLineage {
     pub(crate) session_id: SessionId,
     pub(crate) stream_id: StreamId,
@@ -59,35 +59,35 @@ impl SignalLineage {
         }
     }
 
-    #[doc = "Returns the session identifier associated with `SignalLineage`."]
+    #[doc = "Returns the session identifier held by `SignalLineage`."]
     pub const fn session_id(self) -> SessionId {
         self.session_id
     }
-    #[doc = "Returns the stream identifier associated with `SignalLineage`."]
+    #[doc = "Returns the stream identifier held by `SignalLineage`."]
     pub const fn stream_id(self) -> StreamId {
         self.stream_id
     }
-    #[doc = "Returns the source identifier associated with `SignalLineage`."]
+    #[doc = "Returns the source identifier held by `SignalLineage`."]
     pub const fn source_id(self) -> SourceId {
         self.source_id
     }
-    #[doc = "Returns the clock identifier associated with `SignalLineage`."]
+    #[doc = "Returns the clock identifier held by `SignalLineage`."]
     pub const fn clock_id(self) -> ClockDomainId {
         self.clock_id
     }
-    #[doc = "Returns the sequence number associated with `SignalLineage`."]
+    #[doc = "Returns the sequence number held by `SignalLineage`."]
     pub const fn sequence_number(self) -> u64 {
         self.sequence_number
     }
-    #[doc = "Returns the source generation associated with `SignalLineage`."]
+    #[doc = "Returns the source generation held by `SignalLineage`."]
     pub const fn source_generation(self) -> u32 {
         self.source_generation
     }
-    #[doc = "Returns the discontinuity epoch associated with `SignalLineage`."]
+    #[doc = "Returns the discontinuity epoch held by `SignalLineage`."]
     pub const fn discontinuity_epoch(self) -> u64 {
         self.discontinuity_epoch
     }
-    #[doc = "Returns the policy epoch associated with `SignalLineage`."]
+    #[doc = "Returns the policy epoch held by `SignalLineage`."]
     pub const fn policy_epoch(self) -> u64 {
         self.policy_epoch
     }
@@ -149,27 +149,27 @@ impl SignalDerivation {
         })
     }
 
-    #[doc = "Returns the upstream lineage associated with `SignalDerivation`."]
+    #[doc = "Returns the upstream lineage held by `SignalDerivation`."]
     pub const fn upstream_lineage(&self) -> SignalLineage {
         self.upstream_lineage
     }
-    #[doc = "Returns the upstream timing associated with `SignalDerivation`."]
+    #[doc = "Returns the upstream timing held by `SignalDerivation`."]
     pub const fn upstream_timing(&self) -> SignalTiming {
         self.upstream_timing
     }
-    #[doc = "Returns the operator identifier associated with `SignalDerivation`."]
+    #[doc = "Returns the operator identifier held by `SignalDerivation`."]
     pub const fn operator_id(&self) -> &OperatorId {
         &self.operator_id
     }
-    #[doc = "Returns the operator revision associated with `SignalDerivation`."]
+    #[doc = "Returns the operator revision held by `SignalDerivation`."]
     pub const fn operator_revision(&self) -> u32 {
         self.operator_revision
     }
-    #[doc = "Returns the operator generation associated with `SignalDerivation`."]
+    #[doc = "Returns the operator generation held by `SignalDerivation`."]
     pub const fn operator_generation(&self) -> u32 {
         self.operator_generation
     }
-    #[doc = "Returns the connector identifier associated with `SignalDerivation`."]
+    #[doc = "Returns the connector identifier held by `SignalDerivation`."]
     pub const fn connector_id(&self) -> Option<ConnectorId> {
         self.connector_id
     }

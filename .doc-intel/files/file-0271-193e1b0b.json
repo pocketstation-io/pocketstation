@@ -67,6 +67,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -89,7 +90,8 @@
     "pocketstation::{SidecarMessage, SidecarMessageKind, SidecarProtocolLimits}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "(SidecarMessageKind::Configure, 8),",
+    "pocketstation::{SidecarMessage, SidecarMessageKind, SidecarProtocolLimits}"
   ],
   "invariants": [],
   "language": "Rust",
@@ -98,20 +100,20 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
-  "observed_patterns": [
-    "pattern-fe84fb6f35a53c802413"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "tests/protocol_compatibility.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -136,8 +138,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given pkss v1 message kinds when projected then values remain stable, given pkss v1 signal when encoded then bytes remain stable under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -170,11 +172,12 @@
     "docs/troubleshooting/native-build.md",
     "docs/best-practices/evidence-boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "PKSS_V1_SIGNAL_VECTOR",
-    "given_pkss_v1_signal_when_encoded_then_bytes_remain_stable",
-    "given_pkss_v1_message_kinds_when_projected_then_values_remain_stable"
+    "PKSS_V1_SIGNAL_VECTOR (const)",
+    "given_pkss_v1_signal_when_encoded_then_bytes_remain_stable (fn)",
+    "given_pkss_v1_message_kinds_when_projected_then_values_remain_stable (fn)"
   ],
   "retry_behavior": [],
   "serialization": [
@@ -193,7 +196,11 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-3f19ed84be12761963bc",
+    "test-96b5bb377993cd2e3876"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

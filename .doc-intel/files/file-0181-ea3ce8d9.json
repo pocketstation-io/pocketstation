@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "calls": [
     "any",
     "cfg"
@@ -20,7 +23,10 @@
       "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "constructs": [],
   "content_hash": "d59e8e15843f65ca96e5492b903994aaefe2213675d509c441ec772c36dab849",
   "defaults": [],
@@ -66,8 +72,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "internal-testing"
@@ -83,9 +93,15 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "f7bf323173306159940002b493b0cc56c25325ba",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "implements": [],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/runtime/mod.rs",
+    "IMPORTS:src/runtime/mod.rs"
+  ],
   "imports": [
     "executor::{ExecError, PlanExecutionSummary, RealtimePlanExecutor}",
     "module:executor",
@@ -101,7 +117,19 @@
     "runner::{ plan_source_channel, PlanRunnerCancellation, PlanRunnerDrainPolicy, PlanRunnerError, PlanRunnerFinishSummary, PlanSourceInput, PlanSourceObservationHandle, PlanSourceSendOutcome, PlanSourceSender, RealtimePlanRunner, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"internal-testing\"))]",
+    "executor::{ExecError, PlanExecutionSummary, RealtimePlanExecutor}",
+    "module:executor",
+    "module:router",
+    "module:runner",
+    "router::EdgeObservations",
+    "router::PlanRouterError",
+    "router::{DispatchSummary, PlanEdgeRouter}",
+    "router::{PlanEdgeFrame, PlanEdgeObservationHandle, PlanEdgeReceiver}",
+    "runner::PlanRunnerStepSummary",
+    "runner::PlanSourceInputObservations",
+    "runner::PlanSourceSendError",
+    "runner::{ plan_source_channel, PlanRunnerCancellation, PlanRunnerDrainPolicy, PlanRunnerError, PlanRunnerFinishSummary, PlanSourceInput, PlanSourceObservationHandle, PlanSourceSendOutcome, PlanSourceSender, RealtimePlanRunner, }"
   ],
   "invariants": [],
   "language": "Rust",
@@ -110,20 +138,20 @@
   "module": "pocketstation::runtime::audio",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
-  "observed_patterns": [
-    "pattern-b77a0f996fd80b67112f"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "src/runtime/audio/mod.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "mod",
@@ -148,8 +176,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "DECLARED",
-    "text": "Allocation-free realtime audio execution lane."
+    "classification": "INFERRED",
+    "text": "Implements pocketstation::runtime::audio responsibilities, including Allocation-free realtime audio execution lane.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -214,11 +242,17 @@
     "docs/best-practices/realtime-boundaries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "CONTAINS:src/runtime/audio/executor.rs",
+    "CONTAINS:src/runtime/audio/router.rs",
+    "CONTAINS:src/runtime/audio/runner.rs",
+    "IMPORTS:src/runtime/audio/executor.rs",
+    "IMPORTS:src/runtime/audio/router.rs",
+    "IMPORTS:src/runtime/audio/runner.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "executor",
-    "router",
-    "runner"
+    "audio: Allocation-free realtime audio execution lane."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -228,6 +262,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

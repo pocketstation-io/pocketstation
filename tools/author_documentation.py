@@ -11,6 +11,8 @@ from collections import defaultdict
 from pathlib import Path, PurePosixPath
 from typing import Any
 
+from documentation_content import BEST_PRACTICES, CONCEPTS, GUIDES, TROUBLESHOOTING
+
 
 ROOT = Path(__file__).resolve().parents[1]
 DB = ROOT / ".doc-intel"
@@ -118,10 +120,13 @@ def source_ref(record: dict[str, Any]) -> str:
 def page_symbols(page: dict[str, Any], limit: int = 18) -> list[dict[str, Any]]:
     candidates = [symbol for symbol in SYMBOLS if symbol["public_api"] and relevant(page, symbol)]
     words = {word.lower() for word in re.findall(r"[A-Za-z]+", page["title"]) if len(word) > 3}
+    evidence_paths = {item["path"] for item in page["evidence"]}
+    for capability_id in page["capability_ids"]:
+        evidence_paths.update(item["path"] for item in CAP_BY_ID[capability_id]["evidence"])
     rank = {"module": 0, "trait": 1, "struct": 2, "enum": 3, "function": 4, "type_alias": 5, "constant": 6, "variant": 7, "struct_field": 8}
     candidates.sort(key=lambda symbol: (
+        0 if symbol["source_file"] in evidence_paths else 1,
         -sum(word in symbol["name"].lower() or word in symbol["qualified_name"].lower() for word in words),
-        0 if symbol["source_documented"] else 1,
         rank.get(symbol["kind"], 20),
         symbol["qualified_name"],
     ))
@@ -131,8 +136,31 @@ def page_symbols(page: dict[str, Any], limit: int = 18) -> list[dict[str, Any]]:
 def page_tests(page: dict[str, Any], limit: int = 12) -> list[dict[str, Any]]:
     records = [record for record in TESTS if relevant(page, record)]
     words = {word.lower() for word in re.findall(r"[A-Za-z]+", page["title"]) if len(word) > 3}
-    records.sort(key=lambda record: (-sum(word in record["name"].lower() for word in words), record["path"], record["name"]))
+    evidence_paths = {item["path"] for item in page["evidence"]}
+    records.sort(key=lambda record: (
+        0 if record["path"] in evidence_paths else 1,
+        -sum(word in record["name"].lower() for word in words),
+        record["path"], record["name"],
+    ))
     return records[:limit]
+
+
+def page_errors(page: dict[str, Any], limit: int = 12) -> list[dict[str, Any]]:
+    evidence_paths = {item["path"] for item in page["evidence"]}
+    terms = {
+        word.lower() for word in re.findall(r"[A-Za-z]+", page["title"])
+        if len(word) > 3 and word.lower() not in {"fails", "failure", "error", "reports"}
+    }
+    scored = []
+    for record in ERRORS:
+        if not relevant(page, record):
+            continue
+        searchable = f"{record['type']} {record.get('variant') or ''} {record.get('trigger_condition') or ''}".lower()
+        score = (20 if record["defined_at"]["path"] in evidence_paths else 0) + sum(term in searchable for term in terms)
+        if score:
+            scored.append((score, record))
+    scored.sort(key=lambda item: (-item[0], item[1]["type"], item[1].get("variant") or ""))
+    return [record for _score, record in scored[:limit]]
 
 
 def related_pages(page: dict[str, Any], limit: int = 8) -> list[dict[str, Any]]:
@@ -213,7 +241,7 @@ def scope_section(page: dict[str, Any]) -> str:
         lines.append(f"- **{capability['name']}.** {capability['description']}")
     lines.extend([
         "",
-        "These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.",
+        f"The scope of **{page['title']}** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.",
     ])
     return "\n".join(lines)
 
@@ -221,10 +249,11 @@ def scope_section(page: dict[str, Any]) -> str:
 def symbols_table(page: dict[str, Any], limit: int = 18) -> str:
     symbols = page_symbols(page, limit)
     if not symbols:
-        return "No intentionally public Rust declaration is owned directly by this evidence domain. Use the linked protocol or repository reference."
+        return f"No intentionally public Rust declaration is owned directly by **{page['title']}**. Its contract is expressed by the linked repository, protocol, or qualification evidence instead."
     lines = ["| Public declaration | Kind | Declared purpose | Source |", "|---|---|---|---|"]
     for symbol in symbols:
-        purpose = symbol["summary"] if symbol["source_documented"] else "The compiler exposes this declaration; its native description remains a Gate 9 obligation."
+        purpose = NATIVE_DOCS.get(symbol["symbol_id"], symbol["summary"])
+        purpose = purpose.split("\n\n", 1)[0]
         location = f"{symbol['source_file']}:{symbol['source_lines'][0]}"
         lines.append(f"| {code(symbol['qualified_name'])} | {md(symbol['kind'])} | {md(purpose)[:240]} | {code(location)} |")
     return "\n".join(lines)
@@ -234,7 +263,7 @@ def tests_text(page: dict[str, Any]) -> str:
     tests = page_tests(page)
     if not tests:
         return "No directly matching executable test is assigned to this page. That absence does not prove unsupported behavior; consult the unknowns ledger before making a guarantee."
-    lines = ["The following test bodies are evidence only for their recorded setup:", ""]
+    lines = [f"Executable evidence selected for **{page['title']}** is limited to each test's recorded setup and assertions:", ""]
     for record in tests:
         lines.append(f"- {code(record['name'])} — {record['behavior_under_test']} ({source_ref(record)}; {code(record['test_id'])}).")
     return "\n".join(lines)
@@ -251,7 +280,7 @@ def evidence_boundary(page: dict[str, Any]) -> str:
     lines = [
         "## Evidence boundary",
         "",
-        f"This page was verified against Git snapshot {code(SNAPSHOT)} and these primary files:",
+        f"The claims on **{page['title']}** are anchored to Git snapshot {code(SNAPSHOT)} and these primary files:",
         "",
     ]
     for item in page["evidence"]:
@@ -259,7 +288,7 @@ def evidence_boundary(page: dict[str, Any]) -> str:
         lines.append(f"- {code(location)} ({code(item['classification'])})")
     lines.extend([
         "",
-        "A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.",
+        f"For **{page['title']}**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.",
     ])
     return "\n".join(lines)
 
@@ -343,9 +372,24 @@ pocketstation = {{ version = "1.1.1", default-features = false }}
 Run {code("cargo check")} to verify dependency resolution. Feature selection is compile-time configuration."""
     elif "quickstart" in title:
         example = (ROOT / "examples/product_quickstart.rs").read_text().rstrip()
-        body = f"""## Prerequisites
+        body = f"""## Audience
+
+Use this quickstart if you are adding PocketStation to a Rust desktop application and want the first verified application-plus-microphone capture flow.
+
+## Prerequisites
 
 Choose a host with an application named {code("PocketStation Demo")}, an available default microphone, permission to open both sources, and a writable recording path.
+
+## Supported environment
+
+The crate requires Rust 1.95 or newer. The program requires a target whose native-capture backend implements the selected sources; repository compilation is not physical-device qualification.
+
+## Install
+
+{FENCE}toml
+[dependencies]
+pocketstation = "1.1.1"
+{FENCE}
 
 ## Program
 
@@ -355,9 +399,29 @@ This source is synchronized with {code("examples/product_quickstart.rs")}:
 {example}
 {FENCE}
 
-## Run and verify
+## Run it
 
-Run {code("cargo run --example product_quickstart")}. The example rejects the run unless it observes two frames on each of two stems, obtains a successful stop outcome, and sees two completed recording stems with no failed stems."""
+Run {code("cargo run --example product_quickstart")} from the repository root on the prepared host.
+
+## Success
+
+The example accepts the run only after it observes two frames on each of two distinct stems, receives a successful Session stop outcome, and sees two completed recording stems with no failed stems.
+
+## Common first-run failures
+
+- The application selector cannot resolve {code("PocketStation Demo")}.
+- Permission or source opening fails for application or microphone capture.
+- The recording root is not writable.
+- A polled route returns no frames before the example's bounded observation condition.
+
+Preserve the returned typed error or terminal outcome; do not translate a missing prerequisite into capture success.
+
+## Next steps
+
+- [Learn the Session mental model](/docs/concepts/session.md).
+- [Select capture sources](/docs/concepts/source-selection.md).
+- [Inspect recording outcomes](/docs/how-to/inspect-recording-outcome.md).
+- [Diagnose a Session that fails before start](/docs/troubleshooting/session-start.md)."""
     elif "example" in title:
         body = f"""## Compile the examples
 
@@ -384,7 +448,7 @@ The host application owns permission prompts and source-selection user experienc
 
 Start with a contracts-only Cargo check. Enable the feature set you intend to ship and run available target tests. Keep build, virtual-machine, conformance, and physical-device evidence separately labeled."""
     return join_sections(
-        scope_section(page), body,
+        body, scope_section(page),
         "## Public entry points\n\n" + symbols_table(page, 16),
         "## Executable evidence\n\n" + tests_text(page),
         related_text(page), evidence_boundary(page),
@@ -392,16 +456,24 @@ Start with a contracts-only Cargo check. Enable the feature set you intend to sh
 
 
 def concept_body(page: dict[str, Any]) -> str:
-    intro = " ".join(CAP_BY_ID[item]["description"] for item in page["capability_ids"])
+    content = CONCEPTS.get(page["page_id"])
+    if not content:
+        raise RuntimeError(f"reviewed concept content is absent for {page['page_id']}")
     journeys = [journey for journey in JOURNEYS if set(page["capability_ids"]).intersection(journey["capability_ids"])]
     encountered = "\n".join(f"- **{journey['name']}** — {journey['outcome']}" for journey in journeys[:8])
+    relationships = "\n".join(f"- {item}" for item in content["relationships"])
+    invariants = "\n".join(f"- {item}" for item in content["invariants"])
+    use = "\n".join(f"- {item}" for item in content["use"])
     return join_sections(
-        intro,
+        f"## What it is\n\n{content['what']}",
+        f"## Why it exists\n\n{content['why']}",
+        "## Relationships\n\n" + relationships,
+        "## Invariants and guarantees\n\n" + invariants,
+        "## When you encounter it\n\n" + (encountered or f"You encounter {page['title'].lower()} through its declaration and runtime APIs."),
+        "## Use it\n\n" + use,
         scope_section(page),
-        "## Contract surface\n\n" + symbols_table(page, 20),
-        "## Where you encounter it\n\n" + (encountered or "The current capability model has no separate end-to-end journey for this concept."),
-        "## Behavior established by tests\n\n" + tests_text(page),
-        "## Boundaries\n\nThe compiler inventory establishes names, kinds, visibility, and signatures. Tests establish only their exercised conditions. Where retryability, ordering, cancellation, physical qualification, or recovery is not declared, this page leaves it unspecified.",
+        "## Key API\n\n" + symbols_table(page, 10),
+        "## Executable evidence\n\n" + tests_text(page),
         related_text(page), evidence_boundary(page),
     )
 
@@ -413,9 +485,9 @@ def lifecycle_body(page: dict[str, Any]) -> str:
         lines.append(f"| {code(record['operation'])} | {code(record['trigger'])} | {md(record['source_state'])} | {md(record['destination_state'])} | {code(record['lifecycle_id'])} |")
     return join_sections(
         scope_section(page),
-        "## Ownership transition\n\nPocketStation uses distinct declaration, compilation, preparation, running, cancellation, rollback, stop, and terminal-result types where the source exposes them. Do not collapse a stop outcome into a Boolean assumption: component and finalization failures remain structured data.",
+        f"## Ownership transition\n\nFor **{page['title']}**, PocketStation keeps the declaration, compilation, preparation, running, cancellation, rollback, stop, and terminal-result types exposed by the source distinct. Do not collapse its stop outcome into a Boolean assumption: component and finalization failures remain structured data.",
         "## Extracted lifecycle operations\n\n" + ("\n".join(lines) if records else "No lifecycle record matches this evidence domain."),
-        "## Failure handling\n\nA transition whose guard, idempotence, or recovery is recorded as unknown has no published guarantee here. Preserve the returned error or terminal outcome, inspect component and stage fields, and consult the error reference before retrying.",
+        f"## Failure handling\n\nWithin **{page['title']}**, a transition whose guard, idempotence, or recovery is recorded as not declared has no published guarantee. Preserve its returned error or terminal outcome, inspect component and stage fields, and consult the error reference before retrying.",
         "## Executable evidence\n\n" + tests_text(page),
         related_text(page), evidence_boundary(page),
     )
@@ -456,13 +528,17 @@ PROCEDURES = {
 
 
 def how_to_body(page: dict[str, Any]) -> str:
+    detail = GUIDES.get(page["page_id"])
+    if not detail:
+        raise RuntimeError(f"reviewed guide content is absent for {page['page_id']}")
+    prerequisite, success, failure_focus, references = detail
     steps = PROCEDURES.get(page["page_id"], [])
     if not steps:
         matching = [journey for journey in JOURNEYS if set(page["capability_ids"]).intersection(journey["capability_ids"])]
         raw = matching[0]["steps"] if matching else ["inspect the contract", "perform the operation", "verify the outcome"]
         steps = [step.replace("_", " ").capitalize() + "." for step in raw]
     procedure = "\n".join(f"{number}. {step}" for number, step in enumerate(steps, 1))
-    errors = [record for record in ERRORS if relevant(page, record)][:12]
+    errors = page_errors(page, 10)
     failure_lines = []
     for record in errors:
         label = code(record["type"])
@@ -471,12 +547,12 @@ def how_to_body(page: dict[str, Any]) -> str:
         failure_lines.append(f"- {label} — {code(record['error_id'])}")
     return join_sections(
         scope_section(page),
-        "## Prerequisites\n\nRead the linked concept and confirm that target platform, Cargo features, source or provider dependencies, and application-owned permission work match this task. Keep returned typed errors and outcomes available for verification.",
+        "## Prerequisites\n\n" + prerequisite,
         "## Procedure\n\n" + procedure,
-        "## APIs used\n\n" + symbols_table(page, 16),
-        "## Verify the outcome\n\n" + tests_text(page),
-        "## Failure signals\n\n" + ("\n".join(failure_lines) if failure_lines else "No domain-specific error record is assigned. Preserve the returned error and use the general error index."),
-        "Retry only when the relevant API or error contract explicitly permits it. An error name, a transient-looking message, or a successful prior run is not retry evidence.",
+        "## Important consequence\n\n" + failure_focus,
+        "## Verify the outcome\n\n" + success + "\n\n" + tests_text(page),
+        "## Failure signals\n\n" + ("\n".join(failure_lines) if failure_lines else f"No task-specific public error was resolved for {page['title'].lower()}; preserve the owning API's returned error."),
+        "## API reference\n\n" + "\n".join(f"- [{target.rsplit('/', 1)[-1].removesuffix('.md').replace('-', ' ').title()}]({target})" for target in references) + "\n\n" + symbols_table(page, 8),
         related_text(page), evidence_boundary(page),
     )
 
@@ -500,36 +576,65 @@ def reference_body(page: dict[str, Any]) -> str:
         rows = [[record["test_id"], code(record["name"]), record["behavior_under_test"], code(f"{record['path']}:{record['lines'][0]}")] for record in TESTS]
         table = exhaustive_table("Inventory", ["Evidence record", "Test", "Narrow behavior", "Source"], rows)
     elif path == "docs/reference/lifecycle-evidence.md":
-        rows = [[record["lifecycle_id"], code(record["operation"]), record["trigger"], record["source_state"], record["destination_state"], source_ref(record)] for record in LIFECYCLES]
-        table = exhaustive_table("Inventory", ["Evidence record", "Operation", "Trigger", "From", "To", "Source"], rows)
+        rows = [[
+            record["lifecycle_id"], code(record["operation"]), record["trigger"],
+            record["source_state"], record["destination_state"], record["guard"],
+            record["action"], record["possible_error"], record["recovery"],
+            record["idempotence"], record["observable_signal"],
+            ", ".join(record["tests"]) or record.get("test_coverage_status", "no direct test link"),
+            source_ref(record),
+        ] for record in LIFECYCLES]
+        table = exhaustive_table(
+            "Inventory",
+            ["Evidence record", "Operation", "Trigger", "From", "To", "Guard", "Action", "Possible error", "Recovery", "Idempotence", "Observable signal", "Tests", "Source"],
+            rows,
+        )
     elif page["doc_class"] == "error-reference":
         records = [record for record in ERRORS if relevant(page, record)]
         rows = []
         for record in records:
             variant = code(record["variant"]) if record.get("variant") else "type"
-            rows.append([record["error_id"], code(record["type"]), variant, record["retryable"], record["recoverable"], source_ref(record)])
-        table = exhaustive_table("Error inventory", ["Evidence record", "Type", "Variant", "Retryable", "Recoverable", "Defined"], rows)
+            rows.append([
+                record["error_id"], code(record["type"]), variant,
+                record["trigger_condition"], record["developer_action"],
+                record["retryable"], record["retry_basis"], record["recoverable"],
+                record["recovery_action"], record["test_coverage_status"],
+                ", ".join(record["tests"]) or "none linked", source_ref(record),
+            ])
+        table = exhaustive_table(
+            "Error inventory",
+            ["Evidence record", "Type", "Variant", "Trigger", "Developer action", "Retryable", "Retry basis", "Recoverable", "Recovery action", "Test status", "Tests", "Defined"],
+            rows,
+        )
     elif page["doc_class"] == "config-reference" and path.endswith("configuration.md"):
-        rows = [[record["config_id"], record["kind"], code(record["name"]), code(record.get("parent")), record["default"], record["when_read"], source_ref(record)] for record in CONFIGURATION]
-        table = exhaustive_table("Configuration inventory", ["Evidence record", "Kind", "Name", "Parent", "Default", "When read", "Source"], rows)
+        rows = [[
+            record["config_id"], record["kind"], code(record["name"]), code(record.get("parent")),
+            record["value_type"], record["required"], record["default"], record["units"],
+            record["valid_values"], record["minimum"], record["maximum"], record["when_read"],
+            record["precedence"], record["invalid_value_behavior"],
+            record.get("test_coverage_status", "no direct test link extracted"),
+            ", ".join(record.get("tests", [])) or "none linked", source_ref(record),
+        ] for record in CONFIGURATION]
+        table = exhaustive_table(
+            "Configuration inventory",
+            ["Evidence record", "Kind", "Name", "Parent", "Type", "Required", "Default", "Units", "Valid values", "Minimum", "Maximum", "When read", "Precedence", "Invalid value", "Test status", "Tests", "Source"],
+            rows,
+        )
     else:
         symbols = [symbol for symbol in SYMBOLS if symbol["public_api"] and relevant(page, symbol)]
         symbols.sort(key=lambda record: (record["kind"], record["qualified_name"]))
         rows = []
-        for symbol in symbols[:300]:
-            purpose = (
-                symbol["summary"]
-                if symbol["source_documented"]
-                else NATIVE_DOCS.get(symbol["symbol_id"], "See the native Rust API reference")
-            )
-            rows.append([code(symbol["qualified_name"]), symbol["kind"], purpose, code(f"{symbol['source_file']}:{symbol['source_lines'][0]}")])
-        table = exhaustive_table("Public surface", ["Declaration", "Kind", "Purpose", "Source"], rows)
-    native = "The generated [docs.rs API](https://docs.rs/pocketstation/latest/pocketstation/) is the exhaustive symbol-level Rust reference. Human reference pages organize responsibilities and cross-boundary behavior; they do not duplicate every rustdoc signature."
+        selected = symbols if path == "docs/reference/rust-api.md" else symbols[:300]
+        for symbol in selected:
+            purpose = NATIVE_DOCS.get(symbol["symbol_id"], symbol["summary"]).split("\n\n", 1)[0]
+            rows.append([symbol["symbol_id"], code(symbol["qualified_name"]), symbol["kind"], purpose, code(f"{symbol['source_file']}:{symbol['source_lines'][0]}")])
+        table = exhaustive_table("Public surface", ["Evidence record", "Declaration", "Kind", "Purpose", "Source"], rows)
+    native = f"For **{page['title']}**, the generated [docs.rs API](https://docs.rs/pocketstation/latest/pocketstation/) provides compiler-rendered signatures and navigation. This repository page adds the frozen evidence identifiers, responsibilities, and cross-boundary interpretation used by the documentation verifier."
     return join_sections(
         scope_section(page),
         "## Reference authority\n\n" + native,
         table,
-        "## Interpretation\n\nAn inventory row establishes that a declaration, test, lifecycle operation, configuration surface, or protocol element exists at the frozen snapshot. Fields shown as unknown remain deliberately unspecified. Consult the native API and error contract before relying on panic behavior, blocking, cancellation, ordering, limits, retry, or recovery.",
+        f"## Interpretation\n\nThe **{page['title']}** inventory records compiler-visible or extracted evidence at the frozen snapshot. A field marked unknown or not declared remains outside the published guarantee; use the native signature, owning error type, and cited test before relying on panic, blocking, cancellation, ordering, limits, retry, or recovery behavior.",
         related_text(page), evidence_boundary(page),
     )
 
@@ -557,7 +662,11 @@ TROUBLESHOOTING_ACTIONS = {
 
 
 def troubleshooting_body(page: dict[str, Any]) -> str:
-    errors = [record for record in ERRORS if relevant(page, record)][:30]
+    detail = TROUBLESHOOTING.get(page["page_id"])
+    if not detail:
+        raise RuntimeError(f"reviewed troubleshooting content is absent for {page['page_id']}")
+    symptom, causes, distinguish, corrective, retry_state, references = detail
+    errors = page_errors(page, 12)
     signals = []
     for record in errors:
         label = code(record["type"])
@@ -566,35 +675,45 @@ def troubleshooting_body(page: dict[str, Any]) -> str:
         signals.append(f"- {label} ({code(record['error_id'])})")
     tests = page_tests(page, 15)
     test_lines = [f"- {code(record['name'])} exercises {record['behavior_under_test']} under its recorded setup ({code(record['test_id'])})." for record in tests]
-    action = TROUBLESHOOTING_ACTIONS.get(page["page_id"], "Preserve the typed error, lifecycle stage, component identity, and available observations before changing configuration or retrying.")
     return join_sections(
-        f"Use this page when you observe **{page['title'].lower()}**. Diagnose the reported stage and identity before changing route, source, connector, or lifecycle policy.",
-        "## Distinguish the cause\n\n" + action,
-        "## Diagnostic signals\n\n" + ("\n".join(signals) if signals else "No domain-specific error variant is assigned. Use the stable error-code index and terminal outcome."),
+        "## Symptom\n\n" + symptom,
+        "## Evidenced causes\n\n" + "\n".join(f"- {cause}" for cause in causes),
+        "## Distinguish the causes\n\n" + distinguish,
+        "## Diagnostic signals\n\n" + ("\n".join(signals) if signals else f"No error declaration is tied directly to {page['title'].lower()}; use the owning component's typed outcome and observations."),
         "## Executable evidence\n\n" + ("\n".join(test_lines) if test_lines else "No directly matching executable test is assigned to this symptom. Keep diagnosis within fields returned by the API."),
-        "## Corrective action and retry\n\nApply only the action implied by the typed failure or violated precondition. Retry is not safe merely because a failure appears transient. When retryability or recovery is unknown, preserve the failure for application policy or maintainer review.",
-        "## Data and state\n\nTreat frames, signals, files, acknowledgements, and finalization results produced before failure as potentially partial unless the terminal contract says otherwise. Inspect per-route, per-stem, and per-component outcomes.",
+        "## Corrective action\n\n" + corrective,
+        "## Retry and incomplete state\n\n" + retry_state,
+        "## Related reference\n\n" + "\n".join(f"- [{target.rsplit('/', 1)[-1].removesuffix('.md').replace('-', ' ').title()}]({target})" for target in references),
         related_text(page), evidence_boundary(page),
     )
 
 
 def best_practice_body(page: dict[str, Any]) -> str:
-    recommendations = {
-        "BEST-001": "Measure each bounded route's queue, saturation, drop, and latency observations before changing capacity.",
-        "BEST-002": "Keep allocation, blocking, locks, async scheduling, logging, and application callbacks outside the realtime callback path where architecture checks enforce that boundary.",
-        "BEST-003": "Retain source, stream, stem, generation, clock, sequence, and derivation identity instead of flattening frames into anonymous PCM.",
-        "BEST-004": "Preserve structured stop, component, recording, sidecar, and trace outcomes before releasing runtime ownership.",
-        "BEST-005": "Declare finite attempts and time in connector retry policy, and expose readiness and exhaustion through observations.",
-        "BEST-006": "Load executable extensions only from a canonical absolute path whose trust decision belongs to the host application.",
-        "BEST-007": "Label build, virtual-machine, conformance, and physical-device evidence separately; never promote one scope into another.",
-    }
-    patterns = [record for record in PATTERNS if relevant(page, record)][:20]
+    detail = BEST_PRACTICES.get(page["page_id"])
+    if not detail:
+        raise RuntimeError(f"reviewed best-practice content is absent for {page['page_id']}")
+    problem, recommendation, reason, tradeoff, exception = detail
+    evidence_paths = {item["path"] for item in page["evidence"]}
+    pattern_names = {
+        "BEST-001": {"bounded_queue", "buffer_pool"},
+        "BEST-002": {"bounded_queue", "buffer_pool"},
+        "BEST-003": {"clock_correlation"},
+        "BEST-004": {"typed_error", "transactional_registration"},
+        "BEST-005": {"typed_error", "bounded_queue"},
+        "BEST-006": {"transactional_registration", "sidecar_isolation"},
+        "BEST-007": {"typed_error", "clock_correlation"},
+    }[page["page_id"]]
+    patterns = [
+        record for record in PATTERNS
+        if record["where_implemented"] in evidence_paths and record["name"] in pattern_names
+    ]
     pattern_lines = [f"- {code(record['name'])} at {code(record['where_implemented'])} ({code(record['pattern_id'])})." for record in patterns]
     return join_sections(
-        "## Recommendation\n\n" + recommendations.get(page["page_id"], "Follow the explicit contract and keep unsupported behavior out of application assumptions."),
-        "## Why\n\nThe repository makes capacity, ownership, identity, lifecycle, and evidence boundaries explicit so failures remain attributable. Bypassing them removes observations and typed outcomes needed for diagnosis.",
-        "## Tradeoff\n\nThe recommendation requires explicit configuration and result handling. It does not promise that one capacity, retry budget, selector, or shutdown policy fits every workload. Measure within the API's stated scope.",
-        "## When it does not apply\n\nDo not apply a realtime, connector, capture, or extension rule to another lane or boundary unless it exposes the same contract. An internal pattern is not automatically a public recommendation.",
+        "## Problem\n\n" + problem,
+        "## Recommendation\n\n" + recommendation,
+        "## Reason\n\n" + reason,
+        "## Tradeoff\n\n" + tradeoff,
+        "## When it does not apply\n\n" + exception,
         "## Repository evidence\n\n" + ("\n".join(pattern_lines) if pattern_lines else "This recommendation is tied directly to the page's source evidence."),
         "## Executable evidence\n\n" + tests_text(page),
         related_text(page), evidence_boundary(page),
@@ -611,7 +730,7 @@ def internals_body(page: dict[str, Any]) -> str:
         "## Compiler-visible surface\n\n" + symbols_table(page, 24),
         "## Observed implementation patterns\n\n" + ("\n".join(pattern_lines) if pattern_lines else "No automated pattern record is assigned to this boundary."),
         "## Behavioral evidence\n\n" + tests_text(page),
-        "## Stability boundary\n\nThis page explains internals. Public compatibility comes from exported Rust declarations, the C header, manifests, error codes, and explicit compatibility artifacts—not private module layout.",
+        f"## Stability boundary\n\n**{page['title']}** describes internal ownership. Its private module layout is not a compatibility promise; compatibility comes from exported Rust declarations, the C header, manifests, error codes, and explicit compatibility artifacts.",
         related_text(page), evidence_boundary(page),
     )
 
@@ -620,8 +739,8 @@ def platform_body(page: dict[str, Any]) -> str:
     return join_sections(
         scope_section(page),
         "## Implemented boundary\n\n" + symbols_table(page, 20),
-        "## Permission and source opening\n\nPermission observation and source opening are separate. The host application owns prompts and selection UI. A non-prompting observation is advisory where implemented; preparation or open returns the authoritative result.",
-        "## Qualification boundary\n\nTarget-specific files, Cargo dependencies, or CI establish implementation or build evidence only. They do not establish that every device, operating-system revision, packaging context, permission state, or physical path was qualified.",
+        f"## Permission and source opening\n\nFor **{page['title']}**, permission observation and source opening remain separate. The host application owns prompts and selection UI. A non-prompting observation is advisory where implemented; preparation or open returns the authoritative result.",
+        f"## Qualification boundary\n\nThe target-specific files, Cargo dependencies, and CI cited by **{page['title']}** establish implementation or build evidence only. They do not qualify every device, operating-system revision, packaging context, permission state, or physical path.",
         "## Executable evidence\n\n" + tests_text(page),
         related_text(page), evidence_boundary(page),
     )

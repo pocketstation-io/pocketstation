@@ -60,6 +60,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -83,7 +84,8 @@
     "pocketstation::internal::timing::{ClockCorrectionController, ClockDriftEstimator}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "criterion::{black_box, criterion_group, criterion_main, Criterion, Throughput}",
+    "pocketstation::internal::timing::{ClockCorrectionController, ClockDriftEstimator}"
   ],
   "invariants": [],
   "language": "Rust",
@@ -92,18 +94,20 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "benches/timing.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -117,7 +121,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "text": "Implements not applicable responsibilities, including the benches/timing boundary."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -140,9 +144,10 @@
     "docs/reference/lifecycle-evidence.md",
     "docs/troubleshooting/timing.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "bench_timing"
+    "bench_timing (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -152,6 +157,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

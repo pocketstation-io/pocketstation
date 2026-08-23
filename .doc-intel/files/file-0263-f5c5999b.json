@@ -256,6 +256,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -279,7 +280,8 @@
     "std::collections::BTreeSet"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "serde_json::Value",
+    "std::collections::BTreeSet"
   ],
   "invariants": [
     {
@@ -301,21 +303,31 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not define production behavior beyond the test setup and asserted outcome."
   ],
   "observed_patterns": [
-    "pattern-a8e8e29068c207358578",
     "pattern-c53de7be9374efb9cc13"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "return Err(\"connector.configuration.default_missing\");",
+    "return Err(\"connector.configuration.duplicate_field\");",
+    "return Err(\"connector.configuration.invalid_field\");",
+    "return Err(\"connector.configuration.invalid_revision\");",
+    "return Err(\"connector.configuration.secret_default_forbidden\");",
+    "return Err(\"connector.configuration.too_many_fields\");",
+    "return Err(\"connector.manifest.duplicate_component\");",
+    "return Err(\"connector.manifest.invalid_identity\");",
+    "return Err(\"connector.manifest.invalid_revision\");",
+    "return Err(\"connector.manifest.too_many_components\");"
   ],
   "package": "pocketstation",
   "path": "tests/connector_portable_semantics.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -364,8 +376,8 @@
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "classification": "TESTED",
+    "text": "Provides executable evidence for given canonical connector vectors when compared then core contract semantics match under the conditions declared in this test file."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -407,15 +419,16 @@
     "docs/best-practices/connector-retries.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "VECTORS",
-    "nonempty_text",
-    "bounded_text",
-    "positive_u64",
-    "validate_manifest",
-    "validate_case",
-    "given_canonical_connector_vectors_when_compared_then_core_contract_semantics_match"
+    "VECTORS (const)",
+    "nonempty_text (fn)",
+    "bounded_text (fn)",
+    "positive_u64 (fn)",
+    "validate_manifest (fn)",
+    "validate_case (fn)",
+    "given_canonical_connector_vectors_when_compared_then_core_contract_semantics_match (fn)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -425,7 +438,10 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-5ccbb97716e582e0a790"
+  ],
   "threads": [],
   "visibility": "private_or_not_applicable"
 }

@@ -3,7 +3,12 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/runtime/bridge/mod.rs",
+    "IMPORTS:src/runtime/bridge/mod.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "calls": [
     "Arc::clone",
     "Arc::new",
@@ -110,7 +115,12 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/runtime/bridge/mod.rs",
+    "IMPORTS:src/runtime/bridge/mod.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AtomicBool::new",
@@ -413,8 +423,14 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/runtime/bridge/mod.rs",
+    "IMPORTS:src/runtime/bridge/mod.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -428,14 +444,24 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "8a1fe52f113a0909092d27af59d9e27655902c86",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/runtime/bridge/mod.rs",
+    "IMPORTS:src/runtime/bridge/mod.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "implements": [
     "GeneratedAudioBridgeSpec",
     "GeneratedAudioBridgeObservationHandle",
     "GeneratedAudioBridge",
     "Drop for GeneratedAudioBridge"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/runtime/bridge/mod.rs",
+    "IMPORTS:src/runtime/bridge/mod.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs"
+  ],
   "imports": [
     "crate::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleSpec, SessionId, SourceId, StemId, StreamId, POOL_MAX_SLOTS, }",
     "crate::frame::{SampleFormat, SAMPLE_RATE_HZ}",
@@ -450,7 +476,18 @@
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "crate::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleSpec, SessionId, SourceId, StemId, StreamId, POOL_MAX_SLOTS, }",
+    "crate::frame::{SampleFormat, SAMPLE_RATE_HZ}",
+    "crate::graph::{EdgeContract, SignalEnvelope}",
+    "crate::graph::{SignalEnvelope, SignalPayload}",
+    "crate::runtime::{ PlanSourceSendError, PlanSourceSendOutcome, PlanSourceSender, TypedEdgeObservationHandle, TypedEdgeObservations, TypedEdgeReceiver, }",
+    "crate::runtime::{ plan_source_channel, PlanRunnerCancellation, TypedEdgeBranchSpec, TypedEdgeFanout, }",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "std::thread::{self, JoinHandle}",
+    "std::time::Duration",
+    "super::*"
   ],
   "invariants": [
     {
@@ -488,21 +525,37 @@
   "module": "pocketstation::runtime::bridge::audio",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
-    "pattern-e742bd4fc23f218a902b",
-    "pattern-c60fcfcff3e4147605f6"
+    "pattern-91de00a25daaff088c71",
+    "pattern-e742bd4fc23f218a902b"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:GeneratedAudioBridgeStartError",
+    "fn:cancel_and_join",
+    "fn:finish_and_join",
+    "fn:observations",
+    "fn:snapshot",
+    "fn:spawn",
+    "fn:stem_id",
+    "fn:validate",
+    "return Err(GeneratedAudioBridgeStartError::InvalidPoolSlots);",
+    "return Err(GeneratedAudioBridgeStartError::InvalidSampleSpec);",
+    "return Err(GeneratedAudioBridgeStartError::ZeroFrameSamples);",
+    "struct:GeneratedAudioBridge",
+    "struct:GeneratedAudioBridgeObservationHandle",
+    "struct:GeneratedAudioBridgeObservations",
+    "struct:GeneratedAudioBridgeSpec"
   ],
   "package": "pocketstation",
   "path": "src/runtime/bridge/audio.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -664,7 +717,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::runtime::bridge::audio`."
+    "text": "Implements pocketstation::runtime::bridge::audio responsibilities, including Configures generated audio bridge behavior at its owning API boundary.; Identifies the session identifier recorded by `GeneratedAudioBridgeSpec`.; Identifies the stem identifier recorded by `GeneratedAudioBridgeSpec`.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -719,6 +772,13 @@
     "docs/best-practices/route-sizing.md",
     "docs/best-practices/realtime-boundaries.md",
     "docs/security/boundaries.md"
+  ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/audio.rs",
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/frame/pool.rs",
+    "REFERENCES:src/runtime/audio/runner.rs",
+    "REFERENCES:src/runtime/signal/edge.rs"
   ],
   "resource_ownership": [
     {
@@ -779,28 +839,26 @@
     }
   ],
   "responsibilities": [
-    "LOST_WAKEUP_FALLBACK_INTERVAL",
-    "GeneratedAudioBridgeSpec",
-    "validate",
-    "GeneratedAudioBridgeStartError",
-    "GeneratedAudioBridgeObservationState",
-    "GeneratedAudioBridgeObservations",
-    "GeneratedAudioBridgeObservationHandle",
-    "snapshot",
-    "GeneratedAudioBridge",
-    "spawn",
-    "stem_id",
-    "observations",
-    "finish_and_join",
-    "cancel_and_join",
-    "drop",
-    "run_bridge",
-    "tests",
-    "given_operator_audio_when_bridged_then_owned_frame_enters_bounded_plan_source",
-    "publish_audio",
-    "bridge_specification",
-    "given_retained_audio_ingress_when_pool_is_exhausted_then_loss_is_counted_exactly",
-    "given_full_audio_ingress_when_bridge_sends_then_rejection_is_counted_exactly"
+    "pocketstation::runtime::bridge::audio::GeneratedAudioBridgeSpec: Configures generated audio bridge behavior at its owning API boundary.",
+    "GeneratedAudioBridgeSpec::session_id: Identifies the session identifier recorded by `GeneratedAudioBridgeSpec`.",
+    "GeneratedAudioBridgeSpec::stem_id: Identifies the stem identifier recorded by `GeneratedAudioBridgeSpec`.",
+    "GeneratedAudioBridgeSpec::stream_id: Identifies the stream identifier recorded by `GeneratedAudioBridgeSpec`.",
+    "GeneratedAudioBridgeSpec::source_id: Identifies the source identifier recorded by `GeneratedAudioBridgeSpec`.",
+    "GeneratedAudioBridgeSpec::clock_id: Identifies the clock identifier recorded by `GeneratedAudioBridgeSpec`.",
+    "GeneratedAudioBridgeSpec::sample_spec: Stores the sample spec used by `GeneratedAudioBridgeSpec`.",
+    "GeneratedAudioBridgeSpec::samples_per_frame: Stores the samples per frame used by `GeneratedAudioBridgeSpec`.",
+    "GeneratedAudioBridgeSpec::pool_slots: Stores the pool slots used by `GeneratedAudioBridgeSpec`.",
+    "validate: Validates `GeneratedAudioBridgeSpec` against its declared contract.",
+    "pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError: Classifies failures reported as generated audio bridge start error.",
+    "pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidSampleSpec: Reported when the owning operation encounters invalid sample spec.",
+    "pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::ZeroFrameSamples: Reported when the owning operation encounters zero frame samples.",
+    "pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::InvalidPoolSlots: Reported when the owning operation encounters invalid pool slots.",
+    "pocketstation::runtime::bridge::audio::GeneratedAudioBridgeStartError::ThreadStart: Reported when the owning operation encounters thread start.",
+    "pocketstation::runtime::bridge::audio::GeneratedAudioBridge: Transfers generated audio across the bounded runtime boundary it owns.",
+    "spawn: Spawns its owned operation for `GeneratedAudioBridge`.",
+    "finish_and_join: Finishes input to `GeneratedAudioBridge`, joins its worker, and returns the terminal result.",
+    "cancel_and_join: Cancels and join for `GeneratedAudioBridge`.",
+    "drop: Releases resources owned by `GeneratedAudioBridge`."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -836,7 +894,12 @@
   ],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-0ae60369d5962ff55b0f",
+    "test-1664fa1aa12573253d70",
+    "test-c49159871ef385421381"
+  ],
   "threads": [
     {
       "line": 3,

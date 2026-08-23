@@ -25,7 +25,7 @@ impl SessionStopResult {
         }
     }
 
-    #[doc = "Returns the failure codes associated with `SessionStopResult`."]
+    #[doc = "Returns the failure codes held by `SessionStopResult`."]
     pub fn failure_codes(self) -> Box<[SessionStopFailureCode]> {
         crate::session::session_stop_failure_codes(&self.outcome())
     }

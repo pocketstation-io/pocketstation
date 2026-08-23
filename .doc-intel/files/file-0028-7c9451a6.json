@@ -93,6 +93,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -135,7 +136,7 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "## Configuration and secrets"
   ],
   "invariants": [
     {
@@ -177,22 +178,22 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not override compiler-visible API contracts or executable test evidence."
   ],
-  "observed_patterns": [
-    "pattern-ec0a79e42b7fdfad98ef",
-    "pattern-f5fdf3d0b87d585fac1d",
-    "pattern-6e63946e931d68323065"
-  ],
+  "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "repository",
   "path": "docs/guides/connectors.md",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior.",
+    "Retry-related code is present, but safety and idempotence require an explicit public contract."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [
@@ -204,7 +205,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "DECLARED",
-    "text": "Documents Build a connector."
+    "text": "Documents Build a connector for repository contributors or PocketStation developers."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -223,6 +224,7 @@
     "docs/reference/test-evidence.md",
     "docs/reference/lifecycle-evidence.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [
     {
       "line": 14,
@@ -241,7 +243,9 @@
       "text": "let connector = Connector::with_driver(manifest(), Arc::new(RelayFactory))?;"
     }
   ],
-  "responsibilities": [],
+  "responsibilities": [
+    "Documents Build a connector for repository contributors or PocketStation developers."
+  ],
   "retry_behavior": [
     {
       "line": 119,
@@ -298,6 +302,7 @@
   ],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

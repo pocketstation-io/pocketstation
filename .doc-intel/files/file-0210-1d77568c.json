@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs"
+  ],
   "calls": [
     "Input::signal_spec",
     "InvalidManifest",
@@ -47,7 +50,10 @@
   "cancellation_behavior": [],
   "channels": [],
   "configuration_read": [],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs"
+  ],
   "constructs": [
     "new"
   ],
@@ -356,8 +362,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -376,12 +386,18 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "96546067ab5a7b98b63f59d0ed004fbc9cf08b66",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs"
+  ],
   "implements": [
     "TypedOperator<Input, Output>",
     "Stream<Signal>"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/session/declaration/mod.rs",
+    "IMPORTS:src/session/declaration/mod.rs"
+  ],
   "imports": [
     "crate::graph::{ AsyncOperatorManifest, OperatorId, PortDirection, PortSpec, SignalClass, SignalSpec, }",
     "crate::session::{ EndpointHandle, Operator, RouteId, SessionError, SourceOutputHandle, StemHandle, }",
@@ -389,7 +405,10 @@
     "super::draft::InternalStreamHandle"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "crate::graph::{ AsyncOperatorManifest, OperatorId, PortDirection, PortSpec, SignalClass, SignalSpec, }",
+    "crate::session::{ EndpointHandle, Operator, RouteId, SessionError, SourceOutputHandle, StemHandle, }",
+    "std::marker::PhantomData",
+    "super::draft::InternalStreamHandle"
   ],
   "invariants": [
     {
@@ -407,20 +426,43 @@
   "module": "pocketstation::session::declaration::typed_stream",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-0577caa4e8cabf1f0284"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "enum:TypedStreamError",
+    "fn:from_source_output",
+    "fn:from_stem",
+    "fn:input_port",
+    "fn:input_spec",
+    "fn:new",
+    "fn:operator_id",
+    "fn:output_port",
+    "fn:output_spec",
+    "fn:send",
+    "fn:signal_spec",
+    "fn:through",
+    "return Err(TypedStreamError::AmbiguousPort { direction });",
+    "return Err(TypedStreamError::InputSignalMismatch {",
+    "return Err(TypedStreamError::OperatorIdentityMismatch {",
+    "return Err(TypedStreamError::OutputSignalMismatch {",
+    "return Err(TypedStreamError::StemRequiresPcmAudio);",
+    "return Err(TypedStreamError::StreamInputMismatch);",
+    "struct:Stream",
+    "struct:TypedOperator",
+    "trait:StreamSignal"
   ],
   "package": "pocketstation",
   "path": "src/session/declaration/typed_stream.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Crosses an unsafe or foreign-function boundary; apply the recorded ownership and safety contract.",
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -537,7 +579,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::session::declaration::typed_stream`."
+    "text": "Implements pocketstation::session::declaration::typed stream responsibilities, including Compile-time marker supplied by an SDK or external package.; Returns the signal spec held by `StreamSignal`.; Binds an operator declaration to its typed input and output ports so graph connections preserve signal specifications.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -597,26 +639,52 @@
     "docs/troubleshooting/external-pcm.md",
     "docs/best-practices/terminal-outcomes.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/frame/identity.rs",
+    "REFERENCES:src/graph/operator.rs",
+    "REFERENCES:src/graph/ports.rs",
+    "REFERENCES:src/graph/signal/operator.rs",
+    "REFERENCES:src/graph/signal/spec.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/error.rs"
+  ],
   "resource_ownership": [],
   "responsibilities": [
-    "StreamSignal",
-    "signal_spec",
-    "TypedOperator",
-    "new",
-    "operator_id",
-    "input_port",
-    "output_port",
-    "input_spec",
-    "output_spec",
-    "Stream",
-    "from_stem",
-    "from_source_output",
-    "signal_spec",
-    "through",
-    "send",
-    "select_port",
-    "validate_signal",
-    "TypedStreamError"
+    "pocketstation::session::declaration::typed_stream::StreamSignal: Compile-time marker supplied by an SDK or external package.",
+    "StreamSignal::signal_spec: Returns the signal spec held by `StreamSignal`.",
+    "pocketstation::session::declaration::typed_stream::TypedOperator: Binds an operator declaration to its typed input and output ports so graph connections preserve signal specifications.",
+    "new: Creates a new `TypedOperator`.",
+    "operator_id: Returns the operator identifier held by `TypedOperator`.",
+    "input_port: Returns the input port held by `TypedOperator`.",
+    "output_port: Returns the output port held by `TypedOperator`.",
+    "input_spec: Returns the input spec held by `TypedOperator`.",
+    "output_spec: Returns the output spec held by `TypedOperator`.",
+    "pocketstation::session::declaration::typed_stream::Stream: Typed Rust declaration fa\u00e7ade compiled into stable dynamic signal, schema,",
+    "from_stem: Creates `Stream` from stem.",
+    "from_source_output: Wraps a public external-source output in the same typed Rust fa\u00e7ade.",
+    "signal_spec: Returns the signal spec held by `Stream`.",
+    "through: Routes the current stream through a declared operator using `Stream`.",
+    "send: Sends a value through `Stream`.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError: Classifies failures reported as typed stream error.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::InvalidSignal: Reported when the owning operation encounters invalid signal.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::InvalidManifest: Reported when the owning operation encounters invalid manifest.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::OperatorIdentityMismatch: Reported when the owning operation encounters operator identity mismatch.",
+    "TypedStreamError::OperatorIdentityMismatch::declaration: Stores the declaration used by `OperatorIdentityMismatch`.",
+    "TypedStreamError::OperatorIdentityMismatch::manifest: Stores the manifest used by `OperatorIdentityMismatch`.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::UnknownPort: Reported when the owning operation encounters unknown port.",
+    "TypedStreamError::UnknownPort::direction: Stores the direction used by `UnknownPort`.",
+    "TypedStreamError::UnknownPort::port: Stores the port used by `UnknownPort`.",
+    "TypedStreamError::MissingPort::direction: Stores the direction used by `MissingPort`.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::MissingPort: Reported when the owning operation encounters missing port.",
+    "TypedStreamError::AmbiguousPort::direction: Stores the direction used by `AmbiguousPort`.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::AmbiguousPort: Reported when the owning operation encounters ambiguous port.",
+    "TypedStreamError::InputSignalMismatch::port: Stores the port used by `InputSignalMismatch`.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::InputSignalMismatch: Reported when the owning operation encounters input signal mismatch.",
+    "TypedStreamError::OutputSignalMismatch::port: Stores the port used by `OutputSignalMismatch`.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::OutputSignalMismatch: Reported when the owning operation encounters output signal mismatch.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::StemRequiresPcmAudio: Reported when the owning operation encounters stem requires PCM audio.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::StreamInputMismatch: Reported when the owning operation encounters stream input mismatch.",
+    "pocketstation::session::declaration::typed_stream::TypedStreamError::Session: Reported when the owning operation encounters session."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -631,6 +699,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "mixed"

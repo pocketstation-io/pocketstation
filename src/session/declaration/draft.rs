@@ -291,7 +291,7 @@ impl SessionDraft {
 }
 
 #[derive(Debug, Clone)]
-#[doc = "Represents operator in the PocketStation API."]
+#[doc = "Declares one operator instance, including its stable operator identity and validated node configuration."]
 pub struct Operator {
     operator_id: OperatorId,
     configuration: OperatorConfiguration,
@@ -306,12 +306,12 @@ impl Operator {
         }
     }
 
-    #[doc = "Returns the operator identifier associated with `Operator`."]
+    #[doc = "Returns the operator identifier held by `Operator`."]
     pub const fn operator_id(&self) -> &OperatorId {
         &self.operator_id
     }
 
-    #[doc = "Returns the configuration associated with `Operator`."]
+    #[doc = "Returns the configuration held by `Operator`."]
     pub const fn configuration(&self) -> &OperatorConfiguration {
         &self.configuration
     }
@@ -412,6 +412,7 @@ impl Session {
         self.add_endpoint(descriptor, None)
     }
 
+    #[doc = "Declares a connector endpoint on `Session` with the supplied operator identity and configuration."]
     pub fn connector(
         &self,
         operator_id: OperatorId,
@@ -601,17 +602,17 @@ pub struct EndpointHandle {
 }
 
 impl EndpointHandle {
-    #[doc = "Returns the session identifier associated with `EndpointHandle`."]
+    #[doc = "Returns the session identifier held by `EndpointHandle`."]
     pub const fn session_id(self) -> SessionId {
         self.session_id
     }
 
-    #[doc = "Returns the id associated with `EndpointHandle`."]
+    #[doc = "Returns the id held by `EndpointHandle`."]
     pub const fn id(self) -> EndpointId {
         self.endpoint_id
     }
 
-    #[doc = "Returns the connector identifier associated with `EndpointHandle`."]
+    #[doc = "Returns the connector identifier held by `EndpointHandle`."]
     pub const fn connector_id(self) -> Option<ConnectorId> {
         self.connector_id
     }
@@ -729,17 +730,17 @@ pub struct OperatorInputHandle {
 }
 
 impl OperatorInstanceHandle {
-    #[doc = "Returns the session identifier associated with `OperatorInstanceHandle`."]
+    #[doc = "Returns the session identifier held by `OperatorInstanceHandle`."]
     pub const fn session_id(&self) -> SessionId {
         self.session_id
     }
 
-    #[doc = "Returns the instance identifier associated with `OperatorInstanceHandle`."]
+    #[doc = "Returns the instance identifier held by `OperatorInstanceHandle`."]
     pub const fn instance_id(&self) -> OperatorInstanceId {
         self.instance_id
     }
 
-    #[doc = "Returns the input associated with `OperatorInstanceHandle`."]
+    #[doc = "Returns the input held by `OperatorInstanceHandle`."]
     pub fn input(&self, port_name: impl Into<String>) -> Result<OperatorInputHandle, SessionError> {
         let port_name = port_name.into();
         if port_name.trim().is_empty() {
@@ -755,7 +756,7 @@ impl OperatorInstanceHandle {
         })
     }
 
-    #[doc = "Returns the output associated with `OperatorInstanceHandle`."]
+    #[doc = "Returns the output held by `OperatorInstanceHandle`."]
     pub fn output(
         &self,
         port_name: impl Into<String>,
@@ -805,12 +806,12 @@ impl fmt::Debug for OperatorInputHandle {
 }
 
 impl StemHandle {
-    #[doc = "Returns the session identifier associated with `StemHandle`."]
+    #[doc = "Returns the session identifier held by `StemHandle`."]
     pub const fn session_id(&self) -> SessionId {
         self.stream.session_id
     }
 
-    #[doc = "Returns the id associated with `StemHandle`."]
+    #[doc = "Returns the id held by `StemHandle`."]
     pub const fn id(&self) -> StemId {
         self.stem_id
     }
@@ -846,7 +847,7 @@ impl StemHandle {
         self.through_ports(operator, None::<String>, None::<String>)
     }
 
-    #[doc = "Returns the through ports associated with `StemHandle`."]
+    #[doc = "Returns the through ports held by `StemHandle`."]
     pub fn through_ports(
         &self,
         operator: Operator,
@@ -876,22 +877,22 @@ pub struct SourceInstanceHandle {
 }
 
 impl SourceInstanceHandle {
-    #[doc = "Returns the session identifier associated with `SourceInstanceHandle`."]
+    #[doc = "Returns the session identifier held by `SourceInstanceHandle`."]
     pub const fn session_id(&self) -> SessionId {
         self.session_id
     }
 
-    #[doc = "Returns the instance identifier associated with `SourceInstanceHandle`."]
+    #[doc = "Returns the instance identifier held by `SourceInstanceHandle`."]
     pub const fn instance_id(&self) -> SourceInstanceId {
         self.instance_id
     }
 
-    #[doc = "Returns the source identifier associated with `SourceInstanceHandle`."]
+    #[doc = "Returns the source identifier held by `SourceInstanceHandle`."]
     pub const fn source_id(&self) -> SourceId {
         self.source_id
     }
 
-    #[doc = "Returns the output associated with `SourceInstanceHandle`."]
+    #[doc = "Returns the output held by `SourceInstanceHandle`."]
     pub fn output(
         &self,
         output_port: impl Into<String>,
@@ -959,27 +960,27 @@ pub struct SourceOutputHandle {
 }
 
 impl SourceOutputHandle {
-    #[doc = "Returns the session identifier associated with `SourceOutputHandle`."]
+    #[doc = "Returns the session identifier held by `SourceOutputHandle`."]
     pub const fn session_id(&self) -> SessionId {
         self.stream.session_id
     }
 
-    #[doc = "Returns the source instance identifier associated with `SourceOutputHandle`."]
+    #[doc = "Returns the source instance identifier held by `SourceOutputHandle`."]
     pub const fn source_instance_id(&self) -> SourceInstanceId {
         self.source_instance_id
     }
 
-    #[doc = "Returns the source identifier associated with `SourceOutputHandle`."]
+    #[doc = "Returns the source identifier held by `SourceOutputHandle`."]
     pub const fn source_id(&self) -> SourceId {
         self.source_id
     }
 
-    #[doc = "Returns the stream identifier associated with `SourceOutputHandle`."]
+    #[doc = "Returns the stream identifier held by `SourceOutputHandle`."]
     pub const fn stream_id(&self) -> StreamId {
         self.stream_id
     }
 
-    #[doc = "Returns the output port associated with `SourceOutputHandle`."]
+    #[doc = "Returns the output port held by `SourceOutputHandle`."]
     pub fn output_port(&self) -> &str {
         &self.output_port
     }
@@ -994,7 +995,7 @@ impl SourceOutputHandle {
         self.stream.connect(input)
     }
 
-    #[doc = "Routes the current source output to the requested destination through `SourceOutputHandle`."]
+    #[doc = "Sends to for `SourceOutputHandle`."]
     pub fn send_to(
         &self,
         endpoint: EndpointHandle,
@@ -1016,7 +1017,7 @@ impl SourceOutputHandle {
         self.through_ports(operator, None::<String>, None::<String>)
     }
 
-    #[doc = "Returns the through ports associated with `SourceOutputHandle`."]
+    #[doc = "Returns the through ports held by `SourceOutputHandle`."]
     pub fn through_ports(
         &self,
         operator: Operator,
@@ -1063,22 +1064,22 @@ impl DerivedStreamHandle {
         }
     }
 
-    #[doc = "Returns the session identifier associated with `DerivedStreamHandle`."]
+    #[doc = "Returns the session identifier held by `DerivedStreamHandle`."]
     pub const fn session_id(&self) -> SessionId {
         self.stream.session_id
     }
 
-    #[doc = "Returns the operator instance identifier associated with `DerivedStreamHandle`."]
+    #[doc = "Returns the operator instance identifier held by `DerivedStreamHandle`."]
     pub const fn operator_instance_id(&self) -> OperatorInstanceId {
         self.operator_instance_id
     }
 
-    #[doc = "Returns the output port associated with `DerivedStreamHandle`."]
+    #[doc = "Returns the output port held by `DerivedStreamHandle`."]
     pub fn output_port(&self) -> Option<&str> {
         self.output_port.as_deref()
     }
 
-    #[doc = "Returns the output associated with `DerivedStreamHandle`."]
+    #[doc = "Returns the output held by `DerivedStreamHandle`."]
     pub fn output(&self, port_name: impl Into<String>) -> Result<Self, SessionError> {
         let port_name = port_name.into();
         if port_name.trim().is_empty() {
@@ -1104,7 +1105,7 @@ impl DerivedStreamHandle {
         self.through_ports(operator, None::<String>, None::<String>)
     }
 
-    #[doc = "Returns the through ports associated with `DerivedStreamHandle`."]
+    #[doc = "Returns the through ports held by `DerivedStreamHandle`."]
     pub fn through_ports(
         &self,
         operator: Operator,

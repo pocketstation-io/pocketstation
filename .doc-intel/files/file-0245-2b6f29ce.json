@@ -3,7 +3,10 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs"
+  ],
   "calls": [
     "ClockCorrectionController::default",
     "ClockCorrectionController::new",
@@ -34,7 +37,10 @@
       "text": "#[cfg(test)]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs"
+  ],
   "constructs": [
     "ClockCorrectionController::new",
     "Self::new",
@@ -199,8 +205,12 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [],
   "feature_gate": [
@@ -214,17 +224,24 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "067f3ac1f53919176d2381c89fe04a4c782b637c",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs"
+  ],
   "implements": [
     "ClockCorrectionController",
     "Default for ClockCorrectionController"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/timing/mod.rs",
+    "IMPORTS:src/timing/mod.rs"
+  ],
   "imports": [
     "super::*"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(test)]",
+    "super::*"
   ],
   "invariants": [
     {
@@ -250,18 +267,26 @@
   "module": "pocketstation::timing::clock_correction",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "fn:integral_error_ns",
+    "fn:integral_ns",
+    "fn:last_correction_ns",
+    "fn:last_offset_ns",
+    "fn:new",
+    "fn:tick",
+    "struct:ClockCorrectionController"
   ],
   "package": "pocketstation",
   "path": "src/timing/clock_correction.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -360,7 +385,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::timing::clock_correction`."
+    "text": "Implements pocketstation::timing::clock correction responsibilities, including Applies bounded proportional corrections from measured clock offsets without changing lineage.; Creates a new `ClockCorrectionController`.; Applies one measured clock offset to `ClockCorrectionController` and returns the bounded correction.."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -383,23 +408,17 @@
     "docs/reference/lifecycle-evidence.md",
     "docs/troubleshooting/timing.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "MAX_CORRECTION_NS",
-    "ClockCorrectionController",
-    "new",
-    "tick",
-    "last_offset_ns",
-    "last_correction_ns",
-    "integral_error_ns",
-    "integral_ns",
-    "default",
-    "tests",
-    "given_zero_offset_when_corrected_then_correction_is_zero",
-    "given_positive_offset_when_corrected_then_correction_is_positive",
-    "given_negative_offset_when_corrected_then_correction_is_negative",
-    "given_large_offset_when_corrected_then_correction_is_clamped",
-    "given_repeated_offset_when_corrected_then_integral_accumulates"
+    "pocketstation::timing::clock_correction::ClockCorrectionController: Applies bounded proportional corrections from measured clock offsets without changing lineage.",
+    "new: Creates a new `ClockCorrectionController`.",
+    "tick: Applies one measured clock offset to `ClockCorrectionController` and returns the bounded correction.",
+    "last_offset_ns: Returns the last offset nanoseconds held by `ClockCorrectionController`.",
+    "last_correction_ns: Returns the last correction nanoseconds held by `ClockCorrectionController`.",
+    "integral_error_ns: Returns the integral error nanoseconds held by `ClockCorrectionController`.",
+    "integral_ns: Returns the integral nanoseconds held by `ClockCorrectionController`.",
+    "default: Returns the default `ClockCorrectionController` value."
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -409,7 +428,14 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-3d8bfc2db8ae855b33a9",
+    "test-76bb72f1a9ba30dce241",
+    "test-a6f888162e30bbbe5f60",
+    "test-dd8301421f8682ad1051",
+    "test-e2db7a2b5cf88c25549c"
+  ],
   "threads": [],
   "visibility": "mixed"
 }

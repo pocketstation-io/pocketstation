@@ -69,6 +69,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -93,7 +94,9 @@
     "pocketstation::internal::codec::{ OpusDecoder, OpusEncoder, OpusFrameDuration, OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, }"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "criterion::{black_box, criterion_group, criterion_main, Criterion}",
+    "opus::{Channels, Decoder}",
+    "pocketstation::internal::codec::{ OpusDecoder, OpusEncoder, OpusFrameDuration, OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, }"
   ],
   "invariants": [],
   "language": "Rust",
@@ -102,18 +105,20 @@
   "module": "not_applicable",
   "network_io": [],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "benches/opus_decode.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [
     {
       "kind": "fn",
@@ -127,7 +132,7 @@
   "public_surface": [],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `not_applicable`."
+    "text": "Implements not applicable responsibilities, including the benches/opus decode boundary."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -152,9 +157,10 @@
     "docs/errors/frames-and-codec.md",
     "docs/troubleshooting/opus.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
   "responsibilities": [
-    "bench_decode"
+    "bench_decode (fn)"
   ],
   "retry_behavior": [],
   "serialization": [
@@ -181,6 +187,7 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

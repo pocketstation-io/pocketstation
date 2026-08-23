@@ -164,6 +164,7 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
   "extended_by": [],
   "extends": [],
@@ -184,7 +185,16 @@
   "imported_by": [],
   "imports": [],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "[features]",
+    "[target.'cfg(target_os = \"linux\")'.dependencies]",
+    "[target.'cfg(target_os = \"macos\")'.dependencies]",
+    "[target.'cfg(target_os = \"windows\")'.dependencies]",
+    "assert_no_alloc = { version = \"1.1\", default-features = false }",
+    "no-default-features = true",
+    "required-features = [\"internal-testing\"]",
+    "serde = { version = \"1\", features = [\"derive\"] }",
+    "tokio = { version = \"1\", features = [\"macros\", \"rt\", \"sync\", \"time\"] }",
+    "windows = { version = \"0.58\", optional = true, features = ["
   ],
   "invariants": [],
   "language": "TOML",
@@ -206,25 +216,27 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not prove runtime behavior; it declares build, configuration, or publication inputs."
   ],
   "observed_patterns": [],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "No emitted value or public declaration is recorded for this file."
   ],
   "package": "pocketstation",
   "path": "Cargo.toml",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "No direct test edge was resolved for this file; do not promote implementation presence to tested behavior."
+  ],
   "private_surface": [],
   "process_io": [],
   "protocol_messages": [],
   "public_surface": [],
   "purpose": {
-    "classification": "INFERRED",
-    "text": "Defines repository-owned build, package, or semantic fixture data."
+    "classification": "DIRECT",
+    "text": "Declares crate metadata, Cargo features, dependencies, build targets, and package publication settings."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -243,8 +255,11 @@
     "docs/reference/test-evidence.md",
     "docs/reference/lifecycle-evidence.md"
   ],
+  "relationship_outputs": [],
   "resource_ownership": [],
-  "responsibilities": [],
+  "responsibilities": [
+    "Declares crate metadata, Cargo features, dependencies, build targets, and package publication settings."
+  ],
   "retry_behavior": [],
   "serialization": [
     {
@@ -300,6 +315,7 @@
       "text": "tokio = { version = \"1\", features = [\"macros\", \"rt\", \"sync\", \"time\"] }"
     }
   ],
+  "test_coverage_status": "no_direct_test_link_extracted",
   "tests_covering": [],
   "threads": [],
   "visibility": "private_or_not_applicable"

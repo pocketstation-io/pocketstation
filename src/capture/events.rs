@@ -9,7 +9,7 @@ use super::identity::StableSourceId;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(transparent)]
-#[doc = "Represents source generation in the PocketStation API."]
+#[doc = "Identifies one appearance generation of a capture source across loss and reappearance."]
 pub struct SourceGeneration(pub u32);
 
 impl SourceGeneration {
@@ -53,12 +53,12 @@ pub enum CaptureRuntimeFailureClass {
     SourceInstanceExited,
     #[doc = "Reports platform status."]
     PlatformStatus {
-        #[doc = "Stores the status code associated with `PlatformStatus`."]
+        #[doc = "Stores the status code used by `PlatformStatus`."]
         status_code: i32,
     },
     #[doc = "Reports backend class."]
     BackendClass {
-        #[doc = "Stores the class associated with `BackendClass`."]
+        #[doc = "Stores the class used by `BackendClass`."]
         class: String,
     },
 }
@@ -66,9 +66,9 @@ pub enum CaptureRuntimeFailureClass {
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[doc = "Reports a capture runtime failure."]
 pub struct CaptureRuntimeFailure {
-    #[doc = "Stores the operation associated with `CaptureRuntimeFailure`."]
+    #[doc = "Stores the operation used by `CaptureRuntimeFailure`."]
     pub operation: &'static str,
-    #[doc = "Stores the error class associated with `CaptureRuntimeFailure`."]
+    #[doc = "Stores the error class used by `CaptureRuntimeFailure`."]
     pub error_class: CaptureRuntimeFailureClass,
 }
 
@@ -77,20 +77,20 @@ pub struct CaptureRuntimeFailure {
 pub enum SourceRuntimeEvent {
     #[doc = "Indicates the source unavailable state for `SourceRuntimeEvent`."]
     SourceUnavailable {
-        #[doc = "Identifies the stable associated with `SourceUnavailable`."]
+        #[doc = "Identifies the stable identifier recorded by `SourceUnavailable`."]
         stable_id: StableSourceId,
-        #[doc = "Stores the generation associated with `SourceUnavailable`."]
+        #[doc = "Stores the generation used by `SourceUnavailable`."]
         generation: SourceGeneration,
-        #[doc = "Stores the recovery requirement associated with `SourceUnavailable`."]
+        #[doc = "Stores the recovery requirement used by `SourceUnavailable`."]
         recovery_requirement: SourceRecoveryRequirement,
         #[doc = "Carries the failure reported by `SourceUnavailable`."]
         failure: CaptureRuntimeFailure,
     },
     #[doc = "Indicates the backend failure state for `SourceRuntimeEvent`."]
     BackendFailure {
-        #[doc = "Identifies the stable associated with `BackendFailure`."]
+        #[doc = "Identifies the stable identifier recorded by `BackendFailure`."]
         stable_id: StableSourceId,
-        #[doc = "Stores the generation associated with `BackendFailure`."]
+        #[doc = "Stores the generation used by `BackendFailure`."]
         generation: SourceGeneration,
         #[doc = "Carries the failure reported by `BackendFailure`."]
         failure: CaptureRuntimeFailure,
@@ -271,7 +271,7 @@ impl SourceRuntimeEventObservationHandle {
 }
 
 #[derive(Debug, Clone)]
-#[doc = "Represents source runtime event sender in the PocketStation API."]
+#[doc = "Sends source runtime event values across its declared ownership boundary."]
 pub struct SourceRuntimeEventSender {
     sender: std::sync::mpsc::SyncSender<QueuedSourceRuntimeEvent>,
     counters: Arc<SourceRuntimeEventCounters>,

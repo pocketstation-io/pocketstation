@@ -6,11 +6,11 @@
 
 - **Record aligned multistem output.** Configure stems and finalize per-stem outcomes through the recording endpoint lifecycle.
 
-These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+The scope of **Record independent stems** ends at the native contracts and executable conditions cited below. Platform qualification, performance, retry, and delivery require their own explicit evidence.
 
 ## Prerequisites
 
-Read the linked concept and confirm that target platform, Cargo features, source or provider dependencies, and application-owned permission work match this task. Keep returned typed errors and outcomes available for verification.
+A writable recording root and stable labels for every source stem you intend to preserve.
 
 ## Procedure
 
@@ -20,30 +20,15 @@ Read the linked concept and confirm that target platform, Cargo features, source
 4. Stop to trigger endpoint finalization.
 5. Inspect overall and per-stem recording outcomes.
 
-## APIs used
+## Important consequence
 
-| Public declaration | Kind | Declared purpose | Source |
-|---|---|---|---|
-| `RecordingOutcome::completed_stems` | struct_field | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/recording/writer.rs:114` |
-| `RecordingOutcome::failed_stems` | struct_field | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/recording/writer.rs:115` |
-| `RecordingOutcome::stems` | struct_field | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/recording/writer.rs:116` |
-| `pocketstation::recording::error_code::RecordingErrorCode` | enum | Stable language-neutral code for a recording failure. | `src/recording/error_code.rs:9` |
-| `pocketstation::recording::writer::DiscontinuityRecord` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/recording/writer.rs:92` |
-| `pocketstation::recording::writer::RecordingObservations` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/recording/writer.rs:130` |
-| `pocketstation::recording::writer::RecordingOutcome` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/recording/writer.rs:111` |
-| `pocketstation::recording::writer::RecordingStemOutcome` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/recording/writer.rs:120` |
-| `pocketstation::session::lifecycle::trace::SessionTraceRecord` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/trace.rs:55` |
-| `pocketstation::session::lifecycle::trace::SessionTraceRecorder` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/trace.rs:152` |
-| `pocketstation::session::lifecycle::trace::SessionTraceRecorderHandle` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/trace.rs:108` |
-| `pocketstation::session::lifecycle::trace::SessionTraceRecorderOutcome` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/trace.rs:70` |
-| `pocketstation::recording::writer::DiscontinuityKind` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/recording/writer.rs:104` |
-| `pocketstation::recording::writer::RecordingState` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/recording/writer.rs:85` |
-| `pocketstation::session::lifecycle::trace::SessionTraceRecordKind` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/trace.rs:27` |
-| `pocketstation::session::lifecycle::trace::SessionTraceRecorderFinishError` | enum | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/session/lifecycle/trace.rs:98` |
+File finalization happens during stop; do not declare success from captured-frame counts alone.
 
 ## Verify the outcome
 
-The following test bodies are evidence only for their recorded setup:
+Stop returns a recording outcome whose completed stems match the declared labels and whose failed-stem list is empty.
+
+Executable evidence selected for **Record independent stems** is limited to each test's recorded setup and assertions:
 
 - `given_derived_permission_epoch_when_later_frame_changes_it_then_recording_fails_closed` — given derived permission epoch when later frame changes it then recording fails closed (`src/recording/endpoint/tests.rs:287`; `test-5c3ff5e741df683ae4d8`).
 - `given_session_context_and_two_first_frames_when_recorded_then_manifest_derives_capture_lineage_and_common_origin` — given session context and two first frames when recorded then manifest derives capture lineage and common origin (`src/recording/endpoint/tests.rs:187`; `test-9352f7a742c1f649857a`).
@@ -60,20 +45,32 @@ The following test bodies are evidence only for their recorded setup:
 
 ## Failure signals
 
-- `pocketstation::session::declaration::typed_stream::TypedStreamError` / `OutputSignalMismatch` — `error-00e5716261eba0f8cf3d`
-- `pocketstation::session::error::SessionError` / `UnknownStem` — `error-00f6e798d158df66c847`
-- `pocketstation::session::error_code::SessionStartErrorCode` / `StartCancelled` — `error-01d3fc855e2a00319076`
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `OperatorPrepare` — `error-023d6ab0b23a50a614ff`
-- `pocketstation::session::error_code::SessionStartErrorCode` / `TraceRecorderSetupFailed` — `error-0279b2b6b0cb3b5801bc`
-- `pocketstation::session::prepare::error::SessionPrepareError` / `MissingOperatorSignalInput` — `error-037ddc3e193da74177f8`
-- `pocketstation::recording::error_code::RecordingErrorCode` / `PermissionDenied` — `error-059bf10da1dcb4446e68`
-- `pocketstation::session::lifecycle::trace::SessionTraceValidationError` / `InvalidLayout` — `error-05c60389efcb84311921`
-- `pocketstation::session::prepare::error::SessionPrepareError` — `error-085082b521c14e5ecd1e`
-- `pocketstation::session::extensions::audio_input::buffer::AudioInputWriteErrorKind` / `Closed` — `error-08a7536094bfb2242b17`
-- `pocketstation::session::lifecycle::host::SessionEngineHostBuildError` / `EndpointExtensionRegistration` — `error-09837185c7fca0f70618`
-- `pocketstation::session::lifecycle::start_contract::SessionStartError` / `MissingEndpointDeclaration` — `error-0bc2f7c0b9f9dbf8ddd7`
+- `pocketstation::recording::error_code::RecordingErrorCode` — `error-68ad0dee12406c0e6362`
+- `pocketstation::recording::error_code::RecordingErrorCode` / `DuplicateStemLabel` — `error-dce6c6ee7c6a5e364db2`
+- `pocketstation::recording::error_code::RecordingErrorCode` / `FrameSpecMismatch` — `error-12c636b42e1cdd1deab7`
+- `pocketstation::recording::error_code::RecordingErrorCode` / `GapTooLarge` — `error-38b0ea1c2434c574c637`
+- `pocketstation::recording::error_code::RecordingErrorCode` / `Incomplete` — `error-590cdd41a3dd3ec6ffcd`
+- `pocketstation::recording::error_code::RecordingErrorCode` / `InvalidSampleSpec` — `error-9a35932efb9b3e31e85a`
+- `pocketstation::recording::error_code::RecordingErrorCode` / `InvalidStemLabel` — `error-b6f7bbf887c2eb4077ad`
+- `pocketstation::recording::error_code::RecordingErrorCode` / `IoFailed` — `error-b17153cc6b42bd71e6c3`
+- `pocketstation::recording::error_code::RecordingErrorCode` / `JsonFailed` — `error-841ee8b8be291cf14dc3`
+- `pocketstation::recording::error_code::RecordingErrorCode` / `LineageMismatch` — `error-cd7f8f4c84e98696daec`
 
-Retry only when the relevant API or error contract explicitly permits it. An error name, a transient-looking message, or a successful prior run is not retry evidence.
+## API reference
+
+- [Multistem Recording](/docs/concepts/multistem-recording.md)
+- [Recording](/docs/reference/recording.md)
+
+| Public declaration | Kind | Declared purpose | Source |
+|---|---|---|---|
+| `RecordingOutcome::completed_stems` | struct_field | Stores the completed stems used by `RecordingOutcome`. | `src/recording/writer.rs:114` |
+| `RecordingOutcome::failed_stems` | struct_field | Stores the failed stems used by `RecordingOutcome`. | `src/recording/writer.rs:115` |
+| `RecordingOutcome::stems` | struct_field | Stores the stems used by `RecordingOutcome`. | `src/recording/writer.rs:116` |
+| `pocketstation::recording::config::RecorderStemConfig` | struct | Configures recorder stem behavior at its owning API boundary. | `src/recording/config.rs:55` |
+| `pocketstation::recording::config::StemLabel` | struct | Stores the validated human-readable label used for one recording stem. | `src/recording/config.rs:20` |
+| `pocketstation::recording::endpoint::MultistemRecordingReceipt` | struct | Retains the identity and observation access returned for multistem recording. | `src/recording/endpoint.rs:28` |
+| `pocketstation::recording::endpoint::SessionMultistemEndpointCoordinator` | struct | Canonical Session-owned multistem recorder declaration. | `src/recording/endpoint.rs:49` |
+| `pocketstation::recording::writer::DiscontinuityRecord` | struct | Records one immutable discontinuity observation. | `src/recording/writer.rs:92` |
 
 ## Related documentation
 
@@ -88,8 +85,8 @@ Retry only when the relevant API or error contract explicitly permits it. An err
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Record independent stems** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `examples/product_quickstart.rs:1-61` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Record independent stems**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

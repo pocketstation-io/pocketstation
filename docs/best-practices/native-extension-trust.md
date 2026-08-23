@@ -2,38 +2,33 @@
 
 <!-- claims: CLM-BEST-006-CAP-001,CLM-BEST-006-CAP-002,CLM-BEST-006-SOURCE-001 -->
 
+## Problem
+
+Loading a native extension executes code and retains callback pointers for the registration lifetime.
+
 ## Recommendation
 
-Load executable extensions only from a canonical absolute path whose trust decision belongs to the host application.
+Accept only a host-trusted canonical absolute path to a regular file, then keep the load receipt alive while imported registrations are reachable.
 
-## Why
+## Reason
 
-The repository makes capacity, ownership, identity, lifecycle, and evidence boundaries explicit so failures remain attributable. Bypassing them removes observations and typed outcomes needed for diagnosis.
+Path, ABI, descriptor, transaction, and executable-lifetime checks protect the loader's declared boundary.
 
 ## Tradeoff
 
-The recommendation requires explicit configuration and result handling. It does not promise that one capacity, retry budget, selector, or shutdown policy fits every workload. Measure within the API's stated scope.
+Canonicalization and trust policy add deployment work and do not sandbox the loaded code.
 
 ## When it does not apply
 
-Do not apply a realtime, connector, capture, or extension rule to another lane or boundary unless it exposes the same contract. An internal pattern is not automatically a public recommendation.
+This rule does not apply to a connector that runs exclusively through a separately managed process boundary.
 
 ## Repository evidence
 
-- `bounded_queue` at `tests/conformance_fixture.rs` (`pattern-095b17abae307638000d`).
-- `clock_correlation` at `src/abi/executable_extension.rs` (`pattern-4ba4a78f05d586dd6668`).
-- `bounded_queue` at `src/abi/executable_extension.rs` (`pattern-525a976746de10b4f0c9`).
-- `typed_error` at `src/abi/executable_extension.rs` (`pattern-5be4ae7df5544c36e922`).
-- `typed_error` at `src/abi/session/mod.rs` (`pattern-796af7f8b2fa015d666c`).
-- `buffer_pool` at `src/abi/session/conformance_fixture.rs` (`pattern-89c11b4a94980624b4e5`).
-- `buffer_pool` at `src/abi/session/mod.rs` (`pattern-96698d9df68517671d53`).
-- `typed_error` at `tests/macos_native_ring_contract.rs` (`pattern-c187a3b04f866efe0acb`).
-- `typed_error` at `src/abi/session/conformance_fixture.rs` (`pattern-c94cceb556c86ba83b5b`).
-- `typed_error` at `src/abi/session/runtime.rs` (`pattern-e533a842654dad617452`).
+This recommendation is tied directly to the page's source evidence.
 
 ## Executable evidence
 
-The following test bodies are evidence only for their recorded setup:
+Executable evidence selected for **Load extensions from trusted absolute paths** is limited to each test's recorded setup and assertions:
 
 - `given_acquired_malformed_registration_when_loaded_then_context_is_destroyed_once` — given acquired malformed registration when loaded then context is destroyed once (`tests/native_extension_library.rs:106`; `test-47090f2c38cec228990b`).
 - `given_duplicate_library_import_when_loaded_then_second_import_is_transactional` — given duplicate library import when loaded then second import is transactional (`tests/native_extension_library.rs:190`; `test-d8a393c10a8e4326265b`).
@@ -61,8 +56,8 @@ The following test bodies are evidence only for their recorded setup:
 
 ## Evidence boundary
 
-This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+The claims on **Load extensions from trusted absolute paths** are anchored to Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
 - `src/native_extension/library.rs:1-272` (`DIRECT`)
 
-A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.
+For **Load extensions from trusted absolute paths**, direct source establishes only the recorded declaration or implementation. Tests, external fixtures, and qualification artifacts retain their narrower evidence classifications.

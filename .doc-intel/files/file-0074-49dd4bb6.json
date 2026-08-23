@@ -3,7 +3,11 @@
   "async_boundaries": [],
   "atomics": [],
   "callbacks": [],
-  "called_by": [],
+  "called_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/mod.rs"
+  ],
   "calls": [
     "ApplicationSelector::name",
     "Arc::clone",
@@ -199,7 +203,11 @@
       "text": "#[cfg(any(test, feature = \"conformance-fixtures\"))]"
     }
   ],
-  "constructed_by": [],
+  "constructed_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/mod.rs"
+  ],
   "constructs": [
     "Arc::new",
     "AtomicU32::new",
@@ -1392,8 +1400,13 @@
       "symbol": null
     }
   ],
+  "example_coverage_status": "no_direct_example_link_extracted",
   "examples_using": [],
-  "extended_by": [],
+  "extended_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/mod.rs"
+  ],
   "extends": [],
   "feature_flags": [
     "conformance-fixtures"
@@ -1409,14 +1422,22 @@
   "generated": false,
   "generated_from": "not_applicable",
   "git_object": "c37ec0a40c63181c3c67a758fa83254635158334",
-  "implemented_by": [],
+  "implemented_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/mod.rs"
+  ],
   "implements": [
     "SessionObject",
     "SessionRuntime",
     "EngineRuntime",
     "RuntimeState"
   ],
-  "imported_by": [],
+  "imported_by": [
+    "CONTAINS:src/abi/session/mod.rs",
+    "IMPORTS:src/abi/session/mod.rs",
+    "REFERENCES:src/abi/session/mod.rs"
+  ],
   "imports": [
     "crate::abi::executable_extension::{ ExecutableExtensionPipeline, ExecutableExtensionRegistration, }",
     "crate::abi::session::abi::{ PksSessionAudioFrame, PksSessionEvent, PksSessionEventKind, PksSessionHandle, PksSessionHandleKind, PksSessionLifecycleState, PksSessionSampleFormat, PKS_SESSION_ABI_MAJOR, PKS_SESSION_ABI_MINOR, }",
@@ -1427,7 +1448,18 @@
     "std::sync::{Arc, Mutex, OnceLock}"
   ],
   "inputs": [
-    "See compiler-backed symbol signatures"
+    "#[cfg(any(test, feature = \"conformance-fixtures\"))]",
+    "DEFAULT_ENGINE_CAPACITY_COUNT,",
+    "DEFAULT_SESSION_CAPACITY_COUNT,",
+    "const DEFAULT_ENGINE_CAPACITY_COUNT: usize = 16;",
+    "const DEFAULT_SESSION_CAPACITY_COUNT: usize = 1;",
+    "crate::abi::executable_extension::{ ExecutableExtensionPipeline, ExecutableExtensionRegistration, }",
+    "crate::abi::session::abi::{ PksSessionAudioFrame, PksSessionEvent, PksSessionEventKind, PksSessionHandle, PksSessionHandleKind, PksSessionLifecycleState, PksSessionSampleFormat, PKS_SESSION_ABI_MAJOR, PKS_SESSION_ABI_MINOR, }",
+    "crate::abi::session::error::AbiError",
+    "crate::abi::session::handle::HandleTable",
+    "crate::session::{ ApplicationSelector, CompiledSession, EndpointConfiguration, EndpointDescriptor, NativeSessionEngineHostOptions, Operator, OperatorConfiguration, OperatorId, PolledAudioBatchLease, PolledAudioPollError, RunningSession, Session, SessionEngineHost, SessionEngineHostBuilder, SessionEvent, SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionLifecycleState, SessionMetricsSnapshot, SessionStartCancellation, SessionStartError, Source, SourceConfiguration, SourceTypeId, }",
+    "std::sync::atomic::{AtomicU32, AtomicU64, Ordering}",
+    "std::sync::{Arc, Mutex, OnceLock}"
   ],
   "invariants": [],
   "language": "Rust",
@@ -1462,20 +1494,52 @@
     }
   ],
   "non_responsibilities": [
-    "unknown"
+    "Does not establish platform qualification, performance, or retry guarantees absent explicit evidence."
   ],
   "observed_patterns": [
     "pattern-e533a842654dad617452"
   ],
   "outputs": [
-    "See compiler-backed symbol signatures"
+    "Err(AbiError::BackendFailure)",
+    "Err(AbiError::InvalidLifecycleState)",
+    "Err(_) => {",
+    "Self::Failed { .. } => Err(AbiError::BackendFailure),",
+    "fn:allocate_engine",
+    "fn:allocate_engine_with_host",
+    "fn:audio_frame",
+    "fn:compile_session",
+    "fn:create_app_mic_session",
+    "fn:create_executable_extension_session",
+    "fn:create_session",
+    "fn:destroy_session",
+    "fn:engine_is_live",
+    "fn:metrics",
+    "fn:new",
+    "fn:poll_audio",
+    "fn:poll_event",
+    "fn:register_executable_extension",
+    "fn:release_audio",
+    "fn:release_engine",
+    "fn:session_events",
+    "fn:session_state",
+    "fn:start_session",
+    "fn:stop_session",
+    "fn:with_engine",
+    "fn:with_engine_mut",
+    "return Err(AbiError::InvalidArgument);",
+    "return Err(AbiError::InvalidLifecycleState);",
+    "return Err(AbiError::NoCapacity);",
+    "struct:RuntimeState",
+    "struct:SessionRuntime"
   ],
   "package": "pocketstation",
   "path": "src/abi/session/runtime.rs",
   "platform_gate": [
     "not_explicitly_gated"
   ],
-  "potential_pitfalls": [],
+  "potential_pitfalls": [
+    "Keep claims within the file's direct evidence and linked tests."
+  ],
   "private_surface": [
     {
       "kind": "const",
@@ -1807,7 +1871,7 @@
   ],
   "purpose": {
     "classification": "INFERRED",
-    "text": "Defines the Rust module and items owned by `pocketstation::abi::session::runtime`."
+    "text": "Implements pocketstation::abi::session::runtime responsibilities, including runtime; default engine capacity count; default session capacity count."
   },
   "queues": [],
   "recovery_behavior": [],
@@ -1841,6 +1905,20 @@
     "docs/best-practices/native-extension-trust.md",
     "docs/security/boundaries.md"
   ],
+  "relationship_outputs": [
+    "REFERENCES:src/abi/executable_extension.rs",
+    "REFERENCES:src/abi/session/abi.rs",
+    "REFERENCES:src/abi/session/error.rs",
+    "REFERENCES:src/abi/session/handle.rs",
+    "REFERENCES:src/endpoint/polled_audio_driver.rs",
+    "REFERENCES:src/session/compile/compiled.rs",
+    "REFERENCES:src/session/declaration/draft.rs",
+    "REFERENCES:src/session/lifecycle/events.rs",
+    "REFERENCES:src/session/lifecycle/host.rs",
+    "REFERENCES:src/session/lifecycle/observations.rs",
+    "REFERENCES:src/session/lifecycle/running.rs",
+    "REFERENCES:src/session/lifecycle/start_contract.rs"
+  ],
   "resource_ownership": [
     {
       "line": 2,
@@ -1872,59 +1950,36 @@
     }
   ],
   "responsibilities": [
-    "DEFAULT_ENGINE_CAPACITY_COUNT",
-    "DEFAULT_SESSION_CAPACITY_COUNT",
-    "ENGINE_HANDLE_SCOPE_ID",
-    "NEXT_ENGINE_SCOPE_ID",
-    "SessionObject",
-    "lifecycle_state",
-    "request_stop",
-    "events",
-    "SessionRuntime",
-    "new",
-    "with_options",
-    "with_host",
-    "create_app_mic_session",
-    "register_executable_extension",
-    "create_executable_extension_session",
-    "compile_session",
-    "start_session",
-    "stop_session",
-    "session_state",
-    "session_events",
-    "poll_event",
-    "metrics",
-    "poll_audio",
-    "audio_frame",
-    "release_audio",
-    "destroy_session",
-    "shutdown",
-    "map_poll_error",
-    "event_record",
-    "EngineRuntime",
-    "new",
-    "state",
-    "set_state",
-    "validate_session",
-    "RuntimeState",
-    "new",
-    "allocate_engine",
-    "allocate_engine_with_host",
-    "allocate_runtime",
-    "release_engine",
-    "engine_is_live",
-    "engine",
-    "with_engine_mut",
-    "with_engine",
-    "create_session",
-    "register_executable_extension",
-    "create_executable_extension_session",
-    "compile_session",
-    "start_session",
-    "stop_session",
-    "session_state",
-    "destroy_session",
-    "lifecycle_state_from_event"
+    "DEFAULT_ENGINE_CAPACITY_COUNT (const)",
+    "DEFAULT_SESSION_CAPACITY_COUNT (const)",
+    "ENGINE_HANDLE_SCOPE_ID (const)",
+    "NEXT_ENGINE_SCOPE_ID (static)",
+    "SessionObject (enum)",
+    "lifecycle_state (fn)",
+    "request_stop (fn)",
+    "events (fn)",
+    "SessionRuntime (struct)",
+    "new (fn)",
+    "with_options (fn)",
+    "with_host (fn)",
+    "create_app_mic_session (fn)",
+    "register_executable_extension (fn)",
+    "create_executable_extension_session (fn)",
+    "compile_session (fn)",
+    "start_session (fn)",
+    "stop_session (fn)",
+    "session_state (fn)",
+    "session_events (fn)",
+    "poll_event (fn)",
+    "metrics (fn)",
+    "poll_audio (fn)",
+    "audio_frame (fn)",
+    "release_audio (fn)",
+    "destroy_session (fn)",
+    "shutdown (fn)",
+    "map_poll_error (fn)",
+    "event_record (fn)",
+    "EngineRuntime (struct)"
   ],
   "retry_behavior": [],
   "serialization": [],
@@ -1952,7 +2007,12 @@
   "startup_behavior": [],
   "state_machine": [],
   "tasks": [],
-  "tests_covering": [],
+  "test_coverage_status": "linked",
+  "tests_covering": [
+    "test-49ea3414f8bb90cf86b1",
+    "test-85537f6d9bc6ada5654e",
+    "test-8f6b3c13a8c5d31e5914"
+  ],
   "threads": [],
   "visibility": "mixed"
 }
