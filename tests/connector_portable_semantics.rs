@@ -2,7 +2,10 @@ use std::collections::BTreeSet;
 
 use serde_json::Value;
 
-const VECTORS: &str = include_str!("../../protocol/conformance/connector/v1/vectors.json");
+const VECTORS_PATH: &str = concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../protocol/conformance/connector/v1/vectors.json"
+);
 
 fn nonempty_text(value: Option<&Value>) -> bool {
     value
@@ -168,7 +171,8 @@ fn validate_case(case: &Value, limits: &Value) -> Result<(), &'static str> {
 
 #[test]
 fn given_canonical_connector_vectors_when_compared_then_core_contract_semantics_match() {
-    let corpus: Value = serde_json::from_str(VECTORS).expect("canonical connector vectors");
+    let vectors = std::fs::read_to_string(VECTORS_PATH).expect("canonical connector vectors");
+    let corpus: Value = serde_json::from_str(&vectors).expect("valid connector vector JSON");
     assert_eq!(corpus["schema_revision"], 1);
     assert_eq!(
         corpus["limits"]["maximum_manifest_entries"],
