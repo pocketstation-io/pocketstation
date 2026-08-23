@@ -37,46 +37,72 @@ impl Default for PolledAudioEndpointConfig {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as polled audio endpoint config error."]
 pub enum PolledAudioEndpointConfigError {
     #[error("polled-audio queue capacity must be greater than zero frames")]
+    #[doc = "Reports zero queue capacity."]
     ZeroQueueCapacity,
     #[error("polled-audio batch capacity must be greater than zero frames")]
+    #[doc = "Reports zero batch capacity."]
     ZeroBatchCapacity,
     #[error("polled-audio lease capacity must be greater than zero")]
+    #[doc = "Reports zero lease capacity."]
     ZeroLeaseCapacity,
     #[error("polled-audio queue capacity exceeds {MAX_QUEUE_CAPACITY_FRAMES} frames")]
+    #[doc = "Reports queue capacity too large."]
     QueueCapacityTooLarge,
     #[error("polled-audio batch capacity exceeds {MAX_BATCH_CAPACITY_FRAMES} frames")]
+    #[doc = "Reports batch capacity too large."]
     BatchCapacityTooLarge,
     #[error("polled-audio lease capacity exceeds {MAX_OUTSTANDING_LEASES}")]
+    #[doc = "Reports lease capacity too large."]
     LeaseCapacityTooLarge,
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[doc = "Reports the polled audio observations collected at an observation boundary."]
 pub struct PolledAudioObservations {
+    #[doc = "Stores the registered endpoints associated with `PolledAudioObservations`."]
     pub registered_endpoints: u64,
+    #[doc = "Sets the queue capacity frames available to `PolledAudioObservations`."]
     pub queue_capacity_frames: u64,
+    #[doc = "Reports the queue depth frames observed by `PolledAudioObservations`."]
     pub queue_depth_frames: u64,
+    #[doc = "Reports the queue peak frames observed by `PolledAudioObservations`."]
     pub queue_peak_frames: u64,
+    #[doc = "Counts the total number of queue depth invariant failures observed by `PolledAudioObservations`."]
     pub queue_depth_invariant_failures_total: u64,
+    #[doc = "Counts the total number of frames received observed by `PolledAudioObservations`."]
     pub frames_received_total: u64,
+    #[doc = "Counts the total number of frames delivered observed by `PolledAudioObservations`."]
     pub frames_delivered_total: u64,
+    #[doc = "Counts the total number of queue full drops observed by `PolledAudioObservations`."]
     pub queue_full_drops_total: u64,
+    #[doc = "Counts the total number of invalid ownership drops observed by `PolledAudioObservations`."]
     pub invalid_ownership_drops_total: u64,
+    #[doc = "Sets the lease capacity count available to `PolledAudioObservations`."]
     pub lease_capacity_count: u64,
+    #[doc = "Stores the outstanding leases associated with `PolledAudioObservations`."]
     pub outstanding_leases: u64,
+    #[doc = "Counts the total number of lease exhausted observed by `PolledAudioObservations`."]
     pub lease_exhausted_total: u64,
+    #[doc = "Counts the total number of batches polled observed by `PolledAudioObservations`."]
     pub batches_polled_total: u64,
+    #[doc = "Counts the total number of frames polled observed by `PolledAudioObservations`."]
     pub frames_polled_total: u64,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as polled audio poll error."]
 pub enum PolledAudioPollError {
     #[error("polled-audio queue is empty")]
+    #[doc = "Represents an empty value or collection."]
     Empty,
     #[error("polled-audio lease capacity is exhausted")]
+    #[doc = "Reports lease capacity exhausted."]
     LeaseCapacityExhausted,
     #[error("polled-audio receipt state is poisoned")]
+    #[doc = "Reports state poisoned."]
     StatePoisoned,
 }
 
@@ -169,20 +195,24 @@ impl PolledAudioReceipt {
     }
 }
 
+#[doc = "Owns bounded access to polled audio batch."]
 pub struct PolledAudioBatchLease {
     shared: Arc<ReceiptShared>,
     frames: Option<Vec<DeliveredAudioFrame>>,
 }
 
 impl PolledAudioBatchLease {
+    #[doc = "Returns the number of values held by `PolledAudioBatchLease`."]
     pub fn len(&self) -> usize {
         self.frames.as_ref().map_or(0, Vec::len)
     }
 
+    #[doc = "Returns whether `PolledAudioBatchLease` contains no values."]
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
 
+    #[doc = "Returns the frame associated with `PolledAudioBatchLease`."]
     pub fn frame(&self, index: usize) -> Option<PolledAudioFrame<'_>> {
         self.frames
             .as_ref()?
@@ -192,6 +222,7 @@ impl PolledAudioBatchLease {
 }
 
 impl Drop for PolledAudioBatchLease {
+    #[doc = "Releases resources owned by `PolledAudioBatchLease`."]
     fn drop(&mut self) {
         let Some(mut frames) = self.frames.take() else {
             return;
@@ -207,39 +238,48 @@ impl Drop for PolledAudioBatchLease {
 }
 
 #[derive(Clone, Copy)]
+#[doc = "Represents polled audio frame in the PocketStation API."]
 pub struct PolledAudioFrame<'lease> {
     delivered: &'lease DeliveredAudioFrame,
 }
 
 impl<'lease> PolledAudioFrame<'lease> {
+    #[doc = "Returns the frame lineage associated with `PolledAudioFrame`."]
     pub fn lineage(self) -> FrameLineage {
         self.delivered.frame.lineage()
     }
 
+    #[doc = "Returns the endpoint identifier associated with `PolledAudioFrame`."]
     pub fn endpoint_id(self) -> EndpointId {
         self.delivered.endpoint_id
     }
 
+    #[doc = "Returns the route identifier associated with `PolledAudioFrame`."]
     pub fn route_id(self) -> RouteId {
         self.delivered.route_id
     }
 
+    #[doc = "Returns the stream identifier associated with `PolledAudioFrame`."]
     pub fn stream_id(self) -> StreamId {
         self.delivered.frame.frame().stream_id()
     }
 
+    #[doc = "Returns the connector identifier associated with `PolledAudioFrame`."]
     pub fn connector_id(self) -> ConnectorId {
         self.delivered.connector_id
     }
 
+    #[doc = "Returns the sample rate hertz associated with `PolledAudioFrame`."]
     pub fn sample_rate_hz(self) -> u32 {
         self.delivered.frame.frame().sample_rate_hz
     }
 
+    #[doc = "Returns the channel count represented by `PolledAudioFrame`."]
     pub fn channels(self) -> u8 {
         self.delivered.frame.frame().channels
     }
 
+    #[doc = "Returns the audio samples held by `PolledAudioFrame`."]
     pub fn samples(self) -> &'lease [f32] {
         self.delivered.frame.frame().buffer.as_slice()
     }

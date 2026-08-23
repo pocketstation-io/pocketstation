@@ -1,0 +1,169 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 17,
+      "text": "realtime AudioFrame lane   typed async lane"
+    },
+    {
+      "line": 28,
+      "text": "blocking, async, logging, or panic on callbacks. Typed sources, external"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 23,
+      "text": "recording   callback    endpoint/transport"
+    },
+    {
+      "line": 28,
+      "text": "blocking, async, logging, or panic on callbacks. Typed sources, external"
+    },
+    {
+      "line": 30,
+      "text": "outside that callback lane."
+    }
+  ],
+  "called_by": [],
+  "calls": [],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "220d019c5293c8f7a7a14f5840e18e485eb3a14821c054d67a43ceb3f4165478",
+  "defaults": [],
+  "defines": [],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 23,
+      "text": "recording   callback    endpoint/transport"
+    },
+    {
+      "line": 29,
+      "text": "operators, managed-language sidecars, model work, and endpoint I/O execute"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "220d019c5293c8f7a7a14f5840e18e485eb3a14821c054d67a43ceb3f4165478",
+      "lines": [
+        1,
+        62
+      ],
+      "path": "docs/architecture/overview.md",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 35,
+      "text": "or generic type crosses the C ABI or sidecar protocol."
+    }
+  ],
+  "file_id": "file-0023-e5a5102f",
+  "file_kind": "documentation",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "fed3cd4eed8665800b61d18d180f494577863ef3",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Markdown",
+  "line_count": 62,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-dff2bce36b47db23a36e"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "repository",
+  "path": "docs/architecture/overview.md",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Documents Current architecture."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 35,
+      "text": "or generic type crosses the C ABI or sidecar protocol."
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 17,
+      "text": "realtime AudioFrame lane   typed async lane"
+    },
+    {
+      "line": 28,
+      "text": "blocking, async, logging, or panic on callbacks. Typed sources, external"
+    }
+  ],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

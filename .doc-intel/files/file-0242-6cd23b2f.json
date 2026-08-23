@@ -1,0 +1,681 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Box::new",
+    "EdgeContract::realtime_audio",
+    "HashMap::with_capacity",
+    "HashSet::with_capacity",
+    "MediaCaps::Audio",
+    "NodeId::from_index",
+    "NodeTypeId::from",
+    "PlanRunnerCancellation::new",
+    "PrepareContext::new",
+    "PreparedExternalSourceTarget::AudioIngress",
+    "PreparedExternalSourceTarget::OperatorInput",
+    "PreparedExternalSourceTarget::TypedEndpoint",
+    "PreparedOperatorOutputTarget::GeneratedAudio",
+    "PreparedOperatorOutputTarget::SignalEndpoint",
+    "PreparedWorkerOrigin::Stem",
+    "RealtimePlanExecutor::new",
+    "SampleSpec::new",
+    "StemId",
+    "StreamOrigin::Stem",
+    "Vec::new",
+    "Vec::with_capacity",
+    "allow",
+    "any",
+    "as_deref",
+    "as_str",
+    "async_factory",
+    "cfg",
+    "chain",
+    "clone",
+    "configuration",
+    "connections",
+    "connector_id",
+    "contains",
+    "count",
+    "definition",
+    "descriptor",
+    "drop",
+    "edge_buffer",
+    "edge_id",
+    "endpoints",
+    "external_audio_stem_id",
+    "filter",
+    "find",
+    "flat_map",
+    "generated_audio_ingresses",
+    "id",
+    "input_ports",
+    "insert",
+    "instance_id",
+    "into_runtime_parts",
+    "is_audio",
+    "is_compatible_with",
+    "is_empty",
+    "is_none",
+    "is_none_or",
+    "is_some",
+    "is_some_and",
+    "iter",
+    "len",
+    "let",
+    "manifest",
+    "map",
+    "map_or",
+    "map_or_else",
+    "map_worker_receivers",
+    "max",
+    "next",
+    "node",
+    "node_type_id",
+    "ok_or",
+    "ok_or_else",
+    "operator_id",
+    "operator_instance_id",
+    "operators",
+    "or_else",
+    "origin",
+    "output_port",
+    "output_ports",
+    "plan_source_channel",
+    "position",
+    "prepare_context_for_media",
+    "prepare_external_sources",
+    "prepare_generated_audio_ingresses",
+    "prepare_session_runtime",
+    "prepare_sources",
+    "pub",
+    "push",
+    "remove",
+    "required_node_binding",
+    "saturating_add",
+    "saturating_mul",
+    "source_id",
+    "source_instance_id",
+    "source_instances",
+    "source_outputs",
+    "source_type_id",
+    "stem_id",
+    "stems",
+    "stream_id",
+    "sum",
+    "target",
+    "then",
+    "to",
+    "to_owned",
+    "typed_edge",
+    "unwrap_or",
+    "usize::from",
+    "with_max_payload_bytes"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 1288,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Box::new",
+    "NodeTypeId::from",
+    "PlanRunnerCancellation::new",
+    "PrepareContext::new",
+    "RealtimePlanExecutor::new",
+    "SampleSpec::new",
+    "Vec::new",
+    "usize::from"
+  ],
+  "content_hash": "b2ff86a2e0afbf9fb5653faf4939464714f9e261e964b94596731d0927b16790",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 16,
+      "name": "error",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 18,
+      "name": "mappings",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 19,
+      "name": "prepared",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "prepare_session_runtime",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 93,
+      "name": "prepare_generated_audio_ingresses",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 178,
+      "name": "prepare_external_sources",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 447,
+      "name": "external_audio_stem_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 467,
+      "name": "prepare_sources",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 504,
+      "name": "WorkerMappingContext",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 512,
+      "name": "map_worker_receivers",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1260,
+      "name": "prepare_context_for_media",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1278,
+      "name": "required_node_binding",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 1289,
+      "name": "tests",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 958,
+      "text": "drop(receiver);"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 317,
+      "text": "Some(CompiledNodeBinding::Endpoint { route_id, .. })"
+    },
+    {
+      "line": 335,
+      "text": "let endpoint = spec"
+    },
+    {
+      "line": 338,
+      "text": ".find(|endpoint| endpoint.id() == *endpoint_id)"
+    },
+    {
+      "line": 354,
+      "text": "connector_id: endpoint.connector_id(),"
+    },
+    {
+      "line": 355,
+      "text": "endpoint_operator_id: endpoint.operator_id().clone(),"
+    },
+    {
+      "line": 356,
+      "text": "endpoint_node_type_id: endpoint.node_type_id().clone(),"
+    },
+    {
+      "line": 699,
+      "text": "let CompiledNodeBinding::Endpoint {"
+    },
+    {
+      "line": 964,
+      "text": "let CompiledNodeBinding::Endpoint {"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "prepare_session_runtime",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 138,
+      "text": "return Err(SessionPrepareError::InvalidGeneratedAudioMedia {"
+    },
+    {
+      "line": 146,
+      "text": "return Err(SessionPrepareError::InvalidGeneratedAudioMedia {"
+    },
+    {
+      "line": 154,
+      "text": "return Err(SessionPrepareError::InvalidGeneratedAudioMedia {"
+    },
+    {
+      "line": 224,
+      "text": "return Err(SessionPrepareError::InvalidExternalAudioMedia {"
+    },
+    {
+      "line": 242,
+      "text": "return Err(SessionPrepareError::InvalidExternalAudioMedia {"
+    },
+    {
+      "line": 488,
+      "text": "return Err(SessionPrepareError::DuplicateSourceNode { stem_id: stem.id() });"
+    },
+    {
+      "line": 570,
+      "text": "return Err(SessionPrepareError::OperatorDeclarationMismatch { node_id: node.id() });"
+    },
+    {
+      "line": 578,
+      "text": "return Err(SessionPrepareError::OperatorDeclarationMismatch { node_id: node.id() });"
+    },
+    {
+      "line": 611,
+      "text": "return Err(SessionPrepareError::IncompatibleNodeBinding {"
+    },
+    {
+      "line": 642,
+      "text": "return Err(SessionPrepareError::OperatorDeclarationMismatch {"
+    },
+    {
+      "line": 657,
+      "text": "return Err(SessionPrepareError::IncompatibleNodeBinding {"
+    },
+    {
+      "line": 678,
+      "text": "return Err(SessionPrepareError::InvalidGeneratedAudioMedia { stem_id: *stem_id });"
+    },
+    {
+      "line": 706,
+      "text": "return Err(SessionPrepareError::IncompatibleNodeBinding {"
+    },
+    {
+      "line": 738,
+      "text": "return Err(SessionPrepareError::IncompatibleNodeBinding {"
+    },
+    {
+      "line": 764,
+      "text": "return Err(SessionPrepareError::SignalRouteMismatch {"
+    },
+    {
+      "line": 770,
+      "text": "return Err(SessionPrepareError::DuplicateSignalRoute {"
+    },
+    {
+      "line": 850,
+      "text": "return Err(SessionPrepareError::InvalidOperatorInputPort {"
+    },
+    {
+      "line": 872,
+      "text": "return Err(SessionPrepareError::IncompatibleNodeBinding {"
+    },
+    {
+      "line": 927,
+      "text": "return Err(SessionPrepareError::OperatorDeclarationMismatch {"
+    },
+    {
+      "line": 933,
+      "text": "return Err(SessionPrepareError::OperatorDeclarationMismatch {"
+    },
+    {
+      "line": 938,
+      "text": "return Err(SessionPrepareError::DuplicateOperatorInput {"
+    },
+    {
+      "line": 971,
+      "text": "return Err(SessionPrepareError::IncompatibleNodeBinding {"
+    },
+    {
+      "line": 976,
+      "text": "return Err(SessionPrepareError::DuplicateWorkerRoute {"
+    },
+    {
+      "line": 1030,
+      "text": "return Err(SessionPrepareError::IncompatibleNodeBinding {"
+    },
+    {
+      "line": 1043,
+      "text": "return Err(SessionPrepareError::UnknownWorkerRoute {"
+    },
+    {
+      "line": 1053,
+      "text": "return Err(SessionPrepareError::UnknownWorkerRoute {"
+    },
+    {
+      "line": 1059,
+      "text": "return Err(SessionPrepareError::WorkerRouteMismatch {"
+    },
+    {
+      "line": 1118,
+      "text": "return Err(SessionPrepareError::IncompatibleNodeBinding {"
+    },
+    {
+      "line": 1180,
+      "text": "return Err(SessionPrepareError::MissingOperatorSignalInput {"
+    },
+    {
+      "line": 1237,
+      "text": "return Err(SessionPrepareError::WorkerTopologyMismatch {"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "b2ff86a2e0afbf9fb5653faf4939464714f9e261e964b94596731d0927b16790",
+      "lines": [
+        1,
+        1290
+      ],
+      "path": "src/session/prepare/mod.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0242-6cd23b2f",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "b7c87f0f40461fc1a677b22a2f5dc28dce993bd8",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::StemId",
+    "crate::frame::{SampleFormat, SampleSpec}",
+    "crate::graph::ir::GraphIr",
+    "crate::graph::{ChannelLayout, MediaCaps}",
+    "crate::graph::{EdgeContract, NodeId, NodeRegistry, NodeTypeId, PrepareContext}",
+    "crate::runtime::{ plan_source_channel, AsyncOperatorOutputBranchSpec, PlanEdgeReceiver, PlanRunnerCancellation, PlanSourceInput, RealtimePlanExecutor, TypedEdgeBranchSpec, }",
+    "crate::session::compile::{CompiledNodeBinding, CompiledSessionBindings}",
+    "crate::session::{CompiledSession, ConnectionTarget, SessionSpec, StreamOrigin}",
+    "error::SessionPrepareError",
+    "mappings::{ PreparedExternalAudioIngress, PreparedExternalOperatorInput, PreparedExternalSourceBranch, PreparedExternalSourceMapping, PreparedExternalSourceTarget, PreparedExternalTypedRoute, PreparedGeneratedAudioIngress, PreparedOperatorInputMapping, PreparedOperatorOutputMapping, PreparedOperatorOutputTarget, PreparedTypedInputOrigin, PreparedWorkerOrigin, }",
+    "mappings::{ PreparedOperatorMapping, PreparedSignalRouteMapping, PreparedSourceMapping, PreparedWorkerMapping, }",
+    "module:error",
+    "module:mappings",
+    "module:prepared",
+    "module:tests",
+    "prepared::PreparedSession",
+    "std::collections::{HashMap, HashSet}",
+    "std::sync::Arc"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 1290,
+  "locks": [],
+  "module": "pocketstation::session::prepare",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/prepare/mod.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 16,
+      "name": "error",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 18,
+      "name": "mappings",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 19,
+      "name": "prepared",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 93,
+      "name": "prepare_generated_audio_ingresses",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 178,
+      "name": "prepare_external_sources",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 447,
+      "name": "external_audio_stem_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 467,
+      "name": "prepare_sources",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 504,
+      "name": "WorkerMappingContext",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 512,
+      "name": "map_worker_receivers",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1260,
+      "name": "prepare_context_for_media",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1278,
+      "name": "required_node_binding",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 1289,
+      "name": "tests",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "prepare_session_runtime",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::session::prepare`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [
+    "error::SessionPrepareError",
+    "prepared::PreparedSession"
+  ],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 2,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 583,
+      "text": "factory: Arc::clone(factory),"
+    },
+    {
+      "line": 799,
+      "text": "target: PreparedOperatorOutputTarget::SignalEndpoint(Box::new("
+    }
+  ],
+  "responsibilities": [
+    "error",
+    "mappings",
+    "prepared",
+    "prepare_session_runtime",
+    "prepare_generated_audio_ingresses",
+    "prepare_external_sources",
+    "external_audio_stem_id",
+    "prepare_sources",
+    "WorkerMappingContext",
+    "map_worker_receivers",
+    "prepare_context_for_media",
+    "required_node_binding",
+    "tests"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 505,
+      "text": "struct WorkerMappingContext<'prepare> {"
+    },
+    {
+      "line": 506,
+      "text": "spec: &'prepare SessionSpec,"
+    },
+    {
+      "line": 507,
+      "text": "graph_ir: &'prepare GraphIr,"
+    },
+    {
+      "line": 508,
+      "text": "runtime_plan: &'prepare crate::graph::plan::RuntimePlan,"
+    },
+    {
+      "line": 509,
+      "text": "bindings: &'prepare CompiledSessionBindings,"
+    },
+    {
+      "line": 510,
+      "text": "node_registry: &'prepare NodeRegistry,"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

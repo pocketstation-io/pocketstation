@@ -1,0 +1,226 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "kHz",
+    "profile",
+    "pub"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "731744f018f75e0ba4b8c79067ac9a3e12bc06b39e7ef998672ef6cf0bfa2739",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 2,
+      "name": "OPUS_SAMPLE_RATE_HZ",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 5,
+      "name": "OPUS_FRAME_SAMPLES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 9,
+      "name": "VOICE_AGENT_FRAME_SAMPLES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 13,
+      "name": "OPUS_MAX_PACKET_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "I16_SCALE",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 2,
+      "name": "OPUS_SAMPLE_RATE_HZ",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 5,
+      "name": "OPUS_FRAME_SAMPLES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 9,
+      "name": "VOICE_AGENT_FRAME_SAMPLES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 13,
+      "name": "OPUS_MAX_PACKET_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "I16_SCALE",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "731744f018f75e0ba4b8c79067ac9a3e12bc06b39e7ef998672ef6cf0bfa2739",
+      "lines": [
+        1,
+        17
+      ],
+      "path": "src/codec/constants.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0106-64990b29",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "b109852bff6596385e2ba7e4d1de154c9ba0a49e",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 17,
+  "locks": [],
+  "module": "pocketstation::codec::constants",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/codec/constants.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 2,
+      "name": "OPUS_SAMPLE_RATE_HZ",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 5,
+      "name": "OPUS_FRAME_SAMPLES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 9,
+      "name": "VOICE_AGENT_FRAME_SAMPLES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 13,
+      "name": "OPUS_MAX_PACKET_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "I16_SCALE",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::codec::constants`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/opus-codec.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/opus-roundtrip.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/codec.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/frames-and-codec.md",
+    "docs/troubleshooting/opus.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "OPUS_SAMPLE_RATE_HZ",
+    "OPUS_FRAME_SAMPLES",
+    "VOICE_AGENT_FRAME_SAMPLES",
+    "OPUS_MAX_PACKET_BYTES",
+    "I16_SCALE"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

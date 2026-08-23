@@ -1,0 +1,892 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "ClockDomainId",
+    "Compiler::new",
+    "ExecError::Node",
+    "LineagedAudioFrame::new",
+    "MediaCaps::Audio",
+    "Node",
+    "NodeConfig::new",
+    "NodeError::Prepare",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Pipeline::new",
+    "PlanEdgeFrame::Exclusive",
+    "PlanEdgeFrame::Shared",
+    "PlanEdgeRouter::new",
+    "PlanExecutionSummary::default",
+    "PrepareContext::new",
+    "RealtimePlanExecutor::new",
+    "RuntimePlanner::new",
+    "SampleSpec::new",
+    "Self::Node",
+    "SessionId",
+    "SignalSpec::audio",
+    "SourceId",
+    "StemId",
+    "StreamId",
+    "Vec::new",
+    "abs",
+    "acquire",
+    "add_node",
+    "and_then",
+    "any",
+    "as_deref",
+    "as_slice",
+    "as_str",
+    "audio_frame",
+    "audio_port",
+    "cfg",
+    "clone",
+    "collect",
+    "compile",
+    "connect",
+    "context",
+    "derive",
+    "descriptor",
+    "dispatch_from",
+    "edge_id",
+    "error",
+    "execute_from",
+    "filter_map",
+    "first",
+    "frame",
+    "from_node",
+    "get",
+    "get_mut",
+    "given_connected_gain_plan_when_executed_then_only_connected_nodes_run_and_worker_receives_output",
+    "given_lineaged_frame_when_realtime_operator_executes_then_output_keeps_capture_epochs",
+    "given_realtime_fan_out_when_executed_then_each_mutating_branch_gets_independent_copy",
+    "id",
+    "in_",
+    "index",
+    "instantiate",
+    "into_parts",
+    "into_spec",
+    "iter",
+    "iter_mut",
+    "len",
+    "let",
+    "lineage",
+    "lineaged_frame",
+    "map",
+    "map_err",
+    "max",
+    "new",
+    "node",
+    "observations",
+    "observe_dispatch",
+    "ok_or_else",
+    "out",
+    "plan",
+    "prepare",
+    "process",
+    "process_and_dispatch_lineaged",
+    "push",
+    "recv_at",
+    "register",
+    "register_builtins",
+    "registry",
+    "requires_realtime_safety",
+    "saturating_add",
+    "sort_by",
+    "to",
+    "to_owned",
+    "to_string",
+    "try_copy_from_slice",
+    "unwrap",
+    "unwrap_or",
+    "validate_config",
+    "with"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 3,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 11,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 15,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 187,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 228,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 239,
+      "text": "use crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId};"
+    },
+    {
+      "line": 281,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Compiler::new",
+    "LineagedAudioFrame::new",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Pipeline::new",
+    "PlanEdgeRouter::new",
+    "PrepareContext::new",
+    "RealtimePlanExecutor::new",
+    "RuntimePlanner::new",
+    "SampleSpec::new",
+    "Vec::new",
+    "dispatch_from",
+    "execute_from",
+    "new"
+  ],
+  "content_hash": "9dc2e93f2bb5af5a9c5b8d5d927bf31f8c057c00119f25a0140dbeac0c7bb897",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "enum",
+      "line": 20,
+      "name": "ExecError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 26,
+      "name": "from_node",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 30,
+      "name": "RealtimeNodeSlot",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 37,
+      "name": "PlanExecutionSummary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "observe_dispatch",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 53,
+      "name": "RealtimePlanExecutor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 148,
+      "name": "execute_from",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 188,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 191,
+      "name": "process_and_dispatch_lineaged",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 229,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 249,
+      "name": "audio_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 265,
+      "name": "WorkerSinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 269,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 280,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 284,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 295,
+      "name": "registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 302,
+      "name": "context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 306,
+      "name": "audio_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 313,
+      "name": "lineaged_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 334,
+      "name": "given_connected_gain_plan_when_executed_then_only_connected_nodes_run_and_worker_receives_output",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 372,
+      "name": "given_realtime_fan_out_when_executed_then_each_mutating_branch_gets_independent_copy",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 414,
+      "name": "given_lineaged_frame_when_realtime_operator_executes_then_output_keeps_capture_epochs",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 20,
+      "name": "ExecError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 26,
+      "name": "from_node",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 37,
+      "name": "PlanExecutionSummary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 53,
+      "name": "RealtimePlanExecutor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 148,
+      "name": "execute_from",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 188,
+      "name": "observations",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 84,
+      "text": "return Err(ExecError::Node(format!("
+    },
+    {
+      "line": 127,
+      "text": "return Err(ExecError::Node(format!("
+    },
+    {
+      "line": 176,
+      "text": "return Err(ExecError::Node(format!("
+    },
+    {
+      "line": 204,
+      "text": "return Err(ExecError::Node(format!("
+    },
+    {
+      "line": 290,
+      "text": "Err(NodeError::Prepare("
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 20,
+      "name": "ExecError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 97,
+      "text": ".map_err(ExecError::from_node)?;"
+    },
+    {
+      "line": 99,
+      "text": ".map_err(ExecError::from_node)?;"
+    },
+    {
+      "line": 111,
+      "text": "PlanEdgeRouter::new(plan, ir).map_err(|error| ExecError::Node(error.to_string()))?;"
+    },
+    {
+      "line": 210,
+      "text": "let output = slot.node.process(frame).map_err(ExecError::from_node)?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 97,
+      "text": ".map_err(ExecError::from_node)?;"
+    },
+    {
+      "line": 99,
+      "text": ".map_err(ExecError::from_node)?;"
+    },
+    {
+      "line": 111,
+      "text": "PlanEdgeRouter::new(plan, ir).map_err(|error| ExecError::Node(error.to_string()))?;"
+    },
+    {
+      "line": 210,
+      "text": "let output = slot.node.process(frame).map_err(ExecError::from_node)?;"
+    },
+    {
+      "line": 213,
+      "text": "let output = LineagedAudioFrame::new(output, lineage).map_err(|error| {"
+    },
+    {
+      "line": 310,
+      "text": "buffer.try_copy_from_slice(samples).unwrap();"
+    },
+    {
+      "line": 431,
+      "text": "let summary = executor.execute_from(source.id(), input, 10).unwrap();"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 97,
+      "text": ".map_err(ExecError::from_node)?;"
+    },
+    {
+      "line": 99,
+      "text": ".map_err(ExecError::from_node)?;"
+    },
+    {
+      "line": 111,
+      "text": "PlanEdgeRouter::new(plan, ir).map_err(|error| ExecError::Node(error.to_string()))?;"
+    },
+    {
+      "line": 210,
+      "text": "let output = slot.node.process(frame).map_err(ExecError::from_node)?;"
+    },
+    {
+      "line": 213,
+      "text": "let output = LineagedAudioFrame::new(output, lineage).map_err(|error| {"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "9dc2e93f2bb5af5a9c5b8d5d927bf31f8c057c00119f25a0140dbeac0c7bb897",
+      "lines": [
+        1,
+        446
+      ],
+      "path": "src/runtime/audio/executor.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0180-4a9cac6e",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "2c72c6215702be536f02ca409210ea9ca799e0bb",
+  "implemented_by": [],
+  "implements": [
+    "ExecError",
+    "PlanExecutionSummary",
+    "RealtimePlanExecutor",
+    "NodeFactory for WorkerSinkFactory"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::AudioFrame",
+    "crate::frame::LineagedAudioFrame",
+    "crate::frame::{ AudioBufferPool, ClockDomainId, FrameLineage, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
+    "crate::graph::compile::Compiler",
+    "crate::graph::compile::RuntimePlanner",
+    "crate::graph::dsl::Pipeline",
+    "crate::graph::ir::GraphIr",
+    "crate::graph::node::PrepareContext",
+    "crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId}",
+    "crate::graph::partition::ExecutionPartition",
+    "crate::graph::plan::RuntimePlan",
+    "crate::graph::register_builtins",
+    "crate::graph::registry::NodeRegistry",
+    "crate::graph::registry::{NodeFactory, NodeRegistry}",
+    "crate::graph::runtime_node::RuntimeNode",
+    "crate::graph::spec::EdgeId",
+    "crate::graph::spec::NodeId",
+    "crate::graph::{ AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalSpec, }",
+    "crate::runtime::audio::EdgeObservations",
+    "crate::runtime::audio::{DispatchSummary, PlanEdgeFrame, PlanEdgeReceiver, PlanEdgeRouter}",
+    "std::sync::Arc",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 291,
+      "text": "\"worker sink must not be instantiated on realtime executor\".to_owned(),"
+    },
+    {
+      "line": 364,
+      "text": "assert!((frame.frame().buffer.as_slice()[0] - 0.5).abs() < 1e-4);"
+    },
+    {
+      "line": 365,
+      "text": "assert!((frame.frame().buffer.as_slice()[1] + 0.2).abs() < 1e-4);"
+    },
+    {
+      "line": 409,
+      "text": "assert!((outputs[0] - 0.25).abs() < 1e-4);"
+    },
+    {
+      "line": 410,
+      "text": "assert!((outputs[1] - 1.0).abs() < 1e-4);"
+    },
+    {
+      "line": 438,
+      "text": "assert!((frame.frame().buffer.as_slice()[0] - 0.5).abs() < 1e-4);"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 446,
+  "locks": [],
+  "module": "pocketstation::runtime::audio::executor",
+  "network_io": [
+    {
+      "line": 343,
+      "text": "graph.connect(source.out(\"out\"), gain.in_(\"in\"));"
+    },
+    {
+      "line": 344,
+      "text": "graph.connect(gain.out(\"out\"), worker.in_(\"in\"));"
+    },
+    {
+      "line": 381,
+      "text": "graph.connect(source.out(\"out\"), left_gain.in_(\"in\"));"
+    },
+    {
+      "line": 382,
+      "text": "graph.connect(source.out(\"out\"), right_gain.in_(\"in\"));"
+    },
+    {
+      "line": 383,
+      "text": "graph.connect(left_gain.out(\"out\"), left_worker.in_(\"in\"));"
+    },
+    {
+      "line": 384,
+      "text": "graph.connect(right_gain.out(\"out\"), right_worker.in_(\"in\"));"
+    },
+    {
+      "line": 420,
+      "text": "graph.connect(source.out(\"out\"), gain.in_(\"in\"));"
+    },
+    {
+      "line": 421,
+      "text": "graph.connect(gain.out(\"out\"), worker.in_(\"in\"));"
+    }
+  ],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-3caaa68fb904e3dab03b",
+    "pattern-e733b10763d2378bd7b0",
+    "pattern-c2561f2a635a7ffcdd4a"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/runtime/audio/executor.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "struct",
+      "line": 30,
+      "name": "RealtimeNodeSlot",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "observe_dispatch",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 191,
+      "name": "process_and_dispatch_lineaged",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 229,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 249,
+      "name": "audio_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 265,
+      "name": "WorkerSinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 269,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 280,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 284,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 295,
+      "name": "registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 302,
+      "name": "context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 306,
+      "name": "audio_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 313,
+      "name": "lineaged_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 334,
+      "name": "given_connected_gain_plan_when_executed_then_only_connected_nodes_run_and_worker_receives_output",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 372,
+      "name": "given_realtime_fan_out_when_executed_then_each_mutating_branch_gets_independent_copy",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 414,
+      "name": "given_lineaged_frame_when_realtime_operator_executes_then_output_keeps_capture_epochs",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 20,
+      "name": "ExecError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 26,
+      "name": "from_node",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 37,
+      "name": "PlanExecutionSummary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 53,
+      "name": "RealtimePlanExecutor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 148,
+      "name": "execute_from",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 188,
+      "name": "observations",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Realtime node execution connected by the bounded edges of a `RuntimePlan`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/errors/runtime-and-sidecars.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/route-sizing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 33,
+      "text": "node: Box<dyn RuntimeNode>,"
+    },
+    {
+      "line": 230,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 289,
+      "text": ") -> Result<Box<dyn RuntimeNode>, NodeError> {"
+    },
+    {
+      "line": 299,
+      "text": "registry.register(Arc::new(WorkerSinkFactory)).unwrap();"
+    }
+  ],
+  "responsibilities": [
+    "ExecError",
+    "from_node",
+    "RealtimeNodeSlot",
+    "PlanExecutionSummary",
+    "observe_dispatch",
+    "RealtimePlanExecutor",
+    "new",
+    "execute_from",
+    "observations",
+    "process_and_dispatch_lineaged",
+    "tests",
+    "audio_port",
+    "WorkerSinkFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "registry",
+    "context",
+    "audio_frame",
+    "lineaged_frame",
+    "given_connected_gain_plan_when_executed_then_only_connected_nodes_run_and_worker_receives_output",
+    "given_realtime_fan_out_when_executed_then_each_mutating_branch_gets_independent_copy",
+    "given_lineaged_frame_when_realtime_operator_executes_then_output_keeps_capture_epochs"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 343,
+      "text": "graph.connect(source.out(\"out\"), gain.in_(\"in\"));"
+    },
+    {
+      "line": 344,
+      "text": "graph.connect(gain.out(\"out\"), worker.in_(\"in\"));"
+    },
+    {
+      "line": 381,
+      "text": "graph.connect(source.out(\"out\"), left_gain.in_(\"in\"));"
+    },
+    {
+      "line": 382,
+      "text": "graph.connect(source.out(\"out\"), right_gain.in_(\"in\"));"
+    },
+    {
+      "line": 383,
+      "text": "graph.connect(left_gain.out(\"out\"), left_worker.in_(\"in\"));"
+    },
+    {
+      "line": 384,
+      "text": "graph.connect(right_gain.out(\"out\"), right_worker.in_(\"in\"));"
+    },
+    {
+      "line": 420,
+      "text": "graph.connect(source.out(\"out\"), gain.in_(\"in\"));"
+    },
+    {
+      "line": 421,
+      "text": "graph.connect(gain.out(\"out\"), worker.in_(\"in\"));"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 98,
+      "text": "node.prepare(prepare_context)"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

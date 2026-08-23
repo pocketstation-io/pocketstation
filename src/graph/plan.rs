@@ -18,15 +18,36 @@ pub const MAX_EDGE_RING_CAPACITY_FRAMES: usize =
     crate::frame::POOL_MAX_SLOTS - EDGE_RECEIVER_MAX_IN_FLIGHT_FRAMES;
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
+#[doc = "Classifies failures reported as plan error."]
 pub enum PlanError {
     #[error("input port '{port}' on node {node} has multiplicity One but receives multiple edges")]
-    FanInOnSinglePort { node: u32, port: String },
+    #[doc = "Reports fan in on single port."]
+    FanInOnSinglePort {
+        #[doc = "Stores the node associated with `FanInOnSinglePort`."]
+        node: u32,
+        #[doc = "Stores the port associated with `FanInOnSinglePort`."]
+        port: String,
+    },
     #[error("output port '{port}' on node {node} uses MoveExclusive in a fan-out group")]
-    MoveExclusiveFanOut { node: u32, port: String },
+    #[doc = "Reports move exclusive fan out."]
+    MoveExclusiveFanOut {
+        #[doc = "Stores the node associated with `MoveExclusiveFanOut`."]
+        node: u32,
+        #[doc = "Stores the port associated with `MoveExclusiveFanOut`."]
+        port: String,
+    },
     #[error("compiled edge {edge:?} is missing its negotiated contract")]
-    MissingEdgeContract { edge: EdgeId },
+    #[doc = "Reports missing edge contract."]
+    MissingEdgeContract {
+        #[doc = "Stores the edge associated with `MissingEdgeContract`."]
+        edge: EdgeId,
+    },
     #[error("compiled edge {edge:?} is missing its declared output signal")]
-    MissingOutputSignal { edge: EdgeId },
+    #[doc = "Reports missing output signal."]
+    MissingOutputSignal {
+        #[doc = "Stores the edge associated with `MissingOutputSignal`."]
+        edge: EdgeId,
+    },
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]

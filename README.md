@@ -1,273 +1,156 @@
 # PocketStation
 
-**Capture once. Keep every source. Build the live media pipeline your
-application needs.**
+<!-- claims: CLM-DOC-000-CAP-001,CLM-DOC-000-CAP-002,CLM-DOC-000-CAP-003,CLM-DOC-000-CAP-004,CLM-DOC-000-CAP-005,CLM-DOC-000-CAP-006,CLM-DOC-000-CAP-007,CLM-DOC-000-CAP-008,CLM-DOC-000-CAP-009,CLM-DOC-000-CAP-010,CLM-DOC-000-CAP-011,CLM-DOC-000-CAP-012,CLM-DOC-000-CAP-013,CLM-DOC-000-CAP-014,CLM-DOC-000-CAP-015,CLM-DOC-000-CAP-016,CLM-DOC-000-CAP-017,CLM-DOC-000-CAP-018,CLM-DOC-000-CAP-019,CLM-DOC-000-CAP-020,CLM-DOC-000-CAP-021,CLM-DOC-000-CAP-022,CLM-DOC-000-CAP-023,CLM-DOC-000-CAP-024,CLM-DOC-000-CAP-025,CLM-DOC-000-CAP-026,CLM-DOC-000-CAP-027,CLM-DOC-000-CAP-028,CLM-DOC-000-CAP-029,CLM-DOC-000-CAP-030,CLM-DOC-000-CAP-031,CLM-DOC-000-CAP-032,CLM-DOC-000-CAP-033,CLM-DOC-000-SOURCE-001 -->
 
-PocketStation gives Rust developers one `Session` for capturing a desktop
-application and microphone as independent, source-aware live stems. The same
-capture can flow concurrently to AI Operators, application callbacks, a remote
-receiver, and aligned multistem recording without moving application or model
-work onto the audio callback.
-
-[![crates.io](https://img.shields.io/crates/v/pocketstation.svg)](https://crates.io/crates/pocketstation)
-[![docs.rs](https://img.shields.io/docsrs/pocketstation)](https://docs.rs/pocketstation/latest/pocketstation/)
-[![license](https://img.shields.io/crates/l/pocketstation.svg)](https://github.com/pocketstation-io/pocketstation)
-
-```text
-desktop application ─┐
-                     ├─ capture once ─ source-aware Session ─┬─ AI / model connector
-microphone ──────────┘                                       ├─ browser / remote receiver
-                                                             └─ aligned multistem recording
-```
-
-Build workflows such as:
-
-- live translation or captioning that keeps application speech and microphone
-  speech distinguishable;
-- meeting agents and copilots that send the same live stems to inference,
-  monitoring, transport, and recording;
-- support, accessibility, and QA tools that isolate a slow or failed
-  destination instead of stalling every branch;
-- speech-to-speech systems that return generated PCM through an explicit
-  bounded Bridge;
-- native and managed integrations that participate in the same Session
-  lifecycle rather than building another media runtime.
-
-## Contract
-
-PocketStation does not reduce live media to an anonymous `AudioFrame`. Its
-execution contract keeps the information needed to reason about a running
-system:
-
-| Contract | What remains explicit |
-|---|---|
-| Provenance | source, stream, and stem identity |
-| Time | sequence, timestamp, clock, and derivation |
-| Change | source generation, discontinuity, and permission epochs |
-| Delivery | route capacity, backpressure, copy, and loss policy |
-| Operations | queue depth, saturation, drops, failures, cancellation, and final outcome |
-
-Those semantics remain coherent as work crosses realtime audio, typed signals,
-Rust, the versioned C ABI, and bounded process sidecars. Each integration uses
-the same compiler, lifecycle, observations, and failure model.
+PocketStation is a Rust library for declaring and running source-aware desktop audio Sessions. A Session can keep application and microphone sources separate, route them through bounded paths, expose polled audio, and finalize multistem recording. Extensions, connectors, the C ABI, and sidecars participate through the same declaration and lifecycle model.
 
 ## Install
 
+PocketStation 1.1.1 requires Rust 1.95 or newer. Native capture is the default Cargo feature.
+
 ```toml
 [dependencies]
-pocketstation = "1.0.0"
+pocketstation = "1.1.1"
 ```
 
-PocketStation requires Rust 1.95 or newer. Native capture is enabled by
-default. A contracts-only build for documentation or tooling can disable it:
+Use the contracts-only form when you need public declarations without a native capture backend:
 
 ```toml
-pocketstation = { version = "1.0.0", default-features = false }
+pocketstation = { version = "1.1.1", default-features = false }
 ```
 
-## Quick start
+## Run the first Session
 
-This Session captures one named desktop application and the default microphone,
-keeps them as separate stems, exposes bounded audio polling, and records both
-stems.
+The repository keeps its quickstart as a compiled Cargo example. It declares application and microphone capture, gives each source an independent polled-audio route and recording stem, observes two stems, and inspects both Session and recording outcomes.
 
 ```rust,no_run
-use pocketstation::{ApplicationSelector, Session, SessionRecordingState, Source};
+use std::collections::BTreeMap;
 use std::error::Error;
 use std::time::{Duration, Instant};
 
+use pocketstation as pks;
+
 fn main() -> Result<(), Box<dyn Error>> {
-    let session = Session::builder()
-        .recording_root("recordings")
+    let session = pks::Session::builder()
+        .recording_root("pocketstation-recordings")
         .build();
+    let app = session.capture(pks::Source::application(pks::ApplicationSelector::name(
+        "PocketStation Demo",
+    )))?;
+    let mic = session.capture(pks::Source::microphone_default())?;
+    let app_audio = session.polled_audio()?;
+    let mic_audio = session.polled_audio()?;
 
-    let application = session.capture(Source::application(
-        ApplicationSelector::name("PocketStation Demo"),
-    ))?;
-    let microphone = session.capture(Source::microphone_default())?;
-
-    application.send(session.polled_audio()?)?;
-    microphone.send(session.polled_audio()?)?;
-    application.record("application")?;
-    microphone.record("microphone")?;
+    app.send(app_audio)?;
+    mic.send(mic_audio)?;
+    app.record("application")?;
+    mic.record("microphone")?;
 
     let mut running = session.start()?;
     let deadline = Instant::now() + Duration::from_secs(10);
-    while Instant::now() < deadline {
+    let mut frames_by_stem = BTreeMap::<u64, usize>::new();
+    while Instant::now() < deadline
+        && frames_by_stem.values().filter(|count| **count >= 2).count() < 2
+    {
         if let Ok(batch) = running.try_poll_audio() {
             for index in 0..batch.len() {
-                let frame = batch.frame(index).expect("valid bounded batch index");
-                println!(
-                    "stem={} source={} sequence={}",
-                    frame.lineage().stem_id().get(),
-                    frame.lineage().source_id().get(),
-                    frame.lineage().sequence_number()
-                );
+                let frame = batch
+                    .frame(index)
+                    .ok_or("bounded audio batch returned an invalid frame index")?;
+                let count = frames_by_stem
+                    .entry(frame.lineage().stem_id().get())
+                    .or_default();
+                *count = count.saturating_add(1);
             }
         }
         std::thread::sleep(Duration::from_millis(1));
     }
+    if frames_by_stem.values().filter(|count| **count >= 2).count() != 2 {
+        return Err("application and microphone media were not both observed".into());
+    }
 
-    let stop = running.stop();
-    assert!(stop.is_success());
-    let recording = running.recording_outcome().expect("recording outcome");
-    assert_eq!(recording.state, SessionRecordingState::Complete);
+    let outcome = running.stop();
+    if !outcome.is_success() {
+        return Err("PocketStation Session did not finalize cleanly".into());
+    }
+    let recording = running
+        .recording_outcome()
+        .ok_or("PocketStation Session did not expose a recording outcome")?;
+    if recording.state != pks::SessionRecordingState::Complete
+        || recording.completed_stems != 2
+        || recording.failed_stems != 0
+    {
+        return Err("PocketStation multistem recording did not complete".into());
+    }
     Ok(())
 }
 ```
 
-The complete compiling example is
-[`examples/product_quickstart.rs`](examples/product_quickstart.rs).
-
-## One Session, two execution lanes
-
-```text
-OS capture · typed source · generated audio
-                     │
-                     ▼
-        source identity + immutable lineage
-                     │
-                     ▼
-                   Session
-                     │
-             compiled RuntimePlan
-           ┌─────────┴──────────┐
-           ▼                    ▼
-  realtime audio lane     typed signal lane
-  pooled AudioFrame       SignalEnvelope
-           └─────────┬──────────┘
-                     ▼
-          independent bounded routes
-       Operator · Endpoint · recording
-                     │
-                     ▼
-              Rust · C · sidecar
-```
-
-The audio lane is specialized for fixed-capacity, predictable work. The typed
-lane carries text, events, control data, metrics, binary data, and
-schema-identified custom signals. The explicit Bridge between them allows
-async work to produce audio without making a managed runtime or model provider
-part of the capture callback.
-
-`SignalSpec`, lineage, timing, named ports, and edge policy are the stable
-cross-language contract. Operators can be composed without each connector
-inventing its own source identity, buffering, cancellation, or failure
-semantics.
-
-Rust `Stream<T>` provides compile-time composition. `T` is developer-facing
-metadata; it is not the runtime storage format and never crosses the C ABI or
-sidecar protocol.
-
-## Realtime engineering guarantees
-
-Audio callbacks and realtime partitions are designed and gated to remain:
-
-```text
-allocation-free · lock-free · blocking-free · async-free · log-free · panic-free
-```
-
-Audio buffers come from fixed-capacity pools. Realtime crossings use bounded
-SPSC queues. Every route declares capacity, backpressure, loss, clock, copy,
-and observation policy. Saturation is counted or returned as a typed failure;
-it is never hidden behind an unbounded queue.
-
-## Extend PocketStation
-
-PocketStation keeps product and provider behavior outside the engine:
-
-| Build | Public contract |
-|---|---|
-| Audio or typed source | `SourceFactory` / `SourceDriver` |
-| Processing stage | `AsyncOperatorFactory` with named ports |
-| Destination or connector | `EndpointDriverFactory` |
-| Strongly typed Rust pipeline | `Stream<T>` / `TypedOperator<I, O>` |
-| Native C integration | versioned callbacks in `pocketstation.h` |
-| Packaged compiled extension | `pks_extension_library_v1` loaded into the same `Session` |
-| Python, JavaScript, or another managed process | bounded PKSS sidecar lifecycle for out-of-process work |
-
-Operators can be chained, can expose multiple named inputs and outputs, and can
-return generated PCM through the bounded audio-reentry Bridge. Extensions use
-the same Session compiler, runtime, observations, cancellation, and shutdown;
-they do not implement another engine.
-
-Language SDKs bind these same Session authorities. A trusted compiled package
-is loaded only from a canonical absolute path, all registrations are imported
-transactionally, and Core retains its executable library until every callback
-context is destroyed. SDKs do not own a second loader policy or Session
-runtime.
-
-See the [extension guide](docs/guides/extensions.md) and
-[signal model](docs/concepts/signals-and-streams.md). Connector packages also
-have a dedicated [authoring contract and guide](docs/guides/connectors.md):
-typed manifests and configuration, redacted secrets, finite delivery/retry and
-readiness policies, classified errors, observations, and deterministic
-conformance all lower into the existing endpoint lifecycle. Provider protocols
-and dependencies remain outside Core.
-
-## Platform and evidence boundaries
-
-| Platform | Native implementation | Current evidence boundary |
-|---|---|---|
-| macOS | application capture and microphone | physical final-candidate proof |
-| Windows | WASAPI system, application, and microphone capture | automated VM qualification; physical matrix remains separate |
-| Linux | PipeWire application/system capture and ALSA microphone capture | automated VM qualification; physical matrix remains separate |
-
-Applications own operating-system permission prompts and source selection UX.
-PocketStation reports typed permission, source-loss, discontinuity, saturation,
-and lifecycle outcomes.
-
-These classifications are deliberately narrow. Physical macOS proof does not
-silently become a physical Windows or Linux claim, and local cross-language or
-transport evidence does not become a universal performance claim.
-
-### Permission semantics
-
-`microphone_permission_observation()` is a non-prompting preflight query. macOS
-uses its process authorization state. Windows 10 version 1903 and newer uses
-the current process' `Microphone` AppCapability status and can report allowed,
-denied, restricted, or prompt-required without displaying UI. Linux returns
-`PermissionObservation::NotObservable` because PipeWire portals, session
-policy, direct ALSA access, device ACLs, and containers do not share one
-authoritative process-wide query. `NotObservable` means neither granted nor
-denied. On every platform, Session preparation and source opening still return
-the authoritative typed success or failure for the selected source.
-
-## Native dependencies
-
-macOS requires the Xcode command-line tools. Linux development packages depend
-on the distribution; on Debian/Ubuntu install:
+Compile before running, then run only on a host where the named application, microphone, permissions, and native dependencies are available:
 
 ```bash
-sudo apt install build-essential cmake pkg-config \
-  libasound2-dev libpipewire-0.3-dev
+cargo test --examples --all-features
+cargo run --example product_quickstart
 ```
 
-Windows builds use the MSVC Rust toolchain and Windows SDK.
+## Verify the outcome
 
-## Documentation
+Success means the example observes at least two frames from each of two distinct stems, receives a successful Session stop outcome, and receives a recording outcome with two completed stems and no failed stems. Source, permission, route, stop, or recording failures are returned instead of being counted as success.
 
-- [Developer documentation](docs/README.md)
-- [Architecture](docs/architecture/overview.md)
-- [Rust quickstart](docs/getting-started/rust-quickstart.md)
-- [Extension authoring](docs/guides/extensions.md)
-- [Compatibility](docs/compatibility/README.md)
-- [API reference](https://docs.rs/pocketstation/latest/pocketstation/)
+## Scope
 
-## Development
+- **Install and feature-select the crate.** Add PocketStation to a Cargo package and choose native capture, contracts-only, conformance, or internal test features.
+- **Declare a Session.** Describe sources, operators, endpoints, streams, and recording routes before runtime preparation.
+- **Select and resolve capture sources.** Discover capture candidates and resolve application, process, device, and system queries to stable source identities.
+- **Capture application audio.** Prepare application-scoped capture through the platform backend selected for the current target.
+- **Capture microphone audio.** Select the default or identified input device and open native microphone capture.
+- **Capture system audio.** Represent and open platform system-loopback capture where the selected backend implements it.
+- **Observe permission and source lifecycle.** Query non-prompting authorization where observable and receive source-generation, loss, and permission-epoch changes.
+- **Preserve frame identity and lineage.** Carry source, stream, stem, route, clock, sequence, generation, and derivation identity with audio frames.
+- **Map clocks and correct drift.** Map source timestamps into a Session timeline and estimate or correct clock drift.
+- **Compile Session declarations.** Validate declarations, resolve bindings, and lower a Session specification into an executable plan.
+- **Prepare runtime resources.** Prepare source and endpoint runtimes while preserving the mapping back to declaration identities.
+- **Start, cancel, stop, and finalize a Session.** Coordinate Session startup, rollback, cancellation, steady-state ownership, stop, and terminal outcomes.
+- **Route realtime audio.** Deliver pooled audio frames through independent fixed-capacity routes governed by explicit edge policy.
+- **Poll bounded audio batches.** Consume routed audio from the built-in polled-audio endpoint through bounded batch leases and receipts.
+- **Record aligned multistem output.** Configure stems and finalize per-stem outcomes through the recording endpoint lifecycle.
+- **Describe graph contracts.** Declare typed ports, media capabilities, partition safety, copy, loss, delivery, and observability policy.
+- **Implement asynchronous operators.** Register operator factories that consume and emit named typed signals on the asynchronous execution lane.
+- **Carry typed signals.** Represent audio-adjacent text, event, binary, metric, and custom-schema payloads with timing and lineage.
+- **Bridge asynchronous output into audio.** Return generated PCM from asynchronous processing through an explicit bounded audio reentry bridge.
+- **Implement endpoint drivers.** Prepare, start, receive, cancel, and finalize destinations behind the endpoint driver contract.
+- **Declare connector manifests and configuration.** Describe connector identity, ports, configuration schema, secrets, and delivery policy without embedding a provider protocol in Core.
+- **Run connector workers.** Supervise connector delivery, acknowledgement, retry budgets, readiness, cancellation, drain, and abort.
+- **Load native extension libraries.** Validate and load a versioned native library, acquire registrations, and retain executable ownership for their lifetime.
+- **Use the versioned C ABI.** Declare, start, observe, stop, and release Sessions and extension callbacks through the public C boundary.
+- **Host managed-process sidecars.** Exchange bounded protocol messages with a child process under explicit deadlines and lifecycle states.
+- **Observe Session metrics and events.** Read route, source, operator, sidecar, endpoint, drop, latency, queue, and terminal observations.
+- **Record and validate Session traces.** Persist lifecycle trace records and validate their structural and terminal consistency.
+- **Inject external PCM.** Acquire bounded input buffers and write externally produced PCM through the source extension lifecycle.
+- **Encode and decode Opus.** Configure stateful Opus encoders and decoders and convert between PocketStation audio frames and packets.
+- **Classify public failures.** Expose stable typed errors and cross-boundary error codes without inferring retry or recovery guarantees.
+- **Validate protocol and conformance boundaries.** Check ABI layout, cross-language behavior, connector vectors, and protocol compatibility against versioned fixtures.
+- **Build and publish repository artifacts.** Run architecture, protocol, package, platform, and release checks used by the repository publication workflow.
+- **Integrate transcription processing.** Use the repository-owned Whisper example to send captured stems to an external transcription process with evidence output.
 
-```bash
-cargo fmt --all -- --check
-cargo clippy --all-targets --all-features --locked -- -D warnings
-cargo test --all-targets --all-features --locked
-cargo build --release --example product_quickstart --locked
-bash scripts/check_protocol.sh
-```
+These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
 
-Local component tests establish code correctness, not physical-device,
-cross-network, or universal performance claims. Those claims remain tied to
-versioned evidence artifacts and their stated scope.
+## Documentation map
 
-## License
+- [Start with the Rust quickstart](/docs/getting-started/rust-quickstart.md).
+- [Learn the Session model](/docs/concepts/session.md).
+- [Choose capture and permission behavior](/docs/concepts/source-selection.md).
+- [Configure routes and backpressure](/docs/concepts/realtime-routing.md).
+- [Author connectors](/docs/guides/connectors.md) or [native extensions](/docs/guides/extensions.md).
+- [Use the native Rust API reference](/docs/reference/rust-api.md).
+- [Diagnose observable symptoms](/docs/troubleshooting/session-start.md).
 
-PocketStation is licensed under either MIT or Apache-2.0, at your option.
+## Evidence boundary
+
+This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+
+- `Cargo.toml:1-180` (`DIRECT`)
+- `src/lib.rs:1-1129` (`DIRECT`)
+- `examples/product_quickstart.rs:1-61` (`DIRECT`)
+
+A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.

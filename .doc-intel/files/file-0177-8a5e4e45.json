@@ -1,0 +1,220 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "any",
+    "cfg"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 19,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "6a183ba8835f60aa294ceb206190b9ca87bed03d9aa806df158493623c6b4e1d",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "config",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "endpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "error_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "writer",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 1,
+      "text": "//! Multistem recording owned behind the generic Endpoint lifecycle."
+    },
+    {
+      "line": 7,
+      "text": "mod endpoint;"
+    },
+    {
+      "line": 14,
+      "text": "pub use endpoint::{"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "6a183ba8835f60aa294ceb206190b9ca87bed03d9aa806df158493623c6b4e1d",
+      "lines": [
+        1,
+        25
+      ],
+      "path": "src/recording/mod.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0177-8a5e4e45",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "eb9674ee1e274d6630b57cecdd6a2f82d4a38242",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "config::{ PermissionDecision, PermissionScope, RecorderLineageField, RecorderStemConfig, StemLabel, }",
+    "endpoint::{ MultistemRecordingReceipt, SessionMultistemEndpointCoordinator, MULTISTEM_GROUP_CONFIGURATION_KEY, MULTISTEM_NAME_CONFIGURATION_KEY, }",
+    "error_code::{recording_outcome_error_code, RecordingErrorCode}",
+    "module:config",
+    "module:endpoint",
+    "module:error_code",
+    "module:writer",
+    "writer::{ MultistemRecording, RecorderError, RecordingObservations, RecordingOutcome, RecordingState, RecordingStemOutcome, }",
+    "writer::{DiscontinuityKind, DiscontinuityRecord}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 25,
+  "locks": [],
+  "module": "pocketstation::recording",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/recording/mod.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "config",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "endpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "error_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "writer",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Multistem recording owned behind the generic Endpoint lifecycle.  Session may offer convenience syntax, but recording policy, timeline, persistence, and finalization remain in this module."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [
+    "error_code::{recording_outcome_error_code, RecordingErrorCode}",
+    "writer::{DiscontinuityKind, DiscontinuityRecord}"
+  ],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/stop-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/recording.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/recording.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "config",
+    "endpoint",
+    "error_code",
+    "writer"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

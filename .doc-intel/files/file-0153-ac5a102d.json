@@ -1,0 +1,325 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "OperatorId",
+    "OperatorId::new",
+    "OperatorId::syntax_version",
+    "Self",
+    "as_str",
+    "cfg",
+    "crate::graph::identifier::is_portable_contract_id",
+    "derive",
+    "given_operator_id_when_serialized_then_version_one_is_a_transparent_string",
+    "into",
+    "is_portable",
+    "new",
+    "serde",
+    "serde_json::from_str",
+    "serde_json::to_string",
+    "syntax_version",
+    "unwrap"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 40,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "OperatorId::new",
+    "new"
+  ],
+  "content_hash": "23a61896e598267f512a1c75b7cdae5d7de33c4541a81c780b67e9516790d5ff",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 6,
+      "name": "OPERATOR_ID_SYNTAX_VERSION",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 16,
+      "name": "OperatorId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 19,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "is_portable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 34,
+      "name": "syntax_version",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 41,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "given_operator_id_when_serialized_then_version_one_is_a_transparent_string",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 6,
+      "name": "OPERATOR_ID_SYNTAX_VERSION",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 16,
+      "name": "OperatorId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 19,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "is_portable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 34,
+      "name": "syntax_version",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 49,
+      "text": "let decoded: OperatorId = serde_json::from_str(&encoded).unwrap();"
+    }
+  ],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "23a61896e598267f512a1c75b7cdae5d7de33c4541a81c780b67e9516790d5ff",
+      "lines": [
+        1,
+        56
+      ],
+      "path": "src/graph/operator.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0153-ac5a102d",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "80957e3640604adb6a051721aaba3e95763a27d1",
+  "implemented_by": [],
+  "implements": [
+    "OperatorId"
+  ],
+  "imported_by": [],
+  "imports": [
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 56,
+  "locks": [],
+  "module": "pocketstation::graph::operator",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/operator.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 41,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "given_operator_id_when_serialized_then_version_one_is_a_transparent_string",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 6,
+      "name": "OPERATOR_ID_SYNTAX_VERSION",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 16,
+      "name": "OperatorId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 19,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "is_portable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 34,
+      "name": "syntax_version",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::graph::operator`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "OPERATOR_ID_SYNTAX_VERSION",
+    "OperatorId",
+    "new",
+    "as_str",
+    "is_portable",
+    "syntax_version",
+    "tests",
+    "given_operator_id_when_serialized_then_version_one_is_a_transparent_string"
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 14,
+      "text": "#[derive(Debug, Clone, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]"
+    },
+    {
+      "line": 15,
+      "text": "#[serde(transparent)]"
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

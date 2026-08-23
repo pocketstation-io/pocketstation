@@ -1,0 +1,400 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "ProcessInstanceFingerprint::new",
+    "ProcessInstanceFingerprint::parse",
+    "cfg",
+    "derive",
+    "given_different_pid_when_creation_time_matches_then_process_instance_does_not_match",
+    "given_legacy_pid_key_when_parsed_then_process_instance_is_rejected",
+    "given_process_instance_when_stable_key_round_trips_then_pid_and_creation_time_are_retained",
+    "given_reused_pid_when_creation_time_changes_then_process_instance_does_not_match",
+    "let",
+    "matches",
+    "new",
+    "ok",
+    "parse",
+    "pub",
+    "split_once",
+    "stable_key",
+    "strip_prefix"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 39,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "ProcessInstanceFingerprint::new",
+    "new"
+  ],
+  "content_hash": "5a29372918838b114f273b3c676cf7be70e66201e731281a59b5aa40f7bd08da",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 1,
+      "name": "STABLE_KEY_PREFIX",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 2,
+      "name": "CREATION_TIME_SEPARATOR",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 5,
+      "name": "ProcessInstanceFingerprint",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 11,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "stable_key",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "parse",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "matches",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 40,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "given_process_instance_when_stable_key_round_trips_then_pid_and_creation_time_are_retained",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "given_legacy_pid_key_when_parsed_then_process_instance_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "given_reused_pid_when_creation_time_changes_then_process_instance_does_not_match",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "given_different_pid_when_creation_time_matches_then_process_instance_does_not_match",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [
+    {
+      "line": 1,
+      "text": "const STABLE_KEY_PREFIX: &str = \"wasapi:pid:\";"
+    },
+    {
+      "line": 56,
+      "text": "assert_eq!(ProcessInstanceFingerprint::parse(\"wasapi:pid:4242\"), None);"
+    }
+  ],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 5,
+      "name": "ProcessInstanceFingerprint",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 11,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "stable_key",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "parse",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "matches",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "5a29372918838b114f273b3c676cf7be70e66201e731281a59b5aa40f7bd08da",
+      "lines": [
+        1,
+        73
+      ],
+      "path": "src/capture/platform/windows/process_identity.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0098-504b1e3c",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "67c1e58da805c59afd79229535c9c12167ab03bd",
+  "implemented_by": [],
+  "implements": [
+    "ProcessInstanceFingerprint"
+  ],
+  "imported_by": [],
+  "imports": [
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 63,
+      "text": "assert!(!fingerprint.matches(4_242, 101));"
+    },
+    {
+      "line": 70,
+      "text": "assert!(!fingerprint.matches(4_243, 100));"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 73,
+  "locks": [],
+  "module": "pocketstation::capture::platform::windows::process_identity",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/capture/platform/windows/process_identity.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 1,
+      "name": "STABLE_KEY_PREFIX",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 2,
+      "name": "CREATION_TIME_SEPARATOR",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 40,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "given_process_instance_when_stable_key_round_trips_then_pid_and_creation_time_are_retained",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "given_legacy_pid_key_when_parsed_then_process_instance_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "given_reused_pid_when_creation_time_changes_then_process_instance_does_not_match",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "given_different_pid_when_creation_time_matches_then_process_instance_does_not_match",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 5,
+      "name": "ProcessInstanceFingerprint",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 11,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "stable_key",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "parse",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "matches",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::capture::platform::windows::process_identity`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/source-selection.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/select-process-source.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/run-transcription.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/troubleshooting/timing.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "STABLE_KEY_PREFIX",
+    "CREATION_TIME_SEPARATOR",
+    "ProcessInstanceFingerprint",
+    "new",
+    "stable_key",
+    "parse",
+    "matches",
+    "tests",
+    "given_process_instance_when_stable_key_round_trips_then_pid_and_creation_time_are_retained",
+    "given_legacy_pid_key_when_parsed_then_process_instance_is_rejected",
+    "given_reused_pid_when_creation_time_changes_then_process_instance_does_not_match",
+    "given_different_pid_when_creation_time_matches_then_process_instance_does_not_match"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 1,
+      "text": "const STABLE_KEY_PREFIX: &str = \"wasapi:pid:\";"
+    },
+    {
+      "line": 56,
+      "text": "assert_eq!(ProcessInstanceFingerprint::parse(\"wasapi:pid:4242\"), None);"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

@@ -1,0 +1,1329 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Binary",
+    "Cow::Owned",
+    "Custom",
+    "EncodedAudio",
+    "Event",
+    "SchemaRef",
+    "Self",
+    "Self::EncodedAudio",
+    "Self::new",
+    "SemanticRole",
+    "SemanticRole::new",
+    "SignalClass::Binary",
+    "SignalClass::Custom",
+    "SignalClass::EncodedAudio",
+    "SignalClass::Event",
+    "SignalClass::Text",
+    "SignalId",
+    "SignalId::new",
+    "SignalSpec::audio",
+    "SignalSpec::binary",
+    "SignalSpec::control",
+    "SignalSpec::custom",
+    "SignalSpec::text",
+    "Text",
+    "any",
+    "as_ref",
+    "as_str",
+    "audio",
+    "binary",
+    "bitstream",
+    "cfg",
+    "class",
+    "constraints",
+    "control",
+    "crate::graph::identifier::is_portable_contract_id",
+    "custom",
+    "data",
+    "derive",
+    "encoded_audio",
+    "error",
+    "event",
+    "from",
+    "given_audio_and_text_specs_when_compatible_check_then_false",
+    "given_custom_signal_with_role_when_built_then_fields_accessible",
+    "given_empty_custom_id_role_or_schema_when_validated_then_rejected",
+    "given_pcm_audio_spec_when_is_audio_then_true",
+    "given_same_custom_ids_when_compatible_check_then_true",
+    "given_semantic_role_when_as_str_then_returns_inner",
+    "given_signal_id_when_as_str_then_returns_inner",
+    "given_text_spec_when_is_audio_then_false",
+    "given_two_different_custom_ids_when_compatible_check_then_false",
+    "given_two_pcm_audio_specs_when_compatible_check_then_true",
+    "into",
+    "is_audio",
+    "is_compatible_with",
+    "is_empty",
+    "is_portable",
+    "is_some_and",
+    "map",
+    "means",
+    "messages",
+    "metrics",
+    "new",
+    "pub",
+    "role",
+    "samples",
+    "schema",
+    "text",
+    "to_owned",
+    "trim",
+    "validate",
+    "wire_id",
+    "with_role",
+    "with_schema"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 360,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Self::new",
+    "SemanticRole::new",
+    "SignalId::new",
+    "from",
+    "new"
+  ],
+  "content_hash": "31f8b16782140b0d268688cb670aae2f2be4be969563bfad38831db693da41c9",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "SignalId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 28,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "is_portable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 57,
+      "name": "SemanticRole",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 63,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 87,
+      "name": "SchemaRef",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 93,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 100,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 113,
+      "name": "Codec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 124,
+      "name": "TextFormat",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 132,
+      "name": "EventFormat",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 141,
+      "name": "BinaryFormat",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 156,
+      "name": "SignalClass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 180,
+      "name": "is_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 188,
+      "name": "is_compatible_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 205,
+      "name": "SignalSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 215,
+      "name": "class",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 218,
+      "name": "role",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 222,
+      "name": "schema",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 226,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 236,
+      "name": "wire_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "any",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 269,
+      "name": "audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 274,
+      "name": "encoded_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 279,
+      "name": "text",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 284,
+      "name": "event",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 289,
+      "name": "metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 294,
+      "name": "control",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 299,
+      "name": "binary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 304,
+      "name": "custom",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 309,
+      "name": "with_role",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 315,
+      "name": "with_schema",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 324,
+      "name": "is_compatible_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 327,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 351,
+      "name": "SignalSpecError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 361,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 365,
+      "name": "given_two_pcm_audio_specs_when_compatible_check_then_true",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 372,
+      "name": "given_audio_and_text_specs_when_compatible_check_then_false",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 379,
+      "name": "given_pcm_audio_spec_when_is_audio_then_true",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 385,
+      "name": "given_text_spec_when_is_audio_then_false",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 392,
+      "name": "given_custom_signal_with_role_when_built_then_fields_accessible",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 411,
+      "name": "given_two_different_custom_ids_when_compatible_check_then_false",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 418,
+      "name": "given_same_custom_ids_when_compatible_check_then_true",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 425,
+      "name": "given_signal_id_when_as_str_then_returns_inner",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 431,
+      "name": "given_semantic_role_when_as_str_then_returns_inner",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 437,
+      "name": "given_empty_custom_id_role_or_schema_when_validated_then_rejected",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "SignalId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 28,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "is_portable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 57,
+      "name": "SemanticRole",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 63,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 87,
+      "name": "SchemaRef",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 93,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 113,
+      "name": "Codec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 124,
+      "name": "TextFormat",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 132,
+      "name": "EventFormat",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 141,
+      "name": "BinaryFormat",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 156,
+      "name": "SignalClass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 180,
+      "name": "is_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 188,
+      "name": "is_compatible_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 205,
+      "name": "SignalSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 215,
+      "name": "class",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 218,
+      "name": "role",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 222,
+      "name": "schema",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 226,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 236,
+      "name": "wire_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "any",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 269,
+      "name": "audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 274,
+      "name": "encoded_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 279,
+      "name": "text",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 284,
+      "name": "event",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 289,
+      "name": "metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 294,
+      "name": "control",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 299,
+      "name": "binary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 304,
+      "name": "custom",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 309,
+      "name": "with_role",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 315,
+      "name": "with_schema",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 324,
+      "name": "is_compatible_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 327,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 351,
+      "name": "SignalSpecError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 330,
+      "text": "return Err(SignalSpecError::EmptyCustomId);"
+    },
+    {
+      "line": 337,
+      "text": "return Err(SignalSpecError::EmptyRole);"
+    },
+    {
+      "line": 344,
+      "text": "return Err(SignalSpecError::EmptySchema);"
+    },
+    {
+      "line": 440,
+      "text": "Err(SignalSpecError::EmptyCustomId)"
+    },
+    {
+      "line": 444,
+      "text": "Err(SignalSpecError::EmptyRole)"
+    },
+    {
+      "line": 450,
+      "text": "Err(SignalSpecError::EmptySchema)"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 351,
+      "name": "SignalSpecError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "31f8b16782140b0d268688cb670aae2f2be4be969563bfad38831db693da41c9",
+      "lines": [
+        1,
+        454
+      ],
+      "path": "src/graph/signal/spec.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0166-04e1fd30",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "67a8a9e344f92b1c837a3350a333464f49b51f5c",
+  "implemented_by": [],
+  "implements": [
+    "SignalId",
+    "From<&str> for SignalId",
+    "From<String> for SignalId",
+    "SemanticRole",
+    "From<&str> for SemanticRole",
+    "From<String> for SemanticRole",
+    "SchemaRef",
+    "From<&str> for SchemaRef",
+    "From<String> for SchemaRef",
+    "SignalClass",
+    "SignalSpec"
+  ],
+  "imported_by": [],
+  "imports": [
+    "std::borrow::Cow",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 5,
+      "text": "//! metadata for humans, tooling, and port-matching hints \u2014 the core never"
+    },
+    {
+      "line": 13,
+      "text": "//!   - `SchemaRef` identifies an external schema document; the core never parses it."
+    },
+    {
+      "line": 55,
+      "text": "/// `\"state.final\"`. The core never matches on role values for routing."
+    },
+    {
+      "line": 85,
+      "text": "/// The core never parses schema content; this is for tooling and validation."
+    },
+    {
+      "line": 154,
+      "text": "/// Those belong in `SemanticRole` \u2014 a free-form label that the core never enumerates."
+    },
+    {
+      "line": 322,
+      "text": "/// Class must match exactly.  Role and schema are informational only"
+    },
+    {
+      "line": 323,
+      "text": "/// and never block wiring."
+    },
+    {
+      "line": 352,
+      "text": "#[error(\"custom signal identifier cannot be empty\")]"
+    },
+    {
+      "line": 354,
+      "text": "#[error(\"signal semantic role cannot be empty\")]"
+    },
+    {
+      "line": 356,
+      "text": "#[error(\"signal schema reference cannot be empty\")]"
+    },
+    {
+      "line": 368,
+      "text": "assert!(a.is_compatible_with(&b));"
+    },
+    {
+      "line": 375,
+      "text": "assert!(!audio.is_compatible_with(&text));"
+    },
+    {
+      "line": 380,
+      "text": "assert!(SignalClass::PcmAudio.is_audio());"
+    },
+    {
+      "line": 381,
+      "text": "assert!(SignalClass::EncodedAudio(Codec::Opus).is_audio());"
+    },
+    {
+      "line": 386,
+      "text": "assert!(!SignalClass::Text(TextFormat::Utf8).is_audio());"
+    },
+    {
+      "line": 387,
+      "text": "assert!(!SignalClass::Control.is_audio());"
+    },
+    {
+      "line": 388,
+      "text": "assert!(!SignalClass::Metrics.is_audio());"
+    },
+    {
+      "line": 414,
+      "text": "assert!(!a.is_compatible_with(&b));"
+    },
+    {
+      "line": 421,
+      "text": "assert!(a.is_compatible_with(&b));"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 454,
+  "locks": [],
+  "module": "pocketstation::graph::signal::spec",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/signal/spec.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 100,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 361,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 365,
+      "name": "given_two_pcm_audio_specs_when_compatible_check_then_true",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 372,
+      "name": "given_audio_and_text_specs_when_compatible_check_then_false",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 379,
+      "name": "given_pcm_audio_spec_when_is_audio_then_true",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 385,
+      "name": "given_text_spec_when_is_audio_then_false",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 392,
+      "name": "given_custom_signal_with_role_when_built_then_fields_accessible",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 411,
+      "name": "given_two_different_custom_ids_when_compatible_check_then_false",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 418,
+      "name": "given_same_custom_ids_when_compatible_check_then_true",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 425,
+      "name": "given_signal_id_when_as_str_then_returns_inner",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 431,
+      "name": "given_semantic_role_when_as_str_then_returns_inner",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 437,
+      "name": "given_empty_custom_id_role_or_schema_when_validated_then_rejected",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [
+    {
+      "line": 130,
+      "text": "/// Event structure hint for `SignalClass::Event`."
+    },
+    {
+      "line": 166,
+      "text": "Event(EventFormat),"
+    },
+    {
+      "line": 249,
+      "text": "SignalClass::Event(EventFormat::Json) => \"pks.signal.event.json.v1\","
+    },
+    {
+      "line": 250,
+      "text": "SignalClass::Event(EventFormat::Protobuf) => \"pks.signal.event.protobuf.v1\","
+    },
+    {
+      "line": 251,
+      "text": "SignalClass::Event(EventFormat::Flatbuffers) => \"pks.signal.event.flatbuffers.v1\","
+    },
+    {
+      "line": 252,
+      "text": "SignalClass::Event(EventFormat::Cbor) => \"pks.signal.event.cbor.v1\","
+    },
+    {
+      "line": 285,
+      "text": "Self::new(SignalClass::Event(format))"
+    }
+  ],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "SignalId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 28,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "is_portable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 57,
+      "name": "SemanticRole",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 63,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 87,
+      "name": "SchemaRef",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 93,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 113,
+      "name": "Codec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 124,
+      "name": "TextFormat",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 132,
+      "name": "EventFormat",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 141,
+      "name": "BinaryFormat",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 156,
+      "name": "SignalClass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 180,
+      "name": "is_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 188,
+      "name": "is_compatible_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 205,
+      "name": "SignalSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 215,
+      "name": "class",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 218,
+      "name": "role",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 222,
+      "name": "schema",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 226,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 236,
+      "name": "wire_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "any",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 269,
+      "name": "audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 274,
+      "name": "encoded_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 279,
+      "name": "text",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 284,
+      "name": "event",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 289,
+      "name": "metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 294,
+      "name": "control",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 299,
+      "name": "binary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 304,
+      "name": "custom",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 309,
+      "name": "with_role",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 315,
+      "name": "with_schema",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 324,
+      "name": "is_compatible_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 327,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 351,
+      "name": "SignalSpecError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "SignalSpec \u2014 two-level typed signal contract for graph ports.  Every port in the graph declares a `SignalSpec`.  The compiler validates `SignalClass` compatibility on edge connections; `SemanticRole` is advisory metadata for humans, tooling, and port-matching hints \u2014 the core never enumerates roles.  Design constraints (CRATE_OWNERSHIP.md): - `Custom(SignalId)` uses a stable string identifier, NOT a Rust TypeId. Rust TypeId is process-local and breaks Python/Swift/Kotlin/Protobuf/remote ops. - `SemanticRole` is a free-form string, not an enum. Application semantics belong to the role layer, not the class. - `SchemaRef` identifies an external schema document; the core never parses it."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 42,
+      "text": "Self(Cow::Owned(s.to_owned()))"
+    },
+    {
+      "line": 48,
+      "text": "Self(Cow::Owned(s))"
+    },
+    {
+      "line": 71,
+      "text": "Self(Cow::Owned(s.to_owned()))"
+    },
+    {
+      "line": 77,
+      "text": "Self(Cow::Owned(s))"
+    },
+    {
+      "line": 101,
+      "text": "Self(Cow::Owned(s.to_owned()))"
+    },
+    {
+      "line": 107,
+      "text": "Self(Cow::Owned(s))"
+    }
+  ],
+  "responsibilities": [
+    "SignalId",
+    "new",
+    "as_str",
+    "is_portable",
+    "from",
+    "from",
+    "SemanticRole",
+    "new",
+    "as_str",
+    "from",
+    "from",
+    "SchemaRef",
+    "new",
+    "as_str",
+    "from",
+    "from",
+    "Codec",
+    "TextFormat",
+    "EventFormat",
+    "BinaryFormat",
+    "SignalClass",
+    "is_audio",
+    "is_compatible_with",
+    "SignalSpec",
+    "class",
+    "role",
+    "schema",
+    "new",
+    "wire_id",
+    "any",
+    "audio",
+    "encoded_audio",
+    "text",
+    "event",
+    "metrics",
+    "control",
+    "binary",
+    "custom",
+    "with_role",
+    "with_schema",
+    "is_compatible_with",
+    "validate",
+    "SignalSpecError",
+    "tests",
+    "given_two_pcm_audio_specs_when_compatible_check_then_true",
+    "given_audio_and_text_specs_when_compatible_check_then_false",
+    "given_pcm_audio_spec_when_is_audio_then_true",
+    "given_text_spec_when_is_audio_then_false",
+    "given_custom_signal_with_role_when_built_then_fields_accessible",
+    "given_two_different_custom_ids_when_compatible_check_then_false",
+    "given_same_custom_ids_when_compatible_check_then_true",
+    "given_signal_id_when_as_str_then_returns_inner",
+    "given_semantic_role_when_as_str_then_returns_inner",
+    "given_empty_custom_id_role_or_schema_when_validated_then_rejected"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

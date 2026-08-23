@@ -1,0 +1,453 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "allow",
+    "checked_add",
+    "clock_id",
+    "derive",
+    "discontinuity_epoch",
+    "duration_ns",
+    "error",
+    "ok_or",
+    "permission_epoch",
+    "pub",
+    "saturating_add",
+    "sequence_number",
+    "session_id",
+    "source_generation",
+    "source_id",
+    "stem_id",
+    "timestamp_end_ns",
+    "timestamp_start_ns",
+    "try_new"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "try_new"
+  ],
+  "content_hash": "e21e823ab1837692170db0e567a3b15b5f7b24c38ac0d48cf49e875ac32a9a3f",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "FrameLineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 21,
+      "name": "try_new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "clock_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "timestamp_start_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "duration_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "source_generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "discontinuity_epoch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "permission_epoch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "timestamp_end_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 93,
+      "name": "FrameLineageBuildError",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "FrameLineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 21,
+      "name": "try_new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "clock_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "timestamp_start_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "duration_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "source_generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "discontinuity_epoch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "permission_epoch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "timestamp_end_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 93,
+      "name": "FrameLineageBuildError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 34,
+      "text": "return Err(FrameLineageBuildError::ZeroDuration);"
+    },
+    {
+      "line": 37,
+      "text": "return Err(FrameLineageBuildError::ZeroSourceGeneration);"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 93,
+      "name": "FrameLineageBuildError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "e21e823ab1837692170db0e567a3b15b5f7b24c38ac0d48cf49e875ac32a9a3f",
+      "lines": [
+        1,
+        101
+      ],
+      "path": "src/frame/lineage.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0139-b3fbb52c",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "65f9441a589248e74d2834882e03aa1cd0128eca",
+  "implemented_by": [],
+  "implements": [
+    "FrameLineage"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::{ClockDomainId, SessionId, SourceId, StemId}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 94,
+      "text": "#[error(\"frame lineage duration must be non-zero\")]"
+    },
+    {
+      "line": 96,
+      "text": "#[error(\"frame lineage source generation must be non-zero\")]"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 101,
+  "locks": [],
+  "module": "pocketstation::frame::lineage",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-503fc1d95fe068d3ac6f"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/frame/lineage.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "FrameLineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 21,
+      "name": "try_new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "clock_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "timestamp_start_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "duration_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "source_generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "discontinuity_epoch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "permission_epoch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "timestamp_end_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 93,
+      "name": "FrameLineageBuildError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Compact source-aware lineage carried on realtime audio frames."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/frame-lineage.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/opus-roundtrip.md",
+    "docs/how-to/map-source-time.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/frames.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/frames-and-codec.md",
+    "docs/troubleshooting/opus.md",
+    "docs/troubleshooting/timing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "FrameLineage",
+    "try_new",
+    "session_id",
+    "source_id",
+    "stem_id",
+    "clock_id",
+    "sequence_number",
+    "timestamp_start_ns",
+    "duration_ns",
+    "source_generation",
+    "discontinuity_epoch",
+    "permission_epoch",
+    "timestamp_end_ns",
+    "FrameLineageBuildError"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

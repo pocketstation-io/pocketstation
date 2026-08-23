@@ -1,0 +1,404 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Self::try_new",
+    "checked_add",
+    "derive",
+    "duration_ns",
+    "error",
+    "from_frame",
+    "is_none",
+    "is_some_and",
+    "map",
+    "observed",
+    "observed_timestamp_ns",
+    "pub",
+    "saturating_add",
+    "session_timestamp_ns",
+    "source_timestamp_ns",
+    "timestamp_end_ns",
+    "try_new",
+    "with_duration_ns",
+    "zip"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "Self::try_new",
+    "try_new"
+  ],
+  "content_hash": "4d9c3d9c56f85022f1d0ebb9edffbbf3da7d5fe00779dc6e816e2c9d6905b258",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "SignalTiming",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "try_new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "observed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "with_duration_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "from_frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 64,
+      "name": "timestamp_end_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "source_timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "observed_timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 78,
+      "name": "session_timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "duration_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 89,
+      "name": "SignalTimingError",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "SignalTiming",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "try_new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "observed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "with_duration_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "from_frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 64,
+      "name": "timestamp_end_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "source_timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "observed_timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 78,
+      "name": "session_timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "duration_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 89,
+      "name": "SignalTimingError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 21,
+      "text": "return Err(SignalTimingError::ZeroDuration);"
+    },
+    {
+      "line": 28,
+      "text": "return Err(SignalTimingError::TimestampOverflow);"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 89,
+      "name": "SignalTimingError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "4d9c3d9c56f85022f1d0ebb9edffbbf3da7d5fe00779dc6e816e2c9d6905b258",
+      "lines": [
+        1,
+        95
+      ],
+      "path": "src/graph/signal/timing.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0167-747ed2a5",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "a6eba00401fef0c65ba5b5457d2fc8f169523718",
+  "implemented_by": [],
+  "implements": [
+    "SignalTiming"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::FrameLineage"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 90,
+      "text": "#[error(\"signal timing duration must be non-zero when present\")]"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 95,
+  "locks": [],
+  "module": "pocketstation::graph::signal::timing",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-f7a931232c2556831d2e"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/signal/timing.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "SignalTiming",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "try_new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "observed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "with_duration_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "from_frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 64,
+      "name": "timestamp_end_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "source_timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "observed_timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 78,
+      "name": "session_timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "duration_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 89,
+      "name": "SignalTimingError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Source, observation, and Session clock coordinates for one signal."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "SignalTiming",
+    "try_new",
+    "observed",
+    "with_duration_ns",
+    "from_frame",
+    "timestamp_end_ns",
+    "source_timestamp_ns",
+    "observed_timestamp_ns",
+    "session_timestamp_ns",
+    "duration_ns",
+    "SignalTimingError"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 68,
+      "text": ".map(|(start, duration)| start.saturating_add(duration))"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

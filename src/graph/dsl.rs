@@ -7,20 +7,24 @@ use crate::graph::spec::{
     EdgeId, EdgeSpec, GraphSpec, InputPortRef, NodeId, NodeSpec, OutputPortRef,
 };
 
+#[doc = "Owns bounded access to node."]
 pub struct NodeHandle {
     id: NodeId,
 }
 
 impl NodeHandle {
+    #[doc = "Returns the id associated with `NodeHandle`."]
     pub fn id(&self) -> NodeId {
         self.id
     }
+    #[doc = "Selects a named output port from `NodeHandle`."]
     pub fn out(&self, port: &str) -> OutputPortRef {
         OutputPortRef {
             node: self.id,
             port: port.to_owned(),
         }
     }
+    #[doc = "Selects a named input port from `NodeHandle`."]
     pub fn in_(&self, port: &str) -> InputPortRef {
         InputPortRef {
             node: self.id,
@@ -30,6 +34,7 @@ impl NodeHandle {
 }
 
 #[derive(Default)]
+#[doc = "Represents pipeline in the PocketStation API."]
 pub struct Pipeline {
     spec: GraphSpec,
     next_node: u32,
@@ -37,10 +42,12 @@ pub struct Pipeline {
 }
 
 impl Pipeline {
+    #[doc = "Creates a new `Pipeline`."]
     pub fn new() -> Self {
         Self::default()
     }
 
+    #[doc = "Adds node for `Pipeline`."]
     pub fn add_node(&mut self, type_id: impl Into<NodeTypeId>, config: NodeConfig) -> NodeHandle {
         let id = NodeId(self.next_node);
         self.next_node += 1;
@@ -52,10 +59,12 @@ impl Pipeline {
         NodeHandle { id }
     }
 
+    #[doc = "Connects the requested ports through `Pipeline`."]
     pub fn connect(&mut self, from: OutputPortRef, to: InputPortRef) -> EdgeId {
         self.push_edge(from, to, None)
     }
 
+    #[doc = "Connects pipeline ports using the supplied edge contract on `Pipeline`."]
     pub fn connect_with(
         &mut self,
         from: OutputPortRef,
@@ -87,6 +96,7 @@ impl Pipeline {
         &self.spec
     }
 
+    #[doc = "Converts `Pipeline` into spec."]
     pub fn into_spec(self) -> GraphSpec {
         self.spec
     }

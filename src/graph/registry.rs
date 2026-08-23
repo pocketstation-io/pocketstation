@@ -8,9 +8,13 @@ use crate::graph::runtime_node::RuntimeNode;
 use crate::graph::signal::{AsyncOperatorFactory, AsyncOperatorManifestError};
 use crate::graph::OperatorId;
 
+#[doc = "Defines the implementation contract for node."]
 pub trait NodeFactory: Send + Sync {
+    #[doc = "Returns the descriptor associated with `NodeFactory`."]
     fn descriptor(&self) -> NodeDescriptor;
+    #[doc = "Validates config for `NodeFactory`."]
     fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError>;
+    #[doc = "Instantiates the runtime node described by `NodeFactory`."]
     fn instantiate(
         &self,
         cx: &PrepareContext,
@@ -18,8 +22,11 @@ pub trait NodeFactory: Send + Sync {
     ) -> Result<Box<dyn RuntimeNode>, NodeError>;
 }
 
+#[doc = "Defines the implementation contract for node definition."]
 pub trait NodeDefinition: Send + Sync {
+    #[doc = "Returns the descriptor associated with `NodeDefinition`."]
     fn descriptor(&self) -> NodeDescriptor;
+    #[doc = "Validates config for `NodeDefinition`."]
     fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError>;
 }
 
@@ -29,9 +36,13 @@ enum RegistryEntry {
     Definition(Arc<dyn NodeDefinition>),
 }
 
+#[doc = "Enumerates the supported node definition ref cases."]
 pub enum NodeDefinitionRef<'registry> {
+    #[doc = "Represents the runtime case of `NodeDefinitionRef`."]
     Runtime(&'registry Arc<dyn NodeFactory>),
+    #[doc = "Represents the async case of `NodeDefinitionRef`."]
     Async(&'registry Arc<dyn AsyncOperatorFactory>),
+    #[doc = "Represents the definition case of `NodeDefinitionRef`."]
     Definition(&'registry Arc<dyn NodeDefinition>),
 }
 
@@ -54,26 +65,39 @@ impl NodeDefinitionRef<'_> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as node registration error."]
 pub enum NodeRegistrationError {
     #[error(transparent)]
+    #[doc = "Reports invalid async manifest."]
     InvalidAsyncManifest(#[from] AsyncOperatorManifestError),
     #[error("node type is already registered: {node_type_id}")]
-    DuplicateNodeType { node_type_id: String },
+    #[doc = "Reports duplicate node type."]
+    DuplicateNodeType {
+        #[doc = "Identifies the node type associated with `DuplicateNodeType`."]
+        node_type_id: String,
+    },
     #[error("operator id is already registered: {operator_id}")]
-    DuplicateOperatorId { operator_id: String },
+    #[doc = "Reports duplicate operator identifier."]
+    DuplicateOperatorId {
+        #[doc = "Identifies the operator associated with `DuplicateOperatorId`."]
+        operator_id: String,
+    },
 }
 
 #[derive(Default)]
+#[doc = "Represents node registry in the PocketStation API."]
 pub struct NodeRegistry {
     entries: HashMap<NodeTypeId, RegistryEntry>,
     async_operator_types: HashMap<OperatorId, NodeTypeId>,
 }
 
 impl NodeRegistry {
+    #[doc = "Creates a new `NodeRegistry`."]
     pub fn new() -> Self {
         Self::default()
     }
 
+    #[doc = "Registers a node definition with `NodeRegistry` while preserving unique identities."]
     pub fn register(&mut self, factory: Arc<dyn NodeFactory>) -> Result<(), NodeRegistrationError> {
         let type_id = factory.descriptor().type_id;
         if self.entries.contains_key(&type_id) {
@@ -86,6 +110,7 @@ impl NodeRegistry {
         Ok(())
     }
 
+    #[doc = "Registers async for `NodeRegistry`."]
     pub fn register_async(
         &mut self,
         factory: Arc<dyn AsyncOperatorFactory>,
@@ -109,6 +134,7 @@ impl NodeRegistry {
         Ok(())
     }
 
+    #[doc = "Registers definition for `NodeRegistry`."]
     pub fn register_definition(
         &mut self,
         definition: Arc<dyn NodeDefinition>,
@@ -124,6 +150,7 @@ impl NodeRegistry {
         Ok(())
     }
 
+    #[doc = "Returns the value held by `NodeRegistry`."]
     pub fn get(&self, type_id: &NodeTypeId) -> Option<&Arc<dyn NodeFactory>> {
         match self.entries.get(type_id) {
             Some(RegistryEntry::Runtime(factory)) => Some(factory),
@@ -131,6 +158,7 @@ impl NodeRegistry {
         }
     }
 
+    #[doc = "Returns the definition associated with `NodeRegistry`."]
     pub fn definition(&self, type_id: &NodeTypeId) -> Option<NodeDefinitionRef<'_>> {
         match self.entries.get(type_id)? {
             RegistryEntry::Runtime(factory) => Some(NodeDefinitionRef::Runtime(factory)),
@@ -141,6 +169,7 @@ impl NodeRegistry {
         }
     }
 
+    #[doc = "Returns the async factory associated with `NodeRegistry`."]
     pub fn async_factory(&self, type_id: &NodeTypeId) -> Option<&Arc<dyn AsyncOperatorFactory>> {
         match self.entries.get(type_id) {
             Some(RegistryEntry::Async(factory)) => Some(factory),
@@ -148,6 +177,7 @@ impl NodeRegistry {
         }
     }
 
+    #[doc = "Returns the async factory by operator associated with `NodeRegistry`."]
     pub fn async_factory_by_operator(
         &self,
         operator_id: &OperatorId,
@@ -161,6 +191,7 @@ impl NodeRegistry {
         self.async_operator_types.get(operator_id)
     }
 
+    #[doc = "Returns the contains associated with `NodeRegistry`."]
     pub fn contains(&self, type_id: &NodeTypeId) -> bool {
         self.entries.contains_key(type_id)
     }

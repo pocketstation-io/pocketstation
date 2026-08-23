@@ -1,0 +1,393 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Box::new",
+    "DesktopCaptureSource::capture_mode_with_runtime_event_sender",
+    "cfg",
+    "derive",
+    "given_macos_backend_when_type_checked_then_callback_contract_is_implemented",
+    "into_callback",
+    "observation_handle",
+    "observations",
+    "open",
+    "prepare",
+    "source_id",
+    "stop_and_join"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 63,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Box::new"
+  ],
+  "content_hash": "3338142af3dfe0203ea5d6e5068a4185efcbdc2ad7a923580119cc40f6b00637",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 11,
+      "name": "DesktopCaptureBackend",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 12,
+      "name": "PreparedDesktopCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 16,
+      "name": "ActiveDesktopCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 28,
+      "name": "open",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "observation_handle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "stop_and_join",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 64,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "given_macos_backend_when_type_checked_then_callback_contract_is_implemented",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "require_callback_backend",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [
+    {
+      "line": 9,
+      "text": "/// existing CoreAudio/input RAII owner."
+    }
+  ],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 11,
+      "name": "DesktopCaptureBackend",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "3338142af3dfe0203ea5d6e5068a4185efcbdc2ad7a923580119cc40f6b00637",
+      "lines": [
+        1,
+        74
+      ],
+      "path": "src/capture/platform/macos/session_backend.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0092-3eb01dfe",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "81725967421045ed848af855fdfb27a1e0495074",
+  "implemented_by": [],
+  "implements": [
+    "CallbackCaptureBackend for DesktopCaptureBackend",
+    "PreparedCaptureBackend for PreparedDesktopCapture",
+    "ActiveCaptureBackend for ActiveDesktopCapture"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::capture::platform::macos::DesktopCaptureSource",
+    "crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, PreparedCaptureBackend, }",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 74,
+  "locks": [],
+  "module": "pocketstation::capture::platform::macos::session_backend",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-035a929706d6f2663fc7"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/capture/platform/macos/session_backend.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "struct",
+      "line": 12,
+      "name": "PreparedDesktopCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 16,
+      "name": "ActiveDesktopCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 28,
+      "name": "open",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "observation_handle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "stop_and_join",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 64,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "given_macos_backend_when_type_checked_then_callback_contract_is_implemented",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "require_callback_backend",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 11,
+      "name": "DesktopCaptureBackend",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::capture::platform::macos::session_backend`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/source-selection.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/select-process-source.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/run-transcription.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/troubleshooting/timing.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 9,
+      "text": "/// existing CoreAudio/input RAII owner."
+    },
+    {
+      "line": 22,
+      "text": "fn prepare(&self, mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 23,
+      "text": "Ok(Box::new(PreparedDesktopCapture { mode }))"
+    },
+    {
+      "line": 29,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 31,
+      "text": ") -> Result<Box<dyn ActiveCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 41,
+      "text": "Ok(Box::new(ActiveDesktopCapture { source }))"
+    },
+    {
+      "line": 58,
+      "text": "fn stop_and_join(self: Box<Self>) -> Result<CaptureObservations, CaptureError> {"
+    }
+  ],
+  "responsibilities": [
+    "DesktopCaptureBackend",
+    "PreparedDesktopCapture",
+    "ActiveDesktopCapture",
+    "prepare",
+    "open",
+    "source_id",
+    "observation_handle",
+    "observations",
+    "stop_and_join",
+    "tests",
+    "given_macos_backend_when_type_checked_then_callback_contract_is_implemented",
+    "require_callback_backend"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 9,
+      "text": "/// existing CoreAudio/input RAII owner."
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 22,
+      "text": "fn prepare(&self, mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

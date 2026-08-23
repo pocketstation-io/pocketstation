@@ -3,18 +3,24 @@
 use crate::graph::signal::{SignalEnvelope, SignalEnvelopeError, SignalLineage, SignalTiming};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Represents signal continuity observation in the PocketStation API."]
 pub struct SignalContinuityObservation {
+    #[doc = "Stores the discontinuity observed associated with `SignalContinuityObservation`."]
     pub discontinuity_observed: bool,
+    #[doc = "Stores the source recovered associated with `SignalContinuityObservation`."]
     pub source_recovered: bool,
+    #[doc = "Stores the policy changed associated with `SignalContinuityObservation`."]
     pub policy_changed: bool,
 }
 
 #[derive(Debug, Default)]
+#[doc = "Represents signal continuity tracker in the PocketStation API."]
 pub struct SignalContinuityTracker {
     previous: Option<(SignalLineage, SignalTiming)>,
 }
 
 impl SignalContinuityTracker {
+    #[doc = "Returns the current observation exposed by `SignalContinuityTracker`."]
     pub fn observe(
         &mut self,
         envelope: &SignalEnvelope,
@@ -86,23 +92,33 @@ fn timestamp_regressed(previous: SignalTiming, current: SignalTiming) -> bool {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as signal continuity error."]
 pub enum SignalContinuityError {
     #[error("signal envelope is invalid: {0}")]
+    #[doc = "Reports invalid envelope."]
     InvalidEnvelope(SignalEnvelopeError),
     #[error("signal continuity requires source-independent lineage")]
+    #[doc = "Reports missing lineage."]
     MissingLineage,
     #[error("signal identity changed within one continuity tracker")]
+    #[doc = "Reports identity changed."]
     IdentityChanged,
     #[error("signal sequence gap occurred without a discontinuity epoch change")]
+    #[doc = "Reports sequence gap without discontinuity."]
     SequenceGapWithoutDiscontinuity,
     #[error("signal timestamp regressed")]
+    #[doc = "Reports timestamp regression."]
     TimestampRegression,
     #[error("signal discontinuity epoch regressed")]
+    #[doc = "Reports discontinuity regressed."]
     DiscontinuityRegressed,
     #[error("signal source generation regressed")]
+    #[doc = "Reports generation regressed."]
     GenerationRegressed,
     #[error("signal source recovery occurred without a discontinuity")]
+    #[doc = "Reports recovery without discontinuity."]
     RecoveryWithoutDiscontinuity,
     #[error("signal policy epoch regressed")]
+    #[doc = "Reports policy regressed."]
     PolicyRegressed,
 }

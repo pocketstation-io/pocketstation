@@ -1,0 +1,333 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 150,
+      "text": "async work to produce audio without making a managed runtime or model provider"
+    },
+    {
+      "line": 167,
+      "text": "allocation-free \u00b7 lock-free \u00b7 blocking-free \u00b7 async-free \u00b7 log-free \u00b7 panic-free"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 10,
+      "text": "work onto the audio callback."
+    },
+    {
+      "line": 151,
+      "text": "part of the capture callback."
+    },
+    {
+      "line": 196,
+      "text": "transactionally, and Core retains its executable library until every callback"
+    }
+  ],
+  "called_by": [],
+  "calls": [
+    "ApplicationSelector::name",
+    "Duration::from_millis",
+    "Duration::from_secs",
+    "Instant::now",
+    "Session::builder",
+    "Source::application",
+    "Source::microphone_default",
+    "build",
+    "capture",
+    "expect",
+    "frame",
+    "get",
+    "is_success",
+    "len",
+    "lineage",
+    "main",
+    "microphone_permission_observation",
+    "polled_audio",
+    "record",
+    "recording_outcome",
+    "recording_root",
+    "send",
+    "sequence_number",
+    "source_id",
+    "start",
+    "std::thread::sleep",
+    "stem_id",
+    "stop",
+    "try_poll_audio"
+  ],
+  "cancellation_behavior": [
+    {
+      "line": 191,
+      "text": "the same Session compiler, runtime, observations, cancellation, and shutdown;"
+    }
+  ],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 65,
+      "text": "pocketstation = { version = \"1.0.0\", default-features = false }"
+    },
+    {
+      "line": 261,
+      "text": "cargo clippy --all-targets --all-features --locked -- -D warnings"
+    },
+    {
+      "line": 262,
+      "text": "cargo test --all-targets --all-features --locked"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Session::builder"
+  ],
+  "content_hash": "63a37f8d88db0d9eb26276ec59324ef3893f68a32c7b44428c835d18cd145fc6",
+  "defaults": [
+    {
+      "line": 65,
+      "text": "pocketstation = { version = \"1.0.0\", default-features = false }"
+    }
+  ],
+  "defines": [],
+  "device_io": [
+    {
+      "line": 231,
+      "text": "policy, direct ALSA access, device ACLs, and containers do not share one"
+    },
+    {
+      "line": 267,
+      "text": "Local component tests establish code correctness, not physical-device,"
+    }
+  ],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 141,
+      "text": "Operator \u00b7 Endpoint \u00b7 recording"
+    },
+    {
+      "line": 205,
+      "text": "conformance all lower into the existing endpoint lifecycle. Provider protocols"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "63a37f8d88db0d9eb26276ec59324ef3893f68a32c7b44428c835d18cd145fc6",
+      "lines": [
+        1,
+        274
+      ],
+      "path": "README.md",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 51,
+      "text": "Rust, the versioned C ABI, and bounded process sidecars. Each integration uses"
+    },
+    {
+      "line": 159,
+      "text": "metadata; it is not the runtime storage format and never crosses the C ABI or"
+    }
+  ],
+  "file_id": "file-0008-b3356305",
+  "file_kind": "documentation",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "549df7abe9ce7e6d276bac1c1fd56e03469ef421",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 112,
+      "text": "assert!(stop.is_success());"
+    },
+    {
+      "line": 159,
+      "text": "metadata; it is not the runtime storage format and never crosses the C ABI or"
+    },
+    {
+      "line": 173,
+      "text": "it is never hidden behind an unbounded queue."
+    }
+  ],
+  "language": "Markdown",
+  "line_count": 274,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [
+    {
+      "line": 12,
+      "text": "[![crates.io](https://img.shields.io/crates/v/pocketstation.svg)](https://crates.io/crates/pocketstation)"
+    },
+    {
+      "line": 13,
+      "text": "[![docs.rs](https://img.shields.io/docsrs/pocketstation)](https://docs.rs/pocketstation/latest/pocketstation/)"
+    },
+    {
+      "line": 14,
+      "text": "[![license](https://img.shields.io/crates/l/pocketstation.svg)](https://github.com/pocketstation-io/pocketstation)"
+    },
+    {
+      "line": 255,
+      "text": "- [API reference](https://docs.rs/pocketstation/latest/pocketstation/)"
+    }
+  ],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-69e9b0da1bc3bc46ca58",
+    "pattern-b523ba5d74334fbf84df"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "repository",
+  "path": "README.md",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Documents PocketStation."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 79,
+      "text": "fn main() -> Result<(), Box<dyn Error>> {"
+    }
+  ],
+  "responsibilities": [],
+  "retry_behavior": [
+    {
+      "line": 203,
+      "text": "typed manifests and configuration, redacted secrets, finite delivery/retry and"
+    }
+  ],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 111,
+      "text": "let stop = running.stop();"
+    },
+    {
+      "line": 112,
+      "text": "assert!(stop.is_success());"
+    },
+    {
+      "line": 191,
+      "text": "the same Session compiler, runtime, observations, cancellation, and shutdown;"
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 12,
+      "text": "[![crates.io](https://img.shields.io/crates/v/pocketstation.svg)](https://crates.io/crates/pocketstation)"
+    },
+    {
+      "line": 13,
+      "text": "[![docs.rs](https://img.shields.io/docsrs/pocketstation)](https://docs.rs/pocketstation/latest/pocketstation/)"
+    },
+    {
+      "line": 14,
+      "text": "[![license](https://img.shields.io/crates/l/pocketstation.svg)](https://github.com/pocketstation-io/pocketstation)"
+    },
+    {
+      "line": 255,
+      "text": "- [API reference](https://docs.rs/pocketstation/latest/pocketstation/)"
+    },
+    {
+      "line": 231,
+      "text": "policy, direct ALSA access, device ACLs, and containers do not share one"
+    },
+    {
+      "line": 267,
+      "text": "Local component tests establish code correctness, not physical-device,"
+    },
+    {
+      "line": 51,
+      "text": "Rust, the versioned C ABI, and bounded process sidecars. Each integration uses"
+    },
+    {
+      "line": 159,
+      "text": "metadata; it is not the runtime storage format and never crosses the C ABI or"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 68,
+      "text": "## Quick start"
+    },
+    {
+      "line": 94,
+      "text": "let mut running = session.start()?;"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 150,
+      "text": "async work to produce audio without making a managed runtime or model provider"
+    },
+    {
+      "line": 167,
+      "text": "allocation-free \u00b7 lock-free \u00b7 blocking-free \u00b7 async-free \u00b7 log-free \u00b7 panic-free"
+    }
+  ],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 108,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    }
+  ],
+  "visibility": "private_or_not_applicable"
+}

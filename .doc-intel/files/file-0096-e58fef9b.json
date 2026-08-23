@@ -1,0 +1,602 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Duration::from_millis",
+    "Duration::from_secs",
+    "Failed",
+    "Instant::now",
+    "OpenCancellation::default",
+    "OpenWaitOutcome::Failed",
+    "OpenWaitOutcome::Opened",
+    "Opened",
+    "cancel",
+    "cfg",
+    "clone",
+    "derive",
+    "drop",
+    "given_cancelled_activation_when_waiting_then_cancellation_is_bounded",
+    "given_cancelled_open_when_late_worker_reports_then_success_is_rejected",
+    "given_completed_activation_when_waiting_then_completion_is_returned",
+    "given_hung_activation_when_deadline_expires_then_timeout_is_returned",
+    "given_hung_open_worker_when_waiting_then_timeout_is_returned",
+    "given_timed_out_receiver_when_late_worker_reports_then_success_is_rejected",
+    "given_timeout_when_cancellation_cloned_then_late_worker_observes_it",
+    "given_worker_error_when_waiting_then_exact_failure_is_retained",
+    "is_cancelled",
+    "let",
+    "load",
+    "map_err",
+    "min",
+    "pub",
+    "recv_timeout",
+    "report_open",
+    "saturating_duration_since",
+    "send",
+    "std::sync::mpsc::sync_channel",
+    "store",
+    "to_owned",
+    "try_send",
+    "unwrap",
+    "wait_for_completion",
+    "wait_for_open"
+  ],
+  "cancellation_behavior": [
+    {
+      "line": 12,
+      "text": "pub(crate) fn cancel(&self) {"
+    },
+    {
+      "line": 114,
+      "text": "caller_cancellation.cancel();"
+    },
+    {
+      "line": 123,
+      "text": "open_cancellation.cancel();"
+    },
+    {
+      "line": 158,
+      "text": "cancellation.cancel();"
+    }
+  ],
+  "channels": [
+    {
+      "line": 2,
+      "text": "use std::sync::mpsc::{Receiver, RecvTimeoutError};"
+    },
+    {
+      "line": 44,
+      "text": "completion_rx: &Receiver<()>,"
+    },
+    {
+      "line": 71,
+      "text": "open_rx: &Receiver<Result<T, E>>,"
+    }
+  ],
+  "configuration_read": [
+    {
+      "line": 95,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "0efd82c75d8e4529f8d3c1669fe4bbfb26e04229a391b05c6a1503ff799a7a4d",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 7,
+      "name": "OpenCancellation",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "cancel",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "is_cancelled",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 22,
+      "name": "OpenWaitOutcome",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 30,
+      "name": "OpenReportError",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 36,
+      "name": "CancellableWaitOutcome",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "wait_for_completion",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "wait_for_open",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "report_open",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 96,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 100,
+      "name": "given_hung_open_worker_when_waiting_then_timeout_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 110,
+      "name": "given_timeout_when_cancellation_cloned_then_late_worker_observes_it",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "given_cancelled_open_when_late_worker_reports_then_success_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 132,
+      "name": "given_timed_out_receiver_when_late_worker_reports_then_success_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "given_worker_error_when_waiting_then_exact_failure_is_retained",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "given_cancelled_activation_when_waiting_then_cancellation_is_bounded",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 172,
+      "name": "given_completed_activation_when_waiting_then_completion_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 189,
+      "name": "given_hung_activation_when_deadline_expires_then_timeout_is_returned",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 135,
+      "text": "drop(open_rx);"
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 7,
+      "name": "OpenCancellation",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "cancel",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "is_cancelled",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 22,
+      "name": "OpenWaitOutcome",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 30,
+      "name": "OpenReportError",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 36,
+      "name": "CancellableWaitOutcome",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "wait_for_completion",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "wait_for_open",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "report_open",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 62,
+      "text": "Err(RecvTimeoutError::Disconnected) => {"
+    },
+    {
+      "line": 65,
+      "text": "Err(RecvTimeoutError::Timeout) => {}"
+    },
+    {
+      "line": 76,
+      "text": "Ok(Err(error)) => OpenWaitOutcome::Failed(error),"
+    },
+    {
+      "line": 77,
+      "text": "Err(RecvTimeoutError::Timeout) => OpenWaitOutcome::TimedOut,"
+    },
+    {
+      "line": 78,
+      "text": "Err(RecvTimeoutError::Disconnected) => OpenWaitOutcome::WorkerExited,"
+    },
+    {
+      "line": 88,
+      "text": "return Err(OpenReportError::Cancelled);"
+    },
+    {
+      "line": 127,
+      "text": "Err(OpenReportError::Cancelled)"
+    },
+    {
+      "line": 139,
+      "text": "Err(OpenReportError::ReceiverUnavailable)"
+    },
+    {
+      "line": 146,
+      "text": "open_tx.send(Err(\"activation failed\".to_owned())).unwrap();"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 30,
+      "name": "OpenReportError",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 92,
+      "text": ".map_err(|_| OpenReportError::ReceiverUnavailable)"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 92,
+      "text": ".map_err(|_| OpenReportError::ReceiverUnavailable)"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "0efd82c75d8e4529f8d3c1669fe4bbfb26e04229a391b05c6a1503ff799a7a4d",
+      "lines": [
+        1,
+        204
+      ],
+      "path": "src/capture/platform/windows/open_lifecycle.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0096-e58fef9b",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "92c89515b70b41f0ac4175f906df4a98b97b9eab",
+  "implemented_by": [],
+  "implements": [
+    "OpenCancellation"
+  ],
+  "imported_by": [],
+  "imports": [
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, Ordering}",
+    "std::sync::mpsc::{Receiver, RecvTimeoutError}",
+    "std::time::{Duration, Instant}",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 116,
+      "text": "assert!(worker_cancellation.is_cancelled());"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 204,
+  "locks": [],
+  "module": "pocketstation::capture::platform::windows::open_lifecycle",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-c515a2ba9879e5831820"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/capture/platform/windows/open_lifecycle.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 96,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 100,
+      "name": "given_hung_open_worker_when_waiting_then_timeout_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 110,
+      "name": "given_timeout_when_cancellation_cloned_then_late_worker_observes_it",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "given_cancelled_open_when_late_worker_reports_then_success_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 132,
+      "name": "given_timed_out_receiver_when_late_worker_reports_then_success_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "given_worker_error_when_waiting_then_exact_failure_is_retained",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "given_cancelled_activation_when_waiting_then_cancellation_is_bounded",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 172,
+      "name": "given_completed_activation_when_waiting_then_completion_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 189,
+      "name": "given_hung_activation_when_deadline_expires_then_timeout_is_returned",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 7,
+      "name": "OpenCancellation",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "cancel",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "is_cancelled",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 22,
+      "name": "OpenWaitOutcome",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 30,
+      "name": "OpenReportError",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 36,
+      "name": "CancellableWaitOutcome",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "wait_for_completion",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "wait_for_open",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "report_open",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::capture::platform::windows::open_lifecycle`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/source-selection.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/select-process-source.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/run-transcription.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/troubleshooting/timing.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 3,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 8,
+      "text": "cancelled: Arc<AtomicBool>,"
+    }
+  ],
+  "responsibilities": [
+    "OpenCancellation",
+    "cancel",
+    "is_cancelled",
+    "OpenWaitOutcome",
+    "OpenReportError",
+    "CancellableWaitOutcome",
+    "wait_for_completion",
+    "wait_for_open",
+    "report_open",
+    "tests",
+    "given_hung_open_worker_when_waiting_then_timeout_is_returned",
+    "given_timeout_when_cancellation_cloned_then_late_worker_observes_it",
+    "given_cancelled_open_when_late_worker_reports_then_success_is_rejected",
+    "given_timed_out_receiver_when_late_worker_reports_then_success_is_rejected",
+    "given_worker_error_when_waiting_then_exact_failure_is_retained",
+    "given_cancelled_activation_when_waiting_then_cancellation_is_bounded",
+    "given_completed_activation_when_waiting_then_completion_is_returned",
+    "given_hung_activation_when_deadline_expires_then_timeout_is_returned"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

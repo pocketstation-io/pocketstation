@@ -1,0 +1,915 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 311,
+      "text": "Box::pin(async { Ok(()) })"
+    },
+    {
+      "line": 318,
+      "text": "Box::pin(async move {"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AsyncOperatorManifest::new",
+    "AudioInputConfig::new",
+    "AudioInputWriteErrorKind::InvalidBuffer",
+    "Box::new",
+    "Box::pin",
+    "Duration::from_millis",
+    "Duration::from_secs",
+    "EdgeContract::bounded_async",
+    "EdgeContract::realtime_audio",
+    "Instant::now",
+    "MediaCaps::Audio",
+    "NodeDescriptor::new",
+    "NodeError::Process",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorControl::default",
+    "OperatorId::new",
+    "OperatorOutputRolePolicy::default",
+    "PassThroughFactory::new",
+    "PortSpec::new",
+    "SampleSpec::new",
+    "Session::builder",
+    "Session::new",
+    "SignalDerivation::new",
+    "SignalEnvelope::from_audio",
+    "SignalPayload::Audio",
+    "SignalSpec::audio",
+    "Vec::new",
+    "acquire_before",
+    "audio_input",
+    "audio_input_config",
+    "break",
+    "build",
+    "capture_backends",
+    "cfg",
+    "close",
+    "create",
+    "derive",
+    "discontinuity_epoch",
+    "drop",
+    "expect",
+    "expect_err",
+    "external_source_metrics",
+    "fetch_add",
+    "filter_map",
+    "find",
+    "frame",
+    "get",
+    "given_application_owned_audio_when_written_through_facade_then_session_delivers_its_lineage",
+    "given_audio_input_when_session_runs_then_lineage_fanout_reentry_and_recording_are_real",
+    "given_bounded_audio_input_when_writes_are_invalid_or_saturated_then_ownership_is_explicit",
+    "given_running_audio_input_when_writer_closes_then_accepted_frames_are_drained",
+    "id",
+    "into_parts",
+    "into_payload",
+    "into_rejected",
+    "is_some_and",
+    "is_success",
+    "iter",
+    "kind",
+    "len",
+    "let",
+    "lineage",
+    "load",
+    "manifest",
+    "map",
+    "map_err",
+    "mark_discontinuity",
+    "metrics_snapshot",
+    "new",
+    "observations",
+    "ok_or_else",
+    "output",
+    "path",
+    "pcm_source",
+    "pocketstation::NodeTypeId::from",
+    "pocketstation::conformance::observed_connector",
+    "polled_audio",
+    "prepare",
+    "push",
+    "record",
+    "recording_outcome",
+    "recording_root",
+    "reenter_audio",
+    "register_operator",
+    "route",
+    "route_count",
+    "sample_spec",
+    "send",
+    "send_before",
+    "sequence_number",
+    "source",
+    "source_id",
+    "start",
+    "std::thread::yield_now",
+    "stem_id",
+    "stop",
+    "stream_id",
+    "tempfile::tempdir",
+    "thread::sleep",
+    "through",
+    "timing",
+    "to_owned",
+    "to_string",
+    "try_acquire",
+    "try_copy_from_slice",
+    "try_poll_audio",
+    "try_send",
+    "try_write",
+    "validate_config",
+    "wait_for_route_delivery",
+    "with_copy_policy",
+    "with_derivation",
+    "with_lineage",
+    "with_media"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 10,
+      "text": "ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity,"
+    },
+    {
+      "line": 288,
+      "text": "fn validate_config(&self, _configuration: &OperatorConfiguration) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 391,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 472,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 549,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AsyncOperatorManifest::new",
+    "AudioInputConfig::new",
+    "Box::new",
+    "NodeDescriptor::new",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "PassThroughFactory::new",
+    "PortSpec::new",
+    "SampleSpec::new",
+    "Session::builder",
+    "Session::new",
+    "SignalDerivation::new",
+    "Vec::new",
+    "new",
+    "pocketstation::NodeTypeId::from"
+  ],
+  "content_hash": "d09760d52267d483e5a281af3144a971aca023a285c80bf889e6349d0cd06bb4",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "FRAME_SAMPLES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "OPERATOR_NODE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 21,
+      "name": "UnexpectedOsCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "sample_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "audio_input_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "given_application_owned_audio_when_written_through_facade_then_session_delivers_its_lineage",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "given_bounded_audio_input_when_writes_are_invalid_or_saturated_then_ownership_is_explicit",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "given_running_audio_input_when_writer_closes_then_accepted_frames_are_drained",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 213,
+      "name": "OperatorControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 216,
+      "name": "PassThroughFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 223,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 284,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 287,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 291,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 301,
+      "name": "PassThroughNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 307,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 313,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 348,
+      "name": "given_audio_input_when_session_runs_then_lineage_fanout_reentry_and_recording_are_real",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 510,
+      "name": "acquire_before",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 526,
+      "name": "send_before",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 550,
+      "name": "wait_for_route_delivery",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 103,
+      "text": "drop(full.into_rejected());"
+    },
+    {
+      "line": 111,
+      "text": "drop(empty.into_rejected());"
+    },
+    {
+      "line": 127,
+      "text": "drop(short.into_rejected());"
+    },
+    {
+      "line": 140,
+      "text": "drop(foreign.into_rejected());"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 47,
+      "text": "let polled_audio = session.polled_audio().expect(\"polled audio endpoint\");"
+    },
+    {
+      "line": 165,
+      "text": "let polled_audio = session.polled_audio().expect(\"polled audio endpoint\");"
+    },
+    {
+      "line": 366,
+      "text": "let polled_audio = session.polled_audio().expect(\"polled audio endpoint\");"
+    },
+    {
+      "line": 564,
+      "text": ".endpoint"
+    },
+    {
+      "line": 565,
+      "text": ".is_some_and(|endpoint| endpoint.frames_received_total >= expected_frames)"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 153,
+      "text": "Err(AudioInputBufferAcquireError::Closed)"
+    },
+    {
+      "line": 324,
+      "text": "return Err(NodeError::Process("
+    },
+    {
+      "line": 519,
+      "text": "Err(AudioInputBufferAcquireError::Full) if Instant::now() < deadline => {"
+    },
+    {
+      "line": 536,
+      "text": "Err(error)"
+    },
+    {
+      "line": 544,
+      "text": "Err(error) => panic!(\"PCM frame was not accepted before deadline: {error}\"),"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [
+    {
+      "line": 340,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 522,
+      "text": "result => panic!(\"PCM buffer was not acquired before deadline: {result:?}\"),"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 340,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 340,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "d09760d52267d483e5a281af3144a971aca023a285c80bf889e6349d0cd06bb4",
+      "lines": [
+        1,
+        577
+      ],
+      "path": "tests/audio_input.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "conformance-fixtures"
+  ],
+  "feature_gate": [
+    "conformance-fixtures"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0255-9adcad6a",
+  "file_kind": "test",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "7620f9f6824a9fb8541a2324d3e2468e421b0600",
+  "implemented_by": [],
+  "implements": [
+    "CallbackCaptureBackend for UnexpectedOsCapture",
+    "PassThroughFactory",
+    "AsyncOperatorFactory for PassThroughFactory",
+    "AsyncNode for PassThroughNode"
+  ],
+  "imported_by": [],
+  "imports": [
+    "pocketstation::{ AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AudioCaps, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputConfig, AudioInputWriteErrorKind, CallbackCaptureBackend, CaptureError, CaptureMode, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeError, Operator, OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, PreparedCaptureBackend, SafetyContract, SampleFormat, SampleSpec, Session, SessionRecordingState, SignalDerivation, SignalEnvelope, SignalPayload, SignalSpec, }",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "std::thread",
+    "std::time::{Duration, Instant}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 26,
+      "text": "panic!(\"caller-owned PCM must not invoke an OS capture backend\")"
+    },
+    {
+      "line": 65,
+      "text": "assert!(Instant::now() < deadline, \"fa\u00e7ade frame was not delivered\");"
+    },
+    {
+      "line": 72,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 92,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 101,
+      "text": "let full = writer.try_write(&samples).expect_err(\"queue must saturate\");"
+    },
+    {
+      "line": 106,
+      "text": "let empty = writer.try_send(empty).expect_err(\"empty buffer must fail\");"
+    },
+    {
+      "line": 119,
+      "text": ".expect_err(\"fixed PCM frame size must be enforced\");"
+    },
+    {
+      "line": 135,
+      "text": ".expect_err(\"buffers cannot cross audio inputs\");"
+    },
+    {
+      "line": 151,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 197,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 199,
+      "text": "assert!(observations.closed);"
+    },
+    {
+      "line": 200,
+      "text": "assert!(!observations.cancelled);"
+    },
+    {
+      "line": 435,
+      "text": "\"all source PCM frames must be polled\""
+    },
+    {
+      "line": 440,
+      "text": "\"all operator PCM frames must be polled\""
+    },
+    {
+      "line": 486,
+      "text": "assert!(stop.is_success(), \"audio input Session must stop cleanly\");"
+    },
+    {
+      "line": 495,
+      "text": "assert!(observations.cancelled);"
+    },
+    {
+      "line": 570,
+      "text": "assert!("
+    }
+  ],
+  "language": "Rust",
+  "line_count": 577,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-edf69dcaea64764c5f09"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "tests/audio_input.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "FRAME_SAMPLES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "OPERATOR_NODE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 21,
+      "name": "UnexpectedOsCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "sample_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "audio_input_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "given_application_owned_audio_when_written_through_facade_then_session_delivers_its_lineage",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "given_bounded_audio_input_when_writes_are_invalid_or_saturated_then_ownership_is_explicit",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "given_running_audio_input_when_writer_closes_then_accepted_frames_are_drained",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 213,
+      "name": "OperatorControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 216,
+      "name": "PassThroughFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 223,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 284,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 287,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 291,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 301,
+      "name": "PassThroughNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 307,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 313,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 348,
+      "name": "given_audio_input_when_session_runs_then_lineage_fanout_reentry_and_recording_are_real",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 510,
+      "name": "acquire_before",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 526,
+      "name": "send_before",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 550,
+      "name": "wait_for_route_delivery",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `not_applicable`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/source-selection.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/select-process-source.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/run-transcription.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/troubleshooting/timing.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 2,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 25,
+      "text": "fn prepare(&self, _mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 219,
+      "text": "control: Arc<OperatorControl>,"
+    },
+    {
+      "line": 223,
+      "text": "fn new(control: Arc<OperatorControl>) -> Self {"
+    },
+    {
+      "line": 295,
+      "text": ") -> Result<Box<dyn AsyncNode>, NodeError> {"
+    },
+    {
+      "line": 296,
+      "text": "Ok(Box::new(PassThroughNode {"
+    },
+    {
+      "line": 297,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 303,
+      "text": "control: Arc<OperatorControl>,"
+    },
+    {
+      "line": 311,
+      "text": "Box::pin(async { Ok(()) })"
+    },
+    {
+      "line": 318,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 350,
+      "text": "let unexpected_capture: Arc<dyn CallbackCaptureBackend> = Arc::new(UnexpectedOsCapture);"
+    },
+    {
+      "line": 354,
+      "text": ".capture_backends(Arc::clone(&unexpected_capture), unexpected_capture)"
+    },
+    {
+      "line": 356,
+      "text": "let control = Arc::new(OperatorControl::default());"
+    },
+    {
+      "line": 358,
+      "text": ".register_operator(Arc::new(PassThroughFactory::new(Arc::clone(&control))))"
+    }
+  ],
+  "responsibilities": [
+    "FRAME_SAMPLES",
+    "OPERATOR_ID",
+    "OPERATOR_NODE_ID",
+    "UnexpectedOsCapture",
+    "prepare",
+    "sample_spec",
+    "audio_input_config",
+    "given_application_owned_audio_when_written_through_facade_then_session_delivers_its_lineage",
+    "given_bounded_audio_input_when_writes_are_invalid_or_saturated_then_ownership_is_explicit",
+    "given_running_audio_input_when_writer_closes_then_accepted_frames_are_drained",
+    "OperatorControl",
+    "PassThroughFactory",
+    "new",
+    "manifest",
+    "validate_config",
+    "create",
+    "PassThroughNode",
+    "prepare",
+    "process",
+    "given_audio_input_when_session_runs_then_lineage_fanout_reentry_and_recording_are_real",
+    "acquire_before",
+    "send_before",
+    "wait_for_route_delivery"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 72,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 197,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 485,
+      "text": "let stop = running.stop();"
+    },
+    {
+      "line": 486,
+      "text": "assert!(stop.is_success(), \"audio input Session must stop cleanly\");"
+    }
+  ],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 25,
+      "text": "fn prepare(&self, _mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 53,
+      "text": "let mut running = session.start().expect(\"running audio input Session\");"
+    },
+    {
+      "line": 170,
+      "text": "let mut running = session.start().expect(\"running audio input Session\");"
+    },
+    {
+      "line": 307,
+      "text": "fn prepare<'a>("
+    },
+    {
+      "line": 401,
+      "text": "let mut running = session.start().expect(\"running audio input Session\");"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 311,
+      "text": "Box::pin(async { Ok(()) })"
+    },
+    {
+      "line": 318,
+      "text": "Box::pin(async move {"
+    }
+  ],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 3,
+      "text": "use std::thread;"
+    },
+    {
+      "line": 66,
+      "text": "std::thread::yield_now();"
+    },
+    {
+      "line": 193,
+      "text": "thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 430,
+      "text": "thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 520,
+      "text": "thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 542,
+      "text": "thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 574,
+      "text": "thread::sleep(Duration::from_millis(1));"
+    }
+  ],
+  "visibility": "private_or_not_applicable"
+}

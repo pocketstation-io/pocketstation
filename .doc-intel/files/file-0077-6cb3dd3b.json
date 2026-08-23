@@ -1,0 +1,883 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AtomicU64::new",
+    "Event",
+    "Self",
+    "SourceGeneration",
+    "SourceRuntimeEventCounters::new",
+    "SourceRuntimeEventReceive::Event",
+    "any",
+    "cancel_owned_bytes",
+    "capacity",
+    "cfg",
+    "checked_add",
+    "clone",
+    "compare_exchange_weak",
+    "derive",
+    "fetch_add",
+    "fetch_max",
+    "fetch_sub",
+    "let",
+    "load",
+    "new",
+    "next",
+    "observation_handle",
+    "observations",
+    "owned_bytes",
+    "pub",
+    "publish_backend_failure",
+    "reserve_owned_bytes",
+    "saturating_add",
+    "saturating_mul",
+    "serde",
+    "source_runtime_event_channel",
+    "std::sync::mpsc::TrySendError::Disconnected",
+    "std::sync::mpsc::TrySendError::Full",
+    "std::sync::mpsc::sync_channel",
+    "try_recv",
+    "try_send"
+  ],
+  "cancellation_behavior": [],
+  "channels": [
+    {
+      "line": 1,
+      "text": "//! Bounded capture-runtime failure and lifecycle event channel."
+    },
+    {
+      "line": 70,
+      "text": "/// control-plane data. The bounded event channel rejects a larger event before"
+    },
+    {
+      "line": 231,
+      "text": "/// control channel is full, the newest event is dropped and counted."
+    },
+    {
+      "line": 299,
+      "text": "receiver: std::sync::mpsc::Receiver<QueuedSourceRuntimeEvent>,"
+    }
+  ],
+  "configuration_read": [
+    {
+      "line": 279,
+      "text": "#[cfg(any(test, feature = \"internal-testing\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 316,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AtomicU64::new",
+    "SourceRuntimeEventCounters::new",
+    "new"
+  ],
+  "content_hash": "893bf8ad7a52c14765779debf3860b9e5f129da158b1f92f4a63d2bb7a22e916",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 12,
+      "name": "SourceGeneration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "INITIAL",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 18,
+      "name": "next",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 25,
+      "name": "SourceLifecycleEventKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 35,
+      "name": "SourceRecoveryRequirement",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 40,
+      "name": "CaptureRuntimeFailureClass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 47,
+      "name": "CaptureRuntimeFailure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 53,
+      "name": "SourceRuntimeEvent",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 72,
+      "name": "MAX_SOURCE_RUNTIME_EVENT_OWNED_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 75,
+      "name": "owned_bytes",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 96,
+      "name": "SourceRuntimeEventDelivery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 104,
+      "name": "SourceRuntimeEventReceive",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 111,
+      "name": "SourceRuntimeEventObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 124,
+      "name": "SourceRuntimeEventCounters",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 152,
+      "name": "reserve_owned_bytes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 186,
+      "name": "cancel_owned_bytes",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 194,
+      "name": "QueuedSourceRuntimeEvent",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 200,
+      "name": "SourceRuntimeEventObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 205,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 224,
+      "name": "SourceRuntimeEventSender",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 232,
+      "name": "try_send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 265,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 269,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 280,
+      "name": "publish_backend_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 298,
+      "name": "SourceRuntimeEventReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 304,
+      "name": "try_recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 317,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 320,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 327,
+      "name": "source_runtime_event_channel",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 12,
+      "name": "SourceGeneration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "INITIAL",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 18,
+      "name": "next",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 25,
+      "name": "SourceLifecycleEventKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 35,
+      "name": "SourceRecoveryRequirement",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 40,
+      "name": "CaptureRuntimeFailureClass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 47,
+      "name": "CaptureRuntimeFailure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 53,
+      "name": "SourceRuntimeEvent",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 72,
+      "name": "MAX_SOURCE_RUNTIME_EVENT_OWNED_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 75,
+      "name": "owned_bytes",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 96,
+      "name": "SourceRuntimeEventDelivery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 104,
+      "name": "SourceRuntimeEventReceive",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 111,
+      "name": "SourceRuntimeEventObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 200,
+      "name": "SourceRuntimeEventObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 205,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 224,
+      "name": "SourceRuntimeEventSender",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 232,
+      "name": "try_send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 265,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 269,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 280,
+      "name": "publish_backend_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 298,
+      "name": "SourceRuntimeEventReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 304,
+      "name": "try_recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 317,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 320,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 327,
+      "name": "source_runtime_event_channel",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 182,
+      "text": "Err(observed) => depth = observed,"
+    },
+    {
+      "line": 252,
+      "text": "Err(std::sync::mpsc::TrySendError::Full(queued)) => {"
+    },
+    {
+      "line": 259,
+      "text": "Err(std::sync::mpsc::TrySendError::Disconnected(queued)) => {"
+    },
+    {
+      "line": 311,
+      "text": "Err(std::sync::mpsc::TryRecvError::Empty) => SourceRuntimeEventReceive::Empty,"
+    },
+    {
+      "line": 312,
+      "text": "Err(std::sync::mpsc::TryRecvError::Disconnected) => SourceRuntimeEventReceive::Closed,"
+    },
+    {
+      "line": 332,
+      "text": "return Err(CaptureError::InvalidRuntimeEventCapacity);"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "893bf8ad7a52c14765779debf3860b9e5f129da158b1f92f4a63d2bb7a22e916",
+      "lines": [
+        1,
+        344
+      ],
+      "path": "src/capture/events.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing",
+    "native-capture"
+  ],
+  "feature_gate": [
+    "internal-testing",
+    "native-capture"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0077-6cb3dd3b",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "00bbbe1d2b7236d34c3f55dd7cb07ed75e3d6103",
+  "implemented_by": [],
+  "implements": [
+    "SourceGeneration",
+    "SourceRuntimeEvent",
+    "SourceRuntimeEventCounters",
+    "SourceRuntimeEventObservationHandle",
+    "SourceRuntimeEventSender",
+    "SourceRuntimeEventReceiver"
+  ],
+  "imported_by": [],
+  "imports": [
+    "serde::Serialize",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "super::authorization::CaptureError",
+    "super::identity::StableSourceId"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 344,
+  "locks": [],
+  "module": "pocketstation::capture::events",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-5f72bbb5f3b23f8d98e0"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/capture/events.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "struct",
+      "line": 124,
+      "name": "SourceRuntimeEventCounters",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 152,
+      "name": "reserve_owned_bytes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 186,
+      "name": "cancel_owned_bytes",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 194,
+      "name": "QueuedSourceRuntimeEvent",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [
+    {
+      "line": 105,
+      "text": "Event(SourceRuntimeEvent),"
+    },
+    {
+      "line": 309,
+      "text": "SourceRuntimeEventReceive::Event(queued.event)"
+    }
+  ],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 12,
+      "name": "SourceGeneration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "INITIAL",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 18,
+      "name": "next",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 25,
+      "name": "SourceLifecycleEventKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 35,
+      "name": "SourceRecoveryRequirement",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 40,
+      "name": "CaptureRuntimeFailureClass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 47,
+      "name": "CaptureRuntimeFailure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 53,
+      "name": "SourceRuntimeEvent",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 72,
+      "name": "MAX_SOURCE_RUNTIME_EVENT_OWNED_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 75,
+      "name": "owned_bytes",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 96,
+      "name": "SourceRuntimeEventDelivery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 104,
+      "name": "SourceRuntimeEventReceive",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 111,
+      "name": "SourceRuntimeEventObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 200,
+      "name": "SourceRuntimeEventObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 205,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 224,
+      "name": "SourceRuntimeEventSender",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 232,
+      "name": "try_send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 265,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 269,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 280,
+      "name": "publish_backend_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 298,
+      "name": "SourceRuntimeEventReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 304,
+      "name": "try_recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 317,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 320,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 327,
+      "name": "source_runtime_event_channel",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Bounded capture-runtime failure and lifecycle event channel."
+  },
+  "queues": [
+    {
+      "line": 299,
+      "text": "receiver: std::sync::mpsc::Receiver<QueuedSourceRuntimeEvent>,"
+    }
+  ],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/source-selection.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/select-process-source.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/run-transcription.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/troubleshooting/timing.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 5,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 201,
+      "text": "counters: Arc<SourceRuntimeEventCounters>,"
+    },
+    {
+      "line": 226,
+      "text": "counters: Arc<SourceRuntimeEventCounters>,"
+    },
+    {
+      "line": 272,
+      "text": "counters: Arc::clone(&self.counters),"
+    },
+    {
+      "line": 300,
+      "text": "counters: Arc<SourceRuntimeEventCounters>,"
+    },
+    {
+      "line": 323,
+      "text": "counters: Arc::clone(&self.counters),"
+    },
+    {
+      "line": 335,
+      "text": "let counters = Arc::new(SourceRuntimeEventCounters::new(capacity_events));"
+    }
+  ],
+  "responsibilities": [
+    "SourceGeneration",
+    "INITIAL",
+    "next",
+    "SourceLifecycleEventKind",
+    "SourceRecoveryRequirement",
+    "CaptureRuntimeFailureClass",
+    "CaptureRuntimeFailure",
+    "SourceRuntimeEvent",
+    "MAX_SOURCE_RUNTIME_EVENT_OWNED_BYTES",
+    "owned_bytes",
+    "SourceRuntimeEventDelivery",
+    "SourceRuntimeEventReceive",
+    "SourceRuntimeEventObservations",
+    "SourceRuntimeEventCounters",
+    "new",
+    "reserve_owned_bytes",
+    "cancel_owned_bytes",
+    "QueuedSourceRuntimeEvent",
+    "SourceRuntimeEventObservationHandle",
+    "observations",
+    "SourceRuntimeEventSender",
+    "try_send",
+    "observations",
+    "observation_handle",
+    "publish_backend_failure",
+    "SourceRuntimeEventReceiver",
+    "try_recv",
+    "observations",
+    "observation_handle",
+    "source_runtime_event_channel"
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 3,
+      "text": "use serde::Serialize;"
+    },
+    {
+      "line": 10,
+      "text": "#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]"
+    },
+    {
+      "line": 11,
+      "text": "#[serde(transparent)]"
+    },
+    {
+      "line": 23,
+      "text": "#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]"
+    },
+    {
+      "line": 24,
+      "text": "#[serde(rename_all = \"kebab-case\")]"
+    },
+    {
+      "line": 33,
+      "text": "#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]"
+    },
+    {
+      "line": 34,
+      "text": "#[serde(rename_all = \"kebab-case\")]"
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

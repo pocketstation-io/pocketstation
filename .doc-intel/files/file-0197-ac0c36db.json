@@ -1,0 +1,4327 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 62,
+      "text": "\"compiled async input receiver does not match its edge/node contract\""
+    },
+    {
+      "line": 267,
+      "text": ".ok_or_else(|| NodeError::Prepare(\"async operator has no output port\".to_owned()))?;"
+    },
+    {
+      "line": 270,
+      "text": "\"simple async operator spawn requires exactly one output port\".to_owned(),"
+    },
+    {
+      "line": 290,
+      "text": "\"async operator requires at least one output branch\".to_owned(),"
+    },
+    {
+      "line": 332,
+      "text": "\"async operator output port '{unknown}' is not declared\""
+    },
+    {
+      "line": 367,
+      "text": ".ok_or_else(|| NodeError::Prepare(\"async operator has no input port\".to_owned()))?;"
+    },
+    {
+      "line": 370,
+      "text": "\"simple async operator preparation requires exactly one input port\".to_owned(),"
+    },
+    {
+      "line": 396,
+      "text": ".ok_or_else(|| NodeError::Prepare(\"async operator has no output port\".to_owned()))?;"
+    },
+    {
+      "line": 399,
+      "text": "\"simple async operator preparation requires exactly one output port\".to_owned(),"
+    },
+    {
+      "line": 444,
+      "text": "\"async operator output port '{}' is not declared\","
+    },
+    {
+      "line": 478,
+      "text": "\"async operator output port '{}' is not declared\","
+    },
+    {
+      "line": 503,
+      "text": "\"async operator prepare partition does not match its manifest\".to_owned(),"
+    },
+    {
+      "line": 517,
+      "text": "\"async operator prepare port '{}' is not declared\","
+    },
+    {
+      "line": 526,
+      "text": "\"async operator prepare port '{}' disagrees with its manifest\","
+    },
+    {
+      "line": 584,
+      "text": "\"direct async operator prepare context disagrees with bounded runtime edges\""
+    },
+    {
+      "line": 612,
+      "text": "\"composed async operator requires at least one typed input\".to_owned(),"
+    },
+    {
+      "line": 625,
+      "text": "\"async operator input port '{}' is not declared\","
+    },
+    {
+      "line": 648,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 662,
+      "text": ".await;"
+    },
+    {
+      "line": 683,
+      "text": "pub(crate) async fn prepare_and_spawn_session_composed("
+    },
+    {
+      "line": 691,
+      "text": "\"Session-composed async operator requires at least one input\".to_owned(),"
+    },
+    {
+      "line": 710,
+      "text": ".await"
+    },
+    {
+      "line": 729,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 742,
+      "text": ".await;"
+    },
+    {
+      "line": 764,
+      "text": "pub async fn prepare_and_spawn_from_plan_edge("
+    },
+    {
+      "line": 775,
+      "text": "\"compiled async input receiver does not match its edge/node contract\".to_owned(),"
+    },
+    {
+      "line": 784,
+      "text": "\"async operator requires non-zero capacity for every output branch\".to_owned(),"
+    },
+    {
+      "line": 803,
+      "text": ".await"
+    },
+    {
+      "line": 818,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 831,
+      "text": ".await;"
+    },
+    {
+      "line": 866,
+      "text": "\"async operator requires non-zero capacity for every output branch\".to_owned(),"
+    },
+    {
+      "line": 885,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 896,
+      "text": ".await;"
+    },
+    {
+      "line": 925,
+      "text": "pub async fn cancel_and_join(self) -> Result<(), AsyncOperatorWorkerError> {"
+    },
+    {
+      "line": 930,
+      "text": "self.join.await?"
+    },
+    {
+      "line": 933,
+      "text": "pub async fn finish_and_join(self) -> Result<(), AsyncOperatorWorkerError> {"
+    },
+    {
+      "line": 936,
+      "text": "self.join.await?"
+    },
+    {
+      "line": 942,
+      "text": "async fn run_worker("
+    },
+    {
+      "line": 954,
+      "text": ".await"
+    },
+    {
+      "line": 970,
+      "text": ".await"
+    },
+    {
+      "line": 973,
+      "text": "async fn run_prepared_worker("
+    },
+    {
+      "line": 993,
+      "text": ".await;"
+    },
+    {
+      "line": 994,
+      "text": "let close_result = match tokio::time::timeout(timeout_duration, node.close()).await {"
+    },
+    {
+      "line": 1005,
+      "text": "async fn run_operator_loop("
+    },
+    {
+      "line": 1028,
+      "text": "cancel_node(node, timeout_duration, manifest.deadline.process_timeout_ms).await?;"
+    },
+    {
+      "line": 1041,
+      "text": "let emitted = match tokio::time::timeout(timeout_duration, node.flush()).await {"
+    },
+    {
+      "line": 1056,
+      "text": ".await?;"
+    },
+    {
+      "line": 1090,
+      "text": "cancel_node(node, timeout_duration, manifest.deadline.process_timeout_ms).await?;"
+    },
+    {
+      "line": 1107,
+      "text": "cancel_node(node, timeout_duration, manifest.deadline.process_timeout_ms).await?;"
+    },
+    {
+      "line": 1119,
+      "text": "cancel_node(node, timeout_duration, manifest.deadline.process_timeout_ms).await?;"
+    },
+    {
+      "line": 1129,
+      "text": "async fn cancel_node("
+    },
+    {
+      "line": 1134,
+      "text": "match tokio::time::timeout(timeout_duration, node.cancel()).await {"
+    },
+    {
+      "line": 1350,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1363,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1365,
+      "text": "tokio::time::sleep(Duration::from_millis(50)).await;"
+    },
+    {
+      "line": 1431,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1462,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1469,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1686,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1696,
+      "text": "Box::pin(async { Ok(Vec::new()) })"
+    },
+    {
+      "line": 1755,
+      "text": "async fn given_every_nonaudio_signal_class_when_worker_prepares_then_exact_signal_context_is_received("
+    },
+    {
+      "line": 1789,
+      "text": "assert!(worker.observations().wait_ready().await);"
+    },
+    {
+      "line": 1790,
+      "text": "worker.cancel_and_join().await.unwrap();"
+    },
+    {
+      "line": 1862,
+      "text": "async fn given_operator_composition_with_three_external_operators_then_derived_output_crosses_each_bounded_edge("
+    },
+    {
+      "line": 1902,
+      "text": "first.finish_and_join().await.unwrap();"
+    },
+    {
+      "line": 1903,
+      "text": "second.finish_and_join().await.unwrap();"
+    },
+    {
+      "line": 1904,
+      "text": "third.finish_and_join().await.unwrap();"
+    },
+    {
+      "line": 1919,
+      "text": "async fn given_operator_composition_with_named_multi_input_output_manifest_then_each_declared_port_executes("
+    },
+    {
+      "line": 1977,
+      "text": "worker.finish_and_join().await.unwrap();"
+    },
+    {
+      "line": 2052,
+      "text": "async fn given_full_input_branch_when_sent_then_overflow_is_counted_and_join_is_bounded() {"
+    },
+    {
+      "line": 2071,
+      "text": "worker.cancel_and_join().await.unwrap();"
+    },
+    {
+      "line": 2082,
+      "text": "async fn given_two_inputs_when_processed_then_nonterminal_and_terminal_reach_each_branch() {"
+    },
+    {
+      "line": 2098,
+      "text": "tokio::task::yield_now().await;"
+    },
+    {
+      "line": 2100,
+      "text": "tokio::time::sleep(Duration::from_millis(10)).await;"
+    },
+    {
+      "line": 2121,
+      "text": "worker.cancel_and_join().await.unwrap();"
+    },
+    {
+      "line": 2130,
+      "text": "async fn given_graceful_finish_when_operator_has_pending_state_then_one_final_is_emitted() {"
+    },
+    {
+      "line": 2148,
+      "text": "worker.finish_and_join().await.unwrap();"
+    },
+    {
+      "line": 2182,
+      "text": "async fn given_prepare_failure_when_readiness_is_awaited_then_waiter_returns_false() {"
+    },
+    {
+      "line": 2199,
+      "text": ".await"
+    },
+    {
+      "line": 2204,
+      "text": "worker.finish_and_join().await.unwrap_err(),"
+    },
+    {
+      "line": 2211,
+      "text": "async fn given_compiled_lineaged_edge_when_worker_runs_then_exact_session_stem_is_preserved() {"
+    },
+    {
+      "line": 2290,
+      "text": ".await"
+    },
+    {
+      "line": 2292,
+      "text": "worker.finish_and_join().await.unwrap();"
+    },
+    {
+      "line": 2311,
+      "text": "async fn given_cancellation_when_operator_has_pending_state_then_no_final_is_fabricated() {"
+    },
+    {
+      "line": 2327,
+      "text": "tokio::time::sleep(Duration::from_millis(10)).await;"
+    },
+    {
+      "line": 2335,
+      "text": "worker.cancel_and_join().await.unwrap();"
+    },
+    {
+      "line": 2346,
+      "text": "async fn given_idle_worker_when_cancelled_then_cancel_hook_runs_before_close() {"
+    },
+    {
+      "line": 2364,
+      "text": "assert!(observations.wait_ready().await);"
+    },
+    {
+      "line": 2366,
+      "text": "worker.cancel_and_join().await.unwrap();"
+    },
+    {
+      "line": 2374,
+      "text": "async fn given_full_terminal_branch_when_finished_then_final_loss_fails_closed() {"
+    },
+    {
+      "line": 2390,
+      "text": "let error = worker.finish_and_join().await.unwrap_err();"
+    },
+    {
+      "line": 2423,
+      "text": "async fn given_wrong_output_class_when_processed_then_worker_rejects_it() {"
+    },
+    {
+      "line": 2440,
+      "text": "worker.finish_and_join().await.unwrap_err(),"
+    },
+    {
+      "line": 2446,
+      "text": "async fn given_undeclared_output_role_when_processed_then_worker_rejects_it() {"
+    },
+    {
+      "line": 2463,
+      "text": "worker.finish_and_join().await.unwrap_err(),"
+    },
+    {
+      "line": 2469,
+      "text": "async fn given_audio_output_without_audio_port_when_processed_then_worker_rejects_it() {"
+    },
+    {
+      "line": 2486,
+      "text": "worker.finish_and_join().await.unwrap_err(),"
+    },
+    {
+      "line": 2492,
+      "text": "async fn given_slow_operator_when_deadline_expires_then_timeout_cancel_and_join_are_observed() {"
+    },
+    {
+      "line": 2508,
+      "text": "tokio::time::sleep(Duration::from_millis(15)).await;"
+    },
+    {
+      "line": 2511,
+      "text": "worker.cancel_and_join().await.unwrap();"
+    },
+    {
+      "line": 2523,
+      "text": "async fn given_instance_deadline_when_worker_runs_then_configured_timeout_is_authoritative() {"
+    },
+    {
+      "line": 2538,
+      "text": "tokio::time::sleep(Duration::from_millis(15)).await;"
+    },
+    {
+      "line": 2541,
+      "text": "worker.cancel_and_join().await.unwrap();"
+    },
+    {
+      "line": 2549,
+      "text": "async fn given_node_reported_timeout_when_observed_then_it_is_not_a_process_failure() {"
+    },
+    {
+      "line": 2566,
+      "text": "worker.finish_and_join().await.unwrap();"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "Arc::try_unwrap",
+    "AsyncOperatorEdgePrepareContext::new",
+    "AsyncOperatorObservationState::default",
+    "AsyncOperatorPrepareContext::new",
+    "AsyncOperatorWorker::prepare_and_spawn_from_plan_edge",
+    "AsyncOperatorWorker::spawn",
+    "AsyncOperatorWorker::spawn_composed",
+    "AsyncOperatorWorker::spawn_with_context",
+    "AsyncOperatorWorkerError::Prepare",
+    "AsyncOperatorWorkerError::Process",
+    "AsyncOperatorWorkerInputs::one",
+    "AsyncOperatorWorkerSource::Direct",
+    "AtomicBool::new",
+    "AtomicUsize::new",
+    "AudioBufferPool::new",
+    "Box::new",
+    "Box::pin",
+    "ClockDomainId",
+    "Compiler::new",
+    "Completed",
+    "Direct",
+    "Duration::from_millis",
+    "EdgeContract::bounded_async",
+    "LineagedAudioFrame::new",
+    "MediaCaps::Audio",
+    "MediaCaps::Binary",
+    "Mutex::new",
+    "NodeConfig::new",
+    "NodeError::Prepare",
+    "NodeError::Process",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Notify::new",
+    "OperatorId::new",
+    "OperatorOutputRolePolicy::default",
+    "Pipeline::new",
+    "PlanEdgeFrame::Exclusive",
+    "PlanEdgeFrame::Shared",
+    "ProcessAttempt::Completed",
+    "RuntimePlanner::new",
+    "Self::Direct",
+    "Self::Typed",
+    "Self::spawn_with_source",
+    "SemanticRole::new",
+    "SessionId",
+    "SignalDerivation::new",
+    "SignalEdge::bounded",
+    "SignalEnvelope::from_audio",
+    "SignalEnvelope::untracked",
+    "SignalPayload::Audio",
+    "SignalPayload::Bytes",
+    "SignalPayload::Text",
+    "SignalSpec::audio",
+    "SignalSpec::binary",
+    "SignalSpec::control",
+    "SignalSpec::custom",
+    "SignalSpec::event",
+    "SignalSpec::metrics",
+    "SignalSpec::text",
+    "SourceId",
+    "StemId",
+    "StreamId",
+    "String::new",
+    "Typed",
+    "TypedEdgeFanout::new",
+    "TypedEdgePublishError::InvalidEnvelope",
+    "Vec::new",
+    "Vec::with_capacity",
+    "accepts",
+    "acquire",
+    "add_node",
+    "all",
+    "allow",
+    "any",
+    "as_mut",
+    "as_ref",
+    "as_slice",
+    "as_str",
+    "async_factory",
+    "async_node_type_id",
+    "build_named_output_branches",
+    "build_output_branches",
+    "cancel",
+    "cancel_and_join",
+    "cancel_node",
+    "capacity_signals",
+    "cfg",
+    "chain",
+    "clone",
+    "clone_non_audio_payload",
+    "close",
+    "cmp",
+    "collect",
+    "compile",
+    "composed_prepare_context",
+    "connect_with",
+    "contains",
+    "crate::frame::AudioFrame::new",
+    "crate::graph::EdgeContract::bounded_async",
+    "crate::graph::EdgeContract::realtime_audio",
+    "crate::runtime::PlanEdgeRouter::new",
+    "create",
+    "derive",
+    "direction",
+    "dispatch_from",
+    "drop",
+    "edge_buffer",
+    "edge_contract",
+    "edge_id",
+    "enumerate",
+    "envelope",
+    "execution_partition",
+    "expect",
+    "extend",
+    "factory",
+    "fan_out_outputs",
+    "fetch_add",
+    "filter",
+    "find",
+    "finish_and_join",
+    "flush",
+    "get_u32",
+    "given_audio_output_without_audio_port_when_processed_then_worker_rejects_it",
+    "given_cancellation_when_operator_has_pending_state_then_no_final_is_fabricated",
+    "given_compiled_lineaged_edge_when_worker_runs_then_exact_session_stem_is_preserved",
+    "given_duplicate_async_node_type_when_registered_then_first_authority_is_preserved",
+    "given_every_nonaudio_signal_class_when_worker_prepares_then_exact_signal_context_is_received",
+    "given_full_input_branch_when_sent_then_overflow_is_counted_and_join_is_bounded",
+    "given_full_terminal_branch_when_finished_then_final_loss_fails_closed",
+    "given_graceful_finish_when_operator_has_pending_state_then_one_final_is_emitted",
+    "given_idle_worker_when_cancelled_then_cancel_hook_runs_before_close",
+    "given_instance_deadline_when_worker_runs_then_configured_timeout_is_authoritative",
+    "given_node_reported_timeout_when_observed_then_it_is_not_a_process_failure",
+    "given_operator_composition_with_named_multi_input_output_manifest_then_each_declared_port_executes",
+    "given_operator_composition_with_three_external_operators_then_derived_output_crosses_each_bounded_edge",
+    "given_prepare_context_capacity_disagrees_with_runtime_edge_when_spawned_then_prepare_fails_closed",
+    "given_prepare_failure_when_readiness_is_awaited_then_waiter_returns_false",
+    "given_slow_operator_when_deadline_expires_then_timeout_cancel_and_join_are_observed",
+    "given_two_inputs_when_processed_then_nonterminal_and_terminal_reach_each_branch",
+    "given_undeclared_output_role_when_processed_then_worker_rejects_it",
+    "given_wrong_output_class_when_processed_then_worker_rejects_it",
+    "id",
+    "in_",
+    "input_mut",
+    "input_ports",
+    "inputs",
+    "into_iter",
+    "into_parts",
+    "into_source",
+    "into_spec",
+    "is_abandoned",
+    "is_audio",
+    "is_compatible_with",
+    "is_empty",
+    "is_err",
+    "is_none",
+    "is_some",
+    "is_some_and",
+    "is_terminal",
+    "iter",
+    "iter_mut",
+    "len",
+    "let",
+    "load",
+    "lock",
+    "manifest",
+    "map",
+    "map_err",
+    "map_or",
+    "map_payload",
+    "media",
+    "next",
+    "nonterminal_spec",
+    "notified",
+    "notify_one",
+    "notify_waiters",
+    "observations",
+    "ok_or",
+    "ok_or_else",
+    "one",
+    "out",
+    "output_branch",
+    "output_ports",
+    "outputs",
+    "plan",
+    "pop",
+    "port",
+    "port_name",
+    "prepare",
+    "prepare_and_spawn_from_plan_edge",
+    "prepare_and_spawn_session_composed",
+    "prepare_capture_manifest",
+    "prepare_edge",
+    "process_port",
+    "pub",
+    "publish",
+    "push",
+    "recv",
+    "register_async",
+    "register_builtins",
+    "remove",
+    "resolve_manifest",
+    "run_operator_loop",
+    "run_prepared_worker",
+    "run_worker",
+    "send",
+    "session_composed_prepare_context",
+    "signal",
+    "simple_prepare_context",
+    "snapshot",
+    "sort_by",
+    "spawn",
+    "spawn_composed",
+    "spawn_with_context",
+    "spawn_with_source",
+    "std::mem::replace",
+    "store",
+    "supports_signal",
+    "take",
+    "terminal_spec",
+    "text_envelope",
+    "text_input_factory",
+    "text_typed_input",
+    "to",
+    "to_owned",
+    "to_string",
+    "tokio::spawn",
+    "tokio::task::yield_now",
+    "tokio::test",
+    "tokio::time::sleep",
+    "tokio::time::timeout",
+    "try_recv",
+    "u64::from",
+    "unwrap",
+    "unwrap_err",
+    "validate",
+    "validate_config",
+    "validate_prepare_context",
+    "wait_ready",
+    "with",
+    "with_lineage",
+    "with_role",
+    "with_schema",
+    "zip"
+  ],
+  "cancellation_behavior": [
+    {
+      "line": 1134,
+      "text": "match tokio::time::timeout(timeout_duration, node.cancel()).await {"
+    },
+    {
+      "line": 1461,
+      "text": "fn cancel<'a>(&'a mut self) -> crate::graph::AsyncNodeFuture<'a, Result<(), NodeError>> {"
+    },
+    {
+      "line": 2315,
+      "text": "\"operator.cancel\","
+    },
+    {
+      "line": 2316,
+      "text": "\"operator.cancel.node\","
+    },
+    {
+      "line": 2351,
+      "text": "\"operator.idle-cancel\","
+    },
+    {
+      "line": 2352,
+      "text": "\"operator.idle-cancel.node\","
+    }
+  ],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 17,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 27,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 34,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 119,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 165,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 174,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 188,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 251,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 259,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 358,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 420,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 535,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 562,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 603,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 670,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 696,
+      "text": ".map_err(NodeError::Config)"
+    },
+    {
+      "line": 750,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 763,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 789,
+      "text": ".map_err(NodeError::Config)"
+    },
+    {
+      "line": 851,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 916,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 928,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 934,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 940,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 1248,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 1259,
+      "text": "register_builtins, AudioCaps, BinaryFormat, ChannelLayout, ConfigError, EventFormat,"
+    },
+    {
+      "line": 1303,
+      "text": "fn validate_config(&self, _configuration: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 1310,
+      "text": ") -> Result<AsyncOperatorManifest, ConfigError> {"
+    },
+    {
+      "line": 1666,
+      "text": "fn validate_config(&self, _configuration: &NodeConfig) -> Result<(), ConfigError> {"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AsyncOperatorEdgePrepareContext::new",
+    "AsyncOperatorPrepareContext::new",
+    "AtomicBool::new",
+    "AtomicUsize::new",
+    "AudioBufferPool::new",
+    "Box::new",
+    "Compiler::new",
+    "LineagedAudioFrame::new",
+    "Mutex::new",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Notify::new",
+    "OperatorId::new",
+    "Pipeline::new",
+    "RuntimePlanner::new",
+    "SemanticRole::new",
+    "SignalDerivation::new",
+    "String::new",
+    "TypedEdgeFanout::new",
+    "Vec::new",
+    "crate::frame::AudioFrame::new",
+    "crate::runtime::PlanEdgeRouter::new",
+    "dispatch_from",
+    "u64::from"
+  ],
+  "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 30,
+      "name": "ASYNC_OPERATOR_IDLE_POLL_INTERVAL",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 32,
+      "name": "AsyncOperatorWorkerSource",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 45,
+      "name": "SessionOperatorInput",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "prepare_edge",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 87,
+      "name": "into_source",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 103,
+      "name": "CompiledOperatorInputContract",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "recv",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 162,
+      "name": "is_abandoned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 171,
+      "name": "port_name",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 181,
+      "name": "AsyncOperatorWorkerInputs",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 189,
+      "name": "one",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 195,
+      "name": "recv",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 229,
+      "name": "is_abandoned",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 236,
+      "name": "NamedOutputFanout",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 241,
+      "name": "clone_non_audio_payload",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 249,
+      "name": "AsyncOperatorWorker",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 260,
+      "name": "build_output_branches",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 283,
+      "name": "build_named_output_branches",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 337,
+      "name": "prepare_edge",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 359,
+      "name": "simple_prepare_context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 421,
+      "name": "composed_prepare_context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 462,
+      "name": "session_composed_prepare_context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 496,
+      "name": "validate_prepare_context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 536,
+      "name": "spawn",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 563,
+      "name": "spawn_with_context",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 604,
+      "name": "spawn_composed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 682,
+      "name": "prepare_and_spawn_session_composed",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 764,
+      "name": "prepare_and_spawn_from_plan_edge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 852,
+      "name": "spawn_with_source",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 917,
+      "name": "input_mut",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 920,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 924,
+      "name": "cancel_and_join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 932,
+      "name": "finish_and_join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 942,
+      "name": "run_worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 972,
+      "name": "run_prepared_worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1005,
+      "name": "run_operator_loop",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 1015,
+      "name": "ProcessAttempt",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1128,
+      "name": "cancel_node",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1139,
+      "name": "fan_out_outputs",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 1249,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1267,
+      "name": "TEST_NONTERMINAL_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1269,
+      "name": "TEST_TERMINAL_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1270,
+      "name": "nonterminal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1274,
+      "name": "terminal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 1280,
+      "name": "TestBehavior",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1290,
+      "name": "TestFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1299,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1302,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1306,
+      "name": "resolve_manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1317,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1332,
+      "name": "TestNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1346,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1358,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1427,
+      "name": "flush",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1460,
+      "name": "cancel",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1467,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1475,
+      "name": "port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1496,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1551,
+      "name": "factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1567,
+      "name": "envelope",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1597,
+      "name": "output_branch",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1606,
+      "name": "text_typed_input",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1624,
+      "name": "text_input_factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1648,
+      "name": "text_envelope",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1655,
+      "name": "PrepareCaptureFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1662,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1665,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1669,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1676,
+      "name": "PrepareCaptureNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1682,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1691,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1699,
+      "name": "prepare_capture_manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1755,
+      "name": "given_every_nonaudio_signal_class_when_worker_prepares_then_exact_signal_context_is_received",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1811,
+      "name": "given_prepare_context_capacity_disagrees_with_runtime_edge_when_spawned_then_prepare_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1862,
+      "name": "given_operator_composition_with_three_external_operators_then_derived_output_crosses_each_bounded_edge",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1919,
+      "name": "given_operator_composition_with_named_multi_input_output_manifest_then_each_declared_port_executes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1993,
+      "name": "given_duplicate_async_node_type_when_registered_then_first_authority_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2052,
+      "name": "given_full_input_branch_when_sent_then_overflow_is_counted_and_join_is_bounded",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2082,
+      "name": "given_two_inputs_when_processed_then_nonterminal_and_terminal_reach_each_branch",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2130,
+      "name": "given_graceful_finish_when_operator_has_pending_state_then_one_final_is_emitted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2182,
+      "name": "given_prepare_failure_when_readiness_is_awaited_then_waiter_returns_false",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2211,
+      "name": "given_compiled_lineaged_edge_when_worker_runs_then_exact_session_stem_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2311,
+      "name": "given_cancellation_when_operator_has_pending_state_then_no_final_is_fabricated",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2346,
+      "name": "given_idle_worker_when_cancelled_then_cancel_hook_runs_before_close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2374,
+      "name": "given_full_terminal_branch_when_finished_then_final_loss_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2423,
+      "name": "given_wrong_output_class_when_processed_then_worker_rejects_it",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2446,
+      "name": "given_undeclared_output_role_when_processed_then_worker_rejects_it",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2469,
+      "name": "given_audio_output_without_audio_port_when_processed_then_worker_rejects_it",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2492,
+      "name": "given_slow_operator_when_deadline_expires_then_timeout_cancel_and_join_are_observed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2523,
+      "name": "given_instance_deadline_when_worker_runs_then_configured_timeout_is_authoritative",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2549,
+      "name": "given_node_reported_timeout_when_observed_then_it_is_not_a_process_failure",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 929,
+      "text": "drop(self.input);"
+    },
+    {
+      "line": 935,
+      "text": "drop(self.input);"
+    },
+    {
+      "line": 1975,
+      "text": "drop(left_sender);"
+    },
+    {
+      "line": 1976,
+      "text": "drop(right_sender);"
+    },
+    {
+      "line": 2263,
+      "text": "drop(router);"
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 45,
+      "name": "SessionOperatorInput",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 103,
+      "name": "CompiledOperatorInputContract",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 249,
+      "name": "AsyncOperatorWorker",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 536,
+      "name": "spawn",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 563,
+      "name": "spawn_with_context",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 604,
+      "name": "spawn_composed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 682,
+      "name": "prepare_and_spawn_session_composed",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 764,
+      "name": "prepare_and_spawn_from_plan_edge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 917,
+      "name": "input_mut",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 920,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 924,
+      "name": "cancel_and_join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 932,
+      "name": "finish_and_join",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 61,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 133,
+      "text": "return Err(AsyncOperatorWorkerError::PlanInputLineageMismatch);"
+    },
+    {
+      "line": 138,
+      "text": "Err(AsyncOperatorWorkerError::InvalidPlanInput { kind: \"shared\" })"
+    },
+    {
+      "line": 146,
+      "text": "Err(shared) => {"
+    },
+    {
+      "line": 148,
+      "text": "return Err(AsyncOperatorWorkerError::SharedAudioTypedInput);"
+    },
+    {
+      "line": 221,
+      "text": "return Err(AsyncOperatorWorkerError::OutputSignalMismatch);"
+    },
+    {
+      "line": 269,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 289,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 331,
+      "text": "return Err(NodeError::Prepare(format!("
+    },
+    {
+      "line": 369,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 398,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 502,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 525,
+      "text": "return Err(NodeError::Prepare(format!("
+    },
+    {
+      "line": 583,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 611,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 624,
+      "text": "return Err(NodeError::Prepare(format!("
+    },
+    {
+      "line": 690,
+      "text": "return Err(AsyncOperatorWorkerError::Prepare(NodeError::Prepare("
+    },
+    {
+      "line": 774,
+      "text": "return Err(AsyncOperatorWorkerError::Prepare(NodeError::Prepare("
+    },
+    {
+      "line": 783,
+      "text": "return Err(AsyncOperatorWorkerError::Prepare(NodeError::Prepare("
+    },
+    {
+      "line": 865,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 996,
+      "text": "Err(_) => Err(AsyncOperatorWorkerError::CloseTimeout {"
+    },
+    {
+      "line": 1043,
+      "text": "Ok(Err(error)) => {"
+    },
+    {
+      "line": 1047,
+      "text": "return Err(AsyncOperatorWorkerError::Process(error));"
+    },
+    {
+      "line": 1049,
+      "text": "Err(_) => {"
+    },
+    {
+      "line": 1057,
+      "text": "return Err(AsyncOperatorWorkerError::Timeout {"
+    },
+    {
+      "line": 1088,
+      "text": "ProcessAttempt::Completed(Err(NodeError::ProcessTimeout { timeout_ms })) => {"
+    },
+    {
+      "line": 1092,
+      "text": "return Err(AsyncOperatorWorkerError::Timeout { timeout_ms });"
+    },
+    {
+      "line": 1096,
+      "text": "ProcessAttempt::Completed(Err(error)) => {"
+    },
+    {
+      "line": 1101,
+      "text": "return Err(AsyncOperatorWorkerError::Process(error));"
+    },
+    {
+      "line": 1109,
+      "text": "return Err(AsyncOperatorWorkerError::Timeout {"
+    },
+    {
+      "line": 1136,
+      "text": "Err(_) => Err(AsyncOperatorWorkerError::CancelTimeout { timeout_ms }),"
+    },
+    {
+      "line": 1156,
+      "text": "[] => return Err(AsyncOperatorWorkerError::OutputSignalMismatch),"
+    },
+    {
+      "line": 1171,
+      "text": "_ => return Err(AsyncOperatorWorkerError::AmbiguousOutputPort),"
+    },
+    {
+      "line": 1179,
+      "text": "return Err(AsyncOperatorWorkerError::UndeclaredOutputRole);"
+    },
+    {
+      "line": 1193,
+      "text": "return Err(AsyncOperatorWorkerError::DerivedLineageMismatch);"
+    },
+    {
+      "line": 1217,
+      "text": "Err(TypedEdgePublishError::RequiredBranchFull { branch_index }) => {"
+    },
+    {
+      "line": 1221,
+      "text": "return Err(AsyncOperatorWorkerError::TerminalOutputDropped { branch_index });"
+    },
+    {
+      "line": 1223,
+      "text": "Err(TypedEdgePublishError::InvalidEnvelope(_)) => {"
+    },
+    {
+      "line": 1224,
+      "text": "return Err(AsyncOperatorWorkerError::OutputSignalMismatch);"
+    },
+    {
+      "line": 1226,
+      "text": "Err(TypedEdgePublishError::PayloadTooLarge {"
+    },
+    {
+      "line": 1234,
+      "text": "return Err(AsyncOperatorWorkerError::OutputPayloadTooLarge {"
+    },
+    {
+      "line": 1240,
+      "text": "Err(TypedEdgePublishError::NoBranches) => {"
+    },
+    {
+      "line": 1241,
+      "text": "return Err(AsyncOperatorWorkerError::MissingOutputContract);"
+    },
+    {
+      "line": 1352,
+      "text": "Err(NodeError::Prepare(\"test prepare failure\".to_owned()))"
+    },
+    {
+      "line": 1368,
+      "text": "return Err(NodeError::ProcessTimeout { timeout_ms: 7 });"
+    },
+    {
+      "line": 1857,
+      "text": "matches!(result, Err(NodeError::Prepare(message)) if message.contains(\"disagrees\"))"
+    },
+    {
+      "line": 2018,
+      "text": "Err(NodeRegistrationError::DuplicateNodeType { .. })"
+    },
+    {
+      "line": 2040,
+      "text": "Err(NodeRegistrationError::DuplicateOperatorId { .. })"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [
+    {
+      "line": 274,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    },
+    {
+      "line": 308,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    },
+    {
+      "line": 618,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    },
+    {
+      "line": 697,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 703,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 706,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 714,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 721,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 790,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 796,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 799,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 807,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 814,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 872,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    },
+    {
+      "line": 958,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 1197,
+      "text": ".map_err(|_| AsyncOperatorWorkerError::OutputSignalMismatch)?;"
+    },
+    {
+      "line": 1422,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 1455,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 274,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    },
+    {
+      "line": 308,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    },
+    {
+      "line": 618,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    },
+    {
+      "line": 696,
+      "text": ".map_err(NodeError::Config)"
+    },
+    {
+      "line": 697,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 698,
+      "text": "manifest.validate().map_err(|error| {"
+    },
+    {
+      "line": 703,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 706,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 711,
+      "text": ".map_err(|_| AsyncOperatorWorkerError::PrepareTimeout {"
+    },
+    {
+      "line": 714,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 721,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 789,
+      "text": ".map_err(NodeError::Config)"
+    },
+    {
+      "line": 790,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 791,
+      "text": "manifest.validate().map_err(|error| {"
+    },
+    {
+      "line": 796,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 799,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 804,
+      "text": ".map_err(|_| AsyncOperatorWorkerError::PrepareTimeout {"
+    },
+    {
+      "line": 807,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 814,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 872,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    },
+    {
+      "line": 955,
+      "text": ".map_err(|_| AsyncOperatorWorkerError::PrepareTimeout {"
+    },
+    {
+      "line": 958,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 995,
+      "text": "Ok(result) => result.map_err(AsyncOperatorWorkerError::Close),"
+    },
+    {
+      "line": 1135,
+      "text": "Ok(result) => result.map_err(AsyncOperatorWorkerError::Cancel),"
+    },
+    {
+      "line": 1197,
+      "text": ".map_err(|_| AsyncOperatorWorkerError::OutputSignalMismatch)?;"
+    },
+    {
+      "line": 1422,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 1455,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 274,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    },
+    {
+      "line": 308,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    },
+    {
+      "line": 618,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    },
+    {
+      "line": 696,
+      "text": ".map_err(NodeError::Config)"
+    },
+    {
+      "line": 697,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 698,
+      "text": "manifest.validate().map_err(|error| {"
+    },
+    {
+      "line": 703,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 706,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 711,
+      "text": ".map_err(|_| AsyncOperatorWorkerError::PrepareTimeout {"
+    },
+    {
+      "line": 714,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 721,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 789,
+      "text": ".map_err(NodeError::Config)"
+    },
+    {
+      "line": 790,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 791,
+      "text": "manifest.validate().map_err(|error| {"
+    },
+    {
+      "line": 796,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 799,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 804,
+      "text": ".map_err(|_| AsyncOperatorWorkerError::PrepareTimeout {"
+    },
+    {
+      "line": 807,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 814,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 872,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    },
+    {
+      "line": 955,
+      "text": ".map_err(|_| AsyncOperatorWorkerError::PrepareTimeout {"
+    },
+    {
+      "line": 958,
+      "text": ".map_err(AsyncOperatorWorkerError::Prepare)?;"
+    },
+    {
+      "line": 995,
+      "text": "Ok(result) => result.map_err(AsyncOperatorWorkerError::Close),"
+    },
+    {
+      "line": 1135,
+      "text": "Ok(result) => result.map_err(AsyncOperatorWorkerError::Cancel),"
+    },
+    {
+      "line": 1197,
+      "text": ".map_err(|_| AsyncOperatorWorkerError::OutputSignalMismatch)?;"
+    },
+    {
+      "line": 1422,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 1455,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "21aeb3fa58808ca616ba54c9c1b0950391d6e53cc1c1ac3cf075bf19d122c10f",
+      "lines": [
+        1,
+        2573
+      ],
+      "path": "src/runtime/signal/operator.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0197-ac0c36db",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "8448e04c1d473d1dd3d4edaf128c1eb12fe8ed3a",
+  "implemented_by": [],
+  "implements": [
+    "SessionOperatorInput",
+    "AsyncOperatorWorkerSource",
+    "AsyncOperatorWorkerInputs",
+    "AsyncOperatorWorker",
+    "AsyncOperatorFactory for TestFactory",
+    "AsyncNode for TestNode",
+    "AsyncOperatorFactory for PrepareCaptureFactory",
+    "AsyncNode for PrepareCaptureNode"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::{ AudioBufferPool, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleFormat, SessionId, SourceId, StemId, StreamId, }",
+    "crate::frame::{SessionId, SourceId, StemId}",
+    "crate::graph::compile::{Compiler, RuntimePlanner}",
+    "crate::graph::{ AsyncNode, AsyncOperatorEdgePrepareContext, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorPrepareContext, EdgeContract, MediaCaps, NodeConfig, NodeError, OperatorCancellationPolicy, OperatorFailurePolicy, PortDirection, SignalEnvelope, SignalPayload, SignalSpec, }",
+    "crate::graph::{ register_builtins, AudioCaps, BinaryFormat, ChannelLayout, ConfigError, EventFormat, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeRegistrationError, NodeRegistry, NodeTypeId, OperatorDeadlinePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, Pipeline, PortDirection, PortSpec, SafetyContract, SemanticRole, SignalDerivation, SignalLineage, SignalSpec, SignalTiming, TextFormat, }",
+    "crate::graph::{EdgeId, NodeId}",
+    "crate::runtime::{PlanEdgeFrame, PlanEdgeReceiver}",
+    "crate::runtime::{SignalEdge, SignalEdgeReceiver}",
+    "crate::runtime::{TypedEdgeFanout, TypedEdgePublishError, TypedEdgeReceiver}",
+    "std::sync::Arc",
+    "std::sync::Mutex",
+    "std::sync::atomic::AtomicUsize",
+    "std::sync::atomic::{AtomicBool, Ordering}",
+    "std::time::Duration",
+    "super::*",
+    "super::error::AsyncOperatorWorkerError",
+    "super::io::{ AsyncOperatorInput, AsyncOperatorInputAccessError, AsyncOperatorOutput, AsyncOperatorOutputBranchSpec, }",
+    "super::io::{ AsyncOperatorNamedOutput, AsyncOperatorNamedOutputBranchSpec, AsyncOperatorTypedInput, }",
+    "super::observations::{AsyncOperatorObservationHandle, AsyncOperatorObservationState}",
+    "tokio::sync::Notify",
+    "tokio::task::JoinHandle"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 1789,
+      "text": "assert!(worker.observations().wait_ready().await);"
+    },
+    {
+      "line": 1856,
+      "text": "assert!("
+    },
+    {
+      "line": 1911,
+      "text": "assert!(matches!(output.payload, SignalPayload::Text(_)));"
+    },
+    {
+      "line": 2016,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 2038,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 2068,
+      "text": "assert!(worker.input_mut().unwrap().send(envelope(1)).is_err());"
+    },
+    {
+      "line": 2077,
+      "text": "assert!(snapshot.joined);"
+    },
+    {
+      "line": 2078,
+      "text": "assert!(closed.load(Ordering::Acquire));"
+    },
+    {
+      "line": 2113,
+      "text": "assert!(partial.derivation.is_some());"
+    },
+    {
+      "line": 2126,
+      "text": "assert!(snapshot.joined);"
+    },
+    {
+      "line": 2171,
+      "text": "assert!(output.recv().is_none());"
+    },
+    {
+      "line": 2177,
+      "text": "assert!(snapshot.joined);"
+    },
+    {
+      "line": 2178,
+      "text": "assert!(closed.load(Ordering::Acquire));"
+    },
+    {
+      "line": 2202,
+      "text": "assert!(!ready);"
+    },
+    {
+      "line": 2203,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 2207,
+      "text": "assert!(observations.snapshot().joined);"
+    },
+    {
+      "line": 2254,
+      "text": "panic!(\"test envelope must contain audio\");"
+    },
+    {
+      "line": 2337,
+      "text": "assert!(outputs[0].recv().is_none());"
+    },
+    {
+      "line": 2342,
+      "text": "assert!(closed.load(Ordering::Acquire));"
+    },
+    {
+      "line": 2364,
+      "text": "assert!(observations.wait_ready().await);"
+    },
+    {
+      "line": 2368,
+      "text": "assert!(cancelled.load(Ordering::Acquire));"
+    },
+    {
+      "line": 2369,
+      "text": "assert!(closed.load(Ordering::Acquire));"
+    },
+    {
+      "line": 2392,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 2408,
+      "text": "assert!(outputs[0].recv().is_none());"
+    },
+    {
+      "line": 2419,
+      "text": "assert!(outputs[1].recv().is_none());"
+    },
+    {
+      "line": 2439,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 2462,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 2485,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 2518,
+      "text": "assert!(snapshot.joined);"
+    },
+    {
+      "line": 2519,
+      "text": "assert!(closed.load(Ordering::Acquire));"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 2573,
+  "locks": [
+    {
+      "line": 1251,
+      "text": "use std::sync::Mutex;"
+    },
+    {
+      "line": 1658,
+      "text": "observed: Arc<Mutex<Vec<AsyncOperatorPrepareContext>>>,"
+    },
+    {
+      "line": 1678,
+      "text": "observed: Arc<Mutex<Vec<AsyncOperatorPrepareContext>>>,"
+    },
+    {
+      "line": 1774,
+      "text": "let observed = Arc::new(Mutex::new(Vec::new()));"
+    },
+    {
+      "line": 1815,
+      "text": "let observed = Arc::new(Mutex::new(Vec::new()));"
+    }
+  ],
+  "module": "pocketstation::runtime::signal::operator",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-ed20125623009d38bfb6",
+    "pattern-a802d2ac57167b98a256",
+    "pattern-3da02ff64109c6786946",
+    "pattern-98e87d1228c961cbf000"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/runtime/signal/operator.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 30,
+      "name": "ASYNC_OPERATOR_IDLE_POLL_INTERVAL",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 32,
+      "name": "AsyncOperatorWorkerSource",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "prepare_edge",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 87,
+      "name": "into_source",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "recv",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 162,
+      "name": "is_abandoned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 171,
+      "name": "port_name",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 181,
+      "name": "AsyncOperatorWorkerInputs",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 189,
+      "name": "one",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 195,
+      "name": "recv",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 229,
+      "name": "is_abandoned",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 236,
+      "name": "NamedOutputFanout",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 241,
+      "name": "clone_non_audio_payload",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 260,
+      "name": "build_output_branches",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 283,
+      "name": "build_named_output_branches",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 337,
+      "name": "prepare_edge",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 359,
+      "name": "simple_prepare_context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 421,
+      "name": "composed_prepare_context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 462,
+      "name": "session_composed_prepare_context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 496,
+      "name": "validate_prepare_context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 852,
+      "name": "spawn_with_source",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 942,
+      "name": "run_worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 972,
+      "name": "run_prepared_worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1005,
+      "name": "run_operator_loop",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 1015,
+      "name": "ProcessAttempt",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1128,
+      "name": "cancel_node",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1139,
+      "name": "fan_out_outputs",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 1249,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1267,
+      "name": "TEST_NONTERMINAL_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 1269,
+      "name": "TEST_TERMINAL_ROLE",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1270,
+      "name": "nonterminal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1274,
+      "name": "terminal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 1280,
+      "name": "TestBehavior",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1290,
+      "name": "TestFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1299,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1302,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1306,
+      "name": "resolve_manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1317,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1332,
+      "name": "TestNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1346,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1358,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1427,
+      "name": "flush",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1460,
+      "name": "cancel",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1467,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1475,
+      "name": "port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1496,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1551,
+      "name": "factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1567,
+      "name": "envelope",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1597,
+      "name": "output_branch",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1606,
+      "name": "text_typed_input",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1624,
+      "name": "text_input_factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1648,
+      "name": "text_envelope",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1655,
+      "name": "PrepareCaptureFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1662,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1665,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1669,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 1676,
+      "name": "PrepareCaptureNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1682,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1691,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1699,
+      "name": "prepare_capture_manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1755,
+      "name": "given_every_nonaudio_signal_class_when_worker_prepares_then_exact_signal_context_is_received",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1811,
+      "name": "given_prepare_context_capacity_disagrees_with_runtime_edge_when_spawned_then_prepare_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1862,
+      "name": "given_operator_composition_with_three_external_operators_then_derived_output_crosses_each_bounded_edge",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1919,
+      "name": "given_operator_composition_with_named_multi_input_output_manifest_then_each_declared_port_executes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1993,
+      "name": "given_duplicate_async_node_type_when_registered_then_first_authority_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2052,
+      "name": "given_full_input_branch_when_sent_then_overflow_is_counted_and_join_is_bounded",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2082,
+      "name": "given_two_inputs_when_processed_then_nonterminal_and_terminal_reach_each_branch",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2130,
+      "name": "given_graceful_finish_when_operator_has_pending_state_then_one_final_is_emitted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2182,
+      "name": "given_prepare_failure_when_readiness_is_awaited_then_waiter_returns_false",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2211,
+      "name": "given_compiled_lineaged_edge_when_worker_runs_then_exact_session_stem_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2311,
+      "name": "given_cancellation_when_operator_has_pending_state_then_no_final_is_fabricated",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2346,
+      "name": "given_idle_worker_when_cancelled_then_cancel_hook_runs_before_close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2374,
+      "name": "given_full_terminal_branch_when_finished_then_final_loss_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2423,
+      "name": "given_wrong_output_class_when_processed_then_worker_rejects_it",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2446,
+      "name": "given_undeclared_output_role_when_processed_then_worker_rejects_it",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2469,
+      "name": "given_audio_output_without_audio_port_when_processed_then_worker_rejects_it",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2492,
+      "name": "given_slow_operator_when_deadline_expires_then_timeout_cancel_and_join_are_observed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2523,
+      "name": "given_instance_deadline_when_worker_runs_then_configured_timeout_is_authoritative",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 2549,
+      "name": "given_node_reported_timeout_when_observed_then_it_is_not_a_process_failure",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 536,
+      "text": "pub fn spawn("
+    },
+    {
+      "line": 648,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 729,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 818,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 885,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 1777,
+      "text": "let (worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 1864,
+      "text": "let (mut first, mut first_outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2054,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2084,
+      "text": "let (mut worker, mut outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2132,
+      "text": "let (mut worker, mut outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2183,
+      "text": "let (worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2313,
+      "text": "let (mut worker, mut outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2361,
+      "text": "AsyncOperatorWorker::spawn(operator_factory, &NodeConfig::new(), &[output_branch(1)])"
+    },
+    {
+      "line": 2375,
+      "text": "let (mut worker, mut outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2424,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2447,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2470,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2494,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2524,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2550,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    }
+  ],
+  "protocol_messages": [
+    {
+      "line": 1759,
+      "text": "(SignalSpec::event(EventFormat::Json), MediaCaps::Event),"
+    }
+  ],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 45,
+      "name": "SessionOperatorInput",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 103,
+      "name": "CompiledOperatorInputContract",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 249,
+      "name": "AsyncOperatorWorker",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 536,
+      "name": "spawn",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 563,
+      "name": "spawn_with_context",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 604,
+      "name": "spawn_composed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 682,
+      "name": "prepare_and_spawn_session_composed",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 764,
+      "name": "prepare_and_spawn_from_plan_edge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 917,
+      "name": "input_mut",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 920,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 924,
+      "name": "cancel_and_join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 932,
+      "name": "finish_and_join",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::runtime::signal::operator`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/errors/runtime-and-sidecars.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/route-sizing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 2,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 38,
+      "text": "lineage: Box<CompiledOperatorInputContract>,"
+    },
+    {
+      "line": 92,
+      "text": "lineage: Box::new(contract),"
+    },
+    {
+      "line": 144,
+      "text": ".map_or(Ok(None), |envelope| match Arc::try_unwrap(envelope) {"
+    },
+    {
+      "line": 253,
+      "text": "cancellation: Arc<AtomicBool>,"
+    },
+    {
+      "line": 254,
+      "text": "cancellation_notify: Arc<Notify>,"
+    },
+    {
+      "line": 537,
+      "text": "factory: Arc<dyn AsyncOperatorFactory>,"
+    },
+    {
+      "line": 546,
+      "text": "observations: Arc::new(AsyncOperatorObservationState::default()),"
+    },
+    {
+      "line": 564,
+      "text": "factory: Arc<dyn AsyncOperatorFactory>,"
+    },
+    {
+      "line": 591,
+      "text": "observations: Arc::new(AsyncOperatorObservationState::default()),"
+    },
+    {
+      "line": 605,
+      "text": "factory: Arc<dyn AsyncOperatorFactory>,"
+    },
+    {
+      "line": 633,
+      "text": "let observations = Arc::new(AsyncOperatorObservationState::default());"
+    },
+    {
+      "line": 634,
+      "text": "let cancellation = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 635,
+      "text": "let cancellation_notify = Arc::new(Notify::new());"
+    },
+    {
+      "line": 645,
+      "text": "let task_observations = Arc::clone(&observations);"
+    },
+    {
+      "line": 646,
+      "text": "let task_cancellation = Arc::clone(&cancellation);"
+    },
+    {
+      "line": 647,
+      "text": "let task_cancellation_notify = Arc::clone(&cancellation_notify);"
+    },
+    {
+      "line": 660,
+      "text": "Arc::clone(&task_observations),"
+    },
+    {
+      "line": 684,
+      "text": "factory: Arc<dyn AsyncOperatorFactory>,"
+    },
+    {
+      "line": 716,
+      "text": "let observations = Arc::new(AsyncOperatorObservationState::default());"
+    },
+    {
+      "line": 718,
+      "text": "let cancellation = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 719,
+      "text": "let cancellation_notify = Arc::new(Notify::new());"
+    },
+    {
+      "line": 726,
+      "text": "let task_observations = Arc::clone(&observations);"
+    },
+    {
+      "line": 727,
+      "text": "let task_cancellation = Arc::clone(&cancellation);"
+    },
+    {
+      "line": 728,
+      "text": "let task_cancellation_notify = Arc::clone(&cancellation_notify);"
+    },
+    {
+      "line": 740,
+      "text": "Arc::clone(&task_observations),"
+    },
+    {
+      "line": 765,
+      "text": "factory: Arc<dyn AsyncOperatorFactory>,"
+    },
+    {
+      "line": 809,
+      "text": "let observations = Arc::new(AsyncOperatorObservationState::default());"
+    },
+    {
+      "line": 811,
+      "text": "let cancellation = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 812,
+      "text": "let cancellation_notify = Arc::new(Notify::new());"
+    },
+    {
+      "line": 815,
+      "text": "let task_observations = Arc::clone(&observations);"
+    },
+    {
+      "line": 816,
+      "text": "let task_cancellation = Arc::clone(&cancellation);"
+    },
+    {
+      "line": 817,
+      "text": "let task_cancellation_notify = Arc::clone(&cancellation_notify);"
+    },
+    {
+      "line": 824,
+      "text": "lineage: Box::new(input_contract),"
+    },
+    {
+      "line": 829,
+      "text": "Arc::clone(&task_observations),"
+    },
+    {
+      "line": 853,
+      "text": "factory: Arc<dyn AsyncOperatorFactory>,"
+    },
+    {
+      "line": 875,
+      "text": "let observations = Arc::new(AsyncOperatorObservationState::default());"
+    },
+    {
+      "line": 877,
+      "text": "input.observations = Arc::clone(&observations);"
+    },
+    {
+      "line": 879,
+      "text": "let cancellation = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 880,
+      "text": "let cancellation_notify = Arc::new(Notify::new());"
+    },
+    {
+      "line": 882,
+      "text": "let task_observations = Arc::clone(&observations);"
+    },
+    {
+      "line": 883,
+      "text": "let task_cancellation = Arc::clone(&cancellation);"
+    },
+    {
+      "line": 884,
+      "text": "let task_cancellation_notify = Arc::clone(&cancellation_notify);"
+    },
+    {
+      "line": 894,
+      "text": "Arc::clone(&task_observations),"
+    },
+    {
+      "line": 944,
+      "text": "mut node: Box<dyn AsyncNode>,"
+    },
+    {
+      "line": 948,
+      "text": "cancellation: Arc<AtomicBool>,"
+    },
+    {
+      "line": 949,
+      "text": "cancellation_notify: Arc<Notify>,"
+    },
+    {
+      "line": 950,
+      "text": "observations: Arc<AsyncOperatorObservationState>,"
+    },
+    {
+      "line": 975,
+      "text": "mut node: Box<dyn AsyncNode>,"
+    },
+    {
+      "line": 978,
+      "text": "cancellation: Arc<AtomicBool>,"
+    },
+    {
+      "line": 979,
+      "text": "cancellation_notify: Arc<Notify>,"
+    },
+    {
+      "line": 980,
+      "text": "observations: Arc<AsyncOperatorObservationState>,"
+    },
+    {
+      "line": 1294,
+      "text": "closed: Arc<AtomicBool>,"
+    },
+    {
+      "line": 1295,
+      "text": "cancelled: Arc<AtomicBool>,"
+    },
+    {
+      "line": 1318,
+      "text": "fn create(&self, _configuration: &NodeConfig) -> Result<Box<dyn AsyncNode>, NodeError> {"
+    },
+    {
+      "line": 1319,
+      "text": "Ok(Box::new(TestNode {"
+    },
+    {
+      "line": 1324,
+      "text": "closed: Arc::clone(&self.closed),"
+    },
+    {
+      "line": 1325,
+      "text": "cancelled: Arc::clone(&self.cancelled),"
+    },
+    {
+      "line": 1338,
+      "text": "closed: Arc<AtomicBool>,"
+    },
+    {
+      "line": 1339,
+      "text": "cancelled: Arc<AtomicBool>,"
+    },
+    {
+      "line": 1350,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1363,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1431,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1462,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1469,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1558,
+      "text": "closed: Arc<AtomicBool>,"
+    },
+    {
+      "line": 1559,
+      "text": ") -> Arc<TestFactory> {"
+    },
+    {
+      "line": 1560,
+      "text": "Arc::new(TestFactory {"
+    },
+    {
+      "line": 1564,
+      "text": "cancelled: Arc::new(AtomicBool::new(false)),"
+    },
+    {
+      "line": 1625,
+      "text": "fn text_input_factory(operator_id: &str, node_type_id: &str) -> Arc<TestFactory> {"
+    },
+    {
+      "line": 1632,
+      "text": "Arc::new(AtomicBool::new(false)),"
+    },
+    {
+      "line": 1641,
+      "text": "Arc::new(TestFactory {"
+    },
+    {
+      "line": 1644,
+      "text": "closed: Arc::clone(&factory.closed),"
+    },
+    {
+      "line": 1645,
+      "text": "cancelled: Arc::clone(&factory.cancelled),"
+    },
+    {
+      "line": 1658,
+      "text": "observed: Arc<Mutex<Vec<AsyncOperatorPrepareContext>>>,"
+    },
+    {
+      "line": 1670,
+      "text": "fn create(&self, _configuration: &NodeConfig) -> Result<Box<dyn AsyncNode>, NodeError> {"
+    },
+    {
+      "line": 1671,
+      "text": "Ok(Box::new(PrepareCaptureNode {"
+    },
+    {
+      "line": 1672,
+      "text": "observed: Arc::clone(&self.observed),"
+    },
+    {
+      "line": 1678,
+      "text": "observed: Arc<Mutex<Vec<AsyncOperatorPrepareContext>>>,"
+    },
+    {
+      "line": 1686,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1696,
+      "text": "Box::pin(async { Ok(Vec::new()) })"
+    },
+    {
+      "line": 1774,
+      "text": "let observed = Arc::new(Mutex::new(Vec::new()));"
+    },
+    {
+      "line": 1778,
+      "text": "Arc::new(PrepareCaptureFactory {"
+    },
+    {
+      "line": 1780,
+      "text": "observed: Arc::clone(&observed),"
+    },
+    {
+      "line": 1815,
+      "text": "let observed = Arc::new(Mutex::new(Vec::new()));"
+    },
+    {
+      "line": 1847,
+      "text": "Arc::new(PrepareCaptureFactory { manifest, observed }),"
+    },
+    {
+      "line": 1871,
+      "text": "Arc::new(AtomicBool::new(false)),"
+    },
+    {
+      "line": 1945,
+      "text": "let factory = Arc::new(TestFactory {"
+    },
+    {
+      "line": 1948,
+      "text": "closed: Arc::new(AtomicBool::new(false)),"
+    },
+    {
+      "line": 1949,
+      "text": "cancelled: Arc::new(AtomicBool::new(false)),"
+    },
+    {
+      "line": 1994,
+      "text": "let closed = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 2003,
+      "text": "Arc::clone(&closed),"
+    },
+    {
+      "line": 2036,
+      "text": "Arc::new(AtomicBool::new(false)),"
+    },
+    {
+      "line": 2053,
+      "text": "let closed = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 2061,
+      "text": "Arc::clone(&closed),"
+    },
+    {
+      "line": 2083,
+      "text": "let closed = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 2131,
+      "text": "let closed = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 2139,
+      "text": "Arc::clone(&closed),"
+    },
+    {
+      "line": 2190,
+      "text": "Arc::new(AtomicBool::new(false)),"
+    },
+    {
+      "line": 2218,
+      "text": "Arc::new(AtomicBool::new(false)),"
+    },
+    {
+      "line": 2312,
+      "text": "let closed = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 2320,
+      "text": "Arc::clone(&closed),"
+    },
+    {
+      "line": 2347,
+      "text": "let cancelled = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 2348,
+      "text": "let closed = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 2349,
+      "text": "let operator_factory = Arc::new(TestFactory {"
+    },
+    {
+      "line": 2357,
+      "text": "closed: Arc::clone(&closed),"
+    },
+    {
+      "line": 2358,
+      "text": "cancelled: Arc::clone(&cancelled),"
+    },
+    {
+      "line": 2382,
+      "text": "Arc::new(AtomicBool::new(false)),"
+    },
+    {
+      "line": 2431,
+      "text": "Arc::new(AtomicBool::new(false)),"
+    },
+    {
+      "line": 2454,
+      "text": "Arc::new(AtomicBool::new(false)),"
+    },
+    {
+      "line": 2477,
+      "text": "Arc::new(AtomicBool::new(false)),"
+    },
+    {
+      "line": 2493,
+      "text": "let closed = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 2501,
+      "text": "Arc::clone(&closed),"
+    },
+    {
+      "line": 2531,
+      "text": "Arc::new(AtomicBool::new(false)),"
+    },
+    {
+      "line": 2557,
+      "text": "Arc::new(AtomicBool::new(false)),"
+    }
+  ],
+  "responsibilities": [
+    "ASYNC_OPERATOR_IDLE_POLL_INTERVAL",
+    "AsyncOperatorWorkerSource",
+    "SessionOperatorInput",
+    "prepare_edge",
+    "into_source",
+    "CompiledOperatorInputContract",
+    "recv",
+    "is_abandoned",
+    "port_name",
+    "AsyncOperatorWorkerInputs",
+    "one",
+    "recv",
+    "is_abandoned",
+    "NamedOutputFanout",
+    "clone_non_audio_payload",
+    "AsyncOperatorWorker",
+    "build_output_branches",
+    "build_named_output_branches",
+    "prepare_edge",
+    "simple_prepare_context",
+    "composed_prepare_context",
+    "session_composed_prepare_context",
+    "validate_prepare_context",
+    "spawn",
+    "spawn_with_context",
+    "spawn_composed",
+    "prepare_and_spawn_session_composed",
+    "prepare_and_spawn_from_plan_edge",
+    "spawn_with_source",
+    "input_mut",
+    "observations",
+    "cancel_and_join",
+    "finish_and_join",
+    "run_worker",
+    "run_prepared_worker",
+    "run_operator_loop",
+    "ProcessAttempt",
+    "cancel_node",
+    "fan_out_outputs",
+    "tests",
+    "TEST_NONTERMINAL_ROLE",
+    "TEST_TERMINAL_ROLE",
+    "nonterminal_spec",
+    "terminal_spec",
+    "TestBehavior",
+    "TestFactory",
+    "manifest",
+    "validate_config",
+    "resolve_manifest",
+    "create",
+    "TestNode",
+    "prepare",
+    "process",
+    "flush",
+    "cancel",
+    "close",
+    "port",
+    "manifest",
+    "factory",
+    "envelope",
+    "output_branch",
+    "text_typed_input",
+    "text_input_factory",
+    "text_envelope",
+    "PrepareCaptureFactory",
+    "manifest",
+    "validate_config",
+    "create",
+    "PrepareCaptureNode",
+    "prepare",
+    "process",
+    "prepare_capture_manifest",
+    "given_every_nonaudio_signal_class_when_worker_prepares_then_exact_signal_context_is_received",
+    "given_prepare_context_capacity_disagrees_with_runtime_edge_when_spawned_then_prepare_fails_closed",
+    "given_operator_composition_with_three_external_operators_then_derived_output_crosses_each_bounded_edge",
+    "given_operator_composition_with_named_multi_input_output_manifest_then_each_declared_port_executes",
+    "given_duplicate_async_node_type_when_registered_then_first_authority_is_preserved",
+    "given_full_input_branch_when_sent_then_overflow_is_counted_and_join_is_bounded",
+    "given_two_inputs_when_processed_then_nonterminal_and_terminal_reach_each_branch",
+    "given_graceful_finish_when_operator_has_pending_state_then_one_final_is_emitted",
+    "given_prepare_failure_when_readiness_is_awaited_then_waiter_returns_false",
+    "given_compiled_lineaged_edge_when_worker_runs_then_exact_session_stem_is_preserved",
+    "given_cancellation_when_operator_has_pending_state_then_no_final_is_fabricated",
+    "given_idle_worker_when_cancelled_then_cancel_hook_runs_before_close",
+    "given_full_terminal_branch_when_finished_then_final_loss_fails_closed",
+    "given_wrong_output_class_when_processed_then_worker_rejects_it",
+    "given_undeclared_output_role_when_processed_then_worker_rejects_it",
+    "given_audio_output_without_audio_port_when_processed_then_worker_rejects_it",
+    "given_slow_operator_when_deadline_expires_then_timeout_cancel_and_join_are_observed",
+    "given_instance_deadline_when_worker_runs_then_configured_timeout_is_authoritative",
+    "given_node_reported_timeout_when_observed_then_it_is_not_a_process_failure"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 536,
+      "text": "pub fn spawn("
+    },
+    {
+      "line": 648,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 729,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 818,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 885,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 1777,
+      "text": "let (worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 1864,
+      "text": "let (mut first, mut first_outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2054,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2084,
+      "text": "let (mut worker, mut outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2132,
+      "text": "let (mut worker, mut outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2183,
+      "text": "let (worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2313,
+      "text": "let (mut worker, mut outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2361,
+      "text": "AsyncOperatorWorker::spawn(operator_factory, &NodeConfig::new(), &[output_branch(1)])"
+    },
+    {
+      "line": 2375,
+      "text": "let (mut worker, mut outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2424,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2447,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2470,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2494,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2524,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2550,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 503,
+      "text": "\"async operator prepare partition does not match its manifest\".to_owned(),"
+    },
+    {
+      "line": 517,
+      "text": "\"async operator prepare port '{}' is not declared\","
+    },
+    {
+      "line": 526,
+      "text": "\"async operator prepare port '{}' disagrees with its manifest\","
+    },
+    {
+      "line": 559,
+      "text": "/// prepare context. Session-owned graph execution uses the compiled-edge"
+    },
+    {
+      "line": 584,
+      "text": "\"direct async operator prepare context disagrees with bounded runtime edges\""
+    },
+    {
+      "line": 709,
+      "text": "tokio::time::timeout(timeout_duration, node.prepare(&prepare_context))"
+    },
+    {
+      "line": 802,
+      "text": "tokio::time::timeout(timeout_duration, node.prepare(&prepare_context))"
+    },
+    {
+      "line": 953,
+      "text": "tokio::time::timeout(timeout_duration, node.prepare(&prepare_context))"
+    },
+    {
+      "line": 1346,
+      "text": "fn prepare<'a>("
+    },
+    {
+      "line": 1352,
+      "text": "Err(NodeError::Prepare(\"test prepare failure\".to_owned()))"
+    },
+    {
+      "line": 1682,
+      "text": "fn prepare<'a>("
+    },
+    {
+      "line": 1712,
+      "text": "operator_id: OperatorId::new(format!(\"operator.prepare.{index}\")),"
+    },
+    {
+      "line": 1716,
+      "text": "type_id: NodeTypeId::from(\"operator.prepare.capture\"),"
+    },
+    {
+      "line": 1767,
+      "text": "SignalSpec::custom(\"org.example.prepare-signal.v1\")"
+    },
+    {
+      "line": 1768,
+      "text": ".with_schema(\"json-schema:org.example.prepare-signal.v1\"),"
+    },
+    {
+      "line": 2185,
+      "text": "\"operator.prepare-fail\","
+    },
+    {
+      "line": 2186,
+      "text": "\"operator.prepare-fail.node\","
+    }
+  ],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 13,
+      "text": "use tokio::sync::Notify;"
+    },
+    {
+      "line": 14,
+      "text": "use tokio::task::JoinHandle;"
+    },
+    {
+      "line": 62,
+      "text": "\"compiled async input receiver does not match its edge/node contract\""
+    },
+    {
+      "line": 267,
+      "text": ".ok_or_else(|| NodeError::Prepare(\"async operator has no output port\".to_owned()))?;"
+    },
+    {
+      "line": 270,
+      "text": "\"simple async operator spawn requires exactly one output port\".to_owned(),"
+    },
+    {
+      "line": 290,
+      "text": "\"async operator requires at least one output branch\".to_owned(),"
+    },
+    {
+      "line": 332,
+      "text": "\"async operator output port '{unknown}' is not declared\""
+    },
+    {
+      "line": 367,
+      "text": ".ok_or_else(|| NodeError::Prepare(\"async operator has no input port\".to_owned()))?;"
+    },
+    {
+      "line": 370,
+      "text": "\"simple async operator preparation requires exactly one input port\".to_owned(),"
+    },
+    {
+      "line": 396,
+      "text": ".ok_or_else(|| NodeError::Prepare(\"async operator has no output port\".to_owned()))?;"
+    },
+    {
+      "line": 399,
+      "text": "\"simple async operator preparation requires exactly one output port\".to_owned(),"
+    },
+    {
+      "line": 444,
+      "text": "\"async operator output port '{}' is not declared\","
+    },
+    {
+      "line": 478,
+      "text": "\"async operator output port '{}' is not declared\","
+    },
+    {
+      "line": 503,
+      "text": "\"async operator prepare partition does not match its manifest\".to_owned(),"
+    },
+    {
+      "line": 517,
+      "text": "\"async operator prepare port '{}' is not declared\","
+    },
+    {
+      "line": 526,
+      "text": "\"async operator prepare port '{}' disagrees with its manifest\","
+    },
+    {
+      "line": 584,
+      "text": "\"direct async operator prepare context disagrees with bounded runtime edges\""
+    },
+    {
+      "line": 612,
+      "text": "\"composed async operator requires at least one typed input\".to_owned(),"
+    },
+    {
+      "line": 625,
+      "text": "\"async operator input port '{}' is not declared\","
+    },
+    {
+      "line": 648,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 662,
+      "text": ".await;"
+    },
+    {
+      "line": 683,
+      "text": "pub(crate) async fn prepare_and_spawn_session_composed("
+    },
+    {
+      "line": 691,
+      "text": "\"Session-composed async operator requires at least one input\".to_owned(),"
+    },
+    {
+      "line": 709,
+      "text": "tokio::time::timeout(timeout_duration, node.prepare(&prepare_context))"
+    },
+    {
+      "line": 710,
+      "text": ".await"
+    },
+    {
+      "line": 729,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 742,
+      "text": ".await;"
+    },
+    {
+      "line": 764,
+      "text": "pub async fn prepare_and_spawn_from_plan_edge("
+    },
+    {
+      "line": 775,
+      "text": "\"compiled async input receiver does not match its edge/node contract\".to_owned(),"
+    },
+    {
+      "line": 784,
+      "text": "\"async operator requires non-zero capacity for every output branch\".to_owned(),"
+    },
+    {
+      "line": 802,
+      "text": "tokio::time::timeout(timeout_duration, node.prepare(&prepare_context))"
+    },
+    {
+      "line": 803,
+      "text": ".await"
+    },
+    {
+      "line": 818,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 831,
+      "text": ".await;"
+    },
+    {
+      "line": 866,
+      "text": "\"async operator requires non-zero capacity for every output branch\".to_owned(),"
+    },
+    {
+      "line": 885,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 896,
+      "text": ".await;"
+    },
+    {
+      "line": 925,
+      "text": "pub async fn cancel_and_join(self) -> Result<(), AsyncOperatorWorkerError> {"
+    },
+    {
+      "line": 930,
+      "text": "self.join.await?"
+    },
+    {
+      "line": 933,
+      "text": "pub async fn finish_and_join(self) -> Result<(), AsyncOperatorWorkerError> {"
+    },
+    {
+      "line": 936,
+      "text": "self.join.await?"
+    },
+    {
+      "line": 942,
+      "text": "async fn run_worker("
+    },
+    {
+      "line": 953,
+      "text": "tokio::time::timeout(timeout_duration, node.prepare(&prepare_context))"
+    },
+    {
+      "line": 954,
+      "text": ".await"
+    },
+    {
+      "line": 970,
+      "text": ".await"
+    },
+    {
+      "line": 973,
+      "text": "async fn run_prepared_worker("
+    },
+    {
+      "line": 993,
+      "text": ".await;"
+    },
+    {
+      "line": 994,
+      "text": "let close_result = match tokio::time::timeout(timeout_duration, node.close()).await {"
+    },
+    {
+      "line": 1005,
+      "text": "async fn run_operator_loop("
+    },
+    {
+      "line": 1028,
+      "text": "cancel_node(node, timeout_duration, manifest.deadline.process_timeout_ms).await?;"
+    },
+    {
+      "line": 1041,
+      "text": "let emitted = match tokio::time::timeout(timeout_duration, node.flush()).await {"
+    },
+    {
+      "line": 1056,
+      "text": ".await?;"
+    },
+    {
+      "line": 1069,
+      "text": "tokio::select! {"
+    },
+    {
+      "line": 1071,
+      "text": "_ = tokio::time::sleep(ASYNC_OPERATOR_IDLE_POLL_INTERVAL) => {}"
+    },
+    {
+      "line": 1079,
+      "text": "tokio::pin!(process);"
+    },
+    {
+      "line": 1080,
+      "text": "tokio::select! {"
+    },
+    {
+      "line": 1082,
+      "text": "_ = tokio::time::sleep(timeout_duration) => ProcessAttempt::TimedOut,"
+    },
+    {
+      "line": 1090,
+      "text": "cancel_node(node, timeout_duration, manifest.deadline.process_timeout_ms).await?;"
+    },
+    {
+      "line": 1107,
+      "text": "cancel_node(node, timeout_duration, manifest.deadline.process_timeout_ms).await?;"
+    },
+    {
+      "line": 1119,
+      "text": "cancel_node(node, timeout_duration, manifest.deadline.process_timeout_ms).await?;"
+    },
+    {
+      "line": 1129,
+      "text": "async fn cancel_node("
+    },
+    {
+      "line": 1134,
+      "text": "match tokio::time::timeout(timeout_duration, node.cancel()).await {"
+    },
+    {
+      "line": 1350,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1363,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1365,
+      "text": "tokio::time::sleep(Duration::from_millis(50)).await;"
+    },
+    {
+      "line": 1431,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1462,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1469,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1686,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 1696,
+      "text": "Box::pin(async { Ok(Vec::new()) })"
+    },
+    {
+      "line": 1754,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 1755,
+      "text": "async fn given_every_nonaudio_signal_class_when_worker_prepares_then_exact_signal_context_is_received("
+    },
+    {
+      "line": 1789,
+      "text": "assert!(worker.observations().wait_ready().await);"
+    },
+    {
+      "line": 1790,
+      "text": "worker.cancel_and_join().await.unwrap();"
+    },
+    {
+      "line": 1861,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 1862,
+      "text": "async fn given_operator_composition_with_three_external_operators_then_derived_output_crosses_each_bounded_edge("
+    },
+    {
+      "line": 1902,
+      "text": "first.finish_and_join().await.unwrap();"
+    },
+    {
+      "line": 1903,
+      "text": "second.finish_and_join().await.unwrap();"
+    },
+    {
+      "line": 1904,
+      "text": "third.finish_and_join().await.unwrap();"
+    },
+    {
+      "line": 1918,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 1919,
+      "text": "async fn given_operator_composition_with_named_multi_input_output_manifest_then_each_declared_port_executes("
+    },
+    {
+      "line": 1977,
+      "text": "worker.finish_and_join().await.unwrap();"
+    },
+    {
+      "line": 2051,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2052,
+      "text": "async fn given_full_input_branch_when_sent_then_overflow_is_counted_and_join_is_bounded() {"
+    },
+    {
+      "line": 2071,
+      "text": "worker.cancel_and_join().await.unwrap();"
+    },
+    {
+      "line": 2081,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2082,
+      "text": "async fn given_two_inputs_when_processed_then_nonterminal_and_terminal_reach_each_branch() {"
+    },
+    {
+      "line": 2098,
+      "text": "tokio::task::yield_now().await;"
+    },
+    {
+      "line": 2100,
+      "text": "tokio::time::sleep(Duration::from_millis(10)).await;"
+    },
+    {
+      "line": 2121,
+      "text": "worker.cancel_and_join().await.unwrap();"
+    },
+    {
+      "line": 2129,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2130,
+      "text": "async fn given_graceful_finish_when_operator_has_pending_state_then_one_final_is_emitted() {"
+    },
+    {
+      "line": 2148,
+      "text": "worker.finish_and_join().await.unwrap();"
+    },
+    {
+      "line": 2181,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2182,
+      "text": "async fn given_prepare_failure_when_readiness_is_awaited_then_waiter_returns_false() {"
+    },
+    {
+      "line": 2198,
+      "text": "let ready = tokio::time::timeout(Duration::from_millis(100), observations.wait_ready())"
+    },
+    {
+      "line": 2199,
+      "text": ".await"
+    },
+    {
+      "line": 2204,
+      "text": "worker.finish_and_join().await.unwrap_err(),"
+    },
+    {
+      "line": 2210,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2211,
+      "text": "async fn given_compiled_lineaged_edge_when_worker_runs_then_exact_session_stem_is_preserved() {"
+    },
+    {
+      "line": 2290,
+      "text": ".await"
+    },
+    {
+      "line": 2292,
+      "text": "worker.finish_and_join().await.unwrap();"
+    },
+    {
+      "line": 2310,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2311,
+      "text": "async fn given_cancellation_when_operator_has_pending_state_then_no_final_is_fabricated() {"
+    },
+    {
+      "line": 2327,
+      "text": "tokio::time::sleep(Duration::from_millis(10)).await;"
+    },
+    {
+      "line": 2335,
+      "text": "worker.cancel_and_join().await.unwrap();"
+    },
+    {
+      "line": 2345,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2346,
+      "text": "async fn given_idle_worker_when_cancelled_then_cancel_hook_runs_before_close() {"
+    },
+    {
+      "line": 2364,
+      "text": "assert!(observations.wait_ready().await);"
+    },
+    {
+      "line": 2366,
+      "text": "worker.cancel_and_join().await.unwrap();"
+    },
+    {
+      "line": 2373,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2374,
+      "text": "async fn given_full_terminal_branch_when_finished_then_final_loss_fails_closed() {"
+    },
+    {
+      "line": 2390,
+      "text": "let error = worker.finish_and_join().await.unwrap_err();"
+    },
+    {
+      "line": 2422,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2423,
+      "text": "async fn given_wrong_output_class_when_processed_then_worker_rejects_it() {"
+    },
+    {
+      "line": 2440,
+      "text": "worker.finish_and_join().await.unwrap_err(),"
+    },
+    {
+      "line": 2445,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2446,
+      "text": "async fn given_undeclared_output_role_when_processed_then_worker_rejects_it() {"
+    },
+    {
+      "line": 2463,
+      "text": "worker.finish_and_join().await.unwrap_err(),"
+    },
+    {
+      "line": 2468,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2469,
+      "text": "async fn given_audio_output_without_audio_port_when_processed_then_worker_rejects_it() {"
+    },
+    {
+      "line": 2486,
+      "text": "worker.finish_and_join().await.unwrap_err(),"
+    },
+    {
+      "line": 2491,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2492,
+      "text": "async fn given_slow_operator_when_deadline_expires_then_timeout_cancel_and_join_are_observed() {"
+    },
+    {
+      "line": 2508,
+      "text": "tokio::time::sleep(Duration::from_millis(15)).await;"
+    },
+    {
+      "line": 2511,
+      "text": "worker.cancel_and_join().await.unwrap();"
+    },
+    {
+      "line": 2522,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2523,
+      "text": "async fn given_instance_deadline_when_worker_runs_then_configured_timeout_is_authoritative() {"
+    },
+    {
+      "line": 2538,
+      "text": "tokio::time::sleep(Duration::from_millis(15)).await;"
+    },
+    {
+      "line": 2541,
+      "text": "worker.cancel_and_join().await.unwrap();"
+    },
+    {
+      "line": 2548,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2549,
+      "text": "async fn given_node_reported_timeout_when_observed_then_it_is_not_a_process_failure() {"
+    },
+    {
+      "line": 2566,
+      "text": "worker.finish_and_join().await.unwrap();"
+    }
+  ],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 270,
+      "text": "\"simple async operator spawn requires exactly one output port\".to_owned(),"
+    },
+    {
+      "line": 536,
+      "text": "pub fn spawn("
+    },
+    {
+      "line": 648,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 683,
+      "text": "pub(crate) async fn prepare_and_spawn_session_composed("
+    },
+    {
+      "line": 729,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 764,
+      "text": "pub async fn prepare_and_spawn_from_plan_edge("
+    },
+    {
+      "line": 818,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 885,
+      "text": "let join = tokio::spawn(async move {"
+    },
+    {
+      "line": 1754,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 1777,
+      "text": "let (worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 1861,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 1864,
+      "text": "let (mut first, mut first_outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 1918,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2051,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2054,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2081,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2084,
+      "text": "let (mut worker, mut outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2129,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2132,
+      "text": "let (mut worker, mut outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2181,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2183,
+      "text": "let (worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2210,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2310,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2313,
+      "text": "let (mut worker, mut outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2345,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2361,
+      "text": "AsyncOperatorWorker::spawn(operator_factory, &NodeConfig::new(), &[output_branch(1)])"
+    },
+    {
+      "line": 2373,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2375,
+      "text": "let (mut worker, mut outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2422,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2424,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2445,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2447,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2468,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2470,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2491,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2494,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2522,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2524,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    },
+    {
+      "line": 2548,
+      "text": "#[tokio::test(flavor = \"current_thread\")]"
+    },
+    {
+      "line": 2550,
+      "text": "let (mut worker, _outputs) = AsyncOperatorWorker::spawn("
+    }
+  ],
+  "visibility": "mixed"
+}

@@ -1,0 +1,145 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 5,
+      "text": "every listed public type layout, the append-only executable-extension callback"
+    }
+  ],
+  "called_by": [],
+  "calls": [],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 11,
+      "text": "`internal-testing` feature is intentionally not a product compatibility"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "9843ba96edc97b1ade595424bad4cfb3bc32657d2f2ee4f16b1bba7ff4dc8d64",
+  "defaults": [],
+  "defines": [],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "9843ba96edc97b1ade595424bad4cfb3bc32657d2f2ee4f16b1bba7ff4dc8d64",
+      "lines": [
+        1,
+        18
+      ],
+      "path": "docs/compatibility/README.md",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 3,
+      "text": "`c-abi-v1.baseline` is the reviewed 64-bit C ABI and PKSS identity baseline for"
+    },
+    {
+      "line": 17,
+      "text": "the appropriate ABI/protocol minor-version change and a newly accepted report."
+    }
+  ],
+  "file_id": "file-0024-a8cc61a9",
+  "file_kind": "documentation",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "0fe1136aa8c5c362cb17abacbf7e29b11189e347",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Markdown",
+  "line_count": 18,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "repository",
+  "path": "docs/compatibility/README.md",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Documents Core 1.0 compatibility authority."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 3,
+      "text": "`c-abi-v1.baseline` is the reviewed 64-bit C ABI and PKSS identity baseline for"
+    },
+    {
+      "line": 17,
+      "text": "the appropriate ABI/protocol minor-version change and a newly accepted report."
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

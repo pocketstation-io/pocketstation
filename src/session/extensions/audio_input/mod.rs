@@ -19,6 +19,7 @@ const MAX_CAPACITY_FRAMES: usize = 63;
 pub const PCM_SOURCE_TYPE_ID: &str = "io.pocketstation.source.pcm.v1";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Configures audio input."]
 pub struct AudioInputConfig {
     sample_spec: SampleSpec,
     capacity_frames: usize,
@@ -26,6 +27,7 @@ pub struct AudioInputConfig {
 }
 
 impl AudioInputConfig {
+    #[doc = "Creates a new `AudioInputConfig`."]
     pub fn new(
         sample_spec: SampleSpec,
         capacity_frames: usize,
@@ -56,14 +58,17 @@ impl AudioInputConfig {
         })
     }
 
+    #[doc = "Returns the sample spec associated with `AudioInputConfig`."]
     pub const fn sample_spec(self) -> SampleSpec {
         self.sample_spec
     }
 
+    #[doc = "Returns the capacity frames associated with `AudioInputConfig`."]
     pub const fn capacity_frames(self) -> usize {
         self.capacity_frames
     }
 
+    #[doc = "Returns the frame samples per channel associated with `AudioInputConfig`."]
     pub const fn frame_samples_per_channel(self) -> usize {
         self.frame_samples_per_channel
     }
@@ -74,18 +79,25 @@ impl AudioInputConfig {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as audio input config error."]
 pub enum AudioInputConfigError {
     #[error("audio input sample rate must be non-zero")]
+    #[doc = "Reports zero sample rate."]
     ZeroSampleRate,
     #[error("audio input currently supports mono or stereo PCM")]
+    #[doc = "Reports unsupported channel count."]
     UnsupportedChannelCount,
     #[error("audio input currently supports F32 interleaved PCM")]
+    #[doc = "Reports unsupported sample format."]
     UnsupportedSampleFormat,
     #[error("audio input capacity must be between 1 and 63 frames")]
+    #[doc = "Reports invalid capacity."]
     InvalidCapacity,
     #[error("audio input frame sample count must be non-zero")]
+    #[doc = "Reports zero frame samples."]
     ZeroFrameSamples,
     #[error("audio input frame sample count overflows the platform size")]
+    #[doc = "Reports frame sample count overflow."]
     FrameSampleCountOverflow,
 }
 
@@ -100,10 +112,12 @@ impl AudioInput {
         Self { pcm }
     }
 
+    #[doc = "Returns the source associated with `AudioInput`."]
     pub const fn source(&self) -> &SourceInstanceHandle {
         self.pcm.source()
     }
 
+    #[doc = "Returns the output associated with `AudioInput`."]
     pub const fn output(&self) -> &SourceOutputHandle {
         self.pcm.output()
     }
@@ -128,6 +142,7 @@ impl AudioInput {
         self.pcm.writer_mut().close();
     }
 
+    #[doc = "Returns the observations exposed by `AudioInput`."]
     pub fn observations(&self) -> AudioInputObservations {
         self.pcm.writer().observations()
     }
@@ -140,6 +155,7 @@ impl AudioInput {
 }
 
 impl fmt::Debug for AudioInput {
+    #[doc = "Formats `AudioInput` with the requested formatter."]
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_struct("AudioInput")

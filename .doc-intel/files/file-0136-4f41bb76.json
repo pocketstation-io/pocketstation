@@ -1,0 +1,255 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "SessionStartError::from",
+    "as_str",
+    "cfg",
+    "code",
+    "crate::session::SessionEngineStartError::Freeze",
+    "crate::session::session_stop_failure_codes",
+    "disposition",
+    "failure_codes",
+    "given_facade_errors_when_mapped_then_codes_use_canonical_session_vocabulary",
+    "given_reexported_codes_when_serialized_then_canonical_values_are_unchanged",
+    "is_success",
+    "outcome",
+    "to_owned"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 31,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "SessionStartError::from"
+  ],
+  "content_hash": "7ef92ffc12af6a5b37cd5134b682686c90ffed0feeada61787c5e3e631ce14ff",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 5,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "failure_codes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 32,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "given_facade_errors_when_mapped_then_codes_use_canonical_session_vocabulary",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "given_reexported_codes_when_serialized_then_canonical_values_are_unchanged",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "fn",
+      "line": 5,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "failure_codes",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "7ef92ffc12af6a5b37cd5134b682686c90ffed0feeada61787c5e3e631ce14ff",
+      "lines": [
+        1,
+        81
+      ],
+      "path": "src/error_code.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0136-4f41bb76",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "8c1210f37425fc1d98d76ac05727eb6315ff4bb1",
+  "implemented_by": [],
+  "implements": [
+    "SessionRuntimeError",
+    "SessionStopResult"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::session::{ SessionDeclarationErrorCode, SessionRuntimeErrorCode, SessionStartErrorCode, SessionStopCode, }",
+    "crate::session::{SessionStopCode, SessionStopFailureCode}",
+    "crate::{SessionError, SessionRuntimeError, SessionStartError}",
+    "crate::{SessionRuntimeError, SessionStopDisposition, SessionStopResult}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 81,
+  "locks": [],
+  "module": "pocketstation::error_code",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-6135ab9f881a7768029e"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/error_code.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 32,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "given_facade_errors_when_mapped_then_codes_use_canonical_session_vocabulary",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "given_reexported_codes_when_serialized_then_canonical_values_are_unchanged",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "fn",
+      "line": 5,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "failure_codes",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::error_code`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 26,
+      "text": "pub fn failure_codes(self) -> Box<[SessionStopFailureCode]> {"
+    }
+  ],
+  "responsibilities": [
+    "code",
+    "code",
+    "failure_codes",
+    "tests",
+    "given_facade_errors_when_mapped_then_codes_use_canonical_session_vocabulary",
+    "given_reexported_codes_when_serialized_then_canonical_values_are_unchanged"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

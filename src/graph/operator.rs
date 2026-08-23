@@ -16,10 +16,12 @@ pub const OPERATOR_ID_SYNTAX_VERSION: u16 = 1;
 pub struct OperatorId(String);
 
 impl OperatorId {
+    #[doc = "Creates a new `OperatorId`."]
     pub fn new(operator_id: impl Into<String>) -> Self {
         Self(operator_id.into())
     }
 
+    #[doc = "Returns the stable string representation of `OperatorId`."]
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -32,6 +34,7 @@ impl OperatorId {
         crate::graph::identifier::is_portable_contract_id(self.as_str())
     }
 
+    #[doc = "Returns the syntax version associated with `OperatorId`."]
     pub const fn syntax_version() -> u16 {
         OPERATOR_ID_SYNTAX_VERSION
     }

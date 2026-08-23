@@ -1,0 +1,1415 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 71,
+      "text": "/// The item type expresses ownership only: callback bridges carry an owned"
+    },
+    {
+      "line": 214,
+      "text": "/// that feed realtime callbacks must not register a thread here; typed"
+    },
+    {
+      "line": 215,
+      "text": "/// signal workers and generated-audio bridges execute off callback threads."
+    }
+  ],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "Arc::strong_count",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "ClockDomainId",
+    "Duration::from_secs",
+    "EdgeContract::bounded_async",
+    "EdgeContract::realtime_audio",
+    "InvalidEnvelope",
+    "OnceLock::new",
+    "RingBuffer::new",
+    "Self::bounded_with_payload_limit",
+    "SessionId",
+    "SignalEdge::bounded",
+    "SignalEdge::bounded_with_payload_limit",
+    "SignalEdgeObservationState::default",
+    "SignalEnvelope::from_audio",
+    "SignalEnvelope::untracked",
+    "SignalPayload::Audio",
+    "SignalPayload::Bytes",
+    "SignalSpec::event",
+    "SourceId",
+    "StreamId",
+    "TypedEdgeFanout::new",
+    "TypedEdgePublishReport::default",
+    "Vec::with_capacity",
+    "acquire",
+    "all",
+    "any",
+    "as_slice",
+    "cfg",
+    "derive",
+    "drop",
+    "dropped_count",
+    "enumerate",
+    "envelope",
+    "error",
+    "event_envelope",
+    "expect",
+    "fetch_add",
+    "fetch_max",
+    "fetch_sub",
+    "find",
+    "frame_with_samples",
+    "get",
+    "given_capacity_above_global_bound_when_fanout_built_then_setup_fails",
+    "given_full_owned_signal_edge_when_audio_sent_then_frame_returns_without_allocation",
+    "given_independent_shared_branches_when_one_saturates_then_other_continues",
+    "given_missing_or_zero_payload_limit_when_fanout_built_then_setup_fails",
+    "given_one_branch_when_signal_published_then_receiver_has_exclusive_ownership",
+    "given_payload_above_branch_limit_when_published_then_all_branches_reject_before_fanout",
+    "given_payload_limit_above_global_bound_when_fanout_built_then_setup_fails",
+    "given_registered_signal_consumer_when_item_enqueued_then_parked_thread_is_woken",
+    "into_rejected",
+    "is_abandoned",
+    "is_empty",
+    "is_full",
+    "is_ok",
+    "iter",
+    "iter_mut",
+    "join",
+    "len",
+    "let",
+    "load",
+    "map_err",
+    "max_payload_bytes",
+    "mpsc::sync_channel",
+    "new",
+    "observation_handle",
+    "observations",
+    "ok",
+    "payload_size_bytes",
+    "pop",
+    "position",
+    "pub",
+    "publish",
+    "push",
+    "recv",
+    "recv_timeout",
+    "register_current_thread",
+    "rtrb::PushError::Full",
+    "saturating_add",
+    "saturating_mul",
+    "send",
+    "send_audio",
+    "sequence_number",
+    "set",
+    "snapshot",
+    "split_last_mut",
+    "std::thread::current",
+    "std::thread::park",
+    "std::thread::spawn",
+    "try_copy_from_slice",
+    "try_send",
+    "unpark",
+    "unwrap",
+    "unwrap_err",
+    "validate",
+    "with_lineage",
+    "with_max_payload_bytes"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 7,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 9,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 163,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 170,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 182,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 227,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 425,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 524,
+      "text": "crate::graph::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES as u64"
+    },
+    {
+      "line": 528,
+      "text": "(2 * crate::graph::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES) as u64"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "OnceLock::new",
+    "RingBuffer::new",
+    "TypedEdgeFanout::new",
+    "new"
+  ],
+  "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+  "defaults": [
+    {
+      "line": 524,
+      "text": "crate::graph::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES as u64"
+    },
+    {
+      "line": 528,
+      "text": "(2 * crate::graph::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES) as u64"
+    }
+  ],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "MAX_TYPED_EDGE_CAPACITY_SIGNALS",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 18,
+      "name": "SignalEdgeObservationState",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 31,
+      "name": "SignalEdgeObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 49,
+      "name": "SignalEdgeObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 74,
+      "name": "SignalEdge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "bounded",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "bounded_with_payload_limit",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 110,
+      "name": "SignalEdgeSender",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 118,
+      "name": "SignalEdgeSendError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 123,
+      "name": "into_rejected",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 129,
+      "name": "try_send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 154,
+      "name": "is_full",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "is_abandoned",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 164,
+      "name": "dropped_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 175,
+      "name": "send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 183,
+      "name": "send_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 203,
+      "name": "SignalEdgeReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 216,
+      "name": "register_current_thread",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 219,
+      "name": "recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 228,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 231,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 237,
+      "name": "is_abandoned",
+      "visibility": "pub"
+    },
+    {
+      "kind": "type",
+      "line": 242,
+      "name": "TypedEdgeReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "type",
+      "line": 244,
+      "name": "TypedEdgeObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "type",
+      "line": 245,
+      "name": "TypedEdgeObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 248,
+      "name": "TypedEdgeBranchSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 252,
+      "name": "TypedEdgeBranchSender",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 258,
+      "name": "TypedEdgeFanout",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 307,
+      "name": "publish",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 380,
+      "name": "TypedEdgePublishReport",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 386,
+      "name": "TypedEdgeBuildError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 408,
+      "name": "TypedEdgePublishError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 426,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 433,
+      "name": "envelope",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 454,
+      "name": "frame_with_samples",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 463,
+      "name": "given_full_owned_signal_edge_when_audio_sent_then_frame_returns_without_allocation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 472,
+      "name": "given_registered_signal_consumer_when_item_enqueued_then_parked_thread_is_woken",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 496,
+      "name": "given_independent_shared_branches_when_one_saturates_then_other_continues",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 539,
+      "name": "given_payload_above_branch_limit_when_published_then_all_branches_reject_before_fanout",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 578,
+      "name": "given_capacity_above_global_bound_when_fanout_built_then_setup_fails",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 594,
+      "name": "given_missing_or_zero_payload_limit_when_fanout_built_then_setup_fails",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 612,
+      "name": "given_payload_limit_above_global_bound_when_fanout_built_then_setup_fails",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 629,
+      "name": "given_one_branch_when_signal_published_then_receiver_has_exclusive_ownership",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 352,
+      "text": "drop(error.into_rejected());"
+    },
+    {
+      "line": 366,
+      "text": "drop(error.into_rejected());"
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "MAX_TYPED_EDGE_CAPACITY_SIGNALS",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 31,
+      "name": "SignalEdgeObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 49,
+      "name": "SignalEdgeObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 74,
+      "name": "SignalEdge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "bounded",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 110,
+      "name": "SignalEdgeSender",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 118,
+      "name": "SignalEdgeSendError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 123,
+      "name": "into_rejected",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 129,
+      "name": "try_send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 154,
+      "name": "is_full",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "is_abandoned",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 164,
+      "name": "dropped_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 175,
+      "name": "send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 183,
+      "name": "send_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 203,
+      "name": "SignalEdgeReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 216,
+      "name": "register_current_thread",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 219,
+      "name": "recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 228,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 231,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 237,
+      "name": "is_abandoned",
+      "visibility": "pub"
+    },
+    {
+      "kind": "type",
+      "line": 242,
+      "name": "TypedEdgeReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "type",
+      "line": 244,
+      "name": "TypedEdgeObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "type",
+      "line": 245,
+      "name": "TypedEdgeObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 248,
+      "name": "TypedEdgeBranchSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 258,
+      "name": "TypedEdgeFanout",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 307,
+      "name": "publish",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 380,
+      "name": "TypedEdgePublishReport",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 386,
+      "name": "TypedEdgeBuildError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 408,
+      "name": "TypedEdgePublishError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 147,
+      "text": "Err(rtrb::PushError::Full(item)) => {"
+    },
+    {
+      "line": 150,
+      "text": "Err(SignalEdgeSendError { rejected: item })"
+    },
+    {
+      "line": 194,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 198,
+      "text": "Err(frame)"
+    },
+    {
+      "line": 268,
+      "text": "return Err(TypedEdgeBuildError::NoBranches);"
+    },
+    {
+      "line": 274,
+      "text": "return Err(TypedEdgeBuildError::ZeroCapacity);"
+    },
+    {
+      "line": 277,
+      "text": "return Err(TypedEdgeBuildError::CapacityTooLarge {"
+    },
+    {
+      "line": 283,
+      "text": "return Err(TypedEdgeBuildError::MissingPayloadLimit);"
+    },
+    {
+      "line": 286,
+      "text": "return Err(TypedEdgeBuildError::ZeroPayloadLimit);"
+    },
+    {
+      "line": 289,
+      "text": "return Err(TypedEdgeBuildError::PayloadLimitTooLarge {"
+    },
+    {
+      "line": 323,
+      "text": "return Err(TypedEdgePublishError::PayloadTooLarge {"
+    },
+    {
+      "line": 338,
+      "text": "return Err(TypedEdgePublishError::RequiredBranchFull { branch_index });"
+    },
+    {
+      "line": 344,
+      "text": "return Err(TypedEdgePublishError::NoBranches);"
+    },
+    {
+      "line": 351,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 355,
+      "text": "return Err(TypedEdgePublishError::RequiredBranchFull { branch_index });"
+    },
+    {
+      "line": 365,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 369,
+      "text": "return Err(TypedEdgePublishError::RequiredBranchFull {"
+    },
+    {
+      "line": 586,
+      "text": "Err(TypedEdgeBuildError::CapacityTooLarge {"
+    },
+    {
+      "line": 606,
+      "text": "Err(TypedEdgeBuildError::MissingPayloadLimit)"
+    },
+    {
+      "line": 608,
+      "text": "assert!(matches!(zero, Err(TypedEdgeBuildError::ZeroPayloadLimit)));"
+    },
+    {
+      "line": 621,
+      "text": "Err(TypedEdgeBuildError::PayloadLimitTooLarge {"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "struct",
+      "line": 118,
+      "name": "SignalEdgeSendError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 386,
+      "name": "TypedEdgeBuildError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 408,
+      "name": "TypedEdgePublishError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 315,
+      "text": ".map_err(TypedEdgePublishError::InvalidEnvelope)?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 315,
+      "text": ".map_err(TypedEdgePublishError::InvalidEnvelope)?;"
+    },
+    {
+      "line": 458,
+      "text": "handle.try_copy_from_slice(samples).unwrap();"
+    },
+    {
+      "line": 487,
+      "text": "ready_rx.recv_timeout(Duration::from_secs(1)).unwrap();"
+    },
+    {
+      "line": 491,
+      "text": "assert_eq!(received_rx.recv_timeout(Duration::from_secs(1)).unwrap(), 7);"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 315,
+      "text": ".map_err(TypedEdgePublishError::InvalidEnvelope)?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "c3f570a8b0ce45432567de438c30da83a022d829fa65955307f55ffd30bc6acb",
+      "lines": [
+        1,
+        651
+      ],
+      "path": "src/runtime/signal/edge.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0192-eea052e2",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "b59341121b764ff3a1bc092583c0567668f52c69",
+  "implemented_by": [],
+  "implements": [
+    "SignalEdgeObservationHandle",
+    "SignalEdge",
+    "SignalEdgeSendError<Item>",
+    "SignalEdgeSender<Item>",
+    "SignalEdgeSender<SignalEnvelope>",
+    "SignalEdgeReceiver<Item>",
+    "TypedEdgeFanout"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::AudioFrame",
+    "crate::frame::{AudioBufferPool, ClockDomainId, SessionId, SourceId, StreamId}",
+    "crate::graph::SignalPayload",
+    "crate::graph::{EdgeContract, LossPolicy, SignalEnvelope, SignalEnvelopeError}",
+    "crate::graph::{EventFormat, SignalLineage, SignalSpec, SignalTiming}",
+    "rtrb::{Consumer, Producer, RingBuffer}",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "std::sync::mpsc",
+    "std::sync::{Arc, OnceLock}",
+    "std::thread::Thread",
+    "std::time::Duration",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 173,
+      "text": "reason = \"full queues return the rejected envelope inline so saturation never allocates\""
+    },
+    {
+      "line": 214,
+      "text": "/// that feed realtime callbacks must not register a thread here; typed"
+    },
+    {
+      "line": 389,
+      "text": "#[error(\"typed edge branch capacity must be greater than zero\")]"
+    },
+    {
+      "line": 398,
+      "text": "#[error(\"typed edge branch maximum payload size must be greater than zero\")]"
+    },
+    {
+      "line": 477,
+      "text": "assert!(receiver.register_current_thread());"
+    },
+    {
+      "line": 572,
+      "text": "assert!(receivers"
+    },
+    {
+      "line": 584,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 604,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 608,
+      "text": "assert!(matches!(zero, Err(TypedEdgeBuildError::ZeroPayloadLimit)));"
+    },
+    {
+      "line": 619,
+      "text": "assert!(matches!("
+    }
+  ],
+  "language": "Rust",
+  "line_count": 651,
+  "locks": [],
+  "module": "pocketstation::runtime::signal::edge",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-bb7e9a1209bc593949cb",
+    "pattern-f85ed10ad602540000dd",
+    "pattern-5b4a5379bfca29277451"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/runtime/signal/edge.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "struct",
+      "line": 18,
+      "name": "SignalEdgeObservationState",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "bounded_with_payload_limit",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 252,
+      "name": "TypedEdgeBranchSender",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 426,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 433,
+      "name": "envelope",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 454,
+      "name": "frame_with_samples",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 463,
+      "name": "given_full_owned_signal_edge_when_audio_sent_then_frame_returns_without_allocation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 472,
+      "name": "given_registered_signal_consumer_when_item_enqueued_then_parked_thread_is_woken",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 496,
+      "name": "given_independent_shared_branches_when_one_saturates_then_other_continues",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 539,
+      "name": "given_payload_above_branch_limit_when_published_then_all_branches_reject_before_fanout",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 578,
+      "name": "given_capacity_above_global_bound_when_fanout_built_then_setup_fails",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 594,
+      "name": "given_missing_or_zero_payload_limit_when_fanout_built_then_setup_fails",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 612,
+      "name": "given_payload_limit_above_global_bound_when_fanout_built_then_setup_fails",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 629,
+      "name": "given_one_branch_when_signal_published_then_receiver_has_exclusive_ownership",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 476,
+      "text": "let consumer = std::thread::spawn(move || {"
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "MAX_TYPED_EDGE_CAPACITY_SIGNALS",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 31,
+      "name": "SignalEdgeObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 49,
+      "name": "SignalEdgeObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 74,
+      "name": "SignalEdge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "bounded",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 110,
+      "name": "SignalEdgeSender",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 118,
+      "name": "SignalEdgeSendError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 123,
+      "name": "into_rejected",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 129,
+      "name": "try_send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 154,
+      "name": "is_full",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "is_abandoned",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 164,
+      "name": "dropped_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 175,
+      "name": "send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 183,
+      "name": "send_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 203,
+      "name": "SignalEdgeReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 216,
+      "name": "register_current_thread",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 219,
+      "name": "recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 228,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 231,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 237,
+      "name": "is_abandoned",
+      "visibility": "pub"
+    },
+    {
+      "kind": "type",
+      "line": 242,
+      "name": "TypedEdgeReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "type",
+      "line": 244,
+      "name": "TypedEdgeObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "type",
+      "line": 245,
+      "name": "TypedEdgeObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 248,
+      "name": "TypedEdgeBranchSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 258,
+      "name": "TypedEdgeFanout",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 307,
+      "name": "publish",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 380,
+      "name": "TypedEdgePublishReport",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 386,
+      "name": "TypedEdgeBuildError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 408,
+      "name": "TypedEdgePublishError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::runtime::signal::edge`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/errors/runtime-and-sidecars.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/route-sizing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 2,
+      "text": "use std::sync::{Arc, OnceLock};"
+    },
+    {
+      "line": 50,
+      "text": "state: Arc<SignalEdgeObservationState>,"
+    },
+    {
+      "line": 72,
+      "text": "/// `SignalEnvelope`, while fan-out branches carry `Arc<SignalEnvelope>`. Both"
+    },
+    {
+      "line": 88,
+      "text": "let state = Arc::new(SignalEdgeObservationState {"
+    },
+    {
+      "line": 95,
+      "text": "let receiver_thread = Arc::new(OnceLock::new());"
+    },
+    {
+      "line": 99,
+      "text": "state: Arc::clone(&state),"
+    },
+    {
+      "line": 100,
+      "text": "receiver_thread: Arc::clone(&receiver_thread),"
+    },
+    {
+      "line": 113,
+      "text": "state: Arc<SignalEdgeObservationState>,"
+    },
+    {
+      "line": 114,
+      "text": "receiver_thread: Arc<OnceLock<Thread>>,"
+    },
+    {
+      "line": 206,
+      "text": "state: Arc<SignalEdgeObservationState>,"
+    },
+    {
+      "line": 207,
+      "text": "receiver_thread: Arc<OnceLock<Thread>>,"
+    },
+    {
+      "line": 234,
+      "text": "state: Arc::clone(&self.state),"
+    },
+    {
+      "line": 243,
+      "text": "pub type TypedEdgeReceiver = SignalEdgeReceiver<Arc<SignalEnvelope>>;"
+    },
+    {
+      "line": 254,
+      "text": "sender: SignalEdgeSender<Arc<SignalEnvelope>>,"
+    },
+    {
+      "line": 341,
+      "text": "let shared = Arc::new(envelope);"
+    },
+    {
+      "line": 347,
+      "text": "match branch.sender.try_send(Arc::clone(&shared)) {"
+    },
+    {
+      "line": 648,
+      "text": "assert_eq!(Arc::strong_count(&received), 1);"
+    }
+  ],
+  "responsibilities": [
+    "MAX_TYPED_EDGE_CAPACITY_SIGNALS",
+    "SignalEdgeObservationState",
+    "SignalEdgeObservations",
+    "SignalEdgeObservationHandle",
+    "snapshot",
+    "SignalEdge",
+    "bounded",
+    "bounded_with_payload_limit",
+    "SignalEdgeSender",
+    "SignalEdgeSendError",
+    "into_rejected",
+    "try_send",
+    "is_full",
+    "is_abandoned",
+    "dropped_count",
+    "send",
+    "send_audio",
+    "SignalEdgeReceiver",
+    "register_current_thread",
+    "recv",
+    "observations",
+    "observation_handle",
+    "is_abandoned",
+    "TypedEdgeReceiver",
+    "TypedEdgeObservations",
+    "TypedEdgeObservationHandle",
+    "TypedEdgeBranchSpec",
+    "TypedEdgeBranchSender",
+    "TypedEdgeFanout",
+    "new",
+    "publish",
+    "TypedEdgePublishReport",
+    "TypedEdgeBuildError",
+    "TypedEdgePublishError",
+    "tests",
+    "envelope",
+    "frame_with_samples",
+    "given_full_owned_signal_edge_when_audio_sent_then_frame_returns_without_allocation",
+    "given_registered_signal_consumer_when_item_enqueued_then_parked_thread_is_woken",
+    "given_independent_shared_branches_when_one_saturates_then_other_continues",
+    "given_payload_above_branch_limit_when_published_then_all_branches_reject_before_fanout",
+    "given_capacity_above_global_bound_when_fanout_built_then_setup_fails",
+    "given_missing_or_zero_payload_limit_when_fanout_built_then_setup_fails",
+    "given_payload_limit_above_global_bound_when_fanout_built_then_setup_fails",
+    "given_one_branch_when_signal_published_then_receiver_has_exclusive_ownership"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 476,
+      "text": "let consumer = std::thread::spawn(move || {"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 3,
+      "text": "use std::thread::Thread;"
+    },
+    {
+      "line": 211,
+      "text": "/// Registers the current non-realtime consumer thread for producer wakeups."
+    },
+    {
+      "line": 214,
+      "text": "/// that feed realtime callbacks must not register a thread here; typed"
+    },
+    {
+      "line": 215,
+      "text": "/// signal workers and generated-audio bridges execute off callback threads."
+    },
+    {
+      "line": 217,
+      "text": "self.receiver_thread.set(std::thread::current()).is_ok()"
+    },
+    {
+      "line": 476,
+      "text": "let consumer = std::thread::spawn(move || {"
+    },
+    {
+      "line": 484,
+      "text": "std::thread::park();"
+    }
+  ],
+  "visibility": "mixed"
+}

@@ -22,10 +22,12 @@ use std::borrow::Cow;
 pub struct SignalId(Cow<'static, str>);
 
 impl SignalId {
+    #[doc = "Creates a new `SignalId`."]
     pub fn new(id: impl Into<SignalId>) -> Self {
         id.into()
     }
 
+    #[doc = "Returns the stable string representation of `SignalId`."]
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -38,12 +40,14 @@ impl SignalId {
 }
 
 impl From<&str> for SignalId {
+    #[doc = "Converts the supplied value into `SignalId`."]
     fn from(s: &str) -> Self {
         Self(Cow::Owned(s.to_owned()))
     }
 }
 
 impl From<String> for SignalId {
+    #[doc = "Converts the supplied value into `SignalId`."]
     fn from(s: String) -> Self {
         Self(Cow::Owned(s))
     }
@@ -57,22 +61,26 @@ impl From<String> for SignalId {
 pub struct SemanticRole(Cow<'static, str>);
 
 impl SemanticRole {
+    #[doc = "Creates a new `SemanticRole`."]
     pub fn new(role: impl Into<SemanticRole>) -> Self {
         role.into()
     }
 
+    #[doc = "Returns the stable string representation of `SemanticRole`."]
     pub fn as_str(&self) -> &str {
         &self.0
     }
 }
 
 impl From<&str> for SemanticRole {
+    #[doc = "Converts the supplied value into `SemanticRole`."]
     fn from(s: &str) -> Self {
         Self(Cow::Owned(s.to_owned()))
     }
 }
 
 impl From<String> for SemanticRole {
+    #[doc = "Converts the supplied value into `SemanticRole`."]
     fn from(s: String) -> Self {
         Self(Cow::Owned(s))
     }
@@ -87,22 +95,26 @@ impl From<String> for SemanticRole {
 pub struct SchemaRef(Cow<'static, str>);
 
 impl SchemaRef {
+    #[doc = "Creates a new `SchemaRef`."]
     pub fn new(schema: impl Into<SchemaRef>) -> Self {
         schema.into()
     }
 
+    #[doc = "Returns the stable string representation of `SchemaRef`."]
     pub fn as_str(&self) -> &str {
         &self.0
     }
 }
 
 impl From<&str> for SchemaRef {
+    #[doc = "Converts the supplied value into `SchemaRef`."]
     fn from(s: &str) -> Self {
         Self(Cow::Owned(s.to_owned()))
     }
 }
 
 impl From<String> for SchemaRef {
+    #[doc = "Converts the supplied value into `SchemaRef`."]
     fn from(s: String) -> Self {
         Self(Cow::Owned(s))
     }
@@ -111,37 +123,54 @@ impl From<String> for SchemaRef {
 /// Audio encoding format for `SignalClass::EncodedAudio`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Codec {
+    #[doc = "Represents the opus case of `Codec`."]
     Opus,
+    #[doc = "Represents the aac case of `Codec`."]
     Aac,
+    #[doc = "Represents the mp3 case of `Codec`."]
     Mp3,
+    #[doc = "Represents the g711 ulaw case of `Codec`."]
     G711Ulaw,
+    #[doc = "Represents the g711 alaw case of `Codec`."]
     G711Alaw,
+    #[doc = "Represents the webm opus case of `Codec`."]
     WebmOpus,
 }
 
 /// Text encoding hint for `SignalClass::Text`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum TextFormat {
+    #[doc = "Selects utf8 behavior for `TextFormat`."]
     Utf8,
+    #[doc = "Selects json behavior for `TextFormat`."]
     Json,
+    #[doc = "Selects markdown behavior for `TextFormat`."]
     Markdown,
 }
 
 /// Event structure hint for `SignalClass::Event`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum EventFormat {
+    #[doc = "Indicates the json state for `EventFormat`."]
     Json,
+    #[doc = "Indicates the protobuf state for `EventFormat`."]
     Protobuf,
+    #[doc = "Indicates the flatbuffers state for `EventFormat`."]
     Flatbuffers,
+    #[doc = "Indicates the cbor state for `EventFormat`."]
     Cbor,
 }
 
 /// Binary encoding hint for `SignalClass::Binary`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum BinaryFormat {
+    #[doc = "Selects raw behavior for `BinaryFormat`."]
     Raw,
+    #[doc = "Selects protobuf behavior for `BinaryFormat`."]
     Protobuf,
+    #[doc = "Selects flatbuffers behavior for `BinaryFormat`."]
     Flatbuffers,
+    #[doc = "Selects cbor behavior for `BinaryFormat`."]
     Cbor,
 }
 
@@ -212,17 +241,21 @@ pub struct SignalSpec {
 }
 
 impl SignalSpec {
+    #[doc = "Returns the class associated with `SignalSpec`."]
     pub const fn class(&self) -> &SignalClass {
         &self.class
     }
 
+    #[doc = "Returns the role associated with `SignalSpec`."]
     pub const fn role(&self) -> Option<&SemanticRole> {
         self.role.as_ref()
     }
 
+    #[doc = "Returns the schema associated with `SignalSpec`."]
     pub const fn schema(&self) -> Option<&SchemaRef> {
         self.schema.as_ref()
     }
+    #[doc = "Creates a new `SignalSpec`."]
     pub fn new(class: SignalClass) -> Self {
         Self {
             class,
@@ -325,6 +358,7 @@ impl SignalSpec {
         self.class.is_compatible_with(&other.class)
     }
 
+    #[doc = "Validates `SignalSpec` against its declared contract."]
     pub fn validate(&self) -> Result<(), SignalSpecError> {
         if matches!(&self.class, SignalClass::Custom(id) if id.as_str().trim().is_empty()) {
             return Err(SignalSpecError::EmptyCustomId);
@@ -348,12 +382,16 @@ impl SignalSpec {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as signal spec error."]
 pub enum SignalSpecError {
     #[error("custom signal identifier cannot be empty")]
+    #[doc = "Reports empty custom identifier."]
     EmptyCustomId,
     #[error("signal semantic role cannot be empty")]
+    #[doc = "Reports empty role."]
     EmptyRole,
     #[error("signal schema reference cannot be empty")]
+    #[doc = "Reports empty schema."]
     EmptySchema,
 }
 

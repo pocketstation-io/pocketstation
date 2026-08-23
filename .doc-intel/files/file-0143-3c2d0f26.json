@@ -1,0 +1,1029 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Box::new",
+    "ConfigError::Missing",
+    "MediaCaps::Audio",
+    "NodeConfig::new",
+    "NodeError::Process",
+    "NodeTypeId::from",
+    "PrepareContext::new",
+    "SampleSpec::new",
+    "SignalSpec::any",
+    "SignalSpec::audio",
+    "SourceId",
+    "StreamId",
+    "abs",
+    "acquire",
+    "any_port",
+    "as_mut_slice",
+    "as_slice",
+    "audio_port",
+    "cfg",
+    "descriptor",
+    "expect",
+    "frame_with_channels",
+    "frame_with_samples",
+    "get",
+    "get_f32",
+    "given_gain_config_with_non_numeric_gain_db_when_validate_then_invalid_error",
+    "given_gain_config_with_valid_gain_db_when_validate_then_ok",
+    "given_gain_config_without_gain_db_when_validate_then_missing_error",
+    "given_mono_frame_when_mono_mixed_then_frame_is_unchanged",
+    "given_passthrough_node_when_process_then_returns_frame_unchanged",
+    "given_six_db_gain_node_when_process_then_samples_scaled_by_linear_gain",
+    "given_stereo_frame_when_mono_mixed_then_channels_and_samples_are_downmixed",
+    "given_unity_gain_node_when_process_then_samples_unchanged",
+    "instantiate",
+    "is_ok",
+    "iter",
+    "len",
+    "map",
+    "map_err",
+    "mono_audio_port",
+    "ok_or_else",
+    "powf",
+    "prepare",
+    "prepare_cx",
+    "process",
+    "pub",
+    "register",
+    "register_builtins",
+    "to_owned",
+    "to_string",
+    "try_copy_from_slice",
+    "try_set_len",
+    "unwrap",
+    "validate_config",
+    "with",
+    "zip"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 6,
+      "text": "ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext,"
+    },
+    {
+      "line": 82,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 122,
+      "text": "fn validate_config(&self, config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 124,
+      "text": "None => Err(ConfigError::Missing(GAIN_CONFIGURATION_KEY.to_owned())),"
+    },
+    {
+      "line": 128,
+      "text": ".map_err(|err| ConfigError::Invalid {"
+    },
+    {
+      "line": 143,
+      "text": ".ok_or_else(|| ConfigError::Missing(GAIN_CONFIGURATION_KEY.to_owned()))?;"
+    },
+    {
+      "line": 181,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 229,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 255,
+      "text": "assert!(matches!(result, Err(ConfigError::Missing(_))));"
+    },
+    {
+      "line": 263,
+      "text": "assert!(matches!(result, Err(ConfigError::Invalid { .. })));"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Box::new",
+    "NodeConfig::new",
+    "NodeTypeId::from",
+    "PrepareContext::new",
+    "SampleSpec::new"
+  ],
+  "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "GAIN_CONFIGURATION_KEY",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "PASSTHROUGH_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "GAIN_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "MONO_MIX_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "MONO_CHANNEL_COUNT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "STEREO_CHANNEL_COUNT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 22,
+      "name": "MONO_MIX_SCALE",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 23,
+      "name": "any_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 34,
+      "name": "audio_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "mono_audio_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 66,
+      "name": "PassthroughFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 94,
+      "name": "PassthroughNode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 101,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 106,
+      "name": "GainFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 110,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 121,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 134,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 148,
+      "name": "GainNode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 154,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 157,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 165,
+      "name": "MonoMixFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 169,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 180,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 184,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 193,
+      "name": "MonoMixNode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 197,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 200,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 219,
+      "name": "register_builtins",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 230,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 233,
+      "name": "prepare_cx",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 237,
+      "name": "frame_with_samples",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 241,
+      "name": "frame_with_channels",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 252,
+      "name": "given_gain_config_without_gain_db_when_validate_then_missing_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 259,
+      "name": "given_gain_config_with_non_numeric_gain_db_when_validate_then_invalid_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 267,
+      "name": "given_gain_config_with_valid_gain_db_when_validate_then_ok",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 274,
+      "name": "given_unity_gain_node_when_process_then_samples_unchanged",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 289,
+      "name": "given_six_db_gain_node_when_process_then_samples_scaled_by_linear_gain",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 303,
+      "name": "given_passthrough_node_when_process_then_returns_frame_unchanged",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 316,
+      "name": "given_stereo_frame_when_mono_mixed_then_channels_and_samples_are_downmixed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 333,
+      "name": "given_mono_frame_when_mono_mixed_then_frame_is_unchanged",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "GAIN_CONFIGURATION_KEY",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "PASSTHROUGH_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "GAIN_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "MONO_MIX_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 66,
+      "name": "PassthroughFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 94,
+      "name": "PassthroughNode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 106,
+      "name": "GainFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 148,
+      "name": "GainNode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 165,
+      "name": "MonoMixFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 193,
+      "name": "MonoMixNode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 219,
+      "name": "register_builtins",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 124,
+      "text": "None => Err(ConfigError::Missing(GAIN_CONFIGURATION_KEY.to_owned())),"
+    },
+    {
+      "line": 255,
+      "text": "assert!(matches!(result, Err(ConfigError::Missing(_))));"
+    },
+    {
+      "line": 263,
+      "text": "assert!(matches!(result, Err(ConfigError::Invalid { .. })));"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [
+    {
+      "line": 213,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 128,
+      "text": ".map_err(|err| ConfigError::Invalid {"
+    },
+    {
+      "line": 213,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?;"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 128,
+      "text": ".map_err(|err| ConfigError::Invalid {"
+    },
+    {
+      "line": 213,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "2a63a0356ae729b3fdf647381cf965dc88f524d6e3525386b5f01a210d50b709",
+      "lines": [
+        1,
+        344
+      ],
+      "path": "src/graph/builtins.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0143-3c2d0f26",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "53cae8006fddf925fefbf18e1872f6f833dc4020",
+  "implemented_by": [],
+  "implements": [
+    "NodeFactory for PassthroughFactory",
+    "RuntimeNode for PassthroughNode",
+    "NodeFactory for GainFactory",
+    "RuntimeNode for GainNode",
+    "NodeFactory for MonoMixFactory",
+    "RuntimeNode for MonoMixNode"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::{AudioBufferPool, SampleSpec, SourceId, StreamId}",
+    "crate::frame::{AudioFrame, SampleFormat}",
+    "crate::graph::node::{ ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PrepareContext, }",
+    "crate::graph::partition::{ExecutionPartition, SafetyContract}",
+    "crate::graph::ports::{ AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, }",
+    "crate::graph::registry::{NodeFactory, NodeRegistry}",
+    "crate::graph::runtime_node::RuntimeNode",
+    "crate::graph::signal::SignalSpec",
+    "std::sync::Arc",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 255,
+      "text": "assert!(matches!(result, Err(ConfigError::Missing(_))));"
+    },
+    {
+      "line": 263,
+      "text": "assert!(matches!(result, Err(ConfigError::Invalid { .. })));"
+    },
+    {
+      "line": 270,
+      "text": "assert!(factory.validate_config(&config).is_ok());"
+    },
+    {
+      "line": 283,
+      "text": "assert!((out[0] - 0.5).abs() < 1e-6);"
+    },
+    {
+      "line": 284,
+      "text": "assert!((out[1] + 0.25).abs() < 1e-6);"
+    },
+    {
+      "line": 285,
+      "text": "assert!((out[2] - 1.0).abs() < 1e-6);"
+    },
+    {
+      "line": 298,
+      "text": "assert!((got - raw * expected_linear).abs() < 1e-5);"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 344,
+  "locks": [],
+  "module": "pocketstation::graph::builtins",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-f7a0f2b8559c49e92e8a",
+    "pattern-6df4af5874cc801c4344"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/builtins.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "MONO_CHANNEL_COUNT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "STEREO_CHANNEL_COUNT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 22,
+      "name": "MONO_MIX_SCALE",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 23,
+      "name": "any_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 34,
+      "name": "audio_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "mono_audio_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 101,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 110,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 121,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 134,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 154,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 157,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 169,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 180,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 184,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 197,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 200,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 230,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 233,
+      "name": "prepare_cx",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 237,
+      "name": "frame_with_samples",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 241,
+      "name": "frame_with_channels",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 252,
+      "name": "given_gain_config_without_gain_db_when_validate_then_missing_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 259,
+      "name": "given_gain_config_with_non_numeric_gain_db_when_validate_then_invalid_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 267,
+      "name": "given_gain_config_with_valid_gain_db_when_validate_then_ok",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 274,
+      "name": "given_unity_gain_node_when_process_then_samples_unchanged",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 289,
+      "name": "given_six_db_gain_node_when_process_then_samples_scaled_by_linear_gain",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 303,
+      "name": "given_passthrough_node_when_process_then_returns_frame_unchanged",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 316,
+      "name": "given_stereo_frame_when_mono_mixed_then_channels_and_samples_are_downmixed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 333,
+      "name": "given_mono_frame_when_mono_mixed_then_frame_is_unchanged",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "GAIN_CONFIGURATION_KEY",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "PASSTHROUGH_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "GAIN_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "MONO_MIX_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 66,
+      "name": "PassthroughFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 94,
+      "name": "PassthroughNode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 106,
+      "name": "GainFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 148,
+      "name": "GainNode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 165,
+      "name": "MonoMixFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 193,
+      "name": "MonoMixNode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 219,
+      "name": "register_builtins",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::graph::builtins`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 1,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 90,
+      "text": ") -> Result<Box<dyn RuntimeNode>, NodeError> {"
+    },
+    {
+      "line": 91,
+      "text": "Ok(Box::new(PassthroughNode))"
+    },
+    {
+      "line": 139,
+      "text": ") -> Result<Box<dyn RuntimeNode>, NodeError> {"
+    },
+    {
+      "line": 145,
+      "text": "Ok(Box::new(GainNode { gain_ratio }))"
+    },
+    {
+      "line": 189,
+      "text": ") -> Result<Box<dyn RuntimeNode>, NodeError> {"
+    },
+    {
+      "line": 190,
+      "text": "Ok(Box::new(MonoMixNode))"
+    },
+    {
+      "line": 223,
+      "text": "registry.register(Arc::new(PassthroughFactory))?;"
+    },
+    {
+      "line": 224,
+      "text": "registry.register(Arc::new(GainFactory))?;"
+    },
+    {
+      "line": 225,
+      "text": "registry.register(Arc::new(MonoMixFactory))?;"
+    }
+  ],
+  "responsibilities": [
+    "GAIN_CONFIGURATION_KEY",
+    "PASSTHROUGH_NODE_TYPE_ID",
+    "GAIN_NODE_TYPE_ID",
+    "MONO_MIX_NODE_TYPE_ID",
+    "MONO_CHANNEL_COUNT",
+    "STEREO_CHANNEL_COUNT",
+    "MONO_MIX_SCALE",
+    "any_port",
+    "audio_port",
+    "mono_audio_port",
+    "PassthroughFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "PassthroughNode",
+    "prepare",
+    "process",
+    "GainFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "GainNode",
+    "prepare",
+    "process",
+    "MonoMixFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "MonoMixNode",
+    "prepare",
+    "process",
+    "register_builtins",
+    "tests",
+    "prepare_cx",
+    "frame_with_samples",
+    "frame_with_channels",
+    "given_gain_config_without_gain_db_when_validate_then_missing_error",
+    "given_gain_config_with_non_numeric_gain_db_when_validate_then_invalid_error",
+    "given_gain_config_with_valid_gain_db_when_validate_then_ok",
+    "given_unity_gain_node_when_process_then_samples_unchanged",
+    "given_six_db_gain_node_when_process_then_samples_scaled_by_linear_gain",
+    "given_passthrough_node_when_process_then_returns_frame_unchanged",
+    "given_stereo_frame_when_mono_mixed_then_channels_and_samples_are_downmixed",
+    "given_mono_frame_when_mono_mixed_then_frame_is_unchanged"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 98,
+      "text": "fn prepare(&mut self, _cx: &PrepareContext) -> Result<(), NodeError> {"
+    },
+    {
+      "line": 154,
+      "text": "fn prepare(&mut self, _cx: &PrepareContext) -> Result<(), NodeError> {"
+    },
+    {
+      "line": 197,
+      "text": "fn prepare(&mut self, _cx: &PrepareContext) -> Result<(), NodeError> {"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

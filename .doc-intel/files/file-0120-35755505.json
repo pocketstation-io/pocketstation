@@ -1,0 +1,1590 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "ClockDomainId::new",
+    "ConnectorAudioRecord::decode",
+    "ConnectorAudioRecord::try_new",
+    "ConnectorAudioRecordError::UnsupportedMajor",
+    "ConnectorAudioRecordError::UnsupportedMinor",
+    "ConnectorConfiguration::new",
+    "ConnectorConfigurationRecord",
+    "ConnectorConfigurationRecord::decode",
+    "ConnectorConfigurationRecordError::UnknownValueKind",
+    "ConnectorConfigurationRecordError::UnsupportedMajor",
+    "ConnectorConfigurationRecordError::UnsupportedMinor",
+    "ConnectorConfigurationValue::Boolean",
+    "ConnectorConfigurationValue::ByteCount",
+    "ConnectorConfigurationValue::DurationMilliseconds",
+    "ConnectorConfigurationValue::Secret",
+    "ConnectorConfigurationValue::SignedInteger",
+    "ConnectorConfigurationValue::Text",
+    "ConnectorConfigurationValue::UnsignedInteger",
+    "ConnectorId::new",
+    "ConnectorSecret::new",
+    "EndpointId::new",
+    "FrameLineage::try_new",
+    "RouteId::new",
+    "Self",
+    "Self::try_new",
+    "SessionId::new",
+    "SourceId::new",
+    "StemId::new",
+    "StreamId::new",
+    "UnknownValueKind",
+    "UnsupportedMajor",
+    "UnsupportedMinor",
+    "Vec::new",
+    "Vec::with_capacity",
+    "and_then",
+    "as_bytes",
+    "cfg",
+    "channels",
+    "checked_add",
+    "checked_mul",
+    "chunks_exact",
+    "clock_id",
+    "clone",
+    "configuration",
+    "connector_id",
+    "contains",
+    "decode",
+    "decode_configuration_value",
+    "decode_eight",
+    "decode_text",
+    "derive",
+    "discontinuity_epoch",
+    "duration_ns",
+    "encode",
+    "encode_configuration_value",
+    "endpoint_id",
+    "error",
+    "expect",
+    "expose_secret",
+    "extend_from_slice",
+    "f32::from_le_bytes",
+    "from_item",
+    "from_resolved",
+    "get",
+    "given_audio_record_when_round_tripped_then_transport_and_lineage_identity_are_preserved",
+    "given_invalid_audio_record_when_decoded_then_trailing_and_oversized_payloads_are_rejected",
+    "given_invalid_configuration_record_when_decoded_then_unknown_kinds_and_trailing_bytes_are_rejected",
+    "given_typed_configuration_when_round_tripped_then_types_and_secret_redaction_are_preserved",
+    "i64::from_le_bytes",
+    "insert",
+    "into",
+    "into_configuration",
+    "is_empty",
+    "is_multiple_of",
+    "is_some",
+    "iter",
+    "len",
+    "let",
+    "lineage",
+    "map",
+    "map_audio_record_read_error",
+    "map_err",
+    "map_or",
+    "metadata",
+    "ok_or",
+    "permission_epoch",
+    "port_name",
+    "push",
+    "push_u32",
+    "read_u16",
+    "read_u32",
+    "read_u64",
+    "record",
+    "route_id",
+    "sample_format",
+    "sample_rate_hz",
+    "samples",
+    "sequence_number",
+    "session_id",
+    "source_generation",
+    "source_id",
+    "std::str::from_utf8",
+    "stem_id",
+    "stream_id",
+    "timestamp_start_ns",
+    "to_le_bytes",
+    "to_owned",
+    "to_vec",
+    "trim",
+    "try_into",
+    "try_new",
+    "u16::from_le_bytes",
+    "u16::try_from",
+    "u32::from_le_bytes",
+    "u32::try_from",
+    "u64::from_le_bytes",
+    "u8::from",
+    "usize::from",
+    "validate"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 39,
+      "text": "/// bounded Configure handshake. Secret classification survives the boundary;"
+    },
+    {
+      "line": 601,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "ClockDomainId::new",
+    "ConnectorAudioRecord::try_new",
+    "ConnectorConfiguration::new",
+    "ConnectorId::new",
+    "ConnectorSecret::new",
+    "EndpointId::new",
+    "FrameLineage::try_new",
+    "RouteId::new",
+    "Self::try_new",
+    "SessionId::new",
+    "SourceId::new",
+    "StemId::new",
+    "StreamId::new",
+    "Vec::new",
+    "try_new",
+    "u16::try_from",
+    "u32::try_from",
+    "u8::from",
+    "usize::from"
+  ],
+  "content_hash": "39d2db327725a981741ed72ffd7d4ca762e1316835b1d8240e9fb74c6fd88fcf",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 13,
+      "name": "MAGIC",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "HEADER_BYTES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "FLAG_CONNECTOR_ID_PRESENT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "SAMPLE_FORMAT_F32_INTERLEAVED",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "CONNECTOR_AUDIO_RECORD_MAJOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "CONNECTOR_AUDIO_RECORD_MINOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "MAX_CONNECTOR_AUDIO_RECORD_PORT_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 22,
+      "name": "MAX_CONNECTOR_AUDIO_RECORD_SAMPLES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 23,
+      "name": "CONFIGURATION_MAGIC",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "CONFIGURATION_HEADER_BYTES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 26,
+      "name": "CONFIGURATION_ENTRY_HEADER_BYTES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "CONFIGURATION_TEXT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 28,
+      "name": "CONFIGURATION_BOOLEAN",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 29,
+      "name": "CONFIGURATION_SIGNED_INTEGER",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 30,
+      "name": "CONFIGURATION_UNSIGNED_INTEGER",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 31,
+      "name": "CONFIGURATION_DURATION_MILLISECONDS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 32,
+      "name": "CONFIGURATION_BYTE_COUNT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 33,
+      "name": "CONFIGURATION_SECRET",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 34,
+      "name": "CONNECTOR_CONFIGURATION_RECORD_MAJOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 36,
+      "name": "CONNECTOR_CONFIGURATION_RECORD_MINOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 42,
+      "name": "ConnectorConfigurationRecord",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "from_resolved",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "into_configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "encode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 92,
+      "name": "decode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 169,
+      "name": "encode_configuration_value",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 198,
+      "name": "decode_configuration_value",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 231,
+      "name": "decode_text",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 237,
+      "name": "decode_eight",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 243,
+      "name": "map_audio_record_read_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 251,
+      "name": "ConnectorConfigurationRecordError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 281,
+      "name": "ConnectorAudioMetadata",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 293,
+      "name": "ConnectorAudioRecord",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 300,
+      "name": "try_new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 313,
+      "name": "from_item",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 334,
+      "name": "port_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 338,
+      "name": "metadata",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 342,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 346,
+      "name": "encode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 402,
+      "name": "decode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 503,
+      "name": "validate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 528,
+      "name": "push_u32",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 537,
+      "name": "read_u16",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 544,
+      "name": "read_u32",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 555,
+      "name": "read_u64",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 568,
+      "name": "ConnectorAudioRecordError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 602,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 604,
+      "name": "record",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 636,
+      "name": "given_audio_record_when_round_tripped_then_transport_and_lineage_identity_are_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 645,
+      "name": "given_invalid_audio_record_when_decoded_then_trailing_and_oversized_payloads_are_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 663,
+      "name": "given_typed_configuration_when_round_tripped_then_types_and_secret_redaction_are_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 694,
+      "name": "given_invalid_configuration_record_when_decoded_then_unknown_kinds_and_trailing_bytes_are_rejected",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "CONNECTOR_AUDIO_RECORD_MAJOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "CONNECTOR_AUDIO_RECORD_MINOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "MAX_CONNECTOR_AUDIO_RECORD_PORT_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 22,
+      "name": "MAX_CONNECTOR_AUDIO_RECORD_SAMPLES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 34,
+      "name": "CONNECTOR_CONFIGURATION_RECORD_MAJOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 36,
+      "name": "CONNECTOR_CONFIGURATION_RECORD_MINOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 42,
+      "name": "ConnectorConfigurationRecord",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "from_resolved",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "into_configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "encode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 92,
+      "name": "decode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 251,
+      "name": "ConnectorConfigurationRecordError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 281,
+      "name": "ConnectorAudioMetadata",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 293,
+      "name": "ConnectorAudioRecord",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 300,
+      "name": "try_new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 313,
+      "name": "from_item",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 334,
+      "name": "port_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 338,
+      "name": "metadata",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 342,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 346,
+      "name": "encode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 402,
+      "name": "decode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 568,
+      "name": "ConnectorAudioRecordError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 63,
+      "text": "return Err(ConnectorConfigurationRecordError::TooManyFields);"
+    },
+    {
+      "line": 74,
+      "text": "return Err(ConnectorConfigurationRecordError::InvalidFieldName);"
+    },
+    {
+      "line": 78,
+      "text": "return Err(ConnectorConfigurationRecordError::ValueTooLarge);"
+    },
+    {
+      "line": 95,
+      "text": "return Err(ConnectorConfigurationRecordError::Truncated);"
+    },
+    {
+      "line": 98,
+      "text": "return Err(ConnectorConfigurationRecordError::InvalidMagic);"
+    },
+    {
+      "line": 103,
+      "text": "return Err(ConnectorConfigurationRecordError::UnsupportedMajor(major));"
+    },
+    {
+      "line": 106,
+      "text": "return Err(ConnectorConfigurationRecordError::UnsupportedMinor(minor));"
+    },
+    {
+      "line": 110,
+      "text": "return Err(ConnectorConfigurationRecordError::TooManyFields);"
+    },
+    {
+      "line": 113,
+      "text": "return Err(ConnectorConfigurationRecordError::ReservedFieldSet);"
+    },
+    {
+      "line": 127,
+      "text": "return Err(ConnectorConfigurationRecordError::ReservedFieldSet);"
+    },
+    {
+      "line": 135,
+      "text": "return Err(ConnectorConfigurationRecordError::InvalidFieldName);"
+    },
+    {
+      "line": 138,
+      "text": "return Err(ConnectorConfigurationRecordError::ValueTooLarge);"
+    },
+    {
+      "line": 160,
+      "text": "return Err(ConnectorConfigurationRecordError::DuplicateField);"
+    },
+    {
+      "line": 164,
+      "text": "return Err(ConnectorConfigurationRecordError::TrailingBytes);"
+    },
+    {
+      "line": 208,
+      "text": "_ => Err(ConnectorConfigurationRecordError::InvalidValue),"
+    },
+    {
+      "line": 228,
+      "text": "other => Err(ConnectorConfigurationRecordError::UnknownValueKind(other)),"
+    },
+    {
+      "line": 316,
+      "text": "return Err(ConnectorAudioRecordError::NotAudio);"
+    },
+    {
+      "line": 405,
+      "text": "return Err(ConnectorAudioRecordError::Truncated);"
+    },
+    {
+      "line": 408,
+      "text": "return Err(ConnectorAudioRecordError::InvalidMagic);"
+    },
+    {
+      "line": 413,
+      "text": "return Err(ConnectorAudioRecordError::UnsupportedMajor(major));"
+    },
+    {
+      "line": 416,
+      "text": "return Err(ConnectorAudioRecordError::UnsupportedMinor(minor));"
+    },
+    {
+      "line": 419,
+      "text": "return Err(ConnectorAudioRecordError::InvalidHeaderSize);"
+    },
+    {
+      "line": 423,
+      "text": "return Err(ConnectorAudioRecordError::ReservedFieldSet);"
+    },
+    {
+      "line": 430,
+      "text": "return Err(ConnectorAudioRecordError::UnsupportedSampleFormat);"
+    },
+    {
+      "line": 433,
+      "text": "return Err(ConnectorAudioRecordError::InvalidPortName);"
+    },
+    {
+      "line": 436,
+      "text": "return Err(ConnectorAudioRecordError::InvalidSampleCount);"
+    },
+    {
+      "line": 446,
+      "text": "return Err(if input.len() < expected {"
+    },
+    {
+      "line": 471,
+      "text": "return Err(ConnectorAudioRecordError::InvalidConnectorId);"
+    },
+    {
+      "line": 476,
+      "text": "return Err(ConnectorAudioRecordError::ReservedFieldSet);"
+    },
+    {
+      "line": 508,
+      "text": "return Err(ConnectorAudioRecordError::InvalidPortName);"
+    },
+    {
+      "line": 511,
+      "text": "return Err(ConnectorAudioRecordError::InvalidSampleSpec);"
+    },
+    {
+      "line": 514,
+      "text": "return Err(ConnectorAudioRecordError::UnsupportedSampleFormat);"
+    },
+    {
+      "line": 523,
+      "text": "return Err(ConnectorAudioRecordError::InvalidSampleCount);"
+    },
+    {
+      "line": 650,
+      "text": "Err(ConnectorAudioRecordError::TrailingBytes)"
+    },
+    {
+      "line": 658,
+      "text": "Err(ConnectorAudioRecordError::InvalidSampleCount)"
+    },
+    {
+      "line": 701,
+      "text": "Err(ConnectorConfigurationRecordError::TrailingBytes)"
+    },
+    {
+      "line": 712,
+      "text": "Err(ConnectorConfigurationRecordError::UnknownValueKind(u8::MAX))"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 251,
+      "name": "ConnectorConfigurationRecordError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 568,
+      "name": "ConnectorAudioRecordError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 70,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::LengthOverflow)?;"
+    },
+    {
+      "line": 81,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::LengthOverflow)?;"
+    },
+    {
+      "line": 86,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::LengthOverflow)?;"
+    },
+    {
+      "line": 100,
+      "text": "let major = read_u16(input, 4).map_err(map_audio_record_read_error)?;"
+    },
+    {
+      "line": 101,
+      "text": "let minor = read_u16(input, 6).map_err(map_audio_record_read_error)?;"
+    },
+    {
+      "line": 108,
+      "text": "let field_count = read_u32(input, 8).map_err(map_audio_record_read_error)? as usize;"
+    },
+    {
+      "line": 112,
+      "text": "if read_u32(input, 12).map_err(map_audio_record_read_error)? != 0 {"
+    },
+    {
+      "line": 132,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::Truncated)?,"
+    },
+    {
+      "line": 149,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::InvalidFieldName)?;"
+    },
+    {
+      "line": 226,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::InvalidValue)?,"
+    },
+    {
+      "line": 453,
+      "text": ".map_err(|_| ConnectorAudioRecordError::InvalidPortName)?"
+    },
+    {
+      "line": 467,
+      "text": ".map_err(|_| ConnectorAudioRecordError::InvalidLineage)?;"
+    },
+    {
+      "line": 485,
+      "text": ".map_err(|_| ConnectorAudioRecordError::Truncated)?,"
+    },
+    {
+      "line": 532,
+      "text": ".map_err(|_| ConnectorAudioRecordError::LengthOverflow)?"
+    },
+    {
+      "line": 552,
+      "text": ".map_err(|_| ConnectorAudioRecordError::Truncated)?,"
+    },
+    {
+      "line": 563,
+      "text": ".map_err(|_| ConnectorAudioRecordError::Truncated)?,"
+    },
+    {
+      "line": 689,
+      "text": "assert!(!format!(\"{decoded:?}\").contains(\"private-value\"));"
+    },
+    {
+      "line": 690,
+      "text": "assert!(format!(\"{decoded:?}\").contains(\"<redacted>\"));"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 70,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::LengthOverflow)?;"
+    },
+    {
+      "line": 81,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::LengthOverflow)?;"
+    },
+    {
+      "line": 86,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::LengthOverflow)?;"
+    },
+    {
+      "line": 100,
+      "text": "let major = read_u16(input, 4).map_err(map_audio_record_read_error)?;"
+    },
+    {
+      "line": 101,
+      "text": "let minor = read_u16(input, 6).map_err(map_audio_record_read_error)?;"
+    },
+    {
+      "line": 108,
+      "text": "let field_count = read_u32(input, 8).map_err(map_audio_record_read_error)? as usize;"
+    },
+    {
+      "line": 112,
+      "text": "if read_u32(input, 12).map_err(map_audio_record_read_error)? != 0 {"
+    },
+    {
+      "line": 132,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::Truncated)?,"
+    },
+    {
+      "line": 149,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::InvalidFieldName)?;"
+    },
+    {
+      "line": 226,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::InvalidValue)?,"
+    },
+    {
+      "line": 235,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::InvalidValue)"
+    },
+    {
+      "line": 241,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::InvalidValue)"
+    },
+    {
+      "line": 314,
+      "text": "pub fn from_item(item: &ConnectorItem<'_>) -> Result<Self, ConnectorAudioRecordError> {"
+    },
+    {
+      "line": 453,
+      "text": ".map_err(|_| ConnectorAudioRecordError::InvalidPortName)?"
+    },
+    {
+      "line": 467,
+      "text": ".map_err(|_| ConnectorAudioRecordError::InvalidLineage)?;"
+    },
+    {
+      "line": 485,
+      "text": ".map_err(|_| ConnectorAudioRecordError::Truncated)?,"
+    },
+    {
+      "line": 532,
+      "text": ".map_err(|_| ConnectorAudioRecordError::LengthOverflow)?"
+    },
+    {
+      "line": 552,
+      "text": ".map_err(|_| ConnectorAudioRecordError::Truncated)?,"
+    },
+    {
+      "line": 563,
+      "text": ".map_err(|_| ConnectorAudioRecordError::Truncated)?,"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 70,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::LengthOverflow)?;"
+    },
+    {
+      "line": 81,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::LengthOverflow)?;"
+    },
+    {
+      "line": 86,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::LengthOverflow)?;"
+    },
+    {
+      "line": 100,
+      "text": "let major = read_u16(input, 4).map_err(map_audio_record_read_error)?;"
+    },
+    {
+      "line": 101,
+      "text": "let minor = read_u16(input, 6).map_err(map_audio_record_read_error)?;"
+    },
+    {
+      "line": 108,
+      "text": "let field_count = read_u32(input, 8).map_err(map_audio_record_read_error)? as usize;"
+    },
+    {
+      "line": 112,
+      "text": "if read_u32(input, 12).map_err(map_audio_record_read_error)? != 0 {"
+    },
+    {
+      "line": 132,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::Truncated)?,"
+    },
+    {
+      "line": 149,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::InvalidFieldName)?;"
+    },
+    {
+      "line": 226,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::InvalidValue)?,"
+    },
+    {
+      "line": 235,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::InvalidValue)"
+    },
+    {
+      "line": 241,
+      "text": ".map_err(|_| ConnectorConfigurationRecordError::InvalidValue)"
+    },
+    {
+      "line": 453,
+      "text": ".map_err(|_| ConnectorAudioRecordError::InvalidPortName)?"
+    },
+    {
+      "line": 467,
+      "text": ".map_err(|_| ConnectorAudioRecordError::InvalidLineage)?;"
+    },
+    {
+      "line": 485,
+      "text": ".map_err(|_| ConnectorAudioRecordError::Truncated)?,"
+    },
+    {
+      "line": 532,
+      "text": ".map_err(|_| ConnectorAudioRecordError::LengthOverflow)?"
+    },
+    {
+      "line": 552,
+      "text": ".map_err(|_| ConnectorAudioRecordError::Truncated)?,"
+    },
+    {
+      "line": 563,
+      "text": ".map_err(|_| ConnectorAudioRecordError::Truncated)?,"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "39d2db327725a981741ed72ffd7d4ca762e1316835b1d8240e9fb74c6fd88fcf",
+      "lines": [
+        1,
+        716
+      ],
+      "path": "src/connector/transport.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0120-35755505",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "f333ef0783cd68a2ba9a4ad8d34d919378a71b3d",
+  "implemented_by": [],
+  "implements": [
+    "ConnectorConfigurationRecord",
+    "ConnectorAudioRecord"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::{ ClockDomainId, ConnectorId, EndpointId, FrameLineage, RouteId, SampleFormat, SessionId, SourceId, StemId, StreamId, }",
+    "std::mem::size_of",
+    "super::*",
+    "super::ConnectorItem",
+    "super::{ ConnectorConfiguration, ConnectorConfigurationValue, ConnectorSecret, ResolvedConnectorConfiguration, MAX_CONNECTOR_CONFIGURATION_FIELDS, MAX_CONNECTOR_CONFIGURATION_TEXT_BYTES, }"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 689,
+      "text": "assert!(!format!(\"{decoded:?}\").contains(\"private-value\"));"
+    },
+    {
+      "line": 690,
+      "text": "assert!(format!(\"{decoded:?}\").contains(\"<redacted>\"));"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 716,
+  "locks": [],
+  "module": "pocketstation::connector::transport",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-7b68019126c4c1540ebc",
+    "pattern-139a2b492c98807b410f",
+    "pattern-eff6ece8ed4556f78f30",
+    "pattern-2ee2fce6c23e17a0e11e"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/connector/transport.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 13,
+      "name": "MAGIC",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "HEADER_BYTES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "FLAG_CONNECTOR_ID_PRESENT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "SAMPLE_FORMAT_F32_INTERLEAVED",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 23,
+      "name": "CONFIGURATION_MAGIC",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "CONFIGURATION_HEADER_BYTES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 26,
+      "name": "CONFIGURATION_ENTRY_HEADER_BYTES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "CONFIGURATION_TEXT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 28,
+      "name": "CONFIGURATION_BOOLEAN",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 29,
+      "name": "CONFIGURATION_SIGNED_INTEGER",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 30,
+      "name": "CONFIGURATION_UNSIGNED_INTEGER",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 31,
+      "name": "CONFIGURATION_DURATION_MILLISECONDS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 32,
+      "name": "CONFIGURATION_BYTE_COUNT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 33,
+      "name": "CONFIGURATION_SECRET",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 169,
+      "name": "encode_configuration_value",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 198,
+      "name": "decode_configuration_value",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 231,
+      "name": "decode_text",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 237,
+      "name": "decode_eight",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 243,
+      "name": "map_audio_record_read_error",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 503,
+      "name": "validate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 528,
+      "name": "push_u32",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 537,
+      "name": "read_u16",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 544,
+      "name": "read_u32",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 555,
+      "name": "read_u64",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 602,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 604,
+      "name": "record",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 636,
+      "name": "given_audio_record_when_round_tripped_then_transport_and_lineage_identity_are_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 645,
+      "name": "given_invalid_audio_record_when_decoded_then_trailing_and_oversized_payloads_are_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 663,
+      "name": "given_typed_configuration_when_round_tripped_then_types_and_secret_redaction_are_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 694,
+      "name": "given_invalid_configuration_record_when_decoded_then_unknown_kinds_and_trailing_bytes_are_rejected",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "CONNECTOR_AUDIO_RECORD_MAJOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "CONNECTOR_AUDIO_RECORD_MINOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "MAX_CONNECTOR_AUDIO_RECORD_PORT_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 22,
+      "name": "MAX_CONNECTOR_AUDIO_RECORD_SAMPLES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 34,
+      "name": "CONNECTOR_CONFIGURATION_RECORD_MAJOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 36,
+      "name": "CONNECTOR_CONFIGURATION_RECORD_MINOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 42,
+      "name": "ConnectorConfigurationRecord",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "from_resolved",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "into_configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "encode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 92,
+      "name": "decode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 251,
+      "name": "ConnectorConfigurationRecordError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 281,
+      "name": "ConnectorAudioMetadata",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 293,
+      "name": "ConnectorAudioRecord",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 300,
+      "name": "try_new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 313,
+      "name": "from_item",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 334,
+      "name": "port_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 338,
+      "name": "metadata",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 342,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 346,
+      "name": "encode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 402,
+      "name": "decode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 568,
+      "name": "ConnectorAudioRecordError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::connector::transport`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/connectors.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/configure-connector-secrets.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/connectors.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/connectors.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/terminal-outcomes.md",
+    "docs/best-practices/connector-retries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "MAGIC",
+    "HEADER_BYTES",
+    "FLAG_CONNECTOR_ID_PRESENT",
+    "SAMPLE_FORMAT_F32_INTERLEAVED",
+    "CONNECTOR_AUDIO_RECORD_MAJOR",
+    "CONNECTOR_AUDIO_RECORD_MINOR",
+    "MAX_CONNECTOR_AUDIO_RECORD_PORT_BYTES",
+    "MAX_CONNECTOR_AUDIO_RECORD_SAMPLES",
+    "CONFIGURATION_MAGIC",
+    "CONFIGURATION_HEADER_BYTES",
+    "CONFIGURATION_ENTRY_HEADER_BYTES",
+    "CONFIGURATION_TEXT",
+    "CONFIGURATION_BOOLEAN",
+    "CONFIGURATION_SIGNED_INTEGER",
+    "CONFIGURATION_UNSIGNED_INTEGER",
+    "CONFIGURATION_DURATION_MILLISECONDS",
+    "CONFIGURATION_BYTE_COUNT",
+    "CONFIGURATION_SECRET",
+    "CONNECTOR_CONFIGURATION_RECORD_MAJOR",
+    "CONNECTOR_CONFIGURATION_RECORD_MINOR",
+    "ConnectorConfigurationRecord",
+    "from_resolved",
+    "configuration",
+    "into_configuration",
+    "encode",
+    "decode",
+    "encode_configuration_value",
+    "decode_configuration_value",
+    "decode_text",
+    "decode_eight",
+    "map_audio_record_read_error",
+    "ConnectorConfigurationRecordError",
+    "ConnectorAudioMetadata",
+    "ConnectorAudioRecord",
+    "try_new",
+    "from_item",
+    "port_name",
+    "metadata",
+    "samples",
+    "encode",
+    "decode",
+    "validate",
+    "push_u32",
+    "read_u16",
+    "read_u32",
+    "read_u64",
+    "ConnectorAudioRecordError",
+    "tests",
+    "record",
+    "given_audio_record_when_round_tripped_then_transport_and_lineage_identity_are_preserved",
+    "given_invalid_audio_record_when_decoded_then_trailing_and_oversized_payloads_are_rejected",
+    "given_typed_configuration_when_round_tripped_then_types_and_secret_redaction_are_preserved",
+    "given_invalid_configuration_record_when_decoded_then_unknown_kinds_and_trailing_bytes_are_rejected"
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 61,
+      "text": "pub fn encode(&self) -> Result<Vec<u8>, ConnectorConfigurationRecordError> {"
+    },
+    {
+      "line": 93,
+      "text": "pub fn decode(input: &[u8]) -> Result<Self, ConnectorConfigurationRecordError> {"
+    },
+    {
+      "line": 347,
+      "text": "pub fn encode(&self) -> Result<Vec<u8>, ConnectorAudioRecordError> {"
+    },
+    {
+      "line": 403,
+      "text": "pub fn decode(input: &[u8]) -> Result<Self, ConnectorAudioRecordError> {"
+    },
+    {
+      "line": 638,
+      "text": "let encoded = record.encode().expect(\"encode\");"
+    },
+    {
+      "line": 639,
+      "text": "let decoded = ConnectorAudioRecord::decode(&encoded).expect(\"decode\");"
+    },
+    {
+      "line": 646,
+      "text": "let mut encoded = record().encode().expect(\"encode\");"
+    },
+    {
+      "line": 649,
+      "text": "ConnectorAudioRecord::decode(&encoded),"
+    },
+    {
+      "line": 685,
+      "text": "let encoded = record.encode().expect(\"encode\");"
+    },
+    {
+      "line": 686,
+      "text": "let decoded = ConnectorConfigurationRecord::decode(&encoded).expect(\"decode\");"
+    },
+    {
+      "line": 697,
+      "text": "let mut trailing = record.encode().expect(\"encode\");"
+    },
+    {
+      "line": 700,
+      "text": "ConnectorConfigurationRecord::decode(&trailing),"
+    },
+    {
+      "line": 707,
+      "text": ".encode()"
+    },
+    {
+      "line": 708,
+      "text": ".expect(\"encode\");"
+    },
+    {
+      "line": 711,
+      "text": "ConnectorConfigurationRecord::decode(&unknown),"
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

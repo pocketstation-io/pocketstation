@@ -1,0 +1,241 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "ApplicationSelector::name",
+    "EndpointDescriptor::new",
+    "NodeTypeId::from",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "Session::new",
+    "Source::application",
+    "Source::microphone_default",
+    "capture",
+    "connect",
+    "endpoint",
+    "expect",
+    "given_public_facade_when_typed_delivery_declared_then_internal_graph_is_not_required",
+    "given_public_session_when_named_operator_connected_then_one_instance_owns_both_inputs",
+    "id",
+    "input",
+    "operator",
+    "output",
+    "send",
+    "session_id",
+    "through",
+    "with"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "EndpointDescriptor::new",
+    "NodeTypeId::from",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "Session::new"
+  ],
+  "content_hash": "e472d9aabdaea6f9f6efb6fc5a0e710278366fe7645fefc5b96a7cba8da07208",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 7,
+      "name": "given_public_facade_when_typed_delivery_declared_then_internal_graph_is_not_required",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "given_public_session_when_named_operator_connected_then_one_instance_owns_both_inputs",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 13,
+      "text": ".endpoint(EndpointDescriptor::new("
+    },
+    {
+      "line": 14,
+      "text": "NodeTypeId::from(\"endpoint.text.example\"),"
+    },
+    {
+      "line": 15,
+      "text": "OperatorId::new(\"example.endpoint.text.v1\"),"
+    },
+    {
+      "line": 52,
+      "text": ".endpoint(EndpointDescriptor::new("
+    },
+    {
+      "line": 53,
+      "text": "NodeTypeId::from(\"endpoint.public.named\"),"
+    },
+    {
+      "line": 54,
+      "text": "OperatorId::new(\"example.endpoint.public-named.v1\"),"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "e472d9aabdaea6f9f6efb6fc5a0e710278366fe7645fefc5b96a7cba8da07208",
+      "lines": [
+        1,
+        66
+      ],
+      "path": "tests/operator_declaration.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0270-5b183802",
+  "file_kind": "test",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "cd311bab304b8c208a8ed503f105689b6c9d9dd4",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "pocketstation::{ ApplicationSelector, EndpointDescriptor, NodeTypeId, Operator, OperatorConfiguration, OperatorId, Session, Source, }"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 66,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [
+    {
+      "line": 46,
+      "text": ".connect(declared.input(\"application\").expect(\"application input\"))"
+    },
+    {
+      "line": 49,
+      "text": ".connect(declared.input(\"microphone\").expect(\"microphone input\"))"
+    }
+  ],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "tests/operator_declaration.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 7,
+      "name": "given_public_facade_when_typed_delivery_declared_then_internal_graph_is_not_required",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "given_public_session_when_named_operator_connected_then_one_instance_owns_both_inputs",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `not_applicable`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "given_public_facade_when_typed_delivery_declared_then_internal_graph_is_not_required",
+    "given_public_session_when_named_operator_connected_then_one_instance_owns_both_inputs"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 46,
+      "text": ".connect(declared.input(\"application\").expect(\"application input\"))"
+    },
+    {
+      "line": 49,
+      "text": ".connect(declared.input(\"microphone\").expect(\"microphone input\"))"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

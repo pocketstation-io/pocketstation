@@ -292,36 +292,59 @@ impl SessionEngine {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as session engine build error."]
 pub enum SessionEngineBuildError {
     #[error(transparent)]
+    #[doc = "Reports structural node registration."]
     StructuralNodeRegistration(#[from] SessionGraphRegistrationError),
     #[error("Session engine configuration is invalid: {reason}")]
-    InvalidConfiguration { reason: &'static str },
+    #[doc = "Reports invalid configuration."]
+    InvalidConfiguration {
+        #[doc = "Carries the reason reported by `InvalidConfiguration`."]
+        reason: &'static str,
+    },
     #[error("sidecar process ID {sidecar_id} is already registered")]
-    DuplicateSidecarId { sidecar_id: u64 },
+    #[doc = "Reports duplicate sidecar identifier."]
+    DuplicateSidecarId {
+        #[doc = "Identifies the sidecar associated with `DuplicateSidecarId`."]
+        sidecar_id: u64,
+    },
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as endpoint extension registration error."]
 pub enum EndpointExtensionRegistrationError {
     #[error(transparent)]
+    #[doc = "Reports definition."]
     Definition(#[from] NodeRegistrationError),
     #[error(transparent)]
+    #[doc = "Reports driver."]
     Driver(#[from] EndpointDriverRegistryError),
     #[error("endpoint node type {node_type_id} is already registered with a different contract")]
-    ConflictingDefinition { node_type_id: String },
+    #[doc = "Reports conflicting definition."]
+    ConflictingDefinition {
+        #[doc = "Identifies the node type associated with `ConflictingDefinition`."]
+        node_type_id: String,
+    },
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as session engine start error."]
 pub enum SessionEngineStartError {
     #[error("Session declaration freeze failed: {0}")]
+    #[doc = "Reports freeze."]
     Freeze(#[from] SessionError),
     #[error("Session compilation failed: {0}")]
+    #[doc = "Reports compile."]
     Compile(#[from] SessionCompileError),
     #[error("Session runtime preparation failed: {0}")]
+    #[doc = "Reports prepare."]
     Prepare(#[from] SessionPrepareError),
     #[error("Session transactional start failed: {0}")]
+    #[doc = "Reports start."]
     Start(#[source] SessionStartFailure),
     #[error("Session sidecar start failed: {0}")]
+    #[doc = "Reports sidecar."]
     Sidecar(#[from] SidecarHostError),
 }
 

@@ -1,0 +1,167 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "c7b43681119009247762bd2338b1a0a8bb3573cbe8dd5876d799d17b4f5eb455",
+  "defaults": [],
+  "defines": [],
+  "device_io": [
+    {
+      "line": 11,
+      "text": "\"microphone_path\": \"coreaudio-input-device\","
+    },
+    {
+      "line": 22,
+      "text": "\"application_path\": \"wasapi-process-loopback\","
+    },
+    {
+      "line": 23,
+      "text": "\"microphone_path\": \"wasapi-input-device\","
+    },
+    {
+      "line": 34,
+      "text": "\"application_path\": \"pipewire-node-capture\","
+    },
+    {
+      "line": 35,
+      "text": "\"microphone_path\": \"pipewire-input-node\","
+    },
+    {
+      "line": 37,
+      "text": "\"permission_observation\": \"portal-or-pipewire-policy-state-when-observable-otherwise-not-observable\","
+    }
+  ],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "c7b43681119009247762bd2338b1a0a8bb3573cbe8dd5876d799d17b4f5eb455",
+      "lines": [
+        1,
+        46
+      ],
+      "path": "docs/architecture/CAPTURE_PATHS.json",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0022-4f6c20d8",
+  "file_kind": "documentation",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "15ba28f02c04b6e03b9f7d9793015bbb0107ff20",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "JSON",
+  "line_count": 46,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "repository",
+  "path": "docs/architecture/CAPTURE_PATHS.json",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Provides repository-owned content at `docs/architecture/CAPTURE_PATHS.json`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 11,
+      "text": "\"microphone_path\": \"coreaudio-input-device\","
+    },
+    {
+      "line": 22,
+      "text": "\"application_path\": \"wasapi-process-loopback\","
+    },
+    {
+      "line": 23,
+      "text": "\"microphone_path\": \"wasapi-input-device\","
+    },
+    {
+      "line": 34,
+      "text": "\"application_path\": \"pipewire-node-capture\","
+    },
+    {
+      "line": 35,
+      "text": "\"microphone_path\": \"pipewire-input-node\","
+    },
+    {
+      "line": 37,
+      "text": "\"permission_observation\": \"portal-or-pipewire-policy-state-when-observable-otherwise-not-observable\","
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

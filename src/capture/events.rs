@@ -9,9 +9,11 @@ use super::identity::StableSourceId;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(transparent)]
+#[doc = "Represents source generation in the PocketStation API."]
 pub struct SourceGeneration(pub u32);
 
 impl SourceGeneration {
+    #[doc = "Provides the initial value for `SourceGeneration`."]
     pub const INITIAL: Self = Self(1);
 
     /// Returns the generation assigned after explicit rediscovery.
@@ -22,44 +24,75 @@ impl SourceGeneration {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "kebab-case")]
+#[doc = "Selects the source lifecycle event kind used by PocketStation."]
 pub enum SourceLifecycleEventKind {
+    #[doc = "Indicates the source unavailable state for `SourceLifecycleEventKind`."]
     SourceUnavailable,
+    #[doc = "Indicates the replacement observed state for `SourceLifecycleEventKind`."]
     ReplacementObserved,
+    #[doc = "Indicates the permission changed state for `SourceLifecycleEventKind`."]
     PermissionChanged,
+    #[doc = "Indicates the permission revoked state for `SourceLifecycleEventKind`."]
     PermissionRevoked,
+    #[doc = "Indicates the source reappeared state for `SourceLifecycleEventKind`."]
     SourceReappeared,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "kebab-case")]
+#[doc = "Selects the source recovery requirement used by PocketStation."]
 pub enum SourceRecoveryRequirement {
+    #[doc = "Selects explicit rediscovery and new session behavior for `SourceRecoveryRequirement`."]
     ExplicitRediscoveryAndNewSession,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Enumerates the supported capture runtime failure class cases."]
 pub enum CaptureRuntimeFailureClass {
+    #[doc = "Reports source instance exited."]
     SourceInstanceExited,
-    PlatformStatus { status_code: i32 },
-    BackendClass { class: String },
+    #[doc = "Reports platform status."]
+    PlatformStatus {
+        #[doc = "Stores the status code associated with `PlatformStatus`."]
+        status_code: i32,
+    },
+    #[doc = "Reports backend class."]
+    BackendClass {
+        #[doc = "Stores the class associated with `BackendClass`."]
+        class: String,
+    },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Reports a capture runtime failure."]
 pub struct CaptureRuntimeFailure {
+    #[doc = "Stores the operation associated with `CaptureRuntimeFailure`."]
     pub operation: &'static str,
+    #[doc = "Stores the error class associated with `CaptureRuntimeFailure`."]
     pub error_class: CaptureRuntimeFailureClass,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Classifies the observable source runtime event."]
 pub enum SourceRuntimeEvent {
+    #[doc = "Indicates the source unavailable state for `SourceRuntimeEvent`."]
     SourceUnavailable {
+        #[doc = "Identifies the stable associated with `SourceUnavailable`."]
         stable_id: StableSourceId,
+        #[doc = "Stores the generation associated with `SourceUnavailable`."]
         generation: SourceGeneration,
+        #[doc = "Stores the recovery requirement associated with `SourceUnavailable`."]
         recovery_requirement: SourceRecoveryRequirement,
+        #[doc = "Carries the failure reported by `SourceUnavailable`."]
         failure: CaptureRuntimeFailure,
     },
+    #[doc = "Indicates the backend failure state for `SourceRuntimeEvent`."]
     BackendFailure {
+        #[doc = "Identifies the stable associated with `BackendFailure`."]
         stable_id: StableSourceId,
+        #[doc = "Stores the generation associated with `BackendFailure`."]
         generation: SourceGeneration,
+        #[doc = "Carries the failure reported by `BackendFailure`."]
         failure: CaptureRuntimeFailure,
     },
 }
@@ -93,10 +126,15 @@ impl SourceRuntimeEvent {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Enumerates the supported source runtime event delivery cases."]
 pub enum SourceRuntimeEventDelivery {
+    #[doc = "Indicates the enqueued state for `SourceRuntimeEventDelivery`."]
     Enqueued,
+    #[doc = "Indicates the dropped full state for `SourceRuntimeEventDelivery`."]
     DroppedFull,
+    #[doc = "Indicates the dropped oversized state for `SourceRuntimeEventDelivery`."]
     DroppedOversized,
+    #[doc = "Indicates the receiver closed state for `SourceRuntimeEventDelivery`."]
     ReceiverClosed,
 }
 
@@ -108,15 +146,25 @@ pub enum SourceRuntimeEventReceive {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[doc = "Reports the source runtime event observations collected at an observation boundary."]
 pub struct SourceRuntimeEventObservations {
+    #[doc = "Sets the capacity event count available to `SourceRuntimeEventObservations`."]
     pub capacity_event_count: u64,
+    #[doc = "Stores the maximum event owned size for `SourceRuntimeEventObservations`, in bytes."]
     pub maximum_event_owned_bytes: u64,
+    #[doc = "Stores the maximum buffered owned size for `SourceRuntimeEventObservations`, in bytes."]
     pub maximum_buffered_owned_bytes: u64,
+    #[doc = "Reports the depth events observed by `SourceRuntimeEventObservations`."]
     pub depth_events: u64,
+    #[doc = "Stores the depth owned size for `SourceRuntimeEventObservations`, in bytes."]
     pub depth_owned_bytes: u64,
+    #[doc = "Stores the peak depth owned size for `SourceRuntimeEventObservations`, in bytes."]
     pub peak_depth_owned_bytes: u64,
+    #[doc = "Counts the total number of events enqueued observed by `SourceRuntimeEventObservations`."]
     pub events_enqueued_total: u64,
+    #[doc = "Counts the total number of events dropped observed by `SourceRuntimeEventObservations`."]
     pub events_dropped_total: u64,
+    #[doc = "Counts the total number of events dropped oversized observed by `SourceRuntimeEventObservations`."]
     pub events_dropped_oversized_total: u64,
 }
 
@@ -197,11 +245,13 @@ struct QueuedSourceRuntimeEvent {
 }
 
 #[derive(Debug, Clone)]
+#[doc = "Owns bounded access to source runtime event observation."]
 pub struct SourceRuntimeEventObservationHandle {
     counters: Arc<SourceRuntimeEventCounters>,
 }
 
 impl SourceRuntimeEventObservationHandle {
+    #[doc = "Returns the observations exposed by `SourceRuntimeEventObservationHandle`."]
     pub fn observations(&self) -> SourceRuntimeEventObservations {
         SourceRuntimeEventObservations {
             capacity_event_count: self.counters.capacity_event_count,
@@ -221,6 +271,7 @@ impl SourceRuntimeEventObservationHandle {
 }
 
 #[derive(Debug, Clone)]
+#[doc = "Represents source runtime event sender in the PocketStation API."]
 pub struct SourceRuntimeEventSender {
     sender: std::sync::mpsc::SyncSender<QueuedSourceRuntimeEvent>,
     counters: Arc<SourceRuntimeEventCounters>,
@@ -263,10 +314,12 @@ impl SourceRuntimeEventSender {
         }
     }
 
+    #[doc = "Returns the observations exposed by `SourceRuntimeEventSender`."]
     pub fn observations(&self) -> SourceRuntimeEventObservations {
         self.observation_handle().observations()
     }
 
+    #[doc = "Returns a handle for reading observations from `SourceRuntimeEventSender`."]
     pub fn observation_handle(&self) -> SourceRuntimeEventObservationHandle {
         SourceRuntimeEventObservationHandle {
             counters: Arc::clone(&self.counters),

@@ -1,0 +1,301 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 3,
+      "text": "//! **LABEL: SYNTHETIC** \u2014 no real CoreAudio/WASAPI/ALSA callback is used."
+    },
+    {
+      "line": 8,
+      "text": "//!   - CoreAudio/CPAL callback scheduling jitter"
+    },
+    {
+      "line": 26,
+      "text": "/// Simulate one audio callback: fill a pool slot with synthetic PCM,"
+    },
+    {
+      "line": 28,
+      "text": "/// This is the hot path that runs every 20ms on the callback thread."
+    },
+    {
+      "line": 34,
+      "text": "// callback needs; acquire never fails during the bench."
+    },
+    {
+      "line": 42,
+      "text": "// Simulates the DMA-delivered PCM that the platform callback hands us."
+    }
+  ],
+  "called_by": [],
+  "calls": [
+    "AudioBufferPool::new",
+    "AudioFrame",
+    "AudioFrame::new",
+    "AudioFrame::try_new",
+    "CapturedFrameSender::try_send",
+    "PCM",
+    "SampleSpec::new",
+    "SourceId::new",
+    "StreamId::new",
+    "acquire",
+    "bench_capture_framebus",
+    "bench_function",
+    "benchmark_group",
+    "black_box",
+    "captured_frame_stream",
+    "collect",
+    "expect",
+    "finish",
+    "iter",
+    "let",
+    "macOS",
+    "map",
+    "measurement_time",
+    "sin",
+    "slot",
+    "std::time::Duration::from_secs",
+    "try_copy_from_slice",
+    "try_next",
+    "try_send"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "AudioFrame::try_new",
+    "SampleSpec::new",
+    "SourceId::new",
+    "StreamId::new"
+  ],
+  "content_hash": "d3012ef422aba614e4f9c65223fdb92234847aebc176ebca2723939f0d1081bb",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "bench_capture_framebus",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [
+    {
+      "line": 3,
+      "text": "//! **LABEL: SYNTHETIC** \u2014 no real CoreAudio/WASAPI/ALSA callback is used."
+    },
+    {
+      "line": 8,
+      "text": "//!   - CoreAudio/CPAL callback scheduling jitter"
+    },
+    {
+      "line": 11,
+      "text": "//!   - SCKit latency on macOS (\u226510ms floor; sub-5ms needs CoreAudio tap, macOS 14.2+)"
+    },
+    {
+      "line": 15,
+      "text": "//! real CoreAudio measurement requires a tap harness that does not yet exist."
+    }
+  ],
+  "drop_cleanup": [
+    {
+      "line": 38,
+      "text": "// sender. Capacity is large enough that this bench does not drop."
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "d3012ef422aba614e4f9c65223fdb92234847aebc176ebca2723939f0d1081bb",
+      "lines": [
+        1,
+        82
+      ],
+      "path": "benches/capture_to_stream.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0011-675805ba",
+  "file_kind": "benchmark",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "46c35bd3eaf29294b7ad035f9cc2e7a2fae8fea3",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "criterion::{black_box, criterion_group, criterion_main, Criterion}",
+    "pocketstation::internal::captured_frame_stream",
+    "pocketstation::internal::{AudioBufferPool, AudioFrame, SourceId, StreamId, POOL_SLOT_SAMPLES}",
+    "pocketstation::{SampleFormat, SampleSpec}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 34,
+      "text": "// callback needs; acquire never fails during the bench."
+    }
+  ],
+  "language": "Rust",
+  "line_count": 82,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-f29c8fc71124321028d8",
+    "pattern-56f8584f50d6f6096f99"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "benches/capture_to_stream.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "bench_capture_framebus",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 18,
+      "text": "//! Command:"
+    }
+  ],
+  "protocol_messages": [
+    {
+      "line": 18,
+      "text": "//! Command:"
+    }
+  ],
+  "public_surface": [],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "A1 \u00a711.3 \u2014 Source capture \u2192 bounded captured-frame stream benchmark.  **LABEL: SYNTHETIC** \u2014 no real CoreAudio/WASAPI/ALSA callback is used. This bench measures the pure Rust hot-path cost: pool.acquire() \u2192 copy PCM into slot \u2192 AudioFrame::new() \u2192 CapturedFrameSender::try_send()  It does NOT include: - CoreAudio/CPAL callback scheduling jitter - OS audio driver round-trip latency - Real hardware DMA transfer time - SCKit latency on macOS (\u226510ms floor; sub-5ms needs CoreAudio tap, macOS 14.2+)  \u00a711.3 target: p99 \u2264 5ms. A synthetic mean well under 5ms is necessary but not sufficient; real CoreAudio measurement requires a tap harness that does not yet exist. See `pocketstation-bench/BENCHMARK_CLAIMS.md` for the claim boundary.  Command: cargo bench -p pocketstation --bench capture_to_stream"
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/source-selection.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/select-process-source.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/run-transcription.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/troubleshooting/timing.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "bench_capture_framebus"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 3,
+      "text": "//! **LABEL: SYNTHETIC** \u2014 no real CoreAudio/WASAPI/ALSA callback is used."
+    },
+    {
+      "line": 8,
+      "text": "//!   - CoreAudio/CPAL callback scheduling jitter"
+    },
+    {
+      "line": 11,
+      "text": "//!   - SCKit latency on macOS (\u226510ms floor; sub-5ms needs CoreAudio tap, macOS 14.2+)"
+    },
+    {
+      "line": 15,
+      "text": "//! real CoreAudio measurement requires a tap harness that does not yet exist."
+    },
+    {
+      "line": 18,
+      "text": "//! Command:"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 28,
+      "text": "/// This is the hot path that runs every 20ms on the callback thread."
+    }
+  ],
+  "visibility": "private_or_not_applicable"
+}

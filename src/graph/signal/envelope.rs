@@ -3,6 +3,7 @@ use crate::graph::signal::payload::SignalPayload;
 use crate::graph::signal::{SignalDerivation, SignalLineage, SignalSpec, SignalTiming};
 
 #[derive(Debug)]
+#[doc = "Represents signal envelope in the PocketStation API."]
 pub struct SignalEnvelope {
     pub(crate) payload: SignalPayload,
     pub(crate) spec: SignalSpec,
@@ -24,6 +25,7 @@ impl SignalEnvelope {
         }
     }
 
+    #[doc = "Creates `SignalEnvelope` from audio."]
     pub fn from_audio(frame: AudioFrame, lineage: Option<FrameLineage>) -> Self {
         let timestamp_ns = frame.timestamp_ns;
         let frame_stream_id = frame.stream_id;
@@ -42,51 +44,62 @@ impl SignalEnvelope {
         }
     }
 
+    #[doc = "Transforms the payload held by `SignalEnvelope` while preserving envelope metadata."]
     pub fn map_payload(mut self, payload: SignalPayload, spec: SignalSpec) -> Self {
         self.payload = payload;
         self.spec = spec;
         self
     }
 
+    #[doc = "Sets the lineage on `SignalEnvelope` and returns the updated value."]
     pub fn with_lineage(mut self, lineage: SignalLineage, timing: SignalTiming) -> Self {
         self.lineage = Some(lineage);
         self.timing = timing;
         self
     }
 
+    #[doc = "Sets the derivation on `SignalEnvelope` and returns the updated value."]
     pub fn with_derivation(mut self, derivation: SignalDerivation) -> Self {
         self.derivation = Some(derivation);
         self
     }
 
+    #[doc = "Returns the payload associated with `SignalEnvelope`."]
     pub const fn payload(&self) -> &SignalPayload {
         &self.payload
     }
 
+    #[doc = "Returns the payload size bytes associated with `SignalEnvelope`."]
     pub fn payload_size_bytes(&self) -> usize {
         self.payload.size_bytes()
     }
 
+    #[doc = "Returns the signal spec associated with `SignalEnvelope`."]
     pub const fn signal_spec(&self) -> &SignalSpec {
         &self.spec
     }
 
+    #[doc = "Returns the timing associated with `SignalEnvelope`."]
     pub const fn timing(&self) -> SignalTiming {
         self.timing
     }
 
+    #[doc = "Returns the frame lineage associated with `SignalEnvelope`."]
     pub const fn lineage(&self) -> Option<SignalLineage> {
         self.lineage
     }
 
+    #[doc = "Returns the derivation associated with `SignalEnvelope`."]
     pub const fn derivation(&self) -> Option<&SignalDerivation> {
         self.derivation.as_ref()
     }
 
+    #[doc = "Converts `SignalEnvelope` into payload."]
     pub fn into_payload(self) -> SignalPayload {
         self.payload
     }
 
+    #[doc = "Returns the sequence number associated with `SignalEnvelope`."]
     pub fn sequence_number(&self) -> Option<u64> {
         self.lineage.map(|lineage| lineage.sequence_number).or(
             if let SignalPayload::Audio(frame) = &self.payload {
@@ -97,6 +110,7 @@ impl SignalEnvelope {
         )
     }
 
+    #[doc = "Returns the source identifier associated with `SignalEnvelope`."]
     pub fn source_id(&self) -> Option<SourceId> {
         self.lineage.map(|lineage| lineage.source_id).or({
             if let SignalPayload::Audio(frame) = &self.payload {
@@ -107,6 +121,7 @@ impl SignalEnvelope {
         })
     }
 
+    #[doc = "Returns the timestamp nanoseconds associated with `SignalEnvelope`."]
     pub fn timestamp_ns(&self) -> u64 {
         self.timing
             .session_timestamp_ns
@@ -114,6 +129,7 @@ impl SignalEnvelope {
             .unwrap_or(self.timing.observed_timestamp_ns)
     }
 
+    #[doc = "Validates `SignalEnvelope` against its declared contract."]
     pub fn validate(&self) -> Result<(), SignalEnvelopeError> {
         self.spec
             .validate()
@@ -134,14 +150,19 @@ impl SignalEnvelope {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as signal envelope error."]
 pub enum SignalEnvelopeError {
     #[error("signal envelope has an invalid SignalSpec")]
+    #[doc = "Reports invalid signal spec."]
     InvalidSignalSpec,
     #[error("signal payload does not match its declared SignalSpec")]
+    #[doc = "Reports payload spec mismatch."]
     PayloadSpecMismatch,
     #[error("signal envelope sequence does not match its lineage")]
+    #[doc = "Reports sequence mismatch."]
     SequenceMismatch,
     #[error("signal envelope source does not match its lineage")]
+    #[doc = "Reports source mismatch."]
     SourceMismatch,
 }
 

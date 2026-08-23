@@ -1,0 +1,160 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 16,
+      "text": "forbidden_engine_symbols='pocketstation::internal|RealtimePlanExecutor|RuntimePlanner|NodeRegistry|AudioBufferPool|CallbackCaptureBackend|PreparedCaptureBackend|PlanEdge(Sender|Receiver|Frame)|\\brtrb\\b'"
+    }
+  ],
+  "called_by": [],
+  "calls": [
+    "OBSERVABLE",
+    "PlanEdge"
+  ],
+  "cancellation_behavior": [],
+  "channels": [
+    {
+      "line": 16,
+      "text": "forbidden_engine_symbols='pocketstation::internal|RealtimePlanExecutor|RuntimePlanner|NodeRegistry|AudioBufferPool|CallbackCaptureBackend|PreparedCaptureBackend|PlanEdge(Sender|Receiver|Frame)|\\brtrb\\b'"
+    }
+  ],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "649abfc9532679a6706d8fa995187467b7ec5c701d9328c1432863a73dd450e5",
+  "defaults": [],
+  "defines": [],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "649abfc9532679a6706d8fa995187467b7ec5c701d9328c1432863a73dd450e5",
+      "lines": [
+        1,
+        85
+      ],
+      "path": "scripts/check_pks_single_engine_boundary.sh",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0057-95fba31c",
+  "file_kind": "automation",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "3fc50ad109a557b4469feaf1e8d5bcaf2bbf06a1",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 9,
+      "text": "echo \"standalone Core checks continue; workspace qualification must run this gate with pks present\""
+    }
+  ],
+  "language": "Shell",
+  "line_count": 85,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-691896feff36ac00f8fd"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "repository",
+  "path": "scripts/check_pks_single_engine_boundary.sh",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines a repository build, validation, CI, or release operation."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/installation.md",
+    "docs/concepts/release-evidence.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/concepts/cargo-features.md",
+    "RELEASE_NOTES.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/how-to/choose-features.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/reference/features.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/best-practices/evidence-boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 42,
+      "text": "for required_cli_authority in cli.rs context.rs error.rs output.rs shutdown.rs; do"
+    },
+    {
+      "line": 74,
+      "text": "rg -q '\\.stop\\(' \"$session_command\""
+    }
+  ],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 73,
+      "text": "rg -q '\\.start\\(' \"$session_command\""
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

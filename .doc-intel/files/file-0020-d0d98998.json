@@ -1,0 +1,332 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "PathBuf::from",
+    "String::from_utf8",
+    "args",
+    "build_macos_asp_driver_artifact",
+    "build_macos_capture_bridge",
+    "cc::Build::new",
+    "cfg",
+    "compile",
+    "display",
+    "expect",
+    "file",
+    "flag",
+    "include",
+    "is_some",
+    "join",
+    "main",
+    "output",
+    "status",
+    "std::env::var",
+    "std::env::var_os",
+    "std::fs::copy",
+    "std::fs::create_dir_all",
+    "std::process::Command::new",
+    "success",
+    "to_owned",
+    "to_str",
+    "trim",
+    "unwrap_or_else"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 2,
+      "text": "#[cfg(target_os = \"macos\")]"
+    },
+    {
+      "line": 4,
+      "text": "if std::env::var_os(\"CARGO_FEATURE_NATIVE_CAPTURE\").is_some() {"
+    },
+    {
+      "line": 7,
+      "text": "if std::env::var_os(\"CARGO_FEATURE_MACOS_ASP_DRIVER_ARTIFACT\").is_some() {"
+    },
+    {
+      "line": 13,
+      "text": "#[cfg(target_os = \"macos\")]"
+    },
+    {
+      "line": 17,
+      "text": "let manifest = PathBuf::from(std::env::var(\"CARGO_MANIFEST_DIR\").expect(\"manifest dir\"));"
+    },
+    {
+      "line": 55,
+      "text": "#[cfg(target_os = \"macos\")]"
+    },
+    {
+      "line": 59,
+      "text": "let out_dir = PathBuf::from(std::env::var(\"OUT_DIR\").expect(\"OUT_DIR\"));"
+    },
+    {
+      "line": 60,
+      "text": "let manifest = PathBuf::from(std::env::var(\"CARGO_MANIFEST_DIR\").expect(\"manifest dir\"));"
+    },
+    {
+      "line": 69,
+      "text": "let sdk = std::env::var(\"SDKROOT\").unwrap_or_else(|_| {"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "PathBuf::from",
+    "cc::Build::new",
+    "std::process::Command::new"
+  ],
+  "content_hash": "6ec7c12a1aaed4ca4d5e03e84a48a381594053361d5a9316bc1eb2cbe44a865e",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 1,
+      "name": "main",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "build_macos_capture_bridge",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "build_macos_asp_driver_artifact",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [
+    {
+      "line": 48,
+      "text": "println!(\"cargo:rustc-link-lib=framework=CoreAudio\");"
+    },
+    {
+      "line": 79,
+      "text": "let coreaudio_headers = format!(\"{sdk}/System/Library/Frameworks/CoreAudio.framework/Headers\");"
+    },
+    {
+      "line": 90,
+      "text": "\"CoreAudio\","
+    }
+  ],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [
+    "CARGO_FEATURE_MACOS_ASP_DRIVER_ARTIFACT",
+    "CARGO_FEATURE_NATIVE_CAPTURE",
+    "CARGO_MANIFEST_DIR",
+    "OUT_DIR",
+    "SDKROOT"
+  ],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 17,
+      "text": "let manifest = PathBuf::from(std::env::var(\"CARGO_MANIFEST_DIR\").expect(\"manifest dir\"));"
+    },
+    {
+      "line": 59,
+      "text": "let out_dir = PathBuf::from(std::env::var(\"OUT_DIR\").expect(\"OUT_DIR\"));"
+    },
+    {
+      "line": 60,
+      "text": "let manifest = PathBuf::from(std::env::var(\"CARGO_MANIFEST_DIR\").expect(\"manifest dir\"));"
+    }
+  ],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "6ec7c12a1aaed4ca4d5e03e84a48a381594053361d5a9316bc1eb2cbe44a865e",
+      "lines": [
+        1,
+        118
+      ],
+      "path": "build.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0020-d0d98998",
+  "file_kind": "automation",
+  "filesystem_io": [
+    {
+      "line": 105,
+      "text": "std::fs::create_dir_all(&macos_dir).expect(\"create driver bundle\");"
+    },
+    {
+      "line": 106,
+      "text": "std::fs::copy(&dylib, macos_dir.join(\"PocketStationLoopback\")).expect(\"copy driver binary\");"
+    },
+    {
+      "line": 107,
+      "text": "std::fs::copy(asp.join(\"Info.plist\"), contents.join(\"Info.plist\")).expect(\"copy driver plist\");"
+    }
+  ],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "30ff25d1b41a46a7fe1c4810c396a7ffbbdb7a8d",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "std::path::PathBuf"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 103,
+      "text": "assert!(status.success(), \"Plugin.cpp compilation failed\");"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 118,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "build.rs",
+  "platform_gate": [
+    "macos"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 1,
+      "name": "main",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "build_macos_capture_bridge",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "build_macos_asp_driver_artifact",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 70,
+      "text": "let output = std::process::Command::new(\"xcrun\")"
+    },
+    {
+      "line": 80,
+      "text": "let status = std::process::Command::new(\"clang++\")"
+    }
+  ],
+  "protocol_messages": [
+    {
+      "line": 70,
+      "text": "let output = std::process::Command::new(\"xcrun\")"
+    },
+    {
+      "line": 80,
+      "text": "let status = std::process::Command::new(\"clang++\")"
+    }
+  ],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `not_applicable`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "main",
+    "build_macos_capture_bridge",
+    "build_macos_asp_driver_artifact"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 105,
+      "text": "std::fs::create_dir_all(&macos_dir).expect(\"create driver bundle\");"
+    },
+    {
+      "line": 106,
+      "text": "std::fs::copy(&dylib, macos_dir.join(\"PocketStationLoopback\")).expect(\"copy driver binary\");"
+    },
+    {
+      "line": 107,
+      "text": "std::fs::copy(asp.join(\"Info.plist\"), contents.join(\"Info.plist\")).expect(\"copy driver plist\");"
+    },
+    {
+      "line": 48,
+      "text": "println!(\"cargo:rustc-link-lib=framework=CoreAudio\");"
+    },
+    {
+      "line": 79,
+      "text": "let coreaudio_headers = format!(\"{sdk}/System/Library/Frameworks/CoreAudio.framework/Headers\");"
+    },
+    {
+      "line": 90,
+      "text": "\"CoreAudio\","
+    },
+    {
+      "line": 70,
+      "text": "let output = std::process::Command::new(\"xcrun\")"
+    },
+    {
+      "line": 80,
+      "text": "let status = std::process::Command::new(\"clang++\")"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

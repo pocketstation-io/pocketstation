@@ -1,0 +1,238 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "all",
+    "cfg",
+    "pub"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 1,
+      "text": "#[cfg(all(target_os = \"linux\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 3,
+      "text": "#[cfg(all(target_os = \"macos\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 5,
+      "text": "#[cfg(all(target_os = \"windows\", feature = \"native-capture\"))]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "9b19fd8492bb9ee907129f5a3b2d7dc2301ed7c890ef542e9932030a3c07c5b7",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "linux",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "macos",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "windows",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "linux",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "macos",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "windows",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "9b19fd8492bb9ee907129f5a3b2d7dc2301ed7c890ef542e9932030a3c07c5b7",
+      "lines": [
+        1,
+        7
+      ],
+      "path": "src/capture/platform/mod.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "native-capture"
+  ],
+  "feature_gate": [
+    "native-capture"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0093-ac33bb50",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "ab3a1d409c9db57d29598cf1fa4e93c86bf3f4cb",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "module:linux",
+    "module:macos",
+    "module:windows"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 7,
+  "locks": [],
+  "module": "pocketstation::capture::platform",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/capture/platform/mod.rs",
+  "platform_gate": [
+    "linux",
+    "macos",
+    "windows"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "linux",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "macos",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "windows",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::capture::platform`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/source-selection.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/select-process-source.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/run-transcription.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/troubleshooting/timing.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "linux",
+    "macos",
+    "windows"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

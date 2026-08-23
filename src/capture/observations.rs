@@ -5,14 +5,23 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize)]
+#[doc = "Reports the capture observations collected at an observation boundary."]
 pub struct CaptureObservations {
+    #[doc = "Counts the total number of callback buffers observed by `CaptureObservations`."]
     pub callback_buffers_total: u64,
+    #[doc = "Counts the total number of frames enqueued observed by `CaptureObservations`."]
     pub frames_enqueued_total: u64,
+    #[doc = "Counts the total number of pool exhausted observed by `CaptureObservations`."]
     pub pool_exhausted_total: u64,
+    #[doc = "Counts the total number of dispatch queue full observed by `CaptureObservations`."]
     pub dispatch_queue_full_total: u64,
+    #[doc = "Counts the total number of invalid buffer observed by `CaptureObservations`."]
     pub invalid_buffer_total: u64,
+    #[doc = "Counts the total number of oversized buffer observed by `CaptureObservations`."]
     pub oversized_buffer_total: u64,
+    #[doc = "Counts the total number of stream errors observed by `CaptureObservations`."]
     pub stream_errors_total: u64,
+    #[doc = "Counts the total number of timestamp epoch clamps observed by `CaptureObservations`."]
     pub timestamp_epoch_clamps_total: u64,
 }
 
@@ -29,11 +38,13 @@ struct CaptureObservationValues {
 }
 
 #[derive(Clone, Debug, Default)]
+#[doc = "Owns bounded access to capture observation."]
 pub struct CaptureObservationHandle {
     values: Arc<CaptureObservationValues>,
 }
 
 impl CaptureObservationHandle {
+    #[doc = "Returns the observations exposed by `CaptureObservationHandle`."]
     pub fn observations(&self) -> CaptureObservations {
         snapshot_values(&self.values)
     }

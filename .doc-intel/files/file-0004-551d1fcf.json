@@ -1,0 +1,158 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "deps",
+    "select",
+    "startsWith"
+  ],
+  "cancellation_behavior": [
+    {
+      "line": 18,
+      "text": "cancel-in-progress: false"
+    }
+  ],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 103,
+      "text": "run: cargo test --workspace --all-features --locked"
+    },
+    {
+      "line": 106,
+      "text": "run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings"
+    },
+    {
+      "line": 109,
+      "text": "run: cargo doc --locked --no-deps -p pocketstation --no-default-features --target x86_64-unknown-linux-gnu"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "aff4325bbe16eda2cdad7fe10fa641118a2c9c6050c5c4dc1d8c0661cf9142be",
+  "defaults": [
+    {
+      "line": 109,
+      "text": "run: cargo doc --locked --no-deps -p pocketstation --no-default-features --target x86_64-unknown-linux-gnu"
+    }
+  ],
+  "defines": [],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "aff4325bbe16eda2cdad7fe10fa641118a2c9c6050c5c4dc1d8c0661cf9142be",
+      "lines": [
+        1,
+        161
+      ],
+      "path": ".github/workflows/publish.yml",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0004-551d1fcf",
+  "file_kind": "automation",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "926e135a746fa7b9d56763a154abf7bfd4d3435f",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 50,
+      "text": "echo \"release tag ${RELEASE_TAG} must equal ${expected_tag}\" >&2"
+    },
+    {
+      "line": 66,
+      "text": "echo \"publication recovery must run from main\" >&2"
+    }
+  ],
+  "language": "YAML",
+  "line_count": 161,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "repository",
+  "path": ".github/workflows/publish.yml",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines a repository build, validation, CI, or release operation."
+  },
+  "queues": [],
+  "recovery_behavior": [
+    {
+      "line": 9,
+      "text": "description: Existing version-matched release tag to resume"
+    }
+  ],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

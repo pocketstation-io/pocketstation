@@ -10,15 +10,22 @@ use super::{CaptureSource, SourceKind, SourceState};
 use crate::frame::Platform;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Enumerates the supported source query cases."]
 pub enum SourceQuery {
+    #[doc = "Represents the any case of `SourceQuery`."]
     Any,
+    #[doc = "Represents the app case of `SourceQuery`."]
     App(String),
+    #[doc = "Represents the by kind case of `SourceQuery`."]
     ByKind(SourceKind),
+    #[doc = "Represents the by stable key case of `SourceQuery`."]
     ByStableKey(String),
+    #[doc = "Represents the playing case of `SourceQuery`."]
     Playing,
 }
 
 impl SourceQuery {
+    #[doc = "Returns whether an input satisfies `SourceQuery`."]
     pub fn matches(&self, source: &CaptureSource) -> bool {
         match self {
             Self::Any => true,
@@ -37,6 +44,7 @@ impl SourceQuery {
     }
 }
 
+#[doc = "Resolves query for `query`."]
 pub fn resolve_query(query: &SourceQuery, sources: &[CaptureSource]) -> Vec<CaptureSource> {
     sources
         .iter()
@@ -45,13 +53,17 @@ pub fn resolve_query(query: &SourceQuery, sources: &[CaptureSource]) -> Vec<Capt
         .collect()
 }
 
+#[doc = "Defines the implementation contract for source."]
 pub trait SourceProvider {
+    #[doc = "Discovers the resources visible to `SourceProvider`."]
     fn discover(&self, query: &SourceQuery) -> Vec<CaptureSource>;
 }
 
+#[doc = "Represents local source provider in the PocketStation API."]
 pub struct LocalSourceProvider;
 
 impl SourceProvider for LocalSourceProvider {
+    #[doc = "Discovers the resources visible to `LocalSourceProvider`."]
     fn discover(&self, query: &SourceQuery) -> Vec<CaptureSource> {
         resolve_query(query, &discover_sources())
     }
@@ -82,6 +94,7 @@ pub fn application_capture_available() -> bool {
     }
 }
 
+#[doc = "Discovers capture sources available from the local provider."]
 pub fn discover_sources() -> Vec<CaptureSource> {
     #[cfg(not(feature = "native-capture"))]
     return Vec::new();

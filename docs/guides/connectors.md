@@ -1,167 +1,97 @@
-# Build a connector
+# Author a connector
 
-A Connector is an externally packaged Endpoint integration. It consumes one
-or more named Session routes and publishes them to a protocol, provider, or
-customer boundary without adding that provider to Core.
+<!-- claims: CLM-GUIDE-015-CAP-001,CLM-GUIDE-015-CAP-002,CLM-GUIDE-015-CAP-003,CLM-GUIDE-015-SOURCE-001 -->
 
-## Authoring surface
+## Scope
 
-Implement `ConnectorDriverFactory` to validate and acquire provider
-resources, then return one `ConnectorDriver`. Core owns bounded input polling,
-delivery accounting, drain/abort, and the canonical Endpoint transaction:
+- **Declare connector manifests and configuration.** Describe connector identity, ports, configuration schema, secrets, and delivery policy without embedding a provider protocol in Core.
+- **Run connector workers.** Supervise connector delivery, acknowledgement, retry budgets, readiness, cancellation, drain, and abort.
+- **Validate protocol and conformance boundaries.** Check ABI layout, cross-language behavior, connector vectors, and protocol compatibility against versioned fixtures.
 
-```rust,no_run
-use std::sync::Arc;
-use pocketstation::connector::{
-    Connector, ConnectorConfiguration, ConnectorDeliveryOutcome,
-    ConnectorError, ConnectorInputDescriptor, ConnectorItem,
-    ConnectorDriver, ConnectorDriverFactory,
-};
-use pocketstation::Session;
+These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
 
-# fn manifest() -> pocketstation::connector::ConnectorManifest { todo!() }
-# struct RelayFactory;
-# impl ConnectorDriverFactory for RelayFactory {
-#   fn prepare(&self, _: &[ConnectorInputDescriptor])
-#     -> Result<Box<dyn ConnectorDriver>, ConnectorError>
-#   { todo!() }
-# }
-# struct Relay;
-# impl ConnectorDriver for Relay {
-#   fn deliver(
-#     &mut self,
-#     _: ConnectorItem<'_>,
-#     _: &pocketstation::connector::ConnectorContext,
-#   ) -> Result<ConnectorDeliveryOutcome, ConnectorError> {
-#     Ok(ConnectorDeliveryOutcome::Delivered)
-#   }
-# }
-# fn main() -> Result<(), Box<dyn std::error::Error>> {
-let session = Session::new();
-let connector = Connector::with_driver(manifest(), Arc::new(RelayFactory))?;
-let relay = session.register_connector(connector)?;
-let endpoint = relay.declare(
-    &session,
-    ConnectorConfiguration::new(),
-    pocketstation::EdgeContract::realtime_audio(),
-)?;
-# let _ = endpoint;
-# Ok(())
-# }
-```
+## Prerequisites
 
-The complete compiling example is
-[`examples/connector_authoring.rs`](../../examples/connector_authoring.rs).
+Read the linked concept and confirm that target platform, Cargo features, source or provider dependencies, and application-owned permission work match this task. Keep returned typed errors and outcomes available for verification.
 
-## What Core supplies
+## Procedure
 
-The author does not create an Endpoint lifecycle or a Session registry. The
-private adapter supplies:
+1. Build ConnectorManifest with node and configuration schemas.
+2. Validate values and keep secrets in ConnectorSecret.
+3. Implement finite delivery outcomes.
+4. Register, declare, and connect the endpoint.
+5. Run conformance before provider qualification.
 
-- execution behind the closed Session start gate;
-- one shutdown token shared with the worker, preserving drain versus abort;
-- startup-readiness deadline supervision;
-- panic containment and terminal error classification;
-- preparation cancellation;
-- joined shutdown; and
-- canonical `EndpointDriverObservations` for delivery accounting.
+## APIs used
 
-The driver adapter consumes the bounded `EndpointPortInput` receivers. The
-provider handles typed `ConnectorItem` values and returns an explicit delivered
-or dropped result. `ConnectorFactory` and `ConnectorWorker` remain the advanced
-escape hatch when a protocol requires a specialized off-realtime worker.
+| Public declaration | Kind | Declared purpose | Source |
+|---|---|---|---|
+| `pocketstation::connector::worker::driver::ConnectorDriver` | trait | Provider-specific behavior executed on Core's bounded connector worker. | `src/connector/worker/driver.rs:92` |
+| `pocketstation::connector::worker::driver::ConnectorDriverFactory` | trait | Prepares provider state while Core retains receiver and lifecycle authority. | `src/connector/worker/driver.rs:123` |
+| `pocketstation::connector::sidecar::SidecarConnectorDriverFactory` | struct | Adapts a bounded PocketStation sidecar process to the Connector driver SPI. | `src/connector/sidecar.rs:24` |
+| `pocketstation::connector::transport::ConnectorConfigurationRecord` | struct | Canonical typed configuration handed to a connector sidecar during its bounded Configure handshake. Secret classification survives the boundary; Debug output continues to redact secret values. | `src/connector/transport.rs:42` |
+| `pocketstation::connector::worker::driver::ConnectorInputDescriptor` | struct | Immutable Session and graph metadata for one connector input. | `src/connector/worker/driver.rs:16` |
+| `pocketstation::connector::worker::driver::ConnectorDeliveryOutcome` | enum | Explicit delivery result used for Core-owned accounting. | `src/connector/worker/driver.rs:83` |
+| `pocketstation::connector::worker::driver::ConnectorItem` | enum | One bounded item delivered by Core to a connector driver. | `src/connector/worker/driver.rs:62` |
+| `pocketstation::connector` | module | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/connector/mod.rs:1` |
+| `pocketstation::connector::worker::ConnectorFactory` | trait | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/connector/worker/mod.rs:17` |
+| `pocketstation::connector::worker::ConnectorWorker` | trait | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/connector/worker/mod.rs:32` |
+| `pocketstation::connector::Connector` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/connector/mod.rs:61` |
+| `pocketstation::connector::RegisteredConnector` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/connector/mod.rs:125` |
+| `pocketstation::connector::configuration::ConnectorConfiguration` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/connector/configuration.rs:111` |
+| `pocketstation::connector::configuration::ConnectorConfigurationError` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/connector/configuration.rs:608` |
+| `pocketstation::connector::configuration::ConnectorConfigurationField` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/connector/configuration.rs:168` |
+| `pocketstation::connector::configuration::ConnectorConfigurationSchema` | struct | The compiler exposes this declaration; its native description remains a Gate 9 obligation. | `src/connector/configuration.rs:232` |
 
-## Manifest and routing
+## Verify the outcome
 
-`ConnectorManifest` is inspectable before execution. It contains:
+The following test bodies are evidence only for their recorded setup:
 
-- stable open operator and node type identities;
-- package and manifest revisions;
-- named inputs with the existing `SignalSpec` and `MediaCaps`;
-- typed configuration fields, defaults, constraints, and deprecations;
-- a finite startup-readiness deadline and probe thresholds; and
-- open capability and resource-requirement identifiers.
+- `given_connector_driver_when_two_stems_run_then_core_owns_typed_delivery_and_drain` — given connector driver when two stems run then core owns typed delivery and drain (`tests/connector_contract.rs:582`; `test-eefa0d157754becdb1a2`).
+- `given_connector_error_when_inspected_then_code_is_stable_and_machine_readable` — given connector error when inspected then code is stable and machine readable (`tests/connector_contract.rs:243`; `test-ae5c25d0ba6141b1a13a`).
+- `given_connector_never_ready_when_startup_deadline_expires_then_failure_is_terminal` — given connector never ready when startup deadline expires then failure is terminal (`tests/connector_contract.rs:753`; `test-5cad5d93f0205d9f9891`).
+- `given_connector_public_surface_when_inspected_then_managed_aliases_are_absent` — given connector public surface when inspected then managed aliases are absent (`tests/connector_contract.rs:26`; `test-e1ff05b0ec4b54a78b0b`).
+- `given_duplicate_connector_identity_when_registered_then_registration_is_rejected` — given duplicate connector identity when registered then registration is rejected (`tests/connector_contract.rs:229`; `test-5576ad13d627ff481e0b`).
+- `given_grouped_connector_when_session_is_cancelled_then_abort_intent_reaches_worker` — given grouped connector when session is cancelled then abort intent reaches worker (`tests/connector_contract.rs:711`; `test-2e6e7299000cfcf26fc4`).
+- `given_grouped_connector_when_session_stops_then_one_worker_is_joined_and_observed` — given grouped connector when session stops then one worker is joined and observed (`tests/connector_contract.rs:679`; `test-aa2345c7b9339f742b48`).
+- `given_prior_preparation_when_connector_prepare_fails_then_prior_work_rolls_back` — given prior preparation when connector prepare fails then prior work rolls back (`tests/connector_contract.rs:640`; `test-867a92c422e2fe7fbb4d`).
+- `given_registered_connector_when_declared_then_identity_is_session_scoped` — given registered connector when declared then identity is session scoped (`tests/connector_contract.rs:203`; `test-da2fb847d5c7f22349e8`).
+- `given_saturated_connector_route_when_observed_then_drops_are_visible_in_session_metrics` — given saturated connector route when observed then drops are visible in session metrics (`tests/connector_contract.rs:838`; `test-2a3db251e3203d28d4cf`).
+- `given_canonical_connector_vectors_when_compared_then_core_contract_semantics_match` — given canonical connector vectors when compared then core contract semantics match (`tests/connector_portable_semantics.rs:167`; `test-5ccbb97716e582e0a790`).
+- `given_provider_owned_field_name_when_resolved_then_core_preserves_it_opaquely` — given provider owned field name when resolved then core preserves it opaquely (`src/connector/configuration.rs:642`; `test-d9078fd01d0271720b30`).
 
-`EdgeContract` is supplied when the connector endpoint is declared. Capacity,
-loss, backpressure, copy, and latency policy belong to that exact Graph route,
-not to a provider manifest.
+## Failure signals
 
-Connector API revision 1 is an Endpoint integration: it requires at least one
-input and rejects outputs. Generated audio re-enters through the existing audio
-Bridge, not through a Connector output port.
+- `pocketstation::endpoint::runtime::EndpointFailureStage` / `CancelPreparation` — `error-0265bb447764629fa47b`
+- `pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError` / `ZeroLeaseCapacity` — `error-0370b7ecbdf2b9d6fbdb`
+- `pocketstation::connector::error::ConnectorErrorCodeError` / `TooLong` — `error-06f5c52aa07c86ca5062`
+- `pocketstation::connector::transport::ConnectorAudioRecordError` / `InvalidSampleCount` — `error-093c41e2489cf1bb258d`
+- `pocketstation::connector::transport::ConnectorAudioRecordError` — `error-0b1f3a3357a77fcef185`
+- `pocketstation::connector::error::ConnectorErrorCodeError` / `Empty` — `error-0b71c9f1b1489e0d4f9a`
+- `pocketstation::connector::error::ConnectorErrorBuildError` — `error-0bc8adb0641971704f74`
+- `pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError` / `QueueCapacityTooLarge` — `error-0bed26cd5cd9ccfe0b20`
+- `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` / `TooManyFields` — `error-0c83ebde568152ad3edf`
+- `pocketstation::endpoint::registry::EndpointDriverRegistryError` / `OperatorNodeTypeConflict` — `error-0db6114718e1d213362f`
+- `pocketstation::connector::error::ConnectorErrorStage` / `Startup` — `error-0e62627edef059ecab22`
+- `pocketstation::connector::manifest::ConnectorManifestError` / `InvalidManifestRevision` — `error-10517744910e14c23fc4`
 
-## Configuration and secrets
+Retry only when the relevant API or error contract explicitly permits it. An error name, a transient-looking message, or a successful prior run is not retry evidence.
 
-Use `ConnectorConfigurationValue` instead of parsing an untyped map. Unknown
-fields, missing required values, wrong types, invalid defaults, and constraint
-violations fail before Session compilation.
+## Related documentation
 
-Use `ConnectorSecret` for credentials. Its `Debug` output is redacted, the
-sensitive classification survives lowering into `EndpointConfiguration` and
-`NodeConfig`, and sensitive owned strings are overwritten on destruction. A
-connector may explicitly read a secret during setup or worker execution; it
-must never copy it into errors, logs, metrics, or observations.
+- [Glossary](/docs/glossary.md)
+- [PocketStation](/README.md)
+- [Behavior evidence index](/docs/reference/behavior-evidence.md)
+- [Protocol surface index](/docs/reference/protocol-surface.md)
+- [Rust API reference](/docs/reference/rust-api.md)
+- [Test connector conformance](/docs/how-to/test-connector-conformance.md)
+- [Configuration reference](/docs/reference/configuration.md)
+- [Connector API](/docs/reference/connectors.md)
 
-## Service status and failures
+## Evidence boundary
 
-Call `ConnectorContext::report_readiness_success` or
-`report_readiness_failure` when using thresholds, or set readiness directly
-after a provider handshake. Report health and recovery independently:
+This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
 
-```text
-Ready + Healthy + Idle          normal delivery
-Ready + Degraded + Idle         delivering with reduced service quality
-NotReady + Degraded + Reconnecting  reconnect in progress
-```
+- `examples/connector_authoring.rs:1-167` (`DIRECT`)
 
-Use `ConnectorErrorCode`, `ConnectorErrorStage`, and
-`ConnectorRetryability` for machine-readable failures. Connector packages own
-their actual retry/backoff protocol and must keep it finite. Core does not
-pretend to enforce an unused generic retry policy.
-
-`RegisteredConnector::observations` returns provider observations beside the
-canonical Endpoint observations. Session route metrics remain authoritative
-for queue capacity, backpressure, and route drops.
-
-## Grouping and shutdown
-
-Override `ConnectorDriverFactory::preparation_group` when several declared routes
-must share one provider connection. Returning one shared
-`EndpointPreparationGroup` lets application and microphone buses use one
-worker and one joined provider lifecycle while retaining independent route and
-lineage identities.
-
-The connector driver must:
-
-1. acquire resources in `prepare` without consuming media;
-2. report ready only after the provider can accept delivery;
-3. keep each provider operation finite and off realtime;
-4. return an explicit delivery result or structured error; and
-5. finalize provider resources in `shutdown`.
-
-Core handles receiver polling and monotonic shutdown: an abort can upgrade
-drain, but a later drain cannot weaken an abort. Low-level Connector workers
-remain responsible for their own bounded loop and must follow the same rule.
-
-## Package and language boundary
-
-Do not add provider dependencies to `pocketstation`. The authoritative
-`pocketstation-relay` implementation lives in `pocketstation-io/connectors/relay`.
-`pks`, Python, JavaScript, Lab, and Bench consume or project that package; none
-owns a second Relay media engine. Protocol owns portable wire semantics and
-conformance vectors.
-
-A Python or JavaScript process may use its supported native projection or a
-bounded sidecar/extension boundary, but it never runs foreign-language code on the
-realtime PCM path. The current native extension ABI does not provide arbitrary
-dynamic PCM Endpoint authoring. Do not claim that third-party Python or
-JavaScript code can author an audio connector until a versioned managed/native
-audio boundary and cross-language conformance suite exist.
-
-Enable `conformance-fixtures` and execute the deterministic Session fixtures in
-`pocketstation::conformance` against the package's real `Connector`
-registration. Connector does not publish a second conformance namespace. A
-checklist or self-reported result is not conformance. Core component
-conformance is not provider proof: a supported package must also test its real
-authentication, network setup, readiness, reconnect, multi-bus delivery, and
-receiver-visible outcome in its owning repository.
+A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.

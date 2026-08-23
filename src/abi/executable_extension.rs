@@ -45,14 +45,17 @@ pub(crate) const MAX_LIBRARY_REGISTRATIONS: u32 = 64;
 const SIGNAL_FLAG_END_OF_STREAM: u32 = 1;
 const SIGNAL_FLAG_TERMINAL: u32 = 2;
 
+#[doc = "Defines the optional C callback used to prepare an extension instance; pointer validity and ownership follow the extension ABI contract."]
 pub type PksExtensionPrepareCallback =
     Option<unsafe extern "C-unwind" fn(context: *mut c_void) -> PksSessionStatus>;
+#[doc = "Defines the optional C callback used to validate extension configuration; pointer validity and ownership follow the extension ABI contract."]
 pub type PksExtensionValidateConfigurationCallback = Option<
     unsafe extern "C-unwind" fn(
         registration_context: *mut c_void,
         configuration: PksSessionUtf8,
     ) -> PksSessionStatus,
 >;
+#[doc = "Defines the optional C callback used to create an extension instance; pointer validity and ownership follow the extension ABI contract."]
 pub type PksExtensionCreateCallback = Option<
     unsafe extern "C-unwind" fn(
         registration_context: *mut c_void,
@@ -60,6 +63,7 @@ pub type PksExtensionCreateCallback = Option<
         output_instance_context: *mut *mut c_void,
     ) -> PksSessionStatus,
 >;
+#[doc = "Defines the optional C callback used to produce the next source signal; pointer validity and ownership follow the extension ABI contract."]
 pub type PksExtensionSourceNextCallback = Option<
     unsafe extern "C-unwind" fn(
         context: *mut c_void,
@@ -67,6 +71,7 @@ pub type PksExtensionSourceNextCallback = Option<
         output: *mut PksExtensionSignalBuffer,
     ) -> PksSessionStatus,
 >;
+#[doc = "Defines the optional C callback used to process an operator input; pointer validity and ownership follow the extension ABI contract."]
 pub type PksExtensionOperatorProcessCallback = Option<
     unsafe extern "C-unwind" fn(
         context: *mut c_void,
@@ -74,39 +79,61 @@ pub type PksExtensionOperatorProcessCallback = Option<
         output: *mut PksExtensionSignalBuffer,
     ) -> PksSessionStatus,
 >;
+#[doc = "Defines the optional C callback used to consume an endpoint input; pointer validity and ownership follow the extension ABI contract."]
 pub type PksExtensionEndpointConsumeCallback = Option<
     unsafe extern "C-unwind" fn(
         context: *mut c_void,
         input: *const PksExtensionSignalView,
     ) -> PksSessionStatus,
 >;
+#[doc = "Defines the optional C callback used to request an extension instance to stop; pointer validity and ownership follow the extension ABI contract."]
 pub type PksExtensionStopCallback =
     Option<unsafe extern "C-unwind" fn(context: *mut c_void) -> PksSessionStatus>;
+#[doc = "Defines the optional C callback used to finish extension work; pointer validity and ownership follow the extension ABI contract."]
 pub type PksExtensionFinishCallback =
     Option<unsafe extern "C-unwind" fn(context: *mut c_void) -> PksSessionStatus>;
+#[doc = "Defines the optional C callback used to destroy extension-owned context; pointer validity and ownership follow the extension ABI contract."]
 pub type PksExtensionDestroyCallback = Option<unsafe extern "C-unwind" fn(context: *mut c_void)>;
 
 #[repr(C)]
 #[derive(Clone, Copy)]
+#[doc = "Represents extension callbacks in the PocketStation API."]
 pub struct PksExtensionCallbacks {
+    #[doc = "Stores the byte size of the `PksExtensionCallbacks` ABI structure."]
     pub struct_size_bytes: u32,
+    #[doc = "Stores the major ABI version expected by `PksExtensionCallbacks`."]
     pub abi_major: u16,
+    #[doc = "Stores the minor ABI version expected by `PksExtensionCallbacks`."]
     pub abi_minor: u16,
+    #[doc = "Carries the opaque registration context used by `PksExtensionCallbacks` callbacks."]
     pub registration_context: *mut c_void,
+    #[doc = "Limits payload storage for `PksExtensionCallbacks`, in bytes."]
     pub max_payload_bytes: u32,
+    #[doc = "Reserves storage for forward-compatible evolution of `PksExtensionCallbacks`."]
     pub reserved: u32,
+    #[doc = "Provides the validate configuration callback used by `PksExtensionCallbacks`."]
     pub validate_configuration: PksExtensionValidateConfigurationCallback,
+    #[doc = "Provides the create callback used by `PksExtensionCallbacks`."]
     pub create: PksExtensionCreateCallback,
+    #[doc = "Provides the prepare callback used by `PksExtensionCallbacks`."]
     pub prepare: PksExtensionPrepareCallback,
+    #[doc = "Provides the source next callback used by `PksExtensionCallbacks`."]
     pub source_next: PksExtensionSourceNextCallback,
+    #[doc = "Provides the operator process callback used by `PksExtensionCallbacks`."]
     pub operator_process: PksExtensionOperatorProcessCallback,
+    #[doc = "Provides the endpoint consume callback used by `PksExtensionCallbacks`."]
     pub endpoint_consume: PksExtensionEndpointConsumeCallback,
+    #[doc = "Provides the request stop callback used by `PksExtensionCallbacks`."]
     pub request_stop: PksExtensionStopCallback,
+    #[doc = "Provides the finish callback used by `PksExtensionCallbacks`."]
     pub finish: PksExtensionFinishCallback,
+    #[doc = "Provides the destroy instance callback used by `PksExtensionCallbacks`."]
     pub destroy_instance: PksExtensionDestroyCallback,
+    #[doc = "Provides the destroy registration callback used by `PksExtensionCallbacks`."]
     pub destroy_registration: PksExtensionDestroyCallback,
 }
 
+#[doc = "Defines the optional C callback used to acquire an extension registration; pointer validity and ownership follow the extension ABI contract."]
 pub type PksExtensionAcquireRegistrationCallback = Option<
     unsafe extern "C-unwind" fn(
         library_context: *mut c_void,
@@ -120,61 +147,103 @@ pub type PksExtensionAcquireRegistrationCallback = Option<
 
 #[repr(C)]
 #[derive(Clone, Copy)]
+#[doc = "Represents extension library in the PocketStation API."]
 pub struct PksExtensionLibrary {
+    #[doc = "Stores the byte size of the `PksExtensionLibrary` ABI structure."]
     pub struct_size_bytes: u32,
+    #[doc = "Stores the major ABI version expected by `PksExtensionLibrary`."]
     pub abi_major: u16,
+    #[doc = "Stores the minor ABI version expected by `PksExtensionLibrary`."]
     pub abi_minor: u16,
+    #[doc = "Stores the number of registration represented by `PksExtensionLibrary`."]
     pub registration_count: u32,
+    #[doc = "Reserves storage for forward-compatible evolution of `PksExtensionLibrary`."]
     pub reserved: u32,
+    #[doc = "Carries the opaque library context used by `PksExtensionLibrary` callbacks."]
     pub library_context: *mut c_void,
+    #[doc = "Provides the acquire registration callback used by `PksExtensionLibrary`."]
     pub acquire_registration: PksExtensionAcquireRegistrationCallback,
 }
 
+#[doc = "Names the extension library entrypoint type used by the public API."]
 pub type PksExtensionLibraryEntrypoint =
     unsafe extern "C-unwind" fn(output_library: *mut PksExtensionLibrary) -> PksSessionStatus;
 
 #[repr(C)]
 #[derive(Clone, Copy)]
+#[doc = "Represents extension signal view in the PocketStation API."]
 pub struct PksExtensionSignalView {
+    #[doc = "Stores the byte size of the `PksExtensionSignalView` ABI structure."]
     pub struct_size_bytes: u32,
+    #[doc = "Stores the major ABI version expected by `PksExtensionSignalView`."]
     pub abi_major: u16,
+    #[doc = "Stores the minor ABI version expected by `PksExtensionSignalView`."]
     pub abi_minor: u16,
+    #[doc = "Carries the data owned or referenced by `PksExtensionSignalView`."]
     pub data: *const u8,
+    #[doc = "Stores the len size for `PksExtensionSignalView`, in bytes."]
     pub len_bytes: u32,
+    #[doc = "Carries the bit flags defined by `PksExtensionSignalView`."]
     pub flags: u32,
+    #[doc = "Stores the observed timestamp value for `PksExtensionSignalView`, in nanoseconds."]
     pub observed_timestamp_ns: u64,
+    #[doc = "Stores the source timestamp value for `PksExtensionSignalView`, in nanoseconds."]
     pub source_timestamp_ns: u64,
+    #[doc = "Stores the duration value for `PksExtensionSignalView`, in nanoseconds."]
     pub duration_ns: u64,
+    #[doc = "Stores the sequence number associated with `PksExtensionSignalView`."]
     pub sequence_number: u64,
 }
 
 #[repr(C)]
 #[derive(Clone, Copy)]
+#[doc = "Represents extension signal buffer in the PocketStation API."]
 pub struct PksExtensionSignalBuffer {
+    #[doc = "Stores the byte size of the `PksExtensionSignalBuffer` ABI structure."]
     pub struct_size_bytes: u32,
+    #[doc = "Stores the major ABI version expected by `PksExtensionSignalBuffer`."]
     pub abi_major: u16,
+    #[doc = "Stores the minor ABI version expected by `PksExtensionSignalBuffer`."]
     pub abi_minor: u16,
+    #[doc = "Carries the data owned or referenced by `PksExtensionSignalBuffer`."]
     pub data: *mut u8,
+    #[doc = "Stores the capacity size for `PksExtensionSignalBuffer`, in bytes."]
     pub capacity_bytes: u32,
+    #[doc = "Stores the len size for `PksExtensionSignalBuffer`, in bytes."]
     pub len_bytes: u32,
+    #[doc = "Carries the bit flags defined by `PksExtensionSignalBuffer`."]
     pub flags: u32,
+    #[doc = "Stores the observed timestamp value for `PksExtensionSignalBuffer`, in nanoseconds."]
     pub observed_timestamp_ns: u64,
+    #[doc = "Stores the source timestamp value for `PksExtensionSignalBuffer`, in nanoseconds."]
     pub source_timestamp_ns: u64,
+    #[doc = "Stores the duration value for `PksExtensionSignalBuffer`, in nanoseconds."]
     pub duration_ns: u64,
 }
 
 #[repr(C)]
 #[derive(Clone, Copy)]
+#[doc = "Describes the extension pipeline declaration contract."]
 pub struct PksExtensionPipelineDeclaration {
+    #[doc = "Stores the byte size of the `PksExtensionPipelineDeclaration` ABI structure."]
     pub struct_size_bytes: u32,
+    #[doc = "Stores the major ABI version expected by `PksExtensionPipelineDeclaration`."]
     pub abi_major: u16,
+    #[doc = "Stores the minor ABI version expected by `PksExtensionPipelineDeclaration`."]
     pub abi_minor: u16,
+    #[doc = "Identifies the source associated with `PksExtensionPipelineDeclaration`."]
     pub source_id: PksSessionUtf8,
+    #[doc = "Stores the source output port associated with `PksExtensionPipelineDeclaration`."]
     pub source_output_port: PksSessionUtf8,
+    #[doc = "Identifies the operator associated with `PksExtensionPipelineDeclaration`."]
     pub operator_id: PksSessionUtf8,
+    #[doc = "Stores the operator input port associated with `PksExtensionPipelineDeclaration`."]
     pub operator_input_port: PksSessionUtf8,
+    #[doc = "Stores the operator output port associated with `PksExtensionPipelineDeclaration`."]
     pub operator_output_port: PksSessionUtf8,
+    #[doc = "Identifies the endpoint associated with `PksExtensionPipelineDeclaration`."]
     pub endpoint_id: PksSessionUtf8,
+    #[doc = "Stores the endpoint input port associated with `PksExtensionPipelineDeclaration`."]
     pub endpoint_input_port: PksSessionUtf8,
 }
 

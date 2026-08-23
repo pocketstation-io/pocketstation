@@ -1,0 +1,1092 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AtomicU64::new",
+    "AtomicUsize::new",
+    "UnsafeCell::new",
+    "acquire",
+    "acquire_failures",
+    "as_mut_ptr",
+    "as_mut_slice",
+    "as_slice",
+    "available_slots",
+    "begin_shared",
+    "cfg",
+    "collect",
+    "compare_exchange",
+    "compare_exchange_weak",
+    "contains",
+    "copy_from_slice",
+    "count_ones",
+    "debug_struct",
+    "derive",
+    "drop",
+    "error",
+    "fetch_add",
+    "fetch_or",
+    "field",
+    "finish",
+    "fmt",
+    "freeze",
+    "get",
+    "index",
+    "into_boxed_slice",
+    "is_empty",
+    "is_in_use",
+    "is_ok",
+    "is_some_and",
+    "len",
+    "load",
+    "map",
+    "map_or",
+    "new",
+    "pub",
+    "release",
+    "release_shared",
+    "release_shared_for_testing",
+    "set_shared_ref_count_for_testing",
+    "shared_ref_count",
+    "shared_ref_counts:",
+    "slot",
+    "slot_count",
+    "slot_mut_ptr",
+    "slot_size",
+    "std::mem::ManuallyDrop::new",
+    "std::ptr::read",
+    "std::ptr::slice_from_raw_parts_mut",
+    "store",
+    "trailing_zeros",
+    "try_clone",
+    "try_copy_from_slice",
+    "try_retain_shared",
+    "try_set_len"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 108,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 113,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AtomicU64::new",
+    "AtomicUsize::new",
+    "UnsafeCell::new",
+    "new",
+    "std::mem::ManuallyDrop::new"
+  ],
+  "content_hash": "23f32ed6c30dbb69f7e4723634987be006a00cec77f32598ffe850ca927d9ffa",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 10,
+      "name": "POOL_MAX_SLOTS",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 14,
+      "name": "AudioBufferWriteError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 23,
+      "name": "AudioBufferPool",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "slot_size",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "slot_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "acquire_failures",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "available_slots",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "acquire",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 97,
+      "name": "is_in_use",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 101,
+      "name": "shared_ref_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 109,
+      "name": "set_shared_ref_count_for_testing",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 114,
+      "name": "release_shared_for_testing",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "begin_shared",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 127,
+      "name": "try_retain_shared",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 148,
+      "name": "release_shared",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 174,
+      "name": "release",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 178,
+      "name": "slot",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 189,
+      "name": "slot_mut_ptr",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 197,
+      "name": "AudioBufferHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 205,
+      "name": "len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 208,
+      "name": "is_empty",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 211,
+      "name": "index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 214,
+      "name": "as_slice",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "as_mut_slice",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 228,
+      "name": "try_set_len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 240,
+      "name": "try_copy_from_slice",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 245,
+      "name": "freeze",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 265,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 273,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 280,
+      "name": "SharedAudioBufferHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 288,
+      "name": "len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 291,
+      "name": "is_empty",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 295,
+      "name": "index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 299,
+      "name": "as_slice",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 303,
+      "name": "try_clone",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 314,
+      "name": "shared_ref_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 322,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 328,
+      "name": "fmt",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 265,
+      "text": "fn drop(&mut self) {"
+    },
+    {
+      "line": 322,
+      "text": "fn drop(&mut self) {"
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 10,
+      "name": "POOL_MAX_SLOTS",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 14,
+      "name": "AudioBufferWriteError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 23,
+      "name": "AudioBufferPool",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "slot_size",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "slot_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "acquire_failures",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "available_slots",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "acquire",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 97,
+      "name": "is_in_use",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 101,
+      "name": "shared_ref_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 109,
+      "name": "set_shared_ref_count_for_testing",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 114,
+      "name": "release_shared_for_testing",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 197,
+      "name": "AudioBufferHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 205,
+      "name": "len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 208,
+      "name": "is_empty",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 211,
+      "name": "index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 214,
+      "name": "as_slice",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "as_mut_slice",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 228,
+      "name": "try_set_len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 240,
+      "name": "try_copy_from_slice",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 245,
+      "name": "freeze",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 280,
+      "name": "SharedAudioBufferHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 288,
+      "name": "len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 291,
+      "name": "is_empty",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 295,
+      "name": "index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 299,
+      "name": "as_slice",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 303,
+      "name": "try_clone",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 314,
+      "name": "shared_ref_count",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 144,
+      "text": "Err(observed) => current = observed,"
+    },
+    {
+      "line": 170,
+      "text": "Err(observed) => current = observed,"
+    },
+    {
+      "line": 230,
+      "text": "return Err(AudioBufferWriteError::CapacityExceeded {"
+    },
+    {
+      "line": 248,
+      "text": "return Err(self);"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 14,
+      "name": "AudioBufferWriteError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 240,
+      "text": "pub fn try_copy_from_slice(&mut self, data: &[f32]) -> Result<(), AudioBufferWriteError> {"
+    }
+  ],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "23f32ed6c30dbb69f7e4723634987be006a00cec77f32598ffe850ca927d9ffa",
+      "lines": [
+        1,
+        336
+      ],
+      "path": "src/frame/pool.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 182,
+      "text": "let cell = unsafe { &*self.slots[index as usize].get() };"
+    },
+    {
+      "line": 193,
+      "text": "let cell = unsafe { &mut *self.slots[index as usize].get() };"
+    },
+    {
+      "line": 221,
+      "text": "unsafe { &mut *self.pool.slot_mut_ptr(self.index, self.len) }"
+    },
+    {
+      "line": 254,
+      "text": "let pool = unsafe { std::ptr::read(&this.pool) };"
+    }
+  ],
+  "file_id": "file-0142-e103105e",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "ea7bfec84cd8cda899cc9c1a11aeaa2c3369f5e0",
+  "implemented_by": [],
+  "implements": [
+    "AudioBufferPool",
+    "AudioBufferHandle",
+    "Drop for AudioBufferHandle",
+    "fmt::Debug for AudioBufferHandle",
+    "SharedAudioBufferHandle",
+    "Drop for SharedAudioBufferHandle",
+    "fmt::Debug for SharedAudioBufferHandle"
+  ],
+  "imported_by": [],
+  "imports": [
+    "std::cell::UnsafeCell",
+    "std::fmt",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicU64, AtomicUsize, Ordering}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 4,
+      "text": "//! final `Drop` use atomics and never allocate, lock, block, or log."
+    },
+    {
+      "line": 40,
+      "text": "assert!((1..=POOL_MAX_SLOTS).contains(&slot_count));"
+    },
+    {
+      "line": 41,
+      "text": "assert!(slot_size > 0);"
+    },
+    {
+      "line": 180,
+      "text": "assert!((index as usize) < self.slots.len() && (len as usize) <= self.slot_size);"
+    },
+    {
+      "line": 186,
+      "text": "/// Returns a raw mutable view so the pool itself never manufactures a"
+    },
+    {
+      "line": 190,
+      "text": "assert!((index as usize) < self.slots.len() && (len as usize) <= self.slot_size);"
+    },
+    {
+      "line": 220,
+      "text": "// handle. Frozen/shared handles cannot coexist with this handle."
+    },
+    {
+      "line": 226,
+      "text": "/// Capture callbacks and realtime partitions must use this method instead"
+    },
+    {
+      "line": 263,
+      "text": "/// Drop contract \u2014 must stay forever: lock-free \u00b7 panic-free \u00b7 alloc-free \u00b7 log-free."
+    },
+    {
+      "line": 320,
+      "text": "/// Drop contract \u2014 must stay forever: lock-free \u00b7 panic-free \u00b7 alloc-free \u00b7 log-free."
+    }
+  ],
+  "language": "Rust",
+  "line_count": 336,
+  "locks": [],
+  "module": "pocketstation::frame::pool",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-c7c57018931d0870377f",
+    "pattern-145c92021b15c7666c35"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/frame/pool.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "begin_shared",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 127,
+      "name": "try_retain_shared",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 148,
+      "name": "release_shared",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 174,
+      "name": "release",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 178,
+      "name": "slot",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 189,
+      "name": "slot_mut_ptr",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 265,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 273,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 322,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 328,
+      "name": "fmt",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 10,
+      "name": "POOL_MAX_SLOTS",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 14,
+      "name": "AudioBufferWriteError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 23,
+      "name": "AudioBufferPool",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "slot_size",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "slot_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "acquire_failures",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "available_slots",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "acquire",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 97,
+      "name": "is_in_use",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 101,
+      "name": "shared_ref_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 109,
+      "name": "set_shared_ref_count_for_testing",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 114,
+      "name": "release_shared_for_testing",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 197,
+      "name": "AudioBufferHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 205,
+      "name": "len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 208,
+      "name": "is_empty",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 211,
+      "name": "index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 214,
+      "name": "as_slice",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "as_mut_slice",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 228,
+      "name": "try_set_len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 240,
+      "name": "try_copy_from_slice",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 245,
+      "name": "freeze",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 280,
+      "name": "SharedAudioBufferHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 288,
+      "name": "len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 291,
+      "name": "is_empty",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 295,
+      "name": "index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 299,
+      "name": "as_slice",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 303,
+      "name": "try_clone",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 314,
+      "name": "shared_ref_count",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Fixed-capacity realtime audio storage and ownership handles.  Allocation happens only when the pool is constructed. Acquire, share, and final `Drop` use atomics and never allocate, lock, block, or log."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/frame-lineage.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/opus-roundtrip.md",
+    "docs/how-to/map-source-time.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/frames.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/frames-and-codec.md",
+    "docs/troubleshooting/opus.md",
+    "docs/troubleshooting/timing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 4,
+      "text": "//! final `Drop` use atomics and never allocate, lock, block, or log."
+    },
+    {
+      "line": 9,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 25,
+      "text": "slots: Box<[UnsafeCell<Box<[f32]>>]>,"
+    },
+    {
+      "line": 26,
+      "text": "shared_ref_counts: Box<[AtomicUsize]>,"
+    },
+    {
+      "line": 35,
+      "text": "// access only. The final shared Drop returns the free bit."
+    },
+    {
+      "line": 39,
+      "text": "pub fn new(slot_count: usize, slot_size: usize) -> Arc<Self> {"
+    },
+    {
+      "line": 50,
+      "text": "Arc::new(Self {"
+    },
+    {
+      "line": 75,
+      "text": "pub fn acquire(self: &Arc<Self>) -> Option<AudioBufferHandle> {"
+    },
+    {
+      "line": 90,
+      "text": "pool: Arc::clone(self),"
+    },
+    {
+      "line": 199,
+      "text": "pool: Arc<AudioBufferPool>,"
+    },
+    {
+      "line": 251,
+      "text": "// SAFETY: `this` will not be dropped. Moving its Arc into the immutable"
+    },
+    {
+      "line": 263,
+      "text": "/// Drop contract \u2014 must stay forever: lock-free \u00b7 panic-free \u00b7 alloc-free \u00b7 log-free."
+    },
+    {
+      "line": 264,
+      "text": "impl Drop for AudioBufferHandle {"
+    },
+    {
+      "line": 282,
+      "text": "pool: Arc<AudioBufferPool>,"
+    },
+    {
+      "line": 309,
+      "text": "pool: Arc::clone(&self.pool),"
+    },
+    {
+      "line": 320,
+      "text": "/// Drop contract \u2014 must stay forever: lock-free \u00b7 panic-free \u00b7 alloc-free \u00b7 log-free."
+    },
+    {
+      "line": 321,
+      "text": "impl Drop for SharedAudioBufferHandle {"
+    }
+  ],
+  "responsibilities": [
+    "POOL_MAX_SLOTS",
+    "AudioBufferWriteError",
+    "AudioBufferPool",
+    "new",
+    "slot_size",
+    "slot_count",
+    "acquire_failures",
+    "available_slots",
+    "acquire",
+    "is_in_use",
+    "shared_ref_count",
+    "set_shared_ref_count_for_testing",
+    "release_shared_for_testing",
+    "begin_shared",
+    "try_retain_shared",
+    "release_shared",
+    "release",
+    "slot",
+    "slot_mut_ptr",
+    "AudioBufferHandle",
+    "len",
+    "is_empty",
+    "index",
+    "as_slice",
+    "as_mut_slice",
+    "try_set_len",
+    "try_copy_from_slice",
+    "freeze",
+    "drop",
+    "fmt",
+    "SharedAudioBufferHandle",
+    "len",
+    "is_empty",
+    "index",
+    "as_slice",
+    "try_clone",
+    "shared_ref_count",
+    "drop",
+    "fmt"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 182,
+      "text": "let cell = unsafe { &*self.slots[index as usize].get() };"
+    },
+    {
+      "line": 193,
+      "text": "let cell = unsafe { &mut *self.slots[index as usize].get() };"
+    },
+    {
+      "line": 221,
+      "text": "unsafe { &mut *self.pool.slot_mut_ptr(self.index, self.len) }"
+    },
+    {
+      "line": 254,
+      "text": "let pool = unsafe { std::ptr::read(&this.pool) };"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

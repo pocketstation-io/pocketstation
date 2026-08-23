@@ -16,9 +16,13 @@ const HEADER_BYTES: usize = 136;
 const FLAG_CONNECTOR_ID_PRESENT: u32 = 1;
 const SAMPLE_FORMAT_F32_INTERLEAVED: u8 = 1;
 
+#[doc = "Defines the major version of connector audio record."]
 pub const CONNECTOR_AUDIO_RECORD_MAJOR: u16 = 1;
+#[doc = "Defines the minor version of connector audio record."]
 pub const CONNECTOR_AUDIO_RECORD_MINOR: u16 = 0;
+#[doc = "Sets the maximum supported connector audio record port bytes."]
 pub const MAX_CONNECTOR_AUDIO_RECORD_PORT_BYTES: usize = 256;
+#[doc = "Sets the maximum supported connector audio record samples."]
 pub const MAX_CONNECTOR_AUDIO_RECORD_SAMPLES: usize = 262_144;
 
 const CONFIGURATION_MAGIC: [u8; 4] = *b"PKCC";
@@ -32,7 +36,9 @@ const CONFIGURATION_DURATION_MILLISECONDS: u8 = 5;
 const CONFIGURATION_BYTE_COUNT: u8 = 6;
 const CONFIGURATION_SECRET: u8 = 7;
 
+#[doc = "Defines the major version of connector configuration record."]
 pub const CONNECTOR_CONFIGURATION_RECORD_MAJOR: u16 = 1;
+#[doc = "Defines the minor version of connector configuration record."]
 pub const CONNECTOR_CONFIGURATION_RECORD_MINOR: u16 = 0;
 
 /// Canonical typed configuration handed to a connector sidecar during its
@@ -42,6 +48,7 @@ pub const CONNECTOR_CONFIGURATION_RECORD_MINOR: u16 = 0;
 pub struct ConnectorConfigurationRecord(ConnectorConfiguration);
 
 impl ConnectorConfigurationRecord {
+    #[doc = "Creates `ConnectorConfigurationRecord` from resolved."]
     pub fn from_resolved(configuration: &ResolvedConnectorConfiguration) -> Self {
         let mut values = ConnectorConfiguration::new();
         for (name, value) in configuration.iter() {
@@ -50,14 +57,17 @@ impl ConnectorConfigurationRecord {
         Self(values)
     }
 
+    #[doc = "Returns the configuration associated with `ConnectorConfigurationRecord`."]
     pub const fn configuration(&self) -> &ConnectorConfiguration {
         &self.0
     }
 
+    #[doc = "Converts `ConnectorConfigurationRecord` into configuration."]
     pub fn into_configuration(self) -> ConnectorConfiguration {
         self.0
     }
 
+    #[doc = "Encodes input through `ConnectorConfigurationRecord`."]
     pub fn encode(&self) -> Result<Vec<u8>, ConnectorConfigurationRecordError> {
         if self.0.len() > MAX_CONNECTOR_CONFIGURATION_FIELDS {
             return Err(ConnectorConfigurationRecordError::TooManyFields);
@@ -90,6 +100,7 @@ impl ConnectorConfigurationRecord {
         Ok(output)
     }
 
+    #[doc = "Decodes input through `ConnectorConfigurationRecord`."]
     pub fn decode(input: &[u8]) -> Result<Self, ConnectorConfigurationRecordError> {
         if input.len() < CONFIGURATION_HEADER_BYTES {
             return Err(ConnectorConfigurationRecordError::Truncated);
@@ -248,48 +259,72 @@ fn map_audio_record_read_error(
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as connector configuration record error."]
 pub enum ConnectorConfigurationRecordError {
     #[error("connector configuration record is truncated")]
+    #[doc = "Reports truncated."]
     Truncated,
     #[error("connector configuration record has trailing bytes")]
+    #[doc = "Reports trailing bytes."]
     TrailingBytes,
     #[error("connector configuration record magic is invalid")]
+    #[doc = "Reports invalid magic."]
     InvalidMagic,
     #[error("connector configuration record major {0} is unsupported")]
+    #[doc = "Reports unsupported major."]
     UnsupportedMajor(u16),
     #[error("connector configuration record minor {0} is unsupported")]
+    #[doc = "Reports unsupported minor."]
     UnsupportedMinor(u16),
     #[error("connector configuration record reserved field is non-zero")]
+    #[doc = "Reports reserved field set."]
     ReservedFieldSet,
     #[error("connector configuration record has too many fields")]
+    #[doc = "Reports too many fields."]
     TooManyFields,
     #[error("connector configuration record field name is invalid")]
+    #[doc = "Reports invalid field name."]
     InvalidFieldName,
     #[error("connector configuration record contains a duplicate field")]
+    #[doc = "Reports duplicate field."]
     DuplicateField,
     #[error("connector configuration record value is too large")]
+    #[doc = "Reports value too large."]
     ValueTooLarge,
     #[error("connector configuration record value is invalid")]
+    #[doc = "Reports invalid value."]
     InvalidValue,
     #[error("connector configuration record value kind {0} is unknown")]
+    #[doc = "Reports unknown value kind."]
     UnknownValueKind(u8),
     #[error("connector configuration record length overflowed")]
+    #[doc = "Reports length overflow."]
     LengthOverflow,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Represents connector audio metadata in the PocketStation API."]
 pub struct ConnectorAudioMetadata {
+    #[doc = "Identifies the endpoint associated with `ConnectorAudioMetadata`."]
     pub endpoint_id: EndpointId,
+    #[doc = "Identifies the connector associated with `ConnectorAudioMetadata`."]
     pub connector_id: Option<ConnectorId>,
+    #[doc = "Identifies the route associated with `ConnectorAudioMetadata`."]
     pub route_id: RouteId,
+    #[doc = "Identifies the stream associated with `ConnectorAudioMetadata`."]
     pub stream_id: StreamId,
+    #[doc = "Stores the lineage associated with `ConnectorAudioMetadata`."]
     pub lineage: FrameLineage,
+    #[doc = "Stores the sample rate value for `ConnectorAudioMetadata`, in hertz."]
     pub sample_rate_hz: u32,
+    #[doc = "Stores the channels associated with `ConnectorAudioMetadata`."]
     pub channels: u8,
+    #[doc = "Stores the sample format associated with `ConnectorAudioMetadata`."]
     pub sample_format: SampleFormat,
 }
 
 #[derive(Debug, Clone, PartialEq)]
+#[doc = "Represents connector audio record in the PocketStation API."]
 pub struct ConnectorAudioRecord {
     port_name: String,
     metadata: ConnectorAudioMetadata,
@@ -297,6 +332,7 @@ pub struct ConnectorAudioRecord {
 }
 
 impl ConnectorAudioRecord {
+    #[doc = "Creates a new `ConnectorAudioRecord` after validating its inputs."]
     pub fn try_new(
         port_name: impl Into<String>,
         metadata: ConnectorAudioMetadata,
@@ -311,6 +347,7 @@ impl ConnectorAudioRecord {
         Ok(record)
     }
 
+    #[doc = "Creates `ConnectorAudioRecord` from item."]
     pub fn from_item(item: &ConnectorItem<'_>) -> Result<Self, ConnectorAudioRecordError> {
         let ConnectorItem::Audio { input, frame } = item else {
             return Err(ConnectorAudioRecordError::NotAudio);
@@ -332,18 +369,22 @@ impl ConnectorAudioRecord {
         )
     }
 
+    #[doc = "Returns the port name associated with `ConnectorAudioRecord`."]
     pub fn port_name(&self) -> &str {
         &self.port_name
     }
 
+    #[doc = "Returns the metadata associated with `ConnectorAudioRecord`."]
     pub const fn metadata(&self) -> &ConnectorAudioMetadata {
         &self.metadata
     }
 
+    #[doc = "Returns the audio samples held by `ConnectorAudioRecord`."]
     pub fn samples(&self) -> &[f32] {
         &self.samples
     }
 
+    #[doc = "Encodes input through `ConnectorAudioRecord`."]
     pub fn encode(&self) -> Result<Vec<u8>, ConnectorAudioRecordError> {
         self.validate()?;
         let sample_bytes = self
@@ -400,6 +441,7 @@ impl ConnectorAudioRecord {
         Ok(output)
     }
 
+    #[doc = "Decodes input through `ConnectorAudioRecord`."]
     pub fn decode(input: &[u8]) -> Result<Self, ConnectorAudioRecordError> {
         if input.len() < HEADER_BYTES {
             return Err(ConnectorAudioRecordError::Truncated);
@@ -565,36 +607,52 @@ fn read_u64(input: &[u8], offset: usize) -> Result<u64, ConnectorAudioRecordErro
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as connector audio record error."]
 pub enum ConnectorAudioRecordError {
     #[error("connector item is not PCM audio")]
+    #[doc = "Reports not audio."]
     NotAudio,
     #[error("connector audio record is truncated")]
+    #[doc = "Reports truncated."]
     Truncated,
     #[error("connector audio record has trailing bytes")]
+    #[doc = "Reports trailing bytes."]
     TrailingBytes,
     #[error("connector audio record magic is invalid")]
+    #[doc = "Reports invalid magic."]
     InvalidMagic,
     #[error("connector audio record major {0} is unsupported")]
+    #[doc = "Reports unsupported major."]
     UnsupportedMajor(u16),
     #[error("connector audio record minor {0} is unsupported")]
+    #[doc = "Reports unsupported minor."]
     UnsupportedMinor(u16),
     #[error("connector audio record header size is invalid")]
+    #[doc = "Reports invalid header size."]
     InvalidHeaderSize,
     #[error("connector audio record reserved field is non-zero")]
+    #[doc = "Reports reserved field set."]
     ReservedFieldSet,
     #[error("connector audio record port name is invalid")]
+    #[doc = "Reports invalid port name."]
     InvalidPortName,
     #[error("connector audio record sample specification is invalid")]
+    #[doc = "Reports invalid sample spec."]
     InvalidSampleSpec,
     #[error("connector audio record sample format is unsupported")]
+    #[doc = "Reports unsupported sample format."]
     UnsupportedSampleFormat,
     #[error("connector audio record sample count is invalid")]
+    #[doc = "Reports invalid sample count."]
     InvalidSampleCount,
     #[error("connector audio record lineage is invalid")]
+    #[doc = "Reports invalid lineage."]
     InvalidLineage,
     #[error("connector audio record connector identity is invalid")]
+    #[doc = "Reports invalid connector identifier."]
     InvalidConnectorId,
     #[error("connector audio record length overflowed")]
+    #[doc = "Reports length overflow."]
     LengthOverflow,
 }
 

@@ -1,0 +1,215 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "8732e702f70b2e65280ac2f4cccd05899847d296375b4df1d8846394db99be16",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "audio",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "identity",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "lineage",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 10,
+      "name": "platform",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 11,
+      "name": "pool",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "8732e702f70b2e65280ac2f4cccd05899847d296375b4df1d8846394db99be16",
+      "lines": [
+        1,
+        18
+      ],
+      "path": "src/frame/mod.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0140-1147f92c",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "ec63ed0aa6cb5acc5a6e1e3eddf152c0a10dd831",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "audio::*",
+    "identity::*",
+    "lineage::*",
+    "module:audio",
+    "module:identity",
+    "module:lineage",
+    "module:platform",
+    "module:pool",
+    "platform::Platform",
+    "pool::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 18,
+  "locks": [],
+  "module": "pocketstation::frame",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/frame/mod.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "audio",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "identity",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "lineage",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 10,
+      "name": "platform",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 11,
+      "name": "pool",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Realtime audio frame ownership.  Platform and graph identities are intentionally separate from pooled audio storage. The audio module remains specialized; arbitrary signals use the asynchronous signal lane."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [
+    "audio::*",
+    "identity::*",
+    "lineage::*",
+    "platform::Platform",
+    "pool::*"
+  ],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/frame-lineage.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/opus-roundtrip.md",
+    "docs/how-to/map-source-time.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/frames.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/frames-and-codec.md",
+    "docs/troubleshooting/opus.md",
+    "docs/troubleshooting/timing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "audio",
+    "identity",
+    "lineage",
+    "platform",
+    "pool"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

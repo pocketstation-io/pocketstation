@@ -1,0 +1,1363 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AtomicBool::new",
+    "AtomicU64::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "ClockDomainId",
+    "Compiler::new",
+    "Execution",
+    "FnMut",
+    "LineagedAudioFrame::new",
+    "MediaCaps::Audio",
+    "NodeConfig::new",
+    "NodeError::Prepare",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Pipeline::new",
+    "PlanEdgeFrame::Exclusive",
+    "PlanEdgeFrame::Shared",
+    "PlanExecutionSummary::default",
+    "PlanRunnerCancellation::new",
+    "PlanRunnerStepSummary::default",
+    "PlanSourceInputTelemetry::new",
+    "PrepareContext::new",
+    "RealtimePlanExecutor::new",
+    "RealtimePlanRunner::new",
+    "RingBuffer::new",
+    "RuntimePlanner::new",
+    "SampleSpec::new",
+    "Self::new",
+    "SessionId",
+    "SignalSpec::audio",
+    "SourceId",
+    "StemId",
+    "StreamId",
+    "Vec::new",
+    "WorkerSinkFactory",
+    "acquire",
+    "add_node",
+    "any",
+    "as_mut_slice",
+    "cfg",
+    "clock",
+    "clone",
+    "compile",
+    "connect",
+    "default",
+    "derive",
+    "descriptor",
+    "discard_queued",
+    "enumerate",
+    "error",
+    "execute_from",
+    "fetch_add",
+    "fetch_max",
+    "find",
+    "finish",
+    "finish_with_clock",
+    "frame",
+    "given_full_source_input_when_more_frames_arrive_then_newest_rejects_and_counts",
+    "given_queued_sources_when_cancelled_with_budget_then_drain_is_bounded_and_rest_discards",
+    "given_queued_sources_when_cancelled_with_discard_then_no_frame_executes",
+    "given_two_ready_sources_when_processed_then_each_source_dispatches_independently",
+    "id",
+    "in_",
+    "index",
+    "instantiate",
+    "into_spec",
+    "is_empty",
+    "is_ok",
+    "is_requested",
+    "iter",
+    "iter_mut",
+    "len",
+    "let",
+    "load",
+    "map",
+    "new",
+    "next_ready_source",
+    "observation_handle",
+    "observations",
+    "observe_enqueue",
+    "observe_execution",
+    "ok",
+    "out",
+    "plan",
+    "plan_source_channel",
+    "pop",
+    "process_ready",
+    "process_ready_with_clock",
+    "push",
+    "queue_depth_frames",
+    "recv_at",
+    "register",
+    "register_builtins",
+    "request",
+    "rtrb::PushError::Full",
+    "runner_fixture",
+    "saturating_add",
+    "saturating_sub",
+    "snapshot",
+    "source_node_id",
+    "source_observations",
+    "sum",
+    "swap",
+    "to_owned",
+    "try_recv",
+    "try_recv_for_testing",
+    "try_send",
+    "unwrap",
+    "validate_config"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 176,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 195,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 212,
+      "text": "#[cfg(feature = \"internal-testing\")]"
+    },
+    {
+      "line": 348,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 449,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 460,
+      "text": "use crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId};"
+    },
+    {
+      "line": 499,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AtomicBool::new",
+    "AtomicU64::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Compiler::new",
+    "LineagedAudioFrame::new",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Pipeline::new",
+    "PlanRunnerCancellation::new",
+    "PlanSourceInputTelemetry::new",
+    "PrepareContext::new",
+    "RealtimePlanExecutor::new",
+    "RealtimePlanRunner::new",
+    "RingBuffer::new",
+    "RuntimePlanner::new",
+    "SampleSpec::new",
+    "Self::new",
+    "Vec::new",
+    "execute_from",
+    "new"
+  ],
+  "content_hash": "582ec51539804e485842596f3979d3551044bc0c55b201755704dd42e3a0dd9d",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "enum",
+      "line": 16,
+      "name": "PlanRunnerDrainPolicy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "PlanSourceInputObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 32,
+      "name": "PlanSourceInputTelemetry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "queue_depth_frames",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "observe_enqueue",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "snapshot",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 89,
+      "name": "PlanRunnerCancellation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 94,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "request",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "is_requested",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 110,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 116,
+      "name": "PlanSourceSendError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 123,
+      "name": "PlanSourceSendOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 130,
+      "name": "PlanSourceSender",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 138,
+      "name": "PlanSourceObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 149,
+      "name": "try_send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 177,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 180,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 187,
+      "name": "PlanSourceInput",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 196,
+      "name": "source_node_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 199,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 203,
+      "name": "try_recv",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 213,
+      "name": "try_recv_for_testing",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 216,
+      "name": "discard_queued",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 228,
+      "name": "plan_source_channel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 256,
+      "name": "PlanRunnerError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 270,
+      "name": "PlanRunnerStepSummary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "observe_execution",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 298,
+      "name": "PlanRunnerFinishSummary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 304,
+      "name": "RealtimePlanRunner",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 314,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 337,
+      "name": "process_ready",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 349,
+      "name": "source_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 358,
+      "name": "finish",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 370,
+      "name": "process_ready_with_clock",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 393,
+      "name": "finish_with_clock",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 432,
+      "name": "next_ready_source",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 450,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 471,
+      "name": "WorkerSinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 475,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 498,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 502,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 513,
+      "name": "frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 544,
+      "name": "RunnerFixture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 552,
+      "name": "runner_fixture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 598,
+      "name": "given_two_ready_sources_when_processed_then_each_source_dispatches_independently",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 639,
+      "name": "given_queued_sources_when_cancelled_with_budget_then_drain_is_bounded_and_rest_discards",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 685,
+      "name": "given_queued_sources_when_cancelled_with_discard_then_no_frame_executes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 707,
+      "name": "given_full_source_input_when_more_frames_arrive_then_newest_rejects_and_counts",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 16,
+      "name": "PlanRunnerDrainPolicy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "PlanSourceInputObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 89,
+      "name": "PlanRunnerCancellation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 94,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "request",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "is_requested",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 116,
+      "name": "PlanSourceSendError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 123,
+      "name": "PlanSourceSendOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 130,
+      "name": "PlanSourceSender",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 138,
+      "name": "PlanSourceObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 149,
+      "name": "try_send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 177,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 180,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 187,
+      "name": "PlanSourceInput",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 196,
+      "name": "source_node_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 199,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 213,
+      "name": "try_recv_for_testing",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 228,
+      "name": "plan_source_channel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 256,
+      "name": "PlanRunnerError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 270,
+      "name": "PlanRunnerStepSummary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 298,
+      "name": "PlanRunnerFinishSummary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 304,
+      "name": "RealtimePlanRunner",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 314,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 337,
+      "name": "process_ready",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 349,
+      "name": "source_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 358,
+      "name": "finish",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 164,
+      "text": "Err(rtrb::PushError::Full(frame)) => {"
+    },
+    {
+      "line": 235,
+      "text": "return Err(PlanRunnerError::ZeroSourceCapacity {"
+    },
+    {
+      "line": 324,
+      "text": "return Err(PlanRunnerError::DuplicateSource {"
+    },
+    {
+      "line": 377,
+      "text": "return Err(PlanRunnerError::AlreadyFinished);"
+    },
+    {
+      "line": 380,
+      "text": "return Err(PlanRunnerError::ZeroWorkBudget);"
+    },
+    {
+      "line": 401,
+      "text": "return Err(PlanRunnerError::AlreadyFinished);"
+    },
+    {
+      "line": 508,
+      "text": "Err(NodeError::Prepare("
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 116,
+      "name": "PlanSourceSendError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 256,
+      "name": "PlanRunnerError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "582ec51539804e485842596f3979d3551044bc0c55b201755704dd42e3a0dd9d",
+      "lines": [
+        1,
+        746
+      ],
+      "path": "src/runtime/audio/runner.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0183-9d22f3b6",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "20652a541c60f240e7d06c7bfa0353cf1d62af07",
+  "implemented_by": [],
+  "implements": [
+    "PlanSourceInputTelemetry",
+    "PlanRunnerCancellation",
+    "Default for PlanRunnerCancellation",
+    "PlanSourceObservationHandle",
+    "PlanSourceSender",
+    "PlanSourceInput",
+    "PlanRunnerStepSummary",
+    "RealtimePlanRunner",
+    "NodeFactory for WorkerSinkFactory"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::LineagedAudioFrame",
+    "crate::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
+    "crate::graph::compile::Compiler",
+    "crate::graph::compile::RuntimePlanner",
+    "crate::graph::dsl::Pipeline",
+    "crate::graph::node::{ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId}",
+    "crate::graph::partition::ExecutionPartition",
+    "crate::graph::registry::{NodeFactory, NodeRegistry}",
+    "crate::graph::spec::NodeId",
+    "crate::graph::{ AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalSpec, }",
+    "crate::graph::{register_builtins, PrepareContext, RuntimeNode}",
+    "crate::runtime::PlanEdgeFrame",
+    "crate::runtime::audio::{ExecError, PlanExecutionSummary, RealtimePlanExecutor}",
+    "rtrb::{Consumer, Producer, RingBuffer}",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 261,
+      "text": "#[error(\"runner work budget must be greater than zero\")]"
+    },
+    {
+      "line": 600,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 604,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 642,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 646,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 657,
+      "text": "assert!(cancellation.is_requested());"
+    },
+    {
+      "line": 660,
+      "text": "assert!(summary.drain_budget_exhausted);"
+    },
+    {
+      "line": 661,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 687,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 691,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 702,
+      "text": "assert!(!summary.drain_budget_exhausted);"
+    },
+    {
+      "line": 713,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 724,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 731,
+      "text": "assert!(matches!("
+    }
+  ],
+  "language": "Rust",
+  "line_count": 746,
+  "locks": [],
+  "module": "pocketstation::runtime::audio::runner",
+  "network_io": [
+    {
+      "line": 568,
+      "text": "pipeline.connect(left_source.out(\"out\"), left_sink.in_(\"in\"));"
+    },
+    {
+      "line": 569,
+      "text": "pipeline.connect(right_source.out(\"out\"), right_sink.in_(\"in\"));"
+    }
+  ],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-c15693ac67ca78bd46be",
+    "pattern-550a0db4c916e2cf76fd",
+    "pattern-a9ca7c19337ef948059e",
+    "pattern-007b832d1ee35a325c5f"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/runtime/audio/runner.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "struct",
+      "line": 32,
+      "name": "PlanSourceInputTelemetry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "queue_depth_frames",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "observe_enqueue",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "snapshot",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 110,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 203,
+      "name": "try_recv",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 216,
+      "name": "discard_queued",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "observe_execution",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 370,
+      "name": "process_ready_with_clock",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 393,
+      "name": "finish_with_clock",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 432,
+      "name": "next_ready_source",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 450,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 471,
+      "name": "WorkerSinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 475,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 498,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 502,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 513,
+      "name": "frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 544,
+      "name": "RunnerFixture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 552,
+      "name": "runner_fixture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 598,
+      "name": "given_two_ready_sources_when_processed_then_each_source_dispatches_independently",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 639,
+      "name": "given_queued_sources_when_cancelled_with_budget_then_drain_is_bounded_and_rest_discards",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 685,
+      "name": "given_queued_sources_when_cancelled_with_discard_then_no_frame_executes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 707,
+      "name": "given_full_source_input_when_more_frames_arrive_then_newest_rejects_and_counts",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 16,
+      "name": "PlanRunnerDrainPolicy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "PlanSourceInputObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 89,
+      "name": "PlanRunnerCancellation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 94,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "request",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "is_requested",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 116,
+      "name": "PlanSourceSendError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 123,
+      "name": "PlanSourceSendOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 130,
+      "name": "PlanSourceSender",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 138,
+      "name": "PlanSourceObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 149,
+      "name": "try_send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 177,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 180,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 187,
+      "name": "PlanSourceInput",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 196,
+      "name": "source_node_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 199,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 213,
+      "name": "try_recv_for_testing",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 228,
+      "name": "plan_source_channel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 256,
+      "name": "PlanRunnerError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 270,
+      "name": "PlanRunnerStepSummary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 298,
+      "name": "PlanRunnerFinishSummary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 304,
+      "name": "RealtimePlanRunner",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 314,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 337,
+      "name": "process_ready",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 349,
+      "name": "source_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 358,
+      "name": "finish",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Bounded multi-source ingress for one realtime plan executor.  The runner is polled by its owning processing thread. It does not spawn a thread, block, or publish Session lifecycle state."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/errors/runtime-and-sidecars.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/route-sizing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 7,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 90,
+      "text": "requested: Arc<AtomicBool>,"
+    },
+    {
+      "line": 96,
+      "text": "requested: Arc::new(AtomicBool::new(false)),"
+    },
+    {
+      "line": 134,
+      "text": "telemetry: Arc<PlanSourceInputTelemetry>,"
+    },
+    {
+      "line": 139,
+      "text": "telemetry: Arc<PlanSourceInputTelemetry>,"
+    },
+    {
+      "line": 183,
+      "text": "telemetry: Arc::clone(&self.telemetry),"
+    },
+    {
+      "line": 191,
+      "text": "telemetry: Arc<PlanSourceInputTelemetry>,"
+    },
+    {
+      "line": 240,
+      "text": "let telemetry = Arc::new(PlanSourceInputTelemetry::new(queue_capacity_frames));"
+    },
+    {
+      "line": 245,
+      "text": "telemetry: Arc::clone(&telemetry),"
+    },
+    {
+      "line": 451,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 507,
+      "text": ") -> Result<Box<dyn RuntimeNode>, NodeError> {"
+    },
+    {
+      "line": 557,
+      "text": ".register(Arc::new(WorkerSinkFactory(\"test.sink.left\")))"
+    },
+    {
+      "line": 560,
+      "text": ".register(Arc::new(WorkerSinkFactory(\"test.sink.right\")))"
+    }
+  ],
+  "responsibilities": [
+    "PlanRunnerDrainPolicy",
+    "PlanSourceInputObservations",
+    "PlanSourceInputTelemetry",
+    "new",
+    "queue_depth_frames",
+    "observe_enqueue",
+    "snapshot",
+    "PlanRunnerCancellation",
+    "new",
+    "request",
+    "is_requested",
+    "default",
+    "PlanSourceSendError",
+    "PlanSourceSendOutcome",
+    "PlanSourceSender",
+    "PlanSourceObservationHandle",
+    "observations",
+    "try_send",
+    "observations",
+    "observation_handle",
+    "PlanSourceInput",
+    "source_node_id",
+    "observations",
+    "try_recv",
+    "try_recv_for_testing",
+    "discard_queued",
+    "plan_source_channel",
+    "PlanRunnerError",
+    "PlanRunnerStepSummary",
+    "observe_execution",
+    "PlanRunnerFinishSummary",
+    "RealtimePlanRunner",
+    "new",
+    "process_ready",
+    "source_observations",
+    "finish",
+    "process_ready_with_clock",
+    "finish_with_clock",
+    "next_ready_source",
+    "tests",
+    "WorkerSinkFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "frame",
+    "RunnerFixture",
+    "runner_fixture",
+    "given_two_ready_sources_when_processed_then_each_source_dispatches_independently",
+    "given_queued_sources_when_cancelled_with_budget_then_drain_is_bounded_and_rest_discards",
+    "given_queued_sources_when_cancelled_with_discard_then_no_frame_executes",
+    "given_full_source_input_when_more_frames_arrive_then_newest_rejects_and_counts"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 568,
+      "text": "pipeline.connect(left_source.out(\"out\"), left_sink.in_(\"in\"));"
+    },
+    {
+      "line": 569,
+      "text": "pipeline.connect(right_source.out(\"out\"), right_sink.in_(\"in\"));"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 3,
+      "text": "//! The runner is polled by its owning processing thread. It does not spawn a"
+    },
+    {
+      "line": 4,
+      "text": "//! thread, block, or publish Session lifecycle state."
+    }
+  ],
+  "visibility": "mixed"
+}

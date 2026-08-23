@@ -1,0 +1,1684 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Audio",
+    "Binary",
+    "EdgeContract::bounded_async",
+    "EdgeContract::realtime_audio",
+    "EncodedAudio",
+    "Just",
+    "MediaCaps::Audio",
+    "MediaCaps::Binary",
+    "MediaCaps::EncodedAudio",
+    "Self::Audio",
+    "Self::Binary",
+    "Self::EncodedAudio",
+    "Self::scalar_compatible",
+    "SignalClass::Binary",
+    "SignalClass::Custom",
+    "SignalClass::EncodedAudio",
+    "SignalClass::Event",
+    "SignalClass::Text",
+    "SignalSpec::binary",
+    "SignalSpec::control",
+    "SignalSpec::custom",
+    "SignalSpec::encoded_audio",
+    "SignalSpec::event",
+    "SignalSpec::metrics",
+    "SignalSpec::text",
+    "any_audio_caps",
+    "any_layout",
+    "backpressure",
+    "bounded_async",
+    "cfg",
+    "channel_count",
+    "clock",
+    "copy_policy",
+    "delivery",
+    "derive",
+    "direction",
+    "error",
+    "given_any_and_audio_when_negotiated_then_yields_audio",
+    "given_any_audio_caps_when_compat_checked_then_reflexive_and_symmetric",
+    "given_any_layout_when_compat_checked_both_directions_then_matches",
+    "given_any_media_when_compat_checked_both_directions_then_matches",
+    "given_audio_and_text_when_media_compat_checked_then_incompatible",
+    "given_audio_pair_when_media_compat_checked_then_compatible",
+    "given_bounded_async_when_built_then_contains_no_payload_or_clock_origin_assumption",
+    "given_custom_signal_without_schema_when_checked_then_binary_media_rejects_it",
+    "given_incompatible_media_when_negotiated_then_none",
+    "given_mismatched_rate_when_audio_compat_checked_then_incompatible",
+    "given_mono_and_stereo_when_channel_count_then_returns_one_and_two",
+    "given_observability_levels_when_ranked_then_ordered_ascending",
+    "given_realtime_audio_when_built_then_physical_caps_remain_negotiable",
+    "given_supported_non_audio_signals_when_checked_then_media_is_symmetric",
+    "given_wildcard_audio_when_negotiated_then_narrows_to_concrete",
+    "given_wildcard_rate_when_audio_compat_checked_then_matches_concrete",
+    "into",
+    "is_compatible_with",
+    "is_empty",
+    "is_realtime",
+    "is_some",
+    "jitter_budget_ms",
+    "kind",
+    "latency_budget_ms",
+    "loss",
+    "map_err",
+    "max_payload_bytes",
+    "media",
+    "multiplicity",
+    "name",
+    "narrow",
+    "negotiate",
+    "new",
+    "observability",
+    "or",
+    "prop::option::of",
+    "prop_map",
+    "pub",
+    "rank",
+    "realtime_audio",
+    "required",
+    "signal",
+    "stereo_caps",
+    "supports_signal",
+    "trim",
+    "validate",
+    "with_backpressure",
+    "with_copy_policy",
+    "with_jitter_budget_ms",
+    "with_max_payload_bytes",
+    "with_media",
+    "with_schema"
+  ],
+  "cancellation_behavior": [],
+  "channels": [
+    {
+      "line": 390,
+      "text": "/// channel layout are negotiated from connected ports."
+    }
+  ],
+  "configuration_read": [
+    {
+      "line": 12,
+      "text": "pub const DEFAULT_ASYNC_MAX_PAYLOAD_BYTES: usize = 1_048_576;"
+    },
+    {
+      "line": 424,
+      "text": "max_payload_bytes: Some(DEFAULT_ASYNC_MAX_PAYLOAD_BYTES),"
+    },
+    {
+      "line": 429,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 551,
+      "text": "Some(DEFAULT_ASYNC_MAX_PAYLOAD_BYTES)"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "new"
+  ],
+  "content_hash": "ca5edd27bf9f85e424ed6a7bdfed2f17bb309b6ced3b8a5253ee3648d5843615",
+  "defaults": [
+    {
+      "line": 12,
+      "text": "pub const DEFAULT_ASYNC_MAX_PAYLOAD_BYTES: usize = 1_048_576;"
+    },
+    {
+      "line": 424,
+      "text": "max_payload_bytes: Some(DEFAULT_ASYNC_MAX_PAYLOAD_BYTES),"
+    },
+    {
+      "line": 551,
+      "text": "Some(DEFAULT_ASYNC_MAX_PAYLOAD_BYTES)"
+    }
+  ],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 12,
+      "name": "DEFAULT_ASYNC_MAX_PAYLOAD_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 13,
+      "name": "MAX_ASYNC_PAYLOAD_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 16,
+      "name": "MediaKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 27,
+      "name": "ChannelLayout",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 34,
+      "name": "channel_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "is_compatible_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 48,
+      "name": "AudioCaps",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "is_compatible_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "scalar_compatible",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "narrow",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 85,
+      "name": "MediaCaps",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 97,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 109,
+      "name": "is_compatible_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 123,
+      "name": "negotiate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "supports_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 163,
+      "name": "PortDirection",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 169,
+      "name": "Multiplicity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 175,
+      "name": "PortSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 185,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 212,
+      "name": "name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 216,
+      "name": "direction",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 220,
+      "name": "signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 224,
+      "name": "media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 228,
+      "name": "multiplicity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 232,
+      "name": "required",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 239,
+      "name": "PortSpecError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 249,
+      "name": "ClockDomain",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 259,
+      "name": "is_realtime",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 265,
+      "name": "BackpressurePolicy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 273,
+      "name": "DeliverySemantics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 280,
+      "name": "CopyPolicy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 287,
+      "name": "LossPolicy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 294,
+      "name": "EdgeObservabilityLevel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 301,
+      "name": "rank",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 311,
+      "name": "EdgeContract",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 325,
+      "name": "media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 328,
+      "name": "clock",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 332,
+      "name": "latency_budget_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "jitter_budget_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 340,
+      "name": "backpressure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 344,
+      "name": "delivery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 348,
+      "name": "loss",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 352,
+      "name": "copy_policy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 356,
+      "name": "observability",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 360,
+      "name": "max_payload_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 364,
+      "name": "with_media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 369,
+      "name": "with_backpressure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 374,
+      "name": "with_copy_policy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 379,
+      "name": "with_jitter_budget_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 384,
+      "name": "with_max_payload_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 391,
+      "name": "realtime_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 413,
+      "name": "bounded_async",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 430,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 433,
+      "name": "stereo_caps",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 444,
+      "name": "given_mono_and_stereo_when_channel_count_then_returns_one_and_two",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 451,
+      "name": "given_any_layout_when_compat_checked_both_directions_then_matches",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 458,
+      "name": "given_wildcard_rate_when_audio_compat_checked_then_matches_concrete",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 470,
+      "name": "given_mismatched_rate_when_audio_compat_checked_then_incompatible",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 479,
+      "name": "given_audio_pair_when_media_compat_checked_then_compatible",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 486,
+      "name": "given_audio_and_text_when_media_compat_checked_then_incompatible",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 492,
+      "name": "given_any_media_when_compat_checked_both_directions_then_matches",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 499,
+      "name": "given_any_and_audio_when_negotiated_then_yields_audio",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 505,
+      "name": "given_incompatible_media_when_negotiated_then_none",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 511,
+      "name": "given_wildcard_audio_when_negotiated_then_narrows_to_concrete",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 523,
+      "name": "given_realtime_audio_when_built_then_physical_caps_remain_negotiable",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 540,
+      "name": "given_bounded_async_when_built_then_contains_no_payload_or_clock_origin_assumption",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 556,
+      "name": "given_observability_levels_when_ranked_then_ordered_ascending",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 562,
+      "name": "given_supported_non_audio_signals_when_checked_then_media_is_symmetric",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 578,
+      "name": "given_custom_signal_without_schema_when_checked_then_binary_media_rejects_it",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 582,
+      "name": "any_layout",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 590,
+      "name": "any_audio_caps",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 609,
+      "name": "given_any_audio_caps_when_compat_checked_then_reflexive_and_symmetric",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 12,
+      "name": "DEFAULT_ASYNC_MAX_PAYLOAD_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 13,
+      "name": "MAX_ASYNC_PAYLOAD_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 16,
+      "name": "MediaKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 27,
+      "name": "ChannelLayout",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 34,
+      "name": "channel_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "is_compatible_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 48,
+      "name": "AudioCaps",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "is_compatible_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 85,
+      "name": "MediaCaps",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 97,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 109,
+      "name": "is_compatible_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 123,
+      "name": "negotiate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "supports_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 163,
+      "name": "PortDirection",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 169,
+      "name": "Multiplicity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 175,
+      "name": "PortSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 185,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 212,
+      "name": "name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 216,
+      "name": "direction",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 220,
+      "name": "signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 224,
+      "name": "media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 228,
+      "name": "multiplicity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 232,
+      "name": "required",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 239,
+      "name": "PortSpecError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 249,
+      "name": "ClockDomain",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 259,
+      "name": "is_realtime",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 265,
+      "name": "BackpressurePolicy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 273,
+      "name": "DeliverySemantics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 280,
+      "name": "CopyPolicy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 287,
+      "name": "LossPolicy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 294,
+      "name": "EdgeObservabilityLevel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 301,
+      "name": "rank",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 311,
+      "name": "EdgeContract",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 325,
+      "name": "media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 328,
+      "name": "clock",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 332,
+      "name": "latency_budget_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "jitter_budget_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 340,
+      "name": "backpressure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 344,
+      "name": "delivery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 348,
+      "name": "loss",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 352,
+      "name": "copy_policy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 356,
+      "name": "observability",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 360,
+      "name": "max_payload_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 364,
+      "name": "with_media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 369,
+      "name": "with_backpressure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 374,
+      "name": "with_copy_policy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 379,
+      "name": "with_jitter_budget_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 384,
+      "name": "with_max_payload_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 391,
+      "name": "realtime_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 413,
+      "name": "bounded_async",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 195,
+      "text": "return Err(PortSpecError::EmptyName);"
+    },
+    {
+      "line": 201,
+      "text": "return Err(PortSpecError::SignalMediaMismatch);"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 239,
+      "name": "PortSpecError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 199,
+      "text": ".map_err(|_| PortSpecError::InvalidSignal)?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 199,
+      "text": ".map_err(|_| PortSpecError::InvalidSignal)?;"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 199,
+      "text": ".map_err(|_| PortSpecError::InvalidSignal)?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "ca5edd27bf9f85e424ed6a7bdfed2f17bb309b6ced3b8a5253ee3648d5843615",
+      "lines": [
+        1,
+        618
+      ],
+      "path": "src/graph/ports.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0156-09469919",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "11ae0247e16f00245f7757e8fa745a764943d39f",
+  "implemented_by": [],
+  "implements": [
+    "ChannelLayout",
+    "AudioCaps",
+    "MediaCaps",
+    "PortSpec",
+    "ClockDomain",
+    "EdgeObservabilityLevel",
+    "EdgeContract"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::SampleFormat",
+    "crate::graph::signal::{BinaryFormat, Codec, SignalClass, SignalSpec}",
+    "proptest::prelude::*",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 10,
+      "text": "/// Large streams must be chunked by their source/connector instead of turning"
+    },
+    {
+      "line": 240,
+      "text": "#[error(\"port name cannot be empty\")]"
+    },
+    {
+      "line": 268,
+      "text": "BoundedQueue,   // block producer only via capacity; never drops silently"
+    },
+    {
+      "line": 269,
+      "text": "BlockForbidden, // producer must never block; overflow is a hard error upstream"
+    },
+    {
+      "line": 289,
+      "text": "MustDeliverOrFail, // terminal output must be delivered or the branch fails visibly"
+    },
+    {
+      "line": 452,
+      "text": "assert!(ChannelLayout::Any.is_compatible_with(ChannelLayout::Mono));"
+    },
+    {
+      "line": 453,
+      "text": "assert!(ChannelLayout::Stereo.is_compatible_with(ChannelLayout::Any));"
+    },
+    {
+      "line": 454,
+      "text": "assert!(!ChannelLayout::Mono.is_compatible_with(ChannelLayout::Stereo));"
+    },
+    {
+      "line": 465,
+      "text": "assert!(wildcard.is_compatible_with(&stereo_caps()));"
+    },
+    {
+      "line": 466,
+      "text": "assert!(stereo_caps().is_compatible_with(&wildcard));"
+    },
+    {
+      "line": 475,
+      "text": "assert!(!stereo_caps().is_compatible_with(&other));"
+    },
+    {
+      "line": 482,
+      "text": "assert!(a.is_compatible_with(&b));"
+    },
+    {
+      "line": 488,
+      "text": "assert!(!audio.is_compatible_with(&MediaCaps::Text));"
+    },
+    {
+      "line": 494,
+      "text": "assert!(MediaCaps::Any.is_compatible_with(&audio));"
+    },
+    {
+      "line": 495,
+      "text": "assert!(audio.is_compatible_with(&MediaCaps::Any));"
+    },
+    {
+      "line": 529,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 557,
+      "text": "assert!(EdgeObservabilityLevel::Off.rank() < EdgeObservabilityLevel::Counters.rank());"
+    },
+    {
+      "line": 558,
+      "text": "assert!(EdgeObservabilityLevel::Counters.rank() < EdgeObservabilityLevel::Full.rank());"
+    },
+    {
+      "line": 563,
+      "text": "assert!(MediaCaps::EncodedAudio(Codec::Opus)"
+    },
+    {
+      "line": 565,
+      "text": "assert!(MediaCaps::Text.supports_signal(&SignalSpec::text(crate::graph::TextFormat::Json)));"
+    },
+    {
+      "line": 566,
+      "text": "assert!(MediaCaps::Event"
+    },
+    {
+      "line": 568,
+      "text": "assert!(MediaCaps::Metrics.supports_signal(&SignalSpec::metrics()));"
+    },
+    {
+      "line": 569,
+      "text": "assert!(MediaCaps::Control.supports_signal(&SignalSpec::control()));"
+    },
+    {
+      "line": 570,
+      "text": "assert!(MediaCaps::Binary(BinaryFormat::Cbor)"
+    },
+    {
+      "line": 572,
+      "text": "assert!(MediaCaps::Binary(BinaryFormat::Protobuf).supports_signal("
+    },
+    {
+      "line": 579,
+      "text": "assert!(!MediaCaps::Binary(BinaryFormat::Raw)"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 618,
+  "locks": [],
+  "module": "pocketstation::graph::ports",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-0e9aafce5b5917888ef1"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/ports.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "scalar_compatible",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "narrow",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 430,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 433,
+      "name": "stereo_caps",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 444,
+      "name": "given_mono_and_stereo_when_channel_count_then_returns_one_and_two",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 451,
+      "name": "given_any_layout_when_compat_checked_both_directions_then_matches",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 458,
+      "name": "given_wildcard_rate_when_audio_compat_checked_then_matches_concrete",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 470,
+      "name": "given_mismatched_rate_when_audio_compat_checked_then_incompatible",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 479,
+      "name": "given_audio_pair_when_media_compat_checked_then_compatible",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 486,
+      "name": "given_audio_and_text_when_media_compat_checked_then_incompatible",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 492,
+      "name": "given_any_media_when_compat_checked_both_directions_then_matches",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 499,
+      "name": "given_any_and_audio_when_negotiated_then_yields_audio",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 505,
+      "name": "given_incompatible_media_when_negotiated_then_none",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 511,
+      "name": "given_wildcard_audio_when_negotiated_then_narrows_to_concrete",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 523,
+      "name": "given_realtime_audio_when_built_then_physical_caps_remain_negotiable",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 540,
+      "name": "given_bounded_async_when_built_then_contains_no_payload_or_clock_origin_assumption",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 556,
+      "name": "given_observability_levels_when_ranked_then_ordered_ascending",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 562,
+      "name": "given_supported_non_audio_signals_when_checked_then_media_is_symmetric",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 578,
+      "name": "given_custom_signal_without_schema_when_checked_then_binary_media_rejects_it",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 582,
+      "name": "any_layout",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 590,
+      "name": "any_audio_caps",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 609,
+      "name": "given_any_audio_caps_when_compat_checked_then_reflexive_and_symmetric",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [
+    {
+      "line": 20,
+      "text": "Event,"
+    },
+    {
+      "line": 89,
+      "text": "Event,"
+    },
+    {
+      "line": 102,
+      "text": "Self::Event => Some(MediaKind::Event),"
+    },
+    {
+      "line": 116,
+      "text": "(Self::Event, Self::Event) => true,"
+    },
+    {
+      "line": 134,
+      "text": "(Self::Event, Self::Event) => Some(Self::Event),"
+    },
+    {
+      "line": 150,
+      "text": "(SignalClass::Event(_), Self::Event) => true,"
+    },
+    {
+      "line": 566,
+      "text": "assert!(MediaCaps::Event"
+    }
+  ],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 12,
+      "name": "DEFAULT_ASYNC_MAX_PAYLOAD_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 13,
+      "name": "MAX_ASYNC_PAYLOAD_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 16,
+      "name": "MediaKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 27,
+      "name": "ChannelLayout",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 34,
+      "name": "channel_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "is_compatible_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 48,
+      "name": "AudioCaps",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "is_compatible_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 85,
+      "name": "MediaCaps",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 97,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 109,
+      "name": "is_compatible_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 123,
+      "name": "negotiate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "supports_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 163,
+      "name": "PortDirection",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 169,
+      "name": "Multiplicity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 175,
+      "name": "PortSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 185,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 212,
+      "name": "name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 216,
+      "name": "direction",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 220,
+      "name": "signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 224,
+      "name": "media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 228,
+      "name": "multiplicity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 232,
+      "name": "required",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 239,
+      "name": "PortSpecError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 249,
+      "name": "ClockDomain",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 259,
+      "name": "is_realtime",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 265,
+      "name": "BackpressurePolicy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 273,
+      "name": "DeliverySemantics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 280,
+      "name": "CopyPolicy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 287,
+      "name": "LossPolicy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 294,
+      "name": "EdgeObservabilityLevel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 301,
+      "name": "rank",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 311,
+      "name": "EdgeContract",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 325,
+      "name": "media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 328,
+      "name": "clock",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 332,
+      "name": "latency_budget_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "jitter_budget_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 340,
+      "name": "backpressure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 344,
+      "name": "delivery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 348,
+      "name": "loss",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 352,
+      "name": "copy_policy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 356,
+      "name": "observability",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 360,
+      "name": "max_payload_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 364,
+      "name": "with_media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 369,
+      "name": "with_backpressure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 374,
+      "name": "with_copy_policy",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 379,
+      "name": "with_jitter_budget_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 384,
+      "name": "with_max_payload_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 391,
+      "name": "realtime_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 413,
+      "name": "bounded_async",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Canonical port, media-capability, and edge contracts for the typed graph. Negotiation rules decide which graph ports may connect and what each edge guarantees at runtime."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "DEFAULT_ASYNC_MAX_PAYLOAD_BYTES",
+    "MAX_ASYNC_PAYLOAD_BYTES",
+    "MediaKind",
+    "ChannelLayout",
+    "channel_count",
+    "is_compatible_with",
+    "AudioCaps",
+    "is_compatible_with",
+    "scalar_compatible",
+    "narrow",
+    "MediaCaps",
+    "kind",
+    "is_compatible_with",
+    "negotiate",
+    "supports_signal",
+    "PortDirection",
+    "Multiplicity",
+    "PortSpec",
+    "new",
+    "name",
+    "direction",
+    "signal",
+    "media",
+    "multiplicity",
+    "required",
+    "PortSpecError",
+    "ClockDomain",
+    "is_realtime",
+    "BackpressurePolicy",
+    "DeliverySemantics",
+    "CopyPolicy",
+    "LossPolicy",
+    "EdgeObservabilityLevel",
+    "rank",
+    "EdgeContract",
+    "media",
+    "clock",
+    "latency_budget_ms",
+    "jitter_budget_ms",
+    "backpressure",
+    "delivery",
+    "loss",
+    "copy_policy",
+    "observability",
+    "max_payload_bytes",
+    "with_media",
+    "with_backpressure",
+    "with_copy_policy",
+    "with_jitter_budget_ms",
+    "with_max_payload_bytes",
+    "realtime_audio",
+    "bounded_async",
+    "tests",
+    "stereo_caps",
+    "given_mono_and_stereo_when_channel_count_then_returns_one_and_two",
+    "given_any_layout_when_compat_checked_both_directions_then_matches",
+    "given_wildcard_rate_when_audio_compat_checked_then_matches_concrete",
+    "given_mismatched_rate_when_audio_compat_checked_then_incompatible",
+    "given_audio_pair_when_media_compat_checked_then_compatible",
+    "given_audio_and_text_when_media_compat_checked_then_incompatible",
+    "given_any_media_when_compat_checked_both_directions_then_matches",
+    "given_any_and_audio_when_negotiated_then_yields_audio",
+    "given_incompatible_media_when_negotiated_then_none",
+    "given_wildcard_audio_when_negotiated_then_narrows_to_concrete",
+    "given_realtime_audio_when_built_then_physical_caps_remain_negotiable",
+    "given_bounded_async_when_built_then_contains_no_payload_or_clock_origin_assumption",
+    "given_observability_levels_when_ranked_then_ordered_ascending",
+    "given_supported_non_audio_signals_when_checked_then_media_is_symmetric",
+    "given_custom_signal_without_schema_when_checked_then_binary_media_rejects_it",
+    "any_layout",
+    "any_audio_caps",
+    "given_any_audio_caps_when_compat_checked_then_reflexive_and_symmetric"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

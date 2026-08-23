@@ -1,0 +1,1887 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "ApplicationSelector::Name",
+    "Arc::clone",
+    "Arc::new",
+    "AtomicBool::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Box::default",
+    "Box::new",
+    "CaptureError::BackendInit",
+    "CaptureObservationHandle::default",
+    "CaptureObservations::default",
+    "Duration::from_millis",
+    "Duration::from_secs",
+    "EndpointConfiguration::new",
+    "EndpointDriverObservations::default",
+    "EndpointExtensionRegistration",
+    "EndpointRegistration",
+    "Engine",
+    "Instant::now",
+    "NodeTypeId::from",
+    "OperatorId::new",
+    "OperatorRegistration",
+    "PolledAudioEndpoint",
+    "PolledAudioEndpoint::new",
+    "PolledAudioEndpointConfig::default",
+    "PrepareContext::new",
+    "SampleSpec::new",
+    "Self::new",
+    "Self::with_capture_backends",
+    "Session::new",
+    "SessionEngineBuilder::new",
+    "SessionEngineHostBuilder::native",
+    "SessionEngineHostBuilder::new",
+    "SessionEngineStartError::Start",
+    "SessionMetricsSnapshot::new",
+    "SessionStartOptions::default",
+    "Source::Application",
+    "Source::Microphone",
+    "SourceId",
+    "StreamId",
+    "TestCaptureBackend::default",
+    "Vec::new",
+    "acquire",
+    "all",
+    "any",
+    "as_ref",
+    "browser",
+    "build",
+    "build_native_host",
+    "cancel_preparation",
+    "capture",
+    "cfg",
+    "clone",
+    "cloned",
+    "compile",
+    "connector",
+    "crate::session::PolledAudioObservations::default",
+    "default",
+    "derive",
+    "drop",
+    "engine",
+    "engine_builder",
+    "error",
+    "expect",
+    "get",
+    "given_host_owned_backend_failure_when_started_then_error_remains_typed",
+    "given_host_owned_backends_when_started_then_polled_audio_and_stop_are_real",
+    "given_missing_application_backend_when_host_built_then_error_is_typed",
+    "given_registered_multistem_recorder_when_host_built_then_receipt_is_retained",
+    "given_registered_polled_endpoint_when_host_built_then_receipt_is_retained",
+    "into",
+    "into_boxed_slice",
+    "is_empty",
+    "is_none",
+    "is_some",
+    "is_some_and",
+    "is_success",
+    "join",
+    "join_and_finalize",
+    "len",
+    "let",
+    "load",
+    "map_err",
+    "map_or_else",
+    "metrics_snapshot",
+    "native",
+    "native_with_multistem_recording",
+    "new",
+    "not",
+    "observation_handle",
+    "observations",
+    "ok_or",
+    "open",
+    "outcome",
+    "polled_audio",
+    "polled_audio_receipt",
+    "polled_audio_receipts_total",
+    "prepare",
+    "prepare_context",
+    "product_session",
+    "push",
+    "receipt",
+    "record",
+    "recording_receipt",
+    "recording_receipts_total",
+    "register_async_operator",
+    "register_audio_endpoint_driver",
+    "register_default_endpoints",
+    "register_endpoint",
+    "register_multistem_recording",
+    "register_polled_audio_endpoint",
+    "register_sidecar_process",
+    "request_stop",
+    "route",
+    "route_count",
+    "send",
+    "set_application_backend",
+    "set_microphone_backend",
+    "source",
+    "source_count",
+    "source_id",
+    "start",
+    "start_compiled",
+    "start_compiled_cancellable",
+    "std::env::temp_dir",
+    "std::process::id",
+    "std::thread::sleep",
+    "std::thread::spawn",
+    "stop",
+    "stop_and_join",
+    "store",
+    "take",
+    "take_event_receiver",
+    "then",
+    "to_owned",
+    "to_string",
+    "try_copy_from_slice",
+    "try_poll",
+    "try_send",
+    "with_capture_backends"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 11,
+      "text": "#[cfg(all(target_os = \"linux\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 13,
+      "text": "#[cfg(all(target_os = \"macos\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 15,
+      "text": "#[cfg(all(target_os = \"windows\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 47,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 59,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 70,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 103,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 112,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 157,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 219,
+      "text": "#[cfg(all("
+    },
+    {
+      "line": 220,
+      "text": "feature = \"native-capture\","
+    },
+    {
+      "line": 233,
+      "text": "#[cfg(not(all("
+    },
+    {
+      "line": 234,
+      "text": "feature = \"native-capture\","
+    },
+    {
+      "line": 381,
+      "text": "#[cfg(all("
+    },
+    {
+      "line": 382,
+      "text": "feature = \"native-capture\","
+    },
+    {
+      "line": 397,
+      "text": "#[cfg(not(all("
+    },
+    {
+      "line": 398,
+      "text": "feature = \"native-capture\","
+    },
+    {
+      "line": 408,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 711,
+      "text": "let output_root = std::env::temp_dir().join(format!("
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AtomicBool::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Box::new",
+    "EndpointConfiguration::new",
+    "NodeTypeId::from",
+    "OperatorId::new",
+    "PolledAudioEndpoint::new",
+    "PrepareContext::new",
+    "SampleSpec::new",
+    "Self::new",
+    "Session::new",
+    "SessionEngineBuilder::new",
+    "SessionEngineHostBuilder::new",
+    "SessionMetricsSnapshot::new",
+    "Vec::new",
+    "engine_builder",
+    "new"
+  ],
+  "content_hash": "d96e9b930bacff006cb32a3ac51e822f127e69dc22aec17afad1e3f114c62936",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 31,
+      "name": "SessionEngineHost",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "native",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 48,
+      "name": "native_with_multistem_recording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "compile",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "start",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "start_compiled",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "start_compiled_cancellable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "polled_audio_receipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 104,
+      "name": "polled_audio_receipts_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 107,
+      "name": "recording_receipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "recording_receipts_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "metrics_snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "engine",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 164,
+      "name": "NativeSessionEngineHostOptions",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 172,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 188,
+      "name": "SessionEngineHostBuilder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 200,
+      "name": "with_capture_backends",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 223,
+      "name": "native",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 237,
+      "name": "native",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 242,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 260,
+      "name": "set_application_backend",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 268,
+      "name": "set_microphone_backend",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "engine_builder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 283,
+      "name": "register_audio_endpoint_driver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 293,
+      "name": "register_endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 304,
+      "name": "register_async_operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 312,
+      "name": "register_sidecar_process",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 320,
+      "name": "register_polled_audio_endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 332,
+      "name": "register_multistem_recording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 343,
+      "name": "build",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 362,
+      "name": "SessionEngineHostBuildError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 385,
+      "name": "build_native_host",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 401,
+      "name": "build_native_host",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 409,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 435,
+      "name": "CONNECTOR_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 439,
+      "name": "TestCaptureBackend",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 443,
+      "name": "TestPreparedCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 448,
+      "name": "TestActiveCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 455,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 467,
+      "name": "open",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 509,
+      "name": "source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 512,
+      "name": "observation_handle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 516,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 520,
+      "name": "stop_and_join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 535,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 542,
+      "name": "TestEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 544,
+      "name": "TestPreparedEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 546,
+      "name": "TestRunningEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 550,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 560,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 566,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 576,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 579,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 583,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 591,
+      "name": "prepare_context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 595,
+      "name": "product_session",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 643,
+      "name": "register_default_endpoints",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 662,
+      "name": "given_missing_application_backend_when_host_built_then_error_is_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 680,
+      "name": "given_registered_polled_endpoint_when_host_built_then_receipt_is_retained",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 705,
+      "name": "given_registered_multistem_recorder_when_host_built_then_receipt_is_retained",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 727,
+      "name": "given_host_owned_backends_when_started_then_polled_audio_and_stop_are_real",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 785,
+      "name": "given_host_owned_backend_failure_when_started_then_error_remains_typed",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 535,
+      "text": "fn drop(&mut self) {"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 4,
+      "text": "use crate::endpoint::{EndpointDriverFactory, EndpointDriverRegistryError};"
+    },
+    {
+      "line": 126,
+      "text": "// A typed-only Session has no audio retention endpoint. Its"
+    },
+    {
+      "line": 218,
+      "text": "/// backend, leaving endpoint registration open to the owning application."
+    },
+    {
+      "line": 281,
+      "text": "/// Registers one externally owned endpoint implementation with the"
+    },
+    {
+      "line": 325,
+      "text": "let endpoint = PolledAudioEndpoint::new(config)?;"
+    },
+    {
+      "line": 327,
+      "text": ".register_polled_audio_endpoint(&endpoint)?;"
+    },
+    {
+      "line": 328,
+      "text": "let receipt = endpoint.receipt();"
+    },
+    {
+      "line": 419,
+      "text": "use crate::endpoint::{"
+    },
+    {
+      "line": 657,
+      "text": ".expect(\"endpoint registration\");"
+    },
+    {
+      "line": 689,
+      "text": ".expect(\"polled endpoint\");"
+    },
+    {
+      "line": 717,
+      "text": ".expect(\"recording endpoint\");"
+    },
+    {
+      "line": 744,
+      "text": ".expect(\"polled endpoint\");"
+    },
+    {
+      "line": 797,
+      "text": ".expect(\"polled endpoint\");"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 31,
+      "name": "SessionEngineHost",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "native",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 48,
+      "name": "native_with_multistem_recording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "compile",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "start",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "start_compiled",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "start_compiled_cancellable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "polled_audio_receipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 104,
+      "name": "polled_audio_receipts_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 107,
+      "name": "recording_receipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "recording_receipts_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "metrics_snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "engine",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 164,
+      "name": "NativeSessionEngineHostOptions",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 188,
+      "name": "SessionEngineHostBuilder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 200,
+      "name": "with_capture_backends",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 223,
+      "name": "native",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 237,
+      "name": "native",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 242,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 260,
+      "name": "set_application_backend",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 268,
+      "name": "set_microphone_backend",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "engine_builder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 283,
+      "name": "register_audio_endpoint_driver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 293,
+      "name": "register_endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 304,
+      "name": "register_async_operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 312,
+      "name": "register_sidecar_process",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 320,
+      "name": "register_polled_audio_endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 332,
+      "name": "register_multistem_recording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 343,
+      "name": "build",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 362,
+      "name": "SessionEngineHostBuildError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 240,
+      "text": "Err(SessionEngineHostBuildError::UnsupportedPlatform)"
+    },
+    {
+      "line": 405,
+      "text": "Err(SessionEngineHostBuildError::UnsupportedPlatform)"
+    },
+    {
+      "line": 472,
+      "text": "return Err(CaptureError::BackendInit("
+    },
+    {
+      "line": 670,
+      "text": "Err(error) => error,"
+    },
+    {
+      "line": 755,
+      "text": "Err(crate::session::PolledAudioPollError::Empty) if Instant::now() < deadline => {"
+    },
+    {
+      "line": 758,
+      "text": "Err(error) => panic!(\"polled batch: {error}\"),"
+    },
+    {
+      "line": 802,
+      "text": "Err(error) => error,"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 362,
+      "name": "SessionEngineHostBuildError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 526,
+      "text": ".map_err(|_| CaptureError::CaptureWorkerPanicked {"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 526,
+      "text": ".map_err(|_| CaptureError::CaptureWorkerPanicked {"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "d96e9b930bacff006cb32a3ac51e822f127e69dc22aec17afad1e3f114c62936",
+      "lines": [
+        1,
+        815
+      ],
+      "path": "src/session/lifecycle/host.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing",
+    "native-capture"
+  ],
+  "feature_gate": [
+    "internal-testing",
+    "native-capture"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0228-a82eb704",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "c7df92f4cac290986fb541da23b3ad7657357dfe",
+  "implemented_by": [],
+  "implements": [
+    "SessionEngineHost",
+    "Default for NativeSessionEngineHostOptions",
+    "SessionEngineHostBuilder",
+    "CallbackCaptureBackend for TestCaptureBackend",
+    "PreparedCaptureBackend for TestPreparedCapture",
+    "ActiveCaptureBackend for TestActiveCapture",
+    "Drop for TestActiveCapture",
+    "EndpointDriverFactory for TestEndpointFactory",
+    "PreparedEndpointDriver for TestPreparedEndpoint",
+    "RunningEndpointDriver for TestRunningEndpoint"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::capture::CallbackCaptureBackend",
+    "crate::capture::platform::linux::DesktopCaptureBackend as NativeDesktopCaptureBackend",
+    "crate::capture::platform::macos::DesktopCaptureBackend as NativeDesktopCaptureBackend",
+    "crate::capture::platform::windows::DesktopCaptureBackend as NativeDesktopCaptureBackend",
+    "crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend, }",
+    "crate::endpoint::{ EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointPortInput, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }",
+    "crate::endpoint::{EndpointDriverFactory, EndpointDriverRegistryError}",
+    "crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId}",
+    "crate::frame::{SampleFormat, SampleSpec}",
+    "crate::graph::{ AsyncOperatorFactory, NodeDefinition, NodeRegistrationError, NodeTypeId, PrepareContext, }",
+    "crate::graph::{NodeTypeId, PrepareContext}",
+    "crate::runtime::SidecarProcessSpec",
+    "crate::session::{ ApplicationSelector, DeviceSelector, EndpointConfiguration, OperatorId, PolledAudioEndpointConfig, Session, SessionEngineStartError, SessionStartOptions, Source, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }",
+    "crate::session::{ CaptureBackendSet, CompiledSession, OperatorId, PolledAudioEndpoint, PolledAudioEndpointConfig, PolledAudioEndpointConfigError, PolledAudioReceipt, RunningSession, Session, SessionEngine, SessionEngineBuildError, SessionEngineBuilder, SessionEngineStartError, SessionEventReceiver, SessionMetricsSnapshot, SessionRecordingReceipt, SessionStartCancellation, SessionStartOptions, }",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, Ordering}",
+    "std::time::{Duration, Instant}",
+    "super::{SessionEngineHostBuildError, SessionEngineHostBuilder}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 554,
+      "text": "assert!(!inputs.is_empty());"
+    },
+    {
+      "line": 694,
+      "text": "assert!(host.polled_audio_receipt(0).is_some());"
+    },
+    {
+      "line": 722,
+      "text": "assert!(host.recording_receipt(0).is_some());"
+    },
+    {
+      "line": 723,
+      "text": "assert!(receipt.outcome().is_none());"
+    },
+    {
+      "line": 762,
+      "text": "assert!(!batch.is_empty());"
+    },
+    {
+      "line": 768,
+      "text": "assert!(live_metrics.source(0).is_some());"
+    },
+    {
+      "line": 769,
+      "text": "assert!(live_metrics.source(2).is_none());"
+    },
+    {
+      "line": 770,
+      "text": "assert!(live_metrics.route(7).is_some());"
+    },
+    {
+      "line": 771,
+      "text": "assert!(live_metrics.route(8).is_none());"
+    },
+    {
+      "line": 772,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 778,
+      "text": "assert!(final_metrics"
+    },
+    {
+      "line": 801,
+      "text": "Ok(_) => panic!(\"capture failure must remain typed\"),"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 815,
+  "locks": [],
+  "module": "pocketstation::session::lifecycle::host",
+  "network_io": [
+    {
+      "line": 619,
+      "text": ".browser(\"https://receiver.test/session\")"
+    }
+  ],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-f939739091c36cc0b864",
+    "pattern-4ffac7212984dba606c6",
+    "pattern-302fd4dd990824448edd"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/lifecycle/host.rs",
+  "platform_gate": [
+    "linux",
+    "macos",
+    "windows"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 172,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 385,
+      "name": "build_native_host",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 401,
+      "name": "build_native_host",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 409,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 435,
+      "name": "CONNECTOR_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 439,
+      "name": "TestCaptureBackend",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 443,
+      "name": "TestPreparedCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 448,
+      "name": "TestActiveCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 455,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 467,
+      "name": "open",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 509,
+      "name": "source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 512,
+      "name": "observation_handle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 516,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 520,
+      "name": "stop_and_join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 535,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 542,
+      "name": "TestEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 544,
+      "name": "TestPreparedEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 546,
+      "name": "TestRunningEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 550,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 560,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 566,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 576,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 579,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 583,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 591,
+      "name": "prepare_context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 595,
+      "name": "product_session",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 643,
+      "name": "register_default_endpoints",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 662,
+      "name": "given_missing_application_backend_when_host_built_then_error_is_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 680,
+      "name": "given_registered_polled_endpoint_when_host_built_then_receipt_is_retained",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 705,
+      "name": "given_registered_multistem_recorder_when_host_built_then_receipt_is_retained",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 727,
+      "name": "given_host_owned_backends_when_started_then_polled_audio_and_stop_are_real",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 785,
+      "name": "given_host_owned_backend_failure_when_started_then_error_remains_typed",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 479,
+      "text": "std::thread::spawn(move || {"
+    },
+    {
+      "line": 713,
+      "text": "std::process::id()"
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 31,
+      "name": "SessionEngineHost",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "native",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 48,
+      "name": "native_with_multistem_recording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "compile",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "start",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "start_compiled",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "start_compiled_cancellable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "polled_audio_receipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 104,
+      "name": "polled_audio_receipts_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 107,
+      "name": "recording_receipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "recording_receipts_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "metrics_snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "engine",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 164,
+      "name": "NativeSessionEngineHostOptions",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 188,
+      "name": "SessionEngineHostBuilder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 200,
+      "name": "with_capture_backends",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 223,
+      "name": "native",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 237,
+      "name": "native",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 242,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 260,
+      "name": "set_application_backend",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 268,
+      "name": "set_microphone_backend",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "engine_builder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 283,
+      "name": "register_audio_endpoint_driver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 293,
+      "name": "register_endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 304,
+      "name": "register_async_operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 312,
+      "name": "register_sidecar_process",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 320,
+      "name": "register_polled_audio_endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 332,
+      "name": "register_multistem_recording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 343,
+      "name": "build",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 362,
+      "name": "SessionEngineHostBuildError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::session::lifecycle::host`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 1,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 29,
+      "text": "/// portability layers can project this owner without inventing a second"
+    },
+    {
+      "line": 33,
+      "text": "application_backend: Arc<dyn CallbackCaptureBackend>,"
+    },
+    {
+      "line": 34,
+      "text": "microphone_backend: Arc<dyn CallbackCaptureBackend>,"
+    },
+    {
+      "line": 35,
+      "text": "polled_audio_receipts: Box<[PolledAudioReceipt]>,"
+    },
+    {
+      "line": 36,
+      "text": "recording_receipts: Box<[SessionRecordingReceipt]>,"
+    },
+    {
+      "line": 137,
+      "text": "Box::default(),"
+    },
+    {
+      "line": 138,
+      "text": "Box::default(),"
+    },
+    {
+      "line": 139,
+      "text": "Box::default(),"
+    },
+    {
+      "line": 140,
+      "text": "Box::default(),"
+    },
+    {
+      "line": 141,
+      "text": "Box::default(),"
+    },
+    {
+      "line": 182,
+      "text": "/// Setup-time owner for the canonical Session host."
+    },
+    {
+      "line": 186,
+      "text": "/// product slice. The portable C surface can depend on this owner without"
+    },
+    {
+      "line": 190,
+      "text": "application_backend: Option<Arc<dyn CallbackCaptureBackend>>,"
+    },
+    {
+      "line": 191,
+      "text": "microphone_backend: Option<Arc<dyn CallbackCaptureBackend>>,"
+    },
+    {
+      "line": 202,
+      "text": "application_backend: Arc<dyn CallbackCaptureBackend>,"
+    },
+    {
+      "line": 203,
+      "text": "microphone_backend: Arc<dyn CallbackCaptureBackend>,"
+    },
+    {
+      "line": 226,
+      "text": "let capture_backend: Arc<dyn CallbackCaptureBackend> ="
+    },
+    {
+      "line": 227,
+      "text": "Arc::new(NativeDesktopCaptureBackend);"
+    },
+    {
+      "line": 228,
+      "text": "Self::with_capture_backends(options, Arc::clone(&capture_backend), capture_backend)"
+    },
+    {
+      "line": 263,
+      "text": "backend: Arc<dyn CallbackCaptureBackend>,"
+    },
+    {
+      "line": 271,
+      "text": "backend: Arc<dyn CallbackCaptureBackend>,"
+    },
+    {
+      "line": 287,
+      "text": "factory: Arc<dyn EndpointDriverFactory>,"
+    },
+    {
+      "line": 297,
+      "text": "definition: Arc<dyn NodeDefinition>,"
+    },
+    {
+      "line": 298,
+      "text": "factory: Arc<dyn EndpointDriverFactory>,"
+    },
+    {
+      "line": 307,
+      "text": "factory: Arc<dyn AsyncOperatorFactory>,"
+    },
+    {
+      "line": 411,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 450,
+      "text": "stop_requested: Arc<AtomicBool>,"
+    },
+    {
+      "line": 458,
+      "text": ") -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 459,
+      "text": "Ok(Box::new(TestPreparedCapture {"
+    },
+    {
+      "line": 468,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 470,
+      "text": ") -> Result<Box<dyn ActiveCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 476,
+      "text": "let stop_requested = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 477,
+      "text": "let worker_stop_requested = Arc::clone(&stop_requested);"
+    },
+    {
+      "line": 501,
+      "text": "Ok(Box::new(TestActiveCapture {"
+    },
+    {
+      "line": 521,
+      "text": "fn stop_and_join(mut self: Box<Self>) -> Result<CaptureObservations, CaptureError> {"
+    },
+    {
+      "line": 534,
+      "text": "impl Drop for TestActiveCapture {"
+    },
+    {
+      "line": 553,
+      "text": ") -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 555,
+      "text": "Ok(Box::new(TestPreparedEndpoint))"
+    },
+    {
+      "line": 561,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 562,
+      "text": "_start_gate: Arc<EndpointStartGate>,"
+    },
+    {
+      "line": 563,
+      "text": ") -> Result<Box<dyn RunningEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 564,
+      "text": "Ok(Box::new(TestRunningEndpoint))"
+    },
+    {
+      "line": 567,
+      "text": "fn cancel_preparation(self: Box<Self>) -> EndpointCancellationOutcome {"
+    },
+    {
+      "line": 584,
+      "text": "fn join_and_finalize(self: Box<Self>) -> EndpointDriverFinalization {"
+    },
+    {
+      "line": 655,
+      "text": "Arc::new(TestEndpointFactory),"
+    },
+    {
+      "line": 666,
+      "text": "builder.set_microphone_backend(Arc::new(TestCaptureBackend::default()));"
+    },
+    {
+      "line": 685,
+      "text": "builder.set_application_backend(Arc::new(TestCaptureBackend::default()));"
+    },
+    {
+      "line": 686,
+      "text": "builder.set_microphone_backend(Arc::new(TestCaptureBackend::default()));"
+    },
+    {
+      "line": 709,
+      "text": "builder.set_application_backend(Arc::new(TestCaptureBackend::default()));"
+    },
+    {
+      "line": 710,
+      "text": "builder.set_microphone_backend(Arc::new(TestCaptureBackend::default()));"
+    },
+    {
+      "line": 732,
+      "text": "let application = Arc::new(TestCaptureBackend::default());"
+    },
+    {
+      "line": 734,
+      "text": "let microphone = Arc::new(TestCaptureBackend::default());"
+    },
+    {
+      "line": 790,
+      "text": "let application = Arc::new(TestCaptureBackend::default());"
+    },
+    {
+      "line": 791,
+      "text": "let microphone = Arc::new(TestCaptureBackend::default());"
+    }
+  ],
+  "responsibilities": [
+    "SessionEngineHost",
+    "native",
+    "native_with_multistem_recording",
+    "compile",
+    "start",
+    "start_compiled",
+    "start_compiled_cancellable",
+    "polled_audio_receipt",
+    "polled_audio_receipts_total",
+    "recording_receipt",
+    "recording_receipts_total",
+    "metrics_snapshot",
+    "engine",
+    "NativeSessionEngineHostOptions",
+    "default",
+    "SessionEngineHostBuilder",
+    "with_capture_backends",
+    "native",
+    "native",
+    "new",
+    "set_application_backend",
+    "set_microphone_backend",
+    "engine_builder",
+    "register_audio_endpoint_driver",
+    "register_endpoint",
+    "register_async_operator",
+    "register_sidecar_process",
+    "register_polled_audio_endpoint",
+    "register_multistem_recording",
+    "build",
+    "SessionEngineHostBuildError",
+    "build_native_host",
+    "build_native_host",
+    "tests",
+    "CONNECTOR_OPERATOR_ID",
+    "TestCaptureBackend",
+    "TestPreparedCapture",
+    "TestActiveCapture",
+    "prepare",
+    "open",
+    "source_id",
+    "observation_handle",
+    "observations",
+    "stop_and_join",
+    "drop",
+    "TestEndpointFactory",
+    "TestPreparedEndpoint",
+    "TestRunningEndpoint",
+    "prepare",
+    "start",
+    "cancel_preparation",
+    "observations",
+    "request_stop",
+    "join_and_finalize",
+    "prepare_context",
+    "product_session",
+    "register_default_endpoints",
+    "given_missing_application_backend_when_host_built_then_error_is_typed",
+    "given_registered_polled_endpoint_when_host_built_then_receipt_is_retained",
+    "given_registered_multistem_recorder_when_host_built_then_receipt_is_retained",
+    "given_host_owned_backends_when_started_then_polled_audio_and_stop_are_real",
+    "given_host_owned_backend_failure_when_started_then_error_remains_typed"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 772,
+      "text": "assert!(running.stop().is_success());"
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 619,
+      "text": ".browser(\"https://receiver.test/session\")"
+    },
+    {
+      "line": 479,
+      "text": "std::thread::spawn(move || {"
+    },
+    {
+      "line": 713,
+      "text": "std::process::id()"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 60,
+      "text": "pub fn start(&self, session: Session) -> Result<RunningSession, SessionEngineStartError> {"
+    },
+    {
+      "line": 61,
+      "text": "self.engine.start("
+    },
+    {
+      "line": 455,
+      "text": "fn prepare("
+    },
+    {
+      "line": 550,
+      "text": "fn prepare("
+    },
+    {
+      "line": 560,
+      "text": "fn start("
+    },
+    {
+      "line": 747,
+      "text": "let mut running = host.start(product_session()).expect(\"host start\");"
+    },
+    {
+      "line": 800,
+      "text": "let error = match host.start(product_session()) {"
+    },
+    {
+      "line": 809,
+      "text": "other => panic!(\"unexpected start failure: {other}\"),"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 451,
+      "text": "worker: Option<std::thread::JoinHandle<()>>,"
+    },
+    {
+      "line": 479,
+      "text": "std::thread::spawn(move || {"
+    },
+    {
+      "line": 484,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 495,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 756,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    }
+  ],
+  "visibility": "mixed"
+}

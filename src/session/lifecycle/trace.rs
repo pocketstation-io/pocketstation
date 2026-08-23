@@ -24,38 +24,62 @@ const FNV_OFFSET_BASIS: u64 = 0xcbf2_9ce4_8422_2325;
 const FNV_PRIME: u64 = 0x0000_0100_0000_01b3;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[doc = "Selects the session trace record kind used by PocketStation."]
 pub enum SessionTraceRecordKind {
+    #[doc = "Selects lifecycle behavior for `SessionTraceRecordKind`."]
     Lifecycle {
+        #[doc = "Stores the state associated with `Lifecycle`."]
         state: SessionLifecycleState,
     },
+    #[doc = "Selects source failure behavior for `SessionTraceRecordKind`."]
     SourceFailure {
+        #[doc = "Identifies the stem associated with `SourceFailure`."]
         stem_id: StemId,
     },
+    #[doc = "Selects endpoint failure behavior for `SessionTraceRecordKind`."]
     EndpointFailure {
+        #[doc = "Identifies the route associated with `EndpointFailure`."]
         route_id: RouteId,
+        #[doc = "Identifies the endpoint associated with `EndpointFailure`."]
         endpoint_id: EndpointId,
+        #[doc = "Stores the stage code associated with `EndpointFailure`."]
         stage_code: u8,
     },
+    #[doc = "Selects rollback failure behavior for `SessionTraceRecordKind`."]
     RollbackFailure {
+        #[doc = "Stores the stage associated with `RollbackFailure`."]
         stage: SessionRollbackStage,
     },
+    #[doc = "Selects finalization failure behavior for `SessionTraceRecordKind`."]
     FinalizationFailure {
+        #[doc = "Stores the stage associated with `FinalizationFailure`."]
         stage: SessionFinalizationStage,
     },
+    #[doc = "Selects terminal behavior for `SessionTraceRecordKind`."]
     Terminal {
+        #[doc = "Stores the state associated with `Terminal`."]
         state: SessionTerminalState,
+        #[doc = "Counts the total number of source failures observed by `Terminal`."]
         source_failures_total: u64,
+        #[doc = "Counts the total number of endpoint failures observed by `Terminal`."]
         endpoint_failures_total: u64,
+        #[doc = "Counts the total number of rollback failures observed by `Terminal`."]
         rollback_failures_total: u64,
+        #[doc = "Counts the total number of finalization failures observed by `Terminal`."]
         finalization_failures_total: u64,
     },
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[doc = "Represents session trace record in the PocketStation API."]
 pub struct SessionTraceRecord {
+    #[doc = "Stores the sequence index used by `SessionTraceRecord`."]
     pub sequence_index: u64,
+    #[doc = "Stores the observed at value for `SessionTraceRecord`, in nanoseconds."]
     pub observed_at_ns: u64,
+    #[doc = "Identifies the session associated with `SessionTraceRecord`."]
     pub session_id: SessionId,
+    #[doc = "Stores the kind associated with `SessionTraceRecord`."]
     pub kind: SessionTraceRecordKind,
 }
 
@@ -67,16 +91,24 @@ pub(crate) enum SessionTraceRecordDelivery {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+#[doc = "Reports the structured session trace recorder outcome."]
 pub struct SessionTraceRecorderOutcome {
+    #[doc = "Stores the path associated with `SessionTraceRecorderOutcome`."]
     pub path: PathBuf,
+    #[doc = "Counts the total number of records attempted observed by `SessionTraceRecorderOutcome`."]
     pub records_attempted_total: u64,
+    #[doc = "Counts the total number of records enqueued observed by `SessionTraceRecorderOutcome`."]
     pub records_enqueued_total: u64,
+    #[doc = "Counts the total number of records dropped observed by `SessionTraceRecorderOutcome`."]
     pub records_dropped_total: u64,
+    #[doc = "Counts the total number of records written observed by `SessionTraceRecorderOutcome`."]
     pub records_written_total: u64,
+    #[doc = "Stores the rolling hash associated with `SessionTraceRecorderOutcome`."]
     pub rolling_hash: u64,
 }
 
 impl SessionTraceRecorderOutcome {
+    #[doc = "Returns whether complete applies to `SessionTraceRecorderOutcome`."]
     pub fn is_complete(&self) -> bool {
         self.records_dropped_total == 0
             && self.records_attempted_total == self.records_enqueued_total
@@ -85,26 +117,38 @@ impl SessionTraceRecorderOutcome {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as session trace recorder start error."]
 pub enum SessionTraceRecorderStartError {
     #[error("session trace capacity must be greater than zero records")]
+    #[doc = "Reports zero capacity."]
     ZeroCapacity,
     #[error("session trace output already exists: {path}")]
-    OutputExists { path: PathBuf },
+    #[doc = "Reports output exists."]
+    OutputExists {
+        #[doc = "Stores the path associated with `OutputExists`."]
+        path: PathBuf,
+    },
     #[error("session trace I/O failed: {0}")]
+    #[doc = "Reports I/O."]
     Io(#[from] std::io::Error),
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as session trace recorder finish error."]
 pub enum SessionTraceRecorderFinishError {
     #[error("session trace command channel closed before finalization")]
+    #[doc = "Reports channel closed."]
     ChannelClosed,
     #[error("session trace worker panicked")]
+    #[doc = "Reports worker panicked."]
     WorkerPanicked,
     #[error("session trace I/O failed: {0}")]
+    #[doc = "Reports I/O."]
     Io(#[from] std::io::Error),
 }
 
 #[derive(Clone, Debug)]
+#[doc = "Owns bounded access to session trace recorder."]
 pub struct SessionTraceRecorderHandle {
     sender: SyncSender<RecorderCommand>,
     counters: Arc<RecorderCounters>,
@@ -149,6 +193,7 @@ impl SessionTraceRecorderHandle {
     }
 }
 
+#[doc = "Represents session trace recorder in the PocketStation API."]
 pub struct SessionTraceRecorder {
     path: PathBuf,
     handle: SessionTraceRecorderHandle,
@@ -157,6 +202,7 @@ pub struct SessionTraceRecorder {
 }
 
 impl SessionTraceRecorder {
+    #[doc = "Starts the lifecycle represented by `SessionTraceRecorder`."]
     pub fn start(
         path: impl Into<PathBuf>,
         session_id: SessionId,
@@ -194,10 +240,12 @@ impl SessionTraceRecorder {
         })
     }
 
+    #[doc = "Returns the handle associated with `SessionTraceRecorder`."]
     pub fn handle(&self) -> SessionTraceRecorderHandle {
         self.handle.clone()
     }
 
+    #[doc = "Finishes work owned by `SessionTraceRecorder`."]
     pub fn finish(
         &mut self,
     ) -> Result<&SessionTraceRecorderOutcome, SessionTraceRecorderFinishError> {
@@ -240,18 +288,21 @@ impl SessionTraceRecorder {
             .ok_or(SessionTraceRecorderFinishError::ChannelClosed)
     }
 
+    #[doc = "Returns the outcome associated with `SessionTraceRecorder`."]
     pub fn outcome(&self) -> Option<&SessionTraceRecorderOutcome> {
         self.outcome.as_ref()
     }
 }
 
 impl Drop for SessionTraceRecorder {
+    #[doc = "Releases resources owned by `SessionTraceRecorder`."]
     fn drop(&mut self) {
         let _ = self.finish();
     }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+#[doc = "Represents session trace in the PocketStation API."]
 pub struct SessionTrace {
     session_id: SessionId,
     records: Box<[SessionTraceRecord]>,
@@ -259,24 +310,29 @@ pub struct SessionTrace {
 }
 
 impl SessionTrace {
+    #[doc = "Reads the persisted representation of `SessionTrace`."]
     pub fn read(path: impl AsRef<Path>) -> Result<Self, SessionTraceValidationError> {
         let path = path.as_ref();
         let bytes = std::fs::read(path)?;
         decode_trace(path, &bytes)
     }
 
+    #[doc = "Returns the session identifier associated with `SessionTrace`."]
     pub const fn session_id(&self) -> SessionId {
         self.session_id
     }
 
+    #[doc = "Returns the records associated with `SessionTrace`."]
     pub fn records(&self) -> &[SessionTraceRecord] {
         &self.records
     }
 
+    #[doc = "Returns the outcome associated with `SessionTrace`."]
     pub const fn outcome(&self) -> &SessionTraceRecorderOutcome {
         &self.outcome
     }
 
+    #[doc = "Validates `SessionTrace` against its declared contract."]
     pub fn validate(&self) -> Result<SessionTraceValidation, SessionTraceValidationError> {
         if !self.outcome.is_complete() {
             return Err(SessionTraceValidationError::IncompleteTrace);
@@ -336,53 +392,80 @@ impl SessionTrace {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[doc = "Represents session trace terminal in the PocketStation API."]
 pub struct SessionTraceTerminal {
+    #[doc = "Stores the state associated with `SessionTraceTerminal`."]
     pub state: SessionTerminalState,
+    #[doc = "Counts the total number of source failures observed by `SessionTraceTerminal`."]
     pub source_failures_total: u64,
+    #[doc = "Counts the total number of endpoint failures observed by `SessionTraceTerminal`."]
     pub endpoint_failures_total: u64,
+    #[doc = "Counts the total number of rollback failures observed by `SessionTraceTerminal`."]
     pub rollback_failures_total: u64,
+    #[doc = "Counts the total number of finalization failures observed by `SessionTraceTerminal`."]
     pub finalization_failures_total: u64,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+#[doc = "Represents session trace validation in the PocketStation API."]
 pub struct SessionTraceValidation {
+    #[doc = "Identifies the session associated with `SessionTraceValidation`."]
     pub session_id: SessionId,
+    #[doc = "Stores the lifecycle associated with `SessionTraceValidation`."]
     pub lifecycle: Box<[SessionLifecycleState]>,
+    #[doc = "Indicates whether terminal applies to `SessionTraceValidation`."]
     pub terminal: SessionTraceTerminal,
+    #[doc = "Counts the total number of records validated observed by `SessionTraceValidation`."]
     pub records_validated_total: u64,
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as session trace validation error."]
 pub enum SessionTraceValidationError {
     #[error("Session trace I/O failed: {0}")]
+    #[doc = "Reports I/O."]
     Io(#[from] std::io::Error),
     #[error("Session trace magic is invalid")]
+    #[doc = "Reports invalid magic."]
     InvalidMagic,
     #[error("Session trace version is unsupported")]
+    #[doc = "Reports unsupported version."]
     UnsupportedVersion,
     #[error("Session trace layout is invalid")]
+    #[doc = "Reports invalid layout."]
     InvalidLayout,
     #[error("Session trace is truncated")]
+    #[doc = "Reports truncated."]
     Truncated,
     #[error("Session trace checksum is invalid")]
+    #[doc = "Reports invalid checksum."]
     InvalidChecksum,
     #[error("Session trace is incomplete because records were dropped or not written")]
+    #[doc = "Reports incomplete trace."]
     IncompleteTrace,
     #[error("Session trace contains a non-contiguous record sequence")]
+    #[doc = "Reports sequence gap."]
     SequenceGap,
     #[error("Session trace contains a different Session identity")]
+    #[doc = "Reports session mismatch."]
     SessionMismatch,
     #[error("Session trace monotonic timestamp regressed")]
+    #[doc = "Reports timestamp regression."]
     TimestampRegression,
     #[error("Session trace lifecycle transition is invalid")]
+    #[doc = "Reports invalid lifecycle transition."]
     InvalidLifecycleTransition,
     #[error("Session trace does not contain a terminal record")]
+    #[doc = "Reports missing terminal."]
     MissingTerminal,
     #[error("Session trace terminal state does not match lifecycle state")]
+    #[doc = "Reports terminal mismatch."]
     TerminalMismatch,
     #[error("Session trace contains a record after the terminal record")]
+    #[doc = "Reports record after terminal."]
     RecordAfterTerminal,
     #[error("Session trace contains an unknown record type")]
+    #[doc = "Reports unknown record type."]
     UnknownRecordType,
 }
 

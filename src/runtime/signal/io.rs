@@ -74,6 +74,7 @@ impl AsyncOperatorInput {
 pub type AsyncOperatorOutput = TypedEdgeReceiver;
 pub type AsyncOperatorOutputObservationHandle = TypedEdgeObservationHandle;
 pub type AsyncOperatorOutputBranchSpec = TypedEdgeBranchSpec;
+#[doc = "Names the async operator output observations type used by the public API."]
 pub type AsyncOperatorOutputObservations = TypedEdgeObservations;
 
 pub struct AsyncOperatorTypedInput {

@@ -2,6 +2,7 @@ use crate::session::{SessionStopCode, SessionStopFailureCode};
 use crate::{SessionRuntimeError, SessionStopDisposition, SessionStopResult};
 
 impl SessionRuntimeError {
+    #[doc = "Returns the stable error or status code represented by `SessionRuntimeError`."]
     pub const fn code(self) -> crate::session::SessionRuntimeErrorCode {
         match self {
             Self::MissingMetricsSnapshot => {
@@ -12,6 +13,7 @@ impl SessionRuntimeError {
 }
 
 impl SessionStopResult {
+    #[doc = "Returns the stable error or status code represented by `SessionStopResult`."]
     pub fn code(self) -> SessionStopCode {
         if !self.is_success() {
             SessionStopCode::StopFailed
@@ -23,6 +25,7 @@ impl SessionStopResult {
         }
     }
 
+    #[doc = "Returns the failure codes associated with `SessionStopResult`."]
     pub fn failure_codes(self) -> Box<[SessionStopFailureCode]> {
         crate::session::session_stop_failure_codes(&self.outcome())
     }

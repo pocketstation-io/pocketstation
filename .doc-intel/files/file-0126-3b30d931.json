@@ -1,0 +1,1022 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "EndpointAudioReceiver::new",
+    "EndpointPreparationGroup::Route",
+    "EndpointReceiver::Signal",
+    "EndpointSignalReceiver::new",
+    "Signal",
+    "audio",
+    "cfg",
+    "channels",
+    "context",
+    "edge_contract",
+    "into",
+    "into_inner",
+    "into_parts",
+    "into_plan_edge_receiver",
+    "is_abandoned",
+    "lineage",
+    "map",
+    "mark_discontinuity",
+    "mark_worker_failure",
+    "media",
+    "new",
+    "observation_handle",
+    "observations",
+    "plan_edge_observation_handle",
+    "port_name",
+    "preparation_group",
+    "prepare",
+    "pub",
+    "receiver",
+    "recv",
+    "sample_format",
+    "sample_rate_hz",
+    "samples",
+    "sequence_number",
+    "signal",
+    "signal_spec",
+    "source_id",
+    "stream_id",
+    "timestamp_ns",
+    "try_recv"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 81,
+      "text": "#[cfg(feature = \"internal-testing\")]"
+    },
+    {
+      "line": 116,
+      "text": "#[cfg(feature = \"internal-testing\")]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "EndpointAudioReceiver::new",
+    "EndpointSignalReceiver::new",
+    "new"
+  ],
+  "content_hash": "80ebabe400a06749d992ffb0b4d2d5ec45ca07ca2c2cb018c30d3325aaa178b8",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 18,
+      "name": "EndpointAudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 23,
+      "name": "into_inner",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 26,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 34,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 38,
+      "name": "timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "sample_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "sample_format",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 68,
+      "name": "EndpointAudioReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "into_inner",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "into_plan_edge_receiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "try_recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 91,
+      "name": "is_abandoned",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 95,
+      "name": "mark_discontinuity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "mark_worker_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 108,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 111,
+      "name": "observation_handle",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "plan_edge_observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 123,
+      "name": "EndpointSignalReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 128,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "try_recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 135,
+      "name": "recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 139,
+      "name": "is_abandoned",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 144,
+      "name": "EndpointReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 152,
+      "name": "EndpointPortInput",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 163,
+      "name": "audio",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 184,
+      "name": "signal",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 202,
+      "name": "port_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "signal_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 210,
+      "name": "media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 214,
+      "name": "edge_contract",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 218,
+      "name": "context",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 222,
+      "name": "receiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 226,
+      "name": "into_parts",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 231,
+      "name": "EndpointDriverFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 233,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 240,
+      "name": "prepare",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 9,
+      "text": "use crate::endpoint::{"
+    },
+    {
+      "line": 13,
+      "text": "/// Read-only audio frame delivered to an external endpoint."
+    },
+    {
+      "line": 17,
+      "text": "/// endpoint implementation."
+    },
+    {
+      "line": 64,
+      "text": "/// Exclusive consumer for one bounded realtime-audio endpoint edge."
+    },
+    {
+      "line": 104,
+      "text": "/// Snapshots the bounded edge counters for this endpoint input."
+    },
+    {
+      "line": 122,
+      "text": "/// Exclusive consumer for one bounded asynchronous signal endpoint edge."
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 18,
+      "name": "EndpointAudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 23,
+      "name": "into_inner",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 26,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 34,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 38,
+      "name": "timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "sample_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "sample_format",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 68,
+      "name": "EndpointAudioReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "into_inner",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "into_plan_edge_receiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "try_recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 91,
+      "name": "is_abandoned",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 95,
+      "name": "mark_discontinuity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "mark_worker_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 108,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 111,
+      "name": "observation_handle",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "plan_edge_observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 123,
+      "name": "EndpointSignalReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 128,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "try_recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 135,
+      "name": "recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 139,
+      "name": "is_abandoned",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 144,
+      "name": "EndpointReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 152,
+      "name": "EndpointPortInput",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 163,
+      "name": "audio",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 184,
+      "name": "signal",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 202,
+      "name": "port_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "signal_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 210,
+      "name": "media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 214,
+      "name": "edge_contract",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 218,
+      "name": "context",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 222,
+      "name": "receiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 226,
+      "name": "into_parts",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 231,
+      "name": "EndpointDriverFactory",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "80ebabe400a06749d992ffb0b4d2d5ec45ca07ca2c2cb018c30d3325aaa178b8",
+      "lines": [
+        1,
+        246
+      ],
+      "path": "src/endpoint/contract.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0126-3b30d931",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "31b64ddeb8af0a0f68b76afb703d2d57060cc46f",
+  "implemented_by": [],
+  "implements": [
+    "EndpointAudioFrame",
+    "EndpointAudioReceiver",
+    "EndpointSignalReceiver",
+    "EndpointPortInput"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::endpoint::{ EndpointFailure, EndpointPreparationGroup, EndpointPrepareContext, PreparedEndpointDriver, }",
+    "crate::frame::{FrameLineage, SampleFormat, SampleSpec, SourceId, StreamId}",
+    "crate::graph::{EdgeContract, MediaCaps, PrepareContext, SignalEnvelope, SignalSpec}",
+    "crate::runtime::{ PlanEdgeFrame, PlanEdgeObservationHandle, PlanEdgeReceiver, TypedEdgeReceiver, }",
+    "std::sync::Arc"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 246,
+  "locks": [],
+  "module": "pocketstation::endpoint::contract",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-9c294f67670c65cdf2b2"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/endpoint/contract.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 233,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 240,
+      "name": "prepare",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 18,
+      "name": "EndpointAudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 23,
+      "name": "into_inner",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 26,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 34,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 38,
+      "name": "timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "sample_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "sample_format",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 68,
+      "name": "EndpointAudioReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "into_inner",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "into_plan_edge_receiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "try_recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 91,
+      "name": "is_abandoned",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 95,
+      "name": "mark_discontinuity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "mark_worker_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 108,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 111,
+      "name": "observation_handle",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "plan_edge_observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 123,
+      "name": "EndpointSignalReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 128,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "try_recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 135,
+      "name": "recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 139,
+      "name": "is_abandoned",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 144,
+      "name": "EndpointReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 152,
+      "name": "EndpointPortInput",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 163,
+      "name": "audio",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 184,
+      "name": "signal",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 202,
+      "name": "port_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "signal_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 210,
+      "name": "media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 214,
+      "name": "edge_contract",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 218,
+      "name": "context",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 222,
+      "name": "receiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 226,
+      "name": "into_parts",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 231,
+      "name": "EndpointDriverFactory",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::endpoint::contract`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/stop-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/endpoints.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/endpoints.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 1,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 132,
+      "text": "pub fn try_recv(&mut self) -> Option<Arc<SignalEnvelope>> {"
+    },
+    {
+      "line": 136,
+      "text": "pub fn recv(&mut self) -> Option<Arc<SignalEnvelope>> {"
+    },
+    {
+      "line": 244,
+      "text": ") -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure>;"
+    }
+  ],
+  "responsibilities": [
+    "EndpointAudioFrame",
+    "into_inner",
+    "source_id",
+    "stream_id",
+    "sequence_number",
+    "timestamp_ns",
+    "sample_rate_hz",
+    "channels",
+    "sample_format",
+    "samples",
+    "lineage",
+    "EndpointAudioReceiver",
+    "new",
+    "into_inner",
+    "into_plan_edge_receiver",
+    "try_recv",
+    "is_abandoned",
+    "mark_discontinuity",
+    "mark_worker_failure",
+    "observations",
+    "observation_handle",
+    "plan_edge_observation_handle",
+    "EndpointSignalReceiver",
+    "new",
+    "try_recv",
+    "recv",
+    "is_abandoned",
+    "EndpointReceiver",
+    "EndpointPortInput",
+    "audio",
+    "signal",
+    "port_name",
+    "signal_spec",
+    "media",
+    "edge_contract",
+    "context",
+    "receiver",
+    "into_parts",
+    "EndpointDriverFactory",
+    "preparation_group",
+    "prepare"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 241,
+      "text": "fn prepare("
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

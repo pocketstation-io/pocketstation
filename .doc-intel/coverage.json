@@ -1,0 +1,115 @@
+{
+  "final_status": "complete",
+  "gates": [
+    {
+      "failures": [],
+      "gate": 0,
+      "name": "Repository snapshot + manifest",
+      "status": "pass"
+    },
+    {
+      "failures": [],
+      "gate": 1,
+      "name": "Every semantic file analyzed",
+      "status": "pass"
+    },
+    {
+      "failures": [],
+      "gate": 2,
+      "name": "Every symbol extracted",
+      "status": "pass"
+    },
+    {
+      "failures": [],
+      "gate": 3,
+      "name": "Relationship graph resolved",
+      "status": "pass"
+    },
+    {
+      "failures": [],
+      "gate": 4,
+      "name": "Behaviors, errors, lifecycles, and configuration extracted",
+      "status": "pass"
+    },
+    {
+      "failures": [],
+      "gate": 5,
+      "name": "Capabilities and user journeys derived",
+      "status": "pass"
+    },
+    {
+      "failures": [],
+      "gate": 6,
+      "name": "Information architecture reviewed against evidence",
+      "status": "pass"
+    },
+    {
+      "failures": [],
+      "gate": 7,
+      "name": "Concept documentation",
+      "status": "pass"
+    },
+    {
+      "failures": [],
+      "gate": 8,
+      "name": "How-to documentation",
+      "status": "pass"
+    },
+    {
+      "failures": [],
+      "gate": 9,
+      "name": "API reference",
+      "status": "pass"
+    },
+    {
+      "failures": [],
+      "gate": 10,
+      "name": "Troubleshooting, errors, and best practices",
+      "status": "pass"
+    },
+    {
+      "failures": [],
+      "gate": 11,
+      "name": "Examples executed",
+      "status": "pass"
+    },
+    {
+      "failures": [],
+      "gate": 12,
+      "name": "Documentation build + link validation",
+      "status": "pass"
+    }
+  ],
+  "generated_at": "2026-08-22T06:31:07+00:00",
+  "metrics": {
+    "analyzed_semantic_files": 274,
+    "analyzed_tests": 691,
+    "concept_covered_capabilities": 33,
+    "conflicts": 1,
+    "documented_behavior_records": 752,
+    "documented_config_fields": 135,
+    "documented_errors": 616,
+    "guide_covered_capabilities": 33,
+    "reference_covered_symbols": 2951,
+    "relationships": 11486,
+    "total_behavior_records": 752,
+    "total_claims": 4011,
+    "total_config_fields": 135,
+    "total_errors": 616,
+    "total_examples": 6,
+    "total_pages": 145,
+    "total_public_symbols": 2951,
+    "total_semantic_files": 274,
+    "total_tests": 691,
+    "total_tracked_files": 278,
+    "total_user_capabilities": 33,
+    "troubleshooting_applicable_capabilities": 33,
+    "troubleshooting_covered_capabilities": 33,
+    "unknowns": 3,
+    "validated_pages": 145,
+    "verified_examples": 6,
+    "verified_or_explicit_claims": 4011
+  },
+  "next": null,
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c"
+}

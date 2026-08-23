@@ -1,0 +1,11 @@
+{
+  "broken_internal_links": [],
+  "build_checkpoint": ".doc-intel/checkpoints/documentation-build.json",
+  "claim_failures": [],
+  "claims_sha256": "e97a84a43ad6525573578c04b6bd0588f2219b9d338402244af95f08152b23d9",
+  "created_at": "2026-08-22T04:02:53+00:00",
+  "docs_digest": "2e1eab34ace1d27ab01ba34ce90d9cdeae27ba48afef41f4a87013e40dfa8492",
+  "page_manifest_sha256": "3981c8e36c272b2c37d8c23eacf1afb7900cc2fbe6318d391c9dda6279caac92",
+  "passed": true,
+  "source_digest": "2ba0cd273963e0f1447e62cf201b6156c5dad47979dd260b2eb1fa7957cd081b"
+}

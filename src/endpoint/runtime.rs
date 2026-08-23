@@ -15,12 +15,14 @@ pub struct SessionTimelineOrigin {
 }
 
 impl SessionTimelineOrigin {
+    #[doc = "Creates `SessionTimelineOrigin` from monotonic timestamp nanoseconds."]
     pub const fn from_monotonic_timestamp_ns(monotonic_timestamp_ns: u64) -> Self {
         Self {
             monotonic_timestamp_ns,
         }
     }
 
+    #[doc = "Returns the monotonic timestamp nanoseconds associated with `SessionTimelineOrigin`."]
     pub const fn monotonic_timestamp_ns(self) -> u64 {
         self.monotonic_timestamp_ns
     }
@@ -29,12 +31,17 @@ impl SessionTimelineOrigin {
 /// Provenance of one endpoint input, independent of its physical receiver.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EndpointInputOrigin {
+    #[doc = "Represents the stem case of `EndpointInputOrigin`."]
     Stem(StemId),
     /// A typed signal whose detailed provenance is carried by `SignalLineage`.
     Signal,
+    #[doc = "Represents the source case of `EndpointInputOrigin`."]
     Source {
+        #[doc = "Identifies the source associated with `Source`."]
         source_id: SourceId,
+        #[doc = "Identifies the stream associated with `Source`."]
         stream_id: StreamId,
+        #[doc = "Identifies the audio stem associated with `Source`."]
         audio_stem_id: Option<StemId>,
     },
 }
@@ -47,6 +54,7 @@ pub struct EndpointRouteContext {
 }
 
 impl EndpointRouteContext {
+    #[doc = "Creates `EndpointRouteContext` from stem."]
     pub const fn from_stem(route_id: RouteId, stem_id: StemId) -> Self {
         Self {
             route_id,
@@ -54,6 +62,7 @@ impl EndpointRouteContext {
         }
     }
 
+    #[doc = "Creates `EndpointRouteContext` from source."]
     pub const fn from_source(
         route_id: RouteId,
         source_id: SourceId,
@@ -70,6 +79,7 @@ impl EndpointRouteContext {
         }
     }
 
+    #[doc = "Returns the signal associated with `EndpointRouteContext`."]
     pub const fn signal(route_id: RouteId) -> Self {
         Self {
             route_id,
@@ -77,14 +87,17 @@ impl EndpointRouteContext {
         }
     }
 
+    #[doc = "Returns the route identifier associated with `EndpointRouteContext`."]
     pub const fn route_id(self) -> RouteId {
         self.route_id
     }
 
+    #[doc = "Returns the origin associated with `EndpointRouteContext`."]
     pub const fn origin(self) -> EndpointInputOrigin {
         self.origin
     }
 
+    #[doc = "Returns the audio stem identifier associated with `EndpointRouteContext`."]
     pub const fn audio_stem_id(self) -> Option<StemId> {
         match self.origin {
             EndpointInputOrigin::Stem(stem_id) => Some(stem_id),
@@ -95,6 +108,7 @@ impl EndpointRouteContext {
 }
 
 #[derive(Debug, Clone)]
+#[doc = "Represents endpoint prepare context in the PocketStation API."]
 pub struct EndpointPrepareContext {
     session_id: SessionId,
     endpoint_id: EndpointId,
@@ -105,6 +119,7 @@ pub struct EndpointPrepareContext {
 }
 
 impl EndpointPrepareContext {
+    #[doc = "Creates a new `EndpointPrepareContext`."]
     pub fn new(
         session_id: SessionId,
         endpoint_id: EndpointId,
@@ -122,10 +137,12 @@ impl EndpointPrepareContext {
         }
     }
 
+    #[doc = "Returns the session identifier associated with `EndpointPrepareContext`."]
     pub const fn session_id(&self) -> SessionId {
         self.session_id
     }
 
+    #[doc = "Returns the endpoint identifier associated with `EndpointPrepareContext`."]
     pub const fn endpoint_id(&self) -> EndpointId {
         self.endpoint_id
     }
@@ -135,42 +152,56 @@ impl EndpointPrepareContext {
         self
     }
 
+    #[doc = "Returns the connector identifier associated with `EndpointPrepareContext`."]
     pub const fn connector_id(&self) -> Option<ConnectorId> {
         self.connector_id
     }
 
+    #[doc = "Returns the route context associated with `EndpointPrepareContext`."]
     pub const fn route_context(&self) -> EndpointRouteContext {
         self.route_context
     }
 
+    #[doc = "Returns the session timeline origin associated with `EndpointPrepareContext`."]
     pub const fn session_timeline_origin(&self) -> SessionTimelineOrigin {
         self.session_timeline_origin
     }
 
+    #[doc = "Returns the node configuration associated with `EndpointPrepareContext`."]
     pub const fn node_configuration(&self) -> &NodeConfig {
         &self.node_configuration
     }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Selects the endpoint failure stage used by PocketStation."]
 pub enum EndpointFailureStage {
+    #[doc = "Reports prepare."]
     Prepare,
+    #[doc = "Reports cancel preparation."]
     CancelPreparation,
+    #[doc = "Reports start."]
     Start,
+    #[doc = "Reports request stop."]
     RequestStop,
+    #[doc = "Reports join finalize."]
     JoinFinalize,
 }
 
 /// Machine-readable recovery classification retained in Session outcomes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EndpointFailureRetryability {
+    #[doc = "Reports never."]
     Never,
+    #[doc = "Reports retryable."]
     Retryable,
+    #[doc = "Reports reconfiguration required."]
     ReconfigurationRequired,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
 #[error("endpoint {stage:?} failed: {message}")]
+#[doc = "Reports a endpoint failure."]
 pub struct EndpointFailure {
     stage: EndpointFailureStage,
     message: String,
@@ -179,6 +210,7 @@ pub struct EndpointFailure {
 }
 
 impl EndpointFailure {
+    #[doc = "Creates a new `EndpointFailure`."]
     pub fn new(stage: EndpointFailureStage, message: impl Into<String>) -> Self {
         Self {
             stage,
@@ -201,18 +233,22 @@ impl EndpointFailure {
         self
     }
 
+    #[doc = "Returns the stage associated with `EndpointFailure`."]
     pub const fn stage(&self) -> EndpointFailureStage {
         self.stage
     }
 
+    #[doc = "Returns the diagnostic message associated with `EndpointFailure`."]
     pub fn message(&self) -> &str {
         &self.message
     }
 
+    #[doc = "Returns the stable error or status code represented by `EndpointFailure`."]
     pub fn code(&self) -> Option<&str> {
         self.code.as_deref()
     }
 
+    #[doc = "Returns the retryability associated with `EndpointFailure`."]
     pub const fn retryability(&self) -> Option<EndpointFailureRetryability> {
         self.retryability
     }
@@ -225,11 +261,17 @@ impl EndpointFailure {
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[doc = "Reports the endpoint driver observations collected at an observation boundary."]
 pub struct EndpointDriverObservations {
+    #[doc = "Counts the total number of frames received observed by `EndpointDriverObservations`."]
     pub frames_received_total: u64,
+    #[doc = "Counts the total number of frames delivered observed by `EndpointDriverObservations`."]
     pub frames_delivered_total: u64,
+    #[doc = "Counts the total number of frames dropped observed by `EndpointDriverObservations`."]
     pub frames_dropped_total: u64,
+    #[doc = "Counts the total number of discontinuities observed by `EndpointDriverObservations`."]
     pub discontinuities_total: u64,
+    #[doc = "Counts the total number of failures observed by `EndpointDriverObservations`."]
     pub failures_total: u64,
 }
 
@@ -286,21 +328,31 @@ fn increment(counter: &AtomicU64, amount: u64) {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Reports the structured endpoint cancellation outcome."]
 pub struct EndpointCancellationOutcome {
+    #[doc = "Carries the observations collected for `EndpointCancellationOutcome`."]
     pub observations: EndpointDriverObservations,
+    #[doc = "Stores the result associated with `EndpointCancellationOutcome`."]
     pub result: Result<(), EndpointFailure>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Represents endpoint driver finalization in the PocketStation API."]
 pub struct EndpointDriverFinalization {
+    #[doc = "Carries the observations collected for `EndpointDriverFinalization`."]
     pub observations: EndpointDriverObservations,
+    #[doc = "Stores the result associated with `EndpointDriverFinalization`."]
     pub result: Result<(), EndpointFailure>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Reports the structured endpoint finalization outcome."]
 pub struct EndpointFinalizationOutcome {
+    #[doc = "Carries the observations collected for `EndpointFinalizationOutcome`."]
     pub observations: EndpointDriverObservations,
+    #[doc = "Stores the request stop result associated with `EndpointFinalizationOutcome`."]
     pub request_stop_result: Result<(), EndpointFailure>,
+    #[doc = "Stores the join finalize result associated with `EndpointFinalizationOutcome`."]
     pub join_finalize_result: Result<(), EndpointFailure>,
 }
 
@@ -325,6 +377,7 @@ pub trait PreparedEndpointDriver: Send {
         start_gate: Arc<EndpointStartGate>,
     ) -> Result<Box<dyn RunningEndpointDriver>, EndpointFailure>;
 
+    #[doc = "Cancels preparation for `PreparedEndpointDriver`."]
     fn cancel_preparation(self: Box<Self>) -> EndpointCancellationOutcome;
 }
 
@@ -334,15 +387,19 @@ pub trait PreparedEndpointDriver: Send {
 /// this contract does not create or schedule threads. `Drop` must reclaim the
 /// same resources as the explicit stop/finalize path.
 pub trait RunningEndpointDriver: Send {
+    #[doc = "Returns the observations exposed by `RunningEndpointDriver`."]
     fn observations(&self) -> EndpointDriverObservations;
 
+    #[doc = "Requests a graceful stop from `RunningEndpointDriver`."]
     fn request_stop(&mut self) -> Result<(), EndpointFailure>;
 
+    #[doc = "Requests the selected shutdown mode from `RunningEndpointDriver`."]
     fn request_shutdown(&mut self, mode: EndpointShutdownMode) -> Result<(), EndpointFailure> {
         let _ = mode;
         self.request_stop()
     }
 
+    #[doc = "Joins `RunningEndpointDriver` and returns its finalization outcome."]
     fn join_and_finalize(self: Box<Self>) -> EndpointDriverFinalization;
 }
 
@@ -354,7 +411,9 @@ pub trait RunningEndpointDriver: Send {
 /// behavior through the default `request_shutdown` adapter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EndpointShutdownMode {
+    #[doc = "Selects drain behavior for `EndpointShutdownMode`."]
     Drain,
+    #[doc = "Selects abort behavior for `EndpointShutdownMode`."]
     Abort,
 }
 
@@ -373,6 +432,7 @@ pub struct EndpointStartGate {
 }
 
 impl EndpointStartGate {
+    #[doc = "Returns whether open applies to `EndpointStartGate`."]
     pub fn is_open(&self) -> bool {
         self.open.load(Ordering::Acquire)
     }
@@ -402,6 +462,7 @@ pub fn endpoint_start_gate() -> (EndpointStartGateController, Arc<EndpointStartG
     )
 }
 
+#[doc = "Represents prepared endpoint in the PocketStation API."]
 pub struct PreparedEndpoint {
     pub(crate) driver: Box<dyn PreparedEndpointDriver>,
 }
@@ -435,11 +496,15 @@ impl PreparedEndpoint {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Enumerates the supported endpoint start failure cause cases."]
 pub enum EndpointStartFailureCause {
+    #[doc = "Reports gate already open."]
     GateAlreadyOpen,
+    #[doc = "Reports driver."]
     Driver(EndpointFailure),
 }
 
+#[doc = "Reports a endpoint start failure."]
 pub struct EndpointStartFailure {
     cause: EndpointStartFailureCause,
     prepared: Option<PreparedEndpoint>,
@@ -478,6 +543,7 @@ impl fmt::Display for EndpointStartFailure {
 
 impl std::error::Error for EndpointStartFailure {}
 
+#[doc = "Represents running endpoint in the PocketStation API."]
 pub struct RunningEndpoint {
     driver: Box<dyn RunningEndpointDriver>,
     shutdown_request: Option<(EndpointShutdownMode, Result<(), EndpointFailure>)>,

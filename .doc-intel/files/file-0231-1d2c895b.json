@@ -1,0 +1,1715 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "AtomicU64::new",
+    "EdgeObservations::default",
+    "EndpointId",
+    "RouteId",
+    "abs",
+    "audio_frames_enqueued_total",
+    "cancel_reservation",
+    "cancellation_total",
+    "cfg",
+    "compare_exchange_weak",
+    "derive",
+    "derived_route",
+    "derived_route_count",
+    "drop_observations",
+    "drop_rate_pct",
+    "event_queue",
+    "external_source",
+    "external_source_count",
+    "fetch_add",
+    "fetch_max",
+    "fetch_sub",
+    "find",
+    "frame_capacity_samples",
+    "frames_attempted_total",
+    "from_bridge",
+    "get",
+    "given_route_snapshot_when_drop_observed_then_rate_has_explicit_denominator_and_reasons",
+    "given_route_snapshot_when_latency_observed_then_boundary_units_and_coverage_are_explicit",
+    "ingress_rejected_total",
+    "input_attempted_total",
+    "input_delivered_total",
+    "input_dropped_total",
+    "input_enqueued_total",
+    "input_port",
+    "input_queue_capacity_frames",
+    "input_queue_depth_frames",
+    "input_queue_peak_frames",
+    "invalid_total",
+    "iter",
+    "joined",
+    "len",
+    "load",
+    "maximum_buffered_audio_bytes",
+    "new",
+    "normalized_total",
+    "observe_dequeued",
+    "observe_enqueued",
+    "observe_receiver_closed",
+    "observe_send_full",
+    "operator",
+    "operator_count",
+    "operator_instance_id",
+    "polled_audio",
+    "pool_exhausted_total",
+    "pool_slots",
+    "pub",
+    "queue_capacity_signals",
+    "queue_depth_signals",
+    "queue_peak_signals",
+    "reserve_event",
+    "route",
+    "route_count",
+    "saturating_add",
+    "saturating_mul",
+    "shared_audio_rejected_total",
+    "signals_dropped_total",
+    "signals_enqueued_total",
+    "signals_received_total",
+    "snapshot",
+    "source",
+    "source_count",
+    "source_to_receive_latency",
+    "stem_id"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 574,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "AtomicU64::new",
+    "new"
+  ],
+  "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 17,
+      "name": "SessionEventQueueObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 36,
+      "name": "SessionMetricsSnapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 66,
+      "name": "event_queue",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "polled_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "source_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 78,
+      "name": "source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "external_source_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "external_source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "route_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 94,
+      "name": "route",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "operator_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 102,
+      "name": "operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "derived_route_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 110,
+      "name": "derived_route",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 117,
+      "name": "SessionSourceMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 124,
+      "name": "SessionExternalSourceMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 133,
+      "name": "SessionSidecarMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 139,
+      "name": "SessionRouteMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 150,
+      "name": "SessionRouteObservationInterval",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 157,
+      "name": "SessionRouteDropObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 171,
+      "name": "drop_rate_pct",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 182,
+      "name": "SessionRouteLatencyObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 196,
+      "name": "SessionRouteLatencyBoundary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 201,
+      "name": "SessionRouteLatencyUnit",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "drop_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 222,
+      "name": "source_to_receive_latency",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 242,
+      "name": "SessionOperatorInputMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 253,
+      "name": "SessionAudioReentryMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "from_bridge",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 303,
+      "name": "operator_instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 307,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 311,
+      "name": "queue_capacity_signals",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 315,
+      "name": "queue_depth_signals",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 319,
+      "name": "queue_peak_signals",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 323,
+      "name": "signals_enqueued_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 327,
+      "name": "signals_received_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 331,
+      "name": "signals_dropped_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 335,
+      "name": "pool_slots",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 339,
+      "name": "frame_capacity_samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 343,
+      "name": "maximum_buffered_audio_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 347,
+      "name": "normalized_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 351,
+      "name": "invalid_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 355,
+      "name": "shared_audio_rejected_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 359,
+      "name": "pool_exhausted_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 363,
+      "name": "ingress_rejected_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 367,
+      "name": "audio_frames_enqueued_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 371,
+      "name": "cancellation_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 375,
+      "name": "joined",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 382,
+      "name": "SessionOperatorMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 398,
+      "name": "input_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 401,
+      "name": "input_queue_capacity_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 404,
+      "name": "input_queue_depth_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 408,
+      "name": "input_queue_peak_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 412,
+      "name": "input_attempted_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 416,
+      "name": "input_enqueued_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 420,
+      "name": "input_delivered_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 424,
+      "name": "input_dropped_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 431,
+      "name": "SessionDerivedRouteMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 441,
+      "name": "EndpointObservationStage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 448,
+      "name": "SessionEventQueueCounters",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 461,
+      "name": "SessionEventReservation",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 469,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 485,
+      "name": "reserve_event",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 521,
+      "name": "observe_enqueued",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 525,
+      "name": "observe_send_full",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 530,
+      "name": "observe_receiver_closed",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 536,
+      "name": "observe_dequeued",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 545,
+      "name": "snapshot",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 563,
+      "name": "cancel_reservation",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 575,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 579,
+      "name": "given_route_snapshot_when_drop_observed_then_rate_has_explicit_denominator_and_reasons",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 607,
+      "name": "given_route_snapshot_when_latency_observed_then_boundary_units_and_coverage_are_explicit",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 4,
+      "text": "use crate::endpoint::EndpointDriverObservations;"
+    },
+    {
+      "line": 143,
+      "text": "pub endpoint: Option<EndpointDriverObservations>,"
+    },
+    {
+      "line": 435,
+      "text": "pub endpoint: Option<EndpointDriverObservations>,"
+    },
+    {
+      "line": 589,
+      "text": "endpoint: None,"
+    },
+    {
+      "line": 618,
+      "text": "endpoint: None,"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 17,
+      "name": "SessionEventQueueObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 36,
+      "name": "SessionMetricsSnapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 66,
+      "name": "event_queue",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "polled_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "source_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 78,
+      "name": "source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "external_source_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "external_source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "route_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 94,
+      "name": "route",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "operator_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 102,
+      "name": "operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "derived_route_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 110,
+      "name": "derived_route",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 117,
+      "name": "SessionSourceMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 124,
+      "name": "SessionExternalSourceMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 133,
+      "name": "SessionSidecarMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 139,
+      "name": "SessionRouteMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 150,
+      "name": "SessionRouteObservationInterval",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 157,
+      "name": "SessionRouteDropObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 171,
+      "name": "drop_rate_pct",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 182,
+      "name": "SessionRouteLatencyObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 196,
+      "name": "SessionRouteLatencyBoundary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 201,
+      "name": "SessionRouteLatencyUnit",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "drop_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 222,
+      "name": "source_to_receive_latency",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 242,
+      "name": "SessionOperatorInputMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 253,
+      "name": "SessionAudioReentryMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "from_bridge",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 303,
+      "name": "operator_instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 307,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 311,
+      "name": "queue_capacity_signals",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 315,
+      "name": "queue_depth_signals",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 319,
+      "name": "queue_peak_signals",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 323,
+      "name": "signals_enqueued_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 327,
+      "name": "signals_received_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 331,
+      "name": "signals_dropped_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 335,
+      "name": "pool_slots",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 339,
+      "name": "frame_capacity_samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 343,
+      "name": "maximum_buffered_audio_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 347,
+      "name": "normalized_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 351,
+      "name": "invalid_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 355,
+      "name": "shared_audio_rejected_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 359,
+      "name": "pool_exhausted_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 363,
+      "name": "ingress_rejected_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 367,
+      "name": "audio_frames_enqueued_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 371,
+      "name": "cancellation_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 375,
+      "name": "joined",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 382,
+      "name": "SessionOperatorMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 398,
+      "name": "input_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 401,
+      "name": "input_queue_capacity_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 404,
+      "name": "input_queue_depth_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 408,
+      "name": "input_queue_peak_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 412,
+      "name": "input_attempted_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 416,
+      "name": "input_enqueued_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 420,
+      "name": "input_delivered_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 424,
+      "name": "input_dropped_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 431,
+      "name": "SessionDerivedRouteMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 441,
+      "name": "EndpointObservationStage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 448,
+      "name": "SessionEventQueueCounters",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 461,
+      "name": "SessionEventReservation",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 469,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 485,
+      "name": "reserve_event",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 521,
+      "name": "observe_enqueued",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 525,
+      "name": "observe_send_full",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 530,
+      "name": "observe_receiver_closed",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 536,
+      "name": "observe_dequeued",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 545,
+      "name": "snapshot",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 517,
+      "text": "Err(observed_depth_events) => depth_events = observed_depth_events,"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "dadba8c29aae1a771cd22541d74ee1d0462da8d8e83540f5191b950b3575393a",
+      "lines": [
+        1,
+        636
+      ],
+      "path": "src/session/lifecycle/observations.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0231-1d2c895b",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "c7ac25cba8ab670813c5f22f92524894c2594566",
+  "implemented_by": [],
+  "implements": [
+    "SessionMetricsSnapshot",
+    "SessionRouteDropObservations",
+    "SessionRouteMetrics",
+    "SessionAudioReentryMetrics",
+    "SessionOperatorMetrics",
+    "SessionEventQueueCounters"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::capture::CaptureOwnerObservations",
+    "crate::endpoint::EndpointDriverObservations",
+    "crate::frame::{EndpointId, RouteId, SourceId, StemId}",
+    "crate::runtime::{ AsyncOperatorObservations, AsyncOperatorOutputObservations, EdgeObservations, GeneratedAudioBridgeObservations, PlanSourceInputObservations, SidecarHostSnapshot, }",
+    "crate::session::{ OperatorInstanceId, PolledAudioObservations, SourceInstanceId, SourceRuntimeObservations, }",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 388,
+      "text": "/// plan edge, so callers must use these observations for input accounting."
+    },
+    {
+      "line": 603,
+      "text": "assert!((drops.drop_rate_pct() - 25.0).abs() < f64::EPSILON);"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 636,
+  "locks": [],
+  "module": "pocketstation::session::lifecycle::observations",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-71e7ada80136d8b259e8",
+    "pattern-383b5420ab9a214b5fb2"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/lifecycle/observations.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 563,
+      "name": "cancel_reservation",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 575,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 579,
+      "name": "given_route_snapshot_when_drop_observed_then_rate_has_explicit_denominator_and_reasons",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 607,
+      "name": "given_route_snapshot_when_latency_observed_then_boundary_units_and_coverage_are_explicit",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 17,
+      "name": "SessionEventQueueObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 36,
+      "name": "SessionMetricsSnapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 66,
+      "name": "event_queue",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "polled_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "source_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 78,
+      "name": "source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "external_source_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "external_source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "route_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 94,
+      "name": "route",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "operator_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 102,
+      "name": "operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "derived_route_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 110,
+      "name": "derived_route",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 117,
+      "name": "SessionSourceMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 124,
+      "name": "SessionExternalSourceMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 133,
+      "name": "SessionSidecarMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 139,
+      "name": "SessionRouteMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 150,
+      "name": "SessionRouteObservationInterval",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 157,
+      "name": "SessionRouteDropObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 171,
+      "name": "drop_rate_pct",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 182,
+      "name": "SessionRouteLatencyObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 196,
+      "name": "SessionRouteLatencyBoundary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 201,
+      "name": "SessionRouteLatencyUnit",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "drop_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 222,
+      "name": "source_to_receive_latency",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 242,
+      "name": "SessionOperatorInputMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 253,
+      "name": "SessionAudioReentryMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "from_bridge",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 303,
+      "name": "operator_instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 307,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 311,
+      "name": "queue_capacity_signals",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 315,
+      "name": "queue_depth_signals",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 319,
+      "name": "queue_peak_signals",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 323,
+      "name": "signals_enqueued_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 327,
+      "name": "signals_received_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 331,
+      "name": "signals_dropped_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 335,
+      "name": "pool_slots",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 339,
+      "name": "frame_capacity_samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 343,
+      "name": "maximum_buffered_audio_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 347,
+      "name": "normalized_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 351,
+      "name": "invalid_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 355,
+      "name": "shared_audio_rejected_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 359,
+      "name": "pool_exhausted_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 363,
+      "name": "ingress_rejected_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 367,
+      "name": "audio_frames_enqueued_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 371,
+      "name": "cancellation_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 375,
+      "name": "joined",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 382,
+      "name": "SessionOperatorMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 398,
+      "name": "input_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 401,
+      "name": "input_queue_capacity_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 404,
+      "name": "input_queue_depth_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 408,
+      "name": "input_queue_peak_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 412,
+      "name": "input_attempted_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 416,
+      "name": "input_enqueued_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 420,
+      "name": "input_delivered_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 424,
+      "name": "input_dropped_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 431,
+      "name": "SessionDerivedRouteMetrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 441,
+      "name": "EndpointObservationStage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 448,
+      "name": "SessionEventQueueCounters",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 461,
+      "name": "SessionEventReservation",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 469,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 485,
+      "name": "reserve_event",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 521,
+      "name": "observe_enqueued",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 525,
+      "name": "observe_send_full",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 530,
+      "name": "observe_receiver_closed",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 536,
+      "name": "observe_dequeued",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 545,
+      "name": "snapshot",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::session::lifecycle::observations`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 34,
+      "text": "/// without exposing either counter owner to a language adapter."
+    },
+    {
+      "line": 39,
+      "text": "sources: Box<[SessionSourceMetrics]>,"
+    },
+    {
+      "line": 40,
+      "text": "external_sources: Box<[SessionExternalSourceMetrics]>,"
+    },
+    {
+      "line": 41,
+      "text": "routes: Box<[SessionRouteMetrics]>,"
+    },
+    {
+      "line": 42,
+      "text": "operators: Box<[SessionOperatorMetrics]>,"
+    },
+    {
+      "line": 43,
+      "text": "derived_routes: Box<[SessionDerivedRouteMetrics]>,"
+    },
+    {
+      "line": 50,
+      "text": "sources: Box<[SessionSourceMetrics]>,"
+    },
+    {
+      "line": 51,
+      "text": "external_sources: Box<[SessionExternalSourceMetrics]>,"
+    },
+    {
+      "line": 52,
+      "text": "routes: Box<[SessionRouteMetrics]>,"
+    },
+    {
+      "line": 53,
+      "text": "operators: Box<[SessionOperatorMetrics]>,"
+    },
+    {
+      "line": 54,
+      "text": "derived_routes: Box<[SessionDerivedRouteMetrics]>,"
+    },
+    {
+      "line": 392,
+      "text": "pub input_ports: Box<[SessionOperatorInputMetrics]>,"
+    }
+  ],
+  "responsibilities": [
+    "SessionEventQueueObservations",
+    "SessionMetricsSnapshot",
+    "new",
+    "event_queue",
+    "polled_audio",
+    "source_count",
+    "source",
+    "external_source_count",
+    "external_source",
+    "route_count",
+    "route",
+    "operator_count",
+    "operator",
+    "derived_route_count",
+    "derived_route",
+    "SessionSourceMetrics",
+    "SessionExternalSourceMetrics",
+    "SessionSidecarMetrics",
+    "SessionRouteMetrics",
+    "SessionRouteObservationInterval",
+    "SessionRouteDropObservations",
+    "drop_rate_pct",
+    "SessionRouteLatencyObservations",
+    "SessionRouteLatencyBoundary",
+    "SessionRouteLatencyUnit",
+    "drop_observations",
+    "source_to_receive_latency",
+    "SessionOperatorInputMetrics",
+    "SessionAudioReentryMetrics",
+    "from_bridge",
+    "operator_instance_id",
+    "stem_id",
+    "queue_capacity_signals",
+    "queue_depth_signals",
+    "queue_peak_signals",
+    "signals_enqueued_total",
+    "signals_received_total",
+    "signals_dropped_total",
+    "pool_slots",
+    "frame_capacity_samples",
+    "maximum_buffered_audio_bytes",
+    "normalized_total",
+    "invalid_total",
+    "shared_audio_rejected_total",
+    "pool_exhausted_total",
+    "ingress_rejected_total",
+    "audio_frames_enqueued_total",
+    "cancellation_total",
+    "joined",
+    "SessionOperatorMetrics",
+    "input_port",
+    "input_queue_capacity_frames",
+    "input_queue_depth_frames",
+    "input_queue_peak_frames",
+    "input_attempted_total",
+    "input_enqueued_total",
+    "input_delivered_total",
+    "input_dropped_total",
+    "SessionDerivedRouteMetrics",
+    "EndpointObservationStage",
+    "SessionEventQueueCounters",
+    "SessionEventReservation",
+    "new",
+    "reserve_event",
+    "observe_enqueued",
+    "observe_send_full",
+    "observe_receiver_closed",
+    "observe_dequeued",
+    "snapshot",
+    "cancel_reservation",
+    "tests",
+    "given_route_snapshot_when_drop_observed_then_rate_has_explicit_denominator_and_reasons",
+    "given_route_snapshot_when_latency_observed_then_boundary_units_and_coverage_are_explicit"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 151,
+      "text": "/// From route start through the instant of the Session snapshot."
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

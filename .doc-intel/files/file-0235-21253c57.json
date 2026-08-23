@@ -1,0 +1,857 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 138,
+      "text": "#[error(\"async operator runtime host could not start: {message}\")]"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 4,
+      "text": "//! no runtime orchestration or capture callback behavior."
+    }
+  ],
+  "called_by": [],
+  "calls": [
+    "Box::new",
+    "Source::Application",
+    "Source::Microphone",
+    "capture_finalization_failures_total",
+    "count",
+    "default",
+    "derive",
+    "endpoint_finalization_failures_total",
+    "error",
+    "filter",
+    "fmt",
+    "input",
+    "into_error",
+    "is_empty",
+    "is_requested",
+    "is_success",
+    "iter",
+    "lineage_failures_total",
+    "load",
+    "operator_finalization_failures_total",
+    "pub",
+    "request",
+    "rollback_failures",
+    "rollback_failures_total",
+    "runtime_events_total",
+    "runtime_failures_total",
+    "runtime_worker_panicked",
+    "source",
+    "source_instances",
+    "source_send_rejections_total",
+    "stems",
+    "store",
+    "take",
+    "take_event_receiver",
+    "validate_source_topology",
+    "validate_start_options"
+  ],
+  "cancellation_behavior": [
+    {
+      "line": 193,
+      "text": "#[error(\"Session start was cancelled\")]"
+    }
+  ],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "Box::new"
+  ],
+  "content_hash": "2800c44a61c871aa7cb32562e1506fcc65376589adccf60ac29497856258a364",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 16,
+      "name": "CaptureBackendSet",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 23,
+      "name": "SessionStartOptions",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "validate_start_options",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "validate_source_topology",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 98,
+      "name": "SessionStartCancellation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "request",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "is_requested",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 113,
+      "name": "SessionStartError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 198,
+      "name": "rollback_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 263,
+      "name": "SessionStartFailure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 270,
+      "name": "input",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 277,
+      "name": "error",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 281,
+      "name": "rollback_failures",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 285,
+      "name": "take_event_receiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 289,
+      "name": "into_error",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 296,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 302,
+      "name": "source",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 308,
+      "name": "SessionStopOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 320,
+      "name": "is_success",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 329,
+      "name": "capture_finalization_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 333,
+      "name": "endpoint_finalization_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 337,
+      "name": "operator_finalization_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 341,
+      "name": "runtime_worker_panicked",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 345,
+      "name": "runtime_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 349,
+      "name": "lineage_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 353,
+      "name": "source_send_rejections_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 357,
+      "name": "runtime_events_total",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 10,
+      "text": "use crate::endpoint::{EndpointPrepareError, EndpointStartFailure};"
+    },
+    {
+      "line": 149,
+      "text": "#[error(\"endpoint {endpoint_id:?} declaration is absent\")]"
+    },
+    {
+      "line": 151,
+      "text": "#[error(\"endpoint preparation failed: {source}\")]"
+    },
+    {
+      "line": 171,
+      "text": "#[error(\"endpoint start failed: {source}\")]"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 16,
+      "name": "CaptureBackendSet",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 23,
+      "name": "SessionStartOptions",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "validate_start_options",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "validate_source_topology",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 98,
+      "name": "SessionStartCancellation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "request",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "is_requested",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 113,
+      "name": "SessionStartError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 198,
+      "name": "rollback_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 263,
+      "name": "SessionStartFailure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 270,
+      "name": "input",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 277,
+      "name": "error",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 281,
+      "name": "rollback_failures",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 285,
+      "name": "take_event_receiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 289,
+      "name": "into_error",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 308,
+      "name": "SessionStopOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 320,
+      "name": "is_success",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 329,
+      "name": "capture_finalization_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 333,
+      "name": "endpoint_finalization_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 337,
+      "name": "operator_finalization_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 341,
+      "name": "runtime_worker_panicked",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 345,
+      "name": "runtime_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 349,
+      "name": "lineage_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 353,
+      "name": "source_send_rejections_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 357,
+      "name": "runtime_events_total",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 64,
+      "text": "Some(reason) => Err(SessionStartError::InvalidOptions { reason }),"
+    },
+    {
+      "line": 91,
+      "text": "Err(SessionStartError::UnsupportedSourceTopology)"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 113,
+      "name": "SessionStartError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "2800c44a61c871aa7cb32562e1506fcc65376589adccf60ac29497856258a364",
+      "lines": [
+        1,
+        362
+      ],
+      "path": "src/session/lifecycle/start_contract.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0235-21253c57",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "8659db75d34f6d19e2c906bf223fddddd5ff26a5",
+  "implemented_by": [],
+  "implements": [
+    "Default for SessionStartOptions",
+    "SessionStartCancellation",
+    "SessionStartError",
+    "SessionStartFailure",
+    "std::fmt::Display for SessionStartFailure",
+    "std::error::Error for SessionStartFailure",
+    "SessionStopOutcome"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::capture::{CallbackCaptureBackend, CaptureError}",
+    "crate::endpoint::{EndpointPrepareError, EndpointStartFailure}",
+    "crate::frame::{EndpointId, StemId}",
+    "crate::runtime::PlanRunnerError",
+    "crate::session::{ OperatorInstanceId, PreparedSession, SessionEventReceiver, SessionRollbackFailure, Source, }",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, Ordering}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 49,
+      "text": "Some(\"capture frame capacity must be greater than zero\")"
+    },
+    {
+      "line": 51,
+      "text": "Some(\"capture runtime-event capacity must be greater than zero\")"
+    },
+    {
+      "line": 53,
+      "text": "Some(\"runtime work budget must be greater than zero\")"
+    },
+    {
+      "line": 55,
+      "text": "Some(\"runtime idle poll interval must be greater than zero\")"
+    },
+    {
+      "line": 57,
+      "text": "Some(\"runtime ready timeout must be greater than zero\")"
+    },
+    {
+      "line": 59,
+      "text": "Some(\"session event capacity must be greater than zero\")"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 362,
+  "locks": [],
+  "module": "pocketstation::session::lifecycle::start_contract",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/lifecycle/start_contract.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 296,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 302,
+      "name": "source",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 16,
+      "name": "CaptureBackendSet",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 23,
+      "name": "SessionStartOptions",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "validate_start_options",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "validate_source_topology",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 98,
+      "name": "SessionStartCancellation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "request",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "is_requested",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 113,
+      "name": "SessionStartError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 198,
+      "name": "rollback_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 263,
+      "name": "SessionStartFailure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 270,
+      "name": "input",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "fn",
+      "line": 277,
+      "name": "error",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 281,
+      "name": "rollback_failures",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 285,
+      "name": "take_event_receiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 289,
+      "name": "into_error",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 308,
+      "name": "SessionStopOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 320,
+      "name": "is_success",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 329,
+      "name": "capture_finalization_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 333,
+      "name": "endpoint_finalization_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 337,
+      "name": "operator_finalization_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 341,
+      "name": "runtime_worker_panicked",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 345,
+      "name": "runtime_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 349,
+      "name": "lineage_failures_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 353,
+      "name": "source_send_rejections_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 357,
+      "name": "runtime_events_total",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Public contract for starting and stopping a prepared Session.  These types describe lifecycle input and failure. They deliberately contain no runtime orchestration or capture callback behavior."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 7,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 99,
+      "text": "requested: Arc<AtomicBool>,"
+    },
+    {
+      "line": 266,
+      "text": "pub(super) rollback_failures: Box<[SessionRollbackFailure]>,"
+    },
+    {
+      "line": 274,
+      "text": "rollback_failures: Box::new([]),"
+    }
+  ],
+  "responsibilities": [
+    "CaptureBackendSet",
+    "SessionStartOptions",
+    "default",
+    "validate_start_options",
+    "validate_source_topology",
+    "SessionStartCancellation",
+    "request",
+    "is_requested",
+    "SessionStartError",
+    "rollback_failures_total",
+    "SessionStartFailure",
+    "input",
+    "error",
+    "rollback_failures",
+    "take_event_receiver",
+    "into_error",
+    "fmt",
+    "source",
+    "SessionStopOutcome",
+    "is_success",
+    "capture_finalization_failures_total",
+    "endpoint_finalization_failures_total",
+    "operator_finalization_failures_total",
+    "runtime_worker_panicked",
+    "runtime_failures_total",
+    "lineage_failures_total",
+    "source_send_rejections_total",
+    "runtime_events_total"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 114,
+      "text": "#[error(\"invalid Session start options: {reason}\")]"
+    },
+    {
+      "line": 133,
+      "text": "#[error(\"external source start failed: {message}\")]"
+    },
+    {
+      "line": 138,
+      "text": "#[error(\"async operator runtime host could not start: {message}\")]"
+    },
+    {
+      "line": 171,
+      "text": "#[error(\"endpoint start failed: {source}\")]"
+    },
+    {
+      "line": 183,
+      "text": "#[error(\"runtime worker thread could not start: {message}\")]"
+    },
+    {
+      "line": 193,
+      "text": "#[error(\"Session start was cancelled\")]"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 138,
+      "text": "#[error(\"async operator runtime host could not start: {message}\")]"
+    }
+  ],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 183,
+      "text": "#[error(\"runtime worker thread could not start: {message}\")]"
+    }
+  ],
+  "visibility": "mixed"
+}

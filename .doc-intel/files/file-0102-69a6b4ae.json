@@ -1,0 +1,454 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "App",
+    "ByKind",
+    "ByStableKey",
+    "HashSet::new",
+    "Self::App",
+    "Self::ByKind",
+    "Self::ByStableKey",
+    "StableSourceId::new",
+    "Vec::new",
+    "all",
+    "any",
+    "application_capture_available",
+    "as_deref",
+    "cfg",
+    "clone",
+    "cloned",
+    "collect",
+    "contains",
+    "derive",
+    "discover",
+    "discover_sources",
+    "extend",
+    "filter",
+    "insert",
+    "into_iter",
+    "is_some_and",
+    "iter",
+    "matches",
+    "not",
+    "resolve_query",
+    "super::platform::linux::discover_sources_linux",
+    "super::platform::macos::discover_input_sources_native",
+    "super::platform::macos::discover_sources_native",
+    "super::platform::macos::tap_available",
+    "super::platform::windows::discover_sources_windows",
+    "to_lowercase",
+    "to_owned"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 3,
+      "text": "#[cfg(feature = \"native-capture\")]"
+    },
+    {
+      "line": 6,
+      "text": "#[cfg(feature = \"native-capture\")]"
+    },
+    {
+      "line": 9,
+      "text": "#[cfg(feature = \"native-capture\")]"
+    },
+    {
+      "line": 65,
+      "text": "#[cfg(all(target_os = \"macos\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 69,
+      "text": "#[cfg(all("
+    },
+    {
+      "line": 70,
+      "text": "feature = \"native-capture\","
+    },
+    {
+      "line": 76,
+      "text": "#[cfg(not(all("
+    },
+    {
+      "line": 77,
+      "text": "feature = \"native-capture\","
+    },
+    {
+      "line": 86,
+      "text": "#[cfg(not(feature = \"native-capture\"))]"
+    },
+    {
+      "line": 89,
+      "text": "#[cfg(feature = \"native-capture\")]"
+    },
+    {
+      "line": 91,
+      "text": "#[cfg(target_os = \"macos\")]"
+    },
+    {
+      "line": 93,
+      "text": "#[cfg(target_os = \"windows\")]"
+    },
+    {
+      "line": 95,
+      "text": "#[cfg(target_os = \"linux\")]"
+    },
+    {
+      "line": 97,
+      "text": "#[cfg(not(any(target_os = \"macos\", target_os = \"windows\", target_os = \"linux\")))]"
+    },
+    {
+      "line": 111,
+      "text": "#[cfg(all(target_os = \"macos\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 117,
+      "text": "#[cfg(all(target_os = \"windows\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 120,
+      "text": "#[cfg(all(target_os = \"linux\", feature = \"native-capture\"))]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "HashSet::new",
+    "StableSourceId::new",
+    "Vec::new"
+  ],
+  "content_hash": "ebdce0b628a07488061ae0efdbf76a1b977fc332a8928f3df545bc2d8d3c3989",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "enum",
+      "line": 13,
+      "name": "SourceQuery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "matches",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "resolve_query",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 47,
+      "name": "SourceProvider",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "discover",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 51,
+      "name": "LocalSourceProvider",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "discover",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 64,
+      "name": "application_capture_available",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 84,
+      "name": "discover_sources",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [
+    {
+      "line": 62,
+      "text": "/// This is a control-plane capability query. It does not open a device, prompt"
+    }
+  ],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 13,
+      "name": "SourceQuery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "matches",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "resolve_query",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 47,
+      "name": "SourceProvider",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 51,
+      "name": "LocalSourceProvider",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 64,
+      "name": "application_capture_available",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 84,
+      "name": "discover_sources",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "ebdce0b628a07488061ae0efdbf76a1b977fc332a8928f3df545bc2d8d3c3989",
+      "lines": [
+        1,
+        137
+      ],
+      "path": "src/capture/query.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "native-capture"
+  ],
+  "feature_gate": [
+    "native-capture"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0102-69a6b4ae",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "f29c85b4eb0db6540e7954437c9151288de0b123",
+  "implemented_by": [],
+  "implements": [
+    "SourceQuery",
+    "SourceProvider for LocalSourceProvider"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::Platform",
+    "std::collections::HashSet",
+    "super::StableSourceId",
+    "super::{CaptureSource, SourceKind, SourceState}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 137,
+  "locks": [],
+  "module": "pocketstation::capture::query",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/capture/query.rs",
+  "platform_gate": [
+    "linux",
+    "macos",
+    "windows"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "discover",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "discover",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 13,
+      "name": "SourceQuery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "matches",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "resolve_query",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 47,
+      "name": "SourceProvider",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 51,
+      "name": "LocalSourceProvider",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 64,
+      "name": "application_capture_available",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 84,
+      "name": "discover_sources",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Control-plane source discovery queries used by the first-party CLI."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/source-selection.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/select-process-source.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/run-transcription.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/troubleshooting/timing.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 63,
+      "text": "/// for permission, or create a capture/runtime owner."
+    }
+  ],
+  "responsibilities": [
+    "SourceQuery",
+    "matches",
+    "resolve_query",
+    "SourceProvider",
+    "discover",
+    "LocalSourceProvider",
+    "discover",
+    "application_capture_available",
+    "discover_sources"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 62,
+      "text": "/// This is a control-plane capability query. It does not open a device, prompt"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

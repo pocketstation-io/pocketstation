@@ -1,0 +1,235 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Audio",
+    "Bytes",
+    "Self::Audio",
+    "Self::Bytes",
+    "Self::Text",
+    "SignalClass::Binary",
+    "SignalClass::Custom",
+    "SignalClass::EncodedAudio",
+    "SignalClass::Event",
+    "SignalClass::Text",
+    "Text",
+    "derive",
+    "len",
+    "samples",
+    "saturating_mul",
+    "size_bytes",
+    "supports"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "6351a7a3efb3f112e884b531c34adae225a400730674135fe872c5bf296ae498",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "enum",
+      "line": 10,
+      "name": "SignalPayload",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "supports",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "size_bytes",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 10,
+      "name": "SignalPayload",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "supports",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "size_bytes",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "6351a7a3efb3f112e884b531c34adae225a400730674135fe872c5bf296ae498",
+      "lines": [
+        1,
+        48
+      ],
+      "path": "src/graph/signal/payload.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0164-ec49e191",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "5ed629ef155c8f450a1d7fde07fc3a0aba420627",
+  "implemented_by": [],
+  "implements": [
+    "SignalPayload"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::AudioFrame",
+    "crate::graph::signal::{SignalClass, SignalSpec}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 3,
+      "text": "//! Semantic meaning belongs to `SignalSpec`; this enum must not grow"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 48,
+  "locks": [],
+  "module": "pocketstation::graph::signal::payload",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/signal/payload.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [
+    {
+      "line": 26,
+      "text": "| SignalClass::Event(_)"
+    }
+  ],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 10,
+      "name": "SignalPayload",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "supports",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "size_bytes",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Fundamental runtime payload representations.  Semantic meaning belongs to `SignalSpec`; this enum must not grow provider-, customer-, or industry-specific variants."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 35,
+      "text": "/// Owned media bytes represented by this payload. Envelope metadata and"
+    }
+  ],
+  "responsibilities": [
+    "SignalPayload",
+    "supports",
+    "size_bytes"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

@@ -229,6 +229,7 @@ use crate::session::{
     CONNECTOR_NODE_TYPE_ID,
 };
 
+#[doc = "Represents session in the PocketStation API."]
 pub struct Session {
     declaration: crate::session::Session,
     host_builder: Option<SessionEngineHostBuilder>,
@@ -276,6 +277,7 @@ pub struct SessionBuilder {
 }
 
 impl Default for SessionBuilder {
+    #[doc = "Returns the default `SessionBuilder` value."]
     fn default() -> Self {
         Self {
             recording_root: None,
@@ -353,6 +355,7 @@ impl SessionBuilder {
 }
 
 impl Session {
+    #[doc = "Creates a new `Session`."]
     pub fn new() -> Self {
         Self {
             declaration: crate::session::Session::new(),
@@ -371,14 +374,17 @@ impl Session {
         }
     }
 
+    #[doc = "Creates a builder for declaring `Session` sources, routes, and endpoints."]
     pub fn builder() -> SessionBuilder {
         SessionBuilder::default()
     }
 
+    #[doc = "Returns the id associated with `Session`."]
     pub fn id(&self) -> crate::session::SessionId {
         self.declaration.id()
     }
 
+    #[doc = "Declares a capture source on `Session` and returns its Session-scoped handle."]
     pub fn capture(&self, source: Source) -> Result<StemHandle, SessionError> {
         self.declaration.capture(source)
     }
@@ -479,10 +485,12 @@ impl Session {
         Ok(())
     }
 
+    #[doc = "Declares an endpoint on `Session` and returns its Session-scoped handle."]
     pub fn endpoint(&self, descriptor: EndpointDescriptor) -> Result<EndpointHandle, SessionError> {
         self.declaration.endpoint(descriptor)
     }
 
+    #[doc = "Registers operator for `Session`."]
     pub fn register_operator(
         &self,
         factory: Arc<dyn AsyncOperatorFactory>,
@@ -494,6 +502,7 @@ impl Session {
         Ok(())
     }
 
+    #[doc = "Declares a bounded polled-audio endpoint on `Session`."]
     pub fn polled_audio(&self) -> Result<EndpointHandle, SessionError> {
         self.declaration.polled_audio()
     }
@@ -614,10 +623,12 @@ impl Session {
         Ok(())
     }
 
+    #[doc = "Starts the lifecycle represented by `Session`."]
     pub fn start(self) -> Result<RunningSession, SessionStartError> {
         self.start_cancellable(SessionStartCancellation::default())
     }
 
+    #[doc = "Starts cancellable for `Session`."]
     pub fn start_cancellable(
         self,
         cancellation: SessionStartCancellation,
@@ -777,11 +788,13 @@ impl Session {
 }
 
 impl Default for Session {
+    #[doc = "Returns the default `Session` value."]
     fn default() -> Self {
         Self::new()
     }
 }
 
+#[doc = "Represents running session in the PocketStation API."]
 pub struct RunningSession {
     host: SessionEngineHost,
     running: crate::session::RunningSession,
@@ -795,32 +808,39 @@ pub struct RunningSession {
 }
 
 impl RunningSession {
+    #[doc = "Returns the session identifier associated with `RunningSession`."]
     pub fn session_id(&self) -> crate::session::SessionId {
         self.running.session_id()
     }
 
+    #[doc = "Attempts to poll audio through `RunningSession`."]
     pub fn try_poll_audio(&self) -> Result<PolledAudioBatchLease, PolledAudioPollError> {
         self.receipt.try_poll()
     }
 
+    #[doc = "Returns the audio observations associated with `RunningSession`."]
     pub fn audio_observations(&self) -> PolledAudioObservations {
         self.receipt.observations()
     }
 
+    #[doc = "Returns the recording outcome associated with `RunningSession`."]
     pub fn recording_outcome(&self) -> Option<&crate::session::SessionRecordingOutcome> {
         self.recording_receipt
             .as_ref()
             .and_then(crate::session::SessionRecordingReceipt::outcome)
     }
 
+    #[doc = "Attempts to recv event through `RunningSession`."]
     pub fn try_recv_event(&self) -> SessionEventReceive {
         self.events.try_recv()
     }
 
+    #[doc = "Returns the event observations associated with `RunningSession`."]
     pub fn event_observations(&self) -> SessionEventQueueObservations {
         self.events.observations()
     }
 
+    #[doc = "Returns the metrics snapshot associated with `RunningSession`."]
     pub fn metrics_snapshot(&self) -> Result<SessionMetricsSnapshot, SessionRuntimeError> {
         self.host
             .metrics_snapshot(&self.events, 0, Some(&self.running))
@@ -838,10 +858,12 @@ impl RunningSession {
         self.running.external_source_metrics()
     }
 
+    #[doc = "Returns the sidecar metrics associated with `RunningSession`."]
     pub fn sidecar_metrics(&self) -> Box<[SessionSidecarMetrics]> {
         self.running.sidecar_metrics()
     }
 
+    #[doc = "Attempts to send sidecar signal through `RunningSession`."]
     pub fn try_send_sidecar_signal(
         &self,
         sidecar_id: u64,
@@ -850,6 +872,7 @@ impl RunningSession {
         self.running.try_send_sidecar_signal(sidecar_id, message)
     }
 
+    #[doc = "Attempts to receive sidecar signal through `RunningSession`."]
     pub fn try_receive_sidecar_signal(
         &self,
         sidecar_id: u64,
@@ -857,6 +880,7 @@ impl RunningSession {
         self.running.try_receive_sidecar_signal(sidecar_id)
     }
 
+    #[doc = "Receives the next sidecar signal owned by `RunningSession`."]
     pub fn receive_sidecar_signal(
         &self,
         sidecar_id: u64,
@@ -875,6 +899,7 @@ impl RunningSession {
         self.running.audio_reentry_metrics()
     }
 
+    #[doc = "Returns the session trace outcome associated with `RunningSession`."]
     pub fn session_trace_outcome(
         &self,
     ) -> Option<Result<&SessionTraceRecorderOutcome, &SessionTraceRecorderFinishError>> {
@@ -883,6 +908,7 @@ impl RunningSession {
             .map(|result| result.as_ref())
     }
 
+    #[doc = "Stops `RunningSession` and returns its terminal result."]
     pub fn stop(&mut self) -> SessionStopResult {
         let disposition = if self.stopped {
             SessionStopDisposition::AlreadyStopped
@@ -954,14 +980,17 @@ impl SessionStartError {
         Self::new(SessionStartErrorCode::HostSetupFailed, message)
     }
 
+    #[doc = "Returns the stable error or status code represented by `SessionStartError`."]
     pub const fn code(&self) -> SessionStartErrorCode {
         self.code
     }
 
+    #[doc = "Returns the diagnostic message associated with `SessionStartError`."]
     pub fn message(&self) -> &str {
         &self.message
     }
 
+    #[doc = "Returns the kind represented by `SessionStartError`."]
     pub fn kind(&self) -> SessionStartErrorKind {
         match self.code {
             SessionStartErrorCode::StartCancelled => SessionStartErrorKind::Cancelled,
@@ -978,12 +1007,14 @@ impl SessionStartError {
         }
     }
 
+    #[doc = "Returns whether cancelled applies to `SessionStartError`."]
     pub fn is_cancelled(&self) -> bool {
         self.kind() == SessionStartErrorKind::Cancelled
     }
 }
 
 impl From<SessionTraceRecorderStartError> for SessionStartError {
+    #[doc = "Converts the supplied value into `SessionStartError`."]
     fn from(error: SessionTraceRecorderStartError) -> Self {
         Self::new(
             SessionStartErrorCode::TraceRecorderSetupFailed,
@@ -1023,6 +1054,7 @@ impl From<SessionEngineStartError> for SessionStartError {
 }
 
 impl From<SourceRegistrationError> for SessionStartError {
+    #[doc = "Converts the supplied value into `SessionStartError`."]
     fn from(error: SourceRegistrationError) -> Self {
         Self::new(
             SessionStartErrorCode::CompileFailed,
@@ -1032,96 +1064,135 @@ impl From<SourceRegistrationError> for SessionStartError {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as session endpoint error."]
 pub enum SessionEndpointError {
     #[error("Session endpoint-registration state is unavailable")]
+    #[doc = "Reports registration state unavailable."]
     RegistrationStateUnavailable,
     #[error("Session endpoint operator id '{operator_id}' is already registered")]
-    DuplicateOperatorId { operator_id: String },
+    #[doc = "Reports duplicate operator identifier."]
+    DuplicateOperatorId {
+        #[doc = "Identifies the operator associated with `DuplicateOperatorId`."]
+        operator_id: String,
+    },
     #[error("Session endpoint node type id '{node_type_id}' is already registered")]
-    DuplicateNodeTypeId { node_type_id: String },
+    #[doc = "Reports duplicate node type identifier."]
+    DuplicateNodeTypeId {
+        #[doc = "Identifies the node type associated with `DuplicateNodeTypeId`."]
+        node_type_id: String,
+    },
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as session sidecar error."]
 pub enum SessionSidecarError {
     #[error("Session sidecar-registration state is unavailable")]
+    #[doc = "Reports registration state unavailable."]
     RegistrationStateUnavailable,
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as session operator error."]
 pub enum SessionOperatorError {
     #[error("Session operator-registration state is unavailable")]
+    #[doc = "Reports registration state unavailable."]
     RegistrationStateUnavailable,
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as session source error."]
 pub enum SessionSourceError {
     #[error("Session source-registration state is unavailable")]
+    #[doc = "Reports registration state unavailable."]
     RegistrationStateUnavailable,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Selects the session start error kind used by PocketStation."]
 pub enum SessionStartErrorKind {
+    #[doc = "Reports host."]
     Host,
+    #[doc = "Reports engine."]
     Engine,
+    #[doc = "Indicates that the operation was cancelled."]
     Cancelled,
+    #[doc = "Reports invalid selector."]
     InvalidSelector,
+    #[doc = "Reports missing recording configuration."]
     MissingRecordingConfiguration,
+    #[doc = "Reports invariant."]
     Invariant,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as session runtime error."]
 pub enum SessionRuntimeError {
     #[error("native running Session did not expose a metrics snapshot")]
+    #[doc = "Reports missing metrics snapshot."]
     MissingMetricsSnapshot,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Classifies the observable session stop disposition."]
 pub enum SessionStopDisposition {
+    #[doc = "Indicates that the operation stopped normally."]
     Stopped,
+    #[doc = "Indicates that the operation had already stopped."]
     AlreadyStopped,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Classifies the observable session cancel disposition."]
 pub enum SessionCancelDisposition {
+    #[doc = "Indicates that the operation was cancelled."]
     Cancelled,
+    #[doc = "Indicates that the operation had already stopped."]
     AlreadyStopped,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Reports the structured session cancel result."]
 pub struct SessionCancelResult {
     disposition: SessionCancelDisposition,
     outcome: SessionStopOutcome,
 }
 
 impl SessionCancelResult {
+    #[doc = "Returns the disposition associated with `SessionCancelResult`."]
     pub fn disposition(self) -> SessionCancelDisposition {
         self.disposition
     }
 
+    #[doc = "Returns the outcome associated with `SessionCancelResult`."]
     pub fn outcome(self) -> SessionStopOutcome {
         self.outcome
     }
 
+    #[doc = "Returns whether success applies to `SessionCancelResult`."]
     pub fn is_success(self) -> bool {
         self.outcome.is_success()
     }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Reports the structured session stop result."]
 pub struct SessionStopResult {
     disposition: SessionStopDisposition,
     outcome: SessionStopOutcome,
 }
 
 impl SessionStopResult {
+    #[doc = "Returns the disposition associated with `SessionStopResult`."]
     pub fn disposition(self) -> SessionStopDisposition {
         self.disposition
     }
 
+    #[doc = "Returns the outcome associated with `SessionStopResult`."]
     pub fn outcome(self) -> SessionStopOutcome {
         self.outcome
     }
 
+    #[doc = "Returns whether success applies to `SessionStopResult`."]
     pub fn is_success(self) -> bool {
         self.outcome.is_success()
     }

@@ -1,0 +1,1227 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::from",
+    "Config",
+    "DebugValue",
+    "Missing",
+    "NodeConfig::new",
+    "NodeError::Prepare",
+    "NodeTypeId",
+    "Prepare",
+    "Process",
+    "Self",
+    "Self::default",
+    "and_then",
+    "any",
+    "as_str",
+    "capacity_signals",
+    "cfg",
+    "chain",
+    "crate::graph::identifier::is_node_type_id",
+    "crate::secret::clear_string",
+    "debug_map",
+    "derive",
+    "direction",
+    "display_name",
+    "drop",
+    "edge_contract",
+    "edge_id",
+    "entries",
+    "error",
+    "execution",
+    "finish",
+    "fmt",
+    "from",
+    "get",
+    "get_f32",
+    "get_u32",
+    "given_config_builder_when_with_then_values_are_retrievable",
+    "given_non_numeric_config_when_get_f32_then_returns_none",
+    "given_non_numeric_config_when_get_u32_then_returns_none",
+    "given_numeric_config_when_get_f32_then_parses_value",
+    "given_numeric_config_when_get_u32_then_parses_value",
+    "given_provider_owned_configuration_key_when_stored_then_it_remains_opaque",
+    "inputs",
+    "insert",
+    "into",
+    "is_compatible_with",
+    "is_empty",
+    "is_sensitive",
+    "is_some_and",
+    "is_stateful",
+    "is_valid_for",
+    "is_well_formed",
+    "iter",
+    "map",
+    "map_err",
+    "media",
+    "name",
+    "new",
+    "ok",
+    "outputs",
+    "parse",
+    "port_name",
+    "pub",
+    "safety",
+    "signal",
+    "std::collections::HashSet::new",
+    "supports_signal",
+    "to_owned",
+    "to_string",
+    "trim",
+    "type_id",
+    "validate",
+    "with",
+    "with_sensitive",
+    "write_str"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 141,
+      "text": "pub enum ConfigError {"
+    },
+    {
+      "line": 161,
+      "text": "Config(#[from] ConfigError),"
+    },
+    {
+      "line": 366,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::from",
+    "NodeConfig::new",
+    "from",
+    "new",
+    "std::collections::HashSet::new"
+  ],
+  "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 13,
+      "name": "NodeTypeId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 16,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "is_well_formed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 43,
+      "name": "NodeConfig",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 48,
+      "name": "NodeConfigValue",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "with_sensitive",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 91,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 95,
+      "name": "is_sensitive",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "get_f32",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "get_u32",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 107,
+      "name": "iter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 117,
+      "name": "DebugValue",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 141,
+      "name": "ConfigError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 149,
+      "name": "NodeError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 165,
+      "name": "NodeDescriptor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 176,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 221,
+      "name": "type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 225,
+      "name": "display_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 229,
+      "name": "inputs",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 233,
+      "name": "outputs",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 237,
+      "name": "execution",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 241,
+      "name": "safety",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 245,
+      "name": "is_stateful",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 252,
+      "name": "NodeDescriptorError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 266,
+      "name": "PrepareContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 271,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 282,
+      "name": "PortPrepareContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 293,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "edge_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 340,
+      "name": "port_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 344,
+      "name": "direction",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 348,
+      "name": "signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 352,
+      "name": "media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 356,
+      "name": "edge_contract",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 360,
+      "name": "capacity_signals",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 367,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 371,
+      "name": "given_config_builder_when_with_then_values_are_retrievable",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 381,
+      "name": "given_numeric_config_when_get_f32_then_parses_value",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 387,
+      "name": "given_non_numeric_config_when_get_f32_then_returns_none",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 393,
+      "name": "given_numeric_config_when_get_u32_then_parses_value",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 399,
+      "name": "given_non_numeric_config_when_get_u32_then_returns_none",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 405,
+      "name": "given_provider_owned_configuration_key_when_stored_then_it_remains_opaque",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 54,
+      "text": "fn drop(&mut self) {"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 157,
+      "text": "\"external boundary node type '{node_type_id}' must execute through its endpoint driver\""
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 13,
+      "name": "NodeTypeId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 16,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "is_well_formed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 43,
+      "name": "NodeConfig",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "with_sensitive",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 91,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 95,
+      "name": "is_sensitive",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "get_f32",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "get_u32",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 107,
+      "name": "iter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 141,
+      "name": "ConfigError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 149,
+      "name": "NodeError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 165,
+      "name": "NodeDescriptor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 176,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 221,
+      "name": "type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 225,
+      "name": "display_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 229,
+      "name": "inputs",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 233,
+      "name": "outputs",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 237,
+      "name": "execution",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 241,
+      "name": "safety",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 245,
+      "name": "is_stateful",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 252,
+      "name": "NodeDescriptorError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 266,
+      "name": "PrepareContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 271,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 282,
+      "name": "PortPrepareContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 293,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "edge_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 340,
+      "name": "port_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 344,
+      "name": "direction",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 348,
+      "name": "signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 352,
+      "name": "media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 356,
+      "name": "edge_contract",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 360,
+      "name": "capacity_signals",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 186,
+      "text": "return Err(NodeDescriptorError::EmptyTypeId);"
+    },
+    {
+      "line": 189,
+      "text": "return Err(NodeDescriptorError::EmptyDisplayName);"
+    },
+    {
+      "line": 192,
+      "text": "return Err(NodeDescriptorError::InvalidSafetyContract);"
+    },
+    {
+      "line": 201,
+      "text": "return Err(NodeDescriptorError::PortDirectionMismatch);"
+    },
+    {
+      "line": 209,
+      "text": "return Err(NodeDescriptorError::DuplicatePort);"
+    },
+    {
+      "line": 304,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 309,
+      "text": "return Err(NodeError::Prepare(format!("
+    },
+    {
+      "line": 317,
+      "text": "return Err(NodeError::Prepare(format!("
+    },
+    {
+      "line": 322,
+      "text": "return Err(NodeError::Prepare(format!("
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 141,
+      "name": "ConfigError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 149,
+      "name": "NodeError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 252,
+      "name": "NodeDescriptorError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 315,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 315,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 315,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "7f925f89821b303f0f499264138b0bb8fd5dadaf949ba2cf89583f396d5456e5",
+      "lines": [
+        1,
+        411
+      ],
+      "path": "src/graph/node.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0152-f5372079",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "65b92e255ffaf2f67498962ee16ae6e5dc3d851c",
+  "implemented_by": [],
+  "implements": [
+    "NodeTypeId",
+    "fmt::Display for NodeTypeId",
+    "From<&str> for NodeTypeId",
+    "Drop for NodeConfigValue",
+    "NodeConfig",
+    "fmt::Debug for NodeConfig",
+    "fmt::Debug for DebugValue<'_>",
+    "NodeDescriptor",
+    "PrepareContext",
+    "PortPrepareContext"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::SampleSpec",
+    "crate::graph::EdgeId",
+    "crate::graph::partition::{ExecutionPartition, SafetyContract}",
+    "crate::graph::ports::{EdgeContract, MediaCaps, PortDirection, PortSpec}",
+    "crate::graph::signal::SignalSpec",
+    "std::collections::HashMap",
+    "std::fmt",
+    "std::sync::Arc",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 80,
+      "text": "/// [`Self::get`]. Callers must not copy it into errors, logs, or metrics."
+    },
+    {
+      "line": 157,
+      "text": "\"external boundary node type '{node_type_id}' must execute through its endpoint driver\""
+    },
+    {
+      "line": 253,
+      "text": "#[error(\"node type id cannot be empty\")]"
+    },
+    {
+      "line": 255,
+      "text": "#[error(\"node display name cannot be empty\")]"
+    },
+    {
+      "line": 305,
+      "text": "\"prepared port name cannot be empty\".to_owned(),"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 411,
+  "locks": [],
+  "module": "pocketstation::graph::node",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/node.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 48,
+      "name": "NodeConfigValue",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 117,
+      "name": "DebugValue",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 367,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 371,
+      "name": "given_config_builder_when_with_then_values_are_retrievable",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 381,
+      "name": "given_numeric_config_when_get_f32_then_parses_value",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 387,
+      "name": "given_non_numeric_config_when_get_f32_then_returns_none",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 393,
+      "name": "given_numeric_config_when_get_u32_then_parses_value",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 399,
+      "name": "given_non_numeric_config_when_get_u32_then_returns_none",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 405,
+      "name": "given_provider_owned_configuration_key_when_stored_then_it_remains_opaque",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 13,
+      "name": "NodeTypeId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 16,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "is_well_formed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 43,
+      "name": "NodeConfig",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "with_sensitive",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 91,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 95,
+      "name": "is_sensitive",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "get_f32",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "get_u32",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 107,
+      "name": "iter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 141,
+      "name": "ConfigError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 149,
+      "name": "NodeError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 165,
+      "name": "NodeDescriptor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 176,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 221,
+      "name": "type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 225,
+      "name": "display_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 229,
+      "name": "inputs",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 233,
+      "name": "outputs",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 237,
+      "name": "execution",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 241,
+      "name": "safety",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 245,
+      "name": "is_stateful",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 252,
+      "name": "NodeDescriptorError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 266,
+      "name": "PrepareContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 271,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 282,
+      "name": "PortPrepareContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 293,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "edge_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 340,
+      "name": "port_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 344,
+      "name": "direction",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 348,
+      "name": "signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 352,
+      "name": "media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 356,
+      "name": "edge_contract",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 360,
+      "name": "capacity_signals",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::graph::node`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 3,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 13,
+      "text": "pub struct NodeTypeId(Arc<str>);"
+    },
+    {
+      "line": 38,
+      "text": "Self(Arc::from(value))"
+    },
+    {
+      "line": 53,
+      "text": "impl Drop for NodeConfigValue {"
+    }
+  ],
+  "responsibilities": [
+    "NodeTypeId",
+    "as_str",
+    "is_well_formed",
+    "fmt",
+    "from",
+    "NodeConfig",
+    "NodeConfigValue",
+    "drop",
+    "new",
+    "with",
+    "with_sensitive",
+    "get",
+    "is_sensitive",
+    "get_f32",
+    "get_u32",
+    "iter",
+    "fmt",
+    "DebugValue",
+    "fmt",
+    "ConfigError",
+    "NodeError",
+    "NodeDescriptor",
+    "new",
+    "type_id",
+    "display_name",
+    "inputs",
+    "outputs",
+    "execution",
+    "safety",
+    "is_stateful",
+    "NodeDescriptorError",
+    "PrepareContext",
+    "new",
+    "PortPrepareContext",
+    "new",
+    "edge_id",
+    "port_name",
+    "direction",
+    "signal",
+    "media",
+    "edge_contract",
+    "capacity_signals",
+    "tests",
+    "given_config_builder_when_with_then_values_are_retrievable",
+    "given_numeric_config_when_get_f32_then_parses_value",
+    "given_non_numeric_config_when_get_f32_then_returns_none",
+    "given_numeric_config_when_get_u32_then_parses_value",
+    "given_non_numeric_config_when_get_u32_then_returns_none",
+    "given_provider_owned_configuration_key_when_stored_then_it_remains_opaque"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 150,
+      "text": "#[error(\"node prepare failed: {0}\")]"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

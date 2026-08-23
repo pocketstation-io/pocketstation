@@ -10,9 +10,11 @@ use crate::graph::signal::SignalSpec;
 use crate::graph::EdgeId;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[doc = "Uniquely identifies node type."]
 pub struct NodeTypeId(Arc<str>);
 
 impl NodeTypeId {
+    #[doc = "Returns the stable string representation of `NodeTypeId`."]
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -28,18 +30,21 @@ impl NodeTypeId {
 }
 
 impl fmt::Display for NodeTypeId {
+    #[doc = "Formats `NodeTypeId` with the requested formatter."]
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter.write_str(self.as_str())
     }
 }
 
 impl From<&str> for NodeTypeId {
+    #[doc = "Converts the supplied value into `NodeTypeId`."]
     fn from(value: &str) -> Self {
         Self(Arc::from(value))
     }
 }
 
 #[derive(Clone, Default)]
+#[doc = "Configures node."]
 pub struct NodeConfig {
     values: HashMap<String, NodeConfigValue>,
 }
@@ -59,10 +64,12 @@ impl Drop for NodeConfigValue {
 }
 
 impl NodeConfig {
+    #[doc = "Creates a new `NodeConfig`."]
     pub fn new() -> Self {
         Self::default()
     }
 
+    #[doc = "Returns `NodeConfig` with the supplied entry applied."]
     pub fn with(mut self, key: &str, value: &str) -> Self {
         self.values.insert(
             key.to_owned(),
@@ -89,22 +96,27 @@ impl NodeConfig {
         self
     }
 
+    #[doc = "Returns the value held by `NodeConfig`."]
     pub fn get(&self, key: &str) -> Option<&str> {
         self.values.get(key).map(|entry| entry.value.as_str())
     }
 
+    #[doc = "Returns whether sensitive applies to `NodeConfig`."]
     pub fn is_sensitive(&self, key: &str) -> bool {
         self.values.get(key).is_some_and(|entry| entry.sensitive)
     }
 
+    #[doc = "Returns the get f32 associated with `NodeConfig`."]
     pub fn get_f32(&self, key: &str) -> Option<f32> {
         self.get(key).and_then(|raw| raw.parse().ok())
     }
 
+    #[doc = "Returns the get u32 associated with `NodeConfig`."]
     pub fn get_u32(&self, key: &str) -> Option<u32> {
         self.get(key).and_then(|raw| raw.parse().ok())
     }
 
+    #[doc = "Iterates over the values held by `NodeConfig`."]
     pub fn iter(&self) -> impl Iterator<Item = (&str, &str)> {
         self.values
             .iter()
@@ -113,6 +125,7 @@ impl NodeConfig {
 }
 
 impl fmt::Debug for NodeConfig {
+    #[doc = "Formats `NodeConfig` with the requested formatter."]
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         struct DebugValue<'a>(&'a NodeConfigValue);
 
@@ -138,30 +151,51 @@ impl fmt::Debug for NodeConfig {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as config error."]
 pub enum ConfigError {
     #[error("missing required config key: {0}")]
+    #[doc = "Reports missing."]
     Missing(String),
     #[error("invalid config '{key}': {reason}")]
-    Invalid { key: String, reason: String },
+    #[doc = "Reports invalid."]
+    Invalid {
+        #[doc = "Stores the key associated with `Invalid`."]
+        key: String,
+        #[doc = "Carries the reason reported by `Invalid`."]
+        reason: String,
+    },
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as node error."]
 pub enum NodeError {
     #[error("node prepare failed: {0}")]
+    #[doc = "Reports prepare."]
     Prepare(String),
     #[error("node process failed: {0}")]
+    #[doc = "Reports process."]
     Process(String),
     #[error("node process exceeded its {timeout_ms} ms deadline")]
-    ProcessTimeout { timeout_ms: u32 },
+    #[doc = "Reports process timeout."]
+    ProcessTimeout {
+        #[doc = "Stores the timeout value for `ProcessTimeout`, in milliseconds."]
+        timeout_ms: u32,
+    },
     #[error(
         "external boundary node type '{node_type_id}' must execute through its endpoint driver"
     )]
-    ExternalBoundaryExecution { node_type_id: NodeTypeId },
+    #[doc = "Reports external boundary execution."]
+    ExternalBoundaryExecution {
+        #[doc = "Identifies the node type associated with `ExternalBoundaryExecution`."]
+        node_type_id: NodeTypeId,
+    },
     #[error(transparent)]
+    #[doc = "Reports config."]
     Config(#[from] ConfigError),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Describes the node descriptor contract."]
 pub struct NodeDescriptor {
     pub(crate) type_id: NodeTypeId,
     pub(crate) display_name: &'static str,
@@ -173,6 +207,7 @@ pub struct NodeDescriptor {
 }
 
 impl NodeDescriptor {
+    #[doc = "Creates a new `NodeDescriptor`."]
     pub fn new(
         type_id: NodeTypeId,
         display_name: &'static str,
@@ -219,55 +254,71 @@ impl NodeDescriptor {
         })
     }
 
+    #[doc = "Returns the type identifier associated with `NodeDescriptor`."]
     pub const fn type_id(&self) -> &NodeTypeId {
         &self.type_id
     }
 
+    #[doc = "Returns the display name associated with `NodeDescriptor`."]
     pub const fn display_name(&self) -> &'static str {
         self.display_name
     }
 
+    #[doc = "Returns the inputs associated with `NodeDescriptor`."]
     pub fn inputs(&self) -> &[PortSpec] {
         &self.inputs
     }
 
+    #[doc = "Returns the outputs associated with `NodeDescriptor`."]
     pub fn outputs(&self) -> &[PortSpec] {
         &self.outputs
     }
 
+    #[doc = "Returns the execution associated with `NodeDescriptor`."]
     pub const fn execution(&self) -> ExecutionPartition {
         self.execution
     }
 
+    #[doc = "Returns the safety associated with `NodeDescriptor`."]
     pub const fn safety(&self) -> SafetyContract {
         self.safety
     }
 
+    #[doc = "Returns whether stateful applies to `NodeDescriptor`."]
     pub const fn is_stateful(&self) -> bool {
         self.stateful
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as node descriptor error."]
 pub enum NodeDescriptorError {
     #[error("node type id cannot be empty")]
+    #[doc = "Reports empty type identifier."]
     EmptyTypeId,
     #[error("node display name cannot be empty")]
+    #[doc = "Reports empty display name."]
     EmptyDisplayName,
     #[error("node safety contract does not match its execution partition")]
+    #[doc = "Reports invalid safety contract."]
     InvalidSafetyContract,
     #[error("node port is stored under the wrong direction")]
+    #[doc = "Reports port direction mismatch."]
     PortDirectionMismatch,
     #[error("node has a duplicate named port in one direction")]
+    #[doc = "Reports duplicate port."]
     DuplicatePort,
 }
 
 #[derive(Debug, Clone)]
+#[doc = "Represents prepare context in the PocketStation API."]
 pub struct PrepareContext {
+    #[doc = "Stores the sample spec associated with `PrepareContext`."]
     pub sample_spec: SampleSpec,
 }
 
 impl PrepareContext {
+    #[doc = "Creates a new `PrepareContext`."]
     pub fn new(sample_spec: SampleSpec) -> Self {
         Self { sample_spec }
     }
@@ -290,6 +341,7 @@ pub struct PortPrepareContext {
 }
 
 impl PortPrepareContext {
+    #[doc = "Creates a new `PortPrepareContext`."]
     pub fn new(
         edge_id: Option<EdgeId>,
         port_name: impl Into<String>,
@@ -334,30 +386,37 @@ impl PortPrepareContext {
         })
     }
 
+    #[doc = "Returns the edge identifier associated with `PortPrepareContext`."]
     pub const fn edge_id(&self) -> Option<EdgeId> {
         self.edge_id
     }
 
+    #[doc = "Returns the port name associated with `PortPrepareContext`."]
     pub fn port_name(&self) -> &str {
         &self.port_name
     }
 
+    #[doc = "Returns the direction associated with `PortPrepareContext`."]
     pub const fn direction(&self) -> PortDirection {
         self.direction
     }
 
+    #[doc = "Returns the signal associated with `PortPrepareContext`."]
     pub const fn signal(&self) -> &SignalSpec {
         &self.signal
     }
 
+    #[doc = "Returns the media associated with `PortPrepareContext`."]
     pub const fn media(&self) -> MediaCaps {
         self.media
     }
 
+    #[doc = "Returns the edge contract associated with `PortPrepareContext`."]
     pub const fn edge_contract(&self) -> EdgeContract {
         self.edge_contract
     }
 
+    #[doc = "Returns the capacity signals associated with `PortPrepareContext`."]
     pub const fn capacity_signals(&self) -> usize {
         self.capacity_signals
     }

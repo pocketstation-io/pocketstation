@@ -1,0 +1,412 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 8,
+      "text": "/// Capture backends call this before starting a realtime callback so the"
+    },
+    {
+      "line": 9,
+      "text": "/// callback only reads the initialized monotonic origin."
+    }
+  ],
+  "called_by": [],
+  "calls": [
+    "advance",
+    "advance_from_source_position",
+    "any",
+    "cfg",
+    "checked_add",
+    "checked_div",
+    "checked_sub",
+    "crate::timing::monotonic_timestamp_ns",
+    "derive",
+    "get",
+    "get_or_insert",
+    "get_or_insert_with",
+    "initialize_monotonic_timestamp_domain",
+    "min",
+    "monotonic_timestamp_ns",
+    "new",
+    "ok_or",
+    "saturating_add",
+    "saturating_mul",
+    "u128::from",
+    "unwrap_or"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 3,
+      "text": "#[cfg(any(test, feature = \"internal-testing\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 10,
+      "text": "#[cfg(any(test, feature = \"internal-testing\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 30,
+      "text": "#[cfg(any(test, feature = \"internal-testing\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 40,
+      "text": "#[cfg(any(test, feature = \"internal-testing\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 50,
+      "text": "#[cfg(any(test, feature = \"internal-testing\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 63,
+      "text": "#[cfg(any(test, target_os = \"linux\"))]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "new",
+    "u128::from"
+  ],
+  "content_hash": "bf0bbb29412de908f34f4696fb905be3292ae0a50f885330e7c2eba1b8c7e350",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 11,
+      "name": "initialize_monotonic_timestamp_domain",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 18,
+      "name": "monotonic_timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 31,
+      "name": "CaptureSampleTimeline",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 41,
+      "name": "CaptureSampleTimelineError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 64,
+      "name": "advance",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "advance_from_source_position",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [
+    {
+      "line": 23,
+      "text": "/// the number of sample frames produced by the device."
+    }
+  ],
+  "drop_cleanup": [
+    {
+      "line": 79,
+      "text": "/// separately advancing this clock from an aggregate drop counter."
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "fn",
+      "line": 11,
+      "name": "initialize_monotonic_timestamp_domain",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 18,
+      "name": "monotonic_timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 31,
+      "name": "CaptureSampleTimeline",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 41,
+      "name": "CaptureSampleTimelineError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 64,
+      "name": "advance",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "advance_from_source_position",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 86,
+      "text": "return Err(CaptureSampleTimelineError::MixedAdvanceModes);"
+    },
+    {
+      "line": 93,
+      "text": "return Err(CaptureSampleTimelineError::SourcePositionMovedBackward {"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 41,
+      "name": "CaptureSampleTimelineError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "bf0bbb29412de908f34f4696fb905be3292ae0a50f885330e7c2eba1b8c7e350",
+      "lines": [
+        1,
+        120
+      ],
+      "path": "src/capture/timeline.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing",
+    "native-capture"
+  ],
+  "feature_gate": [
+    "internal-testing",
+    "native-capture"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0105-22368936",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "583e420f18865e37677e49b7229b553043bfdaf6",
+  "implemented_by": [],
+  "implements": [
+    "CaptureSampleTimeline"
+  ],
+  "imported_by": [],
+  "imports": [
+    "std::num::NonZeroU32"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 17,
+      "text": "/// same process; it is never derived from a wall clock and cannot jump."
+    },
+    {
+      "line": 27,
+      "text": "/// and advances only by represented sample count. Callers must advance it even"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 120,
+  "locks": [],
+  "module": "pocketstation::capture::timeline",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-85798d9f164c752449ba"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/capture/timeline.rs",
+  "platform_gate": [
+    "linux"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "fn",
+      "line": 11,
+      "name": "initialize_monotonic_timestamp_domain",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 18,
+      "name": "monotonic_timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 31,
+      "name": "CaptureSampleTimeline",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 41,
+      "name": "CaptureSampleTimelineError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 64,
+      "name": "advance",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "advance_from_source_position",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Source-sample time mapped into PocketStation's monotonic clock domain."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/source-selection.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/select-process-source.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/run-transcription.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/troubleshooting/timing.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "initialize_monotonic_timestamp_domain",
+    "monotonic_timestamp_ns",
+    "CaptureSampleTimeline",
+    "CaptureSampleTimelineError",
+    "new",
+    "advance",
+    "advance_from_source_position"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 23,
+      "text": "/// the number of sample frames produced by the device."
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 62,
+      "text": "/// Returns this buffer's source-time start and advances the next start."
+    },
+    {
+      "line": 77,
+      "text": "/// Returns a buffer's source-time start from its native sample-frame"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 6,
+      "text": "/// Initializes the process-wide capture timestamp domain from a setup thread."
+    }
+  ],
+  "visibility": "mixed"
+}

@@ -7,13 +7,18 @@ use crate::frame::AudioFrame;
 use crate::graph::signal::{SignalClass, SignalSpec};
 
 #[derive(Debug)]
+#[doc = "Enumerates the supported signal payload cases."]
 pub enum SignalPayload {
+    #[doc = "Represents the audio case of `SignalPayload`."]
     Audio(AudioFrame),
+    #[doc = "Represents the text case of `SignalPayload`."]
     Text(String),
+    #[doc = "Represents the bytes case of `SignalPayload`."]
     Bytes(Vec<u8>),
 }
 
 impl SignalPayload {
+    #[doc = "Returns the supports associated with `SignalPayload`."]
     pub fn supports(&self, spec: &SignalSpec) -> bool {
         matches!(
             (self, &spec.class),

@@ -1,0 +1,534 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::new",
+    "Box::new",
+    "EndpointDescriptor::new",
+    "EndpointDriverObservations::default",
+    "EndpointFailure::new",
+    "EndpointReceiver::Signal",
+    "NodeDescriptor::new",
+    "NodeTypeId::from",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "PortSpec::new",
+    "Session::new",
+    "SignalSpec::text",
+    "Source::microphone_default",
+    "Vec::new",
+    "WhisperOperatorFactory::new",
+    "any",
+    "cancel_preparation",
+    "capture",
+    "cfg",
+    "descriptor",
+    "endpoint",
+    "expect",
+    "given_external_consumer_when_declared_then_provider_and_typed_endpoint_use_public_api",
+    "iter",
+    "join_and_finalize",
+    "len",
+    "observations",
+    "prepare",
+    "receiver",
+    "register_endpoint",
+    "register_operator",
+    "request_stop",
+    "send",
+    "start",
+    "through",
+    "validate_config",
+    "with",
+    "with_role"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 6,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 51,
+      "text": ") -> Result<(), pocketstation::ConfigError> {"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "Box::new",
+    "EndpointDescriptor::new",
+    "EndpointFailure::new",
+    "NodeDescriptor::new",
+    "NodeTypeId::from",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "PortSpec::new",
+    "Session::new",
+    "Vec::new",
+    "WhisperOperatorFactory::new"
+  ],
+  "content_hash": "4dedd03f0610687e38c1da94d34c5180915fa352b1feefd0c62cec66a72b94fe",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "TEXT_ENDPOINT_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 22,
+      "name": "TEXT_ENDPOINT_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 23,
+      "name": "TextEndpointDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 27,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 55,
+      "name": "TextEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 75,
+      "name": "PreparedTextEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 98,
+      "name": "RunningTextEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 105,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 108,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 123,
+      "name": "given_external_consumer_when_declared_then_provider_and_typed_endpoint_use_public_api",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 1,
+      "text": "//! Compile boundary for an external provider and typed endpoint consumer."
+    },
+    {
+      "line": 21,
+      "text": "const TEXT_ENDPOINT_OPERATOR_ID: &str = \"example.endpoint.transcript.v1\";"
+    },
+    {
+      "line": 22,
+      "text": "const TEXT_ENDPOINT_NODE_TYPE_ID: &str = \"endpoint.transcript.example\";"
+    },
+    {
+      "line": 30,
+      "text": "\"Example transcript endpoint\","
+    },
+    {
+      "line": 39,
+      "text": ".expect(\"text endpoint input\")],"
+    },
+    {
+      "line": 45,
+      "text": ".expect(\"text endpoint descriptor\")"
+    },
+    {
+      "line": 69,
+      "text": "\"text endpoint requires a signal receiver\","
+    },
+    {
+      "line": 133,
+      "text": "let endpoint = session"
+    },
+    {
+      "line": 134,
+      "text": ".endpoint(EndpointDescriptor::new("
+    },
+    {
+      "line": 138,
+      "text": ".expect(\"endpoint declaration\");"
+    },
+    {
+      "line": 145,
+      "text": ".expect(\"typed endpoint extension registration\");"
+    },
+    {
+      "line": 156,
+      "text": "transcript.send(endpoint).expect(\"typed endpoint route\");"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 67,
+      "text": "return Err(EndpointFailure::new("
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "4dedd03f0610687e38c1da94d34c5180915fa352b1feefd0c62cec66a72b94fe",
+      "lines": [
+        1,
+        159
+      ],
+      "path": "examples/operator-consumer/src/lib.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0033-73937ded",
+  "file_kind": "example",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "08f338460c7b79a574705617ba023c50b914041c",
+  "implemented_by": [],
+  "implements": [
+    "NodeDefinition for TextEndpointDefinition",
+    "EndpointDriverFactory for TextEndpointFactory",
+    "PreparedEndpointDriver for PreparedTextEndpoint",
+    "RunningEndpointDriver for RunningTextEndpoint"
+  ],
+  "imported_by": [],
+  "imports": [
+    "pocketstation::{ EndpointCancellationOutcome, EndpointDescriptor, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointPortInput, EndpointReceiver, EndpointStartGate, ExecutionPartition, MediaCaps, Multiplicity, NodeDefinition, NodeDescriptor, NodeTypeId, Operator, OperatorConfiguration, OperatorId, PortDirection, PortSpec, PreparedEndpointDriver, RunningEndpointDriver, SafetyContract, Session, SignalSpec, Source, TextFormat, }",
+    "std::sync::Arc",
+    "whisper_transcribe_example::{WhisperOperatorFactory, WHISPER_OPERATOR_ID}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 159,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-3dd96e814fdbb6001ead"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "examples/operator-consumer/src/lib.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "TEXT_ENDPOINT_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 22,
+      "name": "TEXT_ENDPOINT_NODE_TYPE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 23,
+      "name": "TextEndpointDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 27,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 55,
+      "name": "TextEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 75,
+      "name": "PreparedTextEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 98,
+      "name": "RunningTextEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 105,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 108,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 123,
+      "name": "given_external_consumer_when_declared_then_provider_and_typed_endpoint_use_public_api",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Compile boundary for an external provider and typed endpoint consumer.  This package intentionally depends only on the public `pocketstation` fa\u00e7ade and an example provider package."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 8,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 62,
+      "text": ") -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 72,
+      "text": "Ok(Box::new(PreparedTextEndpoint { inputs }))"
+    },
+    {
+      "line": 82,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 83,
+      "text": "_start_gate: Arc<EndpointStartGate>,"
+    },
+    {
+      "line": 84,
+      "text": ") -> Result<Box<dyn RunningEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 85,
+      "text": "Ok(Box::new(RunningTextEndpoint {"
+    },
+    {
+      "line": 91,
+      "text": "fn cancel_preparation(self: Box<Self>) -> EndpointCancellationOutcome {"
+    },
+    {
+      "line": 113,
+      "text": "fn join_and_finalize(self: Box<Self>) -> EndpointDriverFinalization {"
+    },
+    {
+      "line": 126,
+      "text": ".register_operator(Arc::new(WhisperOperatorFactory::new("
+    },
+    {
+      "line": 142,
+      "text": "Arc::new(TextEndpointDefinition),"
+    },
+    {
+      "line": 143,
+      "text": "Arc::new(TextEndpointFactory),"
+    }
+  ],
+  "responsibilities": [
+    "tests",
+    "TEXT_ENDPOINT_OPERATOR_ID",
+    "TEXT_ENDPOINT_NODE_TYPE_ID",
+    "TextEndpointDefinition",
+    "descriptor",
+    "validate_config",
+    "TextEndpointFactory",
+    "prepare",
+    "PreparedTextEndpoint",
+    "start",
+    "cancel_preparation",
+    "RunningTextEndpoint",
+    "observations",
+    "request_stop",
+    "join_and_finalize",
+    "given_external_consumer_when_declared_then_provider_and_typed_endpoint_use_public_api"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 59,
+      "text": "fn prepare("
+    },
+    {
+      "line": 81,
+      "text": "fn start("
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

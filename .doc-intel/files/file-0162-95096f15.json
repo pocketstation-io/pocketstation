@@ -1,0 +1,266 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "e826149a665dafaa246a8a3a3e4b744cccaabc77698339afd53b17f1e8e4c6b6",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "continuity",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "envelope",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "lineage",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "operator",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "payload",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 10,
+      "name": "timing",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "e826149a665dafaa246a8a3a3e4b744cccaabc77698339afd53b17f1e8e4c6b6",
+      "lines": [
+        1,
+        29
+      ],
+      "path": "src/graph/signal/mod.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0162-95096f15",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "a41884909f7d5100504a24441c6603654203af70",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "continuity::{SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker}",
+    "envelope::{SignalEnvelope, SignalEnvelopeError}",
+    "lineage::{SignalDerivation, SignalDerivationError, SignalLineage, SignalLineageError}",
+    "module:continuity",
+    "module:envelope",
+    "module:lineage",
+    "module:operator",
+    "module:payload",
+    "module:preparation",
+    "module:spec",
+    "module:timing",
+    "operator::{ AsyncNode, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, }",
+    "payload::SignalPayload",
+    "preparation::{ AsyncNodeFuture, AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext, }",
+    "spec::{ BinaryFormat, Codec, EventFormat, SchemaRef, SemanticRole, SignalClass, SignalId, SignalSpec, SignalSpecError, TextFormat, }",
+    "timing::{SignalTiming, SignalTimingError}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 29,
+  "locks": [],
+  "module": "pocketstation::graph::signal",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/signal/mod.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "continuity",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "envelope",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "lineage",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "operator",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "payload",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 10,
+      "name": "timing",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Signal vocabulary, envelopes, lineage, and asynchronous Operator contract."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [
+    "continuity::{SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker}",
+    "envelope::{SignalEnvelope, SignalEnvelopeError}",
+    "lineage::{SignalDerivation, SignalDerivationError, SignalLineage, SignalLineageError}",
+    "payload::SignalPayload",
+    "timing::{SignalTiming, SignalTimingError}"
+  ],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "continuity",
+    "envelope",
+    "lineage",
+    "operator",
+    "payload",
+    "preparation",
+    "spec",
+    "timing"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

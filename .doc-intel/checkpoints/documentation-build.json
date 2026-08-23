@@ -1,0 +1,28 @@
+{
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "tools/build_documentation.py",
+        "--check"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "site_pages=145 output=/Users/raph/Development/pocketstation-io/pocketstation/target/pocketstation-docs\n"
+    },
+    {
+      "command": [
+        "cargo",
+        "doc",
+        "--no-deps",
+        "--all-features"
+      ],
+      "returncode": 0,
+      "stderr": "    Checking serde v1.0.228\n    Checking tokio v1.52.3\n    Checking thiserror v1.0.69\n Documenting pocketstation v1.1.1 (/Users/raph/Development/pocketstation-io/pocketstation)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.70s\n   Generated /Users/raph/Development/pocketstation-io/pocketstation/target/doc/pocketstation/index.html\n",
+      "stdout": ""
+    }
+  ],
+  "created_at": "2026-08-22T04:02:53+00:00",
+  "name": "documentation-build",
+  "passed": true
+}

@@ -19,14 +19,23 @@ pub enum PlanRunnerDrainPolicy {
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[doc = "Reports the plan source input observations collected at an observation boundary."]
 pub struct PlanSourceInputObservations {
+    #[doc = "Sets the queue capacity frames available to `PlanSourceInputObservations`."]
     pub queue_capacity_frames: u64,
+    #[doc = "Reports the queue depth frames observed by `PlanSourceInputObservations`."]
     pub queue_depth_frames: u64,
+    #[doc = "Reports the queue peak frames observed by `PlanSourceInputObservations`."]
     pub queue_peak_frames: u64,
+    #[doc = "Counts the total number of frames enqueued observed by `PlanSourceInputObservations`."]
     pub frames_enqueued_total: u64,
+    #[doc = "Counts the total number of frames delivered observed by `PlanSourceInputObservations`."]
     pub frames_delivered_total: u64,
+    #[doc = "Counts the total number of frames rejected full observed by `PlanSourceInputObservations`."]
     pub frames_rejected_full_total: u64,
+    #[doc = "Counts the total number of frames rejected cancelled observed by `PlanSourceInputObservations`."]
     pub frames_rejected_cancelled_total: u64,
+    #[doc = "Counts the total number of frames discarded observed by `PlanSourceInputObservations`."]
     pub frames_discarded_total: u64,
 }
 
@@ -253,16 +262,28 @@ pub fn plan_source_channel(
 }
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
+#[doc = "Classifies failures reported as plan runner error."]
 pub enum PlanRunnerError {
     #[error("source node {source_node_id} has zero input capacity")]
-    ZeroSourceCapacity { source_node_id: u32 },
+    #[doc = "Reports zero source capacity."]
+    ZeroSourceCapacity {
+        #[doc = "Identifies the source node associated with `ZeroSourceCapacity`."]
+        source_node_id: u32,
+    },
     #[error("source node {source_node_id} is registered more than once")]
-    DuplicateSource { source_node_id: u32 },
+    #[doc = "Reports duplicate source."]
+    DuplicateSource {
+        #[doc = "Identifies the source node associated with `DuplicateSource`."]
+        source_node_id: u32,
+    },
     #[error("runner work budget must be greater than zero")]
+    #[doc = "Reports zero work budget."]
     ZeroWorkBudget,
     #[error("runner was already finished")]
+    #[doc = "Reports already finished."]
     AlreadyFinished,
     #[error(transparent)]
+    #[doc = "Reports execution."]
     Execution(#[from] ExecError),
 }
 

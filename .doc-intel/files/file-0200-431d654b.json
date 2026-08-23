@@ -1,0 +1,588 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "any",
+    "bindings",
+    "bindings_mut",
+    "cfg",
+    "edge_count",
+    "endpoint_declarations",
+    "endpoints",
+    "external_source_declarations",
+    "graph_ir",
+    "graph_ir_mut",
+    "into_runtime_parts",
+    "len",
+    "node_count",
+    "planned_audio_edge_count",
+    "planned_edge_count",
+    "planned_source_output_count",
+    "planned_typed_edge_count",
+    "pub",
+    "session_id",
+    "source_declarations",
+    "source_instances",
+    "spec",
+    "stems"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 6,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 8,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 21,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 26,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 31,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 36,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 41,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 46,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 51,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 56,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 61,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 66,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 71,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 87,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 92,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 97,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 102,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "cc098c7a37a78a44d5a88db82707eb4742abe800f39329567beb2fdd420d60e7",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 12,
+      "name": "CompiledSession",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 27,
+      "name": "spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "source_declarations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "external_source_declarations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "endpoint_declarations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "node_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "edge_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "planned_edge_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "planned_source_output_count",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "planned_typed_edge_count",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 72,
+      "name": "planned_audio_edge_count",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 75,
+      "name": "into_runtime_parts",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "graph_ir",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 93,
+      "name": "graph_ir_mut",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "bindings",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "bindings_mut",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 12,
+      "name": "CompiledSession",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 27,
+      "name": "spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "source_declarations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "external_source_declarations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "endpoint_declarations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "node_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "edge_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "planned_edge_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "planned_source_output_count",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "planned_typed_edge_count",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 72,
+      "name": "planned_audio_edge_count",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 75,
+      "name": "into_runtime_parts",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "graph_ir",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 93,
+      "name": "graph_ir_mut",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "bindings",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "bindings_mut",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "cc098c7a37a78a44d5a88db82707eb4742abe800f39329567beb2fdd420d60e7",
+      "lines": [
+        1,
+        107
+      ],
+      "path": "src/session/compile/compiled.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0200-431d654b",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "3d0c470cf699adc4b8e1f847cca776595cf40ccf",
+  "implemented_by": [],
+  "implements": [
+    "CompiledSession"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::graph::ir::GraphIr",
+    "crate::session::SessionId",
+    "crate::session::SessionSpec",
+    "crate::session::declaration::{EndpointSpec, SourceInstanceSpec, StemSpec}",
+    "super::CompiledSessionBindings"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 107,
+  "locks": [],
+  "module": "pocketstation::session::compile::compiled",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/compile/compiled.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 12,
+      "name": "CompiledSession",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 27,
+      "name": "spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "source_declarations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "external_source_declarations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "endpoint_declarations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "node_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "edge_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "planned_edge_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "planned_source_output_count",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "planned_typed_edge_count",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 72,
+      "name": "planned_audio_edge_count",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 75,
+      "name": "into_runtime_parts",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "graph_ir",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 93,
+      "name": "graph_ir_mut",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "bindings",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "bindings_mut",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Immutable compiled Session plus its typed runtime bindings."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "CompiledSession",
+    "session_id",
+    "spec",
+    "source_declarations",
+    "external_source_declarations",
+    "endpoint_declarations",
+    "node_count",
+    "edge_count",
+    "planned_edge_count",
+    "planned_source_output_count",
+    "planned_typed_edge_count",
+    "planned_audio_edge_count",
+    "into_runtime_parts",
+    "graph_ir",
+    "graph_ir_mut",
+    "bindings",
+    "bindings_mut"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

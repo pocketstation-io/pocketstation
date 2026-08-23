@@ -25,34 +25,42 @@ pub struct ConnectorInputDescriptor {
 }
 
 impl ConnectorInputDescriptor {
+    #[doc = "Returns the endpoint identifier associated with `ConnectorInputDescriptor`."]
     pub const fn endpoint_id(&self) -> EndpointId {
         self.endpoint_id
     }
 
+    #[doc = "Returns the connector identifier associated with `ConnectorInputDescriptor`."]
     pub const fn connector_id(&self) -> Option<crate::ConnectorId> {
         self.connector_id
     }
 
+    #[doc = "Returns the route identifier associated with `ConnectorInputDescriptor`."]
     pub const fn route_id(&self) -> RouteId {
         self.route_id
     }
 
+    #[doc = "Returns the port name associated with `ConnectorInputDescriptor`."]
     pub fn port_name(&self) -> &str {
         &self.port_name
     }
 
+    #[doc = "Returns the signal spec associated with `ConnectorInputDescriptor`."]
     pub const fn signal_spec(&self) -> &SignalSpec {
         &self.signal
     }
 
+    #[doc = "Returns the media associated with `ConnectorInputDescriptor`."]
     pub const fn media(&self) -> MediaCaps {
         self.media
     }
 
+    #[doc = "Returns the edge contract associated with `ConnectorInputDescriptor`."]
     pub const fn edge_contract(&self) -> crate::EdgeContract {
         self.edge_contract
     }
 
+    #[doc = "Returns the configuration associated with `ConnectorInputDescriptor`."]
     pub const fn configuration(&self) -> &ResolvedConnectorConfiguration {
         &self.configuration
     }
@@ -60,17 +68,24 @@ impl ConnectorInputDescriptor {
 
 /// One bounded item delivered by Core to a connector driver.
 pub enum ConnectorItem<'a> {
+    #[doc = "Represents the audio case of `ConnectorItem`."]
     Audio {
+        #[doc = "Stores the input associated with `Audio`."]
         input: &'a ConnectorInputDescriptor,
+        #[doc = "Stores the frame associated with `Audio`."]
         frame: EndpointAudioFrame,
     },
+    #[doc = "Represents the signal case of `ConnectorItem`."]
     Signal {
+        #[doc = "Stores the input associated with `Signal`."]
         input: &'a ConnectorInputDescriptor,
+        #[doc = "Stores the signal associated with `Signal`."]
         signal: Arc<SignalEnvelope>,
     },
 }
 
 impl ConnectorItem<'_> {
+    #[doc = "Returns the input associated with `ConnectorItem`."]
     pub const fn input(&self) -> &ConnectorInputDescriptor {
         match self {
             Self::Audio { input, .. } | Self::Signal { input, .. } => input,
@@ -81,7 +96,9 @@ impl ConnectorItem<'_> {
 /// Explicit delivery result used for Core-owned accounting.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ConnectorDeliveryOutcome {
+    #[doc = "Indicates the delivered state for `ConnectorDeliveryOutcome`."]
     Delivered,
+    #[doc = "Indicates the dropped state for `ConnectorDeliveryOutcome`."]
     Dropped,
 }
 
@@ -90,21 +107,25 @@ pub enum ConnectorDeliveryOutcome {
 /// Calls occur outside realtime partitions. Implementations must keep every
 /// provider operation finite and return structured errors rather than panic.
 pub trait ConnectorDriver: Send + 'static {
+    #[doc = "Starts the lifecycle represented by `ConnectorDriver`."]
     fn start(&mut self, context: &ConnectorContext) -> Result<(), ConnectorError> {
         let _ = context.set_ready();
         Ok(())
     }
 
+    #[doc = "Delivers the next input through `ConnectorDriver`."]
     fn deliver(
         &mut self,
         item: ConnectorItem<'_>,
         context: &ConnectorContext,
     ) -> Result<ConnectorDeliveryOutcome, ConnectorError>;
 
+    #[doc = "Advances `ConnectorDriver` while no input is available."]
     fn idle(&mut self, _context: &ConnectorContext) -> Result<(), ConnectorError> {
         Ok(())
     }
 
+    #[doc = "Shuts down `ConnectorDriver` according to its lifecycle contract."]
     fn shutdown(
         &mut self,
         _mode: EndpointShutdownMode,
@@ -113,6 +134,7 @@ pub trait ConnectorDriver: Send + 'static {
         Ok(())
     }
 
+    #[doc = "Cancels preparation for `ConnectorDriver`."]
     fn cancel_preparation(self: Box<Self>) -> Result<(), ConnectorError> {
         drop(self);
         Ok(())
@@ -121,6 +143,7 @@ pub trait ConnectorDriver: Send + 'static {
 
 /// Prepares provider state while Core retains receiver and lifecycle authority.
 pub trait ConnectorDriverFactory: Send + Sync {
+    #[doc = "Returns the preparation group associated with `ConnectorDriverFactory`."]
     fn preparation_group(
         &self,
         route_id: RouteId,
@@ -129,6 +152,7 @@ pub trait ConnectorDriverFactory: Send + Sync {
         Ok(EndpointPreparationGroup::Route(route_id))
     }
 
+    #[doc = "Prepares resources required by `ConnectorDriverFactory`."]
     fn prepare(
         &self,
         inputs: &[ConnectorInputDescriptor],

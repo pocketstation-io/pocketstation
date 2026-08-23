@@ -359,22 +359,31 @@ impl SessionEngineHostBuilder {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as session engine host build error."]
 pub enum SessionEngineHostBuildError {
     #[error(transparent)]
+    #[doc = "Reports engine."]
     Engine(#[from] SessionEngineBuildError),
     #[error(transparent)]
+    #[doc = "Reports endpoint registration."]
     EndpointRegistration(#[from] EndpointDriverRegistryError),
     #[error(transparent)]
+    #[doc = "Reports endpoint extension registration."]
     EndpointExtensionRegistration(#[from] crate::session::EndpointExtensionRegistrationError),
     #[error(transparent)]
+    #[doc = "Reports operator registration."]
     OperatorRegistration(#[from] NodeRegistrationError),
     #[error(transparent)]
+    #[doc = "Reports polled audio endpoint."]
     PolledAudioEndpoint(#[from] PolledAudioEndpointConfigError),
     #[error("application capture backend is required")]
+    #[doc = "Reports missing application backend."]
     MissingApplicationBackend,
     #[error("microphone capture backend is required")]
+    #[doc = "Reports missing microphone backend."]
     MissingMicrophoneBackend,
     #[error("native Session capture composition is unsupported on this target")]
+    #[doc = "Reports unsupported platform."]
     UnsupportedPlatform,
 }
 

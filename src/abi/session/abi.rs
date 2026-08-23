@@ -53,12 +53,16 @@ pub enum PksSessionHandleKind {
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[doc = "Reports the structured session status."]
 pub struct PksSessionStatus {
+    #[doc = "Stores the code associated with `PksSessionStatus`."]
     pub code: u32,
+    #[doc = "Stores the detail associated with `PksSessionStatus`."]
     pub detail: u32,
 }
 
 impl PksSessionStatus {
+    #[doc = "Creates a successful status value for `PksSessionStatus`."]
     pub const fn ok() -> Self {
         Self {
             code: PksSessionStatusCode::Ok as u32,
@@ -66,6 +70,7 @@ impl PksSessionStatus {
         }
     }
 
+    #[doc = "Creates a new `PksSessionStatus`."]
     pub const fn new(code: PksSessionStatusCode, detail: u32) -> Self {
         Self {
             code: code as u32,
@@ -76,30 +81,51 @@ impl PksSessionStatus {
 
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[doc = "Enumerates the supported session status code cases."]
 pub enum PksSessionStatusCode {
+    #[doc = "Indicates that the operation completed successfully."]
     Ok = 0,
+    #[doc = "Indicates the null argument state for `PksSessionStatusCode`."]
     NullArgument = 1,
+    #[doc = "Indicates the unsupported ABI major state for `PksSessionStatusCode`."]
     UnsupportedAbiMajor = 3,
+    #[doc = "Indicates the invalid struct size state for `PksSessionStatusCode`."]
     InvalidStructSize = 4,
+    #[doc = "Indicates the invalid handle state for `PksSessionStatusCode`."]
     InvalidHandle = 5,
+    #[doc = "Indicates the stale handle state for `PksSessionStatusCode`."]
     StaleHandle = 6,
+    #[doc = "Indicates the no capacity state for `PksSessionStatusCode`."]
     NoCapacity = 7,
+    #[doc = "Indicates the internal panic state for `PksSessionStatusCode`."]
     InternalPanic = 8,
+    #[doc = "Indicates the misaligned pointer state for `PksSessionStatusCode`."]
     MisalignedPointer = 9,
+    #[doc = "Indicates the invalid argument state for `PksSessionStatusCode`."]
     InvalidArgument = 10,
+    #[doc = "Indicates the foreign handle state for `PksSessionStatusCode`."]
     ForeignHandle = 11,
+    #[doc = "Indicates the invalid lifecycle state state for `PksSessionStatusCode`."]
     InvalidLifecycleState = 12,
+    #[doc = "Indicates the would block state for `PksSessionStatusCode`."]
     WouldBlock = 13,
+    #[doc = "Indicates the backend failure state for `PksSessionStatusCode`."]
     BackendFailure = 14,
+    #[doc = "Indicates that the operation was cancelled."]
     Cancelled = 15,
+    #[doc = "Indicates the index out of range state for `PksSessionStatusCode`."]
     IndexOutOfRange = 16,
+    #[doc = "Indicates the unsupported ABI minor state for `PksSessionStatusCode`."]
     UnsupportedAbiMinor = 17,
 }
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[doc = "Represents session UTF-8 in the PocketStation API."]
 pub struct PksSessionUtf8 {
+    #[doc = "Carries the data owned or referenced by `PksSessionUtf8`."]
     pub data: *const u8,
+    #[doc = "Stores the len size for `PksSessionUtf8`, in bytes."]
     pub len_bytes: u32,
 }
 

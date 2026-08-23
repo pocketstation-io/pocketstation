@@ -7,16 +7,24 @@ use rtrb::{Consumer, Producer, PushError, RingBuffer};
 use crate::capture::CaptureError;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Enumerates the supported captured frame delivery cases."]
 pub enum CapturedFrameDelivery {
+    #[doc = "Indicates the delivered state for `CapturedFrameDelivery`."]
     Delivered,
+    #[doc = "Indicates the dropped newest state for `CapturedFrameDelivery`."]
     DroppedNewest,
+    #[doc = "Indicates the discarded before start state for `CapturedFrameDelivery`."]
     DiscardedBeforeStart,
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[doc = "Reports the captured frame stream stats collected at an observation boundary."]
 pub struct CapturedFrameStreamStats {
+    #[doc = "Stores the delivered frames associated with `CapturedFrameStreamStats`."]
     pub delivered_frames: u64,
+    #[doc = "Stores the dropped newest frames associated with `CapturedFrameStreamStats`."]
     pub dropped_newest_frames: u64,
+    #[doc = "Counts the total number of frames discarded before start observed by `CapturedFrameStreamStats`."]
     pub frames_discarded_before_start_total: u64,
 }
 
@@ -28,11 +36,13 @@ struct CapturedFrameStreamCounters {
 }
 
 #[derive(Clone, Debug)]
+#[doc = "Owns bounded access to captured frame observation."]
 pub struct CapturedFrameObservationHandle {
     counters: Arc<CapturedFrameStreamCounters>,
 }
 
 impl CapturedFrameObservationHandle {
+    #[doc = "Returns the observations exposed by `CapturedFrameObservationHandle`."]
     pub fn observations(&self) -> CapturedFrameStreamStats {
         self.counters.snapshot()
     }
@@ -106,6 +116,7 @@ pub struct CapturedFrameSender {
 }
 
 impl CapturedFrameSender {
+    #[doc = "Attempts to send a value through `CapturedFrameSender` without waiting for capacity."]
     pub fn try_send(&mut self, frame: AudioFrame) -> CapturedFrameDelivery {
         if !self.start_gate.is_open() {
             self.counters
@@ -129,16 +140,19 @@ impl CapturedFrameSender {
         }
     }
 
+    #[doc = "Converts `CapturedFrameSender` into callback."]
     pub fn into_callback(mut self) -> impl FnMut(AudioFrame) + Send + 'static {
         move |frame| {
             let _ = self.try_send(frame);
         }
     }
 
+    #[doc = "Returns the current statistics for `CapturedFrameSender`."]
     pub fn stats(&self) -> CapturedFrameStreamStats {
         self.counters.snapshot()
     }
 
+    #[doc = "Returns a handle for reading observations from `CapturedFrameSender`."]
     pub fn observation_handle(&self) -> CapturedFrameObservationHandle {
         CapturedFrameObservationHandle {
             counters: Arc::clone(&self.counters),

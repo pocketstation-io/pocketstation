@@ -1,0 +1,185 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "sub"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "544b3276d84bc34b7430ae1e3cfb2109936a3bbb2fea7cc0ca35693086af8e49",
+  "defaults": [],
+  "defines": [],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "544b3276d84bc34b7430ae1e3cfb2109936a3bbb2fea7cc0ca35693086af8e49",
+      "lines": [
+        1,
+        93
+      ],
+      "path": "tools/check-abi-compatibility.sh",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 12,
+      "text": "echo \"accepted C ABI baseline crate is missing: ${baseline_crate}\" >&2"
+    },
+    {
+      "line": 17,
+      "text": "echo \"C ABI baseline crate hash mismatch\" >&2"
+    },
+    {
+      "line": 25,
+      "text": "echo \"C ABI baseline archive has no package root\" >&2"
+    },
+    {
+      "line": 30,
+      "text": "echo \"accepted C ABI baseline header hash mismatch\" >&2"
+    },
+    {
+      "line": 46,
+      "text": "echo \"accepted C ABI type or field layout is missing or changed:\" >&2"
+    },
+    {
+      "line": 66,
+      "text": "echo \"unsupported ABI-symbol inspection host: $(uname -s)\" >&2"
+    },
+    {
+      "line": 78,
+      "text": "echo \"accepted C ABI symbol is missing:\" >&2"
+    },
+    {
+      "line": 90,
+      "text": "echo \"C ABI and PKSS compatibility: PASS\""
+    }
+  ],
+  "file_id": "file-0276-72726b08",
+  "file_kind": "semantic_metadata",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "12fe558d6c0b2e63f9652bb987b5609a0fdab561",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Shell",
+  "line_count": 93,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "repository",
+  "path": "tools/check-abi-compatibility.sh",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines repository-owned build, package, or semantic fixture data."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 12,
+      "text": "echo \"accepted C ABI baseline crate is missing: ${baseline_crate}\" >&2"
+    },
+    {
+      "line": 17,
+      "text": "echo \"C ABI baseline crate hash mismatch\" >&2"
+    },
+    {
+      "line": 25,
+      "text": "echo \"C ABI baseline archive has no package root\" >&2"
+    },
+    {
+      "line": 30,
+      "text": "echo \"accepted C ABI baseline header hash mismatch\" >&2"
+    },
+    {
+      "line": 46,
+      "text": "echo \"accepted C ABI type or field layout is missing or changed:\" >&2"
+    },
+    {
+      "line": 66,
+      "text": "echo \"unsupported ABI-symbol inspection host: $(uname -s)\" >&2"
+    },
+    {
+      "line": 78,
+      "text": "echo \"accepted C ABI symbol is missing:\" >&2"
+    },
+    {
+      "line": 90,
+      "text": "echo \"C ABI and PKSS compatibility: PASS\""
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

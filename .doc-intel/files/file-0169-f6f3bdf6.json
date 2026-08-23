@@ -1,0 +1,490 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "EdgeId",
+    "GraphSpec::default",
+    "NodeConfig::new",
+    "NodeId",
+    "NodeTypeId::from",
+    "Self",
+    "Vec::new",
+    "any",
+    "as_str",
+    "caps",
+    "cfg",
+    "derive",
+    "edge_count",
+    "find",
+    "from_index",
+    "given_default_graph_spec_when_built_then_has_no_nodes_or_edges",
+    "given_node_spec_in_graph_when_looked_up_by_id_then_returns_it",
+    "index",
+    "is_none",
+    "iter",
+    "len",
+    "map",
+    "node",
+    "node_count",
+    "pub",
+    "verbatim"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 64,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 68,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 72,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 78,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "NodeConfig::new",
+    "NodeTypeId::from",
+    "Vec::new"
+  ],
+  "content_hash": "543caae54c30ef172b77693ca74d9d555c6a78aaf760a2a56c200aa4430f989f",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 8,
+      "name": "NodeId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "from_index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "EdgeId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 31,
+      "name": "OutputPortRef",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 37,
+      "name": "InputPortRef",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 43,
+      "name": "NodeSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 50,
+      "name": "EdgeSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 58,
+      "name": "GraphSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "node_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "edge_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "node",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 79,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "given_default_graph_spec_when_built_then_has_no_nodes_or_edges",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "given_node_spec_in_graph_when_looked_up_by_id_then_returns_it",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 8,
+      "name": "NodeId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "from_index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "EdgeId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 31,
+      "name": "OutputPortRef",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 37,
+      "name": "InputPortRef",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 43,
+      "name": "NodeSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 50,
+      "name": "EdgeSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 58,
+      "name": "GraphSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "node_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "edge_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "node",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "543caae54c30ef172b77693ca74d9d555c6a78aaf760a2a56c200aa4430f989f",
+      "lines": [
+        1,
+        106
+      ],
+      "path": "src/graph/spec.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0169-f6f3bdf6",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "6c2edcd21f1432bbd6f4b839c13b40c1699e8585",
+  "implemented_by": [],
+  "implements": [
+    "NodeId",
+    "EdgeId",
+    "GraphSpec"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::graph::node::{NodeConfig, NodeTypeId}",
+    "crate::graph::ports::EdgeContract",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 103,
+      "text": "assert!(spec.node(NodeId(0)).is_none());"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 106,
+  "locks": [],
+  "module": "pocketstation::graph::spec",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/spec.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 79,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "given_default_graph_spec_when_built_then_has_no_nodes_or_edges",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "given_node_spec_in_graph_when_looked_up_by_id_then_returns_it",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 8,
+      "name": "NodeId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "from_index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "EdgeId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "index",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 31,
+      "name": "OutputPortRef",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 37,
+      "name": "InputPortRef",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 43,
+      "name": "NodeSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 50,
+      "name": "EdgeSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 58,
+      "name": "GraphSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "node_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "edge_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "node",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "GraphSpec \u2014 the immutable description a builder produces and the compiler consumes. Node specifications are preserved verbatim (type id + config); nothing is discarded."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "NodeId",
+    "from_index",
+    "index",
+    "EdgeId",
+    "index",
+    "OutputPortRef",
+    "InputPortRef",
+    "NodeSpec",
+    "EdgeSpec",
+    "GraphSpec",
+    "node_count",
+    "edge_count",
+    "node",
+    "tests",
+    "given_default_graph_spec_when_built_then_has_no_nodes_or_edges",
+    "given_node_spec_in_graph_when_looked_up_by_id_then_returns_it"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

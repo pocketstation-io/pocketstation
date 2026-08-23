@@ -57,6 +57,7 @@ impl SessionEngineBuilder {
 }
 
 impl StemHandle {
+    #[doc = "Attaches recording output to `StemHandle`."]
     pub fn record(&self, stem_name: impl Into<String>) -> Result<EndpointHandle, SessionError> {
         let descriptor = EndpointDescriptor::new(
             NodeTypeId::from(RECORDER_NODE_TYPE_ID),
@@ -76,6 +77,7 @@ impl StemHandle {
 }
 
 impl SourceOutputHandle {
+    #[doc = "Attaches recording output to `SourceOutputHandle`."]
     pub fn record(&self, stem_name: impl Into<String>) -> Result<EndpointHandle, SessionError> {
         let descriptor = EndpointDescriptor::new(
             NodeTypeId::from(RECORDER_NODE_TYPE_ID),

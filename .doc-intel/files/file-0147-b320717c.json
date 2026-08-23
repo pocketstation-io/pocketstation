@@ -1,0 +1,505 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Compilation",
+    "EdgeContract::realtime_audio",
+    "EdgeId",
+    "NodeConfig::new",
+    "NodeId",
+    "Pipeline::new",
+    "Self::default",
+    "add_node",
+    "any",
+    "as_str",
+    "cfg",
+    "connect",
+    "connect_with",
+    "derive",
+    "edge_count",
+    "execution",
+    "get",
+    "given_connect_with_contract_when_into_spec_then_edge_carries_requested_contract",
+    "given_connected_nodes_when_into_spec_then_edge_records_endpoints",
+    "given_two_added_nodes_when_into_spec_then_specs_are_preserved_with_distinct_ids",
+    "id",
+    "in_",
+    "index",
+    "into",
+    "into_spec",
+    "is_none",
+    "is_some",
+    "new",
+    "node_count",
+    "out",
+    "push",
+    "push_edge",
+    "spec",
+    "to_owned",
+    "with"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 85,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 95,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "NodeConfig::new",
+    "Pipeline::new",
+    "new"
+  ],
+  "content_hash": "9b88d1dc8f76ea395cd58c5854323b33a25b06c6b5afd5c134e0b5628d54fc62",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 9,
+      "name": "NodeHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 18,
+      "name": "out",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "in_",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 33,
+      "name": "Pipeline",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "add_node",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "connect",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "connect_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "push_edge",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 89,
+      "name": "into_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 96,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 100,
+      "name": "given_two_added_nodes_when_into_spec_then_specs_are_preserved_with_distinct_ids",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 114,
+      "name": "given_connected_nodes_when_into_spec_then_edge_records_endpoints",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 129,
+      "name": "given_connect_with_contract_when_into_spec_then_edge_carries_requested_contract",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 9,
+      "name": "NodeHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 18,
+      "name": "out",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "in_",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 33,
+      "name": "Pipeline",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "add_node",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "connect",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "connect_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 89,
+      "name": "into_spec",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "9b88d1dc8f76ea395cd58c5854323b33a25b06c6b5afd5c134e0b5628d54fc62",
+      "lines": [
+        1,
+        143
+      ],
+      "path": "src/graph/dsl.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0147-b320717c",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "8211c494b26ea7c18719e103bef4be3df18cad42",
+  "implemented_by": [],
+  "implements": [
+    "NodeHandle",
+    "Pipeline"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::graph::node::{NodeConfig, NodeTypeId}",
+    "crate::graph::ports::EdgeContract",
+    "crate::graph::spec::{ EdgeId, EdgeSpec, GraphSpec, InputPortRef, NodeId, NodeSpec, OutputPortRef, }",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 1,
+      "text": "//! Ergonomic builder frontend. It only assembles a GraphSpec \u2014 it never executes."
+    },
+    {
+      "line": 125,
+      "text": "assert!(spec.edges[0].requested.is_none());"
+    },
+    {
+      "line": 140,
+      "text": "assert!(spec.edges[0].requested.is_some());"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 143,
+  "locks": [],
+  "module": "pocketstation::graph::dsl",
+  "network_io": [
+    {
+      "line": 55,
+      "text": "pub fn connect(&mut self, from: OutputPortRef, to: InputPortRef) -> EdgeId {"
+    },
+    {
+      "line": 118,
+      "text": "let edge = graph.connect(mic.out(\"audio\"), gain.in_(\"audio\"));"
+    }
+  ],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/dsl.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 67,
+      "name": "push_edge",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 96,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 100,
+      "name": "given_two_added_nodes_when_into_spec_then_specs_are_preserved_with_distinct_ids",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 114,
+      "name": "given_connected_nodes_when_into_spec_then_edge_records_endpoints",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 129,
+      "name": "given_connect_with_contract_when_into_spec_then_edge_carries_requested_contract",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 9,
+      "name": "NodeHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 18,
+      "name": "out",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "in_",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 33,
+      "name": "Pipeline",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "add_node",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 54,
+      "name": "connect",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "connect_with",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 89,
+      "name": "into_spec",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Ergonomic builder frontend. It only assembles a GraphSpec \u2014 it never executes. Compilation (Wave 4) and execution (Wave 6) consume the spec downstream."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "NodeHandle",
+    "id",
+    "out",
+    "in_",
+    "Pipeline",
+    "new",
+    "add_node",
+    "connect",
+    "connect_with",
+    "push_edge",
+    "spec",
+    "into_spec",
+    "tests",
+    "given_two_added_nodes_when_into_spec_then_specs_are_preserved_with_distinct_ids",
+    "given_connected_nodes_when_into_spec_then_edge_records_endpoints",
+    "given_connect_with_contract_when_into_spec_then_edge_carries_requested_contract"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 55,
+      "text": "pub fn connect(&mut self, from: OutputPortRef, to: InputPortRef) -> EdgeId {"
+    },
+    {
+      "line": 118,
+      "text": "let edge = graph.connect(mic.out(\"audio\"), gain.in_(\"audio\"));"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

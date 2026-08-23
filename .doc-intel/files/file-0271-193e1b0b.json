@@ -1,0 +1,199 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "SidecarMessage::decode",
+    "SidecarProtocolLimits::default",
+    "encode",
+    "expect",
+    "given_pkss_v1_message_kinds_when_projected_then_values_remain_stable",
+    "given_pkss_v1_signal_when_encoded_then_bytes_remain_stable",
+    "to_owned"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 47,
+      "text": "(SidecarMessageKind::Configure, 8),"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "587f4571f7e39983d6862d0c01ccdb45c2787389fefdc5be33e32b6cff10faa3",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 2,
+      "name": "PKSS_V1_SIGNAL_VECTOR",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "given_pkss_v1_signal_when_encoded_then_bytes_remain_stable",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 38,
+      "name": "given_pkss_v1_message_kinds_when_projected_then_values_remain_stable",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "587f4571f7e39983d6862d0c01ccdb45c2787389fefdc5be33e32b6cff10faa3",
+      "lines": [
+        1,
+        55
+      ],
+      "path": "tests/protocol_compatibility.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0271-193e1b0b",
+  "file_kind": "test",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "e640c6d494263736afaa3e90a4c4b4e4f278af5a",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "pocketstation::{SidecarMessage, SidecarMessageKind, SidecarProtocolLimits}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 55,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-fe84fb6f35a53c802413"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "tests/protocol_compatibility.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 2,
+      "name": "PKSS_V1_SIGNAL_VECTOR",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "given_pkss_v1_signal_when_encoded_then_bytes_remain_stable",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 38,
+      "name": "given_pkss_v1_message_kinds_when_projected_then_values_remain_stable",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `not_applicable`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/installation.md",
+    "docs/getting-started/examples.md",
+    "docs/concepts/conformance.md",
+    "docs/concepts/release-evidence.md",
+    "docs/architecture/overview.md",
+    "docs/internals/abi-conformance.md",
+    "docs/glossary.md",
+    "docs/concepts/cargo-features.md",
+    "RELEASE_NOTES.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/how-to/choose-features.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/reference/features.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/best-practices/evidence-boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "PKSS_V1_SIGNAL_VECTOR",
+    "given_pkss_v1_signal_when_encoded_then_bytes_remain_stable",
+    "given_pkss_v1_message_kinds_when_projected_then_values_remain_stable"
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 28,
+      "text": "let encoded = message.encode(limits).expect(\"encode PKSS 1.0 vector\");"
+    },
+    {
+      "line": 32,
+      "text": "SidecarMessage::decode(PKSS_V1_SIGNAL_VECTOR, limits),"
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

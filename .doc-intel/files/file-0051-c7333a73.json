@@ -1,0 +1,375 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 54,
+      "text": "// Writer: CoreAudio IO callback thread."
+    },
+    {
+      "line": 107,
+      "text": "// \u2500\u2500\u2500 IO callback \u2014 real-time thread, no ObjC/alloc/lock/log \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500"
+    }
+  ],
+  "called_by": [],
+  "calls": [
+    "AudioDeviceCreateIOProcID",
+    "AudioDeviceDestroyIOProcID",
+    "AudioDeviceStart",
+    "AudioDeviceStop",
+    "AudioHardwareCreateAggregateDevice",
+    "AudioHardwareCreateProcessTap",
+    "AudioHardwareDestroyAggregateDevice",
+    "AudioHardwareDestroyProcessTap",
+    "AudioObjectGetPropertyData",
+    "AudioObjectGetPropertyDataSize",
+    "CFRelease",
+    "CFStringGetCString",
+    "CMAudioFormatDescriptionGetStreamBasicDescription",
+    "TAP_RING_MASK",
+    "arrayWithCapacity:",
+    "atomic_fetch_add_explicit",
+    "atomic_load_explicit",
+    "atomic_store",
+    "atomic_store_explicit",
+    "available",
+    "calloc",
+    "free",
+    "mach_absolute_time",
+    "mach_timebase_info",
+    "malloc",
+    "maxLength:sizeof",
+    "memcpy",
+    "memset",
+    "pks_append_input_devices",
+    "pks_audio_object_id_for_pid",
+    "pks_create_process_tap",
+    "pks_destroy_process_tap",
+    "pks_discover_sources",
+    "pks_failure_status",
+    "pks_host_time_to_ns",
+    "pks_process_start_time_ns",
+    "pks_process_tap_available",
+    "pks_tap_channels",
+    "pks_tap_current_host_time_ns",
+    "pks_tap_drop_count",
+    "pks_tap_level",
+    "pks_tap_read_frames",
+    "pks_tap_read_frames_timed",
+    "pks_tap_sample_rate",
+    "pks_tap_start",
+    "playing",
+    "proc_name",
+    "proc_pidinfo",
+    "ring_load_level",
+    "ring_store_level",
+    "sqrtf",
+    "strncpy",
+    "tap_io_proc",
+    "thread"
+  ],
+  "cancellation_behavior": [],
+  "channels": [
+    {
+      "line": 147,
+      "text": "// Non-interleaved: one buffer per channel."
+    }
+  ],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "cac0c11c5735b3b4e77814d4db1cdeb8efdc830b8b60005b64b251ea3291784d",
+  "defaults": [],
+  "defines": [],
+  "device_io": [
+    {
+      "line": 1,
+      "text": "// CoreAudio process tap implementation \u2014 macOS 14.2+."
+    },
+    {
+      "line": 11,
+      "text": "#import <CoreAudio/CoreAudio.h>"
+    },
+    {
+      "line": 12,
+      "text": "#import <CoreAudio/CATapDescription.h>"
+    },
+    {
+      "line": 13,
+      "text": "#import <CoreAudio/AudioHardwareTapping.h>"
+    },
+    {
+      "line": 54,
+      "text": "// Writer: CoreAudio IO callback thread."
+    },
+    {
+      "line": 237,
+      "text": "for (AVCaptureDevice *device in session.devices) {"
+    },
+    {
+      "line": 242,
+      "text": "info->state = device.connected"
+    },
+    {
+      "line": 245,
+      "text": "if (![device.uniqueID getCString:info->bundle_id"
+    },
+    {
+      "line": 251,
+      "text": "[device.localizedName getCString:info->name"
+    },
+    {
+      "line": 257,
+      "text": "for (AVCaptureDeviceFormat *format in device.formats) {"
+    },
+    {
+      "line": 301,
+      "text": "AudioObjectID device = devices[i];"
+    },
+    {
+      "line": 309,
+      "text": "device, &streamsAddr, 0, NULL, &streamsSize) != noErr"
+    },
+    {
+      "line": 316,
+      "text": "device, &streamsAddr, 0, NULL, &streamsSize, streams) != noErr) {"
+    },
+    {
+      "line": 329,
+      "text": "info->audio_object_id = device;"
+    },
+    {
+      "line": 342,
+      "text": "device, &uidAddr, 0, NULL, &valueSize, &uid) != noErr || !uid) {"
+    },
+    {
+      "line": 358,
+      "text": "device, &nameAddr, 0, NULL, &valueSize, &name) == noErr && name) {"
+    },
+    {
+      "line": 375,
+      "text": "device, &rateAddr, 0, NULL, &valueSize, &rate) == noErr"
+    },
+    {
+      "line": 543,
+      "text": "// Get the tap's UID for the aggregate device descriptor."
+    },
+    {
+      "line": 624,
+      "text": "// Detect the aggregate device's input format to get the actual sample rate."
+    }
+  ],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "cac0c11c5735b3b4e77814d4db1cdeb8efdc830b8b60005b64b251ea3291784d",
+      "lines": [
+        1,
+        768
+      ],
+      "path": "native/macos/asp/source_discovery.m",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0051-c7333a73",
+  "file_kind": "native_source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "9b62a9cb72112ab136433a38f95d254a634f9c14",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Objective-C",
+  "line_count": 768,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "repository",
+  "path": "native/macos/asp/source_discovery.m",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements a native or platform boundary."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/best-practices/evidence-boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 1,
+      "text": "// CoreAudio process tap implementation \u2014 macOS 14.2+."
+    },
+    {
+      "line": 11,
+      "text": "#import <CoreAudio/CoreAudio.h>"
+    },
+    {
+      "line": 12,
+      "text": "#import <CoreAudio/CATapDescription.h>"
+    },
+    {
+      "line": 13,
+      "text": "#import <CoreAudio/AudioHardwareTapping.h>"
+    },
+    {
+      "line": 54,
+      "text": "// Writer: CoreAudio IO callback thread."
+    },
+    {
+      "line": 237,
+      "text": "for (AVCaptureDevice *device in session.devices) {"
+    },
+    {
+      "line": 242,
+      "text": "info->state = device.connected"
+    },
+    {
+      "line": 245,
+      "text": "if (![device.uniqueID getCString:info->bundle_id"
+    },
+    {
+      "line": 251,
+      "text": "[device.localizedName getCString:info->name"
+    },
+    {
+      "line": 257,
+      "text": "for (AVCaptureDeviceFormat *format in device.formats) {"
+    },
+    {
+      "line": 301,
+      "text": "AudioObjectID device = devices[i];"
+    },
+    {
+      "line": 309,
+      "text": "device, &streamsAddr, 0, NULL, &streamsSize) != noErr"
+    },
+    {
+      "line": 316,
+      "text": "device, &streamsAddr, 0, NULL, &streamsSize, streams) != noErr) {"
+    },
+    {
+      "line": 329,
+      "text": "info->audio_object_id = device;"
+    },
+    {
+      "line": 342,
+      "text": "device, &uidAddr, 0, NULL, &valueSize, &uid) != noErr || !uid) {"
+    },
+    {
+      "line": 358,
+      "text": "device, &nameAddr, 0, NULL, &valueSize, &name) == noErr && name) {"
+    },
+    {
+      "line": 375,
+      "text": "device, &rateAddr, 0, NULL, &valueSize, &rate) == noErr"
+    },
+    {
+      "line": 543,
+      "text": "// Get the tap's UID for the aggregate device descriptor."
+    },
+    {
+      "line": 624,
+      "text": "// Detect the aggregate device's input format to get the actual sample rate."
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 54,
+      "text": "// Writer: CoreAudio IO callback thread."
+    },
+    {
+      "line": 55,
+      "text": "// Reader: Rust reader thread (sole consumer)."
+    },
+    {
+      "line": 107,
+      "text": "// \u2500\u2500\u2500 IO callback \u2014 real-time thread, no ObjC/alloc/lock/log \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500"
+    }
+  ],
+  "visibility": "private_or_not_applicable"
+}

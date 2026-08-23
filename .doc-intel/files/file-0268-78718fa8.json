@@ -1,0 +1,306 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Command::new",
+    "PathBuf::from",
+    "String::from_utf8",
+    "String::from_utf8_lossy",
+    "arg",
+    "args",
+    "cfg",
+    "expect",
+    "given_native_ring_contract_when_executed_then_visibility_and_drop_accounting_hold",
+    "join",
+    "output",
+    "std::env::temp_dir",
+    "std::fs::remove_file",
+    "std::process::id",
+    "success",
+    "to_owned",
+    "trim"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 1,
+      "text": "#![cfg(target_os = \"macos\")]"
+    },
+    {
+      "line": 11,
+      "text": "std::env::temp_dir().join(format!(\"pks-native-ring-contract-{}\", std::process::id()));"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Command::new",
+    "PathBuf::from"
+  ],
+  "content_hash": "10b6122be6028d572241223a9301c87bdfcf9c666d92d51fd8dca0698c3431ff",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 7,
+      "name": "given_native_ring_contract_when_executed_then_visibility_and_drop_accounting_hold",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [
+    "CARGO_MANIFEST_DIR"
+  ],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "10b6122be6028d572241223a9301c87bdfcf9c666d92d51fd8dca0698c3431ff",
+      "lines": [
+        1,
+        69
+      ],
+      "path": "tests/macos_native_ring_contract.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0268-78718fa8",
+  "file_kind": "test",
+  "filesystem_io": [
+    {
+      "line": 62,
+      "text": "let _ = std::fs::remove_file(&executable);"
+    }
+  ],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "f6568a2175173da29ed4f6c2e7d3aa4448097dcf",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "std::path::PathBuf",
+    "std::process::Command"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 15,
+      "text": ".expect(\"xcrun must resolve the macOS C compiler\");"
+    },
+    {
+      "line": 16,
+      "text": "assert!("
+    },
+    {
+      "line": 21,
+      "text": ".expect(\"xcrun compiler path must be UTF-8\")"
+    },
+    {
+      "line": 27,
+      "text": ".expect(\"xcrun must resolve the macOS SDK\");"
+    },
+    {
+      "line": 28,
+      "text": "assert!("
+    },
+    {
+      "line": 33,
+      "text": ".expect(\"xcrun SDK path must be UTF-8\")"
+    },
+    {
+      "line": 52,
+      "text": ".expect(\"native ring contract must compile\");"
+    },
+    {
+      "line": 53,
+      "text": "assert!("
+    },
+    {
+      "line": 61,
+      "text": ".expect(\"native ring contract must execute\");"
+    },
+    {
+      "line": 63,
+      "text": "assert!("
+    }
+  ],
+  "language": "Rust",
+  "line_count": 69,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-c187a3b04f866efe0acb"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "tests/macos_native_ring_contract.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 7,
+      "name": "given_native_ring_contract_when_executed_then_visibility_and_drop_accounting_hold",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 4,
+      "text": "use std::process::Command;"
+    },
+    {
+      "line": 11,
+      "text": "std::env::temp_dir().join(format!(\"pks-native-ring-contract-{}\", std::process::id()));"
+    },
+    {
+      "line": 12,
+      "text": "let compiler = Command::new(\"xcrun\")"
+    },
+    {
+      "line": 24,
+      "text": "let sdk = Command::new(\"xcrun\")"
+    },
+    {
+      "line": 37,
+      "text": "let compile = Command::new(compiler)"
+    },
+    {
+      "line": 59,
+      "text": "let result = Command::new(&executable)"
+    }
+  ],
+  "protocol_messages": [
+    {
+      "line": 4,
+      "text": "use std::process::Command;"
+    },
+    {
+      "line": 12,
+      "text": "let compiler = Command::new(\"xcrun\")"
+    },
+    {
+      "line": 24,
+      "text": "let sdk = Command::new(\"xcrun\")"
+    },
+    {
+      "line": 37,
+      "text": "let compile = Command::new(compiler)"
+    },
+    {
+      "line": 59,
+      "text": "let result = Command::new(&executable)"
+    }
+  ],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `not_applicable`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/native-extensions.md",
+    "docs/concepts/c-abi-ownership.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/architecture/overview.md",
+    "docs/internals/abi-conformance.md",
+    "docs/glossary.md",
+    "docs/guides/extensions.md",
+    "docs/how-to/use-c-session-api.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/native-extensions.md",
+    "docs/reference/c-abi.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/extensions-and-abi.md",
+    "docs/troubleshooting/native-extension-load.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/native-extension-trust.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "given_native_ring_contract_when_executed_then_visibility_and_drop_accounting_hold"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 62,
+      "text": "let _ = std::fs::remove_file(&executable);"
+    },
+    {
+      "line": 4,
+      "text": "use std::process::Command;"
+    },
+    {
+      "line": 11,
+      "text": "std::env::temp_dir().join(format!(\"pks-native-ring-contract-{}\", std::process::id()));"
+    },
+    {
+      "line": 12,
+      "text": "let compiler = Command::new(\"xcrun\")"
+    },
+    {
+      "line": 24,
+      "text": "let sdk = Command::new(\"xcrun\")"
+    },
+    {
+      "line": 37,
+      "text": "let compile = Command::new(compiler)"
+    },
+    {
+      "line": 59,
+      "text": "let result = Command::new(&executable)"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

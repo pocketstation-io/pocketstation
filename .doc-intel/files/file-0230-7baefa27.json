@@ -1,0 +1,423 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "any",
+    "cfg",
+    "pub"
+  ],
+  "cancellation_behavior": [
+    {
+      "line": 37,
+      "text": "pub(crate) use running::start_prepared_session_cancellable_with_trace;"
+    },
+    {
+      "line": 40,
+      "text": "pub use running::{start_prepared_session, start_prepared_session_cancellable};"
+    }
+  ],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 39,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 50,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 53,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "a0561caab766091d4935d53121e2f71a77b883d2ff1921b9066d4db5162958c3",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "endpoint_transaction",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "engine",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "events",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "host",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "metric_bindings",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "operator_observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 10,
+      "name": "rollback",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 11,
+      "name": "running",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 12,
+      "name": "start_contract",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 13,
+      "name": "trace",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 54,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 55,
+      "name": "engine",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 56,
+      "name": "running",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "a0561caab766091d4935d53121e2f71a77b883d2ff1921b9066d4db5162958c3",
+      "lines": [
+        1,
+        58
+      ],
+      "path": "src/session/lifecycle/mod.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0230-7baefa27",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "9df2664a3708517d2bef04ea8693cb18ff50f66e",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "engine::{ EndpointExtensionRegistrationError, SessionEngine, SessionEngineBuildError, SessionEngineBuilder, SessionEngineStartError, }",
+    "events::{ SessionComponentId, SessionControlFailure, SessionEndpointFailure, SessionEvent, SessionEventKind, SessionEventReceive, SessionEventReceiver, SessionFinalizationFailure, SessionFinalizationStage, SessionLifecycleState, SessionRollbackFailure, SessionRollbackStage, SessionSourceFailure, SessionTerminalOutcome, SessionTerminalState, }",
+    "host::{ NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuildError, SessionEngineHostBuilder, }",
+    "module:endpoint_transaction",
+    "module:engine",
+    "module:events",
+    "module:host",
+    "module:metric_bindings",
+    "module:observations",
+    "module:operator_observations",
+    "module:rollback",
+    "module:running",
+    "module:start_contract",
+    "module:trace",
+    "observations::{ EndpointObservationStage, SessionAudioReentryMetrics, SessionDerivedRouteMetrics, SessionEventQueueObservations, SessionExternalSourceMetrics, SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteDropObservations, SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit, SessionRouteMetrics, SessionRouteObservationInterval, SessionSidecarMetrics, SessionSourceMetrics, }",
+    "running::RunningSession",
+    "running::start_prepared_session_cancellable_with_trace",
+    "running::{start_prepared_session, start_prepared_session_cancellable}",
+    "start_contract::{ CaptureBackendSet, SessionStartCancellation, SessionStartError, SessionStartFailure, SessionStartOptions, SessionStopOutcome, }",
+    "trace::{ SessionTrace, SessionTraceRecorder, SessionTraceRecorderFinishError, SessionTraceRecorderHandle, SessionTraceRecorderOutcome, SessionTraceRecorderStartError, SessionTraceValidation, SessionTraceValidationError, }",
+    "trace::{SessionTraceRecord, SessionTraceRecordKind, SessionTraceTerminal}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 58,
+  "locks": [],
+  "module": "pocketstation::session::lifecycle",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-42242e8c33db6aa40f15",
+    "pattern-e96e6e14c96a3f84d817"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/lifecycle/mod.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "endpoint_transaction",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "engine",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "events",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "host",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "metric_bindings",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "operator_observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 10,
+      "name": "rollback",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 11,
+      "name": "running",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 12,
+      "name": "start_contract",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 13,
+      "name": "trace",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 54,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 55,
+      "name": "engine",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 56,
+      "name": "running",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Session engine construction, transactional startup, observations, and stop."
+  },
+  "queues": [],
+  "recovery_behavior": [
+    {
+      "line": 10,
+      "text": "mod rollback;"
+    }
+  ],
+  "reexports": [
+    "running::RunningSession",
+    "running::{start_prepared_session, start_prepared_session_cancellable}",
+    "trace::{SessionTraceRecord, SessionTraceRecordKind, SessionTraceTerminal}"
+  ],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "endpoint_transaction",
+    "engine",
+    "events",
+    "host",
+    "metric_bindings",
+    "observations",
+    "operator_observations",
+    "rollback",
+    "running",
+    "start_contract",
+    "trace",
+    "tests",
+    "engine",
+    "running"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 1,
+      "text": "//! Session engine construction, transactional startup, observations, and stop."
+    }
+  ],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 1,
+      "text": "//! Session engine construction, transactional startup, observations, and stop."
+    },
+    {
+      "line": 37,
+      "text": "pub(crate) use running::start_prepared_session_cancellable_with_trace;"
+    },
+    {
+      "line": 40,
+      "text": "pub use running::{start_prepared_session, start_prepared_session_cancellable};"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

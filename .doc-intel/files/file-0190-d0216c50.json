@@ -1,0 +1,272 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 5,
+      "text": "//! inside an audio callback."
+    }
+  ],
+  "called_by": [],
+  "calls": [
+    "cfg",
+    "pub"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 10,
+      "text": "#[cfg(feature = \"internal-testing\")]"
+    },
+    {
+      "line": 16,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "310b298d5c03247f57bb71b896227c36fc079b2c279df76eee61476793549cc9",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "audio",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "bridge",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "lifecycle",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 11,
+      "name": "nodes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 12,
+      "name": "signal",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "mod",
+      "line": 11,
+      "name": "nodes",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "310b298d5c03247f57bb71b896227c36fc079b2c279df76eee61476793549cc9",
+      "lines": [
+        1,
+        20
+      ],
+      "path": "src/runtime/mod.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0190-d0216c50",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "21b878853353972f3e80c6ce46561933d5a901af",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "audio::*",
+    "bridge::*",
+    "lifecycle::*",
+    "lifecycle::CONTROL_SIGNAL_ID",
+    "module:audio",
+    "module:bridge",
+    "module:lifecycle",
+    "module:nodes",
+    "module:signal",
+    "signal::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 4,
+      "text": "//! partition crossing is explicit and bounded; lifecycle code never executes"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 20,
+  "locks": [],
+  "module": "pocketstation::runtime",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-c3c7b819fc488b35f891"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/runtime/mod.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "audio",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "bridge",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "lifecycle",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 12,
+      "name": "signal",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "mod",
+      "line": 11,
+      "name": "nodes",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Runtime implementation for compiled Session plans.  The realtime audio lane and asynchronous signal lane remain separate. Every partition crossing is explicit and bounded; lifecycle code never executes inside an audio callback."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [
+    "audio::*",
+    "bridge::*",
+    "lifecycle::*",
+    "signal::*"
+  ],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/errors/runtime-and-sidecars.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/route-sizing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "audio",
+    "bridge",
+    "lifecycle",
+    "nodes",
+    "signal"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

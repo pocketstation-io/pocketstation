@@ -82,56 +82,91 @@ pub enum RecorderError {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
+#[doc = "Selects the recording state used by PocketStation."]
 pub enum RecordingState {
+    #[doc = "Indicates the recording state for `RecordingState`."]
     Recording,
+    #[doc = "Indicates the complete state for `RecordingState`."]
     Complete,
+    #[doc = "Indicates the incomplete state for `RecordingState`."]
     Incomplete,
 }
 
 #[derive(Debug, Clone, Serialize)]
+#[doc = "Represents discontinuity record in the PocketStation API."]
 pub struct DiscontinuityRecord {
+    #[doc = "Identifies the stem associated with `DiscontinuityRecord`."]
     pub stem_id: u64,
+    #[doc = "Stores the label associated with `DiscontinuityRecord`."]
     pub label: String,
+    #[doc = "Stores the kind associated with `DiscontinuityRecord`."]
     pub kind: DiscontinuityKind,
+    #[doc = "Stores the timestamp start value for `DiscontinuityRecord`, in nanoseconds."]
     pub timestamp_start_ns: u64,
+    #[doc = "Stores the timestamp end value for `DiscontinuityRecord`, in nanoseconds."]
     pub timestamp_end_ns: u64,
+    #[doc = "Stores the sequence start associated with `DiscontinuityRecord`."]
     pub sequence_start: Option<u64>,
+    #[doc = "Stores the sequence end associated with `DiscontinuityRecord`."]
     pub sequence_end: Option<u64>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
+#[doc = "Selects the discontinuity kind used by PocketStation."]
 pub enum DiscontinuityKind {
+    #[doc = "Selects timestamp gap behavior for `DiscontinuityKind`."]
     TimestampGap,
+    #[doc = "Selects sequence gap behavior for `DiscontinuityKind`."]
     SequenceGap,
+    #[doc = "Selects overlap rejected behavior for `DiscontinuityKind`."]
     OverlapRejected,
 }
 
 #[derive(Debug, Clone)]
+#[doc = "Reports the structured recording outcome."]
 pub struct RecordingOutcome {
+    #[doc = "Stores the session dir associated with `RecordingOutcome`."]
     pub session_dir: PathBuf,
+    #[doc = "Stores the state associated with `RecordingOutcome`."]
     pub state: RecordingState,
+    #[doc = "Stores the completed stems associated with `RecordingOutcome`."]
     pub completed_stems: usize,
+    #[doc = "Stores the failed stems associated with `RecordingOutcome`."]
     pub failed_stems: usize,
+    #[doc = "Stores the stems associated with `RecordingOutcome`."]
     pub stems: Vec<RecordingStemOutcome>,
 }
 
 #[derive(Debug, Clone)]
+#[doc = "Reports the structured recording stem outcome."]
 pub struct RecordingStemOutcome {
+    #[doc = "Stores the label associated with `RecordingStemOutcome`."]
     pub label: String,
+    #[doc = "Stores the written frames associated with `RecordingStemOutcome`."]
     pub written_frames: u64,
+    #[doc = "Stores the stale frames associated with `RecordingStemOutcome`."]
     pub stale_frames: u64,
+    #[doc = "Stores the gap ranges associated with `RecordingStemOutcome`."]
     pub gap_ranges: Vec<DiscontinuityRecord>,
+    #[doc = "Stores the error associated with `RecordingStemOutcome`."]
     pub error: Option<String>,
+    #[doc = "Stores the edge observations associated with `RecordingStemOutcome`."]
     pub edge_observations: EdgeObservations,
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[doc = "Reports the recording observations collected at an observation boundary."]
 pub struct RecordingObservations {
+    #[doc = "Counts the total number of frames received observed by `RecordingObservations`."]
     pub frames_received_total: u64,
+    #[doc = "Counts the total number of frames written observed by `RecordingObservations`."]
     pub frames_written_total: u64,
+    #[doc = "Counts the total number of frames rejected observed by `RecordingObservations`."]
     pub frames_rejected_total: u64,
+    #[doc = "Counts the total number of discontinuities observed by `RecordingObservations`."]
     pub discontinuities_total: u64,
+    #[doc = "Counts the total number of failures observed by `RecordingObservations`."]
     pub failures_total: u64,
 }
 

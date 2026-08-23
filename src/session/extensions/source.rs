@@ -14,6 +14,7 @@ use crate::runtime::{
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[doc = "Uniquely identifies source type."]
 pub struct SourceTypeId(String);
 
 impl SourceTypeId {
@@ -49,6 +50,7 @@ impl SourceTypeId {
         Ok(Self(value))
     }
 
+    #[doc = "Returns the stable string representation of `SourceTypeId`."]
     pub fn as_str(&self) -> &str {
         &self.0
     }
@@ -65,25 +67,35 @@ fn has_source_category(value: &str) -> bool {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as source type id error."]
 pub enum SourceTypeIdError {
     #[error("source type identifier cannot be empty")]
+    #[doc = "Represents an empty value or collection."]
     Empty,
     #[error("source type identifier cannot contain surrounding whitespace")]
+    #[doc = "Reports surrounding whitespace."]
     SurroundingWhitespace,
     #[error("source type identifier is {actual_bytes} bytes; maximum is {maximum_bytes}")]
+    #[doc = "Reports too long."]
     TooLong {
+        #[doc = "Stores the actual size for `TooLong`, in bytes."]
         actual_bytes: usize,
+        #[doc = "Stores the maximum size for `TooLong`, in bytes."]
         maximum_bytes: usize,
     },
     #[error("source type identifier must contain only ASCII contract characters")]
+    #[doc = "Reports non ascii."]
     NonAscii,
     #[error("source type identifier must use bounded reverse-domain syntax ending in vN")]
+    #[doc = "Reports invalid contract syntax."]
     InvalidContractSyntax,
     #[error("source type identifier must contain a source category and concrete source name")]
+    #[doc = "Reports missing source category."]
     MissingSourceCategory,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[doc = "Configures source."]
 pub struct SourceConfiguration {
     values: BTreeMap<String, String>,
 }
@@ -97,10 +109,12 @@ impl SourceConfiguration {
         self.values.insert(key.into(), value.into());
     }
 
+    #[doc = "Returns the value held by `SourceConfiguration`."]
     pub fn get(&self, key: &str) -> Option<&str> {
         self.values.get(key).map(String::as_str)
     }
 
+    #[doc = "Iterates over the values held by `SourceConfiguration`."]
     pub fn iter(&self) -> impl Iterator<Item = (&str, &str)> {
         self.values
             .iter()
@@ -109,6 +123,7 @@ impl SourceConfiguration {
 }
 
 #[derive(Debug, Clone)]
+#[doc = "Describes the source manifest contract."]
 pub struct SourceManifest {
     pub(crate) source_type_id: SourceTypeId,
     pub(crate) revision: u32,
@@ -119,6 +134,7 @@ pub struct SourceManifest {
 }
 
 impl SourceManifest {
+    #[doc = "Creates a new `SourceManifest`."]
     pub fn new(
         source_type_id: SourceTypeId,
         revision: u32,
@@ -139,6 +155,7 @@ impl SourceManifest {
         Ok(manifest)
     }
 
+    #[doc = "Returns the source type identifier associated with `SourceManifest`."]
     pub const fn source_type_id(&self) -> &SourceTypeId {
         &self.source_type_id
     }
@@ -167,18 +184,22 @@ impl SourceManifest {
         self.implementation_generation
     }
 
+    #[doc = "Returns the outputs associated with `SourceManifest`."]
     pub fn outputs(&self) -> &[PortSpec] {
         &self.outputs
     }
 
+    #[doc = "Returns the execution associated with `SourceManifest`."]
     pub const fn execution(&self) -> ExecutionPartition {
         self.execution
     }
 
+    #[doc = "Returns the safety associated with `SourceManifest`."]
     pub const fn safety(&self) -> SafetyContract {
         self.safety
     }
 
+    #[doc = "Validates `SourceManifest` against its declared contract."]
     pub fn validate(&self) -> Result<(), SourceManifestError> {
         if self.revision == 0 || self.implementation_generation == 0 {
             return Err(SourceManifestError::ZeroVersion);
@@ -214,31 +235,43 @@ impl SourceManifest {
         Ok(())
     }
 
+    #[doc = "Returns the output port associated with `SourceManifest`."]
     pub fn output_port(&self, name: &str) -> Option<&PortSpec> {
         self.outputs.iter().find(|output| output.name == name)
     }
 }
 
 #[derive(Debug, Clone)]
+#[doc = "Represents source prepare context in the PocketStation API."]
 pub struct SourcePrepareContext {
+    #[doc = "Stores the manifest associated with `SourcePrepareContext`."]
     pub manifest: SourceManifest,
+    #[doc = "Stores the session associated with `SourcePrepareContext`."]
     pub session: Option<SourceSessionContext>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Represents source output identity in the PocketStation API."]
 pub struct SourceOutputIdentity {
+    #[doc = "Stores the output port associated with `SourceOutputIdentity`."]
     pub output_port: String,
+    #[doc = "Identifies the stream associated with `SourceOutputIdentity`."]
     pub stream_id: StreamId,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Represents source session context in the PocketStation API."]
 pub struct SourceSessionContext {
+    #[doc = "Identifies the session associated with `SourceSessionContext`."]
     pub session_id: SessionId,
+    #[doc = "Identifies the source associated with `SourceSessionContext`."]
     pub source_id: SourceId,
+    #[doc = "Stores the outputs associated with `SourceSessionContext`."]
     pub outputs: Vec<SourceOutputIdentity>,
 }
 
 impl SourceSessionContext {
+    #[doc = "Returns the output associated with `SourceSessionContext`."]
     pub fn output(&self, output_port: &str) -> Option<&SourceOutputIdentity> {
         self.outputs
             .iter()
@@ -247,35 +280,49 @@ impl SourceSessionContext {
 }
 
 #[derive(Clone)]
+#[doc = "Represents source cancellation in the PocketStation API."]
 pub struct SourceCancellation {
     cancelled: Arc<AtomicBool>,
 }
 
 impl SourceCancellation {
+    #[doc = "Returns whether cancelled applies to `SourceCancellation`."]
     pub fn is_cancelled(&self) -> bool {
         self.cancelled.load(Ordering::Acquire)
     }
 }
 
 #[derive(Debug)]
+#[doc = "Represents source emission in the PocketStation API."]
 pub struct SourceEmission {
+    #[doc = "Stores the output port associated with `SourceEmission`."]
     pub output_port: String,
+    #[doc = "Stores the envelope associated with `SourceEmission`."]
     pub envelope: SignalEnvelope,
+    #[doc = "Indicates whether terminal applies to `SourceEmission`."]
     pub terminal: bool,
 }
 
+#[doc = "Defines the implementation contract for source."]
 pub trait SourceDriver: Send {
+    #[doc = "Prepares resources required by `SourceDriver`."]
     fn prepare(&mut self, context: &SourcePrepareContext) -> Result<(), SourceDriverError>;
+    #[doc = "Produces the next source emission from `SourceDriver`."]
     fn next(
         &mut self,
         cancellation: &SourceCancellation,
     ) -> Result<Option<SourceEmission>, SourceDriverError>;
+    #[doc = "Closes `SourceDriver` to further work."]
     fn close(&mut self) -> Result<(), SourceDriverError>;
 }
 
+#[doc = "Defines the implementation contract for source."]
 pub trait SourceFactory: Send + Sync {
+    #[doc = "Returns the manifest associated with `SourceFactory`."]
     fn manifest(&self) -> &SourceManifest;
+    #[doc = "Validates config for `SourceFactory`."]
     fn validate_config(&self, configuration: &SourceConfiguration) -> Result<(), ConfigError>;
+    #[doc = "Creates the runtime implementation described by `SourceFactory`."]
     fn create(
         &self,
         configuration: &SourceConfiguration,
@@ -391,15 +438,25 @@ struct SourceRuntimeObservationState {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Reports the source runtime observations collected at an observation boundary."]
 pub struct SourceRuntimeObservations {
+    #[doc = "Counts the total number of emitted observed by `SourceRuntimeObservations`."]
     pub emitted_total: u64,
+    #[doc = "Counts the total number of dropped observed by `SourceRuntimeObservations`."]
     pub dropped_total: u64,
+    #[doc = "Counts the total number of failure observed by `SourceRuntimeObservations`."]
     pub failure_total: u64,
+    #[doc = "Counts the total number of cancellation observed by `SourceRuntimeObservations`."]
     pub cancellation_total: u64,
+    #[doc = "Counts the total number of discontinuity observed by `SourceRuntimeObservations`."]
     pub discontinuity_total: u64,
+    #[doc = "Counts the total number of recovery observed by `SourceRuntimeObservations`."]
     pub recovery_total: u64,
+    #[doc = "Counts the total number of policy change observed by `SourceRuntimeObservations`."]
     pub policy_change_total: u64,
+    #[doc = "Indicates whether ready applies to `SourceRuntimeObservations`."]
     pub ready: bool,
+    #[doc = "Stores the joined associated with `SourceRuntimeObservations`."]
     pub joined: bool,
 }
 
@@ -674,36 +731,51 @@ fn run_source_driver(
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as source manifest error."]
 pub enum SourceManifestError {
     #[error("source type identifier cannot be empty")]
+    #[doc = "Reports empty source type identifier."]
     EmptySourceTypeId,
     #[error("source manifest revision and implementation generation must be non-zero")]
+    #[doc = "Reports zero version."]
     ZeroVersion,
     #[error("source manifest requires at least one output")]
+    #[doc = "Reports no outputs."]
     NoOutputs,
     #[error("source manifest contains a non-output port")]
+    #[doc = "Reports non output port."]
     NonOutputPort,
     #[error("source output name cannot be empty")]
+    #[doc = "Reports empty output name."]
     EmptyOutputName,
     #[error("source output names must be unique")]
+    #[doc = "Reports duplicate output name."]
     DuplicateOutputName,
     #[error("source output SignalSpec is invalid")]
+    #[doc = "Reports invalid signal."]
     InvalidSignal,
     #[error("source output SignalSpec and MediaCaps are incompatible")]
+    #[doc = "Reports signal media mismatch."]
     SignalMediaMismatch,
     #[error("source safety contract is incompatible with its execution partition")]
+    #[doc = "Reports invalid safety contract."]
     InvalidSafetyContract,
     #[error("in-process source drivers currently require the BlockingWorker partition")]
+    #[doc = "Reports unsupported execution partition."]
     UnsupportedExecutionPartition,
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as source registration error."]
 pub enum SourceRegistrationError {
     #[error("invalid source manifest: {0}")]
+    #[doc = "Reports invalid manifest."]
     InvalidManifest(SourceManifestError),
     #[error("source type {0} is already registered")]
+    #[doc = "Reports duplicate source type."]
     DuplicateSourceType(SourceTypeId),
     #[error("source type {0} conflicts with an existing graph node type")]
+    #[doc = "Reports node type conflict."]
     NodeTypeConflict(SourceTypeId),
 }
 
@@ -739,14 +811,17 @@ impl NodeDefinition for SourceNodeDefinition {
 }
 
 impl std::fmt::Display for SourceTypeId {
+    #[doc = "Formats `SourceTypeId` with the requested formatter."]
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         formatter.write_str(self.as_str())
     }
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as source driver error."]
 pub enum SourceDriverError {
     #[error("source driver failed: {0}")]
+    #[doc = "Reports failed."]
     Failed(String),
 }
 

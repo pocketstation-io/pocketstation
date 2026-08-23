@@ -1,0 +1,173 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "AudioBufferPool::new",
+    "acquire",
+    "bench_function",
+    "bench_pool",
+    "benchmark_group",
+    "black_box",
+    "drop",
+    "finish",
+    "iter"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "AudioBufferPool::new"
+  ],
+  "content_hash": "925e78b3952f801d3410e8f6f93eec7a33cb731fdb8aeefe880ea465783d2e7c",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 3,
+      "name": "bench_pool",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 19,
+      "text": "drop(handle);"
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "925e78b3952f801d3410e8f6f93eec7a33cb731fdb8aeefe880ea465783d2e7c",
+      "lines": [
+        1,
+        28
+      ],
+      "path": "benches/audio_buffer_pool.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0010-494f173e",
+  "file_kind": "benchmark",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "6c181bbe73425a44a8d30793561f10688b74ea51",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "criterion::{black_box, criterion_group, criterion_main, Criterion}",
+    "pocketstation::internal::{AudioBufferPool, POOL_MAX_SLOTS, POOL_SLOT_SAMPLES}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 28,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-88d5d10d4c8e80149f0f"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "benches/audio_buffer_pool.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 3,
+      "name": "bench_pool",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `not_applicable`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/frame-lineage.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/opus-roundtrip.md",
+    "docs/how-to/map-source-time.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/frames.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/frames-and-codec.md",
+    "docs/troubleshooting/opus.md",
+    "docs/troubleshooting/timing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 16,
+      "text": "// Drop calls AudioBufferPool::release via the handle's Drop impl,"
+    }
+  ],
+  "responsibilities": [
+    "bench_pool"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

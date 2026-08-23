@@ -1,6 +1,7 @@
 const MAX_CORRECTION_NS: i64 = 10_000_000;
 
 #[derive(Debug, Clone, Copy)]
+#[doc = "Represents clock correction controller in the PocketStation API."]
 pub struct ClockCorrectionController {
     proportional_gain: f64,
     integral_gain: f64,
@@ -10,6 +11,7 @@ pub struct ClockCorrectionController {
 }
 
 impl ClockCorrectionController {
+    #[doc = "Creates a new `ClockCorrectionController`."]
     pub fn new(proportional_gain: f64, integral_gain: f64) -> Self {
         Self {
             proportional_gain,
@@ -20,6 +22,7 @@ impl ClockCorrectionController {
         }
     }
 
+    #[doc = "Applies one measured clock offset to `ClockCorrectionController` and returns the bounded correction."]
     pub fn tick(&mut self, measured_offset_ns: i64) -> i64 {
         let error_ns = measured_offset_ns as f64;
         self.integral_error_ns += error_ns;
@@ -33,22 +36,27 @@ impl ClockCorrectionController {
         self.last_correction_ns
     }
 
+    #[doc = "Returns the last offset nanoseconds associated with `ClockCorrectionController`."]
     pub fn last_offset_ns(&self) -> i64 {
         self.last_offset_ns
     }
+    #[doc = "Returns the last correction nanoseconds associated with `ClockCorrectionController`."]
     pub fn last_correction_ns(&self) -> i64 {
         self.last_correction_ns
     }
+    #[doc = "Returns the integral error nanoseconds associated with `ClockCorrectionController`."]
     pub fn integral_error_ns(&self) -> f64 {
         self.integral_error_ns
     }
 
+    #[doc = "Returns the integral nanoseconds associated with `ClockCorrectionController`."]
     pub fn integral_ns(&self) -> f64 {
         self.integral_error_ns
     }
 }
 
 impl Default for ClockCorrectionController {
+    #[doc = "Returns the default `ClockCorrectionController` value."]
     fn default() -> Self {
         Self::new(0.1, 0.001)
     }

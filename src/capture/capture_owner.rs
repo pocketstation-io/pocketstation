@@ -71,7 +71,9 @@ pub struct CapturePrepareRequest {
 /// source failures through `runtime_event_sender`. Both sends are bounded and
 /// non-blocking. A backend must not retain another unbounded delivery path.
 pub struct CaptureDelivery {
+    #[doc = "Stores the frame sender associated with `CaptureDelivery`."]
     pub frame_sender: CapturedFrameSender,
+    #[doc = "Stores the runtime event sender associated with `CaptureDelivery`."]
     pub runtime_event_sender: SourceRuntimeEventSender,
 }
 
@@ -81,11 +83,13 @@ pub struct CaptureDelivery {
 /// They must not report a successful open until the native callback or worker
 /// is ready to deliver into the supplied bounded endpoints.
 pub trait CallbackCaptureBackend: Send + Sync {
+    #[doc = "Prepares resources required by `CallbackCaptureBackend`."]
     fn prepare(&self, mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError>;
 }
 
 /// Backend state that has passed validation but has not started delivery.
 pub trait PreparedCaptureBackend: Send {
+    #[doc = "Opens the resource represented by `PreparedCaptureBackend`."]
     fn open(
         self: Box<Self>,
         delivery: CaptureDelivery,
@@ -104,10 +108,13 @@ pub trait ActiveCaptureBackend: Send {
     /// captured lineage. Session configuration never supplies it.
     fn source_id(&self) -> SourceId;
 
+    #[doc = "Returns a handle for reading observations from `ActiveCaptureBackend`."]
     fn observation_handle(&self) -> CaptureObservationHandle;
 
+    #[doc = "Returns the observations exposed by `ActiveCaptureBackend`."]
     fn observations(&self) -> CaptureObservations;
 
+    #[doc = "Stops and join for `ActiveCaptureBackend`."]
     fn stop_and_join(self: Box<Self>) -> Result<CaptureObservations, CaptureError>;
 }
 
@@ -158,8 +165,11 @@ impl PreparedCapture {
 /// Aggregate observations from one active capture ownership boundary.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct CaptureOwnerObservations {
+    #[doc = "Stores the backend associated with `CaptureOwnerObservations`."]
     pub backend: CaptureObservations,
+    #[doc = "Stores the frame stream associated with `CaptureOwnerObservations`."]
     pub frame_stream: CapturedFrameStreamStats,
+    #[doc = "Stores the runtime events associated with `CaptureOwnerObservations`."]
     pub runtime_events: SourceRuntimeEventObservations,
 }
 

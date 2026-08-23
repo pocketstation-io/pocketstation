@@ -1,0 +1,634 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 95,
+      "text": "/// contracts exactly once at the realtime-to-async boundary."
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "allow",
+    "as_str",
+    "checked_add",
+    "clock_id",
+    "connector_id",
+    "derive",
+    "discontinuity_epoch",
+    "error",
+    "from_frame",
+    "is_empty",
+    "is_none",
+    "is_some_and",
+    "new",
+    "operator_generation",
+    "operator_id",
+    "operator_revision",
+    "policy_epoch",
+    "pub",
+    "sequence_number",
+    "session_id",
+    "source_generation",
+    "source_id",
+    "stream_id",
+    "trim",
+    "try_new",
+    "upstream_lineage",
+    "upstream_timing",
+    "zip"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "new",
+    "try_new"
+  ],
+  "content_hash": "58965121cba639eb88e43de8a7e83b77941a1143e7bf504b40a8341e0221ff8b",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 8,
+      "name": "SignalLineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 21,
+      "name": "try_new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "from_frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "clock_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "source_generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "discontinuity_epoch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "policy_epoch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 86,
+      "name": "SignalLineageError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 97,
+      "name": "SignalDerivation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 107,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "upstream_lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "upstream_timing",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 147,
+      "name": "operator_revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 150,
+      "name": "operator_generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 153,
+      "name": "connector_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 159,
+      "name": "SignalDerivationError",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 8,
+      "name": "SignalLineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 21,
+      "name": "try_new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "from_frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "clock_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "source_generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "discontinuity_epoch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "policy_epoch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 86,
+      "name": "SignalLineageError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 97,
+      "name": "SignalDerivation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 107,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "upstream_lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "upstream_timing",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 147,
+      "name": "operator_revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 150,
+      "name": "operator_generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 153,
+      "name": "connector_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 159,
+      "name": "SignalDerivationError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 32,
+      "text": "return Err(SignalLineageError::ZeroSourceGeneration);"
+    },
+    {
+      "line": 116,
+      "text": "return Err(SignalDerivationError::EmptyOperatorId);"
+    },
+    {
+      "line": 119,
+      "text": "return Err(SignalDerivationError::ZeroOperatorVersion);"
+    },
+    {
+      "line": 126,
+      "text": "return Err(SignalDerivationError::InvalidTimestampRange);"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 86,
+      "name": "SignalLineageError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 159,
+      "name": "SignalDerivationError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "58965121cba639eb88e43de8a7e83b77941a1143e7bf504b40a8341e0221ff8b",
+      "lines": [
+        1,
+        167
+      ],
+      "path": "src/graph/signal/lineage.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0161-d04f78a5",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "66f1ac1feef66b5a349b6280fa845b86d9f092ba",
+  "implemented_by": [],
+  "implements": [
+    "SignalLineage",
+    "SignalDerivation"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::{ClockDomainId, ConnectorId, FrameLineage, SessionId, SourceId, StreamId}",
+    "crate::graph::operator::OperatorId",
+    "crate::graph::signal::SignalTiming"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 87,
+      "text": "#[error(\"signal lineage source generation must be non-zero\")]"
+    },
+    {
+      "line": 164,
+      "text": "#[error(\"derived signal operator revision and generation must be non-zero\")]"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 167,
+  "locks": [],
+  "module": "pocketstation::graph::signal::lineage",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-8f3b868f3807b8fa1bb0"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/signal/lineage.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 8,
+      "name": "SignalLineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 21,
+      "name": "try_new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "from_frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "clock_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "source_generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 77,
+      "name": "discontinuity_epoch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "policy_epoch",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 86,
+      "name": "SignalLineageError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 97,
+      "name": "SignalDerivation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 107,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "upstream_lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "upstream_timing",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 147,
+      "name": "operator_revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 150,
+      "name": "operator_generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 153,
+      "name": "connector_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 159,
+      "name": "SignalDerivationError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Source-independent signal lineage and derivation."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "SignalLineage",
+    "try_new",
+    "from_frame",
+    "session_id",
+    "stream_id",
+    "source_id",
+    "clock_id",
+    "sequence_number",
+    "source_generation",
+    "discontinuity_epoch",
+    "policy_epoch",
+    "SignalLineageError",
+    "SignalDerivation",
+    "new",
+    "upstream_lineage",
+    "upstream_timing",
+    "operator_id",
+    "operator_revision",
+    "operator_generation",
+    "connector_id",
+    "SignalDerivationError"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 124,
+      "text": ".is_some_and(|(start, duration)| start.checked_add(duration).is_none())"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 95,
+      "text": "/// contracts exactly once at the realtime-to-async boundary."
+    }
+  ],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

@@ -1,0 +1,806 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Application",
+    "ApplicationSelector::process_instance",
+    "BundleId",
+    "DeviceId",
+    "DeviceSelector::default",
+    "Id",
+    "Microphone",
+    "Name",
+    "ProcessId",
+    "ProcessId::new",
+    "Self",
+    "Self::Application",
+    "Self::BundleId",
+    "Self::Id",
+    "Self::Microphone",
+    "Self::Name",
+    "Self::ProcessId",
+    "Self::StableId",
+    "StableId",
+    "StableSourceId::new",
+    "application",
+    "as_str",
+    "bundle_id",
+    "cfg",
+    "default",
+    "derive",
+    "get",
+    "given_empty_stable_key_when_process_instance_validated_then_selector_is_rejected",
+    "given_non_application_identity_when_process_instance_validated_then_selector_is_rejected",
+    "given_zero_pid_when_process_instance_validated_then_selector_is_rejected",
+    "id",
+    "into",
+    "is_empty",
+    "microphone",
+    "microphone_default",
+    "name",
+    "new",
+    "process_id",
+    "process_instance",
+    "pub",
+    "stable_id",
+    "to_owned",
+    "trim",
+    "validate"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 160,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "ProcessId::new",
+    "StableSourceId::new",
+    "new"
+  ],
+  "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "ProcessId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 9,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 19,
+      "name": "DeviceId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 32,
+      "name": "ApplicationSelector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "bundle_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "process_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "process_instance",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "stable_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 66,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 107,
+      "name": "DeviceSelector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "default",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 134,
+      "name": "Source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "application",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "microphone",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 147,
+      "name": "microphone_default",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 151,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 161,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 169,
+      "name": "given_zero_pid_when_process_instance_validated_then_selector_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 186,
+      "name": "given_non_application_identity_when_process_instance_validated_then_selector_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 203,
+      "name": "given_empty_stable_key_when_process_instance_validated_then_selector_is_rejected",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [
+    {
+      "line": 125,
+      "text": "reason: \"microphone device id cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 175,
+      "text": "\"wasapi:pid:0:creation-100ns:133801234567890000\","
+    },
+    {
+      "line": 192,
+      "text": "\"wasapi:pid:42:creation-100ns:133801234567890000\","
+    }
+  ],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "ProcessId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 9,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 19,
+      "name": "DeviceId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 32,
+      "name": "ApplicationSelector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "bundle_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "process_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "process_instance",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "stable_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 66,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 107,
+      "name": "DeviceSelector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "default",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 134,
+      "name": "Source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "application",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "microphone",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 147,
+      "name": "microphone_default",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 151,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 70,
+      "text": "Err(SessionError::InvalidSelector {"
+    },
+    {
+      "line": 75,
+      "text": "Err(SessionError::InvalidSelector {"
+    },
+    {
+      "line": 80,
+      "text": "Err(SessionError::InvalidSelector {"
+    },
+    {
+      "line": 87,
+      "text": "Err(SessionError::InvalidSelector {"
+    },
+    {
+      "line": 94,
+      "text": "Err(SessionError::InvalidSelector {"
+    },
+    {
+      "line": 98,
+      "text": "Self::Name(name) if name.trim().is_empty() => Err(SessionError::InvalidSelector {"
+    },
+    {
+      "line": 124,
+      "text": "Err(SessionError::InvalidSelector {"
+    },
+    {
+      "line": 181,
+      "text": "Err(SessionError::InvalidSelector { .. })"
+    },
+    {
+      "line": 198,
+      "text": "Err(SessionError::InvalidSelector { .. })"
+    },
+    {
+      "line": 211,
+      "text": "Err(SessionError::InvalidSelector { .. })"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "de6487d8576113c003ff69b0a6f9e5666d9d9cf31f3a8371f77ec06fa2ea1c05",
+      "lines": [
+        1,
+        215
+      ],
+      "path": "src/session/declaration/selector.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0207-e96da20a",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "4d3c831bbf529460e9d01588c55427fa64ae7f52",
+  "implemented_by": [],
+  "implements": [
+    "ProcessId",
+    "DeviceId",
+    "ApplicationSelector",
+    "DeviceSelector",
+    "Source"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::capture::{SourceKind, StableSourceId}",
+    "crate::frame::Platform",
+    "crate::session::SessionError",
+    "super::{ApplicationSelector, ProcessId}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 71,
+      "text": "reason: \"application bundle id cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 76,
+      "text": "reason: \"application process id must be non-zero\".to_owned(),"
+    },
+    {
+      "line": 81,
+      "text": "reason: \"application process instance id must be non-zero\".to_owned(),"
+    },
+    {
+      "line": 88,
+      "text": "reason: \"application stable id must identify an application\".to_owned(),"
+    },
+    {
+      "line": 95,
+      "text": "reason: \"application stable id cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 99,
+      "text": "reason: \"application name cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 125,
+      "text": "reason: \"microphone device id cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 179,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 196,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 209,
+      "text": "assert!(matches!("
+    }
+  ],
+  "language": "Rust",
+  "line_count": 215,
+  "locks": [],
+  "module": "pocketstation::session::declaration::selector",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/declaration/selector.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 161,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 169,
+      "name": "given_zero_pid_when_process_instance_validated_then_selector_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 186,
+      "name": "given_non_application_identity_when_process_instance_validated_then_selector_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 203,
+      "name": "given_empty_stable_key_when_process_instance_validated_then_selector_is_rejected",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 6,
+      "name": "ProcessId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 9,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 19,
+      "name": "DeviceId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 32,
+      "name": "ApplicationSelector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "bundle_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "process_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "process_instance",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "stable_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 66,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 107,
+      "name": "DeviceSelector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "default",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 134,
+      "name": "Source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "application",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "microphone",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 147,
+      "name": "microphone_default",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 151,
+      "name": "validate",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::session::declaration::selector`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "ProcessId",
+    "new",
+    "get",
+    "DeviceId",
+    "new",
+    "as_str",
+    "ApplicationSelector",
+    "bundle_id",
+    "process_id",
+    "process_instance",
+    "stable_id",
+    "name",
+    "validate",
+    "DeviceSelector",
+    "default",
+    "id",
+    "validate",
+    "Source",
+    "application",
+    "microphone",
+    "microphone_default",
+    "validate",
+    "tests",
+    "given_zero_pid_when_process_instance_validated_then_selector_is_rejected",
+    "given_non_application_identity_when_process_instance_validated_then_selector_is_rejected",
+    "given_empty_stable_key_when_process_instance_validated_then_selector_is_rejected"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 125,
+      "text": "reason: \"microphone device id cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 175,
+      "text": "\"wasapi:pid:0:creation-100ns:133801234567890000\","
+    },
+    {
+      "line": 192,
+      "text": "\"wasapi:pid:42:creation-100ns:133801234567890000\","
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

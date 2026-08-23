@@ -1,0 +1,774 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "InvalidTerminal",
+    "InvalidUtf8",
+    "SidecarMessage::decode",
+    "SidecarMessageKind::try_from",
+    "SidecarProtocolError::InvalidTerminal",
+    "SidecarProtocolError::InvalidUtf8",
+    "SidecarProtocolError::UnknownMessageKind",
+    "SidecarProtocolError::UnsupportedMajor",
+    "SidecarProtocolError::UnsupportedMinor",
+    "SidecarProtocolLimits::default",
+    "UnknownMessageKind",
+    "UnsupportedMajor",
+    "UnsupportedMinor",
+    "Vec::with_capacity",
+    "and_then",
+    "as_bytes",
+    "as_deref",
+    "as_ref",
+    "cfg",
+    "checked_add",
+    "decode",
+    "default",
+    "derive",
+    "encode",
+    "error",
+    "expect",
+    "extend_from_slice",
+    "get",
+    "given_core_extension_oversized_sidecar_payload_when_encoded_then_fails_closed",
+    "given_core_extension_sidecar_message_when_round_tripped_then_identity_is_stable",
+    "is_empty",
+    "len",
+    "map",
+    "map_err",
+    "map_or",
+    "max_frame_bytes",
+    "ok_or",
+    "optional_text",
+    "push",
+    "push_len",
+    "read_text",
+    "read_u16",
+    "read_u32",
+    "read_u64",
+    "repr",
+    "std::str::from_utf8",
+    "then_some",
+    "to_le_bytes",
+    "to_owned",
+    "to_vec",
+    "try_from",
+    "try_into",
+    "u16::from_le_bytes",
+    "u32::from_le_bytes",
+    "u32::try_from",
+    "u64::from_le_bytes",
+    "u8::from",
+    "unwrap_or",
+    "validate",
+    "validate_length"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 17,
+      "text": "Configure = 8,"
+    },
+    {
+      "line": 34,
+      "text": "8 => Ok(Self::Configure),"
+    },
+    {
+      "line": 325,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "SidecarMessageKind::try_from",
+    "try_from",
+    "u32::try_from",
+    "u8::from"
+  ],
+  "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 1,
+      "name": "MAGIC",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 2,
+      "name": "HEADER_BYTES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 3,
+      "name": "SIDECAR_PROTOCOL_MAJOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 5,
+      "name": "SIDECAR_PROTOCOL_MINOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 9,
+      "name": "SidecarMessageKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "type",
+      "line": 23,
+      "name": "Error",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "try_from",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 43,
+      "name": "SidecarProtocolLimits",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "max_frame_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 73,
+      "name": "SidecarMessage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "encode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "decode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 194,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "push_len",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 223,
+      "name": "read_u16",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 230,
+      "name": "read_u32",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 241,
+      "name": "read_u64",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 252,
+      "name": "read_text",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 270,
+      "name": "optional_text",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 274,
+      "name": "validate_length",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 292,
+      "name": "SidecarProtocolError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 326,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 330,
+      "name": "given_core_extension_sidecar_message_when_round_tripped_then_identity_is_stable",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 349,
+      "name": "given_core_extension_oversized_sidecar_payload_when_encoded_then_fails_closed",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 3,
+      "name": "SIDECAR_PROTOCOL_MAJOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 5,
+      "name": "SIDECAR_PROTOCOL_MINOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 9,
+      "name": "SidecarMessageKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 43,
+      "name": "SidecarProtocolLimits",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "max_frame_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 73,
+      "name": "SidecarMessage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "encode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "decode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 194,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 292,
+      "name": "SidecarProtocolError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 37,
+      "text": "_ => Err(SidecarProtocolError::UnknownMessageKind(value)),"
+    },
+    {
+      "line": 98,
+      "text": "return Err(SidecarProtocolError::FrameTooLarge);"
+    },
+    {
+      "line": 126,
+      "text": "return Err(SidecarProtocolError::Truncated);"
+    },
+    {
+      "line": 129,
+      "text": "return Err(SidecarProtocolError::InvalidMagic);"
+    },
+    {
+      "line": 134,
+      "text": "return Err(SidecarProtocolError::UnsupportedMajor(major));"
+    },
+    {
+      "line": 137,
+      "text": "return Err(SidecarProtocolError::UnsupportedMinor(minor));"
+    },
+    {
+      "line": 143,
+      "text": "value => return Err(SidecarProtocolError::InvalidTerminal(value)),"
+    },
+    {
+      "line": 146,
+      "text": "return Err(SidecarProtocolError::ReservedFieldSet);"
+    },
+    {
+      "line": 166,
+      "text": "return Err(if expected > input.len() {"
+    },
+    {
+      "line": 175,
+      "text": "return Err(SidecarProtocolError::EmptySignalId);"
+    },
+    {
+      "line": 197,
+      "text": "return Err(SidecarProtocolError::EmptySignalId);"
+    },
+    {
+      "line": 281,
+      "text": "Err(SidecarProtocolError::FieldTooLarge {"
+    },
+    {
+      "line": 367,
+      "text": "Err(SidecarProtocolError::FieldTooLarge {"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 292,
+      "name": "SidecarProtocolError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 219,
+      "text": "let len = u32::try_from(len).map_err(|_| SidecarProtocolError::FrameLengthOverflow)?;"
+    },
+    {
+      "line": 238,
+      "text": ".map_err(|_| SidecarProtocolError::Truncated)?,"
+    },
+    {
+      "line": 249,
+      "text": ".map_err(|_| SidecarProtocolError::Truncated)?,"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 25,
+      "text": "fn try_from(value: u8) -> Result<Self, SidecarProtocolError> {"
+    },
+    {
+      "line": 219,
+      "text": "let len = u32::try_from(len).map_err(|_| SidecarProtocolError::FrameLengthOverflow)?;"
+    },
+    {
+      "line": 238,
+      "text": ".map_err(|_| SidecarProtocolError::Truncated)?,"
+    },
+    {
+      "line": 249,
+      "text": ".map_err(|_| SidecarProtocolError::Truncated)?,"
+    },
+    {
+      "line": 268,
+      "text": ".map_err(|_| SidecarProtocolError::InvalidUtf8(field))"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 219,
+      "text": "let len = u32::try_from(len).map_err(|_| SidecarProtocolError::FrameLengthOverflow)?;"
+    },
+    {
+      "line": 238,
+      "text": ".map_err(|_| SidecarProtocolError::Truncated)?,"
+    },
+    {
+      "line": 249,
+      "text": ".map_err(|_| SidecarProtocolError::Truncated)?,"
+    },
+    {
+      "line": 268,
+      "text": ".map_err(|_| SidecarProtocolError::InvalidUtf8(field))"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "57db38b9d6c278a46b78edc995f39689fb28bbe7c0f495cb1d4ffc13f92b9938",
+      "lines": [
+        1,
+        374
+      ],
+      "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0189-99be4f19",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "afcb288cdb6a8c2fb522bcce64c6f9cd8ded2be2",
+  "implemented_by": [],
+  "implements": [
+    "TryFrom<u8> for SidecarMessageKind",
+    "Default for SidecarProtocolLimits",
+    "SidecarProtocolLimits",
+    "SidecarMessage"
+  ],
+  "imported_by": [],
+  "imports": [
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 344,
+      "text": "assert!(encoded.len() <= limits.max_frame_bytes().expect(\"bound\"));"
+    },
+    {
+      "line": 365,
+      "text": "assert!(matches!("
+    }
+  ],
+  "language": "Rust",
+  "line_count": 374,
+  "locks": [],
+  "module": "pocketstation::runtime::lifecycle::sidecar_protocol",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-8e20e712bfc478b0a055",
+    "pattern-a0b53d2c9580d1339c1f"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/runtime/lifecycle/sidecar_protocol.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 1,
+      "name": "MAGIC",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 2,
+      "name": "HEADER_BYTES",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 23,
+      "name": "Error",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "try_from",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "push_len",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 223,
+      "name": "read_u16",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 230,
+      "name": "read_u32",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 241,
+      "name": "read_u64",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 252,
+      "name": "read_text",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 270,
+      "name": "optional_text",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 274,
+      "name": "validate_length",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 326,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 330,
+      "name": "given_core_extension_sidecar_message_when_round_tripped_then_identity_is_stable",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 349,
+      "name": "given_core_extension_oversized_sidecar_payload_when_encoded_then_fails_closed",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 3,
+      "name": "SIDECAR_PROTOCOL_MAJOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 5,
+      "name": "SIDECAR_PROTOCOL_MINOR",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 9,
+      "name": "SidecarMessageKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 43,
+      "name": "SidecarProtocolLimits",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "max_frame_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 73,
+      "name": "SidecarMessage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "encode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "decode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 194,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 292,
+      "name": "SidecarProtocolError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::runtime::lifecycle::sidecar_protocol`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/errors/runtime-and-sidecars.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/route-sizing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "MAGIC",
+    "HEADER_BYTES",
+    "SIDECAR_PROTOCOL_MAJOR",
+    "SIDECAR_PROTOCOL_MINOR",
+    "SidecarMessageKind",
+    "Error",
+    "try_from",
+    "SidecarProtocolLimits",
+    "default",
+    "max_frame_bytes",
+    "SidecarMessage",
+    "encode",
+    "decode",
+    "validate",
+    "push_len",
+    "read_u16",
+    "read_u32",
+    "read_u64",
+    "read_text",
+    "optional_text",
+    "validate_length",
+    "SidecarProtocolError",
+    "tests",
+    "given_core_extension_sidecar_message_when_round_tripped_then_identity_is_stable",
+    "given_core_extension_oversized_sidecar_payload_when_encoded_then_fails_closed"
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 86,
+      "text": "pub fn encode(&self, limits: SidecarProtocolLimits) -> Result<Vec<u8>, SidecarProtocolError> {"
+    },
+    {
+      "line": 121,
+      "text": "pub fn decode("
+    },
+    {
+      "line": 343,
+      "text": "let encoded = message.encode(limits).expect(\"encoded\");"
+    },
+    {
+      "line": 345,
+      "text": "assert_eq!(SidecarMessage::decode(&encoded, limits), Ok(message));"
+    },
+    {
+      "line": 366,
+      "text": "message.encode(limits),"
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

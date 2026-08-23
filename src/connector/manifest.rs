@@ -4,17 +4,22 @@ use crate::graph::{ExecutionPartition, NodeDescriptor, OperatorId};
 
 use super::{ConnectorConfigurationSchema, ConnectorReadinessPolicy};
 
+#[doc = "Defines the public connector API revision value."]
 pub const CONNECTOR_API_REVISION: u32 = 1;
+#[doc = "Sets the maximum supported connector manifest entries."]
 pub const MAX_CONNECTOR_MANIFEST_ENTRIES: usize = 128;
+#[doc = "Sets the maximum supported connector manifest text bytes."]
 pub const MAX_CONNECTOR_MANIFEST_TEXT_BYTES: usize = 4_096;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Represents connector capability in the PocketStation API."]
 pub struct ConnectorCapability {
     id: String,
     documentation: String,
 }
 
 impl ConnectorCapability {
+    #[doc = "Creates a new `ConnectorCapability`."]
     pub fn new(
         id: impl Into<String>,
         documentation: impl Into<String>,
@@ -27,16 +32,19 @@ impl ConnectorCapability {
         Ok(entry)
     }
 
+    #[doc = "Returns the id associated with `ConnectorCapability`."]
     pub fn id(&self) -> &str {
         &self.id
     }
 
+    #[doc = "Returns the documentation associated with `ConnectorCapability`."]
     pub fn documentation(&self) -> &str {
         &self.documentation
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Represents connector requirement in the PocketStation API."]
 pub struct ConnectorRequirement {
     id: String,
     required: bool,
@@ -44,6 +52,7 @@ pub struct ConnectorRequirement {
 }
 
 impl ConnectorRequirement {
+    #[doc = "Creates a new `ConnectorRequirement`."]
     pub fn new(
         id: impl Into<String>,
         required: bool,
@@ -58,20 +67,24 @@ impl ConnectorRequirement {
         Ok(entry)
     }
 
+    #[doc = "Returns the id associated with `ConnectorRequirement`."]
     pub fn id(&self) -> &str {
         &self.id
     }
 
+    #[doc = "Returns the required associated with `ConnectorRequirement`."]
     pub const fn required(&self) -> bool {
         self.required
     }
 
+    #[doc = "Returns the documentation associated with `ConnectorRequirement`."]
     pub fn documentation(&self) -> &str {
         &self.documentation
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Describes the connector manifest contract."]
 pub struct ConnectorManifest {
     api_revision: u32,
     manifest_revision: u32,
@@ -86,6 +99,7 @@ pub struct ConnectorManifest {
 
 impl ConnectorManifest {
     #[allow(clippy::too_many_arguments)]
+    #[doc = "Creates a new `ConnectorManifest`."]
     pub fn new(
         manifest_revision: u32,
         operator_id: OperatorId,
@@ -110,53 +124,65 @@ impl ConnectorManifest {
     }
 
     #[must_use]
+    #[doc = "Sets the capability on `ConnectorManifest` and returns the updated value."]
     pub fn with_capability(mut self, capability: ConnectorCapability) -> Self {
         self.capabilities.push(capability);
         self
     }
 
     #[must_use]
+    #[doc = "Sets the requirement on `ConnectorManifest` and returns the updated value."]
     pub fn with_requirement(mut self, requirement: ConnectorRequirement) -> Self {
         self.requirements.push(requirement);
         self
     }
 
+    #[doc = "Returns the API revision associated with `ConnectorManifest`."]
     pub const fn api_revision(&self) -> u32 {
         self.api_revision
     }
 
+    #[doc = "Returns the manifest revision associated with `ConnectorManifest`."]
     pub const fn manifest_revision(&self) -> u32 {
         self.manifest_revision
     }
 
+    #[doc = "Returns the operator identifier associated with `ConnectorManifest`."]
     pub const fn operator_id(&self) -> &OperatorId {
         &self.operator_id
     }
 
+    #[doc = "Returns the package version associated with `ConnectorManifest`."]
     pub fn package_version(&self) -> &str {
         &self.package_version
     }
 
+    #[doc = "Returns the node associated with `ConnectorManifest`."]
     pub const fn node(&self) -> &NodeDescriptor {
         &self.node
     }
 
+    #[doc = "Returns the configuration associated with `ConnectorManifest`."]
     pub const fn configuration(&self) -> &ConnectorConfigurationSchema {
         &self.configuration
     }
 
+    #[doc = "Returns the readiness associated with `ConnectorManifest`."]
     pub const fn readiness(&self) -> ConnectorReadinessPolicy {
         self.readiness
     }
 
+    #[doc = "Returns the capabilities associated with `ConnectorManifest`."]
     pub fn capabilities(&self) -> &[ConnectorCapability] {
         &self.capabilities
     }
 
+    #[doc = "Returns the requirements associated with `ConnectorManifest`."]
     pub fn requirements(&self) -> &[ConnectorRequirement] {
         &self.requirements
     }
 
+    #[doc = "Validates `ConnectorManifest` against its declared contract."]
     pub fn validate(&self) -> Result<(), ConnectorManifestError> {
         if self.api_revision != CONNECTOR_API_REVISION {
             return Err(ConnectorManifestError::UnsupportedApiRevision {
@@ -228,27 +254,47 @@ fn validate_unique_entries<'a>(
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as connector manifest error."]
 pub enum ConnectorManifestError {
     #[error("connector API revision {requested} is unsupported; Core supports {supported}")]
-    UnsupportedApiRevision { requested: u32, supported: u32 },
+    #[doc = "Reports unsupported API revision."]
+    UnsupportedApiRevision {
+        #[doc = "Stores the requested associated with `UnsupportedApiRevision`."]
+        requested: u32,
+        #[doc = "Stores the supported associated with `UnsupportedApiRevision`."]
+        supported: u32,
+    },
     #[error("connector manifest revision must be non-zero")]
+    #[doc = "Reports invalid manifest revision."]
     InvalidManifestRevision,
     #[error("connector operator id cannot be empty")]
+    #[doc = "Reports empty operator identifier."]
     EmptyOperatorId,
     #[error("connector package version cannot be empty or exceed the byte limit")]
+    #[doc = "Reports invalid package version."]
     InvalidPackageVersion,
     #[error("connector manifest requires at least one input port")]
+    #[doc = "Reports missing input port."]
     MissingInputPort,
     #[error("endpoint connectors cannot declare output ports in connector API revision 1")]
+    #[doc = "Reports output port not supported."]
     OutputPortNotSupported,
     #[error("connector execution cannot run on a realtime partition")]
+    #[doc = "Reports realtime execution forbidden."]
     RealtimeExecutionForbidden,
     #[error("connector manifest entry requires a non-empty id and documentation")]
+    #[doc = "Reports invalid manifest entry."]
     InvalidManifestEntry,
     #[error("connector manifest entry exceeds the byte limit")]
+    #[doc = "Reports manifest entry too large."]
     ManifestEntryTooLarge,
     #[error("connector manifest exceeds the entry limit")]
+    #[doc = "Reports too many manifest entries."]
     TooManyManifestEntries,
     #[error("connector manifest contains duplicate entry '{id}'")]
-    DuplicateManifestEntry { id: String },
+    #[doc = "Reports duplicate manifest entry."]
+    DuplicateManifestEntry {
+        #[doc = "Identifies the id associated with `DuplicateManifestEntry`."]
+        id: String,
+    },
 }

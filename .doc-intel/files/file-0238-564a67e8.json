@@ -1,0 +1,2095 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AtomicBool::new",
+    "BufWriter::new",
+    "EndpointId",
+    "Io",
+    "OpenOptions::new",
+    "PathBuf::from",
+    "Record",
+    "RecorderCommand::Record",
+    "RecorderCounters::default",
+    "RouteId",
+    "SessionEvent::new",
+    "SessionEventKind::Endpoint",
+    "SessionEventKind::Finalization",
+    "SessionEventKind::Lifecycle",
+    "SessionEventKind::Rollback",
+    "SessionEventKind::Source",
+    "SessionEventKind::Terminal",
+    "SessionId",
+    "SessionTerminalOutcome::new",
+    "SessionTrace::read",
+    "SessionTraceRecorder::start",
+    "StemId",
+    "TrySendError::Disconnected",
+    "TrySendError::Full",
+    "Vec::new",
+    "Vec::with_capacity",
+    "and_then",
+    "as_ref",
+    "cfg",
+    "chunks_exact",
+    "clone",
+    "complete_outcome",
+    "complete_trace",
+    "contains",
+    "copied",
+    "copy_from_slice",
+    "crate::timing::monotonic_timestamp_ns",
+    "create_new",
+    "decode_finalization_stage",
+    "decode_kind",
+    "decode_lifecycle",
+    "decode_record",
+    "decode_rollback_stage",
+    "decode_terminal",
+    "decode_trace",
+    "derive",
+    "drop",
+    "encode_kind",
+    "encode_record",
+    "endpoint_failures",
+    "endpoint_id",
+    "endpoint_stage_code",
+    "enumerate",
+    "error",
+    "event",
+    "exists",
+    "fetch_add",
+    "finalization_failures",
+    "finalization_stage_code",
+    "finish",
+    "flush",
+    "fnv1a",
+    "get",
+    "get_u16",
+    "get_u32",
+    "get_u64",
+    "given_complete_trace_when_validated_then_lifecycle_and_terminal_match",
+    "given_corrupted_record_when_read_then_checksum_is_rejected",
+    "given_dropped_records_when_validated_then_trace_is_incomplete",
+    "given_existing_output_when_started_then_recorder_fails_closed",
+    "given_invalid_lifecycle_when_validated_then_validation_fails_closed",
+    "given_record_after_terminal_when_validated_then_trace_is_rejected",
+    "given_sequence_gap_when_validated_then_trace_is_rejected",
+    "given_timestamp_regression_when_validated_then_trace_is_rejected",
+    "given_truncated_trace_when_read_then_truncation_is_rejected",
+    "given_unknown_version_when_read_then_version_is_rejected",
+    "given_zero_capacity_when_started_then_recorder_fails_closed",
+    "handle",
+    "into",
+    "into_boxed_slice",
+    "into_iter",
+    "is_complete",
+    "is_multiple_of",
+    "is_none",
+    "is_some",
+    "is_some_and",
+    "iter",
+    "join",
+    "kind",
+    "last",
+    "len",
+    "let",
+    "lifecycle_code",
+    "load",
+    "map",
+    "map_err",
+    "mpsc::sync_channel",
+    "name",
+    "ok",
+    "ok_or",
+    "open",
+    "outcome",
+    "path",
+    "pub",
+    "push",
+    "put_u16",
+    "put_u32",
+    "put_u64",
+    "read",
+    "record",
+    "record_kind",
+    "records",
+    "recv",
+    "rollback_failures",
+    "rollback_stage_code",
+    "route_id",
+    "saturating_add",
+    "send",
+    "session_id",
+    "source_failures",
+    "spawn",
+    "stage",
+    "start",
+    "state",
+    "std::fs::read",
+    "std::fs::write",
+    "std::io::Error::new",
+    "stem_id",
+    "stopped_records",
+    "store",
+    "synthetic_trace",
+    "take",
+    "tempfile::tempdir",
+    "terminal_code",
+    "thread::Builder::new",
+    "to_le_bytes",
+    "to_owned",
+    "to_path_buf",
+    "truncate",
+    "try_into",
+    "try_record_event",
+    "try_send",
+    "u64::from",
+    "unwrap",
+    "validate",
+    "validate_lifecycle_transition",
+    "validate_terminal",
+    "wrapping_mul",
+    "write",
+    "write_all",
+    "write_footer",
+    "write_header",
+    "writer_loop"
+  ],
+  "cancellation_behavior": [],
+  "channels": [
+    {
+      "line": 5,
+      "text": "use std::sync::mpsc::{self, Receiver, SyncSender, TrySendError};"
+    },
+    {
+      "line": 99,
+      "text": "#[error(\"session trace command channel closed before finalization\")]"
+    },
+    {
+      "line": 408,
+      "text": "receiver: Receiver<RecorderCommand>,"
+    },
+    {
+      "line": 443,
+      "text": "\"session trace command channel closed\","
+    }
+  ],
+  "configuration_read": [
+    {
+      "line": 870,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AtomicBool::new",
+    "BufWriter::new",
+    "OpenOptions::new",
+    "PathBuf::from",
+    "SessionEvent::new",
+    "SessionTerminalOutcome::new",
+    "Vec::new",
+    "create_new",
+    "std::io::Error::new",
+    "thread::Builder::new",
+    "u64::from"
+  ],
+  "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "TRACE_MAGIC",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "TRACE_VERSION",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "HEADER_SIZE_BYTES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "RECORD_SIZE_BYTES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "FOOTER_SIZE_BYTES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "RECORD_MARKER",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 22,
+      "name": "FOOTER_MARKER",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 23,
+      "name": "FNV_OFFSET_BASIS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "FNV_PRIME",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 27,
+      "name": "SessionTraceRecordKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 55,
+      "name": "SessionTraceRecord",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 63,
+      "name": "SessionTraceRecordDelivery",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 70,
+      "name": "SessionTraceRecorderOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "is_complete",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 88,
+      "name": "SessionTraceRecorderStartError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 98,
+      "name": "SessionTraceRecorderFinishError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 108,
+      "name": "SessionTraceRecorderHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 115,
+      "name": "try_record_event",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 151,
+      "name": "SessionTraceRecorder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 160,
+      "name": "start",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 196,
+      "name": "handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 200,
+      "name": "finish",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 242,
+      "name": "outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 249,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 255,
+      "name": "SessionTrace",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 262,
+      "name": "read",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 267,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 271,
+      "name": "records",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 275,
+      "name": "outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 279,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 339,
+      "name": "SessionTraceTerminal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 348,
+      "name": "SessionTraceValidation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 356,
+      "name": "SessionTraceValidationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 390,
+      "name": "RecorderCounters",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 395,
+      "name": "RecorderCommand",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 400,
+      "name": "WriterOutcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 405,
+      "name": "writer_loop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 446,
+      "name": "record_kind",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 473,
+      "name": "write_header",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 490,
+      "name": "encode_record",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 507,
+      "name": "write_footer",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 529,
+      "name": "decode_trace",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 595,
+      "name": "decode_record",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 612,
+      "name": "encode_kind",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 648,
+      "name": "decode_kind",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 683,
+      "name": "validate_lifecycle_transition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 710,
+      "name": "validate_terminal",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 731,
+      "name": "lifecycle_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 741,
+      "name": "decode_lifecycle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 752,
+      "name": "terminal_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 759,
+      "name": "decode_terminal",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 767,
+      "name": "rollback_stage_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 777,
+      "name": "decode_rollback_stage",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 788,
+      "name": "finalization_stage_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 800,
+      "name": "decode_finalization_stage",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 815,
+      "name": "endpoint_stage_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 825,
+      "name": "fnv1a",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 833,
+      "name": "put_u16",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 837,
+      "name": "put_u32",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 841,
+      "name": "put_u64",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 845,
+      "name": "get_u16",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 853,
+      "name": "get_u32",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 861,
+      "name": "get_u64",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 871,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 874,
+      "name": "event",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 878,
+      "name": "complete_trace",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 903,
+      "name": "record",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 917,
+      "name": "synthetic_trace",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 928,
+      "name": "complete_outcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 939,
+      "name": "stopped_records",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 991,
+      "name": "given_complete_trace_when_validated_then_lifecycle_and_terminal_match",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1015,
+      "name": "given_corrupted_record_when_read_then_checksum_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1030,
+      "name": "given_truncated_trace_when_read_then_truncation_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1045,
+      "name": "given_unknown_version_when_read_then_version_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1060,
+      "name": "given_invalid_lifecycle_when_validated_then_validation_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1093,
+      "name": "given_existing_output_when_started_then_recorder_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1106,
+      "name": "given_zero_capacity_when_started_then_recorder_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1118,
+      "name": "given_dropped_records_when_validated_then_trace_is_incomplete",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1139,
+      "name": "given_sequence_gap_when_validated_then_trace_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1151,
+      "name": "given_timestamp_regression_when_validated_then_trace_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1163,
+      "name": "given_record_after_terminal_when_validated_then_trace_is_rejected",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 249,
+      "text": "fn drop(&mut self) {"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 453,
+      "text": "SessionEventKind::Endpoint(failure) => SessionTraceRecordKind::EndpointFailure {"
+    },
+    {
+      "line": 816,
+      "text": "fn endpoint_stage_code(stage: crate::endpoint::EndpointFailureStage) -> u8 {"
+    },
+    {
+      "line": 818,
+      "text": "crate::endpoint::EndpointFailureStage::Prepare => 1,"
+    },
+    {
+      "line": 819,
+      "text": "crate::endpoint::EndpointFailureStage::CancelPreparation => 2,"
+    },
+    {
+      "line": 820,
+      "text": "crate::endpoint::EndpointFailureStage::Start => 3,"
+    },
+    {
+      "line": 821,
+      "text": "crate::endpoint::EndpointFailureStage::RequestStop => 4,"
+    },
+    {
+      "line": 822,
+      "text": "crate::endpoint::EndpointFailureStage::JoinFinalize => 5,"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 27,
+      "name": "SessionTraceRecordKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 55,
+      "name": "SessionTraceRecord",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 63,
+      "name": "SessionTraceRecordDelivery",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 70,
+      "name": "SessionTraceRecorderOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "is_complete",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 88,
+      "name": "SessionTraceRecorderStartError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 98,
+      "name": "SessionTraceRecorderFinishError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 108,
+      "name": "SessionTraceRecorderHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 115,
+      "name": "try_record_event",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 151,
+      "name": "SessionTraceRecorder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 160,
+      "name": "start",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 196,
+      "name": "handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 200,
+      "name": "finish",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 242,
+      "name": "outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 255,
+      "name": "SessionTrace",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 262,
+      "name": "read",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 267,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 271,
+      "name": "records",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 275,
+      "name": "outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 279,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 339,
+      "name": "SessionTraceTerminal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 348,
+      "name": "SessionTraceValidation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 356,
+      "name": "SessionTraceValidationError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 136,
+      "text": "Err(TrySendError::Full(_)) => {"
+    },
+    {
+      "line": 142,
+      "text": "Err(TrySendError::Disconnected(_)) => {"
+    },
+    {
+      "line": 166,
+      "text": "return Err(SessionTraceRecorderStartError::ZeroCapacity);"
+    },
+    {
+      "line": 171,
+      "text": "Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {"
+    },
+    {
+      "line": 172,
+      "text": "return Err(SessionTraceRecorderStartError::OutputExists { path });"
+    },
+    {
+      "line": 174,
+      "text": "Err(error) => return Err(error.into()),"
+    },
+    {
+      "line": 282,
+      "text": "return Err(SessionTraceValidationError::IncompleteTrace);"
+    },
+    {
+      "line": 289,
+      "text": "return Err(SessionTraceValidationError::SequenceGap);"
+    },
+    {
+      "line": 292,
+      "text": "return Err(SessionTraceValidationError::SessionMismatch);"
+    },
+    {
+      "line": 295,
+      "text": "return Err(SessionTraceValidationError::TimestampRegression);"
+    },
+    {
+      "line": 299,
+      "text": "return Err(SessionTraceValidationError::RecordAfterTerminal);"
+    },
+    {
+      "line": 441,
+      "text": "Err(std::io::Error::new("
+    },
+    {
+      "line": 532,
+      "text": "return Err(SessionTraceValidationError::Truncated);"
+    },
+    {
+      "line": 535,
+      "text": "return Err(SessionTraceValidationError::InvalidMagic);"
+    },
+    {
+      "line": 538,
+      "text": "return Err(SessionTraceValidationError::UnsupportedVersion);"
+    },
+    {
+      "line": 543,
+      "text": "return Err(SessionTraceValidationError::InvalidLayout);"
+    },
+    {
+      "line": 546,
+      "text": "return Err(SessionTraceValidationError::InvalidChecksum);"
+    },
+    {
+      "line": 555,
+      "text": "return Err(SessionTraceValidationError::InvalidLayout);"
+    },
+    {
+      "line": 558,
+      "text": "return Err(SessionTraceValidationError::InvalidChecksum);"
+    },
+    {
+      "line": 565,
+      "text": "return Err(SessionTraceValidationError::InvalidLayout);"
+    },
+    {
+      "line": 571,
+      "text": "return Err(SessionTraceValidationError::InvalidLayout);"
+    },
+    {
+      "line": 574,
+      "text": "return Err(SessionTraceValidationError::InvalidChecksum);"
+    },
+    {
+      "line": 580,
+      "text": "return Err(SessionTraceValidationError::InvalidChecksum);"
+    },
+    {
+      "line": 666,
+      "text": "3 => Err(SessionTraceValidationError::UnknownRecordType),"
+    },
+    {
+      "line": 680,
+      "text": "_ => Err(SessionTraceValidationError::UnknownRecordType),"
+    },
+    {
+      "line": 707,
+      "text": "Err(SessionTraceValidationError::InvalidLifecycleTransition)"
+    },
+    {
+      "line": 728,
+      "text": "Err(SessionTraceValidationError::TerminalMismatch)"
+    },
+    {
+      "line": 749,
+      "text": "_ => Err(SessionTraceValidationError::UnknownRecordType),"
+    },
+    {
+      "line": 764,
+      "text": "_ => Err(SessionTraceValidationError::UnknownRecordType),"
+    },
+    {
+      "line": 785,
+      "text": "_ => Err(SessionTraceValidationError::UnknownRecordType),"
+    },
+    {
+      "line": 812,
+      "text": "_ => Err(SessionTraceValidationError::UnknownRecordType),"
+    },
+    {
+      "line": 1025,
+      "text": "Err(SessionTraceValidationError::InvalidChecksum)"
+    },
+    {
+      "line": 1040,
+      "text": "Err(SessionTraceValidationError::Truncated)"
+    },
+    {
+      "line": 1055,
+      "text": "Err(SessionTraceValidationError::UnsupportedVersion)"
+    },
+    {
+      "line": 1088,
+      "text": "Err(SessionTraceValidationError::InvalidLifecycleTransition)"
+    },
+    {
+      "line": 1100,
+      "text": "Err(SessionTraceRecorderStartError::OutputExists { .. })"
+    },
+    {
+      "line": 1112,
+      "text": "Err(SessionTraceRecorderStartError::ZeroCapacity)"
+    },
+    {
+      "line": 1134,
+      "text": "Err(SessionTraceValidationError::IncompleteTrace)"
+    },
+    {
+      "line": 1146,
+      "text": "Err(SessionTraceValidationError::SequenceGap)"
+    },
+    {
+      "line": 1158,
+      "text": "Err(SessionTraceValidationError::TimestampRegression)"
+    },
+    {
+      "line": 1175,
+      "text": "Err(SessionTraceValidationError::RecordAfterTerminal)"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 88,
+      "name": "SessionTraceRecorderStartError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 98,
+      "name": "SessionTraceRecorderFinishError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 356,
+      "name": "SessionTraceValidationError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 209,
+      "text": ".map_err(|_| SessionTraceRecorderFinishError::ChannelClosed)?;"
+    },
+    {
+      "line": 216,
+      "text": ".map_err(|_| SessionTraceRecorderFinishError::WorkerPanicked)??;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 94,
+      "text": "Io(#[from] std::io::Error),"
+    },
+    {
+      "line": 104,
+      "text": "Io(#[from] std::io::Error),"
+    },
+    {
+      "line": 209,
+      "text": ".map_err(|_| SessionTraceRecorderFinishError::ChannelClosed)?;"
+    },
+    {
+      "line": 216,
+      "text": ".map_err(|_| SessionTraceRecorderFinishError::WorkerPanicked)??;"
+    },
+    {
+      "line": 358,
+      "text": "Io(#[from] std::io::Error),"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 209,
+      "text": ".map_err(|_| SessionTraceRecorderFinishError::ChannelClosed)?;"
+    },
+    {
+      "line": 216,
+      "text": ".map_err(|_| SessionTraceRecorderFinishError::WorkerPanicked)??;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "9a58e119e1ba2176fae6e1b5d448b16da0396deba9e48aea99fa2e7e87660213",
+      "lines": [
+        1,
+        1179
+      ],
+      "path": "src/session/lifecycle/trace.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0238-564a67e8",
+  "file_kind": "source",
+  "filesystem_io": [
+    {
+      "line": 1,
+      "text": "use std::fs::{File, OpenOptions};"
+    },
+    {
+      "line": 169,
+      "text": "let file = match OpenOptions::new().write(true).create_new(true).open(&path) {"
+    },
+    {
+      "line": 264,
+      "text": "let bytes = std::fs::read(path)?;"
+    },
+    {
+      "line": 407,
+      "text": "mut writer: BufWriter<File>,"
+    },
+    {
+      "line": 417,
+      "text": "writer.write_all(&encoded)?;"
+    },
+    {
+      "line": 475,
+      "text": "writer: &mut BufWriter<File>,"
+    },
+    {
+      "line": 488,
+      "text": "writer.write_all(&bytes)"
+    },
+    {
+      "line": 509,
+      "text": "writer: &mut BufWriter<File>,"
+    },
+    {
+      "line": 527,
+      "text": "writer.write_all(&bytes)"
+    },
+    {
+      "line": 1019,
+      "text": "let mut bytes = std::fs::read(&path).unwrap();"
+    },
+    {
+      "line": 1021,
+      "text": "std::fs::write(&path, bytes).unwrap();"
+    },
+    {
+      "line": 1034,
+      "text": "let mut bytes = std::fs::read(&path).unwrap();"
+    },
+    {
+      "line": 1036,
+      "text": "std::fs::write(&path, bytes).unwrap();"
+    },
+    {
+      "line": 1049,
+      "text": "let mut bytes = std::fs::read(&path).unwrap();"
+    },
+    {
+      "line": 1051,
+      "text": "std::fs::write(&path, bytes).unwrap();"
+    },
+    {
+      "line": 1096,
+      "text": "std::fs::write(&path, b\"existing\").unwrap();"
+    },
+    {
+      "line": 1102,
+      "text": "assert_eq!(std::fs::read(&path).unwrap(), b\"existing\");"
+    }
+  ],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "7be727966f12207e11eabbe52262db99be7febff",
+  "implemented_by": [],
+  "implements": [
+    "SessionTraceRecorderOutcome",
+    "SessionTraceRecorderHandle",
+    "SessionTraceRecorder",
+    "Drop for SessionTraceRecorder",
+    "SessionTrace"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::{EndpointId, RouteId, SessionId, StemId}",
+    "crate::session::{ SessionEvent, SessionEventKind, SessionFinalizationStage, SessionLifecycleState, SessionRollbackStage, SessionTerminalState, }",
+    "crate::session::{SessionEventKind, SessionTerminalOutcome}",
+    "std::fs::{File, OpenOptions}",
+    "std::io::{BufWriter, Write}",
+    "std::path::{Path, PathBuf}",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "std::sync::mpsc::{self, Receiver, SyncSender, TrySendError}",
+    "std::thread::{self, JoinHandle}",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 89,
+      "text": "#[error(\"session trace capacity must be greater than zero records\")]"
+    },
+    {
+      "line": 995,
+      "text": "assert!(outcome.is_complete());"
+    },
+    {
+      "line": 1023,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 1038,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 1053,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 1086,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 1098,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 1110,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 1114,
+      "text": "assert!(!path.exists());"
+    },
+    {
+      "line": 1132,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 1144,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 1156,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 1173,
+      "text": "assert!(matches!("
+    }
+  ],
+  "language": "Rust",
+  "line_count": 1179,
+  "locks": [],
+  "module": "pocketstation::session::lifecycle::trace",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/lifecycle/trace.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "TRACE_MAGIC",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "TRACE_VERSION",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "HEADER_SIZE_BYTES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "RECORD_SIZE_BYTES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "FOOTER_SIZE_BYTES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "RECORD_MARKER",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 22,
+      "name": "FOOTER_MARKER",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 23,
+      "name": "FNV_OFFSET_BASIS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "FNV_PRIME",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 249,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 390,
+      "name": "RecorderCounters",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 395,
+      "name": "RecorderCommand",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 400,
+      "name": "WriterOutcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 405,
+      "name": "writer_loop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 446,
+      "name": "record_kind",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 473,
+      "name": "write_header",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 490,
+      "name": "encode_record",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 507,
+      "name": "write_footer",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 529,
+      "name": "decode_trace",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 595,
+      "name": "decode_record",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 612,
+      "name": "encode_kind",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 648,
+      "name": "decode_kind",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 683,
+      "name": "validate_lifecycle_transition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 710,
+      "name": "validate_terminal",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 731,
+      "name": "lifecycle_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 741,
+      "name": "decode_lifecycle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 752,
+      "name": "terminal_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 759,
+      "name": "decode_terminal",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 767,
+      "name": "rollback_stage_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 777,
+      "name": "decode_rollback_stage",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 788,
+      "name": "finalization_stage_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 800,
+      "name": "decode_finalization_stage",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 815,
+      "name": "endpoint_stage_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 825,
+      "name": "fnv1a",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 833,
+      "name": "put_u16",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 837,
+      "name": "put_u32",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 841,
+      "name": "put_u64",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 845,
+      "name": "get_u16",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 853,
+      "name": "get_u32",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 861,
+      "name": "get_u64",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 871,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 874,
+      "name": "event",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 878,
+      "name": "complete_trace",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 903,
+      "name": "record",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 917,
+      "name": "synthetic_trace",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 928,
+      "name": "complete_outcome",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 939,
+      "name": "stopped_records",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 991,
+      "name": "given_complete_trace_when_validated_then_lifecycle_and_terminal_match",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1015,
+      "name": "given_corrupted_record_when_read_then_checksum_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1030,
+      "name": "given_truncated_trace_when_read_then_truncation_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1045,
+      "name": "given_unknown_version_when_read_then_version_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1060,
+      "name": "given_invalid_lifecycle_when_validated_then_validation_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1093,
+      "name": "given_existing_output_when_started_then_recorder_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1106,
+      "name": "given_zero_capacity_when_started_then_recorder_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1118,
+      "name": "given_dropped_records_when_validated_then_trace_is_incomplete",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1139,
+      "name": "given_sequence_gap_when_validated_then_trace_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1151,
+      "name": "given_timestamp_regression_when_validated_then_trace_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1163,
+      "name": "given_record_after_terminal_when_validated_then_trace_is_rejected",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 184,
+      "text": ".spawn(move || writer_loop(writer, receiver, worker_counters))?;"
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 27,
+      "name": "SessionTraceRecordKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 55,
+      "name": "SessionTraceRecord",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 63,
+      "name": "SessionTraceRecordDelivery",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 70,
+      "name": "SessionTraceRecorderOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "is_complete",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 88,
+      "name": "SessionTraceRecorderStartError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 98,
+      "name": "SessionTraceRecorderFinishError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 108,
+      "name": "SessionTraceRecorderHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 115,
+      "name": "try_record_event",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 151,
+      "name": "SessionTraceRecorder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 160,
+      "name": "start",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 196,
+      "name": "handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 200,
+      "name": "finish",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 242,
+      "name": "outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 255,
+      "name": "SessionTrace",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 262,
+      "name": "read",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 267,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 271,
+      "name": "records",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 275,
+      "name": "outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 279,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 339,
+      "name": "SessionTraceTerminal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 348,
+      "name": "SessionTraceValidation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 356,
+      "name": "SessionTraceValidationError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::session::lifecycle::trace`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 6,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 110,
+      "text": "counters: Arc<RecorderCounters>,"
+    },
+    {
+      "line": 111,
+      "text": "accepting: Arc<AtomicBool>,"
+    },
+    {
+      "line": 179,
+      "text": "let counters = Arc::new(RecorderCounters::default());"
+    },
+    {
+      "line": 180,
+      "text": "let accepting = Arc::new(AtomicBool::new(true));"
+    },
+    {
+      "line": 181,
+      "text": "let worker_counters = Arc::clone(&counters);"
+    },
+    {
+      "line": 248,
+      "text": "impl Drop for SessionTraceRecorder {"
+    },
+    {
+      "line": 257,
+      "text": "records: Box<[SessionTraceRecord]>,"
+    },
+    {
+      "line": 350,
+      "text": "pub lifecycle: Box<[SessionLifecycleState]>,"
+    },
+    {
+      "line": 409,
+      "text": "counters: Arc<RecorderCounters>,"
+    }
+  ],
+  "responsibilities": [
+    "TRACE_MAGIC",
+    "TRACE_VERSION",
+    "HEADER_SIZE_BYTES",
+    "RECORD_SIZE_BYTES",
+    "FOOTER_SIZE_BYTES",
+    "RECORD_MARKER",
+    "FOOTER_MARKER",
+    "FNV_OFFSET_BASIS",
+    "FNV_PRIME",
+    "SessionTraceRecordKind",
+    "SessionTraceRecord",
+    "SessionTraceRecordDelivery",
+    "SessionTraceRecorderOutcome",
+    "is_complete",
+    "SessionTraceRecorderStartError",
+    "SessionTraceRecorderFinishError",
+    "SessionTraceRecorderHandle",
+    "try_record_event",
+    "SessionTraceRecorder",
+    "start",
+    "handle",
+    "finish",
+    "outcome",
+    "drop",
+    "SessionTrace",
+    "read",
+    "session_id",
+    "records",
+    "outcome",
+    "validate",
+    "SessionTraceTerminal",
+    "SessionTraceValidation",
+    "SessionTraceValidationError",
+    "RecorderCounters",
+    "RecorderCommand",
+    "WriterOutcome",
+    "writer_loop",
+    "record_kind",
+    "write_header",
+    "encode_record",
+    "write_footer",
+    "decode_trace",
+    "decode_record",
+    "encode_kind",
+    "decode_kind",
+    "validate_lifecycle_transition",
+    "validate_terminal",
+    "lifecycle_code",
+    "decode_lifecycle",
+    "terminal_code",
+    "decode_terminal",
+    "rollback_stage_code",
+    "decode_rollback_stage",
+    "finalization_stage_code",
+    "decode_finalization_stage",
+    "endpoint_stage_code",
+    "fnv1a",
+    "put_u16",
+    "put_u32",
+    "put_u64",
+    "get_u16",
+    "get_u32",
+    "get_u64",
+    "tests",
+    "event",
+    "complete_trace",
+    "record",
+    "synthetic_trace",
+    "complete_outcome",
+    "stopped_records",
+    "given_complete_trace_when_validated_then_lifecycle_and_terminal_match",
+    "given_corrupted_record_when_read_then_checksum_is_rejected",
+    "given_truncated_trace_when_read_then_truncation_is_rejected",
+    "given_unknown_version_when_read_then_version_is_rejected",
+    "given_invalid_lifecycle_when_validated_then_validation_fails_closed",
+    "given_existing_output_when_started_then_recorder_fails_closed",
+    "given_zero_capacity_when_started_then_recorder_fails_closed",
+    "given_dropped_records_when_validated_then_trace_is_incomplete",
+    "given_sequence_gap_when_validated_then_trace_is_rejected",
+    "given_timestamp_regression_when_validated_then_trace_is_rejected",
+    "given_record_after_terminal_when_validated_then_trace_is_rejected"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 1,
+      "text": "use std::fs::{File, OpenOptions};"
+    },
+    {
+      "line": 169,
+      "text": "let file = match OpenOptions::new().write(true).create_new(true).open(&path) {"
+    },
+    {
+      "line": 264,
+      "text": "let bytes = std::fs::read(path)?;"
+    },
+    {
+      "line": 407,
+      "text": "mut writer: BufWriter<File>,"
+    },
+    {
+      "line": 417,
+      "text": "writer.write_all(&encoded)?;"
+    },
+    {
+      "line": 475,
+      "text": "writer: &mut BufWriter<File>,"
+    },
+    {
+      "line": 488,
+      "text": "writer.write_all(&bytes)"
+    },
+    {
+      "line": 509,
+      "text": "writer: &mut BufWriter<File>,"
+    },
+    {
+      "line": 527,
+      "text": "writer.write_all(&bytes)"
+    },
+    {
+      "line": 1019,
+      "text": "let mut bytes = std::fs::read(&path).unwrap();"
+    },
+    {
+      "line": 1021,
+      "text": "std::fs::write(&path, bytes).unwrap();"
+    },
+    {
+      "line": 1034,
+      "text": "let mut bytes = std::fs::read(&path).unwrap();"
+    },
+    {
+      "line": 1036,
+      "text": "std::fs::write(&path, bytes).unwrap();"
+    },
+    {
+      "line": 1049,
+      "text": "let mut bytes = std::fs::read(&path).unwrap();"
+    },
+    {
+      "line": 1051,
+      "text": "std::fs::write(&path, bytes).unwrap();"
+    },
+    {
+      "line": 1096,
+      "text": "std::fs::write(&path, b\"existing\").unwrap();"
+    },
+    {
+      "line": 1102,
+      "text": "assert_eq!(std::fs::read(&path).unwrap(), b\"existing\");"
+    },
+    {
+      "line": 184,
+      "text": ".spawn(move || writer_loop(writer, receiver, worker_counters))?;"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 160,
+      "text": "pub fn start("
+    },
+    {
+      "line": 881,
+      "text": "let mut recorder = SessionTraceRecorder::start(path, session_id, 16).unwrap();"
+    },
+    {
+      "line": 1064,
+      "text": "let mut recorder = SessionTraceRecorder::start(&path, session_id, 8).unwrap();"
+    },
+    {
+      "line": 1099,
+      "text": "SessionTraceRecorder::start(&path, SessionId(1), 8),"
+    },
+    {
+      "line": 1111,
+      "text": "SessionTraceRecorder::start(&path, SessionId(1), 0),"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 7,
+      "text": "use std::thread::{self, JoinHandle};"
+    },
+    {
+      "line": 182,
+      "text": "let worker = thread::Builder::new()"
+    },
+    {
+      "line": 184,
+      "text": ".spawn(move || writer_loop(writer, receiver, worker_counters))?;"
+    }
+  ],
+  "visibility": "mixed"
+}

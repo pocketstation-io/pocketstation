@@ -1,0 +1,435 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "ApplicationSelector::name",
+    "BTreeSet::new",
+    "Duration::from_millis",
+    "Duration::from_secs",
+    "Instant::now",
+    "SessionEventReceive::Event",
+    "SessionStartCancellation::default",
+    "Source::application",
+    "Source::microphone_default",
+    "Vec::new",
+    "all",
+    "artifact_root",
+    "as_str",
+    "audio_observations",
+    "capture",
+    "cfg",
+    "code",
+    "conformance::session",
+    "conformance::session_with_recording",
+    "count",
+    "disposition",
+    "entry",
+    "err",
+    "exists",
+    "filter",
+    "frame",
+    "get",
+    "given_empty_application_selector_when_declared_then_error_is_typed",
+    "given_fixture_session_when_started_then_two_stems_cross_canonical_engine",
+    "given_recording_root_when_two_stems_finish_then_terminal_outcome_is_exposed",
+    "given_recording_routes_without_root_when_started_then_configuration_error_is_typed",
+    "given_requested_cancellation_when_fixture_started_then_start_fails_typed",
+    "insert",
+    "is_cancelled",
+    "is_none",
+    "is_some",
+    "is_some_and",
+    "is_success",
+    "iter",
+    "join",
+    "kind",
+    "len",
+    "lineage",
+    "metrics_snapshot",
+    "new",
+    "or_default",
+    "outcome",
+    "polled_audio",
+    "push",
+    "record",
+    "recording_outcome",
+    "request",
+    "send",
+    "source",
+    "source_count",
+    "start",
+    "start_cancellable",
+    "std::env::temp_dir",
+    "std::process::id",
+    "std::thread::sleep",
+    "stem_id",
+    "stop",
+    "try_poll_audio",
+    "try_recv_event",
+    "unwrap",
+    "values"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 1,
+      "text": "#![cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 13,
+      "text": "std::env::temp_dir().join(format!(\"pocketstation-{test_name}-{}\", std::process::id()))"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "BTreeSet::new",
+    "Vec::new",
+    "new"
+  ],
+  "content_hash": "83182899e9a237fbf94806e26c7dea218e07d53e6dd2a4602479711df31336b6",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 11,
+      "name": "artifact_root",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "given_fixture_session_when_started_then_two_stems_cross_canonical_engine",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "given_requested_cancellation_when_fixture_started_then_start_fails_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 79,
+      "name": "given_empty_application_selector_when_declared_then_error_is_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 92,
+      "name": "given_recording_routes_without_root_when_started_then_configuration_error_is_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "given_recording_root_when_two_stems_finish_then_terminal_outcome_is_exposed",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "83182899e9a237fbf94806e26c7dea218e07d53e6dd2a4602479711df31336b6",
+      "lines": [
+        1,
+        205
+      ],
+      "path": "tests/conformance_fixture.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0260-6e2be828",
+  "file_kind": "test",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "3456596c69c201d255ec2199193f4457dcdbaa4b",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "pocketstation::{ conformance, ApplicationSelector, SessionEventReceive, SessionStartCancellation, SessionStartErrorKind, SessionStopDisposition, Source, }",
+    "std::collections::BTreeSet",
+    "std::path::PathBuf",
+    "std::time::{Duration, Instant}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 43,
+      "text": "assert!(running.audio_observations().frames_polled_total >= 2);"
+    },
+    {
+      "line": 44,
+      "text": "assert!(!matches!("
+    },
+    {
+      "line": 49,
+      "text": "assert!(metrics.source(0).is_some());"
+    },
+    {
+      "line": 50,
+      "text": "assert!(metrics.source(1).is_some());"
+    },
+    {
+      "line": 51,
+      "text": "assert!(metrics.source(2).is_none());"
+    },
+    {
+      "line": 57,
+      "text": "assert!(first.is_success());"
+    },
+    {
+      "line": 75,
+      "text": "assert!(error.is_cancelled());"
+    },
+    {
+      "line": 145,
+      "text": "assert!(frame_counts.values().all(|count| *count >= 3));"
+    },
+    {
+      "line": 148,
+      "text": "// separate branch and must continue to completion while this queue drops."
+    },
+    {
+      "line": 163,
+      "text": "assert!(sources_completed);"
+    },
+    {
+      "line": 172,
+      "text": "assert!(slow_branch.queue_peak_frames <= slow_branch.queue_capacity_frames);"
+    },
+    {
+      "line": 173,
+      "text": "assert!(slow_branch.queue_full_drops_total > 0);"
+    },
+    {
+      "line": 181,
+      "text": "assert!("
+    },
+    {
+      "line": 193,
+      "text": "assert!("
+    },
+    {
+      "line": 203,
+      "text": "assert!(outcome.session_dir.exists());"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 205,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-095b17abae307638000d"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "tests/conformance_fixture.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 11,
+      "name": "artifact_root",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "given_fixture_session_when_started_then_two_stems_cross_canonical_engine",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "given_requested_cancellation_when_fixture_started_then_start_fails_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 79,
+      "name": "given_empty_application_selector_when_declared_then_error_is_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 92,
+      "name": "given_recording_routes_without_root_when_started_then_configuration_error_is_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "given_recording_root_when_two_stems_finish_then_terminal_outcome_is_exposed",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 13,
+      "text": "std::env::temp_dir().join(format!(\"pocketstation-{test_name}-{}\", std::process::id()))"
+    }
+  ],
+  "protocol_messages": [
+    {
+      "line": 177,
+      "text": "while let SessionEventReceive::Event(event) = running.try_recv_event() {"
+    }
+  ],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `not_applicable`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/native-extensions.md",
+    "docs/concepts/c-abi-ownership.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/architecture/overview.md",
+    "docs/internals/abi-conformance.md",
+    "docs/glossary.md",
+    "docs/guides/extensions.md",
+    "docs/how-to/use-c-session-api.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/native-extensions.md",
+    "docs/reference/c-abi.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/extensions-and-abi.md",
+    "docs/troubleshooting/native-extension-load.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/native-extension-trust.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "artifact_root",
+    "given_fixture_session_when_started_then_two_stems_cross_canonical_engine",
+    "given_requested_cancellation_when_fixture_started_then_start_fails_typed",
+    "given_empty_application_selector_when_declared_then_error_is_typed",
+    "given_recording_routes_without_root_when_started_then_configuration_error_is_typed",
+    "given_recording_root_when_two_stems_finish_then_terminal_outcome_is_exposed"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 52,
+      "text": "let first = running.stop();"
+    },
+    {
+      "line": 53,
+      "text": "let second = running.stop();"
+    },
+    {
+      "line": 147,
+      "text": "// Deliberately stop consuming this bounded destination. The recorder is a"
+    },
+    {
+      "line": 175,
+      "text": "let stop = running.stop();"
+    },
+    {
+      "line": 182,
+      "text": "stop.is_success(),"
+    },
+    {
+      "line": 183,
+      "text": "\"{stop:?}; recording={outcome:?}; events={terminal_events:?}\""
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 13,
+      "text": "std::env::temp_dir().join(format!(\"pocketstation-{test_name}-{}\", std::process::id()))"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 30,
+      "text": "let mut running = session.start().unwrap();"
+    },
+    {
+      "line": 87,
+      "text": "let error = session.start().err().unwrap();"
+    },
+    {
+      "line": 103,
+      "text": "let error = session.start().err().unwrap();"
+    },
+    {
+      "line": 130,
+      "text": "let mut running = session.start().unwrap();"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 39,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 142,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 161,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 170,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    }
+  ],
+  "visibility": "private_or_not_applicable"
+}

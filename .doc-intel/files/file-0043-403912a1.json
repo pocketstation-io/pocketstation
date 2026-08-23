@@ -1,0 +1,381 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 869,
+      "text": "// Must dispatch asynchronously \u2014 SetPropertyData may be on HAL client thread"
+    }
+  ],
+  "atomics": [
+    {
+      "line": 4,
+      "text": "//   - No mutex on RT thread (uses _Atomic instead of pthread_mutex_t in GetZeroTimeStamp)"
+    }
+  ],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "AudioServerPlugInDriverFactory",
+    "CFEqual",
+    "CFRelease",
+    "CFStringCreateWithCString",
+    "CFUUIDCreateFromUUIDBytes",
+    "CFUUIDGetConstantUUIDWithBytes",
+    "IDs",
+    "RETURN_CFSTR",
+    "RETURN_CID",
+    "RETURN_F64",
+    "RETURN_OID",
+    "RETURN_U32",
+    "RequestDeviceConfigurationChange",
+    "atomic_fetch_add_explicit",
+    "atomic_fetch_sub_explicit",
+    "atomic_load_explicit",
+    "atomic_store",
+    "atomic_store_explicit",
+    "close",
+    "device",
+    "directly",
+    "dispatch_async",
+    "dispatch_get_global_queue",
+    "free",
+    "ftruncate",
+    "helpers",
+    "instance",
+    "isfinite",
+    "mach_absolute_time",
+    "mach_timebase_info",
+    "memset",
+    "mmap",
+    "munmap",
+    "offsetof",
+    "past",
+    "pks_AbortDeviceConfigurationChange",
+    "pks_AddDeviceClient",
+    "pks_AddRef",
+    "pks_BeginIOOperation",
+    "pks_CreateDevice",
+    "pks_DestroyDevice",
+    "pks_DoIOOperation",
+    "pks_EndIOOperation",
+    "pks_GetPropertyData",
+    "pks_GetPropertyDataSize",
+    "pks_GetZeroTimeStamp",
+    "pks_HasProperty",
+    "pks_Initialize",
+    "pks_IsPropertySettable",
+    "pks_PerformDeviceConfigurationChange",
+    "pks_QueryInterface",
+    "pks_Release",
+    "pks_RemoveDeviceClient",
+    "pks_SetPropertyData",
+    "pks_StartIO",
+    "pks_StopIO",
+    "pks_WillDoIOOperation",
+    "pks_driver_ref",
+    "pks_host_ticks_per_frame",
+    "pks_ring_reject_invalid_timeline",
+    "pks_ring_try_write",
+    "pks_shm_create",
+    "pks_shm_destroy",
+    "pks_stream_format",
+    "pks_vtable_init",
+    "position",
+    "rate",
+    "ring",
+    "shm_open",
+    "shm_unlink",
+    "state",
+    "struct",
+    "switch",
+    "thread",
+    "value",
+    "wrap",
+    "writer"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "620e5fbf62eb9c80d4da86f12fe6b0f46e4082ae13ccb5fc682aebf2071eab92",
+  "defaults": [],
+  "defines": [],
+  "device_io": [
+    {
+      "line": 5,
+      "text": "//   - Per-device state struct (no static locals in DoIOOperation \u2014 fixes race with 2 devices)"
+    },
+    {
+      "line": 11,
+      "text": "#include <CoreAudio/AudioServerPlugIn.h>"
+    },
+    {
+      "line": 12,
+      "text": "#include <CoreAudio/CoreAudioTypes.h>"
+    },
+    {
+      "line": 54,
+      "text": "// Per-device state (fixes BlackHole's static-local race)"
+    },
+    {
+      "line": 95,
+      "text": "PksDevice                           device;"
+    },
+    {
+      "line": 199,
+      "text": "PksDevice* dev = &drv->device;"
+    },
+    {
+      "line": 246,
+      "text": "PksDevice* dev = &((PksDriver*)inDriver)->device;"
+    },
+    {
+      "line": 305,
+      "text": "PksDevice* dev = &((PksDriver*)inDriver)->device;"
+    },
+    {
+      "line": 329,
+      "text": "PksDevice* dev = &((PksDriver*)inDriver)->device;"
+    },
+    {
+      "line": 404,
+      "text": "PksDevice* dev = &((PksDriver*)inDriver)->device;"
+    },
+    {
+      "line": 476,
+      "text": "// Helper: stream format for our device (f32 interleaved stereo at given rate)"
+    },
+    {
+      "line": 690,
+      "text": "PksDevice* dev = &drv->device;"
+    },
+    {
+      "line": 856,
+      "text": "PksDevice* dev = &drv->device;"
+    },
+    {
+      "line": 909,
+      "text": "PksDevice* dev = &((PksDriver*)inDriver)->device;"
+    }
+  ],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "620e5fbf62eb9c80d4da86f12fe6b0f46e4082ae13ccb5fc682aebf2071eab92",
+      "lines": [
+        1,
+        978
+      ],
+      "path": "native/macos/asp/Plugin.cpp",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0043-403912a1",
+  "file_kind": "native_source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "b1acab3e80c3bd1f24c04570265e53f7502835b4",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 91,
+      "text": "AudioServerPlugInDriverInterface*   interface;  // must be first"
+    }
+  ],
+  "language": "C++",
+  "line_count": 978,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "repository",
+  "path": "native/macos/asp/Plugin.cpp",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements a native or platform boundary."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/best-practices/evidence-boundaries.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 9,
+      "text": "//   - Drop counter in shared memory"
+    }
+  ],
+  "responsibilities": [],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 5,
+      "text": "//   - Per-device state struct (no static locals in DoIOOperation \u2014 fixes race with 2 devices)"
+    },
+    {
+      "line": 11,
+      "text": "#include <CoreAudio/AudioServerPlugIn.h>"
+    },
+    {
+      "line": 12,
+      "text": "#include <CoreAudio/CoreAudioTypes.h>"
+    },
+    {
+      "line": 54,
+      "text": "// Per-device state (fixes BlackHole's static-local race)"
+    },
+    {
+      "line": 95,
+      "text": "PksDevice                           device;"
+    },
+    {
+      "line": 199,
+      "text": "PksDevice* dev = &drv->device;"
+    },
+    {
+      "line": 246,
+      "text": "PksDevice* dev = &((PksDriver*)inDriver)->device;"
+    },
+    {
+      "line": 305,
+      "text": "PksDevice* dev = &((PksDriver*)inDriver)->device;"
+    },
+    {
+      "line": 329,
+      "text": "PksDevice* dev = &((PksDriver*)inDriver)->device;"
+    },
+    {
+      "line": 404,
+      "text": "PksDevice* dev = &((PksDriver*)inDriver)->device;"
+    },
+    {
+      "line": 476,
+      "text": "// Helper: stream format for our device (f32 interleaved stereo at given rate)"
+    },
+    {
+      "line": 690,
+      "text": "PksDevice* dev = &drv->device;"
+    },
+    {
+      "line": 856,
+      "text": "PksDevice* dev = &drv->device;"
+    },
+    {
+      "line": 909,
+      "text": "PksDevice* dev = &((PksDriver*)inDriver)->device;"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 869,
+      "text": "// Must dispatch asynchronously \u2014 SetPropertyData may be on HAL client thread"
+    }
+  ],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 4,
+      "text": "//   - No mutex on RT thread (uses _Atomic instead of pthread_mutex_t in GetZeroTimeStamp)"
+    },
+    {
+      "line": 60,
+      "text": "// Sample rate \u2014 written on config-change thread, read on RT thread."
+    },
+    {
+      "line": 61,
+      "text": "// Protected by dispatch to RT thread exclusion via RequestDeviceConfigurationChange."
+    },
+    {
+      "line": 70,
+      "text": "// Zero-timestamp state \u2014 no mutex; single writer (GetZeroTimeStamp on RT thread)"
+    },
+    {
+      "line": 339,
+      "text": "// Advance counter until anchor is in the past (no mutex \u2014 single RT thread writer)"
+    },
+    {
+      "line": 869,
+      "text": "// Must dispatch asynchronously \u2014 SetPropertyData may be on HAL client thread"
+    }
+  ],
+  "visibility": "private_or_not_applicable"
+}

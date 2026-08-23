@@ -1,0 +1,348 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 72,
+      "text": "pub async fn wait_ready(&self) -> bool {"
+    },
+    {
+      "line": 81,
+      "text": "notified.await;"
+    },
+    {
+      "line": 86,
+      "text": "pub async fn wait_terminal(&self) {"
+    },
+    {
+      "line": 92,
+      "text": "notified.await;"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "any",
+    "cfg",
+    "derive",
+    "load",
+    "notified",
+    "pub",
+    "snapshot",
+    "wait_ready",
+    "wait_terminal"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 71,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 85,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "057853746fb185c8462f34ba3985188f81ff767e15c05315aab71a6b7b425026",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 9,
+      "name": "AsyncOperatorObservationState",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 29,
+      "name": "AsyncOperatorObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 47,
+      "name": "AsyncOperatorObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 72,
+      "name": "wait_ready",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "wait_terminal",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 9,
+      "name": "AsyncOperatorObservationState",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 29,
+      "name": "AsyncOperatorObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 47,
+      "name": "AsyncOperatorObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 72,
+      "name": "wait_ready",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "wait_terminal",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "057853746fb185c8462f34ba3985188f81ff767e15c05315aab71a6b7b425026",
+      "lines": [
+        1,
+        96
+      ],
+      "path": "src/runtime/signal/observations.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0196-352cc166",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "1a8e62442d8c0ffea07d510b78729f7ee20bcf65",
+  "implemented_by": [],
+  "implements": [
+    "AsyncOperatorObservationHandle"
+  ],
+  "imported_by": [],
+  "imports": [
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "tokio::sync::Notify"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 96,
+  "locks": [],
+  "module": "pocketstation::runtime::signal::observations",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-ce06e446dc0be3c73863"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/runtime/signal/observations.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 9,
+      "name": "AsyncOperatorObservationState",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 29,
+      "name": "AsyncOperatorObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 47,
+      "name": "AsyncOperatorObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 72,
+      "name": "wait_ready",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "wait_terminal",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Async operator lifecycle and throughput observations."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/errors/runtime-and-sidecars.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/route-sizing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 4,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 48,
+      "text": "pub(super) state: Arc<AsyncOperatorObservationState>,"
+    }
+  ],
+  "responsibilities": [
+    "AsyncOperatorObservationState",
+    "AsyncOperatorObservations",
+    "AsyncOperatorObservationHandle",
+    "snapshot",
+    "wait_ready",
+    "wait_terminal"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 6,
+      "text": "use tokio::sync::Notify;"
+    },
+    {
+      "line": 72,
+      "text": "pub async fn wait_ready(&self) -> bool {"
+    },
+    {
+      "line": 81,
+      "text": "notified.await;"
+    },
+    {
+      "line": 86,
+      "text": "pub async fn wait_terminal(&self) {"
+    },
+    {
+      "line": 92,
+      "text": "notified.await;"
+    }
+  ],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

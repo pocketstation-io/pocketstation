@@ -1,0 +1,637 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Input::signal_spec",
+    "InvalidManifest",
+    "InvalidSignal",
+    "Output::signal_spec",
+    "Session",
+    "Signal::signal_spec",
+    "TypedStreamError::InvalidManifest",
+    "TypedStreamError::InvalidSignal",
+    "as_str",
+    "clone",
+    "derive",
+    "error",
+    "find",
+    "fn",
+    "from_source_output",
+    "from_stem",
+    "input_port",
+    "input_ports",
+    "input_spec",
+    "is_some",
+    "map_err",
+    "new",
+    "next",
+    "ok_or",
+    "ok_or_else",
+    "operator_id",
+    "output_port",
+    "output_ports",
+    "output_spec",
+    "select_port",
+    "send",
+    "send_to",
+    "signal_spec",
+    "through_ports",
+    "to_owned",
+    "to_string",
+    "validate",
+    "validate_signal"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "new"
+  ],
+  "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "trait",
+      "line": 15,
+      "name": "StreamSignal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 16,
+      "name": "signal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 20,
+      "name": "TypedOperator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "input_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 78,
+      "name": "output_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "input_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "output_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 96,
+      "name": "Stream",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "from_stem",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 118,
+      "name": "from_source_output",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 127,
+      "name": "signal_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "through",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 150,
+      "name": "send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "select_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 177,
+      "name": "validate_signal",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 185,
+      "name": "TypedStreamError",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 151,
+      "text": "pub fn send(&self, endpoint: EndpointHandle) -> Result<RouteId, TypedStreamError> {"
+    },
+    {
+      "line": 152,
+      "text": "self.handle.send_to(endpoint, None).map_err(Into::into)"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "trait",
+      "line": 15,
+      "name": "StreamSignal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 20,
+      "name": "TypedOperator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "input_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 78,
+      "name": "output_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "input_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "output_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 96,
+      "name": "Stream",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "from_stem",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 118,
+      "name": "from_source_output",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 127,
+      "name": "signal_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "through",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 150,
+      "name": "send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 185,
+      "name": "TypedStreamError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 40,
+      "text": "return Err(TypedStreamError::OperatorIdentityMismatch {"
+    },
+    {
+      "line": 52,
+      "text": "return Err(TypedStreamError::InputSignalMismatch {"
+    },
+    {
+      "line": 57,
+      "text": "return Err(TypedStreamError::OutputSignalMismatch {"
+    },
+    {
+      "line": 107,
+      "text": "return Err(TypedStreamError::StemRequiresPcmAudio);"
+    },
+    {
+      "line": 137,
+      "text": "return Err(TypedStreamError::StreamInputMismatch);"
+    },
+    {
+      "line": 173,
+      "text": "return Err(TypedStreamError::AmbiguousPort { direction });"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 185,
+      "name": "TypedStreamError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 38,
+      "text": ".map_err(|error| TypedStreamError::InvalidManifest(error.to_string()))?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 38,
+      "text": ".map_err(|error| TypedStreamError::InvalidManifest(error.to_string()))?;"
+    },
+    {
+      "line": 103,
+      "text": "pub fn from_stem(stem: StemHandle) -> Result<Self, TypedStreamError> {"
+    },
+    {
+      "line": 118,
+      "text": "pub fn from_source_output(output: SourceOutputHandle) -> Result<Self, TypedStreamError> {"
+    },
+    {
+      "line": 152,
+      "text": "self.handle.send_to(endpoint, None).map_err(Into::into)"
+    },
+    {
+      "line": 181,
+      "text": ".map_err(|error| TypedStreamError::InvalidSignal(error.to_string()))"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 38,
+      "text": ".map_err(|error| TypedStreamError::InvalidManifest(error.to_string()))?;"
+    },
+    {
+      "line": 152,
+      "text": "self.handle.send_to(endpoint, None).map_err(Into::into)"
+    },
+    {
+      "line": 181,
+      "text": ".map_err(|error| TypedStreamError::InvalidSignal(error.to_string()))"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "700131f421cdde00df35bc5887c16802a508cf9b1f67c772244b61dea4cdf0af",
+      "lines": [
+        1,
+        215
+      ],
+      "path": "src/session/declaration/typed_stream.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 14,
+      "text": "/// identity is never serialized or exposed through the C ABI."
+    }
+  ],
+  "file_id": "file-0210-1d77568c",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "96546067ab5a7b98b63f59d0ed004fbc9cf08b66",
+  "implemented_by": [],
+  "implements": [
+    "TypedOperator<Input, Output>",
+    "Stream<Signal>"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::graph::{ AsyncOperatorManifest, OperatorId, PortDirection, PortSpec, SignalClass, SignalSpec, }",
+    "crate::session::{ EndpointHandle, Operator, RouteId, SessionError, SourceOutputHandle, StemHandle, }",
+    "std::marker::PhantomData",
+    "super::draft::InternalStreamHandle"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 14,
+      "text": "/// identity is never serialized or exposed through the C ABI."
+    },
+    {
+      "line": 208,
+      "text": "#[error(\"typed capture stem markers must describe PCM audio\")]"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 215,
+  "locks": [],
+  "module": "pocketstation::session::declaration::typed_stream",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-0577caa4e8cabf1f0284"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/declaration/typed_stream.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 16,
+      "name": "signal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "select_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 177,
+      "name": "validate_signal",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "trait",
+      "line": 15,
+      "name": "StreamSignal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 20,
+      "name": "TypedOperator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "input_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 78,
+      "name": "output_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 82,
+      "name": "input_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "output_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 96,
+      "name": "Stream",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "from_stem",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 118,
+      "name": "from_source_output",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 127,
+      "name": "signal_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "through",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 150,
+      "name": "send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 185,
+      "name": "TypedStreamError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::session::declaration::typed_stream`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "StreamSignal",
+    "signal_spec",
+    "TypedOperator",
+    "new",
+    "operator_id",
+    "input_port",
+    "output_port",
+    "input_spec",
+    "output_spec",
+    "Stream",
+    "from_stem",
+    "from_source_output",
+    "signal_spec",
+    "through",
+    "send",
+    "select_port",
+    "validate_signal",
+    "TypedStreamError"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 14,
+      "text": "/// identity is never serialized or exposed through the C ABI."
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

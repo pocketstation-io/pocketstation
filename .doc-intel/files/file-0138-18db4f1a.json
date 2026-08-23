@@ -1,0 +1,256 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "ClockDomainId",
+    "Self",
+    "derive",
+    "get",
+    "name",
+    "new",
+    "pub"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "new"
+  ],
+  "content_hash": "d6a9e6605f036fbb13fa683a1523731b90246cbcfd2bdfe8b660f0651cdc9022",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "macro_rules!",
+      "line": 2,
+      "name": "u64_identity",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 9,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 29,
+      "name": "ClockDomainId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "get",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "fn",
+      "line": 9,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 29,
+      "name": "ClockDomainId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "get",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "d6a9e6605f036fbb13fa683a1523731b90246cbcfd2bdfe8b660f0651cdc9022",
+      "lines": [
+        1,
+        40
+      ],
+      "path": "src/frame/identity.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0138-18db4f1a",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "8d6c106699cba1a2d792b66baa797d0c3c2e008c",
+  "implemented_by": [],
+  "implements": [
+    "$name",
+    "ClockDomainId"
+  ],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 40,
+  "locks": [],
+  "module": "pocketstation::frame::identity",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/frame/identity.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "macro_rules!",
+      "line": 2,
+      "name": "u64_identity",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "fn",
+      "line": 9,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "get",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 29,
+      "name": "ClockDomainId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "get",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Compact stable identities carried by plans and hot-path frames."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/frame-lineage.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/opus-roundtrip.md",
+    "docs/how-to/map-source-time.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/frames.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/frames-and-codec.md",
+    "docs/troubleshooting/opus.md",
+    "docs/troubleshooting/timing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "u64_identity",
+    "new",
+    "get",
+    "ClockDomainId",
+    "new",
+    "get"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

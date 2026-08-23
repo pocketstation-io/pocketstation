@@ -5,6 +5,7 @@ use crate::graph::operator::OperatorId;
 use crate::graph::signal::SignalTiming;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Represents signal lineage in the PocketStation API."]
 pub struct SignalLineage {
     pub(crate) session_id: SessionId,
     pub(crate) stream_id: StreamId,
@@ -18,6 +19,7 @@ pub struct SignalLineage {
 
 impl SignalLineage {
     #[allow(clippy::too_many_arguments)]
+    #[doc = "Creates a new `SignalLineage` after validating its inputs."]
     pub fn try_new(
         session_id: SessionId,
         stream_id: StreamId,
@@ -43,6 +45,7 @@ impl SignalLineage {
         })
     }
 
+    #[doc = "Creates `SignalLineage` from frame."]
     pub const fn from_frame(stream_id: StreamId, lineage: FrameLineage) -> Self {
         Self {
             session_id: lineage.session_id,
@@ -56,35 +59,45 @@ impl SignalLineage {
         }
     }
 
+    #[doc = "Returns the session identifier associated with `SignalLineage`."]
     pub const fn session_id(self) -> SessionId {
         self.session_id
     }
+    #[doc = "Returns the stream identifier associated with `SignalLineage`."]
     pub const fn stream_id(self) -> StreamId {
         self.stream_id
     }
+    #[doc = "Returns the source identifier associated with `SignalLineage`."]
     pub const fn source_id(self) -> SourceId {
         self.source_id
     }
+    #[doc = "Returns the clock identifier associated with `SignalLineage`."]
     pub const fn clock_id(self) -> ClockDomainId {
         self.clock_id
     }
+    #[doc = "Returns the sequence number associated with `SignalLineage`."]
     pub const fn sequence_number(self) -> u64 {
         self.sequence_number
     }
+    #[doc = "Returns the source generation associated with `SignalLineage`."]
     pub const fn source_generation(self) -> u32 {
         self.source_generation
     }
+    #[doc = "Returns the discontinuity epoch associated with `SignalLineage`."]
     pub const fn discontinuity_epoch(self) -> u64 {
         self.discontinuity_epoch
     }
+    #[doc = "Returns the policy epoch associated with `SignalLineage`."]
     pub const fn policy_epoch(self) -> u64 {
         self.policy_epoch
     }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as signal lineage error."]
 pub enum SignalLineageError {
     #[error("signal lineage source generation must be non-zero")]
+    #[doc = "Reports zero source generation."]
     ZeroSourceGeneration,
 }
 
@@ -104,6 +117,7 @@ pub struct SignalDerivation {
 }
 
 impl SignalDerivation {
+    #[doc = "Creates a new `SignalDerivation`."]
     pub fn new(
         upstream_lineage: SignalLineage,
         upstream_timing: SignalTiming,
@@ -135,32 +149,42 @@ impl SignalDerivation {
         })
     }
 
+    #[doc = "Returns the upstream lineage associated with `SignalDerivation`."]
     pub const fn upstream_lineage(&self) -> SignalLineage {
         self.upstream_lineage
     }
+    #[doc = "Returns the upstream timing associated with `SignalDerivation`."]
     pub const fn upstream_timing(&self) -> SignalTiming {
         self.upstream_timing
     }
+    #[doc = "Returns the operator identifier associated with `SignalDerivation`."]
     pub const fn operator_id(&self) -> &OperatorId {
         &self.operator_id
     }
+    #[doc = "Returns the operator revision associated with `SignalDerivation`."]
     pub const fn operator_revision(&self) -> u32 {
         self.operator_revision
     }
+    #[doc = "Returns the operator generation associated with `SignalDerivation`."]
     pub const fn operator_generation(&self) -> u32 {
         self.operator_generation
     }
+    #[doc = "Returns the connector identifier associated with `SignalDerivation`."]
     pub const fn connector_id(&self) -> Option<ConnectorId> {
         self.connector_id
     }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as signal derivation error."]
 pub enum SignalDerivationError {
     #[error("derived signal upstream timing is invalid")]
+    #[doc = "Reports invalid timestamp range."]
     InvalidTimestampRange,
     #[error("derived signal operator id is empty")]
+    #[doc = "Reports empty operator identifier."]
     EmptyOperatorId,
     #[error("derived signal operator revision and generation must be non-zero")]
+    #[doc = "Reports zero operator version."]
     ZeroOperatorVersion,
 }

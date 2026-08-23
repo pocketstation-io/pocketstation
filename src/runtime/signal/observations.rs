@@ -26,20 +26,35 @@ pub(super) struct AsyncOperatorObservationState {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Reports the async operator observations collected at an observation boundary."]
 pub struct AsyncOperatorObservations {
+    #[doc = "Counts the total number of input attempted observed by `AsyncOperatorObservations`."]
     pub input_attempted_total: u64,
+    #[doc = "Counts the total number of input dropped observed by `AsyncOperatorObservations`."]
     pub input_dropped_total: u64,
+    #[doc = "Counts the total number of processed observed by `AsyncOperatorObservations`."]
     pub processed_total: u64,
+    #[doc = "Counts the total number of output emitted observed by `AsyncOperatorObservations`."]
     pub output_emitted_total: u64,
+    #[doc = "Counts the total number of output dropped observed by `AsyncOperatorObservations`."]
     pub output_dropped_total: u64,
+    #[doc = "Counts the total number of output nonterminal observed by `AsyncOperatorObservations`."]
     pub output_nonterminal_total: u64,
+    #[doc = "Counts the total number of output terminal observed by `AsyncOperatorObservations`."]
     pub output_terminal_total: u64,
+    #[doc = "Counts the total number of process failure observed by `AsyncOperatorObservations`."]
     pub process_failure_total: u64,
+    #[doc = "Counts the total number of timeout observed by `AsyncOperatorObservations`."]
     pub timeout_total: u64,
+    #[doc = "Counts the total number of cancellation observed by `AsyncOperatorObservations`."]
     pub cancellation_total: u64,
+    #[doc = "Counts the total number of graceful finish observed by `AsyncOperatorObservations`."]
     pub graceful_finish_total: u64,
+    #[doc = "Counts the total number of idle poll observed by `AsyncOperatorObservations`."]
     pub idle_poll_total: u64,
+    #[doc = "Indicates whether ready applies to `AsyncOperatorObservations`."]
     pub ready: bool,
+    #[doc = "Stores the joined associated with `AsyncOperatorObservations`."]
     pub joined: bool,
 }
 

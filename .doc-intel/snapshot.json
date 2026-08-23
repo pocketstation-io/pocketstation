@@ -1,0 +1,89 @@
+{
+  "absolute_repository_path": "/Users/raph/Development/pocketstation-io/pocketstation",
+  "branch_at_initialization": "docs/documentation-compiler",
+  "build_systems": [
+    "Cargo"
+  ],
+  "ci_definitions": [
+    ".github/workflows/ci.yml",
+    ".github/workflows/publish.yml"
+  ],
+  "created_at": "2026-08-21T22:44:16+00:00",
+  "documentation_frameworks": [
+    "rustdoc",
+    "repository Markdown"
+  ],
+  "governing_inputs": {
+    "active_goal_objective": {
+      "sha256": "8303090235d40851dee0e0be8d700c8f6da2624513ba3e8934e4292ab689f414",
+      "source_attachment": "/Users/raph/.codex/attachments/976eac18-4c82-4e7e-93e2-12fa7716dbf7/goal-objective.md"
+    },
+    "critical_execution_contract": {
+      "repository_copy": ".doc-intel/CRITICAL-EXECUTION-CONTRACT.md",
+      "sha256": "4f6e8d2ed0a52306a9f2e110100af3a15b942331544dd9a4ea3b719fd558453d",
+      "source_attachment": "/Users/raph/.codex/attachments/4cde7db2-466c-434a-8e26-1512ee860713/pasted-text.txt"
+    },
+    "precedence": [
+      "active_goal_objective",
+      "critical_execution_contract",
+      "repository_documentation_intelligence_and_publication_protocol",
+      "repository_snapshot"
+    ],
+    "repository_documentation_intelligence_and_publication_protocol": {
+      "repository_copy": ".doc-intel/PROTOCOL.md",
+      "sha256": "457a830edf137459bd4192b4a8584257f2d323bd4af91b5e65e5079c2ae2a8e2",
+      "source_attachment": "/Users/raph/.codex/attachments/24d09dd0-2aa4-4151-a313-124b72ade419/pasted-text.txt"
+    },
+    "status": "governing"
+  },
+  "head_at_initialization": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "languages": {
+    "ABI baseline": 1,
+    "C": 6,
+    "C header": 5,
+    "C++": 2,
+    "CMake": 1,
+    "Cargo lockfile": 3,
+    "JSON": 1,
+    "Markdown": 12,
+    "Objective-C": 2,
+    "Property list": 1,
+    "Rust": 222,
+    "Shell": 13,
+    "TOML": 3,
+    "Text": 4,
+    "YAML": 2
+  },
+  "manifest_sha256": "b7b064c7ffdac477a778b8c46ba580e9a0bdfdca5be343f36f5ad4f974d5dc84",
+  "package_managers": [
+    "Cargo"
+  ],
+  "package_members": [
+    "pocketstation"
+  ],
+  "release_configuration": [
+    ".github/workflows/publish.yml",
+    "Cargo.toml",
+    "RELEASE_NOTES.md",
+    "scripts/publish.sh",
+    "scripts/test-publish-recovery.sh",
+    "scripts/test-single-package-publish.sh"
+  ],
+  "repository_name": "pocketstation",
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "submodules": [],
+  "working_tree_status_at_initialization": [
+    "?? .doc-intel/CRITICAL-EXECUTION-CONTRACT.md",
+    "?? .doc-intel/GOVERNING-INPUTS.json",
+    "?? .doc-intel/PROTOCOL.md",
+    "?? .doc-intel/inventory.jsonl",
+    "?? .doc-intel/repository-manifest.jsonl",
+    "?? tools/__pycache__/documentation_compiler.cpython-312.pyc",
+    "?? tools/__pycache__/verify_documentation_coverage.cpython-312.pyc",
+    "?? tools/documentation_compiler.py",
+    "?? tools/verify_documentation_coverage.py"
+  ],
+  "workspace_members": [
+    "pocketstation"
+  ]
+}

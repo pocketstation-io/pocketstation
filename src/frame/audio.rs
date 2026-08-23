@@ -1,3 +1,4 @@
+#[doc = "Types and operations for audio."]
 use std::sync::Arc;
 
 use super::pool::{AudioBufferHandle, AudioBufferPool, SharedAudioBufferHandle};
@@ -10,18 +11,25 @@ const FRAME_DURATION_MS: u32 = 20;
 pub const POOL_SLOT_SAMPLES: usize = 960; // 20ms × 48kHz
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Selects the sample format used by PocketStation."]
 pub enum SampleFormat {
+    #[doc = "Selects f32 interleaved behavior for `SampleFormat`."]
     F32Interleaved,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Configures sample."]
 pub struct SampleSpec {
+    #[doc = "Stores the sample rate value for `SampleSpec`, in hertz."]
     pub sample_rate_hz: u32,
+    #[doc = "Stores the channels associated with `SampleSpec`."]
     pub channels: u8,
+    #[doc = "Stores the format associated with `SampleSpec`."]
     pub format: SampleFormat,
 }
 
 impl SampleSpec {
+    #[doc = "Creates a new `SampleSpec`."]
     pub fn new(sample_rate_hz: u32, channels: u8, format: SampleFormat) -> Self {
         Self {
             sample_rate_hz,
@@ -30,12 +38,14 @@ impl SampleSpec {
         }
     }
 
+    #[doc = "Returns the frame samples for duration milliseconds associated with `SampleSpec`."]
     pub fn frame_samples_for_duration_ms(&self, duration_ms: u32) -> usize {
         (self.sample_rate_hz * duration_ms / 1000) as usize * self.channels as usize
     }
 }
 
 #[derive(Debug)]
+#[doc = "Represents audio frame in the PocketStation API."]
 pub struct AudioFrame {
     pub(crate) stream_id: StreamId,
     pub(crate) source_id: SourceId,
@@ -48,16 +58,26 @@ pub struct AudioFrame {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as audio frame build error."]
 pub enum AudioFrameBuildError {
     #[error("audio frame sample rate must be non-zero")]
+    #[doc = "Reports zero sample rate."]
     ZeroSampleRate,
     #[error("audio frame channel count must be non-zero")]
+    #[doc = "Reports zero channels."]
     ZeroChannels,
     #[error("audio frame sample count {samples} is not divisible by {channels} channels")]
-    MisalignedSamples { samples: usize, channels: u8 },
+    #[doc = "Reports misaligned samples."]
+    MisalignedSamples {
+        #[doc = "Stores the samples associated with `MisalignedSamples`."]
+        samples: usize,
+        #[doc = "Stores the channels associated with `MisalignedSamples`."]
+        channels: u8,
+    },
 }
 
 impl AudioFrame {
+    #[doc = "Creates a new `AudioFrame` after validating its inputs."]
     pub fn try_new(
         stream_id: StreamId,
         source_id: SourceId,
@@ -115,38 +135,47 @@ impl AudioFrame {
         }
     }
 
+    #[doc = "Returns the stream identifier associated with `AudioFrame`."]
     pub const fn stream_id(&self) -> StreamId {
         self.stream_id
     }
 
+    #[doc = "Returns the source identifier associated with `AudioFrame`."]
     pub const fn source_id(&self) -> SourceId {
         self.source_id
     }
 
+    #[doc = "Returns the sample rate hertz associated with `AudioFrame`."]
     pub const fn sample_rate_hz(&self) -> u32 {
         self.sample_rate_hz
     }
 
+    #[doc = "Returns the channel count represented by `AudioFrame`."]
     pub const fn channels(&self) -> u8 {
         self.channels
     }
 
+    #[doc = "Returns the format associated with `AudioFrame`."]
     pub const fn format(&self) -> SampleFormat {
         self.format
     }
 
+    #[doc = "Returns the timestamp nanoseconds associated with `AudioFrame`."]
     pub const fn timestamp_ns(&self) -> u64 {
         self.timestamp_ns
     }
 
+    #[doc = "Returns the sequence number associated with `AudioFrame`."]
     pub const fn sequence_number(&self) -> u64 {
         self.sequence_number
     }
 
+    #[doc = "Returns the audio samples held by `AudioFrame`."]
     pub fn samples(&self) -> &[f32] {
         self.buffer.as_slice()
     }
 
+    #[doc = "Freezes mutable storage owned by `AudioFrame` into its shared immutable form."]
     pub fn freeze(self) -> Option<SharedAudioFrame> {
         let Self {
             stream_id,
@@ -173,6 +202,7 @@ impl AudioFrame {
 }
 
 #[derive(Debug)]
+#[doc = "Represents shared audio frame in the PocketStation API."]
 pub struct SharedAudioFrame {
     pub(crate) stream_id: StreamId,
     pub(crate) source_id: SourceId,
@@ -185,38 +215,47 @@ pub struct SharedAudioFrame {
 }
 
 impl SharedAudioFrame {
+    #[doc = "Returns the stream identifier associated with `SharedAudioFrame`."]
     pub const fn stream_id(&self) -> StreamId {
         self.stream_id
     }
 
+    #[doc = "Returns the source identifier associated with `SharedAudioFrame`."]
     pub const fn source_id(&self) -> SourceId {
         self.source_id
     }
 
+    #[doc = "Returns the sample rate hertz associated with `SharedAudioFrame`."]
     pub const fn sample_rate_hz(&self) -> u32 {
         self.sample_rate_hz
     }
 
+    #[doc = "Returns the channel count represented by `SharedAudioFrame`."]
     pub const fn channels(&self) -> u8 {
         self.channels
     }
 
+    #[doc = "Returns the format associated with `SharedAudioFrame`."]
     pub const fn format(&self) -> SampleFormat {
         self.format
     }
 
+    #[doc = "Returns the timestamp nanoseconds associated with `SharedAudioFrame`."]
     pub const fn timestamp_ns(&self) -> u64 {
         self.timestamp_ns
     }
 
+    #[doc = "Returns the sequence number associated with `SharedAudioFrame`."]
     pub const fn sequence_number(&self) -> u64 {
         self.sequence_number
     }
 
+    #[doc = "Returns the audio samples held by `SharedAudioFrame`."]
     pub fn samples(&self) -> &[f32] {
         self.buffer.as_slice()
     }
 
+    #[doc = "Attempts to clone through `SharedAudioFrame`."]
     pub fn try_clone(&self) -> Option<Self> {
         Some(Self {
             stream_id: self.stream_id,
@@ -230,6 +269,7 @@ impl SharedAudioFrame {
         })
     }
 
+    #[doc = "Copies the shared frame into storage acquired from the supplied pool for `SharedAudioFrame`."]
     pub fn copy_to_pool(&self, pool: &Arc<AudioBufferPool>) -> Option<AudioFrame> {
         let mut buffer = pool.acquire()?;
         buffer.try_copy_from_slice(self.buffer.as_slice()).ok()?;

@@ -1,0 +1,1166 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "AudioIngressFactory::new",
+    "Box::new",
+    "EndpointBoundaryDefinition::new",
+    "MediaCaps::Audio",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "PrepareContext::new",
+    "SampleSpec::new",
+    "SignalSpec::audio",
+    "Source::Application",
+    "Source::Microphone",
+    "SourceId",
+    "StreamId",
+    "Vec::new",
+    "acquire",
+    "add_node",
+    "and_then",
+    "any",
+    "as_deref",
+    "as_str",
+    "audio_endpoint_boundary_definition",
+    "audio_port",
+    "cfg",
+    "chain",
+    "channel_layout_for",
+    "clone",
+    "configuration",
+    "connect_with",
+    "connections",
+    "contains",
+    "count",
+    "default_session_graph_lowerers",
+    "definition",
+    "derive",
+    "descriptor",
+    "endpoint_config",
+    "error",
+    "expect",
+    "filter",
+    "frame",
+    "generated_audio_ingresses",
+    "get",
+    "given_application_ingress_when_frame_processed_then_identity_is_forwarded",
+    "given_audio_endpoint_extension_when_requested_then_definition_is_not_boot_registered",
+    "given_duplicate_type_when_session_nodes_registered_then_registry_is_unchanged",
+    "given_empty_registry_when_components_registered_then_descriptors_and_lowerers_exist",
+    "given_structural_ingress_when_validated_then_session_metadata_is_not_required",
+    "id",
+    "in_",
+    "insert",
+    "insert_node",
+    "instance_id",
+    "instantiate",
+    "is_audio",
+    "is_none",
+    "is_ok",
+    "is_ok_and",
+    "is_some",
+    "iter",
+    "len",
+    "lower_operator_edges",
+    "lower_source_nodes",
+    "manifest",
+    "map",
+    "map_err",
+    "new",
+    "ok_or",
+    "ok_or_else",
+    "operator_instance_id",
+    "origin",
+    "out",
+    "output_port",
+    "prepare",
+    "prepare_context",
+    "process",
+    "pub",
+    "register",
+    "register_definition",
+    "register_session_graph_nodes",
+    "register_session_graph_nodes_with_sample_spec",
+    "sample_spec",
+    "select_operator_port",
+    "source",
+    "source_instance_id",
+    "source_instances",
+    "source_outputs",
+    "source_type_id",
+    "stem_id",
+    "stems",
+    "to_owned",
+    "unwrap",
+    "validate_config",
+    "with"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 4,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 12,
+      "text": "ConfigError, ExecutionPartition, NodeConfig, NodeDefinition, NodeDescriptor, NodeError,"
+    },
+    {
+      "line": 35,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 399,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 442,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 497,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 522,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "AudioIngressFactory::new",
+    "Box::new",
+    "EndpointBoundaryDefinition::new",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "PrepareContext::new",
+    "SampleSpec::new",
+    "Vec::new",
+    "new"
+  ],
+  "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "AUDIO_PORT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 23,
+      "name": "APPLICATION_SOURCE_NODE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "MICROPHONE_SOURCE_NODE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 26,
+      "name": "GENERATED_AUDIO_INGRESS_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 30,
+      "name": "SessionGraphRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "register_session_graph_nodes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "register_session_graph_nodes_with_sample_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 109,
+      "name": "default_session_graph_lowerers",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 116,
+      "name": "BuiltinSourceLowerer",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "lower_source_nodes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 193,
+      "name": "lower_operator_edges",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "endpoint_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 217,
+      "name": "OperatorAudioLowerer",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 221,
+      "name": "lower_source_nodes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 241,
+      "name": "lower_operator_edges",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "endpoint_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 358,
+      "name": "AudioIngressFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 367,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 383,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 398,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 402,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 412,
+      "name": "channel_layout_for",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 420,
+      "name": "GeneratedAudioBridgeDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 426,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 441,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 446,
+      "name": "SourceIngressNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 450,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 453,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 458,
+      "name": "EndpointBoundaryDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 465,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 472,
+      "name": "audio_endpoint_boundary_definition",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 481,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 496,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 501,
+      "name": "audio_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 523,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 527,
+      "name": "prepare_context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 531,
+      "name": "sample_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 535,
+      "name": "endpoint_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 539,
+      "name": "frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 547,
+      "name": "given_empty_registry_when_components_registered_then_descriptors_and_lowerers_exist",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 568,
+      "name": "given_duplicate_type_when_session_nodes_registered_then_registry_is_unchanged",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 591,
+      "name": "given_application_ingress_when_frame_processed_then_identity_is_forwarded",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 619,
+      "name": "given_audio_endpoint_extension_when_requested_then_definition_is_not_boot_registered",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 639,
+      "name": "given_structural_ingress_when_validated_then_session_metadata_is_not_required",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 341,
+      "text": "endpoint: &EndpointSpec,"
+    },
+    {
+      "line": 352,
+      "text": "for (key, value) in endpoint.configuration().iter() {"
+    },
+    {
+      "line": 484,
+      "text": "display_name: \"Audio Endpoint Boundary\","
+    },
+    {
+      "line": 622,
+      "text": "let node_type_id = NodeTypeId::from(\"endpoint.test\");"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 23,
+      "name": "APPLICATION_SOURCE_NODE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "MICROPHONE_SOURCE_NODE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 26,
+      "name": "GENERATED_AUDIO_INGRESS_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 30,
+      "name": "SessionGraphRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "register_session_graph_nodes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "register_session_graph_nodes_with_sample_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 109,
+      "name": "default_session_graph_lowerers",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 472,
+      "name": "audio_endpoint_boundary_definition",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 89,
+      "text": "return Err(SessionGraphRegistrationError::DuplicateNodeType {"
+    },
+    {
+      "line": 269,
+      "text": "return Err(SessionCompileError::InvalidAudioBridgeOutput {"
+    },
+    {
+      "line": 312,
+      "text": "return Err(SessionCompileError::AudioBridgeOutputNotExclusive {"
+    },
+    {
+      "line": 584,
+      "text": "Err(SessionGraphRegistrationError::DuplicateNodeType { .. })"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 30,
+      "name": "SessionGraphRegistrationError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 99,
+      "text": ".map_err(|_| SessionGraphRegistrationError::DuplicateNodeType { node_type_id })?;"
+    },
+    {
+      "line": 105,
+      "text": ".map_err(|_| SessionGraphRegistrationError::DuplicateNodeType { node_type_id })?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 99,
+      "text": ".map_err(|_| SessionGraphRegistrationError::DuplicateNodeType { node_type_id })?;"
+    },
+    {
+      "line": 105,
+      "text": ".map_err(|_| SessionGraphRegistrationError::DuplicateNodeType { node_type_id })?;"
+    },
+    {
+      "line": 563,
+      "text": "assert!(registry.contains(&NodeTypeId::from(node_type_id)));"
+    },
+    {
+      "line": 587,
+      "text": "assert!(!registry.contains(&NodeTypeId::from(MICROPHONE_SOURCE_NODE_TYPE_ID)));"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 99,
+      "text": ".map_err(|_| SessionGraphRegistrationError::DuplicateNodeType { node_type_id })?;"
+    },
+    {
+      "line": 105,
+      "text": ".map_err(|_| SessionGraphRegistrationError::DuplicateNodeType { node_type_id })?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "bbab4840fb02ffef154352ad78aee64643388e5a618fe71f2ced374f92844768",
+      "lines": [
+        1,
+        650
+      ],
+      "path": "src/session/extensions/builtins.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0216-22b74c99",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "4dbad0a770c6d9fc0431ed5c63187534b542fbf3",
+  "implemented_by": [],
+  "implements": [
+    "SessionGraphLowerer for BuiltinSourceLowerer",
+    "SessionGraphLowerer for OperatorAudioLowerer",
+    "AudioIngressFactory",
+    "NodeFactory for AudioIngressFactory",
+    "NodeDefinition for GeneratedAudioBridgeDefinition",
+    "RuntimeNode for SourceIngressNode",
+    "EndpointBoundaryDefinition",
+    "NodeDefinition for EndpointBoundaryDefinition"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::SampleFormat",
+    "crate::frame::{AudioBufferPool, SampleSpec, SourceId, StreamId}",
+    "crate::frame::{AudioFrame, SampleSpec}",
+    "crate::graph::{ AudioCaps, ChannelLayout, MediaCaps, Multiplicity, PortDirection, PortSpec, SafetyContract, SignalSpec, }",
+    "crate::graph::{ ConfigError, ExecutionPartition, NodeConfig, NodeDefinition, NodeDescriptor, NodeError, NodeFactory, NodeRegistry, NodeTypeId, Pipeline, PrepareContext, RuntimeNode, }",
+    "crate::session::compile::{ select_operator_port, CompiledNodeBinding, CompiledSessionBindings, LoweredOperator, SessionCompileError, SessionGraphLowerer, SessionSourceLoweringContext, }",
+    "crate::session::{EndpointSpec, OperatorInstanceId, SessionSpec, Source, StemId}",
+    "std::collections::HashMap",
+    "std::sync::Arc",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 563,
+      "text": "assert!(registry.contains(&NodeTypeId::from(node_type_id)));"
+    },
+    {
+      "line": 582,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 587,
+      "text": "assert!(!registry.contains(&NodeTypeId::from(MICROPHONE_SOURCE_NODE_TYPE_ID)));"
+    },
+    {
+      "line": 624,
+      "text": "assert!(registry.definition(&node_type_id).is_none());"
+    },
+    {
+      "line": 634,
+      "text": "assert!(definition.validate_config(&endpoint_config()).is_ok());"
+    },
+    {
+      "line": 635,
+      "text": "assert!(registry.get(&node_type_id).is_none());"
+    },
+    {
+      "line": 647,
+      "text": "assert!(factory.validate_config(&NodeConfig::new()).is_ok());"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 650,
+  "locks": [],
+  "module": "pocketstation::session::extensions::builtins",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-2bff6ab2da8c5acd813e",
+    "pattern-f113caf0c47b76f1137c"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/extensions/builtins.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "AUDIO_PORT",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 116,
+      "name": "BuiltinSourceLowerer",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "lower_source_nodes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 193,
+      "name": "lower_operator_edges",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 206,
+      "name": "endpoint_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 217,
+      "name": "OperatorAudioLowerer",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 221,
+      "name": "lower_source_nodes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 241,
+      "name": "lower_operator_edges",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "endpoint_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 358,
+      "name": "AudioIngressFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 367,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 383,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 398,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 402,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 412,
+      "name": "channel_layout_for",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 420,
+      "name": "GeneratedAudioBridgeDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 426,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 441,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 446,
+      "name": "SourceIngressNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 450,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 453,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 458,
+      "name": "EndpointBoundaryDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 465,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 481,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 496,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 501,
+      "name": "audio_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 523,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 527,
+      "name": "prepare_context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 531,
+      "name": "sample_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 535,
+      "name": "endpoint_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 539,
+      "name": "frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 547,
+      "name": "given_empty_registry_when_components_registered_then_descriptors_and_lowerers_exist",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 568,
+      "name": "given_duplicate_type_when_session_nodes_registered_then_registry_is_unchanged",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 591,
+      "name": "given_application_ingress_when_frame_processed_then_identity_is_forwarded",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 619,
+      "name": "given_audio_endpoint_extension_when_requested_then_definition_is_not_boot_registered",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 639,
+      "name": "given_structural_ingress_when_validated_then_session_metadata_is_not_required",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 23,
+      "name": "APPLICATION_SOURCE_NODE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "MICROPHONE_SOURCE_NODE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 26,
+      "name": "GENERATED_AUDIO_INGRESS_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 30,
+      "name": "SessionGraphRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "register_session_graph_nodes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "register_session_graph_nodes_with_sample_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 109,
+      "name": "default_session_graph_lowerers",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 472,
+      "name": "audio_endpoint_boundary_definition",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::session::extensions::builtins`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 2,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 49,
+      "text": ") -> Result<Vec<Arc<dyn SessionGraphLowerer>>, SessionGraphRegistrationError> {"
+    },
+    {
+      "line": 50,
+      "text": "let factories: Vec<Arc<dyn NodeFactory>> = vec!["
+    },
+    {
+      "line": 51,
+      "text": "Arc::new(AudioIngressFactory::new("
+    },
+    {
+      "line": 57,
+      "text": "Arc::new(AudioIngressFactory::new("
+    },
+    {
+      "line": 63,
+      "text": "Arc::new(AudioIngressFactory::new("
+    },
+    {
+      "line": 69,
+      "text": "Arc::new(AudioIngressFactory::new("
+    },
+    {
+      "line": 76,
+      "text": "let definitions: Vec<Arc<dyn NodeDefinition>> ="
+    },
+    {
+      "line": 77,
+      "text": "vec![Arc::new(GeneratedAudioBridgeDefinition { sample_spec })];"
+    },
+    {
+      "line": 110,
+      "text": "pub(crate) fn default_session_graph_lowerers() -> Vec<Arc<dyn SessionGraphLowerer>> {"
+    },
+    {
+      "line": 112,
+      "text": "Arc::new(BuiltinSourceLowerer),"
+    },
+    {
+      "line": 113,
+      "text": "Arc::new(OperatorAudioLowerer),"
+    },
+    {
+      "line": 407,
+      "text": ") -> Result<Box<dyn RuntimeNode>, NodeError> {"
+    },
+    {
+      "line": 409,
+      "text": "Ok(Box::new(SourceIngressNode))"
+    },
+    {
+      "line": 476,
+      "text": ") -> Arc<dyn NodeDefinition> {"
+    },
+    {
+      "line": 477,
+      "text": "Arc::new(EndpointBoundaryDefinition::new(node_type_id, sample_spec))"
+    },
+    {
+      "line": 571,
+      "text": ".register(Arc::new(AudioIngressFactory::new("
+    }
+  ],
+  "responsibilities": [
+    "AUDIO_PORT",
+    "APPLICATION_SOURCE_NODE_TYPE_ID",
+    "MICROPHONE_SOURCE_NODE_TYPE_ID",
+    "EXTERNAL_AUDIO_INGRESS_NODE_TYPE_ID",
+    "GENERATED_AUDIO_INGRESS_NODE_TYPE_ID",
+    "GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID",
+    "SessionGraphRegistrationError",
+    "register_session_graph_nodes",
+    "register_session_graph_nodes_with_sample_spec",
+    "default_session_graph_lowerers",
+    "BuiltinSourceLowerer",
+    "lower_source_nodes",
+    "lower_operator_edges",
+    "endpoint_config",
+    "OperatorAudioLowerer",
+    "lower_source_nodes",
+    "lower_operator_edges",
+    "endpoint_config",
+    "AudioIngressFactory",
+    "new",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "channel_layout_for",
+    "GeneratedAudioBridgeDefinition",
+    "descriptor",
+    "validate_config",
+    "SourceIngressNode",
+    "prepare",
+    "process",
+    "EndpointBoundaryDefinition",
+    "new",
+    "audio_endpoint_boundary_definition",
+    "descriptor",
+    "validate_config",
+    "audio_port",
+    "tests",
+    "prepare_context",
+    "sample_spec",
+    "endpoint_config",
+    "frame",
+    "given_empty_registry_when_components_registered_then_descriptors_and_lowerers_exist",
+    "given_duplicate_type_when_session_nodes_registered_then_registry_is_unchanged",
+    "given_application_ingress_when_frame_processed_then_identity_is_forwarded",
+    "given_audio_endpoint_extension_when_requested_then_definition_is_not_boot_registered",
+    "given_structural_ingress_when_validated_then_session_metadata_is_not_required"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 450,
+      "text": "fn prepare(&mut self, _context: &PrepareContext) -> Result<(), NodeError> {"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

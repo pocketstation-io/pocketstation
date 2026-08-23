@@ -1,0 +1,431 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "accepts_delivery",
+    "as_ref",
+    "delivery_readiness",
+    "derive",
+    "health",
+    "health_reason_code",
+    "last_transition_elapsed_ns",
+    "pub",
+    "readiness_reason_code",
+    "recovery",
+    "recovery_reason_code",
+    "repr",
+    "revision"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "enum",
+      "line": 4,
+      "name": "ConnectorDeliveryReadiness",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 10,
+      "name": "accepts_delivery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 17,
+      "name": "ConnectorHealth",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 24,
+      "name": "ConnectorRecovery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 30,
+      "name": "ConnectorServiceStatus",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "delivery_readiness",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "health",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "recovery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "readiness_reason_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "health_reason_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "recovery_reason_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "last_transition_elapsed_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "accepts_delivery",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 4,
+      "name": "ConnectorDeliveryReadiness",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 10,
+      "name": "accepts_delivery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 17,
+      "name": "ConnectorHealth",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 24,
+      "name": "ConnectorRecovery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 30,
+      "name": "ConnectorServiceStatus",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "delivery_readiness",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "health",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "recovery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "readiness_reason_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "health_reason_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "recovery_reason_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "last_transition_elapsed_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "accepts_delivery",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "50f4f58366bb6b109924470ce87870369789aa382f875e18ad53ba61d643d3bd",
+      "lines": [
+        1,
+        79
+      ],
+      "path": "src/connector/status.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0119-cc2eec34",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "4ffad0dc6542ee25615b0ddc48fc4390d7d2396e",
+  "implemented_by": [],
+  "implements": [
+    "ConnectorDeliveryReadiness",
+    "ConnectorServiceStatus"
+  ],
+  "imported_by": [],
+  "imports": [
+    "super::ConnectorErrorCode"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 79,
+  "locks": [],
+  "module": "pocketstation::connector::status",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-2204e930be728d4ccf21"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/connector/status.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 4,
+      "name": "ConnectorDeliveryReadiness",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 10,
+      "name": "accepts_delivery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 17,
+      "name": "ConnectorHealth",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 24,
+      "name": "ConnectorRecovery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 30,
+      "name": "ConnectorServiceStatus",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "delivery_readiness",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "health",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "recovery",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "readiness_reason_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "health_reason_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "recovery_reason_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "last_transition_elapsed_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "accepts_delivery",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::connector::status`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/connectors.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/configure-connector-secrets.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/connectors.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/connectors.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/terminal-outcomes.md",
+    "docs/best-practices/connector-retries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "ConnectorDeliveryReadiness",
+    "accepts_delivery",
+    "ConnectorHealth",
+    "ConnectorRecovery",
+    "ConnectorServiceStatus",
+    "delivery_readiness",
+    "health",
+    "recovery",
+    "readiness_reason_code",
+    "health_reason_code",
+    "recovery_reason_code",
+    "revision",
+    "last_transition_elapsed_ns",
+    "accepts_delivery"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

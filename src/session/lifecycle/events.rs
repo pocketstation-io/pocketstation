@@ -17,51 +17,78 @@ pub const MAX_SESSION_EVENT_OWNED_BYTES: usize = 1024 * 1024;
 /// Public lifecycle states emitted by a running session.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SessionLifecycleState {
+    #[doc = "Indicates the starting state for `SessionLifecycleState`."]
     Starting,
+    #[doc = "Indicates the running state for `SessionLifecycleState`."]
     Running,
+    #[doc = "Indicates the stopping state for `SessionLifecycleState`."]
     Stopping,
+    #[doc = "Indicates that the operation stopped normally."]
     Stopped,
+    #[doc = "Indicates the failed state for `SessionLifecycleState`."]
     Failed,
 }
 
 /// The rollback operation that failed while unwinding a partial start.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SessionRollbackStage {
+    #[doc = "Represents the cancel operator case of `SessionRollbackStage`."]
     CancelOperator,
+    #[doc = "Represents the cancel endpoint preparation case of `SessionRollbackStage`."]
     CancelEndpointPreparation,
+    #[doc = "Represents the finalize started endpoint case of `SessionRollbackStage`."]
     FinalizeStartedEndpoint,
+    #[doc = "Represents the stop opened capture case of `SessionRollbackStage`."]
     StopOpenedCapture,
+    #[doc = "Represents the discard runtime queues case of `SessionRollbackStage`."]
     DiscardRuntimeQueues,
 }
 
 /// The finalization operation that failed while stopping a session.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SessionFinalizationStage {
+    #[doc = "Represents the stop capture case of `SessionFinalizationStage`."]
     StopCapture,
+    #[doc = "Represents the drain runtime case of `SessionFinalizationStage`."]
     DrainRuntime,
+    #[doc = "Represents the drain operator case of `SessionFinalizationStage`."]
     DrainOperator,
+    #[doc = "Represents the request endpoint stop case of `SessionFinalizationStage`."]
     RequestEndpointStop,
+    #[doc = "Represents the join endpoint case of `SessionFinalizationStage`."]
     JoinEndpoint,
+    #[doc = "Represents the finalize endpoint case of `SessionFinalizationStage`."]
     FinalizeEndpoint,
+    #[doc = "Represents the drain sidecar case of `SessionFinalizationStage`."]
     DrainSidecar,
 }
 
 /// Stable identity of the component that produced a session control failure.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SessionComponentId {
+    #[doc = "Represents the source case of `SessionComponentId`."]
     Source {
+        #[doc = "Identifies the stem associated with `Source`."]
         stem_id: StemId,
     },
+    #[doc = "Represents the endpoint case of `SessionComponentId`."]
     Endpoint {
+        #[doc = "Identifies the route associated with `Endpoint`."]
         route_id: RouteId,
+        #[doc = "Identifies the endpoint associated with `Endpoint`."]
         endpoint_id: EndpointId,
     },
+    #[doc = "Represents the operator case of `SessionComponentId`."]
     Operator {
+        #[doc = "Identifies the operator instance associated with `Operator`."]
         operator_instance_id: OperatorInstanceId,
     },
+    #[doc = "Represents the sidecar case of `SessionComponentId`."]
     Sidecar {
+        #[doc = "Identifies the sidecar associated with `Sidecar`."]
         sidecar_id: u64,
     },
+    #[doc = "Represents the runtime case of `SessionComponentId`."]
     Runtime,
 }
 
@@ -86,14 +113,17 @@ impl SessionControlFailure {
         }
     }
 
+    #[doc = "Returns the component associated with `SessionControlFailure`."]
     pub const fn component(&self) -> SessionComponentId {
         self.component
     }
 
+    #[doc = "Returns the operation associated with `SessionControlFailure`."]
     pub const fn operation(&self) -> &'static str {
         self.operation
     }
 
+    #[doc = "Returns the error class associated with `SessionControlFailure`."]
     pub fn error_class(&self) -> &str {
         &self.error_class
     }
@@ -208,7 +238,9 @@ impl SessionFinalizationFailure {
 /// Final state carried by the terminal session event.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SessionTerminalState {
+    #[doc = "Indicates that the operation stopped normally."]
     Stopped,
+    #[doc = "Indicates the failed state for `SessionTerminalState`."]
     Failed,
 }
 
@@ -292,11 +324,17 @@ impl SessionTerminalOutcome {
 /// Payload of one authoritative session event.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum SessionEventKind {
+    #[doc = "Indicates the lifecycle state for `SessionEventKind`."]
     Lifecycle(SessionLifecycleState),
+    #[doc = "Indicates the source state for `SessionEventKind`."]
     Source(SessionSourceFailure),
+    #[doc = "Indicates the endpoint state for `SessionEventKind`."]
     Endpoint(SessionEndpointFailure),
+    #[doc = "Indicates the rollback state for `SessionEventKind`."]
     Rollback(SessionRollbackFailure),
+    #[doc = "Indicates the finalization state for `SessionEventKind`."]
     Finalization(SessionFinalizationFailure),
+    #[doc = "Indicates the terminal state for `SessionEventKind`."]
     Terminal(SessionTerminalOutcome),
 }
 
@@ -315,10 +353,12 @@ impl SessionEvent {
         Self { session_id, kind }
     }
 
+    #[doc = "Returns the session identifier associated with `SessionEvent`."]
     pub const fn session_id(&self) -> SessionId {
         self.session_id
     }
 
+    #[doc = "Returns the kind represented by `SessionEvent`."]
     pub const fn kind(&self) -> &SessionEventKind {
         &self.kind
     }
@@ -490,8 +530,11 @@ impl SessionEventSender {
 /// Result of non-blocking event polling.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum SessionEventReceive {
+    #[doc = "Indicates the event state for `SessionEventReceive`."]
     Event(SessionEvent),
+    #[doc = "Represents an empty value or collection."]
     Empty,
+    #[doc = "Reports that the underlying channel or resource is closed."]
     Closed,
 }
 

@@ -1,0 +1,506 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 123,
+      "text": ".expect(\"validated acquisition callback\");"
+    },
+    {
+      "line": 133,
+      "text": "// SAFETY: the callback record has the same zero-valid field classes as"
+    },
+    {
+      "line": 134,
+      "text": "// the descriptor and is validated before any callback is invoked."
+    },
+    {
+      "line": 140,
+      "text": "// context and callback are retained by the library lease."
+    }
+  ],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "BTreeSet::new",
+    "Library::new",
+    "NativeExtensionLibraryError::new",
+    "Vec::with_capacity",
+    "acquire",
+    "build_registration_with_library",
+    "canonicalize",
+    "clone",
+    "code",
+    "destroy_acquired_registration",
+    "entrypoint",
+    "expect",
+    "id",
+    "insert",
+    "is_absolute",
+    "is_file",
+    "is_none",
+    "is_null",
+    "kind",
+    "load_native_extension_library",
+    "map_err",
+    "metadata",
+    "pub",
+    "push",
+    "status_ok",
+    "std::mem::zeroed",
+    "std::panic::AssertUnwindSafe",
+    "std::panic::catch_unwind",
+    "std::ptr::null",
+    "std::ptr::null_mut",
+    "std::slice::from_raw_parts",
+    "to_owned",
+    "to_path_buf",
+    "validate_library_descriptor"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 130,
+      "text": "// function pointer Options and raw pointers use null as their empty"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "BTreeSet::new",
+    "Library::new",
+    "NativeExtensionLibraryError::new"
+  ],
+  "content_hash": "d7d5a74223308c0b42ddf8bb345b1bf4671720268007a650a82b0d267de2d2e3",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "EXTENSION_LIBRARY_ENTRYPOINT_V1_NUL",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 20,
+      "name": "LoadedNativeExtensionLibrary",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "load_native_extension_library",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 231,
+      "name": "validate_library_descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "status_ok",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 215,
+      "text": "PksExtensionKind::Endpoint => NativeExtensionKind::Endpoint,"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 20,
+      "name": "LoadedNativeExtensionLibrary",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "load_native_extension_library",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 37,
+      "text": "return Err(NativeExtensionLibraryError::new("
+    },
+    {
+      "line": 58,
+      "text": "return Err(NativeExtensionLibraryError::new("
+    },
+    {
+      "line": 169,
+      "text": "return Err(NativeExtensionLibraryError::new("
+    },
+    {
+      "line": 201,
+      "text": "return Err(NativeExtensionLibraryError::new("
+    },
+    {
+      "line": 237,
+      "text": "return Err(NativeExtensionLibraryError::new("
+    },
+    {
+      "line": 244,
+      "text": "return Err(NativeExtensionLibraryError::new("
+    },
+    {
+      "line": 256,
+      "text": "return Err(NativeExtensionLibraryError::new("
+    },
+    {
+      "line": 269,
+      "text": "Err(format!(\"status={} detail={}\", status.code, status.detail))"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 43,
+      "text": "let canonical_path = path.canonicalize().map_err(|error| {"
+    },
+    {
+      "line": 50,
+      "text": "let metadata = canonical_path.metadata().map_err(|error| {"
+    },
+    {
+      "line": 68,
+      "text": "let library = Arc::new(unsafe { Library::new(&canonical_path) }.map_err(|error| {"
+    },
+    {
+      "line": 80,
+      "text": ".map_err(|error| {"
+    },
+    {
+      "line": 105,
+      "text": ".map_err(|_| {"
+    },
+    {
+      "line": 112,
+      "text": "status_ok(status).map_err(|message| {"
+    },
+    {
+      "line": 152,
+      "text": ".map_err(|_| {"
+    },
+    {
+      "line": 159,
+      "text": "status_ok(status).map_err(|message| {"
+    },
+    {
+      "line": 190,
+      "text": ".map_err(|error| {"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 43,
+      "text": "let canonical_path = path.canonicalize().map_err(|error| {"
+    },
+    {
+      "line": 50,
+      "text": "let metadata = canonical_path.metadata().map_err(|error| {"
+    },
+    {
+      "line": 68,
+      "text": "let library = Arc::new(unsafe { Library::new(&canonical_path) }.map_err(|error| {"
+    },
+    {
+      "line": 80,
+      "text": ".map_err(|error| {"
+    },
+    {
+      "line": 105,
+      "text": ".map_err(|_| {"
+    },
+    {
+      "line": 112,
+      "text": "status_ok(status).map_err(|message| {"
+    },
+    {
+      "line": 152,
+      "text": ".map_err(|_| {"
+    },
+    {
+      "line": 159,
+      "text": "status_ok(status).map_err(|message| {"
+    },
+    {
+      "line": 190,
+      "text": ".map_err(|error| {"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "d7d5a74223308c0b42ddf8bb345b1bf4671720268007a650a82b0d267de2d2e3",
+      "lines": [
+        1,
+        272
+      ],
+      "path": "src/native_extension/library.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 31,
+      "text": "/// Extension ABI records, pointers, callbacks, and contexts satisfy their"
+    },
+    {
+      "line": 68,
+      "text": "let library = Arc::new(unsafe { Library::new(&canonical_path) }.map_err(|error| {"
+    },
+    {
+      "line": 75,
+      "text": "// SAFETY: symbol bytes are NUL terminated and the Extension ABI fixes the"
+    },
+    {
+      "line": 76,
+      "text": "// exact C-unwind function signature for this ABI major."
+    },
+    {
+      "line": 77,
+      "text": "let entrypoint = unsafe {"
+    },
+    {
+      "line": 103,
+      "text": "unsafe { entrypoint(&mut descriptor) }"
+    },
+    {
+      "line": 132,
+      "text": "let mut extension_descriptor: PksExtensionDescriptor = unsafe { std::mem::zeroed() };"
+    },
+    {
+      "line": 135,
+      "text": "let mut callbacks: PksExtensionCallbacks = unsafe { std::mem::zeroed() };"
+    },
+    {
+      "line": 141,
+      "text": "unsafe {"
+    },
+    {
+      "line": 181,
+      "text": "unsafe { std::slice::from_raw_parts(ports, port_count as usize) }"
+    },
+    {
+      "line": 239,
+      "text": "format!(\"unsupported Extension ABI major {}\", descriptor.abi_major),"
+    },
+    {
+      "line": 246,
+      "text": "format!(\"unsupported Extension ABI minor {}\", descriptor.abi_minor),"
+    }
+  ],
+  "file_id": "file-0171-5d692692",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "3b256be44541e176fad2fc10899c2cd1b4ad85ab",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "crate::abi::executable_extension::{ build_registration_with_library, destroy_acquired_registration, ExecutableExtensionRegistration, MAX_LIBRARY_REGISTRATIONS, }",
+    "libloading::Library",
+    "std::collections::BTreeSet",
+    "std::path::Path",
+    "std::sync::Arc",
+    "super::{ NativeExtensionKind, NativeExtensionLibrary, NativeExtensionLibraryError, NativeExtensionLibraryErrorCode, NativeExtensionRegistration, PksExtensionCallbacks, PksExtensionDescriptor, PksExtensionKind, PksExtensionLibrary, PksExtensionLibraryEntrypoint, PksSessionStatus, PksSessionStatusCode, EXTENSION_LIBRARY_ENTRYPOINT_V1, PKS_EXTENSION_ABI_MAJOR, PKS_EXTENSION_ABI_MINOR, }"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 30,
+      "text": "/// The caller must guarantee that the library is trusted and that any exported"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 272,
+  "locks": [],
+  "module": "pocketstation::native_extension::library",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/native_extension/library.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "EXTENSION_LIBRARY_ENTRYPOINT_V1_NUL",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 231,
+      "name": "validate_library_descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "status_ok",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 20,
+      "name": "LoadedNativeExtensionLibrary",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "load_native_extension_library",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::native_extension::library`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/native-extensions.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/extensions.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/native-extensions.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/extensions-and-abi.md",
+    "docs/troubleshooting/native-extension-load.md",
+    "docs/best-practices/native-extension-trust.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 3,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 68,
+      "text": "let library = Arc::new(unsafe { Library::new(&canonical_path) }.map_err(|error| {"
+    },
+    {
+      "line": 187,
+      "text": "Some(Arc::clone(&library)),"
+    }
+  ],
+  "responsibilities": [
+    "EXTENSION_LIBRARY_ENTRYPOINT_V1_NUL",
+    "LoadedNativeExtensionLibrary",
+    "load_native_extension_library",
+    "validate_library_descriptor",
+    "status_ok"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 31,
+      "text": "/// Extension ABI records, pointers, callbacks, and contexts satisfy their"
+    },
+    {
+      "line": 68,
+      "text": "let library = Arc::new(unsafe { Library::new(&canonical_path) }.map_err(|error| {"
+    },
+    {
+      "line": 75,
+      "text": "// SAFETY: symbol bytes are NUL terminated and the Extension ABI fixes the"
+    },
+    {
+      "line": 76,
+      "text": "// exact C-unwind function signature for this ABI major."
+    },
+    {
+      "line": 77,
+      "text": "let entrypoint = unsafe {"
+    },
+    {
+      "line": 103,
+      "text": "unsafe { entrypoint(&mut descriptor) }"
+    },
+    {
+      "line": 132,
+      "text": "let mut extension_descriptor: PksExtensionDescriptor = unsafe { std::mem::zeroed() };"
+    },
+    {
+      "line": 135,
+      "text": "let mut callbacks: PksExtensionCallbacks = unsafe { std::mem::zeroed() };"
+    },
+    {
+      "line": 141,
+      "text": "unsafe {"
+    },
+    {
+      "line": 181,
+      "text": "unsafe { std::slice::from_raw_parts(ports, port_count as usize) }"
+    },
+    {
+      "line": 239,
+      "text": "format!(\"unsupported Extension ABI major {}\", descriptor.abi_major),"
+    },
+    {
+      "line": 246,
+      "text": "format!(\"unsupported Extension ABI minor {}\", descriptor.abi_minor),"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

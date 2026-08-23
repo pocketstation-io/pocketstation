@@ -1,0 +1,149 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 34,
+      "text": "Record Rust API, C ABI, PKSS, bounded-memory, and realtime callback impact."
+    }
+  ],
+  "called_by": [],
+  "calls": [
+    "change"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "327e739b0207e016ac187a203d2a55b92c6c45450989dfda09490a4b916c74b4",
+  "defaults": [],
+  "defines": [],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 25,
+      "text": "- [ ] Missing execution primitive that no source, operator, endpoint/connector, transport, SDK projection, or sidecar can express"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "327e739b0207e016ac187a203d2a55b92c6c45450989dfda09490a4b916c74b4",
+      "lines": [
+        1,
+        46
+      ],
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 24,
+      "text": "- [ ] API/ABI compatibility repair"
+    },
+    {
+      "line": 34,
+      "text": "Record Rust API, C ABI, PKSS, bounded-memory, and realtime callback impact."
+    }
+  ],
+  "file_id": "file-0002-18813c86",
+  "file_kind": "automation",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "96686f134bb312b9113a15cdbe4b21045eae1031",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Markdown",
+  "line_count": 46,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-93908f5bdcbc41dcd9e9"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "repository",
+  "path": ".github/PULL_REQUEST_TEMPLATE.md",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines a repository build, validation, CI, or release operation."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 24,
+      "text": "- [ ] API/ABI compatibility repair"
+    },
+    {
+      "line": 34,
+      "text": "Record Rust API, C ABI, PKSS, bounded-memory, and realtime callback impact."
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

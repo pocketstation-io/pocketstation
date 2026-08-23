@@ -1,0 +1,260 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "TimelineMapping::new",
+    "cfg",
+    "checked_add",
+    "checked_sub",
+    "derive",
+    "given_earlier_source_timestamp_when_normalized_then_session_delta_is_preserved",
+    "given_later_source_timestamp_when_normalized_then_session_delta_is_preserved",
+    "given_unrepresentable_timestamp_when_normalized_then_none_is_returned",
+    "new",
+    "normalize_timestamp_ns"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 26,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "TimelineMapping::new",
+    "new"
+  ],
+  "content_hash": "04aee575b5af75e64d490fbdec883d754271351c4fc364ed2cc12daf816b2f2a",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 2,
+      "name": "TimelineMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 8,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "normalize_timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 27,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "given_later_source_timestamp_when_normalized_then_session_delta_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 38,
+      "name": "given_earlier_source_timestamp_when_normalized_then_session_delta_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "given_unrepresentable_timestamp_when_normalized_then_none_is_returned",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 2,
+      "name": "TimelineMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 8,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "normalize_timestamp_ns",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "04aee575b5af75e64d490fbdec883d754271351c4fc364ed2cc12daf816b2f2a",
+      "lines": [
+        1,
+        51
+      ],
+      "path": "src/timing/timeline_mapping.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0248-931c6cf2",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "ee74d9b23c0ac19459b247b09431ad920c089245",
+  "implemented_by": [],
+  "implements": [
+    "TimelineMapping"
+  ],
+  "imported_by": [],
+  "imports": [
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 51,
+  "locks": [],
+  "module": "pocketstation::timing::timeline_mapping",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-1a2ab2aee6f2ef76950e"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/timing/timeline_mapping.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 27,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "given_later_source_timestamp_when_normalized_then_session_delta_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 38,
+      "name": "given_earlier_source_timestamp_when_normalized_then_session_delta_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "given_unrepresentable_timestamp_when_normalized_then_none_is_returned",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 2,
+      "name": "TimelineMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 8,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 14,
+      "name": "normalize_timestamp_ns",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::timing::timeline_mapping`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/timing-and-clocks.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/map-source-time.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/timing.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/troubleshooting/timing.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "TimelineMapping",
+    "new",
+    "normalize_timestamp_ns",
+    "tests",
+    "given_later_source_timestamp_when_normalized_then_session_delta_is_preserved",
+    "given_earlier_source_timestamp_when_normalized_then_session_delta_is_preserved",
+    "given_unrepresentable_timestamp_when_normalized_then_none_is_returned"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

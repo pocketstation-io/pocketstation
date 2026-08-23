@@ -4,16 +4,22 @@ use std::slice;
 
 use crate::abi::session::{PksSessionStatus, PksSessionStatusCode, PksSessionUtf8};
 
+#[doc = "Defines the major version of extension ABI."]
 pub const PKS_EXTENSION_ABI_MAJOR: u16 = 1;
+#[doc = "Defines the minor version of extension ABI."]
 pub const PKS_EXTENSION_ABI_MINOR: u16 = 2;
 const MAX_PORTS: u32 = 64;
 const MAX_IDENTIFIER_BYTES: u32 = 1_024;
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[doc = "Represents extension ABI version in the PocketStation API."]
 pub struct PksExtensionAbiVersion {
+    #[doc = "Stores the byte size of the `PksExtensionAbiVersion` ABI structure."]
     pub struct_size_bytes: u32,
+    #[doc = "Stores the major ABI version expected by `PksExtensionAbiVersion`."]
     pub abi_major: u16,
+    #[doc = "Stores the minor ABI version expected by `PksExtensionAbiVersion`."]
     pub abi_minor: u16,
 }
 
@@ -29,43 +35,69 @@ impl PksExtensionAbiVersion {
 
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[doc = "Selects the extension kind used by PocketStation."]
 pub enum PksExtensionKind {
+    #[doc = "Selects source behavior for `PksExtensionKind`."]
     Source = 1,
+    #[doc = "Selects operator behavior for `PksExtensionKind`."]
     Operator = 2,
+    #[doc = "Selects endpoint behavior for `PksExtensionKind`."]
     Endpoint = 3,
 }
 
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[doc = "Selects the extension port direction used by PocketStation."]
 pub enum PksExtensionPortDirection {
+    #[doc = "Selects input behavior for `PksExtensionPortDirection`."]
     Input = 1,
+    #[doc = "Selects output behavior for `PksExtensionPortDirection`."]
     Output = 2,
 }
 
 #[repr(C)]
 #[derive(Clone, Copy)]
+#[doc = "Describes the extension descriptor contract."]
 pub struct PksExtensionDescriptor {
+    #[doc = "Stores the byte size of the `PksExtensionDescriptor` ABI structure."]
     pub struct_size_bytes: u32,
+    #[doc = "Stores the major ABI version expected by `PksExtensionDescriptor`."]
     pub abi_major: u16,
+    #[doc = "Stores the minor ABI version expected by `PksExtensionDescriptor`."]
     pub abi_minor: u16,
+    #[doc = "Stores the kind associated with `PksExtensionDescriptor`."]
     pub kind: u32,
+    #[doc = "Stores the revision associated with `PksExtensionDescriptor`."]
     pub revision: u32,
+    #[doc = "Stores the generation associated with `PksExtensionDescriptor`."]
     pub generation: u32,
+    #[doc = "Stores the number of port represented by `PksExtensionDescriptor`."]
     pub port_count: u32,
+    #[doc = "Identifies the extension associated with `PksExtensionDescriptor`."]
     pub extension_id: PksSessionUtf8,
 }
 
 #[repr(C)]
 #[derive(Clone, Copy)]
+#[doc = "Represents extension port in the PocketStation API."]
 pub struct PksExtensionPort {
+    #[doc = "Stores the byte size of the `PksExtensionPort` ABI structure."]
     pub struct_size_bytes: u32,
+    #[doc = "Stores the major ABI version expected by `PksExtensionPort`."]
     pub abi_major: u16,
+    #[doc = "Stores the minor ABI version expected by `PksExtensionPort`."]
     pub abi_minor: u16,
+    #[doc = "Stores the direction associated with `PksExtensionPort`."]
     pub direction: u32,
+    #[doc = "Indicates whether required applies to `PksExtensionPort`."]
     pub required: u32,
+    #[doc = "Stores the name associated with `PksExtensionPort`."]
     pub name: PksSessionUtf8,
+    #[doc = "Identifies the signal associated with `PksExtensionPort`."]
     pub signal_id: PksSessionUtf8,
+    #[doc = "Stores the semantic role associated with `PksExtensionPort`."]
     pub semantic_role: PksSessionUtf8,
+    #[doc = "Stores the schema associated with `PksExtensionPort`."]
     pub schema: PksSessionUtf8,
 }
 

@@ -1,0 +1,253 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "AudioBufferPool::new",
+    "AudioFrame::try_new",
+    "ClockDomainId::new",
+    "EdgeContract::bounded_async",
+    "FrameLineage::try_new",
+    "GeneratedAudioBridge::spawn",
+    "NodeId::from_index",
+    "PlanRunnerCancellation::new",
+    "SampleSpec::new",
+    "SessionId::new",
+    "SignalEnvelope::from_audio",
+    "SourceId::new",
+    "StemId::new",
+    "StreamId::new",
+    "Throughput::Elements",
+    "TypedEdgeFanout::new",
+    "acquire",
+    "bench_function",
+    "bench_generated_audio_bridge",
+    "benchmark_group",
+    "black_box",
+    "drop",
+    "expect",
+    "finish",
+    "finish_and_join",
+    "frame",
+    "iter",
+    "let",
+    "plan_source_channel",
+    "publish",
+    "remove",
+    "saturating_mul",
+    "sequence_number",
+    "spin_loop",
+    "std::thread::yield_now",
+    "throughput",
+    "try_recv_for_testing",
+    "wrapping_add"
+  ],
+  "cancellation_behavior": [],
+  "channels": [
+    {
+      "line": 22,
+      "text": "plan_source_channel(NodeId::from_index(1), 8, cancellation).expect(\"source channel\");"
+    }
+  ],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "AudioBufferPool::new",
+    "AudioFrame::try_new",
+    "ClockDomainId::new",
+    "FrameLineage::try_new",
+    "PlanRunnerCancellation::new",
+    "SampleSpec::new",
+    "SessionId::new",
+    "SourceId::new",
+    "StemId::new",
+    "StreamId::new",
+    "TypedEdgeFanout::new"
+  ],
+  "content_hash": "4adccc5f0ae1b6fbf89653fd28fff675b3cf7a4ea960d56b60d80a902b71b74a",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 13,
+      "name": "FRAME_SAMPLES",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "bench_generated_audio_bridge",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 86,
+      "text": "drop(fanout);"
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 22,
+      "text": "plan_source_channel(NodeId::from_index(1), 8, cancellation).expect(\"source channel\");"
+    }
+  ],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "4adccc5f0ae1b6fbf89653fd28fff675b3cf7a4ea960d56b60d80a902b71b74a",
+      "lines": [
+        1,
+        94
+      ],
+      "path": "benches/generated_audio_bridge.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0013-8f3ce185",
+  "file_kind": "benchmark",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "fcf0ed1e3a1c0ccc94d30ca31eb99d9277e009c2",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "criterion::{black_box, criterion_group, criterion_main, Criterion, Throughput}",
+    "pocketstation::internal::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
+    "pocketstation::internal::graph::{EdgeContract, NodeId, SignalEnvelope}",
+    "pocketstation::internal::runtime::{ plan_source_channel, GeneratedAudioBridge, GeneratedAudioBridgeSpec, PlanRunnerCancellation, TypedEdgeBranchSpec, TypedEdgeFanout, }",
+    "std::hint::spin_loop"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 94,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-75ee714be751c7038ff7"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "benches/generated_audio_bridge.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 13,
+      "name": "FRAME_SAMPLES",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 15,
+      "name": "bench_generated_audio_bridge",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 28,
+      "text": "let bridge = GeneratedAudioBridge::spawn("
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `not_applicable`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/installation.md",
+    "docs/getting-started/examples.md",
+    "docs/concepts/conformance.md",
+    "docs/concepts/release-evidence.md",
+    "docs/architecture/overview.md",
+    "docs/internals/abi-conformance.md",
+    "docs/glossary.md",
+    "docs/concepts/cargo-features.md",
+    "RELEASE_NOTES.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/how-to/choose-features.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/reference/features.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/best-practices/evidence-boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "FRAME_SAMPLES",
+    "bench_generated_audio_bridge"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 28,
+      "text": "let bridge = GeneratedAudioBridge::spawn("
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 28,
+      "text": "let bridge = GeneratedAudioBridge::spawn("
+    },
+    {
+      "line": 80,
+      "text": "std::thread::yield_now();"
+    }
+  ],
+  "visibility": "private_or_not_applicable"
+}

@@ -1,0 +1,397 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "AudioBufferPool::new",
+    "AudioFrame::try_new",
+    "ClockDomainId::new",
+    "Compiler::new",
+    "FrameLineage::try_new",
+    "LineagedAudioFrame::new",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "Pipeline::new",
+    "PlanEdgeRouter::new",
+    "PlanRunnerCancellation::new",
+    "PrepareContext::new",
+    "RealtimePlanExecutor::new",
+    "RealtimePlanRunner::new",
+    "RuntimePlanner::new",
+    "SampleSpec::new",
+    "SessionId::new",
+    "SourceId::new",
+    "StemId::new",
+    "StreamId::new",
+    "Throughput::Elements",
+    "acquire",
+    "add_node",
+    "bench_function",
+    "bench_runtime_plan",
+    "benchmark_group",
+    "black_box",
+    "clone",
+    "compile",
+    "connect",
+    "dispatch_from",
+    "drain",
+    "execute_from",
+    "expect",
+    "finish",
+    "get",
+    "id",
+    "in_",
+    "into_spec",
+    "is_empty",
+    "iter",
+    "let",
+    "lineaged_frame",
+    "out",
+    "plan",
+    "plan_source_channel",
+    "process_ready",
+    "register_builtins",
+    "saturating_mul",
+    "send_source_frame",
+    "three_branch_plan",
+    "throughput",
+    "timestamp_ns",
+    "try_recv",
+    "try_send",
+    "wrapping_add"
+  ],
+  "cancellation_behavior": [],
+  "channels": [
+    {
+      "line": 151,
+      "text": ".expect(\"first source channel\");"
+    },
+    {
+      "line": 154,
+      "text": ".expect(\"second source channel\");"
+    }
+  ],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "AudioBufferPool::new",
+    "AudioFrame::try_new",
+    "ClockDomainId::new",
+    "Compiler::new",
+    "FrameLineage::try_new",
+    "LineagedAudioFrame::new",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "Pipeline::new",
+    "PlanEdgeRouter::new",
+    "PlanRunnerCancellation::new",
+    "PrepareContext::new",
+    "RealtimePlanExecutor::new",
+    "RealtimePlanRunner::new",
+    "RuntimePlanner::new",
+    "SampleSpec::new",
+    "SessionId::new",
+    "SourceId::new",
+    "StemId::new",
+    "StreamId::new",
+    "dispatch_from",
+    "execute_from"
+  ],
+  "content_hash": "52f4eadfeb3ae6e42a861a410e277150be8c45c61b5094cea6781b610a5932df",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "FRAME_SAMPLES",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 21,
+      "name": "lineaged_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "three_branch_plan",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "drain",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "bench_runtime_plan",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 191,
+      "name": "send_source_frame",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "52f4eadfeb3ae6e42a861a410e277150be8c45c61b5094cea6781b610a5932df",
+      "lines": [
+        1,
+        201
+      ],
+      "path": "benches/runtime_plan.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0016-42d9e41e",
+  "file_kind": "benchmark",
+  "filesystem_io": [],
+  "finalization": [
+    {
+      "line": 75,
+      "text": "fn drain(receivers: &mut [PlanEdgeReceiver]) {"
+    },
+    {
+      "line": 100,
+      "text": "drain(&mut receivers);"
+    }
+  ],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "69fecdc1b6c066ba707a6b7c94e12a1174670161",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "criterion::{black_box, criterion_group, criterion_main, Criterion, Throughput}",
+    "pocketstation::internal::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
+    "pocketstation::internal::graph::NodeId",
+    "pocketstation::internal::graph::compiler::Compiler",
+    "pocketstation::internal::graph::dsl::Pipeline",
+    "pocketstation::internal::graph::node::{NodeConfig, PrepareContext}",
+    "pocketstation::internal::graph::planner::RuntimePlanner",
+    "pocketstation::internal::graph::register_builtins",
+    "pocketstation::internal::graph::registry::NodeRegistry",
+    "pocketstation::internal::runtime::{ plan_source_channel, PlanEdgeReceiver, PlanEdgeRouter, PlanRunnerCancellation, PlanSourceSendOutcome, PlanSourceSender, RealtimePlanExecutor, RealtimePlanRunner, }",
+    "std::sync::Arc"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 110,
+      "text": "assert!(workers.is_empty());"
+    },
+    {
+      "line": 147,
+      "text": "assert!(workers.is_empty());"
+    },
+    {
+      "line": 193,
+      "text": "assert!(matches!("
+    }
+  ],
+  "language": "Rust",
+  "line_count": 201,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [
+    {
+      "line": 66,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 138,
+      "text": "graph.connect(first_source.out(\"out\"), first_sink.in_(\"in\"));"
+    },
+    {
+      "line": 139,
+      "text": "graph.connect(second_source.out(\"out\"), second_sink.in_(\"in\"));"
+    }
+  ],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-0bed8aaed06c69250bca",
+    "pattern-190078991e6fb29b089b",
+    "pattern-e6328fbaa144215cdb33"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "benches/runtime_plan.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "FRAME_SAMPLES",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 21,
+      "name": "lineaged_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "three_branch_plan",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "drain",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "bench_runtime_plan",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 191,
+      "name": "send_source_frame",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `not_applicable`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/errors/runtime-and-sidecars.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/route-sizing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 1,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 23,
+      "text": "pool: &Arc<AudioBufferPool>,"
+    }
+  ],
+  "responsibilities": [
+    "FRAME_SAMPLES",
+    "lineaged_frame",
+    "three_branch_plan",
+    "drain",
+    "bench_runtime_plan",
+    "send_source_frame"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 66,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 138,
+      "text": "graph.connect(first_source.out(\"out\"), first_sink.in_(\"in\"));"
+    },
+    {
+      "line": 139,
+      "text": "graph.connect(second_source.out(\"out\"), second_sink.in_(\"in\"));"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

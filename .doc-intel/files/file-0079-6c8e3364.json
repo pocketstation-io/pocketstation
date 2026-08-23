@@ -1,0 +1,416 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "as_bytes",
+    "as_slice",
+    "crate::frame::SourceId",
+    "derive",
+    "hash_bytes",
+    "identity_strength",
+    "into",
+    "is_some",
+    "new",
+    "process_tree_scope",
+    "selector_persistence_scope",
+    "source_id",
+    "starts_with",
+    "u64::from",
+    "wrapping_mul"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "new",
+    "u64::from"
+  ],
+  "content_hash": "6c4b0001b1e9562b9bfeb8b1e447b3ec0c229cd700fc676a56e7b0fbeb904af1",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "enum",
+      "line": 9,
+      "name": "SourceKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 17,
+      "name": "SourceState",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 26,
+      "name": "StableSourceId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 47,
+      "name": "FNV1A_OFFSET_BASIS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 48,
+      "name": "FNV1A_PRIME",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "hash_bytes",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 82,
+      "name": "CaptureSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 94,
+      "name": "identity_strength",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 114,
+      "name": "selector_persistence_scope",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "process_tree_scope",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [
+    {
+      "line": 69,
+      "text": "SourceKind::OutputDevice => b\"output-device\".as_slice(),"
+    },
+    {
+      "line": 70,
+      "text": "SourceKind::InputDevice => b\"input-device\".as_slice(),"
+    }
+  ],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 9,
+      "name": "SourceKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 17,
+      "name": "SourceState",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 26,
+      "name": "StableSourceId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 82,
+      "name": "CaptureSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 94,
+      "name": "identity_strength",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 114,
+      "name": "selector_persistence_scope",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "process_tree_scope",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "6c4b0001b1e9562b9bfeb8b1e447b3ec0c229cd700fc676a56e7b0fbeb904af1",
+      "lines": [
+        1,
+        166
+      ],
+      "path": "src/capture/identity.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0079-6c8e3364",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "e53e69bd2aa4149c8dbdb90811e415452527747b",
+  "implemented_by": [],
+  "implements": [
+    "StableSourceId",
+    "CaptureSource"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::Platform",
+    "super::authorization::SourceIdentityStrength",
+    "super::selection::{ProcessTreeScope, SelectorPersistenceScope}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 166,
+  "locks": [],
+  "module": "pocketstation::capture::identity",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/capture/identity.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 47,
+      "name": "FNV1A_OFFSET_BASIS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 48,
+      "name": "FNV1A_PRIME",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "hash_bytes",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 9,
+      "name": "SourceKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 17,
+      "name": "SourceState",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 26,
+      "name": "StableSourceId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 82,
+      "name": "CaptureSource",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 94,
+      "name": "identity_strength",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 114,
+      "name": "selector_persistence_scope",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "process_tree_scope",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Stable source identity and source discovery state."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/source-selection.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/select-process-source.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/run-transcription.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/troubleshooting/timing.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 113,
+      "text": "/// rediscovery. The capture owner remains authoritative for opening it."
+    }
+  ],
+  "responsibilities": [
+    "SourceKind",
+    "SourceState",
+    "StableSourceId",
+    "new",
+    "source_id",
+    "FNV1A_OFFSET_BASIS",
+    "FNV1A_PRIME",
+    "hash_bytes",
+    "CaptureSource",
+    "identity_strength",
+    "selector_persistence_scope",
+    "process_tree_scope"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 69,
+      "text": "SourceKind::OutputDevice => b\"output-device\".as_slice(),"
+    },
+    {
+      "line": 70,
+      "text": "SourceKind::InputDevice => b\"input-device\".as_slice(),"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

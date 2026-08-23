@@ -12,7 +12,9 @@ use super::{
     ConnectorItem, ConnectorRetryability, ResolvedConnectorConfiguration,
 };
 
+#[doc = "Defines the public connector audio record signal identifier value."]
 pub const CONNECTOR_AUDIO_RECORD_SIGNAL_ID: &str = "io.pocketstation.connector.audio-record.v1";
+#[doc = "Defines the public connector audio record schema value."]
 pub const CONNECTOR_AUDIO_RECORD_SCHEMA: &str = "urn:pocketstation:connector:audio-record:v1";
 
 /// Adapts a bounded PocketStation sidecar process to the Connector driver SPI.
@@ -26,16 +28,19 @@ pub struct SidecarConnectorDriverFactory {
 }
 
 impl SidecarConnectorDriverFactory {
+    #[doc = "Creates a new `SidecarConnectorDriverFactory`."]
     pub const fn new(process: SidecarProcessSpec) -> Self {
         Self { process }
     }
 
+    #[doc = "Processes an input value through `SidecarConnectorDriverFactory`."]
     pub const fn process(&self) -> &SidecarProcessSpec {
         &self.process
     }
 }
 
 impl ConnectorDriverFactory for SidecarConnectorDriverFactory {
+    #[doc = "Returns the preparation group associated with `SidecarConnectorDriverFactory`."]
     fn preparation_group(
         &self,
         _route_id: RouteId,
@@ -46,6 +51,7 @@ impl ConnectorDriverFactory for SidecarConnectorDriverFactory {
         )))
     }
 
+    #[doc = "Prepares resources required by `SidecarConnectorDriverFactory`."]
     fn prepare(
         &self,
         inputs: &[ConnectorInputDescriptor],
@@ -261,6 +267,7 @@ fn connector_error(
     ConnectorError::internal_with_retryability(code, stage, retryability, message)
 }
 
+#[doc = "Creates a connector driver factory backed by the supplied sidecar process."]
 pub fn sidecar_connector_factory(process: SidecarProcessSpec) -> Arc<dyn ConnectorDriverFactory> {
     Arc::new(SidecarConnectorDriverFactory::new(process))
 }

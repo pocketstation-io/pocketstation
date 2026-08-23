@@ -1,0 +1,187 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Decoder::new",
+    "OpusDecoder::default",
+    "OpusEncoder::default",
+    "Vec::with_capacity",
+    "bench_decode",
+    "bench_function",
+    "benchmark_group",
+    "black_box",
+    "clear",
+    "collect",
+    "decode",
+    "decode_into",
+    "decode_plc_into",
+    "encode_into",
+    "expect",
+    "finish",
+    "iter",
+    "iter_mut",
+    "len",
+    "map",
+    "resize",
+    "sin",
+    "unwrap",
+    "zip"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "Decoder::new"
+  ],
+  "content_hash": "dc73a43a4302e157d676efb8e6c20f2c0c01dc111cf2f9ef6035fa24168dff5b",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 6,
+      "name": "bench_decode",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "dc73a43a4302e157d676efb8e6c20f2c0c01dc111cf2f9ef6035fa24168dff5b",
+      "lines": [
+        1,
+        70
+      ],
+      "path": "benches/opus_decode.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0014-731cf51a",
+  "file_kind": "benchmark",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "0dfad7d739b189211f6069054c378175928511ed",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "criterion::{black_box, criterion_group, criterion_main, Criterion}",
+    "opus::{Channels, Decoder}",
+    "pocketstation::internal::codec::{ OpusDecoder, OpusEncoder, OpusFrameDuration, OPUS_FRAME_SAMPLES, OPUS_MAX_PACKET_BYTES, }"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 70,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "benches/opus_decode.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 6,
+      "name": "bench_decode",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `not_applicable`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/opus-codec.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/opus-roundtrip.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/codec.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/frames-and-codec.md",
+    "docs/troubleshooting/opus.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "bench_decode"
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 10,
+      "text": "// Pre-encode a packet outside the benchmark loop so the loop measures"
+    },
+    {
+      "line": 11,
+      "text": "// only the decode path, not encode overhead."
+    },
+    {
+      "line": 39,
+      "text": ".decode(black_box(&packet), &mut direct_pcm, false)"
+    },
+    {
+      "line": 40,
+      "text": ".expect(\"direct decode\");"
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

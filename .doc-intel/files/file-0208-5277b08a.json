@@ -1,0 +1,1885 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "DeviceSelector::default",
+    "EndpointConfiguration::new",
+    "EndpointId",
+    "HashSet::with_capacity",
+    "NodeTypeId::from",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "OperatorInstanceId",
+    "OperatorInstanceId::new",
+    "RouteId",
+    "Self",
+    "SessionId",
+    "SessionSpecVersion::new",
+    "Source::microphone",
+    "SourceInstanceId",
+    "Stem",
+    "StemId",
+    "StreamOrigin::Stem",
+    "Vec::new",
+    "allow",
+    "any",
+    "as_deref",
+    "as_str",
+    "cfg",
+    "clone",
+    "configuration",
+    "connection_spec",
+    "connections",
+    "connector_id",
+    "contains",
+    "deprecated",
+    "derive",
+    "endpoint_spec",
+    "endpoints",
+    "find",
+    "generated_audio_ingress_spec",
+    "generated_audio_ingresses",
+    "given_current_schema_when_version_read_then_derived_route_extension_is_recorded",
+    "given_legacy_minor_version_when_validated_then_existing_direct_routes_remain_supported",
+    "given_legacy_version_with_derived_fields_when_validated_then_schema_lie_is_rejected",
+    "given_newer_minor_version_when_validated_then_schema_fails_closed",
+    "id",
+    "input_edge",
+    "insert",
+    "instance_id",
+    "is_empty",
+    "is_some_and",
+    "iter",
+    "len",
+    "major",
+    "minor",
+    "new",
+    "node_type_id",
+    "ok_or",
+    "operator_id",
+    "operator_instance_id",
+    "operator_spec",
+    "operators",
+    "origin",
+    "output_port",
+    "pub",
+    "push",
+    "saturating_add",
+    "session_id",
+    "source",
+    "source_id",
+    "source_instance_id",
+    "source_instance_spec",
+    "source_instances",
+    "source_output_spec",
+    "source_outputs",
+    "source_type_id",
+    "stem_id",
+    "stem_spec",
+    "stems",
+    "stream_id",
+    "target",
+    "to_owned",
+    "trim",
+    "valid_legacy_compatible_spec",
+    "validate",
+    "value",
+    "version"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 50,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 55,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 273,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 314,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 801,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "EndpointConfiguration::new",
+    "NodeTypeId::from",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "OperatorInstanceId::new",
+    "SessionSpecVersion::new",
+    "Vec::new",
+    "new"
+  ],
+  "content_hash": "6e358c36aae6c10975ec63aea26f252ba6fe5d1c2f1195b30d720d86be8193ad",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 10,
+      "name": "SESSION_SPEC_VERSION",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 14,
+      "name": "SourceInstanceId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 20,
+      "name": "value",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 27,
+      "name": "OperatorInstanceId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "value",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 40,
+      "name": "SessionSpecVersion",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "major",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "minor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 62,
+      "name": "StemSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 68,
+      "name": "SourceInstanceSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 79,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "source_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 87,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 94,
+      "name": "SourceOutputSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 106,
+      "name": "GeneratedAudioIngressSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 115,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 118,
+      "name": "operator_instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 122,
+      "name": "output_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 126,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 130,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "source_instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "output_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 151,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 154,
+      "name": "source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 161,
+      "name": "EndpointSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 171,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 174,
+      "name": "connector_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 178,
+      "name": "node_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 182,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 186,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 190,
+      "name": "input_edge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 197,
+      "name": "OperatorInstanceSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 208,
+      "name": "StreamOrigin",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 224,
+      "name": "ConnectionTarget",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 238,
+      "name": "ConnectionSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 245,
+      "name": "instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 248,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 252,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 259,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 262,
+      "name": "origin",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 266,
+      "name": "target",
+      "visibility": "pub"
+    },
+    {
+      "kind": "type",
+      "line": 274,
+      "name": "OperatorSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 277,
+      "name": "SessionSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 288,
+      "name": "SessionSpecDeclarations",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 300,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 315,
+      "name": "version",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 318,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 322,
+      "name": "stems",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 326,
+      "name": "source_instances",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 330,
+      "name": "source_outputs",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 334,
+      "name": "generated_audio_ingresses",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 338,
+      "name": "endpoints",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 342,
+      "name": "operators",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 346,
+      "name": "connections",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 350,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 712,
+      "name": "stem_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 716,
+      "name": "source_instance_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 730,
+      "name": "source_output_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 742,
+      "name": "generated_audio_ingress_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 758,
+      "name": "endpoint_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 776,
+      "name": "operator_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 788,
+      "name": "connection_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 802,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 805,
+      "name": "valid_legacy_compatible_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 838,
+      "name": "given_legacy_minor_version_when_validated_then_existing_direct_routes_remain_supported",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 845,
+      "name": "given_newer_minor_version_when_validated_then_schema_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 856,
+      "name": "given_current_schema_when_version_read_then_derived_route_extension_is_recorded",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 861,
+      "name": "given_legacy_version_with_derived_fields_when_validated_then_schema_lie_is_rejected",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 206,
+      "text": "/// endpoint, transport, or customer product categories."
+    },
+    {
+      "line": 236,
+      "text": "/// every operator/endpoint destination."
+    },
+    {
+      "line": 520,
+      "text": "for endpoint in &self.endpoints {"
+    },
+    {
+      "line": 521,
+      "text": "if !endpoint_ids.insert(endpoint.endpoint_id) {"
+    },
+    {
+      "line": 523,
+      "text": "reason: format!(\"duplicate endpoint id {:?}\", endpoint.endpoint_id),"
+    },
+    {
+      "line": 526,
+      "text": "if endpoint.node_type_id.as_str().trim().is_empty()"
+    },
+    {
+      "line": 527,
+      "text": "|| endpoint.operator_id.as_str().trim().is_empty()"
+    },
+    {
+      "line": 531,
+      "text": "\"endpoint {:?} requires node type and operator ids\","
+    },
+    {
+      "line": 532,
+      "text": "endpoint.endpoint_id"
+    },
+    {
+      "line": 536,
+      "text": "endpoint.configuration.validate()?;"
+    },
+    {
+      "line": 638,
+      "text": "reason: \"endpoint input port cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 820,
+      "text": "NodeTypeId::from(\"endpoint.test\"),"
+    },
+    {
+      "line": 821,
+      "text": "OperatorId::new(\"example.endpoint.test.v1\"),"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 10,
+      "name": "SESSION_SPEC_VERSION",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 14,
+      "name": "SourceInstanceId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 20,
+      "name": "value",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 27,
+      "name": "OperatorInstanceId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "value",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 40,
+      "name": "SessionSpecVersion",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "major",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "minor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 62,
+      "name": "StemSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 68,
+      "name": "SourceInstanceSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 79,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "source_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 87,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 94,
+      "name": "SourceOutputSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 106,
+      "name": "GeneratedAudioIngressSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 115,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 118,
+      "name": "operator_instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 122,
+      "name": "output_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 126,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 130,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "source_instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "output_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 151,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 154,
+      "name": "source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 161,
+      "name": "EndpointSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 171,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 174,
+      "name": "connector_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 178,
+      "name": "node_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 182,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 186,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 190,
+      "name": "input_edge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 197,
+      "name": "OperatorInstanceSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 208,
+      "name": "StreamOrigin",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 224,
+      "name": "ConnectionTarget",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 238,
+      "name": "ConnectionSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 245,
+      "name": "instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 248,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 252,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 259,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 262,
+      "name": "origin",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 266,
+      "name": "target",
+      "visibility": "pub"
+    },
+    {
+      "kind": "type",
+      "line": 274,
+      "name": "OperatorSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 277,
+      "name": "SessionSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 288,
+      "name": "SessionSpecDeclarations",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 300,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 315,
+      "name": "version",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 318,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 322,
+      "name": "stems",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 326,
+      "name": "source_instances",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 330,
+      "name": "source_outputs",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 334,
+      "name": "generated_audio_ingresses",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 338,
+      "name": "endpoints",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 342,
+      "name": "operators",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 346,
+      "name": "connections",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 350,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 712,
+      "name": "stem_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 716,
+      "name": "source_instance_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 730,
+      "name": "source_output_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 742,
+      "name": "generated_audio_ingress_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 758,
+      "name": "endpoint_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 776,
+      "name": "operator_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 788,
+      "name": "connection_spec",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 355,
+      "text": "return Err(SessionError::UnsupportedVersion {"
+    },
+    {
+      "line": 364,
+      "text": "return Err(SessionError::NoSources);"
+    },
+    {
+      "line": 373,
+      "text": "return Err(SessionError::InvalidOperator {"
+    },
+    {
+      "line": 384,
+      "text": "return Err(SessionError::InvalidRoute {"
+    },
+    {
+      "line": 393,
+      "text": "return Err(SessionError::InvalidOperator {"
+    },
+    {
+      "line": 399,
+      "text": "return Err(SessionError::InvalidRoute {"
+    },
+    {
+      "line": 412,
+      "text": "return Err(SessionError::InvalidRoute {"
+    },
+    {
+      "line": 421,
+      "text": "return Err(SessionError::NoRoutes {"
+    },
+    {
+      "line": 429,
+      "text": "return Err(SessionError::InvalidRoute {"
+    },
+    {
+      "line": 438,
+      "text": "return Err(SessionError::InvalidOperator {"
+    },
+    {
+      "line": 446,
+      "text": "return Err(SessionError::NoRoutes {"
+    },
+    {
+      "line": 458,
+      "text": "return Err(SessionError::InvalidRoute {"
+    },
+    {
+      "line": 467,
+      "text": "return Err(SessionError::NoSourceOutputs {"
+    },
+    {
+      "line": 477,
+      "text": "return Err(SessionError::UnknownSourceInstance {"
+    },
+    {
+      "line": 486,
+      "text": "return Err(SessionError::InvalidRoute {"
+    },
+    {
+      "line": 503,
+      "text": "return Err(SessionError::NoSourceOutputRoutes {"
+    },
+    {
+      "line": 512,
+      "text": "return Err(SessionError::InvalidRoute {"
+    },
+    {
+      "line": 522,
+      "text": "return Err(SessionError::InvalidEndpoint {"
+    },
+    {
+      "line": 529,
+      "text": "return Err(SessionError::InvalidEndpoint {"
+    },
+    {
+      "line": 542,
+      "text": "return Err(SessionError::InvalidRoute {"
+    },
+    {
+      "line": 547,
+      "text": "return Err(SessionError::InvalidOperator {"
+    },
+    {
+      "line": 554,
+      "text": "return Err(SessionError::UnknownOperatorInstance {"
+    },
+    {
+      "line": 564,
+      "text": "return Err(SessionError::InvalidRoute {"
+    },
+    {
+      "line": 571,
+      "text": "return Err(SessionError::UnknownStem { stem_id: *stem_id });"
+    },
+    {
+      "line": 584,
+      "text": "return Err(SessionError::UnknownSourceOutput {"
+    },
+    {
+      "line": 597,
+      "text": "return Err(SessionError::InvalidOperator {"
+    },
+    {
+      "line": 609,
+      "text": "return Err(SessionError::UnknownOperatorInstance {"
+    },
+    {
+      "line": 617,
+      "text": "return Err(SessionError::InvalidOperator {"
+    },
+    {
+      "line": 629,
+      "text": "return Err(SessionError::UnknownEndpoint {"
+    },
+    {
+      "line": 637,
+      "text": "return Err(SessionError::InvalidRoute {"
+    },
+    {
+      "line": 647,
+      "text": "return Err(SessionError::UnknownOperatorInstance {"
+    },
+    {
+      "line": 655,
+      "text": "return Err(SessionError::InvalidOperator {"
+    },
+    {
+      "line": 661,
+      "text": "return Err(SessionError::InvalidOperator {"
+    },
+    {
+      "line": 681,
+      "text": "return Err(SessionError::InvalidOperator {"
+    },
+    {
+      "line": 704,
+      "text": "return Err(SessionError::OperatorHasNoDestination {"
+    },
+    {
+      "line": 851,
+      "text": "Err(SessionError::UnsupportedVersion { major: 1, minor: 6 })"
+    },
+    {
+      "line": 886,
+      "text": "Err(SessionError::InvalidOperator { .. })"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "6e358c36aae6c10975ec63aea26f252ba6fe5d1c2f1195b30d720d86be8193ad",
+      "lines": [
+        1,
+        890
+      ],
+      "path": "src/session/declaration/spec.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0208-5277b08a",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "c68c4e5b186581a0d0fbbe4b9345d5cf643716d8",
+  "implemented_by": [],
+  "implements": [
+    "SourceInstanceId",
+    "OperatorInstanceId",
+    "SessionSpecVersion",
+    "SourceInstanceSpec",
+    "GeneratedAudioIngressSpec",
+    "SourceOutputSpec",
+    "StemSpec",
+    "EndpointSpec",
+    "OperatorInstanceSpec",
+    "ConnectionSpec",
+    "SessionSpec"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::{EndpointId, RouteId, SessionId, SourceId, StemId, StreamId}",
+    "crate::graph::NodeTypeId",
+    "crate::session::{ EndpointConfiguration, OperatorConfiguration, OperatorId, SessionError, Source, SourceConfiguration, SourceTypeId, }",
+    "crate::session::{DeviceSelector, EndpointConfiguration}",
+    "std::collections::HashSet",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 439,
+      "text": "reason: \"generated audio output port cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 548,
+      "text": "reason: \"operator id cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 618,
+      "text": "reason: \"operator output port cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 638,
+      "text": "reason: \"endpoint input port cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 656,
+      "text": "reason: \"operator input port cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 849,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 884,
+      "text": "assert!(matches!("
+    }
+  ],
+  "language": "Rust",
+  "line_count": 890,
+  "locks": [],
+  "module": "pocketstation::session::declaration::spec",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/declaration/spec.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 802,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 805,
+      "name": "valid_legacy_compatible_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 838,
+      "name": "given_legacy_minor_version_when_validated_then_existing_direct_routes_remain_supported",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 845,
+      "name": "given_newer_minor_version_when_validated_then_schema_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 856,
+      "name": "given_current_schema_when_version_read_then_derived_route_extension_is_recorded",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 861,
+      "name": "given_legacy_version_with_derived_fields_when_validated_then_schema_lie_is_rejected",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 10,
+      "name": "SESSION_SPEC_VERSION",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 14,
+      "name": "SourceInstanceId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 20,
+      "name": "value",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 27,
+      "name": "OperatorInstanceId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "value",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 40,
+      "name": "SessionSpecVersion",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "major",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "minor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 62,
+      "name": "StemSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 68,
+      "name": "SourceInstanceSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 79,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "source_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 87,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 94,
+      "name": "SourceOutputSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 106,
+      "name": "GeneratedAudioIngressSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 115,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 118,
+      "name": "operator_instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 122,
+      "name": "output_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 126,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 130,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "source_instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "output_port",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 144,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 151,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 154,
+      "name": "source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 161,
+      "name": "EndpointSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 171,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 174,
+      "name": "connector_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 178,
+      "name": "node_type_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 182,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 186,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 190,
+      "name": "input_edge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 197,
+      "name": "OperatorInstanceSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 208,
+      "name": "StreamOrigin",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 224,
+      "name": "ConnectionTarget",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 238,
+      "name": "ConnectionSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 245,
+      "name": "instance_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 248,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 252,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 259,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 262,
+      "name": "origin",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 266,
+      "name": "target",
+      "visibility": "pub"
+    },
+    {
+      "kind": "type",
+      "line": 274,
+      "name": "OperatorSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 277,
+      "name": "SessionSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 288,
+      "name": "SessionSpecDeclarations",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 300,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 315,
+      "name": "version",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 318,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 322,
+      "name": "stems",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 326,
+      "name": "source_instances",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 330,
+      "name": "source_outputs",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 334,
+      "name": "generated_audio_ingresses",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 338,
+      "name": "endpoints",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 342,
+      "name": "operators",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 346,
+      "name": "connections",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 350,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 712,
+      "name": "stem_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 716,
+      "name": "source_instance_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 730,
+      "name": "source_output_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 742,
+      "name": "generated_audio_ingress_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 758,
+      "name": "endpoint_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 776,
+      "name": "operator_spec",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 788,
+      "name": "connection_spec",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::session::declaration::spec`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "SESSION_SPEC_VERSION",
+    "SourceInstanceId",
+    "new",
+    "value",
+    "OperatorInstanceId",
+    "new",
+    "value",
+    "SessionSpecVersion",
+    "new",
+    "major",
+    "minor",
+    "StemSpec",
+    "SourceInstanceSpec",
+    "instance_id",
+    "source_id",
+    "source_type_id",
+    "configuration",
+    "SourceOutputSpec",
+    "GeneratedAudioIngressSpec",
+    "stem_id",
+    "operator_instance_id",
+    "output_port",
+    "source_id",
+    "stream_id",
+    "source_instance_id",
+    "output_port",
+    "stream_id",
+    "id",
+    "source",
+    "EndpointSpec",
+    "id",
+    "connector_id",
+    "node_type_id",
+    "operator_id",
+    "configuration",
+    "input_edge",
+    "OperatorInstanceSpec",
+    "StreamOrigin",
+    "ConnectionTarget",
+    "ConnectionSpec",
+    "instance_id",
+    "operator_id",
+    "configuration",
+    "id",
+    "origin",
+    "target",
+    "OperatorSpec",
+    "SessionSpec",
+    "SessionSpecDeclarations",
+    "new",
+    "version",
+    "session_id",
+    "stems",
+    "source_instances",
+    "source_outputs",
+    "generated_audio_ingresses",
+    "endpoints",
+    "operators",
+    "connections",
+    "validate",
+    "stem_spec",
+    "source_instance_spec",
+    "source_output_spec",
+    "generated_audio_ingress_spec",
+    "endpoint_spec",
+    "operator_spec",
+    "connection_spec",
+    "tests",
+    "valid_legacy_compatible_spec",
+    "given_legacy_minor_version_when_validated_then_existing_direct_routes_remain_supported",
+    "given_newer_minor_version_when_validated_then_schema_fails_closed",
+    "given_current_schema_when_version_read_then_derived_route_extension_is_recorded",
+    "given_legacy_version_with_derived_fields_when_validated_then_schema_lie_is_rejected"
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 205,
+      "text": "/// The variants describe engine topology only. They do not encode provider,"
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

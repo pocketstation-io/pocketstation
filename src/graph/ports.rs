@@ -10,27 +10,41 @@ use crate::graph::signal::{BinaryFormat, Codec, SignalClass, SignalSpec};
 /// Large streams must be chunked by their source/connector instead of turning
 /// one queue item into an unbounded allocation.
 pub const DEFAULT_ASYNC_MAX_PAYLOAD_BYTES: usize = 1_048_576;
+#[doc = "Sets the maximum supported async payload bytes."]
 pub const MAX_ASYNC_PAYLOAD_BYTES: usize = 16_777_216;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Selects the media kind used by PocketStation."]
 pub enum MediaKind {
+    #[doc = "Selects audio PCM behavior for `MediaKind`."]
     AudioPcm,
+    #[doc = "Selects audio encoded behavior for `MediaKind`."]
     AudioEncoded,
+    #[doc = "Selects text behavior for `MediaKind`."]
     Text,
+    #[doc = "Selects event behavior for `MediaKind`."]
     Event,
+    #[doc = "Selects metrics behavior for `MediaKind`."]
     Metrics,
+    #[doc = "Selects control behavior for `MediaKind`."]
     Control,
+    #[doc = "Selects binary behavior for `MediaKind`."]
     Binary,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Enumerates the supported channel layout cases."]
 pub enum ChannelLayout {
+    #[doc = "Represents the mono case of `ChannelLayout`."]
     Mono,
+    #[doc = "Represents the stereo case of `ChannelLayout`."]
     Stereo,
+    #[doc = "Represents the any case of `ChannelLayout`."]
     Any, // wildcard; matches any concrete layout during negotiation
 }
 
 impl ChannelLayout {
+    #[doc = "Returns the channel count associated with `ChannelLayout`."]
     pub fn channel_count(self) -> Option<u8> {
         match self {
             Self::Mono => Some(1),
@@ -39,20 +53,27 @@ impl ChannelLayout {
         }
     }
 
+    #[doc = "Returns whether compatible with applies to `ChannelLayout`."]
     pub fn is_compatible_with(self, other: ChannelLayout) -> bool {
         matches!(self, Self::Any) || matches!(other, Self::Any) || self == other
     }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Represents audio caps in the PocketStation API."]
 pub struct AudioCaps {
-    pub sample_rate_hz: Option<u32>,  // None = any rate accepted
+    #[doc = "Stores the sample rate value for `AudioCaps`, in hertz."]
+    pub sample_rate_hz: Option<u32>, // None = any rate accepted
+    #[doc = "Stores the frame samples associated with `AudioCaps`."]
     pub frame_samples: Option<usize>, // None = any frame length accepted
+    #[doc = "Stores the channel layout associated with `AudioCaps`."]
     pub channel_layout: ChannelLayout,
+    #[doc = "Stores the format associated with `AudioCaps`."]
     pub format: SampleFormat,
 }
 
 impl AudioCaps {
+    #[doc = "Returns whether compatible with applies to `AudioCaps`."]
     pub fn is_compatible_with(&self, other: &AudioCaps) -> bool {
         Self::scalar_compatible(self.sample_rate_hz, other.sample_rate_hz)
             && Self::scalar_compatible(self.frame_samples, other.frame_samples)
@@ -82,18 +103,28 @@ impl AudioCaps {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Enumerates the supported media caps cases."]
 pub enum MediaCaps {
+    #[doc = "Represents the audio case of `MediaCaps`."]
     Audio(AudioCaps),
+    #[doc = "Represents the encoded audio case of `MediaCaps`."]
     EncodedAudio(Codec),
+    #[doc = "Represents the text case of `MediaCaps`."]
     Text,
+    #[doc = "Represents the event case of `MediaCaps`."]
     Event,
+    #[doc = "Represents the metrics case of `MediaCaps`."]
     Metrics,
+    #[doc = "Represents the control case of `MediaCaps`."]
     Control,
+    #[doc = "Represents the binary case of `MediaCaps`."]
     Binary(BinaryFormat),
+    #[doc = "Represents the any case of `MediaCaps`."]
     Any, // wildcard port; has no single MediaKind
 }
 
 impl MediaCaps {
+    #[doc = "Returns the kind represented by `MediaCaps`."]
     pub fn kind(&self) -> Option<MediaKind> {
         match self {
             Self::Audio(_) => Some(MediaKind::AudioPcm),
@@ -107,6 +138,7 @@ impl MediaCaps {
         }
     }
 
+    #[doc = "Returns whether compatible with applies to `MediaCaps`."]
     pub fn is_compatible_with(&self, other: &MediaCaps) -> bool {
         match (self, other) {
             (Self::Any, _) | (_, Self::Any) => true,
@@ -121,6 +153,7 @@ impl MediaCaps {
         }
     }
 
+    #[doc = "Negotiates the compatible media capabilities shared by `MediaCaps` and its peer."]
     pub fn negotiate(&self, other: &MediaCaps) -> Option<MediaCaps> {
         match (self, other) {
             (Self::Any, narrower) | (narrower, Self::Any) => Some(*narrower),
@@ -139,6 +172,7 @@ impl MediaCaps {
         }
     }
 
+    #[doc = "Returns whether supports signal applies to `MediaCaps`."]
     pub fn supports_signal(&self, signal: &SignalSpec) -> bool {
         match (&signal.class, self) {
             (_, Self::Any) | (SignalClass::Any, _) => true,
@@ -160,18 +194,25 @@ impl MediaCaps {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[doc = "Selects the port direction used by PocketStation."]
 pub enum PortDirection {
+    #[doc = "Selects input behavior for `PortDirection`."]
     Input,
+    #[doc = "Selects output behavior for `PortDirection`."]
     Output,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Enumerates the supported multiplicity cases."]
 pub enum Multiplicity {
+    #[doc = "Represents the one case of `Multiplicity`."]
     One,
+    #[doc = "Represents the many case of `Multiplicity`."]
     Many,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Configures port."]
 pub struct PortSpec {
     pub(crate) name: String,
     pub(crate) direction: PortDirection,
@@ -182,6 +223,7 @@ pub struct PortSpec {
 }
 
 impl PortSpec {
+    #[doc = "Creates a new `PortSpec`."]
     pub fn new(
         name: impl Into<String>,
         direction: PortDirection,
@@ -210,94 +252,132 @@ impl PortSpec {
         })
     }
 
+    #[doc = "Returns the name associated with `PortSpec`."]
     pub fn name(&self) -> &str {
         &self.name
     }
 
+    #[doc = "Returns the direction associated with `PortSpec`."]
     pub const fn direction(&self) -> PortDirection {
         self.direction
     }
 
+    #[doc = "Returns the signal associated with `PortSpec`."]
     pub const fn signal(&self) -> &SignalSpec {
         &self.signal
     }
 
+    #[doc = "Returns the media associated with `PortSpec`."]
     pub const fn media(&self) -> MediaCaps {
         self.media
     }
 
+    #[doc = "Returns the multiplicity associated with `PortSpec`."]
     pub const fn multiplicity(&self) -> Multiplicity {
         self.multiplicity
     }
 
+    #[doc = "Returns the required associated with `PortSpec`."]
     pub const fn required(&self) -> bool {
         self.required
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as port spec error."]
 pub enum PortSpecError {
     #[error("port name cannot be empty")]
+    #[doc = "Reports empty name."]
     EmptyName,
     #[error("port SignalSpec is invalid")]
+    #[doc = "Reports invalid signal."]
     InvalidSignal,
     #[error("port signal and media representation are incompatible")]
+    #[doc = "Reports signal media mismatch."]
     SignalMediaMismatch,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Enumerates the supported clock domain cases."]
 pub enum ClockDomain {
+    #[doc = "Represents the capture case of `ClockDomain`."]
     Capture,
+    #[doc = "Represents the playback case of `ClockDomain`."]
     Playback,
+    #[doc = "Represents the network case of `ClockDomain`."]
     Network,
     /// Preserve the clock carried by the producer's signal envelope.
     Inherited,
+    #[doc = "Represents the wallclock case of `ClockDomain`."]
     Wallclock,
 }
 
 impl ClockDomain {
+    #[doc = "Returns whether realtime applies to `ClockDomain`."]
     pub fn is_realtime(self) -> bool {
         matches!(self, Self::Capture | Self::Playback)
     }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Selects the backpressure policy used by PocketStation."]
 pub enum BackpressurePolicy {
-    DropNewest,     // shed the incoming frame; preserves already-queued order
-    DropOldest,     // evict head to admit newest; freshest-wins for realtime audio
-    BoundedQueue,   // block producer only via capacity; never drops silently
+    #[doc = "Selects drop newest behavior for `BackpressurePolicy`."]
+    DropNewest, // shed the incoming frame; preserves already-queued order
+    #[doc = "Selects drop oldest behavior for `BackpressurePolicy`."]
+    DropOldest, // evict head to admit newest; freshest-wins for realtime audio
+    #[doc = "Selects bounded queue behavior for `BackpressurePolicy`."]
+    BoundedQueue, // block producer only via capacity; never drops silently
+    #[doc = "Selects block forbidden behavior for `BackpressurePolicy`."]
     BlockForbidden, // producer must never block; overflow is a hard error upstream
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Selects the delivery semantics used by PocketStation."]
 pub enum DeliverySemantics {
+    #[doc = "Indicates the best effort realtime state for `DeliverySemantics`."]
     BestEffortRealtime,
+    #[doc = "Indicates the ordered state for `DeliverySemantics`."]
     Ordered,
+    #[doc = "Indicates the exactly once not realtime state for `DeliverySemantics`."]
     ExactlyOnceNotRealtime,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Selects the copy policy used by PocketStation."]
 pub enum CopyPolicy {
+    #[doc = "Selects move exclusive behavior for `CopyPolicy`."]
     MoveExclusive,
+    #[doc = "Selects share read only behavior for `CopyPolicy`."]
     ShareReadOnly,
+    #[doc = "Selects copy to branch pool behavior for `CopyPolicy`."]
     CopyToBranchPool,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Selects the loss policy used by PocketStation."]
 pub enum LossPolicy {
-    ConcealForAudio,   // PLC-eligible; dropped audio is concealed downstream
+    #[doc = "Selects conceal for audio behavior for `LossPolicy`."]
+    ConcealForAudio, // PLC-eligible; dropped audio is concealed downstream
+    #[doc = "Selects must deliver or fail behavior for `LossPolicy`."]
     MustDeliverOrFail, // terminal output must be delivered or the branch fails visibly
+    #[doc = "Selects drop allowed behavior for `LossPolicy`."]
     DropAllowed,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Selects the edge observability level used by PocketStation."]
 pub enum EdgeObservabilityLevel {
+    #[doc = "Selects off behavior for `EdgeObservabilityLevel`."]
     Off,
+    #[doc = "Selects counters behavior for `EdgeObservabilityLevel`."]
     Counters,
+    #[doc = "Reports that bounded capacity is full."]
     Full,
 }
 
 impl EdgeObservabilityLevel {
+    #[doc = "Returns the rank associated with `EdgeObservabilityLevel`."]
     pub fn rank(self) -> u8 {
         match self {
             Self::Off => 0,
@@ -308,6 +388,7 @@ impl EdgeObservabilityLevel {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Represents edge contract in the PocketStation API."]
 pub struct EdgeContract {
     pub(crate) media: MediaCaps,
     pub(crate) clock: ClockDomain,
@@ -322,66 +403,81 @@ pub struct EdgeContract {
 }
 
 impl EdgeContract {
+    #[doc = "Returns the media associated with `EdgeContract`."]
     pub const fn media(&self) -> MediaCaps {
         self.media
     }
 
+    #[doc = "Returns the clock associated with `EdgeContract`."]
     pub const fn clock(&self) -> ClockDomain {
         self.clock
     }
 
+    #[doc = "Returns the latency budget milliseconds associated with `EdgeContract`."]
     pub const fn latency_budget_ms(&self) -> Option<u32> {
         self.latency_budget_ms
     }
 
+    #[doc = "Returns the jitter budget milliseconds associated with `EdgeContract`."]
     pub const fn jitter_budget_ms(&self) -> Option<u32> {
         self.jitter_budget_ms
     }
 
+    #[doc = "Returns the backpressure associated with `EdgeContract`."]
     pub const fn backpressure(&self) -> BackpressurePolicy {
         self.backpressure
     }
 
+    #[doc = "Returns the delivery associated with `EdgeContract`."]
     pub const fn delivery(&self) -> DeliverySemantics {
         self.delivery
     }
 
+    #[doc = "Returns the loss associated with `EdgeContract`."]
     pub const fn loss(&self) -> LossPolicy {
         self.loss
     }
 
+    #[doc = "Returns the copy policy associated with `EdgeContract`."]
     pub const fn copy_policy(&self) -> CopyPolicy {
         self.copy_policy
     }
 
+    #[doc = "Returns the observability associated with `EdgeContract`."]
     pub const fn observability(&self) -> EdgeObservabilityLevel {
         self.observability
     }
 
+    #[doc = "Returns the max payload bytes associated with `EdgeContract`."]
     pub const fn max_payload_bytes(&self) -> Option<usize> {
         self.max_payload_bytes
     }
 
+    #[doc = "Sets the media on `EdgeContract` and returns the updated value."]
     pub fn with_media(mut self, media: MediaCaps) -> Self {
         self.media = media;
         self
     }
 
+    #[doc = "Sets the backpressure on `EdgeContract` and returns the updated value."]
     pub fn with_backpressure(mut self, backpressure: BackpressurePolicy) -> Self {
         self.backpressure = backpressure;
         self
     }
 
+    #[doc = "Sets the copy policy on `EdgeContract` and returns the updated value."]
     pub fn with_copy_policy(mut self, copy_policy: CopyPolicy) -> Self {
         self.copy_policy = copy_policy;
         self
     }
 
+    #[doc = "Sets the jitter budget milliseconds on `EdgeContract` and returns the updated value."]
     pub fn with_jitter_budget_ms(mut self, jitter_budget_ms: Option<u32>) -> Self {
         self.jitter_budget_ms = jitter_budget_ms;
         self
     }
 
+    #[doc = "Sets the max payload bytes on `EdgeContract` and returns the updated value."]
     pub fn with_max_payload_bytes(mut self, max_payload_bytes: usize) -> Self {
         self.max_payload_bytes = Some(max_payload_bytes);
         self

@@ -1,0 +1,339 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Vec::new",
+    "and_then",
+    "contains",
+    "display",
+    "expect",
+    "extension",
+    "given_connector_authoring_layer_when_scanned_then_it_does_not_duplicate_core_runtime_policy",
+    "given_endpoint_spi_when_source_is_scanned_then_connector_policy_never_flows_downward",
+    "given_normal_crate_root_when_scanned_then_implementation_owners_are_private",
+    "given_supported_contracts_when_named_from_crate_root_then_they_compile",
+    "is_dir",
+    "iter",
+    "join",
+    "map",
+    "next",
+    "normal",
+    "path",
+    "pop",
+    "push",
+    "rust_sources",
+    "split",
+    "std::fs::read_dir",
+    "std::fs::read_to_string",
+    "std::path::Path::new",
+    "to_path_buf"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "Vec::new",
+    "std::path::Path::new"
+  ],
+  "content_hash": "ab92627f7c8f827bf55d9b307394b2c9ad6deae954aebc982da427de5f323e1f",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 13,
+      "name": "accepts_public_contract",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "given_supported_contracts_when_named_from_crate_root_then_they_compile",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "given_normal_crate_root_when_scanned_then_implementation_owners_are_private",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "given_endpoint_spi_when_source_is_scanned_then_connector_policy_never_flows_downward",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 101,
+      "name": "given_connector_authoring_layer_when_scanned_then_it_does_not_duplicate_core_runtime_policy",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "rust_sources",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 89,
+      "text": "let endpoint_root = std::path::Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"src/endpoint\");"
+    },
+    {
+      "line": 91,
+      "text": "let source = std::fs::read_to_string(&path).expect(\"endpoint source\");"
+    },
+    {
+      "line": 94,
+      "text": "\"endpoint SPI must not depend on connector policy: {}\","
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [
+    "CARGO_MANIFEST_DIR"
+  ],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "ab92627f7c8f827bf55d9b307394b2c9ad6deae954aebc982da427de5f323e1f",
+      "lines": [
+        1,
+        149
+      ],
+      "path": "tests/public_api_boundary.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 142,
+      "text": "} else if path.extension().and_then(std::ffi::OsStr::to_str) == Some(\"rs\") {"
+    }
+  ],
+  "file_id": "file-0272-75c29040",
+  "file_kind": "test",
+  "filesystem_io": [
+    {
+      "line": 91,
+      "text": "let source = std::fs::read_to_string(&path).expect(\"endpoint source\");"
+    },
+    {
+      "line": 106,
+      "text": ".map(|path| std::fs::read_to_string(path).expect(\"connector source\"))"
+    },
+    {
+      "line": 138,
+      "text": "for entry in std::fs::read_dir(directory).expect(\"source directory\") {"
+    }
+  ],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "0ec404eb8684f168ec9f321fb68c29b7bb579c2d",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "pocketstation::graph::SignalSpec",
+    "pocketstation::{ ActiveCaptureBackend, AsyncNode, AsyncOperatorFactory, AudioBufferHandle, AudioBufferPool, CallbackCaptureBackend, CaptureDelivery, EndpointAudioFrame, EndpointAudioReceiver, EndpointDriverFactory, EndpointPortInput, EndpointSignalReceiver, NodeDefinition, PreparedCaptureBackend, PreparedEndpointDriver, RunningEndpointDriver, Session, SharedAudioBufferHandle, SharedAudioFrame, SignalEnvelope, SourceDriver, SourceFactory, Stream, }",
+    "std::sync::Arc"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 69,
+      "text": "assert!("
+    },
+    {
+      "line": 75,
+      "text": "assert!("
+    },
+    {
+      "line": 79,
+      "text": "assert!("
+    },
+    {
+      "line": 84,
+      "text": "assert!(public_prelude.contains(\"pub mod graph;\"));"
+    },
+    {
+      "line": 92,
+      "text": "assert!("
+    },
+    {
+      "line": 94,
+      "text": "\"endpoint SPI must not depend on connector policy: {}\","
+    },
+    {
+      "line": 127,
+      "text": "assert!("
+    }
+  ],
+  "language": "Rust",
+  "line_count": 149,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-2973216be17e52591275"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "tests/public_api_boundary.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 13,
+      "name": "accepts_public_contract",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "given_supported_contracts_when_named_from_crate_root_then_they_compile",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "given_normal_crate_root_when_scanned_then_implementation_owners_are_private",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "given_endpoint_spi_when_source_is_scanned_then_connector_policy_never_flows_downward",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 101,
+      "name": "given_connector_authoring_layer_when_scanned_then_it_does_not_duplicate_core_runtime_policy",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "rust_sources",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Compile and source boundary for the normal (non-`internal-testing`) crate."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/installation.md",
+    "docs/getting-started/examples.md",
+    "docs/concepts/conformance.md",
+    "docs/concepts/release-evidence.md",
+    "docs/architecture/overview.md",
+    "docs/internals/abi-conformance.md",
+    "docs/glossary.md",
+    "docs/concepts/cargo-features.md",
+    "RELEASE_NOTES.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/how-to/choose-features.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/reference/features.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/best-practices/evidence-boundaries.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 3,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 36,
+      "text": "accepts_public_contract::<Arc<AudioBufferPool>>();"
+    },
+    {
+      "line": 71,
+      "text": "\"implementation owner leaked from crate root: {forbidden}\""
+    }
+  ],
+  "responsibilities": [
+    "accepts_public_contract",
+    "given_supported_contracts_when_named_from_crate_root_then_they_compile",
+    "given_normal_crate_root_when_scanned_then_implementation_owners_are_private",
+    "given_endpoint_spi_when_source_is_scanned_then_connector_policy_never_flows_downward",
+    "given_connector_authoring_layer_when_scanned_then_it_does_not_duplicate_core_runtime_policy",
+    "rust_sources"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 91,
+      "text": "let source = std::fs::read_to_string(&path).expect(\"endpoint source\");"
+    },
+    {
+      "line": 106,
+      "text": ".map(|path| std::fs::read_to_string(path).expect(\"connector source\"))"
+    },
+    {
+      "line": 138,
+      "text": "for entry in std::fs::read_dir(directory).expect(\"source directory\") {"
+    },
+    {
+      "line": 142,
+      "text": "} else if path.extension().and_then(std::ffi::OsStr::to_str) == Some(\"rs\") {"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

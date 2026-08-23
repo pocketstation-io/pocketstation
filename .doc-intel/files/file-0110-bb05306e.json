@@ -1,0 +1,379 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "application",
+    "bitrate_kbps",
+    "cfg",
+    "channels",
+    "derive",
+    "frame_duration",
+    "frame_ms",
+    "given_stereo_profiles_when_resolved_then_channels_remain_stereo",
+    "is_stereo",
+    "opus_config"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 91,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "9ed939b52b42d7a5eca13300a76378606430da1bdfe28a4cebf65c13a569595a",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 4,
+      "name": "VOICE_BITRATE_KBPS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 6,
+      "name": "MUSIC_STEREO_BITRATE_KBPS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 7,
+      "name": "MUSIC_STEREO_10MS_BITRATE_KBPS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 8,
+      "name": "HIFI_STEREO_BITRATE_KBPS",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 11,
+      "name": "StreamProfile",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 21,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "frame_duration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "application",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "bitrate_kbps",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "frame_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "is_stereo",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 72,
+      "name": "opus_config",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 92,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "given_stereo_profiles_when_resolved_then_channels_remain_stereo",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 11,
+      "name": "StreamProfile",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 21,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "frame_duration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "application",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "bitrate_kbps",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "frame_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "is_stereo",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 72,
+      "name": "opus_config",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ed939b52b42d7a5eca13300a76378606430da1bdfe28a4cebf65c13a569595a",
+      "lines": [
+        1,
+        107
+      ],
+      "path": "src/codec/profile.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0110-bb05306e",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "5ecf1022d9177c35991c3ea7c3c3a7558f522294",
+  "implemented_by": [],
+  "implements": [
+    "StreamProfile"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::codec::{OpusApplication, OpusChannels, OpusConfig, OpusFrameDuration, OpusSampleRate}",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 107,
+  "locks": [],
+  "module": "pocketstation::codec::profile",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/codec/profile.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 4,
+      "name": "VOICE_BITRATE_KBPS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 6,
+      "name": "MUSIC_STEREO_BITRATE_KBPS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 7,
+      "name": "MUSIC_STEREO_10MS_BITRATE_KBPS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 8,
+      "name": "HIFI_STEREO_BITRATE_KBPS",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 92,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "given_stereo_profiles_when_resolved_then_channels_remain_stereo",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 11,
+      "name": "StreamProfile",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 21,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "frame_duration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "application",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "bitrate_kbps",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 59,
+      "name": "frame_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "is_stereo",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 72,
+      "name": "opus_config",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Named transport encoding profiles resolved to concrete Opus configuration."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/opus-codec.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/opus-roundtrip.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/codec.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/frames-and-codec.md",
+    "docs/troubleshooting/opus.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "VOICE_BITRATE_KBPS",
+    "MUSIC_STEREO_BITRATE_KBPS",
+    "MUSIC_STEREO_10MS_BITRATE_KBPS",
+    "HIFI_STEREO_BITRATE_KBPS",
+    "StreamProfile",
+    "channels",
+    "frame_duration",
+    "application",
+    "bitrate_kbps",
+    "frame_ms",
+    "is_stereo",
+    "opus_config",
+    "tests",
+    "given_stereo_profiles_when_resolved_then_channels_remain_stereo"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

@@ -1,0 +1,622 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "EdgeMetricId",
+    "any",
+    "branch_copy_pool_bytes",
+    "branch_copy_pool_capacity_frames",
+    "bytes",
+    "cfg",
+    "derive",
+    "edge_buffer",
+    "error",
+    "find",
+    "headroom",
+    "iter",
+    "len",
+    "map",
+    "metric_id",
+    "node_count",
+    "partition",
+    "saturating_add",
+    "saturating_mul",
+    "total_bytes",
+    "typed_edge"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 134,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 139,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 144,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "eb96dd8c4c6cae67944a96d633d5887391382a240cedf537fb48d62c0e46fd78",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 10,
+      "name": "FRAME_BYTES_MONO_48K",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 12,
+      "name": "EDGE_RING_CAPACITY_FRAMES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "EDGE_RECEIVER_MAX_IN_FLIGHT_FRAMES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "MAX_EDGE_RING_CAPACITY_FRAMES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 21,
+      "name": "PlanError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 33,
+      "name": "EdgeMetricId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 36,
+      "name": "EdgeBufferPlan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "total_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "branch_copy_pool_capacity_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "branch_copy_pool_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 64,
+      "name": "MemoryPlan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "edge_buffer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 78,
+      "name": "PartitionGroup",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 84,
+      "name": "FanOutGroup",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 90,
+      "name": "FanInGroup",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 96,
+      "name": "TypedEdgePlan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 113,
+      "name": "SourceOutputPlan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 121,
+      "name": "RuntimePlan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 135,
+      "name": "node_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "partition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 145,
+      "name": "metric_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 151,
+      "name": "typed_edge",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 10,
+      "name": "FRAME_BYTES_MONO_48K",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 12,
+      "name": "EDGE_RING_CAPACITY_FRAMES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "EDGE_RECEIVER_MAX_IN_FLIGHT_FRAMES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "MAX_EDGE_RING_CAPACITY_FRAMES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 21,
+      "name": "PlanError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 33,
+      "name": "EdgeMetricId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 36,
+      "name": "EdgeBufferPlan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "total_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "branch_copy_pool_capacity_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "branch_copy_pool_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 64,
+      "name": "MemoryPlan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "edge_buffer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 78,
+      "name": "PartitionGroup",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 84,
+      "name": "FanOutGroup",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 90,
+      "name": "FanInGroup",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 96,
+      "name": "TypedEdgePlan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 113,
+      "name": "SourceOutputPlan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 121,
+      "name": "RuntimePlan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 135,
+      "name": "node_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "partition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 145,
+      "name": "metric_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 151,
+      "name": "typed_edge",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 21,
+      "name": "PlanError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "eb96dd8c4c6cae67944a96d633d5887391382a240cedf537fb48d62c0e46fd78",
+      "lines": [
+        1,
+        156
+      ],
+      "path": "src/graph/plan.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0155-bd4731fe",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "9c1b9d48a1c21adfd866a2e3fa6dc6125ecf6a2a",
+  "implemented_by": [],
+  "implements": [
+    "EdgeBufferPlan",
+    "MemoryPlan",
+    "RuntimePlan"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::graph::partition::ExecutionPartition",
+    "crate::graph::ports::{CopyPolicy, EdgeContract, MediaCaps}",
+    "crate::graph::signal::SignalSpec",
+    "crate::graph::spec::{EdgeId, InputPortRef, NodeId, OutputPortRef}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 14,
+      "text": "/// processes that frame. Copy-pool sizing must cover that owned frame in"
+    },
+    {
+      "line": 107,
+      "text": "/// One connected output of a graph root that runtime preparation must feed."
+    }
+  ],
+  "language": "Rust",
+  "line_count": 156,
+  "locks": [],
+  "module": "pocketstation::graph::plan",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-3cba3102bace53b5f813"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/plan.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 10,
+      "name": "FRAME_BYTES_MONO_48K",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 12,
+      "name": "EDGE_RING_CAPACITY_FRAMES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "EDGE_RECEIVER_MAX_IN_FLIGHT_FRAMES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "MAX_EDGE_RING_CAPACITY_FRAMES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 21,
+      "name": "PlanError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 33,
+      "name": "EdgeMetricId",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 36,
+      "name": "EdgeBufferPlan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 44,
+      "name": "total_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "branch_copy_pool_capacity_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "branch_copy_pool_bytes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 64,
+      "name": "MemoryPlan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "edge_buffer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 78,
+      "name": "PartitionGroup",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 84,
+      "name": "FanOutGroup",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 90,
+      "name": "FanInGroup",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 96,
+      "name": "TypedEdgePlan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 113,
+      "name": "SourceOutputPlan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 121,
+      "name": "RuntimePlan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 135,
+      "name": "node_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "partition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 145,
+      "name": "metric_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 151,
+      "name": "typed_edge",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "RuntimePlan \u2014 the lowered, execution-ready shape the planner emits from a verified `GraphIr`. It carries the execution partitions, per-edge buffer sizing, fan-out/fan-in groupings, and stable metric handles the runtime (Wave 6) consumes. No node is executed here; this is the plan, not the run."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "FRAME_BYTES_MONO_48K",
+    "EDGE_RING_CAPACITY_FRAMES",
+    "EDGE_RECEIVER_MAX_IN_FLIGHT_FRAMES",
+    "MAX_EDGE_RING_CAPACITY_FRAMES",
+    "PlanError",
+    "EdgeMetricId",
+    "EdgeBufferPlan",
+    "total_bytes",
+    "branch_copy_pool_capacity_frames",
+    "branch_copy_pool_bytes",
+    "MemoryPlan",
+    "edge_buffer",
+    "PartitionGroup",
+    "FanOutGroup",
+    "FanInGroup",
+    "TypedEdgePlan",
+    "SourceOutputPlan",
+    "RuntimePlan",
+    "node_count",
+    "partition",
+    "metric_id",
+    "typed_edge"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

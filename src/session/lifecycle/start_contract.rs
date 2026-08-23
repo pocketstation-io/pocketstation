@@ -100,98 +100,156 @@ pub struct SessionStartCancellation {
 }
 
 impl SessionStartCancellation {
+    #[doc = "Requests the state transition represented by `SessionStartCancellation`."]
     pub fn request(&self) {
         self.requested.store(true, Ordering::Release);
     }
 
+    #[doc = "Returns whether requested applies to `SessionStartCancellation`."]
     pub fn is_requested(&self) -> bool {
         self.requested.load(Ordering::Acquire)
     }
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as session start error."]
 pub enum SessionStartError {
     #[error("invalid Session start options: {reason}")]
-    InvalidOptions { reason: &'static str },
+    #[doc = "Reports invalid options."]
+    InvalidOptions {
+        #[doc = "Carries the reason reported by `InvalidOptions`."]
+        reason: &'static str,
+    },
     #[error("Session requires exactly one application and one microphone source")]
+    #[doc = "Reports unsupported source topology."]
     UnsupportedSourceTopology,
     #[error("external source preparation failed: {message}")]
+    #[doc = "Reports external source prepare."]
     ExternalSourcePrepare {
+        #[doc = "Carries the diagnostic message reported by `ExternalSourcePrepare`."]
         message: String,
+        #[doc = "Counts the total number of rollback failures observed by `ExternalSourcePrepare`."]
         rollback_failures_total: u64,
     },
     #[error("external source audio ingress failed: {message}")]
+    #[doc = "Reports external audio bridge."]
     ExternalAudioBridge {
+        #[doc = "Carries the diagnostic message reported by `ExternalAudioBridge`."]
         message: String,
+        #[doc = "Counts the total number of rollback failures observed by `ExternalAudioBridge`."]
         rollback_failures_total: u64,
     },
     #[error("generated audio reentry failed: {message}")]
+    #[doc = "Reports generated audio bridge."]
     GeneratedAudioBridge {
+        #[doc = "Carries the diagnostic message reported by `GeneratedAudioBridge`."]
         message: String,
+        #[doc = "Counts the total number of rollback failures observed by `GeneratedAudioBridge`."]
         rollback_failures_total: u64,
     },
     #[error("external source start failed: {message}")]
+    #[doc = "Reports external source start."]
     ExternalSourceStart {
+        #[doc = "Carries the diagnostic message reported by `ExternalSourceStart`."]
         message: String,
+        #[doc = "Counts the total number of rollback failures observed by `ExternalSourceStart`."]
         rollback_failures_total: u64,
     },
     #[error("async operator runtime host could not start: {message}")]
+    #[doc = "Reports operator runtime host."]
     OperatorRuntimeHost {
+        #[doc = "Carries the diagnostic message reported by `OperatorRuntimeHost`."]
         message: String,
+        #[doc = "Counts the total number of rollback failures observed by `OperatorRuntimeHost`."]
         rollback_failures_total: u64,
     },
     #[error("operator {operator_instance_id:?} preparation failed: {message}")]
+    #[doc = "Reports operator prepare."]
     OperatorPrepare {
+        #[doc = "Identifies the operator instance associated with `OperatorPrepare`."]
         operator_instance_id: OperatorInstanceId,
+        #[doc = "Carries the diagnostic message reported by `OperatorPrepare`."]
         message: String,
+        #[doc = "Counts the total number of rollback failures observed by `OperatorPrepare`."]
         rollback_failures_total: u64,
     },
     #[error("endpoint {endpoint_id:?} declaration is absent")]
-    MissingEndpointDeclaration { endpoint_id: EndpointId },
+    #[doc = "Reports missing endpoint declaration."]
+    MissingEndpointDeclaration {
+        #[doc = "Identifies the endpoint associated with `MissingEndpointDeclaration`."]
+        endpoint_id: EndpointId,
+    },
     #[error("endpoint preparation failed: {source}")]
+    #[doc = "Reports endpoint prepare."]
     EndpointPrepare {
         #[source]
+        #[doc = "Carries the source associated with `EndpointPrepare`."]
         source: EndpointPrepareError,
+        #[doc = "Counts the total number of rollback failures observed by `EndpointPrepare`."]
         rollback_failures_total: u64,
     },
     #[error("capture preparation failed for stem {stem_id:?}: {source}")]
+    #[doc = "Reports capture prepare."]
     CapturePrepare {
+        #[doc = "Identifies the stem associated with `CapturePrepare`."]
         stem_id: StemId,
         #[source]
+        #[doc = "Carries the source associated with `CapturePrepare`."]
         source: CaptureError,
+        #[doc = "Counts the total number of rollback failures observed by `CapturePrepare`."]
         rollback_failures_total: u64,
     },
     #[error("capture open failed for stem {stem_id:?}: {source}")]
+    #[doc = "Reports capture open."]
     CaptureOpen {
+        #[doc = "Identifies the stem associated with `CaptureOpen`."]
         stem_id: StemId,
         #[source]
+        #[doc = "Carries the source associated with `CaptureOpen`."]
         source: CaptureError,
+        #[doc = "Counts the total number of rollback failures observed by `CaptureOpen`."]
         rollback_failures_total: u64,
     },
     #[error("endpoint start failed: {source}")]
+    #[doc = "Reports endpoint start."]
     EndpointStart {
         #[source]
+        #[doc = "Carries the source associated with `EndpointStart`."]
         source: EndpointStartFailure,
+        #[doc = "Counts the total number of rollback failures observed by `EndpointStart`."]
         rollback_failures_total: u64,
     },
     #[error("runtime runner preparation failed: {source}")]
+    #[doc = "Reports runtime runner."]
     RuntimeRunner {
         #[source]
+        #[doc = "Carries the source associated with `RuntimeRunner`."]
         source: PlanRunnerError,
+        #[doc = "Counts the total number of rollback failures observed by `RuntimeRunner`."]
         rollback_failures_total: u64,
     },
     #[error("runtime worker thread could not start: {message}")]
+    #[doc = "Reports runtime worker spawn."]
     RuntimeWorkerSpawn {
+        #[doc = "Carries the diagnostic message reported by `RuntimeWorkerSpawn`."]
         message: String,
+        #[doc = "Counts the total number of rollback failures observed by `RuntimeWorkerSpawn`."]
         rollback_failures_total: u64,
     },
     #[error("runtime worker did not become ready: {message}")]
+    #[doc = "Reports runtime worker ready."]
     RuntimeWorkerReady {
+        #[doc = "Carries the diagnostic message reported by `RuntimeWorkerReady`."]
         message: String,
+        #[doc = "Counts the total number of rollback failures observed by `RuntimeWorkerReady`."]
         rollback_failures_total: u64,
     },
     #[error("Session start was cancelled")]
-    Cancelled { rollback_failures_total: u64 },
+    #[doc = "Indicates that the operation was cancelled."]
+    Cancelled {
+        #[doc = "Counts the total number of rollback failures observed by `Cancelled`."]
+        rollback_failures_total: u64,
+    },
 }
 
 impl SessionStartError {
@@ -260,6 +318,7 @@ impl SessionStartError {
 }
 
 #[derive(Debug)]
+#[doc = "Reports a session start failure."]
 pub struct SessionStartFailure {
     pub(super) error: SessionStartError,
     pub(super) event_receiver: Option<SessionEventReceiver>,
@@ -305,6 +364,7 @@ impl std::error::Error for SessionStartFailure {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Reports the structured session stop outcome."]
 pub struct SessionStopOutcome {
     pub(super) runtime_worker_panicked: bool,
     pub(super) capture_finalization_failures_total: u64,
@@ -317,6 +377,7 @@ pub struct SessionStopOutcome {
 }
 
 impl SessionStopOutcome {
+    #[doc = "Returns whether success applies to `SessionStopOutcome`."]
     pub fn is_success(&self) -> bool {
         !self.runtime_worker_panicked
             && self.capture_finalization_failures_total == 0
@@ -327,34 +388,42 @@ impl SessionStopOutcome {
             && self.source_send_rejections_total == 0
     }
 
+    #[doc = "Returns the capture finalization failures total associated with `SessionStopOutcome`."]
     pub const fn capture_finalization_failures_total(&self) -> u64 {
         self.capture_finalization_failures_total
     }
 
+    #[doc = "Returns the endpoint finalization failures total associated with `SessionStopOutcome`."]
     pub const fn endpoint_finalization_failures_total(&self) -> u64 {
         self.endpoint_finalization_failures_total
     }
 
+    #[doc = "Returns the operator finalization failures total associated with `SessionStopOutcome`."]
     pub const fn operator_finalization_failures_total(&self) -> u64 {
         self.operator_finalization_failures_total
     }
 
+    #[doc = "Returns the runtime worker panicked associated with `SessionStopOutcome`."]
     pub const fn runtime_worker_panicked(&self) -> bool {
         self.runtime_worker_panicked
     }
 
+    #[doc = "Returns the runtime failures total associated with `SessionStopOutcome`."]
     pub const fn runtime_failures_total(&self) -> u64 {
         self.runtime_failures_total
     }
 
+    #[doc = "Returns the lineage failures total associated with `SessionStopOutcome`."]
     pub const fn lineage_failures_total(&self) -> u64 {
         self.lineage_failures_total
     }
 
+    #[doc = "Returns the source send rejections total associated with `SessionStopOutcome`."]
     pub const fn source_send_rejections_total(&self) -> u64 {
         self.source_send_rejections_total
     }
 
+    #[doc = "Returns the runtime events total associated with `SessionStopOutcome`."]
     pub const fn runtime_events_total(&self) -> u64 {
         self.runtime_events_total
     }

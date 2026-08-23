@@ -1,0 +1,600 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Command::new",
+    "Duration::from_millis",
+    "Duration::from_secs",
+    "EndpointDescriptor::new",
+    "Instant::now",
+    "NodeTypeId::from",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "Path::new",
+    "Session::new",
+    "SourceConfiguration::default",
+    "SourceTypeId::new",
+    "String::from_utf8_lossy",
+    "arg",
+    "canonical_path",
+    "code",
+    "compile_plugin",
+    "connect",
+    "contains",
+    "count",
+    "drop",
+    "endpoint",
+    "env",
+    "expect",
+    "expect_err",
+    "external_source_metrics",
+    "fs::read_to_string",
+    "generation",
+    "given_acquired_malformed_registration_when_loaded_then_context_is_destroyed_once",
+    "given_duplicate_library_import_when_loaded_then_second_import_is_transactional",
+    "given_library_without_entrypoint_when_loaded_then_typed_error_is_returned",
+    "given_relative_library_path_when_loaded_then_ambient_search_is_rejected",
+    "given_unsupported_library_abi_when_loaded_then_registration_never_mutates_session",
+    "given_valid_native_library_when_loaded_then_canonical_session_executes_complete_pipeline",
+    "id",
+    "input",
+    "is_absolute",
+    "is_empty",
+    "is_success",
+    "join",
+    "kind",
+    "len",
+    "load_native_extension_library",
+    "marker_text",
+    "matches",
+    "message",
+    "operator",
+    "operator_metrics",
+    "output",
+    "path",
+    "registrations",
+    "revision",
+    "send_to",
+    "source",
+    "start",
+    "std::thread::sleep",
+    "stop",
+    "success",
+    "tempfile::tempdir",
+    "to_owned",
+    "unwrap_or_default"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 30,
+      "text": "std::env::consts::DLL_PREFIX,"
+    },
+    {
+      "line": 32,
+      "text": "std::env::consts::DLL_SUFFIX"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Command::new",
+    "EndpointDescriptor::new",
+    "NodeTypeId::from",
+    "Operator::new",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "Path::new",
+    "Session::new",
+    "SourceTypeId::new"
+  ],
+  "content_hash": "f4ae9ab54d363aa7fd30d7b7fa36d377031e738d17433773fe2bc5a1240b33cf",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 14,
+      "name": "SOURCE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "ENDPOINT_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 18,
+      "name": "CompiledPlugin",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "compile_plugin",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "marker_text",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "given_relative_library_path_when_loaded_then_ambient_search_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "given_library_without_entrypoint_when_loaded_then_typed_error_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 94,
+      "name": "given_unsupported_library_abi_when_loaded_then_registration_never_mutates_session",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 109,
+      "name": "given_acquired_malformed_registration_when_loaded_then_context_is_destroyed_once",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 126,
+      "name": "given_valid_native_library_when_loaded_then_canonical_session_executes_complete_pipeline",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 193,
+      "name": "given_duplicate_library_import_when_loaded_then_second_import_is_transactional",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 185,
+      "text": "drop(running);"
+    },
+    {
+      "line": 208,
+      "text": "drop(session);"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 17,
+      "text": "const ENDPOINT_ID: &str = \"dev.pocketstation.fixture.endpoint.v1\";"
+    },
+    {
+      "line": 161,
+      "text": "let endpoint = session"
+    },
+    {
+      "line": 162,
+      "text": ".endpoint(EndpointDescriptor::new("
+    },
+    {
+      "line": 166,
+      "text": ".expect(\"declare acquired endpoint\");"
+    },
+    {
+      "line": 170,
+      "text": ".send_to(endpoint, Some(\"in\".to_owned()))"
+    },
+    {
+      "line": 171,
+      "text": ".expect(\"operator to endpoint route\");"
+    },
+    {
+      "line": 180,
+      "text": "\"acquired endpoint did not consume the source/operator payload\""
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [
+    "CARGO_MANIFEST_DIR"
+  ],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "f4ae9ab54d363aa7fd30d7b7fa36d377031e738d17433773fe2bc5a1240b33cf",
+      "lines": [
+        1,
+        214
+      ],
+      "path": "tests/native_extension_library.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 70,
+      "text": "let error = unsafe { Session::new().load_native_extension_library(\"fixture-extension\") }"
+    },
+    {
+      "line": 83,
+      "text": "let error = unsafe { Session::new().load_native_extension_library(&plugin.path) }"
+    },
+    {
+      "line": 98,
+      "text": "let error = unsafe { session.load_native_extension_library(&plugin.path) }"
+    },
+    {
+      "line": 99,
+      "text": ".expect_err(\"unsupported ABI must fail before acquisition\");"
+    },
+    {
+      "line": 113,
+      "text": "let error = unsafe { Session::new().load_native_extension_library(&plugin.path) }"
+    },
+    {
+      "line": 129,
+      "text": "// SAFETY: the test compiled this ABI-conformant local fixture and controls"
+    },
+    {
+      "line": 131,
+      "text": "let receipt = unsafe { session.load_native_extension_library(&plugin.path) }"
+    },
+    {
+      "line": 196,
+      "text": "// SAFETY: the test compiled this ABI-conformant local fixture and controls"
+    },
+    {
+      "line": 198,
+      "text": "unsafe { session.load_native_extension_library(&plugin.path) }.expect(\"first import\");"
+    },
+    {
+      "line": 202,
+      "text": "let error = unsafe { session.load_native_extension_library(&plugin.path) }"
+    }
+  ],
+  "file_id": "file-0269-84268e51",
+  "file_kind": "test",
+  "filesystem_io": [
+    {
+      "line": 64,
+      "text": "fs::read_to_string(path).unwrap_or_default()"
+    }
+  ],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "3865b69fa0044f393d71c66bbf3bb9783b8d6a8b",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "pocketstation::native_extension::{ NativeExtensionKind, NativeExtensionLibraryErrorCode, EXTENSION_LIBRARY_ENTRYPOINT_V1, }",
+    "pocketstation::{ EndpointDescriptor, NodeTypeId, Operator, OperatorConfiguration, OperatorId, Session, SourceConfiguration, SourceTypeId, }",
+    "std::fs",
+    "std::path::{Path, PathBuf}",
+    "std::process::Command",
+    "std::time::{Duration, Instant}",
+    "tempfile::TempDir"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 50,
+      "text": "assert!("
+    },
+    {
+      "line": 71,
+      "text": ".expect_err(\"relative library path must be rejected\");"
+    },
+    {
+      "line": 84,
+      "text": ".expect_err(\"missing extension entrypoint must fail\");"
+    },
+    {
+      "line": 90,
+      "text": "assert!(error.message().contains(EXTENSION_LIBRARY_ENTRYPOINT_V1));"
+    },
+    {
+      "line": 99,
+      "text": ".expect_err(\"unsupported ABI must fail before acquisition\");"
+    },
+    {
+      "line": 105,
+      "text": "assert!(marker_text(&plugin.marker).is_empty());"
+    },
+    {
+      "line": 114,
+      "text": ".expect_err(\"malformed acquired registration must fail\");"
+    },
+    {
+      "line": 134,
+      "text": "assert!(receipt.canonical_path().is_absolute());"
+    },
+    {
+      "line": 178,
+      "text": "assert!("
+    },
+    {
+      "line": 184,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 203,
+      "text": ".expect_err(\"second import must fail atomically\");"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 214,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [
+    {
+      "line": 159,
+      "text": ".connect(operator.input(\"in\").expect(\"operator input\"))"
+    }
+  ],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "tests/native_extension_library.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 14,
+      "name": "SOURCE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "ENDPOINT_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 18,
+      "name": "CompiledPlugin",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "compile_plugin",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "marker_text",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "given_relative_library_path_when_loaded_then_ambient_search_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 80,
+      "name": "given_library_without_entrypoint_when_loaded_then_typed_error_is_returned",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 94,
+      "name": "given_unsupported_library_abi_when_loaded_then_registration_never_mutates_session",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 109,
+      "name": "given_acquired_malformed_registration_when_loaded_then_context_is_destroyed_once",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 126,
+      "name": "given_valid_native_library_when_loaded_then_canonical_session_executes_complete_pipeline",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 193,
+      "name": "given_duplicate_library_import_when_loaded_then_second_import_is_transactional",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 3,
+      "text": "use std::process::Command;"
+    },
+    {
+      "line": 36,
+      "text": "let mut command = Command::new(\"rustc\");"
+    }
+  ],
+  "protocol_messages": [
+    {
+      "line": 3,
+      "text": "use std::process::Command;"
+    },
+    {
+      "line": 36,
+      "text": "let mut command = Command::new(\"rustc\");"
+    }
+  ],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `not_applicable`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/native-extensions.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/extensions.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/native-extensions.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/extensions-and-abi.md",
+    "docs/troubleshooting/native-extension-load.md",
+    "docs/best-practices/native-extension-trust.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "SOURCE_ID",
+    "OPERATOR_ID",
+    "ENDPOINT_ID",
+    "CompiledPlugin",
+    "compile_plugin",
+    "marker_text",
+    "given_relative_library_path_when_loaded_then_ambient_search_is_rejected",
+    "given_library_without_entrypoint_when_loaded_then_typed_error_is_returned",
+    "given_unsupported_library_abi_when_loaded_then_registration_never_mutates_session",
+    "given_acquired_malformed_registration_when_loaded_then_context_is_destroyed_once",
+    "given_valid_native_library_when_loaded_then_canonical_session_executes_complete_pipeline",
+    "given_duplicate_library_import_when_loaded_then_second_import_is_transactional"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 184,
+      "text": "assert!(running.stop().is_success());"
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 64,
+      "text": "fs::read_to_string(path).unwrap_or_default()"
+    },
+    {
+      "line": 159,
+      "text": ".connect(operator.input(\"in\").expect(\"operator input\"))"
+    },
+    {
+      "line": 3,
+      "text": "use std::process::Command;"
+    },
+    {
+      "line": 36,
+      "text": "let mut command = Command::new(\"rustc\");"
+    },
+    {
+      "line": 70,
+      "text": "let error = unsafe { Session::new().load_native_extension_library(\"fixture-extension\") }"
+    },
+    {
+      "line": 83,
+      "text": "let error = unsafe { Session::new().load_native_extension_library(&plugin.path) }"
+    },
+    {
+      "line": 98,
+      "text": "let error = unsafe { session.load_native_extension_library(&plugin.path) }"
+    },
+    {
+      "line": 99,
+      "text": ".expect_err(\"unsupported ABI must fail before acquisition\");"
+    },
+    {
+      "line": 113,
+      "text": "let error = unsafe { Session::new().load_native_extension_library(&plugin.path) }"
+    },
+    {
+      "line": 129,
+      "text": "// SAFETY: the test compiled this ABI-conformant local fixture and controls"
+    },
+    {
+      "line": 131,
+      "text": "let receipt = unsafe { session.load_native_extension_library(&plugin.path) }"
+    },
+    {
+      "line": 196,
+      "text": "// SAFETY: the test compiled this ABI-conformant local fixture and controls"
+    },
+    {
+      "line": 198,
+      "text": "unsafe { session.load_native_extension_library(&plugin.path) }.expect(\"first import\");"
+    },
+    {
+      "line": 202,
+      "text": "let error = unsafe { session.load_native_extension_library(&plugin.path) }"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 173,
+      "text": "let mut running = session.start().expect(\"start canonical Session\");"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 176,
+      "text": "std::thread::sleep(Duration::from_millis(10));"
+    }
+  ],
+  "visibility": "private_or_not_applicable"
+}

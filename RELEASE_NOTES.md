@@ -1,3 +1,18 @@
+# Release and version information
+
+<!-- claims: CLM-DOC-057-CAP-001,CLM-DOC-057-CAP-002,CLM-DOC-057-SOURCE-001 -->
+
+PocketStation's package version at the analyzed snapshot is 1.1.1. Release automation and package metadata remain the publication authority; this page preserves the repository's declared release record.
+
+## Scope
+
+- **Install and feature-select the crate.** Add PocketStation to a Cargo package and choose native capture, contracts-only, conformance, or internal test features.
+- **Build and publish repository artifacts.** Run architecture, protocol, package, platform, and release checks used by the repository publication workflow.
+
+These statements describe repository contracts at the documented snapshot. They do not extend platform qualification, performance, retry, or delivery guarantees beyond the native API contracts and executable evidence.
+
+## Snapshot release record
+
 # PocketStation 1.x release notes
 
 PocketStation 1.x is the compatible release line for one source-aware desktop
@@ -64,3 +79,27 @@ Realtime callbacks remain allocation-free, lock-free, blocking-free,
 async-free, log-free, and panic-free by contract and accepted gates. Evidence
 classifications remain exact; 1.x does not claim universal platform parity or
 overall performance superiority.
+
+## Evidence scope
+
+Release notes are declared evidence. They do not replace executable checks, physical qualification artifacts, or the compatibility baseline.
+
+## Related documentation
+
+- [Glossary](/docs/glossary.md)
+- [PocketStation](/README.md)
+- [Behavior evidence index](/docs/reference/behavior-evidence.md)
+- [Rust API reference](/docs/reference/rust-api.md)
+- [Cargo features and build surfaces](/docs/concepts/cargo-features.md)
+- [Install PocketStation](/docs/getting-started/installation.md)
+- [PocketStation documentation](/docs/README.md)
+- [Release evidence boundary](/docs/concepts/release-evidence.md)
+
+## Evidence boundary
+
+This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+
+- `Cargo.toml:1-180` (`DIRECT`)
+- `.github/workflows/publish.yml:1-161` (`DIRECT`)
+
+A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.

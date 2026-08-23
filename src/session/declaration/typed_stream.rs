@@ -13,10 +13,12 @@ use crate::session::{
 /// `SignalSpec` remains the runtime and cross-language authority. Rust type
 /// identity is never serialized or exposed through the C ABI.
 pub trait StreamSignal: Send + Sync + 'static {
+    #[doc = "Returns the signal spec associated with `StreamSignal`."]
     fn signal_spec() -> SignalSpec;
 }
 
 #[derive(Debug, Clone)]
+#[doc = "Represents typed operator in the PocketStation API."]
 pub struct TypedOperator<Input, Output> {
     operator: Operator,
     input_port: String,
@@ -27,6 +29,7 @@ pub struct TypedOperator<Input, Output> {
 }
 
 impl<Input: StreamSignal, Output: StreamSignal> TypedOperator<Input, Output> {
+    #[doc = "Creates a new `TypedOperator`."]
     pub fn new(
         operator: Operator,
         manifest: &AsyncOperatorManifest,
@@ -68,22 +71,27 @@ impl<Input: StreamSignal, Output: StreamSignal> TypedOperator<Input, Output> {
         })
     }
 
+    #[doc = "Returns the operator identifier associated with `TypedOperator`."]
     pub const fn operator_id(&self) -> &OperatorId {
         self.operator.operator_id()
     }
 
+    #[doc = "Returns the input port associated with `TypedOperator`."]
     pub fn input_port(&self) -> &str {
         &self.input_port
     }
 
+    #[doc = "Returns the output port associated with `TypedOperator`."]
     pub fn output_port(&self) -> &str {
         &self.output_port
     }
 
+    #[doc = "Returns the input spec associated with `TypedOperator`."]
     pub const fn input_spec(&self) -> &SignalSpec {
         &self.input_spec
     }
 
+    #[doc = "Returns the output spec associated with `TypedOperator`."]
     pub const fn output_spec(&self) -> &SignalSpec {
         &self.output_spec
     }
@@ -100,6 +108,7 @@ pub struct Stream<Signal> {
 }
 
 impl<Signal: StreamSignal> Stream<Signal> {
+    #[doc = "Creates `Stream` from stem."]
     pub fn from_stem(stem: StemHandle) -> Result<Self, TypedStreamError> {
         let signal_spec = Signal::signal_spec();
         validate_signal(&signal_spec)?;
@@ -125,10 +134,12 @@ impl<Signal: StreamSignal> Stream<Signal> {
         })
     }
 
+    #[doc = "Returns the signal spec associated with `Stream`."]
     pub const fn signal_spec(&self) -> &SignalSpec {
         &self.signal_spec
     }
 
+    #[doc = "Routes the current stream through a declared operator using `Stream`."]
     pub fn through<Output: StreamSignal>(
         self,
         operator: TypedOperator<Signal, Output>,
@@ -148,6 +159,7 @@ impl<Signal: StreamSignal> Stream<Signal> {
         })
     }
 
+    #[doc = "Sends a value through `Stream`."]
     pub fn send(&self, endpoint: EndpointHandle) -> Result<RouteId, TypedStreamError> {
         self.handle.send_to(endpoint, None).map_err(Into::into)
     }
@@ -182,33 +194,61 @@ fn validate_signal(signal: &SignalSpec) -> Result<(), TypedStreamError> {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as typed stream error."]
 pub enum TypedStreamError {
     #[error("typed stream signal is invalid: {0}")]
+    #[doc = "Reports invalid signal."]
     InvalidSignal(String),
     #[error("typed operator manifest is invalid: {0}")]
+    #[doc = "Reports invalid manifest."]
     InvalidManifest(String),
     #[error("operator declaration '{declaration}' does not match manifest '{manifest}'")]
+    #[doc = "Reports operator identity mismatch."]
     OperatorIdentityMismatch {
+        #[doc = "Stores the declaration associated with `OperatorIdentityMismatch`."]
         declaration: String,
+        #[doc = "Stores the manifest associated with `OperatorIdentityMismatch`."]
         manifest: String,
     },
     #[error("typed stream port '{port}' is not declared for direction {direction:?}")]
+    #[doc = "Reports unknown port."]
     UnknownPort {
+        #[doc = "Stores the direction associated with `UnknownPort`."]
         direction: PortDirection,
+        #[doc = "Stores the port associated with `UnknownPort`."]
         port: String,
     },
     #[error("typed stream manifest has no port for direction {direction:?}")]
-    MissingPort { direction: PortDirection },
+    #[doc = "Reports missing port."]
+    MissingPort {
+        #[doc = "Stores the direction associated with `MissingPort`."]
+        direction: PortDirection,
+    },
     #[error("typed stream manifest requires explicit port selection for direction {direction:?}")]
-    AmbiguousPort { direction: PortDirection },
+    #[doc = "Reports ambiguous port."]
+    AmbiguousPort {
+        #[doc = "Stores the direction associated with `AmbiguousPort`."]
+        direction: PortDirection,
+    },
     #[error("typed operator input marker does not match port '{port}'")]
-    InputSignalMismatch { port: String },
+    #[doc = "Reports input signal mismatch."]
+    InputSignalMismatch {
+        #[doc = "Stores the port associated with `InputSignalMismatch`."]
+        port: String,
+    },
     #[error("typed operator output marker does not match port '{port}'")]
-    OutputSignalMismatch { port: String },
+    #[doc = "Reports output signal mismatch."]
+    OutputSignalMismatch {
+        #[doc = "Stores the port associated with `OutputSignalMismatch`."]
+        port: String,
+    },
     #[error("typed capture stem markers must describe PCM audio")]
+    #[doc = "Reports stem requires PCM audio."]
     StemRequiresPcmAudio,
     #[error("typed stream output does not match the next operator input")]
+    #[doc = "Reports stream input mismatch."]
     StreamInputMismatch,
     #[error(transparent)]
+    #[doc = "Reports session."]
     Session(#[from] SessionError),
 }

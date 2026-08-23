@@ -1,0 +1,883 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "Arc::try_unwrap",
+    "AtomicBool::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "ClockDomainId",
+    "Duration::from_millis",
+    "EdgeContract::bounded_async",
+    "FrameLineage::try_new",
+    "GeneratedAudioBridge::spawn",
+    "GeneratedAudioBridgeObservationState::default",
+    "LineagedAudioFrame::new",
+    "PlanRunnerCancellation::new",
+    "SampleSpec::new",
+    "SessionId",
+    "SignalEnvelope::from_audio",
+    "SignalPayload::Audio",
+    "SourceId",
+    "StemId",
+    "StreamId",
+    "TypedEdgeFanout::new",
+    "acquire",
+    "as_slice",
+    "bridge_specification",
+    "cancel_and_join",
+    "cfg",
+    "checked_div",
+    "clone",
+    "contains",
+    "crate::graph::NodeId",
+    "derive",
+    "drop",
+    "error",
+    "expect",
+    "fetch_add",
+    "finish_and_join",
+    "given_full_audio_ingress_when_bridge_sends_then_rejection_is_counted_exactly",
+    "given_operator_audio_when_bridged_then_owned_frame_enters_bounded_plan_source",
+    "given_retained_audio_ingress_when_pool_is_exhausted_then_loss_is_counted_exactly",
+    "is_abandoned",
+    "is_err",
+    "join",
+    "len",
+    "let",
+    "load",
+    "map",
+    "map_err",
+    "map_or",
+    "name",
+    "observation_handle",
+    "observations",
+    "or",
+    "plan_source_channel",
+    "pub",
+    "publish",
+    "publish_audio",
+    "recv",
+    "register_current_thread",
+    "remove",
+    "run_bridge",
+    "saturating_add",
+    "saturating_mul",
+    "snapshot",
+    "spawn",
+    "stem_id",
+    "store",
+    "take",
+    "thread::Builder::new",
+    "thread::park_timeout",
+    "thread::sleep",
+    "to_owned",
+    "try_copy_from_slice",
+    "try_send",
+    "u64::from",
+    "u64::try_from",
+    "unwrap_or",
+    "usize::from",
+    "validate"
+  ],
+  "cancellation_behavior": [],
+  "channels": [
+    {
+      "line": 47,
+      "text": "#[error(\"generated-audio bridge sample rate and channel count must be non-zero\")]"
+    },
+    {
+      "line": 341,
+      "text": "plan_source_channel(crate::graph::NodeId(1), 2, cancellation).expect(\"source channel\");"
+    },
+    {
+      "line": 465,
+      "text": "plan_source_channel(crate::graph::NodeId(1), 4, cancellation).expect(\"source channel\");"
+    },
+    {
+      "line": 503,
+      "text": "plan_source_channel(crate::graph::NodeId(1), 1, cancellation).expect(\"source channel\");"
+    }
+  ],
+  "configuration_read": [
+    {
+      "line": 328,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AtomicBool::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "FrameLineage::try_new",
+    "LineagedAudioFrame::new",
+    "PlanRunnerCancellation::new",
+    "SampleSpec::new",
+    "TypedEdgeFanout::new",
+    "thread::Builder::new",
+    "u64::from",
+    "u64::try_from",
+    "usize::from"
+  ],
+  "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "LOST_WAKEUP_FALLBACK_INTERVAL",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 19,
+      "name": "GeneratedAudioBridgeSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 46,
+      "name": "GeneratedAudioBridgeStartError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 58,
+      "name": "GeneratedAudioBridgeObservationState",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 71,
+      "name": "GeneratedAudioBridgeObservations",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 88,
+      "name": "GeneratedAudioBridgeObservationHandle",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 122,
+      "name": "GeneratedAudioBridge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "spawn",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 169,
+      "name": "stem_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 173,
+      "name": "observations",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 177,
+      "name": "finish_and_join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 183,
+      "name": "cancel_and_join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 193,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 200,
+      "name": "run_bridge",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 329,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 338,
+      "name": "given_operator_audio_when_bridged_then_owned_frame_enters_bounded_plan_source",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 409,
+      "name": "publish_audio",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 447,
+      "name": "bridge_specification",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 462,
+      "name": "given_retained_audio_ingress_when_pool_is_exhausted_then_loss_is_counted_exactly",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 500,
+      "name": "given_full_audio_ingress_when_bridge_sends_then_rejection_is_counted_exactly",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 193,
+      "text": "fn drop(&mut self) {"
+    },
+    {
+      "line": 315,
+      "text": "drop(frame);"
+    },
+    {
+      "line": 395,
+      "text": "drop(fanout);"
+    },
+    {
+      "line": 478,
+      "text": "drop(fanout);"
+    },
+    {
+      "line": 516,
+      "text": "drop(fanout);"
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 19,
+      "name": "GeneratedAudioBridgeSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 46,
+      "name": "GeneratedAudioBridgeStartError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 71,
+      "name": "GeneratedAudioBridgeObservations",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 88,
+      "name": "GeneratedAudioBridgeObservationHandle",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 122,
+      "name": "GeneratedAudioBridge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "spawn",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 169,
+      "name": "stem_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 173,
+      "name": "observations",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 177,
+      "name": "finish_and_join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 183,
+      "name": "cancel_and_join",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 33,
+      "text": "return Err(GeneratedAudioBridgeStartError::InvalidSampleSpec);"
+    },
+    {
+      "line": 36,
+      "text": "return Err(GeneratedAudioBridgeStartError::ZeroFrameSamples);"
+    },
+    {
+      "line": 39,
+      "text": "return Err(GeneratedAudioBridgeStartError::InvalidPoolSlots);"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 46,
+      "name": "GeneratedAudioBridgeStartError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 156,
+      "text": ".map_err(|_| GeneratedAudioBridgeStartError::ThreadStart)?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 156,
+      "text": ".map_err(|_| GeneratedAudioBridgeStartError::ThreadStart)?;"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 156,
+      "text": ".map_err(|_| GeneratedAudioBridgeStartError::ThreadStart)?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "78258bc408f46223036bd4acb5bff217a46c846a8200ffd658ccf46c51952242",
+      "lines": [
+        1,
+        529
+      ],
+      "path": "src/runtime/bridge/audio.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0184-3b0d7adc",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "8a1fe52f113a0909092d27af59d9e27655902c86",
+  "implemented_by": [],
+  "implements": [
+    "GeneratedAudioBridgeSpec",
+    "GeneratedAudioBridgeObservationHandle",
+    "GeneratedAudioBridge",
+    "Drop for GeneratedAudioBridge"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleSpec, SessionId, SourceId, StemId, StreamId, POOL_MAX_SLOTS, }",
+    "crate::frame::{SampleFormat, SAMPLE_RATE_HZ}",
+    "crate::graph::{EdgeContract, SignalEnvelope}",
+    "crate::graph::{SignalEnvelope, SignalPayload}",
+    "crate::runtime::{ PlanSourceSendError, PlanSourceSendOutcome, PlanSourceSender, TypedEdgeObservationHandle, TypedEdgeObservations, TypedEdgeReceiver, }",
+    "crate::runtime::{ plan_source_channel, PlanRunnerCancellation, TypedEdgeBranchSpec, TypedEdgeFanout, }",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "std::thread::{self, JoinHandle}",
+    "std::time::Duration",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 47,
+      "text": "#[error(\"generated-audio bridge sample rate and channel count must be non-zero\")]"
+    },
+    {
+      "line": 49,
+      "text": "#[error(\"generated-audio bridge samples per frame must be non-zero\")]"
+    },
+    {
+      "line": 51,
+      "text": "#[error(\"generated-audio bridge pool slots must be between 1 and 64\")]"
+    },
+    {
+      "line": 407,
+      "text": "assert!(observations.joined);"
+    },
+    {
+      "line": 490,
+      "text": "assert!("
+    },
+    {
+      "line": 496,
+      "text": "assert!(observations.joined);"
+    },
+    {
+      "line": 526,
+      "text": "assert!(observations.joined);"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 529,
+  "locks": [],
+  "module": "pocketstation::runtime::bridge::audio",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-e742bd4fc23f218a902b",
+    "pattern-c60fcfcff3e4147605f6"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/runtime/bridge/audio.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "LOST_WAKEUP_FALLBACK_INTERVAL",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 58,
+      "name": "GeneratedAudioBridgeObservationState",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 193,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 200,
+      "name": "run_bridge",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 329,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 338,
+      "name": "given_operator_audio_when_bridged_then_owned_frame_enters_bounded_plan_source",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 409,
+      "name": "publish_audio",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 447,
+      "name": "bridge_specification",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 462,
+      "name": "given_retained_audio_ingress_when_pool_is_exhausted_then_loss_is_counted_exactly",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 500,
+      "name": "given_full_audio_ingress_when_bridge_sends_then_rejection_is_counted_exactly",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 131,
+      "text": "pub fn spawn("
+    },
+    {
+      "line": 145,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 357,
+      "text": "let bridge = GeneratedAudioBridge::spawn(receivers.remove(0), sender, specification)"
+    },
+    {
+      "line": 472,
+      "text": "GeneratedAudioBridge::spawn(receivers.remove(0), sender, bridge_specification(1))"
+    },
+    {
+      "line": 510,
+      "text": "GeneratedAudioBridge::spawn(receivers.remove(0), sender, bridge_specification(2))"
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 19,
+      "name": "GeneratedAudioBridgeSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 46,
+      "name": "GeneratedAudioBridgeStartError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 71,
+      "name": "GeneratedAudioBridgeObservations",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 88,
+      "name": "GeneratedAudioBridgeObservationHandle",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 122,
+      "name": "GeneratedAudioBridge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "spawn",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 169,
+      "name": "stem_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 173,
+      "name": "observations",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 177,
+      "name": "finish_and_join",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 183,
+      "name": "cancel_and_join",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::runtime::bridge::audio`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/errors/runtime-and-sidecars.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/route-sizing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 2,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 89,
+      "text": "state: Arc<GeneratedAudioBridgeObservationState>,"
+    },
+    {
+      "line": 125,
+      "text": "cancellation: Arc<AtomicBool>,"
+    },
+    {
+      "line": 139,
+      "text": "let cancellation = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 140,
+      "text": "let state = Arc::new(GeneratedAudioBridgeObservationState::default());"
+    },
+    {
+      "line": 141,
+      "text": "let worker_cancellation = Arc::clone(&cancellation);"
+    },
+    {
+      "line": 142,
+      "text": "let worker_state = Arc::clone(&state);"
+    },
+    {
+      "line": 152,
+      "text": "Arc::clone(&worker_state),"
+    },
+    {
+      "line": 192,
+      "text": "impl Drop for GeneratedAudioBridge {"
+    },
+    {
+      "line": 205,
+      "text": "pool: Arc<AudioBufferPool>,"
+    },
+    {
+      "line": 206,
+      "text": "cancellation: Arc<AtomicBool>,"
+    },
+    {
+      "line": 207,
+      "text": "observations: Arc<GeneratedAudioBridgeObservationState>,"
+    },
+    {
+      "line": 231,
+      "text": "let Ok(envelope) = Arc::try_unwrap(shared) else {"
+    },
+    {
+      "line": 413,
+      "text": "input_pool: &Arc<AudioBufferPool>,"
+    }
+  ],
+  "responsibilities": [
+    "LOST_WAKEUP_FALLBACK_INTERVAL",
+    "GeneratedAudioBridgeSpec",
+    "validate",
+    "GeneratedAudioBridgeStartError",
+    "GeneratedAudioBridgeObservationState",
+    "GeneratedAudioBridgeObservations",
+    "GeneratedAudioBridgeObservationHandle",
+    "snapshot",
+    "GeneratedAudioBridge",
+    "spawn",
+    "stem_id",
+    "observations",
+    "finish_and_join",
+    "cancel_and_join",
+    "drop",
+    "run_bridge",
+    "tests",
+    "given_operator_audio_when_bridged_then_owned_frame_enters_bounded_plan_source",
+    "publish_audio",
+    "bridge_specification",
+    "given_retained_audio_ingress_when_pool_is_exhausted_then_loss_is_counted_exactly",
+    "given_full_audio_ingress_when_bridge_sends_then_rejection_is_counted_exactly"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 131,
+      "text": "pub fn spawn("
+    },
+    {
+      "line": 145,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 357,
+      "text": "let bridge = GeneratedAudioBridge::spawn(receivers.remove(0), sender, specification)"
+    },
+    {
+      "line": 472,
+      "text": "GeneratedAudioBridge::spawn(receivers.remove(0), sender, bridge_specification(1))"
+    },
+    {
+      "line": 510,
+      "text": "GeneratedAudioBridge::spawn(receivers.remove(0), sender, bridge_specification(2))"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 53,
+      "text": "#[error(\"generated-audio bridge worker thread could not start\")]"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 3,
+      "text": "use std::thread::{self, JoinHandle};"
+    },
+    {
+      "line": 53,
+      "text": "#[error(\"generated-audio bridge worker thread could not start\")]"
+    },
+    {
+      "line": 131,
+      "text": "pub fn spawn("
+    },
+    {
+      "line": 143,
+      "text": "let join = thread::Builder::new()"
+    },
+    {
+      "line": 145,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 226,
+      "text": "thread::park_timeout(LOST_WAKEUP_FALLBACK_INTERVAL);"
+    },
+    {
+      "line": 357,
+      "text": "let bridge = GeneratedAudioBridge::spawn(receivers.remove(0), sender, specification)"
+    },
+    {
+      "line": 392,
+      "text": "thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 472,
+      "text": "GeneratedAudioBridge::spawn(receivers.remove(0), sender, bridge_specification(1))"
+    },
+    {
+      "line": 510,
+      "text": "GeneratedAudioBridge::spawn(receivers.remove(0), sender, bridge_specification(2))"
+    }
+  ],
+  "visibility": "mixed"
+}

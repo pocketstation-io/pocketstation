@@ -1,3 +1,6 @@
+//! Loading, validation, registration, and ownership for native extension
+//! libraries that implement the versioned PocketStation extension ABI.
+
 mod library;
 
 use std::path::{Path, PathBuf};
@@ -24,13 +27,18 @@ pub(crate) use library::load_native_extension_library;
 pub const EXTENSION_LIBRARY_ENTRYPOINT_V1: &str = "pks_extension_library_v1";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Selects the native extension kind used by PocketStation."]
 pub enum NativeExtensionKind {
+    #[doc = "Selects source behavior for `NativeExtensionKind`."]
     Source,
+    #[doc = "Selects operator behavior for `NativeExtensionKind`."]
     Operator,
+    #[doc = "Selects endpoint behavior for `NativeExtensionKind`."]
     Endpoint,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Represents native extension registration in the PocketStation API."]
 pub struct NativeExtensionRegistration {
     pub(crate) id: String,
     pub(crate) kind: NativeExtensionKind,
@@ -39,18 +47,22 @@ pub struct NativeExtensionRegistration {
 }
 
 impl NativeExtensionRegistration {
+    #[doc = "Returns the id associated with `NativeExtensionRegistration`."]
     pub fn id(&self) -> &str {
         &self.id
     }
 
+    #[doc = "Returns the kind represented by `NativeExtensionRegistration`."]
     pub const fn kind(&self) -> NativeExtensionKind {
         self.kind
     }
 
+    #[doc = "Returns the revision associated with `NativeExtensionRegistration`."]
     pub const fn revision(&self) -> u32 {
         self.revision
     }
 
+    #[doc = "Returns the generation associated with `NativeExtensionRegistration`."]
     pub const fn generation(&self) -> u32 {
         self.generation
     }
@@ -65,35 +77,54 @@ pub struct NativeExtensionLibrary {
 }
 
 impl NativeExtensionLibrary {
+    #[doc = "Returns the canonical path associated with `NativeExtensionLibrary`."]
     pub fn canonical_path(&self) -> &Path {
         &self.canonical_path
     }
 
+    #[doc = "Returns the registrations associated with `NativeExtensionLibrary`."]
     pub fn registrations(&self) -> &[NativeExtensionRegistration] {
         &self.registrations
     }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Enumerates the supported native extension library error code cases."]
 pub enum NativeExtensionLibraryErrorCode {
+    #[doc = "Reports path not absolute."]
     PathNotAbsolute,
+    #[doc = "Reports path canonicalization failed."]
     PathCanonicalizationFailed,
+    #[doc = "Reports path not file."]
     PathNotFile,
+    #[doc = "Reports library load failed."]
     LibraryLoadFailed,
+    #[doc = "Reports entrypoint missing."]
     EntrypointMissing,
+    #[doc = "Reports entrypoint panicked."]
     EntrypointPanicked,
+    #[doc = "Reports entrypoint failed."]
     EntrypointFailed,
+    #[doc = "Reports unsupported ABI major."]
     UnsupportedAbiMajor,
+    #[doc = "Reports unsupported ABI minor."]
     UnsupportedAbiMinor,
+    #[doc = "Reports invalid library descriptor."]
     InvalidLibraryDescriptor,
+    #[doc = "Reports registration acquisition panicked."]
     RegistrationAcquisitionPanicked,
+    #[doc = "Reports registration acquisition failed."]
     RegistrationAcquisitionFailed,
+    #[doc = "Reports invalid registration."]
     InvalidRegistration,
+    #[doc = "Reports duplicate registration."]
     DuplicateRegistration,
+    #[doc = "Reports registration state unavailable."]
     RegistrationStateUnavailable,
 }
 
 impl NativeExtensionLibraryErrorCode {
+    #[doc = "Returns the stable string representation of `NativeExtensionLibraryErrorCode`."]
     pub const fn as_str(self) -> &'static str {
         match self {
             Self::PathNotAbsolute => "NATIVE_EXTENSION_PATH_NOT_ABSOLUTE",
@@ -121,6 +152,7 @@ impl NativeExtensionLibraryErrorCode {
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
 #[error("{code}: {message}", code = .code.as_str())]
+#[doc = "Reports a native extension library error."]
 pub struct NativeExtensionLibraryError {
     code: NativeExtensionLibraryErrorCode,
     message: String,
@@ -128,14 +160,17 @@ pub struct NativeExtensionLibraryError {
 }
 
 impl NativeExtensionLibraryError {
+    #[doc = "Returns the stable error or status code represented by `NativeExtensionLibraryError`."]
     pub const fn code(&self) -> NativeExtensionLibraryErrorCode {
         self.code
     }
 
+    #[doc = "Returns the diagnostic message associated with `NativeExtensionLibraryError`."]
     pub fn message(&self) -> &str {
         &self.message
     }
 
+    #[doc = "Returns the path associated with `NativeExtensionLibraryError`."]
     pub fn path(&self) -> Option<&Path> {
         self.path.as_deref()
     }

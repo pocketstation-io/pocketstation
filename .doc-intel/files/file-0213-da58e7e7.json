@@ -1,0 +1,928 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "AudioInputBufferError::Capacity",
+    "AudioInputWriteError::new",
+    "AudioInputWriteErrorKind::InvalidBuffer",
+    "Capacity",
+    "InvalidBuffer",
+    "Self::new",
+    "acquire",
+    "as_mut",
+    "as_mut_slice",
+    "as_ref",
+    "as_slice",
+    "available_slots",
+    "checked_div",
+    "close",
+    "configuration",
+    "debug_struct",
+    "derive",
+    "error",
+    "fetch_add",
+    "field",
+    "finish",
+    "fmt",
+    "from",
+    "interleaved_samples_per_frame",
+    "into_rejected",
+    "is_abandoned",
+    "is_multiple_of",
+    "is_none",
+    "is_some",
+    "is_some_and",
+    "kind",
+    "len",
+    "load",
+    "map_err",
+    "mark_discontinuity",
+    "min",
+    "new",
+    "observations",
+    "ok_or",
+    "pub",
+    "sample_capacity",
+    "sample_count",
+    "sample_duration_ns",
+    "samples",
+    "samples_mut",
+    "saturating_add",
+    "saturating_mul",
+    "try_acquire",
+    "try_copy_from_slice",
+    "try_send",
+    "try_set_len",
+    "try_set_sample_count",
+    "try_write",
+    "u128::from",
+    "unwrap_or",
+    "unwrap_or_else",
+    "usize::from",
+    "write_str"
+  ],
+  "cancellation_behavior": [],
+  "channels": [
+    {
+      "line": 286,
+      "text": "#[error(\"interleaved sample count is not divisible by the channel count\")]"
+    }
+  ],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "AudioInputWriteError::new",
+    "Self::new",
+    "from",
+    "new",
+    "u128::from",
+    "usize::from"
+  ],
+  "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 10,
+      "name": "AudioInputBuffer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 19,
+      "name": "sample_capacity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "sample_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 26,
+      "name": "try_set_sample_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "try_copy_from_slice",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "samples_mut",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "mark_discontinuity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 63,
+      "name": "AudioInputState",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 72,
+      "name": "AudioInputObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 82,
+      "name": "QueuedAudioInputFrame",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 90,
+      "name": "AudioInputWriter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "try_acquire",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 134,
+      "name": "try_write",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 146,
+      "name": "try_send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 241,
+      "name": "close",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 245,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 261,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 271,
+      "name": "AudioInputBufferAcquireError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 281,
+      "name": "AudioInputBufferError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 298,
+      "name": "AudioInputWriteErrorKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 304,
+      "name": "AudioInputWriteError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 311,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 314,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 318,
+      "name": "into_rejected",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 325,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 346,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 359,
+      "name": "sample_duration_ns",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 10,
+      "name": "AudioInputBuffer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 19,
+      "name": "sample_capacity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "sample_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 26,
+      "name": "try_set_sample_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "try_copy_from_slice",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "samples_mut",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "mark_discontinuity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 63,
+      "name": "AudioInputState",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 72,
+      "name": "AudioInputObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 82,
+      "name": "QueuedAudioInputFrame",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 90,
+      "name": "AudioInputWriter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "try_acquire",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 134,
+      "name": "try_write",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 146,
+      "name": "try_send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 241,
+      "name": "close",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 245,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 271,
+      "name": "AudioInputBufferAcquireError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 281,
+      "name": "AudioInputBufferError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 298,
+      "name": "AudioInputWriteErrorKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 304,
+      "name": "AudioInputWriteError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 314,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 318,
+      "name": "into_rejected",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 109,
+      "text": "return Err(AudioInputBufferAcquireError::Cancelled);"
+    },
+    {
+      "line": 118,
+      "text": "return Err(AudioInputBufferAcquireError::Closed);"
+    },
+    {
+      "line": 137,
+      "text": "if let Err(error) = buffer.try_copy_from_slice(samples) {"
+    },
+    {
+      "line": 139,
+      "text": "return Err(AudioInputWriteError::new("
+    },
+    {
+      "line": 149,
+      "text": "return Err(AudioInputWriteError::new("
+    },
+    {
+      "line": 155,
+      "text": "return Err(AudioInputWriteError::new("
+    },
+    {
+      "line": 161,
+      "text": "return Err(AudioInputWriteError::new("
+    },
+    {
+      "line": 168,
+      "text": "return Err(AudioInputWriteError::new("
+    },
+    {
+      "line": 177,
+      "text": "return Err(AudioInputWriteError::new("
+    },
+    {
+      "line": 184,
+      "text": "return Err(AudioInputWriteError::new("
+    },
+    {
+      "line": 192,
+      "text": "return Err(AudioInputWriteError::new("
+    },
+    {
+      "line": 226,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 229,
+      "text": "Err(AudioInputWriteError::new("
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 271,
+      "name": "AudioInputBufferAcquireError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 281,
+      "name": "AudioInputBufferError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 298,
+      "name": "AudioInputWriteErrorKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 304,
+      "name": "AudioInputWriteError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 126,
+      "text": ".map_err(|_| AudioInputBufferAcquireError::Full)?;"
+    },
+    {
+      "line": 136,
+      "text": "let mut buffer = self.try_acquire().map_err(AudioInputWriteError::from)?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 34,
+      "text": "pub fn try_copy_from_slice(&mut self, samples: &[f32]) -> Result<(), AudioBufferWriteError> {"
+    },
+    {
+      "line": 126,
+      "text": ".map_err(|_| AudioInputBufferAcquireError::Full)?;"
+    },
+    {
+      "line": 136,
+      "text": "let mut buffer = self.try_acquire().map_err(AudioInputWriteError::from)?;"
+    },
+    {
+      "line": 137,
+      "text": "if let Err(error) = buffer.try_copy_from_slice(samples) {"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 126,
+      "text": ".map_err(|_| AudioInputBufferAcquireError::Full)?;"
+    },
+    {
+      "line": 136,
+      "text": "let mut buffer = self.try_acquire().map_err(AudioInputWriteError::from)?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "17f68e619fbf65a0852fbd446c80b3393a4f2ebaf779794ec07a7ecf8bd14d8f",
+      "lines": [
+        1,
+        367
+      ],
+      "path": "src/session/extensions/audio_input/buffer.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0213-da58e7e7",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "f6d30cb4352aad836b7c6c524912b2c08e5fdc34",
+  "implemented_by": [],
+  "implements": [
+    "AudioInputBuffer",
+    "fmt::Debug for AudioInputBuffer",
+    "AudioInputWriter",
+    "fmt::Debug for AudioInputWriter",
+    "AudioInputWriteError",
+    "From<AudioInputBufferAcquireError> for AudioInputWriteError",
+    "fmt::Debug for AudioInputWriteError",
+    "fmt::Display for AudioInputWriteError",
+    "std::error::Error for AudioInputWriteError"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::{AudioBufferHandle, AudioBufferPool, AudioBufferWriteError}",
+    "crate::runtime::SignalEdgeSender",
+    "crate::timing::monotonic_timestamp_ns",
+    "std::fmt",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "super::AudioInputConfig"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 367,
+  "locks": [],
+  "module": "pocketstation::session::extensions::audio_input::buffer",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-bf9d68a8d25141b92721",
+    "pattern-45cc0a7c968cd3197190"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/extensions/audio_input/buffer.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 261,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 311,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 325,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 346,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 359,
+      "name": "sample_duration_ns",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 10,
+      "name": "AudioInputBuffer",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 19,
+      "name": "sample_capacity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "sample_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 26,
+      "name": "try_set_sample_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "try_copy_from_slice",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 37,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "samples_mut",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "mark_discontinuity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 63,
+      "name": "AudioInputState",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 72,
+      "name": "AudioInputObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 82,
+      "name": "QueuedAudioInputFrame",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 90,
+      "name": "AudioInputWriter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "try_acquire",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 134,
+      "name": "try_write",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 146,
+      "name": "try_send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 241,
+      "name": "close",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 245,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 271,
+      "name": "AudioInputBufferAcquireError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 281,
+      "name": "AudioInputBufferError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 298,
+      "name": "AudioInputWriteErrorKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 304,
+      "name": "AudioInputWriteError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 314,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 318,
+      "name": "into_rejected",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::session::extensions::audio_input::buffer`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 3,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 94,
+      "text": "pub(super) pool: Arc<AudioBufferPool>,"
+    },
+    {
+      "line": 96,
+      "text": "pub(super) state: Arc<AudioInputState>,"
+    }
+  ],
+  "responsibilities": [
+    "AudioInputBuffer",
+    "sample_capacity",
+    "sample_count",
+    "try_set_sample_count",
+    "try_copy_from_slice",
+    "samples",
+    "samples_mut",
+    "mark_discontinuity",
+    "fmt",
+    "AudioInputState",
+    "AudioInputObservations",
+    "QueuedAudioInputFrame",
+    "AudioInputWriter",
+    "configuration",
+    "try_acquire",
+    "try_write",
+    "try_send",
+    "close",
+    "observations",
+    "fmt",
+    "AudioInputBufferAcquireError",
+    "AudioInputBufferError",
+    "AudioInputWriteErrorKind",
+    "AudioInputWriteError",
+    "new",
+    "kind",
+    "into_rejected",
+    "from",
+    "fmt",
+    "fmt",
+    "sample_duration_ns"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

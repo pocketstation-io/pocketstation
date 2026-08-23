@@ -1,0 +1,431 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "BTreeSet::new",
+    "and_then",
+    "any",
+    "as_array",
+    "as_str",
+    "as_u64",
+    "bounded_text",
+    "expect",
+    "expect_err",
+    "filter",
+    "get",
+    "given_canonical_connector_vectors_when_compared_then_core_contract_semantics_match",
+    "insert",
+    "is_empty",
+    "is_none",
+    "is_ok",
+    "is_some",
+    "is_some_and",
+    "iter",
+    "len",
+    "nonempty_text",
+    "ok",
+    "ok_or",
+    "positive_u64",
+    "serde_json::from_str",
+    "trim",
+    "unwrap_or_default",
+    "usize::try_from",
+    "validate_case",
+    "validate_manifest"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "BTreeSet::new",
+    "usize::try_from"
+  ],
+  "content_hash": "dbd93e059adc4a2f48a8b3daabdffddea8f9f61e0f86273359ba1af174d64abf",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 4,
+      "name": "VECTORS",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 6,
+      "name": "nonempty_text",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "bounded_text",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 18,
+      "name": "positive_u64",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "validate_manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 150,
+      "name": "validate_case",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 170,
+      "name": "given_canonical_connector_vectors_when_compared_then_core_contract_semantics_match",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 101,
+      "text": "Some(\"source\" | \"operator\" | \"endpoint\")"
+    },
+    {
+      "line": 126,
+      "text": "if let Some(endpoint) = case.get(\"endpoint\") {"
+    },
+    {
+      "line": 127,
+      "text": "let endpoint_component = endpoint[\"component_id\"].as_str().unwrap_or_default();"
+    },
+    {
+      "line": 130,
+      "text": "&& component[\"kind\"].as_str() == Some(\"endpoint\")"
+    },
+    {
+      "line": 132,
+      "text": "return Err(\"connector.endpoint.unknown_component\");"
+    },
+    {
+      "line": 134,
+      "text": "if !positive_u64(endpoint.get(\"maximum_inflight_items\"))"
+    },
+    {
+      "line": 135,
+      "text": "|| !positive_u64(endpoint.get(\"maximum_payload_bytes\"))"
+    },
+    {
+      "line": 136,
+      "text": "|| !positive_u64(endpoint.get(\"startup_deadline_ms\"))"
+    },
+    {
+      "line": 137,
+      "text": "|| !positive_u64(endpoint.get(\"shutdown_deadline_ms\"))"
+    },
+    {
+      "line": 138,
+      "text": "|| !positive_u64(endpoint.get(\"probe_interval_ms\"))"
+    },
+    {
+      "line": 139,
+      "text": "|| !positive_u64(endpoint.get(\"success_threshold\"))"
+    },
+    {
+      "line": 140,
+      "text": "|| !positive_u64(endpoint.get(\"failure_threshold\"))"
+    },
+    {
+      "line": 142,
+      "text": "return Err(\"connector.endpoint.invalid_deadline\");"
+    },
+    {
+      "line": 144,
+      "text": "if endpoint[\"probe_interval_ms\"].as_u64() > endpoint[\"startup_deadline_ms\"].as_u64() {"
+    },
+    {
+      "line": 145,
+      "text": "return Err(\"connector.endpoint.invalid_deadline\");"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 30,
+      "text": "return Err(\"connector.manifest.invalid_revision\");"
+    },
+    {
+      "line": 39,
+      "text": "return Err(\"connector.manifest.invalid_identity\");"
+    },
+    {
+      "line": 46,
+      "text": "return Err(\"connector.configuration.invalid_revision\");"
+    },
+    {
+      "line": 56,
+      "text": "return Err(\"connector.configuration.too_many_fields\");"
+    },
+    {
+      "line": 65,
+      "text": "return Err(\"connector.configuration.duplicate_field\");"
+    },
+    {
+      "line": 68,
+      "text": "return Err(\"connector.configuration.invalid_field\");"
+    },
+    {
+      "line": 73,
+      "text": "return Err(\"connector.configuration.secret_default_forbidden\");"
+    },
+    {
+      "line": 76,
+      "text": "return Err(\"connector.configuration.default_missing\");"
+    },
+    {
+      "line": 88,
+      "text": "return Err(\"connector.manifest.too_many_components\");"
+    },
+    {
+      "line": 97,
+      "text": "return Err(\"connector.manifest.duplicate_component\");"
+    },
+    {
+      "line": 103,
+      "text": "return Err(\"connector.manifest.invalid_component_kind\");"
+    },
+    {
+      "line": 115,
+      "text": "return Err(\"connector.manifest.duplicate_port\");"
+    },
+    {
+      "line": 121,
+      "text": "return Err(\"connector.manifest.invalid_port\");"
+    },
+    {
+      "line": 132,
+      "text": "return Err(\"connector.endpoint.unknown_component\");"
+    },
+    {
+      "line": 142,
+      "text": "return Err(\"connector.endpoint.invalid_deadline\");"
+    },
+    {
+      "line": 145,
+      "text": "return Err(\"connector.endpoint.invalid_deadline\");"
+    },
+    {
+      "line": 162,
+      "text": "return Err(\"connector.status.invalid\");"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [
+    {
+      "line": 199,
+      "text": "Some(\"accept\") => assert!(result.is_ok(), \"{}: {result:?}\", case[\"id\"]),"
+    },
+    {
+      "line": 206,
+      "text": "expectation => panic!(\"unknown vector expectation: {expectation:?}\"),"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 171,
+      "text": "let corpus: Value = serde_json::from_str(VECTORS).expect(\"canonical connector vectors\");"
+    }
+  ],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "dbd93e059adc4a2f48a8b3daabdffddea8f9f61e0f86273359ba1af174d64abf",
+      "lines": [
+        1,
+        210
+      ],
+      "path": "tests/connector_portable_semantics.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0263-f5c5999b",
+  "file_kind": "test",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "e85b56109124992a35cf8085ea93cae8d8943b50",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "serde_json::Value",
+    "std::collections::BTreeSet"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 195,
+      "text": "assert!(!cases.is_empty());"
+    },
+    {
+      "line": 199,
+      "text": "Some(\"accept\") => assert!(result.is_ok(), \"{}: {result:?}\", case[\"id\"]),"
+    },
+    {
+      "line": 201,
+      "text": "result.expect_err(\"negative vector must reject\"),"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 210,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-a8e8e29068c207358578",
+    "pattern-c53de7be9374efb9cc13"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "tests/connector_portable_semantics.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 4,
+      "name": "VECTORS",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 6,
+      "name": "nonempty_text",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 12,
+      "name": "bounded_text",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 18,
+      "name": "positive_u64",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "validate_manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 150,
+      "name": "validate_case",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 170,
+      "name": "given_canonical_connector_vectors_when_compared_then_core_contract_semantics_match",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `not_applicable`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/connectors.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/configure-connector-secrets.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/connectors.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/connectors.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/terminal-outcomes.md",
+    "docs/best-practices/connector-retries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "VECTORS",
+    "nonempty_text",
+    "bounded_text",
+    "positive_u64",
+    "validate_manifest",
+    "validate_case",
+    "given_canonical_connector_vectors_when_compared_then_core_contract_semantics_match"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

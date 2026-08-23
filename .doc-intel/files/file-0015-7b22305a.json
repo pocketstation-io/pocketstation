@@ -1,0 +1,274 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "BenchmarkId::new",
+    "OpusEncoder::from_config",
+    "Vec::with_capacity",
+    "bench_function",
+    "bench_opus_encode",
+    "benchmark_group",
+    "clamp",
+    "collect",
+    "encode",
+    "encode_into",
+    "expect",
+    "finish",
+    "iter",
+    "iter_mut",
+    "map",
+    "opus::Bitrate::Bits",
+    "opus::Encoder::new",
+    "pcm_sine",
+    "samples",
+    "set_bitrate",
+    "set_complexity",
+    "sin",
+    "zip"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "BenchmarkId::new",
+    "opus::Encoder::new"
+  ],
+  "content_hash": "8e79e70322ae79945bd2e82e6a45a8298f752a09d46d1326182a3dd59f28c27e",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "SAMPLES_20MS_MONO",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "SAMPLES_20MS_STEREO",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "SAMPLES_10MS_MONO",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "pcm_sine",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 28,
+      "name": "bench_opus_encode",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 46,
+      "text": "let mut enc = OpusEncoder::from_config(&config).expect(\"encoder\");"
+    },
+    {
+      "line": 68,
+      "text": "let mut enc = OpusEncoder::from_config(&config).expect(\"encoder\");"
+    },
+    {
+      "line": 118,
+      "text": "let mut enc = OpusEncoder::from_config(&config).expect(\"encoder\");"
+    },
+    {
+      "line": 140,
+      "text": "let mut enc = OpusEncoder::from_config(&config).expect(\"encoder\");"
+    }
+  ],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "8e79e70322ae79945bd2e82e6a45a8298f752a09d46d1326182a3dd59f28c27e",
+      "lines": [
+        1,
+        154
+      ],
+      "path": "benches/opus_encode.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0015-7b22305a",
+  "file_kind": "benchmark",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "f5c03f4c069a851736b398540abc3fb5e5a4bc6a",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "criterion::{criterion_group, criterion_main, BenchmarkId, Criterion}",
+    "opus::{Application, Channels}",
+    "pocketstation::internal::codec::{ OpusApplication, OpusChannels, OpusConfig, OpusEncoder, OpusFrameDuration, OpusSampleRate, }"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 78,
+      "text": "// wrapper case so a host scheduling or power-state change cannot be"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 154,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "benches/opus_encode.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "SAMPLES_20MS_MONO",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "SAMPLES_20MS_STEREO",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 21,
+      "name": "SAMPLES_10MS_MONO",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 22,
+      "name": "pcm_sine",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 28,
+      "name": "bench_opus_encode",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "A2 \u2014 OpusEncode budget validation.  Validates \u00a711.3: FrameBus \u2192 Opus encoder \u2264 2ms per 20ms frame.  Run: cargo bench -p pocketstation --bench opus_encode  Pass threshold: p99 \u2264 2ms (2_000_000 ns)."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/opus-codec.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/opus-roundtrip.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/codec.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/frames-and-codec.md",
+    "docs/troubleshooting/opus.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 33,
+      "text": "// codec owner instead of the compatibility fa\u00e7ade."
+    }
+  ],
+  "responsibilities": [
+    "SAMPLES_20MS_MONO",
+    "SAMPLES_20MS_STEREO",
+    "SAMPLES_10MS_MONO",
+    "pcm_sine",
+    "bench_opus_encode"
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 50,
+      "text": "enc.encode_into(&pcm, &mut out).expect(\"encode\");"
+    },
+    {
+      "line": 72,
+      "text": "enc.encode_into(&pcm, &mut out).expect(\"encode\");"
+    },
+    {
+      "line": 98,
+      "text": ".encode(&converted, &mut output)"
+    },
+    {
+      "line": 99,
+      "text": ".expect(\"direct encode\");"
+    },
+    {
+      "line": 122,
+      "text": "enc.encode_into(&pcm, &mut out).expect(\"encode\");"
+    },
+    {
+      "line": 144,
+      "text": "enc.encode_into(&pcm, &mut out).expect(\"encode\");"
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

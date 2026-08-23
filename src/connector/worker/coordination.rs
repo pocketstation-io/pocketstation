@@ -11,6 +11,7 @@ use crate::connector::{
 };
 
 #[derive(Clone)]
+#[doc = "Represents connector context in the PocketStation API."]
 pub struct ConnectorContext {
     pub(super) stop: ConnectorStopToken,
     pub(super) state: ConnectorWorkerState,
@@ -25,58 +26,69 @@ pub(super) struct ReadinessProbeState {
 }
 
 impl ConnectorContext {
+    #[doc = "Returns whether stop requested applies to `ConnectorContext`."]
     pub fn is_stop_requested(&self) -> bool {
         self.stop.is_requested()
     }
 
+    #[doc = "Returns the shutdown mode associated with `ConnectorContext`."]
     pub fn shutdown_mode(&self) -> Option<EndpointShutdownMode> {
         self.stop.mode()
     }
 
+    #[doc = "Returns whether abort requested applies to `ConnectorContext`."]
     pub fn is_abort_requested(&self) -> bool {
         self.shutdown_mode() == Some(EndpointShutdownMode::Abort)
     }
 
+    #[doc = "Waits until a stop request is visible to `ConnectorContext`."]
     pub fn wait_for_stop(&self, timeout: Duration) -> bool {
         self.stop.wait_timeout(timeout)
     }
 
+    #[doc = "Sets the ready used by `ConnectorContext`."]
     pub fn set_ready(&self) -> bool {
         self.state
             .connector()
             .set_delivery_readiness(ConnectorDeliveryReadiness::Ready, None)
     }
 
+    #[doc = "Sets the not ready used by `ConnectorContext`."]
     pub fn set_not_ready(&self, reason_code: Option<ConnectorErrorCode>) -> bool {
         self.state
             .connector()
             .set_delivery_readiness(ConnectorDeliveryReadiness::NotReady, reason_code)
     }
 
+    #[doc = "Sets the degraded used by `ConnectorContext`."]
     pub fn set_degraded(&self, reason_code: ConnectorErrorCode) -> bool {
         self.state
             .connector()
             .set_health(ConnectorHealth::Degraded, Some(reason_code))
     }
 
+    #[doc = "Sets the healthy used by `ConnectorContext`."]
     pub fn set_healthy(&self) -> bool {
         self.state
             .connector()
             .set_health(ConnectorHealth::Healthy, None)
     }
 
+    #[doc = "Sets the reconnecting used by `ConnectorContext`."]
     pub fn set_reconnecting(&self, reason_code: ConnectorErrorCode) -> bool {
         self.state
             .connector()
             .set_recovery(ConnectorRecovery::Reconnecting, Some(reason_code))
     }
 
+    #[doc = "Sets the connected used by `ConnectorContext`."]
     pub fn set_connected(&self) -> bool {
         self.state
             .connector()
             .set_recovery(ConnectorRecovery::Idle, None)
     }
 
+    #[doc = "Records a successful readiness probe for `ConnectorContext`."]
     pub fn report_readiness_success(&self) -> bool {
         let reached_threshold = {
             let mut probes = self
@@ -94,6 +106,7 @@ impl ConnectorContext {
         self.set_ready()
     }
 
+    #[doc = "Returns the report readiness failure associated with `ConnectorContext`."]
     pub fn report_readiness_failure(&self, reason_code: ConnectorErrorCode) -> bool {
         let reached_threshold = {
             let mut probes = self
@@ -111,31 +124,38 @@ impl ConnectorContext {
         self.set_not_ready(Some(reason_code))
     }
 
+    #[doc = "Records frame received for `ConnectorContext`."]
     pub fn record_frame_received(&self, amount: u64) {
         self.state.endpoint().record_received(amount);
     }
 
+    #[doc = "Records frame delivered for `ConnectorContext`."]
     pub fn record_frame_delivered(&self, amount: u64) {
         self.state.endpoint().record_delivered(amount);
     }
 
+    #[doc = "Records frame dropped for `ConnectorContext`."]
     pub fn record_frame_dropped(&self, amount: u64) {
         self.state.endpoint().record_dropped(amount);
     }
 
+    #[doc = "Records discontinuity for `ConnectorContext`."]
     pub fn record_discontinuity(&self, amount: u64) {
         self.state.endpoint().record_discontinuity(amount);
     }
 
+    #[doc = "Records retry for `ConnectorContext`."]
     pub fn record_retry(&self) {
         self.state.connector().record_retry();
     }
 
+    #[doc = "Records failure for `ConnectorContext`."]
     pub fn record_failure(&self, error: ConnectorError) -> Result<(), ConnectorObservationError> {
         self.state.endpoint().record_failure(1);
         self.state.connector().record_failure(error)
     }
 
+    #[doc = "Returns the endpoint observations associated with `ConnectorContext`."]
     pub fn endpoint_observations(&self) -> EndpointDriverObservations {
         self.state.endpoint().snapshot()
     }

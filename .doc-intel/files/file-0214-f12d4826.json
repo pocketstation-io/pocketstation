@@ -1,0 +1,648 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "capacity_frames",
+    "checked_mul",
+    "close",
+    "contains",
+    "debug_struct",
+    "derive",
+    "error",
+    "field",
+    "finish",
+    "fmt",
+    "frame_samples_per_channel",
+    "interleaved_samples_per_frame",
+    "into_pcm_source",
+    "new",
+    "observations",
+    "ok_or",
+    "output",
+    "pub",
+    "sample_spec",
+    "source",
+    "try_acquire",
+    "try_send",
+    "try_write",
+    "usize::from",
+    "writer",
+    "writer_mut"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "new",
+    "usize::from"
+  ],
+  "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 1,
+      "name": "buffer",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "source",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "MAX_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "PCM_SOURCE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "AudioInputConfig",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "sample_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "capacity_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 66,
+      "name": "frame_samples_per_channel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "interleaved_samples_per_frame",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "enum",
+      "line": 77,
+      "name": "AudioInputConfigError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 94,
+      "name": "AudioInput",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 102,
+      "name": "source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "output",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "try_acquire",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "try_write",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 122,
+      "name": "try_send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 127,
+      "name": "close",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 130,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "into_pcm_source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "fmt",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "PCM_SOURCE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "AudioInputConfig",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "sample_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "capacity_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 66,
+      "name": "frame_samples_per_channel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "interleaved_samples_per_frame",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "enum",
+      "line": 77,
+      "name": "AudioInputConfigError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 94,
+      "name": "AudioInput",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 102,
+      "name": "source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "output",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "try_acquire",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "try_write",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 122,
+      "name": "try_send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 127,
+      "name": "close",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 130,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "into_pcm_source",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 35,
+      "text": "return Err(AudioInputConfigError::ZeroSampleRate);"
+    },
+    {
+      "line": 38,
+      "text": "return Err(AudioInputConfigError::UnsupportedChannelCount);"
+    },
+    {
+      "line": 41,
+      "text": "return Err(AudioInputConfigError::UnsupportedSampleFormat);"
+    },
+    {
+      "line": 44,
+      "text": "return Err(AudioInputConfigError::InvalidCapacity);"
+    },
+    {
+      "line": 47,
+      "text": "return Err(AudioInputConfigError::ZeroFrameSamples);"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 77,
+      "name": "AudioInputConfigError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "2eceb218a034d7d492078a90c08a1de61e869c0050b9a5e007b747b351b7b2cc",
+      "lines": [
+        1,
+        152
+      ],
+      "path": "src/session/extensions/audio_input/mod.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0214-f12d4826",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [
+    {
+      "line": 126,
+      "text": "/// Closes this application-owned input after its accepted frames drain."
+    }
+  ],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "a9fbc63691865f9f2d453a723ae9e8e4dfedb8f8",
+  "implemented_by": [],
+  "implements": [
+    "AudioInputConfig",
+    "AudioInput",
+    "fmt::Debug for AudioInput"
+  ],
+  "imported_by": [],
+  "imports": [
+    "buffer::{ AudioInputBuffer, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputObservations, AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, }",
+    "crate::session::declaration::{SourceInstanceHandle, SourceOutputHandle}",
+    "crate::{SampleFormat, SampleSpec}",
+    "module:buffer",
+    "module:source",
+    "source::AudioInputFactory",
+    "source::{AudioInputError, PcmSource}",
+    "std::fmt"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 78,
+      "text": "#[error(\"audio input sample rate must be non-zero\")]"
+    },
+    {
+      "line": 84,
+      "text": "#[error(\"audio input capacity must be between 1 and 63 frames\")]"
+    },
+    {
+      "line": 86,
+      "text": "#[error(\"audio input frame sample count must be non-zero\")]"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 152,
+  "locks": [],
+  "module": "pocketstation::session::extensions::audio_input",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/extensions/audio_input/mod.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 1,
+      "name": "buffer",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "source",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "MAX_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "fmt",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "PCM_SOURCE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 22,
+      "name": "AudioInputConfig",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 58,
+      "name": "sample_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "capacity_frames",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 66,
+      "name": "frame_samples_per_channel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "interleaved_samples_per_frame",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "enum",
+      "line": 77,
+      "name": "AudioInputConfigError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 94,
+      "name": "AudioInput",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 99,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 102,
+      "name": "source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 106,
+      "name": "output",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "try_acquire",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "try_write",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 122,
+      "name": "try_send",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 127,
+      "name": "close",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 130,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "into_pcm_source",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::session::extensions::audio_input`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [
+    "source::{AudioInputError, PcmSource}"
+  ],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "buffer",
+    "source",
+    "MAX_CAPACITY_FRAMES",
+    "PCM_SOURCE_TYPE_ID",
+    "AudioInputConfig",
+    "new",
+    "sample_spec",
+    "capacity_frames",
+    "frame_samples_per_channel",
+    "interleaved_samples_per_frame",
+    "AudioInputConfigError",
+    "AudioInput",
+    "new",
+    "source",
+    "output",
+    "try_acquire",
+    "try_write",
+    "try_send",
+    "close",
+    "observations",
+    "into_pcm_source",
+    "fmt"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

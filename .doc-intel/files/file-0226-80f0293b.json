@@ -1,0 +1,977 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Compile",
+    "Definition",
+    "Driver",
+    "EndpointDriverRegistry::new",
+    "Freeze",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Prepare",
+    "Self::Compile",
+    "Self::Freeze",
+    "Self::Prepare",
+    "Self::Sidecar",
+    "Self::Start",
+    "SessionCompiler::with_sources",
+    "SessionEngineStartError::Sidecar",
+    "Sidecar",
+    "SidecarHost::spawn",
+    "SourceRegistrationError::DuplicateSourceType",
+    "SourceRegistrationError::NodeTypeConflict",
+    "SourceRegistry::default",
+    "Start",
+    "StructuralNodeRegistration",
+    "Vec::new",
+    "Vec::with_capacity",
+    "any",
+    "as_str",
+    "attach_sidecars",
+    "audio_endpoint_boundary_definition",
+    "build",
+    "cancel",
+    "cancel_and_reap",
+    "cfg",
+    "clone",
+    "compile",
+    "contains",
+    "crate::session::SessionStartCancellation::default",
+    "crate::session::lifecycle::start_prepared_session_cancellable_with_trace",
+    "definition",
+    "derive",
+    "descriptor",
+    "error",
+    "freeze",
+    "into_start_failure",
+    "is_some",
+    "iter",
+    "len",
+    "manifest",
+    "map_err",
+    "new",
+    "prepare_session_runtime",
+    "push",
+    "register",
+    "register_async",
+    "register_async_operator",
+    "register_audio_endpoint_driver",
+    "register_definition",
+    "register_endpoint",
+    "register_session_graph_nodes_with_sample_spec",
+    "register_sidecar_process",
+    "register_source_factory",
+    "set_session_trace",
+    "source_manifest",
+    "source_node_definition",
+    "start",
+    "start_compiled",
+    "start_compiled_cancellable",
+    "start_failure",
+    "to_owned",
+    "validate",
+    "validate_engine_configuration",
+    "validate_registration"
+  ],
+  "cancellation_behavior": [
+    {
+      "line": 245,
+      "text": "let running = crate::session::lifecycle::start_prepared_session_cancellable_with_trace("
+    },
+    {
+      "line": 270,
+      "text": "let running = crate::session::lifecycle::start_prepared_session_cancellable_with_trace("
+    },
+    {
+      "line": 356,
+      "text": "let _ = running.cancel();"
+    }
+  ],
+  "channels": [
+    {
+      "line": 373,
+      "text": "Some(\"channel count must be one or two\")"
+    }
+  ],
+  "configuration_read": [
+    {
+      "line": 17,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 170,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 216,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 233,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 283,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "EndpointDriverRegistry::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Vec::new",
+    "new"
+  ],
+  "content_hash": "605962a665b0fab1d3e65eb19ae40fdc5e341ccbdaa2068623dd817cb67dc870",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 30,
+      "name": "SessionEngineBuilder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "set_session_trace",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "register_audio_endpoint_driver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 91,
+      "name": "register_endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "register_async_operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 125,
+      "name": "register_sidecar_process",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 146,
+      "name": "register_source_factory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 171,
+      "name": "source_manifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 176,
+      "name": "build",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 202,
+      "name": "SessionEngine",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "source_manifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 220,
+      "name": "compile",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 234,
+      "name": "start_compiled",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 257,
+      "name": "start_compiled_cancellable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 284,
+      "name": "start",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 295,
+      "name": "SessionEngineBuildError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 305,
+      "name": "EndpointExtensionRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 315,
+      "name": "SessionEngineStartError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 329,
+      "name": "start_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 335,
+      "name": "into_start_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 343,
+      "name": "attach_sidecars",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 364,
+      "name": "validate_engine_configuration",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 3,
+      "text": "use crate::endpoint::{EndpointDriverFactory, EndpointDriverRegistry, EndpointDriverRegistryError};"
+    },
+    {
+      "line": 28,
+      "text": "/// capture and endpoint implementations enter through their existing contracts"
+    },
+    {
+      "line": 87,
+      "text": "/// Atomically registers an endpoint's compiler contract and runtime driver."
+    },
+    {
+      "line": 199,
+      "text": "/// Compilation, runtime preparation, capture ownership, endpoint lifecycle,"
+    },
+    {
+      "line": 310,
+      "text": "#[error(\"endpoint node type {node_type_id} is already registered with a different contract\")]"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 30,
+      "name": "SessionEngineBuilder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "set_session_trace",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "register_audio_endpoint_driver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 91,
+      "name": "register_endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "register_async_operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 125,
+      "name": "register_sidecar_process",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 146,
+      "name": "register_source_factory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 171,
+      "name": "source_manifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 176,
+      "name": "build",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 202,
+      "name": "SessionEngine",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "source_manifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 220,
+      "name": "compile",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 234,
+      "name": "start_compiled",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 257,
+      "name": "start_compiled_cancellable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 284,
+      "name": "start",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 295,
+      "name": "SessionEngineBuildError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 305,
+      "name": "EndpointExtensionRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 315,
+      "name": "SessionEngineStartError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 329,
+      "name": "start_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 335,
+      "name": "into_start_failure",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 102,
+      "text": "return Err(EndpointExtensionRegistrationError::ConflictingDefinition {"
+    },
+    {
+      "line": 134,
+      "text": "return Err(SessionEngineBuildError::DuplicateSidecarId {"
+    },
+    {
+      "line": 156,
+      "text": "return Err(SourceRegistrationError::DuplicateSourceType(source_type_id));"
+    },
+    {
+      "line": 160,
+      "text": "return Err(SourceRegistrationError::NodeTypeConflict(source_type_id));"
+    },
+    {
+      "line": 352,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 357,
+      "text": "return Err(SessionEngineStartError::Sidecar(error));"
+    },
+    {
+      "line": 392,
+      "text": "Some(reason) => Err(SessionEngineBuildError::InvalidConfiguration { reason }),"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 295,
+      "name": "SessionEngineBuildError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 305,
+      "name": "EndpointExtensionRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 315,
+      "name": "SessionEngineStartError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 153,
+      "text": ".map_err(SourceRegistrationError::InvalidManifest)?;"
+    },
+    {
+      "line": 164,
+      "text": ".map_err(|_| SourceRegistrationError::NodeTypeConflict(source_type_id.clone()))?;"
+    },
+    {
+      "line": 254,
+      "text": ".map_err(SessionEngineStartError::Start)?;"
+    },
+    {
+      "line": 279,
+      "text": ".map_err(SessionEngineStartError::Start)?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 153,
+      "text": ".map_err(SourceRegistrationError::InvalidManifest)?;"
+    },
+    {
+      "line": 164,
+      "text": ".map_err(|_| SourceRegistrationError::NodeTypeConflict(source_type_id.clone()))?;"
+    },
+    {
+      "line": 230,
+      "text": ".map_err(SessionEngineStartError::Compile)"
+    },
+    {
+      "line": 254,
+      "text": ".map_err(SessionEngineStartError::Start)?;"
+    },
+    {
+      "line": 279,
+      "text": ".map_err(SessionEngineStartError::Start)?;"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 153,
+      "text": ".map_err(SourceRegistrationError::InvalidManifest)?;"
+    },
+    {
+      "line": 164,
+      "text": ".map_err(|_| SourceRegistrationError::NodeTypeConflict(source_type_id.clone()))?;"
+    },
+    {
+      "line": 230,
+      "text": ".map_err(SessionEngineStartError::Compile)"
+    },
+    {
+      "line": 254,
+      "text": ".map_err(SessionEngineStartError::Start)?;"
+    },
+    {
+      "line": 279,
+      "text": ".map_err(SessionEngineStartError::Start)?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "605962a665b0fab1d3e65eb19ae40fdc5e341ccbdaa2068623dd817cb67dc870",
+      "lines": [
+        1,
+        396
+      ],
+      "path": "src/session/lifecycle/engine.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0226-80f0293b",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "4d27eaad08f32074c08bd52a67c09dac519c8be4",
+  "implemented_by": [],
+  "implements": [
+    "SessionEngineBuilder",
+    "SessionEngine",
+    "SessionEngineStartError"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::endpoint::{EndpointDriverFactory, EndpointDriverRegistry, EndpointDriverRegistryError}",
+    "crate::graph::{ AsyncOperatorFactory, NodeDefinition, NodeRegistrationError, NodeRegistry, NodeTypeId, PrepareContext, }",
+    "crate::runtime::{SidecarHost, SidecarHostError, SidecarProcessSpec}",
+    "crate::session::compile::SessionGraphLowerer",
+    "crate::session::extensions::builtins::{ audio_endpoint_boundary_definition, register_session_graph_nodes_with_sample_spec, }",
+    "crate::session::extensions::source::{ source_node_definition, SourceFactory, SourceRegistrationError, SourceRegistry, }",
+    "crate::session::extensions::source::{SourceManifest, SourceTypeId}",
+    "crate::session::{ prepare_session_runtime, CaptureBackendSet, CompiledSession, OperatorId, RunningSession, Session, SessionCompileError, SessionCompiler, SessionError, SessionGraphRegistrationError, SessionPrepareError, SessionStartFailure, SessionStartOptions, SessionTraceRecorderHandle, }",
+    "std::sync::Arc"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 145,
+      "text": "/// a later registration can never silently replace the first factory."
+    },
+    {
+      "line": 371,
+      "text": "Some(\"sample rate must be greater than zero hertz\")"
+    },
+    {
+      "line": 373,
+      "text": "Some(\"channel count must be one or two\")"
+    },
+    {
+      "line": 375,
+      "text": "Some(\"source queue capacity must be greater than zero frames\")"
+    },
+    {
+      "line": 377,
+      "text": "Some(\"capture frame capacity must be greater than zero frames\")"
+    },
+    {
+      "line": 379,
+      "text": "Some(\"capture runtime-event capacity must be greater than zero events\")"
+    },
+    {
+      "line": 381,
+      "text": "Some(\"runtime work budget must be greater than zero frames\")"
+    },
+    {
+      "line": 383,
+      "text": "Some(\"runtime idle poll interval must be greater than zero milliseconds\")"
+    },
+    {
+      "line": 385,
+      "text": "Some(\"runtime ready timeout must be greater than zero milliseconds\")"
+    },
+    {
+      "line": 387,
+      "text": "Some(\"Session event capacity must be greater than zero events\")"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 396,
+  "locks": [],
+  "module": "pocketstation::session::lifecycle::engine",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-5ada9e33f908593228be",
+    "pattern-fdcf872a3dcf7ace27e8"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/lifecycle/engine.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 343,
+      "name": "attach_sidecars",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 364,
+      "name": "validate_engine_configuration",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 350,
+      "text": "match SidecarHost::spawn(spec.clone()) {"
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 30,
+      "name": "SessionEngineBuilder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 65,
+      "name": "set_session_trace",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 73,
+      "name": "register_audio_endpoint_driver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 91,
+      "name": "register_endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "register_async_operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 125,
+      "name": "register_sidecar_process",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 146,
+      "name": "register_source_factory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 171,
+      "name": "source_manifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 176,
+      "name": "build",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 202,
+      "name": "SessionEngine",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "source_manifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 220,
+      "name": "compile",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 234,
+      "name": "start_compiled",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 257,
+      "name": "start_compiled_cancellable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 284,
+      "name": "start",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 295,
+      "name": "SessionEngineBuildError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 305,
+      "name": "EndpointExtensionRegistrationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 315,
+      "name": "SessionEngineStartError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 329,
+      "name": "start_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 335,
+      "name": "into_start_failure",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::session::lifecycle::engine`."
+  },
+  "queues": [],
+  "recovery_behavior": [
+    {
+      "line": 200,
+      "text": "/// scheduling, rollback, and finalization remain implemented by their existing"
+    }
+  ],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 1,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 37,
+      "text": "graph_lowerers: Vec<Arc<dyn SessionGraphLowerer>>,"
+    },
+    {
+      "line": 78,
+      "text": "factory: Arc<dyn EndpointDriverFactory>,"
+    },
+    {
+      "line": 94,
+      "text": "definition: Arc<dyn NodeDefinition>,"
+    },
+    {
+      "line": 95,
+      "text": "factory: Arc<dyn EndpointDriverFactory>,"
+    },
+    {
+      "line": 116,
+      "text": "factory: Arc<dyn AsyncOperatorFactory>,"
+    },
+    {
+      "line": 148,
+      "text": "factory: Arc<dyn SourceFactory>,"
+    },
+    {
+      "line": 163,
+      "text": ".register_definition(source_node_definition(Arc::clone(&factory)))"
+    },
+    {
+      "line": 206,
+      "text": "graph_lowerers: Vec<Arc<dyn SessionGraphLowerer>>,"
+    }
+  ],
+  "responsibilities": [
+    "SessionEngineBuilder",
+    "new",
+    "set_session_trace",
+    "register_audio_endpoint_driver",
+    "register_endpoint",
+    "register_async_operator",
+    "register_sidecar_process",
+    "register_source_factory",
+    "source_manifest",
+    "build",
+    "SessionEngine",
+    "source_manifest",
+    "compile",
+    "start_compiled",
+    "start_compiled_cancellable",
+    "start",
+    "SessionEngineBuildError",
+    "EndpointExtensionRegistrationError",
+    "SessionEngineStartError",
+    "start_failure",
+    "into_start_failure",
+    "attach_sidecars",
+    "validate_engine_configuration"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 124,
+      "text": "/// shutdown failures remain attributable without process-global state."
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 350,
+      "text": "match SidecarHost::spawn(spec.clone()) {"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 245,
+      "text": "let running = crate::session::lifecycle::start_prepared_session_cancellable_with_trace("
+    },
+    {
+      "line": 270,
+      "text": "let running = crate::session::lifecycle::start_prepared_session_cancellable_with_trace("
+    },
+    {
+      "line": 284,
+      "text": "pub fn start("
+    },
+    {
+      "line": 322,
+      "text": "#[error(\"Session transactional start failed: {0}\")]"
+    },
+    {
+      "line": 324,
+      "text": "#[error(\"Session sidecar start failed: {0}\")]"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 350,
+      "text": "match SidecarHost::spawn(spec.clone()) {"
+    }
+  ],
+  "visibility": "mixed"
+}

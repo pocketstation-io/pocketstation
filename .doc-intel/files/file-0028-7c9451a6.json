@@ -1,0 +1,304 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::new",
+    "Connector::with_driver",
+    "ConnectorConfiguration::new",
+    "Session::new",
+    "declare",
+    "deliver",
+    "main",
+    "manifest",
+    "pocketstation::EdgeContract::realtime_audio",
+    "prepare",
+    "register_connector"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 93,
+      "text": "## Configuration and secrets"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "ConnectorConfiguration::new",
+    "Session::new"
+  ],
+  "content_hash": "3931e84db4d9dc2ad00f72172f49041b9ef2be8f31194e61724778c542b8c734",
+  "defaults": [],
+  "defines": [],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 3,
+      "text": "A Connector is an externally packaged Endpoint integration. It consumes one"
+    },
+    {
+      "line": 11,
+      "text": "delivery accounting, drain/abort, and the canonical Endpoint transaction:"
+    },
+    {
+      "line": 43,
+      "text": "let endpoint = relay.declare("
+    },
+    {
+      "line": 48,
+      "text": "# let _ = endpoint;"
+    },
+    {
+      "line": 58,
+      "text": "The author does not create an Endpoint lifecycle or a Session registry. The"
+    },
+    {
+      "line": 85,
+      "text": "`EdgeContract` is supplied when the connector endpoint is declared. Capacity,"
+    },
+    {
+      "line": 89,
+      "text": "Connector API revision 1 is an Endpoint integration: it requires at least one"
+    },
+    {
+      "line": 123,
+      "text": "canonical Endpoint observations. Session route metrics remain authoritative"
+    },
+    {
+      "line": 157,
+      "text": "dynamic PCM Endpoint authoring. Do not claim that third-party Python or"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "3931e84db4d9dc2ad00f72172f49041b9ef2be8f31194e61724778c542b8c734",
+      "lines": [
+        1,
+        168
+      ],
+      "path": "docs/guides/connectors.md",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 156,
+      "text": "realtime PCM path. The current native extension ABI does not provide arbitrary"
+    }
+  ],
+  "file_id": "file-0028-7c9451a6",
+  "file_kind": "documentation",
+  "filesystem_io": [],
+  "finalization": [
+    {
+      "line": 11,
+      "text": "delivery accounting, drain/abort, and the canonical Endpoint transaction:"
+    },
+    {
+      "line": 62,
+      "text": "- one shutdown token shared with the worker, preserving drain versus abort;"
+    },
+    {
+      "line": 140,
+      "text": "5. finalize provider resources in `shutdown`."
+    },
+    {
+      "line": 143,
+      "text": "drain, but a later drain cannot weaken an abort. Low-level Connector workers"
+    }
+  ],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "04194444de5b4febb00480fb383a4001a4762017",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 103,
+      "text": "must never copy it into errors, logs, metrics, or observations."
+    },
+    {
+      "line": 119,
+      "text": "their actual retry/backoff protocol and must keep it finite. Core does not"
+    },
+    {
+      "line": 129,
+      "text": "must share one provider connection. Returning one shared"
+    },
+    {
+      "line": 134,
+      "text": "The connector driver must:"
+    },
+    {
+      "line": 143,
+      "text": "drain, but a later drain cannot weaken an abort. Low-level Connector workers"
+    },
+    {
+      "line": 144,
+      "text": "remain responsible for their own bounded loop and must follow the same rule."
+    },
+    {
+      "line": 155,
+      "text": "bounded sidecar/extension boundary, but it never runs foreign-language code on the"
+    },
+    {
+      "line": 165,
+      "text": "conformance is not provider proof: a supported package must also test its real"
+    }
+  ],
+  "language": "Markdown",
+  "line_count": 168,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-ec0a79e42b7fdfad98ef",
+    "pattern-f5fdf3d0b87d585fac1d",
+    "pattern-6e63946e931d68323065"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "repository",
+  "path": "docs/guides/connectors.md",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [
+    {
+      "line": 151,
+      "text": "owns a second Relay media engine. Protocol owns portable wire semantics and"
+    }
+  ],
+  "public_surface": [],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Documents Build a connector."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 14,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 26,
+      "text": "#     -> Result<Box<dyn ConnectorDriver>, ConnectorError>"
+    },
+    {
+      "line": 39,
+      "text": "# fn main() -> Result<(), Box<dyn std::error::Error>> {"
+    },
+    {
+      "line": 41,
+      "text": "let connector = Connector::with_driver(manifest(), Arc::new(RelayFactory))?;"
+    }
+  ],
+  "responsibilities": [],
+  "retry_behavior": [
+    {
+      "line": 119,
+      "text": "their actual retry/backoff protocol and must keep it finite. Core does not"
+    },
+    {
+      "line": 120,
+      "text": "pretend to enforce an unused generic retry policy."
+    }
+  ],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 62,
+      "text": "- one shutdown token shared with the worker, preserving drain versus abort;"
+    },
+    {
+      "line": 66,
+      "text": "- joined shutdown; and"
+    },
+    {
+      "line": 126,
+      "text": "## Grouping and shutdown"
+    },
+    {
+      "line": 140,
+      "text": "5. finalize provider resources in `shutdown`."
+    },
+    {
+      "line": 142,
+      "text": "Core handles receiver polling and monotonic shutdown: an abort can upgrade"
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 156,
+      "text": "realtime PCM path. The current native extension ABI does not provide arbitrary"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 25,
+      "text": "#   fn prepare(&self, _: &[ConnectorInputDescriptor])"
+    },
+    {
+      "line": 61,
+      "text": "- execution behind the closed Session start gate;"
+    },
+    {
+      "line": 136,
+      "text": "1. acquire resources in `prepare` without consuming media;"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

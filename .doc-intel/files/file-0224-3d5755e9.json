@@ -1,0 +1,1704 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AtomicBool::new",
+    "AtomicU64::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Box::new",
+    "ClockDomainId",
+    "Duration::from_millis",
+    "Duration::from_secs",
+    "EndpointConfiguration::new",
+    "EndpointControl::default",
+    "EndpointDescriptor::new",
+    "EndpointDriverObservations::default",
+    "EndpointFailure::new",
+    "EndpointReceiver::Signal",
+    "Instant::now",
+    "MediaCaps::Audio",
+    "MediaCaps::Binary",
+    "NodeTypeId::from",
+    "OperatorId::new",
+    "PrepareContext::new",
+    "SampleSpec::new",
+    "Session::new",
+    "SessionEngineBuilder::new",
+    "SessionStartOptions::default",
+    "SignalEnvelope::from_audio",
+    "SignalEnvelope::untracked",
+    "SignalPayload::Bytes",
+    "SignalSpec::audio",
+    "SignalSpec::custom",
+    "SourceConfiguration::default",
+    "SourceControl::default",
+    "SourceDriverError::Failed",
+    "SourceTypeId::new",
+    "Vec::new",
+    "acquire",
+    "as_mut_slice",
+    "as_ref",
+    "audio_source_factory",
+    "build",
+    "cancel_preparation",
+    "clone",
+    "close",
+    "context",
+    "create",
+    "derive",
+    "descriptor",
+    "endpoint",
+    "expect",
+    "failing_source_factory",
+    "fetch_add",
+    "fill",
+    "find",
+    "get",
+    "given_external_pcm_source_when_session_runs_then_audio_uses_bounded_ingress_with_source_identity",
+    "given_one_external_source_failure_when_session_runs_then_unrelated_source_completes",
+    "given_typed_source_when_one_branch_saturates_then_other_branch_and_shutdown_remain_real",
+    "indexed_metrics_full",
+    "into_parts",
+    "is_abandoned",
+    "is_cancelled",
+    "is_empty",
+    "is_open",
+    "is_some",
+    "is_success",
+    "iter",
+    "join",
+    "join_and_finalize",
+    "len",
+    "let",
+    "lineage",
+    "load",
+    "manifest",
+    "map_err",
+    "next",
+    "node_configuration",
+    "observations",
+    "ok_or_else",
+    "origin",
+    "output",
+    "pop",
+    "prepare",
+    "receiver",
+    "recv",
+    "register_endpoint",
+    "register_source_factory",
+    "request_stop",
+    "route_context",
+    "saturating_add",
+    "saturating_mul",
+    "send",
+    "source",
+    "source_factory",
+    "source_id",
+    "start",
+    "std::thread::sleep",
+    "std::thread::spawn",
+    "stop",
+    "store",
+    "take",
+    "to_le_bytes",
+    "to_owned",
+    "to_vec",
+    "try_recv",
+    "unwrap",
+    "validate_config",
+    "with",
+    "with_configuration",
+    "with_lineage",
+    "with_schema"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 14,
+      "text": "AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps,"
+    },
+    {
+      "line": 134,
+      "text": "fn validate_config(&self, _configuration: &SourceConfiguration) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 173,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 405,
+      "text": "fn validate_config(&self, _configuration: &SourceConfiguration) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 449,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AtomicBool::new",
+    "AtomicU64::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Box::new",
+    "EndpointConfiguration::new",
+    "EndpointDescriptor::new",
+    "EndpointFailure::new",
+    "NodeTypeId::from",
+    "OperatorId::new",
+    "PrepareContext::new",
+    "SampleSpec::new",
+    "Session::new",
+    "SessionEngineBuilder::new",
+    "SourceTypeId::new",
+    "Vec::new"
+  ],
+  "content_hash": "9161ccec6a90d420a59ffe7c809e8e6e6915da8594e19833937fe3c3ae27068e",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "SOURCE_TYPE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "SIGNAL_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 28,
+      "name": "SCHEMA_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 29,
+      "name": "ENDPOINT_NODE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 30,
+      "name": "ENDPOINT_OPERATOR",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 31,
+      "name": "AUDIO_SOURCE_TYPE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 32,
+      "name": "AUDIO_ENDPOINT_NODE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 33,
+      "name": "AUDIO_ENDPOINT_OPERATOR",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 34,
+      "name": "FAILING_SOURCE_TYPE",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 37,
+      "name": "SourceControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 42,
+      "name": "LifecycleSourceFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 48,
+      "name": "LifecycleSourceDriver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "next",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 122,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 130,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 150,
+      "name": "EndpointDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 154,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 172,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 179,
+      "name": "EndpointControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 183,
+      "name": "LifecycleEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 188,
+      "name": "PreparedLifecycleEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 194,
+      "name": "RunningLifecycleEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 202,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 229,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 278,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 288,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 295,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 300,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 317,
+      "name": "AudioSourceFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 322,
+      "name": "AudioSourceDriver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 331,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "next",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 393,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 401,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 404,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 408,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 421,
+      "name": "AudioEndpointDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 425,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 448,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 453,
+      "name": "AudioEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 458,
+      "name": "PreparedAudioEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 466,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 493,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 545,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 553,
+      "name": "ForbiddenCaptureBackend",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 557,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 561,
+      "name": "source_factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 583,
+      "name": "failing_source_factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 605,
+      "name": "audio_source_factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 631,
+      "name": "endpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 647,
+      "name": "given_typed_source_when_one_branch_saturates_then_other_branch_and_shutdown_remain_real",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 737,
+      "name": "given_one_external_source_failure_when_session_runs_then_unrelated_source_completes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 826,
+      "name": "given_external_pcm_source_when_session_runs_then_audio_uses_bounded_ingress_with_source_identity",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 6,
+      "text": "use crate::endpoint::{"
+    },
+    {
+      "line": 29,
+      "text": "const ENDPOINT_NODE: &str = \"org.example.lifecycle-endpoint.v1\";"
+    },
+    {
+      "line": 30,
+      "text": "const ENDPOINT_OPERATOR: &str = \"org.example.lifecycle-endpoint-driver.v1\";"
+    },
+    {
+      "line": 32,
+      "text": "const AUDIO_ENDPOINT_NODE: &str = \"org.example.lifecycle-audio-endpoint.v1\";"
+    },
+    {
+      "line": 33,
+      "text": "const AUDIO_ENDPOINT_OPERATOR: &str = \"org.example.lifecycle-audio-endpoint-driver.v1\";"
+    },
+    {
+      "line": 157,
+      "text": "display_name: \"Lifecycle endpoint\","
+    },
+    {
+      "line": 247,
+      "text": "\"typed lifecycle endpoint received audio\","
+    },
+    {
+      "line": 306,
+      "text": ".expect(\"lifecycle endpoint worker\")"
+    },
+    {
+      "line": 428,
+      "text": "display_name: \"Lifecycle audio endpoint\","
+    },
+    {
+      "line": 511,
+      "text": "\"audio endpoint received a signal input\","
+    },
+    {
+      "line": 632,
+      "text": "fn endpoint(session: &Session, consume: bool) -> crate::session::EndpointHandle {"
+    },
+    {
+      "line": 634,
+      "text": ".endpoint("
+    },
+    {
+      "line": 680,
+      "text": "output.send(endpoint(&session, true)).unwrap();"
+    },
+    {
+      "line": 684,
+      "text": "output.send(endpoint(&session, false)).unwrap();"
+    },
+    {
+      "line": 776,
+      "text": ".send(endpoint(&session, true))"
+    },
+    {
+      "line": 787,
+      "text": ".send(endpoint(&session, true))"
+    },
+    {
+      "line": 864,
+      "text": ".endpoint(EndpointDescriptor::new("
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 68,
+      "text": "return Err(SourceDriverError::Failed("
+    },
+    {
+      "line": 245,
+      "text": "return Err(EndpointFailure::new("
+    },
+    {
+      "line": 477,
+      "text": "return Err(EndpointFailure::new("
+    },
+    {
+      "line": 509,
+      "text": "return Err(EndpointFailure::new("
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 308,
+      "text": ".map_err(|_| {"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 308,
+      "text": ".map_err(|_| {"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "9161ccec6a90d420a59ffe7c809e8e6e6915da8594e19833937fe3c3ae27068e",
+      "lines": [
+        1,
+        907
+      ],
+      "path": "src/session/extensions/tests/runtime.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0224-3d5755e9",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "b7b252bfb323eb9c655223d767cd87bc72a24157",
+  "implemented_by": [],
+  "implements": [
+    "SourceDriver for LifecycleSourceDriver",
+    "SourceFactory for LifecycleSourceFactory",
+    "NodeDefinition for EndpointDefinition",
+    "EndpointDriverFactory for LifecycleEndpointFactory",
+    "PreparedEndpointDriver for PreparedLifecycleEndpoint",
+    "RunningEndpointDriver for RunningLifecycleEndpoint",
+    "SourceDriver for AudioSourceDriver",
+    "SourceFactory for AudioSourceFactory",
+    "NodeDefinition for AudioEndpointDefinition",
+    "EndpointDriverFactory for AudioEndpointFactory",
+    "PreparedEndpointDriver for PreparedAudioEndpoint",
+    "CallbackCaptureBackend for ForbiddenCaptureBackend"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::capture::{CallbackCaptureBackend, CaptureError, CaptureMode, PreparedCaptureBackend}",
+    "crate::endpoint::{ EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointInputOrigin, EndpointPortInput, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }",
+    "crate::frame::{AudioBufferPool, AudioFrame, ClockDomainId, SampleFormat, SampleSpec}",
+    "crate::graph::{ AudioCaps, BinaryFormat, ChannelLayout, ConfigError, ExecutionPartition, MediaCaps, Multiplicity, NodeConfig, NodeDefinition, NodeDescriptor, NodeTypeId, PortDirection, PortSpec, PrepareContext, SafetyContract, SignalEnvelope, SignalLineage, SignalPayload, SignalSpec, SignalTiming, }",
+    "crate::session::{ CaptureBackendSet, EndpointConfiguration, EndpointDescriptor, OperatorId, Session, SessionEngineBuilder, SessionStartOptions, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourcePrepareContext, SourceSessionContext, SourceTypeId, }",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "std::time::{Duration, Instant}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 209,
+      "text": "assert!(matches!(input.receiver(), EndpointReceiver::Signal(_)));"
+    },
+    {
+      "line": 210,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 473,
+      "text": "assert!(matches!(input.receiver(), EndpointReceiver::Audio { .. }));"
+    },
+    {
+      "line": 558,
+      "text": "panic!(\"typed-only external Session must not prepare a desktop capture backend\")"
+    },
+    {
+      "line": 682,
+      "text": "// deliberately never consumes and therefore exercises bounded saturation."
+    },
+    {
+      "line": 706,
+      "text": "assert!(external_sources[0].runtime.emitted_total >= 16);"
+    },
+    {
+      "line": 707,
+      "text": "assert!(external_sources[0].runtime.dropped_total > 0);"
+    },
+    {
+      "line": 711,
+      "text": "assert!(fast_endpoint.received_total.load(Ordering::Relaxed) >= 16);"
+    },
+    {
+      "line": 717,
+      "text": "assert!(outcome.is_success());"
+    },
+    {
+      "line": 719,
+      "text": "assert!(external_sources[0].runtime.joined);"
+    },
+    {
+      "line": 820,
+      "text": "assert!(!outcome.is_success());"
+    },
+    {
+      "line": 893,
+      "text": "assert!(built_in_sources.is_empty());"
+    },
+    {
+      "line": 898,
+      "text": "assert!(running.stop().is_success());"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 907,
+  "locks": [],
+  "module": "pocketstation::session::extensions::tests::runtime",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-5794c5cef4aa72fbcf3a",
+    "pattern-0e401638b1f6b8cd709e"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/extensions/tests/runtime.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "SOURCE_TYPE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 27,
+      "name": "SIGNAL_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 28,
+      "name": "SCHEMA_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 29,
+      "name": "ENDPOINT_NODE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 30,
+      "name": "ENDPOINT_OPERATOR",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 31,
+      "name": "AUDIO_SOURCE_TYPE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 32,
+      "name": "AUDIO_ENDPOINT_NODE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 33,
+      "name": "AUDIO_ENDPOINT_OPERATOR",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 34,
+      "name": "FAILING_SOURCE_TYPE",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 37,
+      "name": "SourceControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 42,
+      "name": "LifecycleSourceFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 48,
+      "name": "LifecycleSourceDriver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "next",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 122,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 130,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 150,
+      "name": "EndpointDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 154,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 172,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 179,
+      "name": "EndpointControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 183,
+      "name": "LifecycleEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 188,
+      "name": "PreparedLifecycleEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 194,
+      "name": "RunningLifecycleEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 202,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 229,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 278,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 288,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 295,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 300,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 317,
+      "name": "AudioSourceFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 322,
+      "name": "AudioSourceDriver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 331,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "next",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 393,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 401,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 404,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 408,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 421,
+      "name": "AudioEndpointDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 425,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 448,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 453,
+      "name": "AudioEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 458,
+      "name": "PreparedAudioEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 466,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 493,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 545,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 553,
+      "name": "ForbiddenCaptureBackend",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 557,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 561,
+      "name": "source_factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 583,
+      "name": "failing_source_factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 605,
+      "name": "audio_source_factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 631,
+      "name": "endpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 647,
+      "name": "given_typed_source_when_one_branch_saturates_then_other_branch_and_shutdown_remain_real",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 737,
+      "name": "given_one_external_source_failure_when_session_runs_then_unrelated_source_completes",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 826,
+      "name": "given_external_pcm_source_when_session_runs_then_audio_uses_bounded_ingress_with_source_identity",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 253,
+      "text": "let worker = std::thread::spawn(move || {"
+    },
+    {
+      "line": 517,
+      "text": "let worker = std::thread::spawn(move || {"
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::session::extensions::tests::runtime`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 2,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 45,
+      "text": "control: Arc<SourceControl>,"
+    },
+    {
+      "line": 50,
+      "text": "control: Arc<SourceControl>,"
+    },
+    {
+      "line": 141,
+      "text": ") -> Result<Box<dyn SourceDriver>, SourceDriverError> {"
+    },
+    {
+      "line": 142,
+      "text": "Ok(Box::new(LifecycleSourceDriver {"
+    },
+    {
+      "line": 143,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 185,
+      "text": "fast_control: Arc<EndpointControl>,"
+    },
+    {
+      "line": 186,
+      "text": "slow_control: Arc<EndpointControl>,"
+    },
+    {
+      "line": 191,
+      "text": "control: Arc<EndpointControl>,"
+    },
+    {
+      "line": 196,
+      "text": "control: Arc<EndpointControl>,"
+    },
+    {
+      "line": 197,
+      "text": "stop: Arc<AtomicBool>,"
+    },
+    {
+      "line": 205,
+      "text": ") -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 216,
+      "text": "Arc::clone(&self.fast_control)"
+    },
+    {
+      "line": 218,
+      "text": "Arc::clone(&self.slow_control)"
+    },
+    {
+      "line": 220,
+      "text": "Ok(Box::new(PreparedLifecycleEndpoint {"
+    },
+    {
+      "line": 230,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 231,
+      "text": "start_gate: Arc<EndpointStartGate>,"
+    },
+    {
+      "line": 232,
+      "text": ") -> Result<Box<dyn RunningEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 250,
+      "text": "let stop = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 251,
+      "text": "let worker_stop = Arc::clone(&stop);"
+    },
+    {
+      "line": 252,
+      "text": "let worker_control = Arc::clone(&control);"
+    },
+    {
+      "line": 272,
+      "text": "Ok(Box::new(RunningLifecycleEndpoint {"
+    },
+    {
+      "line": 279,
+      "text": "fn cancel_preparation(self: Box<Self>) -> EndpointCancellationOutcome {"
+    },
+    {
+      "line": 301,
+      "text": "fn join_and_finalize(mut self: Box<Self>) -> EndpointDriverFinalization {"
+    },
+    {
+      "line": 320,
+      "text": "control: Arc<SourceControl>,"
+    },
+    {
+      "line": 324,
+      "text": "control: Arc<SourceControl>,"
+    },
+    {
+      "line": 327,
+      "text": "pool: Arc<AudioBufferPool>,"
+    },
+    {
+      "line": 412,
+      "text": ") -> Result<Box<dyn SourceDriver>, SourceDriverError> {"
+    },
+    {
+      "line": 413,
+      "text": "Ok(Box::new(AudioSourceDriver {"
+    },
+    {
+      "line": 414,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 455,
+      "text": "control: Arc<EndpointControl>,"
+    },
+    {
+      "line": 456,
+      "text": "expected_source_id: Arc<AtomicU64>,"
+    },
+    {
+      "line": 461,
+      "text": "control: Arc<EndpointControl>,"
+    },
+    {
+      "line": 462,
+      "text": "expected_source_id: Arc<AtomicU64>,"
+    },
+    {
+      "line": 469,
+      "text": ") -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 484,
+      "text": "Ok(Box::new(PreparedAudioEndpoint {"
+    },
+    {
+      "line": 486,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 487,
+      "text": "expected_source_id: Arc::clone(&self.expected_source_id),"
+    },
+    {
+      "line": 494,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 495,
+      "text": "start_gate: Arc<EndpointStartGate>,"
+    },
+    {
+      "line": 496,
+      "text": ") -> Result<Box<dyn RunningEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 514,
+      "text": "let stop = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 515,
+      "text": "let worker_stop = Arc::clone(&stop);"
+    },
+    {
+      "line": 516,
+      "text": "let worker_control = Arc::clone(&control);"
+    },
+    {
+      "line": 539,
+      "text": "Ok(Box::new(RunningLifecycleEndpoint {"
+    },
+    {
+      "line": 546,
+      "text": "fn cancel_preparation(self: Box<Self>) -> EndpointCancellationOutcome {"
+    },
+    {
+      "line": 557,
+      "text": "fn prepare(&self, _mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 562,
+      "text": "fn source_factory(control: Arc<SourceControl>) -> Arc<dyn SourceFactory> {"
+    },
+    {
+      "line": 563,
+      "text": "Arc::new(LifecycleSourceFactory {"
+    },
+    {
+      "line": 584,
+      "text": "fn failing_source_factory(control: Arc<SourceControl>) -> Arc<dyn SourceFactory> {"
+    },
+    {
+      "line": 585,
+      "text": "Arc::new(LifecycleSourceFactory {"
+    },
+    {
+      "line": 606,
+      "text": "fn audio_source_factory(control: Arc<SourceControl>) -> Arc<dyn SourceFactory> {"
+    },
+    {
+      "line": 607,
+      "text": "Arc::new(AudioSourceFactory {"
+    },
+    {
+      "line": 648,
+      "text": "let source_control = Arc::new(SourceControl::default());"
+    },
+    {
+      "line": 649,
+      "text": "let fast_endpoint = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 650,
+      "text": "let slow_endpoint = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 658,
+      "text": ".register_source_factory(source_factory(Arc::clone(&source_control)))"
+    },
+    {
+      "line": 663,
+      "text": "Arc::new(EndpointDefinition),"
+    },
+    {
+      "line": 664,
+      "text": "Arc::new(LifecycleEndpointFactory {"
+    },
+    {
+      "line": 665,
+      "text": "fast_control: Arc::clone(&fast_endpoint),"
+    },
+    {
+      "line": 666,
+      "text": "slow_control: Arc::clone(&slow_endpoint),"
+    },
+    {
+      "line": 738,
+      "text": "let healthy_control = Arc::new(SourceControl::default());"
+    },
+    {
+      "line": 739,
+      "text": "let failing_control = Arc::new(SourceControl::default());"
+    },
+    {
+      "line": 740,
+      "text": "let consumed = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 741,
+      "text": "let unused = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 749,
+      "text": ".register_source_factory(source_factory(Arc::clone(&healthy_control)))"
+    },
+    {
+      "line": 752,
+      "text": ".register_source_factory(failing_source_factory(Arc::clone(&failing_control)))"
+    },
+    {
+      "line": 757,
+      "text": "Arc::new(EndpointDefinition),"
+    },
+    {
+      "line": 758,
+      "text": "Arc::new(LifecycleEndpointFactory {"
+    },
+    {
+      "line": 759,
+      "text": "fast_control: Arc::clone(&consumed),"
+    },
+    {
+      "line": 828,
+      "text": "let source_control = Arc::new(SourceControl::default());"
+    },
+    {
+      "line": 829,
+      "text": "let endpoint_control = Arc::new(EndpointControl::default());"
+    },
+    {
+      "line": 830,
+      "text": "let observed_source_id = Arc::new(AtomicU64::new(0));"
+    },
+    {
+      "line": 838,
+      "text": ".register_source_factory(audio_source_factory(Arc::clone(&source_control)))"
+    },
+    {
+      "line": 843,
+      "text": "Arc::new(AudioEndpointDefinition),"
+    },
+    {
+      "line": 844,
+      "text": "Arc::new(AudioEndpointFactory {"
+    },
+    {
+      "line": 845,
+      "text": "control: Arc::clone(&endpoint_control),"
+    },
+    {
+      "line": 846,
+      "text": "expected_source_id: Arc::clone(&observed_source_id),"
+    }
+  ],
+  "responsibilities": [
+    "SOURCE_TYPE",
+    "SIGNAL_ID",
+    "SCHEMA_ID",
+    "ENDPOINT_NODE",
+    "ENDPOINT_OPERATOR",
+    "AUDIO_SOURCE_TYPE",
+    "AUDIO_ENDPOINT_NODE",
+    "AUDIO_ENDPOINT_OPERATOR",
+    "FAILING_SOURCE_TYPE",
+    "SourceControl",
+    "LifecycleSourceFactory",
+    "LifecycleSourceDriver",
+    "prepare",
+    "next",
+    "close",
+    "manifest",
+    "validate_config",
+    "create",
+    "EndpointDefinition",
+    "descriptor",
+    "validate_config",
+    "EndpointControl",
+    "LifecycleEndpointFactory",
+    "PreparedLifecycleEndpoint",
+    "RunningLifecycleEndpoint",
+    "prepare",
+    "start",
+    "cancel_preparation",
+    "observations",
+    "request_stop",
+    "join_and_finalize",
+    "AudioSourceFactory",
+    "AudioSourceDriver",
+    "prepare",
+    "next",
+    "close",
+    "manifest",
+    "validate_config",
+    "create",
+    "AudioEndpointDefinition",
+    "descriptor",
+    "validate_config",
+    "AudioEndpointFactory",
+    "PreparedAudioEndpoint",
+    "prepare",
+    "start",
+    "cancel_preparation",
+    "ForbiddenCaptureBackend",
+    "prepare",
+    "source_factory",
+    "failing_source_factory",
+    "audio_source_factory",
+    "endpoint",
+    "given_typed_source_when_one_branch_saturates_then_other_branch_and_shutdown_remain_real",
+    "given_one_external_source_failure_when_session_runs_then_unrelated_source_completes",
+    "given_external_pcm_source_when_session_runs_then_audio_uses_bounded_ingress_with_source_identity"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 197,
+      "text": "stop: Arc<AtomicBool>,"
+    },
+    {
+      "line": 250,
+      "text": "let stop = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 251,
+      "text": "let worker_stop = Arc::clone(&stop);"
+    },
+    {
+      "line": 274,
+      "text": "stop,"
+    },
+    {
+      "line": 297,
+      "text": "self.stop.store(true, Ordering::Release);"
+    },
+    {
+      "line": 302,
+      "text": "self.stop.store(true, Ordering::Release);"
+    },
+    {
+      "line": 514,
+      "text": "let stop = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 515,
+      "text": "let worker_stop = Arc::clone(&stop);"
+    },
+    {
+      "line": 541,
+      "text": "stop,"
+    },
+    {
+      "line": 716,
+      "text": "let outcome = running.stop();"
+    },
+    {
+      "line": 819,
+      "text": "let outcome = running.stop();"
+    },
+    {
+      "line": 898,
+      "text": "assert!(running.stop().is_success());"
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 253,
+      "text": "let worker = std::thread::spawn(move || {"
+    },
+    {
+      "line": 517,
+      "text": "let worker = std::thread::spawn(move || {"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 57,
+      "text": "fn prepare(&mut self, context: &SourcePrepareContext) -> Result<(), SourceDriverError> {"
+    },
+    {
+      "line": 202,
+      "text": "fn prepare("
+    },
+    {
+      "line": 229,
+      "text": "fn start("
+    },
+    {
+      "line": 331,
+      "text": "fn prepare(&mut self, context: &SourcePrepareContext) -> Result<(), SourceDriverError> {"
+    },
+    {
+      "line": 466,
+      "text": "fn prepare("
+    },
+    {
+      "line": 493,
+      "text": "fn start("
+    },
+    {
+      "line": 557,
+      "text": "fn prepare(&self, _mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 558,
+      "text": "panic!(\"typed-only external Session must not prepare a desktop capture backend\")"
+    },
+    {
+      "line": 683,
+      "text": "// Its per-route configuration is retained in the prepare context."
+    },
+    {
+      "line": 688,
+      "text": ".start("
+    },
+    {
+      "line": 792,
+      "text": ".start("
+    },
+    {
+      "line": 874,
+      "text": ".start("
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 74,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 79,
+      "text": "std::thread::sleep(Duration::from_millis(10));"
+    },
+    {
+      "line": 81,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 198,
+      "text": "worker: Option<std::thread::JoinHandle<()>>,"
+    },
+    {
+      "line": 253,
+      "text": "let worker = std::thread::spawn(move || {"
+    },
+    {
+      "line": 255,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 269,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 343,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 354,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 517,
+      "text": "let worker = std::thread::spawn(move || {"
+    },
+    {
+      "line": 519,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 536,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 702,
+      "text": "std::thread::sleep(Duration::from_millis(2));"
+    },
+    {
+      "line": 802,
+      "text": "std::thread::sleep(Duration::from_millis(2));"
+    },
+    {
+      "line": 885,
+      "text": "std::thread::sleep(Duration::from_millis(2));"
+    }
+  ],
+  "visibility": "private_or_not_applicable"
+}

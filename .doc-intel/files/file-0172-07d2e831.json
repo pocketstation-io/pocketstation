@@ -1,0 +1,577 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Self::new",
+    "as_deref",
+    "as_str",
+    "canonical_path",
+    "code",
+    "derive",
+    "duplicate_registration",
+    "error",
+    "generation",
+    "id",
+    "into",
+    "kind",
+    "message",
+    "new",
+    "path",
+    "pub",
+    "registration_state_unavailable",
+    "registrations",
+    "revision"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "Self::new",
+    "new"
+  ],
+  "content_hash": "6e9b7c138b8318c655d616a0ffa675bd57f75e4c3931235e10d7ffcaf25b4d86",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 1,
+      "name": "library",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "EXTENSION_LIBRARY_ENTRYPOINT_V1",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 27,
+      "name": "NativeExtensionKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 34,
+      "name": "NativeExtensionRegistration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 62,
+      "name": "NativeExtensionLibrary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "canonical_path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "registrations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 78,
+      "name": "NativeExtensionLibraryErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 97,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 124,
+      "name": "NativeExtensionLibraryError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 134,
+      "name": "message",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 138,
+      "name": "path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 142,
+      "name": "registration_state_unavailable",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 150,
+      "name": "duplicate_registration",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "new",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 30,
+      "text": "Endpoint,"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "EXTENSION_LIBRARY_ENTRYPOINT_V1",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 27,
+      "name": "NativeExtensionKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 34,
+      "name": "NativeExtensionRegistration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 62,
+      "name": "NativeExtensionLibrary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "canonical_path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "registrations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 78,
+      "name": "NativeExtensionLibraryErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 97,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 124,
+      "name": "NativeExtensionLibraryError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 134,
+      "name": "message",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 138,
+      "name": "path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 142,
+      "name": "registration_state_unavailable",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 150,
+      "name": "duplicate_registration",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "new",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 78,
+      "name": "NativeExtensionLibraryErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 124,
+      "name": "NativeExtensionLibraryError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "6e9b7c138b8318c655d616a0ffa675bd57f75e4c3931235e10d7ffcaf25b4d86",
+      "lines": [
+        1,
+        171
+      ],
+      "path": "src/native_extension/mod.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 21,
+      "text": "/// Exact exported symbol required from a native Extension ABI v1 dynamic"
+    },
+    {
+      "line": 22,
+      "text": "/// library. The suffix follows the ABI major; compatible minor revisions use"
+    }
+  ],
+  "file_id": "file-0172-07d2e831",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "3809ed7593a8cdf8a03ca1d0908c28ff10fe735c",
+  "implemented_by": [],
+  "implements": [
+    "NativeExtensionRegistration",
+    "NativeExtensionLibrary",
+    "NativeExtensionLibraryErrorCode",
+    "NativeExtensionLibraryError"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::abi::executable_extension::{ PksExtensionAcquireRegistrationCallback, PksExtensionCallbacks, PksExtensionCreateCallback, PksExtensionDestroyCallback, PksExtensionEndpointConsumeCallback, PksExtensionFinishCallback, PksExtensionLibrary, PksExtensionLibraryEntrypoint, PksExtensionOperatorProcessCallback, PksExtensionPipelineDeclaration, PksExtensionPrepareCallback, PksExtensionSignalBuffer, PksExtensionSignalView, PksExtensionSourceNextCallback, PksExtensionStopCallback, PksExtensionValidateConfigurationCallback, }",
+    "crate::abi::extension::{ PksExtensionAbiVersion, PksExtensionDescriptor, PksExtensionKind, PksExtensionPort, PksExtensionPortDirection, PKS_EXTENSION_ABI_MAJOR, PKS_EXTENSION_ABI_MINOR, }",
+    "crate::abi::session::{PksSessionStatus, PksSessionStatusCode, PksSessionUtf8}",
+    "library::load_native_extension_library",
+    "module:library",
+    "std::path::{Path, PathBuf}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 171,
+  "locks": [],
+  "module": "pocketstation::native_extension",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/native_extension/mod.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 1,
+      "name": "library",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 24,
+      "name": "EXTENSION_LIBRARY_ENTRYPOINT_V1",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 27,
+      "name": "NativeExtensionKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 34,
+      "name": "NativeExtensionRegistration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 45,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "generation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 62,
+      "name": "NativeExtensionLibrary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "canonical_path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 71,
+      "name": "registrations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 78,
+      "name": "NativeExtensionLibraryErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 97,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 124,
+      "name": "NativeExtensionLibraryError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 134,
+      "name": "message",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 138,
+      "name": "path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 142,
+      "name": "registration_state_unavailable",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 150,
+      "name": "duplicate_registration",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "new",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::native_extension`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [
+    "crate::abi::session::{PksSessionStatus, PksSessionStatusCode, PksSessionUtf8}"
+  ],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/native-extensions.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/extensions.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/native-extensions.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/extensions-and-abi.md",
+    "docs/troubleshooting/native-extension-load.md",
+    "docs/best-practices/native-extension-trust.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "library",
+    "EXTENSION_LIBRARY_ENTRYPOINT_V1",
+    "NativeExtensionKind",
+    "NativeExtensionRegistration",
+    "id",
+    "kind",
+    "revision",
+    "generation",
+    "NativeExtensionLibrary",
+    "canonical_path",
+    "registrations",
+    "NativeExtensionLibraryErrorCode",
+    "as_str",
+    "NativeExtensionLibraryError",
+    "code",
+    "message",
+    "path",
+    "registration_state_unavailable",
+    "duplicate_registration",
+    "new"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 21,
+      "text": "/// Exact exported symbol required from a native Extension ABI v1 dynamic"
+    },
+    {
+      "line": 22,
+      "text": "/// library. The suffix follows the ABI major; compatible minor revisions use"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

@@ -1,0 +1,306 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "cfg"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 43,
+      "text": "no-default-features = true"
+    },
+    {
+      "line": 48,
+      "text": "[features]"
+    },
+    {
+      "line": 68,
+      "text": "serde = { version = \"1\", features = [\"derive\"] }"
+    },
+    {
+      "line": 71,
+      "text": "tokio = { version = \"1\", features = [\"macros\", \"rt\", \"sync\", \"time\"] }"
+    },
+    {
+      "line": 76,
+      "text": "assert_no_alloc = { version = \"1.1\", default-features = false }"
+    },
+    {
+      "line": 82,
+      "text": "[target.'cfg(target_os = \"macos\")'.dependencies]"
+    },
+    {
+      "line": 85,
+      "text": "[target.'cfg(target_os = \"linux\")'.dependencies]"
+    },
+    {
+      "line": 90,
+      "text": "[target.'cfg(target_os = \"windows\")'.dependencies]"
+    },
+    {
+      "line": 92,
+      "text": "windows = { version = \"0.58\", optional = true, features = ["
+    },
+    {
+      "line": 118,
+      "text": "required-features = [\"internal-testing\"]"
+    },
+    {
+      "line": 123,
+      "text": "required-features = [\"internal-testing\"]"
+    },
+    {
+      "line": 128,
+      "text": "required-features = [\"internal-testing\"]"
+    },
+    {
+      "line": 133,
+      "text": "required-features = [\"internal-testing\"]"
+    },
+    {
+      "line": 138,
+      "text": "required-features = [\"internal-testing\"]"
+    },
+    {
+      "line": 143,
+      "text": "required-features = [\"internal-testing\"]"
+    },
+    {
+      "line": 148,
+      "text": "required-features = [\"internal-testing\"]"
+    },
+    {
+      "line": 153,
+      "text": "required-features = [\"internal-testing\"]"
+    },
+    {
+      "line": 158,
+      "text": "required-features = [\"conformance-fixtures\"]"
+    },
+    {
+      "line": 163,
+      "text": "required-features = [\"internal-testing\"]"
+    },
+    {
+      "line": 167,
+      "text": "required-features = [\"internal-testing\"]"
+    },
+    {
+      "line": 171,
+      "text": "required-features = [\"internal-testing\"]"
+    },
+    {
+      "line": 175,
+      "text": "required-features = [\"internal-testing\"]"
+    },
+    {
+      "line": 179,
+      "text": "required-features = [\"internal-testing\"]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "584c34d5d28ed46b0bf195951667901f8b919e21bc45d336d03d381df514c06b",
+  "defaults": [
+    {
+      "line": 43,
+      "text": "no-default-features = true"
+    },
+    {
+      "line": 76,
+      "text": "assert_no_alloc = { version = \"1.1\", default-features = false }"
+    }
+  ],
+  "defines": [],
+  "device_io": [
+    {
+      "line": 51,
+      "text": "\"dep:cpal\","
+    },
+    {
+      "line": 52,
+      "text": "\"dep:pipewire\","
+    },
+    {
+      "line": 55,
+      "text": "\"dep:wasapi\","
+    },
+    {
+      "line": 83,
+      "text": "cpal = { version = \"0.18.1\", optional = true }"
+    },
+    {
+      "line": 86,
+      "text": "pipewire = { version = \"0.10\", optional = true }"
+    },
+    {
+      "line": 91,
+      "text": "wasapi = { version = \"0.23\", optional = true }"
+    }
+  ],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "584c34d5d28ed46b0bf195951667901f8b919e21bc45d336d03d381df514c06b",
+      "lines": [
+        1,
+        180
+      ],
+      "path": "Cargo.toml",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0007-2e9d962a",
+  "file_kind": "semantic_metadata",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "bd2d5816efd22fed4567c2615d5a5c816741e9ec",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "TOML",
+  "line_count": 180,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [
+    {
+      "line": 7,
+      "text": "repository = \"https://github.com/pocketstation-io/pocketstation\""
+    },
+    {
+      "line": 8,
+      "text": "homepage = \"https://github.com/pocketstation-io/pocketstation\""
+    },
+    {
+      "line": 9,
+      "text": "documentation = \"https://docs.rs/pocketstation\""
+    }
+  ],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "Cargo.toml",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines repository-owned build, package, or semantic fixture data."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 68,
+      "text": "serde = { version = \"1\", features = [\"derive\"] }"
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 7,
+      "text": "repository = \"https://github.com/pocketstation-io/pocketstation\""
+    },
+    {
+      "line": 8,
+      "text": "homepage = \"https://github.com/pocketstation-io/pocketstation\""
+    },
+    {
+      "line": 9,
+      "text": "documentation = \"https://docs.rs/pocketstation\""
+    },
+    {
+      "line": 51,
+      "text": "\"dep:cpal\","
+    },
+    {
+      "line": 52,
+      "text": "\"dep:pipewire\","
+    },
+    {
+      "line": 55,
+      "text": "\"dep:wasapi\","
+    },
+    {
+      "line": 83,
+      "text": "cpal = { version = \"0.18.1\", optional = true }"
+    },
+    {
+      "line": 86,
+      "text": "pipewire = { version = \"0.10\", optional = true }"
+    },
+    {
+      "line": 91,
+      "text": "wasapi = { version = \"0.23\", optional = true }"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 71,
+      "text": "tokio = { version = \"1\", features = [\"macros\", \"rt\", \"sync\", \"time\"] }"
+    }
+  ],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

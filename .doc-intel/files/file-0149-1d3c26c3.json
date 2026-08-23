@@ -1,0 +1,339 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "any",
+    "as_str",
+    "cfg",
+    "derive",
+    "edge_count",
+    "find",
+    "id",
+    "iter",
+    "len",
+    "node",
+    "node_count",
+    "topo_order",
+    "type_str"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 39,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "cd0cd4da825d36345eadb44cca7796cececee85cd43ce2c60d20d2078c50db8a",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 10,
+      "name": "ResolvedNode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 16,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 19,
+      "name": "type_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 25,
+      "name": "ResolvedEdge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 32,
+      "name": "GraphIr",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "node_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "edge_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "node",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "topo_order",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 10,
+      "name": "ResolvedNode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 16,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 19,
+      "name": "type_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 25,
+      "name": "ResolvedEdge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 32,
+      "name": "GraphIr",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "node_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "edge_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "node",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "topo_order",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "cd0cd4da825d36345eadb44cca7796cececee85cd43ce2c60d20d2078c50db8a",
+      "lines": [
+        1,
+        55
+      ],
+      "path": "src/graph/ir.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0149-1d3c26c3",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "51511d642f05ad6748d846957fe0d3d171dac834",
+  "implemented_by": [],
+  "implements": [
+    "ResolvedNode",
+    "GraphIr"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::graph::node::NodeDescriptor",
+    "crate::graph::ports::{EdgeContract, MediaCaps}",
+    "crate::graph::spec::{EdgeSpec, NodeId, NodeSpec}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 55,
+  "locks": [],
+  "module": "pocketstation::graph::ir",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/ir.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 10,
+      "name": "ResolvedNode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 16,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 19,
+      "name": "type_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 25,
+      "name": "ResolvedEdge",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 32,
+      "name": "GraphIr",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 40,
+      "name": "node_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "edge_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 46,
+      "name": "node",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 50,
+      "name": "topo_order",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Typed intermediate representation the compiler produces from a `GraphSpec`. Resolution attaches each node's descriptor; the verification passes fill the negotiated media, edge contracts, and topological order in place."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "ResolvedNode",
+    "id",
+    "type_str",
+    "ResolvedEdge",
+    "GraphIr",
+    "node_count",
+    "edge_count",
+    "node",
+    "topo_order"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

@@ -1,0 +1,210 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "PksSessionStatus::new",
+    "derive",
+    "error",
+    "status"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "PksSessionStatus::new"
+  ],
+  "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "enum",
+      "line": 4,
+      "name": "AbiError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 38,
+      "name": "status",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 4,
+      "name": "AbiError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 38,
+      "name": "status",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 4,
+      "name": "AbiError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "b5ae93c5ea344fdc12a3134b3115981f2368066518cd09f81adf340ccd611b8d",
+      "lines": [
+        1,
+        72
+      ],
+      "path": "src/abi/session/error.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 7,
+      "text": "#[error(\"requested ABI major is unsupported\")]"
+    },
+    {
+      "line": 9,
+      "text": "#[error(\"requested ABI minor is newer than this engine\")]"
+    }
+  ],
+  "file_id": "file-0071-4d9a395e",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "163bfeed45656e9c4b4f95f6e9b814346495c892",
+  "implemented_by": [],
+  "implements": [
+    "AbiError"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::abi::session::abi::{PksSessionStatus, PksSessionStatusCode}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 72,
+  "locks": [],
+  "module": "pocketstation::abi::session::error",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/abi/session/error.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 4,
+      "name": "AbiError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 38,
+      "name": "status",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::abi::session::error`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/native-extensions.md",
+    "docs/concepts/c-abi-ownership.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/architecture/overview.md",
+    "docs/internals/abi-conformance.md",
+    "docs/glossary.md",
+    "docs/guides/extensions.md",
+    "docs/how-to/use-c-session-api.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/native-extensions.md",
+    "docs/reference/c-abi.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/extensions-and-abi.md",
+    "docs/troubleshooting/native-extension-load.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/native-extension-trust.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "AbiError",
+    "status"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 7,
+      "text": "#[error(\"requested ABI major is unsupported\")]"
+    },
+    {
+      "line": 9,
+      "text": "#[error(\"requested ABI minor is newer than this engine\")]"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

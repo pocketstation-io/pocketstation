@@ -1,0 +1,149 @@
+# PocketStation documentation
+> Evidence snapshot: 3b7b970f6598239e5d435b60c8d132a955a1886c
+> Canonical human and reference documentation for the PocketStation Rust SDK.
+
+- [Platform support and evidence](docs/platform/compatibility.md): Capture application audio, Capture microphone audio, Capture system audio, Observe permission and source lifecycle
+- [Application capture](docs/concepts/application-capture.md): Capture application audio
+- [Asynchronous operators](docs/concepts/async-operators.md): Implement asynchronous operators
+- [Audio reentry](docs/concepts/audio-reentry.md): Bridge asynchronous output into audio
+- [C ABI ownership](docs/concepts/c-abi-ownership.md): Use the versioned C ABI
+- [Cargo features and build surfaces](docs/concepts/cargo-features.md): Install and feature-select the crate
+- [Conformance and qualification](docs/concepts/conformance.md): Validate protocol and conformance boundaries
+- [Connector model](docs/concepts/connectors.md): Declare connector manifests and configuration
+- [Connector worker lifecycle](docs/concepts/connector-workers.md): Run connector workers
+- [Endpoint lifecycle](docs/concepts/endpoints.md): Implement endpoint drivers
+- [Error and status model](docs/concepts/error-model.md): Classify public failures
+- [External PCM input](docs/concepts/external-pcm.md): Inject external PCM
+- [Frame identity and lineage](docs/concepts/frame-lineage.md): Preserve frame identity and lineage
+- [Graph contracts](docs/concepts/graph-contracts.md): Describe graph contracts
+- [Microphone capture](docs/concepts/microphone-capture.md): Capture microphone audio
+- [Multistem recording](docs/concepts/multistem-recording.md): Record aligned multistem output
+- [Native extension libraries](docs/concepts/native-extensions.md): Load native extension libraries
+- [Observations and metrics](docs/concepts/observability.md): Observe Session metrics and events
+- [Opus codec state](docs/concepts/opus-codec.md): Encode and decode Opus
+- [Permissions and source lifecycle](docs/concepts/permissions-and-source-lifecycle.md): Observe permission and source lifecycle
+- [Polled audio](docs/concepts/polled-audio.md): Poll bounded audio batches
+- [Realtime routing](docs/concepts/realtime-routing.md): Route realtime audio
+- [Release evidence boundary](docs/concepts/release-evidence.md): Build and publish repository artifacts
+- [Runtime preparation](docs/concepts/runtime-preparation.md): Prepare runtime resources
+- [Session compilation](docs/concepts/session-compilation.md): Compile Session declarations
+- [Session lifecycle](docs/concepts/session-lifecycle.md): Start, cancel, stop, and finalize a Session
+- [Session mental model](docs/concepts/session.md): Declare a Session
+- [Session traces](docs/concepts/session-traces.md): Record and validate Session traces
+- [Sidecar lifecycle](docs/concepts/sidecars.md): Host managed-process sidecars
+- [Signals and streams](docs/concepts/signals-and-streams.md): Carry typed signals
+- [Source selection](docs/concepts/source-selection.md): Select and resolve capture sources
+- [System capture](docs/concepts/system-capture.md): Capture system audio
+- [Timing and clocks](docs/concepts/timing-and-clocks.md): Map clocks and correct drift
+- [Transcription integration boundary](docs/concepts/transcription-integration.md): Integrate transcription processing
+- [Install PocketStation](docs/getting-started/installation.md): Install and feature-select the crate
+- [Platform prerequisites](docs/getting-started/platform-prerequisites.md): Capture application audio, Capture microphone audio, Capture system audio, Observe permission and source lifecycle
+- [Run the examples](docs/getting-started/examples.md): Install and feature-select the crate, Validate protocol and conformance boundaries, Integrate transcription processing
+- [Rust quickstart](docs/getting-started/rust-quickstart.md): Declare a Session, Capture application audio, Capture microphone audio, Poll bounded audio batches
+- [Glossary](docs/glossary.md): Install and feature-select the crate, Declare a Session, Select and resolve capture sources, Capture application audio
+- [ABI and conformance model](docs/internals/abi-conformance.md): Use the versioned C ABI, Validate protocol and conformance boundaries
+- [Architecture overview](docs/architecture/overview.md): Compile Session declarations, Start, cancel, stop, and finalize a Session, Route realtime audio, Carry typed signals
+- [Asynchronous signal lane](docs/internals/async-signal-lane.md): Implement asynchronous operators, Carry typed signals
+- [Memory ownership and buffer pools](docs/internals/memory-ownership.md): Preserve frame identity and lineage, Route realtime audio
+- [Platform backend boundary](docs/internals/platform-backends.md): Capture application audio, Capture microphone audio, Capture system audio
+- [Realtime audio lane](docs/internals/realtime-audio-lane.md): Preserve frame identity and lineage, Route realtime audio
+- [Runtime planner](docs/internals/runtime-planner.md): Compile Session declarations, Prepare runtime resources
+- [Build, prepare, and start](docs/lifecycle/build-prepare-start.md): Declare a Session, Compile Session declarations, Prepare runtime resources, Start, cancel, stop, and finalize a Session
+- [Cancellation and rollback](docs/lifecycle/cancellation-and-rollback.md): Start, cancel, stop, and finalize a Session
+- [Running ownership](docs/lifecycle/running.md): Start, cancel, stop, and finalize a Session, Observe Session metrics and events
+- [Stop, drain, and finalization](docs/lifecycle/stop-drain-finalize.md): Start, cancel, stop, and finalize a Session, Record aligned multistem output, Implement endpoint drivers, Run connector workers
+- [Terminal outcomes](docs/lifecycle/terminal-outcomes.md): Start, cancel, stop, and finalize a Session, Classify public failures
+- [PocketStation](README.md): Install and feature-select the crate, Declare a Session, Select and resolve capture sources, Capture application audio
+- [PocketStation documentation](docs/README.md): Install and feature-select the crate, Declare a Session
+- [Linux capture](docs/platform/linux.md): Capture application audio, Capture microphone audio, Capture system audio, Observe permission and source lifecycle
+- [Permission ownership](docs/platform/permissions.md): Observe permission and source lifecycle
+- [Windows capture](docs/platform/windows.md): Capture application audio, Capture microphone audio, Capture system audio, Observe permission and source lifecycle
+- [macOS capture](docs/platform/macos.md): Capture application audio, Capture microphone audio, Capture system audio, Observe permission and source lifecycle
+- [Release and version information](RELEASE_NOTES.md): Install and feature-select the crate, Build and publish repository artifacts
+- [Author a connector](docs/guides/connectors.md): Declare connector manifests and configuration, Run connector workers, Validate protocol and conformance boundaries
+- [Build and load a native extension](docs/guides/extensions.md): Load native extension libraries, Use the versioned C ABI, Validate protocol and conformance boundaries
+- [Capture a desktop application](docs/how-to/capture-application.md): Select and resolve capture sources, Capture application audio, Observe permission and source lifecycle
+- [Capture application and microphone stems](docs/how-to/capture-app-and-mic.md): Declare a Session, Capture application audio, Capture microphone audio, Preserve frame identity and lineage
+- [Capture system audio](docs/how-to/capture-system-audio.md): Select and resolve capture sources, Capture system audio, Observe permission and source lifecycle
+- [Capture the default microphone](docs/how-to/capture-microphone.md): Capture microphone audio, Observe permission and source lifecycle
+- [Choose crate features](docs/how-to/choose-features.md): Install and feature-select the crate
+- [Choose route capacity and loss policy](docs/how-to/configure-route-policy.md): Route realtime audio, Describe graph contracts
+- [Configure connector secrets](docs/how-to/configure-connector-secrets.md): Declare connector manifests and configuration, Classify public failures
+- [Connect named operator ports](docs/how-to/connect-operator-ports.md): Declare a Session, Describe graph contracts, Implement asynchronous operators
+- [Encode and decode Opus](docs/how-to/opus-roundtrip.md): Encode and decode Opus, Preserve frame identity and lineage
+- [Fan out one source](docs/how-to/fan-out-source.md): Declare a Session, Route realtime audio, Describe graph contracts
+- [Host a managed-process sidecar](docs/how-to/host-sidecar.md): Host managed-process sidecars, Run connector workers
+- [Implement an asynchronous operator](docs/how-to/implement-operator.md): Describe graph contracts, Implement asynchronous operators, Carry typed signals
+- [Implement an endpoint driver](docs/how-to/implement-endpoint.md): Implement endpoint drivers
+- [Inject external PCM](docs/how-to/inject-external-pcm.md): Inject external PCM
+- [Inspect recording outcomes](docs/how-to/inspect-recording-outcome.md): Record aligned multistem output, Classify public failures
+- [Instrument a Session](docs/how-to/instrument-session.md): Observe Session metrics and events, Record and validate Session traces
+- [Map source time into the Session timeline](docs/how-to/map-source-time.md): Preserve frame identity and lineage, Map clocks and correct drift
+- [Observe permission without prompting](docs/how-to/observe-permission.md): Observe permission and source lifecycle
+- [Operate a Session through C](docs/how-to/use-c-session-api.md): Use the versioned C ABI, Classify public failures
+- [Poll audio without unbounded buffering](docs/how-to/poll-audio.md): Poll bounded audio batches, Route realtime audio
+- [Prepare resources before start](docs/how-to/prepare-session.md): Compile Session declarations, Prepare runtime resources, Start, cancel, stop, and finalize a Session
+- [Record independent stems](docs/how-to/record-stems.md): Record aligned multistem output
+- [Return generated PCM through a bridge](docs/how-to/return-generated-audio.md): Bridge asynchronous output into audio, Implement asynchronous operators
+- [Run protocol checks](docs/how-to/run-protocol-checks.md): Validate protocol and conformance boundaries, Build and publish repository artifacts
+- [Run the transcription example](docs/how-to/run-transcription.md): Integrate transcription processing, Capture application audio, Capture microphone audio
+- [Select a process-scoped source](docs/how-to/select-process-source.md): Select and resolve capture sources, Observe permission and source lifecycle
+- [Stop a Session and inspect failures](docs/how-to/stop-session.md): Start, cancel, stop, and finalize a Session, Record aligned multistem output, Implement endpoint drivers, Classify public failures
+- [Test connector conformance](docs/how-to/test-connector-conformance.md): Run connector workers, Validate protocol and conformance boundaries
+- [Compatibility and evidence](docs/compatibility/README.md): Validate protocol and conformance boundaries, Build and publish repository artifacts
+- [Configuration reference](docs/reference/configuration.md): Install and feature-select the crate, Declare a Session, Route realtime audio, Record aligned multistem output
+- [Feature flags](docs/reference/features.md): Install and feature-select the crate, Validate protocol and conformance boundaries
+- [Error code index](docs/reference/error-codes.md): Classify public failures
+- [C ABI reference](docs/reference/c-abi.md): Use the versioned C ABI, Validate protocol and conformance boundaries
+- [Protocol surface index](docs/reference/protocol-surface.md): Declare connector manifests and configuration, Run connector workers, Load native extension libraries, Use the versioned C ABI
+- [Sidecar protocol](docs/reference/sidecar-protocol.md): Host managed-process sidecars
+- [Behavior evidence index](docs/reference/behavior-evidence.md): Install and feature-select the crate, Declare a Session, Select and resolve capture sources, Capture application audio
+- [Capture API](docs/reference/capture.md): Select and resolve capture sources, Capture application audio, Capture microphone audio, Capture system audio
+- [Connector API](docs/reference/connectors.md): Declare connector manifests and configuration, Run connector workers
+- [Endpoint API](docs/reference/endpoints.md): Poll bounded audio batches, Implement endpoint drivers
+- [Frame and lineage API](docs/reference/frames.md): Preserve frame identity and lineage
+- [Graph and route contracts](docs/reference/graph.md): Describe graph contracts, Implement asynchronous operators, Carry typed signals, Bridge asynchronous output into audio
+- [Lifecycle evidence index](docs/reference/lifecycle-evidence.md): Start, cancel, stop, and finalize a Session, Implement endpoint drivers, Run connector workers, Host managed-process sidecars
+- [Native extension API](docs/reference/native-extensions.md): Load native extension libraries
+- [Observation API](docs/reference/observations.md): Observe Session metrics and events, Record and validate Session traces
+- [Opus codec API](docs/reference/codec.md): Encode and decode Opus
+- [Recording API](docs/reference/recording.md): Record aligned multistem output
+- [Rust API reference](docs/reference/rust-api.md): Install and feature-select the crate, Declare a Session, Select and resolve capture sources, Capture application audio
+- [Session API](docs/reference/session.md): Declare a Session, Compile Session declarations, Prepare runtime resources, Start, cancel, stop, and finalize a Session
+- [Test evidence index](docs/reference/test-evidence.md): Validate protocol and conformance boundaries, Build and publish repository artifacts
+- [Timing API](docs/reference/timing.md): Map clocks and correct drift
+- [Keep qualification claims scoped](docs/best-practices/evidence-boundaries.md): Capture application audio, Capture microphone audio, Capture system audio, Validate protocol and conformance boundaries
+- [Keep realtime callbacks bounded](docs/best-practices/realtime-boundaries.md): Route realtime audio, Preserve frame identity and lineage
+- [Load extensions from trusted absolute paths](docs/best-practices/native-extension-trust.md): Load native extension libraries, Use the versioned C ABI
+- [Preserve source identity](docs/best-practices/source-identity.md): Select and resolve capture sources, Observe permission and source lifecycle, Preserve frame identity and lineage
+- [Size bounded routes from observations](docs/best-practices/route-sizing.md): Route realtime audio, Describe graph contracts, Observe Session metrics and events
+- [Treat stop outcomes as data](docs/best-practices/terminal-outcomes.md): Start, cancel, stop, and finalize a Session, Record aligned multistem output, Implement endpoint drivers, Run connector workers
+- [Use finite connector retry budgets](docs/best-practices/connector-retries.md): Declare connector manifests and configuration, Run connector workers, Observe Session metrics and events
+- [Capture failures](docs/errors/capture.md): Select and resolve capture sources, Capture application audio, Capture microphone audio, Capture system audio
+- [Connector failures](docs/errors/connectors.md): Declare connector manifests and configuration, Run connector workers, Classify public failures
+- [Endpoint failures](docs/errors/endpoints.md): Poll bounded audio batches, Implement endpoint drivers, Classify public failures
+- [Extension and ABI failures](docs/errors/extensions-and-abi.md): Load native extension libraries, Use the versioned C ABI, Classify public failures
+- [Frame and codec failures](docs/errors/frames-and-codec.md): Preserve frame identity and lineage, Encode and decode Opus, Classify public failures
+- [Graph and signal failures](docs/errors/graph-and-signals.md): Describe graph contracts, Implement asynchronous operators, Carry typed signals, Bridge asynchronous output into audio
+- [Recording failures](docs/errors/recording.md): Record aligned multistem output, Classify public failures
+- [Runtime and sidecar failures](docs/errors/runtime-and-sidecars.md): Route realtime audio, Bridge asynchronous output into audio, Host managed-process sidecars, Classify public failures
+- [Session failures](docs/errors/session.md): Compile Session declarations, Prepare runtime resources, Start, cancel, stop, and finalize a Session, Classify public failures
+- [Security boundaries](docs/security/boundaries.md): Declare connector manifests and configuration, Load native extension libraries, Use the versioned C ABI, Host managed-process sidecars
+- [A capture source disappears](docs/troubleshooting/source-loss.md): Select and resolve capture sources, Observe permission and source lifecycle, Preserve frame identity and lineage, Start, cancel, stop, and finalize a Session
+- [A conformance check cannot find external fixtures](docs/troubleshooting/conformance-fixtures.md): Validate protocol and conformance boundaries, Build and publish repository artifacts
+- [A connector is not ready](docs/troubleshooting/connector-readiness.md): Implement endpoint drivers, Declare connector manifests and configuration, Run connector workers, Observe Session metrics and events
+- [A native extension does not load](docs/troubleshooting/native-extension-load.md): Load native extension libraries, Use the versioned C ABI, Classify public failures
+- [A native-capture build fails](docs/troubleshooting/native-build.md): Install and feature-select the crate, Capture application audio, Capture microphone audio, Capture system audio
+- [A recording is incomplete](docs/troubleshooting/recording-incomplete.md): Record aligned multistem output, Start, cancel, stop, and finalize a Session, Classify public failures
+- [A sidecar misses a deadline](docs/troubleshooting/sidecar-deadline.md): Host managed-process sidecars, Run connector workers, Observe Session metrics and events, Classify public failures
+- [External PCM input is saturated](docs/troubleshooting/external-pcm.md): Inject external PCM, Route realtime audio, Observe Session metrics and events, Classify public failures
+- [Frames or signals are dropped](docs/troubleshooting/drops-and-saturation.md): Route realtime audio, Poll bounded audio batches, Describe graph contracts, Implement asynchronous operators
+- [No application audio arrives](docs/troubleshooting/no-application-audio.md): Select and resolve capture sources, Capture application audio, Observe permission and source lifecycle, Observe Session metrics and events
+- [No microphone audio arrives](docs/troubleshooting/no-microphone-audio.md): Capture microphone audio, Observe permission and source lifecycle, Observe Session metrics and events, Classify public failures
+- [Opus conversion fails](docs/troubleshooting/opus.md): Encode and decode Opus, Preserve frame identity and lineage, Classify public failures
+- [Permission state is denied or unobservable](docs/troubleshooting/permission-state.md): Capture application audio, Capture microphone audio, Capture system audio, Observe permission and source lifecycle
+- [Session fails before start](docs/troubleshooting/session-start.md): Declare a Session, Compile Session declarations, Prepare runtime resources, Start, cancel, stop, and finalize a Session
+- [Session stop reports component failures](docs/troubleshooting/session-stop.md): Start, cancel, stop, and finalize a Session, Record aligned multistem output, Implement endpoint drivers, Run connector workers
+- [Session trace validation fails](docs/troubleshooting/session-trace.md): Record and validate Session traces, Observe Session metrics and events, Classify public failures
+- [Timestamps diverge or discontinuities appear](docs/troubleshooting/timing.md): Observe permission and source lifecycle, Preserve frame identity and lineage, Map clocks and correct drift, Observe Session metrics and events
+- [Transcription process evidence is missing](docs/troubleshooting/transcription-evidence.md): Integrate transcription processing, Classify public failures

@@ -1,3 +1,6 @@
+//! Connector declarations, typed configuration, workers, transport records,
+//! readiness, observations, and endpoint integration.
+
 mod configuration;
 mod error;
 mod manifest;
@@ -58,6 +61,7 @@ pub use worker::{
     ConnectorWorker,
 };
 
+#[doc = "Represents connector in the PocketStation API."]
 pub struct Connector {
     manifest: Arc<ConnectorManifest>,
     endpoint_factory: Arc<dyn EndpointDriverFactory>,
@@ -65,6 +69,7 @@ pub struct Connector {
 }
 
 impl Connector {
+    #[doc = "Creates a new `Connector`."]
     pub fn new(
         manifest: ConnectorManifest,
         factory: Arc<dyn ConnectorFactory>,
@@ -116,12 +121,14 @@ impl Connector {
         Self::with_driver(manifest, sidecar_connector_factory(process))
     }
 
+    #[doc = "Returns the manifest associated with `Connector`."]
     pub fn manifest(&self) -> &ConnectorManifest {
         &self.manifest
     }
 }
 
 #[derive(Clone)]
+#[doc = "Represents registered connector in the PocketStation API."]
 pub struct RegisteredConnector {
     session_id: crate::SessionId,
     manifest: Arc<ConnectorManifest>,
@@ -129,14 +136,17 @@ pub struct RegisteredConnector {
 }
 
 impl RegisteredConnector {
+    #[doc = "Returns the session identifier associated with `RegisteredConnector`."]
     pub const fn session_id(&self) -> crate::SessionId {
         self.session_id
     }
 
+    #[doc = "Returns the manifest associated with `RegisteredConnector`."]
     pub fn manifest(&self) -> &ConnectorManifest {
         &self.manifest
     }
 
+    #[doc = "Returns the current observation exposed by `RegisteredConnector`."]
     pub fn observation(
         &self,
         endpoint: EndpointHandle,
@@ -150,12 +160,14 @@ impl RegisteredConnector {
         Ok(self.observations.observation(endpoint.id()))
     }
 
+    #[doc = "Returns the observations exposed by `RegisteredConnector`."]
     pub fn observations(
         &self,
     ) -> Result<Vec<ConnectorRuntimeObservations>, ConnectorObservationError> {
         self.observations.snapshots()
     }
 
+    #[doc = "Adds the declaration represented by `RegisteredConnector` to its Session."]
     pub fn declare(
         &self,
         session: &Session,
@@ -201,6 +213,7 @@ impl NodeDefinition for ConnectorDefinition {
 }
 
 impl Session {
+    #[doc = "Registers connector for `Session`."]
     pub fn register_connector(
         &self,
         connector: Connector,
@@ -222,31 +235,44 @@ impl Session {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as connector registration error."]
 pub enum ConnectorRegistrationError {
     #[error(transparent)]
+    #[doc = "Reports invalid manifest."]
     InvalidManifest(#[from] ConnectorManifestError),
     #[error(transparent)]
+    #[doc = "Reports session."]
     Session(#[from] crate::SessionEndpointError),
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as connector declaration error."]
 pub enum ConnectorDeclarationError {
     #[error("connector is registered to Session {registered:?}, not Session {requested:?}")]
+    #[doc = "Reports wrong session."]
     WrongSession {
+        #[doc = "Stores the registered associated with `WrongSession`."]
         registered: crate::SessionId,
+        #[doc = "Stores the requested associated with `WrongSession`."]
         requested: crate::SessionId,
     },
     #[error(transparent)]
+    #[doc = "Reports configuration."]
     Configuration(#[from] ConnectorConfigurationError),
     #[error(transparent)]
+    #[doc = "Reports session."]
     Session(#[from] SessionError),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as connector observation lookup error."]
 pub enum ConnectorObservationLookupError {
     #[error("connector is registered to Session {registered:?}, not Session {requested:?}")]
+    #[doc = "Reports wrong session."]
     WrongSession {
+        #[doc = "Stores the registered associated with `WrongSession`."]
         registered: crate::SessionId,
+        #[doc = "Stores the requested associated with `WrongSession`."]
         requested: crate::SessionId,
     },
 }

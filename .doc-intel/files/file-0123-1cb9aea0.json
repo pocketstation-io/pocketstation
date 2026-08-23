@@ -1,0 +1,1016 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 399,
+      "text": "\"connector worker thread panicked outside its contained run callback\","
+    }
+  ],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AssertUnwindSafe",
+    "Box::new",
+    "ConnectorObservationHandle::new",
+    "ConnectorStopToken::new",
+    "ConnectorWorkerState::new",
+    "EndpointDriverObservationHandle::default",
+    "EndpointFailure::new",
+    "Mutex::new",
+    "ReadinessProbeState::default",
+    "Vec::with_capacity",
+    "as_ref",
+    "as_str",
+    "cancel_preparation",
+    "cancel_worker",
+    "catch_unwind",
+    "clone",
+    "code",
+    "configuration",
+    "configuration_endpoint_failure",
+    "connector_driver_endpoint_factory",
+    "connector_endpoint_factory",
+    "contains",
+    "context",
+    "drop",
+    "endpoint",
+    "endpoint_id",
+    "endpoint_ids",
+    "first",
+    "install",
+    "internal_connector_error",
+    "into",
+    "into_endpoint_failure",
+    "into_inner",
+    "into_result",
+    "is_err",
+    "is_requested",
+    "iter",
+    "join",
+    "join_and_finalize",
+    "len",
+    "lock",
+    "map",
+    "map_err",
+    "map_or",
+    "mark_stopping",
+    "name",
+    "node_configuration",
+    "observations",
+    "ok_or_else",
+    "preparation_group",
+    "prepare",
+    "prepare_connector_driver",
+    "pub",
+    "push",
+    "readiness",
+    "record_terminal",
+    "request",
+    "request_shutdown",
+    "request_stop",
+    "resolve_node_config",
+    "run",
+    "session_id",
+    "snapshot",
+    "spawn",
+    "spawn_worker",
+    "start",
+    "stop_and_join",
+    "supervise_startup_readiness",
+    "take",
+    "terminal_error",
+    "thread::Builder::new",
+    "to_owned",
+    "to_string",
+    "unwrap_or_else",
+    "wait_for_start_gate"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "Box::new",
+    "ConnectorObservationHandle::new",
+    "ConnectorStopToken::new",
+    "ConnectorWorkerState::new",
+    "EndpointFailure::new",
+    "Mutex::new",
+    "thread::Builder::new"
+  ],
+  "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "connector_endpoint_factory",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "connector_driver_endpoint_factory",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 48,
+      "name": "ConnectorDriverEndpointAdapter",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 107,
+      "name": "configuration_endpoint_failure",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 116,
+      "name": "ConnectorEndpointAdapter",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 124,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 161,
+      "name": "endpoint_ids",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 185,
+      "name": "PreparedConnectorWorker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 193,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 266,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 280,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 286,
+      "name": "spawn_worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 348,
+      "name": "cancel_worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 371,
+      "name": "RunningConnectorWorker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 380,
+      "name": "stop_and_join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 407,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 410,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 414,
+      "name": "request_shutdown",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 420,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 434,
+      "name": "drop",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 280,
+      "text": "fn drop(&mut self) {"
+    },
+    {
+      "line": 434,
+      "text": "fn drop(&mut self) {"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 5,
+      "text": "use crate::endpoint::EndpointDriverObservationHandle;"
+    },
+    {
+      "line": 273,
+      "text": "observations: self.state.endpoint().snapshot(),"
+    },
+    {
+      "line": 408,
+      "text": "self.state.endpoint().snapshot()"
+    },
+    {
+      "line": 424,
+      "text": "observations: self.state.endpoint().snapshot(),"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "connector_endpoint_factory",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "connector_driver_endpoint_factory",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 98,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 102,
+      "text": "Err(error.into_endpoint_failure())"
+    },
+    {
+      "line": 152,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 156,
+      "text": "Err(error.into_endpoint_failure())"
+    },
+    {
+      "line": 164,
+      "text": "return Err(EndpointFailure::new("
+    },
+    {
+      "line": 173,
+      "text": "return Err(EndpointFailure::new("
+    },
+    {
+      "line": 217,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 226,
+      "text": "return Err(error.into_endpoint_failure());"
+    },
+    {
+      "line": 246,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 255,
+      "text": "return Err(error.into_endpoint_failure());"
+    },
+    {
+      "line": 330,
+      "text": "Err(error) => state.record_terminal(error),"
+    },
+    {
+      "line": 332,
+      "text": "Err(_) => state.record_terminal(internal_connector_error("
+    },
+    {
+      "line": 355,
+      "text": "if let Err(error) = &result {"
+    },
+    {
+      "line": 360,
+      "text": "Err(_) => {"
+    },
+    {
+      "line": 367,
+      "text": "Err(error)"
+    },
+    {
+      "line": 428,
+      "text": ".map_or(Ok(()), |error| Err(error.into_endpoint_failure())),"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [
+    {
+      "line": 65,
+      "text": ".map_err(configuration_endpoint_failure)?;"
+    },
+    {
+      "line": 91,
+      "text": ".map_err(configuration_endpoint_failure)?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 65,
+      "text": ".map_err(configuration_endpoint_failure)?;"
+    },
+    {
+      "line": 68,
+      "text": ".map_err(ConnectorError::into_endpoint_failure)"
+    },
+    {
+      "line": 91,
+      "text": ".map_err(configuration_endpoint_failure)?;"
+    },
+    {
+      "line": 131,
+      "text": ".map_err(ConnectorError::into_endpoint_failure)"
+    },
+    {
+      "line": 270,
+      "text": "cancel_worker(worker, &self.state).map_err(ConnectorError::into_endpoint_failure)"
+    },
+    {
+      "line": 340,
+      "text": ".map_err(|error| {"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 65,
+      "text": ".map_err(configuration_endpoint_failure)?;"
+    },
+    {
+      "line": 68,
+      "text": ".map_err(ConnectorError::into_endpoint_failure)"
+    },
+    {
+      "line": 91,
+      "text": ".map_err(configuration_endpoint_failure)?;"
+    },
+    {
+      "line": 131,
+      "text": ".map_err(ConnectorError::into_endpoint_failure)"
+    },
+    {
+      "line": 270,
+      "text": "cancel_worker(worker, &self.state).map_err(ConnectorError::into_endpoint_failure)"
+    },
+    {
+      "line": 340,
+      "text": ".map_err(|error| {"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "e8346f60f8d47c3f8839dcd393a2d990e7e650988f234b4ddae14c608b57710c",
+      "lines": [
+        1,
+        438
+      ],
+      "path": "src/connector/worker/endpoint_adapter.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0123-1cb9aea0",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "f68d478d5620a6f16ed86ec31b87bbe00d0091a9",
+  "implemented_by": [],
+  "implements": [
+    "EndpointDriverFactory for ConnectorDriverEndpointAdapter",
+    "EndpointDriverFactory for ConnectorEndpointAdapter",
+    "PreparedEndpointDriver for PreparedConnectorWorker",
+    "Drop for PreparedConnectorWorker",
+    "RunningConnectorWorker",
+    "RunningEndpointDriver for RunningConnectorWorker",
+    "Drop for RunningConnectorWorker"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::connector::{ ConnectorError, ConnectorErrorStage, ConnectorManifest, ConnectorObservationHandle, ConnectorObservationStore, ConnectorReadinessPolicy, }",
+    "crate::endpoint::EndpointDriverObservationHandle",
+    "crate::{ EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointPortInput, EndpointPreparationGroup, EndpointShutdownMode, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }",
+    "std::panic::{catch_unwind, AssertUnwindSafe}",
+    "std::sync::{Arc, Mutex}",
+    "std::thread::{self, JoinHandle}",
+    "super::coordination::{ConnectorStopToken, ReadinessProbeState}",
+    "super::driver::{prepare_connector_driver, ConnectorDriverFactory}",
+    "super::supervisor::{ internal_connector_error, supervise_startup_readiness, wait_for_start_gate, ConnectorWorkerState, }",
+    "super::{ConnectorContext, ConnectorFactory, ConnectorWorker}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 166,
+      "text": "\"connector input batch cannot be empty\","
+    }
+  ],
+  "language": "Rust",
+  "line_count": 438,
+  "locks": [
+    {
+      "line": 2,
+      "text": "use std::sync::{Arc, Mutex};"
+    },
+    {
+      "line": 203,
+      "text": "let worker_slot = Arc::new(Mutex::new(Some(worker)));"
+    },
+    {
+      "line": 205,
+      "text": "let readiness_probes = Arc::new(Mutex::new(ReadinessProbeState::default()));"
+    },
+    {
+      "line": 288,
+      "text": "worker_slot: Arc<Mutex<Option<Box<dyn ConnectorWorker>>>>,"
+    },
+    {
+      "line": 293,
+      "text": "readiness_probes: Arc<Mutex<ReadinessProbeState>>,"
+    }
+  ],
+  "module": "pocketstation::connector::worker::endpoint_adapter",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-cf32a83b08a8eee406c3",
+    "pattern-0c264e4ec468e7568a9c"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/connector/worker/endpoint_adapter.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "struct",
+      "line": 48,
+      "name": "ConnectorDriverEndpointAdapter",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 107,
+      "name": "configuration_endpoint_failure",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 116,
+      "name": "ConnectorEndpointAdapter",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 124,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 161,
+      "name": "endpoint_ids",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 185,
+      "name": "PreparedConnectorWorker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 193,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 266,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 280,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 286,
+      "name": "spawn_worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 348,
+      "name": "cancel_worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 371,
+      "name": "RunningConnectorWorker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 380,
+      "name": "stop_and_join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 407,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 410,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 414,
+      "name": "request_shutdown",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 420,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 434,
+      "name": "drop",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 236,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 297,
+      "text": ".spawn(move || {"
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "fn",
+      "line": 24,
+      "name": "connector_endpoint_factory",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "connector_driver_endpoint_factory",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::connector::worker::endpoint_adapter`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/connectors.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/configure-connector-secrets.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/connectors.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/connectors.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/terminal-outcomes.md",
+    "docs/best-practices/connector-retries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 2,
+      "text": "use std::sync::{Arc, Mutex};"
+    },
+    {
+      "line": 26,
+      "text": "factory: Arc<dyn ConnectorFactory>,"
+    },
+    {
+      "line": 29,
+      "text": ") -> Arc<dyn EndpointDriverFactory> {"
+    },
+    {
+      "line": 30,
+      "text": "Arc::new(ConnectorEndpointAdapter {"
+    },
+    {
+      "line": 38,
+      "text": "factory: Arc<dyn ConnectorDriverFactory>,"
+    },
+    {
+      "line": 40,
+      "text": "manifest: Arc<ConnectorManifest>,"
+    },
+    {
+      "line": 41,
+      "text": ") -> Arc<dyn EndpointDriverFactory> {"
+    },
+    {
+      "line": 42,
+      "text": "Arc::new(ConnectorDriverEndpointAdapter {"
+    },
+    {
+      "line": 50,
+      "text": "factory: Arc<dyn ConnectorDriverFactory>,"
+    },
+    {
+      "line": 52,
+      "text": "manifest: Arc<ConnectorManifest>,"
+    },
+    {
+      "line": 74,
+      "text": ") -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 93,
+      "text": "Ok(worker) => Ok(Box::new(PreparedConnectorWorker {"
+    },
+    {
+      "line": 118,
+      "text": "factory: Arc<dyn ConnectorFactory>,"
+    },
+    {
+      "line": 137,
+      "text": ") -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 147,
+      "text": "Ok(worker) => Ok(Box::new(PreparedConnectorWorker {"
+    },
+    {
+      "line": 162,
+      "text": "fn endpoint_ids(inputs: &[EndpointPortInput]) -> Result<Arc<[crate::EndpointId]>, EndpointFailure> {"
+    },
+    {
+      "line": 187,
+      "text": "worker: Option<Box<dyn ConnectorWorker>>,"
+    },
+    {
+      "line": 194,
+      "text": "mut self: Box<Self>,"
+    },
+    {
+      "line": 195,
+      "text": "start_gate: Arc<EndpointStartGate>,"
+    },
+    {
+      "line": 196,
+      "text": ") -> Result<Box<dyn RunningEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 203,
+      "text": "let worker_slot = Arc::new(Mutex::new(Some(worker)));"
+    },
+    {
+      "line": 205,
+      "text": "let readiness_probes = Arc::new(Mutex::new(ReadinessProbeState::default()));"
+    },
+    {
+      "line": 208,
+      "text": "Arc::clone(&worker_slot),"
+    },
+    {
+      "line": 209,
+      "text": "Arc::clone(&start_gate),"
+    },
+    {
+      "line": 213,
+      "text": "Arc::clone(&readiness_probes),"
+    },
+    {
+      "line": 232,
+      "text": "let watchdog_gate = Arc::clone(&start_gate);"
+    },
+    {
+      "line": 259,
+      "text": "Ok(Box::new(RunningConnectorWorker {"
+    },
+    {
+      "line": 267,
+      "text": "fn cancel_preparation(mut self: Box<Self>) -> EndpointCancellationOutcome {"
+    },
+    {
+      "line": 279,
+      "text": "impl Drop for PreparedConnectorWorker {"
+    },
+    {
+      "line": 288,
+      "text": "worker_slot: Arc<Mutex<Option<Box<dyn ConnectorWorker>>>>,"
+    },
+    {
+      "line": 289,
+      "text": "start_gate: Arc<EndpointStartGate>,"
+    },
+    {
+      "line": 293,
+      "text": "readiness_probes: Arc<Mutex<ReadinessProbeState>>,"
+    },
+    {
+      "line": 350,
+      "text": "worker: Box<dyn ConnectorWorker>,"
+    },
+    {
+      "line": 421,
+      "text": "fn join_and_finalize(mut self: Box<Self>) -> EndpointDriverFinalization {"
+    },
+    {
+      "line": 433,
+      "text": "impl Drop for RunningConnectorWorker {"
+    }
+  ],
+  "responsibilities": [
+    "connector_endpoint_factory",
+    "connector_driver_endpoint_factory",
+    "ConnectorDriverEndpointAdapter",
+    "preparation_group",
+    "prepare",
+    "configuration_endpoint_failure",
+    "ConnectorEndpointAdapter",
+    "preparation_group",
+    "prepare",
+    "endpoint_ids",
+    "PreparedConnectorWorker",
+    "start",
+    "cancel_preparation",
+    "drop",
+    "spawn_worker",
+    "cancel_worker",
+    "RunningConnectorWorker",
+    "stop_and_join",
+    "observations",
+    "request_stop",
+    "request_shutdown",
+    "join_and_finalize",
+    "drop"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 204,
+      "text": "let stop = ConnectorStopToken::new();"
+    },
+    {
+      "line": 210,
+      "text": "stop.clone(),"
+    },
+    {
+      "line": 230,
+      "text": "let watchdog_stop = stop.clone();"
+    },
+    {
+      "line": 247,
+      "text": "stop.request(EndpointShutdownMode::Abort);"
+    },
+    {
+      "line": 260,
+      "text": "stop,"
+    },
+    {
+      "line": 290,
+      "text": "stop: ConnectorStopToken,"
+    },
+    {
+      "line": 308,
+      "text": "stop.request(EndpointShutdownMode::Abort);"
+    },
+    {
+      "line": 311,
+      "text": "if !wait_for_start_gate(&stop, &start_gate) {"
+    },
+    {
+      "line": 316,
+      "text": "stop: stop.clone(),"
+    },
+    {
+      "line": 324,
+      "text": "Ok(()) if stop.is_requested() => {}"
+    },
+    {
+      "line": 328,
+      "text": "\"connector worker exited before stop was requested\","
+    },
+    {
+      "line": 338,
+      "text": "stop.request(EndpointShutdownMode::Abort);"
+    },
+    {
+      "line": 373,
+      "text": "stop: ConnectorStopToken,"
+    },
+    {
+      "line": 382,
+      "text": "if !self.stop.is_requested() {"
+    },
+    {
+      "line": 383,
+      "text": "self.stop.request(EndpointShutdownMode::Abort);"
+    },
+    {
+      "line": 417,
+      "text": "self.stop.request(mode);"
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 236,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 297,
+      "text": ".spawn(move || {"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 71,
+      "text": "fn prepare("
+    },
+    {
+      "line": 134,
+      "text": "fn prepare("
+    },
+    {
+      "line": 146,
+      "text": "match self.factory.prepare(inputs) {"
+    },
+    {
+      "line": 193,
+      "text": "fn start("
+    },
+    {
+      "line": 311,
+      "text": "if !wait_for_start_gate(&stop, &start_gate) {"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 3,
+      "text": "use std::thread::{self, JoinHandle};"
+    },
+    {
+      "line": 234,
+      "text": "let watchdog_handle = thread::Builder::new()"
+    },
+    {
+      "line": 236,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 295,
+      "text": "thread::Builder::new()"
+    },
+    {
+      "line": 297,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 399,
+      "text": "\"connector worker thread panicked outside its contained run callback\","
+    }
+  ],
+  "visibility": "mixed"
+}

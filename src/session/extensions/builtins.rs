@@ -27,9 +27,14 @@ pub(crate) const GENERATED_AUDIO_INGRESS_NODE_TYPE_ID: &str = "source.generated_
 pub(crate) const GENERATED_AUDIO_BRIDGE_NODE_TYPE_ID: &str = "bridge.generated_audio";
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as session graph registration error."]
 pub enum SessionGraphRegistrationError {
     #[error("Session structural node type '{node_type_id}' is already registered")]
-    DuplicateNodeType { node_type_id: String },
+    #[doc = "Reports duplicate node type."]
+    DuplicateNodeType {
+        #[doc = "Identifies the node type associated with `DuplicateNodeType`."]
+        node_type_id: String,
+    },
 }
 
 #[cfg(any(test, feature = "internal-testing"))]

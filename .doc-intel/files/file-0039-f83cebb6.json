@@ -1,0 +1,268 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 16,
+      "text": "async fn main() -> Result<(), Box<dyn std::error::Error>> {"
+    },
+    {
+      "line": 25,
+      "text": "let wav_bytes = tokio::fs::read(wav_path).await?;"
+    },
+    {
+      "line": 58,
+      "text": "connector.prepare(&prepare_context).await?;"
+    },
+    {
+      "line": 65,
+      "text": ".await?"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "AsyncOperatorPrepareContext::new",
+    "EdgeContract::bounded_async",
+    "EdgeContract::realtime_audio",
+    "MediaCaps::Audio",
+    "PortPrepareContext::new",
+    "SignalEnvelope::untracked",
+    "SignalPayload::Bytes",
+    "SignalPayload::Text",
+    "SignalSpec::audio",
+    "SignalSpec::binary",
+    "SignalSpec::text",
+    "WhisperConnector::new",
+    "into",
+    "into_iter",
+    "into_payload",
+    "is_some",
+    "main",
+    "map",
+    "next",
+    "ok_or",
+    "prepare",
+    "process",
+    "skip",
+    "std::env::args_os",
+    "std::process::exit",
+    "tokio::fs::read",
+    "unwrap_or_else",
+    "usage",
+    "with_media",
+    "with_role"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 17,
+      "text": "let mut arguments = std::env::args_os().skip(1).map(PathBuf::from);"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "AsyncOperatorPrepareContext::new",
+    "PortPrepareContext::new",
+    "WhisperConnector::new"
+  ],
+  "content_hash": "4e6e8f93a1b079cb631b61e725ead5927c58aea4f833c956a0a99f62fc94afa0",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 9,
+      "name": "usage",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 16,
+      "name": "main",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 71,
+      "text": "_ => return Err(\"Whisper connector returned a non-text signal\".into()),"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "4e6e8f93a1b079cb631b61e725ead5927c58aea4f833c956a0a99f62fc94afa0",
+      "lines": [
+        1,
+        75
+      ],
+      "path": "examples/whisper-transcribe/src/main.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0039-f83cebb6",
+  "file_kind": "example",
+  "filesystem_io": [
+    {
+      "line": 25,
+      "text": "let wav_bytes = tokio::fs::read(wav_path).await?;"
+    }
+  ],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "f4167db2dbc2a58870ff6ae1dfec60a28adcd303",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "pocketstation::{ AsyncNode, AsyncOperatorPrepareContext, AudioCaps, BinaryFormat, ChannelLayout, EdgeContract, ExecutionPartition, MediaCaps, PortDirection, PortPrepareContext, SampleFormat, SignalEnvelope, SignalPayload, SignalSpec, TextFormat, }",
+    "std::path::PathBuf",
+    "whisper_transcribe_example::WhisperConnector"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 75,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-b3ae5e0d6b047003e494"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "examples/whisper-transcribe/src/main.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 9,
+      "name": "usage",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 16,
+      "name": "main",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 12,
+      "text": "std::process::exit(2);"
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `not_applicable`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/examples.md",
+    "docs/concepts/transcription-integration.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/run-transcription.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/troubleshooting/transcription-evidence.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 16,
+      "text": "async fn main() -> Result<(), Box<dyn std::error::Error>> {"
+    }
+  ],
+  "responsibilities": [
+    "usage",
+    "main"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 25,
+      "text": "let wav_bytes = tokio::fs::read(wav_path).await?;"
+    },
+    {
+      "line": 12,
+      "text": "std::process::exit(2);"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 58,
+      "text": "connector.prepare(&prepare_context).await?;"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 15,
+      "text": "#[tokio::main]"
+    },
+    {
+      "line": 16,
+      "text": "async fn main() -> Result<(), Box<dyn std::error::Error>> {"
+    },
+    {
+      "line": 25,
+      "text": "let wav_bytes = tokio::fs::read(wav_path).await?;"
+    },
+    {
+      "line": 58,
+      "text": "connector.prepare(&prepare_context).await?;"
+    },
+    {
+      "line": 65,
+      "text": ".await?"
+    }
+  ],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

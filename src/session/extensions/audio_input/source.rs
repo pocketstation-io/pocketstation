@@ -49,28 +49,34 @@ impl PcmSource {
         }
     }
 
+    #[doc = "Returns the source associated with `PcmSource`."]
     pub const fn source(&self) -> &SourceInstanceHandle {
         &self.source
     }
 
+    #[doc = "Returns the output associated with `PcmSource`."]
     pub const fn output(&self) -> &SourceOutputHandle {
         &self.output
     }
 
+    #[doc = "Returns the writer associated with `PcmSource`."]
     pub const fn writer(&self) -> &AudioInputWriter {
         &self.writer
     }
 
+    #[doc = "Returns the writer mut associated with `PcmSource`."]
     pub fn writer_mut(&mut self) -> &mut AudioInputWriter {
         &mut self.writer
     }
 
+    #[doc = "Consumes `PcmSource` and returns its component values."]
     pub fn into_parts(self) -> (SourceInstanceHandle, SourceOutputHandle, AudioInputWriter) {
         (self.source, self.output, self.writer)
     }
 }
 
 impl fmt::Debug for PcmSource {
+    #[doc = "Formats `PcmSource` with the requested formatter."]
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_struct("PcmSource")
@@ -82,22 +88,30 @@ impl fmt::Debug for PcmSource {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as audio input error."]
 pub enum AudioInputError {
     #[error("invalid audio input configuration: {0}")]
+    #[doc = "Reports configuration."]
     Configuration(#[from] AudioInputConfigError),
     #[error("invalid PCM source identity: {0}")]
+    #[doc = "Reports source type identifier."]
     SourceTypeId(#[from] SourceTypeIdError),
     #[error("audio input manifest failed: {0}")]
+    #[doc = "Reports manifest."]
     Manifest(#[from] SourceManifestError),
     #[error("audio input Session declaration failed: {0}")]
+    #[doc = "Reports session."]
     Session(#[from] SessionError),
     #[error("audio input registration state is unavailable")]
+    #[doc = "Reports registration state unavailable."]
     RegistrationStateUnavailable,
     #[error(
         "all audio inputs in one Session must use the same concrete sample and frame contract"
     )]
+    #[doc = "Reports incompatible contract."]
     IncompatibleContract,
     #[error("audio input instance identity space is exhausted")]
+    #[doc = "Reports instance identity exhausted."]
     InstanceIdentityExhausted,
 }
 

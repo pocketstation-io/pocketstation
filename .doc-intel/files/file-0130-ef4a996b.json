@@ -1,0 +1,1536 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AtomicBool::new",
+    "AtomicU64::new",
+    "Box::new",
+    "Duration::from_millis",
+    "EndpointDriverObservations::default",
+    "EndpointFailure::new",
+    "Mutex::new",
+    "PlanEdgeFrame::Exclusive",
+    "PushError::Full",
+    "ReceiptShared::new",
+    "RingBuffer::new",
+    "Vec::new",
+    "Vec::with_capacity",
+    "WorkerObservations::default",
+    "allow",
+    "and",
+    "and_then",
+    "as_mut",
+    "as_ref",
+    "as_slice",
+    "cancel_preparation",
+    "cfg",
+    "channels",
+    "checked_sub",
+    "clear",
+    "clone",
+    "compare_exchange_weak",
+    "connector_id",
+    "default",
+    "derive",
+    "drop",
+    "endpoint_id",
+    "endpoint_observations",
+    "error",
+    "fetch_add",
+    "fetch_max",
+    "fetch_sub",
+    "fetch_update",
+    "frame",
+    "get",
+    "get_mut",
+    "into_inner",
+    "into_parts",
+    "is_empty",
+    "is_err",
+    "is_ok",
+    "is_open",
+    "iter",
+    "join",
+    "join_and_finalize",
+    "len",
+    "let",
+    "lineage",
+    "load",
+    "lock",
+    "map",
+    "map_err",
+    "map_or",
+    "mark_worker_failure",
+    "message",
+    "name",
+    "new",
+    "observation_handle",
+    "observations",
+    "observe_dequeued",
+    "observe_enqueued",
+    "observe_queue_full_drop",
+    "ok_or_else",
+    "pop",
+    "position",
+    "prepare",
+    "prepare_delivered_frame",
+    "prepare_failure",
+    "publish_delivered_frame",
+    "push",
+    "register_consumer",
+    "release_queue_reservation",
+    "remove_consumer",
+    "request_stop",
+    "route_context",
+    "route_id",
+    "run_worker",
+    "sample_rate_hz",
+    "samples",
+    "saturating_add",
+    "spawn",
+    "start",
+    "store",
+    "stream_id",
+    "take",
+    "thread::Builder::new",
+    "thread::sleep",
+    "to_string",
+    "try_poll",
+    "try_recv",
+    "try_reserve_queue_slot",
+    "unwrap_or",
+    "validate_config"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 771,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AtomicBool::new",
+    "AtomicU64::new",
+    "Box::new",
+    "EndpointFailure::new",
+    "Mutex::new",
+    "ReceiptShared::new",
+    "RingBuffer::new",
+    "Vec::new",
+    "new",
+    "thread::Builder::new"
+  ],
+  "content_hash": "7bca38fcdae5e19dcf7e637091821d6a6b9c44263369619ab3a451344fe27cd2",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "WORK_BUDGET_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "IDLE_POLL_INTERVAL",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "MAX_QUEUE_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "MAX_BATCH_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "MAX_OUTSTANDING_LEASES",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 23,
+      "name": "PolledAudioEndpointConfig",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 40,
+      "name": "PolledAudioEndpointConfigError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 56,
+      "name": "PolledAudioObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 74,
+      "name": "PolledAudioPollError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 82,
+      "name": "PolledAudioEndpointFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 89,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 105,
+      "name": "PolledAudioReceipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 110,
+      "name": "try_poll",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 166,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 171,
+      "name": "PolledAudioBatchLease",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 178,
+      "name": "len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 181,
+      "name": "is_empty",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 185,
+      "name": "frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 195,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 210,
+      "name": "PolledAudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 215,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 218,
+      "name": "endpoint_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 222,
+      "name": "route_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 226,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 230,
+      "name": "connector_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 234,
+      "name": "sample_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 238,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 242,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 249,
+      "name": "DeliveredAudioFrame",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 255,
+      "name": "ReceiptState",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 261,
+      "name": "ReceiptShared",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 282,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 310,
+      "name": "register_consumer",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 335,
+      "name": "remove_consumer",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 364,
+      "name": "try_reserve_queue_slot",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 383,
+      "name": "observe_enqueued",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 389,
+      "name": "release_queue_reservation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 393,
+      "name": "observe_queue_full_drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 397,
+      "name": "observe_dequeued",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 413,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 439,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 482,
+      "name": "PreparedPolledAudioEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 496,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 544,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 558,
+      "name": "RunningPolledAudioEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 570,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 573,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 578,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 618,
+      "name": "WorkerObservations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 626,
+      "name": "run_worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 675,
+      "name": "publish_delivered_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 705,
+      "name": "prepare_delivered_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 730,
+      "name": "endpoint_observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 746,
+      "name": "prepare_failure",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 750,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 772,
+      "name": "tests",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 150,
+      "text": "drop(state);"
+    },
+    {
+      "line": 195,
+      "text": "fn drop(&mut self) {"
+    },
+    {
+      "line": 358,
+      "text": "drop(consumer);"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 6,
+      "text": "use crate::endpoint::{"
+    },
+    {
+      "line": 445,
+      "text": "\"one polled-audio endpoint requires exactly one input\","
+    },
+    {
+      "line": 450,
+      "text": "\"one polled-audio endpoint requires exactly one input\","
+    },
+    {
+      "line": 456,
+      "text": "\"polled-audio endpoint accepts only realtime audio inputs\","
+    },
+    {
+      "line": 460,
+      "text": "prepare_failure(\"polled-audio endpoint is missing its typed connector binding\")"
+    },
+    {
+      "line": 606,
+      "text": "\"polled-audio endpoint received a non-lineaged or non-branch-copy frame\","
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 23,
+      "name": "PolledAudioEndpointConfig",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 40,
+      "name": "PolledAudioEndpointConfigError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 56,
+      "name": "PolledAudioObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 74,
+      "name": "PolledAudioPollError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 82,
+      "name": "PolledAudioEndpointFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 89,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 105,
+      "name": "PolledAudioReceipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 110,
+      "name": "try_poll",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 166,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 171,
+      "name": "PolledAudioBatchLease",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 178,
+      "name": "len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 181,
+      "name": "is_empty",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 185,
+      "name": "frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 210,
+      "name": "PolledAudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 215,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 218,
+      "name": "endpoint_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 222,
+      "name": "route_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 226,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 230,
+      "name": "connector_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 234,
+      "name": "sample_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 238,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 242,
+      "name": "samples",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 120,
+      "text": "return Err(PolledAudioPollError::LeaseCapacityExhausted);"
+    },
+    {
+      "line": 126,
+      "text": "return Err(PolledAudioPollError::Empty);"
+    },
+    {
+      "line": 148,
+      "text": "return Err(PolledAudioPollError::Empty);"
+    },
+    {
+      "line": 379,
+      "text": "Err(observed) => depth = observed,"
+    },
+    {
+      "line": 444,
+      "text": "return Err(prepare_failure("
+    },
+    {
+      "line": 449,
+      "text": "return Err(prepare_failure("
+    },
+    {
+      "line": 455,
+      "text": "return Err(prepare_failure("
+    },
+    {
+      "line": 588,
+      "text": "None => Err(EndpointFailure::new("
+    },
+    {
+      "line": 604,
+      "text": "Err(EndpointFailure::new("
+    },
+    {
+      "line": 696,
+      "text": "Err(PushError::Full(_frame)) => {"
+    },
+    {
+      "line": 755,
+      "text": "Err(PolledAudioEndpointConfigError::ZeroQueueCapacity)"
+    },
+    {
+      "line": 757,
+      "text": "Err(PolledAudioEndpointConfigError::QueueCapacityTooLarge)"
+    },
+    {
+      "line": 759,
+      "text": "Err(PolledAudioEndpointConfigError::ZeroBatchCapacity)"
+    },
+    {
+      "line": 761,
+      "text": "Err(PolledAudioEndpointConfigError::BatchCapacityTooLarge)"
+    },
+    {
+      "line": 763,
+      "text": "Err(PolledAudioEndpointConfigError::ZeroLeaseCapacity)"
+    },
+    {
+      "line": 765,
+      "text": "Err(PolledAudioEndpointConfigError::LeaseCapacityTooLarge)"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 40,
+      "name": "PolledAudioEndpointConfigError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 74,
+      "name": "PolledAudioPollError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 115,
+      "text": ".map_err(|_| PolledAudioPollError::StatePoisoned)?;"
+    },
+    {
+      "line": 319,
+      "text": ".map_err(|_| prepare_failure(\"polled-audio receipt state is poisoned\"))?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 115,
+      "text": ".map_err(|_| PolledAudioPollError::StatePoisoned)?;"
+    },
+    {
+      "line": 319,
+      "text": ".map_err(|_| prepare_failure(\"polled-audio receipt state is poisoned\"))?;"
+    },
+    {
+      "line": 337,
+      "text": "let mut state = self.state.lock().map_err(|_| {"
+    },
+    {
+      "line": 528,
+      "text": ".map_err(|error| {"
+    },
+    {
+      "line": 549,
+      "text": ".map_err(|failure| {"
+    },
+    {
+      "line": 582,
+      "text": "Some(worker) => worker.join().map_err(|_| {"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 115,
+      "text": ".map_err(|_| PolledAudioPollError::StatePoisoned)?;"
+    },
+    {
+      "line": 319,
+      "text": ".map_err(|_| prepare_failure(\"polled-audio receipt state is poisoned\"))?;"
+    },
+    {
+      "line": 337,
+      "text": "let mut state = self.state.lock().map_err(|_| {"
+    },
+    {
+      "line": 528,
+      "text": ".map_err(|error| {"
+    },
+    {
+      "line": 549,
+      "text": ".map_err(|failure| {"
+    },
+    {
+      "line": 582,
+      "text": "Some(worker) => worker.join().map_err(|_| {"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "7bca38fcdae5e19dcf7e637091821d6a6b9c44263369619ab3a451344fe27cd2",
+      "lines": [
+        1,
+        773
+      ],
+      "path": "src/endpoint/polled_audio_driver.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0130-ef4a996b",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "1465a3e22ec78347b1c6c63ca55b9b01b65b0bb4",
+  "implemented_by": [],
+  "implements": [
+    "Default for PolledAudioEndpointConfig",
+    "PolledAudioEndpointFactory",
+    "PolledAudioReceipt",
+    "PolledAudioBatchLease",
+    "Drop for PolledAudioBatchLease",
+    "PolledAudioFrame<'lease>",
+    "ReceiptShared",
+    "EndpointDriverFactory for PolledAudioEndpointFactory",
+    "PreparedEndpointDriver for PreparedPolledAudioEndpoint",
+    "RunningEndpointDriver for RunningPolledAudioEndpoint"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::endpoint::{ EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointPortInput, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }",
+    "crate::frame::{ConnectorId, EndpointId, FrameLineage, LineagedAudioFrame, RouteId, StreamId}",
+    "crate::runtime::{PlanEdgeFrame, PlanEdgeObservationHandle}",
+    "module:tests",
+    "rtrb::{Consumer, Producer, PushError, RingBuffer}",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "std::sync::{Arc, Mutex}",
+    "std::thread::{self, JoinHandle}",
+    "std::time::Duration"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 41,
+      "text": "#[error(\"polled-audio queue capacity must be greater than zero frames\")]"
+    },
+    {
+      "line": 43,
+      "text": "#[error(\"polled-audio batch capacity must be greater than zero frames\")]"
+    },
+    {
+      "line": 45,
+      "text": "#[error(\"polled-audio lease capacity must be greater than zero\")]"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 773,
+  "locks": [
+    {
+      "line": 2,
+      "text": "use std::sync::{Arc, Mutex};"
+    },
+    {
+      "line": 263,
+      "text": "state: Mutex<ReceiptState>,"
+    },
+    {
+      "line": 288,
+      "text": "state: Mutex::new(ReceiptState {"
+    }
+  ],
+  "module": "pocketstation::endpoint::polled_audio_driver",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-95395d6c5aa33e8e7aca"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/endpoint/polled_audio_driver.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "WORK_BUDGET_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "IDLE_POLL_INTERVAL",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 18,
+      "name": "MAX_QUEUE_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 19,
+      "name": "MAX_BATCH_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 20,
+      "name": "MAX_OUTSTANDING_LEASES",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 195,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 249,
+      "name": "DeliveredAudioFrame",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 255,
+      "name": "ReceiptState",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 261,
+      "name": "ReceiptShared",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 282,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 310,
+      "name": "register_consumer",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 335,
+      "name": "remove_consumer",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 364,
+      "name": "try_reserve_queue_slot",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 383,
+      "name": "observe_enqueued",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 389,
+      "name": "release_queue_reservation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 393,
+      "name": "observe_queue_full_drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 397,
+      "name": "observe_dequeued",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 413,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 439,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 482,
+      "name": "PreparedPolledAudioEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 496,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 544,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 558,
+      "name": "RunningPolledAudioEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 570,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 573,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 578,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 618,
+      "name": "WorkerObservations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 626,
+      "name": "run_worker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 675,
+      "name": "publish_delivered_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 705,
+      "name": "prepare_delivered_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 730,
+      "name": "endpoint_observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 746,
+      "name": "prepare_failure",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 750,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 772,
+      "name": "tests",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 515,
+      "text": ".spawn(move || {"
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 23,
+      "name": "PolledAudioEndpointConfig",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 40,
+      "name": "PolledAudioEndpointConfigError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 56,
+      "name": "PolledAudioObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 74,
+      "name": "PolledAudioPollError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 82,
+      "name": "PolledAudioEndpointFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 89,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 105,
+      "name": "PolledAudioReceipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 110,
+      "name": "try_poll",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 166,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 171,
+      "name": "PolledAudioBatchLease",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 178,
+      "name": "len",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 181,
+      "name": "is_empty",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 185,
+      "name": "frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 210,
+      "name": "PolledAudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 215,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 218,
+      "name": "endpoint_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 222,
+      "name": "route_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 226,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 230,
+      "name": "connector_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 234,
+      "name": "sample_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 238,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 242,
+      "name": "samples",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::endpoint::polled_audio_driver`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/stop-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/endpoints.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/endpoints.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 2,
+      "text": "use std::sync::{Arc, Mutex};"
+    },
+    {
+      "line": 85,
+      "text": "shared: Arc<ReceiptShared>,"
+    },
+    {
+      "line": 93,
+      "text": "let shared = Arc::new(ReceiptShared::new(config));"
+    },
+    {
+      "line": 97,
+      "text": "shared: Arc::clone(&shared),"
+    },
+    {
+      "line": 106,
+      "text": "shared: Arc<ReceiptShared>,"
+    },
+    {
+      "line": 162,
+      "text": "shared: Arc::clone(&self.shared),"
+    },
+    {
+      "line": 173,
+      "text": "shared: Arc<ReceiptShared>,"
+    },
+    {
+      "line": 194,
+      "text": "impl Drop for PolledAudioBatchLease {"
+    },
+    {
+      "line": 442,
+      "text": ") -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 469,
+      "text": "Ok(Box::new(PreparedPolledAudioEndpoint {"
+    },
+    {
+      "line": 477,
+      "text": "shared: Arc::clone(&self.shared),"
+    },
+    {
+      "line": 491,
+      "text": "shared: Arc<ReceiptShared>,"
+    },
+    {
+      "line": 497,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 498,
+      "text": "start_gate: Arc<EndpointStartGate>,"
+    },
+    {
+      "line": 499,
+      "text": ") -> Result<Box<dyn RunningEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 500,
+      "text": "let stop = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 501,
+      "text": "let observations = Arc::new(WorkerObservations::default());"
+    },
+    {
+      "line": 502,
+      "text": "let thread_stop = Arc::clone(&stop);"
+    },
+    {
+      "line": 503,
+      "text": "let thread_observations = Arc::clone(&observations);"
+    },
+    {
+      "line": 504,
+      "text": "let thread_shared = Arc::clone(&self.shared);"
+    },
+    {
+      "line": 534,
+      "text": "Ok(Box::new(RunningPolledAudioEndpoint {"
+    },
+    {
+      "line": 545,
+      "text": "fn cancel_preparation(self: Box<Self>) -> EndpointCancellationOutcome {"
+    },
+    {
+      "line": 560,
+      "text": "stop: Arc<AtomicBool>,"
+    },
+    {
+      "line": 562,
+      "text": "observations: Arc<WorkerObservations>,"
+    },
+    {
+      "line": 563,
+      "text": "shared: Arc<ReceiptShared>,"
+    },
+    {
+      "line": 579,
+      "text": "fn join_and_finalize(mut self: Box<Self>) -> EndpointDriverFinalization {"
+    }
+  ],
+  "responsibilities": [
+    "WORK_BUDGET_FRAMES",
+    "IDLE_POLL_INTERVAL",
+    "MAX_QUEUE_CAPACITY_FRAMES",
+    "MAX_BATCH_CAPACITY_FRAMES",
+    "MAX_OUTSTANDING_LEASES",
+    "PolledAudioEndpointConfig",
+    "default",
+    "PolledAudioEndpointConfigError",
+    "PolledAudioObservations",
+    "PolledAudioPollError",
+    "PolledAudioEndpointFactory",
+    "new",
+    "PolledAudioReceipt",
+    "try_poll",
+    "observations",
+    "PolledAudioBatchLease",
+    "len",
+    "is_empty",
+    "frame",
+    "drop",
+    "PolledAudioFrame",
+    "lineage",
+    "endpoint_id",
+    "route_id",
+    "stream_id",
+    "connector_id",
+    "sample_rate_hz",
+    "channels",
+    "samples",
+    "DeliveredAudioFrame",
+    "ReceiptState",
+    "ReceiptShared",
+    "new",
+    "register_consumer",
+    "remove_consumer",
+    "try_reserve_queue_slot",
+    "observe_enqueued",
+    "release_queue_reservation",
+    "observe_queue_full_drop",
+    "observe_dequeued",
+    "observations",
+    "prepare",
+    "PreparedPolledAudioEndpoint",
+    "start",
+    "cancel_preparation",
+    "RunningPolledAudioEndpoint",
+    "observations",
+    "request_stop",
+    "join_and_finalize",
+    "WorkerObservations",
+    "run_worker",
+    "publish_delivered_frame",
+    "prepare_delivered_frame",
+    "endpoint_observations",
+    "prepare_failure",
+    "validate_config",
+    "tests"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 500,
+      "text": "let stop = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 502,
+      "text": "let thread_stop = Arc::clone(&stop);"
+    },
+    {
+      "line": 535,
+      "text": "stop,"
+    },
+    {
+      "line": 560,
+      "text": "stop: Arc<AtomicBool>,"
+    },
+    {
+      "line": 575,
+      "text": "self.stop.store(true, Ordering::Release);"
+    },
+    {
+      "line": 580,
+      "text": "self.stop.store(true, Ordering::Release);"
+    },
+    {
+      "line": 634,
+      "text": "stop: &AtomicBool,"
+    },
+    {
+      "line": 638,
+      "text": "if stop.load(Ordering::Acquire) {"
+    },
+    {
+      "line": 667,
+      "text": "if stop.load(Ordering::Acquire) && !progressed {"
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 515,
+      "text": ".spawn(move || {"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 439,
+      "text": "fn prepare("
+    },
+    {
+      "line": 496,
+      "text": "fn start("
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 3,
+      "text": "use std::thread::{self, JoinHandle};"
+    },
+    {
+      "line": 513,
+      "text": "let worker = thread::Builder::new()"
+    },
+    {
+      "line": 515,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 641,
+      "text": "thread::sleep(IDLE_POLL_INTERVAL);"
+    },
+    {
+      "line": 671,
+      "text": "thread::sleep(IDLE_POLL_INTERVAL);"
+    }
+  ],
+  "visibility": "mixed"
+}

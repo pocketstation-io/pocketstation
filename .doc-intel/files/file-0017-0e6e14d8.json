@@ -1,0 +1,246 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "ApplicationSelector::name",
+    "Source::application",
+    "Source::microphone_default",
+    "bench_function",
+    "bench_session_lifecycle",
+    "benchmark_group",
+    "black_box",
+    "capture",
+    "expect",
+    "finish",
+    "is_success",
+    "iter",
+    "pocketstation::conformance::session",
+    "polled_audio",
+    "send",
+    "start",
+    "stop"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "a71d9ec16e1f7f4c28d0bd8a7f383098ae99b1b22ac014f88b1f65e1a780de6e",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "fn",
+      "line": 9,
+      "name": "bench_session_lifecycle",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [
+    {
+      "line": 5,
+      "text": "//! device and is intentionally separate from per-frame execution benchmarks."
+    }
+  ],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 24,
+      "text": ".send(session.polled_audio().expect(\"application endpoint\"))"
+    },
+    {
+      "line": 27,
+      "text": ".send(session.polled_audio().expect(\"microphone endpoint\"))"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "a71d9ec16e1f7f4c28d0bd8a7f383098ae99b1b22ac014f88b1f65e1a780de6e",
+      "lines": [
+        1,
+        41
+      ],
+      "path": "benches/session_lifecycle.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0017-0e6e14d8",
+  "file_kind": "benchmark",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "4fa56acad9411d676f746e9549acbfbf4514cb96",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "criterion::{black_box, criterion_group, criterion_main, Criterion}",
+    "pocketstation::{ApplicationSelector, Source}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 32,
+      "text": "assert!(outcome.is_success());"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 41,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "benches/session_lifecycle.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 9,
+      "name": "bench_session_lifecycle",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "LOOPBACK-ONLY Session lifecycle benchmark.  This measures public declaration, compile/prepare, deterministic fixture thread startup, and clean stop/join. It does not use a physical capture device and is intentionally separate from per-frame execution benchmarks."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "bench_session_lifecycle"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 4,
+      "text": "//! thread startup, and clean stop/join. It does not use a physical capture"
+    },
+    {
+      "line": 31,
+      "text": "let outcome = running.stop();"
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 5,
+      "text": "//! device and is intentionally separate from per-frame execution benchmarks."
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 3,
+      "text": "//! This measures public declaration, compile/prepare, deterministic fixture"
+    },
+    {
+      "line": 4,
+      "text": "//! thread startup, and clean stop/join. It does not use a physical capture"
+    },
+    {
+      "line": 30,
+      "text": "let mut running = session.start().expect(\"running benchmark Session\");"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 4,
+      "text": "//! thread startup, and clean stop/join. It does not use a physical capture"
+    }
+  ],
+  "visibility": "private_or_not_applicable"
+}

@@ -119,49 +119,86 @@ struct QueuedPlanEdgeFrame {
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+#[doc = "Reports the edge observations collected at an observation boundary."]
 pub struct EdgeObservations {
+    #[doc = "Sets the queue capacity frames available to `EdgeObservations`."]
     pub queue_capacity_frames: u64,
+    #[doc = "Reports the queue depth frames observed by `EdgeObservations`."]
     pub queue_depth_frames: u64,
+    #[doc = "Reports the queue peak frames observed by `EdgeObservations`."]
     pub queue_peak_frames: u64,
+    #[doc = "Counts the total number of frames enqueued observed by `EdgeObservations`."]
     pub frames_enqueued_total: u64,
+    #[doc = "Counts the total number of frames delivered observed by `EdgeObservations`."]
     pub frames_delivered_total: u64,
+    #[doc = "Counts the total number of frames dropped observed by `EdgeObservations`."]
     pub frames_dropped_total: u64,
+    #[doc = "Counts the total number of overruns observed by `EdgeObservations`."]
     pub overruns_total: u64,
+    #[doc = "Counts the total number of receiver unavailable drops observed by `EdgeObservations`."]
     pub receiver_unavailable_drops_total: u64,
+    #[doc = "Counts the total number of queue full drops observed by `EdgeObservations`."]
     pub queue_full_drops_total: u64,
+    #[doc = "Counts the total number of shared reference exhausted drops observed by `EdgeObservations`."]
     pub shared_reference_exhausted_drops_total: u64,
+    #[doc = "Counts the total number of branch pool exhausted drops observed by `EdgeObservations`."]
     pub branch_pool_exhausted_drops_total: u64,
+    #[doc = "Counts the total number of invalid copy policy drops observed by `EdgeObservations`."]
     pub invalid_copy_policy_drops_total: u64,
+    #[doc = "Counts the total number of freeze failed drops observed by `EdgeObservations`."]
     pub freeze_failed_drops_total: u64,
+    #[doc = "Counts the total number of discontinuities observed by `EdgeObservations`."]
     pub discontinuities_total: u64,
+    #[doc = "Counts the total number of source identity discontinuities observed by `EdgeObservations`."]
     pub source_identity_discontinuities_total: u64,
+    #[doc = "Counts the total number of sequence discontinuities observed by `EdgeObservations`."]
     pub sequence_discontinuities_total: u64,
+    #[doc = "Counts the total number of timestamp discontinuities observed by `EdgeObservations`."]
     pub timestamp_discontinuities_total: u64,
+    #[doc = "Counts the total number of lineage epoch discontinuities observed by `EdgeObservations`."]
     pub lineage_epoch_discontinuities_total: u64,
+    #[doc = "Counts the total number of manually reported discontinuities observed by `EdgeObservations`."]
     pub manually_reported_discontinuities_total: u64,
+    #[doc = "Counts the total number of enqueue to receive samples observed by `EdgeObservations`."]
     pub enqueue_to_receive_samples_total: u64,
+    #[doc = "Counts the total number of enqueue to receive invalid order observed by `EdgeObservations`."]
     pub enqueue_to_receive_invalid_order_total: u64,
+    #[doc = "Stores the enqueue to receive p50 value for `EdgeObservations`, in nanoseconds."]
     pub enqueue_to_receive_p50_ns: u64,
+    #[doc = "Stores the enqueue to receive p95 value for `EdgeObservations`, in nanoseconds."]
     pub enqueue_to_receive_p95_ns: u64,
+    #[doc = "Stores the enqueue to receive p99 value for `EdgeObservations`, in nanoseconds."]
     pub enqueue_to_receive_p99_ns: u64,
+    #[doc = "Stores the enqueue to receive max value for `EdgeObservations`, in nanoseconds."]
     pub enqueue_to_receive_max_ns: u64,
+    #[doc = "Counts the total number of source timestamp to receive samples observed by `EdgeObservations`."]
     pub source_timestamp_to_receive_samples_total: u64,
+    #[doc = "Counts the total number of source timestamp to receive missing observed by `EdgeObservations`."]
     pub source_timestamp_to_receive_missing_total: u64,
+    #[doc = "Counts the total number of source timestamp to receive future observed by `EdgeObservations`."]
     pub source_timestamp_to_receive_future_total: u64,
+    #[doc = "Stores the source timestamp to receive p50 value for `EdgeObservations`, in nanoseconds."]
     pub source_timestamp_to_receive_p50_ns: u64,
+    #[doc = "Stores the source timestamp to receive p95 value for `EdgeObservations`, in nanoseconds."]
     pub source_timestamp_to_receive_p95_ns: u64,
+    #[doc = "Stores the source timestamp to receive p99 value for `EdgeObservations`, in nanoseconds."]
     pub source_timestamp_to_receive_p99_ns: u64,
+    #[doc = "Stores the source timestamp to receive max value for `EdgeObservations`, in nanoseconds."]
     pub source_timestamp_to_receive_max_ns: u64,
+    #[doc = "Counts the total number of worker failures observed by `EdgeObservations`."]
     pub worker_failures_total: u64,
+    #[doc = "Counts the total number of shutdown discarded observed by `EdgeObservations`."]
     pub shutdown_discarded_total: u64,
 }
 
 impl EdgeObservations {
+    #[doc = "Returns the frames attempted total associated with `EdgeObservations`."]
     pub fn frames_attempted_total(self) -> u64 {
         self.frames_enqueued_total
             .saturating_add(self.frames_dropped_total)
     }
 
+    #[doc = "Returns the drop rate pct associated with `EdgeObservations`."]
     pub fn drop_rate_pct(self) -> f64 {
         let frames_attempted_total = self.frames_attempted_total();
         if frames_attempted_total == 0 {

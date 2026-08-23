@@ -1,0 +1,2444 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 390,
+      "text": "reason: \"async producer into realtime consumer requires a non-blocking \\"
+    },
+    {
+      "line": 693,
+      "text": "\"model.async\","
+    },
+    {
+      "line": 1129,
+      "text": "let model = graph.add_node(\"model.async\", NodeConfig::new());"
+    },
+    {
+      "line": 1148,
+      "text": "let model = graph.add_node(\"model.async\", NodeConfig::new());"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::new",
+    "Box::new",
+    "CompileContext::new",
+    "CompileError::UnknownNode",
+    "CompileError::UnknownNodeType",
+    "Compiler::new",
+    "EdgeContract::bounded_async",
+    "EdgeContract::realtime_audio",
+    "EdgeId",
+    "MediaCaps::Audio",
+    "MediaCaps::Binary",
+    "MediaCaps::EncodedAudio",
+    "NodeConfig::new",
+    "NodeId",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Pipeline::new",
+    "Self::needs_mono_downmix",
+    "Self::new",
+    "Self::resolve",
+    "UnknownNode",
+    "UnknownNodeType",
+    "Vec::new",
+    "Vec::with_capacity",
+    "add_node",
+    "and_then",
+    "any",
+    "as_ref",
+    "as_str",
+    "audio_layout",
+    "audio_media",
+    "audio_media_with",
+    "cfg",
+    "clock",
+    "clocks",
+    "clone",
+    "cloned",
+    "collect",
+    "compile",
+    "connect",
+    "connect_with",
+    "crate::graph::SignalSpec::any",
+    "crate::graph::SignalSpec::audio",
+    "crate::graph::SignalSpec::binary",
+    "crate::graph::SignalSpec::control",
+    "crate::graph::SignalSpec::encoded_audio",
+    "crate::graph::SignalSpec::event",
+    "crate::graph::SignalSpec::metrics",
+    "crate::graph::SignalSpec::text",
+    "default",
+    "definition",
+    "derive",
+    "descriptor",
+    "edge_count",
+    "ensure_port",
+    "entry",
+    "enumerate",
+    "error",
+    "expect",
+    "extend",
+    "filter_map",
+    "find",
+    "find_node",
+    "get",
+    "get_mut",
+    "given_async_producer_into_realtime_consumer_with_bounded_edge_when_compiled_then_invalid_realtime_edge",
+    "given_async_producer_into_realtime_consumer_with_drop_newest_edge_when_compiled_then_ok",
+    "given_audio_output_into_text_input_when_compiled_then_media_mismatch",
+    "given_audio_signal_into_text_signal_when_compiled_then_signal_mismatch",
+    "given_edge_into_output_port_when_compiled_then_wrong_port_direction",
+    "given_edge_to_missing_port_when_compiled_then_unknown_port",
+    "given_fan_in_with_consistent_clock_domains_when_compiled_then_ok",
+    "given_fan_in_with_mismatched_clock_domains_when_compiled_then_clock_domain_mismatch",
+    "given_fixed_graph_when_compiled_then_topo_order_matches_golden_snapshot",
+    "given_linear_chain_when_compiled_then_topo_order_equals_insertion_order",
+    "given_linear_graph_when_compiled_then_topo_orders_source_before_sink",
+    "given_node_with_rejecting_config_when_compiled_then_invalid_config",
+    "given_realtime_node_with_allocating_safety_when_compiled_then_safety_is_rejected",
+    "given_stereo_source_into_mono_only_sink_when_compiled_then_mono_mix_adapter_inserted",
+    "given_stereo_source_into_stereo_sink_when_compiled_then_stereo_survives_no_adapter",
+    "given_two_node_cycle_when_compiled_then_cycle_detected",
+    "given_unregistered_type_when_compiled_then_unknown_node_type",
+    "given_unspecified_binary_edge_when_compiled_then_bounded_async_contract_is_derived",
+    "glitches",
+    "id",
+    "in_",
+    "index",
+    "insert",
+    "instantiate",
+    "into_iter",
+    "into_spec",
+    "is_compatible_with",
+    "is_empty",
+    "is_none",
+    "is_ok",
+    "is_some",
+    "is_valid_for",
+    "it",
+    "iter",
+    "len",
+    "let",
+    "map",
+    "map_err",
+    "map_or",
+    "max",
+    "max_payload_bytes",
+    "media",
+    "needs_mono_downmix",
+    "negotiate",
+    "new",
+    "node",
+    "node_count",
+    "ok_or",
+    "ok_or_else",
+    "or_default",
+    "out",
+    "pop_first",
+    "port",
+    "port_media",
+    "port_spec",
+    "position",
+    "push",
+    "register",
+    "requires_realtime_safety",
+    "resolve",
+    "run",
+    "test_descriptor",
+    "test_registry",
+    "then_some",
+    "to_owned",
+    "to_string",
+    "topo_order",
+    "type_str",
+    "unused_node",
+    "unwrap",
+    "unwrap_err",
+    "unwrap_or",
+    "unwrap_or_default",
+    "unwrap_or_else",
+    "validate_config",
+    "windows"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 518,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 528,
+      "text": "use crate::graph::node::{ConfigError, NodeConfig, NodeTypeId, PrepareContext};"
+    },
+    {
+      "line": 604,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 626,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 648,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 677,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 699,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 726,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 754,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 784,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 813,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 838,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 860,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 861,
+      "text": "Err(ConfigError::Invalid {"
+    },
+    {
+      "line": 889,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 915,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 941,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 1018,
+      "text": "Some(crate::graph::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES)"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "Box::new",
+    "CompileContext::new",
+    "Compiler::new",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Pipeline::new",
+    "Self::new",
+    "Vec::new",
+    "new"
+  ],
+  "content_hash": "8a1010113e54244c08bfbfd305254dd36161c0548621eea4335b0a1882887e88",
+  "defaults": [
+    {
+      "line": 1018,
+      "text": "Some(crate::graph::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES)"
+    }
+  ],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 23,
+      "name": "MONO_DOWNMIX_ADAPTER_TYPE",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 26,
+      "name": "CompileError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 64,
+      "name": "CompileContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 74,
+      "name": "GraphPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 78,
+      "name": "find_node",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "ensure_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 110,
+      "name": "port_media",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 114,
+      "name": "port_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 118,
+      "name": "audio_layout",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 125,
+      "name": "InsertAdapterNodesPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 132,
+      "name": "needs_mono_downmix",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 138,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 216,
+      "name": "ValidateNodeIdsPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 220,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 231,
+      "name": "ValidateSafetyContractsPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 235,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 253,
+      "name": "ValidatePortsPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 257,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 277,
+      "name": "ValidateClockDomainsPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 281,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 307,
+      "name": "NegotiateCapsPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 311,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 373,
+      "name": "ValidateRealtimeBoundariesPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 377,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 400,
+      "name": "CycleDetectionPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 404,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 443,
+      "name": "Compiler",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 449,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 463,
+      "name": "compile",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 476,
+      "name": "resolve",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 513,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 519,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 533,
+      "name": "audio_media",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 537,
+      "name": "audio_media_with",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 546,
+      "name": "port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 568,
+      "name": "test_descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 589,
+      "name": "unused_node",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 593,
+      "name": "SourceFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 596,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 604,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 607,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 615,
+      "name": "TransformFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 618,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 626,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 629,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 637,
+      "name": "SinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 640,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 648,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 651,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 659,
+      "name": "MixerFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 662,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 677,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 680,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 688,
+      "name": "AsyncModelFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 691,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 699,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 702,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 710,
+      "name": "BinarySourceFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 713,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 725,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 729,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 738,
+      "name": "BinarySinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 741,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 753,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 757,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 766,
+      "name": "TextSinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 769,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 784,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 787,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 795,
+      "name": "SignalTextSinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 798,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 813,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 816,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 824,
+      "name": "UnsafeRealtimeFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 827,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 838,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 841,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 849,
+      "name": "RejectingFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 852,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 860,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 866,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 874,
+      "name": "StereoSourceFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 877,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 889,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 892,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 900,
+      "name": "MonoOnlySinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 903,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 915,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 918,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 926,
+      "name": "StereoSinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 929,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 941,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 944,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 952,
+      "name": "test_registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 976,
+      "name": "given_linear_graph_when_compiled_then_topo_orders_source_before_sink",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 997,
+      "name": "given_unspecified_binary_edge_when_compiled_then_bounded_async_contract_is_derived",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1023,
+      "name": "given_unregistered_type_when_compiled_then_unknown_node_type",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1039,
+      "name": "given_node_with_rejecting_config_when_compiled_then_invalid_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1052,
+      "name": "given_edge_to_missing_port_when_compiled_then_unknown_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1067,
+      "name": "given_edge_into_output_port_when_compiled_then_wrong_port_direction",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1082,
+      "name": "given_audio_output_into_text_input_when_compiled_then_media_mismatch",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1097,
+      "name": "given_audio_signal_into_text_signal_when_compiled_then_signal_mismatch",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1112,
+      "name": "given_realtime_node_with_allocating_safety_when_compiled_then_safety_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1125,
+      "name": "given_async_producer_into_realtime_consumer_with_bounded_edge_when_compiled_then_invalid_realtime_edge",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1145,
+      "name": "given_async_producer_into_realtime_consumer_with_drop_newest_edge_when_compiled_then_ok",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1162,
+      "name": "given_two_node_cycle_when_compiled_then_cycle_detected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1178,
+      "name": "given_fan_in_with_mismatched_clock_domains_when_compiled_then_clock_domain_mismatch",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1199,
+      "name": "given_fan_in_with_consistent_clock_domains_when_compiled_then_ok",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1214,
+      "name": "given_stereo_source_into_mono_only_sink_when_compiled_then_mono_mix_adapter_inserted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1235,
+      "name": "given_stereo_source_into_stereo_sink_when_compiled_then_stereo_survives_no_adapter",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1255,
+      "name": "given_fixed_graph_when_compiled_then_topo_order_matches_golden_snapshot",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1274,
+      "name": "given_linear_chain_when_compiled_then_topo_order_equals_insertion_order",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 26,
+      "name": "CompileError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 64,
+      "name": "CompileContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 74,
+      "name": "GraphPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 125,
+      "name": "InsertAdapterNodesPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 216,
+      "name": "ValidateNodeIdsPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 231,
+      "name": "ValidateSafetyContractsPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 253,
+      "name": "ValidatePortsPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 277,
+      "name": "ValidateClockDomainsPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 307,
+      "name": "NegotiateCapsPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 373,
+      "name": "ValidateRealtimeBoundariesPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 400,
+      "name": "CycleDetectionPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 443,
+      "name": "Compiler",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 449,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 463,
+      "name": "compile",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 100,
+      "text": "return Err(CompileError::WrongPortDirection {"
+    },
+    {
+      "line": 105,
+      "text": "Err(CompileError::UnknownPort {"
+    },
+    {
+      "line": 224,
+      "text": "return Err(CompileError::UnknownNode(node_id.index()));"
+    },
+    {
+      "line": 242,
+      "text": "return Err(CompileError::InvalidSafetyContract {"
+    },
+    {
+      "line": 293,
+      "text": "return Err(CompileError::ClockDomainMismatch {"
+    },
+    {
+      "line": 330,
+      "text": "return Err(CompileError::SignalMismatch {"
+    },
+    {
+      "line": 342,
+      "text": "return Err(CompileError::MediaMismatch {"
+    },
+    {
+      "line": 388,
+      "text": "return Err(CompileError::InvalidRealtimeEdge {"
+    },
+    {
+      "line": 437,
+      "text": "return Err(CompileError::CycleDetected);"
+    },
+    {
+      "line": 861,
+      "text": "Err(ConfigError::Invalid {"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 26,
+      "name": "CompileError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 485,
+      "text": ".map_err(|err| CompileError::InvalidConfig {"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 485,
+      "text": ".map_err(|err| CompileError::InvalidConfig {"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "8a1010113e54244c08bfbfd305254dd36161c0548621eea4335b0a1882887e88",
+      "lines": [
+        1,
+        1295
+      ],
+      "path": "src/graph/compile/resolve.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0146-9daeb387",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "037783ac1da6887f0ae3f2bf76833b8d92a00f8d",
+  "implemented_by": [],
+  "implements": [
+    "CompileContext<'a>",
+    "InsertAdapterNodesPass",
+    "GraphPass for InsertAdapterNodesPass",
+    "GraphPass for ValidateNodeIdsPass",
+    "GraphPass for ValidateSafetyContractsPass",
+    "GraphPass for ValidatePortsPass",
+    "GraphPass for ValidateClockDomainsPass",
+    "GraphPass for NegotiateCapsPass",
+    "GraphPass for ValidateRealtimeBoundariesPass",
+    "GraphPass for CycleDetectionPass",
+    "Compiler",
+    "Default for Compiler",
+    "NodeFactory for SourceFactory",
+    "NodeFactory for TransformFactory",
+    "NodeFactory for SinkFactory",
+    "NodeFactory for MixerFactory",
+    "NodeFactory for AsyncModelFactory",
+    "NodeFactory for BinarySourceFactory",
+    "NodeFactory for BinarySinkFactory",
+    "NodeFactory for TextSinkFactory",
+    "NodeFactory for SignalTextSinkFactory",
+    "NodeFactory for UnsafeRealtimeFactory",
+    "NodeFactory for RejectingFactory",
+    "NodeFactory for StereoSourceFactory",
+    "NodeFactory for MonoOnlySinkFactory",
+    "NodeFactory for StereoSinkFactory"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::SampleFormat",
+    "crate::graph::builtins::PassthroughNode",
+    "crate::graph::dsl::Pipeline",
+    "crate::graph::ir::{GraphIr, ResolvedEdge, ResolvedNode}",
+    "crate::graph::node::{ConfigError, NodeConfig, NodeTypeId, PrepareContext}",
+    "crate::graph::node::{NodeConfig, NodeDescriptor, NodeTypeId}",
+    "crate::graph::partition::{ExecutionPartition, SafetyContract}",
+    "crate::graph::ports::{ BackpressurePolicy, ChannelLayout, ClockDomain, EdgeContract, MediaCaps, PortDirection, PortSpec, }",
+    "crate::graph::ports::{AudioCaps, ChannelLayout, Multiplicity}",
+    "crate::graph::registry::NodeFactory",
+    "crate::graph::registry::NodeRegistry",
+    "crate::graph::runtime_node::RuntimeNode",
+    "crate::graph::spec::{ EdgeId, EdgeSpec, GraphSpec, InputPortRef, NodeId, NodeSpec, OutputPortRef, }",
+    "proptest::prelude::*",
+    "std::collections::{BTreeMap, BTreeSet}",
+    "std::sync::Arc",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 282,
+      "text": "// Every edge feeding one input port must share a clock domain: blindly"
+    },
+    {
+      "line": 285,
+      "text": "// conversion capability must bridge different clock domains."
+    },
+    {
+      "line": 992,
+      "text": "assert!(position(source.id().index()) < position(sink.id().index()));"
+    },
+    {
+      "line": 993,
+      "text": "assert!(ir.node(source.id()).is_some());"
+    },
+    {
+      "line": 1048,
+      "text": "assert!(matches!(error, CompileError::InvalidConfig { .. }));"
+    },
+    {
+      "line": 1063,
+      "text": "assert!(matches!(error, CompileError::UnknownPort { .. }));"
+    },
+    {
+      "line": 1078,
+      "text": "assert!(matches!(error, CompileError::WrongPortDirection { .. }));"
+    },
+    {
+      "line": 1093,
+      "text": "assert!(matches!(error, CompileError::MediaMismatch { .. }));"
+    },
+    {
+      "line": 1108,
+      "text": "assert!(matches!(error, CompileError::SignalMismatch { .. }));"
+    },
+    {
+      "line": 1121,
+      "text": "assert!(matches!(error, CompileError::InvalidSafetyContract { .. }));"
+    },
+    {
+      "line": 1141,
+      "text": "assert!(matches!(error, CompileError::InvalidRealtimeEdge { .. }));"
+    },
+    {
+      "line": 1156,
+      "text": "assert!(Compiler::new()"
+    },
+    {
+      "line": 1195,
+      "text": "assert!(matches!(error, CompileError::ClockDomainMismatch { .. }));"
+    },
+    {
+      "line": 1208,
+      "text": "assert!(Compiler::new()"
+    },
+    {
+      "line": 1228,
+      "text": "assert!(ir"
+    },
+    {
+      "line": 1248,
+      "text": "assert!(!ir"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 1295,
+  "locks": [],
+  "module": "pocketstation::graph::compile::resolve",
+  "network_io": [
+    {
+      "line": 982,
+      "text": "graph.connect(source.out(\"audio\"), transform.in_(\"audio\"));"
+    },
+    {
+      "line": 983,
+      "text": "graph.connect(transform.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 1002,
+      "text": "graph.connect(source.out(\"signal\"), sink.in_(\"signal\"));"
+    },
+    {
+      "line": 1057,
+      "text": "graph.connect(source.out(\"audio\"), transform.in_(\"missing\"));"
+    },
+    {
+      "line": 1072,
+      "text": "graph.connect(transform.out(\"audio\"), source.in_(\"audio\"));"
+    },
+    {
+      "line": 1087,
+      "text": "graph.connect(source.out(\"audio\"), text_sink.in_(\"text\"));"
+    },
+    {
+      "line": 1102,
+      "text": "graph.connect(source.out(\"audio\"), text_sink.in_(\"text\"));"
+    },
+    {
+      "line": 1167,
+      "text": "graph.connect(first.out(\"audio\"), second.in_(\"audio\"));"
+    },
+    {
+      "line": 1168,
+      "text": "graph.connect(second.out(\"audio\"), first.in_(\"audio\"));"
+    },
+    {
+      "line": 1184,
+      "text": "graph.connect(capture.out(\"audio\"), mixer.in_(\"audio\"));"
+    },
+    {
+      "line": 1205,
+      "text": "graph.connect(first.out(\"audio\"), mixer.in_(\"audio\")); // Capture"
+    },
+    {
+      "line": 1206,
+      "text": "graph.connect(second.out(\"audio\"), mixer.in_(\"audio\")); // Capture"
+    },
+    {
+      "line": 1219,
+      "text": "graph.connect(source.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 1240,
+      "text": "graph.connect(source.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 1261,
+      "text": "graph.connect(source.out(\"audio\"), transform.in_(\"audio\"));"
+    },
+    {
+      "line": 1262,
+      "text": "graph.connect(transform.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 1284,
+      "text": "graph.connect(pair[0].out(\"audio\"), pair[1].in_(\"audio\"));"
+    }
+  ],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-b2196da7812aa576e6e6",
+    "pattern-df71ba55a86c5b0cc5ce"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/compile/resolve.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 23,
+      "name": "MONO_DOWNMIX_ADAPTER_TYPE",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 78,
+      "name": "find_node",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "ensure_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 110,
+      "name": "port_media",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 114,
+      "name": "port_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 118,
+      "name": "audio_layout",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 132,
+      "name": "needs_mono_downmix",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 138,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 220,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 235,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 257,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 281,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 311,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 377,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 404,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 476,
+      "name": "resolve",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 513,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 519,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 533,
+      "name": "audio_media",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 537,
+      "name": "audio_media_with",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 546,
+      "name": "port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 568,
+      "name": "test_descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 589,
+      "name": "unused_node",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 593,
+      "name": "SourceFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 596,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 604,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 607,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 615,
+      "name": "TransformFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 618,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 626,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 629,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 637,
+      "name": "SinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 640,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 648,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 651,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 659,
+      "name": "MixerFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 662,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 677,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 680,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 688,
+      "name": "AsyncModelFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 691,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 699,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 702,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 710,
+      "name": "BinarySourceFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 713,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 725,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 729,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 738,
+      "name": "BinarySinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 741,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 753,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 757,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 766,
+      "name": "TextSinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 769,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 784,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 787,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 795,
+      "name": "SignalTextSinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 798,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 813,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 816,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 824,
+      "name": "UnsafeRealtimeFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 827,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 838,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 841,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 849,
+      "name": "RejectingFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 852,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 860,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 866,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 874,
+      "name": "StereoSourceFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 877,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 889,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 892,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 900,
+      "name": "MonoOnlySinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 903,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 915,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 918,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 926,
+      "name": "StereoSinkFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 929,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 941,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 944,
+      "name": "instantiate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 952,
+      "name": "test_registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 976,
+      "name": "given_linear_graph_when_compiled_then_topo_orders_source_before_sink",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 997,
+      "name": "given_unspecified_binary_edge_when_compiled_then_bounded_async_contract_is_derived",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1023,
+      "name": "given_unregistered_type_when_compiled_then_unknown_node_type",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1039,
+      "name": "given_node_with_rejecting_config_when_compiled_then_invalid_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1052,
+      "name": "given_edge_to_missing_port_when_compiled_then_unknown_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1067,
+      "name": "given_edge_into_output_port_when_compiled_then_wrong_port_direction",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1082,
+      "name": "given_audio_output_into_text_input_when_compiled_then_media_mismatch",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1097,
+      "name": "given_audio_signal_into_text_signal_when_compiled_then_signal_mismatch",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1112,
+      "name": "given_realtime_node_with_allocating_safety_when_compiled_then_safety_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1125,
+      "name": "given_async_producer_into_realtime_consumer_with_bounded_edge_when_compiled_then_invalid_realtime_edge",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1145,
+      "name": "given_async_producer_into_realtime_consumer_with_drop_newest_edge_when_compiled_then_ok",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1162,
+      "name": "given_two_node_cycle_when_compiled_then_cycle_detected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1178,
+      "name": "given_fan_in_with_mismatched_clock_domains_when_compiled_then_clock_domain_mismatch",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1199,
+      "name": "given_fan_in_with_consistent_clock_domains_when_compiled_then_ok",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1214,
+      "name": "given_stereo_source_into_mono_only_sink_when_compiled_then_mono_mix_adapter_inserted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1235,
+      "name": "given_stereo_source_into_stereo_sink_when_compiled_then_stereo_survives_no_adapter",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1255,
+      "name": "given_fixed_graph_when_compiled_then_topo_order_matches_golden_snapshot",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1274,
+      "name": "given_linear_chain_when_compiled_then_topo_order_equals_insertion_order",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [
+    {
+      "line": 555,
+      "text": "MediaCaps::Event => {"
+    }
+  ],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 26,
+      "name": "CompileError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 64,
+      "name": "CompileContext",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 70,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 74,
+      "name": "GraphPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 125,
+      "name": "InsertAdapterNodesPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 216,
+      "name": "ValidateNodeIdsPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 231,
+      "name": "ValidateSafetyContractsPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 253,
+      "name": "ValidatePortsPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 277,
+      "name": "ValidateClockDomainsPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 307,
+      "name": "NegotiateCapsPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 373,
+      "name": "ValidateRealtimeBoundariesPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 400,
+      "name": "CycleDetectionPass",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 443,
+      "name": "Compiler",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 449,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 463,
+      "name": "compile",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Verification-pass pipeline that turns a `GraphSpec` into a checked `GraphIr`. Resolution binds descriptors; ordered passes validate ids, ports, media, clock domains, realtime boundaries, and acyclicity. Lowering into a `RuntimePlan` lives in `planner::RuntimePlanner` (Wave 5)."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 445,
+      "text": "passes: Vec<Box<dyn GraphPass>>,"
+    },
+    {
+      "line": 452,
+      "text": "Box::new(ValidateNodeIdsPass),"
+    },
+    {
+      "line": 453,
+      "text": "Box::new(ValidatePortsPass),"
+    },
+    {
+      "line": 454,
+      "text": "Box::new(InsertAdapterNodesPass),"
+    },
+    {
+      "line": 455,
+      "text": "Box::new(ValidateSafetyContractsPass),"
+    },
+    {
+      "line": 456,
+      "text": "Box::new(NegotiateCapsPass),"
+    },
+    {
+      "line": 457,
+      "text": "Box::new(ValidateClockDomainsPass),"
+    },
+    {
+      "line": 458,
+      "text": "Box::new(ValidateRealtimeBoundariesPass),"
+    },
+    {
+      "line": 459,
+      "text": "Box::new(CycleDetectionPass),"
+    },
+    {
+      "line": 521,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 590,
+      "text": "fn unused_node() -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 591,
+      "text": "Ok(Box::new(PassthroughNode))"
+    },
+    {
+      "line": 611,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 633,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 655,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 684,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 706,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 734,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 762,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 791,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 820,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 845,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 870,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 896,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 922,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 948,
+      "text": ") -> Result<Box<dyn RuntimeNode>, crate::graph::node::NodeError> {"
+    },
+    {
+      "line": 955,
+      "text": "registry.register(Arc::new(SourceFactory)).unwrap();"
+    },
+    {
+      "line": 956,
+      "text": "registry.register(Arc::new(TransformFactory)).unwrap();"
+    },
+    {
+      "line": 957,
+      "text": "registry.register(Arc::new(SinkFactory)).unwrap();"
+    },
+    {
+      "line": 958,
+      "text": "registry.register(Arc::new(MixerFactory)).unwrap();"
+    },
+    {
+      "line": 959,
+      "text": "registry.register(Arc::new(AsyncModelFactory)).unwrap();"
+    },
+    {
+      "line": 960,
+      "text": "registry.register(Arc::new(BinarySourceFactory)).unwrap();"
+    },
+    {
+      "line": 961,
+      "text": "registry.register(Arc::new(BinarySinkFactory)).unwrap();"
+    },
+    {
+      "line": 962,
+      "text": "registry.register(Arc::new(TextSinkFactory)).unwrap();"
+    },
+    {
+      "line": 963,
+      "text": "registry.register(Arc::new(SignalTextSinkFactory)).unwrap();"
+    },
+    {
+      "line": 964,
+      "text": "registry.register(Arc::new(UnsafeRealtimeFactory)).unwrap();"
+    },
+    {
+      "line": 965,
+      "text": "registry.register(Arc::new(RejectingFactory)).unwrap();"
+    },
+    {
+      "line": 966,
+      "text": "registry.register(Arc::new(StereoSourceFactory)).unwrap();"
+    },
+    {
+      "line": 967,
+      "text": "registry.register(Arc::new(MonoOnlySinkFactory)).unwrap();"
+    },
+    {
+      "line": 968,
+      "text": "registry.register(Arc::new(StereoSinkFactory)).unwrap();"
+    },
+    {
+      "line": 970,
+      "text": ".register(Arc::new(crate::graph::builtins::MonoMixFactory))"
+    }
+  ],
+  "responsibilities": [
+    "MONO_DOWNMIX_ADAPTER_TYPE",
+    "CompileError",
+    "CompileContext",
+    "new",
+    "GraphPass",
+    "run",
+    "find_node",
+    "ensure_port",
+    "port_media",
+    "port_spec",
+    "audio_layout",
+    "InsertAdapterNodesPass",
+    "needs_mono_downmix",
+    "run",
+    "ValidateNodeIdsPass",
+    "run",
+    "ValidateSafetyContractsPass",
+    "run",
+    "ValidatePortsPass",
+    "run",
+    "ValidateClockDomainsPass",
+    "run",
+    "NegotiateCapsPass",
+    "run",
+    "ValidateRealtimeBoundariesPass",
+    "run",
+    "CycleDetectionPass",
+    "run",
+    "Compiler",
+    "new",
+    "compile",
+    "resolve",
+    "default",
+    "tests",
+    "audio_media",
+    "audio_media_with",
+    "port",
+    "test_descriptor",
+    "unused_node",
+    "SourceFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "TransformFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "SinkFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "MixerFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "AsyncModelFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "BinarySourceFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "BinarySinkFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "TextSinkFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "SignalTextSinkFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "UnsafeRealtimeFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "RejectingFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "StereoSourceFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "MonoOnlySinkFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "StereoSinkFactory",
+    "descriptor",
+    "validate_config",
+    "instantiate",
+    "test_registry",
+    "given_linear_graph_when_compiled_then_topo_orders_source_before_sink",
+    "given_unspecified_binary_edge_when_compiled_then_bounded_async_contract_is_derived",
+    "given_unregistered_type_when_compiled_then_unknown_node_type",
+    "given_node_with_rejecting_config_when_compiled_then_invalid_config"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 982,
+      "text": "graph.connect(source.out(\"audio\"), transform.in_(\"audio\"));"
+    },
+    {
+      "line": 983,
+      "text": "graph.connect(transform.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 1002,
+      "text": "graph.connect(source.out(\"signal\"), sink.in_(\"signal\"));"
+    },
+    {
+      "line": 1057,
+      "text": "graph.connect(source.out(\"audio\"), transform.in_(\"missing\"));"
+    },
+    {
+      "line": 1072,
+      "text": "graph.connect(transform.out(\"audio\"), source.in_(\"audio\"));"
+    },
+    {
+      "line": 1087,
+      "text": "graph.connect(source.out(\"audio\"), text_sink.in_(\"text\"));"
+    },
+    {
+      "line": 1102,
+      "text": "graph.connect(source.out(\"audio\"), text_sink.in_(\"text\"));"
+    },
+    {
+      "line": 1167,
+      "text": "graph.connect(first.out(\"audio\"), second.in_(\"audio\"));"
+    },
+    {
+      "line": 1168,
+      "text": "graph.connect(second.out(\"audio\"), first.in_(\"audio\"));"
+    },
+    {
+      "line": 1184,
+      "text": "graph.connect(capture.out(\"audio\"), mixer.in_(\"audio\"));"
+    },
+    {
+      "line": 1205,
+      "text": "graph.connect(first.out(\"audio\"), mixer.in_(\"audio\")); // Capture"
+    },
+    {
+      "line": 1206,
+      "text": "graph.connect(second.out(\"audio\"), mixer.in_(\"audio\")); // Capture"
+    },
+    {
+      "line": 1219,
+      "text": "graph.connect(source.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 1240,
+      "text": "graph.connect(source.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 1261,
+      "text": "graph.connect(source.out(\"audio\"), transform.in_(\"audio\"));"
+    },
+    {
+      "line": 1262,
+      "text": "graph.connect(transform.out(\"audio\"), sink.in_(\"audio\"));"
+    },
+    {
+      "line": 1284,
+      "text": "graph.connect(pair[0].out(\"audio\"), pair[1].in_(\"audio\"));"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 390,
+      "text": "reason: \"async producer into realtime consumer requires a non-blocking \\"
+    },
+    {
+      "line": 693,
+      "text": "\"model.async\","
+    },
+    {
+      "line": 1129,
+      "text": "let model = graph.add_node(\"model.async\", NodeConfig::new());"
+    },
+    {
+      "line": 1148,
+      "text": "let model = graph.add_node(\"model.async\", NodeConfig::new());"
+    }
+  ],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

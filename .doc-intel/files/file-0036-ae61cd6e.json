@@ -1,0 +1,145 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 14,
+      "text": "serde = { version = \"1\", features = [\"derive\"] }"
+    },
+    {
+      "line": 18,
+      "text": "tokio = { version = \"1\", features = [\"fs\", \"macros\", \"process\", \"rt-multi-thread\", \"time\"] }"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "ac62f0189686a77c77a1d6ade6e9dca3536160b2dc8fbcdbd20e31fd09d3cec9",
+  "defaults": [],
+  "defines": [],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "ac62f0189686a77c77a1d6ade6e9dca3536160b2dc8fbcdbd20e31fd09d3cec9",
+      "lines": [
+        1,
+        21
+      ],
+      "path": "examples/whisper-transcribe/Cargo.toml",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0036-ae61cd6e",
+  "file_kind": "example",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "a790c6d8c3b82eceb212cf181cd72f58213dba12",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "TOML",
+  "line_count": 21,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "repository",
+  "path": "examples/whisper-transcribe/Cargo.toml",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Provides repository-owned intended-use evidence."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/examples.md",
+    "docs/concepts/transcription-integration.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/run-transcription.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/troubleshooting/transcription-evidence.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 14,
+      "text": "serde = { version = \"1\", features = [\"derive\"] }"
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 18,
+      "text": "tokio = { version = \"1\", features = [\"fs\", \"macros\", \"process\", \"rt-multi-thread\", \"time\"] }"
+    }
+  ],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 18,
+      "text": "tokio = { version = \"1\", features = [\"fs\", \"macros\", \"process\", \"rt-multi-thread\", \"time\"] }"
+    }
+  ],
+  "visibility": "private_or_not_applicable"
+}

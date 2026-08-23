@@ -1,0 +1,459 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AtomicBool::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "ClockDomainId",
+    "ConnectorId",
+    "EndpointId",
+    "LineagedAudioFrame::new",
+    "PlanEdgeFrame::Shared",
+    "PolledAudioEndpointConfig::default",
+    "PolledAudioEndpointFactory::new",
+    "ReceiptShared::new",
+    "RingBuffer::new",
+    "RouteId",
+    "SessionId",
+    "SourceId",
+    "StemId",
+    "StreamId",
+    "WorkerObservations::default",
+    "acquire",
+    "as_ptr",
+    "delivered",
+    "drop",
+    "err",
+    "expect",
+    "frame",
+    "freeze",
+    "given_concurrent_publish_and_poll_when_observed_then_depth_stays_bounded_and_returns_to_zero",
+    "given_held_batch_when_polled_then_samples_stay_stable_and_lease_exhaustion_is_counted",
+    "given_impossible_dequeue_when_observed_then_depth_saturates_and_failure_is_explicit",
+    "given_shared_branch_when_published_then_it_is_rejected_and_counted",
+    "given_untrusted_oversized_capacities_when_constructed_then_all_fail_before_allocation",
+    "is_none",
+    "join",
+    "let",
+    "lineaged_frame",
+    "load",
+    "max",
+    "observations",
+    "observe_dequeued",
+    "prepare_delivered_frame",
+    "publish_delivered_frame",
+    "register_consumer",
+    "remove_consumer",
+    "samples",
+    "saturating_mul",
+    "store",
+    "thread::spawn",
+    "thread::yield_now",
+    "try_copy_from_slice",
+    "try_poll"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AtomicBool::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "LineagedAudioFrame::new",
+    "PolledAudioEndpointFactory::new",
+    "ReceiptShared::new",
+    "RingBuffer::new"
+  ],
+  "content_hash": "c08275ba982b4a4889e44e7567e7751411d7b18044ef1a8a7e83bd3261d92e22",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 6,
+      "name": "ENDPOINT_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 8,
+      "name": "CONNECTOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 9,
+      "name": "ROUTE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 10,
+      "name": "lineaged_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "delivered",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "given_shared_branch_when_published_then_it_is_rejected_and_counted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "given_held_batch_when_polled_then_samples_stay_stable_and_lease_exhaustion_is_counted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "given_concurrent_publish_and_poll_when_observed_then_depth_stays_bounded_and_returns_to_zero",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 230,
+      "name": "given_untrusted_oversized_capacities_when_constructed_then_all_fail_before_allocation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "given_impossible_dequeue_when_observed_then_depth_saturates_and_failure_is_explicit",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 126,
+      "text": "drop(lease);"
+    },
+    {
+      "line": 132,
+      "text": "drop(second);"
+    },
+    {
+      "line": 133,
+      "text": "drop(producer);"
+    },
+    {
+      "line": 206,
+      "text": "Ok(lease) => drop(lease),"
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 121,
+      "text": "Err(PolledAudioPollError::LeaseCapacityExhausted)"
+    },
+    {
+      "line": 207,
+      "text": "Err(PolledAudioPollError::Empty) => thread::yield_now(),"
+    },
+    {
+      "line": 208,
+      "text": "Err(error) => panic!(\"unexpected concurrent poll result: {error}\"),"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "c08275ba982b4a4889e44e7567e7751411d7b18044ef1a8a7e83bd3261d92e22",
+      "lines": [
+        1,
+        275
+      ],
+      "path": "src/endpoint/polled_audio_driver/tests.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0131-54d675b2",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "410db70f51da8f5aeb4ead73c1c30702fdfcba75",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::{ AudioBufferPool, AudioFrame, ClockDomainId, SessionId, SourceId, StemId, StreamId, }",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 62,
+      "text": "assert!(prepare_delivered_frame("
+    },
+    {
+      "line": 119,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 212,
+      "text": "assert!(depth <= config.queue_capacity_frames as u64);"
+    },
+    {
+      "line": 218,
+      "text": "assert!(maximum_depth <= config.queue_capacity_frames as u64);"
+    },
+    {
+      "line": 257,
+      "text": ".expect(\"oversized config must fail\"),"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 275,
+  "locks": [],
+  "module": "pocketstation::endpoint::polled_audio_driver::tests",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-5a665572187409651b60",
+    "pattern-a3b3fcad4d50a67e95c6",
+    "pattern-ffa343bd7bb55707fdb9"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/endpoint/polled_audio_driver/tests.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 6,
+      "name": "ENDPOINT_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 8,
+      "name": "CONNECTOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 9,
+      "name": "ROUTE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 10,
+      "name": "lineaged_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 42,
+      "name": "delivered",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 53,
+      "name": "given_shared_branch_when_published_then_it_is_rejected_and_counted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "given_held_batch_when_polled_then_samples_stay_stable_and_lease_exhaustion_is_counted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "given_concurrent_publish_and_poll_when_observed_then_depth_stays_bounded_and_returns_to_zero",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 230,
+      "name": "given_untrusted_oversized_capacities_when_constructed_then_all_fail_before_allocation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "given_impossible_dequeue_when_observed_then_depth_saturates_and_failure_is_explicit",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 160,
+      "text": "let producer_thread = thread::spawn(move || {"
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::endpoint::polled_audio_driver::tests`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/stop-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/endpoints.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/endpoints.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 12,
+      "text": "pool: &Arc<AudioBufferPool>,"
+    },
+    {
+      "line": 91,
+      "text": "let shared = Arc::new(ReceiptShared::new(config));"
+    },
+    {
+      "line": 93,
+      "text": "shared: Arc::clone(&shared),"
+    },
+    {
+      "line": 147,
+      "text": "let shared = Arc::new(ReceiptShared::new(config));"
+    },
+    {
+      "line": 149,
+      "text": "shared: Arc::clone(&shared),"
+    },
+    {
+      "line": 155,
+      "text": "let producer_shared = Arc::clone(&shared);"
+    },
+    {
+      "line": 156,
+      "text": "let producer_done = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 157,
+      "text": "let thread_done = Arc::clone(&producer_done);"
+    },
+    {
+      "line": 158,
+      "text": "let worker = Arc::new(WorkerObservations::default());"
+    },
+    {
+      "line": 159,
+      "text": "let thread_worker = Arc::clone(&worker);"
+    }
+  ],
+  "responsibilities": [
+    "ENDPOINT_ID",
+    "CONNECTOR_ID",
+    "ROUTE_ID",
+    "lineaged_frame",
+    "delivered",
+    "given_shared_branch_when_published_then_it_is_rejected_and_counted",
+    "given_held_batch_when_polled_then_samples_stay_stable_and_lease_exhaustion_is_counted",
+    "given_concurrent_publish_and_poll_when_observed_then_depth_stays_bounded_and_returns_to_zero",
+    "given_untrusted_oversized_capacities_when_constructed_then_all_fail_before_allocation",
+    "given_impossible_dequeue_when_observed_then_depth_saturates_and_failure_is_explicit"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 160,
+      "text": "let producer_thread = thread::spawn(move || {"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 160,
+      "text": "let producer_thread = thread::spawn(move || {"
+    },
+    {
+      "line": 188,
+      "text": "thread::yield_now();"
+    },
+    {
+      "line": 197,
+      "text": "thread::yield_now();"
+    },
+    {
+      "line": 207,
+      "text": "Err(PolledAudioPollError::Empty) => thread::yield_now(),"
+    },
+    {
+      "line": 217,
+      "text": "producer_thread.join().expect(\"producer thread\");"
+    }
+  ],
+  "visibility": "private_or_not_applicable"
+}

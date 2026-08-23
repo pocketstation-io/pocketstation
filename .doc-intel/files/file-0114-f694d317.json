@@ -1,0 +1,813 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "BTreeSet::new",
+    "Vec::new",
+    "allow",
+    "api_revision",
+    "as_str",
+    "capabilities",
+    "configuration",
+    "derive",
+    "documentation",
+    "error",
+    "execution",
+    "id",
+    "inputs",
+    "insert",
+    "into",
+    "is_empty",
+    "iter",
+    "len",
+    "manifest_revision",
+    "map",
+    "new",
+    "node",
+    "operator_id",
+    "outputs",
+    "package_version",
+    "push",
+    "readiness",
+    "required",
+    "requirements",
+    "to_owned",
+    "trim",
+    "validate",
+    "validate_manifest_entry",
+    "validate_unique_entries",
+    "with_capability",
+    "with_requirement"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "BTreeSet::new",
+    "Vec::new",
+    "new"
+  ],
+  "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 6,
+      "name": "CONNECTOR_API_REVISION",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 8,
+      "name": "MAX_CONNECTOR_MANIFEST_ENTRIES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 9,
+      "name": "MAX_CONNECTOR_MANIFEST_TEXT_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 12,
+      "name": "ConnectorCapability",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 18,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "documentation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 40,
+      "name": "ConnectorRequirement",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 64,
+      "name": "required",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "documentation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 75,
+      "name": "ConnectorManifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 89,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "with_capability",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 119,
+      "name": "with_requirement",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 123,
+      "name": "api_revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 127,
+      "name": "manifest_revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 135,
+      "name": "package_version",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 139,
+      "name": "node",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 147,
+      "name": "readiness",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 151,
+      "name": "capabilities",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "requirements",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 159,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 201,
+      "name": "validate_manifest_entry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 213,
+      "name": "validate_unique_entries",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 231,
+      "name": "ConnectorManifestError",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 242,
+      "text": "#[error(\"endpoint connectors cannot declare output ports in connector API revision 1\")]"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 6,
+      "name": "CONNECTOR_API_REVISION",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 8,
+      "name": "MAX_CONNECTOR_MANIFEST_ENTRIES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 9,
+      "name": "MAX_CONNECTOR_MANIFEST_TEXT_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 12,
+      "name": "ConnectorCapability",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 18,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "documentation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 40,
+      "name": "ConnectorRequirement",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 64,
+      "name": "required",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "documentation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 75,
+      "name": "ConnectorManifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 89,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "with_capability",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 119,
+      "name": "with_requirement",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 123,
+      "name": "api_revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 127,
+      "name": "manifest_revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 135,
+      "name": "package_version",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 139,
+      "name": "node",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 147,
+      "name": "readiness",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 151,
+      "name": "capabilities",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "requirements",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 159,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 231,
+      "name": "ConnectorManifestError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 162,
+      "text": "return Err(ConnectorManifestError::UnsupportedApiRevision {"
+    },
+    {
+      "line": 168,
+      "text": "return Err(ConnectorManifestError::InvalidManifestRevision);"
+    },
+    {
+      "line": 171,
+      "text": "return Err(ConnectorManifestError::EmptyOperatorId);"
+    },
+    {
+      "line": 176,
+      "text": "return Err(ConnectorManifestError::InvalidPackageVersion);"
+    },
+    {
+      "line": 179,
+      "text": "return Err(ConnectorManifestError::MissingInputPort);"
+    },
+    {
+      "line": 182,
+      "text": "return Err(ConnectorManifestError::OutputPortNotSupported);"
+    },
+    {
+      "line": 188,
+      "text": "return Err(ConnectorManifestError::RealtimeExecutionForbidden);"
+    },
+    {
+      "line": 204,
+      "text": "return Err(ConnectorManifestError::InvalidManifestEntry);"
+    },
+    {
+      "line": 209,
+      "text": "return Err(ConnectorManifestError::ManifestEntryTooLarge);"
+    },
+    {
+      "line": 219,
+      "text": "return Err(ConnectorManifestError::TooManyManifestEntries);"
+    },
+    {
+      "line": 224,
+      "text": "return Err(ConnectorManifestError::DuplicateManifestEntry { id: id.to_owned() });"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 231,
+      "name": "ConnectorManifestError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "f623dcdc7045bb7964195334cb52efea96744a8ec86f4f9e739f1560e08de833",
+      "lines": [
+        1,
+        255
+      ],
+      "path": "src/connector/manifest.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0114-f694d317",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "2936591c40c9515ae62f9aee7c1de915c2ea1168",
+  "implemented_by": [],
+  "implements": [
+    "ConnectorCapability",
+    "ConnectorRequirement",
+    "ConnectorManifest"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::graph::{ExecutionPartition, NodeDescriptor, OperatorId}",
+    "std::collections::BTreeSet",
+    "super::{ConnectorConfigurationSchema, ConnectorReadinessPolicy}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 234,
+      "text": "#[error(\"connector manifest revision must be non-zero\")]"
+    },
+    {
+      "line": 236,
+      "text": "#[error(\"connector operator id cannot be empty\")]"
+    },
+    {
+      "line": 238,
+      "text": "#[error(\"connector package version cannot be empty or exceed the byte limit\")]"
+    },
+    {
+      "line": 242,
+      "text": "#[error(\"endpoint connectors cannot declare output ports in connector API revision 1\")]"
+    },
+    {
+      "line": 244,
+      "text": "#[error(\"connector execution cannot run on a realtime partition\")]"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 255,
+  "locks": [],
+  "module": "pocketstation::connector::manifest",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-ec72b9d6dae5b40c0408"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/connector/manifest.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 201,
+      "name": "validate_manifest_entry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 213,
+      "name": "validate_unique_entries",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 6,
+      "name": "CONNECTOR_API_REVISION",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 8,
+      "name": "MAX_CONNECTOR_MANIFEST_ENTRIES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 9,
+      "name": "MAX_CONNECTOR_MANIFEST_TEXT_BYTES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 12,
+      "name": "ConnectorCapability",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 18,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 29,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 33,
+      "name": "documentation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 40,
+      "name": "ConnectorRequirement",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 64,
+      "name": "required",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 68,
+      "name": "documentation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 75,
+      "name": "ConnectorManifest",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 89,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 113,
+      "name": "with_capability",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 119,
+      "name": "with_requirement",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 123,
+      "name": "api_revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 127,
+      "name": "manifest_revision",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "operator_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 135,
+      "name": "package_version",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 139,
+      "name": "node",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 143,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 147,
+      "name": "readiness",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 151,
+      "name": "capabilities",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "requirements",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 159,
+      "name": "validate",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 231,
+      "name": "ConnectorManifestError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::connector::manifest`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/connectors.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/configure-connector-secrets.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/connectors.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/connectors.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/terminal-outcomes.md",
+    "docs/best-practices/connector-retries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "CONNECTOR_API_REVISION",
+    "MAX_CONNECTOR_MANIFEST_ENTRIES",
+    "MAX_CONNECTOR_MANIFEST_TEXT_BYTES",
+    "ConnectorCapability",
+    "new",
+    "id",
+    "documentation",
+    "ConnectorRequirement",
+    "new",
+    "id",
+    "required",
+    "documentation",
+    "ConnectorManifest",
+    "new",
+    "with_capability",
+    "with_requirement",
+    "api_revision",
+    "manifest_revision",
+    "operator_id",
+    "package_version",
+    "node",
+    "configuration",
+    "readiness",
+    "capabilities",
+    "requirements",
+    "validate",
+    "validate_manifest_entry",
+    "validate_unique_entries",
+    "ConnectorManifestError"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

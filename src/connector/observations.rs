@@ -12,6 +12,7 @@ use super::{
 };
 
 #[derive(Clone)]
+#[doc = "Owns bounded access to connector observation."]
 pub struct ConnectorObservationHandle {
     inner: Arc<ConnectorObservationState>,
 }
@@ -50,6 +51,7 @@ impl ConnectorObservationHandle {
         }
     }
 
+    #[doc = "Returns a point-in-time snapshot of `ConnectorObservationHandle`."]
     pub fn snapshot(&self) -> Result<ConnectorObservations, ConnectorObservationError> {
         let service_status = self
             .inner
@@ -155,25 +157,38 @@ impl ConnectorObservationHandle {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Reports the connector observations collected at an observation boundary."]
 pub struct ConnectorObservations {
+    #[doc = "Stores the service status associated with `ConnectorObservations`."]
     pub service_status: ConnectorServiceStatus,
+    #[doc = "Counts the total number of status transitions observed by `ConnectorObservations`."]
     pub status_transitions_total: u64,
+    #[doc = "Counts the total number of retry attempts observed by `ConnectorObservations`."]
     pub retry_attempts_total: u64,
+    #[doc = "Counts the total number of reconnects observed by `ConnectorObservations`."]
     pub reconnects_total: u64,
+    #[doc = "Counts the total number of failures observed by `ConnectorObservations`."]
     pub failures_total: u64,
+    #[doc = "Carries the last error reported by `ConnectorObservations`."]
     pub last_error: Option<ConnectorError>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Reports the connector runtime observations collected at an observation boundary."]
 pub struct ConnectorRuntimeObservations {
+    #[doc = "Identifies the endpoint associated with `ConnectorRuntimeObservations`."]
     pub endpoint_ids: Arc<[EndpointId]>,
+    #[doc = "Stores the connector associated with `ConnectorRuntimeObservations`."]
     pub connector: ConnectorObservations,
+    #[doc = "Stores the endpoint associated with `ConnectorRuntimeObservations`."]
     pub endpoint: EndpointDriverObservations,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as connector observation error."]
 pub enum ConnectorObservationError {
     #[error("connector observation state is unavailable")]
+    #[doc = "Reports state unavailable."]
     StateUnavailable,
 }
 

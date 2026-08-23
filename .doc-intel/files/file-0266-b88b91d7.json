@@ -1,0 +1,1161 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 297,
+      "text": "// SAFETY: both views are valid for the callback duration."
+    },
+    {
+      "line": 331,
+      "text": "// SAFETY: final exactly-once callback returns Box ownership."
+    },
+    {
+      "line": 339,
+      "text": "// SAFETY: final exactly-once callback returns Box ownership."
+    }
+  ],
+  "called_by": [],
+  "calls": [
+    "Box::from_raw",
+    "Box::into_raw",
+    "Box::new",
+    "OpenOptions::new",
+    "String::from_utf8_lossy",
+    "acquire",
+    "allow",
+    "append",
+    "as_ptr",
+    "callbacks",
+    "cast",
+    "cfg",
+    "create",
+    "derive",
+    "destroy_instance",
+    "destroy_registration",
+    "endpoint_consume",
+    "endpoint_consume:",
+    "expect",
+    "fn",
+    "is_null",
+    "len",
+    "let",
+    "lifecycle",
+    "marker",
+    "not",
+    "open",
+    "operator_process",
+    "operator_process:",
+    "pks_extension_library_v1",
+    "prepare",
+    "repr",
+    "source_next",
+    "source_next:",
+    "status",
+    "std::ptr::copy_nonoverlapping",
+    "std::ptr::null_mut",
+    "std::slice::from_raw_parts",
+    "then_some",
+    "utf8",
+    "validate",
+    "write"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 407,
+      "text": "#[cfg(not(no_entrypoint))]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Box::new",
+    "OpenOptions::new"
+  ],
+  "content_hash": "7630cd50ad37a736d2d0b0234e1c9b572e6725e2639387420f62879a279eb22e",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 7,
+      "name": "ABI_MAJOR",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 9,
+      "name": "ABI_MINOR",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 10,
+      "name": "STATUS_OK",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 11,
+      "name": "STATUS_INVALID_ARGUMENT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 12,
+      "name": "KIND_SOURCE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 13,
+      "name": "KIND_OPERATOR",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 14,
+      "name": "KIND_ENDPOINT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "PORT_INPUT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "PORT_OUTPUT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "END_OF_STREAM",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 21,
+      "name": "Status",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 28,
+      "name": "Utf8",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 37,
+      "name": "Descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 50,
+      "name": "Port",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 65,
+      "name": "SignalView",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 79,
+      "name": "SignalBuffer",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 91,
+      "name": "Validate",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 93,
+      "name": "Create",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 95,
+      "name": "Prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 96,
+      "name": "SourceNext",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 99,
+      "name": "OperatorProcess",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 102,
+      "name": "EndpointConsume",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 104,
+      "name": "Lifecycle",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 105,
+      "name": "Destroy",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 109,
+      "name": "Callbacks",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 127,
+      "name": "Acquire",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 140,
+      "name": "ExtensionLibrary",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 149,
+      "name": "RegistrationContext",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 153,
+      "name": "InstanceContext",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "utf8",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 165,
+      "name": "SOURCE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 167,
+      "name": "OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 168,
+      "name": "ENDPOINT_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 169,
+      "name": "SIGNAL_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 170,
+      "name": "SCHEMA",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 171,
+      "name": "EMPTY",
+      "visibility": "private"
+    },
+    {
+      "kind": "static",
+      "line": 172,
+      "name": "SOURCE_PORTS",
+      "visibility": "private"
+    },
+    {
+      "kind": "static",
+      "line": 184,
+      "name": "OPERATOR_PORTS",
+      "visibility": "private"
+    },
+    {
+      "kind": "static",
+      "line": 209,
+      "name": "ENDPOINT_PORTS",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 221,
+      "name": "status",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 225,
+      "name": "marker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 234,
+      "name": "validate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 238,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 257,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 261,
+      "name": "source_next",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 288,
+      "name": "operator_process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 310,
+      "name": "endpoint_consume",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 324,
+      "name": "lifecycle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 328,
+      "name": "destroy_instance",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "destroy_registration",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 344,
+      "name": "callbacks",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 365,
+      "name": "acquire",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 409,
+      "name": "pks_extension_library_v1",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 168,
+      "text": "const ENDPOINT_ID: &[u8] = b\"dev.pocketstation.fixture.endpoint.v1\";"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [
+    "PKS_FIXTURE_MARKER"
+  ],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "7630cd50ad37a736d2d0b0234e1c9b572e6725e2639387420f62879a279eb22e",
+      "lines": [
+        1,
+        427
+      ],
+      "path": "tests/fixtures/native_extension_plugin.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 3,
+      "text": "use std::ffi::c_void;"
+    },
+    {
+      "line": 248,
+      "text": "let registration = unsafe { &*(registration_context as *const RegistrationContext) };"
+    },
+    {
+      "line": 254,
+      "text": "unsafe { output_instance.write(Box::into_raw(instance).cast()) };"
+    },
+    {
+      "line": 271,
+      "text": "let instance = unsafe { &mut *(context as *mut InstanceContext) };"
+    },
+    {
+      "line": 272,
+      "text": "let output = unsafe { &mut *output };"
+    },
+    {
+      "line": 283,
+      "text": "unsafe { std::ptr::copy_nonoverlapping(payload.as_ptr(), output.data, payload.len()) };"
+    },
+    {
+      "line": 298,
+      "text": "let input = unsafe { &*input };"
+    },
+    {
+      "line": 299,
+      "text": "let output = unsafe { &mut *output };"
+    },
+    {
+      "line": 304,
+      "text": "unsafe {"
+    },
+    {
+      "line": 319,
+      "text": "let input = unsafe { &*input };"
+    },
+    {
+      "line": 320,
+      "text": "let bytes = unsafe { std::slice::from_raw_parts(input.data, input.len_bytes as usize) };"
+    },
+    {
+      "line": 332,
+      "text": "let instance = unsafe { Box::from_raw(context as *mut InstanceContext) };"
+    },
+    {
+      "line": 340,
+      "text": "let registration = unsafe { Box::from_raw(context as *mut RegistrationContext) };"
+    },
+    {
+      "line": 398,
+      "text": "unsafe {"
+    },
+    {
+      "line": 414,
+      "text": "unsafe {"
+    }
+  ],
+  "file_id": "file-0266-b88b91d7",
+  "file_kind": "test",
+  "filesystem_io": [
+    {
+      "line": 4,
+      "text": "use std::fs::OpenOptions;"
+    },
+    {
+      "line": 227,
+      "text": "let mut file = OpenOptions::new()"
+    }
+  ],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "99fcfb4222700df33ab2f767364ff20bb142b5b8",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "std::ffi::c_void",
+    "std::fs::OpenOptions",
+    "std::io::Write",
+    "std::mem::size_of"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 427,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "tests/fixtures/native_extension_plugin.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 7,
+      "name": "ABI_MAJOR",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 9,
+      "name": "ABI_MINOR",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 10,
+      "name": "STATUS_OK",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 11,
+      "name": "STATUS_INVALID_ARGUMENT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 12,
+      "name": "KIND_SOURCE",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 13,
+      "name": "KIND_OPERATOR",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 14,
+      "name": "KIND_ENDPOINT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 15,
+      "name": "PORT_INPUT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 16,
+      "name": "PORT_OUTPUT",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 17,
+      "name": "END_OF_STREAM",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 21,
+      "name": "Status",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 28,
+      "name": "Utf8",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 37,
+      "name": "Descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 50,
+      "name": "Port",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 65,
+      "name": "SignalView",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 79,
+      "name": "SignalBuffer",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 91,
+      "name": "Validate",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 93,
+      "name": "Create",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 95,
+      "name": "Prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 96,
+      "name": "SourceNext",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 99,
+      "name": "OperatorProcess",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 102,
+      "name": "EndpointConsume",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 104,
+      "name": "Lifecycle",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 105,
+      "name": "Destroy",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 109,
+      "name": "Callbacks",
+      "visibility": "private"
+    },
+    {
+      "kind": "type",
+      "line": 127,
+      "name": "Acquire",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 140,
+      "name": "ExtensionLibrary",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 149,
+      "name": "RegistrationContext",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 153,
+      "name": "InstanceContext",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 158,
+      "name": "utf8",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 165,
+      "name": "SOURCE_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 167,
+      "name": "OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 168,
+      "name": "ENDPOINT_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 169,
+      "name": "SIGNAL_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 170,
+      "name": "SCHEMA",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 171,
+      "name": "EMPTY",
+      "visibility": "private"
+    },
+    {
+      "kind": "static",
+      "line": 172,
+      "name": "SOURCE_PORTS",
+      "visibility": "private"
+    },
+    {
+      "kind": "static",
+      "line": 184,
+      "name": "OPERATOR_PORTS",
+      "visibility": "private"
+    },
+    {
+      "kind": "static",
+      "line": 209,
+      "name": "ENDPOINT_PORTS",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 221,
+      "name": "status",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 225,
+      "name": "marker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 234,
+      "name": "validate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 238,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 257,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 261,
+      "name": "source_next",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 288,
+      "name": "operator_process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 310,
+      "name": "endpoint_consume",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 324,
+      "name": "lifecycle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 328,
+      "name": "destroy_instance",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "destroy_registration",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 344,
+      "name": "callbacks",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 365,
+      "name": "acquire",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 409,
+      "name": "pks_extension_library_v1",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `not_applicable`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/installation.md",
+    "docs/getting-started/examples.md",
+    "docs/concepts/conformance.md",
+    "docs/concepts/release-evidence.md",
+    "docs/architecture/overview.md",
+    "docs/internals/abi-conformance.md",
+    "docs/glossary.md",
+    "docs/concepts/cargo-features.md",
+    "RELEASE_NOTES.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/how-to/choose-features.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/reference/features.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/best-practices/evidence-boundaries.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 249,
+      "text": "let instance = Box::new(InstanceContext {"
+    },
+    {
+      "line": 254,
+      "text": "unsafe { output_instance.write(Box::into_raw(instance).cast()) };"
+    },
+    {
+      "line": 331,
+      "text": "// SAFETY: final exactly-once callback returns Box ownership."
+    },
+    {
+      "line": 332,
+      "text": "let instance = unsafe { Box::from_raw(context as *mut InstanceContext) };"
+    },
+    {
+      "line": 339,
+      "text": "// SAFETY: final exactly-once callback returns Box ownership."
+    },
+    {
+      "line": 340,
+      "text": "let registration = unsafe { Box::from_raw(context as *mut RegistrationContext) };"
+    },
+    {
+      "line": 350,
+      "text": "registration_context: Box::into_raw(Box::new(RegistrationContext { kind })).cast(),"
+    }
+  ],
+  "responsibilities": [
+    "ABI_MAJOR",
+    "ABI_MINOR",
+    "STATUS_OK",
+    "STATUS_INVALID_ARGUMENT",
+    "KIND_SOURCE",
+    "KIND_OPERATOR",
+    "KIND_ENDPOINT",
+    "PORT_INPUT",
+    "PORT_OUTPUT",
+    "END_OF_STREAM",
+    "Status",
+    "Utf8",
+    "Descriptor",
+    "Port",
+    "SignalView",
+    "SignalBuffer",
+    "Validate",
+    "Create",
+    "Prepare",
+    "SourceNext",
+    "OperatorProcess",
+    "EndpointConsume",
+    "Lifecycle",
+    "Destroy",
+    "Callbacks",
+    "Acquire",
+    "ExtensionLibrary",
+    "RegistrationContext",
+    "InstanceContext",
+    "utf8",
+    "SOURCE_ID",
+    "OPERATOR_ID",
+    "ENDPOINT_ID",
+    "SIGNAL_ID",
+    "SCHEMA",
+    "EMPTY",
+    "SOURCE_PORTS",
+    "OPERATOR_PORTS",
+    "ENDPOINT_PORTS",
+    "status",
+    "marker",
+    "validate",
+    "create",
+    "prepare",
+    "source_next",
+    "operator_process",
+    "endpoint_consume",
+    "lifecycle",
+    "destroy_instance",
+    "destroy_registration",
+    "callbacks",
+    "acquire",
+    "pks_extension_library_v1"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 4,
+      "text": "use std::fs::OpenOptions;"
+    },
+    {
+      "line": 227,
+      "text": "let mut file = OpenOptions::new()"
+    },
+    {
+      "line": 3,
+      "text": "use std::ffi::c_void;"
+    },
+    {
+      "line": 248,
+      "text": "let registration = unsafe { &*(registration_context as *const RegistrationContext) };"
+    },
+    {
+      "line": 254,
+      "text": "unsafe { output_instance.write(Box::into_raw(instance).cast()) };"
+    },
+    {
+      "line": 271,
+      "text": "let instance = unsafe { &mut *(context as *mut InstanceContext) };"
+    },
+    {
+      "line": 272,
+      "text": "let output = unsafe { &mut *output };"
+    },
+    {
+      "line": 283,
+      "text": "unsafe { std::ptr::copy_nonoverlapping(payload.as_ptr(), output.data, payload.len()) };"
+    },
+    {
+      "line": 298,
+      "text": "let input = unsafe { &*input };"
+    },
+    {
+      "line": 299,
+      "text": "let output = unsafe { &mut *output };"
+    },
+    {
+      "line": 304,
+      "text": "unsafe {"
+    },
+    {
+      "line": 319,
+      "text": "let input = unsafe { &*input };"
+    },
+    {
+      "line": 320,
+      "text": "let bytes = unsafe { std::slice::from_raw_parts(input.data, input.len_bytes as usize) };"
+    },
+    {
+      "line": 332,
+      "text": "let instance = unsafe { Box::from_raw(context as *mut InstanceContext) };"
+    },
+    {
+      "line": 340,
+      "text": "let registration = unsafe { Box::from_raw(context as *mut RegistrationContext) };"
+    },
+    {
+      "line": 398,
+      "text": "unsafe {"
+    },
+    {
+      "line": 414,
+      "text": "unsafe {"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 118,
+      "text": "prepare: Prepare,"
+    },
+    {
+      "line": 258,
+      "text": "unsafe extern \"C-unwind\" fn prepare(_context: *mut c_void) -> Status {"
+    },
+    {
+      "line": 355,
+      "text": "prepare: Some(prepare),"
+    }
+  ],
+  "state_machine": [
+    {
+      "line": 21,
+      "text": "struct Status {"
+    },
+    {
+      "line": 92,
+      "text": "type Validate = Option<unsafe extern \"C-unwind\" fn(*mut c_void, Utf8) -> Status>;"
+    },
+    {
+      "line": 94,
+      "text": "Option<unsafe extern \"C-unwind\" fn(*mut c_void, Utf8, *mut *mut c_void) -> Status>;"
+    },
+    {
+      "line": 95,
+      "text": "type Prepare = Option<unsafe extern \"C-unwind\" fn(*mut c_void) -> Status>;"
+    },
+    {
+      "line": 97,
+      "text": "unsafe extern \"C-unwind\" fn(*mut c_void, u32, *mut SignalBuffer) -> Status,"
+    },
+    {
+      "line": 100,
+      "text": "unsafe extern \"C-unwind\" fn(*mut c_void, *const SignalView, *mut SignalBuffer) -> Status,"
+    },
+    {
+      "line": 103,
+      "text": "Option<unsafe extern \"C-unwind\" fn(*mut c_void, *const SignalView) -> Status>;"
+    },
+    {
+      "line": 104,
+      "text": "type Lifecycle = Option<unsafe extern \"C-unwind\" fn(*mut c_void) -> Status>;"
+    },
+    {
+      "line": 136,
+      "text": ") -> Status,"
+    },
+    {
+      "line": 222,
+      "text": "fn status(code: u32) -> Status {"
+    },
+    {
+      "line": 223,
+      "text": "Status { code, detail: 0 }"
+    },
+    {
+      "line": 235,
+      "text": "unsafe extern \"C-unwind\" fn validate(_context: *mut c_void, _configuration: Utf8) -> Status {"
+    },
+    {
+      "line": 243,
+      "text": ") -> Status {"
+    },
+    {
+      "line": 258,
+      "text": "unsafe extern \"C-unwind\" fn prepare(_context: *mut c_void) -> Status {"
+    },
+    {
+      "line": 266,
+      "text": ") -> Status {"
+    },
+    {
+      "line": 293,
+      "text": ") -> Status {"
+    },
+    {
+      "line": 314,
+      "text": ") -> Status {"
+    },
+    {
+      "line": 325,
+      "text": "unsafe extern \"C-unwind\" fn lifecycle(_context: *mut c_void) -> Status {"
+    },
+    {
+      "line": 373,
+      "text": ") -> Status {"
+    },
+    {
+      "line": 409,
+      "text": "unsafe extern \"C-unwind\" fn pks_extension_library_v1(output: *mut ExtensionLibrary) -> Status {"
+    }
+  ],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

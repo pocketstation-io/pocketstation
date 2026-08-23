@@ -1,0 +1,212 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 97,
+      "text": "* Publishes one interleaved stereo callback without overwriting unread data."
+    },
+    {
+      "line": 105,
+      "text": "* frame when the whole callback cannot fit. Partial callback publication is"
+    }
+  ],
+  "called_by": [],
+  "calls": [
+    "PKS_RING_MASK",
+    "_Static_assert",
+    "atomic_fetch_add_explicit",
+    "atomic_load_explicit",
+    "atomic_store_explicit",
+    "defined",
+    "pks_ring_reject_invalid_timeline",
+    "pks_ring_try_write",
+    "plugin",
+    "reader",
+    "static_assert"
+  ],
+  "cancellation_behavior": [],
+  "channels": [
+    {
+      "line": 155,
+      "text": "for (uint32_t channel = 0; channel < PKS_MAX_CHANNELS; channel++) {"
+    },
+    {
+      "line": 156,
+      "text": "ring->data[slot * PKS_MAX_CHANNELS + channel] ="
+    },
+    {
+      "line": 157,
+      "text": "source[frame * PKS_MAX_CHANNELS + channel];"
+    }
+  ],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "ae7e186966ffb98349726e64500521d45cb8211454bf7aff6793516b28d61410",
+  "defaults": [],
+  "defines": [],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "ae7e186966ffb98349726e64500521d45cb8211454bf7aff6793516b28d61410",
+      "lines": [
+        1,
+        183
+      ],
+      "path": "native/macos/asp/SharedRing.h",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 179,
+      "text": "static_assert(PKS_SHM_SIZE <= UINT32_MAX, \"ASP ABI size field must not truncate\");"
+    },
+    {
+      "line": 181,
+      "text": "_Static_assert(PKS_SHM_SIZE <= UINT32_MAX, \"ASP ABI size field must not truncate\");"
+    }
+  ],
+  "file_id": "file-0045-0e647008",
+  "file_kind": "native_source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "484addb1707f4ceedee9c62f760aefd0972fa657",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 11,
+      "text": "/* Shared memory name \u2014 both plugin and pks must agree on this. */"
+    },
+    {
+      "line": 47,
+      "text": "* its capacity cannot diverge from the audio ring."
+    },
+    {
+      "line": 105,
+      "text": "* frame when the whole callback cannot fit. Partial callback publication is"
+    },
+    {
+      "line": 179,
+      "text": "static_assert(PKS_SHM_SIZE <= UINT32_MAX, \"ASP ABI size field must not truncate\");"
+    },
+    {
+      "line": 181,
+      "text": "_Static_assert(PKS_SHM_SIZE <= UINT32_MAX, \"ASP ABI size field must not truncate\");"
+    }
+  ],
+  "language": "C header",
+  "line_count": 183,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "repository",
+  "path": "native/macos/asp/SharedRing.h",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Implements a native or platform boundary."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/best-practices/evidence-boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 179,
+      "text": "static_assert(PKS_SHM_SIZE <= UINT32_MAX, \"ASP ABI size field must not truncate\");"
+    },
+    {
+      "line": 181,
+      "text": "_Static_assert(PKS_SHM_SIZE <= UINT32_MAX, \"ASP ABI size field must not truncate\");"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

@@ -22,15 +22,20 @@ pub struct OpusDecoder {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as opus decode error."]
 pub enum OpusDecodeError {
     #[error(
         "requested {requested_samples_per_channel} Opus samples per channel exceeds configured maximum {maximum_samples_per_channel}"
     )]
+    #[doc = "Reports frame duration exceeds configured maximum."]
     FrameDurationExceedsConfiguredMaximum {
+        #[doc = "Stores the requested samples per channel associated with `FrameDurationExceedsConfiguredMaximum`."]
         requested_samples_per_channel: usize,
+        #[doc = "Stores the maximum samples per channel associated with `FrameDurationExceedsConfiguredMaximum`."]
         maximum_samples_per_channel: usize,
     },
     #[error("Opus decode failed: {0}")]
+    #[doc = "Reports opus."]
     Opus(#[from] opus::Error),
 }
 
@@ -172,6 +177,7 @@ fn decode_packet(
 }
 
 impl Default for OpusDecoder {
+    #[doc = "Returns the default `OpusDecoder` value."]
     fn default() -> Self {
         Self::new().expect("OpusDecoder::new failed with fixed parameters — libopus not linked?")
     }

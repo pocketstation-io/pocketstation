@@ -1,0 +1,563 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AtomicBool::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Box::new",
+    "CaptureError::BackendInit",
+    "CaptureObservationHandle::default",
+    "CaptureObservations::default",
+    "Duration::from_millis",
+    "PksSessionStatus::ok",
+    "PrepareContext::new",
+    "SampleSpec::new",
+    "SessionEngineHostBuilder::new",
+    "SourceId",
+    "StreamId",
+    "abi_call",
+    "acquire",
+    "allocate_engine_with_host",
+    "build",
+    "cast_const",
+    "conformance_host",
+    "drop",
+    "engine_options",
+    "expect",
+    "guard_pointer_alignment",
+    "join",
+    "load",
+    "map_err",
+    "observation_handle",
+    "observations",
+    "ok_or_else",
+    "open",
+    "pks_session_conformance_engine_create",
+    "pks_session_conformance_panic",
+    "prepare",
+    "read_versioned_record",
+    "register_polled_audio_endpoint",
+    "runtime_state",
+    "set_application_backend",
+    "set_microphone_backend",
+    "source_id",
+    "std::thread::sleep",
+    "std::thread::spawn",
+    "stop_and_join",
+    "store",
+    "take",
+    "to_owned",
+    "try_copy_from_slice",
+    "try_send",
+    "unsafe",
+    "write_record"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AtomicBool::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Box::new",
+    "PrepareContext::new",
+    "SampleSpec::new",
+    "SessionEngineHostBuilder::new"
+  ],
+  "content_hash": "86d1d76379981c32a595806af48d221a6dabcdd6f1e55bf34d932b4bc7613d68",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 17,
+      "name": "DeterministicCaptureBackend",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 19,
+      "name": "DeterministicPreparedCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 21,
+      "name": "DeterministicActiveCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 28,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 34,
+      "name": "open",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 78,
+      "name": "source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "observation_handle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 89,
+      "name": "stop_and_join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 104,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 111,
+      "name": "conformance_host",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "pks_session_conformance_engine_create",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 159,
+      "name": "pks_session_conformance_panic",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 104,
+      "text": "fn drop(&mut self) {"
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "pks_session_conformance_engine_create",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 159,
+      "name": "pks_session_conformance_panic",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [
+    {
+      "line": 122,
+      "text": ".map_err(|_| AbiError::BackendFailure)?;"
+    },
+    {
+      "line": 129,
+      "text": ".map_err(|_| AbiError::BackendFailure)?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 95,
+      "text": ".map_err(|_| CaptureError::CaptureWorkerPanicked {"
+    },
+    {
+      "line": 122,
+      "text": ".map_err(|_| AbiError::BackendFailure)?;"
+    },
+    {
+      "line": 129,
+      "text": ".map_err(|_| AbiError::BackendFailure)?;"
+    },
+    {
+      "line": 130,
+      "text": "builder.build().map_err(|_| AbiError::BackendFailure)"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 95,
+      "text": ".map_err(|_| CaptureError::CaptureWorkerPanicked {"
+    },
+    {
+      "line": 122,
+      "text": ".map_err(|_| AbiError::BackendFailure)?;"
+    },
+    {
+      "line": 129,
+      "text": ".map_err(|_| AbiError::BackendFailure)?;"
+    },
+    {
+      "line": 130,
+      "text": "builder.build().map_err(|_| AbiError::BackendFailure)"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "86d1d76379981c32a595806af48d221a6dabcdd6f1e55bf34d932b4bc7613d68",
+      "lines": [
+        1,
+        162
+      ],
+      "path": "src/abi/session/conformance_fixture.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 140,
+      "text": "pub unsafe extern \"C\" fn pks_session_conformance_engine_create("
+    },
+    {
+      "line": 147,
+      "text": "let config = unsafe { read_versioned_record(config) }?;"
+    },
+    {
+      "line": 153,
+      "text": "unsafe { write_record(output_engine, engine) }?;"
+    },
+    {
+      "line": 159,
+      "text": "pub extern \"C\" fn pks_session_conformance_panic() -> PksSessionStatus {"
+    }
+  ],
+  "file_id": "file-0070-1df6503b",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "d8709a79ffe0b332184a25b9a125de0913420d8a",
+  "implemented_by": [],
+  "implements": [
+    "CallbackCaptureBackend for DeterministicCaptureBackend",
+    "PreparedCaptureBackend for DeterministicPreparedCapture",
+    "ActiveCaptureBackend for DeterministicActiveCapture",
+    "Drop for DeterministicActiveCapture"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::abi::session::{ abi_call, engine_options, guard_pointer_alignment, read_versioned_record, runtime_state, write_record, AbiError, PksSessionEngineConfig, PksSessionHandle, PksSessionStatus, }",
+    "crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend, }",
+    "crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId}",
+    "crate::graph::PrepareContext",
+    "crate::session::{NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuilder}",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, Ordering}",
+    "std::time::Duration"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 162,
+  "locks": [],
+  "module": "pocketstation::abi::session::conformance_fixture",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-89c11b4a94980624b4e5",
+    "pattern-c94cceb556c86ba83b5b"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/abi/session/conformance_fixture.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "struct",
+      "line": 17,
+      "name": "DeterministicCaptureBackend",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 19,
+      "name": "DeterministicPreparedCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 21,
+      "name": "DeterministicActiveCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 28,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 34,
+      "name": "open",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 78,
+      "name": "source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 81,
+      "name": "observation_handle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 89,
+      "name": "stop_and_join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 104,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 111,
+      "name": "conformance_host",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 50,
+      "text": "let worker = std::thread::spawn(move || {"
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "fn",
+      "line": 140,
+      "name": "pks_session_conformance_engine_create",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 159,
+      "name": "pks_session_conformance_panic",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::abi::session::conformance_fixture`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/native-extensions.md",
+    "docs/concepts/c-abi-ownership.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/architecture/overview.md",
+    "docs/internals/abi-conformance.md",
+    "docs/glossary.md",
+    "docs/guides/extensions.md",
+    "docs/how-to/use-c-session-api.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/native-extensions.md",
+    "docs/reference/c-abi.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/extensions-and-abi.md",
+    "docs/troubleshooting/native-extension-load.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/native-extension-trust.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 2,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 23,
+      "text": "stop_requested: Arc<AtomicBool>,"
+    },
+    {
+      "line": 28,
+      "text": "fn prepare(&self, _mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 29,
+      "text": "Ok(Box::new(DeterministicPreparedCapture))"
+    },
+    {
+      "line": 35,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 37,
+      "text": ") -> Result<Box<dyn ActiveCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 48,
+      "text": "let stop_requested = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 49,
+      "text": "let worker_stop_requested = Arc::clone(&stop_requested);"
+    },
+    {
+      "line": 70,
+      "text": "Ok(Box::new(DeterministicActiveCapture {"
+    },
+    {
+      "line": 90,
+      "text": "fn stop_and_join(mut self: Box<Self>) -> Result<CaptureObservations, CaptureError> {"
+    },
+    {
+      "line": 103,
+      "text": "impl Drop for DeterministicActiveCapture {"
+    },
+    {
+      "line": 123,
+      "text": "let capture_backend: Arc<dyn CallbackCaptureBackend> = Arc::new(DeterministicCaptureBackend);"
+    },
+    {
+      "line": 125,
+      "text": ".set_application_backend(Arc::clone(&capture_backend))"
+    }
+  ],
+  "responsibilities": [
+    "DeterministicCaptureBackend",
+    "DeterministicPreparedCapture",
+    "DeterministicActiveCapture",
+    "prepare",
+    "open",
+    "source_id",
+    "observation_handle",
+    "observations",
+    "stop_and_join",
+    "drop",
+    "conformance_host",
+    "pks_session_conformance_engine_create",
+    "pks_session_conformance_panic"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 50,
+      "text": "let worker = std::thread::spawn(move || {"
+    },
+    {
+      "line": 140,
+      "text": "pub unsafe extern \"C\" fn pks_session_conformance_engine_create("
+    },
+    {
+      "line": 147,
+      "text": "let config = unsafe { read_versioned_record(config) }?;"
+    },
+    {
+      "line": 153,
+      "text": "unsafe { write_record(output_engine, engine) }?;"
+    },
+    {
+      "line": 159,
+      "text": "pub extern \"C\" fn pks_session_conformance_panic() -> PksSessionStatus {"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 28,
+      "text": "fn prepare(&self, _mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 24,
+      "text": "worker: Option<std::thread::JoinHandle<()>>,"
+    },
+    {
+      "line": 50,
+      "text": "let worker = std::thread::spawn(move || {"
+    },
+    {
+      "line": 54,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 65,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    }
+  ],
+  "visibility": "mixed"
+}

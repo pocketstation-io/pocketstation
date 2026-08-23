@@ -1,0 +1,1280 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "ApplicationSelector::Name",
+    "ApplicationSelector::name",
+    "Arc::clone",
+    "Arc::new",
+    "AtomicBool::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Box::new",
+    "CaptureError::BackendInit",
+    "CaptureObservationHandle::default",
+    "CaptureObservations::default",
+    "DeviceSelector::default",
+    "Duration::from_millis",
+    "Duration::from_secs",
+    "EndpointConfiguration::new",
+    "EndpointDriverObservations::default",
+    "EndpointExtensionRegistrationError::Driver",
+    "EndpointGroupId::new",
+    "EndpointPreparationGroup::Route",
+    "EndpointPreparationGroup::Shared",
+    "Instant::now",
+    "NodeTypeId::from",
+    "OperatorId::new",
+    "PolledAudioEndpoint::new",
+    "PrepareContext::new",
+    "SampleSpec::new",
+    "Session::new",
+    "SessionEngineBuilder::new",
+    "SessionEngineStartError::Compile",
+    "SessionStartOptions::default",
+    "Source::Application",
+    "Source::Microphone",
+    "Source::application",
+    "Source::microphone",
+    "SourceId",
+    "StreamId",
+    "TestCaptureBackend::default",
+    "TestEndpointControl::default",
+    "acquire",
+    "as_ptr",
+    "browser",
+    "build",
+    "cancel_preparation",
+    "capture",
+    "compile",
+    "connector",
+    "connector_id",
+    "derive",
+    "drop",
+    "endpoint_factory",
+    "endpoint_id",
+    "error",
+    "expect",
+    "fetch_add",
+    "frame",
+    "get",
+    "given_16khz_session_when_started_then_compiled_endpoint_contexts_preserve_declared_rate",
+    "given_capture_open_failure_when_starting_then_transactional_failure_is_preserved",
+    "given_deterministic_capture_when_polled_then_real_runtime_branch_copy_and_lineage_are_exposed",
+    "given_duplicate_or_conflicting_operator_when_registering_then_builder_fails_typed",
+    "given_separated_engine_stages_when_started_then_canonical_owners_are_preserved",
+    "given_session_plan_when_prepared_then_stem_media_is_preserved",
+    "given_unregistered_declared_operator_when_starting_then_compile_failure_remains_typed",
+    "id",
+    "is_empty",
+    "is_open",
+    "is_success",
+    "join",
+    "join_and_finalize",
+    "lineage",
+    "load",
+    "map_err",
+    "map_or",
+    "observation_handle",
+    "observations",
+    "open",
+    "polled_audio",
+    "preparation_group",
+    "prepare",
+    "prepare_context",
+    "prepare_context_16khz",
+    "product_session",
+    "receipt",
+    "receiver",
+    "record",
+    "register_audio_endpoint_driver",
+    "register_polled_audio_endpoint",
+    "request_stop",
+    "route_id",
+    "samples",
+    "send",
+    "source_id",
+    "start",
+    "start_compiled",
+    "start_failure",
+    "std::thread::sleep",
+    "std::thread::spawn",
+    "stop",
+    "stop_and_join",
+    "store",
+    "take",
+    "to_owned",
+    "try_copy_from_slice",
+    "try_poll",
+    "try_send",
+    "u64::from"
+  ],
+  "cancellation_behavior": [],
+  "channels": [
+    {
+      "line": 221,
+      "text": "channels => panic!(\"unexpected endpoint input channel count {channels}\"),"
+    }
+  ],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AtomicBool::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Box::new",
+    "EndpointConfiguration::new",
+    "EndpointGroupId::new",
+    "NodeTypeId::from",
+    "OperatorId::new",
+    "PolledAudioEndpoint::new",
+    "PrepareContext::new",
+    "SampleSpec::new",
+    "Session::new",
+    "SessionEngineBuilder::new",
+    "u64::from"
+  ],
+  "content_hash": "ae570120ca73634db9def6bc00356206b621c1a78b93f552771b0b33f5200835",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "CONNECTOR_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 29,
+      "name": "TestCaptureBackend",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 32,
+      "name": "TestPreparedCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 36,
+      "name": "TestActiveCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 38,
+      "name": "DeliveringCaptureBackend",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 40,
+      "name": "DeliveringPreparedCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 42,
+      "name": "DeliveringActiveCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "open",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 72,
+      "name": "source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 75,
+      "name": "observation_handle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 79,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "stop_and_join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "open",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 134,
+      "name": "observation_handle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 138,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 142,
+      "name": "stop_and_join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 157,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 166,
+      "name": "TestEndpointControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 173,
+      "name": "TestEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 177,
+      "name": "TestPreparedEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 181,
+      "name": "TestRunningEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 185,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 196,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 231,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 243,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 253,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 256,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 260,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 268,
+      "name": "prepare_context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 272,
+      "name": "prepare_context_16khz",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "endpoint_factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 282,
+      "name": "product_session",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 320,
+      "name": "given_session_plan_when_prepared_then_stem_media_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 368,
+      "name": "given_16khz_session_when_started_then_compiled_endpoint_contexts_preserve_declared_rate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 408,
+      "name": "given_separated_engine_stages_when_started_then_canonical_owners_are_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 443,
+      "name": "given_deterministic_capture_when_polled_then_real_runtime_branch_copy_and_lineage_are_exposed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 539,
+      "name": "given_duplicate_or_conflicting_operator_when_registering_then_builder_fails_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 577,
+      "name": "given_unregistered_declared_operator_when_starting_then_compile_failure_remains_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 602,
+      "name": "given_capture_open_failure_when_starting_then_transactional_failure_is_preserved",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 157,
+      "text": "fn drop(&mut self) {"
+    },
+    {
+      "line": 534,
+      "text": "drop(lease);"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 9,
+      "text": "use crate::endpoint::{"
+    },
+    {
+      "line": 203,
+      "text": "let crate::endpoint::EndpointReceiver::Audio { sample_spec, .. } = input.receiver()"
+    },
+    {
+      "line": 205,
+      "text": "panic!(\"audio endpoint received a signal input\");"
+    },
+    {
+      "line": 221,
+      "text": "channels => panic!(\"unexpected endpoint input channel count {channels}\"),"
+    },
+    {
+      "line": 384,
+      "text": ".expect(\"endpoint registration\");"
+    },
+    {
+      "line": 424,
+      "text": ".expect(\"endpoint registration\");"
+    },
+    {
+      "line": 444,
+      "text": "let endpoint = PolledAudioEndpoint::new(PolledAudioEndpointConfig {"
+    },
+    {
+      "line": 449,
+      "text": ".expect(\"polled endpoint\");"
+    },
+    {
+      "line": 450,
+      "text": "let receipt = endpoint.receipt();"
+    },
+    {
+      "line": 455,
+      "text": ".register_polled_audio_endpoint(&endpoint)"
+    },
+    {
+      "line": 456,
+      "text": ".expect(\"polled endpoint registration\");"
+    },
+    {
+      "line": 499,
+      "text": "Err(error) => panic!(\"polled endpoint did not receive capture: {error}\"),"
+    },
+    {
+      "line": 591,
+      "text": "Ok(_) => panic!(\"unregistered endpoint operators must fail\"),"
+    },
+    {
+      "line": 618,
+      "text": ".expect(\"endpoint registration\");"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 62,
+      "text": "Err(CaptureError::BackendInit("
+    },
+    {
+      "line": 496,
+      "text": "Err(PolledAudioPollError::Empty) if Instant::now() < deadline => {"
+    },
+    {
+      "line": 499,
+      "text": "Err(error) => panic!(\"polled endpoint did not receive capture: {error}\"),"
+    },
+    {
+      "line": 558,
+      "text": "Err(EndpointExtensionRegistrationError::Driver("
+    },
+    {
+      "line": 570,
+      "text": "Err(EndpointExtensionRegistrationError::Driver("
+    },
+    {
+      "line": 592,
+      "text": "Err(error) => error,"
+    },
+    {
+      "line": 633,
+      "text": "Err(error) => error,"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 148,
+      "text": ".map_err(|_| CaptureError::CaptureWorkerPanicked {"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 148,
+      "text": ".map_err(|_| CaptureError::CaptureWorkerPanicked {"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "ae570120ca73634db9def6bc00356206b621c1a78b93f552771b0b33f5200835",
+      "lines": [
+        1,
+        643
+      ],
+      "path": "src/session/lifecycle/tests/engine.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0236-6f9da1b6",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "09b3a3e93fee78c1c8478236df1502fa8776180e",
+  "implemented_by": [],
+  "implements": [
+    "CallbackCaptureBackend for TestCaptureBackend",
+    "PreparedCaptureBackend for TestPreparedCapture",
+    "ActiveCaptureBackend for TestActiveCapture",
+    "CallbackCaptureBackend for DeliveringCaptureBackend",
+    "PreparedCaptureBackend for DeliveringPreparedCapture",
+    "ActiveCaptureBackend for DeliveringActiveCapture",
+    "Drop for DeliveringActiveCapture",
+    "EndpointDriverFactory for TestEndpointFactory",
+    "PreparedEndpointDriver for TestPreparedEndpoint",
+    "RunningEndpointDriver for TestRunningEndpoint"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend, }",
+    "crate::endpoint::{ EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointDriverRegistryError, EndpointFailure, EndpointGroupId, EndpointPortInput, EndpointPreparationGroup, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, }",
+    "crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId}",
+    "crate::graph::{NodeTypeId, PrepareContext}",
+    "crate::session::{ ApplicationSelector, CaptureBackendSet, DeviceSelector, EndpointConfiguration, EndpointExtensionRegistrationError, OperatorId, PolledAudioEndpoint, PolledAudioEndpointConfig, PolledAudioPollError, Session, SessionCompileError, SessionEngineBuilder, SessionEngineStartError, SessionStartError, SessionStartOptions, Source, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, RECORDER_NODE_TYPE_ID, RECORDER_OPERATOR_ID, }",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "std::time::{Duration, Instant}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 201,
+      "text": "assert!(!inputs.is_empty());"
+    },
+    {
+      "line": 363,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 364,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 404,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 439,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 531,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 556,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 568,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 591,
+      "text": "Ok(_) => panic!(\"unregistered endpoint operators must fail\"),"
+    },
+    {
+      "line": 595,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 632,
+      "text": "Ok(_) => panic!(\"capture open must fail\"),"
+    },
+    {
+      "line": 637,
+      "text": ".expect(\"transactional start failure must remain available\");"
+    },
+    {
+      "line": 638,
+      "text": "assert!(matches!("
+    }
+  ],
+  "language": "Rust",
+  "line_count": 643,
+  "locks": [],
+  "module": "pocketstation::session::lifecycle::tests::engine",
+  "network_io": [
+    {
+      "line": 300,
+      "text": ".browser(\"https://receiver.test/session\")"
+    }
+  ],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-95f5108aef0b18289bdb",
+    "pattern-7eecba675f804dd8adaa",
+    "pattern-690f1327b10f770a5f78"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/lifecycle/tests/engine.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 25,
+      "name": "CONNECTOR_OPERATOR_ID",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 29,
+      "name": "TestCaptureBackend",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 32,
+      "name": "TestPreparedCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 36,
+      "name": "TestActiveCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 38,
+      "name": "DeliveringCaptureBackend",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 40,
+      "name": "DeliveringPreparedCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 42,
+      "name": "DeliveringActiveCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "open",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 72,
+      "name": "source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 75,
+      "name": "observation_handle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 79,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "stop_and_join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "open",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 134,
+      "name": "observation_handle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 138,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 142,
+      "name": "stop_and_join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 157,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 166,
+      "name": "TestEndpointControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 173,
+      "name": "TestEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 177,
+      "name": "TestPreparedEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 181,
+      "name": "TestRunningEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 185,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 196,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 231,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 243,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 253,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 256,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 260,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 268,
+      "name": "prepare_context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 272,
+      "name": "prepare_context_16khz",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "endpoint_factory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 282,
+      "name": "product_session",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 320,
+      "name": "given_session_plan_when_prepared_then_stem_media_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 368,
+      "name": "given_16khz_session_when_started_then_compiled_endpoint_contexts_preserve_declared_rate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 408,
+      "name": "given_separated_engine_stages_when_started_then_canonical_owners_are_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 443,
+      "name": "given_deterministic_capture_when_polled_then_real_runtime_branch_copy_and_lineage_are_exposed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 539,
+      "name": "given_duplicate_or_conflicting_operator_when_registering_then_builder_fails_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 577,
+      "name": "given_unregistered_declared_operator_when_starting_then_compile_failure_remains_typed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 602,
+      "name": "given_capture_open_failure_when_starting_then_transactional_failure_is_preserved",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 102,
+      "text": "let worker = std::thread::spawn(move || {"
+    }
+  ],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::session::lifecycle::tests::engine`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 2,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 44,
+      "text": "stop_requested: Arc<AtomicBool>,"
+    },
+    {
+      "line": 49,
+      "text": "fn prepare(&self, _mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 50,
+      "text": "Ok(Box::new(TestPreparedCapture {"
+    },
+    {
+      "line": 58,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 60,
+      "text": ") -> Result<Box<dyn ActiveCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 66,
+      "text": "Ok(Box::new(TestActiveCapture))"
+    },
+    {
+      "line": 84,
+      "text": "fn stop_and_join(self: Box<Self>) -> Result<CaptureObservations, CaptureError> {"
+    },
+    {
+      "line": 90,
+      "text": "fn prepare(&self, _mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 91,
+      "text": "Ok(Box::new(DeliveringPreparedCapture))"
+    },
+    {
+      "line": 97,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 99,
+      "text": ") -> Result<Box<dyn ActiveCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 100,
+      "text": "let stop_requested = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 101,
+      "text": "let worker_stop_requested = Arc::clone(&stop_requested);"
+    },
+    {
+      "line": 123,
+      "text": "Ok(Box::new(DeliveringActiveCapture {"
+    },
+    {
+      "line": 143,
+      "text": "fn stop_and_join(mut self: Box<Self>) -> Result<CaptureObservations, CaptureError> {"
+    },
+    {
+      "line": 156,
+      "text": "impl Drop for DeliveringActiveCapture {"
+    },
+    {
+      "line": 175,
+      "text": "control: Arc<TestEndpointControl>,"
+    },
+    {
+      "line": 179,
+      "text": "control: Arc<TestEndpointControl>,"
+    },
+    {
+      "line": 200,
+      "text": ") -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 224,
+      "text": "Ok(Box::new(TestPreparedEndpoint {"
+    },
+    {
+      "line": 225,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 232,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 233,
+      "text": "start_gate: Arc<EndpointStartGate>,"
+    },
+    {
+      "line": 234,
+      "text": ") -> Result<Box<dyn RunningEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 241,
+      "text": "Ok(Box::new(TestRunningEndpoint))"
+    },
+    {
+      "line": 244,
+      "text": "fn cancel_preparation(self: Box<Self>) -> EndpointCancellationOutcome {"
+    },
+    {
+      "line": 261,
+      "text": "fn join_and_finalize(self: Box<Self>) -> EndpointDriverFinalization {"
+    },
+    {
+      "line": 277,
+      "text": "fn endpoint_factory(control: &Arc<TestEndpointControl>) -> Arc<dyn EndpointDriverFactory> {"
+    },
+    {
+      "line": 278,
+      "text": "Arc::new(TestEndpointFactory {"
+    },
+    {
+      "line": 279,
+      "text": "control: Arc::clone(control),"
+    },
+    {
+      "line": 321,
+      "text": "let control = Arc::new(TestEndpointControl::default());"
+    },
+    {
+      "line": 369,
+      "text": "let control = Arc::new(TestEndpointControl::default());"
+    },
+    {
+      "line": 409,
+      "text": "let control = Arc::new(TestEndpointControl::default());"
+    },
+    {
+      "line": 540,
+      "text": "let control = Arc::new(TestEndpointControl::default());"
+    },
+    {
+      "line": 603,
+      "text": "let control = Arc::new(TestEndpointControl::default());"
+    }
+  ],
+  "responsibilities": [
+    "CONNECTOR_OPERATOR_ID",
+    "TestCaptureBackend",
+    "TestPreparedCapture",
+    "TestActiveCapture",
+    "DeliveringCaptureBackend",
+    "DeliveringPreparedCapture",
+    "DeliveringActiveCapture",
+    "prepare",
+    "open",
+    "source_id",
+    "observation_handle",
+    "observations",
+    "stop_and_join",
+    "prepare",
+    "open",
+    "source_id",
+    "observation_handle",
+    "observations",
+    "stop_and_join",
+    "drop",
+    "TestEndpointControl",
+    "TestEndpointFactory",
+    "TestPreparedEndpoint",
+    "TestRunningEndpoint",
+    "preparation_group",
+    "prepare",
+    "start",
+    "cancel_preparation",
+    "observations",
+    "request_stop",
+    "join_and_finalize",
+    "prepare_context",
+    "prepare_context_16khz",
+    "endpoint_factory",
+    "product_session",
+    "given_session_plan_when_prepared_then_stem_media_is_preserved",
+    "given_16khz_session_when_started_then_compiled_endpoint_contexts_preserve_declared_rate",
+    "given_separated_engine_stages_when_started_then_canonical_owners_are_preserved",
+    "given_deterministic_capture_when_polled_then_real_runtime_branch_copy_and_lineage_are_exposed",
+    "given_duplicate_or_conflicting_operator_when_registering_then_builder_fails_typed",
+    "given_unregistered_declared_operator_when_starting_then_compile_failure_remains_typed",
+    "given_capture_open_failure_when_starting_then_transactional_failure_is_preserved"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 363,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 364,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 404,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 439,
+      "text": "assert!(running.stop().is_success());"
+    },
+    {
+      "line": 531,
+      "text": "assert!(running.stop().is_success());"
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 300,
+      "text": ".browser(\"https://receiver.test/session\")"
+    },
+    {
+      "line": 102,
+      "text": "let worker = std::thread::spawn(move || {"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 49,
+      "text": "fn prepare(&self, _mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 90,
+      "text": "fn prepare(&self, _mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 197,
+      "text": "fn prepare("
+    },
+    {
+      "line": 231,
+      "text": "fn start("
+    },
+    {
+      "line": 350,
+      "text": ".start("
+    },
+    {
+      "line": 357,
+      "text": ".expect(\"canonical Session start\");"
+    },
+    {
+      "line": 389,
+      "text": ".start("
+    },
+    {
+      "line": 396,
+      "text": ".expect(\"16 kHz Session start\");"
+    },
+    {
+      "line": 437,
+      "text": ".expect(\"prepared Session start\");"
+    },
+    {
+      "line": 483,
+      "text": ".start("
+    },
+    {
+      "line": 490,
+      "text": ".expect(\"canonical Session start\");"
+    },
+    {
+      "line": 584,
+      "text": "let error = match engine.start("
+    },
+    {
+      "line": 625,
+      "text": "let error = match engine.start("
+    },
+    {
+      "line": 637,
+      "text": ".expect(\"transactional start failure must remain available\");"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 45,
+      "text": "worker: Option<std::thread::JoinHandle<()>>,"
+    },
+    {
+      "line": 102,
+      "text": "let worker = std::thread::spawn(move || {"
+    },
+    {
+      "line": 107,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 118,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 497,
+      "text": "std::thread::sleep(Duration::from_millis(1));"
+    }
+  ],
+  "visibility": "private_or_not_applicable"
+}

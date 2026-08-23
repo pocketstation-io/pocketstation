@@ -1,0 +1,1499 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "ClockDomainId",
+    "LineagedAudioFrame::new",
+    "SampleSpec::new",
+    "SessionId",
+    "SourceId",
+    "StemId",
+    "StreamId",
+    "acquire",
+    "acquire_failures",
+    "any",
+    "as_mut_slice",
+    "as_slice",
+    "available_slots",
+    "cfg",
+    "channels",
+    "collect",
+    "copy_to_pool",
+    "derive",
+    "drop",
+    "error",
+    "format",
+    "frame",
+    "frame_samples_for_duration_ms",
+    "freeze",
+    "given_48khz_mono_spec_when_frame_samples_for_20ms_then_returns_960",
+    "given_48khz_stereo_spec_when_frame_samples_for_20ms_then_returns_1920",
+    "given_acquired_handle_when_copy_from_slice_then_length_matches_data",
+    "given_exhausted_pool_when_handle_dropped_then_reacquire_succeeds",
+    "given_frame_lineage_when_timestamp_end_requested_then_duration_is_saturating",
+    "given_frozen_buffer_with_many_consumers_when_final_handle_drops_then_slot_is_reused",
+    "given_full_64_slot_pool_when_acquire_then_returns_none_and_increments_failures",
+    "given_matching_frame_and_lineage_when_frozen_then_epochs_survive_fanout",
+    "given_mismatched_dynamic_frame_identity_when_enveloped_then_rejected",
+    "given_pool_acquisition_and_release_when_observed_then_available_slots_are_exact",
+    "given_pool_when_acquire_and_release_then_in_use_flag_tracks_state",
+    "given_pool_with_4_slots_when_all_acquired_then_next_acquire_returns_none",
+    "given_queued_shared_branches_when_queue_drops_then_all_references_are_released",
+    "given_rejected_shared_branch_when_handle_drops_then_reference_is_released",
+    "given_shared_frame_when_copied_to_branch_pool_then_samples_are_independent",
+    "given_shared_reference_at_max_when_clone_attempted_then_clone_fails_without_wraparound",
+    "given_zero_shared_references_when_release_attempted_then_underflow_is_rejected",
+    "index",
+    "into_parts",
+    "is_in_use",
+    "is_multiple_of",
+    "is_none",
+    "is_some",
+    "len",
+    "lineage",
+    "map",
+    "new",
+    "ok",
+    "pub",
+    "release_shared_for_testing",
+    "sample_rate_hz",
+    "samples",
+    "sequence_number",
+    "set_shared_ref_count_for_testing",
+    "shared_ref_count",
+    "source_id",
+    "stream_id",
+    "timestamp_end_ns",
+    "timestamp_ns",
+    "try_clone",
+    "try_copy_from_slice",
+    "try_new",
+    "unwrap",
+    "usize::from",
+    "validate_frame_lineage"
+  ],
+  "cancellation_behavior": [],
+  "channels": [
+    {
+      "line": 54,
+      "text": "#[error(\"audio frame channel count must be non-zero\")]"
+    }
+  ],
+  "configuration_read": [
+    {
+      "line": 7,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 9,
+      "text": "#[cfg(any(test, feature = \"internal-testing\", target_os = \"linux\"))]"
+    },
+    {
+      "line": 343,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "LineagedAudioFrame::new",
+    "SampleSpec::new",
+    "new",
+    "try_new",
+    "usize::from"
+  ],
+  "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 5,
+      "name": "SAMPLE_RATE_HZ",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 8,
+      "name": "FRAME_DURATION_MS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 10,
+      "name": "POOL_SLOT_SAMPLES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 13,
+      "name": "SampleFormat",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 18,
+      "name": "SampleSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "frame_samples_for_duration_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 39,
+      "name": "AudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 51,
+      "name": "AudioFrameBuildError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "try_new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 121,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 125,
+      "name": "sample_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 129,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "format",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 145,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 149,
+      "name": "freeze",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 176,
+      "name": "SharedAudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 188,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 191,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 195,
+      "name": "sample_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 199,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 203,
+      "name": "format",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 207,
+      "name": "timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 211,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 215,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 219,
+      "name": "try_clone",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 232,
+      "name": "copy_to_pool",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 250,
+      "name": "FrameLineageError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 266,
+      "name": "LineagedAudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 272,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 280,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 284,
+      "name": "into_parts",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 288,
+      "name": "freeze",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 298,
+      "name": "SharedLineagedAudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 304,
+      "name": "frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 307,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 311,
+      "name": "try_clone",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 318,
+      "name": "copy_to_pool",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 326,
+      "name": "validate_frame_lineage",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 344,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 349,
+      "name": "given_pool_with_4_slots_when_all_acquired_then_next_acquire_returns_none",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 369,
+      "name": "given_pool_acquisition_and_release_when_observed_then_available_slots_are_exact",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 381,
+      "name": "given_acquired_handle_when_copy_from_slice_then_length_matches_data",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 395,
+      "name": "given_full_64_slot_pool_when_acquire_then_returns_none_and_increments_failures",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 410,
+      "name": "given_exhausted_pool_when_handle_dropped_then_reacquire_succeeds",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 424,
+      "name": "given_pool_when_acquire_and_release_then_in_use_flag_tracks_state",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 437,
+      "name": "given_48khz_mono_spec_when_frame_samples_for_20ms_then_returns_960",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 449,
+      "name": "given_48khz_stereo_spec_when_frame_samples_for_20ms_then_returns_1920",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 461,
+      "name": "given_frame_lineage_when_timestamp_end_requested_then_duration_is_saturating",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 481,
+      "name": "given_matching_frame_and_lineage_when_frozen_then_epochs_survive_fanout",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 513,
+      "name": "given_mismatched_dynamic_frame_identity_when_enveloped_then_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 539,
+      "name": "given_frozen_buffer_with_many_consumers_when_final_handle_drops_then_slot_is_reused",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 561,
+      "name": "given_rejected_shared_branch_when_handle_drops_then_reference_is_released",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 575,
+      "name": "given_queued_shared_branches_when_queue_drops_then_all_references_are_released",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 590,
+      "name": "given_shared_frame_when_copied_to_branch_pool_then_samples_are_independent",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 614,
+      "name": "given_shared_reference_at_max_when_clone_attempted_then_clone_fails_without_wraparound",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 626,
+      "name": "given_zero_shared_references_when_release_attempted_then_underflow_is_rejected",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 361,
+      "text": "drop(a);"
+    },
+    {
+      "line": 362,
+      "text": "drop(b);"
+    },
+    {
+      "line": 363,
+      "text": "drop(c);"
+    },
+    {
+      "line": 364,
+      "text": "drop(d);"
+    },
+    {
+      "line": 376,
+      "text": "drop(handle);"
+    },
+    {
+      "line": 406,
+      "text": "drop(handles);"
+    },
+    {
+      "line": 417,
+      "text": "drop(h);"
+    },
+    {
+      "line": 432,
+      "text": "drop(h);"
+    },
+    {
+      "line": 553,
+      "text": "drop(second);"
+    },
+    {
+      "line": 554,
+      "text": "drop(shared);"
+    },
+    {
+      "line": 556,
+      "text": "drop(third);"
+    },
+    {
+      "line": 568,
+      "text": "drop(rejected_branch);"
+    },
+    {
+      "line": 583,
+      "text": "drop(queued);"
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 5,
+      "name": "SAMPLE_RATE_HZ",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 10,
+      "name": "POOL_SLOT_SAMPLES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 13,
+      "name": "SampleFormat",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 18,
+      "name": "SampleSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "frame_samples_for_duration_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 39,
+      "name": "AudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 51,
+      "name": "AudioFrameBuildError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "try_new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 121,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 125,
+      "name": "sample_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 129,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "format",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 145,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 149,
+      "name": "freeze",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 176,
+      "name": "SharedAudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 188,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 191,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 195,
+      "name": "sample_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 199,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 203,
+      "name": "format",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 207,
+      "name": "timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 211,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 215,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 219,
+      "name": "try_clone",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 232,
+      "name": "copy_to_pool",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 250,
+      "name": "FrameLineageError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 266,
+      "name": "LineagedAudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 272,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 280,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 284,
+      "name": "into_parts",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 288,
+      "name": "freeze",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 298,
+      "name": "SharedLineagedAudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 304,
+      "name": "frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 307,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 311,
+      "name": "try_clone",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 318,
+      "name": "copy_to_pool",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 70,
+      "text": "return Err(AudioFrameBuildError::ZeroSampleRate);"
+    },
+    {
+      "line": 73,
+      "text": "return Err(AudioFrameBuildError::ZeroChannels);"
+    },
+    {
+      "line": 79,
+      "text": "return Err(AudioFrameBuildError::MisalignedSamples {"
+    },
+    {
+      "line": 332,
+      "text": "return Err(FrameLineageError::Source);"
+    },
+    {
+      "line": 335,
+      "text": "return Err(FrameLineageError::SequenceNumber);"
+    },
+    {
+      "line": 338,
+      "text": "return Err(FrameLineageError::Timestamp);"
+    },
+    {
+      "line": 535,
+      "text": "assert!(matches!(result, Err(FrameLineageError::Source)));"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 51,
+      "name": "AudioFrameBuildError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 250,
+      "name": "FrameLineageError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 387,
+      "text": "h.try_copy_from_slice(&[1.0, 2.0, 3.0]).unwrap();"
+    },
+    {
+      "line": 485,
+      "text": "buffer.try_copy_from_slice(&[0.1, 0.2, 0.3, 0.4]).unwrap();"
+    },
+    {
+      "line": 595,
+      "text": "buffer.try_copy_from_slice(&[0.25, -0.5, 0.75]).unwrap();"
+    }
+  ],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "fdff2c3b6493560487d88f3802357ff52dd285025e685e1e5a1549d22f80a485",
+      "lines": [
+        1,
+        636
+      ],
+      "path": "src/frame/audio.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0137-f287a3ef",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "0bd9b4b0ad1f8257bbfd568ec755b1e404508548",
+  "implemented_by": [],
+  "implements": [
+    "SampleSpec",
+    "AudioFrame",
+    "SharedAudioFrame",
+    "LineagedAudioFrame",
+    "SharedLineagedAudioFrame"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::{ClockDomainId, SessionId, StemId}",
+    "crate::frame::{FrameLineage, SourceId, StreamId}",
+    "std::sync::Arc",
+    "super::*",
+    "super::pool::{AudioBufferHandle, AudioBufferPool, SharedAudioBufferHandle}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 52,
+      "text": "#[error(\"audio frame sample rate must be non-zero\")]"
+    },
+    {
+      "line": 54,
+      "text": "#[error(\"audio frame channel count must be non-zero\")]"
+    },
+    {
+      "line": 360,
+      "text": "assert!(pool.acquire().is_none());"
+    },
+    {
+      "line": 365,
+      "text": "assert!(pool.acquire().is_some());"
+    },
+    {
+      "line": 405,
+      "text": "assert!(extra.is_none());"
+    },
+    {
+      "line": 414,
+      "text": "assert!(pool.acquire().is_none());"
+    },
+    {
+      "line": 420,
+      "text": "assert!(pool.acquire().is_some());"
+    },
+    {
+      "line": 431,
+      "text": "assert!(pool.is_in_use(slot));"
+    },
+    {
+      "line": 433,
+      "text": "assert!(!pool.is_in_use(slot));"
+    },
+    {
+      "line": 535,
+      "text": "assert!(matches!(result, Err(FrameLineageError::Source)));"
+    },
+    {
+      "line": 552,
+      "text": "assert!(pool.acquire().is_none());"
+    },
+    {
+      "line": 555,
+      "text": "assert!(pool.acquire().is_none());"
+    },
+    {
+      "line": 557,
+      "text": "assert!(pool.acquire().is_some());"
+    },
+    {
+      "line": 610,
+      "text": "assert!(shared.copy_to_pool(&branch_pool).is_none());"
+    },
+    {
+      "line": 621,
+      "text": "assert!(shared.try_clone().is_none());"
+    },
+    {
+      "line": 631,
+      "text": "assert!(!pool.release_shared_for_testing(0));"
+    },
+    {
+      "line": 633,
+      "text": "assert!(pool.acquire().is_some());"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 636,
+  "locks": [],
+  "module": "pocketstation::frame::audio",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-8c2dc4f399c8eb61d8ce",
+    "pattern-0311869ce2fb5212a274",
+    "pattern-ee39cfb6b1913e9744d4"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/frame/audio.rs",
+  "platform_gate": [
+    "linux"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 8,
+      "name": "FRAME_DURATION_MS",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 326,
+      "name": "validate_frame_lineage",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 344,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 349,
+      "name": "given_pool_with_4_slots_when_all_acquired_then_next_acquire_returns_none",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 369,
+      "name": "given_pool_acquisition_and_release_when_observed_then_available_slots_are_exact",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 381,
+      "name": "given_acquired_handle_when_copy_from_slice_then_length_matches_data",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 395,
+      "name": "given_full_64_slot_pool_when_acquire_then_returns_none_and_increments_failures",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 410,
+      "name": "given_exhausted_pool_when_handle_dropped_then_reacquire_succeeds",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 424,
+      "name": "given_pool_when_acquire_and_release_then_in_use_flag_tracks_state",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 437,
+      "name": "given_48khz_mono_spec_when_frame_samples_for_20ms_then_returns_960",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 449,
+      "name": "given_48khz_stereo_spec_when_frame_samples_for_20ms_then_returns_1920",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 461,
+      "name": "given_frame_lineage_when_timestamp_end_requested_then_duration_is_saturating",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 481,
+      "name": "given_matching_frame_and_lineage_when_frozen_then_epochs_survive_fanout",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 513,
+      "name": "given_mismatched_dynamic_frame_identity_when_enveloped_then_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 539,
+      "name": "given_frozen_buffer_with_many_consumers_when_final_handle_drops_then_slot_is_reused",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 561,
+      "name": "given_rejected_shared_branch_when_handle_drops_then_reference_is_released",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 575,
+      "name": "given_queued_shared_branches_when_queue_drops_then_all_references_are_released",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 590,
+      "name": "given_shared_frame_when_copied_to_branch_pool_then_samples_are_independent",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 614,
+      "name": "given_shared_reference_at_max_when_clone_attempted_then_clone_fails_without_wraparound",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 626,
+      "name": "given_zero_shared_references_when_release_attempted_then_underflow_is_rejected",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 5,
+      "name": "SAMPLE_RATE_HZ",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 10,
+      "name": "POOL_SLOT_SAMPLES",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 13,
+      "name": "SampleFormat",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 18,
+      "name": "SampleSpec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 32,
+      "name": "frame_samples_for_duration_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 39,
+      "name": "AudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 51,
+      "name": "AudioFrameBuildError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "try_new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 98,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 117,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 121,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 125,
+      "name": "sample_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 129,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 133,
+      "name": "format",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 145,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 149,
+      "name": "freeze",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 176,
+      "name": "SharedAudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 188,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 191,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 195,
+      "name": "sample_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 199,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 203,
+      "name": "format",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 207,
+      "name": "timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 211,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 215,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 219,
+      "name": "try_clone",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 232,
+      "name": "copy_to_pool",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 250,
+      "name": "FrameLineageError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 266,
+      "name": "LineagedAudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 272,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 276,
+      "name": "frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 280,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 284,
+      "name": "into_parts",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 288,
+      "name": "freeze",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 298,
+      "name": "SharedLineagedAudioFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 304,
+      "name": "frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 307,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 311,
+      "name": "try_clone",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 318,
+      "name": "copy_to_pool",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::frame::audio`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/frame-lineage.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/opus-roundtrip.md",
+    "docs/how-to/map-source-time.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/frames.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/frames-and-codec.md",
+    "docs/troubleshooting/opus.md",
+    "docs/troubleshooting/timing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 1,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 233,
+      "text": "pub fn copy_to_pool(&self, pool: &Arc<AudioBufferPool>) -> Option<AudioFrame> {"
+    },
+    {
+      "line": 319,
+      "text": "pub fn copy_to_pool(&self, pool: &Arc<AudioBufferPool>) -> Option<LineagedAudioFrame> {"
+    }
+  ],
+  "responsibilities": [
+    "SAMPLE_RATE_HZ",
+    "FRAME_DURATION_MS",
+    "POOL_SLOT_SAMPLES",
+    "SampleFormat",
+    "SampleSpec",
+    "new",
+    "frame_samples_for_duration_ms",
+    "AudioFrame",
+    "AudioFrameBuildError",
+    "try_new",
+    "new",
+    "stream_id",
+    "source_id",
+    "sample_rate_hz",
+    "channels",
+    "format",
+    "timestamp_ns",
+    "sequence_number",
+    "samples",
+    "freeze",
+    "SharedAudioFrame",
+    "stream_id",
+    "source_id",
+    "sample_rate_hz",
+    "channels",
+    "format",
+    "timestamp_ns",
+    "sequence_number",
+    "samples",
+    "try_clone",
+    "copy_to_pool",
+    "FrameLineageError",
+    "LineagedAudioFrame",
+    "new",
+    "frame",
+    "lineage",
+    "into_parts",
+    "freeze",
+    "SharedLineagedAudioFrame",
+    "frame",
+    "lineage",
+    "try_clone",
+    "copy_to_pool",
+    "validate_frame_lineage",
+    "tests",
+    "given_pool_with_4_slots_when_all_acquired_then_next_acquire_returns_none",
+    "given_pool_acquisition_and_release_when_observed_then_available_slots_are_exact",
+    "given_acquired_handle_when_copy_from_slice_then_length_matches_data",
+    "given_full_64_slot_pool_when_acquire_then_returns_none_and_increments_failures",
+    "given_exhausted_pool_when_handle_dropped_then_reacquire_succeeds",
+    "given_pool_when_acquire_and_release_then_in_use_flag_tracks_state",
+    "given_48khz_mono_spec_when_frame_samples_for_20ms_then_returns_960",
+    "given_48khz_stereo_spec_when_frame_samples_for_20ms_then_returns_1920",
+    "given_frame_lineage_when_timestamp_end_requested_then_duration_is_saturating",
+    "given_matching_frame_and_lineage_when_frozen_then_epochs_survive_fanout",
+    "given_mismatched_dynamic_frame_identity_when_enveloped_then_rejected",
+    "given_frozen_buffer_with_many_consumers_when_final_handle_drops_then_slot_is_reused",
+    "given_rejected_shared_branch_when_handle_drops_then_reference_is_released",
+    "given_queued_shared_branches_when_queue_drops_then_all_references_are_released",
+    "given_shared_frame_when_copied_to_branch_pool_then_samples_are_independent",
+    "given_shared_reference_at_max_when_clone_attempted_then_clone_fails_without_wraparound",
+    "given_zero_shared_references_when_release_attempted_then_underflow_is_rejected"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

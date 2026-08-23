@@ -1,0 +1,285 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 86,
+      "text": "blocking, async, and external partitions\u2014never on capture callbacks or the"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 16,
+      "text": "| Native C extension | `pocketstation.h` Extension ABI | Versioned callback tables with explicit context ownership and bounded worker execution |"
+    },
+    {
+      "line": 17,
+      "text": "| Trusted native dynamic library | `pks_extension_library_v1` + unsafe `Session::load_native_extension_library` | Absolute-path import, transactional registration, and code retained through callback destruction; authentication remains external |"
+    },
+    {
+      "line": 28,
+      "text": "It never executes a managed-language or provider callback on the capture path."
+    },
+    {
+      "line": 45,
+      "text": "Extension ABI 1.2 adds a transport for the executable callback tables already"
+    },
+    {
+      "line": 48,
+      "text": "callback; each acquisition returns one source, operator, or endpoint"
+    },
+    {
+      "line": 49,
+      "text": "descriptor, borrowed port records, and its callback table."
+    },
+    {
+      "line": 57,
+      "text": "// the library obeys the PocketStation Extension ABI and callback lifetimes."
+    },
+    {
+      "line": 83,
+      "text": "every acquired callback adapter, so executable code cannot unload before those"
+    },
+    {
+      "line": 86,
+      "text": "blocking, async, and external partitions\u2014never on capture callbacks or the"
+    },
+    {
+      "line": 90,
+      "text": "method. They must not implement their own loader search rules, callback"
+    }
+  ],
+  "called_by": [],
+  "calls": [
+    "Session::new",
+    "id",
+    "kind",
+    "load_native_extension_library",
+    "main",
+    "registrations"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "Session::new"
+  ],
+  "content_hash": "8c42703fcbb75b37dbc91d9083dc058c9e99ba719ec11e9a3b6eb7bcb6b830ac",
+  "defaults": [],
+  "defines": [],
+  "device_io": [
+    {
+      "line": 41,
+      "text": "physical-device deployment."
+    }
+  ],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 14,
+      "text": "| New destination | endpoint driver/factory | Consume a bounded route and expose lifecycle/failure observations |"
+    },
+    {
+      "line": 48,
+      "text": "callback; each acquisition returns one source, operator, or endpoint"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "8c42703fcbb75b37dbc91d9083dc058c9e99ba719ec11e9a3b6eb7bcb6b830ac",
+      "lines": [
+        1,
+        93
+      ],
+      "path": "docs/guides/extensions.md",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 16,
+      "text": "| Native C extension | `pocketstation.h` Extension ABI | Versioned callback tables with explicit context ownership and bounded worker execution |"
+    },
+    {
+      "line": 45,
+      "text": "Extension ABI 1.2 adds a transport for the executable callback tables already"
+    },
+    {
+      "line": 57,
+      "text": "// the library obeys the PocketStation Extension ABI and callback lifetimes."
+    },
+    {
+      "line": 58,
+      "text": "let loaded = unsafe {"
+    },
+    {
+      "line": 73,
+      "text": "ABI-checked, every descriptor and port is copied, and duplicate identifiers are"
+    },
+    {
+      "line": 76,
+      "text": "Extension ABI v1 registrations execute only on supported non-realtime"
+    }
+  ],
+  "file_id": "file-0029-ada71088",
+  "file_kind": "documentation",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "84f0e44bbaa191050c41f2cca5b84929e2e95d0c",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 20,
+      "text": "An extension must not require `internal-testing` or edits to central. It must"
+    },
+    {
+      "line": 28,
+      "text": "It never executes a managed-language or provider callback on the capture path."
+    },
+    {
+      "line": 35,
+      "text": "process boundary. Rust `TypeId` and generic parameters never cross either"
+    },
+    {
+      "line": 70,
+      "text": "deployment or package layer owns that trust decision. The path must be absolute"
+    },
+    {
+      "line": 83,
+      "text": "every acquired callback adapter, so executable code cannot unload before those"
+    },
+    {
+      "line": 86,
+      "text": "blocking, async, and external partitions\u2014never on capture callbacks or the"
+    },
+    {
+      "line": 90,
+      "text": "method. They must not implement their own loader search rules, callback"
+    }
+  ],
+  "language": "Markdown",
+  "line_count": 93,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-fdd6f67024834e6012eb"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "repository",
+  "path": "docs/guides/extensions.md",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Documents Extend PocketStation."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 54,
+      "text": "# fn main() -> Result<(), Box<dyn std::error::Error>> {"
+    },
+    {
+      "line": 91,
+      "text": "lifetime owner, extension registry, or execution engine. Platform wheels or"
+    }
+  ],
+  "responsibilities": [],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 41,
+      "text": "physical-device deployment."
+    },
+    {
+      "line": 16,
+      "text": "| Native C extension | `pocketstation.h` Extension ABI | Versioned callback tables with explicit context ownership and bounded worker execution |"
+    },
+    {
+      "line": 45,
+      "text": "Extension ABI 1.2 adds a transport for the executable callback tables already"
+    },
+    {
+      "line": 57,
+      "text": "// the library obeys the PocketStation Extension ABI and callback lifetimes."
+    },
+    {
+      "line": 58,
+      "text": "let loaded = unsafe {"
+    },
+    {
+      "line": 73,
+      "text": "ABI-checked, every descriptor and port is copied, and duplicate identifiers are"
+    },
+    {
+      "line": 76,
+      "text": "Extension ABI v1 registrations execute only on supported non-realtime"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 86,
+      "text": "blocking, async, and external partitions\u2014never on capture callbacks or the"
+    }
+  ],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

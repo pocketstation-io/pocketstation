@@ -5,13 +5,18 @@ use crate::codec::constants::{I16_SCALE, OPUS_MAX_PACKET_BYTES};
 /// Supported Opus frame duration at 48 kHz.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OpusFrameDuration {
+    #[doc = "Represents the ms10 case of `OpusFrameDuration`."]
     Ms10,
+    #[doc = "Represents the ms20 case of `OpusFrameDuration`."]
     Ms20,
+    #[doc = "Represents the ms40 case of `OpusFrameDuration`."]
     Ms40,
+    #[doc = "Represents the ms60 case of `OpusFrameDuration`."]
     Ms60,
 }
 
 impl OpusFrameDuration {
+    #[doc = "Returns the samples at 48k associated with `OpusFrameDuration`."]
     pub fn samples_at_48k(self) -> usize {
         match self {
             Self::Ms10 => 480,
@@ -25,11 +30,14 @@ impl OpusFrameDuration {
 /// Typed channel count for Opus — prevents silent u8 misuse.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OpusChannels {
+    #[doc = "Represents the mono case of `OpusChannels`."]
     Mono,
+    #[doc = "Represents the stereo case of `OpusChannels`."]
     Stereo,
 }
 
 impl OpusChannels {
+    #[doc = "Returns the count associated with `OpusChannels`."]
     pub fn count(self) -> u8 {
         match self {
             Self::Mono => 1,
@@ -42,10 +50,12 @@ impl OpusChannels {
 /// the constraint explicit rather than hiding it behind a `u32` constant.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OpusSampleRate {
+    #[doc = "Represents the hz48000 case of `OpusSampleRate`."]
     Hz48000,
 }
 
 impl OpusSampleRate {
+    #[doc = "Returns the hz associated with `OpusSampleRate`."]
     pub fn hz(self) -> u32 {
         match self {
             Self::Hz48000 => 48_000,
@@ -89,6 +99,7 @@ pub struct OpusConfig {
 }
 
 impl Default for OpusConfig {
+    #[doc = "Returns the default `OpusConfig` value."]
     fn default() -> Self {
         Self {
             sample_rate: OpusSampleRate::Hz48000,
@@ -128,16 +139,22 @@ impl OpusConfig {
 }
 
 #[derive(Debug, thiserror::Error)]
+#[doc = "Classifies failures reported as opus encode error."]
 pub enum OpusEncodeError {
     #[error(
         "Opus frame has {sample_count} interleaved samples; expected {expected_sample_count} for {channels} channels"
     )]
+    #[doc = "Reports invalid frame sample count."]
     InvalidFrameSampleCount {
+        #[doc = "Stores the number of sample represented by `InvalidFrameSampleCount`."]
         sample_count: usize,
+        #[doc = "Stores the channels associated with `InvalidFrameSampleCount`."]
         channels: usize,
+        #[doc = "Stores the number of expected sample represented by `InvalidFrameSampleCount`."]
         expected_sample_count: usize,
     },
     #[error("Opus encode failed: {0}")]
+    #[doc = "Reports opus."]
     Opus(#[from] opus::Error),
 }
 
@@ -300,6 +317,7 @@ fn encode_pcm(
 }
 
 impl Default for OpusEncoder {
+    #[doc = "Returns the default `OpusEncoder` value."]
     fn default() -> Self {
         Self::new().expect("OpusEncoder::new failed with fixed parameters — libopus not linked?")
     }

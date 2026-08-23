@@ -1,0 +1,3182 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Mutex::new",
+    "NativeSessionEngineHostOptions::default",
+    "OperatorId::new",
+    "PcmSource::new",
+    "SampleSpec::new",
+    "Self::new",
+    "SessionBuilder::default",
+    "SessionEngineHostBuilder::native",
+    "SessionEngineHostBuilder::with_capture_backends",
+    "SessionEngineStartError::Compile",
+    "SessionEngineStartError::Freeze",
+    "SessionEngineStartError::Prepare",
+    "SessionEngineStartError::Sidecar",
+    "SessionEngineStartError::Start",
+    "SessionStartCancellation::default",
+    "SessionStartError::from",
+    "SessionStartError::invariant",
+    "SessionStartError::new",
+    "SessionTraceRecorder::start",
+    "SourceConfiguration::default",
+    "SourceTypeId::new",
+    "Vec::new",
+    "all",
+    "and_then",
+    "any",
+    "as_os_str",
+    "as_ref",
+    "as_str",
+    "audio_input",
+    "audio_observations",
+    "audio_reentry_metrics",
+    "bind",
+    "browser",
+    "build",
+    "builder",
+    "cancel",
+    "capture",
+    "capture_backends",
+    "cfg",
+    "clone",
+    "cloned",
+    "code",
+    "compile",
+    "connector",
+    "crate::capture::platform::macos::microphone_permission_observation",
+    "crate::capture::platform::windows::microphone_permission_observation",
+    "crate::session::NodeTypeId::from",
+    "crate::session::PolledAudioEndpointConfig::default",
+    "crate::session::Session::new",
+    "crate::session::SessionEngineStartError::Freeze",
+    "crate::session::extensions::AudioInputFactory::new",
+    "declares_multistem_recording",
+    "default",
+    "deprecated",
+    "derive",
+    "derived_route_metrics",
+    "descriptor",
+    "disposition",
+    "doc",
+    "drop",
+    "endpoint",
+    "engine_builder",
+    "error",
+    "event_observations",
+    "external_source_metrics",
+    "filter",
+    "finish",
+    "finish_session_trace",
+    "from",
+    "handle",
+    "id",
+    "into",
+    "into_inner",
+    "invariant",
+    "is_cancelled",
+    "is_empty",
+    "is_none",
+    "is_some",
+    "is_success",
+    "iter",
+    "kind",
+    "lock",
+    "map",
+    "map_err",
+    "message",
+    "metrics_snapshot",
+    "microphone_permission_observation",
+    "new",
+    "not",
+    "observations",
+    "ok_or",
+    "ok_or_else",
+    "operator",
+    "operator_metrics",
+    "outcome",
+    "output",
+    "pcm_source",
+    "polled_audio",
+    "polled_audio_receipt",
+    "push",
+    "receive_sidecar_signal",
+    "recording_outcome",
+    "recording_receipt",
+    "recording_root",
+    "register_async_operator",
+    "register_audio_endpoint_driver",
+    "register_browser_driver",
+    "register_connector_driver",
+    "register_endpoint",
+    "register_multistem_recording",
+    "register_operator",
+    "register_polled_audio_endpoint",
+    "register_sidecar",
+    "register_sidecar_process",
+    "register_source",
+    "register_source_factory",
+    "reserve",
+    "sample_spec",
+    "session_id",
+    "session_start_failure_code",
+    "session_trace",
+    "session_trace_outcome",
+    "set_session_trace",
+    "sidecar_metrics",
+    "source",
+    "source_id",
+    "start",
+    "start_cancellable",
+    "start_compiled_cancellable",
+    "stop",
+    "take",
+    "take_event_receiver",
+    "to_owned",
+    "transpose",
+    "try_poll",
+    "try_poll_audio",
+    "try_receive_sidecar_signal",
+    "try_recv",
+    "try_recv_event",
+    "try_send_sidecar_signal",
+    "type_id",
+    "with_host_builder"
+  ],
+  "cancellation_behavior": [
+    {
+      "line": 432,
+      "text": "factory.cancel(source.source_id());"
+    },
+    {
+      "line": 735,
+      "text": "let mut running = host.start_compiled_cancellable(compiled, cancellation)?;"
+    },
+    {
+      "line": 903,
+      "text": "pub fn cancel(&mut self) -> SessionCancelResult {"
+    },
+    {
+      "line": 910,
+      "text": "let outcome = self.running.cancel();"
+    }
+  ],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 24,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    },
+    {
+      "line": 56,
+      "text": "#[cfg(all(target_os = \"macos\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 60,
+      "text": "#[cfg(all(target_os = \"windows\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 64,
+      "text": "#[cfg(not(all("
+    },
+    {
+      "line": 65,
+      "text": "feature = \"native-capture\","
+    },
+    {
+      "line": 88,
+      "text": "BinaryFormat, ChannelLayout, ClockDomain, Codec, ConfigError, CopyPolicy, DeliverySemantics,"
+    },
+    {
+      "line": 148,
+      "text": "#[cfg(feature = \"internal-testing\")]"
+    },
+    {
+      "line": 153,
+      "text": "#[cfg(all(target_os = \"linux\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 157,
+      "text": "#[cfg(all(target_os = \"macos\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 166,
+      "text": "#[cfg(all(target_os = \"windows\", feature = \"native-capture\"))]"
+    },
+    {
+      "line": 290,
+      "text": "/// Configures the artifact root used by declared multistem recording routes."
+    },
+    {
+      "line": 755,
+      "text": "#[cfg(feature = \"conformance-fixtures\")]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Mutex::new",
+    "OperatorId::new",
+    "PcmSource::new",
+    "SampleSpec::new",
+    "Self::new",
+    "SessionStartError::from",
+    "SessionStartError::new",
+    "SourceTypeId::new",
+    "Vec::new",
+    "builder",
+    "crate::session::NodeTypeId::from",
+    "crate::session::Session::new",
+    "crate::session::extensions::AudioInputFactory::new",
+    "engine_builder",
+    "from",
+    "new",
+    "with_host_builder"
+  ],
+  "content_hash": "743287ce68c996020c7c65014acc8951a2eff6e51e3feaae6e9debc4a7ed959e",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "abi",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "capture",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "codec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "connector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "endpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 13,
+      "name": "graph",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 14,
+      "name": "native_extension",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 15,
+      "name": "recording",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 16,
+      "name": "runtime",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 17,
+      "name": "secret",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 18,
+      "name": "session",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 19,
+      "name": "timing",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 25,
+      "name": "conformance",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 26,
+      "name": "error_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "microphone_permission_observation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 150,
+      "name": "internal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 151,
+      "name": "capture",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 154,
+      "name": "linux",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 158,
+      "name": "macos",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 167,
+      "name": "windows",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 171,
+      "name": "frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 174,
+      "name": "codec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 177,
+      "name": "graph",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 179,
+      "name": "compile",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 182,
+      "name": "compiler",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 185,
+      "name": "dsl",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 188,
+      "name": "ir",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 191,
+      "name": "node",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 194,
+      "name": "plan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 197,
+      "name": "planner",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 200,
+      "name": "registry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 204,
+      "name": "runtime",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 207,
+      "name": "recording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 210,
+      "name": "session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 213,
+      "name": "timing",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 216,
+      "name": "endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 231,
+      "name": "Session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 247,
+      "name": "CaptureBackendConfiguration",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 252,
+      "name": "EndpointDriverRegistration",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 258,
+      "name": "EndpointExtensionRegistration",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 264,
+      "name": "SessionTraceConfiguration",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 271,
+      "name": "SessionBuilder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 279,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 292,
+      "name": "recording_root",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 300,
+      "name": "sample_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 308,
+      "name": "capture_backends",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 326,
+      "name": "session_trace",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "build",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 356,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 373,
+      "name": "builder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 377,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 381,
+      "name": "capture",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 390,
+      "name": "source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 400,
+      "name": "pcm_source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 447,
+      "name": "audio_input",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 456,
+      "name": "operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 461,
+      "name": "register_source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 474,
+      "name": "register_sidecar",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 481,
+      "name": "endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 485,
+      "name": "register_operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 496,
+      "name": "polled_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 507,
+      "name": "connector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 520,
+      "name": "register_connector_driver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 534,
+      "name": "browser",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 539,
+      "name": "register_browser_driver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 549,
+      "name": "register_audio_endpoint_driver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 571,
+      "name": "register_endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 616,
+      "name": "start",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 620,
+      "name": "start_cancellable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 756,
+      "name": "with_host_builder",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 780,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 784,
+      "name": "RunningSession",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 798,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 801,
+      "name": "try_poll_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 805,
+      "name": "audio_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 809,
+      "name": "recording_outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 815,
+      "name": "try_recv_event",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 819,
+      "name": "event_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 823,
+      "name": "metrics_snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 832,
+      "name": "operator_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 837,
+      "name": "external_source_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 840,
+      "name": "sidecar_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 844,
+      "name": "try_send_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 852,
+      "name": "try_receive_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 859,
+      "name": "receive_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 868,
+      "name": "derived_route_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 874,
+      "name": "audio_reentry_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 877,
+      "name": "session_trace_outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 885,
+      "name": "stop",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 903,
+      "name": "cancel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 917,
+      "name": "finish_session_trace",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 940,
+      "name": "SessionStartError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 946,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 952,
+      "name": "invariant",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 956,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 960,
+      "name": "message",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 964,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 980,
+      "name": "is_cancelled",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 987,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 996,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1010,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1026,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 1035,
+      "name": "SessionEndpointError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1045,
+      "name": "SessionSidecarError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1051,
+      "name": "SessionOperatorError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1057,
+      "name": "SessionSourceError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1063,
+      "name": "SessionStartErrorKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1073,
+      "name": "SessionRuntimeError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1079,
+      "name": "SessionStopDisposition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1085,
+      "name": "SessionCancelDisposition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 1091,
+      "name": "SessionCancelResult",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1097,
+      "name": "disposition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1100,
+      "name": "outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1104,
+      "name": "is_success",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 1111,
+      "name": "SessionStopResult",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1117,
+      "name": "disposition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1120,
+      "name": "outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1124,
+      "name": "is_success",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 608,
+      "text": "drop(registrations);"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 7,
+      "text": "mod endpoint;"
+    },
+    {
+      "line": 72,
+      "text": "pub use crate::endpoint::{"
+    },
+    {
+      "line": 216,
+      "text": "pub mod endpoint {"
+    },
+    {
+      "line": 217,
+      "text": "pub use crate::endpoint::*;"
+    },
+    {
+      "line": 306,
+      "text": "/// Session compiler, runtime, endpoint lifecycle, and recording ownership."
+    },
+    {
+      "line": 482,
+      "text": "pub fn endpoint(&self, descriptor: EndpointDescriptor) -> Result<EndpointHandle, SessionError> {"
+    },
+    {
+      "line": 483,
+      "text": "self.declaration.endpoint(descriptor)"
+    },
+    {
+      "line": 568,
+      "text": "/// Registers one externally owned endpoint as a single compiler/runtime"
+    },
+    {
+      "line": 569,
+      "text": "/// extension. The endpoint definition and driver cannot be installed"
+    },
+    {
+      "line": 674,
+      "text": ".map_err(|_| SessionStartError::invariant(\"endpoint registration state unavailable\"))?;"
+    },
+    {
+      "line": 684,
+      "text": ".map_err(|_| SessionStartError::invariant(\"endpoint registration state unavailable\"))?;"
+    },
+    {
+      "line": 1036,
+      "text": "#[error(\"Session endpoint-registration state is unavailable\")]"
+    },
+    {
+      "line": 1038,
+      "text": "#[error(\"Session endpoint operator id '{operator_id}' is already registered\")]"
+    },
+    {
+      "line": 1040,
+      "text": "#[error(\"Session endpoint node type id '{node_type_id}' is already registered\")]"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "codec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "connector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 13,
+      "name": "graph",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 14,
+      "name": "native_extension",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 19,
+      "name": "timing",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 25,
+      "name": "conformance",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "microphone_permission_observation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 150,
+      "name": "internal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 151,
+      "name": "capture",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 154,
+      "name": "linux",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 158,
+      "name": "macos",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 167,
+      "name": "windows",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 171,
+      "name": "frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 174,
+      "name": "codec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 177,
+      "name": "graph",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 179,
+      "name": "compile",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 182,
+      "name": "compiler",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 185,
+      "name": "dsl",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 188,
+      "name": "ir",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 191,
+      "name": "node",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 194,
+      "name": "plan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 197,
+      "name": "planner",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 200,
+      "name": "registry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 204,
+      "name": "runtime",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 207,
+      "name": "recording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 210,
+      "name": "session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 213,
+      "name": "timing",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 216,
+      "name": "endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 231,
+      "name": "Session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 271,
+      "name": "SessionBuilder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 292,
+      "name": "recording_root",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 300,
+      "name": "sample_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 308,
+      "name": "capture_backends",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 326,
+      "name": "session_trace",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "build",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 356,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 373,
+      "name": "builder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 377,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 381,
+      "name": "capture",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 390,
+      "name": "source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 400,
+      "name": "pcm_source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 447,
+      "name": "audio_input",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 456,
+      "name": "operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 461,
+      "name": "register_source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 474,
+      "name": "register_sidecar",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 481,
+      "name": "endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 485,
+      "name": "register_operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 496,
+      "name": "polled_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 507,
+      "name": "connector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 520,
+      "name": "register_connector_driver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 534,
+      "name": "browser",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 539,
+      "name": "register_browser_driver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 571,
+      "name": "register_endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 616,
+      "name": "start",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 620,
+      "name": "start_cancellable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 784,
+      "name": "RunningSession",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 798,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 801,
+      "name": "try_poll_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 805,
+      "name": "audio_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 809,
+      "name": "recording_outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 815,
+      "name": "try_recv_event",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 819,
+      "name": "event_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 823,
+      "name": "metrics_snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 832,
+      "name": "operator_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 837,
+      "name": "external_source_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 840,
+      "name": "sidecar_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 844,
+      "name": "try_send_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 852,
+      "name": "try_receive_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 859,
+      "name": "receive_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 868,
+      "name": "derived_route_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 874,
+      "name": "audio_reentry_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 877,
+      "name": "session_trace_outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 885,
+      "name": "stop",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 903,
+      "name": "cancel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 940,
+      "name": "SessionStartError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 956,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 960,
+      "name": "message",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 964,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 980,
+      "name": "is_cancelled",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1035,
+      "name": "SessionEndpointError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1045,
+      "name": "SessionSidecarError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1051,
+      "name": "SessionOperatorError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1057,
+      "name": "SessionSourceError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1063,
+      "name": "SessionStartErrorKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1073,
+      "name": "SessionRuntimeError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1079,
+      "name": "SessionStopDisposition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1085,
+      "name": "SessionCancelDisposition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 1091,
+      "name": "SessionCancelResult",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1097,
+      "name": "disposition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1100,
+      "name": "outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1104,
+      "name": "is_success",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 1111,
+      "name": "SessionStopResult",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1117,
+      "name": "disposition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1120,
+      "name": "outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1124,
+      "name": "is_success",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 405,
+      "text": "return Err(AudioInputError::IncompatibleContract);"
+    },
+    {
+      "line": 431,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 433,
+      "text": "return Err(error.into());"
+    },
+    {
+      "line": 593,
+      "text": "return Err(SessionEndpointError::DuplicateOperatorId {"
+    },
+    {
+      "line": 604,
+      "text": "return Err(SessionEndpointError::DuplicateNodeTypeId {"
+    },
+    {
+      "line": 723,
+      "text": "return Err(SessionStartError::new("
+    },
+    {
+      "line": 738,
+      "text": "return Err(SessionStartError::new("
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "struct",
+      "line": 940,
+      "name": "SessionStartError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1035,
+      "name": "SessionEndpointError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1045,
+      "name": "SessionSidecarError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1051,
+      "name": "SessionOperatorError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1057,
+      "name": "SessionSourceError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1063,
+      "name": "SessionStartErrorKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1073,
+      "name": "SessionRuntimeError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 410,
+      "text": ".map_err(|_| AudioInputError::RegistrationStateUnavailable)?;"
+    },
+    {
+      "line": 417,
+      "text": ".map_err(|_| AudioInputError::RegistrationStateUnavailable)?"
+    },
+    {
+      "line": 467,
+      "text": ".map_err(|_| SessionSourceError::RegistrationStateUnavailable)?"
+    },
+    {
+      "line": 477,
+      "text": ".map_err(|_| SessionSidecarError::RegistrationStateUnavailable)?"
+    },
+    {
+      "line": 492,
+      "text": ".map_err(|_| SessionOperatorError::RegistrationStateUnavailable)?"
+    },
+    {
+      "line": 559,
+      "text": ".map_err(|_| SessionEndpointError::RegistrationStateUnavailable)?;"
+    },
+    {
+      "line": 581,
+      "text": ".map_err(|_| SessionEndpointError::RegistrationStateUnavailable)?;"
+    },
+    {
+      "line": 585,
+      "text": ".map_err(|_| SessionEndpointError::RegistrationStateUnavailable)?;"
+    },
+    {
+      "line": 674,
+      "text": ".map_err(|_| SessionStartError::invariant(\"endpoint registration state unavailable\"))?;"
+    },
+    {
+      "line": 684,
+      "text": ".map_err(|_| SessionStartError::invariant(\"endpoint registration state unavailable\"))?;"
+    },
+    {
+      "line": 694,
+      "text": ".map_err(|_| SessionStartError::invariant(\"operator registration state unavailable\"))?;"
+    },
+    {
+      "line": 700,
+      "text": ".map_err(|_| SessionStartError::invariant(\"source registration state unavailable\"))?;"
+    },
+    {
+      "line": 708,
+      "text": ".map_err(|_| SessionStartError::invariant(\"sidecar registration state unavailable\"))?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 410,
+      "text": ".map_err(|_| AudioInputError::RegistrationStateUnavailable)?;"
+    },
+    {
+      "line": 417,
+      "text": ".map_err(|_| AudioInputError::RegistrationStateUnavailable)?"
+    },
+    {
+      "line": 467,
+      "text": ".map_err(|_| SessionSourceError::RegistrationStateUnavailable)?"
+    },
+    {
+      "line": 477,
+      "text": ".map_err(|_| SessionSidecarError::RegistrationStateUnavailable)?"
+    },
+    {
+      "line": 492,
+      "text": ".map_err(|_| SessionOperatorError::RegistrationStateUnavailable)?"
+    },
+    {
+      "line": 559,
+      "text": ".map_err(|_| SessionEndpointError::RegistrationStateUnavailable)?;"
+    },
+    {
+      "line": 581,
+      "text": ".map_err(|_| SessionEndpointError::RegistrationStateUnavailable)?;"
+    },
+    {
+      "line": 585,
+      "text": ".map_err(|_| SessionEndpointError::RegistrationStateUnavailable)?;"
+    },
+    {
+      "line": 651,
+      "text": ".map_err(|error| {"
+    },
+    {
+      "line": 674,
+      "text": ".map_err(|_| SessionStartError::invariant(\"endpoint registration state unavailable\"))?;"
+    },
+    {
+      "line": 684,
+      "text": ".map_err(|_| SessionStartError::invariant(\"endpoint registration state unavailable\"))?;"
+    },
+    {
+      "line": 694,
+      "text": ".map_err(|_| SessionStartError::invariant(\"operator registration state unavailable\"))?;"
+    },
+    {
+      "line": 700,
+      "text": ".map_err(|_| SessionStartError::invariant(\"source registration state unavailable\"))?;"
+    },
+    {
+      "line": 708,
+      "text": ".map_err(|_| SessionStartError::invariant(\"sidecar registration state unavailable\"))?;"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 410,
+      "text": ".map_err(|_| AudioInputError::RegistrationStateUnavailable)?;"
+    },
+    {
+      "line": 417,
+      "text": ".map_err(|_| AudioInputError::RegistrationStateUnavailable)?"
+    },
+    {
+      "line": 467,
+      "text": ".map_err(|_| SessionSourceError::RegistrationStateUnavailable)?"
+    },
+    {
+      "line": 477,
+      "text": ".map_err(|_| SessionSidecarError::RegistrationStateUnavailable)?"
+    },
+    {
+      "line": 492,
+      "text": ".map_err(|_| SessionOperatorError::RegistrationStateUnavailable)?"
+    },
+    {
+      "line": 559,
+      "text": ".map_err(|_| SessionEndpointError::RegistrationStateUnavailable)?;"
+    },
+    {
+      "line": 581,
+      "text": ".map_err(|_| SessionEndpointError::RegistrationStateUnavailable)?;"
+    },
+    {
+      "line": 585,
+      "text": ".map_err(|_| SessionEndpointError::RegistrationStateUnavailable)?;"
+    },
+    {
+      "line": 651,
+      "text": ".map_err(|error| {"
+    },
+    {
+      "line": 674,
+      "text": ".map_err(|_| SessionStartError::invariant(\"endpoint registration state unavailable\"))?;"
+    },
+    {
+      "line": 684,
+      "text": ".map_err(|_| SessionStartError::invariant(\"endpoint registration state unavailable\"))?;"
+    },
+    {
+      "line": 694,
+      "text": ".map_err(|_| SessionStartError::invariant(\"operator registration state unavailable\"))?;"
+    },
+    {
+      "line": 700,
+      "text": ".map_err(|_| SessionStartError::invariant(\"source registration state unavailable\"))?;"
+    },
+    {
+      "line": 708,
+      "text": ".map_err(|_| SessionStartError::invariant(\"sidecar registration state unavailable\"))?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "743287ce68c996020c7c65014acc8951a2eff6e51e3feaae6e9debc4a7ed959e",
+      "lines": [
+        1,
+        1129
+      ],
+      "path": "src/lib.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "conformance-fixtures",
+    "internal-testing",
+    "native-capture"
+  ],
+  "feature_gate": [
+    "conformance-fixtures",
+    "internal-testing",
+    "native-capture"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0170-b1a35a68",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "b5579f3e8f9484fd4bc78d0727481c4332b8ec5a",
+  "implemented_by": [],
+  "implements": [
+    "Default for SessionBuilder",
+    "SessionBuilder",
+    "Session",
+    "Default for Session",
+    "RunningSession",
+    "SessionStartError",
+    "From<SessionTraceRecorderStartError> for SessionStartError",
+    "From<SessionEngineHostBuildError> for SessionStartError",
+    "From<SessionEngineStartError> for SessionStartError",
+    "From<SourceRegistrationError> for SessionStartError",
+    "SessionCancelResult",
+    "SessionStopResult"
+  ],
+  "imported_by": [],
+  "imports": [
+    "capture::captured_frame_stream",
+    "crate::capture::*",
+    "crate::capture::platform::linux::*",
+    "crate::capture::platform::macos::{ discover_input_sources_native, discover_sources_native, tap_available, InternalDesktopCaptureBackend as DesktopCaptureBackend, InternalDesktopCaptureSource as DesktopCaptureSource, InternalSystemLoopbackSource as SystemLoopbackSource, MacosInputSource, }",
+    "crate::capture::platform::windows::*",
+    "crate::capture::{ application_capture_available, discover_sources, resolve_query, ActiveCaptureBackend, CallbackCaptureBackend, CaptureAuthorizationSnapshot, CaptureCapabilityState, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CaptureOpenOutcome, CapturePermissionLifecycle, CapturePermissionTransition, CaptureRuntimeFailure, CaptureRuntimeFailureClass, CaptureScope, CaptureSessionGrant, CaptureSource, CapturedFrameDelivery, CapturedFrameObservationHandle, CapturedFrameSender, CapturedFrameStreamStats, InputDeviceSelector, LocalSourceProvider, PermissionEpoch, PermissionObservation, PreparedCaptureBackend, ProcessTreeScope, SelectorPersistenceScope, SourceGeneration, SourceIdentityStrength, SourceKind, SourceLifecycleEventKind, SourceProvider, SourceQuery, SourceRecoveryRequirement, SourceRuntimeEvent, SourceRuntimeEventDelivery, SourceRuntimeEventObservationHandle, SourceRuntimeEventObservations, SourceRuntimeEventSender, SourceState, StableSourceId, }",
+    "crate::codec::*",
+    "crate::endpoint::*",
+    "crate::endpoint::{ EndpointAudioFrame, EndpointAudioReceiver, EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureRetryability, EndpointFailureStage, EndpointGroupId, EndpointInputOrigin, EndpointPortInput, EndpointPreparationGroup, EndpointPrepareContext, EndpointReceiver, EndpointRouteContext, EndpointShutdownMode, EndpointSignalReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, SessionTimelineOrigin, }",
+    "crate::frame::*",
+    "crate::frame::{ AudioBufferHandle, AudioBufferWriteError, Platform, SharedAudioBufferHandle, SharedAudioFrame, }",
+    "crate::frame::{ AudioBufferPool, AudioFrame, AudioFrameBuildError, ClockDomainId, ConnectorId, EndpointId, FrameLineage, FrameLineageBuildError, RouteId, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
+    "crate::graph::*",
+    "crate::graph::compile::*",
+    "crate::graph::compile::Compiler",
+    "crate::graph::compile::RuntimePlanner",
+    "crate::graph::dsl::*",
+    "crate::graph::ir::*",
+    "crate::graph::node::*",
+    "crate::graph::plan::*",
+    "crate::graph::registry::*",
+    "crate::graph::{ AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError, AsyncOperatorPrepareContext, AudioCaps, BackpressurePolicy, BinaryFormat, ChannelLayout, ClockDomain, Codec, ConfigError, CopyPolicy, DeliverySemantics, EdgeContract, EdgeObservabilityLevel, EventFormat, ExecutionPartition, LossPolicy, MediaCaps, MediaKind, Multiplicity, NodeConfig as OperatorConfiguration, NodeDefinition, NodeDescriptor, NodeError, NodeTypeId, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortPrepareContext, PortSpec, SafetyContract, SchemaRef, SemanticRole, SignalClass, SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker, SignalDerivation, SignalDerivationError, SignalEnvelope, SignalEnvelopeError, SignalId, SignalLineage, SignalLineageError, SignalPayload, SignalSpec, SignalSpecError, SignalTiming, SignalTimingError, TextFormat, }",
+    "crate::recording::*",
+    "crate::runtime::*",
+    "crate::runtime::{ AsyncOperatorObservations, AsyncOperatorOutputObservations, EdgeObservations, PlanSourceInputObservations, }",
+    "crate::runtime::{ SidecarDeadlines, SidecarHostError, SidecarHostSnapshot, SidecarMessage, SidecarMessageKind, SidecarProcessSpec, SidecarProtocolLimits, SidecarState, }",
+    "crate::session::*",
+    "crate::session::declaration::{ ApplicationSelector, ConnectionSpec, ConnectionTarget, DerivedStreamHandle, DeviceId, DeviceSelector, EndpointConfiguration, EndpointDescriptor, EndpointHandle, Operator, OperatorInputHandle, OperatorInstanceHandle, OperatorInstanceId, OperatorInstanceSpec, ProcessId, Source, SourceInstanceHandle, SourceInstanceId, SourceInstanceSpec, SourceOutputHandle, SourceOutputSpec, StemHandle, Stream, StreamOrigin, StreamSignal, TypedOperator, TypedStreamError, }",
+    "crate::session::error::SessionError",
+    "crate::session::error_code::{ polled_audio_poll_error_code, session_declaration_error_code, session_start_failure_code, PolledAudioPollErrorCode, SessionDeclarationErrorCode, SessionRuntimeErrorCode, SessionStartErrorCode, SessionStopCode, SessionStopFailureCode, }",
+    "crate::session::extensions::{ AudioInput, AudioInputBuffer, AudioInputBufferAcquireError, AudioInputBufferError, AudioInputConfig, AudioInputConfigError, AudioInputError, AudioInputObservations, AudioInputWriteError, AudioInputWriteErrorKind, AudioInputWriter, PcmSource, SourceCancellation, SourceConfiguration, SourceDriver, SourceDriverError, SourceEmission, SourceFactory, SourceManifest, SourceManifestError, SourceOutputIdentity, SourcePrepareContext, SourceRegistrationError, SourceRuntimeObservations, SourceSessionContext, SourceTypeId, SourceTypeIdError, PCM_SOURCE_TYPE_ID, }",
+    "crate::session::lifecycle::{ SessionAudioReentryMetrics, SessionControlFailure, SessionDerivedRouteMetrics, SessionEvent, SessionEventKind, SessionEventQueueObservations, SessionEventReceive, SessionExternalSourceMetrics, SessionLifecycleState, SessionMetricsSnapshot, SessionOperatorInputMetrics, SessionOperatorMetrics, SessionRouteDropObservations, SessionRouteLatencyBoundary, SessionRouteLatencyObservations, SessionRouteLatencyUnit, SessionRouteMetrics, SessionRouteObservationInterval, SessionSidecarMetrics, SessionSourceMetrics, SessionStartCancellation, SessionStopOutcome, SessionTerminalState, SessionTrace, SessionTraceRecorder, SessionTraceRecorderFinishError, SessionTraceRecorderOutcome, SessionTraceRecorderStartError, SessionTraceValidation, SessionTraceValidationError, }",
+    "crate::session::{ NativeSessionEngineHostOptions, SessionEngineHost, SessionEngineHostBuildError, SessionEngineHostBuilder, SessionEngineStartError, BROWSER_NODE_TYPE_ID, BROWSER_OPERATOR_ID, CONNECTOR_NODE_TYPE_ID, }",
+    "crate::session::{ PolledAudioBatchLease, PolledAudioFrame, PolledAudioObservations, PolledAudioPollError, }",
+    "crate::session::{ session_recording_outcome_error_code, SessionRecordingErrorCode, SessionRecordingObservations, SessionRecordingOutcome, SessionRecordingState, SessionRecordingStemOutcome, }",
+    "crate::timing::*",
+    "frame::{ AudioBufferPool, AudioFrame, SourceId, StreamId, POOL_MAX_SLOTS, POOL_SLOT_SAMPLES, }",
+    "module:abi",
+    "module:capture",
+    "module:codec",
+    "module:conformance",
+    "module:connector",
+    "module:endpoint",
+    "module:error_code",
+    "module:frame",
+    "module:graph",
+    "module:native_extension",
+    "module:recording",
+    "module:runtime",
+    "module:secret",
+    "module:session",
+    "module:timing",
+    "std::path::PathBuf",
+    "std::sync::{Arc, Mutex}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 52,
+      "text": "/// queries. Linux currently returns `NotObservable`; callers must not"
+    },
+    {
+      "line": 322,
+      "text": "/// The output path must not exist. Records are transferred to a dedicated"
+    },
+    {
+      "line": 569,
+      "text": "/// extension. The endpoint definition and driver cannot be installed"
+    },
+    {
+      "line": 674,
+      "text": ".map_err(|_| SessionStartError::invariant(\"endpoint registration state unavailable\"))?;"
+    },
+    {
+      "line": 684,
+      "text": ".map_err(|_| SessionStartError::invariant(\"endpoint registration state unavailable\"))?;"
+    },
+    {
+      "line": 694,
+      "text": ".map_err(|_| SessionStartError::invariant(\"operator registration state unavailable\"))?;"
+    },
+    {
+      "line": 700,
+      "text": ".map_err(|_| SessionStartError::invariant(\"source registration state unavailable\"))?;"
+    },
+    {
+      "line": 708,
+      "text": ".map_err(|_| SessionStartError::invariant(\"sidecar registration state unavailable\"))?;"
+    },
+    {
+      "line": 935,
+      "text": "/// Internal compiler, runtime, capture-owner, and host error types never cross"
+    },
+    {
+      "line": 953,
+      "text": "fn invariant(message: impl Into<String>) -> Self {"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 1129,
+  "locks": [
+    {
+      "line": 22,
+      "text": "use std::sync::{Arc, Mutex};"
+    },
+    {
+      "line": 238,
+      "text": "endpoint_registrations: Mutex<Vec<EndpointDriverRegistration>>,"
+    },
+    {
+      "line": 239,
+      "text": "endpoint_extensions: Mutex<Vec<EndpointExtensionRegistration>>,"
+    },
+    {
+      "line": 240,
+      "text": "operator_registrations: Mutex<Vec<Arc<dyn AsyncOperatorFactory>>>,"
+    },
+    {
+      "line": 241,
+      "text": "source_registrations: Mutex<Vec<Arc<dyn SourceFactory>>>,"
+    },
+    {
+      "line": 242,
+      "text": "audio_input_factory: Mutex<Option<Arc<crate::session::extensions::AudioInputFactory>>>,"
+    },
+    {
+      "line": 243,
+      "text": "sidecar_registrations: Mutex<Vec<SidecarProcessSpec>>,"
+    },
+    {
+      "line": 343,
+      "text": "endpoint_registrations: Mutex::new(Vec::new()),"
+    },
+    {
+      "line": 344,
+      "text": "endpoint_extensions: Mutex::new(Vec::new()),"
+    },
+    {
+      "line": 345,
+      "text": "operator_registrations: Mutex::new(Vec::new()),"
+    },
+    {
+      "line": 346,
+      "text": "source_registrations: Mutex::new(Vec::new()),"
+    },
+    {
+      "line": 347,
+      "text": "audio_input_factory: Mutex::new(None),"
+    },
+    {
+      "line": 348,
+      "text": "sidecar_registrations: Mutex::new(Vec::new()),"
+    },
+    {
+      "line": 363,
+      "text": "endpoint_registrations: Mutex::new(Vec::new()),"
+    },
+    {
+      "line": 364,
+      "text": "endpoint_extensions: Mutex::new(Vec::new()),"
+    },
+    {
+      "line": 365,
+      "text": "operator_registrations: Mutex::new(Vec::new()),"
+    },
+    {
+      "line": 366,
+      "text": "source_registrations: Mutex::new(Vec::new()),"
+    },
+    {
+      "line": 367,
+      "text": "audio_input_factory: Mutex::new(None),"
+    },
+    {
+      "line": 368,
+      "text": "sidecar_registrations: Mutex::new(Vec::new()),"
+    },
+    {
+      "line": 767,
+      "text": "endpoint_registrations: Mutex::new(Vec::new()),"
+    },
+    {
+      "line": 768,
+      "text": "endpoint_extensions: Mutex::new(Vec::new()),"
+    },
+    {
+      "line": 769,
+      "text": "operator_registrations: Mutex::new(Vec::new()),"
+    },
+    {
+      "line": 770,
+      "text": "source_registrations: Mutex::new(Vec::new()),"
+    },
+    {
+      "line": 771,
+      "text": "audio_input_factory: Mutex::new(None),"
+    },
+    {
+      "line": 772,
+      "text": "sidecar_registrations: Mutex::new(Vec::new()),"
+    }
+  ],
+  "module": "pocketstation",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-4749381b955e49aa6477",
+    "pattern-8780d67f5ad45ac06309",
+    "pattern-26a666aef5f6efec871b",
+    "pattern-73fee963faa887906e44"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/lib.rs",
+  "platform_gate": [
+    "linux",
+    "macos",
+    "windows"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 2,
+      "name": "abi",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 4,
+      "name": "capture",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 7,
+      "name": "endpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 15,
+      "name": "recording",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 16,
+      "name": "runtime",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 17,
+      "name": "secret",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 18,
+      "name": "session",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 26,
+      "name": "error_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 247,
+      "name": "CaptureBackendConfiguration",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 252,
+      "name": "EndpointDriverRegistration",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 258,
+      "name": "EndpointExtensionRegistration",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 264,
+      "name": "SessionTraceConfiguration",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 279,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 549,
+      "name": "register_audio_endpoint_driver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 756,
+      "name": "with_host_builder",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 780,
+      "name": "default",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 917,
+      "name": "finish_session_trace",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 946,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 952,
+      "name": "invariant",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 987,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 996,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1010,
+      "name": "from",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1026,
+      "name": "from",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "mod",
+      "line": 5,
+      "name": "codec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 6,
+      "name": "connector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 13,
+      "name": "graph",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 14,
+      "name": "native_extension",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 19,
+      "name": "timing",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 25,
+      "name": "conformance",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "microphone_permission_observation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 150,
+      "name": "internal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 151,
+      "name": "capture",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 154,
+      "name": "linux",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 158,
+      "name": "macos",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 167,
+      "name": "windows",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 171,
+      "name": "frame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 174,
+      "name": "codec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 177,
+      "name": "graph",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 179,
+      "name": "compile",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 182,
+      "name": "compiler",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 185,
+      "name": "dsl",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 188,
+      "name": "ir",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 191,
+      "name": "node",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 194,
+      "name": "plan",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 197,
+      "name": "planner",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 200,
+      "name": "registry",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 204,
+      "name": "runtime",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 207,
+      "name": "recording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 210,
+      "name": "session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 213,
+      "name": "timing",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 216,
+      "name": "endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 231,
+      "name": "Session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 271,
+      "name": "SessionBuilder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 292,
+      "name": "recording_root",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 300,
+      "name": "sample_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 308,
+      "name": "capture_backends",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 326,
+      "name": "session_trace",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 336,
+      "name": "build",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 356,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 373,
+      "name": "builder",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 377,
+      "name": "id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 381,
+      "name": "capture",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 390,
+      "name": "source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 400,
+      "name": "pcm_source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 447,
+      "name": "audio_input",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 456,
+      "name": "operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 461,
+      "name": "register_source",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 474,
+      "name": "register_sidecar",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 481,
+      "name": "endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 485,
+      "name": "register_operator",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 496,
+      "name": "polled_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 507,
+      "name": "connector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 520,
+      "name": "register_connector_driver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 534,
+      "name": "browser",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 539,
+      "name": "register_browser_driver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 571,
+      "name": "register_endpoint",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 616,
+      "name": "start",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 620,
+      "name": "start_cancellable",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 784,
+      "name": "RunningSession",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 798,
+      "name": "session_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 801,
+      "name": "try_poll_audio",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 805,
+      "name": "audio_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 809,
+      "name": "recording_outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 815,
+      "name": "try_recv_event",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 819,
+      "name": "event_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 823,
+      "name": "metrics_snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 832,
+      "name": "operator_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 837,
+      "name": "external_source_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 840,
+      "name": "sidecar_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 844,
+      "name": "try_send_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 852,
+      "name": "try_receive_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 859,
+      "name": "receive_sidecar_signal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 868,
+      "name": "derived_route_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 874,
+      "name": "audio_reentry_metrics",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 877,
+      "name": "session_trace_outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 885,
+      "name": "stop",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 903,
+      "name": "cancel",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 940,
+      "name": "SessionStartError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 956,
+      "name": "code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 960,
+      "name": "message",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 964,
+      "name": "kind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 980,
+      "name": "is_cancelled",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1035,
+      "name": "SessionEndpointError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1045,
+      "name": "SessionSidecarError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1051,
+      "name": "SessionOperatorError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1057,
+      "name": "SessionSourceError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1063,
+      "name": "SessionStartErrorKind",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1073,
+      "name": "SessionRuntimeError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1079,
+      "name": "SessionStopDisposition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 1085,
+      "name": "SessionCancelDisposition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 1091,
+      "name": "SessionCancelResult",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1097,
+      "name": "disposition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1100,
+      "name": "outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1104,
+      "name": "is_success",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 1111,
+      "name": "SessionStopResult",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1117,
+      "name": "disposition",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1120,
+      "name": "outcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1124,
+      "name": "is_success",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [
+    "capture::captured_frame_stream",
+    "crate::capture::*",
+    "crate::capture::platform::linux::*",
+    "crate::capture::platform::windows::*",
+    "crate::codec::*",
+    "crate::endpoint::*",
+    "crate::frame::*",
+    "crate::graph::*",
+    "crate::graph::compile::*",
+    "crate::graph::compile::Compiler",
+    "crate::graph::compile::RuntimePlanner",
+    "crate::graph::dsl::*",
+    "crate::graph::ir::*",
+    "crate::graph::node::*",
+    "crate::graph::plan::*",
+    "crate::graph::registry::*",
+    "crate::recording::*",
+    "crate::runtime::*",
+    "crate::session::*",
+    "crate::session::error::SessionError",
+    "crate::timing::*"
+  ],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 22,
+      "text": "use std::sync::{Arc, Mutex};"
+    },
+    {
+      "line": 240,
+      "text": "operator_registrations: Mutex<Vec<Arc<dyn AsyncOperatorFactory>>>,"
+    },
+    {
+      "line": 241,
+      "text": "source_registrations: Mutex<Vec<Arc<dyn SourceFactory>>>,"
+    },
+    {
+      "line": 242,
+      "text": "audio_input_factory: Mutex<Option<Arc<crate::session::extensions::AudioInputFactory>>>,"
+    },
+    {
+      "line": 249,
+      "text": "application: Arc<dyn CallbackCaptureBackend>,"
+    },
+    {
+      "line": 250,
+      "text": "microphone: Arc<dyn CallbackCaptureBackend>,"
+    },
+    {
+      "line": 256,
+      "text": "factory: Arc<dyn EndpointDriverFactory>,"
+    },
+    {
+      "line": 261,
+      "text": "definition: Arc<dyn NodeDefinition>,"
+    },
+    {
+      "line": 262,
+      "text": "factory: Arc<dyn EndpointDriverFactory>,"
+    },
+    {
+      "line": 310,
+      "text": "application: Arc<dyn CallbackCaptureBackend>,"
+    },
+    {
+      "line": 311,
+      "text": "microphone: Arc<dyn CallbackCaptureBackend>,"
+    },
+    {
+      "line": 334,
+      "text": "/// Builds the Session declaration owner."
+    },
+    {
+      "line": 412,
+      "text": "Some(factory) => Arc::clone(factory),"
+    },
+    {
+      "line": 418,
+      "text": ".push(Arc::clone(&factory) as Arc<dyn SourceFactory>);"
+    },
+    {
+      "line": 419,
+      "text": "*factory_slot = Some(Arc::clone(&factory));"
+    },
+    {
+      "line": 463,
+      "text": "factory: Arc<dyn SourceFactory>,"
+    },
+    {
+      "line": 488,
+      "text": "factory: Arc<dyn AsyncOperatorFactory>,"
+    },
+    {
+      "line": 523,
+      "text": "factory: Arc<dyn EndpointDriverFactory>,"
+    },
+    {
+      "line": 541,
+      "text": "factory: Arc<dyn EndpointDriverFactory>,"
+    },
+    {
+      "line": 554,
+      "text": "factory: Arc<dyn EndpointDriverFactory>,"
+    },
+    {
+      "line": 574,
+      "text": "definition: Arc<dyn NodeDefinition>,"
+    },
+    {
+      "line": 575,
+      "text": "factory: Arc<dyn EndpointDriverFactory>,"
+    },
+    {
+      "line": 832,
+      "text": "pub fn operator_metrics(&self) -> Box<[SessionOperatorMetrics]> {"
+    },
+    {
+      "line": 837,
+      "text": "pub fn external_source_metrics(&self) -> Box<[SessionExternalSourceMetrics]> {"
+    },
+    {
+      "line": 841,
+      "text": "pub fn sidecar_metrics(&self) -> Box<[SessionSidecarMetrics]> {"
+    },
+    {
+      "line": 868,
+      "text": "pub fn derived_route_metrics(&self) -> Box<[SessionDerivedRouteMetrics]> {"
+    },
+    {
+      "line": 874,
+      "text": "pub fn audio_reentry_metrics(&self) -> Box<[SessionAudioReentryMetrics]> {"
+    },
+    {
+      "line": 935,
+      "text": "/// Internal compiler, runtime, capture-owner, and host error types never cross"
+    }
+  ],
+  "responsibilities": [
+    "abi",
+    "capture",
+    "codec",
+    "connector",
+    "endpoint",
+    "frame",
+    "graph",
+    "native_extension",
+    "recording",
+    "runtime",
+    "secret",
+    "session",
+    "timing",
+    "conformance",
+    "error_code",
+    "microphone_permission_observation",
+    "internal",
+    "capture",
+    "linux",
+    "macos",
+    "windows",
+    "frame",
+    "codec",
+    "graph",
+    "compile",
+    "compiler",
+    "dsl",
+    "ir",
+    "node",
+    "plan",
+    "planner",
+    "registry",
+    "runtime",
+    "recording",
+    "session",
+    "timing",
+    "endpoint",
+    "Session",
+    "CaptureBackendConfiguration",
+    "EndpointDriverRegistration",
+    "EndpointExtensionRegistration",
+    "SessionTraceConfiguration",
+    "SessionBuilder",
+    "default",
+    "recording_root",
+    "sample_spec",
+    "capture_backends",
+    "session_trace",
+    "build",
+    "new",
+    "builder",
+    "id",
+    "capture",
+    "source",
+    "pcm_source",
+    "audio_input",
+    "operator",
+    "register_source",
+    "register_sidecar",
+    "endpoint",
+    "register_operator",
+    "polled_audio",
+    "connector",
+    "register_connector_driver",
+    "browser",
+    "register_browser_driver",
+    "register_audio_endpoint_driver",
+    "register_endpoint",
+    "start",
+    "start_cancellable",
+    "with_host_builder",
+    "default",
+    "RunningSession",
+    "session_id",
+    "try_poll_audio",
+    "audio_observations",
+    "recording_outcome",
+    "try_recv_event",
+    "event_observations",
+    "metrics_snapshot",
+    "operator_metrics",
+    "external_source_metrics",
+    "sidecar_metrics",
+    "try_send_sidecar_signal",
+    "try_receive_sidecar_signal",
+    "receive_sidecar_signal",
+    "derived_route_metrics",
+    "audio_reentry_metrics",
+    "session_trace_outcome",
+    "stop",
+    "cancel",
+    "finish_session_trace",
+    "SessionStartError",
+    "new",
+    "invariant",
+    "code",
+    "message",
+    "kind",
+    "is_cancelled",
+    "from"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 737,
+      "text": "let _ = running.stop();"
+    },
+    {
+      "line": 886,
+      "text": "pub fn stop(&mut self) -> SessionStopResult {"
+    },
+    {
+      "line": 893,
+      "text": "let outcome = self.running.stop();"
+    }
+  ],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 473,
+      "text": "/// process lifecycle. The child is spawned only during transactional start."
+    },
+    {
+      "line": 617,
+      "text": "pub fn start(self) -> Result<RunningSession, SessionStartError> {"
+    },
+    {
+      "line": 642,
+      "text": "SessionTraceRecorder::start("
+    },
+    {
+      "line": 735,
+      "text": "let mut running = host.start_compiled_cancellable(compiled, cancellation)?;"
+    },
+    {
+      "line": 1021,
+      "text": "Self::new(code, format!(\"canonical Session start failed: {error}\"))"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

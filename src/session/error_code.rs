@@ -8,26 +8,44 @@ use crate::session::{PolledAudioPollError, SessionError, SessionStartError, Sess
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SessionDeclarationErrorCode {
+    #[doc = "Reports no sources."]
     NoSources,
+    #[doc = "Reports no routes."]
     NoRoutes,
+    #[doc = "Reports no source outputs."]
     NoSourceOutputs,
+    #[doc = "Reports invalid selector."]
     InvalidSelector,
+    #[doc = "Reports invalid endpoint."]
     InvalidEndpoint,
+    #[doc = "Reports invalid operator."]
     InvalidOperator,
+    #[doc = "Reports invalid route."]
     InvalidRoute,
+    #[doc = "Reports foreign endpoint."]
     ForeignEndpoint,
+    #[doc = "Reports draft frozen."]
     DraftFrozen,
+    #[doc = "Reports internal state unavailable."]
     InternalStateUnavailable,
+    #[doc = "Reports id exhausted."]
     IdExhausted,
+    #[doc = "Reports unsupported version."]
     UnsupportedVersion,
+    #[doc = "Reports unknown endpoint."]
     UnknownEndpoint,
+    #[doc = "Reports unknown stem."]
     UnknownStem,
+    #[doc = "Reports unknown source."]
     UnknownSource,
+    #[doc = "Reports unknown operator instance."]
     UnknownOperatorInstance,
+    #[doc = "Reports operator has no destination."]
     OperatorHasNoDestination,
 }
 
 impl SessionDeclarationErrorCode {
+    #[doc = "Returns the stable string representation of `SessionDeclarationErrorCode`."]
     pub const fn as_str(self) -> &'static str {
         match self {
             Self::NoSources => "session.no_sources",
@@ -59,30 +77,52 @@ impl SessionDeclarationErrorCode {
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SessionStartErrorCode {
+    #[doc = "Reports host setup failed."]
     HostSetupFailed,
+    #[doc = "Reports unsupported platform."]
     UnsupportedPlatform,
+    #[doc = "Reports start cancelled."]
     StartCancelled,
+    #[doc = "Reports invalid selector."]
     InvalidSelector,
+    #[doc = "Reports declaration invalid."]
     DeclarationInvalid,
+    #[doc = "Reports compile failed."]
     CompileFailed,
+    #[doc = "Reports runtime prepare failed."]
     RuntimePrepareFailed,
+    #[doc = "Reports invalid start options."]
     InvalidStartOptions,
+    #[doc = "Reports unsupported source topology."]
     UnsupportedSourceTopology,
+    #[doc = "Reports missing endpoint declaration."]
     MissingEndpointDeclaration,
+    #[doc = "Reports endpoint prepare failed."]
     EndpointPrepareFailed,
+    #[doc = "Reports capture permission denied."]
     CapturePermissionDenied,
+    #[doc = "Reports capture source unavailable."]
     CaptureSourceUnavailable,
+    #[doc = "Reports capture unsupported."]
     CaptureUnsupported,
+    #[doc = "Reports capture backend failed."]
     CaptureBackendFailed,
+    #[doc = "Reports endpoint start failed."]
     EndpointStartFailed,
+    #[doc = "Reports runtime start failed."]
     RuntimeStartFailed,
+    #[doc = "Reports missing audio receipt."]
     MissingAudioReceipt,
+    #[doc = "Reports missing recording configuration."]
     MissingRecordingConfiguration,
+    #[doc = "Reports missing event receiver."]
     MissingEventReceiver,
+    #[doc = "Reports trace recorder setup failed."]
     TraceRecorderSetupFailed,
 }
 
 impl SessionStartErrorCode {
+    #[doc = "Returns the stable string representation of `SessionStartErrorCode`."]
     pub const fn as_str(self) -> &'static str {
         match self {
             Self::HostSetupFailed => "session.host_setup_failed",
@@ -114,10 +154,12 @@ impl SessionStartErrorCode {
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SessionRuntimeErrorCode {
+    #[doc = "Reports missing metrics snapshot."]
     MissingMetricsSnapshot,
 }
 
 impl SessionRuntimeErrorCode {
+    #[doc = "Returns the stable string representation of `SessionRuntimeErrorCode`."]
     pub const fn as_str(self) -> &'static str {
         match self {
             Self::MissingMetricsSnapshot => "session.missing_metrics_snapshot",
@@ -129,12 +171,16 @@ impl SessionRuntimeErrorCode {
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PolledAudioPollErrorCode {
+    #[doc = "Represents an empty value or collection."]
     Empty,
+    #[doc = "Reports lease capacity exhausted."]
     LeaseCapacityExhausted,
+    #[doc = "Reports internal state unavailable."]
     InternalStateUnavailable,
 }
 
 impl PolledAudioPollErrorCode {
+    #[doc = "Returns the stable string representation of `PolledAudioPollErrorCode`."]
     pub const fn as_str(self) -> &'static str {
         match self {
             Self::Empty => "audio.poll_empty",
@@ -148,12 +194,16 @@ impl PolledAudioPollErrorCode {
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SessionStopCode {
+    #[doc = "Indicates that the operation stopped normally."]
     Stopped,
+    #[doc = "Indicates that the operation had already stopped."]
     AlreadyStopped,
+    #[doc = "Represents the stop failed case of `SessionStopCode`."]
     StopFailed,
 }
 
 impl SessionStopCode {
+    #[doc = "Returns the stable string representation of `SessionStopCode`."]
     pub const fn as_str(self) -> &'static str {
         match self {
             Self::Stopped => "session.stopped",
@@ -169,16 +219,24 @@ impl SessionStopCode {
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SessionStopFailureCode {
+    #[doc = "Reports runtime worker panicked."]
     RuntimeWorkerPanicked,
+    #[doc = "Reports capture finalization failed."]
     CaptureFinalizationFailed,
+    #[doc = "Reports operator finalization failed."]
     OperatorFinalizationFailed,
+    #[doc = "Reports endpoint finalization failed."]
     EndpointFinalizationFailed,
+    #[doc = "Reports runtime failed."]
     RuntimeFailed,
+    #[doc = "Reports lineage failed."]
     LineageFailed,
+    #[doc = "Reports source send rejected."]
     SourceSendRejected,
 }
 
 impl SessionStopFailureCode {
+    #[doc = "Returns the stable string representation of `SessionStopFailureCode`."]
     pub const fn as_str(self) -> &'static str {
         match self {
             Self::RuntimeWorkerPanicked => "session.runtime_worker_panicked",
@@ -192,6 +250,7 @@ impl SessionStopFailureCode {
     }
 }
 
+#[doc = "Returns the session declaration error code associated with `error_code`."]
 pub const fn session_declaration_error_code(error: &SessionError) -> SessionDeclarationErrorCode {
     match error {
         SessionError::NoSources => SessionDeclarationErrorCode::NoSources,
@@ -222,6 +281,7 @@ pub const fn session_declaration_error_code(error: &SessionError) -> SessionDecl
     }
 }
 
+#[doc = "Returns the session start failure code associated with `error_code`."]
 pub const fn session_start_failure_code(error: &SessionStartError) -> SessionStartErrorCode {
     match error {
         SessionStartError::InvalidOptions { .. } => SessionStartErrorCode::InvalidStartOptions,
@@ -252,6 +312,7 @@ pub const fn session_start_failure_code(error: &SessionStartError) -> SessionSta
     }
 }
 
+#[doc = "Returns the polled audio poll error code associated with `error_code`."]
 pub const fn polled_audio_poll_error_code(error: PolledAudioPollError) -> PolledAudioPollErrorCode {
     match error {
         PolledAudioPollError::Empty => PolledAudioPollErrorCode::Empty,

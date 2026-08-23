@@ -1,0 +1,190 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "FAIL",
+    "PASS",
+    "SignalId",
+    "ai",
+    "checks",
+    "enum",
+    "failure",
+    "graph"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 30,
+      "text": "# Core must not have enum ModelNode, enum PolicyNode, or enum SinkNode."
+    },
+    {
+      "line": 33,
+      "text": "if grep -rq \"enum ModelNode\\|enum PolicyNode\\|enum SinkNode\" \"${dir}/src\" 2>/dev/null; then"
+    },
+    {
+      "line": 34,
+      "text": "echo \"FAIL [arch-2]: Closed graph enum (ModelNode/PolicyNode/SinkNode) in ${dir##\"${REPO_ROOT}\"/}.\" >&2"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "d0ff8ee7a038b9cfb0367a99d560ea2930f1a7c0a6848238adb016031c151cd0",
+  "defaults": [],
+  "defines": [],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 12,
+      "text": "#   5. Endpoint lifecycle dependency direction remains acyclic"
+    },
+    {
+      "line": 44,
+      "text": "for dir in \"${CORE}/frame\" \"${CORE}/graph\" \"${CORE}/runtime\" \"${CORE}/endpoint\"; do"
+    },
+    {
+      "line": 64,
+      "text": "# 5. Keep endpoint semantics above runtime and below Session/concrete drivers."
+    },
+    {
+      "line": 65,
+      "text": "if rg -q 'crate::endpoint|crate::session|crate::capture::platform' \"${CORE}/runtime\"; then"
+    },
+    {
+      "line": 66,
+      "text": "echo \"FAIL [arch-5]: runtime imports endpoint, Session, or platform capture.\" >&2"
+    },
+    {
+      "line": 69,
+      "text": "if rg -q 'crate::session|crate::capture::platform' \"${CORE}/endpoint\"; then"
+    },
+    {
+      "line": 70,
+      "text": "echo \"FAIL [arch-5]: endpoint imports Session or target capture.\" >&2"
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "d0ff8ee7a038b9cfb0367a99d560ea2930f1a7c0a6848238adb016031c151cd0",
+      "lines": [
+        1,
+        81
+      ],
+      "path": "scripts/lint/check-architecture-constraints.sh",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0059-eb6f55c9",
+  "file_kind": "automation",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "870e4ba9d2530a303a4c43d09fe7b30ce788304b",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 21,
+      "text": "# These must never be created: pks-ai, pks-ai-*, model-connectors."
+    },
+    {
+      "line": 30,
+      "text": "# Core must not have enum ModelNode, enum PolicyNode, or enum SinkNode."
+    },
+    {
+      "line": 42,
+      "text": "# Product engine modules must not mention AI provider names."
+    }
+  ],
+  "language": "Shell",
+  "line_count": 81,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "repository",
+  "path": "scripts/lint/check-architecture-constraints.sh",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines a repository build, validation, CI, or release operation."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/installation.md",
+    "docs/concepts/release-evidence.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/concepts/cargo-features.md",
+    "RELEASE_NOTES.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/how-to/choose-features.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/reference/features.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/best-practices/evidence-boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

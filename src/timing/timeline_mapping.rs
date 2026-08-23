@@ -1,10 +1,14 @@
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Represents timeline mapping in the PocketStation API."]
 pub struct TimelineMapping {
+    #[doc = "Stores the source origin value for `TimelineMapping`, in nanoseconds."]
     pub source_origin_ns: u64,
+    #[doc = "Stores the session origin value for `TimelineMapping`, in nanoseconds."]
     pub session_origin_ns: u64,
 }
 
 impl TimelineMapping {
+    #[doc = "Creates a new `TimelineMapping`."]
     pub const fn new(source_origin_ns: u64, session_origin_ns: u64) -> Self {
         Self {
             source_origin_ns,
@@ -12,6 +16,7 @@ impl TimelineMapping {
         }
     }
 
+    #[doc = "Returns the normalize timestamp nanoseconds associated with `TimelineMapping`."]
     pub fn normalize_timestamp_ns(self, source_timestamp_ns: u64) -> Option<u64> {
         if source_timestamp_ns >= self.source_origin_ns {
             self.session_origin_ns

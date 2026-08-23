@@ -1,0 +1,529 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "any",
+    "cfg",
+    "pub"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 7,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 13,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 23,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 27,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 31,
+      "text": "ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PortPrepareContext,"
+    },
+    {
+      "line": 35,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 38,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 39,
+      "text": "pub(crate) use ports::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES;"
+    },
+    {
+      "line": 45,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 65,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "c38deaa474dac59ac24e059959f8c33eb23cdfafa47855454750232c5a53ee3d",
+  "defaults": [
+    {
+      "line": 39,
+      "text": "pub(crate) use ports::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES;"
+    }
+  ],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "builtins",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "compile",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 10,
+      "name": "dsl",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 11,
+      "name": "identifier",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 12,
+      "name": "ir",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 14,
+      "name": "named_ports",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 15,
+      "name": "node",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 16,
+      "name": "operator",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 17,
+      "name": "partition",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 18,
+      "name": "plan",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 19,
+      "name": "ports",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 20,
+      "name": "registry",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 21,
+      "name": "runtime_node",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 22,
+      "name": "signal",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 24,
+      "name": "source",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 25,
+      "name": "spec",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "builtins",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "compile",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 10,
+      "name": "dsl",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 11,
+      "name": "identifier",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 12,
+      "name": "ir",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 15,
+      "name": "node",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 16,
+      "name": "operator",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 17,
+      "name": "partition",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 18,
+      "name": "plan",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 19,
+      "name": "ports",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 20,
+      "name": "registry",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 21,
+      "name": "runtime_node",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 22,
+      "name": "signal",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 25,
+      "name": "spec",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "c38deaa474dac59ac24e059959f8c33eb23cdfafa47855454750232c5a53ee3d",
+      "lines": [
+        1,
+        67
+      ],
+      "path": "src/graph/mod.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0150-e6378d6e",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "41c436e4781498e3af0f088bcf798c41dcee732e",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "builtins::register_builtins",
+    "dsl::{NodeHandle, Pipeline}",
+    "module:builtins",
+    "module:compile",
+    "module:dsl",
+    "module:identifier",
+    "module:ir",
+    "module:named_ports",
+    "module:node",
+    "module:operator",
+    "module:partition",
+    "module:plan",
+    "module:ports",
+    "module:registry",
+    "module:runtime_node",
+    "module:signal",
+    "module:source",
+    "module:spec",
+    "node::{ ConfigError, NodeConfig, NodeDescriptor, NodeError, NodeTypeId, PortPrepareContext, PrepareContext, }",
+    "operator::OPERATOR_ID_SYNTAX_VERSION",
+    "operator::OperatorId",
+    "partition::{ExecutionPartition, SafetyContract}",
+    "ports::DEFAULT_ASYNC_MAX_PAYLOAD_BYTES",
+    "ports::{ AudioCaps, BackpressurePolicy, ChannelLayout, ClockDomain, CopyPolicy, DeliverySemantics, EdgeContract, EdgeObservabilityLevel, LossPolicy, MediaCaps, MediaKind, Multiplicity, PortDirection, PortSpec, MAX_ASYNC_PAYLOAD_BYTES, }",
+    "registry::NodeDefinitionRef",
+    "registry::{NodeDefinition, NodeFactory, NodeRegistrationError, NodeRegistry}",
+    "runtime_node::RuntimeNode",
+    "signal::{ AsyncNode, AsyncNodeFuture, AsyncOperatorEdgePrepareContext, AsyncOperatorPrepareContext, SignalContinuityError, SignalContinuityObservation, SignalContinuityTracker, SignalDerivation, SignalDerivationError, SignalEnvelope, SignalEnvelopeError, SignalLineage, SignalLineageError, SignalPayload, SignalTiming, SignalTimingError, }",
+    "signal::{ AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorManifestError, OperatorCancellationPolicy, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorOutputRolePolicy, OperatorPermissionPolicy, }",
+    "signal::{ BinaryFormat, Codec, EventFormat, SchemaRef, SemanticRole, SignalClass, SignalId, SignalSpec, SignalSpecError, TextFormat, }",
+    "spec::{EdgeId, GraphSpec, NodeId, OutputPortRef}",
+    "spec::{EdgeSpec, InputPortRef, NodeSpec}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 67,
+  "locks": [],
+  "module": "pocketstation::graph",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/graph/mod.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 14,
+      "name": "named_ports",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 24,
+      "name": "source",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "mod",
+      "line": 8,
+      "name": "builtins",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 9,
+      "name": "compile",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 10,
+      "name": "dsl",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 11,
+      "name": "identifier",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 12,
+      "name": "ir",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 15,
+      "name": "node",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 16,
+      "name": "operator",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 17,
+      "name": "partition",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 18,
+      "name": "plan",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 19,
+      "name": "ports",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 20,
+      "name": "registry",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 21,
+      "name": "runtime_node",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 22,
+      "name": "signal",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "mod",
+      "line": 25,
+      "name": "spec",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Stable graph-extension contracts.  This namespace exposes signal, media, port, partition, and extension contracts. Declaration builders, registries, compiler stages, IR, runtime plans, and executable nodes are private engine implementation."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [
+    "builtins::register_builtins",
+    "dsl::{NodeHandle, Pipeline}",
+    "operator::OPERATOR_ID_SYNTAX_VERSION",
+    "operator::OperatorId",
+    "partition::{ExecutionPartition, SafetyContract}",
+    "registry::NodeDefinitionRef",
+    "registry::{NodeDefinition, NodeFactory, NodeRegistrationError, NodeRegistry}",
+    "runtime_node::RuntimeNode",
+    "spec::{EdgeId, GraphSpec, NodeId, OutputPortRef}",
+    "spec::{EdgeSpec, InputPortRef, NodeSpec}"
+  ],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/graph-contracts.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/error-model.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/graph.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/best-practices/route-sizing.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "builtins",
+    "compile",
+    "dsl",
+    "identifier",
+    "ir",
+    "named_ports",
+    "node",
+    "operator",
+    "partition",
+    "plan",
+    "ports",
+    "registry",
+    "runtime_node",
+    "signal",
+    "source",
+    "spec"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

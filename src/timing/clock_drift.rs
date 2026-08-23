@@ -1,12 +1,17 @@
 const DRIFT_WINDOW_SAMPLES: usize = 100;
 
 #[derive(Debug, Clone, Copy, Default, PartialEq)]
+#[doc = "Reports the clock drift snapshot collected at an observation boundary."]
 pub struct ClockDriftSnapshot {
+    #[doc = "Stores the drift ppm associated with `ClockDriftSnapshot`."]
     pub drift_ppm: f64,
+    #[doc = "Stores the accumulated error value for `ClockDriftSnapshot`, in nanoseconds."]
     pub accumulated_error_ns: i64,
+    #[doc = "Stores the number of observed samples represented by `ClockDriftSnapshot`."]
     pub observed_samples_count: u64,
 }
 
+#[doc = "Represents clock drift estimator in the PocketStation API."]
 pub struct ClockDriftEstimator {
     observations: [(f64, f64); DRIFT_WINDOW_SAMPLES],
     write_index: usize,
@@ -19,6 +24,7 @@ pub struct ClockDriftEstimator {
 }
 
 impl ClockDriftEstimator {
+    #[doc = "Creates a new `ClockDriftEstimator`."]
     pub fn new() -> Self {
         Self {
             observations: [(0.0, 0.0); DRIFT_WINDOW_SAMPLES],
@@ -32,6 +38,7 @@ impl ClockDriftEstimator {
         }
     }
 
+    #[doc = "Returns the current observation exposed by `ClockDriftEstimator`."]
     pub fn observe(&mut self, source_timestamp_ns: u64, runtime_timestamp_ns: u64) {
         let base_source_timestamp_ns = *self
             .base_source_timestamp_ns
@@ -56,13 +63,16 @@ impl ClockDriftEstimator {
         self.estimate();
     }
 
+    #[doc = "Returns the drift ppm associated with `ClockDriftEstimator`."]
     pub fn drift_ppm(&self) -> f64 {
         self.drift_ppm
     }
+    #[doc = "Returns the accumulated error nanoseconds associated with `ClockDriftEstimator`."]
     pub fn accumulated_error_ns(&self) -> i64 {
         self.accumulated_error_ns
     }
 
+    #[doc = "Returns a point-in-time snapshot of `ClockDriftEstimator`."]
     pub fn snapshot(&self) -> ClockDriftSnapshot {
         ClockDriftSnapshot {
             drift_ppm: self.drift_ppm,
@@ -112,6 +122,7 @@ impl ClockDriftEstimator {
 }
 
 impl Default for ClockDriftEstimator {
+    #[doc = "Returns the default `ClockDriftEstimator` value."]
     fn default() -> Self {
         Self::new()
     }

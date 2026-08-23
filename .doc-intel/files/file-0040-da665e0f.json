@@ -1,0 +1,756 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 36,
+      "text": "pub async fn begin("
+    },
+    {
+      "line": 40,
+      "text": "tokio::fs::create_dir_all(&self.root).await?;"
+    },
+    {
+      "line": 46,
+      "text": "tokio::fs::create_dir(&invocation_dir).await?;"
+    },
+    {
+      "line": 48,
+      "text": "tokio::fs::write(&input_wav_path, input_wav).await?;"
+    },
+    {
+      "line": 121,
+      "text": "pub async fn complete("
+    },
+    {
+      "line": 131,
+      "text": "self.receipt.stdout_hash = hash_file_if_present(&self.receipt.stdout_path).await?;"
+    },
+    {
+      "line": 132,
+      "text": "self.receipt.stderr_hash = hash_file_if_present(&self.receipt.stderr_path).await?;"
+    },
+    {
+      "line": 133,
+      "text": "self.receipt.transcript_hash = hash_file_if_present(&self.receipt.transcript_path).await?;"
+    },
+    {
+      "line": 136,
+      "text": "tokio::fs::write(&receipt_path, encoded).await?;"
+    },
+    {
+      "line": 189,
+      "text": "async fn hash_file_if_present(path: &Path) -> Result<Option<String>, std::io::Error> {"
+    },
+    {
+      "line": 190,
+      "text": "match tokio::fs::read(path).await {"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Io",
+    "Serialize",
+    "SystemTime::now",
+    "Vec::new",
+    "all",
+    "as_nanos",
+    "begin",
+    "bytes",
+    "clone",
+    "complete",
+    "content_hash",
+    "derive",
+    "duration_since",
+    "error",
+    "hash_file_if_present",
+    "input_wav_path",
+    "into",
+    "is_ascii_alphanumeric",
+    "is_empty",
+    "join",
+    "kind",
+    "map_or",
+    "mark_kill_requested",
+    "mark_wait_observed",
+    "new",
+    "output_prefix",
+    "saturating_add",
+    "serde",
+    "serde_json::to_vec_pretty",
+    "set_argv",
+    "set_pid",
+    "stderr_path",
+    "stdout_path",
+    "tokio::fs::create_dir",
+    "tokio::fs::create_dir_all",
+    "tokio::fs::read",
+    "tokio::fs::write",
+    "transcript_path",
+    "u64::from",
+    "unix_timestamp_ns",
+    "wrapping_mul"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "Vec::new",
+    "new",
+    "u64::from"
+  ],
+  "content_hash": "1490f9cadd8b42d3246c3fa15b0323bcce2a66b53e045ac5a667b634f2ba912f",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 5,
+      "name": "RECEIPT_SCHEMA_VERSION",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 7,
+      "name": "CONTENT_HASH_ALGORITHM",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 10,
+      "name": "WhisperProcessEvidence",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "begin",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 79,
+      "name": "ActiveProcessEvidence",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "input_wav_path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "stdout_path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 92,
+      "name": "stderr_path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "transcript_path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 100,
+      "name": "output_prefix",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 104,
+      "name": "set_pid",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 108,
+      "name": "set_argv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "mark_kill_requested",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "mark_wait_observed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "complete",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 143,
+      "name": "ProcessOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 153,
+      "name": "WhisperProcessReceipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 178,
+      "name": "ProcessEvidenceError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 188,
+      "name": "hash_file_if_present",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 196,
+      "name": "content_hash",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 205,
+      "name": "unix_timestamp_ns",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 10,
+      "name": "WhisperProcessEvidence",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "begin",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 79,
+      "name": "ActiveProcessEvidence",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "input_wav_path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "stdout_path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 92,
+      "name": "stderr_path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "transcript_path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 100,
+      "name": "output_prefix",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 104,
+      "name": "set_pid",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 108,
+      "name": "set_argv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "mark_kill_requested",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "mark_wait_observed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "complete",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 143,
+      "name": "ProcessOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 153,
+      "name": "WhisperProcessReceipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 178,
+      "name": "ProcessEvidenceError",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 27,
+      "text": "return Err(ProcessEvidenceError::InvalidCaseId);"
+    },
+    {
+      "line": 192,
+      "text": "Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(None),"
+    },
+    {
+      "line": 193,
+      "text": "Err(error) => Err(error),"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 178,
+      "name": "ProcessEvidenceError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 184,
+      "text": "Io(#[from] std::io::Error),"
+    },
+    {
+      "line": 186,
+      "text": "Serialize(#[from] serde_json::Error),"
+    }
+  ],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "1490f9cadd8b42d3246c3fa15b0323bcce2a66b53e045ac5a667b634f2ba912f",
+      "lines": [
+        1,
+        211
+      ],
+      "path": "examples/whisper-transcribe/src/process_evidence.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0040-da665e0f",
+  "file_kind": "example",
+  "filesystem_io": [
+    {
+      "line": 40,
+      "text": "tokio::fs::create_dir_all(&self.root).await?;"
+    },
+    {
+      "line": 46,
+      "text": "tokio::fs::create_dir(&invocation_dir).await?;"
+    },
+    {
+      "line": 48,
+      "text": "tokio::fs::write(&input_wav_path, input_wav).await?;"
+    },
+    {
+      "line": 136,
+      "text": "tokio::fs::write(&receipt_path, encoded).await?;"
+    },
+    {
+      "line": 190,
+      "text": "match tokio::fs::read(path).await {"
+    }
+  ],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "71dbbeddcc2819b6f1a2d2a9025dc1b2253899fa",
+  "implemented_by": [],
+  "implements": [
+    "WhisperProcessEvidence",
+    "ActiveProcessEvidence"
+  ],
+  "imported_by": [],
+  "imports": [
+    "serde::Serialize",
+    "std::path::{Path, PathBuf}",
+    "std::time::{SystemTime, UNIX_EPOCH}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 180,
+      "text": "\"process evidence case id must use only ASCII letters, digits, dot, dash, or underscore\""
+    }
+  ],
+  "language": "Rust",
+  "line_count": 211,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-13d69f7c5fd945648312"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "examples/whisper-transcribe/src/process_evidence.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 5,
+      "name": "RECEIPT_SCHEMA_VERSION",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 7,
+      "name": "CONTENT_HASH_ALGORITHM",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 188,
+      "name": "hash_file_if_present",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 196,
+      "name": "content_hash",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 205,
+      "name": "unix_timestamp_ns",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 10,
+      "name": "WhisperProcessEvidence",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 17,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "begin",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 79,
+      "name": "ActiveProcessEvidence",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "input_wav_path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 88,
+      "name": "stdout_path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 92,
+      "name": "stderr_path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "transcript_path",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 100,
+      "name": "output_prefix",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 104,
+      "name": "set_pid",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 108,
+      "name": "set_argv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 112,
+      "name": "mark_kill_requested",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 116,
+      "name": "mark_wait_observed",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 120,
+      "name": "complete",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 143,
+      "name": "ProcessOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 153,
+      "name": "WhisperProcessReceipt",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 178,
+      "name": "ProcessEvidenceError",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `not_applicable`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/examples.md",
+    "docs/concepts/transcription-integration.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/run-transcription.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/troubleshooting/transcription-evidence.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "RECEIPT_SCHEMA_VERSION",
+    "CONTENT_HASH_ALGORITHM",
+    "WhisperProcessEvidence",
+    "new",
+    "begin",
+    "ActiveProcessEvidence",
+    "input_wav_path",
+    "stdout_path",
+    "stderr_path",
+    "transcript_path",
+    "output_prefix",
+    "set_pid",
+    "set_argv",
+    "mark_kill_requested",
+    "mark_wait_observed",
+    "complete",
+    "ProcessOutcome",
+    "WhisperProcessReceipt",
+    "ProcessEvidenceError",
+    "hash_file_if_present",
+    "content_hash",
+    "unix_timestamp_ns"
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 4,
+      "text": "use serde::Serialize;"
+    },
+    {
+      "line": 141,
+      "text": "#[derive(Debug, Clone, Copy, Serialize)]"
+    },
+    {
+      "line": 142,
+      "text": "#[serde(rename_all = \"snake_case\")]"
+    },
+    {
+      "line": 152,
+      "text": "#[derive(Debug, Serialize)]"
+    },
+    {
+      "line": 186,
+      "text": "Serialize(#[from] serde_json::Error),"
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 40,
+      "text": "tokio::fs::create_dir_all(&self.root).await?;"
+    },
+    {
+      "line": 46,
+      "text": "tokio::fs::create_dir(&invocation_dir).await?;"
+    },
+    {
+      "line": 48,
+      "text": "tokio::fs::write(&input_wav_path, input_wav).await?;"
+    },
+    {
+      "line": 136,
+      "text": "tokio::fs::write(&receipt_path, encoded).await?;"
+    },
+    {
+      "line": 190,
+      "text": "match tokio::fs::read(path).await {"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 36,
+      "text": "pub async fn begin("
+    },
+    {
+      "line": 40,
+      "text": "tokio::fs::create_dir_all(&self.root).await?;"
+    },
+    {
+      "line": 46,
+      "text": "tokio::fs::create_dir(&invocation_dir).await?;"
+    },
+    {
+      "line": 48,
+      "text": "tokio::fs::write(&input_wav_path, input_wav).await?;"
+    },
+    {
+      "line": 121,
+      "text": "pub async fn complete("
+    },
+    {
+      "line": 131,
+      "text": "self.receipt.stdout_hash = hash_file_if_present(&self.receipt.stdout_path).await?;"
+    },
+    {
+      "line": 132,
+      "text": "self.receipt.stderr_hash = hash_file_if_present(&self.receipt.stderr_path).await?;"
+    },
+    {
+      "line": 133,
+      "text": "self.receipt.transcript_hash = hash_file_if_present(&self.receipt.transcript_path).await?;"
+    },
+    {
+      "line": 136,
+      "text": "tokio::fs::write(&receipt_path, encoded).await?;"
+    },
+    {
+      "line": 189,
+      "text": "async fn hash_file_if_present(path: &Path) -> Result<Option<String>, std::io::Error> {"
+    },
+    {
+      "line": 190,
+      "text": "match tokio::fs::read(path).await {"
+    }
+  ],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

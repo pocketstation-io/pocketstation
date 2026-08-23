@@ -11,16 +11,21 @@ use std::sync::Arc;
 pub const POOL_MAX_SLOTS: usize = 64;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as audio buffer write error."]
 pub enum AudioBufferWriteError {
     #[error(
         "audio buffer write of {requested_samples} samples exceeds capacity {capacity_samples}"
     )]
+    #[doc = "Reports capacity exceeded."]
     CapacityExceeded {
+        #[doc = "Stores the requested samples associated with `CapacityExceeded`."]
         requested_samples: usize,
+        #[doc = "Sets the capacity samples available to `CapacityExceeded`."]
         capacity_samples: usize,
     },
 }
 
+#[doc = "Represents audio buffer pool in the PocketStation API."]
 pub struct AudioBufferPool {
     slots: Box<[UnsafeCell<Box<[f32]>>]>,
     shared_ref_counts: Box<[AtomicUsize]>,
@@ -36,6 +41,7 @@ pub struct AudioBufferPool {
 unsafe impl Sync for AudioBufferPool {}
 
 impl AudioBufferPool {
+    #[doc = "Creates a new `AudioBufferPool`."]
     pub fn new(slot_count: usize, slot_size: usize) -> Arc<Self> {
         assert!((1..=POOL_MAX_SLOTS).contains(&slot_count));
         assert!(slot_size > 0);
@@ -59,19 +65,24 @@ impl AudioBufferPool {
         })
     }
 
+    #[doc = "Returns the slot size associated with `AudioBufferPool`."]
     pub fn slot_size(&self) -> usize {
         self.slot_size
     }
+    #[doc = "Returns the slot count associated with `AudioBufferPool`."]
     pub fn slot_count(&self) -> usize {
         self.slots.len()
     }
+    #[doc = "Returns the acquire failures associated with `AudioBufferPool`."]
     pub fn acquire_failures(&self) -> usize {
         self.acquire_failures.load(Ordering::Relaxed)
     }
+    #[doc = "Returns the available slots associated with `AudioBufferPool`."]
     pub fn available_slots(&self) -> usize {
         self.free_mask.load(Ordering::Acquire).count_ones() as usize
     }
 
+    #[doc = "Attempts to acquire an available buffer slot from `AudioBufferPool`."]
     pub fn acquire(self: &Arc<Self>) -> Option<AudioBufferHandle> {
         loop {
             let mask = self.free_mask.load(Ordering::Acquire);
@@ -95,10 +106,12 @@ impl AudioBufferPool {
         }
     }
 
+    #[doc = "Returns whether in use applies to `AudioBufferPool`."]
     pub fn is_in_use(&self, index: u32) -> bool {
         self.free_mask.load(Ordering::Acquire) & (1u64 << index) == 0
     }
 
+    #[doc = "Returns the shared ref count associated with `AudioBufferPool`."]
     pub fn shared_ref_count(&self, index: u32) -> usize {
         self.shared_ref_counts
             .get(index as usize)
@@ -195,6 +208,7 @@ impl AudioBufferPool {
     }
 }
 
+#[doc = "Owns bounded access to audio buffer."]
 pub struct AudioBufferHandle {
     pool: Arc<AudioBufferPool>,
     index: u32,
@@ -202,19 +216,24 @@ pub struct AudioBufferHandle {
 }
 
 impl AudioBufferHandle {
+    #[doc = "Returns the number of values held by `AudioBufferHandle`."]
     pub fn len(&self) -> usize {
         self.len as usize
     }
+    #[doc = "Returns whether `AudioBufferHandle` contains no values."]
     pub fn is_empty(&self) -> bool {
         self.len == 0
     }
+    #[doc = "Returns the index associated with `AudioBufferHandle`."]
     pub fn index(&self) -> u32 {
         self.index
     }
+    #[doc = "Borrows `AudioBufferHandle` as slice."]
     pub fn as_slice(&self) -> &[f32] {
         self.pool.slot(self.index, self.len)
     }
 
+    #[doc = "Borrows `AudioBufferHandle` as mut slice."]
     pub fn as_mut_slice(&mut self) -> &mut [f32] {
         // SAFETY: `&mut self` proves exclusive access to the only mutable
         // handle. Frozen/shared handles cannot coexist with this handle.
@@ -243,6 +262,7 @@ impl AudioBufferHandle {
         Ok(())
     }
 
+    #[doc = "Freezes mutable storage owned by `AudioBufferHandle` into its shared immutable form."]
     pub fn freeze(self) -> Result<SharedAudioBufferHandle, Self> {
         if !self.pool.begin_shared(self.index) {
             return Err(self);
@@ -262,6 +282,7 @@ impl AudioBufferHandle {
 
 /// Drop contract — must stay forever: lock-free · panic-free · alloc-free · log-free.
 impl Drop for AudioBufferHandle {
+    #[doc = "Releases resources owned by `AudioBufferHandle`."]
     fn drop(&mut self) {
         if self.pool.shared_ref_count(self.index) == 0 {
             self.pool.release(self.index);
@@ -270,6 +291,7 @@ impl Drop for AudioBufferHandle {
 }
 
 impl fmt::Debug for AudioBufferHandle {
+    #[doc = "Formats `AudioBufferHandle` with the requested formatter."]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("AudioBufferHandle")
             .field("index", &self.index)
@@ -278,6 +300,7 @@ impl fmt::Debug for AudioBufferHandle {
     }
 }
 
+#[doc = "Owns bounded access to shared audio buffer."]
 pub struct SharedAudioBufferHandle {
     pool: Arc<AudioBufferPool>,
     index: u32,
@@ -285,22 +308,27 @@ pub struct SharedAudioBufferHandle {
 }
 
 impl SharedAudioBufferHandle {
+    #[doc = "Returns the number of values held by `SharedAudioBufferHandle`."]
     pub fn len(&self) -> usize {
         self.len as usize
     }
 
+    #[doc = "Returns whether `SharedAudioBufferHandle` contains no values."]
     pub fn is_empty(&self) -> bool {
         self.len == 0
     }
 
+    #[doc = "Returns the index associated with `SharedAudioBufferHandle`."]
     pub fn index(&self) -> u32 {
         self.index
     }
 
+    #[doc = "Borrows `SharedAudioBufferHandle` as slice."]
     pub fn as_slice(&self) -> &[f32] {
         self.pool.slot(self.index, self.len)
     }
 
+    #[doc = "Attempts to clone through `SharedAudioBufferHandle`."]
     pub fn try_clone(&self) -> Option<Self> {
         if !self.pool.try_retain_shared(self.index) {
             return None;
@@ -312,6 +340,7 @@ impl SharedAudioBufferHandle {
         })
     }
 
+    #[doc = "Returns the shared ref count associated with `SharedAudioBufferHandle`."]
     pub fn shared_ref_count(&self) -> usize {
         self.pool.shared_ref_count(self.index)
     }
@@ -319,12 +348,14 @@ impl SharedAudioBufferHandle {
 
 /// Drop contract — must stay forever: lock-free · panic-free · alloc-free · log-free.
 impl Drop for SharedAudioBufferHandle {
+    #[doc = "Releases resources owned by `SharedAudioBufferHandle`."]
     fn drop(&mut self) {
         self.pool.release_shared(self.index);
     }
 }
 
 impl fmt::Debug for SharedAudioBufferHandle {
+    #[doc = "Formats `SharedAudioBufferHandle` with the requested formatter."]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("SharedAudioBufferHandle")
             .field("index", &self.index)

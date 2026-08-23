@@ -1,0 +1,88 @@
+# A connector is not ready
+
+<!-- claims: CLM-TRBL-008-CAP-001,CLM-TRBL-008-CAP-002,CLM-TRBL-008-CAP-003,CLM-TRBL-008-CAP-004,CLM-TRBL-008-CAP-005,CLM-TRBL-008-SOURCE-001 -->
+
+Use this page when you observe **a connector is not ready**. Diagnose the reported stage and identity before changing route, source, connector, or lifecycle policy.
+
+## Distinguish the cause
+
+Separate manifest validation, configuration validation, readiness timeout, delivery failure, retry-budget exhaustion, and endpoint finalization stages.
+
+## Diagnostic signals
+
+- `pocketstation::endpoint::runtime::EndpointFailureStage` / `CancelPreparation` (`error-0265bb447764629fa47b`)
+- `pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError` / `ZeroLeaseCapacity` (`error-0370b7ecbdf2b9d6fbdb`)
+- `pocketstation::connector::error::ConnectorErrorCodeError` / `TooLong` (`error-06f5c52aa07c86ca5062`)
+- `pocketstation::connector::transport::ConnectorAudioRecordError` / `InvalidSampleCount` (`error-093c41e2489cf1bb258d`)
+- `pocketstation::connector::transport::ConnectorAudioRecordError` (`error-0b1f3a3357a77fcef185`)
+- `pocketstation::connector::error::ConnectorErrorCodeError` / `Empty` (`error-0b71c9f1b1489e0d4f9a`)
+- `pocketstation::connector::error::ConnectorErrorBuildError` (`error-0bc8adb0641971704f74`)
+- `pocketstation::endpoint::polled_audio_driver::PolledAudioEndpointConfigError` / `QueueCapacityTooLarge` (`error-0bed26cd5cd9ccfe0b20`)
+- `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` / `TooManyFields` (`error-0c83ebde568152ad3edf`)
+- `pocketstation::endpoint::registry::EndpointDriverRegistryError` / `OperatorNodeTypeConflict` (`error-0db6114718e1d213362f`)
+- `pocketstation::connector::error::ConnectorErrorStage` / `Startup` (`error-0e62627edef059ecab22`)
+- `pocketstation::connector::manifest::ConnectorManifestError` / `InvalidManifestRevision` (`error-10517744910e14c23fc4`)
+- `pocketstation::connector::transport::ConnectorAudioRecordError` / `UnsupportedMinor` (`error-1082687e9dbfd2cadfc5`)
+- `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` / `InvalidValue` (`error-16fe034657303e4973f8`)
+- `pocketstation::connector::ConnectorDeclarationError` (`error-1cafe789f84ff34b7955`)
+- `pocketstation::endpoint::polled_audio_driver::PolledAudioPollError` / `LeaseCapacityExhausted` (`error-1d54a56031f21d638e8a`)
+- `pocketstation::connector::error::ConnectorErrorCodeError` (`error-1d9267787b6c574f3c02`)
+- `pocketstation::endpoint::runtime::EndpointFailureStage` (`error-1fdd7e0417ea75e9688a`)
+- `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` / `ValueTooLarge` (`error-20e58c6bbc3ac729a8e8`)
+- `pocketstation::endpoint::runtime::EndpointFailure` (`error-21860e8a08d6660b2cd4`)
+- `pocketstation::endpoint::polled_audio_driver::PolledAudioPollError` / `Empty` (`error-25cba0c2435c181a17c1`)
+- `pocketstation::connector::transport::ConnectorAudioRecordError` / `Truncated` (`error-287ed1c38c6ad2b533ef`)
+- `pocketstation::connector::manifest::ConnectorManifestError` / `TooManyManifestEntries` (`error-29230b3395a2c8d86df6`)
+- `pocketstation::endpoint::polled_audio_driver::PolledAudioPollError` / `StatePoisoned` (`error-29386b30a0d8753119c2`)
+- `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` / `WrongType` (`error-2f295a051ff6d0366ead`)
+- `pocketstation::endpoint::runtime::EndpointStartFailure` (`error-30d87c511b03582515cf`)
+- `pocketstation::endpoint::registry::EndpointPrepareError` / `Driver` (`error-323cf47f273c3dd6cfc8`)
+- `pocketstation::connector::error::ConnectorErrorStage` / `Join` (`error-326d10a69e8bf7fdb781`)
+- `pocketstation::connector::configuration::ConnectorConfigurationErrorCode` / `UnknownField` (`error-37775f819a84416494a5`)
+- `pocketstation::endpoint::runtime::EndpointStartFailureCause` / `Driver` (`error-39aa567a66c392fdb792`)
+
+## Executable evidence
+
+- `given_connector_never_ready_when_startup_deadline_expires_then_failure_is_terminal` exercises given connector never ready when startup deadline expires then failure is terminal under its recorded setup (`test-5cad5d93f0205d9f9891`).
+- `given_already_open_start_gate_when_endpoint_start_requested_then_start_fails_recoverably` exercises given already open start gate when endpoint start requested then start fails recoverably under its recorded setup (`test-e8c1d06b58a459a61c14`).
+- `given_connector_driver_when_two_stems_run_then_core_owns_typed_delivery_and_drain` exercises given connector driver when two stems run then core owns typed delivery and drain under its recorded setup (`test-eefa0d157754becdb1a2`).
+- `given_connector_error_when_inspected_then_code_is_stable_and_machine_readable` exercises given connector error when inspected then code is stable and machine readable under its recorded setup (`test-ae5c25d0ba6141b1a13a`).
+- `given_connector_public_surface_when_inspected_then_managed_aliases_are_absent` exercises given connector public surface when inspected then managed aliases are absent under its recorded setup (`test-e1ff05b0ec4b54a78b0b`).
+- `given_duplicate_connector_identity_when_registered_then_registration_is_rejected` exercises given duplicate connector identity when registered then registration is rejected under its recorded setup (`test-5576ad13d627ff481e0b`).
+- `given_grouped_connector_when_session_is_cancelled_then_abort_intent_reaches_worker` exercises given grouped connector when session is cancelled then abort intent reaches worker under its recorded setup (`test-2e6e7299000cfcf26fc4`).
+- `given_grouped_connector_when_session_stops_then_one_worker_is_joined_and_observed` exercises given grouped connector when session stops then one worker is joined and observed under its recorded setup (`test-aa2345c7b9339f742b48`).
+- `given_prior_preparation_when_connector_prepare_fails_then_prior_work_rolls_back` exercises given prior preparation when connector prepare fails then prior work rolls back under its recorded setup (`test-867a92c422e2fe7fbb4d`).
+- `given_registered_connector_when_declared_then_identity_is_session_scoped` exercises given registered connector when declared then identity is session scoped under its recorded setup (`test-da2fb847d5c7f22349e8`).
+- `given_saturated_connector_route_when_observed_then_drops_are_visible_in_session_metrics` exercises given saturated connector route when observed then drops are visible in session metrics under its recorded setup (`test-2a3db251e3203d28d4cf`).
+- `given_canonical_connector_vectors_when_compared_then_core_contract_semantics_match` exercises given canonical connector vectors when compared then core contract semantics match under its recorded setup (`test-5ccbb97716e582e0a790`).
+- `given_provider_owned_field_name_when_resolved_then_core_preserves_it_opaquely` exercises given provider owned field name when resolved then core preserves it opaquely under its recorded setup (`test-d9078fd01d0271720b30`).
+- `given_empty_input_group_when_sidecar_prepares_then_structured_error_is_returned` exercises given empty input group when sidecar prepares then structured error is returned under its recorded setup (`test-49bd18fb96d67fdba9bf`).
+- `given_sidecar_host_errors_when_classified_then_retryability_is_preserved` exercises given sidecar host errors when classified then retryability is preserved under its recorded setup (`test-98ad8a10ce6f978fe856`).
+
+## Corrective action and retry
+
+Apply only the action implied by the typed failure or violated precondition. Retry is not safe merely because a failure appears transient. When retryability or recovery is unknown, preserve the failure for application policy or maintainer review.
+
+## Data and state
+
+Treat frames, signals, files, acknowledgements, and finalization results produced before failure as potentially partial unless the terminal contract says otherwise. Inspect per-route, per-stem, and per-component outcomes.
+
+## Related documentation
+
+- [Glossary](/docs/glossary.md)
+- [PocketStation](/README.md)
+- [Behavior evidence index](/docs/reference/behavior-evidence.md)
+- [Rust API reference](/docs/reference/rust-api.md)
+- [A sidecar misses a deadline](/docs/troubleshooting/sidecar-deadline.md)
+- [Connector failures](/docs/errors/connectors.md)
+- [Session stop reports component failures](/docs/troubleshooting/session-stop.md)
+- [Treat stop outcomes as data](/docs/best-practices/terminal-outcomes.md)
+
+## Evidence boundary
+
+This page was verified against Git snapshot `3b7b970f6598239e5d435b60c8d132a955a1886c` and these primary files:
+
+- `src/connector/readiness.rs:1-67` (`DIRECT`)
+- `src/connector/status.rs:1-79` (`DIRECT`)
+
+A file's presence proves implementation or declaration at this snapshot. It does not by itself prove physical-device qualification, operational performance, retry safety, or behavior outside the recorded test conditions.

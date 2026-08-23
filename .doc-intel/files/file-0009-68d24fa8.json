@@ -1,0 +1,181 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 64,
+      "text": "async-free, log-free, and panic-free by contract and accepted gates. Evidence"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "937116ba09996a1d83502d416379343580447d61aa785e8043d61660d2d6bef8",
+  "defaults": [],
+  "defines": [],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 20,
+      "text": "- external source, Operator, Endpoint, Connector, and generated-audio"
+    },
+    {
+      "line": 43,
+      "text": "- Open Operator, Endpoint, Connector, external-source, and generated-audio"
+    },
+    {
+      "line": 48,
+      "text": "Endpoint-backed worker path remains available for specialized transports."
+    }
+  ],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "937116ba09996a1d83502d416379343580447d61aa785e8043d61660d2d6bef8",
+      "lines": [
+        1,
+        67
+      ],
+      "path": "RELEASE_NOTES.md",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 18,
+      "text": "- Rust and the versioned C ABI;"
+    },
+    {
+      "line": 31,
+      "text": "ABI uses versioned, size-prefixed records. PKSS frames carry explicit protocol"
+    },
+    {
+      "line": 54,
+      "text": "- A versioned C ABI with executable callbacks and bounded PKSS process"
+    }
+  ],
+  "file_id": "file-0009-68d24fa8",
+  "file_kind": "documentation",
+  "filesystem_io": [],
+  "finalization": [
+    {
+      "line": 46,
+      "text": "accounting, drain/abort, panic containment, and joined finalization while"
+    }
+  ],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "ab69b62a44ef08cf344977fbdae6a8f22f6599d0",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Markdown",
+  "line_count": 67,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "repository",
+  "path": "RELEASE_NOTES.md",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Documents PocketStation 1.x release notes."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 53,
+      "text": "runtime observations, and explicit stop and fault outcomes."
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 18,
+      "text": "- Rust and the versioned C ABI;"
+    },
+    {
+      "line": 31,
+      "text": "ABI uses versioned, size-prefixed records. PKSS frames carry explicit protocol"
+    },
+    {
+      "line": 54,
+      "text": "- A versioned C ABI with executable callbacks and bounded PKSS process"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 58,
+      "text": "source prepare/open is authoritative on every platform."
+    }
+  ],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 64,
+      "text": "async-free, log-free, and panic-free by contract and accepted gates. Evidence"
+    }
+  ],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

@@ -1,0 +1,475 @@
+{
+  "status": "reviewed",
+  "terms": [
+    {
+      "aliases": [],
+      "canonical_name": "Session",
+      "code_spelling": "Session",
+      "definition": "A declaration-time owner for sources, routes, operators, endpoints, and recording intent.",
+      "first_defining_symbol": "sym-2bc92b241327b4dea7a6",
+      "forbidden_aliases": [
+        "session runtime",
+        "context"
+      ],
+      "human_spelling": "Session",
+      "related_concepts": [
+        "RunningSession",
+        "SessionSpec"
+      ]
+    },
+    {
+      "aliases": [
+        "capture source"
+      ],
+      "canonical_name": "source",
+      "code_spelling": "Source",
+      "definition": "A declaration that identifies where a Session obtains a signal.",
+      "first_defining_symbol": "sym-1970bf80b3d65e499cbc",
+      "forbidden_aliases": [
+        "input thing"
+      ],
+      "human_spelling": "source",
+      "related_concepts": [
+        "stem",
+        "stream"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "stem",
+      "code_spelling": "StemId",
+      "definition": "A source-aware branch identity retained through routing and recording.",
+      "first_defining_symbol": "sym-75d4d4e1943195e6eb77",
+      "forbidden_aliases": [
+        "channel"
+      ],
+      "human_spelling": "stem",
+      "related_concepts": [
+        "source",
+        "lineage"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "stream",
+      "code_spelling": "Stream",
+      "definition": "A declaration-time typed connection origin used to compose Session routes.",
+      "first_defining_symbol": "sym-4a90d35df4d9ea067d92",
+      "forbidden_aliases": [
+        "track"
+      ],
+      "human_spelling": "stream",
+      "related_concepts": [
+        "signal",
+        "stem"
+      ]
+    },
+    {
+      "aliases": [
+        "provenance"
+      ],
+      "canonical_name": "lineage",
+      "code_spelling": "FrameLineage",
+      "definition": "Immutable identity and sequence metadata carried with a frame or signal.",
+      "first_defining_symbol": "sym-4fef42d34554948a377e",
+      "forbidden_aliases": [],
+      "human_spelling": "lineage",
+      "related_concepts": [
+        "source",
+        "stem",
+        "clock domain"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "clock domain",
+      "code_spelling": "ClockDomainId",
+      "definition": "An identity that states which clock produced a timestamp.",
+      "first_defining_symbol": "sym-a4e444719df81e729b41",
+      "forbidden_aliases": [],
+      "human_spelling": "clock domain",
+      "related_concepts": [
+        "Session timeline",
+        "lineage"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "Session timeline",
+      "code_spelling": "SessionTimelineOrigin",
+      "definition": "The common monotonic time origin used to correlate Session work.",
+      "first_defining_symbol": "sym-d7e0a4a1b83a40982ab0",
+      "forbidden_aliases": [
+        "wall clock"
+      ],
+      "human_spelling": "Session timeline",
+      "related_concepts": [
+        "clock domain"
+      ]
+    },
+    {
+      "aliases": [
+        "edge"
+      ],
+      "canonical_name": "route",
+      "code_spelling": "RouteId",
+      "definition": "A compiled delivery path from an output to an independent consumer.",
+      "first_defining_symbol": "sym-1a6c2e99f6c5209e946e",
+      "forbidden_aliases": [],
+      "human_spelling": "route",
+      "related_concepts": [
+        "backpressure",
+        "loss policy"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "backpressure",
+      "code_spelling": "BackpressurePolicy",
+      "definition": "The declared response when a bounded route cannot accept work immediately.",
+      "first_defining_symbol": "sym-52c724b184440d33720d",
+      "forbidden_aliases": [],
+      "human_spelling": "backpressure",
+      "related_concepts": [
+        "loss policy",
+        "capacity"
+      ]
+    },
+    {
+      "aliases": [
+        "drop policy"
+      ],
+      "canonical_name": "loss policy",
+      "code_spelling": "LossPolicy",
+      "definition": "The declared rule for data loss at a constrained edge.",
+      "first_defining_symbol": "sym-d1d9e1a25673a4721cca",
+      "forbidden_aliases": [],
+      "human_spelling": "loss policy",
+      "related_concepts": [
+        "backpressure"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "copy policy",
+      "code_spelling": "CopyPolicy",
+      "definition": "The declared ownership or copying rule for an edge crossing.",
+      "first_defining_symbol": "sym-478790b2fe815b61e933",
+      "forbidden_aliases": [],
+      "human_spelling": "copy policy",
+      "related_concepts": [
+        "route"
+      ]
+    },
+    {
+      "aliases": [
+        "processing stage"
+      ],
+      "canonical_name": "operator",
+      "code_spelling": "AsyncOperatorFactory",
+      "definition": "An extension that transforms or produces typed signals on the asynchronous lane.",
+      "first_defining_symbol": "sym-7f673a8597d821bc4fd4",
+      "forbidden_aliases": [
+        "filter"
+      ],
+      "human_spelling": "operator",
+      "related_concepts": [
+        "signal",
+        "named port"
+      ]
+    },
+    {
+      "aliases": [
+        "destination"
+      ],
+      "canonical_name": "endpoint",
+      "code_spelling": "EndpointDriverFactory",
+      "definition": "A destination driver prepared and finalized through the Session lifecycle.",
+      "first_defining_symbol": "sym-189be840949c107bd1e2",
+      "forbidden_aliases": [],
+      "human_spelling": "endpoint",
+      "related_concepts": [
+        "connector",
+        "route"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "connector",
+      "code_spelling": "ConnectorManifest",
+      "definition": "A typed endpoint integration contract with configuration, delivery, readiness, and failure policy.",
+      "first_defining_symbol": "sym-0b8e49c6c2e292c1b1a7",
+      "forbidden_aliases": [
+        "provider plugin"
+      ],
+      "human_spelling": "connector",
+      "related_concepts": [
+        "endpoint",
+        "sidecar"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "native extension",
+      "code_spelling": "NativeExtensionLibrary",
+      "definition": "A compiled dynamic library that contributes versioned source, operator, or endpoint registrations.",
+      "first_defining_symbol": "sym-6e04836fb3c4a6506520",
+      "forbidden_aliases": [
+        "plugin"
+      ],
+      "human_spelling": "native extension",
+      "related_concepts": [
+        "C ABI"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "sidecar",
+      "code_spelling": "SidecarProcessSpec",
+      "definition": "A managed child process participating through a bounded lifecycle protocol.",
+      "first_defining_symbol": "sym-a27eab0d01739805fe30",
+      "forbidden_aliases": [
+        "service"
+      ],
+      "human_spelling": "sidecar",
+      "related_concepts": [
+        "connector"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "signal",
+      "code_spelling": "SignalEnvelope",
+      "definition": "A typed asynchronous payload with specification, timing, and lineage.",
+      "first_defining_symbol": "sym-5814f0751edd71a9a732",
+      "forbidden_aliases": [
+        "message"
+      ],
+      "human_spelling": "signal",
+      "related_concepts": [
+        "audio frame",
+        "operator"
+      ]
+    },
+    {
+      "aliases": [
+        "frame"
+      ],
+      "canonical_name": "audio frame",
+      "code_spelling": "AudioFrame",
+      "definition": "A pooled PCM buffer paired with sample specification and frame lineage.",
+      "first_defining_symbol": "sym-20dc36dbfddecd17a67e",
+      "forbidden_aliases": [],
+      "human_spelling": "audio frame",
+      "related_concepts": [
+        "signal",
+        "buffer pool"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "buffer pool",
+      "code_spelling": "AudioBufferPool",
+      "definition": "A fixed-capacity owner that supplies reusable audio storage.",
+      "first_defining_symbol": "sym-a15a6a92570d55bd7a7e",
+      "forbidden_aliases": [],
+      "human_spelling": "buffer pool",
+      "related_concepts": [
+        "audio frame"
+      ]
+    },
+    {
+      "aliases": [
+        "Bridge"
+      ],
+      "canonical_name": "audio reentry",
+      "code_spelling": "AudioReentryBridge",
+      "definition": "The bounded crossing that returns asynchronously generated PCM to the audio lane.",
+      "first_defining_symbol": "not_found",
+      "forbidden_aliases": [],
+      "human_spelling": "audio reentry",
+      "related_concepts": [
+        "operator"
+      ]
+    },
+    {
+      "aliases": [
+        "Session spec"
+      ],
+      "canonical_name": "Session declaration",
+      "code_spelling": "SessionSpec",
+      "definition": "The immutable specification produced before compilation and runtime preparation.",
+      "first_defining_symbol": "sym-27197b414b5c58c307bc",
+      "forbidden_aliases": [],
+      "human_spelling": "Session declaration",
+      "related_concepts": [
+        "Session",
+        "compiled Session"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "compiled Session",
+      "code_spelling": "CompiledSession",
+      "definition": "A validated and resolved Session plan ready for resource preparation.",
+      "first_defining_symbol": "sym-4562c1edb000359bf2e3",
+      "forbidden_aliases": [],
+      "human_spelling": "compiled Session",
+      "related_concepts": [
+        "Session declaration",
+        "prepared Session"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "prepared Session",
+      "code_spelling": "PreparedSession",
+      "definition": "A Session whose source and endpoint resources have been prepared but not started.",
+      "first_defining_symbol": "sym-fc6de5a8f49558d75b23",
+      "forbidden_aliases": [],
+      "human_spelling": "prepared Session",
+      "related_concepts": [
+        "compiled Session",
+        "running Session"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "running Session",
+      "code_spelling": "RunningSession",
+      "definition": "The runtime owner used to observe and stop active Session execution.",
+      "first_defining_symbol": "sym-c71973c28b7cd5ca276f",
+      "forbidden_aliases": [],
+      "human_spelling": "running Session",
+      "related_concepts": [
+        "prepared Session",
+        "terminal outcome"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "terminal outcome",
+      "code_spelling": "SessionTerminalOutcome",
+      "definition": "The structured result of Session stop and component finalization.",
+      "first_defining_symbol": "sym-85d357462ae58fe52af5",
+      "forbidden_aliases": [
+        "exit status"
+      ],
+      "human_spelling": "terminal outcome",
+      "related_concepts": [
+        "running Session"
+      ]
+    },
+    {
+      "aliases": [
+        "metric"
+      ],
+      "canonical_name": "observation",
+      "code_spelling": "SessionMetricsSnapshot",
+      "definition": "A metrics, event, or trace value exposed without redefining runtime behavior.",
+      "first_defining_symbol": "sym-0faf34118f6e4161f275",
+      "forbidden_aliases": [
+        "telemetry guarantee"
+      ],
+      "human_spelling": "observation",
+      "related_concepts": [
+        "Session trace"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "Session trace",
+      "code_spelling": "SessionTrace",
+      "definition": "A persisted sequence of lifecycle trace records with validation support.",
+      "first_defining_symbol": "sym-8770e17938b020854796",
+      "forbidden_aliases": [
+        "log file"
+      ],
+      "human_spelling": "Session trace",
+      "related_concepts": [
+        "observation"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "source generation",
+      "code_spelling": "SourceGeneration",
+      "definition": "A monotonic identity revision used when an observed source changes incarnation.",
+      "first_defining_symbol": "sym-01264616743bcdc7a86b",
+      "forbidden_aliases": [],
+      "human_spelling": "source generation",
+      "related_concepts": [
+        "source",
+        "lineage"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "permission epoch",
+      "code_spelling": "PermissionEpoch",
+      "definition": "A revision associated with authorization state observation.",
+      "first_defining_symbol": "sym-527fd6dac2e7990eabeb",
+      "forbidden_aliases": [],
+      "human_spelling": "permission epoch",
+      "related_concepts": [
+        "source generation"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "readiness",
+      "code_spelling": "ConnectorReadinessPolicy",
+      "definition": "The connector policy governing readiness observations before delivery.",
+      "first_defining_symbol": "sym-f5ef166c6864c5eafaa0",
+      "forbidden_aliases": [
+        "health"
+      ],
+      "human_spelling": "readiness",
+      "related_concepts": [
+        "connector"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "retry budget",
+      "code_spelling": "RetryBudget",
+      "definition": "A finite connector limit on retry attempts or elapsed retry work.",
+      "first_defining_symbol": "not_found",
+      "forbidden_aliases": [
+        "infinite retry"
+      ],
+      "human_spelling": "retry budget",
+      "related_concepts": [
+        "connector"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "C ABI",
+      "code_spelling": "PksSessionStatus",
+      "definition": "The versioned C representation of Session and extension operations.",
+      "first_defining_symbol": "sym-49a4e0df98e2e2be6b65",
+      "forbidden_aliases": [
+        "Rust API"
+      ],
+      "human_spelling": "C ABI",
+      "related_concepts": [
+        "native extension"
+      ]
+    },
+    {
+      "aliases": [],
+      "canonical_name": "conformance",
+      "code_spelling": "conformance",
+      "definition": "Executable evidence that a boundary matches a versioned contract under stated conditions.",
+      "first_defining_symbol": "not_found",
+      "forbidden_aliases": [
+        "qualification"
+      ],
+      "human_spelling": "conformance",
+      "related_concepts": [
+        "C ABI"
+      ]
+    }
+  ]
+}

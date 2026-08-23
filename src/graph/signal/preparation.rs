@@ -6,6 +6,7 @@ use std::pin::Pin;
 use crate::graph::node::{NodeError, PortPrepareContext};
 use crate::graph::{ExecutionPartition, PortDirection};
 
+#[doc = "Names the future returned by async node operations."]
 pub type AsyncNodeFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;
 
 /// Exact bounded graph edge supplied to an asynchronous Operator at prepare time.
@@ -26,6 +27,7 @@ pub struct AsyncOperatorPrepareContext {
 }
 
 impl AsyncOperatorPrepareContext {
+    #[doc = "Creates a new `AsyncOperatorPrepareContext`."]
     pub fn new(
         execution_partition: ExecutionPartition,
         edges: Vec<AsyncOperatorEdgePrepareContext>,
@@ -55,14 +57,17 @@ impl AsyncOperatorPrepareContext {
         })
     }
 
+    #[doc = "Returns the execution partition associated with `AsyncOperatorPrepareContext`."]
     pub const fn execution_partition(&self) -> ExecutionPartition {
         self.execution_partition
     }
 
+    #[doc = "Returns the inputs associated with `AsyncOperatorPrepareContext`."]
     pub fn inputs(&self) -> &[AsyncOperatorEdgePrepareContext] {
         &self.inputs
     }
 
+    #[doc = "Returns the outputs associated with `AsyncOperatorPrepareContext`."]
     pub fn outputs(&self) -> &[AsyncOperatorEdgePrepareContext] {
         &self.outputs
     }

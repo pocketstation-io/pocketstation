@@ -1,0 +1,765 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Box::new",
+    "ConnectorRunOutcome::failure",
+    "ConnectorRunOutcome::success",
+    "Duration::from_millis",
+    "EndpointPreparationGroup::Route",
+    "EndpointReceiver::Signal",
+    "Vec::with_capacity",
+    "cancel_preparation",
+    "clone",
+    "configuration",
+    "connector_id",
+    "context",
+    "deliver",
+    "derive",
+    "discontinuity_epoch",
+    "drop",
+    "edge_contract",
+    "endpoint_id",
+    "idle",
+    "input",
+    "into_iter",
+    "into_parts",
+    "is_abort_requested",
+    "is_some_and",
+    "iter",
+    "len",
+    "let",
+    "lineage",
+    "map",
+    "map_or",
+    "media",
+    "port_name",
+    "preparation_group",
+    "prepare",
+    "prepare_connector_driver",
+    "pub",
+    "push",
+    "record_discontinuity",
+    "record_frame_delivered",
+    "record_frame_dropped",
+    "record_frame_received",
+    "route_context",
+    "route_id",
+    "run",
+    "set_ready",
+    "shutdown",
+    "shutdown_mode",
+    "signal_spec",
+    "start",
+    "super::supervisor::internal_connector_error",
+    "take",
+    "to_owned",
+    "try_recv",
+    "unwrap_or",
+    "wait_for_stop",
+    "zip"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "Box::new"
+  ],
+  "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 11,
+      "name": "DRIVER_IDLE_WAIT",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 16,
+      "name": "ConnectorInputDescriptor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 28,
+      "name": "endpoint_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "connector_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "route_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "port_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "signal_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "edge_contract",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 62,
+      "name": "ConnectorItem",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "input",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 83,
+      "name": "ConnectorDeliveryOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 92,
+      "name": "ConnectorDriver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 93,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 97,
+      "name": "deliver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "idle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 107,
+      "name": "shutdown",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 115,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "trait",
+      "line": 123,
+      "name": "ConnectorDriverFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 124,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "prepare_connector_driver",
+      "visibility": "pub(super)"
+    },
+    {
+      "kind": "struct",
+      "line": 180,
+      "name": "DriverInput",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 186,
+      "name": "PollingConnectorWorker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 193,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 273,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 280,
+      "name": "record_discontinuity",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 117,
+      "text": "drop(self);"
+    }
+  ],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 16,
+      "name": "ConnectorInputDescriptor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 28,
+      "name": "endpoint_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "connector_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "route_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "port_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "signal_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "edge_contract",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 62,
+      "name": "ConnectorItem",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "input",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 83,
+      "name": "ConnectorDeliveryOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 92,
+      "name": "ConnectorDriver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 123,
+      "name": "ConnectorDriverFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "prepare_connector_driver",
+      "visibility": "pub(super)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 144,
+      "text": "return Err(super::supervisor::internal_connector_error("
+    },
+    {
+      "line": 201,
+      "text": "if let Err(error) = driver.start(&context) {"
+    },
+    {
+      "line": 249,
+      "text": "Err(error) => return ConnectorRunOutcome::failure(error),"
+    },
+    {
+      "line": 259,
+      "text": "if let Err(error) = driver.idle(&context) {"
+    },
+    {
+      "line": 270,
+      "text": "Err(error) => ConnectorRunOutcome::failure(error),"
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "9273bdec170d7f8991ee839125b0ef5465fd2e2cebbbac65691230dfe5bc5130",
+      "lines": [
+        1,
+        287
+      ],
+      "path": "src/connector/worker/driver.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0122-2424cdbd",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "8da872bb28839d501d8a3a5b20f3ddfb1c9d7e48",
+  "implemented_by": [],
+  "implements": [
+    "ConnectorInputDescriptor",
+    "ConnectorItem<'_>",
+    "ConnectorWorker for PollingConnectorWorker"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::connector::{ConnectorError, ResolvedConnectorConfiguration}",
+    "crate::{ EndpointAudioFrame, EndpointId, EndpointPortInput, EndpointPreparationGroup, EndpointReceiver, EndpointShutdownMode, MediaCaps, RouteId, SignalEnvelope, SignalSpec, }",
+    "std::sync::Arc",
+    "std::time::Duration",
+    "super::{ConnectorContext, ConnectorRunOutcome, ConnectorWorker}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 90,
+      "text": "/// Calls occur outside realtime partitions. Implementations must keep every"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 287,
+  "locks": [],
+  "module": "pocketstation::connector::worker::driver",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-a6a76a8e4974d5910060",
+    "pattern-e065b0a6fab311b67644"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/connector/worker/driver.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 11,
+      "name": "DRIVER_IDLE_WAIT",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 93,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 97,
+      "name": "deliver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 103,
+      "name": "idle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 107,
+      "name": "shutdown",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 115,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 124,
+      "name": "preparation_group",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 131,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 180,
+      "name": "DriverInput",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 186,
+      "name": "PollingConnectorWorker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 193,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 273,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 280,
+      "name": "record_discontinuity",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 16,
+      "name": "ConnectorInputDescriptor",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 28,
+      "name": "endpoint_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "connector_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "route_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 39,
+      "name": "port_name",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 43,
+      "name": "signal_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 47,
+      "name": "media",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 51,
+      "name": "edge_contract",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 62,
+      "name": "ConnectorItem",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 74,
+      "name": "input",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 83,
+      "name": "ConnectorDeliveryOutcome",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 92,
+      "name": "ConnectorDriver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "trait",
+      "line": 123,
+      "name": "ConnectorDriverFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 137,
+      "name": "prepare_connector_driver",
+      "visibility": "pub(super)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::connector::worker::driver`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/connectors.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/configure-connector-secrets.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/connectors.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/connectors.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/terminal-outcomes.md",
+    "docs/best-practices/connector-retries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 1,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 69,
+      "text": "signal: Arc<SignalEnvelope>,"
+    },
+    {
+      "line": 116,
+      "text": "fn cancel_preparation(self: Box<Self>) -> Result<(), ConnectorError> {"
+    },
+    {
+      "line": 135,
+      "text": ") -> Result<Box<dyn ConnectorDriver>, ConnectorError>;"
+    },
+    {
+      "line": 142,
+      "text": ") -> Result<Box<dyn ConnectorWorker>, ConnectorError> {"
+    },
+    {
+      "line": 175,
+      "text": "Ok(Box::new(PollingConnectorWorker {"
+    },
+    {
+      "line": 188,
+      "text": "driver: Option<Box<dyn ConnectorDriver>>,"
+    },
+    {
+      "line": 193,
+      "text": "fn run(mut self: Box<Self>, context: ConnectorContext) -> ConnectorRunOutcome {"
+    },
+    {
+      "line": 274,
+      "text": "fn cancel_preparation(mut self: Box<Self>) -> Result<(), ConnectorError> {"
+    }
+  ],
+  "responsibilities": [
+    "DRIVER_IDLE_WAIT",
+    "ConnectorInputDescriptor",
+    "endpoint_id",
+    "connector_id",
+    "route_id",
+    "port_name",
+    "signal_spec",
+    "media",
+    "edge_contract",
+    "configuration",
+    "ConnectorItem",
+    "input",
+    "ConnectorDeliveryOutcome",
+    "ConnectorDriver",
+    "start",
+    "deliver",
+    "idle",
+    "shutdown",
+    "cancel_preparation",
+    "ConnectorDriverFactory",
+    "preparation_group",
+    "prepare",
+    "prepare_connector_driver",
+    "DriverInput",
+    "PollingConnectorWorker",
+    "run",
+    "cancel_preparation",
+    "record_discontinuity"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 108,
+      "text": "fn shutdown("
+    },
+    {
+      "line": 268,
+      "text": "match driver.shutdown(mode, &context) {"
+    }
+  ],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 93,
+      "text": "fn start(&mut self, context: &ConnectorContext) -> Result<(), ConnectorError> {"
+    },
+    {
+      "line": 132,
+      "text": "fn prepare("
+    },
+    {
+      "line": 174,
+      "text": "let driver = factory.prepare(&descriptors)?;"
+    },
+    {
+      "line": 201,
+      "text": "if let Err(error) = driver.start(&context) {"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

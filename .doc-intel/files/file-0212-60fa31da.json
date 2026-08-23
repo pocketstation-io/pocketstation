@@ -1,0 +1,644 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "CaptureError::BackendInit",
+    "CaptureError::ModeUnsupported",
+    "EndpointId",
+    "SessionId",
+    "StemId",
+    "Vec::with_capacity",
+    "all",
+    "as_str",
+    "capture_error_code",
+    "capture_finalization_failures_total",
+    "cfg",
+    "copied",
+    "crate::session::OperatorInstanceId::new",
+    "derive",
+    "endpoint_finalization_failures_total",
+    "given_declaration_errors_when_mapped_then_every_variant_has_a_stable_code",
+    "given_polled_audio_failures_when_mapped_then_every_status_is_preserved",
+    "given_stable_code_vocabulary_when_serialized_then_values_are_unique_and_namespaced",
+    "given_start_and_capture_failures_when_mapped_then_specific_classes_are_preserved",
+    "into_boxed_slice",
+    "iter",
+    "len",
+    "lineage_failures_total",
+    "operator_finalization_failures_total",
+    "polled_audio_poll_error_code",
+    "push",
+    "runtime_failures_total",
+    "runtime_worker_panicked",
+    "session_declaration_error_code",
+    "session_start_failure_code",
+    "session_stop_failure_codes",
+    "source_send_rejections_total",
+    "starts_with",
+    "to_owned"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 307,
+      "text": "#[cfg(test)]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "crate::session::OperatorInstanceId::new"
+  ],
+  "content_hash": "a6393ff17adfb143671072f10ab578af75ef78e281dcbc5d10b066d10b1290c8",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "enum",
+      "line": 10,
+      "name": "SessionDeclarationErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 61,
+      "name": "SessionStartErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 116,
+      "name": "SessionRuntimeErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 121,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 131,
+      "name": "PolledAudioPollErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 138,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 150,
+      "name": "SessionStopCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 157,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 171,
+      "name": "SessionStopFailureCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 182,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 194,
+      "name": "session_declaration_error_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 224,
+      "name": "session_start_failure_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "polled_audio_poll_error_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "session_stop_failure_codes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 290,
+      "name": "capture_error_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 308,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 322,
+      "name": "given_stable_code_vocabulary_when_serialized_then_values_are_unique_and_namespaced",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 385,
+      "name": "given_declaration_errors_when_mapped_then_every_variant_has_a_stable_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 473,
+      "name": "given_start_and_capture_failures_when_mapped_then_specific_classes_are_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 527,
+      "name": "given_polled_audio_failures_when_mapped_then_every_status_is_preserved",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 10,
+      "name": "SessionDeclarationErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 61,
+      "name": "SessionStartErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 116,
+      "name": "SessionRuntimeErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 121,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 131,
+      "name": "PolledAudioPollErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 138,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 150,
+      "name": "SessionStopCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 157,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 171,
+      "name": "SessionStopFailureCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 182,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 194,
+      "name": "session_declaration_error_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 224,
+      "name": "session_start_failure_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "polled_audio_poll_error_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "session_stop_failure_codes",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 10,
+      "name": "SessionDeclarationErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 61,
+      "name": "SessionStartErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 116,
+      "name": "SessionRuntimeErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 131,
+      "name": "PolledAudioPollErrorCode",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "a6393ff17adfb143671072f10ab578af75ef78e281dcbc5d10b066d10b1290c8",
+      "lines": [
+        1,
+        544
+      ],
+      "path": "src/session/error_code.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0212-60fa31da",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "133f0ba83733f16cbc7b7874fd19c37aafbe5bce",
+  "implemented_by": [],
+  "implements": [
+    "SessionDeclarationErrorCode",
+    "SessionStartErrorCode",
+    "SessionRuntimeErrorCode",
+    "PolledAudioPollErrorCode",
+    "SessionStopCode",
+    "SessionStopFailureCode"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::capture::CaptureError",
+    "crate::session::{ EndpointId, PolledAudioPollError, SessionError, SessionId, SessionStartError, StemId, }",
+    "crate::session::{PolledAudioPollError, SessionError, SessionStartError, SessionStopOutcome}",
+    "std::collections::HashSet",
+    "super::{ capture_error_code, polled_audio_poll_error_code, session_declaration_error_code, session_start_failure_code, PolledAudioPollErrorCode, SessionDeclarationErrorCode, SessionRuntimeErrorCode, SessionStartErrorCode, SessionStopCode, SessionStopFailureCode, }"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 377,
+      "text": "assert!(values.iter().all(|value| {"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 544,
+  "locks": [],
+  "module": "pocketstation::session::error_code",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/error_code.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "fn",
+      "line": 290,
+      "name": "capture_error_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 308,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 322,
+      "name": "given_stable_code_vocabulary_when_serialized_then_values_are_unique_and_namespaced",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 385,
+      "name": "given_declaration_errors_when_mapped_then_every_variant_has_a_stable_code",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 473,
+      "name": "given_start_and_capture_failures_when_mapped_then_specific_classes_are_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 527,
+      "name": "given_polled_audio_failures_when_mapped_then_every_status_is_preserved",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 10,
+      "name": "SessionDeclarationErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 31,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 61,
+      "name": "SessionStartErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 86,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 116,
+      "name": "SessionRuntimeErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 121,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 131,
+      "name": "PolledAudioPollErrorCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 138,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 150,
+      "name": "SessionStopCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 157,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 171,
+      "name": "SessionStopFailureCode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 182,
+      "name": "as_str",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 194,
+      "name": "session_declaration_error_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 224,
+      "name": "session_start_failure_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "polled_audio_poll_error_code",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 264,
+      "name": "session_stop_failure_codes",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::session::error_code`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 265,
+      "text": "pub fn session_stop_failure_codes(outcome: &SessionStopOutcome) -> Box<[SessionStopFailureCode]> {"
+    }
+  ],
+  "responsibilities": [
+    "SessionDeclarationErrorCode",
+    "as_str",
+    "SessionStartErrorCode",
+    "as_str",
+    "SessionRuntimeErrorCode",
+    "as_str",
+    "PolledAudioPollErrorCode",
+    "as_str",
+    "SessionStopCode",
+    "as_str",
+    "SessionStopFailureCode",
+    "as_str",
+    "session_declaration_error_code",
+    "session_start_failure_code",
+    "polled_audio_poll_error_code",
+    "session_stop_failure_codes",
+    "capture_error_code",
+    "tests",
+    "given_stable_code_vocabulary_when_serialized_then_values_are_unique_and_namespaced",
+    "given_declaration_errors_when_mapped_then_every_variant_has_a_stable_code",
+    "given_start_and_capture_failures_when_mapped_then_specific_classes_are_preserved",
+    "given_polled_audio_failures_when_mapped_then_every_status_is_preserved"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 147,
+      "text": "/// Stable language-neutral status for an idempotent Session stop."
+    },
+    {
+      "line": 166,
+      "text": "/// Stable language-neutral cause retained by a failed Session stop."
+    }
+  ],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

@@ -1,0 +1,721 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "Arc::ptr_eq",
+    "AtomicU64::new",
+    "HashMap::new",
+    "Instant::now",
+    "Mutex::new",
+    "any",
+    "as_nanos",
+    "clone",
+    "collect",
+    "copied",
+    "derive",
+    "elapsed",
+    "error",
+    "fetch_update",
+    "finish_transition",
+    "get",
+    "increment",
+    "insert",
+    "install",
+    "into_inner",
+    "into_iter",
+    "iter",
+    "load",
+    "lock",
+    "lock_status",
+    "map",
+    "map_err",
+    "new",
+    "observation",
+    "pub",
+    "push",
+    "record_failure",
+    "record_retry",
+    "saturating_add",
+    "set_delivery_readiness",
+    "set_health",
+    "set_recovery",
+    "snapshot",
+    "snapshots",
+    "u64::try_from",
+    "unwrap_or",
+    "unwrap_or_else",
+    "values"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AtomicU64::new",
+    "HashMap::new",
+    "Mutex::new",
+    "new",
+    "u64::try_from"
+  ],
+  "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 15,
+      "name": "ConnectorObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 18,
+      "name": "ConnectorObservationState",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 75,
+      "name": "set_delivery_readiness",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "set_health",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 105,
+      "name": "set_recovery",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 124,
+      "name": "record_retry",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 128,
+      "name": "record_failure",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "lock_status",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 148,
+      "name": "finish_transition",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 158,
+      "name": "ConnectorObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 168,
+      "name": "ConnectorRuntimeObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 175,
+      "name": "ConnectorObservationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 181,
+      "name": "ConnectorObservationStore",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 186,
+      "name": "ConnectorObservationEntry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 193,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 198,
+      "name": "install",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "observation",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 228,
+      "name": "snapshots",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 255,
+      "name": "increment",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 6,
+      "text": "use crate::endpoint::EndpointDriverObservationHandle;"
+    },
+    {
+      "line": 171,
+      "text": "pub endpoint: EndpointDriverObservations,"
+    },
+    {
+      "line": 189,
+      "text": "endpoint: EndpointDriverObservationHandle,"
+    },
+    {
+      "line": 203,
+      "text": "endpoint: EndpointDriverObservationHandle,"
+    },
+    {
+      "line": 212,
+      "text": "endpoint: endpoint.clone(),"
+    },
+    {
+      "line": 249,
+      "text": "endpoint: entry.endpoint.snapshot(),"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 15,
+      "name": "ConnectorObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 75,
+      "name": "set_delivery_readiness",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "set_health",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 105,
+      "name": "set_recovery",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 124,
+      "name": "record_retry",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 128,
+      "name": "record_failure",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 158,
+      "name": "ConnectorObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 168,
+      "name": "ConnectorRuntimeObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 175,
+      "name": "ConnectorObservationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 181,
+      "name": "ConnectorObservationStore",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 193,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 198,
+      "name": "install",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "observation",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 228,
+      "name": "snapshots",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 175,
+      "name": "ConnectorObservationError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 58,
+      "text": ".map_err(|_| ConnectorObservationError::StateUnavailable)?"
+    },
+    {
+      "line": 64,
+      "text": ".map_err(|_| ConnectorObservationError::StateUnavailable)?"
+    },
+    {
+      "line": 137,
+      "text": ".map_err(|_| ConnectorObservationError::StateUnavailable)? = Some(error);"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 58,
+      "text": ".map_err(|_| ConnectorObservationError::StateUnavailable)?"
+    },
+    {
+      "line": 64,
+      "text": ".map_err(|_| ConnectorObservationError::StateUnavailable)?"
+    },
+    {
+      "line": 137,
+      "text": ".map_err(|_| ConnectorObservationError::StateUnavailable)? = Some(error);"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 58,
+      "text": ".map_err(|_| ConnectorObservationError::StateUnavailable)?"
+    },
+    {
+      "line": 64,
+      "text": ".map_err(|_| ConnectorObservationError::StateUnavailable)?"
+    },
+    {
+      "line": 137,
+      "text": ".map_err(|_| ConnectorObservationError::StateUnavailable)? = Some(error);"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "b1cd1a76c16025861b46b7f272ed0eda303f7f698fb9af8b9b30836eebb14a20",
+      "lines": [
+        1,
+        261
+      ],
+      "path": "src/connector/observations.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0116-9d74a2cd",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "103c0800df1bf8041ed60660f444ffdfb18af0ef",
+  "implemented_by": [],
+  "implements": [
+    "ConnectorObservationHandle",
+    "ConnectorObservationStore"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::endpoint::EndpointDriverObservationHandle",
+    "crate::{EndpointDriverObservations, EndpointId}",
+    "std::collections::HashMap",
+    "std::sync::atomic::{AtomicU64, Ordering}",
+    "std::sync::{Arc, Mutex}",
+    "std::time::Instant",
+    "super::{ ConnectorDeliveryReadiness, ConnectorError, ConnectorErrorCode, ConnectorHealth, ConnectorRecovery, ConnectorServiceStatus, }"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 261,
+  "locks": [
+    {
+      "line": 3,
+      "text": "use std::sync::{Arc, Mutex};"
+    },
+    {
+      "line": 21,
+      "text": "status: Mutex<ConnectorServiceStatus>,"
+    },
+    {
+      "line": 26,
+      "text": "last_error: Mutex<Option<ConnectorError>>,"
+    },
+    {
+      "line": 34,
+      "text": "status: Mutex::new(ConnectorServiceStatus {"
+    },
+    {
+      "line": 48,
+      "text": "last_error: Mutex::new(None),"
+    },
+    {
+      "line": 182,
+      "text": "inner: Arc<Mutex<HashMap<EndpointId, ConnectorObservationEntry>>>,"
+    },
+    {
+      "line": 195,
+      "text": "inner: Arc::new(Mutex::new(HashMap::new())),"
+    }
+  ],
+  "module": "pocketstation::connector::observations",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-d954414b5a5c752cfe87"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/connector/observations.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "struct",
+      "line": 18,
+      "name": "ConnectorObservationState",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 141,
+      "name": "lock_status",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 148,
+      "name": "finish_transition",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 186,
+      "name": "ConnectorObservationEntry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 255,
+      "name": "increment",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 15,
+      "name": "ConnectorObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 52,
+      "name": "snapshot",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 75,
+      "name": "set_delivery_readiness",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "set_health",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 105,
+      "name": "set_recovery",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 124,
+      "name": "record_retry",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 128,
+      "name": "record_failure",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 158,
+      "name": "ConnectorObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 168,
+      "name": "ConnectorRuntimeObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 175,
+      "name": "ConnectorObservationError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 181,
+      "name": "ConnectorObservationStore",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 193,
+      "name": "new",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 198,
+      "name": "install",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "observation",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 228,
+      "name": "snapshots",
+      "visibility": "pub(crate)"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `pocketstation::connector::observations`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/connectors.md",
+    "docs/concepts/connector-workers.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/concepts/conformance.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/guides/connectors.md",
+    "docs/how-to/configure-connector-secrets.md",
+    "docs/how-to/test-connector-conformance.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/run-protocol-checks.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/connectors.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/connectors.md",
+    "docs/troubleshooting/connector-readiness.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/conformance-fixtures.md",
+    "docs/best-practices/terminal-outcomes.md",
+    "docs/best-practices/connector-retries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 3,
+      "text": "use std::sync::{Arc, Mutex};"
+    },
+    {
+      "line": 16,
+      "text": "inner: Arc<ConnectorObservationState>,"
+    },
+    {
+      "line": 32,
+      "text": "inner: Arc::new(ConnectorObservationState {"
+    },
+    {
+      "line": 169,
+      "text": "pub endpoint_ids: Arc<[EndpointId]>,"
+    },
+    {
+      "line": 182,
+      "text": "inner: Arc<Mutex<HashMap<EndpointId, ConnectorObservationEntry>>>,"
+    },
+    {
+      "line": 187,
+      "text": "endpoint_ids: Arc<[EndpointId]>,"
+    },
+    {
+      "line": 195,
+      "text": "inner: Arc::new(Mutex::new(HashMap::new())),"
+    },
+    {
+      "line": 201,
+      "text": "endpoint_ids: Arc<[EndpointId]>,"
+    },
+    {
+      "line": 210,
+      "text": "endpoint_ids: Arc::clone(&endpoint_ids),"
+    },
+    {
+      "line": 237,
+      "text": ".any(|known| Arc::ptr_eq(&known.endpoint_ids, &entry.endpoint_ids))"
+    }
+  ],
+  "responsibilities": [
+    "ConnectorObservationHandle",
+    "ConnectorObservationState",
+    "new",
+    "snapshot",
+    "set_delivery_readiness",
+    "set_health",
+    "set_recovery",
+    "record_retry",
+    "record_failure",
+    "lock_status",
+    "finish_transition",
+    "ConnectorObservations",
+    "ConnectorRuntimeObservations",
+    "ConnectorObservationError",
+    "ConnectorObservationStore",
+    "ConnectorObservationEntry",
+    "new",
+    "install",
+    "observation",
+    "snapshots",
+    "increment"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

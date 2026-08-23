@@ -1,0 +1,2888 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 729,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 739,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 778,
+      "text": "Box::pin(async move {"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AtomicBool::new",
+    "AtomicU64::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Box::new",
+    "Box::pin",
+    "CaptureMode::Application",
+    "CaptureMode::InputDevice",
+    "CaptureMode::Process",
+    "CaptureObservationHandle::default",
+    "CaptureObservations::default",
+    "ConnectorDeclaration",
+    "ConnectorRegistration",
+    "Contract",
+    "Declaration",
+    "Duration::from_millis",
+    "Duration::from_secs",
+    "EndpointDriverObservations::default",
+    "EndpointFailure::new",
+    "EndpointReceiver::Signal",
+    "ExtensionEndpointControl::default",
+    "ExtensionOperatorControl::default",
+    "ExtensionSourceControl::default",
+    "NativeSessionEngineHostOptions::default",
+    "ObservedEndpointError::Contract",
+    "OnceLock::new",
+    "OperatorId::new",
+    "PolledAudioEndpointConfig::default",
+    "PrepareContext::new",
+    "Registration",
+    "SampleSpec::new",
+    "Session::with_host_builder",
+    "SessionEngineHostBuilder::new",
+    "SourceId",
+    "StreamId",
+    "Vec::new",
+    "acquire",
+    "amplitude",
+    "as_mut_slice",
+    "as_ref",
+    "as_slice",
+    "browser",
+    "cancel_preparation",
+    "channels",
+    "clone",
+    "close",
+    "collect",
+    "crate::AsyncOperatorManifest::new",
+    "crate::ClockDomainId::new",
+    "crate::EdgeContract::bounded_async",
+    "crate::EdgeContract::realtime_audio",
+    "crate::EndpointDescriptor::new",
+    "crate::EndpointDriverObservations::default",
+    "crate::EndpointFailure::new",
+    "crate::EndpointReceiver::Signal",
+    "crate::MediaCaps::Audio",
+    "crate::MediaCaps::Binary",
+    "crate::NodeDescriptor::new",
+    "crate::NodeError::Process",
+    "crate::NodeTypeId::from",
+    "crate::Operator::new",
+    "crate::OperatorConfiguration::new",
+    "crate::OperatorId::new",
+    "crate::PortSpec::new",
+    "crate::SemanticRole::new",
+    "crate::Session::new",
+    "crate::SessionEventKind::Lifecycle",
+    "crate::SessionEventKind::Terminal",
+    "crate::SessionEventReceive::Event",
+    "crate::SignalDerivation::new",
+    "crate::SignalEnvelope::untracked",
+    "crate::SignalPayload::Bytes",
+    "crate::SignalSpec::audio",
+    "crate::SignalSpec::custom",
+    "crate::SourceConfiguration::default",
+    "crate::SourceDriverError::Failed",
+    "crate::SourceManifest::new",
+    "crate::SourceTypeId::new",
+    "crate::connector::Connector::new",
+    "crate::connector::ConnectorConfiguration::new",
+    "crate::connector::ConnectorConfigurationSchema::new",
+    "crate::connector::ConnectorManifest::new",
+    "crate::connector::ConnectorReadinessPolicy::new",
+    "crate::connector::ConnectorRunOutcome::success",
+    "crate::timing::monotonic_timestamp_ns",
+    "create",
+    "current_observations",
+    "declare",
+    "derive",
+    "derived_route",
+    "descriptor",
+    "drop",
+    "endpoint",
+    "error",
+    "extension_operator_manifest",
+    "extension_port",
+    "extension_signal_spec",
+    "external_source",
+    "fetch_add",
+    "fill",
+    "filter_map",
+    "from_source_output",
+    "get_or_init",
+    "input_queue_capacity_frames",
+    "input_queue_peak_frames",
+    "into",
+    "into_iter",
+    "into_parts",
+    "is_abandoned",
+    "is_open",
+    "is_some",
+    "is_some_and",
+    "is_stop_requested",
+    "is_success",
+    "is_zero",
+    "join",
+    "join_and_finalize",
+    "kind",
+    "len",
+    "let",
+    "lineage",
+    "load",
+    "manifest",
+    "map",
+    "map_err",
+    "map_or",
+    "map_payload",
+    "metrics_snapshot",
+    "name",
+    "new",
+    "next",
+    "observation_handle",
+    "observations",
+    "observed_browser",
+    "observed_connector",
+    "ok_or_else",
+    "open",
+    "operator",
+    "output",
+    "payload",
+    "pop",
+    "port_name",
+    "prepare",
+    "push",
+    "receiver",
+    "record_frame_delivered",
+    "record_frame_received",
+    "register_browser_driver",
+    "register_connector",
+    "register_endpoint",
+    "register_operator",
+    "register_source",
+    "report_readiness_success",
+    "request_stop",
+    "run",
+    "run_extension_vector",
+    "saturating_add",
+    "saturating_mul",
+    "send",
+    "session",
+    "session_for_saturation",
+    "session_with_options",
+    "session_with_recording",
+    "session_with_recording_and_trace",
+    "session_with_trace",
+    "set_application_backend",
+    "set_microphone_backend",
+    "signal_spec",
+    "source",
+    "source_id",
+    "spawn",
+    "start",
+    "std::thread::spawn",
+    "std::time::Instant::now",
+    "stop",
+    "stop_and_join",
+    "store",
+    "stream_id",
+    "take",
+    "thread::Builder::new",
+    "thread::sleep",
+    "thread::yield_now",
+    "through",
+    "timing",
+    "to_owned",
+    "to_string",
+    "to_vec",
+    "try_recv",
+    "try_recv_event",
+    "try_send",
+    "usize::from",
+    "validate_config",
+    "wait_for_stop",
+    "with_derivation",
+    "with_lineage",
+    "with_role",
+    "with_schema"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 3,
+      "text": "//! This feature is `LOOPBACK-ONLY`, disabled by default, and is not product"
+    },
+    {
+      "line": 691,
+      "text": ") -> Result<(), crate::ConfigError> {"
+    },
+    {
+      "line": 793,
+      "text": ") -> Result<(), crate::ConfigError> {"
+    },
+    {
+      "line": 838,
+      "text": ") -> Result<(), crate::ConfigError> {"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AtomicBool::new",
+    "AtomicU64::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Box::new",
+    "EndpointFailure::new",
+    "OnceLock::new",
+    "OperatorId::new",
+    "PrepareContext::new",
+    "SampleSpec::new",
+    "Session::with_host_builder",
+    "SessionEngineHostBuilder::new",
+    "Vec::new",
+    "crate::AsyncOperatorManifest::new",
+    "crate::ClockDomainId::new",
+    "crate::EndpointDescriptor::new",
+    "crate::EndpointFailure::new",
+    "crate::NodeDescriptor::new",
+    "crate::NodeTypeId::from",
+    "crate::Operator::new",
+    "crate::OperatorConfiguration::new",
+    "crate::OperatorId::new",
+    "crate::PortSpec::new",
+    "crate::SemanticRole::new",
+    "crate::Session::new",
+    "crate::SignalDerivation::new",
+    "crate::SourceManifest::new",
+    "crate::SourceTypeId::new",
+    "crate::connector::Connector::new",
+    "crate::connector::ConnectorConfiguration::new",
+    "crate::connector::ConnectorConfigurationSchema::new",
+    "crate::connector::ConnectorManifest::new",
+    "crate::connector::ConnectorReadinessPolicy::new",
+    "new",
+    "thread::Builder::new",
+    "usize::from"
+  ],
+  "content_hash": "12df2d10306ab22a503b602818bbb3ecfe10feda5430fe9830b6d2a38ecf5e26",
+  "defaults": [
+    {
+      "line": 3,
+      "text": "//! This feature is `LOOPBACK-ONLY`, disabled by default, and is not product"
+    }
+  ],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 28,
+      "name": "FRAME_SAMPLES_PER_CHANNEL",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 30,
+      "name": "FRAME_DURATION_NS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 31,
+      "name": "FRAME_PACING_MS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 32,
+      "name": "RECORDING_EDGE_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 33,
+      "name": "SLOW_BRANCH_QUEUE_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 39,
+      "name": "FRAMES_PER_SOURCE",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 40,
+      "name": "OBSERVED_CONNECTOR_OPERATOR_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 43,
+      "name": "FixtureSource",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "stream_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "amplitude",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "channels",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 77,
+      "name": "DeterministicCaptureBackend",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 82,
+      "name": "DeterministicPreparedCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 88,
+      "name": "DeterministicActiveCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 114,
+      "name": "open",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 165,
+      "name": "source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 168,
+      "name": "observation_handle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 172,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 176,
+      "name": "stop_and_join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 192,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 197,
+      "name": "session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 204,
+      "name": "session_for_saturation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 209,
+      "name": "session_with_recording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "session_with_trace",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 231,
+      "name": "session_with_recording_and_trace",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 243,
+      "name": "session_with_options",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 274,
+      "name": "observed_connector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 335,
+      "name": "observed_browser",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 345,
+      "name": "ObservedEndpointError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 357,
+      "name": "ObservedEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 361,
+      "name": "ObservedConnectorFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 367,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 377,
+      "name": "ObservedConnectorWorker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 384,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 419,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 429,
+      "name": "PreparedObservedEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 436,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 488,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 496,
+      "name": "RunningObservedEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 504,
+      "name": "current_observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 515,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 518,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 523,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 544,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 553,
+      "name": "EXTENSION_SIGNAL_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 554,
+      "name": "EXTENSION_SCHEMA_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 555,
+      "name": "EXTENSION_ROLE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 556,
+      "name": "EXTENSION_SOURCE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 557,
+      "name": "EXTENSION_OPERATOR_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 558,
+      "name": "EXTENSION_OPERATOR_NODE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 559,
+      "name": "EXTENSION_ENDPOINT_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 560,
+      "name": "EXTENSION_ENDPOINT_NODE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 561,
+      "name": "EXTENSION_SOURCE_PORT",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 562,
+      "name": "EXTENSION_OPERATOR_INPUT_PORT",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 563,
+      "name": "EXTENSION_OPERATOR_OUTPUT_PORT",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 564,
+      "name": "EXTENSION_ENDPOINT_INPUT_PORT",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 565,
+      "name": "EXTENSION_INPUT_PAYLOAD",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 566,
+      "name": "EXTENSION_OUTPUT_PAYLOAD",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 573,
+      "name": "ExtensionConformanceReport",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 607,
+      "name": "ExtensionSourceControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 611,
+      "name": "ExtensionSourceFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 616,
+      "name": "ExtensionSourceDriver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 624,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 632,
+      "name": "next",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 676,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 684,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 687,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 694,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 708,
+      "name": "ExtensionOperatorControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 712,
+      "name": "ExtensionOperatorFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 718,
+      "name": "ExtensionOperatorNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 725,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 734,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 776,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 786,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 789,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 796,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 809,
+      "name": "ExtensionEndpointControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 816,
+      "name": "ExtensionEndpointDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 820,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 834,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 842,
+      "name": "ExtensionEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 846,
+      "name": "PreparedExtensionEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 851,
+      "name": "RunningExtensionEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 859,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 893,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 947,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 957,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 969,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 972,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 978,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 998,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1006,
+      "name": "run_extension_vector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 1180,
+      "name": "ExtensionSignal",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1184,
+      "name": "signal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1188,
+      "name": "extension_signal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1194,
+      "name": "extension_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1205,
+      "name": "extension_operator_manifest",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 192,
+      "text": "fn drop(&mut self) {"
+    },
+    {
+      "line": 544,
+      "text": "fn drop(&mut self) {"
+    },
+    {
+      "line": 998,
+      "text": "fn drop(&mut self) {"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 339,
+      "text": "let endpoint = session.browser(\"https://receiver.invalid/conformance\")?;"
+    },
+    {
+      "line": 341,
+      "text": "Ok(endpoint)"
+    },
+    {
+      "line": 455,
+      "text": ".name(\"pocketstation-conformance-endpoint\".to_owned())"
+    },
+    {
+      "line": 479,
+      "text": "format!(\"conformance endpoint worker failed to start: {error}\"),"
+    },
+    {
+      "line": 530,
+      "text": "\"conformance endpoint worker panicked\","
+    },
+    {
+      "line": 559,
+      "text": "pub const EXTENSION_ENDPOINT_ID: &str = \"org.pocketstation.conformance.endpoint.v1\";"
+    },
+    {
+      "line": 560,
+      "text": "pub const EXTENSION_ENDPOINT_NODE_ID: &str = \"org.pocketstation.conformance.endpoint-node.v1\";"
+    },
+    {
+      "line": 571,
+      "text": "/// canonical `Session` and its registered Source/Operator/Endpoint owners."
+    },
+    {
+      "line": 823,
+      "text": "display_name: \"Cross-language conformance endpoint\","
+    },
+    {
+      "line": 866,
+      "text": "\"conformance endpoint requires exactly one input\","
+    },
+    {
+      "line": 872,
+      "text": "\"conformance endpoint input is missing\","
+    },
+    {
+      "line": 881,
+      "text": "\"conformance endpoint input contract mismatch\","
+    },
+    {
+      "line": 901,
+      "text": "\"conformance endpoint received an audio edge\","
+    },
+    {
+      "line": 909,
+      "text": ".name(\"pocketstation-extension-conformance-endpoint\".to_owned())"
+    },
+    {
+      "line": 938,
+      "text": "format!(\"conformance endpoint worker failed to start: {error}\"),"
+    },
+    {
+      "line": 985,
+      "text": "\"conformance endpoint worker panicked\","
+    },
+    {
+      "line": 1004,
+      "text": "/// Executes the neutral typed Source -> `Stream<T>` -> Operator -> Endpoint"
+    },
+    {
+      "line": 1075,
+      "text": "let endpoint = session"
+    },
+    {
+      "line": 1076,
+      "text": ".endpoint(crate::EndpointDescriptor::new("
+    },
+    {
+      "line": 1082,
+      "text": ".send(endpoint)"
+    },
+    {
+      "line": 1143,
+      "text": "return Err(\"conformance endpoint observed an invalid signal\".to_owned());"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "const",
+      "line": 39,
+      "name": "FRAMES_PER_SOURCE",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 40,
+      "name": "OBSERVED_CONNECTOR_OPERATOR_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 197,
+      "name": "session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 204,
+      "name": "session_for_saturation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 209,
+      "name": "session_with_recording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "session_with_trace",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 231,
+      "name": "session_with_recording_and_trace",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 274,
+      "name": "observed_connector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 335,
+      "name": "observed_browser",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 345,
+      "name": "ObservedEndpointError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 553,
+      "name": "EXTENSION_SIGNAL_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 554,
+      "name": "EXTENSION_SCHEMA_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 555,
+      "name": "EXTENSION_ROLE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 556,
+      "name": "EXTENSION_SOURCE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 557,
+      "name": "EXTENSION_OPERATOR_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 558,
+      "name": "EXTENSION_OPERATOR_NODE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 559,
+      "name": "EXTENSION_ENDPOINT_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 560,
+      "name": "EXTENSION_ENDPOINT_NODE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 561,
+      "name": "EXTENSION_SOURCE_PORT",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 562,
+      "name": "EXTENSION_OPERATOR_INPUT_PORT",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 563,
+      "name": "EXTENSION_OPERATOR_OUTPUT_PORT",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 564,
+      "name": "EXTENSION_ENDPOINT_INPUT_PORT",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 565,
+      "name": "EXTENSION_INPUT_PAYLOAD",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 566,
+      "name": "EXTENSION_OUTPUT_PAYLOAD",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 573,
+      "name": "ExtensionConformanceReport",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1006,
+      "name": "run_extension_vector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 1180,
+      "name": "ExtensionSignal",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [
+    "CARGO_PKG_VERSION"
+  ],
+  "errors_created": [
+    {
+      "line": 741,
+      "text": "return Err(crate::NodeError::Process("
+    },
+    {
+      "line": 752,
+      "text": "return Err(crate::NodeError::Process("
+    },
+    {
+      "line": 864,
+      "text": "return Err(crate::EndpointFailure::new("
+    },
+    {
+      "line": 879,
+      "text": "return Err(crate::EndpointFailure::new("
+    },
+    {
+      "line": 899,
+      "text": "return Err(crate::EndpointFailure::new("
+    },
+    {
+      "line": 1117,
+      "text": "return Err(\"conformance vector did not reach its terminal condition\".to_owned());"
+    },
+    {
+      "line": 1143,
+      "text": "return Err(\"conformance endpoint observed an invalid signal\".to_owned());"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 345,
+      "name": "ObservedEndpointError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 291,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 301,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 303,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 310,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 319,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 324,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 766,
+      "text": ".map_err(|error| crate::NodeError::Process(error.to_string()))?;"
+    },
+    {
+      "line": 1011,
+      "text": "crate::SourceTypeId::new(EXTENSION_SOURCE_TYPE_ID).map_err(|error| error.to_string())?,"
+    },
+    {
+      "line": 1021,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1036,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1039,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1048,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1053,
+      "text": ".map_err(|error| error.to_string())?,"
+    },
+    {
+      "line": 1056,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1059,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1061,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1071,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1074,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1080,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1083,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1085,
+      "text": "let mut running = session.start().map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1103,
+      "text": ".map_err(|error| error.to_string())?;"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 182,
+      "text": ".map_err(|_| CaptureError::CaptureWorkerPanicked {"
+    },
+    {
+      "line": 291,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 301,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 303,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 310,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 319,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 324,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 476,
+      "text": ".map_err(|error| {"
+    },
+    {
+      "line": 527,
+      "text": "worker.join().map_err(|_| {"
+    },
+    {
+      "line": 766,
+      "text": ".map_err(|error| crate::NodeError::Process(error.to_string()))?;"
+    },
+    {
+      "line": 935,
+      "text": ".map_err(|error| {"
+    },
+    {
+      "line": 982,
+      "text": "worker.join().map_err(|_| {"
+    },
+    {
+      "line": 1011,
+      "text": "crate::SourceTypeId::new(EXTENSION_SOURCE_TYPE_ID).map_err(|error| error.to_string())?,"
+    },
+    {
+      "line": 1021,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1036,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1039,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1048,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1053,
+      "text": ".map_err(|error| error.to_string())?,"
+    },
+    {
+      "line": 1056,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1059,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1061,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1071,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1074,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1080,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1083,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1085,
+      "text": "let mut running = session.start().map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1103,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1250,
+      "text": ".map_err(|error| error.to_string())"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 182,
+      "text": ".map_err(|_| CaptureError::CaptureWorkerPanicked {"
+    },
+    {
+      "line": 291,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 301,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 303,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 310,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 319,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 324,
+      "text": ".map_err(|error| ObservedEndpointError::Contract(error.to_string()))?;"
+    },
+    {
+      "line": 476,
+      "text": ".map_err(|error| {"
+    },
+    {
+      "line": 527,
+      "text": "worker.join().map_err(|_| {"
+    },
+    {
+      "line": 766,
+      "text": ".map_err(|error| crate::NodeError::Process(error.to_string()))?;"
+    },
+    {
+      "line": 935,
+      "text": ".map_err(|error| {"
+    },
+    {
+      "line": 982,
+      "text": "worker.join().map_err(|_| {"
+    },
+    {
+      "line": 1011,
+      "text": "crate::SourceTypeId::new(EXTENSION_SOURCE_TYPE_ID).map_err(|error| error.to_string())?,"
+    },
+    {
+      "line": 1021,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1036,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1039,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1048,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1053,
+      "text": ".map_err(|error| error.to_string())?,"
+    },
+    {
+      "line": 1056,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1059,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1061,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1071,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1074,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1080,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1083,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1085,
+      "text": "let mut running = session.start().map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1103,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1250,
+      "text": ".map_err(|error| error.to_string())"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "12df2d10306ab22a503b602818bbb3ecfe10feda5430fe9830b6d2a38ecf5e26",
+      "lines": [
+        1,
+        1252
+      ],
+      "path": "src/conformance.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0111-d626769d",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "c61c2d539d9323cdd48ab00c2e32b5a5611fbfdb",
+  "implemented_by": [],
+  "implements": [
+    "FixtureSource",
+    "CallbackCaptureBackend for DeterministicCaptureBackend",
+    "PreparedCaptureBackend for DeterministicPreparedCapture",
+    "ActiveCaptureBackend for DeterministicActiveCapture",
+    "Drop for DeterministicActiveCapture",
+    "crate::connector::ConnectorFactory for ObservedConnectorFactory",
+    "crate::connector::ConnectorWorker for ObservedConnectorWorker",
+    "EndpointDriverFactory for ObservedEndpointFactory",
+    "PreparedEndpointDriver for PreparedObservedEndpoint",
+    "RunningObservedEndpoint",
+    "RunningEndpointDriver for RunningObservedEndpoint",
+    "Drop for RunningObservedEndpoint",
+    "crate::SourceDriver for ExtensionSourceDriver",
+    "crate::SourceFactory for ExtensionSourceFactory",
+    "crate::AsyncNode for ExtensionOperatorNode",
+    "crate::AsyncOperatorFactory for ExtensionOperatorFactory",
+    "crate::NodeDefinition for ExtensionEndpointDefinition",
+    "crate::EndpointDriverFactory for ExtensionEndpointFactory",
+    "crate::PreparedEndpointDriver for PreparedExtensionEndpoint",
+    "RunningExtensionEndpoint",
+    "crate::RunningEndpointDriver for RunningExtensionEndpoint",
+    "Drop for RunningExtensionEndpoint",
+    "crate::StreamSignal for ExtensionSignal"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::capture::{ ActiveCaptureBackend, CallbackCaptureBackend, CaptureDelivery, CaptureError, CaptureMode, CaptureObservationHandle, CaptureObservations, CapturedFrameDelivery, PreparedCaptureBackend, }",
+    "crate::frame::{AudioBufferPool, AudioFrame, SampleFormat, SampleSpec, SourceId, StreamId}",
+    "crate::graph::PrepareContext",
+    "crate::session::{ EndpointHandle, NativeSessionEngineHostOptions, OperatorId, PolledAudioEndpointConfig, SessionEngineHostBuildError, SessionEngineHostBuilder, }",
+    "crate::{ EndpointCancellationOutcome, EndpointDriverFactory, EndpointDriverFinalization, EndpointDriverObservations, EndpointFailure, EndpointFailureStage, EndpointPortInput, EndpointReceiver, EndpointStartGate, PreparedEndpointDriver, RunningEndpointDriver, Session, SessionEndpointError, SessionError, }",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "std::sync::{Arc, OnceLock}",
+    "std::time::Duration",
+    "std::{path::PathBuf, thread}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 1252,
+  "locks": [],
+  "module": "pocketstation::conformance",
+  "network_io": [
+    {
+      "line": 339,
+      "text": "let endpoint = session.browser(\"https://receiver.invalid/conformance\")?;"
+    }
+  ],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-b14453e27367155469a3",
+    "pattern-712ad8750d73b578c857",
+    "pattern-de5e133341278a27dbc1",
+    "pattern-b2aa0d19dde4fd1dec0c"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/conformance.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 28,
+      "name": "FRAME_SAMPLES_PER_CHANNEL",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 30,
+      "name": "FRAME_DURATION_NS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 31,
+      "name": "FRAME_PACING_MS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 32,
+      "name": "RECORDING_EDGE_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 33,
+      "name": "SLOW_BRANCH_QUEUE_CAPACITY_FRAMES",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 43,
+      "name": "FixtureSource",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 49,
+      "name": "stream_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "amplitude",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "channels",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 77,
+      "name": "DeterministicCaptureBackend",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 82,
+      "name": "DeterministicPreparedCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 88,
+      "name": "DeterministicActiveCapture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 96,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 114,
+      "name": "open",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 165,
+      "name": "source_id",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 168,
+      "name": "observation_handle",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 172,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 176,
+      "name": "stop_and_join",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 192,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 243,
+      "name": "session_with_options",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 357,
+      "name": "ObservedEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 361,
+      "name": "ObservedConnectorFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 367,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 377,
+      "name": "ObservedConnectorWorker",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 384,
+      "name": "run",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 419,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 429,
+      "name": "PreparedObservedEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 436,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 488,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 496,
+      "name": "RunningObservedEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 504,
+      "name": "current_observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 515,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 518,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 523,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 544,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 607,
+      "name": "ExtensionSourceControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 611,
+      "name": "ExtensionSourceFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 616,
+      "name": "ExtensionSourceDriver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 624,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 632,
+      "name": "next",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 676,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 684,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 687,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 694,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 708,
+      "name": "ExtensionOperatorControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 712,
+      "name": "ExtensionOperatorFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 718,
+      "name": "ExtensionOperatorNode",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 725,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 734,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 776,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 786,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 789,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 796,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 809,
+      "name": "ExtensionEndpointControl",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 816,
+      "name": "ExtensionEndpointDefinition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 820,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 834,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 842,
+      "name": "ExtensionEndpointFactory",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 846,
+      "name": "PreparedExtensionEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 851,
+      "name": "RunningExtensionEndpoint",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 859,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 893,
+      "name": "start",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 947,
+      "name": "cancel_preparation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 957,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 969,
+      "name": "observations",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 972,
+      "name": "request_stop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 978,
+      "name": "join_and_finalize",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 998,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1184,
+      "name": "signal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1188,
+      "name": "extension_signal_spec",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1194,
+      "name": "extension_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1205,
+      "name": "extension_operator_manifest",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 125,
+      "text": "let worker = std::thread::spawn(move || {"
+    },
+    {
+      "line": 456,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 910,
+      "text": ".spawn(move || {"
+    }
+  ],
+  "protocol_messages": [
+    {
+      "line": 1090,
+      "text": "while let crate::SessionEventReceive::Event(event) = running.try_recv_event() {"
+    },
+    {
+      "line": 1131,
+      "text": "while let crate::SessionEventReceive::Event(event) = running.try_recv_event() {"
+    }
+  ],
+  "public_surface": [
+    {
+      "kind": "const",
+      "line": 39,
+      "name": "FRAMES_PER_SOURCE",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 40,
+      "name": "OBSERVED_CONNECTOR_OPERATOR_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 197,
+      "name": "session",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 204,
+      "name": "session_for_saturation",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 209,
+      "name": "session_with_recording",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "session_with_trace",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 231,
+      "name": "session_with_recording_and_trace",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 274,
+      "name": "observed_connector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 335,
+      "name": "observed_browser",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 345,
+      "name": "ObservedEndpointError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 553,
+      "name": "EXTENSION_SIGNAL_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 554,
+      "name": "EXTENSION_SCHEMA_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 555,
+      "name": "EXTENSION_ROLE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 556,
+      "name": "EXTENSION_SOURCE_TYPE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 557,
+      "name": "EXTENSION_OPERATOR_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 558,
+      "name": "EXTENSION_OPERATOR_NODE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 559,
+      "name": "EXTENSION_ENDPOINT_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 560,
+      "name": "EXTENSION_ENDPOINT_NODE_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 561,
+      "name": "EXTENSION_SOURCE_PORT",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 562,
+      "name": "EXTENSION_OPERATOR_INPUT_PORT",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 563,
+      "name": "EXTENSION_OPERATOR_OUTPUT_PORT",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 564,
+      "name": "EXTENSION_ENDPOINT_INPUT_PORT",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 565,
+      "name": "EXTENSION_INPUT_PAYLOAD",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 566,
+      "name": "EXTENSION_OUTPUT_PAYLOAD",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 573,
+      "name": "ExtensionConformanceReport",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 1006,
+      "name": "run_extension_vector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 1180,
+      "name": "ExtensionSignal",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Deterministic canonical-engine fixture for external conformance harnesses.  This feature is `LOOPBACK-ONLY`, disabled by default, and is not product capture evidence."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 7,
+      "text": "use std::sync::{Arc, OnceLock};"
+    },
+    {
+      "line": 79,
+      "text": "timestamp_origin_ns: Arc<OnceLock<u64>>,"
+    },
+    {
+      "line": 85,
+      "text": "timestamp_origin_ns: Arc<OnceLock<u64>>,"
+    },
+    {
+      "line": 90,
+      "text": "stop_requested: Arc<AtomicBool>,"
+    },
+    {
+      "line": 96,
+      "text": "fn prepare(&self, mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 105,
+      "text": "Ok(Box::new(DeterministicPreparedCapture {"
+    },
+    {
+      "line": 107,
+      "text": "timestamp_origin_ns: Arc::clone(&self.timestamp_origin_ns),"
+    },
+    {
+      "line": 115,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 117,
+      "text": ") -> Result<Box<dyn ActiveCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 118,
+      "text": "let stop_requested = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 119,
+      "text": "let worker_stop_requested = Arc::clone(&stop_requested);"
+    },
+    {
+      "line": 156,
+      "text": "Ok(Box::new(DeterministicActiveCapture {"
+    },
+    {
+      "line": 177,
+      "text": "fn stop_and_join(mut self: Box<Self>) -> Result<CaptureObservations, CaptureError> {"
+    },
+    {
+      "line": 190,
+      "text": "/// Drop contract: signal-only, allocation-free, blocking-free, log-free, panic-free."
+    },
+    {
+      "line": 191,
+      "text": "impl Drop for DeterministicActiveCapture {"
+    },
+    {
+      "line": 262,
+      "text": "let capture_backend: Arc<dyn CallbackCaptureBackend> = Arc::new(DeterministicCaptureBackend {"
+    },
+    {
+      "line": 263,
+      "text": "timestamp_origin_ns: Arc::new(OnceLock::new()),"
+    },
+    {
+      "line": 267,
+      "text": ".set_application_backend(Arc::clone(&capture_backend))"
+    },
+    {
+      "line": 322,
+      "text": "Arc::new(ObservedConnectorFactory { per_frame_delay }),"
+    },
+    {
+      "line": 340,
+      "text": "session.register_browser_driver(Arc::new(ObservedEndpointFactory { per_frame_delay }))?;"
+    },
+    {
+      "line": 370,
+      "text": ") -> Result<Box<dyn crate::connector::ConnectorWorker>, crate::connector::ConnectorError> {"
+    },
+    {
+      "line": 371,
+      "text": "Ok(Box::new(ObservedConnectorWorker {"
+    },
+    {
+      "line": 385,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 422,
+      "text": ") -> Result<Box<dyn PreparedEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 423,
+      "text": "Ok(Box::new(PreparedObservedEndpoint {"
+    },
+    {
+      "line": 437,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 438,
+      "text": "start_gate: Arc<EndpointStartGate>,"
+    },
+    {
+      "line": 439,
+      "text": ") -> Result<Box<dyn RunningEndpointDriver>, EndpointFailure> {"
+    },
+    {
+      "line": 440,
+      "text": "let stop_requested = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 441,
+      "text": "let worker_stop_requested = Arc::clone(&stop_requested);"
+    },
+    {
+      "line": 442,
+      "text": "let frames_received_total = Arc::new(AtomicU64::new(0));"
+    },
+    {
+      "line": 443,
+      "text": "let worker_frames_received_total = Arc::clone(&frames_received_total);"
+    },
+    {
+      "line": 482,
+      "text": "Ok(Box::new(RunningObservedEndpoint {"
+    },
+    {
+      "line": 489,
+      "text": "fn cancel_preparation(self: Box<Self>) -> EndpointCancellationOutcome {"
+    },
+    {
+      "line": 498,
+      "text": "stop_requested: Arc<AtomicBool>,"
+    },
+    {
+      "line": 500,
+      "text": "frames_received_total: Arc<AtomicU64>,"
+    },
+    {
+      "line": 524,
+      "text": "fn join_and_finalize(mut self: Box<Self>) -> EndpointDriverFinalization {"
+    },
+    {
+      "line": 541,
+      "text": "/// Drop contract: signal-only, allocation-free, blocking-free, log-free,"
+    },
+    {
+      "line": 543,
+      "text": "impl Drop for RunningObservedEndpoint {"
+    },
+    {
+      "line": 614,
+      "text": "control: Arc<ExtensionSourceControl>,"
+    },
+    {
+      "line": 618,
+      "text": "control: Arc<ExtensionSourceControl>,"
+    },
+    {
+      "line": 698,
+      "text": ") -> Result<Box<dyn crate::SourceDriver>, crate::SourceDriverError> {"
+    },
+    {
+      "line": 699,
+      "text": "Ok(Box::new(ExtensionSourceDriver {"
+    },
+    {
+      "line": 700,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 715,
+      "text": "control: Arc<ExtensionOperatorControl>,"
+    },
+    {
+      "line": 720,
+      "text": "control: Arc<ExtensionOperatorControl>,"
+    },
+    {
+      "line": 729,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 739,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 778,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 800,
+      "text": ") -> Result<Box<dyn crate::AsyncNode>, crate::NodeError> {"
+    },
+    {
+      "line": 801,
+      "text": "Ok(Box::new(ExtensionOperatorNode {"
+    },
+    {
+      "line": 802,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 844,
+      "text": "control: Arc<ExtensionEndpointControl>,"
+    },
+    {
+      "line": 849,
+      "text": "control: Arc<ExtensionEndpointControl>,"
+    },
+    {
+      "line": 853,
+      "text": "control: Arc<ExtensionEndpointControl>,"
+    },
+    {
+      "line": 854,
+      "text": "stop: Arc<AtomicBool>,"
+    },
+    {
+      "line": 862,
+      "text": ") -> Result<Box<dyn crate::PreparedEndpointDriver>, crate::EndpointFailure> {"
+    },
+    {
+      "line": 885,
+      "text": "Ok(Box::new(PreparedExtensionEndpoint {"
+    },
+    {
+      "line": 887,
+      "text": "control: Arc::clone(&self.control),"
+    },
+    {
+      "line": 894,
+      "text": "self: Box<Self>,"
+    },
+    {
+      "line": 895,
+      "text": "start_gate: Arc<crate::EndpointStartGate>,"
+    },
+    {
+      "line": 896,
+      "text": ") -> Result<Box<dyn crate::RunningEndpointDriver>, crate::EndpointFailure> {"
+    },
+    {
+      "line": 904,
+      "text": "let stop = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 905,
+      "text": "let worker_stop = Arc::clone(&stop);"
+    },
+    {
+      "line": 906,
+      "text": "let control = Arc::clone(&self.control);"
+    },
+    {
+      "line": 907,
+      "text": "let worker_control = Arc::clone(&control);"
+    },
+    {
+      "line": 941,
+      "text": "Ok(Box::new(RunningExtensionEndpoint {"
+    },
+    {
+      "line": 948,
+      "text": "fn cancel_preparation(self: Box<Self>) -> crate::EndpointCancellationOutcome {"
+    },
+    {
+      "line": 979,
+      "text": "fn join_and_finalize(mut self: Box<Self>) -> crate::EndpointDriverFinalization {"
+    },
+    {
+      "line": 997,
+      "text": "impl Drop for RunningExtensionEndpoint {"
+    },
+    {
+      "line": 1007,
+      "text": "let source_control = Arc::new(ExtensionSourceControl::default());"
+    },
+    {
+      "line": 1008,
+      "text": "let operator_control = Arc::new(ExtensionOperatorControl::default());"
+    },
+    {
+      "line": 1009,
+      "text": "let endpoint_control = Arc::new(ExtensionEndpointControl::default());"
+    },
+    {
+      "line": 1023,
+      "text": "let source_factory: Arc<dyn crate::SourceFactory> = Arc::new(ExtensionSourceFactory {"
+    },
+    {
+      "line": 1025,
+      "text": "control: Arc::clone(&source_control),"
+    },
+    {
+      "line": 1027,
+      "text": "let operator_factory: Arc<dyn crate::AsyncOperatorFactory> ="
+    },
+    {
+      "line": 1028,
+      "text": "Arc::new(ExtensionOperatorFactory {"
+    },
+    {
+      "line": 1030,
+      "text": "control: Arc::clone(&operator_control),"
+    },
+    {
+      "line": 1043,
+      "text": "Arc::new(ExtensionEndpointDefinition),"
+    },
+    {
+      "line": 1044,
+      "text": "Arc::new(ExtensionEndpointFactory {"
+    },
+    {
+      "line": 1045,
+      "text": "control: Arc::clone(&endpoint_control),"
+    }
+  ],
+  "responsibilities": [
+    "FRAME_SAMPLES_PER_CHANNEL",
+    "FRAME_DURATION_NS",
+    "FRAME_PACING_MS",
+    "RECORDING_EDGE_CAPACITY_FRAMES",
+    "SLOW_BRANCH_QUEUE_CAPACITY_FRAMES",
+    "FRAMES_PER_SOURCE",
+    "OBSERVED_CONNECTOR_OPERATOR_ID",
+    "FixtureSource",
+    "stream_id",
+    "source_id",
+    "amplitude",
+    "channels",
+    "DeterministicCaptureBackend",
+    "DeterministicPreparedCapture",
+    "DeterministicActiveCapture",
+    "prepare",
+    "open",
+    "source_id",
+    "observation_handle",
+    "observations",
+    "stop_and_join",
+    "drop",
+    "session",
+    "session_for_saturation",
+    "session_with_recording",
+    "session_with_trace",
+    "session_with_recording_and_trace",
+    "session_with_options",
+    "observed_connector",
+    "observed_browser",
+    "ObservedEndpointError",
+    "ObservedEndpointFactory",
+    "ObservedConnectorFactory",
+    "prepare",
+    "ObservedConnectorWorker",
+    "run",
+    "prepare",
+    "PreparedObservedEndpoint",
+    "start",
+    "cancel_preparation",
+    "RunningObservedEndpoint",
+    "current_observations",
+    "observations",
+    "request_stop",
+    "join_and_finalize",
+    "drop",
+    "EXTENSION_SIGNAL_ID",
+    "EXTENSION_SCHEMA_ID",
+    "EXTENSION_ROLE_ID",
+    "EXTENSION_SOURCE_TYPE_ID",
+    "EXTENSION_OPERATOR_ID",
+    "EXTENSION_OPERATOR_NODE_ID",
+    "EXTENSION_ENDPOINT_ID",
+    "EXTENSION_ENDPOINT_NODE_ID",
+    "EXTENSION_SOURCE_PORT",
+    "EXTENSION_OPERATOR_INPUT_PORT",
+    "EXTENSION_OPERATOR_OUTPUT_PORT",
+    "EXTENSION_ENDPOINT_INPUT_PORT",
+    "EXTENSION_INPUT_PAYLOAD",
+    "EXTENSION_OUTPUT_PAYLOAD",
+    "ExtensionConformanceReport",
+    "ExtensionSourceControl",
+    "ExtensionSourceFactory",
+    "ExtensionSourceDriver",
+    "prepare",
+    "next",
+    "close",
+    "manifest",
+    "validate_config",
+    "create",
+    "ExtensionOperatorControl",
+    "ExtensionOperatorFactory",
+    "ExtensionOperatorNode",
+    "prepare",
+    "process",
+    "close",
+    "manifest",
+    "validate_config",
+    "create",
+    "ExtensionEndpointControl",
+    "ExtensionEndpointDefinition",
+    "descriptor",
+    "validate_config",
+    "ExtensionEndpointFactory",
+    "PreparedExtensionEndpoint",
+    "RunningExtensionEndpoint",
+    "prepare",
+    "start",
+    "cancel_preparation",
+    "observations",
+    "observations",
+    "request_stop",
+    "join_and_finalize",
+    "drop",
+    "run_extension_vector",
+    "ExtensionSignal",
+    "signal_spec",
+    "extension_signal_spec",
+    "extension_port",
+    "extension_operator_manifest"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 854,
+      "text": "stop: Arc<AtomicBool>,"
+    },
+    {
+      "line": 904,
+      "text": "let stop = Arc::new(AtomicBool::new(false));"
+    },
+    {
+      "line": 905,
+      "text": "let worker_stop = Arc::clone(&stop);"
+    },
+    {
+      "line": 943,
+      "text": "stop,"
+    },
+    {
+      "line": 975,
+      "text": "self.stop.store(true, Ordering::Release);"
+    },
+    {
+      "line": 980,
+      "text": "self.stop.store(true, Ordering::Release);"
+    },
+    {
+      "line": 999,
+      "text": "self.stop.store(true, Ordering::Release);"
+    },
+    {
+      "line": 1116,
+      "text": "let _ = running.stop();"
+    },
+    {
+      "line": 1130,
+      "text": "let stop_success = running.stop().is_success();"
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 339,
+      "text": "let endpoint = session.browser(\"https://receiver.invalid/conformance\")?;"
+    },
+    {
+      "line": 125,
+      "text": "let worker = std::thread::spawn(move || {"
+    },
+    {
+      "line": 456,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 910,
+      "text": ".spawn(move || {"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 96,
+      "text": "fn prepare(&self, mode: CaptureMode) -> Result<Box<dyn PreparedCaptureBackend>, CaptureError> {"
+    },
+    {
+      "line": 367,
+      "text": "fn prepare("
+    },
+    {
+      "line": 419,
+      "text": "fn prepare("
+    },
+    {
+      "line": 436,
+      "text": "fn start("
+    },
+    {
+      "line": 479,
+      "text": "format!(\"conformance endpoint worker failed to start: {error}\"),"
+    },
+    {
+      "line": 624,
+      "text": "fn prepare("
+    },
+    {
+      "line": 725,
+      "text": "fn prepare<'a>("
+    },
+    {
+      "line": 859,
+      "text": "fn prepare("
+    },
+    {
+      "line": 893,
+      "text": "fn start("
+    },
+    {
+      "line": 938,
+      "text": "format!(\"conformance endpoint worker failed to start: {error}\"),"
+    },
+    {
+      "line": 1085,
+      "text": "let mut running = session.start().map_err(|error| error.to_string())?;"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 729,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 739,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 778,
+      "text": "Box::pin(async move {"
+    }
+  ],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 9,
+      "text": "use std::{path::PathBuf, thread};"
+    },
+    {
+      "line": 91,
+      "text": "worker: Option<std::thread::JoinHandle<()>>,"
+    },
+    {
+      "line": 125,
+      "text": "let worker = std::thread::spawn(move || {"
+    },
+    {
+      "line": 132,
+      "text": "thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 147,
+      "text": "thread::sleep(Duration::from_millis(FRAME_PACING_MS));"
+    },
+    {
+      "line": 151,
+      "text": "thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 406,
+      "text": "thread::sleep(self.per_frame_delay);"
+    },
+    {
+      "line": 454,
+      "text": "let worker = thread::Builder::new()"
+    },
+    {
+      "line": 456,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 458,
+      "text": "thread::yield_now();"
+    },
+    {
+      "line": 467,
+      "text": "thread::sleep(per_frame_delay);"
+    },
+    {
+      "line": 472,
+      "text": "thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 499,
+      "text": "worker: Option<thread::JoinHandle<()>>,"
+    },
+    {
+      "line": 855,
+      "text": "worker: Option<thread::JoinHandle<()>>,"
+    },
+    {
+      "line": 908,
+      "text": "let worker = thread::Builder::new()"
+    },
+    {
+      "line": 910,
+      "text": ".spawn(move || {"
+    },
+    {
+      "line": 912,
+      "text": "thread::yield_now();"
+    },
+    {
+      "line": 932,
+      "text": "thread::sleep(Duration::from_millis(1));"
+    },
+    {
+      "line": 1119,
+      "text": "thread::sleep(Duration::from_millis(1));"
+    }
+  ],
+  "visibility": "mixed"
+}

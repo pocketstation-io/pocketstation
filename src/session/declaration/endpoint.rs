@@ -11,6 +11,7 @@ pub const BROWSER_OPERATOR_ID: &str = "io.pocketstation.browser.webrtc.v1";
 pub(crate) const BROWSER_RECEIVER_URI_CONFIGURATION_KEY: &str = "receiver_uri";
 
 #[derive(Clone, Default, PartialEq, Eq)]
+#[doc = "Configures endpoint."]
 pub struct EndpointConfiguration {
     values: BTreeMap<String, EndpointConfigurationValue>,
 }
@@ -30,10 +31,12 @@ impl Drop for EndpointConfigurationValue {
 }
 
 impl EndpointConfiguration {
+    #[doc = "Creates a new `EndpointConfiguration`."]
     pub fn new() -> Self {
         Self::default()
     }
 
+    #[doc = "Returns `EndpointConfiguration` with the supplied entry applied."]
     pub fn with(mut self, key: impl Into<String>, value: impl Into<String>) -> Self {
         self.values.insert(
             key.into(),
@@ -57,14 +60,17 @@ impl EndpointConfiguration {
         self
     }
 
+    #[doc = "Returns the value held by `EndpointConfiguration`."]
     pub fn get(&self, key: &str) -> Option<&str> {
         self.values.get(key).map(|entry| entry.value.as_str())
     }
 
+    #[doc = "Returns whether sensitive applies to `EndpointConfiguration`."]
     pub fn is_sensitive(&self, key: &str) -> bool {
         self.values.get(key).is_some_and(|entry| entry.sensitive)
     }
 
+    #[doc = "Iterates over the values held by `EndpointConfiguration`."]
     pub fn iter(&self) -> impl Iterator<Item = (&str, &str)> {
         self.values
             .iter()
@@ -82,6 +88,7 @@ impl EndpointConfiguration {
 }
 
 impl std::fmt::Debug for EndpointConfiguration {
+    #[doc = "Formats `EndpointConfiguration` with the requested formatter."]
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         struct DebugValue<'a>(&'a EndpointConfigurationValue);
 
@@ -107,6 +114,7 @@ impl std::fmt::Debug for EndpointConfiguration {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Describes the endpoint descriptor contract."]
 pub struct EndpointDescriptor {
     node_type_id: NodeTypeId,
     operator_id: OperatorId,
@@ -115,6 +123,7 @@ pub struct EndpointDescriptor {
 }
 
 impl EndpointDescriptor {
+    #[doc = "Creates a new `EndpointDescriptor`."]
     pub fn new(node_type_id: NodeTypeId, operator_id: OperatorId) -> Self {
         Self {
             node_type_id,
@@ -124,6 +133,7 @@ impl EndpointDescriptor {
         }
     }
 
+    #[doc = "Sets the configuration on `EndpointDescriptor` and returns the updated value."]
     pub fn with_configuration(mut self, configuration: EndpointConfiguration) -> Self {
         self.configuration = configuration;
         self
@@ -138,18 +148,22 @@ impl EndpointDescriptor {
         self
     }
 
+    #[doc = "Returns the node type identifier associated with `EndpointDescriptor`."]
     pub fn node_type_id(&self) -> &NodeTypeId {
         &self.node_type_id
     }
 
+    #[doc = "Returns the operator identifier associated with `EndpointDescriptor`."]
     pub fn operator_id(&self) -> &OperatorId {
         &self.operator_id
     }
 
+    #[doc = "Returns the configuration associated with `EndpointDescriptor`."]
     pub fn configuration(&self) -> &EndpointConfiguration {
         &self.configuration
     }
 
+    #[doc = "Returns the input edge associated with `EndpointDescriptor`."]
     pub const fn input_edge(&self) -> Option<EdgeContract> {
         self.input_edge
     }

@@ -6,30 +6,46 @@ use super::authorization::SourceIdentityStrength;
 use super::selection::{ProcessTreeScope, SelectorPersistenceScope};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[doc = "Selects the source kind used by PocketStation."]
 pub enum SourceKind {
+    #[doc = "Selects application behavior for `SourceKind`."]
     Application,
+    #[doc = "Selects output device behavior for `SourceKind`."]
     OutputDevice,
+    #[doc = "Selects input device behavior for `SourceKind`."]
     InputDevice,
+    #[doc = "Selects system mix behavior for `SourceKind`."]
     SystemMix,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[doc = "Selects the source state used by PocketStation."]
 pub enum SourceState {
+    #[doc = "Indicates the available state for `SourceState`."]
     Available,
+    #[doc = "Indicates the playing state for `SourceState`."]
     Playing,
+    #[doc = "Indicates the silent state for `SourceState`."]
     Silent,
+    #[doc = "Reports that the requested resource is unavailable."]
     Unavailable,
+    #[doc = "Indicates the permission blocked state for `SourceState`."]
     PermissionBlocked,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[doc = "Uniquely identifies stable source."]
 pub struct StableSourceId {
+    #[doc = "Stores the platform associated with `StableSourceId`."]
     pub platform: Platform,
+    #[doc = "Stores the kind associated with `StableSourceId`."]
     pub kind: SourceKind,
+    #[doc = "Stores the stable key associated with `StableSourceId`."]
     pub stable_key: String,
 }
 
 impl StableSourceId {
+    #[doc = "Creates a new `StableSourceId`."]
     pub fn new(platform: Platform, kind: SourceKind, stable_key: impl Into<String>) -> Self {
         Self {
             platform,
@@ -79,18 +95,28 @@ impl StableSourceId {
 }
 
 #[derive(Debug, Clone)]
+#[doc = "Represents capture source in the PocketStation API."]
 pub struct CaptureSource {
+    #[doc = "Identifies the stable associated with `CaptureSource`."]
     pub stable_id: StableSourceId,
+    #[doc = "Stores the name associated with `CaptureSource`."]
     pub name: String,
+    #[doc = "Identifies the process associated with `CaptureSource`."]
     pub process_id: Option<u32>,
+    #[doc = "Identifies the app associated with `CaptureSource`."]
     pub app_id: Option<String>,
+    #[doc = "Stores the device uid associated with `CaptureSource`."]
     pub device_uid: Option<String>,
+    #[doc = "Stores the state associated with `CaptureSource`."]
     pub state: SourceState,
+    #[doc = "Stores the sample rate value for `CaptureSource`, in hertz."]
     pub sample_rate_hz: u32,
+    #[doc = "Stores the channels associated with `CaptureSource`."]
     pub channels: u16,
 }
 
 impl CaptureSource {
+    #[doc = "Returns the identity strength associated with `CaptureSource`."]
     pub fn identity_strength(&self) -> SourceIdentityStrength {
         match self.stable_id.kind {
             SourceKind::Application if self.app_id.is_some() && self.process_id.is_some() => {

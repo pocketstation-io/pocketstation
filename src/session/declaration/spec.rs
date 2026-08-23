@@ -11,26 +11,32 @@ use crate::session::{
 pub const SESSION_SPEC_VERSION: SessionSpecVersion = SessionSpecVersion::new(1, 5);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[doc = "Uniquely identifies source instance."]
 pub struct SourceInstanceId(u64);
 
 impl SourceInstanceId {
+    #[doc = "Creates a new `SourceInstanceId`."]
     pub const fn new(value: u64) -> Self {
         Self(value)
     }
 
+    #[doc = "Returns the value associated with `SourceInstanceId`."]
     pub const fn value(self) -> u64 {
         self.0
     }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[doc = "Uniquely identifies operator instance."]
 pub struct OperatorInstanceId(u64);
 
 impl OperatorInstanceId {
+    #[doc = "Creates a new `OperatorInstanceId`."]
     pub const fn new(value: u64) -> Self {
         Self(value)
     }
 
+    #[doc = "Returns the value associated with `OperatorInstanceId`."]
     pub const fn value(self) -> u64 {
         self.0
     }
@@ -65,6 +71,7 @@ pub struct StemSpec {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Configures source instance."]
 pub struct SourceInstanceSpec {
     instance_id: SourceInstanceId,
     source_id: SourceId,
@@ -73,24 +80,29 @@ pub struct SourceInstanceSpec {
 }
 
 impl SourceInstanceSpec {
+    #[doc = "Returns the instance identifier associated with `SourceInstanceSpec`."]
     pub const fn instance_id(&self) -> SourceInstanceId {
         self.instance_id
     }
 
+    #[doc = "Returns the source identifier associated with `SourceInstanceSpec`."]
     pub const fn source_id(&self) -> SourceId {
         self.source_id
     }
 
+    #[doc = "Returns the source type identifier associated with `SourceInstanceSpec`."]
     pub const fn source_type_id(&self) -> &SourceTypeId {
         &self.source_type_id
     }
 
+    #[doc = "Returns the configuration associated with `SourceInstanceSpec`."]
     pub const fn configuration(&self) -> &SourceConfiguration {
         &self.configuration
     }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Configures source output."]
 pub struct SourceOutputSpec {
     source_instance_id: SourceInstanceId,
     output_port: String,
@@ -134,14 +146,17 @@ impl GeneratedAudioIngressSpec {
 }
 
 impl SourceOutputSpec {
+    #[doc = "Returns the source instance identifier associated with `SourceOutputSpec`."]
     pub const fn source_instance_id(&self) -> SourceInstanceId {
         self.source_instance_id
     }
 
+    #[doc = "Returns the output port associated with `SourceOutputSpec`."]
     pub fn output_port(&self) -> &str {
         &self.output_port
     }
 
+    #[doc = "Returns the stream identifier associated with `SourceOutputSpec`."]
     pub const fn stream_id(&self) -> StreamId {
         self.stream_id
     }
@@ -194,6 +209,7 @@ impl EndpointSpec {
 }
 
 #[derive(Debug, Clone)]
+#[doc = "Configures operator instance."]
 pub struct OperatorInstanceSpec {
     instance_id: OperatorInstanceId,
     operator_id: OperatorId,
@@ -206,15 +222,24 @@ pub struct OperatorInstanceSpec {
 /// endpoint, transport, or customer product categories.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum StreamOrigin {
+    #[doc = "Represents the stem case of `StreamOrigin`."]
     Stem(StemId),
+    #[doc = "Represents the source output case of `StreamOrigin`."]
     SourceOutput {
+        #[doc = "Identifies the source instance associated with `SourceOutput`."]
         source_instance_id: SourceInstanceId,
+        #[doc = "Stores the output port associated with `SourceOutput`."]
         output_port: String,
+        #[doc = "Identifies the stream associated with `SourceOutput`."]
         stream_id: StreamId,
+        #[doc = "Identifies the source associated with `SourceOutput`."]
         source_id: SourceId,
     },
+    #[doc = "Represents the operator output case of `StreamOrigin`."]
     OperatorOutput {
+        #[doc = "Identifies the operator instance associated with `OperatorOutput`."]
         operator_instance_id: OperatorInstanceId,
+        #[doc = "Stores the output port associated with `OperatorOutput`."]
         output_port: Option<String>,
     },
 }
@@ -222,12 +247,18 @@ pub enum StreamOrigin {
 /// Stable destination of a declared Session connection.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ConnectionTarget {
+    #[doc = "Represents the operator input case of `ConnectionTarget`."]
     OperatorInput {
+        #[doc = "Identifies the operator instance associated with `OperatorInput`."]
         operator_instance_id: OperatorInstanceId,
+        #[doc = "Stores the input port associated with `OperatorInput`."]
         input_port: Option<String>,
     },
+    #[doc = "Represents the endpoint input case of `ConnectionTarget`."]
     EndpointInput {
+        #[doc = "Identifies the endpoint associated with `EndpointInput`."]
         endpoint_id: EndpointId,
+        #[doc = "Stores the input port associated with `EndpointInput`."]
         input_port: Option<String>,
     },
 }
@@ -242,28 +273,34 @@ pub struct ConnectionSpec {
 }
 
 impl OperatorInstanceSpec {
+    #[doc = "Returns the instance identifier associated with `OperatorInstanceSpec`."]
     pub const fn instance_id(&self) -> OperatorInstanceId {
         self.instance_id
     }
 
+    #[doc = "Returns the operator identifier associated with `OperatorInstanceSpec`."]
     pub const fn operator_id(&self) -> &OperatorId {
         &self.operator_id
     }
 
+    #[doc = "Returns the configuration associated with `OperatorInstanceSpec`."]
     pub const fn configuration(&self) -> &OperatorConfiguration {
         &self.configuration
     }
 }
 
 impl ConnectionSpec {
+    #[doc = "Returns the id associated with `ConnectionSpec`."]
     pub const fn id(&self) -> RouteId {
         self.route_id
     }
 
+    #[doc = "Returns the origin associated with `ConnectionSpec`."]
     pub const fn origin(&self) -> &StreamOrigin {
         &self.origin
     }
 
+    #[doc = "Returns the target associated with `ConnectionSpec`."]
     pub const fn target(&self) -> &ConnectionTarget {
         &self.target
     }

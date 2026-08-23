@@ -18,17 +18,29 @@ pub(crate) const CONTROL_SIGNAL_ID: &str = "pks.sidecar.control.v1";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
+#[doc = "Selects the sidecar state used by PocketStation."]
 pub enum SidecarState {
+    #[doc = "Indicates the spawned state for `SidecarState`."]
     Spawned = 0,
+    #[doc = "Indicates the hello state for `SidecarState`."]
     Hello = 1,
+    #[doc = "Indicates the manifest state for `SidecarState`."]
     Manifest = 2,
+    #[doc = "Indicates the configure state for `SidecarState`."]
     Configure = 3,
+    #[doc = "Indicates the ready state for `SidecarState`."]
     Ready = 4,
+    #[doc = "Indicates the running state for `SidecarState`."]
     Running = 5,
+    #[doc = "Indicates the cancelling state for `SidecarState`."]
     Cancelling = 6,
+    #[doc = "Indicates the closing state for `SidecarState`."]
     Closing = 7,
+    #[doc = "Reports that the underlying channel or resource is closed."]
     Closed = 8,
+    #[doc = "Indicates the reaped state for `SidecarState`."]
     Reaped = 9,
+    #[doc = "Indicates the failed state for `SidecarState`."]
     Failed = 10,
 }
 
@@ -51,13 +63,18 @@ impl SidecarState {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Represents sidecar deadlines in the PocketStation API."]
 pub struct SidecarDeadlines {
+    #[doc = "Indicates whether ready applies to `SidecarDeadlines`."]
     pub ready: Duration,
+    #[doc = "Stores the processing associated with `SidecarDeadlines`."]
     pub processing: Duration,
+    #[doc = "Stores the shutdown associated with `SidecarDeadlines`."]
     pub shutdown: Duration,
 }
 
 impl Default for SidecarDeadlines {
+    #[doc = "Returns the default `SidecarDeadlines` value."]
     fn default() -> Self {
         Self {
             ready: Duration::from_secs(5),
@@ -68,17 +85,26 @@ impl Default for SidecarDeadlines {
 }
 
 #[derive(Debug, Clone)]
+#[doc = "Configures sidecar process."]
 pub struct SidecarProcessSpec {
+    #[doc = "Identifies the id associated with `SidecarProcessSpec`."]
     pub id: u64,
+    #[doc = "Stores the program associated with `SidecarProcessSpec`."]
     pub program: PathBuf,
+    #[doc = "Stores the arguments associated with `SidecarProcessSpec`."]
     pub arguments: Vec<OsString>,
+    #[doc = "Stores the configuration associated with `SidecarProcessSpec`."]
     pub configuration: Vec<u8>,
+    #[doc = "Sets the data capacity messages available to `SidecarProcessSpec`."]
     pub data_capacity_messages: usize,
+    #[doc = "Stores the protocol limits associated with `SidecarProcessSpec`."]
     pub protocol_limits: SidecarProtocolLimits,
+    #[doc = "Stores the deadlines associated with `SidecarProcessSpec`."]
     pub deadlines: SidecarDeadlines,
 }
 
 impl SidecarProcessSpec {
+    #[doc = "Creates a new `SidecarProcessSpec`."]
     pub fn new(id: u64, program: impl Into<PathBuf>) -> Self {
         Self {
             id,
@@ -130,19 +156,30 @@ impl SidecarHostObservations {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Reports the sidecar host snapshot collected at an observation boundary."]
 pub struct SidecarHostSnapshot {
+    #[doc = "Stores the state associated with `SidecarHostSnapshot`."]
     pub state: SidecarState,
+    #[doc = "Stores the state transitions associated with `SidecarHostSnapshot`."]
     pub state_transitions: u64,
+    #[doc = "Counts the total number of data enqueued observed by `SidecarHostSnapshot`."]
     pub data_enqueued_total: u64,
+    #[doc = "Counts the total number of data received observed by `SidecarHostSnapshot`."]
     pub data_received_total: u64,
+    #[doc = "Counts the total number of data dropped observed by `SidecarHostSnapshot`."]
     pub data_dropped_total: u64,
+    #[doc = "Counts the total number of protocol failures observed by `SidecarHostSnapshot`."]
     pub protocol_failures_total: u64,
+    #[doc = "Counts the total number of timeouts observed by `SidecarHostSnapshot`."]
     pub timeouts_total: u64,
+    #[doc = "Counts the total number of forced kills observed by `SidecarHostSnapshot`."]
     pub forced_kills_total: u64,
+    #[doc = "Counts the total number of reaps observed by `SidecarHostSnapshot`."]
     pub reaps_total: u64,
 }
 
 impl SidecarHostSnapshot {
+    #[doc = "Returns the visited associated with `SidecarHostSnapshot`."]
     pub const fn visited(self, state: SidecarState) -> bool {
         self.state_transitions & (1u64 << state as u8) != 0
     }
@@ -683,51 +720,76 @@ fn validate_spec(spec: &SidecarProcessSpec) -> Result<(), SidecarHostError> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as sidecar host error."]
 pub enum SidecarHostError {
     #[error("sidecar configuration is invalid: {0}")]
+    #[doc = "Reports invalid configuration."]
     InvalidConfiguration(&'static str),
     #[error("sidecar spawn failed: {0}")]
+    #[doc = "Reports spawn."]
     Spawn(String),
     #[error("sidecar I/O thread spawn failed: {0}")]
+    #[doc = "Reports thread spawn."]
     ThreadSpawn(String),
     #[error("sidecar child did not expose {0}")]
+    #[doc = "Reports missing pipe."]
     MissingPipe(&'static str),
     #[error("sidecar I/O failed: {0}")]
+    #[doc = "Reports I/O."]
     Io(String),
     #[error("sidecar protocol failed: {0}")]
+    #[doc = "Reports protocol."]
     Protocol(#[from] SidecarProtocolError),
     #[error("sidecar frame exceeds the configured bound")]
+    #[doc = "Reports frame too large."]
     FrameTooLarge,
     #[error("sidecar data queue is full")]
+    #[doc = "Reports data queue full."]
     DataQueueFull,
     #[error("sidecar reserved control queue is full")]
+    #[doc = "Reports control queue full."]
     ControlQueueFull,
     #[error("sidecar channel is closed")]
+    #[doc = "Reports that the underlying channel or resource is closed."]
     Closed,
     #[error("sidecar stdout closed unexpectedly")]
+    #[doc = "Reports unexpected eof."]
     UnexpectedEof,
     #[error("sidecar expected {expected:?} but received {actual:?}")]
+    #[doc = "Reports unexpected message."]
     UnexpectedMessage {
+        #[doc = "Records the value expected by `UnexpectedMessage`."]
         expected: SidecarMessageKind,
+        #[doc = "Records the value observed by `UnexpectedMessage`."]
         actual: SidecarMessageKind,
     },
     #[error("sidecar timed out waiting for {0:?}")]
+    #[doc = "Reports timeout."]
     Timeout(SidecarMessageKind),
     #[error("sidecar timed out waiting for a processed signal")]
+    #[doc = "Reports processing timeout."]
     ProcessingTimeout,
     #[error("sidecar expected state {expected:?} but is {actual:?}")]
+    #[doc = "Reports invalid state."]
     InvalidState {
+        #[doc = "Records the value expected by `InvalidState`."]
         expected: SidecarState,
+        #[doc = "Records the value observed by `InvalidState`."]
         actual: SidecarState,
     },
     #[error("sidecar data queue accepts Signal messages, not {0:?}")]
+    #[doc = "Reports invalid data kind."]
     InvalidDataKind(SidecarMessageKind),
     #[error("sidecar process wait failed: {0}")]
+    #[doc = "Reports wait."]
     Wait(String),
     #[error("sidecar process kill failed: {0}")]
+    #[doc = "Reports kill."]
     Kill(String),
     #[error("sidecar process was already reaped")]
+    #[doc = "Reports already reaped."]
     AlreadyReaped,
     #[error("sidecar process ID {0} is not owned by this Session")]
+    #[doc = "Reports unknown sidecar."]
     UnknownSidecar(u64),
 }

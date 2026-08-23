@@ -1,0 +1,3099 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [
+    {
+      "line": 341,
+      "text": "async fn require_file(path: &Path, label: &str) -> Result<(), NodeError> {"
+    },
+    {
+      "line": 343,
+      "text": ".await"
+    },
+    {
+      "line": 354,
+      "text": "async fn transcribe(&mut self, wav_bytes: &[u8]) -> Result<String, NodeError> {"
+    },
+    {
+      "line": 366,
+      "text": ".await"
+    },
+    {
+      "line": 394,
+      "text": ".await"
+    },
+    {
+      "line": 429,
+      "text": ".await"
+    },
+    {
+      "line": 446,
+      "text": ".await"
+    },
+    {
+      "line": 453,
+      "text": ".await?;"
+    },
+    {
+      "line": 461,
+      "text": ".await"
+    },
+    {
+      "line": 470,
+      "text": ".await"
+    },
+    {
+      "line": 504,
+      "text": "async fn terminate_active_child(&mut self, outcome: ProcessOutcome) -> Result<(), NodeError> {"
+    },
+    {
+      "line": 509,
+      "text": ".await"
+    },
+    {
+      "line": 524,
+      "text": ".await"
+    },
+    {
+      "line": 528,
+      "text": ".await"
+    },
+    {
+      "line": 536,
+      "text": ".await"
+    },
+    {
+      "line": 570,
+      "text": "async fn process_audio("
+    },
+    {
+      "line": 637,
+      "text": ".await"
+    },
+    {
+      "line": 650,
+      "text": "async fn transcribe_samples("
+    },
+    {
+      "line": 657,
+      "text": "self.transcribe(&wav_bytes).await"
+    },
+    {
+      "line": 784,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 785,
+      "text": "Self::require_file(&self.binary_path, \"whisper-cli\").await?;"
+    },
+    {
+      "line": 786,
+      "text": "Self::require_file(&self.model_path, \"Whisper model\").await?;"
+    },
+    {
+      "line": 829,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 835,
+      "text": "Ok(self.process_audio(input).await?.into_iter().collect())"
+    },
+    {
+      "line": 838,
+      "text": "let transcript = self.transcribe(bytes.as_slice()).await?;"
+    },
+    {
+      "line": 853,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 870,
+      "text": ".await?;"
+    },
+    {
+      "line": 888,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 890,
+      "text": ".await?;"
+    },
+    {
+      "line": 897,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 898,
+      "text": "self.terminate_active_child(ProcessOutcome::Closed).await?;"
+    },
+    {
+      "line": 958,
+      "text": "async fn connector_fixture(delay_seconds: Option<&str>) -> (TempDir, WhisperConnector) {"
+    },
+    {
+      "line": 968,
+      "text": "tokio::fs::write(&binary, script).await.unwrap();"
+    },
+    {
+      "line": 969,
+      "text": "let mut permissions = tokio::fs::metadata(&binary).await.unwrap().permissions();"
+    },
+    {
+      "line": 972,
+      "text": ".await"
+    },
+    {
+      "line": 974,
+      "text": "tokio::fs::write(&model, b\"model\").await.unwrap();"
+    },
+    {
+      "line": 1043,
+      "text": "async fn prepared_window_connector() -> (TempDir, WhisperConnector) {"
+    },
+    {
+      "line": 1044,
+      "text": "let (fixture, mut connector) = connector_fixture(None).await;"
+    },
+    {
+      "line": 1052,
+      "text": ".await"
+    },
+    {
+      "line": 1076,
+      "text": "async fn given_wav_envelope_when_connector_runs_then_text_lineage_is_preserved() {"
+    },
+    {
+      "line": 1077,
+      "text": "let (_fixture, mut connector) = connector_fixture(None).await;"
+    },
+    {
+      "line": 1080,
+      "text": "connector.prepare(&context).await.unwrap();"
+    },
+    {
+      "line": 1083,
+      "text": ".await"
+    },
+    {
+      "line": 1101,
+      "text": "async fn given_missing_binary_when_prepare_runs_then_connector_fails_closed() {"
+    },
+    {
+      "line": 1106,
+      "text": "let error = connector.prepare(&context).await.unwrap_err();"
+    },
+    {
+      "line": 1111,
+      "text": "async fn given_hung_provider_when_deadline_expires_then_child_is_killed_and_reaped() {"
+    },
+    {
+      "line": 1112,
+      "text": "let (_fixture, mut connector) = connector_fixture(Some(\"1\")).await;"
+    },
+    {
+      "line": 1120,
+      "text": ".await"
+    },
+    {
+      "line": 1125,
+      "text": ".await"
+    },
+    {
+      "line": 1132,
+      "text": "async fn given_process_evidence_when_provider_succeeds_then_actual_invocation_is_persisted() {"
+    },
+    {
+      "line": 1134,
+      "text": "let (_fixture, mut connector) = connector_fixture(None).await;"
+    },
+    {
+      "line": 1144,
+      "text": ".await"
+    },
+    {
+      "line": 1149,
+      "text": ".await"
+    },
+    {
+      "line": 1155,
+      "text": ".await"
+    },
+    {
+      "line": 1183,
+      "text": "async fn given_process_evidence_when_provider_times_out_then_kill_and_reap_are_persisted() {"
+    },
+    {
+      "line": 1185,
+      "text": "let (_fixture, mut connector) = connector_fixture(Some(\"1\")).await;"
+    },
+    {
+      "line": 1196,
+      "text": ".await"
+    },
+    {
+      "line": 1201,
+      "text": ".await"
+    },
+    {
+      "line": 1212,
+      "text": ".await"
+    },
+    {
+      "line": 1223,
+      "text": "async fn given_outer_cancellation_when_process_is_active_then_child_receipt_is_finalized() {"
+    },
+    {
+      "line": 1225,
+      "text": "let (_fixture, mut connector) = connector_fixture(Some(\"1\")).await;"
+    },
+    {
+      "line": 1235,
+      "text": ".await"
+    },
+    {
+      "line": 1246,
+      "text": "connector.cancel().await.unwrap();"
+    },
+    {
+      "line": 1255,
+      "text": ".await"
+    },
+    {
+      "line": 1266,
+      "text": "async fn given_typed_audio_when_window_fills_then_partial_precedes_one_final_transcript() {"
+    },
+    {
+      "line": 1268,
+      "text": "let (_fixture, mut connector) = connector_fixture(None).await;"
+    },
+    {
+      "line": 1276,
+      "text": ".await"
+    },
+    {
+      "line": 1280,
+      "text": "assert!(connector.process(first).await.unwrap().is_empty());"
+    },
+    {
+      "line": 1285,
+      "text": ".await"
+    },
+    {
+      "line": 1302,
+      "text": "let final_output = connector.flush().await.unwrap().pop().unwrap();"
+    },
+    {
+      "line": 1310,
+      "text": "assert!(connector.flush().await.unwrap().is_empty());"
+    },
+    {
+      "line": 1314,
+      "text": "async fn given_lineaged_window_when_transcribed_then_derived_range_covers_every_frame() {"
+    },
+    {
+      "line": 1315,
+      "text": "let (_fixture, mut connector) = prepared_window_connector().await;"
+    },
+    {
+      "line": 1318,
+      "text": ".await"
+    },
+    {
+      "line": 1324,
+      "text": ".await"
+    },
+    {
+      "line": 1341,
+      "text": "async fn given_two_complete_windows_when_finished_then_partials_and_single_final_cover_stream()"
+    },
+    {
+      "line": 1343,
+      "text": "let (_fixture, mut connector) = prepared_window_connector().await;"
+    },
+    {
+      "line": 1349,
+      "text": ".await"
+    },
+    {
+      "line": 1359,
+      "text": "let finals = connector.flush().await.unwrap();"
+    },
+    {
+      "line": 1378,
+      "text": "assert!(connector.flush().await.unwrap().is_empty());"
+    },
+    {
+      "line": 1382,
+      "text": "async fn given_source_change_inside_window_when_processed_then_window_is_rejected_and_reset() {"
+    },
+    {
+      "line": 1383,
+      "text": "let (_fixture, mut connector) = prepared_window_connector().await;"
+    },
+    {
+      "line": 1386,
+      "text": ".await"
+    },
+    {
+      "line": 1392,
+      "text": ".await"
+    },
+    {
+      "line": 1403,
+      "text": "async fn given_discontinuity_change_inside_window_when_processed_then_window_is_rejected() {"
+    },
+    {
+      "line": 1404,
+      "text": "let (_fixture, mut connector) = prepared_window_connector().await;"
+    },
+    {
+      "line": 1407,
+      "text": ".await"
+    },
+    {
+      "line": 1413,
+      "text": ".await"
+    },
+    {
+      "line": 1422,
+      "text": "async fn given_permission_change_inside_window_when_processed_then_window_is_rejected() {"
+    },
+    {
+      "line": 1423,
+      "text": "let (_fixture, mut connector) = prepared_window_connector().await;"
+    },
+    {
+      "line": 1426,
+      "text": ".await"
+    },
+    {
+      "line": 1432,
+      "text": ".await"
+    }
+  ],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "AsyncOperatorManifest::new",
+    "AsyncOperatorPrepareContext::new",
+    "AudioBufferPool::new",
+    "AudioFrame::try_new",
+    "Box::new",
+    "Box::pin",
+    "ClockDomainId::new",
+    "Command::new",
+    "Cursor::new",
+    "Duration::from_millis",
+    "EdgeContract::bounded_async",
+    "EdgeContract::realtime_audio",
+    "FrameLineage::try_new",
+    "MediaCaps::Audio",
+    "NodeDescriptor::new",
+    "NodeError::Prepare",
+    "NodeError::Process",
+    "NodeTypeId::from",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "PortPrepareContext::new",
+    "PortSpec::new",
+    "SampleSpec::new",
+    "Self::encode_wav",
+    "Self::require_file",
+    "SemanticRole::new",
+    "SessionId::new",
+    "SignalDerivation::new",
+    "SignalEnvelope::from_audio",
+    "SignalEnvelope::untracked",
+    "SignalLineage::try_new",
+    "SignalPayload::Audio",
+    "SignalPayload::Bytes",
+    "SignalPayload::Text",
+    "SignalSpec::audio",
+    "SignalSpec::binary",
+    "SignalSpec::text",
+    "SignalTiming::try_new",
+    "SourceId::new",
+    "Stdio::from",
+    "StemId::new",
+    "StreamId::new",
+    "TempDir::new",
+    "Vec::new",
+    "WhisperConnector::new",
+    "WhisperOperatorFactory::new",
+    "WhisperProcessEvidence::new",
+    "acquire",
+    "all",
+    "and_then",
+    "args",
+    "as_mut",
+    "as_ref",
+    "as_slice",
+    "as_str",
+    "as_u64",
+    "audio_frame",
+    "begin",
+    "binary_envelope",
+    "cancel",
+    "cancellation",
+    "cfg",
+    "channel_count",
+    "channels",
+    "clamp",
+    "class",
+    "clear",
+    "clock_id",
+    "clone",
+    "collect",
+    "command_argv",
+    "complete",
+    "connector_fixture",
+    "contains",
+    "create",
+    "deadline",
+    "derivation",
+    "derive",
+    "discontinuity_epoch",
+    "display",
+    "duration_ns",
+    "encode_wav",
+    "expect",
+    "extend",
+    "extend_from_slice",
+    "f32::from",
+    "failure",
+    "finalize",
+    "find_map",
+    "flush",
+    "format",
+    "generation",
+    "get",
+    "get_u32",
+    "given_discontinuity_change_inside_window_when_processed_then_window_is_rejected",
+    "given_hung_provider_when_deadline_expires_then_child_is_killed_and_reaped",
+    "given_instance_timeout_when_manifest_resolves_then_deadline_matches_configuration",
+    "given_lineaged_window_when_transcribed_then_derived_range_covers_every_frame",
+    "given_missing_binary_when_prepare_runs_then_connector_fails_closed",
+    "given_outer_cancellation_when_process_is_active_then_child_receipt_is_finalized",
+    "given_permission_change_inside_window_when_processed_then_window_is_rejected",
+    "given_process_evidence_when_provider_succeeds_then_actual_invocation_is_persisted",
+    "given_process_evidence_when_provider_times_out_then_kill_and_reap_are_persisted",
+    "given_source_change_inside_window_when_processed_then_window_is_rejected_and_reset",
+    "given_two_complete_windows_when_finished_then_partials_and_single_final_cover_stream",
+    "given_typed_audio_when_window_fills_then_partial_precedes_one_final_transcript",
+    "given_wav_envelope_when_connector_runs_then_text_lineage_is_preserved",
+    "hound::WavWriter::new",
+    "input_edge",
+    "input_wav_path",
+    "inputs",
+    "into",
+    "into_inner",
+    "into_iter",
+    "is_empty",
+    "is_file",
+    "is_none",
+    "is_ok_and",
+    "is_some",
+    "is_some_and",
+    "iter",
+    "join",
+    "kill",
+    "kill_on_drop",
+    "len",
+    "let",
+    "lineage",
+    "lineaged_envelope",
+    "manifest",
+    "map",
+    "map_err",
+    "map_payload",
+    "mark_kill_requested",
+    "mark_wait_observed",
+    "media",
+    "new",
+    "next",
+    "node",
+    "ok_or_else",
+    "operator_id",
+    "output_edge",
+    "output_for_origin",
+    "output_roles",
+    "parent",
+    "path",
+    "payload",
+    "permission",
+    "permissions",
+    "policy_epoch",
+    "pop",
+    "prepare",
+    "prepared_window_connector",
+    "process",
+    "process_audio",
+    "push",
+    "queue_capacity_frames",
+    "require_file",
+    "reset_stream",
+    "resolve_manifest",
+    "revision",
+    "role",
+    "round",
+    "sample_rate_hz",
+    "samples",
+    "saturating_add",
+    "saturating_sub",
+    "sequence_number",
+    "serde_json::from_slice",
+    "session_id",
+    "set_argv",
+    "set_mode",
+    "set_pid",
+    "signal_spec",
+    "source_generation",
+    "source_id",
+    "source_timestamp_ns",
+    "spawn",
+    "std::fs::File::create",
+    "std::mem::take",
+    "stderr",
+    "stdout",
+    "stream_id",
+    "success",
+    "take",
+    "terminate_active_child",
+    "test_prepare_context",
+    "timestamp_end_ns",
+    "timestamp_ns",
+    "timing",
+    "to_owned",
+    "to_path_buf",
+    "to_str",
+    "to_string",
+    "to_string_lossy",
+    "to_vec",
+    "tokio::fs::metadata",
+    "tokio::fs::read",
+    "tokio::fs::read_to_string",
+    "tokio::fs::set_permissions",
+    "tokio::fs::write",
+    "tokio::time::sleep",
+    "tokio::time::timeout",
+    "transcribe",
+    "transcribe_samples",
+    "transcript_final_spec",
+    "transcript_partial_spec",
+    "trim",
+    "try_copy_from_slice",
+    "try_wait",
+    "u64::from",
+    "unwrap",
+    "unwrap_err",
+    "unwrap_or",
+    "unwrap_or_default",
+    "unwrap_or_else",
+    "update_origin",
+    "upstream_lineage",
+    "upstream_timing",
+    "validate_config",
+    "validate_positive_u32",
+    "validate_window_continuation",
+    "wait",
+    "with",
+    "with_copy_policy",
+    "with_derivation",
+    "with_duration_ns",
+    "with_gpu",
+    "with_lineage",
+    "with_media",
+    "with_process_evidence",
+    "with_process_timeout_ms",
+    "with_role",
+    "with_window_duration_ms",
+    "write_sample"
+  ],
+  "cancellation_behavior": [
+    {
+      "line": 887,
+      "text": "fn cancel<'a>(&'a mut self) -> AsyncNodeFuture<'a, Result<(), NodeError>> {"
+    },
+    {
+      "line": 1227,
+      "text": ".with_process_evidence(evidence_root.path(), \"cancel\")"
+    },
+    {
+      "line": 1246,
+      "text": "connector.cancel().await.unwrap();"
+    },
+    {
+      "line": 1252,
+      "text": ".join(\"cancel-0000\")"
+    }
+  ],
+  "channels": [
+    {
+      "line": 592,
+      "text": "\"audio channel count changed from {channels} to {}\","
+    },
+    {
+      "line": 816,
+      "text": "\"Whisper requires concrete PCM sample rate and channel layout\".to_owned(),"
+    }
+  ],
+  "configuration_read": [
+    {
+      "line": 8,
+      "text": "AsyncOperatorPrepareContext, AudioCaps, ChannelLayout, ConfigError, CopyPolicy, EdgeContract,"
+    },
+    {
+      "line": 72,
+      "text": "const DEFAULT_PROCESS_TIMEOUT_MS: u32 = 60_000;"
+    },
+    {
+      "line": 139,
+      "text": "process_timeout_ms: DEFAULT_PROCESS_TIMEOUT_MS"
+    },
+    {
+      "line": 167,
+      "text": "fn validate_config(&self, configuration: &OperatorConfiguration) -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 172,
+      "text": "return Err(ConfigError::Invalid {"
+    },
+    {
+      "line": 183,
+      "text": "return Err(ConfigError::Invalid {"
+    },
+    {
+      "line": 195,
+      "text": "ConfigError::Invalid {"
+    },
+    {
+      "line": 202,
+      "text": "return Err(ConfigError::Invalid {"
+    },
+    {
+      "line": 215,
+      "text": ") -> Result<AsyncOperatorManifest, ConfigError> {"
+    },
+    {
+      "line": 219,
+      "text": ".unwrap_or(DEFAULT_PROCESS_TIMEOUT_MS);"
+    },
+    {
+      "line": 237,
+      "text": ".map_err(|error| ConfigError::Invalid {"
+    },
+    {
+      "line": 278,
+      "text": ") -> Result<(), ConfigError> {"
+    },
+    {
+      "line": 285,
+      "text": "Err(ConfigError::Invalid {"
+    },
+    {
+      "line": 302,
+      "text": "process_timeout_ms: DEFAULT_PROCESS_TIMEOUT_MS,"
+    },
+    {
+      "line": 905,
+      "text": "#[cfg(all(test, unix))]"
+    },
+    {
+      "line": 1071,
+      "text": "DEFAULT_PROCESS_TIMEOUT_MS + PROCESS_TIMEOUT_CLEANUP_MARGIN_MS"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "AsyncOperatorManifest::new",
+    "AsyncOperatorPrepareContext::new",
+    "AudioBufferPool::new",
+    "AudioFrame::try_new",
+    "Box::new",
+    "ClockDomainId::new",
+    "Command::new",
+    "Cursor::new",
+    "FrameLineage::try_new",
+    "NodeDescriptor::new",
+    "NodeTypeId::from",
+    "OperatorConfiguration::new",
+    "OperatorId::new",
+    "PortPrepareContext::new",
+    "PortSpec::new",
+    "SampleSpec::new",
+    "SemanticRole::new",
+    "SessionId::new",
+    "SignalDerivation::new",
+    "SignalLineage::try_new",
+    "SignalTiming::try_new",
+    "SourceId::new",
+    "Stdio::from",
+    "StemId::new",
+    "StreamId::new",
+    "TempDir::new",
+    "Vec::new",
+    "WhisperConnector::new",
+    "WhisperOperatorFactory::new",
+    "WhisperProcessEvidence::new",
+    "f32::from",
+    "hound::WavWriter::new",
+    "new",
+    "u64::from"
+  ],
+  "content_hash": "ff95eac3430f5f59140302b76a8aec469cf177b209533ce9d5c20d94893e559d",
+  "defaults": [
+    {
+      "line": 72,
+      "text": "const DEFAULT_PROCESS_TIMEOUT_MS: u32 = 60_000;"
+    },
+    {
+      "line": 139,
+      "text": "process_timeout_ms: DEFAULT_PROCESS_TIMEOUT_MS"
+    },
+    {
+      "line": 219,
+      "text": ".unwrap_or(DEFAULT_PROCESS_TIMEOUT_MS);"
+    },
+    {
+      "line": 302,
+      "text": "process_timeout_ms: DEFAULT_PROCESS_TIMEOUT_MS,"
+    },
+    {
+      "line": 1071,
+      "text": "DEFAULT_PROCESS_TIMEOUT_MS + PROCESS_TIMEOUT_CLEANUP_MARGIN_MS"
+    }
+  ],
+  "defines": [
+    {
+      "kind": "mod",
+      "line": 17,
+      "name": "process_evidence",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 24,
+      "name": "WhisperConnector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 45,
+      "name": "WindowOrigin",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 53,
+      "name": "WHISPER_OPERATOR_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 55,
+      "name": "TRANSCRIPT_PARTIAL_ROLE",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 56,
+      "name": "TRANSCRIPT_FINAL_ROLE",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "transcript_partial_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "transcript_final_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 65,
+      "name": "WHISPER_OPERATOR_REVISION",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 66,
+      "name": "WHISPER_OPERATOR_GENERATION",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 67,
+      "name": "LANGUAGE_CONFIGURATION_KEY",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 69,
+      "name": "GPU_CONFIGURATION_KEY",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 70,
+      "name": "WINDOW_DURATION_MS_CONFIGURATION_KEY",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 71,
+      "name": "PROCESS_TIMEOUT_MS_CONFIGURATION_KEY",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 72,
+      "name": "DEFAULT_PROCESS_TIMEOUT_MS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 73,
+      "name": "PROCESS_TIMEOUT_CLEANUP_MARGIN_MS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 74,
+      "name": "EVIDENCE_ROOT_CONFIGURATION_KEY",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 75,
+      "name": "EVIDENCE_CASE_ID_CONFIGURATION_KEY",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 76,
+      "name": "WhisperOperatorFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 163,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 166,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 211,
+      "name": "resolve_manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 242,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 274,
+      "name": "validate_positive_u32",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 292,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 316,
+      "name": "with_gpu",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 321,
+      "name": "with_window_duration_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 326,
+      "name": "with_process_timeout_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 331,
+      "name": "with_process_evidence",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 340,
+      "name": "require_file",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 353,
+      "name": "transcribe",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 474,
+      "name": "command_argv",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 503,
+      "name": "terminate_active_child",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 541,
+      "name": "encode_wav",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 569,
+      "name": "process_audio",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 649,
+      "name": "transcribe_samples",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 659,
+      "name": "output_for_origin",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 686,
+      "name": "reset_stream",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 694,
+      "name": "update_origin",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 717,
+      "name": "validate_window_continuation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 780,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 824,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 851,
+      "name": "flush",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 886,
+      "name": "cancel",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 895,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 906,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 915,
+      "name": "test_prepare_context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 957,
+      "name": "connector_fixture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 978,
+      "name": "audio_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 993,
+      "name": "lineaged_envelope",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1019,
+      "name": "binary_envelope",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1042,
+      "name": "prepared_window_connector",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1058,
+      "name": "given_instance_timeout_when_manifest_resolves_then_deadline_matches_configuration",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1076,
+      "name": "given_wav_envelope_when_connector_runs_then_text_lineage_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1101,
+      "name": "given_missing_binary_when_prepare_runs_then_connector_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1111,
+      "name": "given_hung_provider_when_deadline_expires_then_child_is_killed_and_reaped",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1132,
+      "name": "given_process_evidence_when_provider_succeeds_then_actual_invocation_is_persisted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1183,
+      "name": "given_process_evidence_when_provider_times_out_then_kill_and_reap_are_persisted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1223,
+      "name": "given_outer_cancellation_when_process_is_active_then_child_receipt_is_finalized",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1266,
+      "name": "given_typed_audio_when_window_fills_then_partial_precedes_one_final_transcript",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1314,
+      "name": "given_lineaged_window_when_transcribed_then_derived_range_covers_every_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1341,
+      "name": "given_two_complete_windows_when_finished_then_partials_and_single_final_cover_stream",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1382,
+      "name": "given_source_change_inside_window_when_processed_then_window_is_rejected_and_reset",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1403,
+      "name": "given_discontinuity_change_inside_window_when_processed_then_window_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1422,
+      "name": "given_permission_change_inside_window_when_processed_then_window_is_rejected",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 24,
+      "name": "WhisperConnector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 53,
+      "name": "WHISPER_OPERATOR_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 55,
+      "name": "TRANSCRIPT_PARTIAL_ROLE",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 56,
+      "name": "TRANSCRIPT_FINAL_ROLE",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "transcript_partial_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "transcript_final_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 74,
+      "name": "EVIDENCE_ROOT_CONFIGURATION_KEY",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 75,
+      "name": "EVIDENCE_CASE_ID_CONFIGURATION_KEY",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 76,
+      "name": "WhisperOperatorFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 292,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 316,
+      "name": "with_gpu",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 321,
+      "name": "with_window_duration_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 326,
+      "name": "with_process_timeout_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 331,
+      "name": "with_process_evidence",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 172,
+      "text": "return Err(ConfigError::Invalid {"
+    },
+    {
+      "line": 183,
+      "text": "return Err(ConfigError::Invalid {"
+    },
+    {
+      "line": 202,
+      "text": "return Err(ConfigError::Invalid {"
+    },
+    {
+      "line": 285,
+      "text": "Err(ConfigError::Invalid {"
+    },
+    {
+      "line": 346,
+      "text": "return Err(NodeError::Prepare(format!("
+    },
+    {
+      "line": 451,
+      "text": "Err(_) => {"
+    },
+    {
+      "line": 454,
+      "text": "return Err(NodeError::ProcessTimeout {"
+    },
+    {
+      "line": 463,
+      "text": "return Err(NodeError::Process(format!("
+    },
+    {
+      "line": 585,
+      "text": "return Err(NodeError::Process(format!("
+    },
+    {
+      "line": 591,
+      "text": "return Err(NodeError::Process(format!("
+    },
+    {
+      "line": 597,
+      "text": "return Err(NodeError::Process("
+    },
+    {
+      "line": 605,
+      "text": "return Err(NodeError::Process(format!("
+    },
+    {
+      "line": 614,
+      "text": "if let Err(reason) = update_origin(&mut self.stream_origin, &input, frame_timestamp_end_ns)"
+    },
+    {
+      "line": 617,
+      "text": "return Err(NodeError::Process(reason));"
+    },
+    {
+      "line": 619,
+      "text": "if let Err(reason) = update_origin(&mut self.pending_origin, &input, frame_timestamp_end_ns)"
+    },
+    {
+      "line": 622,
+      "text": "return Err(NodeError::Process(reason));"
+    },
+    {
+      "line": 640,
+      "text": "Err(error) => {"
+    },
+    {
+      "line": 642,
+      "text": "return Err(error);"
+    },
+    {
+      "line": 724,
+      "text": "return Err(\"source identity changed inside a Whisper window\".to_owned());"
+    },
+    {
+      "line": 736,
+      "text": "return Err(\"lineage authority changed inside a Whisper window\".to_owned());"
+    },
+    {
+      "line": 742,
+      "text": "return Err(\"lineage range is not contiguous inside a Whisper window\".to_owned());"
+    },
+    {
+      "line": 761,
+      "text": "return Err(\"timestamp range is not contiguous inside a Whisper window\".to_owned());"
+    },
+    {
+      "line": 773,
+      "text": "return Err(\"lineage presence changed inside a Whisper window\".to_owned());"
+    },
+    {
+      "line": 788,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 793,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 808,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 815,
+      "text": "return Err(NodeError::Prepare("
+    },
+    {
+      "line": 831,
+      "text": "return Err(NodeError::Process(\"connector is not prepared\".to_owned()));"
+    },
+    {
+      "line": 844,
+      "text": "_ => Err(NodeError::Process(format!("
+    }
+  ],
+  "errors_defined": [],
+  "errors_propagated": [
+    {
+      "line": 269,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    },
+    {
+      "line": 344,
+      "text": ".map_err(|error| NodeError::Prepare(format!(\"{label} {}: {error}\", path.display())))?;"
+    },
+    {
+      "line": 367,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 395,
+      "text": ".map_err(|error| NodeError::Process(format!(\"write WAV input: {error}\")))?;"
+    },
+    {
+      "line": 405,
+      "text": ".map_err(|error| NodeError::Process(format!(\"create whisper stdout: {error}\")))?;"
+    },
+    {
+      "line": 407,
+      "text": ".map_err(|error| NodeError::Process(format!(\"create whisper stderr: {error}\")))?;"
+    },
+    {
+      "line": 415,
+      "text": ".map_err(|error| NodeError::Process(format!(\"start whisper-cli: {error}\")))?,"
+    },
+    {
+      "line": 447,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?;"
+    },
+    {
+      "line": 471,
+      "text": ".map_err(|error| NodeError::Process(format!(\"read transcript: {error}\")))?;"
+    },
+    {
+      "line": 510,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?;"
+    },
+    {
+      "line": 516,
+      "text": ".map_err(|error| NodeError::Process(format!(\"inspect whisper-cli child: {error}\")))?;"
+    },
+    {
+      "line": 525,
+      "text": ".map_err(|error| NodeError::Process(format!(\"kill whisper-cli child: {error}\")))?;"
+    },
+    {
+      "line": 529,
+      "text": ".map_err(|error| NodeError::Process(format!(\"reap whisper-cli child: {error}\")))?;"
+    },
+    {
+      "line": 537,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?;"
+    },
+    {
+      "line": 556,
+      "text": ".map_err(|error| NodeError::Process(format!(\"create WAV window: {error}\")))?;"
+    },
+    {
+      "line": 561,
+      "text": ".map_err(|error| NodeError::Process(format!(\"write WAV window: {error}\")))?;"
+    },
+    {
+      "line": 565,
+      "text": ".map_err(|error| NodeError::Process(format!(\"finalize WAV window: {error}\")))?;"
+    },
+    {
+      "line": 681,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 750,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 769,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 1241,
+      "text": "result = &mut process => panic!(\"provider unexpectedly completed: {result:?}\"),"
+    }
+  ],
+  "errors_translated": [
+    {
+      "line": 194,
+      "text": "WhisperProcessEvidence::new(root, case_id).map_err(|error| {"
+    },
+    {
+      "line": 237,
+      "text": ".map_err(|error| ConfigError::Invalid {"
+    },
+    {
+      "line": 269,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    },
+    {
+      "line": 344,
+      "text": ".map_err(|error| NodeError::Prepare(format!(\"{label} {}: {error}\", path.display())))?;"
+    },
+    {
+      "line": 356,
+      "text": "Some(TempDir::new().map_err(|error| {"
+    },
+    {
+      "line": 367,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 395,
+      "text": ".map_err(|error| NodeError::Process(format!(\"write WAV input: {error}\")))?;"
+    },
+    {
+      "line": 405,
+      "text": ".map_err(|error| NodeError::Process(format!(\"create whisper stdout: {error}\")))?;"
+    },
+    {
+      "line": 407,
+      "text": ".map_err(|error| NodeError::Process(format!(\"create whisper stderr: {error}\")))?;"
+    },
+    {
+      "line": 415,
+      "text": ".map_err(|error| NodeError::Process(format!(\"start whisper-cli: {error}\")))?,"
+    },
+    {
+      "line": 434,
+      "text": "let status = status.map_err(|error| {"
+    },
+    {
+      "line": 447,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?;"
+    },
+    {
+      "line": 471,
+      "text": ".map_err(|error| NodeError::Process(format!(\"read transcript: {error}\")))?;"
+    },
+    {
+      "line": 510,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?;"
+    },
+    {
+      "line": 516,
+      "text": ".map_err(|error| NodeError::Process(format!(\"inspect whisper-cli child: {error}\")))?;"
+    },
+    {
+      "line": 525,
+      "text": ".map_err(|error| NodeError::Process(format!(\"kill whisper-cli child: {error}\")))?;"
+    },
+    {
+      "line": 529,
+      "text": ".map_err(|error| NodeError::Process(format!(\"reap whisper-cli child: {error}\")))?;"
+    },
+    {
+      "line": 537,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?;"
+    },
+    {
+      "line": 556,
+      "text": ".map_err(|error| NodeError::Process(format!(\"create WAV window: {error}\")))?;"
+    },
+    {
+      "line": 561,
+      "text": ".map_err(|error| NodeError::Process(format!(\"write WAV window: {error}\")))?;"
+    },
+    {
+      "line": 565,
+      "text": ".map_err(|error| NodeError::Process(format!(\"finalize WAV window: {error}\")))?;"
+    },
+    {
+      "line": 681,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 750,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 769,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 982,
+      "text": "buffer.try_copy_from_slice(&[0.25; 160]).unwrap();"
+    }
+  ],
+  "errors_wrapped": [
+    {
+      "line": 194,
+      "text": "WhisperProcessEvidence::new(root, case_id).map_err(|error| {"
+    },
+    {
+      "line": 237,
+      "text": ".map_err(|error| ConfigError::Invalid {"
+    },
+    {
+      "line": 269,
+      "text": ".map_err(|error| NodeError::Prepare(error.to_string()))?;"
+    },
+    {
+      "line": 344,
+      "text": ".map_err(|error| NodeError::Prepare(format!(\"{label} {}: {error}\", path.display())))?;"
+    },
+    {
+      "line": 356,
+      "text": "Some(TempDir::new().map_err(|error| {"
+    },
+    {
+      "line": 367,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 395,
+      "text": ".map_err(|error| NodeError::Process(format!(\"write WAV input: {error}\")))?;"
+    },
+    {
+      "line": 405,
+      "text": ".map_err(|error| NodeError::Process(format!(\"create whisper stdout: {error}\")))?;"
+    },
+    {
+      "line": 407,
+      "text": ".map_err(|error| NodeError::Process(format!(\"create whisper stderr: {error}\")))?;"
+    },
+    {
+      "line": 415,
+      "text": ".map_err(|error| NodeError::Process(format!(\"start whisper-cli: {error}\")))?,"
+    },
+    {
+      "line": 434,
+      "text": "let status = status.map_err(|error| {"
+    },
+    {
+      "line": 447,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?;"
+    },
+    {
+      "line": 471,
+      "text": ".map_err(|error| NodeError::Process(format!(\"read transcript: {error}\")))?;"
+    },
+    {
+      "line": 510,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?;"
+    },
+    {
+      "line": 516,
+      "text": ".map_err(|error| NodeError::Process(format!(\"inspect whisper-cli child: {error}\")))?;"
+    },
+    {
+      "line": 525,
+      "text": ".map_err(|error| NodeError::Process(format!(\"kill whisper-cli child: {error}\")))?;"
+    },
+    {
+      "line": 529,
+      "text": ".map_err(|error| NodeError::Process(format!(\"reap whisper-cli child: {error}\")))?;"
+    },
+    {
+      "line": 537,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?;"
+    },
+    {
+      "line": 556,
+      "text": ".map_err(|error| NodeError::Process(format!(\"create WAV window: {error}\")))?;"
+    },
+    {
+      "line": 561,
+      "text": ".map_err(|error| NodeError::Process(format!(\"write WAV window: {error}\")))?;"
+    },
+    {
+      "line": 565,
+      "text": ".map_err(|error| NodeError::Process(format!(\"finalize WAV window: {error}\")))?;"
+    },
+    {
+      "line": 681,
+      "text": ".map_err(|error| NodeError::Process(error.to_string()))?,"
+    },
+    {
+      "line": 750,
+      "text": ".map_err(|error| error.to_string())?;"
+    },
+    {
+      "line": 769,
+      "text": ".map_err(|error| error.to_string())?;"
+    }
+  ],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "ff95eac3430f5f59140302b76a8aec469cf177b209533ce9d5c20d94893e559d",
+      "lines": [
+        1,
+        1440
+      ],
+      "path": "examples/whisper-transcribe/src/lib.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0038-42cae060",
+  "file_kind": "example",
+  "filesystem_io": [
+    {
+      "line": 342,
+      "text": "let metadata = tokio::fs::metadata(path)"
+    },
+    {
+      "line": 393,
+      "text": "tokio::fs::write(&wav_path, wav_bytes)"
+    },
+    {
+      "line": 404,
+      "text": "let stdout_file = std::fs::File::create(&stdout_path)"
+    },
+    {
+      "line": 406,
+      "text": "let stderr_file = std::fs::File::create(&stderr_path)"
+    },
+    {
+      "line": 460,
+      "text": "let stderr = tokio::fs::read_to_string(&stderr_path)"
+    },
+    {
+      "line": 469,
+      "text": "let transcript = tokio::fs::read_to_string(&output_path)"
+    },
+    {
+      "line": 912,
+      "text": "use std::os::unix::fs::PermissionsExt;"
+    },
+    {
+      "line": 968,
+      "text": "tokio::fs::write(&binary, script).await.unwrap();"
+    },
+    {
+      "line": 969,
+      "text": "let mut permissions = tokio::fs::metadata(&binary).await.unwrap().permissions();"
+    },
+    {
+      "line": 971,
+      "text": "tokio::fs::set_permissions(&binary, permissions)"
+    },
+    {
+      "line": 974,
+      "text": "tokio::fs::write(&model, b\"model\").await.unwrap();"
+    },
+    {
+      "line": 1154,
+      "text": "&tokio::fs::read(invocation.join(\"receipt.json\"))"
+    },
+    {
+      "line": 1206,
+      "text": "&tokio::fs::read("
+    },
+    {
+      "line": 1249,
+      "text": "&tokio::fs::read("
+    }
+  ],
+  "finalization": [
+    {
+      "line": 564,
+      "text": ".finalize()"
+    },
+    {
+      "line": 565,
+      "text": ".map_err(|error| NodeError::Process(format!(\"finalize WAV window: {error}\")))?;"
+    }
+  ],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "f32ea2d0ec4ed0f9c8f35e3067709f9d53ac8fce",
+  "implemented_by": [],
+  "implements": [
+    "WhisperOperatorFactory",
+    "AsyncOperatorFactory for WhisperOperatorFactory",
+    "WhisperConnector",
+    "AsyncNode for WhisperConnector"
+  ],
+  "imported_by": [],
+  "imports": [
+    "module:process_evidence",
+    "pocketstation::{ AsyncNode, AsyncNodeFuture, AsyncOperatorFactory, AsyncOperatorManifest, AsyncOperatorPrepareContext, AudioCaps, ChannelLayout, ConfigError, CopyPolicy, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeError, NodeTypeId, OperatorCancellationPolicy, OperatorConfiguration, OperatorDeadlinePolicy, OperatorFailurePolicy, OperatorId, OperatorOutputRolePolicy, OperatorPermissionPolicy, PortDirection, PortSpec, SafetyContract, SampleFormat, SemanticRole, SignalDerivation, SignalEnvelope, SignalLineage, SignalPayload, SignalSpec, SignalTiming, SourceId, TextFormat, }",
+    "pocketstation::{ AudioBufferPool, AudioFrame, BinaryFormat, ClockDomainId, FrameLineage, PortPrepareContext, SampleFormat, SampleSpec, SessionId, SignalLineage, SignalSpec, SignalTiming, SourceId, StemId, StreamId, }",
+    "process_evidence::ActiveProcessEvidence",
+    "process_evidence::{ ProcessEvidenceError, ProcessOutcome, WhisperProcessEvidence, WhisperProcessReceipt, }",
+    "std::io::Cursor",
+    "std::os::unix::fs::PermissionsExt",
+    "std::path::{Path, PathBuf}",
+    "std::process::Stdio",
+    "std::time::Duration",
+    "super::*",
+    "tempfile::TempDir",
+    "tokio::process::{Child, Command}"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 174,
+      "text": "reason: \"language cannot be empty\".to_owned(),"
+    },
+    {
+      "line": 204,
+      "text": "reason: \"evidence_root and evidence_case_id must be supplied together\""
+    },
+    {
+      "line": 482,
+      "text": "NodeError::Process(format!(\"{label} must be valid UTF-8 for process evidence\"))"
+    },
+    {
+      "line": 789,
+      "text": "\"Whisper window duration must be greater than zero\".to_owned(),"
+    },
+    {
+      "line": 794,
+      "text": "\"Whisper process timeout must be greater than zero\".to_owned(),"
+    },
+    {
+      "line": 1095,
+      "text": "assert!("
+    },
+    {
+      "line": 1107,
+      "text": "assert!(matches!(error, NodeError::Prepare(_)));"
+    },
+    {
+      "line": 1128,
+      "text": "assert!(matches!(error, NodeError::ProcessTimeout { timeout_ms: 5 }));"
+    },
+    {
+      "line": 1169,
+      "text": "assert!(receipt[\"pid\"].as_u64().is_some());"
+    },
+    {
+      "line": 1174,
+      "text": "assert!(invocation.join(\"input.wav\").is_file());"
+    },
+    {
+      "line": 1175,
+      "text": "assert!(invocation.join(\"stdout.log\").is_file());"
+    },
+    {
+      "line": 1176,
+      "text": "assert!(invocation.join(\"stderr.log\").is_file());"
+    },
+    {
+      "line": 1177,
+      "text": "assert!(invocation.join(\"transcript.txt\").is_file());"
+    },
+    {
+      "line": 1178,
+      "text": "assert!(receipt[\"input_wav_hash\"].as_str().is_some());"
+    },
+    {
+      "line": 1179,
+      "text": "assert!(receipt[\"transcript_hash\"].as_str().is_some());"
+    },
+    {
+      "line": 1204,
+      "text": "assert!(matches!(error, NodeError::ProcessTimeout { timeout_ms: 5 }));"
+    },
+    {
+      "line": 1280,
+      "text": "assert!(connector.process(first).await.unwrap().is_empty());"
+    },
+    {
+      "line": 1298,
+      "text": "assert!("
+    },
+    {
+      "line": 1310,
+      "text": "assert!(connector.flush().await.unwrap().is_empty());"
+    },
+    {
+      "line": 1316,
+      "text": "assert!(connector"
+    },
+    {
+      "line": 1355,
+      "text": "assert!(partials.iter().all(|output| {"
+    },
+    {
+      "line": 1373,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 1378,
+      "text": "assert!(connector.flush().await.unwrap().is_empty());"
+    },
+    {
+      "line": 1384,
+      "text": "assert!(connector"
+    },
+    {
+      "line": 1395,
+      "text": "assert!("
+    },
+    {
+      "line": 1398,
+      "text": "assert!(connector.pending_samples.is_empty());"
+    },
+    {
+      "line": 1399,
+      "text": "assert!(connector.pending_origin.is_none());"
+    },
+    {
+      "line": 1405,
+      "text": "assert!(connector"
+    },
+    {
+      "line": 1416,
+      "text": "assert!("
+    },
+    {
+      "line": 1424,
+      "text": "assert!(connector"
+    },
+    {
+      "line": 1435,
+      "text": "assert!("
+    }
+  ],
+  "language": "Rust",
+  "line_count": 1440,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-dee628e71ec7c1c0ff7b",
+    "pattern-05350b66e882a52b5fe0",
+    "pattern-78780c49a001a9fa415d",
+    "pattern-ab77075f8e2f3f9c0d25"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "examples/whisper-transcribe/src/lib.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "mod",
+      "line": 17,
+      "name": "process_evidence",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 45,
+      "name": "WindowOrigin",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 65,
+      "name": "WHISPER_OPERATOR_REVISION",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 66,
+      "name": "WHISPER_OPERATOR_GENERATION",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 67,
+      "name": "LANGUAGE_CONFIGURATION_KEY",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 69,
+      "name": "GPU_CONFIGURATION_KEY",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 70,
+      "name": "WINDOW_DURATION_MS_CONFIGURATION_KEY",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 71,
+      "name": "PROCESS_TIMEOUT_MS_CONFIGURATION_KEY",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 72,
+      "name": "DEFAULT_PROCESS_TIMEOUT_MS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 73,
+      "name": "PROCESS_TIMEOUT_CLEANUP_MARGIN_MS",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 163,
+      "name": "manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 166,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 211,
+      "name": "resolve_manifest",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 242,
+      "name": "create",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 274,
+      "name": "validate_positive_u32",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 340,
+      "name": "require_file",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 353,
+      "name": "transcribe",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 474,
+      "name": "command_argv",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 503,
+      "name": "terminate_active_child",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 541,
+      "name": "encode_wav",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 569,
+      "name": "process_audio",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 649,
+      "name": "transcribe_samples",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 659,
+      "name": "output_for_origin",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 686,
+      "name": "reset_stream",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 694,
+      "name": "update_origin",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 717,
+      "name": "validate_window_continuation",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 780,
+      "name": "prepare",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 824,
+      "name": "process",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 851,
+      "name": "flush",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 886,
+      "name": "cancel",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 895,
+      "name": "close",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 906,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 915,
+      "name": "test_prepare_context",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 957,
+      "name": "connector_fixture",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 978,
+      "name": "audio_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 993,
+      "name": "lineaged_envelope",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1019,
+      "name": "binary_envelope",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1042,
+      "name": "prepared_window_connector",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1058,
+      "name": "given_instance_timeout_when_manifest_resolves_then_deadline_matches_configuration",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1076,
+      "name": "given_wav_envelope_when_connector_runs_then_text_lineage_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1101,
+      "name": "given_missing_binary_when_prepare_runs_then_connector_fails_closed",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1111,
+      "name": "given_hung_provider_when_deadline_expires_then_child_is_killed_and_reaped",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1132,
+      "name": "given_process_evidence_when_provider_succeeds_then_actual_invocation_is_persisted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1183,
+      "name": "given_process_evidence_when_provider_times_out_then_kill_and_reap_are_persisted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1223,
+      "name": "given_outer_cancellation_when_process_is_active_then_child_receipt_is_finalized",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1266,
+      "name": "given_typed_audio_when_window_fills_then_partial_precedes_one_final_transcript",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1314,
+      "name": "given_lineaged_window_when_transcribed_then_derived_range_covers_every_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1341,
+      "name": "given_two_complete_windows_when_finished_then_partials_and_single_final_cover_stream",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1382,
+      "name": "given_source_change_inside_window_when_processed_then_window_is_rejected_and_reset",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1403,
+      "name": "given_discontinuity_change_inside_window_when_processed_then_window_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1422,
+      "name": "given_permission_change_inside_window_when_processed_then_window_is_rejected",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [
+    {
+      "line": 3,
+      "text": "use std::process::Stdio;"
+    },
+    {
+      "line": 16,
+      "text": "use tokio::process::{Child, Command};"
+    },
+    {
+      "line": 38,
+      "text": "active_child: Option<Child>,"
+    },
+    {
+      "line": 402,
+      "text": "let mut command = Command::new(&argv[0]);"
+    },
+    {
+      "line": 414,
+      "text": ".spawn()"
+    },
+    {
+      "line": 418,
+      "text": "active.set_pid(self.active_child.as_ref().and_then(Child::id));"
+    }
+  ],
+  "protocol_messages": [
+    {
+      "line": 16,
+      "text": "use tokio::process::{Child, Command};"
+    },
+    {
+      "line": 402,
+      "text": "let mut command = Command::new(&argv[0]);"
+    }
+  ],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 24,
+      "name": "WhisperConnector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 53,
+      "name": "WHISPER_OPERATOR_ID",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 55,
+      "name": "TRANSCRIPT_PARTIAL_ROLE",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 56,
+      "name": "TRANSCRIPT_FINAL_ROLE",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 57,
+      "name": "transcript_partial_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 61,
+      "name": "transcript_final_spec",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 74,
+      "name": "EVIDENCE_ROOT_CONFIGURATION_KEY",
+      "visibility": "pub"
+    },
+    {
+      "kind": "const",
+      "line": 75,
+      "name": "EVIDENCE_CASE_ID_CONFIGURATION_KEY",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 76,
+      "name": "WhisperOperatorFactory",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 85,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 292,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 316,
+      "name": "with_gpu",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 321,
+      "name": "with_window_duration_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 326,
+      "name": "with_process_timeout_ms",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 331,
+      "name": "with_process_evidence",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `not_applicable`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/examples.md",
+    "docs/concepts/transcription-integration.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/how-to/run-transcription.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/troubleshooting/transcription-evidence.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 246,
+      "text": ") -> Result<Box<dyn AsyncNode>, NodeError> {"
+    },
+    {
+      "line": 271,
+      "text": "Ok(Box::new(connector))"
+    },
+    {
+      "line": 784,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 829,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 853,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 888,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 897,
+      "text": "Box::pin(async move {"
+    }
+  ],
+  "responsibilities": [
+    "process_evidence",
+    "WhisperConnector",
+    "WindowOrigin",
+    "WHISPER_OPERATOR_ID",
+    "TRANSCRIPT_PARTIAL_ROLE",
+    "TRANSCRIPT_FINAL_ROLE",
+    "transcript_partial_spec",
+    "transcript_final_spec",
+    "WHISPER_OPERATOR_REVISION",
+    "WHISPER_OPERATOR_GENERATION",
+    "LANGUAGE_CONFIGURATION_KEY",
+    "GPU_CONFIGURATION_KEY",
+    "WINDOW_DURATION_MS_CONFIGURATION_KEY",
+    "PROCESS_TIMEOUT_MS_CONFIGURATION_KEY",
+    "DEFAULT_PROCESS_TIMEOUT_MS",
+    "PROCESS_TIMEOUT_CLEANUP_MARGIN_MS",
+    "EVIDENCE_ROOT_CONFIGURATION_KEY",
+    "EVIDENCE_CASE_ID_CONFIGURATION_KEY",
+    "WhisperOperatorFactory",
+    "new",
+    "manifest",
+    "validate_config",
+    "resolve_manifest",
+    "create",
+    "validate_positive_u32",
+    "new",
+    "with_gpu",
+    "with_window_duration_ms",
+    "with_process_timeout_ms",
+    "with_process_evidence",
+    "require_file",
+    "transcribe",
+    "command_argv",
+    "terminate_active_child",
+    "encode_wav",
+    "process_audio",
+    "transcribe_samples",
+    "output_for_origin",
+    "reset_stream",
+    "update_origin",
+    "validate_window_continuation",
+    "prepare",
+    "process",
+    "flush",
+    "cancel",
+    "close",
+    "tests",
+    "test_prepare_context",
+    "connector_fixture",
+    "audio_frame",
+    "lineaged_envelope",
+    "binary_envelope",
+    "prepared_window_connector",
+    "given_instance_timeout_when_manifest_resolves_then_deadline_matches_configuration",
+    "given_wav_envelope_when_connector_runs_then_text_lineage_is_preserved",
+    "given_missing_binary_when_prepare_runs_then_connector_fails_closed",
+    "given_hung_provider_when_deadline_expires_then_child_is_killed_and_reaped",
+    "given_process_evidence_when_provider_succeeds_then_actual_invocation_is_persisted",
+    "given_process_evidence_when_provider_times_out_then_kill_and_reap_are_persisted",
+    "given_outer_cancellation_when_process_is_active_then_child_receipt_is_finalized",
+    "given_typed_audio_when_window_fills_then_partial_precedes_one_final_transcript",
+    "given_lineaged_window_when_transcribed_then_derived_range_covers_every_frame",
+    "given_two_complete_windows_when_finished_then_partials_and_single_final_cover_stream",
+    "given_source_change_inside_window_when_processed_then_window_is_rejected_and_reset",
+    "given_discontinuity_change_inside_window_when_processed_then_window_is_rejected",
+    "given_permission_change_inside_window_when_processed_then_window_is_rejected"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 342,
+      "text": "let metadata = tokio::fs::metadata(path)"
+    },
+    {
+      "line": 393,
+      "text": "tokio::fs::write(&wav_path, wav_bytes)"
+    },
+    {
+      "line": 404,
+      "text": "let stdout_file = std::fs::File::create(&stdout_path)"
+    },
+    {
+      "line": 406,
+      "text": "let stderr_file = std::fs::File::create(&stderr_path)"
+    },
+    {
+      "line": 460,
+      "text": "let stderr = tokio::fs::read_to_string(&stderr_path)"
+    },
+    {
+      "line": 469,
+      "text": "let transcript = tokio::fs::read_to_string(&output_path)"
+    },
+    {
+      "line": 912,
+      "text": "use std::os::unix::fs::PermissionsExt;"
+    },
+    {
+      "line": 968,
+      "text": "tokio::fs::write(&binary, script).await.unwrap();"
+    },
+    {
+      "line": 969,
+      "text": "let mut permissions = tokio::fs::metadata(&binary).await.unwrap().permissions();"
+    },
+    {
+      "line": 971,
+      "text": "tokio::fs::set_permissions(&binary, permissions)"
+    },
+    {
+      "line": 974,
+      "text": "tokio::fs::write(&model, b\"model\").await.unwrap();"
+    },
+    {
+      "line": 1154,
+      "text": "&tokio::fs::read(invocation.join(\"receipt.json\"))"
+    },
+    {
+      "line": 1206,
+      "text": "&tokio::fs::read("
+    },
+    {
+      "line": 1249,
+      "text": "&tokio::fs::read("
+    },
+    {
+      "line": 3,
+      "text": "use std::process::Stdio;"
+    },
+    {
+      "line": 16,
+      "text": "use tokio::process::{Child, Command};"
+    },
+    {
+      "line": 38,
+      "text": "active_child: Option<Child>,"
+    },
+    {
+      "line": 402,
+      "text": "let mut command = Command::new(&argv[0]);"
+    },
+    {
+      "line": 414,
+      "text": ".spawn()"
+    },
+    {
+      "line": 418,
+      "text": "active.set_pid(self.active_child.as_ref().and_then(Child::id));"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 415,
+      "text": ".map_err(|error| NodeError::Process(format!(\"start whisper-cli: {error}\")))?,"
+    },
+    {
+      "line": 780,
+      "text": "fn prepare<'a>("
+    },
+    {
+      "line": 1047,
+      "text": ".prepare(&test_prepare_context(SampleSpec::new("
+    },
+    {
+      "line": 1080,
+      "text": "connector.prepare(&context).await.unwrap();"
+    },
+    {
+      "line": 1106,
+      "text": "let error = connector.prepare(&context).await.unwrap_err();"
+    },
+    {
+      "line": 1115,
+      "text": ".prepare(&test_prepare_context(SampleSpec::new("
+    },
+    {
+      "line": 1139,
+      "text": ".prepare(&test_prepare_context(SampleSpec::new("
+    },
+    {
+      "line": 1191,
+      "text": ".prepare(&test_prepare_context(SampleSpec::new("
+    },
+    {
+      "line": 1230,
+      "text": ".prepare(&test_prepare_context(SampleSpec::new("
+    },
+    {
+      "line": 1271,
+      "text": ".prepare(&test_prepare_context(SampleSpec::new("
+    }
+  ],
+  "state_machine": [],
+  "tasks": [
+    {
+      "line": 16,
+      "text": "use tokio::process::{Child, Command};"
+    },
+    {
+      "line": 341,
+      "text": "async fn require_file(path: &Path, label: &str) -> Result<(), NodeError> {"
+    },
+    {
+      "line": 342,
+      "text": "let metadata = tokio::fs::metadata(path)"
+    },
+    {
+      "line": 343,
+      "text": ".await"
+    },
+    {
+      "line": 354,
+      "text": "async fn transcribe(&mut self, wav_bytes: &[u8]) -> Result<String, NodeError> {"
+    },
+    {
+      "line": 366,
+      "text": ".await"
+    },
+    {
+      "line": 393,
+      "text": "tokio::fs::write(&wav_path, wav_bytes)"
+    },
+    {
+      "line": 394,
+      "text": ".await"
+    },
+    {
+      "line": 425,
+      "text": "tokio::time::timeout("
+    },
+    {
+      "line": 429,
+      "text": ".await"
+    },
+    {
+      "line": 446,
+      "text": ".await"
+    },
+    {
+      "line": 453,
+      "text": ".await?;"
+    },
+    {
+      "line": 460,
+      "text": "let stderr = tokio::fs::read_to_string(&stderr_path)"
+    },
+    {
+      "line": 461,
+      "text": ".await"
+    },
+    {
+      "line": 469,
+      "text": "let transcript = tokio::fs::read_to_string(&output_path)"
+    },
+    {
+      "line": 470,
+      "text": ".await"
+    },
+    {
+      "line": 504,
+      "text": "async fn terminate_active_child(&mut self, outcome: ProcessOutcome) -> Result<(), NodeError> {"
+    },
+    {
+      "line": 509,
+      "text": ".await"
+    },
+    {
+      "line": 524,
+      "text": ".await"
+    },
+    {
+      "line": 528,
+      "text": ".await"
+    },
+    {
+      "line": 536,
+      "text": ".await"
+    },
+    {
+      "line": 570,
+      "text": "async fn process_audio("
+    },
+    {
+      "line": 637,
+      "text": ".await"
+    },
+    {
+      "line": 650,
+      "text": "async fn transcribe_samples("
+    },
+    {
+      "line": 657,
+      "text": "self.transcribe(&wav_bytes).await"
+    },
+    {
+      "line": 784,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 785,
+      "text": "Self::require_file(&self.binary_path, \"whisper-cli\").await?;"
+    },
+    {
+      "line": 786,
+      "text": "Self::require_file(&self.model_path, \"Whisper model\").await?;"
+    },
+    {
+      "line": 829,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 835,
+      "text": "Ok(self.process_audio(input).await?.into_iter().collect())"
+    },
+    {
+      "line": 838,
+      "text": "let transcript = self.transcribe(bytes.as_slice()).await?;"
+    },
+    {
+      "line": 853,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 870,
+      "text": ".await?;"
+    },
+    {
+      "line": 888,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 890,
+      "text": ".await?;"
+    },
+    {
+      "line": 897,
+      "text": "Box::pin(async move {"
+    },
+    {
+      "line": 898,
+      "text": "self.terminate_active_child(ProcessOutcome::Closed).await?;"
+    },
+    {
+      "line": 958,
+      "text": "async fn connector_fixture(delay_seconds: Option<&str>) -> (TempDir, WhisperConnector) {"
+    },
+    {
+      "line": 968,
+      "text": "tokio::fs::write(&binary, script).await.unwrap();"
+    },
+    {
+      "line": 969,
+      "text": "let mut permissions = tokio::fs::metadata(&binary).await.unwrap().permissions();"
+    },
+    {
+      "line": 971,
+      "text": "tokio::fs::set_permissions(&binary, permissions)"
+    },
+    {
+      "line": 972,
+      "text": ".await"
+    },
+    {
+      "line": 974,
+      "text": "tokio::fs::write(&model, b\"model\").await.unwrap();"
+    },
+    {
+      "line": 1043,
+      "text": "async fn prepared_window_connector() -> (TempDir, WhisperConnector) {"
+    },
+    {
+      "line": 1044,
+      "text": "let (fixture, mut connector) = connector_fixture(None).await;"
+    },
+    {
+      "line": 1052,
+      "text": ".await"
+    },
+    {
+      "line": 1075,
+      "text": "#[tokio::test]"
+    },
+    {
+      "line": 1076,
+      "text": "async fn given_wav_envelope_when_connector_runs_then_text_lineage_is_preserved() {"
+    },
+    {
+      "line": 1077,
+      "text": "let (_fixture, mut connector) = connector_fixture(None).await;"
+    },
+    {
+      "line": 1080,
+      "text": "connector.prepare(&context).await.unwrap();"
+    },
+    {
+      "line": 1083,
+      "text": ".await"
+    },
+    {
+      "line": 1100,
+      "text": "#[tokio::test]"
+    },
+    {
+      "line": 1101,
+      "text": "async fn given_missing_binary_when_prepare_runs_then_connector_fails_closed() {"
+    },
+    {
+      "line": 1106,
+      "text": "let error = connector.prepare(&context).await.unwrap_err();"
+    },
+    {
+      "line": 1110,
+      "text": "#[tokio::test]"
+    },
+    {
+      "line": 1111,
+      "text": "async fn given_hung_provider_when_deadline_expires_then_child_is_killed_and_reaped() {"
+    },
+    {
+      "line": 1112,
+      "text": "let (_fixture, mut connector) = connector_fixture(Some(\"1\")).await;"
+    },
+    {
+      "line": 1120,
+      "text": ".await"
+    },
+    {
+      "line": 1125,
+      "text": ".await"
+    },
+    {
+      "line": 1131,
+      "text": "#[tokio::test]"
+    },
+    {
+      "line": 1132,
+      "text": "async fn given_process_evidence_when_provider_succeeds_then_actual_invocation_is_persisted() {"
+    },
+    {
+      "line": 1134,
+      "text": "let (_fixture, mut connector) = connector_fixture(None).await;"
+    },
+    {
+      "line": 1144,
+      "text": ".await"
+    },
+    {
+      "line": 1149,
+      "text": ".await"
+    },
+    {
+      "line": 1154,
+      "text": "&tokio::fs::read(invocation.join(\"receipt.json\"))"
+    },
+    {
+      "line": 1155,
+      "text": ".await"
+    },
+    {
+      "line": 1182,
+      "text": "#[tokio::test]"
+    },
+    {
+      "line": 1183,
+      "text": "async fn given_process_evidence_when_provider_times_out_then_kill_and_reap_are_persisted() {"
+    },
+    {
+      "line": 1185,
+      "text": "let (_fixture, mut connector) = connector_fixture(Some(\"1\")).await;"
+    },
+    {
+      "line": 1196,
+      "text": ".await"
+    },
+    {
+      "line": 1201,
+      "text": ".await"
+    },
+    {
+      "line": 1206,
+      "text": "&tokio::fs::read("
+    },
+    {
+      "line": 1212,
+      "text": ".await"
+    },
+    {
+      "line": 1222,
+      "text": "#[tokio::test]"
+    },
+    {
+      "line": 1223,
+      "text": "async fn given_outer_cancellation_when_process_is_active_then_child_receipt_is_finalized() {"
+    },
+    {
+      "line": 1225,
+      "text": "let (_fixture, mut connector) = connector_fixture(Some(\"1\")).await;"
+    },
+    {
+      "line": 1235,
+      "text": ".await"
+    },
+    {
+      "line": 1239,
+      "text": "tokio::pin!(process);"
+    },
+    {
+      "line": 1240,
+      "text": "tokio::select! {"
+    },
+    {
+      "line": 1242,
+      "text": "_ = tokio::time::sleep(Duration::from_millis(20)) => {}"
+    },
+    {
+      "line": 1246,
+      "text": "connector.cancel().await.unwrap();"
+    },
+    {
+      "line": 1249,
+      "text": "&tokio::fs::read("
+    },
+    {
+      "line": 1255,
+      "text": ".await"
+    },
+    {
+      "line": 1265,
+      "text": "#[tokio::test]"
+    },
+    {
+      "line": 1266,
+      "text": "async fn given_typed_audio_when_window_fills_then_partial_precedes_one_final_transcript() {"
+    },
+    {
+      "line": 1268,
+      "text": "let (_fixture, mut connector) = connector_fixture(None).await;"
+    },
+    {
+      "line": 1276,
+      "text": ".await"
+    },
+    {
+      "line": 1280,
+      "text": "assert!(connector.process(first).await.unwrap().is_empty());"
+    },
+    {
+      "line": 1285,
+      "text": ".await"
+    },
+    {
+      "line": 1302,
+      "text": "let final_output = connector.flush().await.unwrap().pop().unwrap();"
+    },
+    {
+      "line": 1310,
+      "text": "assert!(connector.flush().await.unwrap().is_empty());"
+    },
+    {
+      "line": 1313,
+      "text": "#[tokio::test]"
+    },
+    {
+      "line": 1314,
+      "text": "async fn given_lineaged_window_when_transcribed_then_derived_range_covers_every_frame() {"
+    },
+    {
+      "line": 1315,
+      "text": "let (_fixture, mut connector) = prepared_window_connector().await;"
+    },
+    {
+      "line": 1318,
+      "text": ".await"
+    },
+    {
+      "line": 1324,
+      "text": ".await"
+    },
+    {
+      "line": 1340,
+      "text": "#[tokio::test]"
+    },
+    {
+      "line": 1341,
+      "text": "async fn given_two_complete_windows_when_finished_then_partials_and_single_final_cover_stream()"
+    },
+    {
+      "line": 1343,
+      "text": "let (_fixture, mut connector) = prepared_window_connector().await;"
+    },
+    {
+      "line": 1349,
+      "text": ".await"
+    },
+    {
+      "line": 1359,
+      "text": "let finals = connector.flush().await.unwrap();"
+    },
+    {
+      "line": 1378,
+      "text": "assert!(connector.flush().await.unwrap().is_empty());"
+    },
+    {
+      "line": 1381,
+      "text": "#[tokio::test]"
+    },
+    {
+      "line": 1382,
+      "text": "async fn given_source_change_inside_window_when_processed_then_window_is_rejected_and_reset() {"
+    },
+    {
+      "line": 1383,
+      "text": "let (_fixture, mut connector) = prepared_window_connector().await;"
+    },
+    {
+      "line": 1386,
+      "text": ".await"
+    },
+    {
+      "line": 1392,
+      "text": ".await"
+    },
+    {
+      "line": 1402,
+      "text": "#[tokio::test]"
+    },
+    {
+      "line": 1403,
+      "text": "async fn given_discontinuity_change_inside_window_when_processed_then_window_is_rejected() {"
+    },
+    {
+      "line": 1404,
+      "text": "let (_fixture, mut connector) = prepared_window_connector().await;"
+    },
+    {
+      "line": 1407,
+      "text": ".await"
+    },
+    {
+      "line": 1413,
+      "text": ".await"
+    },
+    {
+      "line": 1421,
+      "text": "#[tokio::test]"
+    },
+    {
+      "line": 1422,
+      "text": "async fn given_permission_change_inside_window_when_processed_then_window_is_rejected() {"
+    },
+    {
+      "line": 1423,
+      "text": "let (_fixture, mut connector) = prepared_window_connector().await;"
+    },
+    {
+      "line": 1426,
+      "text": ".await"
+    },
+    {
+      "line": 1432,
+      "text": ".await"
+    }
+  ],
+  "tests_covering": [],
+  "threads": [
+    {
+      "line": 414,
+      "text": ".spawn()"
+    }
+  ],
+  "visibility": "mixed"
+}

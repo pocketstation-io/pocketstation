@@ -1,0 +1,873 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "AudioIngress",
+    "GeneratedAudio",
+    "OperatorInput",
+    "PreparedOperatorOutputTarget::GeneratedAudio",
+    "PreparedOperatorOutputTarget::SignalEndpoint",
+    "Self::Stem",
+    "SignalEndpoint",
+    "Stem",
+    "TypedEndpoint",
+    "any",
+    "as_ref",
+    "cfg",
+    "collect",
+    "derive",
+    "endpoint_id",
+    "filter_map",
+    "iter",
+    "len",
+    "node_configuration",
+    "node_id",
+    "observations",
+    "output_count",
+    "prepare_context",
+    "pub",
+    "receiver_observations",
+    "route_id",
+    "sender_observations",
+    "signal_routes",
+    "stem_id"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 24,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 29,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 144,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 149,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 154,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 218,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 223,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 228,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 242,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 247,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 252,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 257,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 262,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 267,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "b4761f58fc7c3f5ffd081f4cbfa6d667684d35dca7d3277d6771e3f523c06338",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "struct",
+      "line": 17,
+      "name": "PreparedSourceMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "sender_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 34,
+      "name": "PreparedWorkerMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 50,
+      "name": "PreparedWorkerOrigin",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "stem_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 66,
+      "name": "PreparedExternalSourceMapping",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 74,
+      "name": "PreparedExternalSourceBranch",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 81,
+      "name": "PreparedExternalSourceTarget",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 87,
+      "name": "PreparedExternalOperatorInput",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 97,
+      "name": "PreparedExternalAudioIngress",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 106,
+      "name": "PreparedGeneratedAudioIngress",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 115,
+      "name": "PreparedExternalTypedRoute",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 130,
+      "name": "PreparedSignalRouteMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 145,
+      "name": "route_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 150,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "endpoint_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 159,
+      "name": "PreparedOperatorMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 168,
+      "name": "PreparedOperatorInputMapping",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 191,
+      "name": "PreparedTypedInputOrigin",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 201,
+      "name": "PreparedOperatorOutputMapping",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 207,
+      "name": "PreparedOperatorOutputTarget",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 219,
+      "name": "node_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 224,
+      "name": "output_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 229,
+      "name": "signal_routes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 243,
+      "name": "route_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 248,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 253,
+      "name": "endpoint_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 258,
+      "name": "node_configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 263,
+      "name": "receiver_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 268,
+      "name": "prepare_context",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [
+    {
+      "line": 5,
+      "text": "use crate::endpoint::OperatorId;"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "struct",
+      "line": 17,
+      "name": "PreparedSourceMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "sender_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 34,
+      "name": "PreparedWorkerMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 50,
+      "name": "PreparedWorkerOrigin",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "stem_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 66,
+      "name": "PreparedExternalSourceMapping",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 74,
+      "name": "PreparedExternalSourceBranch",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 81,
+      "name": "PreparedExternalSourceTarget",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 87,
+      "name": "PreparedExternalOperatorInput",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 97,
+      "name": "PreparedExternalAudioIngress",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 106,
+      "name": "PreparedGeneratedAudioIngress",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 115,
+      "name": "PreparedExternalTypedRoute",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 130,
+      "name": "PreparedSignalRouteMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 145,
+      "name": "route_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 150,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "endpoint_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 159,
+      "name": "PreparedOperatorMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 168,
+      "name": "PreparedOperatorInputMapping",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 191,
+      "name": "PreparedTypedInputOrigin",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 201,
+      "name": "PreparedOperatorOutputMapping",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 207,
+      "name": "PreparedOperatorOutputTarget",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 219,
+      "name": "node_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 224,
+      "name": "output_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 229,
+      "name": "signal_routes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 243,
+      "name": "route_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 248,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 253,
+      "name": "endpoint_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 258,
+      "name": "node_configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 263,
+      "name": "receiver_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 268,
+      "name": "prepare_context",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "b4761f58fc7c3f5ffd081f4cbfa6d667684d35dca7d3277d6771e3f523c06338",
+      "lines": [
+        1,
+        272
+      ],
+      "path": "src/session/prepare/mappings.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0241-adddfc22",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "b468c76f6dec2097566cb59882fe6f4939ad21dc",
+  "implemented_by": [],
+  "implements": [
+    "PreparedSourceMapping",
+    "PreparedWorkerOrigin",
+    "PreparedSignalRouteMapping",
+    "PreparedOperatorMapping",
+    "PreparedWorkerMapping"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::endpoint::OperatorId",
+    "crate::frame::SampleSpec",
+    "crate::frame::{ConnectorId, EndpointId, RouteId, SourceId, StemId, StreamId}",
+    "crate::graph::{ AsyncOperatorFactory, EdgeContract, EdgeId, MediaCaps, NodeConfig, NodeId, NodeTypeId, PrepareContext, SignalSpec, }",
+    "crate::runtime::{ AsyncOperatorOutputBranchSpec, PlanEdgeReceiver, PlanSourceSender, TypedEdgeBranchSpec, }",
+    "crate::session::declaration::OperatorInstanceId",
+    "crate::session::{SourceConfiguration, SourceInstanceId, SourceTypeId}",
+    "std::sync::Arc"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [],
+  "language": "Rust",
+  "line_count": 272,
+  "locks": [],
+  "module": "pocketstation::session::prepare::mappings",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/session/prepare/mappings.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "struct",
+      "line": 17,
+      "name": "PreparedSourceMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 25,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 30,
+      "name": "sender_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 34,
+      "name": "PreparedWorkerMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 50,
+      "name": "PreparedWorkerOrigin",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 60,
+      "name": "stem_id",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 66,
+      "name": "PreparedExternalSourceMapping",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 74,
+      "name": "PreparedExternalSourceBranch",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 81,
+      "name": "PreparedExternalSourceTarget",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 87,
+      "name": "PreparedExternalOperatorInput",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 97,
+      "name": "PreparedExternalAudioIngress",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 106,
+      "name": "PreparedGeneratedAudioIngress",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 115,
+      "name": "PreparedExternalTypedRoute",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 130,
+      "name": "PreparedSignalRouteMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 145,
+      "name": "route_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 150,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 155,
+      "name": "endpoint_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 159,
+      "name": "PreparedOperatorMapping",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 168,
+      "name": "PreparedOperatorInputMapping",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 191,
+      "name": "PreparedTypedInputOrigin",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "struct",
+      "line": 201,
+      "name": "PreparedOperatorOutputMapping",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "enum",
+      "line": 207,
+      "name": "PreparedOperatorOutputTarget",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 219,
+      "name": "node_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 224,
+      "name": "output_count",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 229,
+      "name": "signal_routes",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 243,
+      "name": "route_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 248,
+      "name": "stem_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 253,
+      "name": "endpoint_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 258,
+      "name": "node_configuration",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 263,
+      "name": "receiver_observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 268,
+      "name": "prepare_context",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Typed resource mappings between a compiled graph and runtime preparation."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/concepts/session.md",
+    "docs/concepts/session-compilation.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/polled-audio.md",
+    "docs/concepts/multistem-recording.md",
+    "docs/concepts/endpoints.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/session-traces.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/lifecycle/terminal-outcomes.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/poll-audio.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/record-stems.md",
+    "docs/how-to/inspect-recording-outcome.md",
+    "docs/how-to/connect-operator-ports.md",
+    "docs/how-to/implement-endpoint.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/session.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/session.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/recording-incomplete.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/session-trace.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/terminal-outcomes.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 3,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 163,
+      "text": "pub(crate) factory: Arc<dyn AsyncOperatorFactory>,"
+    },
+    {
+      "line": 213,
+      "text": "SignalEndpoint(Box<PreparedSignalRouteMapping>),"
+    }
+  ],
+  "responsibilities": [
+    "PreparedSourceMapping",
+    "stem_id",
+    "sender_observations",
+    "PreparedWorkerMapping",
+    "PreparedWorkerOrigin",
+    "stem_id",
+    "PreparedExternalSourceMapping",
+    "PreparedExternalSourceBranch",
+    "PreparedExternalSourceTarget",
+    "PreparedExternalOperatorInput",
+    "PreparedExternalAudioIngress",
+    "PreparedGeneratedAudioIngress",
+    "PreparedExternalTypedRoute",
+    "PreparedSignalRouteMapping",
+    "route_id",
+    "stem_id",
+    "endpoint_id",
+    "PreparedOperatorMapping",
+    "PreparedOperatorInputMapping",
+    "PreparedTypedInputOrigin",
+    "PreparedOperatorOutputMapping",
+    "PreparedOperatorOutputTarget",
+    "node_id",
+    "output_count",
+    "signal_routes",
+    "route_id",
+    "stem_id",
+    "endpoint_id",
+    "node_configuration",
+    "receiver_observations",
+    "prepare_context"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

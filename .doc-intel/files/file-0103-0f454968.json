@@ -1,0 +1,325 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Application",
+    "InputDevice",
+    "InputDeviceSelector::StableId",
+    "Process",
+    "Self::Application",
+    "Self::InputDevice",
+    "Self::Process",
+    "StableId",
+    "derive",
+    "process_tree_scope",
+    "selector_persistence_scope",
+    "serde"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "e50b844974fd40dc0fc2d08427bb27dd0fa132cc873c525794262704748433c1",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "enum",
+      "line": 9,
+      "name": "InputDeviceSelector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 16,
+      "name": "CaptureMode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "selector_persistence_scope",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "process_tree_scope",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 73,
+      "name": "SelectorPersistenceScope",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 83,
+      "name": "ProcessTreeScope",
+      "visibility": "pub"
+    }
+  ],
+  "device_io": [
+    {
+      "line": 35,
+      "text": "/// a replacement process or substitute a default device."
+    }
+  ],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 9,
+      "name": "InputDeviceSelector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 16,
+      "name": "CaptureMode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "selector_persistence_scope",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "process_tree_scope",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 73,
+      "name": "SelectorPersistenceScope",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 83,
+      "name": "ProcessTreeScope",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "e50b844974fd40dc0fc2d08427bb27dd0fa132cc873c525794262704748433c1",
+      "lines": [
+        1,
+        89
+      ],
+      "path": "src/capture/selection.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0103-0f454968",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "1af38111b25b58a24be1d405e710ccb75526eeac",
+  "implemented_by": [],
+  "implements": [
+    "CaptureMode"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::Platform",
+    "serde::Serialize",
+    "super::identity::StableSourceId"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 34,
+      "text": "/// This is control-plane metadata. It never authorizes a backend to follow"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 89,
+  "locks": [],
+  "module": "pocketstation::capture::selection",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/capture/selection.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 9,
+      "name": "InputDeviceSelector",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 16,
+      "name": "CaptureMode",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "selector_persistence_scope",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "process_tree_scope",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 73,
+      "name": "SelectorPersistenceScope",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 83,
+      "name": "ProcessTreeScope",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Capture selection semantics; control-plane only."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/getting-started/rust-quickstart.md",
+    "docs/getting-started/platform-prerequisites.md",
+    "docs/concepts/source-selection.md",
+    "docs/concepts/application-capture.md",
+    "docs/concepts/microphone-capture.md",
+    "docs/concepts/system-capture.md",
+    "docs/concepts/permissions-and-source-lifecycle.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/external-pcm.md",
+    "docs/concepts/error-model.md",
+    "docs/platform/compatibility.md",
+    "docs/platform/macos.md",
+    "docs/platform/windows.md",
+    "docs/platform/linux.md",
+    "docs/platform/permissions.md",
+    "docs/architecture/overview.md",
+    "docs/internals/platform-backends.md",
+    "docs/glossary.md",
+    "docs/how-to/capture-application.md",
+    "docs/how-to/capture-microphone.md",
+    "docs/how-to/capture-app-and-mic.md",
+    "docs/how-to/select-process-source.md",
+    "docs/how-to/observe-permission.md",
+    "docs/how-to/inject-external-pcm.md",
+    "docs/how-to/run-transcription.md",
+    "docs/how-to/capture-system-audio.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/capture.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/capture.md",
+    "docs/troubleshooting/no-application-audio.md",
+    "docs/troubleshooting/no-microphone-audio.md",
+    "docs/troubleshooting/permission-state.md",
+    "docs/troubleshooting/source-loss.md",
+    "docs/troubleshooting/native-build.md",
+    "docs/troubleshooting/timing.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/source-identity.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "InputDeviceSelector",
+    "CaptureMode",
+    "selector_persistence_scope",
+    "process_tree_scope",
+    "SelectorPersistenceScope",
+    "ProcessTreeScope"
+  ],
+  "retry_behavior": [],
+  "serialization": [
+    {
+      "line": 4,
+      "text": "use serde::Serialize;"
+    },
+    {
+      "line": 71,
+      "text": "#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]"
+    },
+    {
+      "line": 72,
+      "text": "#[serde(rename_all = \"kebab-case\")]"
+    },
+    {
+      "line": 81,
+      "text": "#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]"
+    },
+    {
+      "line": 82,
+      "text": "#[serde(rename_all = \"kebab-case\")]"
+    }
+  ],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 35,
+      "text": "/// a replacement process or substitute a default device."
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}

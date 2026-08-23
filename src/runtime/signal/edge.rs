@@ -28,13 +28,21 @@ struct SignalEdgeObservationState {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Reports the signal edge observations collected at an observation boundary."]
 pub struct SignalEdgeObservations {
+    #[doc = "Sets the capacity signals available to `SignalEdgeObservations`."]
     pub capacity_signals: u64,
+    #[doc = "Limits payload storage for `SignalEdgeObservations`, in bytes."]
     pub max_payload_bytes: u64,
+    #[doc = "Stores the maximum buffered payload size for `SignalEdgeObservations`, in bytes."]
     pub maximum_buffered_payload_bytes: u64,
+    #[doc = "Reports the depth signals observed by `SignalEdgeObservations`."]
     pub depth_signals: u64,
+    #[doc = "Reports the peak depth signals observed by `SignalEdgeObservations`."]
     pub peak_depth_signals: u64,
+    #[doc = "Counts the total number of enqueued observed by `SignalEdgeObservations`."]
     pub enqueued_total: u64,
+    #[doc = "Counts the total number of received observed by `SignalEdgeObservations`."]
     pub received_total: u64,
     /// Compatibility alias for `enqueued_total`.
     ///
@@ -42,6 +50,7 @@ pub struct SignalEdgeObservations {
     /// receiver. New accounting should use `enqueued_total` and
     /// `received_total` explicitly.
     pub delivered_total: u64,
+    #[doc = "Counts the total number of dropped observed by `SignalEdgeObservations`."]
     pub dropped_total: u64,
 }
 

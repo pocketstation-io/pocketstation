@@ -291,12 +291,14 @@ impl SessionDraft {
 }
 
 #[derive(Debug, Clone)]
+#[doc = "Represents operator in the PocketStation API."]
 pub struct Operator {
     operator_id: OperatorId,
     configuration: OperatorConfiguration,
 }
 
 impl Operator {
+    #[doc = "Creates a new `Operator`."]
     pub fn new(operator_id: OperatorId, configuration: OperatorConfiguration) -> Self {
         Self {
             operator_id,
@@ -304,10 +306,12 @@ impl Operator {
         }
     }
 
+    #[doc = "Returns the operator identifier associated with `Operator`."]
     pub const fn operator_id(&self) -> &OperatorId {
         &self.operator_id
     }
 
+    #[doc = "Returns the configuration associated with `Operator`."]
     pub const fn configuration(&self) -> &OperatorConfiguration {
         &self.configuration
     }
@@ -589,6 +593,7 @@ impl fmt::Debug for Session {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[doc = "Owns bounded access to endpoint."]
 pub struct EndpointHandle {
     session_id: SessionId,
     endpoint_id: EndpointId,
@@ -596,14 +601,17 @@ pub struct EndpointHandle {
 }
 
 impl EndpointHandle {
+    #[doc = "Returns the session identifier associated with `EndpointHandle`."]
     pub const fn session_id(self) -> SessionId {
         self.session_id
     }
 
+    #[doc = "Returns the id associated with `EndpointHandle`."]
     pub const fn id(self) -> EndpointId {
         self.endpoint_id
     }
 
+    #[doc = "Returns the connector identifier associated with `EndpointHandle`."]
     pub const fn connector_id(self) -> Option<ConnectorId> {
         self.connector_id
     }
@@ -697,12 +705,14 @@ impl InternalStreamHandle {
 }
 
 #[derive(Clone)]
+#[doc = "Owns bounded access to stem."]
 pub struct StemHandle {
     pub(super) stream: InternalStreamHandle,
     stem_id: StemId,
 }
 
 #[derive(Clone)]
+#[doc = "Owns bounded access to operator instance."]
 pub struct OperatorInstanceHandle {
     shared: Arc<SessionShared>,
     session_id: SessionId,
@@ -710,6 +720,7 @@ pub struct OperatorInstanceHandle {
 }
 
 #[derive(Clone)]
+#[doc = "Owns bounded access to operator input."]
 pub struct OperatorInputHandle {
     shared: Arc<SessionShared>,
     session_id: SessionId,
@@ -718,14 +729,17 @@ pub struct OperatorInputHandle {
 }
 
 impl OperatorInstanceHandle {
+    #[doc = "Returns the session identifier associated with `OperatorInstanceHandle`."]
     pub const fn session_id(&self) -> SessionId {
         self.session_id
     }
 
+    #[doc = "Returns the instance identifier associated with `OperatorInstanceHandle`."]
     pub const fn instance_id(&self) -> OperatorInstanceId {
         self.instance_id
     }
 
+    #[doc = "Returns the input associated with `OperatorInstanceHandle`."]
     pub fn input(&self, port_name: impl Into<String>) -> Result<OperatorInputHandle, SessionError> {
         let port_name = port_name.into();
         if port_name.trim().is_empty() {
@@ -741,6 +755,7 @@ impl OperatorInstanceHandle {
         })
     }
 
+    #[doc = "Returns the output associated with `OperatorInstanceHandle`."]
     pub fn output(
         &self,
         port_name: impl Into<String>,
@@ -767,6 +782,7 @@ impl OperatorInstanceHandle {
 }
 
 impl fmt::Debug for OperatorInstanceHandle {
+    #[doc = "Formats `OperatorInstanceHandle` with the requested formatter."]
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_struct("OperatorInstanceHandle")
@@ -777,6 +793,7 @@ impl fmt::Debug for OperatorInstanceHandle {
 }
 
 impl fmt::Debug for OperatorInputHandle {
+    #[doc = "Formats `OperatorInputHandle` with the requested formatter."]
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_struct("OperatorInputHandle")
@@ -788,14 +805,17 @@ impl fmt::Debug for OperatorInputHandle {
 }
 
 impl StemHandle {
+    #[doc = "Returns the session identifier associated with `StemHandle`."]
     pub const fn session_id(&self) -> SessionId {
         self.stream.session_id
     }
 
+    #[doc = "Returns the id associated with `StemHandle`."]
     pub const fn id(&self) -> StemId {
         self.stem_id
     }
 
+    #[doc = "Sends a value through `StemHandle`."]
     pub fn send(&self, endpoint: EndpointHandle) -> Result<RouteId, SessionError> {
         self.stream.send_to(endpoint, None)
     }
@@ -816,14 +836,17 @@ impl StemHandle {
         self.stream.declare_endpoint_and_send(descriptor)
     }
 
+    #[doc = "Connects the requested ports through `StemHandle`."]
     pub fn connect(&self, input: OperatorInputHandle) -> Result<RouteId, SessionError> {
         self.stream.connect(input)
     }
 
+    #[doc = "Routes the current stream through a declared operator using `StemHandle`."]
     pub fn through(&self, operator: Operator) -> Result<DerivedStreamHandle, SessionError> {
         self.through_ports(operator, None::<String>, None::<String>)
     }
 
+    #[doc = "Returns the through ports associated with `StemHandle`."]
     pub fn through_ports(
         &self,
         operator: Operator,
@@ -836,6 +859,7 @@ impl StemHandle {
 }
 
 #[derive(Clone)]
+#[doc = "Owns bounded access to derived stream."]
 pub struct DerivedStreamHandle {
     pub(super) stream: InternalStreamHandle,
     operator_instance_id: OperatorInstanceId,
@@ -843,6 +867,7 @@ pub struct DerivedStreamHandle {
 }
 
 #[derive(Clone)]
+#[doc = "Owns bounded access to source instance."]
 pub struct SourceInstanceHandle {
     shared: Arc<SessionShared>,
     session_id: SessionId,
@@ -851,18 +876,22 @@ pub struct SourceInstanceHandle {
 }
 
 impl SourceInstanceHandle {
+    #[doc = "Returns the session identifier associated with `SourceInstanceHandle`."]
     pub const fn session_id(&self) -> SessionId {
         self.session_id
     }
 
+    #[doc = "Returns the instance identifier associated with `SourceInstanceHandle`."]
     pub const fn instance_id(&self) -> SourceInstanceId {
         self.instance_id
     }
 
+    #[doc = "Returns the source identifier associated with `SourceInstanceHandle`."]
     pub const fn source_id(&self) -> SourceId {
         self.source_id
     }
 
+    #[doc = "Returns the output associated with `SourceInstanceHandle`."]
     pub fn output(
         &self,
         output_port: impl Into<String>,
@@ -908,6 +937,7 @@ impl SourceInstanceHandle {
 }
 
 impl fmt::Debug for SourceInstanceHandle {
+    #[doc = "Formats `SourceInstanceHandle` with the requested formatter."]
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_struct("SourceInstanceHandle")
@@ -919,6 +949,7 @@ impl fmt::Debug for SourceInstanceHandle {
 }
 
 #[derive(Clone)]
+#[doc = "Owns bounded access to source output."]
 pub struct SourceOutputHandle {
     pub(super) stream: InternalStreamHandle,
     source_instance_id: SourceInstanceId,
@@ -928,34 +959,42 @@ pub struct SourceOutputHandle {
 }
 
 impl SourceOutputHandle {
+    #[doc = "Returns the session identifier associated with `SourceOutputHandle`."]
     pub const fn session_id(&self) -> SessionId {
         self.stream.session_id
     }
 
+    #[doc = "Returns the source instance identifier associated with `SourceOutputHandle`."]
     pub const fn source_instance_id(&self) -> SourceInstanceId {
         self.source_instance_id
     }
 
+    #[doc = "Returns the source identifier associated with `SourceOutputHandle`."]
     pub const fn source_id(&self) -> SourceId {
         self.source_id
     }
 
+    #[doc = "Returns the stream identifier associated with `SourceOutputHandle`."]
     pub const fn stream_id(&self) -> StreamId {
         self.stream_id
     }
 
+    #[doc = "Returns the output port associated with `SourceOutputHandle`."]
     pub fn output_port(&self) -> &str {
         &self.output_port
     }
 
+    #[doc = "Sends a value through `SourceOutputHandle`."]
     pub fn send(&self, endpoint: EndpointHandle) -> Result<RouteId, SessionError> {
         self.send_to(endpoint, None::<String>)
     }
 
+    #[doc = "Connects the requested ports through `SourceOutputHandle`."]
     pub fn connect(&self, input: OperatorInputHandle) -> Result<RouteId, SessionError> {
         self.stream.connect(input)
     }
 
+    #[doc = "Routes the current source output to the requested destination through `SourceOutputHandle`."]
     pub fn send_to(
         &self,
         endpoint: EndpointHandle,
@@ -972,10 +1011,12 @@ impl SourceOutputHandle {
         self.stream.declare_endpoint_and_send(descriptor)
     }
 
+    #[doc = "Routes the current stream through a declared operator using `SourceOutputHandle`."]
     pub fn through(&self, operator: Operator) -> Result<DerivedStreamHandle, SessionError> {
         self.through_ports(operator, None::<String>, None::<String>)
     }
 
+    #[doc = "Returns the through ports associated with `SourceOutputHandle`."]
     pub fn through_ports(
         &self,
         operator: Operator,
@@ -988,6 +1029,7 @@ impl SourceOutputHandle {
 }
 
 impl fmt::Debug for SourceOutputHandle {
+    #[doc = "Formats `SourceOutputHandle` with the requested formatter."]
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_struct("SourceOutputHandle")
@@ -1021,18 +1063,22 @@ impl DerivedStreamHandle {
         }
     }
 
+    #[doc = "Returns the session identifier associated with `DerivedStreamHandle`."]
     pub const fn session_id(&self) -> SessionId {
         self.stream.session_id
     }
 
+    #[doc = "Returns the operator instance identifier associated with `DerivedStreamHandle`."]
     pub const fn operator_instance_id(&self) -> OperatorInstanceId {
         self.operator_instance_id
     }
 
+    #[doc = "Returns the output port associated with `DerivedStreamHandle`."]
     pub fn output_port(&self) -> Option<&str> {
         self.output_port.as_deref()
     }
 
+    #[doc = "Returns the output associated with `DerivedStreamHandle`."]
     pub fn output(&self, port_name: impl Into<String>) -> Result<Self, SessionError> {
         let port_name = port_name.into();
         if port_name.trim().is_empty() {
@@ -1048,14 +1094,17 @@ impl DerivedStreamHandle {
         ))
     }
 
+    #[doc = "Connects the requested ports through `DerivedStreamHandle`."]
     pub fn connect(&self, input: OperatorInputHandle) -> Result<RouteId, SessionError> {
         self.stream.connect(input)
     }
 
+    #[doc = "Routes the current stream through a declared operator using `DerivedStreamHandle`."]
     pub fn through(&self, operator: Operator) -> Result<DerivedStreamHandle, SessionError> {
         self.through_ports(operator, None::<String>, None::<String>)
     }
 
+    #[doc = "Returns the through ports associated with `DerivedStreamHandle`."]
     pub fn through_ports(
         &self,
         operator: Operator,
@@ -1066,6 +1115,7 @@ impl DerivedStreamHandle {
             .through_ports(operator, input_port.into(), output_port.into())
     }
 
+    #[doc = "Sends a value through `DerivedStreamHandle`."]
     pub fn send(&self, endpoint: EndpointHandle) -> Result<RouteId, SessionError> {
         self.stream.send_to(endpoint, None)
     }
@@ -1111,6 +1161,7 @@ impl DerivedStreamHandle {
 }
 
 impl fmt::Debug for DerivedStreamHandle {
+    #[doc = "Formats `DerivedStreamHandle` with the requested formatter."]
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_struct("DerivedStreamHandle")
@@ -1122,6 +1173,7 @@ impl fmt::Debug for DerivedStreamHandle {
 }
 
 impl fmt::Debug for StemHandle {
+    #[doc = "Formats `StemHandle` with the requested formatter."]
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_struct("StemHandle")

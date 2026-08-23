@@ -6,22 +6,35 @@ pub const SIDECAR_PROTOCOL_MINOR: u16 = 0;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
+#[doc = "Selects the sidecar message kind used by PocketStation."]
 pub enum SidecarMessageKind {
+    #[doc = "Selects signal behavior for `SidecarMessageKind`."]
     Signal = 1,
+    #[doc = "Selects ready behavior for `SidecarMessageKind`."]
     Ready = 2,
+    #[doc = "Selects error behavior for `SidecarMessageKind`."]
     Error = 3,
+    #[doc = "Selects cancel behavior for `SidecarMessageKind`."]
     Cancel = 4,
+    #[doc = "Selects close behavior for `SidecarMessageKind`."]
     Close = 5,
+    #[doc = "Selects hello behavior for `SidecarMessageKind`."]
     Hello = 6,
+    #[doc = "Selects manifest behavior for `SidecarMessageKind`."]
     Manifest = 7,
+    #[doc = "Selects configure behavior for `SidecarMessageKind`."]
     Configure = 8,
+    #[doc = "Selects observation behavior for `SidecarMessageKind`."]
     Observation = 9,
+    #[doc = "Reports that the underlying channel or resource is closed."]
     Closed = 10,
 }
 
 impl TryFrom<u8> for SidecarMessageKind {
+    #[doc = "Specifies the error type returned by `SidecarMessageKind` operations."]
     type Error = SidecarProtocolError;
 
+    #[doc = "Attempts to from through `SidecarMessageKind`."]
     fn try_from(value: u8) -> Result<Self, SidecarProtocolError> {
         match value {
             1 => Ok(Self::Signal),
@@ -40,14 +53,20 @@ impl TryFrom<u8> for SidecarMessageKind {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Represents sidecar protocol limits in the PocketStation API."]
 pub struct SidecarProtocolLimits {
+    #[doc = "Stores the max signal id size for `SidecarProtocolLimits`, in bytes."]
     pub max_signal_id_bytes: usize,
+    #[doc = "Stores the max role size for `SidecarProtocolLimits`, in bytes."]
     pub max_role_bytes: usize,
+    #[doc = "Stores the max schema size for `SidecarProtocolLimits`, in bytes."]
     pub max_schema_bytes: usize,
+    #[doc = "Limits payload storage for `SidecarProtocolLimits`, in bytes."]
     pub max_payload_bytes: usize,
 }
 
 impl Default for SidecarProtocolLimits {
+    #[doc = "Returns the default `SidecarProtocolLimits` value."]
     fn default() -> Self {
         Self {
             max_signal_id_bytes: 256,
@@ -59,6 +78,7 @@ impl Default for SidecarProtocolLimits {
 }
 
 impl SidecarProtocolLimits {
+    #[doc = "Returns the max frame bytes associated with `SidecarProtocolLimits`."]
     pub fn max_frame_bytes(self) -> Result<usize, SidecarProtocolError> {
         HEADER_BYTES
             .checked_add(self.max_signal_id_bytes)
@@ -70,19 +90,30 @@ impl SidecarProtocolLimits {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[doc = "Represents sidecar message in the PocketStation API."]
 pub struct SidecarMessage {
+    #[doc = "Stores the kind associated with `SidecarMessage`."]
     pub kind: SidecarMessageKind,
+    #[doc = "Indicates whether terminal applies to `SidecarMessage`."]
     pub terminal: bool,
+    #[doc = "Identifies the stream associated with `SidecarMessage`."]
     pub stream_id: u64,
+    #[doc = "Stores the sequence number associated with `SidecarMessage`."]
     pub sequence_number: u64,
+    #[doc = "Stores the timestamp value for `SidecarMessage`, in nanoseconds."]
     pub timestamp_ns: u64,
+    #[doc = "Identifies the signal associated with `SidecarMessage`."]
     pub signal_id: String,
+    #[doc = "Stores the role associated with `SidecarMessage`."]
     pub role: Option<String>,
+    #[doc = "Stores the schema associated with `SidecarMessage`."]
     pub schema: Option<String>,
+    #[doc = "Stores the payload associated with `SidecarMessage`."]
     pub payload: Vec<u8>,
 }
 
 impl SidecarMessage {
+    #[doc = "Encodes input through `SidecarMessage`."]
     pub fn encode(&self, limits: SidecarProtocolLimits) -> Result<Vec<u8>, SidecarProtocolError> {
         self.validate(limits)?;
         let role = self.role.as_deref().unwrap_or("").as_bytes();
@@ -118,6 +149,7 @@ impl SidecarMessage {
         Ok(output)
     }
 
+    #[doc = "Decodes input through `SidecarMessage`."]
     pub fn decode(
         input: &[u8],
         limits: SidecarProtocolLimits,
@@ -192,6 +224,7 @@ impl SidecarMessage {
         Ok(message)
     }
 
+    #[doc = "Validates `SidecarMessage` against its declared contract."]
     pub fn validate(&self, limits: SidecarProtocolLimits) -> Result<(), SidecarProtocolError> {
         if self.signal_id.is_empty() {
             return Err(SidecarProtocolError::EmptySignalId);
@@ -289,36 +322,53 @@ fn validate_length(
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as sidecar protocol error."]
 pub enum SidecarProtocolError {
     #[error("sidecar frame is truncated")]
+    #[doc = "Reports truncated."]
     Truncated,
     #[error("sidecar frame has trailing bytes")]
+    #[doc = "Reports trailing bytes."]
     TrailingBytes,
     #[error("sidecar frame magic is invalid")]
+    #[doc = "Reports invalid magic."]
     InvalidMagic,
     #[error("sidecar protocol major {0} is unsupported")]
+    #[doc = "Reports unsupported major."]
     UnsupportedMajor(u16),
     #[error("sidecar protocol minor {0} is unsupported")]
+    #[doc = "Reports unsupported minor."]
     UnsupportedMinor(u16),
     #[error("sidecar message kind {0} is unknown")]
+    #[doc = "Reports unknown message kind."]
     UnknownMessageKind(u8),
     #[error("sidecar terminal flag {0} is invalid")]
+    #[doc = "Reports invalid terminal."]
     InvalidTerminal(u8),
     #[error("sidecar reserved field is non-zero")]
+    #[doc = "Reports reserved field set."]
     ReservedFieldSet,
     #[error("sidecar signal id is empty")]
+    #[doc = "Reports empty signal identifier."]
     EmptySignalId,
     #[error("sidecar {field} length {actual} exceeds {maximum}")]
+    #[doc = "Reports field too large."]
     FieldTooLarge {
+        #[doc = "Stores the field associated with `FieldTooLarge`."]
         field: &'static str,
+        #[doc = "Records the value observed by `FieldTooLarge`."]
         actual: usize,
+        #[doc = "Sets the inclusive maximum accepted by `FieldTooLarge`."]
         maximum: usize,
     },
     #[error("sidecar {0} is not valid UTF-8")]
+    #[doc = "Reports invalid UTF-8."]
     InvalidUtf8(&'static str),
     #[error("sidecar frame length overflowed")]
+    #[doc = "Reports frame length overflow."]
     FrameLengthOverflow,
     #[error("sidecar frame exceeds the configured bound")]
+    #[doc = "Reports frame too large."]
     FrameTooLarge,
 }
 

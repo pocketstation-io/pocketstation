@@ -6,25 +6,38 @@ use serde::Serialize;
 use super::identity::StableSourceId;
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[doc = "Enumerates the supported input device selector cases."]
 pub enum InputDeviceSelector {
     #[default]
+    #[doc = "Selects default behavior for `InputDeviceSelector`."]
     Default,
+    #[doc = "Selects stable identifier behavior for `InputDeviceSelector`."]
     StableId(String),
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[doc = "Selects the capture mode used by PocketStation."]
 pub enum CaptureMode {
     #[default]
+    #[doc = "Selects system mix behavior for `CaptureMode`."]
     SystemMix,
+    #[doc = "Selects application behavior for `CaptureMode`."]
     Application(String),
+    #[doc = "Selects process behavior for `CaptureMode`."]
     Process(u32),
+    #[doc = "Selects exact application behavior for `CaptureMode`."]
     ExactApplication {
+        #[doc = "Identifies the process associated with `ExactApplication`."]
         process_id: u32,
+        #[doc = "Identifies the stable associated with `ExactApplication`."]
         stable_id: StableSourceId,
     },
+    #[doc = "Selects exact application stable behavior for `CaptureMode`."]
     ExactApplicationStable {
+        #[doc = "Identifies the stable associated with `ExactApplicationStable`."]
         stable_id: StableSourceId,
     },
+    #[doc = "Selects input device behavior for `CaptureMode`."]
     InputDevice(InputDeviceSelector),
 }
 
@@ -70,19 +83,30 @@ impl CaptureMode {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "kebab-case")]
+#[doc = "Selects the selector persistence scope used by PocketStation."]
 pub enum SelectorPersistenceScope {
+    #[doc = "Selects process lifetime behavior for `SelectorPersistenceScope`."]
     ProcessLifetime,
+    #[doc = "Selects application identity behavior for `SelectorPersistenceScope`."]
     ApplicationIdentity,
+    #[doc = "Selects device identity behavior for `SelectorPersistenceScope`."]
     DeviceIdentity,
+    #[doc = "Selects session default device behavior for `SelectorPersistenceScope`."]
     SessionDefaultDevice,
+    #[doc = "Selects platform identity behavior for `SelectorPersistenceScope`."]
     PlatformIdentity,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "kebab-case")]
+#[doc = "Selects the process tree scope used by PocketStation."]
 pub enum ProcessTreeScope {
+    #[doc = "Selects selected process only behavior for `ProcessTreeScope`."]
     SelectedProcessOnly,
+    #[doc = "Selects selected process and descendants behavior for `ProcessTreeScope`."]
     SelectedProcessAndDescendants,
+    #[doc = "Selects application identity behavior for `ProcessTreeScope`."]
     ApplicationIdentity,
+    #[doc = "Selects not applicable behavior for `ProcessTreeScope`."]
     NotApplicable,
 }

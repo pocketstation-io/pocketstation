@@ -1,0 +1,213 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [
+    {
+      "line": 161,
+      "text": "* capture callback or realtime audio partition. Calls for one instance are"
+    },
+    {
+      "line": 162,
+      "text": "* serialized. A callback must not retain signal view/buffer pointers after it"
+    },
+    {
+      "line": 169,
+      "text": "* instance and registration use finish. No callback may unwind across this C"
+    },
+    {
+      "line": 219,
+      "text": "* acquire_registration writes one descriptor and callback table by value and"
+    },
+    {
+      "line": 221,
+      "text": "* data before the call for the next index. On OK, ownership of the callback"
+    }
+  ],
+  "called_by": [],
+  "calls": [
+    "PksSessionStatus",
+    "pks_encode_opus",
+    "pks_extension_abi_get_version",
+    "pks_extension_abi_is_compatible",
+    "pks_extension_descriptor_validate",
+    "pks_extension_library_v1",
+    "pks_opus_encoder_create",
+    "pks_opus_encoder_destroy",
+    "pks_opus_encoder_set_bitrate",
+    "pks_opus_max_packet_bytes",
+    "pks_session_abi_get_version",
+    "pks_session_abi_is_compatible",
+    "pks_session_audio_batch_frame",
+    "pks_session_audio_batch_release",
+    "pks_session_audio_poll",
+    "pks_session_compile",
+    "pks_session_create_app_mic",
+    "pks_session_create_extension_pipeline",
+    "pks_session_destroy",
+    "pks_session_engine_create",
+    "pks_session_engine_destroy",
+    "pks_session_engine_is_live",
+    "pks_session_engine_register_extension",
+    "pks_session_event_poll",
+    "pks_session_extension_metrics_poll",
+    "pks_session_get_state",
+    "pks_session_metrics_poll",
+    "pks_session_route_metrics_at",
+    "pks_session_route_metrics_count",
+    "pks_session_source_metrics_at",
+    "pks_session_source_metrics_count",
+    "pks_session_start",
+    "pks_session_stop",
+    "void"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [],
+  "content_hash": "8598942414a86ef5a6a6a8afcecd561d703c170d0787b4bb17abef4139a16d44",
+  "defaults": [],
+  "defines": [],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "8598942414a86ef5a6a6a8afcecd561d703c170d0787b4bb17abef4139a16d44",
+      "lines": [
+        1,
+        615
+      ],
+      "path": "include/pocketstation.h",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [
+    {
+      "line": 7,
+      "text": "extern \"C\" {"
+    },
+    {
+      "line": 575,
+      "text": "* Compatibility codec ABI. These symbols remain in libpocketstation for the"
+    }
+  ],
+  "file_id": "file-0041-310f027c",
+  "file_kind": "public_ffi",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "dafc8cbc883c7a4b52293e1a71310d45fda42237",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 160,
+      "text": "* asynchronous worker threads. PocketStation never invokes them from a"
+    },
+    {
+      "line": 162,
+      "text": "* serialized. A callback must not retain signal view/buffer pointers after it"
+    },
+    {
+      "line": 217,
+      "text": "* It never searches the ambient process library path."
+    },
+    {
+      "line": 228,
+      "text": "* like all executable extension callbacks, must not unwind across C."
+    }
+  ],
+  "language": "C header",
+  "line_count": 615,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "repository",
+  "path": "include/pocketstation.h",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Declares the public foreign-function interface."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/architecture/overview.md",
+    "docs/glossary.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 7,
+      "text": "extern \"C\" {"
+    },
+    {
+      "line": 575,
+      "text": "* Compatibility codec ABI. These symbols remain in libpocketstation for the"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [
+    {
+      "line": 203,
+      "text": "PksExtensionPrepareCallback prepare;"
+    }
+  ],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

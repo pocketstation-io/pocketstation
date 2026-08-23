@@ -7,28 +7,48 @@ use crate::recording::{RecorderError, RecordingOutcome, RecordingState};
 #[non_exhaustive]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RecordingErrorCode {
+    #[doc = "Reports output exists."]
     OutputExists,
+    #[doc = "Reports invalid stem label."]
     InvalidStemLabel,
+    #[doc = "Reports duplicate stem label."]
     DuplicateStemLabel,
+    #[doc = "Reports session mismatch."]
     SessionMismatch,
+    #[doc = "Reports that the required permission was denied."]
     PermissionDenied,
+    #[doc = "Reports invalid sample spec."]
     InvalidSampleSpec,
+    #[doc = "Reports source mismatch."]
     SourceMismatch,
+    #[doc = "Reports lineage mismatch."]
     LineageMismatch,
+    #[doc = "Reports frame spec mismatch."]
     FrameSpecMismatch,
+    #[doc = "Reports unaligned samples."]
     UnalignedSamples,
+    #[doc = "Reports timestamp out of range."]
     TimestampOutOfRange,
+    #[doc = "Reports gap too large."]
     GapTooLarge,
+    #[doc = "Reports too many gaps."]
     TooManyGaps,
+    #[doc = "Reports worker panicked."]
     WorkerPanicked,
+    #[doc = "Reports I/O failed."]
     IoFailed,
+    #[doc = "Reports wav failed."]
     WavFailed,
+    #[doc = "Reports json failed."]
     JsonFailed,
+    #[doc = "Reports not finalized."]
     NotFinalized,
+    #[doc = "Reports incomplete."]
     Incomplete,
 }
 
 impl RecordingErrorCode {
+    #[doc = "Returns the stable string representation of `RecordingErrorCode`."]
     pub const fn as_str(self) -> &'static str {
         match self {
             Self::OutputExists => "recording.output_exists",
@@ -79,6 +99,7 @@ impl RecorderError {
     }
 }
 
+#[doc = "Returns the recording outcome error code associated with `error_code`."]
 pub const fn recording_outcome_error_code(
     outcome: &RecordingOutcome,
 ) -> Option<RecordingErrorCode> {

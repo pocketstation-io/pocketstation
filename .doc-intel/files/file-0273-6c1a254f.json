@@ -1,0 +1,397 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "AudioBufferPool::new",
+    "AudioFrame::try_new",
+    "ClockDomainId::new",
+    "Compiler::new",
+    "FrameLineage::try_new",
+    "LineagedAudioFrame::new",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "Pipeline::new",
+    "PlanEdgeRouter::new",
+    "PlanRunnerCancellation::new",
+    "PrepareContext::new",
+    "RealtimePlanExecutor::new",
+    "RealtimePlanRunner::new",
+    "RuntimePlanner::new",
+    "SampleSpec::new",
+    "SessionId::new",
+    "SourceId::new",
+    "StemId::new",
+    "StreamId::new",
+    "acquire",
+    "add_node",
+    "assert_no_alloc",
+    "audio_frame",
+    "clone",
+    "compile",
+    "connect",
+    "dispatch_from",
+    "execute_from",
+    "get",
+    "given_preallocated_three_edge_router_when_frame_dispatched_then_no_heap_allocation_occurs",
+    "given_prepared_multi_source_runner_when_ready_frames_process_then_no_heap_allocation_occurs",
+    "given_prepared_realtime_plan_when_connected_nodes_execute_then_no_heap_allocation_occurs",
+    "id",
+    "in_",
+    "into_spec",
+    "is_empty",
+    "let",
+    "out",
+    "plan",
+    "plan_source_channel",
+    "pocketstation::internal::frame::SampleSpec::new",
+    "process_ready",
+    "register_builtins",
+    "sequence_number",
+    "source_id",
+    "timestamp_ns",
+    "try_copy_from_slice",
+    "try_send",
+    "unwrap",
+    "with_lineage"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [],
+  "constructed_by": [],
+  "constructs": [
+    "AudioBufferPool::new",
+    "AudioFrame::try_new",
+    "ClockDomainId::new",
+    "Compiler::new",
+    "FrameLineage::try_new",
+    "LineagedAudioFrame::new",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "Pipeline::new",
+    "PlanEdgeRouter::new",
+    "PlanRunnerCancellation::new",
+    "PrepareContext::new",
+    "RealtimePlanExecutor::new",
+    "RealtimePlanRunner::new",
+    "RuntimePlanner::new",
+    "SampleSpec::new",
+    "SessionId::new",
+    "SourceId::new",
+    "StemId::new",
+    "StreamId::new",
+    "dispatch_from",
+    "execute_from",
+    "pocketstation::internal::frame::SampleSpec::new"
+  ],
+  "content_hash": "9ed591a961c9a2989cea735fb54de3c7a3cacd0e5377d88ab902152dc0bf27af",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "static",
+      "line": 18,
+      "name": "ALLOCATOR",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 19,
+      "name": "with_lineage",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "audio_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "given_preallocated_three_edge_router_when_frame_dispatched_then_no_heap_allocation_occurs",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 92,
+      "name": "given_prepared_realtime_plan_when_connected_nodes_execute_then_no_heap_allocation_occurs",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 136,
+      "name": "given_prepared_multi_source_runner_when_ready_frames_process_then_no_heap_allocation_occurs",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [],
+  "endpoints": [],
+  "entry_points": [],
+  "environment_variables": [],
+  "errors_created": [],
+  "errors_defined": [],
+  "errors_propagated": [],
+  "errors_translated": [
+    {
+      "line": 74,
+      "text": "buffer.try_copy_from_slice(&[0.25, -0.5]).unwrap();"
+    },
+    {
+      "line": 117,
+      "text": "buffer.try_copy_from_slice(&[0.25, -0.5]).unwrap();"
+    },
+    {
+      "line": 127,
+      "text": "let summary = assert_no_alloc(|| executor.execute_from(source_id, frame, 5)).unwrap();"
+    },
+    {
+      "line": 169,
+      "text": "first_buffer.try_copy_from_slice(&[0.25, -0.5]).unwrap();"
+    },
+    {
+      "line": 170,
+      "text": "second_buffer.try_copy_from_slice(&[-0.25, 0.5]).unwrap();"
+    }
+  ],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "9ed591a961c9a2989cea735fb54de3c7a3cacd0e5377d88ab902152dc0bf27af",
+      "lines": [
+        1,
+        201
+      ],
+      "path": "tests/runtime_plan_router_alloc.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [],
+  "feature_gate": [
+    "not_explicitly_gated"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0273-6c1a254f",
+  "file_kind": "test",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "295d56e9d5ad1eec128bd11ce4199ccecd2da8e0",
+  "implemented_by": [],
+  "implements": [],
+  "imported_by": [],
+  "imports": [
+    "assert_no_alloc::{assert_no_alloc, AllocDisabler}",
+    "pocketstation::internal::frame::{ AudioBufferHandle, AudioBufferPool, AudioFrame, ClockDomainId, FrameLineage, LineagedAudioFrame, SampleFormat, SampleSpec, SessionId, SourceId, StemId, StreamId, }",
+    "pocketstation::internal::graph::compiler::Compiler",
+    "pocketstation::internal::graph::dsl::Pipeline",
+    "pocketstation::internal::graph::node::{NodeConfig, PrepareContext}",
+    "pocketstation::internal::graph::planner::RuntimePlanner",
+    "pocketstation::internal::graph::register_builtins",
+    "pocketstation::internal::graph::registry::NodeRegistry",
+    "pocketstation::internal::runtime::{ plan_source_channel, PlanEdgeRouter, PlanRunnerCancellation, PlanSourceSendOutcome, RealtimePlanExecutor, RealtimePlanRunner, }"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 114,
+      "text": "assert!(workers.is_empty());"
+    },
+    {
+      "line": 157,
+      "text": "assert!(workers.is_empty());"
+    },
+    {
+      "line": 171,
+      "text": "assert!(matches!("
+    },
+    {
+      "line": 181,
+      "text": "assert!(matches!("
+    }
+  ],
+  "language": "Rust",
+  "line_count": 201,
+  "locks": [],
+  "module": "not_applicable",
+  "network_io": [
+    {
+      "line": 65,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 101,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 145,
+      "text": "graph.connect(first_source.out(\"out\"), first_sink.in_(\"in\"));"
+    },
+    {
+      "line": 146,
+      "text": "graph.connect(second_source.out(\"out\"), second_sink.in_(\"in\"));"
+    }
+  ],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-db58b2484fc047e653cc",
+    "pattern-6cd1a46f8aad41f0b460",
+    "pattern-c7686b64ae95c87133d3"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "tests/runtime_plan_router_alloc.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "static",
+      "line": 18,
+      "name": "ALLOCATOR",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 19,
+      "name": "with_lineage",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 36,
+      "name": "audio_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 56,
+      "name": "given_preallocated_three_edge_router_when_frame_dispatched_then_no_heap_allocation_occurs",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 92,
+      "name": "given_prepared_realtime_plan_when_connected_nodes_execute_then_no_heap_allocation_occurs",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 136,
+      "name": "given_prepared_multi_source_runner_when_ready_frames_process_then_no_heap_allocation_occurs",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [],
+  "purpose": {
+    "classification": "INFERRED",
+    "text": "Defines the Rust module and items owned by `not_applicable`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/errors/runtime-and-sidecars.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/route-sizing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [],
+  "responsibilities": [
+    "ALLOCATOR",
+    "with_lineage",
+    "audio_frame",
+    "given_preallocated_three_edge_router_when_frame_dispatched_then_no_heap_allocation_occurs",
+    "given_prepared_realtime_plan_when_connected_nodes_execute_then_no_heap_allocation_occurs",
+    "given_prepared_multi_source_runner_when_ready_frames_process_then_no_heap_allocation_occurs"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [],
+  "side_effects": [
+    {
+      "line": 65,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 101,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 145,
+      "text": "graph.connect(first_source.out(\"out\"), first_sink.in_(\"in\"));"
+    },
+    {
+      "line": 146,
+      "text": "graph.connect(second_source.out(\"out\"), second_sink.in_(\"in\"));"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "private_or_not_applicable"
+}

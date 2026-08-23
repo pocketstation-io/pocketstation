@@ -17,8 +17,10 @@ use crate::runtime::audio::EdgeObservations;
 use crate::runtime::audio::{DispatchSummary, PlanEdgeFrame, PlanEdgeReceiver, PlanEdgeRouter};
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
+#[doc = "Classifies failures reported as exec error."]
 pub enum ExecError {
     #[error("realtime plan execution failed: {0}")]
+    #[doc = "Reports node."]
     Node(String),
 }
 

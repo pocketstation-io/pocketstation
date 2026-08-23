@@ -8,6 +8,7 @@ use crate::timing::monotonic_timestamp_ns;
 
 use super::AudioInputConfig;
 
+#[doc = "Represents audio input buffer in the PocketStation API."]
 pub struct AudioInputBuffer {
     writer_id: u64,
     buffer: AudioBufferHandle,
@@ -16,14 +17,17 @@ pub struct AudioInputBuffer {
 }
 
 impl AudioInputBuffer {
+    #[doc = "Returns the sample capacity associated with `AudioInputBuffer`."]
     pub fn sample_capacity(&self) -> usize {
         self.sample_capacity
     }
 
+    #[doc = "Returns the sample count associated with `AudioInputBuffer`."]
     pub fn sample_count(&self) -> usize {
         self.buffer.len()
     }
 
+    #[doc = "Attempts to set sample count through `AudioInputBuffer`."]
     pub fn try_set_sample_count(
         &mut self,
         sample_count: usize,
@@ -31,24 +35,29 @@ impl AudioInputBuffer {
         self.buffer.try_set_len(sample_count)
     }
 
+    #[doc = "Attempts to copy from slice through `AudioInputBuffer`."]
     pub fn try_copy_from_slice(&mut self, samples: &[f32]) -> Result<(), AudioBufferWriteError> {
         self.buffer.try_copy_from_slice(samples)
     }
 
+    #[doc = "Returns the audio samples held by `AudioInputBuffer`."]
     pub fn samples(&self) -> &[f32] {
         self.buffer.as_slice()
     }
 
+    #[doc = "Returns the samples mut associated with `AudioInputBuffer`."]
     pub fn samples_mut(&mut self) -> &mut [f32] {
         self.buffer.as_mut_slice()
     }
 
+    #[doc = "Marks the next value from `AudioInputBuffer` as discontinuous."]
     pub fn mark_discontinuity(&mut self) {
         self.discontinuity = true;
     }
 }
 
 impl fmt::Debug for AudioInputBuffer {
+    #[doc = "Formats `AudioInputBuffer` with the requested formatter."]
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_struct("AudioInputBuffer")
@@ -69,14 +78,23 @@ pub(super) struct AudioInputState {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Reports the audio input observations collected at an observation boundary."]
 pub struct AudioInputObservations {
+    #[doc = "Sets the capacity frames available to `AudioInputObservations`."]
     pub capacity_frames: u64,
+    #[doc = "Stores the buffer slots associated with `AudioInputObservations`."]
     pub buffer_slots: u64,
+    #[doc = "Stores the available buffers associated with `AudioInputObservations`."]
     pub available_buffers: u64,
+    #[doc = "Counts the total number of accepted observed by `AudioInputObservations`."]
     pub accepted_total: u64,
+    #[doc = "Counts the total number of full observed by `AudioInputObservations`."]
     pub full_total: u64,
+    #[doc = "Counts the total number of invalid observed by `AudioInputObservations`."]
     pub invalid_total: u64,
+    #[doc = "Stores the cancelled associated with `AudioInputObservations`."]
     pub cancelled: bool,
+    #[doc = "Stores the closed associated with `AudioInputObservations`."]
     pub closed: bool,
 }
 
@@ -88,6 +106,7 @@ pub(super) struct QueuedAudioInputFrame {
     pub(super) discontinuity_epoch: u64,
 }
 
+#[doc = "Represents audio input writer in the PocketStation API."]
 pub struct AudioInputWriter {
     pub(super) writer_id: u64,
     pub(super) config: AudioInputConfig,
@@ -100,10 +119,12 @@ pub struct AudioInputWriter {
 }
 
 impl AudioInputWriter {
+    #[doc = "Returns the configuration associated with `AudioInputWriter`."]
     pub const fn configuration(&self) -> AudioInputConfig {
         self.config
     }
 
+    #[doc = "Attempts to acquire through `AudioInputWriter`."]
     pub fn try_acquire(&self) -> Result<AudioInputBuffer, AudioInputBufferAcquireError> {
         if self.state.cancelled.load(Ordering::Acquire) {
             return Err(AudioInputBufferAcquireError::Cancelled);
@@ -132,6 +153,7 @@ impl AudioInputWriter {
         })
     }
 
+    #[doc = "Attempts to write through `AudioInputWriter`."]
     pub fn try_write(&mut self, samples: &[f32]) -> Result<(), AudioInputWriteError> {
         let mut buffer = self.try_acquire().map_err(AudioInputWriteError::from)?;
         if let Err(error) = buffer.try_copy_from_slice(samples) {
@@ -144,6 +166,7 @@ impl AudioInputWriter {
         self.try_send(buffer)
     }
 
+    #[doc = "Attempts to send a value through `AudioInputWriter` without waiting for capacity."]
     pub fn try_send(&mut self, buffer: AudioInputBuffer) -> Result<(), AudioInputWriteError> {
         if self.state.cancelled.load(Ordering::Acquire) {
             return Err(AudioInputWriteError::new(
@@ -239,10 +262,12 @@ impl AudioInputWriter {
         }
     }
 
+    #[doc = "Closes `AudioInputWriter` to further work."]
     pub fn close(&mut self) {
         self.sender = None;
     }
 
+    #[doc = "Returns the observations exposed by `AudioInputWriter`."]
     pub fn observations(&self) -> AudioInputObservations {
         AudioInputObservations {
             capacity_frames: self.config.capacity_frames as u64,
@@ -258,6 +283,7 @@ impl AudioInputWriter {
 }
 
 impl fmt::Debug for AudioInputWriter {
+    #[doc = "Formats `AudioInputWriter` with the requested formatter."]
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_struct("AudioInputWriter")
@@ -268,40 +294,58 @@ impl fmt::Debug for AudioInputWriter {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as audio input buffer acquire error."]
 pub enum AudioInputBufferAcquireError {
     #[error("audio input is full")]
+    #[doc = "Reports that bounded capacity is full."]
     Full,
     #[error("audio input is closed")]
+    #[doc = "Reports that the underlying channel or resource is closed."]
     Closed,
     #[error("audio input Session was cancelled")]
+    #[doc = "Indicates that the operation was cancelled."]
     Cancelled,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, thiserror::Error)]
+#[doc = "Classifies failures reported as audio input buffer error."]
 pub enum AudioInputBufferError {
     #[error("audio buffer belongs to another audio input")]
+    #[doc = "Reports wrong source."]
     WrongSource,
     #[error("audio buffer contains no samples")]
+    #[doc = "Represents an empty value or collection."]
     Empty,
     #[error("interleaved sample count is not divisible by the channel count")]
+    #[doc = "Reports misaligned channels."]
     MisalignedChannels,
     #[error("audio buffer contains {actual_samples} samples; expected exactly {expected_samples}")]
+    #[doc = "Reports wrong frame length."]
     WrongFrameLength {
+        #[doc = "Stores the expected samples associated with `WrongFrameLength`."]
         expected_samples: usize,
+        #[doc = "Stores the actual samples associated with `WrongFrameLength`."]
         actual_samples: usize,
     },
     #[error("audio buffer capacity rejected the samples: {0}")]
+    #[doc = "Reports capacity."]
     Capacity(AudioBufferWriteError),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[doc = "Selects the audio input write error kind used by PocketStation."]
 pub enum AudioInputWriteErrorKind {
+    #[doc = "Reports that bounded capacity is full."]
     Full,
+    #[doc = "Reports that the underlying channel or resource is closed."]
     Closed,
+    #[doc = "Indicates that the operation was cancelled."]
     Cancelled,
+    #[doc = "Reports invalid buffer."]
     InvalidBuffer(AudioInputBufferError),
 }
 
+#[doc = "Reports a audio input write error."]
 pub struct AudioInputWriteError {
     kind: AudioInputWriteErrorKind,
     rejected: Option<AudioInputBuffer>,
@@ -312,16 +356,19 @@ impl AudioInputWriteError {
         Self { kind, rejected }
     }
 
+    #[doc = "Returns the kind represented by `AudioInputWriteError`."]
     pub const fn kind(&self) -> AudioInputWriteErrorKind {
         self.kind
     }
 
+    #[doc = "Converts `AudioInputWriteError` into rejected."]
     pub fn into_rejected(self) -> Option<AudioInputBuffer> {
         self.rejected
     }
 }
 
 impl From<AudioInputBufferAcquireError> for AudioInputWriteError {
+    #[doc = "Converts the supplied value into `AudioInputWriteError`."]
     fn from(error: AudioInputBufferAcquireError) -> Self {
         let kind = match error {
             AudioInputBufferAcquireError::Full => AudioInputWriteErrorKind::Full,
@@ -333,6 +380,7 @@ impl From<AudioInputBufferAcquireError> for AudioInputWriteError {
 }
 
 impl fmt::Debug for AudioInputWriteError {
+    #[doc = "Formats `AudioInputWriteError` with the requested formatter."]
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_struct("AudioInputWriteError")
@@ -343,6 +391,7 @@ impl fmt::Debug for AudioInputWriteError {
 }
 
 impl fmt::Display for AudioInputWriteError {
+    #[doc = "Formats `AudioInputWriteError` with the requested formatter."]
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self.kind {
             AudioInputWriteErrorKind::Full => formatter.write_str("audio input is full"),

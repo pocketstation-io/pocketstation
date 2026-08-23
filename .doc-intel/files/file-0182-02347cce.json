@@ -1,0 +1,2018 @@
+{
+  "analysis_stage": "doc_ready",
+  "async_boundaries": [],
+  "atomics": [],
+  "callbacks": [],
+  "called_by": [],
+  "calls": [
+    "Arc::clone",
+    "Arc::new",
+    "AtomicBool::new",
+    "AtomicU64::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "ClockDomainId",
+    "Compiler::new",
+    "Definition",
+    "DispatchSummary::default",
+    "EdgeContract::bounded_async",
+    "EdgeContract::realtime_audio",
+    "EdgeObservations::default",
+    "EdgeTelemetry::new",
+    "Exclusive",
+    "FnOnce",
+    "LineagedAudioFrame::new",
+    "MediaCaps::Audio",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Pipeline::new",
+    "PlanEdgeFrame::Exclusive",
+    "PlanEdgeFrame::Shared",
+    "PlanEdgeRouter::new",
+    "RingBuffer::new",
+    "RuntimePlanner::new",
+    "Self::Exclusive",
+    "Self::Shared",
+    "SessionId",
+    "Shared",
+    "SignalSpec::audio",
+    "SignalSpec::text",
+    "SourceId",
+    "StemId",
+    "StreamId",
+    "Vec::new",
+    "Vec::with_capacity",
+    "abs",
+    "abs_diff",
+    "acquire",
+    "add_node",
+    "all",
+    "and_then",
+    "any",
+    "as_ptr",
+    "as_ref",
+    "as_slice",
+    "branch_copy_pool_capacity_frames",
+    "cfg",
+    "channels",
+    "checked_div",
+    "checked_shl",
+    "clock",
+    "clone",
+    "cloned",
+    "collect",
+    "compile",
+    "connect",
+    "connect_with",
+    "copy_to_pool",
+    "count",
+    "debug_tuple",
+    "dedup",
+    "derive",
+    "descriptor",
+    "dispatch_from",
+    "div_ceil",
+    "drop",
+    "drop_rate_pct",
+    "edge_buffer",
+    "edge_id",
+    "enumerate",
+    "error",
+    "fetch_add",
+    "fetch_max",
+    "field",
+    "filter",
+    "filter_map",
+    "find",
+    "finish",
+    "fmt",
+    "for_each",
+    "frame",
+    "frames_attempted_total",
+    "freeze",
+    "from",
+    "given_compiled_text_edge_when_router_builds_then_only_audio_edge_gets_audio_receiver",
+    "given_enqueued_and_dropped_frames_when_observed_then_drop_rate_uses_all_attempts",
+    "given_failed_branch_when_receiver_drops_then_unrelated_branch_continues",
+    "given_foreign_clock_timestamp_when_delivered_then_source_latency_is_not_fabricated",
+    "given_lineage_discontinuity_epoch_change_when_received_then_declared_discontinuity_is_counted",
+    "given_lineaged_source_fan_out_when_branch_frames_are_copied_then_exact_lineage_is_preserved",
+    "given_observation_handle_when_consumer_detects_gap_then_live_discontinuity_is_visible",
+    "given_observation_handle_when_producer_fills_edge_then_live_queue_and_drop_are_visible",
+    "given_observation_handle_when_receiver_drops_then_shutdown_snapshot_remains_available",
+    "given_one_source_with_three_edges_when_dispatched_then_every_edge_receives_identified_frame",
+    "given_queued_frame_when_clocked_receive_runs_then_clock_is_sampled_after_pop",
+    "given_receive_before_enqueue_when_observed_then_latency_sample_is_rejected",
+    "given_receiver_holds_popped_frame_when_queue_has_room_then_next_copy_is_enqueued",
+    "given_sequence_and_timestamp_gap_when_received_then_typed_discontinuities_are_counted",
+    "given_shutdown_with_queued_shared_frames_when_receivers_drop_then_pool_slots_are_released",
+    "given_slow_full_branch_when_more_frames_dispatched_then_other_branch_continues",
+    "given_timestamped_frame_when_delivered_then_both_latency_boundaries_have_sample_coverage",
+    "given_two_sources_with_six_edges_when_dispatched_then_source_identity_stays_separate",
+    "histogram_percentile_ns",
+    "id",
+    "in_",
+    "into_spec",
+    "is_abandoned",
+    "is_audio",
+    "is_full",
+    "is_none",
+    "is_ok",
+    "is_some",
+    "is_some_and",
+    "iter",
+    "iter_mut",
+    "latency_bucket",
+    "leading_zeros",
+    "len",
+    "let",
+    "lineage",
+    "lineaged_frame",
+    "lineaged_frame_with_clock",
+    "load",
+    "make_frame",
+    "map",
+    "mark_discontinuity",
+    "mark_worker_failure",
+    "max",
+    "min",
+    "new",
+    "node",
+    "observation_handle",
+    "observations",
+    "observe_continuity",
+    "observe_delivery",
+    "observe_drop",
+    "observe_enqueue",
+    "observe_received",
+    "ok",
+    "ok_or",
+    "out",
+    "plan",
+    "pop",
+    "position",
+    "pub",
+    "push",
+    "queue_depth_frames",
+    "recv_at",
+    "recv_with_clock",
+    "register_builtins",
+    "register_definition",
+    "registry",
+    "rtrb::PushError::Full",
+    "sample_format",
+    "sample_rate_hz",
+    "samples",
+    "saturating_add",
+    "saturating_mul",
+    "saturating_sub",
+    "send",
+    "sequence_number",
+    "snapshot",
+    "sort_unstable",
+    "source_id",
+    "std::array::from_fn",
+    "store",
+    "stream_id",
+    "sum",
+    "swap_remove",
+    "then",
+    "timestamp_ns",
+    "to",
+    "to_owned",
+    "try_clone",
+    "try_copy_from_slice",
+    "try_recv",
+    "typed_port",
+    "u64::from",
+    "u64::try_from",
+    "unwrap",
+    "unwrap_or",
+    "usize::from",
+    "validate_config",
+    "with_role"
+  ],
+  "cancellation_behavior": [],
+  "channels": [],
+  "configuration_read": [
+    {
+      "line": 490,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 512,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 658,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 723,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 736,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 851,
+      "text": "#[cfg(any(test, feature = \"internal-testing\"))]"
+    },
+    {
+      "line": 860,
+      "text": "#[cfg(test)]"
+    },
+    {
+      "line": 871,
+      "text": "AudioCaps, ChannelLayout, ConfigError, EdgeContract, ExecutionPartition, MediaCaps,"
+    },
+    {
+      "line": 883,
+      "text": "fn validate_config(&self, _config: &NodeConfig) -> Result<(), ConfigError> {"
+    }
+  ],
+  "constructed_by": [],
+  "constructs": [
+    "Arc::new",
+    "AtomicBool::new",
+    "AtomicU64::new",
+    "AudioBufferPool::new",
+    "AudioFrame::new",
+    "Compiler::new",
+    "EdgeTelemetry::new",
+    "LineagedAudioFrame::new",
+    "NodeConfig::new",
+    "NodeRegistry::new",
+    "NodeTypeId::from",
+    "Pipeline::new",
+    "PlanEdgeRouter::new",
+    "RingBuffer::new",
+    "RuntimePlanner::new",
+    "Vec::new",
+    "dispatch_from",
+    "from",
+    "new",
+    "u64::from",
+    "u64::try_from",
+    "usize::from"
+  ],
+  "content_hash": "8d938c5af86e87f73bcda44cc3b45f813650bb0d2ae75d1127131fbb76af7bd2",
+  "defaults": [],
+  "defines": [
+    {
+      "kind": "const",
+      "line": 12,
+      "name": "LATENCY_HISTOGRAM_BUCKETS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 14,
+      "name": "TIMESTAMP_CONTINUITY_TOLERANCE_NS",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 17,
+      "name": "PlanRouterError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 28,
+      "name": "PlanEdgeFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 48,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "sample_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "sample_format",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 100,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 115,
+      "name": "QueuedPlanEdgeFrame",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 122,
+      "name": "EdgeObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 160,
+      "name": "frames_attempted_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 164,
+      "name": "drop_rate_pct",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 174,
+      "name": "EdgeTelemetry",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 211,
+      "name": "PlanEdgeObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 223,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "queue_depth_frames",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 262,
+      "name": "observe_enqueue",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 268,
+      "name": "observe_delivery",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 299,
+      "name": "observe_drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 330,
+      "name": "snapshot",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 416,
+      "name": "EdgeDropReason",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 424,
+      "name": "latency_bucket",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 433,
+      "name": "histogram_percentile_ns",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 453,
+      "name": "EdgeSender",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 461,
+      "name": "is_full",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 464,
+      "name": "send",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 487,
+      "name": "PlanEdgeReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 500,
+      "name": "FrameContinuity",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 508,
+      "name": "edge_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 513,
+      "name": "from",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 516,
+      "name": "to",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 526,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 531,
+      "name": "recv_at",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 545,
+      "name": "try_recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 548,
+      "name": "is_abandoned",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 552,
+      "name": "recv_with_clock",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 558,
+      "name": "observe_received",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 568,
+      "name": "observe_continuity",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 625,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 629,
+      "name": "mark_discontinuity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 638,
+      "name": "mark_worker_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 647,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 656,
+      "name": "RoutedEdge",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 667,
+      "name": "DispatchSummary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 674,
+      "name": "PlanEdgeRouter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 680,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 747,
+      "name": "dispatch_from",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 852,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "mod",
+      "line": 861,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 875,
+      "name": "Definition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 879,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 882,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 887,
+      "name": "typed_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 908,
+      "name": "registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 914,
+      "name": "frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 928,
+      "name": "lineaged_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 945,
+      "name": "lineaged_frame_with_clock",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 986,
+      "name": "given_compiled_text_edge_when_router_builds_then_only_audio_edge_gets_audio_receiver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1047,
+      "name": "given_one_source_with_three_edges_when_dispatched_then_every_edge_receives_identified_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1079,
+      "name": "given_lineaged_source_fan_out_when_branch_frames_are_copied_then_exact_lineage_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1120,
+      "name": "given_lineage_discontinuity_epoch_change_when_received_then_declared_discontinuity_is_counted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1152,
+      "name": "given_timestamped_frame_when_delivered_then_both_latency_boundaries_have_sample_coverage",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1185,
+      "name": "given_foreign_clock_timestamp_when_delivered_then_source_latency_is_not_fabricated",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1203,
+      "name": "given_receive_before_enqueue_when_observed_then_latency_sample_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1220,
+      "name": "given_queued_frame_when_clocked_receive_runs_then_clock_is_sampled_after_pop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1244,
+      "name": "given_enqueued_and_dropped_frames_when_observed_then_drop_rate_uses_all_attempts",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1256,
+      "name": "given_sequence_and_timestamp_gap_when_received_then_typed_discontinuities_are_counted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1284,
+      "name": "given_two_sources_with_six_edges_when_dispatched_then_source_identity_stays_separate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1325,
+      "name": "given_slow_full_branch_when_more_frames_dispatched_then_other_branch_continues",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1377,
+      "name": "given_observation_handle_when_producer_fills_edge_then_live_queue_and_drop_are_visible",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1413,
+      "name": "given_observation_handle_when_consumer_detects_gap_then_live_discontinuity_is_visible",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1442,
+      "name": "given_observation_handle_when_receiver_drops_then_shutdown_snapshot_remains_available",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1474,
+      "name": "given_receiver_holds_popped_frame_when_queue_has_room_then_next_copy_is_enqueued",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1521,
+      "name": "given_failed_branch_when_receiver_drops_then_unrelated_branch_continues",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1572,
+      "name": "given_shutdown_with_queued_shared_frames_when_receivers_drop_then_pool_slots_are_released",
+      "visibility": "private"
+    }
+  ],
+  "device_io": [],
+  "drop_cleanup": [
+    {
+      "line": 524,
+      "text": "/// another owner must observe queue, drop, discontinuity, or shutdown"
+    },
+    {
+      "line": 647,
+      "text": "fn drop(&mut self) {"
+    },
+    {
+      "line": 1461,
+      "text": "drop(receiver);"
+    },
+    {
+      "line": 1462,
+      "text": "drop(router);"
+    },
+    {
+      "line": 1516,
+      "text": "drop(in_flight);"
+    },
+    {
+      "line": 1541,
+      "text": "drop(failed_receiver);"
+    },
+    {
+      "line": 1606,
+      "text": "drop(receivers);"
+    },
+    {
+      "line": 1612,
+      "text": "drop(receiver_in_flight_reservations);"
+    }
+  ],
+  "endpoints": [
+    {
+      "line": 207,
+      "text": "/// Endpoint workers can retain this handle after taking ownership of a"
+    }
+  ],
+  "entry_points": [
+    {
+      "kind": "enum",
+      "line": 17,
+      "name": "PlanRouterError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 28,
+      "name": "PlanEdgeFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 48,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "sample_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "sample_format",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 122,
+      "name": "EdgeObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 160,
+      "name": "frames_attempted_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 164,
+      "name": "drop_rate_pct",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 211,
+      "name": "PlanEdgeObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 487,
+      "name": "PlanEdgeReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 508,
+      "name": "edge_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 513,
+      "name": "from",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 516,
+      "name": "to",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 526,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 531,
+      "name": "recv_at",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 545,
+      "name": "try_recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 548,
+      "name": "is_abandoned",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 625,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 629,
+      "name": "mark_discontinuity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 638,
+      "name": "mark_worker_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 667,
+      "name": "DispatchSummary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 674,
+      "name": "PlanEdgeRouter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 680,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 747,
+      "name": "dispatch_from",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 852,
+      "name": "observations",
+      "visibility": "pub"
+    }
+  ],
+  "environment_variables": [],
+  "errors_created": [
+    {
+      "line": 480,
+      "text": "Err(rtrb::PushError::Full(_queued)) => {"
+    },
+    {
+      "line": 705,
+      "text": "return Err(PlanRouterError::ZeroCapacity { edge_id });"
+    },
+    {
+      "line": 708,
+      "text": "return Err(PlanRouterError::InvalidFrameBytes {"
+    }
+  ],
+  "errors_defined": [
+    {
+      "kind": "enum",
+      "line": 17,
+      "name": "PlanRouterError",
+      "visibility": "pub"
+    }
+  ],
+  "errors_propagated": [
+    {
+      "line": 1317,
+      "text": "source_id => panic!(\"unexpected source {source_id:?}\"),"
+    }
+  ],
+  "errors_translated": [],
+  "errors_wrapped": [],
+  "evidence": [
+    {
+      "classification": "DIRECT",
+      "content_hash": "8d938c5af86e87f73bcda44cc3b45f813650bb0d2ae75d1127131fbb76af7bd2",
+      "lines": [
+        1,
+        1615
+      ],
+      "path": "src/runtime/audio/router.rs",
+      "symbol": null
+    }
+  ],
+  "examples_using": [],
+  "extended_by": [],
+  "extends": [],
+  "feature_flags": [
+    "internal-testing"
+  ],
+  "feature_gate": [
+    "internal-testing"
+  ],
+  "ffi_io": [],
+  "file_id": "file-0182-02347cce",
+  "file_kind": "source",
+  "filesystem_io": [],
+  "finalization": [],
+  "generated": false,
+  "generated_from": "not_applicable",
+  "git_object": "59a6519a23bce2fb0778dad054482386e47979c5",
+  "implemented_by": [],
+  "implements": [
+    "PlanEdgeFrame",
+    "std::fmt::Debug for PlanEdgeFrame",
+    "EdgeObservations",
+    "PlanEdgeObservationHandle",
+    "EdgeTelemetry",
+    "EdgeSender",
+    "PlanEdgeReceiver",
+    "Drop for PlanEdgeReceiver",
+    "PlanEdgeRouter",
+    "NodeDefinition for Definition"
+  ],
+  "imported_by": [],
+  "imports": [
+    "crate::frame::{AudioBufferPool, FrameLineage, LineagedAudioFrame, SharedLineagedAudioFrame}",
+    "crate::frame::{AudioFrame, ClockDomainId, SessionId, SourceId, StemId, StreamId}",
+    "crate::graph::compile::Compiler",
+    "crate::graph::compile::RuntimePlanner",
+    "crate::graph::dsl::Pipeline",
+    "crate::graph::ir::GraphIr",
+    "crate::graph::node::NodeConfig",
+    "crate::graph::plan::RuntimePlan",
+    "crate::graph::register_builtins",
+    "crate::graph::registry::{NodeDefinition, NodeRegistry}",
+    "crate::graph::spec::{EdgeId, InputPortRef, NodeId, OutputPortRef}",
+    "crate::graph::{ AudioCaps, ChannelLayout, ConfigError, EdgeContract, ExecutionPartition, MediaCaps, Multiplicity, NodeDescriptor, NodeTypeId, PortDirection, PortSpec, SafetyContract, SignalSpec, TextFormat, }",
+    "crate::graph::{CopyPolicy, MediaCaps}",
+    "rtrb::{Consumer, Producer, RingBuffer}",
+    "std::sync::Arc",
+    "std::sync::atomic::{AtomicBool, AtomicU64, Ordering}",
+    "super::*"
+  ],
+  "inputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "invariants": [
+    {
+      "line": 209,
+      "text": "/// cannot mutate counters or edge lifecycle state."
+    },
+    {
+      "line": 524,
+      "text": "/// another owner must observe queue, drop, discontinuity, or shutdown"
+    },
+    {
+      "line": 542,
+      "text": "/// destination workers must use this method. The internal `recv_at` method"
+    },
+    {
+      "line": 1252,
+      "text": "assert!((observations.drop_rate_pct() - 25.0).abs() < f64::EPSILON);"
+    },
+    {
+      "line": 1601,
+      "text": "assert!(branch_pools"
+    },
+    {
+      "line": 1609,
+      "text": "assert!(branch_pools"
+    }
+  ],
+  "language": "Rust",
+  "line_count": 1615,
+  "locks": [],
+  "module": "pocketstation::runtime::audio::router",
+  "network_io": [
+    {
+      "line": 1056,
+      "text": "graph.connect(source.out(\"out\"), first.in_(\"in\"));"
+    },
+    {
+      "line": 1057,
+      "text": "graph.connect(source.out(\"out\"), second.in_(\"in\"));"
+    },
+    {
+      "line": 1058,
+      "text": "graph.connect(source.out(\"out\"), third.in_(\"in\"));"
+    },
+    {
+      "line": 1086,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1126,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1157,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1225,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1261,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1295,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1332,
+      "text": "let slow_edge = graph.connect(source.out(\"out\"), slow.in_(\"in\"));"
+    },
+    {
+      "line": 1333,
+      "text": "let fast_edge = graph.connect(source.out(\"out\"), fast.in_(\"in\"));"
+    },
+    {
+      "line": 1383,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1419,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1448,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1528,
+      "text": "let failed_edge = graph.connect(source.out(\"out\"), failed.in_(\"in\"));"
+    },
+    {
+      "line": 1529,
+      "text": "let healthy_edge = graph.connect(source.out(\"out\"), healthy.in_(\"in\"));"
+    },
+    {
+      "line": 1579,
+      "text": "graph.connect(source.out(\"out\"), first.in_(\"in\"));"
+    },
+    {
+      "line": 1580,
+      "text": "graph.connect(source.out(\"out\"), second.in_(\"in\"));"
+    }
+  ],
+  "non_responsibilities": [
+    "unknown"
+  ],
+  "observed_patterns": [
+    "pattern-704b068457aff5e7ae16",
+    "pattern-bb441f171fed3994bd2a",
+    "pattern-545a8ffd6d5188242445",
+    "pattern-69313a14552fd2f67df1",
+    "pattern-fe53f00cbfc6f1746cdb"
+  ],
+  "outputs": [
+    "See compiler-backed symbol signatures"
+  ],
+  "package": "pocketstation",
+  "path": "src/runtime/audio/router.rs",
+  "platform_gate": [
+    "not_explicitly_gated"
+  ],
+  "potential_pitfalls": [],
+  "private_surface": [
+    {
+      "kind": "const",
+      "line": 12,
+      "name": "LATENCY_HISTOGRAM_BUCKETS",
+      "visibility": "private"
+    },
+    {
+      "kind": "const",
+      "line": 14,
+      "name": "TIMESTAMP_CONTINUITY_TOLERANCE_NS",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 100,
+      "name": "fmt",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 115,
+      "name": "QueuedPlanEdgeFrame",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 174,
+      "name": "EdgeTelemetry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 223,
+      "name": "new",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 254,
+      "name": "queue_depth_frames",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 262,
+      "name": "observe_enqueue",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 268,
+      "name": "observe_delivery",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 299,
+      "name": "observe_drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 330,
+      "name": "snapshot",
+      "visibility": "private"
+    },
+    {
+      "kind": "enum",
+      "line": 416,
+      "name": "EdgeDropReason",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 424,
+      "name": "latency_bucket",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 433,
+      "name": "histogram_percentile_ns",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 453,
+      "name": "EdgeSender",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 461,
+      "name": "is_full",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 464,
+      "name": "send",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 500,
+      "name": "FrameContinuity",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 552,
+      "name": "recv_with_clock",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 558,
+      "name": "observe_received",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 568,
+      "name": "observe_continuity",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 647,
+      "name": "drop",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 656,
+      "name": "RoutedEdge",
+      "visibility": "private"
+    },
+    {
+      "kind": "mod",
+      "line": 861,
+      "name": "tests",
+      "visibility": "private"
+    },
+    {
+      "kind": "struct",
+      "line": 875,
+      "name": "Definition",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 879,
+      "name": "descriptor",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 882,
+      "name": "validate_config",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 887,
+      "name": "typed_port",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 908,
+      "name": "registry",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 914,
+      "name": "frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 928,
+      "name": "lineaged_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 945,
+      "name": "lineaged_frame_with_clock",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 986,
+      "name": "given_compiled_text_edge_when_router_builds_then_only_audio_edge_gets_audio_receiver",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1047,
+      "name": "given_one_source_with_three_edges_when_dispatched_then_every_edge_receives_identified_frame",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1079,
+      "name": "given_lineaged_source_fan_out_when_branch_frames_are_copied_then_exact_lineage_is_preserved",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1120,
+      "name": "given_lineage_discontinuity_epoch_change_when_received_then_declared_discontinuity_is_counted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1152,
+      "name": "given_timestamped_frame_when_delivered_then_both_latency_boundaries_have_sample_coverage",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1185,
+      "name": "given_foreign_clock_timestamp_when_delivered_then_source_latency_is_not_fabricated",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1203,
+      "name": "given_receive_before_enqueue_when_observed_then_latency_sample_is_rejected",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1220,
+      "name": "given_queued_frame_when_clocked_receive_runs_then_clock_is_sampled_after_pop",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1244,
+      "name": "given_enqueued_and_dropped_frames_when_observed_then_drop_rate_uses_all_attempts",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1256,
+      "name": "given_sequence_and_timestamp_gap_when_received_then_typed_discontinuities_are_counted",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1284,
+      "name": "given_two_sources_with_six_edges_when_dispatched_then_source_identity_stays_separate",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1325,
+      "name": "given_slow_full_branch_when_more_frames_dispatched_then_other_branch_continues",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1377,
+      "name": "given_observation_handle_when_producer_fills_edge_then_live_queue_and_drop_are_visible",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1413,
+      "name": "given_observation_handle_when_consumer_detects_gap_then_live_discontinuity_is_visible",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1442,
+      "name": "given_observation_handle_when_receiver_drops_then_shutdown_snapshot_remains_available",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1474,
+      "name": "given_receiver_holds_popped_frame_when_queue_has_room_then_next_copy_is_enqueued",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1521,
+      "name": "given_failed_branch_when_receiver_drops_then_unrelated_branch_continues",
+      "visibility": "private"
+    },
+    {
+      "kind": "fn",
+      "line": 1572,
+      "name": "given_shutdown_with_queued_shared_frames_when_receivers_drop_then_pool_slots_are_released",
+      "visibility": "private"
+    }
+  ],
+  "process_io": [],
+  "protocol_messages": [],
+  "public_surface": [
+    {
+      "kind": "enum",
+      "line": 17,
+      "name": "PlanRouterError",
+      "visibility": "pub"
+    },
+    {
+      "kind": "enum",
+      "line": 28,
+      "name": "PlanEdgeFrame",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 35,
+      "name": "stream_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 41,
+      "name": "source_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 48,
+      "name": "sequence_number",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 55,
+      "name": "timestamp_ns",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 62,
+      "name": "sample_rate_hz",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 69,
+      "name": "channels",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 76,
+      "name": "sample_format",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 83,
+      "name": "samples",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 90,
+      "name": "lineage",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 122,
+      "name": "EdgeObservations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 160,
+      "name": "frames_attempted_total",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 164,
+      "name": "drop_rate_pct",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 211,
+      "name": "PlanEdgeObservationHandle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 217,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 487,
+      "name": "PlanEdgeReceiver",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 508,
+      "name": "edge_id",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 513,
+      "name": "from",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 516,
+      "name": "to",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 526,
+      "name": "observation_handle",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 531,
+      "name": "recv_at",
+      "visibility": "pub(crate)"
+    },
+    {
+      "kind": "fn",
+      "line": 545,
+      "name": "try_recv",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 548,
+      "name": "is_abandoned",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 625,
+      "name": "observations",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 629,
+      "name": "mark_discontinuity",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 638,
+      "name": "mark_worker_failure",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 667,
+      "name": "DispatchSummary",
+      "visibility": "pub"
+    },
+    {
+      "kind": "struct",
+      "line": 674,
+      "name": "PlanEdgeRouter",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 680,
+      "name": "new",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 747,
+      "name": "dispatch_from",
+      "visibility": "pub"
+    },
+    {
+      "kind": "fn",
+      "line": 852,
+      "name": "observations",
+      "visibility": "pub"
+    }
+  ],
+  "purpose": {
+    "classification": "DECLARED",
+    "text": "Executable bounded edge routing for a compiled `RuntimePlan`."
+  },
+  "queues": [],
+  "recovery_behavior": [],
+  "reexports": [],
+  "related_docs": [
+    "README.md",
+    "docs/README.md",
+    "docs/concepts/runtime-preparation.md",
+    "docs/concepts/session-lifecycle.md",
+    "docs/concepts/realtime-routing.md",
+    "docs/concepts/async-operators.md",
+    "docs/concepts/signals-and-streams.md",
+    "docs/concepts/audio-reentry.md",
+    "docs/concepts/sidecars.md",
+    "docs/concepts/observability.md",
+    "docs/concepts/error-model.md",
+    "docs/lifecycle/build-prepare-start.md",
+    "docs/lifecycle/running.md",
+    "docs/lifecycle/cancellation-and-rollback.md",
+    "docs/lifecycle/stop-drain-finalize.md",
+    "docs/architecture/overview.md",
+    "docs/internals/runtime-planner.md",
+    "docs/internals/realtime-audio-lane.md",
+    "docs/internals/async-signal-lane.md",
+    "docs/internals/memory-ownership.md",
+    "docs/glossary.md",
+    "docs/how-to/fan-out-source.md",
+    "docs/how-to/configure-route-policy.md",
+    "docs/how-to/implement-operator.md",
+    "docs/how-to/return-generated-audio.md",
+    "docs/how-to/host-sidecar.md",
+    "docs/how-to/instrument-session.md",
+    "docs/how-to/stop-session.md",
+    "docs/how-to/prepare-session.md",
+    "docs/reference/rust-api.md",
+    "docs/reference/sidecar-protocol.md",
+    "docs/reference/configuration.md",
+    "docs/compatibility/README.md",
+    "docs/reference/observations.md",
+    "docs/reference/error-codes.md",
+    "docs/reference/behavior-evidence.md",
+    "docs/reference/protocol-surface.md",
+    "docs/reference/test-evidence.md",
+    "docs/reference/lifecycle-evidence.md",
+    "docs/errors/graph-and-signals.md",
+    "docs/errors/runtime-and-sidecars.md",
+    "docs/troubleshooting/session-start.md",
+    "docs/troubleshooting/drops-and-saturation.md",
+    "docs/troubleshooting/sidecar-deadline.md",
+    "docs/troubleshooting/session-stop.md",
+    "docs/troubleshooting/external-pcm.md",
+    "docs/best-practices/route-sizing.md",
+    "docs/best-practices/realtime-boundaries.md",
+    "docs/security/boundaries.md"
+  ],
+  "resource_ownership": [
+    {
+      "line": 4,
+      "text": "use std::sync::Arc;"
+    },
+    {
+      "line": 212,
+      "text": "telemetry: Arc<EdgeTelemetry>,"
+    },
+    {
+      "line": 456,
+      "text": "alive: Arc<AtomicBool>,"
+    },
+    {
+      "line": 457,
+      "text": "telemetry: Arc<EdgeTelemetry>,"
+    },
+    {
+      "line": 494,
+      "text": "alive: Arc<AtomicBool>,"
+    },
+    {
+      "line": 495,
+      "text": "telemetry: Arc<EdgeTelemetry>,"
+    },
+    {
+      "line": 524,
+      "text": "/// another owner must observe queue, drop, discontinuity, or shutdown"
+    },
+    {
+      "line": 528,
+      "text": "telemetry: Arc::clone(&self.telemetry),"
+    },
+    {
+      "line": 646,
+      "text": "impl Drop for PlanEdgeReceiver {"
+    },
+    {
+      "line": 662,
+      "text": "branch_pool: Option<Arc<AudioBufferPool>>,"
+    },
+    {
+      "line": 714,
+      "text": "let alive = Arc::new(AtomicBool::new(true));"
+    },
+    {
+      "line": 715,
+      "text": "let telemetry = Arc::new(EdgeTelemetry::new(buffer.capacity_frames));"
+    },
+    {
+      "line": 730,
+      "text": "alive: Arc::clone(&alive),"
+    },
+    {
+      "line": 731,
+      "text": "telemetry: Arc::clone(&telemetry),"
+    },
+    {
+      "line": 916,
+      "text": "pool: &Arc<AudioBufferPool>,"
+    },
+    {
+      "line": 930,
+      "text": "pool: &Arc<AudioBufferPool>,"
+    },
+    {
+      "line": 947,
+      "text": "pool: &Arc<AudioBufferPool>,"
+    },
+    {
+      "line": 989,
+      "text": ".register_definition(Arc::new(Definition(NodeDescriptor {"
+    },
+    {
+      "line": 1008,
+      "text": ".register_definition(Arc::new(Definition(NodeDescriptor {"
+    }
+  ],
+  "responsibilities": [
+    "LATENCY_HISTOGRAM_BUCKETS",
+    "TIMESTAMP_CONTINUITY_TOLERANCE_NS",
+    "PlanRouterError",
+    "PlanEdgeFrame",
+    "stream_id",
+    "source_id",
+    "sequence_number",
+    "timestamp_ns",
+    "sample_rate_hz",
+    "channels",
+    "sample_format",
+    "samples",
+    "lineage",
+    "fmt",
+    "QueuedPlanEdgeFrame",
+    "EdgeObservations",
+    "frames_attempted_total",
+    "drop_rate_pct",
+    "EdgeTelemetry",
+    "PlanEdgeObservationHandle",
+    "observations",
+    "new",
+    "queue_depth_frames",
+    "observe_enqueue",
+    "observe_delivery",
+    "observe_drop",
+    "snapshot",
+    "EdgeDropReason",
+    "latency_bucket",
+    "histogram_percentile_ns",
+    "EdgeSender",
+    "is_full",
+    "send",
+    "PlanEdgeReceiver",
+    "FrameContinuity",
+    "edge_id",
+    "from",
+    "to",
+    "observation_handle",
+    "recv_at",
+    "try_recv",
+    "is_abandoned",
+    "recv_with_clock",
+    "observe_received",
+    "observe_continuity",
+    "observations",
+    "mark_discontinuity",
+    "mark_worker_failure",
+    "drop",
+    "RoutedEdge",
+    "DispatchSummary",
+    "PlanEdgeRouter",
+    "new",
+    "dispatch_from",
+    "observations",
+    "tests",
+    "Definition",
+    "descriptor",
+    "validate_config",
+    "typed_port",
+    "registry",
+    "frame",
+    "lineaged_frame",
+    "lineaged_frame_with_clock",
+    "given_compiled_text_edge_when_router_builds_then_only_audio_edge_gets_audio_receiver",
+    "given_one_source_with_three_edges_when_dispatched_then_every_edge_receives_identified_frame",
+    "given_lineaged_source_fan_out_when_branch_frames_are_copied_then_exact_lineage_is_preserved",
+    "given_lineage_discontinuity_epoch_change_when_received_then_declared_discontinuity_is_counted",
+    "given_timestamped_frame_when_delivered_then_both_latency_boundaries_have_sample_coverage",
+    "given_foreign_clock_timestamp_when_delivered_then_source_latency_is_not_fabricated",
+    "given_receive_before_enqueue_when_observed_then_latency_sample_is_rejected",
+    "given_queued_frame_when_clocked_receive_runs_then_clock_is_sampled_after_pop",
+    "given_enqueued_and_dropped_frames_when_observed_then_drop_rate_uses_all_attempts",
+    "given_sequence_and_timestamp_gap_when_received_then_typed_discontinuities_are_counted",
+    "given_two_sources_with_six_edges_when_dispatched_then_source_identity_stays_separate",
+    "given_slow_full_branch_when_more_frames_dispatched_then_other_branch_continues",
+    "given_observation_handle_when_producer_fills_edge_then_live_queue_and_drop_are_visible",
+    "given_observation_handle_when_consumer_detects_gap_then_live_discontinuity_is_visible",
+    "given_observation_handle_when_receiver_drops_then_shutdown_snapshot_remains_available",
+    "given_receiver_holds_popped_frame_when_queue_has_room_then_next_copy_is_enqueued",
+    "given_failed_branch_when_receiver_drops_then_unrelated_branch_continues",
+    "given_shutdown_with_queued_shared_frames_when_receivers_drop_then_pool_slots_are_released"
+  ],
+  "retry_behavior": [],
+  "serialization": [],
+  "shutdown_behavior": [
+    {
+      "line": 524,
+      "text": "/// another owner must observe queue, drop, discontinuity, or shutdown"
+    }
+  ],
+  "side_effects": [
+    {
+      "line": 1056,
+      "text": "graph.connect(source.out(\"out\"), first.in_(\"in\"));"
+    },
+    {
+      "line": 1057,
+      "text": "graph.connect(source.out(\"out\"), second.in_(\"in\"));"
+    },
+    {
+      "line": 1058,
+      "text": "graph.connect(source.out(\"out\"), third.in_(\"in\"));"
+    },
+    {
+      "line": 1086,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1126,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1157,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1225,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1261,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1295,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1332,
+      "text": "let slow_edge = graph.connect(source.out(\"out\"), slow.in_(\"in\"));"
+    },
+    {
+      "line": 1333,
+      "text": "let fast_edge = graph.connect(source.out(\"out\"), fast.in_(\"in\"));"
+    },
+    {
+      "line": 1383,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1419,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1448,
+      "text": "graph.connect(source.out(\"out\"), sink.in_(\"in\"));"
+    },
+    {
+      "line": 1528,
+      "text": "let failed_edge = graph.connect(source.out(\"out\"), failed.in_(\"in\"));"
+    },
+    {
+      "line": 1529,
+      "text": "let healthy_edge = graph.connect(source.out(\"out\"), healthy.in_(\"in\"));"
+    },
+    {
+      "line": 1579,
+      "text": "graph.connect(source.out(\"out\"), first.in_(\"in\"));"
+    },
+    {
+      "line": 1580,
+      "text": "graph.connect(source.out(\"out\"), second.in_(\"in\"));"
+    }
+  ],
+  "snapshot": "3b7b970f6598239e5d435b60c8d132a955a1886c",
+  "startup_behavior": [],
+  "state_machine": [],
+  "tasks": [],
+  "tests_covering": [],
+  "threads": [],
+  "visibility": "mixed"
+}
