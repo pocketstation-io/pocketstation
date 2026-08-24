@@ -863,7 +863,7 @@ impl SystemLoopbackSource {
         self.runtime_event_rx
             .as_ref()
             .map_or_else(SourceRuntimeEventObservations::default, |receiver| {
-                receiver.observations()
+                receiver.observation_handle().observations()
             })
     }
 
